@@ -33,6 +33,7 @@ public class VideoCanvas extends GLCanvas implements Closeable
 	private boolean mUsePBO = false; // seems to be faster without PBOs!!
 
 	private ByteBuffer mSourceBuffer;
+	private ByteBuffer mConvertedSourceBuffer;
 	private volatile boolean mIsUpToDate = false;
 	private boolean mReportErrors = false;
 
@@ -50,7 +51,7 @@ public class VideoCanvas extends GLCanvas implements Closeable
 
 	public VideoCanvas() throws GLException
 	{
-		
+
 	}
 
 	public VideoCanvas(	final int pBytesPerPixel,
@@ -190,6 +191,9 @@ public class VideoCanvas extends GLCanvas implements Closeable
 			@Override
 			public void display(GLAutoDrawable glautodrawable)
 			{
+				if (mSourceBuffer == null)
+					return;
+
 				final int lWidth = mVideoWidth;
 				final int lHeight = mVideoHeight;
 
@@ -304,6 +308,7 @@ public class VideoCanvas extends GLCanvas implements Closeable
 	{
 		pGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
 
+		//System.out.println("pNewContentBuffer=" + pNewContentBuffer);
 		pNewContentBuffer.rewind();
 		pGL2.glTexSubImage2D(	GL2.GL_TEXTURE_2D,
 													0,
@@ -388,6 +393,44 @@ public class VideoCanvas extends GLCanvas implements Closeable
 		if (mBytesPerPixel == 1)
 		{
 			return pNewContentBuffer;
+		}
+		else if (mBytesPerPixel == 2)
+		{
+			final int lByteBufferLength = pNewContentBuffer.capacity();
+			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() < lByteBufferLength)
+			{
+				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lByteBufferLength / 2);
+			}
+
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
+
+			pNewContentBuffer.rewind();
+			final int lShortBufferLength = mConvertedSourceBuffer.capacity();
+			for (int i = 0; i < lShortBufferLength; i++)
+			{
+				final byte low = pNewContentBuffer.get();
+				final byte high = pNewContentBuffer.get();
+				final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
+				min = Math.min(min, shortvalue);
+				max = Math.max(max, shortvalue);
+			}
+
+			final int supportwidth = max - min;
+
+			pNewContentBuffer.rewind();
+			mConvertedSourceBuffer.clear();
+			for (int i = 0; i < lShortBufferLength; i++)
+			{
+				final byte low = pNewContentBuffer.get();
+				final byte high = pNewContentBuffer.get();
+				final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
+				final byte mappedvalue = (byte) shortvalue;
+				mConvertedSourceBuffer.put(mappedvalue);
+			}
+
+			return mConvertedSourceBuffer;
+
 		}
 
 		return null;

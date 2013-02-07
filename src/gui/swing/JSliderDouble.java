@@ -62,6 +62,8 @@ public class JSliderDouble extends JPanel
 												double pValue)
 	{
 		super();
+		
+		mDoubleVariable.setValue(null, pValue);
 
 		setLayout(new BorderLayout(0, 0));
 

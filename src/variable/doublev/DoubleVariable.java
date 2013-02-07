@@ -16,6 +16,11 @@ public class DoubleVariable	implements
 	{
 		mValue = pDoubleValue;
 	}
+	
+	public void setCurrentValue(Object pDoubleEventSource)
+	{
+		setValue(pDoubleEventSource,mValue);
+	}
 
 	public final void setValue(final double pNewValue)
 	{
@@ -80,5 +85,7 @@ public class DoubleVariable	implements
 		sendUpdatesTo(pDoubleVariable);
 		sendQueriesTo(pDoubleVariable);
 	}
+
+
 
 }

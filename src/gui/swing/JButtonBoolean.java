@@ -1,6 +1,6 @@
 package gui.swing;
 
-import gui.swing.test.TestFrame;
+import gui.swing.test.TestVideoCanvasFrameDisplay;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
