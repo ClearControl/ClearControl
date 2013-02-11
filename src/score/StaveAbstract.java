@@ -75,7 +75,7 @@ public abstract class StaveAbstract extends ScoreAbstract	implements
 	public int getTimePointFromNormalized(double pNormalizedTimePoint)
 	{
 		final int lNumberOfTimePoints = getNumberOfTimePoints();
-		final int lIntegerTimePoint = (int) Math.round((lNumberOfTimePoints - 1) * pNormalizedTimePoint);
+		final int lIntegerTimePoint = (int) Math.round(lNumberOfTimePoints * pNormalizedTimePoint);
 		return lIntegerTimePoint;
 	}
 

@@ -6,7 +6,8 @@ import score.interfaces.StaveInterface;
 
 public class RampStave extends TriggerStave implements StaveInterface
 {
-	public volatile double mSyncStart, mSyncStop, mStartValue, mStopValue;
+	public volatile double mSyncStart, mSyncStop, mStartValue,
+			mStopValue, mOutsideValue;
 	public volatile boolean mNoJump = true;
 
 	public RampStave(String pName)
@@ -20,14 +21,14 @@ public class RampStave extends TriggerStave implements StaveInterface
 		Set.write(this, 0);
 		if (mNoJump)
 		{
-			Ramp.write(this, 0, mSyncStart, 0, mStartValue, 0);
-			Ramp.write(this, mSyncStop, 1, mStopValue, 0, 0);
+			Ramp.write(this, 0, mSyncStart, mOutsideValue, mStartValue, 0);
+			Ramp.write(this, mSyncStop, 1, mStopValue, mOutsideValue, 0);
 		}
 		Ramp.write(	this,
 								mSyncStart,
 								mSyncStop,
 								mStartValue,
 								mStopValue,
-								mStartValue);
+								0);
 	}
 }

@@ -23,6 +23,7 @@ public class Ramp
 
 		final short lValueOutsideShort = (short) Math.round(lMaxIntegerAmplitude * pValueOutside);
 
+		if(lValueOutsideShort!=0)
 		for (int i = 0; i < lStartInteger; i++)
 		{
 			array[i] += lValueOutsideShort;
@@ -30,12 +31,13 @@ public class Ramp
 
 		for (int i = lStartInteger; i < lStopInteger; i++)
 		{
-			final double lValue = (pStartValue + (i-lStartInteger) * (pStopValue - pStartValue)
-																																	/ lRampLength);
+			final double lValue = (pStartValue + (i - lStartInteger) * (pStopValue - pStartValue)
+																						/ lRampLength);
 			final short lValueShort = (short) Math.round(lMaxIntegerAmplitude * lValue);
 			array[i] += lValueShort;
 		}
 
+		if(lValueOutsideShort!=0)
 		for (int i = lStopInteger; i < lArrayLength; i++)
 		{
 			array[i] += lValueOutsideShort;
