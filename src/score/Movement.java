@@ -1,6 +1,7 @@
 package score;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import score.interfaces.MovementInterface;
@@ -28,7 +29,7 @@ public class Movement extends ScoreAbstract	implements
 		mStaveListArray = new StaveInterface[pNumberOfStaves];
 		for (int i = 0; i < pNumberOfStaves; i++)
 		{
-			mStaveListArray[i] = new ConstantStave("Zero",0);
+			mStaveListArray[i] = new ConstantStave("Zero", 0);
 		}
 	}
 
@@ -73,6 +74,7 @@ public class Movement extends ScoreAbstract	implements
 		{
 			final int lMovementBufferLengthInBytes = lMovementBufferLength * 2;
 			mMovementShortBuffer = ByteBuffer.allocateDirect(lMovementBufferLengthInBytes)
+																				.order(ByteOrder.nativeOrder())
 																				.asShortBuffer();
 		}
 

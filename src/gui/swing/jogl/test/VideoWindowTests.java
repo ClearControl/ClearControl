@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.swing.JFrame;
 
@@ -28,7 +29,7 @@ public class VideoWindowTests
 		VideoWindow lVideoWindow = new VideoWindow(1, 512, 512);
 		
 
-		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getBufferLength());
+		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getBufferLength()).order(ByteOrder.nativeOrder());
 
 		lVideoWindow.setSourceBuffer(lVideoByteBuffer);
 

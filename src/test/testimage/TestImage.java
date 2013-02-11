@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 
@@ -32,7 +33,7 @@ public class TestImage
 			final File myFile = new File(resourceLocation.toURI());
 			final FileInputStream lFileInputStream = new FileInputStream(myFile);
 			final FileChannel lChannel = lFileInputStream.getChannel();
-			final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect((int) lChannel.size());
+			final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect((int) lChannel.size()).order(ByteOrder.nativeOrder());
 			lChannel.read(lByteBuffer);
 			lFileInputStream.close();
 			lByteBuffer.rewind();

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
 import recycling.RecyclableInterface;
@@ -37,7 +38,7 @@ public class Frame implements RecyclableInterface
 		height = pHeight;
 		bpp = pBytesPerPixel;
 		buffer = ByteBuffer.allocateDirect(pWidth * pHeight
-																				* pBytesPerPixel);
+																				* pBytesPerPixel).order(ByteOrder.nativeOrder());
 	}
 
 	public Frame(	ByteBuffer pByteBuffer,

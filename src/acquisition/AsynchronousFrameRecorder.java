@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,7 @@ public class AsynchronousFrameRecorder<F extends Frame> extends
 
 	private FileChannel mChannel;
 	private long mLastElapsedTimeToWriteFrame;
-	private ByteBuffer mWriteByteBuffer = ByteBuffer.allocateDirect(cMaxBufferSize);
+	private ByteBuffer mWriteByteBuffer = ByteBuffer.allocateDirect(cMaxBufferSize).order(ByteOrder.nativeOrder());
 
 	public AsynchronousFrameRecorder(String pName, int pMaxQueueSize)
 	{

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import score.interfaces.MovementInterface;
 import score.interfaces.ScoreInterface;
 
-
-
 public class Score extends ScoreAbstract implements ScoreInterface
 {
 	private int mDeltaTime;
@@ -89,8 +87,8 @@ public class Score extends ScoreAbstract implements ScoreInterface
 		if (lCurrentScoreBufferCapacity < lScoreBufferLength)
 		{
 			final int lScoreBufferLengthInBytes = lScoreBufferLength * 2;
-			ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(lScoreBufferLengthInBytes);
-			lByteBuffer.order(ByteOrder.nativeOrder());
+			ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(lScoreBufferLengthInBytes)
+																					.order(ByteOrder.nativeOrder());
 			mScoreShortBuffer = lByteBuffer.asShortBuffer();
 		}
 

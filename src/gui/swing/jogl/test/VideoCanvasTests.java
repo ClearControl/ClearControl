@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.swing.JFrame;
 
@@ -43,7 +44,7 @@ public class VideoCanvasTests
 		jframe.setBackground(Color.black);
 		jframe.setVisible(true);
 
-		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoCanvas.getBufferLength());
+		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoCanvas.getBufferLength()).order(ByteOrder.nativeOrder());
 
 		lVideoCanvas.setSourceBuffer(lVideoByteBuffer);
 

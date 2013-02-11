@@ -3,13 +3,14 @@ package frames;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
 public class CompressedFrame extends Frame 
 {
 
 	private BufferHeader mLookUpTableBufferHeader = new BufferHeader();
-	private ByteBuffer m8BitTo16BitLookupTableByteBuffer = ByteBuffer.allocateDirect(256 * 4);
+	private ByteBuffer m8BitTo16BitLookupTableByteBuffer = ByteBuffer.allocateDirect(256 * 4).order(ByteOrder.nativeOrder());
 
 	public CompressedFrame()
 	{

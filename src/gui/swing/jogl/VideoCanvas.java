@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
@@ -399,7 +400,7 @@ public class VideoCanvas extends GLCanvas implements Closeable
 			final int lByteBufferLength = pNewContentBuffer.capacity();
 			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() < lByteBufferLength)
 			{
-				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lByteBufferLength / 2);
+				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lByteBufferLength / 2).order(ByteOrder.nativeOrder());
 			}
 
 			int min = Integer.MAX_VALUE;

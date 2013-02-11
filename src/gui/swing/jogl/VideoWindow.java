@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
@@ -412,49 +413,55 @@ public class VideoWindow implements Closeable
 			final int lConvertedBuferLength = lByteBufferLength / 2;
 			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() < lConvertedBuferLength)
 			{
-				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lConvertedBuferLength);
+				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lConvertedBuferLength).order(ByteOrder.nativeOrder());
 			}
 
-			int min = Integer.MAX_VALUE;
-			int max = Integer.MIN_VALUE;
-
-			pNewContentBuffer.rewind();
-			final int lShortBufferLength = mConvertedSourceBuffer.capacity();
-			for (int i = 0; i < lShortBufferLength; i++)
-			{
-				final byte low = pNewContentBuffer.get();
-				final byte high = pNewContentBuffer.get();
-				final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
-				min = Math.min(min, shortvalue);
-				max = Math.max(max, shortvalue);
-			}
-
-			final int supportwidth = max - min;
-			if (supportwidth == 0)
-			{
-				for (int i = 0; i < lShortBufferLength; i++)
-				{
-					mConvertedSourceBuffer.put((byte) 0);
-				}
-				return mConvertedSourceBuffer;
-			}
-
-			pNewContentBuffer.rewind();
-			mConvertedSourceBuffer.clear();
-			for (int i = 0; i < lShortBufferLength; i++)
-			{
-				final byte low = pNewContentBuffer.get();
-				final byte high = pNewContentBuffer.get();
-				final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
-				final byte mappedvalue = (byte) ((255 * (shortvalue - min)) / supportwidth);
-				mConvertedSourceBuffer.put(mappedvalue);
-			}
+			convertBufferInternal(pNewContentBuffer);
 
 			return mConvertedSourceBuffer;
 
 		}
 
 		return null;
+	}
+
+	private void convertBufferInternal(ByteBuffer pNewContentBuffer)
+	{
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+
+		pNewContentBuffer.rewind();
+		final int lShortBufferLength = mConvertedSourceBuffer.capacity();
+		for (int i = 0; i < lShortBufferLength; i++)
+		{
+			final byte low = pNewContentBuffer.get();
+			final byte high = pNewContentBuffer.get();
+			final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
+			min = Math.min(min, shortvalue);
+			max = Math.max(max, shortvalue);
+		}
+
+		final int supportwidth = max - min;
+		if (supportwidth == 0)
+		{
+			for (int i = 0; i < lShortBufferLength; i++)
+			{
+				mConvertedSourceBuffer.put((byte) 0);
+			}
+			return ;
+		}
+
+		pNewContentBuffer.rewind();
+		mConvertedSourceBuffer.clear();
+		for (int i = 0; i < lShortBufferLength; i++)
+		{
+			final byte low = pNewContentBuffer.get();
+			final byte high = pNewContentBuffer.get();
+			final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
+			final byte mappedvalue = (byte) ((255 * (shortvalue - min)) / supportwidth);
+			mConvertedSourceBuffer.put(mappedvalue);
+		}
+
 	}
 
 	private void reportError(GL2 pGL2)
