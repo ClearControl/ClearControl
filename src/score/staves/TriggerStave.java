@@ -8,6 +8,7 @@ import score.interfaces.StaveInterface;
 public class TriggerStave extends StaveAbstract	implements
 																								StaveInterface
 {
+	public volatile boolean mEnabled = false;
 	public volatile double mSyncStart, mSyncStop;
 	public volatile boolean mReverse = false;
 
@@ -20,6 +21,9 @@ public class TriggerStave extends StaveAbstract	implements
 	public void updateStaveBuffer()
 	{
 		Set.write(this, 0);
+		if (!mEnabled)
+			return;
+
 		if (mReverse)
 			Interval.write(this, mSyncStart, mSyncStop, 0, 1);
 		else

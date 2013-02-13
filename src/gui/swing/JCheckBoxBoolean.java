@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,30 +26,34 @@ import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleOutputVariableInterface;
 import variable.doublev.DoubleVariable;
 
-public class JButtonBoolean extends JButton
+public class JCheckBoxBoolean extends JCheckBox
 {
-	private final JButtonBoolean mThis;
-	private BooleanVariable mBooleanVariable;
-	private String mOnLabel, mOffLabel;
 
-	public JButtonBoolean(final boolean pInitialState,
-												String pOnLabel,
-												String pOffLabel)
+
+	private final JCheckBoxBoolean mThis;
+	private BooleanVariable mBooleanVariable;
+
+	public JCheckBoxBoolean(String pLabel)
 	{
+		this(false, pLabel);
+	}
+
+	public JCheckBoxBoolean(final boolean pInitialState, String pLabel)
+	{
+		super(pLabel);
 		mThis = this;
 		mBooleanVariable = new BooleanVariable(pInitialState);
-		mOnLabel = pOnLabel;
-		mOffLabel = pOffLabel;
-		setLabelFromState(mBooleanVariable.getBooleanValue());
+
+		setCheckmarkFromState(mBooleanVariable.getBooleanValue());
 
 		addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent pE)
 			{
 				mBooleanVariable.toggle(mThis);
-				
+
 				final boolean lButtonState = mBooleanVariable.getBooleanValue();
-				//System.out.println(lButtonState);
+				// System.out.println(lButtonState);
 
 				EventQueue.invokeLater(new Runnable()
 				{
@@ -56,7 +61,7 @@ public class JButtonBoolean extends JButton
 					{
 						try
 						{
-							setLabelFromState(lButtonState);
+							setCheckmarkFromState(lButtonState);
 						}
 						catch (Throwable e)
 						{
@@ -75,7 +80,7 @@ public class JButtonBoolean extends JButton
 			public void setValue(Object pDoubleEventSource, double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
-				if(pDoubleEventSource!=mThis)
+				if (pDoubleEventSource != mThis)
 				{
 					EventQueue.invokeLater(new Runnable()
 					{
@@ -83,7 +88,7 @@ public class JButtonBoolean extends JButton
 						{
 							try
 							{
-								setLabelFromState(lButtonState);
+								setCheckmarkFromState(lButtonState);
 							}
 							catch (Throwable e)
 							{
@@ -92,7 +97,7 @@ public class JButtonBoolean extends JButton
 						}
 					});
 				}
-				
+
 			}
 		});/**/
 
@@ -103,18 +108,41 @@ public class JButtonBoolean extends JButton
 		return mBooleanVariable;
 	}
 
-
-	private void setLabelFromState(final boolean lButtonState)
+	private void setCheckmarkFromState(final boolean lButtonState)
 	{
 		setSelected(lButtonState);
-		if (lButtonState)
-		{
-			setText(mOnLabel);
-		}
-		else
-		{
-			setText(mOffLabel);
-		}
 	}
+	
+	
+	@Override
+	public String getText()
+	{
+		// TODO Auto-generated method stub
+		return super.getText();
+	}
+
+	@Override
+	public void setText(String pText)
+	{
+		// TODO Auto-generated method stub
+		super.setText(pText);
+	}
+
+	@Override
+	@Deprecated
+	public String getLabel()
+	{
+		// TODO Auto-generated method stub
+		return super.getLabel();
+	}
+
+	@Override
+	@Deprecated
+	public void setLabel(String pLabel)
+	{
+		// TODO Auto-generated method stub
+		super.setLabel(pLabel);
+	}
+	
 
 }
