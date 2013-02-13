@@ -1,6 +1,6 @@
 package device;
 
-public abstract class CameraDevice extends BaseVirtualDevice implements VirtualDevice
+public abstract class CameraDevice extends SignalStartableDevice implements VirtualDevice
 {
 
 }

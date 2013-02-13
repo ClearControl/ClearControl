@@ -3,11 +3,11 @@ package device;
 import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
-public abstract class BaseVirtualDevice implements VirtualDevice
+public abstract class SignalStartableDevice implements VirtualDevice
 {
 	protected BooleanVariable mStartStopSignal = new BooleanVariable(false);
 
-	public BaseVirtualDevice()
+	public SignalStartableDevice()
 	{
 		super();
 		mStartStopSignal.detectEdgeWith(new BooleanEventListenerInterface()

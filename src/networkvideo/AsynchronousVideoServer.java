@@ -12,7 +12,6 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import compression.AdaptiveQuantizer;
 
 import utils.concurency.thread.EnhancedThread;
 import utils.network.jpgvideo.JpgVideoServer;
@@ -21,6 +20,7 @@ import timming.StopWatch;
 
 import frames.CompressedFrame;
 import frames.Frame;
+import frames.quantizers.AdaptiveQuantizer;
 import asyncprocs.AsynchronousProcessorBase;
 import asyncprocs.AsynchronousProcessorInterface;
 

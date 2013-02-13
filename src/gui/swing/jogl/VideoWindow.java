@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
@@ -39,7 +40,11 @@ public class VideoWindow implements Closeable
 	private boolean mUsePBO = false; // seems to be faster without PBOs!!
 
 	private ByteBuffer mSourceBuffer;
+
+	private short[] mShortArray;
+	private byte[] mByteArray;
 	private ByteBuffer mConvertedSourceBuffer;
+
 	private volatile boolean mIsUpToDate = false;
 	private boolean mReportErrors = false;
 
@@ -413,10 +418,12 @@ public class VideoWindow implements Closeable
 			final int lConvertedBuferLength = lByteBufferLength / 2;
 			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() < lConvertedBuferLength)
 			{
-				mConvertedSourceBuffer = ByteBuffer.allocateDirect(lConvertedBuferLength).order(ByteOrder.nativeOrder());
+				mShortArray = new short[lConvertedBuferLength];
+				mByteArray = new byte[lConvertedBuferLength];
+				mConvertedSourceBuffer = ByteBuffer.wrap(mByteArray);
 			}
 
-			convertBufferInternal(pNewContentBuffer);
+			convertFromShortBuffer(pNewContentBuffer.asShortBuffer());
 
 			return mConvertedSourceBuffer;
 
@@ -425,43 +432,42 @@ public class VideoWindow implements Closeable
 		return null;
 	}
 
-	private void convertBufferInternal(ByteBuffer pNewContentBuffer)
+	int[] mMinMax = new int[]
+	{ Integer.MAX_VALUE, Integer.MIN_VALUE };
+
+	private void convertFromShortBuffer(ShortBuffer pShortBuffer)
 	{
-		int min = Integer.MAX_VALUE;
-		int max = Integer.MIN_VALUE;
+		pShortBuffer.rewind();
+		pShortBuffer.get(mShortArray);
+		convert16to8bitRescaled(mShortArray, mByteArray, mMinMax);
+	}
 
-		pNewContentBuffer.rewind();
-		final int lShortBufferLength = mConvertedSourceBuffer.capacity();
-		for (int i = 0; i < lShortBufferLength; i++)
+	private static final void convert16to8bitRescaled(final short[] pShortArray,
+																										final byte[] lByteArray,
+																										int[] pMinMax)
+	{
+		final int length = pShortArray.length;
+
+		final int lCurrentMin = pMinMax[0];
+		final int lCurrentMax = pMinMax[1];
+		final int lCurrentWidth = lCurrentMax - lCurrentMin;
+
+		int lNewMin = Integer.MAX_VALUE;
+		int lNewMax = Integer.MIN_VALUE;
+
+		for (int i = 0; i < length; i++)
 		{
-			final byte low = pNewContentBuffer.get();
-			final byte high = pNewContentBuffer.get();
-			final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
-			min = Math.min(min, shortvalue);
-			max = Math.max(max, shortvalue);
+			final int lShortValue = pShortArray[i];
+			lNewMin = Math.min(lNewMin, lShortValue);
+			lNewMax = Math.max(lNewMax, lShortValue);
+			byte lByteMappedValue = 0;
+			if (lCurrentWidth > 0)
+				lByteMappedValue = (byte) ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+			lByteArray[i] = lByteMappedValue;
 		}
 
-		final int supportwidth = max - min;
-		if (supportwidth == 0)
-		{
-			for (int i = 0; i < lShortBufferLength; i++)
-			{
-				mConvertedSourceBuffer.put((byte) 0);
-			}
-			return ;
-		}
-
-		pNewContentBuffer.rewind();
-		mConvertedSourceBuffer.clear();
-		for (int i = 0; i < lShortBufferLength; i++)
-		{
-			final byte low = pNewContentBuffer.get();
-			final byte high = pNewContentBuffer.get();
-			final int shortvalue = ((high & 0x000000FF) << 8) + (low & 0x000000FF);
-			final byte mappedvalue = (byte) ((255 * (shortvalue - min)) / supportwidth);
-			mConvertedSourceBuffer.put(mappedvalue);
-		}
-
+		pMinMax[0] = lNewMin;
+		pMinMax[1] = lNewMax;
 	}
 
 	private void reportError(GL2 pGL2)

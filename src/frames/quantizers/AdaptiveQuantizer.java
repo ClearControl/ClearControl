@@ -1,4 +1,4 @@
-package compression;
+package frames.quantizers;
 
 import java.util.Arrays;
 
@@ -129,23 +129,37 @@ public class AdaptiveQuantizer
 
 	public Frame apply(Frame pFrame16Bit)
 	{
+		return apply(pFrame16Bit, null);
+	}
+
+	public Frame apply(Frame pFrame16Bit, Frame pFrame8Bit)
+	{
 		final int length = pFrame16Bit.width * pFrame16Bit.height;
-		if (m16BitBuffer == null || m16BitBuffer.length < length
-				|| m8BitBuffer == null
-				|| m8BitBuffer.length < length
-				|| mFrame8Bit.width != pFrame16Bit.width
-				|| mFrame8Bit.height != pFrame16Bit.height)
+
+		mFrame8Bit = pFrame8Bit;
+
+		if (m16BitBuffer == null || m16BitBuffer.length < length)
 		{
 			m16BitBuffer = new short[length];
+
+		}
+		
+		if (m8BitBuffer == null || m8BitBuffer.length < length)
+		{
 			m8BitBuffer = new byte[length];
+		}
+		
+		if (mFrame8Bit == null || mFrame8Bit.width != pFrame16Bit.width
+				|| mFrame8Bit.height != pFrame16Bit.height)
+		{
 			mFrame8Bit = new Frame(	pFrame16Bit.index,
 															pFrame16Bit.width,
 															pFrame16Bit.height,
 															1);
 		}
 
-		mFrame8Bit.index=pFrame16Bit.index;
-		
+		mFrame8Bit.index = pFrame16Bit.index;
+
 		pFrame16Bit.buffer.rewind();
 		pFrame16Bit.buffer.asShortBuffer().get(m16BitBuffer);
 

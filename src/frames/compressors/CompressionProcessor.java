@@ -1,4 +1,4 @@
-package acquisition;
+package frames.compressors;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,10 +9,10 @@ import turbojpeg.utils.StopWatch;
 import turbojpegj.TurboJpegJCompressor;
 import asyncprocs.ProcessorInterface;
 
-import compression.AdaptiveQuantizer;
 
 import frames.CompressedFrame;
 import frames.Frame;
+import frames.quantizers.AdaptiveQuantizer;
 
 public class CompressionProcessor	implements
 																	ProcessorInterface<Frame, CompressedFrame>

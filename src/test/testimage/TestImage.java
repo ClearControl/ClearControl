@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 
-import compression.test.AdaptiveQuantizerTests;
+import frames.quantizers.test.AdaptiveQuantizerTests;
 
 public class TestImage
 {

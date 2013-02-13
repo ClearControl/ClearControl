@@ -153,7 +153,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		return lLoad;
 	}
 	
-	public final void close()
+	public final boolean stop()
 	{
 		for (ProcessorThread lProcessorThread: mThreads)
 		{
@@ -162,6 +162,15 @@ public class AsynchronousProcessorPool<I, O>	extends
 		mThreads.clear();
 		mBusyThreads.clear();
 		mAvailableThreads.clear();
+		super.close();
+		return true;
+	}
+	
+	public final void close()
+	{
+		if(!mThreads.isEmpty())
+			stop();
+			
 		super.close();
 	}
 	

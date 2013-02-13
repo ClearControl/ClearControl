@@ -1,6 +1,6 @@
 package device;
 
-public abstract class SignalGeneratorDevice extends BaseVirtualDevice implements VirtualDevice
+public abstract class SignalGeneratorDevice extends SignalStartableDevice implements VirtualDevice
 {
 
 }
