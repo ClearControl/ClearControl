@@ -11,4 +11,8 @@ public interface MovementInterface
 
 	int computeMovementBufferLength();
 
+	int getDeltaTimeInMicroseconds();
+	
+	void setDeltaTimeInMicroseconds(int pDeltaTimeInMicroseconds);
+
 }

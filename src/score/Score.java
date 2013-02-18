@@ -10,7 +10,6 @@ import score.interfaces.ScoreInterface;
 
 public class Score extends ScoreAbstract implements ScoreInterface
 {
-	private int mDeltaTime;
 	private ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
 
 	private ShortBuffer mScoreShortBuffer;
@@ -53,10 +52,7 @@ public class Score extends ScoreAbstract implements ScoreInterface
 		mMovementList.clear();
 	}
 
-	public int getDeltaTime()
-	{
-		return mDeltaTime;
-	}
+
 
 	public ShortBuffer getScoreBuffer()
 	{
@@ -114,9 +110,16 @@ public class Score extends ScoreAbstract implements ScoreInterface
 		return lScoreBufferLength;
 	}
 
+	public ArrayList<MovementInterface> getMovements()
+	{	
+		return mMovementList;
+	}
+	
 	public int getNumberOfMovements()
 	{
 		return mMovementList.size();
 	}
+
+
 
 }

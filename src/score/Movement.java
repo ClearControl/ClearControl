@@ -11,8 +11,11 @@ import score.staves.ConstantStave;
 public class Movement extends ScoreAbstract	implements
 																						MovementInterface
 {
+
 	private static final int cDefaultNumberOfStavesPerMovement = 16;
 
+	private int mDeltaTimeInMicroeconds;
+	
 	private final StaveInterface[] mStaveListArray;
 
 	private ShortBuffer mMovementShortBuffer;
@@ -31,6 +34,16 @@ public class Movement extends ScoreAbstract	implements
 		{
 			mStaveListArray[i] = new ConstantStave("Zero", 0);
 		}
+	}
+	
+	public void setDeltaTimeInMicroseconds(final int pDeltaTimeInMicroeconds)
+	{
+		mDeltaTimeInMicroeconds = pDeltaTimeInMicroeconds;
+	}
+	
+	public int getDeltaTimeInMicroseconds()
+	{
+		return mDeltaTimeInMicroeconds;
 	}
 
 	public boolean setStave(final int pStaveIndex,
@@ -64,6 +77,8 @@ public class Movement extends ScoreAbstract	implements
 
 		return mMovementShortBuffer;
 	}
+	
+	
 
 	private void updateMovementBuffer()
 	{
@@ -128,5 +143,7 @@ public class Movement extends ScoreAbstract	implements
 			lStave.requestUpdate();
 		}
 	}
+
+
 
 }

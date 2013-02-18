@@ -1,10 +1,16 @@
 package variable.objectv;
 
+import java.util.ArrayList;
+
+import variable.doublev.DoubleInputVariableInterface;
+
 public class ObjectVariable<O>	implements
 																ObjectInputOutputVariableInterface<O>
 {
 	private volatile O mReference;
 	private ObjectInputVariableInterface<O> mInputVariable;
+	private ArrayList<ObjectInputVariableInterface<O>> mInputVariables;
+
 	private ObjectOutputVariableInterface<O> mOutputVariable;
 
 	public final void setReference(final O pNewReference)
@@ -13,11 +19,21 @@ public class ObjectVariable<O>	implements
 	}
 
 	@Override
-	public void setReference(Object pDoubleEventSource, O pNewReference)
+	public void setReference(Object pObjectEventSource, O pNewReference)
 	{
-		mReference = pNewReference;
+
 		if (mInputVariable != null)
-			mInputVariable.setReference(pDoubleEventSource, pNewReference);
+			mInputVariable.setReference(pObjectEventSource, pNewReference);
+		else if (mInputVariables != null)
+		{
+			for (ObjectInputVariableInterface<O> lObjectInputVariableInterface : mInputVariables)
+			{
+				lObjectInputVariableInterface.setReference(	pObjectEventSource,
+																										pNewReference);
+			}
+		}
+
+		mReference = pNewReference;
 	}
 
 	@Override
@@ -29,20 +45,37 @@ public class ObjectVariable<O>	implements
 		return mReference;
 	}
 
-	public final void sendUpdatesTo(ObjectInputVariableInterface pDoubleVariable)
+	public final void sendUpdatesTo(ObjectInputVariableInterface pObjectVariable)
 	{
-		mInputVariable = pDoubleVariable;
+		synchronized (this)
+		{
+			if (mInputVariable == null && mInputVariables == null)
+			{
+				mInputVariable = pObjectVariable;
+			}
+			else if (mInputVariable != null && mInputVariables == null)
+			{
+				mInputVariables = new ArrayList<ObjectInputVariableInterface<O>>();
+				mInputVariables.add(mInputVariable);
+				mInputVariables.add(pObjectVariable);
+				mInputVariable = null;
+			}
+			else if (mInputVariable == null && mInputVariables != null)
+			{
+				mInputVariables.add(pObjectVariable);
+			}
+		}
 	}
 
-	public final void sendQueriesTo(ObjectOutputVariableInterface pDoubleVariable)
+	public final void sendQueriesTo(ObjectOutputVariableInterface pObjectVariable)
 	{
-		mOutputVariable = pDoubleVariable;
+		mOutputVariable = pObjectVariable;
 	}
 
-	public final void syncWith(ObjectInputOutputVariableInterface pDoubleVariable)
+	public final void syncWith(ObjectInputOutputVariableInterface pObjectVariable)
 	{
-		mInputVariable = pDoubleVariable;
-		mOutputVariable = pDoubleVariable;
+		sendUpdatesTo(pObjectVariable);
+		sendQueriesTo(pObjectVariable);
 	}
 
 }
