@@ -6,7 +6,7 @@ import score.interfaces.StaveInterface;
 
 
 
-public abstract class StaveAbstract extends ScoreAbstract	implements
+public abstract class StaveAbstract extends NameableAbstract	implements
 																													StaveInterface
 
 {

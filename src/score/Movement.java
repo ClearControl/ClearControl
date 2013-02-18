@@ -8,7 +8,7 @@ import score.interfaces.MovementInterface;
 import score.interfaces.StaveInterface;
 import score.staves.ConstantStave;
 
-public class Movement extends ScoreAbstract	implements
+public class Movement extends NameableAbstract	implements
 																						MovementInterface
 {
 

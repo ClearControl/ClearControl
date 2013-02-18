@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import score.interfaces.MovementInterface;
 import score.interfaces.ScoreInterface;
 
-public class Score extends ScoreAbstract implements ScoreInterface
+public class Score extends NameableAbstract implements ScoreInterface
 {
 	private ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
 
@@ -98,6 +98,7 @@ public class Score extends ScoreAbstract implements ScoreInterface
 		}
 		mScoreShortBuffer.flip();
 
+		mIsUpToDateBasedOnMovementList = true;
 	}
 
 	private int computeScoreBufferLength()

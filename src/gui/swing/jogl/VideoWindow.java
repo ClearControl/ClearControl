@@ -76,7 +76,12 @@ public class VideoWindow implements Closeable
 		mVideoWidth = pVideoWidth;
 		mVideoHeight = pVideoHeight;
 		mBufferLength = mVideoWidth * mVideoWidth * mBytesPerPixel;
-
+		
+		if(pVideoWidth>512 || pVideoHeight>512)
+			mGLWindow.setSize(512,512);
+		else 
+			mGLWindow.setSize(pVideoWidth,pVideoHeight);
+		
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{
 
