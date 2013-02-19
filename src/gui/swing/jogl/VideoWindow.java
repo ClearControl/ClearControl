@@ -57,8 +57,10 @@ public class VideoWindow implements Closeable
 																																	Font.PLAIN,
 																																	12));
 
-	private volatile boolean mLinearInterpolation = false;
-	private boolean mSyncToRefresh;
+	private volatile boolean mLinearInterpolation = false,
+			mSyncToRefresh, mManualMinMax = false;
+
+	private volatile double mMinIntensity, mMaxIntensity;
 
 	private static final GLCapabilities cGLCapabilities = new GLCapabilities(GLProfile.getDefault());
 
@@ -76,12 +78,14 @@ public class VideoWindow implements Closeable
 		mVideoWidth = pVideoWidth;
 		mVideoHeight = pVideoHeight;
 		mBufferLength = mVideoWidth * mVideoWidth * mBytesPerPixel;
+
+		if (pVideoWidth > 512 || pVideoHeight > 512)
+			mGLWindow.setSize(512, 512);
+		else
+			mGLWindow.setSize(pVideoWidth, pVideoHeight);
 		
-		if(pVideoWidth>512 || pVideoHeight>512)
-			mGLWindow.setSize(512,512);
-		else 
-			mGLWindow.setSize(pVideoWidth,pVideoHeight);
-		
+		mGLWindow.setTitle(VideoWindow.class.getSimpleName());
+
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{
 
@@ -444,15 +448,65 @@ public class VideoWindow implements Closeable
 	{
 		pShortBuffer.rewind();
 		pShortBuffer.get(mShortArray);
-		convert16to8bitRescaled(mShortArray, mByteArray, mMinMax);
+		if (mManualMinMax)
+		{
+			mMinMax[0] = (int) Math.round(65536 * mMinIntensity);
+			mMinMax[1] = (int) Math.round(65536 * mMaxIntensity);
+		}
+		convert16to8bitRescaled(mShortArray,
+														mByteArray,
+														!mManualMinMax,
+														mMinMax);
 	}
 
 	private static final void convert16to8bitRescaled(final short[] pShortArray,
 																										final byte[] lByteArray,
+																										final boolean pAutoRescale,
 																										int[] pMinMax)
 	{
 		final int length = pShortArray.length;
 
+		if (pAutoRescale)
+		{
+			convert16to8bitRescaledAuto(pShortArray,
+																	lByteArray,
+																	pMinMax,
+																	length);
+		}
+		else
+		{
+			convert16to8bitRescaledManual(pShortArray,
+																		lByteArray,
+																		pMinMax,
+																		length);
+		}
+
+	}
+
+	private static void convert16to8bitRescaledManual(final short[] pShortArray,
+																										final byte[] lByteArray,
+																										int[] pMinMax,
+																										final int length)
+	{
+		final int lCurrentMin = pMinMax[0];
+		final int lCurrentMax = pMinMax[1];
+		final int lCurrentWidth = lCurrentMax - lCurrentMin;
+
+		for (int i = 0; i < length; i++)
+		{
+			final int lShortValue = pShortArray[i];
+			byte lByteMappedValue = 0;
+			if (lCurrentWidth > 0)
+				lByteMappedValue = (byte) ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+			lByteArray[i] = lByteMappedValue;
+		}
+	}
+
+	private static void convert16to8bitRescaledAuto(final short[] pShortArray,
+																									final byte[] lByteArray,
+																									int[] pMinMax,
+																									final int length)
+	{
 		final int lCurrentMin = pMinMax[0];
 		final int lCurrentMax = pMinMax[1];
 		final int lCurrentWidth = lCurrentMax - lCurrentMin;
@@ -541,6 +595,41 @@ public class VideoWindow implements Closeable
 	public void setVisible(boolean pB)
 	{
 		mGLWindow.setVisible(pB);
+	}
+
+	public boolean isVisible()
+	{
+		return mGLWindow.isVisible();
+	}
+
+	public double getMinIntensity()
+	{
+		return mMinIntensity;
+	}
+
+	public void setMinIntensity(double minIntensity)
+	{
+		mMinIntensity = minIntensity;
+	}
+
+	public double getMaxIntensity()
+	{
+		return mMaxIntensity;
+	}
+
+	public void setMaxIntensity(double maxIntensity)
+	{
+		mMaxIntensity = maxIntensity;
+	}
+
+	public boolean isManualMinMax()
+	{
+		return mManualMinMax;
+	}
+
+	public void setManualMinMax(boolean manualMinMax)
+	{
+		mManualMinMax = manualMinMax;
 	}
 
 }

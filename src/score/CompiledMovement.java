@@ -1,5 +1,7 @@
 package score;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import score.interfaces.MovementInterface;
@@ -12,7 +14,16 @@ public class CompiledMovement implements MovementInterface
 	public CompiledMovement(MovementInterface pMovement)
 	{
 		mDeltaTimeInMicroseconds = pMovement.getDeltaTimeInMicroseconds();
-		mMovementBuffer = pMovement.getMovementBuffer();
+
+		ShortBuffer lMovementBuffer = pMovement.getMovementBuffer();
+		final int lMovementBufferlength = lMovementBuffer.limit();
+
+		mMovementBuffer = ByteBuffer.allocateDirect(2*lMovementBufferlength)
+																.order(ByteOrder.nativeOrder())
+																.asShortBuffer();
+
+		lMovementBuffer.rewind();
+		mMovementBuffer.put(lMovementBuffer);
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package variable.objectv;
 
 import java.util.ArrayList;
 
+import frames.Frame;
+
 import variable.doublev.DoubleInputVariableInterface;
 
 public class ObjectVariable<O>	implements
@@ -45,7 +47,7 @@ public class ObjectVariable<O>	implements
 		return mReference;
 	}
 
-	public final void sendUpdatesTo(ObjectInputVariableInterface pObjectVariable)
+	public final void sendUpdatesTo(ObjectInputVariableInterface<O> pObjectVariable)
 	{
 		synchronized (this)
 		{
@@ -66,6 +68,21 @@ public class ObjectVariable<O>	implements
 			}
 		}
 	}
+	
+	public void stopSendUpdatesTo(ObjectInputVariableInterface<O> pObjectVariable)
+	{
+		synchronized (this)
+		{
+			if (mInputVariable != null && mInputVariable==pObjectVariable && mInputVariables == null)
+			{
+				mInputVariable = null;
+			}
+			else if (mInputVariable == null && mInputVariables != null)
+			{
+				mInputVariables.remove(pObjectVariable);
+			}
+		}
+	}
 
 	public final void sendQueriesTo(ObjectOutputVariableInterface pObjectVariable)
 	{
@@ -77,5 +94,7 @@ public class ObjectVariable<O>	implements
 		sendUpdatesTo(pObjectVariable);
 		sendQueriesTo(pObjectVariable);
 	}
+
+
 
 }
