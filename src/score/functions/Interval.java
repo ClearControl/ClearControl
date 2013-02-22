@@ -5,7 +5,7 @@ import score.interfaces.StaveInterface;
 public class Interval
 {
 
-	public static void write(	StaveInterface pStave,
+	public static void add(	StaveInterface pStave,
 														double pSyncStart,
 														double pSyncStop,
 														double pValueInside,

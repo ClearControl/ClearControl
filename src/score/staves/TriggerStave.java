@@ -25,9 +25,8 @@ public class TriggerStave extends StaveAbstract	implements
 			return;
 
 		if (mReverse)
-			Interval.write(this, mSyncStart, mSyncStop, 0, 1);
+			Interval.add(this, mSyncStart, mSyncStop, 0, 1);
 		else
-			Interval.write(this, mSyncStart, mSyncStop, 1, 0);
+			Interval.add(this, mSyncStart, mSyncStop, 1, 0);
 	}
-
 }

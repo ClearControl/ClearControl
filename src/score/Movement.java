@@ -12,9 +12,9 @@ public class Movement extends NameableAbstract	implements
 																						MovementInterface
 {
 
-	private static final int cDefaultNumberOfStavesPerMovement = 16;
+	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
-	private int mDeltaTimeInMicroeconds;
+	private double mDeltaTimeInMicroeconds;
 	
 	private final StaveInterface[] mStaveListArray;
 
@@ -36,14 +36,20 @@ public class Movement extends NameableAbstract	implements
 		}
 	}
 	
-	public void setDeltaTimeInMicroseconds(final int pDeltaTimeInMicroeconds)
+	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroeconds)
 	{
 		mDeltaTimeInMicroeconds = pDeltaTimeInMicroeconds;
 	}
 	
-	public int getDeltaTimeInMicroseconds()
+	public double getDeltaTimeInMicroseconds()
 	{
 		return mDeltaTimeInMicroeconds;
+	}
+	
+	@Override
+	public int getMaxNumberOfTimePointsPerBuffer()
+	{
+		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer;
 	}
 
 	public boolean setStave(final int pStaveIndex,
@@ -135,7 +141,7 @@ public class Movement extends NameableAbstract	implements
 		StaveInterface lFirstStave = getFirstStave();
 		return lFirstStave.getNumberOfTimePoints();
 	}
-
+	
 	public void requestUpdateAllStaves()
 	{
 		for (StaveInterface lStave : mStaveListArray)
@@ -143,6 +149,22 @@ public class Movement extends NameableAbstract	implements
 			lStave.requestUpdate();
 		}
 	}
+
+	@Override
+	public double getDurationInMilliseconds()
+	{
+		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer*(getDeltaTimeInMicroseconds()*0.001);
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("Movement[%s]", getName());
+	}
+
+
+
+
 
 
 

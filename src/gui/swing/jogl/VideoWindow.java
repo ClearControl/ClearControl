@@ -57,7 +57,7 @@ public class VideoWindow implements Closeable
 																																	Font.PLAIN,
 																																	12));
 
-	private volatile boolean mLinearInterpolation = false,
+	private volatile boolean mDisplayOn=true, mLinearInterpolation = false,
 			mSyncToRefresh, mManualMinMax = false;
 
 	private volatile double mMinIntensity, mMaxIntensity;
@@ -96,7 +96,7 @@ public class VideoWindow implements Closeable
 													int pWidth,
 													int pHeight)
 			{
-
+				//System.out.println("reshape");
 				GL2 lGL2 = glautodrawable.getGL().getGL2();
 
 				lGL2.glLoadIdentity();
@@ -189,7 +189,7 @@ public class VideoWindow implements Closeable
 					lGL2.glBufferData(GL2.GL_PIXEL_UNPACK_BUFFER,
 														mBufferLength,
 														null,
-														lGL2.GL_STREAM_DRAW);
+														GL2.GL_STREAM_DRAW);
 					reportError(lGL2);
 
 					lGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER,
@@ -219,17 +219,26 @@ public class VideoWindow implements Closeable
 			{
 				if (mSourceBuffer == null)
 					return;
-
+				
 				final int lWidth = mVideoWidth;
 				final int lHeight = mVideoHeight;
 
 				GL2 lGL2 = glautodrawable.getGL().getGL2();
-
+				
+				if(!mDisplayOn)
+				{
+					lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+					lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT);
+					return;
+				}/**/
+				
 				updateVideoWithBuffer(lGL2, mSourceBuffer);
-
+				
 				// mGL2.glLoadIdentity();
+
 				lGL2.glEnable(GL2.GL_TEXTURE_2D);
 				lGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
+				//lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 				lGL2.glBegin(GL2.GL_QUADS);
 
 				lGL2.glTexCoord2d(0.0, 0.0);
@@ -244,6 +253,7 @@ public class VideoWindow implements Closeable
 				lGL2.glTexCoord2d(0.0, 1.0);
 				lGL2.glVertex3d(0.0, 1, 0.0);
 				lGL2.glEnd();
+				/**/
 
 				if (mDisplayFrameRate)
 				{
@@ -285,7 +295,7 @@ public class VideoWindow implements Closeable
 	private boolean updateVideoWithBuffer(GL2 pGL2,
 																				ByteBuffer pNewContentBuffer)
 	{
-		if (mIsUpToDate)
+		if (mIsUpToDate|| !mDisplayOn ) //
 			return true;
 
 		if (!isContextAvailable())
@@ -600,6 +610,16 @@ public class VideoWindow implements Closeable
 	public boolean isVisible()
 	{
 		return mGLWindow.isVisible();
+	}
+
+	public void setDisplayOn(boolean pDisplayOn)
+	{
+		mDisplayOn = pDisplayOn;
+	}
+
+	public boolean getDisplayOn()
+	{
+		return mDisplayOn;
 	}
 
 	public double getMinIntensity()

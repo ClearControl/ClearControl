@@ -5,8 +5,9 @@ import score.interfaces.StaveInterface;
 public class BinaryPattern
 {
 
-	public static final void write(	final StaveInterface pStave,
+	public static final void mult(	final StaveInterface pStave,
 																	final int pPatternPeriod,
+																	final int pPatternPhase,
 																	final int pPatternOnLength)
 	{
 		final int lArrayLength = pStave.getNumberOfTimePoints();
@@ -14,11 +15,11 @@ public class BinaryPattern
 
 		for (int i = 0; i < lArrayLength; i++)
 		{
-			final int modulo = i % pPatternPeriod;
+			final int modulo = (i+pPatternPhase) % pPatternPeriod;
 			if (modulo < pPatternOnLength)
-				array[i] = 1;
+				array[i] *= 1;
 			else
-				array[i] = 0;
+				array[i] *= 0;
 		}
 	}
 

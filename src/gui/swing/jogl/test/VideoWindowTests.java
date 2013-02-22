@@ -27,7 +27,7 @@ public class VideoWindowTests
 	public void simpleRandomDataTest() throws InterruptedException
 	{
 		VideoWindow lVideoWindow = new VideoWindow(1, 512, 512);
-		
+		lVideoWindow.setDisplayOn(true);
 
 		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getBufferLength()).order(ByteOrder.nativeOrder());
 

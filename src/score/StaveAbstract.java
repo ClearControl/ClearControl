@@ -10,8 +10,8 @@ public abstract class StaveAbstract extends NameableAbstract	implements
 																													StaveInterface
 
 {
-	private final static int cDefaultNumberOfTimePoints = 2048;
-	private final static int cDefaultMaximalSignalIntegerAmplitude = 32767;
+	public final static int cMaximumNumberOfTimePointsPerBuffer = 2048;
+	public final static int cDefaultMaximalSignalIntegerAmplitude = 32767;
 
 	private final int mMaxSignalIntegerAmplitude;
 	public final short[] mArray;
@@ -21,7 +21,7 @@ public abstract class StaveAbstract extends NameableAbstract	implements
 	public StaveAbstract(String pName)
 	{
 		this(	pName,
-					cDefaultNumberOfTimePoints,
+					cMaximumNumberOfTimePointsPerBuffer,
 					cDefaultMaximalSignalIntegerAmplitude);
 	}
 

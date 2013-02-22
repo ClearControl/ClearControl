@@ -18,9 +18,12 @@ public class VideoWindowFrameDisplay
 
 	private ObjectVariable<Frame> mObjectVariable = new ObjectVariable<Frame>();
 
+	public BooleanVariable mDisplayOn = new BooleanVariable(true);
 	public BooleanVariable mManualMinMaxIntensity = new BooleanVariable(false);
 	public DoubleVariable mMinimumIntensity = new DoubleVariable(0);
 	public DoubleVariable mMaximumIntensity = new DoubleVariable(1);
+
+
 
 	public VideoWindowFrameDisplay()
 	{
@@ -61,6 +64,16 @@ public class VideoWindowFrameDisplay
 			}
 		});
 		
+		
+		mDisplayOn.sendUpdatesTo(new DoubleInputVariableInterface()
+		{
+			@Override
+			public void setValue(Object pDoubleEventSource, double pBoolean)
+			{
+				final boolean lDisplayOn = BooleanVariable.double2boolean(pBoolean);
+				mVideoWindow.setDisplayOn(lDisplayOn);
+			}
+		});
 		
 		mManualMinMaxIntensity.sendUpdatesTo(new DoubleInputVariableInterface()
 		{

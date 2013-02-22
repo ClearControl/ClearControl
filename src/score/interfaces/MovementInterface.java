@@ -11,8 +11,24 @@ public interface MovementInterface
 
 	int computeMovementBufferLength();
 
-	int getDeltaTimeInMicroseconds();
+	double getDeltaTimeInMicroseconds();
 	
-	void setDeltaTimeInMicroseconds(int pDeltaTimeInMicroseconds);
+	void setDeltaTimeInMicroseconds(double pDeltaTimeInMicroseconds);
+
+	double getDurationInMilliseconds();
+
+	int getMaxNumberOfTimePointsPerBuffer();
+	
+	int getNumberOfTimePoints();
+	
+	int getNumberOfStaves();
+
+	String getName();
+
+
+
+
+
+
 
 }

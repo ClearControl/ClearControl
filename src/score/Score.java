@@ -121,6 +121,11 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return mMovementList.size();
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format("Score-%s", getName());
+	}
 
 
 }
