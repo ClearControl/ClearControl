@@ -32,7 +32,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 					if (lOutput != null)
 						send(lOutput);
 				}
-				catch (InterruptedException e)
+				catch (Throwable e)
 				{
 					System.out.println(e.getLocalizedMessage());
 				}

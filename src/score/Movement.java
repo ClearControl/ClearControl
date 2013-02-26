@@ -20,6 +20,8 @@ public class Movement extends NameableAbstract	implements
 
 	private ShortBuffer mMovementShortBuffer;
 	private boolean mIsUpToDateBasedOnStaveList = false;
+	
+	public static final Movement NullMovement = new Movement("NullMovement");
 
 	public Movement(final String pName)
 	{
