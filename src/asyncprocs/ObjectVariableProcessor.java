@@ -13,18 +13,21 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 	ObjectVariable<O> mOutputObjectVariable = new ObjectVariable<O>();
 
 	AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
-	
+
 	private Object mObjectEventSource;
 
-	public ObjectVariableProcessor(String pName,
+	public ObjectVariableProcessor(	String pName,
 																	int pMaxQueueSize,
 																	int pThreadPoolSize,
-																	ProcessorInterface<I,O> pProcessor,
+																	ProcessorInterface<I, O> pProcessor,
 																	final boolean pDropIfQueueFull)
 	{
 		super();
-		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(pName, pMaxQueueSize, pThreadPoolSize, pProcessor);
-		
+		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(	pName,
+																																			pMaxQueueSize,
+																																			pThreadPoolSize,
+																																			pProcessor);
+
 		mInputObjectVariable.sendUpdatesTo(new ObjectInputVariableInterface<I>()
 		{
 
@@ -33,7 +36,7 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 																I pNewReference)
 			{
 				mObjectEventSource = pObjectEventSource;
-				if(pDropIfQueueFull)
+				if (pDropIfQueueFull)
 				{
 					mAsynchronousProcessorPool.passOrFail(pNewReference);
 				}
@@ -43,19 +46,30 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 				}
 			}
 		});
-		
-		mAsynchronousProcessorPool.connectToReceiver(new AsynchronousProcessorBase<O, O>("ObjectVariableProcessor-ConnectionToObjectVariable",pMaxQueueSize)
+
+		mAsynchronousProcessorPool.connectToReceiver(new AsynchronousProcessorAdapter<O, O>()
 		{
+
 			@Override
-			public O process(O pOutput)
+			public boolean passOrWait(O pObject)
 			{
-				mOutputObjectVariable.setReference(mObjectEventSource, pOutput);
-				return null;
+				mOutputObjectVariable.setReference(	mObjectEventSource,
+																						pObject);
+				return true;
 			}
+
+			@Override
+			public boolean passOrFail(O pObject)
+			{
+				mOutputObjectVariable.setReference(	mObjectEventSource,
+																						pObject);
+				return true;
+			}
+
 		});
-		
+
 	}
-	
+
 	public ObjectVariable<I> getInputObjectVariable()
 	{
 		return mInputObjectVariable;
@@ -65,7 +79,6 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 	{
 		return mOutputObjectVariable;
 	}
-
 
 	@Override
 	public boolean open()
@@ -91,6 +104,5 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 		mAsynchronousProcessorPool.close();
 		return true;
 	}
-
 
 }
