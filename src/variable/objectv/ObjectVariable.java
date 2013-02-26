@@ -1,6 +1,7 @@
 package variable.objectv;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import frames.Frame;
 
@@ -11,7 +12,7 @@ public class ObjectVariable<O>	implements
 {
 	private volatile O mReference;
 	private ObjectInputVariableInterface<O> mInputVariable;
-	private ArrayList<ObjectInputVariableInterface<O>> mInputVariables;
+	private CopyOnWriteArrayList<ObjectInputVariableInterface<O>> mInputVariables;
 
 	private ObjectOutputVariableInterface<O> mOutputVariable;
 
@@ -57,7 +58,7 @@ public class ObjectVariable<O>	implements
 			}
 			else if (mInputVariable != null && mInputVariables == null)
 			{
-				mInputVariables = new ArrayList<ObjectInputVariableInterface<O>>();
+				mInputVariables = new CopyOnWriteArrayList<ObjectInputVariableInterface<O>>();
 				mInputVariables.add(mInputVariable);
 				mInputVariables.add(pObjectVariable);
 				mInputVariable = null;

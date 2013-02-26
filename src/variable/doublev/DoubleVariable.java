@@ -9,7 +9,7 @@ public class DoubleVariable	implements
 {
 	protected volatile double mValue;
 	private DoubleInputVariableInterface mInputVariable;
-	private ArrayList<DoubleInputVariableInterface> mInputVariables;
+	private CopyOnWriteArrayList<DoubleInputVariableInterface> mInputVariables;
 	private DoubleOutputVariableInterface mOutputVariable;
 
 	public DoubleVariable(double pDoubleValue)
@@ -63,7 +63,7 @@ public class DoubleVariable	implements
 			}
 			else if (mInputVariable != null && mInputVariables == null)
 			{
-				mInputVariables = new ArrayList<DoubleInputVariableInterface>();
+				mInputVariables = new CopyOnWriteArrayList<DoubleInputVariableInterface>();
 				mInputVariables.add(mInputVariable);
 				mInputVariables.add(pDoubleVariable);
 				mInputVariable = null;

@@ -47,26 +47,21 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 			}
 		});
 
-		mAsynchronousProcessorPool.connectToReceiver(new AsynchronousProcessorAdapter<O, O>()
+		
+		AsynchronousProcessorBase<O,O> lConnector = new AsynchronousProcessorBase<O, O>("AsynchronousProcessorPool->OutputObjectVariable", pMaxQueueSize)
 		{
 
 			@Override
-			public boolean passOrWait(O pObject)
+			public O process(O pInput)
 			{
 				mOutputObjectVariable.setReference(	mObjectEventSource,
-																						pObject);
-				return true;
+				                                   	pInput);
+				return null;
 			}
-
-			@Override
-			public boolean passOrFail(O pObject)
-			{
-				mOutputObjectVariable.setReference(	mObjectEventSource,
-																						pObject);
-				return true;
-			}
-
-		});
+		};
+		
+		lConnector.start();
+		mAsynchronousProcessorPool.connectToReceiver(lConnector);
 
 	}
 

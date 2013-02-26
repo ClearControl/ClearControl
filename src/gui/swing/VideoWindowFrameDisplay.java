@@ -60,7 +60,7 @@ public class VideoWindowFrameDisplay
 				mVideoWindow.notifyNewFrame();
 
 				mVideoWindow.display();
-				//pNewFrameReference.releaseFrame();
+				pNewFrameReference.releaseFrame();
 			}
 		});
 		
