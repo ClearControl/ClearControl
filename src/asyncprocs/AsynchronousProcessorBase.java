@@ -54,9 +54,18 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		return mEnhancedThread.start();
 	}
 
+	public boolean stop()
+	{
+		if(mEnhancedThread==null) return false;
+		
+		mEnhancedThread.stop();
+		mEnhancedThread=null;
+		return true;
+	}
+	
 	public void close()
 	{
-		mEnhancedThread.stop();
+		stop();
 	}
 
 	public boolean passOrWait(final I pObject)

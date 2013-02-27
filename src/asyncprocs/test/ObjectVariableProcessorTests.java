@@ -13,7 +13,7 @@ import asyncprocs.AsynchronousProcessorBase;
 import asyncprocs.AsynchronousProcessorInterface;
 import asyncprocs.AsynchronousProcessorNull;
 import asyncprocs.AsynchronousProcessorPool;
-import asyncprocs.ObjectVariableProcessor;
+import asyncprocs.ObjectVariableAsynchronousPooledProcessor;
 import asyncprocs.ProcessorInterface;
 
 public class ObjectVariableProcessorTests
@@ -40,7 +40,7 @@ public class ObjectVariableProcessorTests
 			}
 		};
 
-		ObjectVariableProcessor<String, String> lObjectVariableProcessor = new ObjectVariableProcessor<String, String>(	"test",
+		ObjectVariableAsynchronousPooledProcessor<String, String> lObjectVariableProcessor = new ObjectVariableAsynchronousPooledProcessor<String, String>(	"test",
 																																																										10,
 																																																										2,
 																																																										lProcessor,

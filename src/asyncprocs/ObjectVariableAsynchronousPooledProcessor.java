@@ -7,7 +7,8 @@ import variable.objectv.ObjectInputVariableInterface;
 import variable.objectv.ObjectOutputVariableInterface;
 import variable.objectv.ObjectVariable;
 
-public class ObjectVariableProcessor<I, O> implements VirtualDevice
+public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
+																															VirtualDevice
 {
 	ObjectVariable<I> mInputObjectVariable = new ObjectVariable<I>();
 	ObjectVariable<O> mOutputObjectVariable = new ObjectVariable<O>();
@@ -16,11 +17,11 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 
 	private Object mObjectEventSource;
 
-	public ObjectVariableProcessor(	String pName,
-																	int pMaxQueueSize,
-																	int pThreadPoolSize,
-																	ProcessorInterface<I, O> pProcessor,
-																	final boolean pDropIfQueueFull)
+	public ObjectVariableAsynchronousPooledProcessor(	String pName,
+																										int pMaxQueueSize,
+																										int pThreadPoolSize,
+																										ProcessorInterface<I, O> pProcessor,
+																										final boolean pDropIfQueueFull)
 	{
 		super();
 		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(	pName,
@@ -47,19 +48,18 @@ public class ObjectVariableProcessor<I, O> implements VirtualDevice
 			}
 		});
 
-		
-		AsynchronousProcessorBase<O,O> lConnector = new AsynchronousProcessorBase<O, O>("AsynchronousProcessorPool->OutputObjectVariable", pMaxQueueSize)
+		AsynchronousProcessorBase<O, O> lConnector = new AsynchronousProcessorBase<O, O>(	"AsynchronousProcessorPool->OutputObjectVariable",
+																																											pMaxQueueSize)
 		{
 
 			@Override
 			public O process(O pInput)
 			{
-				mOutputObjectVariable.setReference(	mObjectEventSource,
-				                                   	pInput);
+				mOutputObjectVariable.setReference(mObjectEventSource, pInput);
 				return null;
 			}
 		};
-		
+
 		lConnector.start();
 		mAsynchronousProcessorPool.connectToReceiver(lConnector);
 
