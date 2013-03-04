@@ -162,7 +162,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		mThreads.clear();
 		mBusyThreads.clear();
 		mAvailableThreads.clear();
-		super.close();
+		super.stop();
 		return true;
 	}
 	

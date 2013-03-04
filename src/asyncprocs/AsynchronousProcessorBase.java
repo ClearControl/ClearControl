@@ -65,7 +65,12 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	
 	public void close()
 	{
-		stop();
+		this.stop();
+	}
+	
+	public void waitToStart()
+	{
+		mEnhancedThread.waitForRunning();
 	}
 
 	public boolean passOrWait(final I pObject)
@@ -99,7 +104,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		if (mReceiver != null)
 			mReceiver.passOrWait(lOutput);
 	}
-
+	
 	public int getQueueLength()
 	{
 		return mInputQueue.size();
@@ -114,5 +119,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		return mInputQueue;
 	}
+
+
+
+
 
 }

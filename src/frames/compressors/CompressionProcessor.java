@@ -51,7 +51,7 @@ public class CompressionProcessor	implements
 		Recycler<CompressedFrame> lFrameRecycler = mFrameManagerThreadLocal.get();
 		if (lFrameRecycler == null)
 		{
-			lFrameRecycler = new Recycler<CompressedFrame>();
+			lFrameRecycler = new Recycler<CompressedFrame>(CompressedFrame.class);
 			mFrameManagerThreadLocal.set(lFrameRecycler);
 		}
 
@@ -70,7 +70,7 @@ public class CompressionProcessor	implements
 
 		final ByteBuffer lCompressedByteBuffer = lTurboJpegJCompressor.getCompressedBuffer();
 
-		final CompressedFrame lCompressedFrame = lFrameRecycler.requestFrame(CompressedFrame.class);
+		final CompressedFrame lCompressedFrame = lFrameRecycler.requestFrame();
 
 		if (lFrameRecycler.getCounter() > 1000)
 			System.out.println("Too many CompressedFrame requested !");

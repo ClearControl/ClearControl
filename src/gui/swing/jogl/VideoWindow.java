@@ -232,7 +232,14 @@ public class VideoWindow implements Closeable
 					return;
 				}/**/
 				
-				updateVideoWithBuffer(lGL2, mSourceBuffer);
+				try
+				{
+					updateVideoWithBuffer(lGL2, mSourceBuffer);
+				}
+				catch (Throwable e)
+				{
+					e.printStackTrace();
+				}
 				
 				// mGL2.glLoadIdentity();
 
@@ -442,6 +449,7 @@ public class VideoWindow implements Closeable
 				mConvertedSourceBuffer = ByteBuffer.wrap(mByteArray);
 			}
 
+			pNewContentBuffer.rewind();
 			convertFromShortBuffer(pNewContentBuffer.asShortBuffer());
 
 			return mConvertedSourceBuffer;

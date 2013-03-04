@@ -44,11 +44,11 @@ public class AdaptiveQuantizerProcessor	implements
 		Recycler<Frame> lFrameRecycler = mFrameRecyclerThreadLocal.get();
 		if (lFrameRecycler == null)
 		{
-			lFrameRecycler = new Recycler<Frame>();
+			lFrameRecycler = new Recycler<Frame>(Frame.class);
 			mFrameRecyclerThreadLocal.set(lFrameRecycler);
 		}
 
-		final Frame l8BitFrame = lFrameRecycler.requestFrame(Frame.class);
+		final Frame l8BitFrame = lFrameRecycler.requestFrame();
 		
 		l8BitFrame.width = pFrame16Bit.width;
 		l8BitFrame.height = pFrame16Bit.height;

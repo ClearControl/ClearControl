@@ -38,7 +38,8 @@ public class Frame implements RecyclableInterface
 		height = pHeight;
 		bpp = pBytesPerPixel;
 		buffer = ByteBuffer.allocateDirect(pWidth * pHeight
-																				* pBytesPerPixel).order(ByteOrder.nativeOrder());
+																				* pBytesPerPixel)
+												.order(ByteOrder.nativeOrder());
 	}
 
 	public Frame(	ByteBuffer pByteBuffer,
@@ -72,10 +73,28 @@ public class Frame implements RecyclableInterface
 				System.out.format("length=%d, buffer.capacity()=%d \n",
 													length,
 													buffer.capacity());/**/
-			buffer = ByteBuffer.allocate(length);
+			buffer = ByteBuffer.allocateDirect(length)
+													.order(ByteOrder.nativeOrder());
+			;
 			pByteBufferToBeCopied.rewind();
 			buffer.put(pByteBufferToBeCopied);
 		}
+	}
+
+	@Override
+	public void initialize(int... pParameters)
+	{
+		width = pParameters[0];
+		height = pParameters[1];
+		bpp = pParameters[2];
+
+		final int length = width * height * bpp;
+		if (buffer == null || buffer.capacity() < length)
+		{
+			buffer = ByteBuffer.allocateDirect(length)
+													.order(ByteOrder.nativeOrder());
+		}
+		buffer.clear();
 	}
 
 	public void releaseFrame()
