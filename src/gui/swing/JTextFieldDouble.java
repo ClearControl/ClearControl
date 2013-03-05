@@ -29,9 +29,9 @@ public class JTextFieldDouble extends JPanel
 	private final JTextFieldDouble mThis;
 	private DoubleVariable mDoubleVariable = new DoubleVariable(0);
 
-	public JTextFieldDouble(String pValueName)
+	public JTextFieldDouble(String pValueName, double pValue)
 	{
-		this(pValueName, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+		this(pValueName, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, pValue);
 	}
 
 	public JTextFieldDouble(String pValueName,
@@ -176,6 +176,11 @@ public class JTextFieldDouble extends JPanel
 	public void setColumns(int pNumberColumns)
 	{
 		mValueTextField.setColumns(pNumberColumns);
+	}
+
+	public void setValue(double pValue)
+	{
+		mValueTextField.setText(""+pValue);
 	}
 
 }

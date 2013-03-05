@@ -29,16 +29,15 @@ import variable.doublev.DoubleVariable;
 public class JCheckBoxBoolean extends JCheckBox
 {
 
-
 	private final JCheckBoxBoolean mThis;
 	private BooleanVariable mBooleanVariable;
 
 	public JCheckBoxBoolean(String pLabel)
 	{
-		this(false, pLabel);
+		this(pLabel,false);
 	}
 
-	public JCheckBoxBoolean(final boolean pInitialState, String pLabel)
+	public JCheckBoxBoolean(String pLabel, final boolean pInitialState)
 	{
 		super(pLabel);
 		mThis = this;
@@ -112,8 +111,7 @@ public class JCheckBoxBoolean extends JCheckBox
 	{
 		setSelected(lButtonState);
 	}
-	
-	
+
 	@Override
 	public String getText()
 	{
@@ -143,6 +141,5 @@ public class JCheckBoxBoolean extends JCheckBox
 		// TODO Auto-generated method stub
 		super.setLabel(pLabel);
 	}
-	
 
 }
