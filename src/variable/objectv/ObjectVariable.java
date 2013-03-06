@@ -69,12 +69,13 @@ public class ObjectVariable<O>	implements
 			}
 		}
 	}
-	
+
 	public void stopSendUpdatesTo(ObjectInputVariableInterface<O> pObjectVariable)
 	{
 		synchronized (this)
 		{
-			if (mInputVariable != null && mInputVariable==pObjectVariable && mInputVariables == null)
+			if (mInputVariable != null && mInputVariable == pObjectVariable
+					&& mInputVariables == null)
 			{
 				mInputVariable = null;
 			}
@@ -96,6 +97,14 @@ public class ObjectVariable<O>	implements
 		sendQueriesTo(pObjectVariable);
 	}
 
+	public boolean isNotNull()
+	{
+		return mReference != null;
+	}
 
+	public boolean isNull()
+	{
+		return mReference == null;
+	}
 
 }
