@@ -31,24 +31,48 @@ public class JButtonBoolean extends JButton
 	private BooleanVariable mBooleanVariable;
 	private String mOnLabel, mOffLabel;
 
+	private boolean mButtonIsOnOffSwitch = true;
+
 	public JButtonBoolean(final boolean pInitialState,
 												String pOnLabel,
 												String pOffLabel)
+	{
+		this(pInitialState, pOnLabel, pOffLabel, true);
+	}
+	
+	public JButtonBoolean(String pRestLabel,
+												String pPressingLabel)
+	{
+		this(false, pPressingLabel, pRestLabel, false);
+	}
+
+	public JButtonBoolean(final boolean pInitialState,
+												String pOnLabel,
+												String pOffLabel,
+												boolean pButtonIsOnOffSwitch)
 	{
 		mThis = this;
 		mBooleanVariable = new BooleanVariable(pInitialState);
 		mOnLabel = pOnLabel;
 		mOffLabel = pOffLabel;
+		mButtonIsOnOffSwitch = pButtonIsOnOffSwitch;
 		setLabelFromState(mBooleanVariable.getBooleanValue());
 
 		addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent pE)
 			{
-				mBooleanVariable.toggle(mThis);
-				
+				if (mButtonIsOnOffSwitch)
+				{
+					mBooleanVariable.toggle(mThis);
+				}
+				else
+				{
+					mBooleanVariable.setValue(mThis, true);
+					mBooleanVariable.setValue(mThis, false);
+				}
+
 				final boolean lButtonState = mBooleanVariable.getBooleanValue();
-				//System.out.println(lButtonState);
 
 				EventQueue.invokeLater(new Runnable()
 				{
@@ -75,7 +99,7 @@ public class JButtonBoolean extends JButton
 			public void setValue(Object pDoubleEventSource, double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
-				if(pDoubleEventSource!=mThis)
+				if (pDoubleEventSource != mThis)
 				{
 					EventQueue.invokeLater(new Runnable()
 					{
@@ -92,7 +116,7 @@ public class JButtonBoolean extends JButton
 						}
 					});
 				}
-				
+
 			}
 		});/**/
 
@@ -102,7 +126,6 @@ public class JButtonBoolean extends JButton
 	{
 		return mBooleanVariable;
 	}
-
 
 	private void setLabelFromState(final boolean lButtonState)
 	{

@@ -62,7 +62,8 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 		mcontentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(mcontentPane);
 
-		VideoCanvasFrameDisplay lVideoDisplayDevice = new VideoCanvasFrameDisplay(512, 512);
+		VideoCanvasFrameDisplay lVideoDisplayDevice = new VideoCanvasFrameDisplay(512,
+																																							512);
 		lVideoDisplayDevice.setLinearInterpolation(true);
 		lVideoDisplayDevice.setSyncToRefresh(false);
 
@@ -87,6 +88,22 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 				final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 				sDisplay = lBoolean;
 				System.out.println("sDisplay=" + sDisplay);
+			}
+		});
+
+		JButtonBoolean lJButtonBoolean2 = new JButtonBoolean(	"Push Button",
+																													"No Display");
+		mcontentPane.add(lJButtonBoolean2, BorderLayout.EAST);
+
+		BooleanVariable lPushVariable = lJButtonBoolean2.getBooleanVariable();
+
+		lPushVariable.sendUpdatesTo(new DoubleInputVariableInterface()
+		{
+			@Override
+			public void setValue(Object pDoubleEventSource, double pNewValue)
+			{
+				sValue = 0.5;
+				System.out.println("push!!!");
 			}
 		});
 
