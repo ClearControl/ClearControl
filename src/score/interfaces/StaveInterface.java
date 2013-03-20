@@ -13,6 +13,8 @@ public interface StaveInterface
 	
 	void requestUpdate();
 
+	void setNumberOfTimePoints(final int pNumberOfTimePoints);
+	
 	int getNumberOfTimePoints();
 
 	ShortBuffer getStaveBuffer();

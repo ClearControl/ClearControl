@@ -4,18 +4,16 @@ import java.nio.ShortBuffer;
 
 import score.interfaces.StaveInterface;
 
-
-
-public abstract class StaveAbstract extends NameableAbstract	implements
-																													StaveInterface
+public abstract class StaveAbstract extends NameableAbstract implements
+																														StaveInterface
 
 {
 	public final static int cMaximumNumberOfTimePointsPerBuffer = 2048;
 	public final static int cDefaultMaximalSignalIntegerAmplitude = 32767;
 
 	private final int mMaxSignalIntegerAmplitude;
-	public final short[] mArray;
-	private final ShortBuffer mStaveShortBuffer;
+	public short[] mArray;
+	private ShortBuffer mStaveShortBuffer;
 	private boolean mIsUpToDate = false;
 
 	public StaveAbstract(String pName)
@@ -38,9 +36,7 @@ public abstract class StaveAbstract extends NameableAbstract	implements
 	{
 		super(pName);
 		mMaxSignalIntegerAmplitude = pMaxSignalIntegerAmplitude;
-		final int lArrayLength = pNumberOfTimePoints;
-		mArray = new short[lArrayLength];
-		mStaveShortBuffer = ShortBuffer.wrap(mArray);
+		setNumberOfTimePoints(pNumberOfTimePoints);
 	}
 
 	public void set(final int pTimePoint, final short pIntegerValue)
@@ -77,6 +73,16 @@ public abstract class StaveAbstract extends NameableAbstract	implements
 		final int lNumberOfTimePoints = getNumberOfTimePoints();
 		final int lIntegerTimePoint = (int) Math.round(lNumberOfTimePoints * pNormalizedTimePoint);
 		return lIntegerTimePoint;
+	}
+
+	public void setNumberOfTimePoints(final int pNumberOfTimePoints)
+	{
+		if (mArray != null && pNumberOfTimePoints == mArray.length)
+			return;
+		final int lArrayLength = pNumberOfTimePoints;
+		mArray = new short[lArrayLength];
+		mStaveShortBuffer = ShortBuffer.wrap(mArray);
+		requestUpdate();
 	}
 
 	public int getNumberOfTimePoints()

@@ -8,19 +8,19 @@ import score.interfaces.MovementInterface;
 import score.interfaces.StaveInterface;
 import score.staves.ConstantStave;
 
-public class Movement extends NameableAbstract	implements
-																						MovementInterface
+public class Movement extends NameableAbstract implements
+																							MovementInterface
 {
 
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
 	private double mDeltaTimeInMicroeconds;
-	
+
 	private final StaveInterface[] mStaveListArray;
 
 	private ShortBuffer mMovementShortBuffer;
 	private boolean mIsUpToDateBasedOnStaveList = false;
-	
+
 	public static final Movement NullMovement = new Movement("NullMovement");
 
 	public Movement(final String pName)
@@ -37,19 +37,49 @@ public class Movement extends NameableAbstract	implements
 			mStaveListArray[i] = new ConstantStave("Zero", 0);
 		}
 	}
+
+	public void setTotalDurationInMicroseconds(	final double pTotalDurationInMicroseconds,
+																							final double pMinDeltaTimeInMicroseconds)
+	{
+		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
+
+		final int lMaxNumberOfTimePointsFittingInTotalDuration = Math.min(lMaxNumberOfTimePointsPerMovement,
+																																			(int) (pTotalDurationInMicroseconds / pMinDeltaTimeInMicroseconds));
+
+		setNumberOfTimePoints(lMaxNumberOfTimePointsFittingInTotalDuration);
+
+		final double lDeltaTimeInMicroseconds = pTotalDurationInMicroseconds / lMaxNumberOfTimePointsFittingInTotalDuration;
+
+		setDeltaTimeInMicroseconds(lDeltaTimeInMicroseconds);
 	
+	}
+
 	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroeconds)
 	{
 		mDeltaTimeInMicroeconds = pDeltaTimeInMicroeconds;
 	}
-	
+
 	public double getDeltaTimeInMicroseconds()
 	{
 		return mDeltaTimeInMicroeconds;
 	}
-	
+
+	public int getNumberOfTimePoints()
+	{
+		StaveInterface lFirstStave = getFirstStave();
+		return lFirstStave.getNumberOfTimePoints();
+	}
+
+	public void setNumberOfTimePoints(final int pNumberOfTimePoints)
+	{
+		for (StaveInterface lStave : mStaveListArray)
+		{
+			lStave.setNumberOfTimePoints(pNumberOfTimePoints);
+		}
+	}
+
 	@Override
-	public int getMaxNumberOfTimePointsPerBuffer()
+	public int getMaxNumberOfTimePointsPerMovement()
 	{
 		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer;
 	}
@@ -85,8 +115,6 @@ public class Movement extends NameableAbstract	implements
 
 		return mMovementShortBuffer;
 	}
-	
-	
 
 	private void updateMovementBuffer()
 	{
@@ -102,7 +130,7 @@ public class Movement extends NameableAbstract	implements
 		}
 
 		mMovementShortBuffer.limit(lMovementBufferLength);
-		mMovementShortBuffer.clear();
+		mMovementShortBuffer.rewind();
 		for (StaveInterface lStave : mStaveListArray)
 		{
 			final ShortBuffer lStaveShortBuffer = lStave.getStaveBuffer();
@@ -138,12 +166,6 @@ public class Movement extends NameableAbstract	implements
 		return lNumberOfChannels;
 	}
 
-	public int getNumberOfTimePoints()
-	{
-		StaveInterface lFirstStave = getFirstStave();
-		return lFirstStave.getNumberOfTimePoints();
-	}
-	
 	public void requestUpdateAllStaves()
 	{
 		for (StaveInterface lStave : mStaveListArray)
@@ -155,7 +177,7 @@ public class Movement extends NameableAbstract	implements
 	@Override
 	public double getDurationInMilliseconds()
 	{
-		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer*(getDeltaTimeInMicroseconds()*0.001);
+		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer * (getDeltaTimeInMicroseconds() * 0.001);
 	}
 
 	@Override
@@ -163,11 +185,5 @@ public class Movement extends NameableAbstract	implements
 	{
 		return String.format("Movement[%s]", getName());
 	}
-
-
-
-
-
-
 
 }
