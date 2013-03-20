@@ -13,9 +13,10 @@ public class BinaryPattern
 		final int lArrayLength = pStave.getNumberOfTimePoints();
 		final short[] array = pStave.getStaveArray();
 
+		final int lPatternPeriodNonZero = pPatternPeriod<=0?1:pPatternPeriod;
 		for (int i = 0; i < lArrayLength; i++)
 		{
-			final int modulo = (i+pPatternPhase) % pPatternPeriod;
+			final int modulo = (i+pPatternPhase) % lPatternPeriodNonZero;
 			if (modulo < pPatternOnLength)
 				array[i] *= 1;
 			else
