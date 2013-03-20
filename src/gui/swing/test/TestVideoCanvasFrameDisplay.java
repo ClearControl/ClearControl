@@ -24,6 +24,7 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 
 	static volatile boolean sDisplay = true;
 	static volatile double sValue = 1;
+	static volatile int sImageSize = 512;
 
 	/**
 	 * Launch the application.
@@ -103,13 +104,14 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 			public void setValue(Object pDoubleEventSource, double pNewValue)
 			{
 				sValue = 0.5;
+
 				System.out.println("push!!!");
 			}
 		});
 
 		DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
-		final Frame lFrame = new Frame(0, 512, 512, 1);
+		final Frame lFrame = new Frame(0, sImageSize, sImageSize, 1);
 
 		lDoubleVariable.sendUpdatesTo(new DoubleInputVariableInterface()
 		{
@@ -119,10 +121,6 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 			{
 				sValue = pNewValue;
 				System.out.println(pNewValue);
-
-				// generateNoiseBuffer(lFrame.buffer, pNewValue);
-				// lFrameVariable.setReference(lFrame);
-
 			}
 		});
 

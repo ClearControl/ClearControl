@@ -2,6 +2,7 @@ package gui.swing.jogl.test;
 
 import static org.junit.Assert.*;
 
+
 import gui.swing.jogl.VideoCanvas;
 
 import java.awt.BorderLayout;

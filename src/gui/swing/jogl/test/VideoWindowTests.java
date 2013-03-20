@@ -29,18 +29,28 @@ public class VideoWindowTests
 		VideoWindow lVideoWindow = new VideoWindow(1, 512, 512);
 		lVideoWindow.setDisplayOn(true);
 
-		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getBufferLength()).order(ByteOrder.nativeOrder());
+		ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getMaxBufferLength())
+																						.order(ByteOrder.nativeOrder());
 
 		lVideoWindow.setSourceBuffer(lVideoByteBuffer);
 
-		
 		lVideoWindow.setVisible(true);
 		while (true)
 		{
 			generateNoiseBuffer(lVideoByteBuffer);
+			if (Math.random() > 0.5)
+			{
+				lVideoWindow.setWidth(512);
+				lVideoWindow.setHeight(512);
+			}
+			else
+			{
+				lVideoWindow.setWidth(256);
+				lVideoWindow.setHeight(256);
+			}
 			lVideoWindow.notifyNewFrame();
 			lVideoWindow.display();
-			Thread.sleep(1);
+			Thread.sleep(1000);
 		}
 
 	}
