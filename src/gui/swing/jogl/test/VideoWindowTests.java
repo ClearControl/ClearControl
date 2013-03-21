@@ -38,16 +38,7 @@ public class VideoWindowTests
 		while (true)
 		{
 			generateNoiseBuffer(lVideoByteBuffer);
-			if (Math.random() > 0.5)
-			{
-				lVideoWindow.setWidth(512);
-				lVideoWindow.setHeight(512);
-			}
-			else
-			{
-				lVideoWindow.setWidth(256);
-				lVideoWindow.setHeight(256);
-			}
+			
 			lVideoWindow.notifyNewFrame();
 			lVideoWindow.display();
 			Thread.sleep(1000);
@@ -62,7 +53,7 @@ public class VideoWindowTests
 		final int lBufferLength = pVideoByteBuffer.limit();
 		for (int i = 0; i < lBufferLength; i++)
 		{
-			final byte lValue = (byte) ((int) (Math.random() * 256) % 256);
+			final byte lValue = (byte) ((int) (1 * 255) % 256); //Math.random()
 			// System.out.print(lValue);
 			pVideoByteBuffer.put(lValue);
 		}

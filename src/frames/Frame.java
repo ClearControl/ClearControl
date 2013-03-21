@@ -94,7 +94,8 @@ public class Frame implements RecyclableInterface
 			buffer = ByteBuffer.allocateDirect(length)
 													.order(ByteOrder.nativeOrder());
 		}
-		buffer.clear();
+		buffer.limit(length);
+		buffer.rewind();
 	}
 
 	public void releaseFrame()

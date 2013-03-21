@@ -136,7 +136,8 @@ public class VideoWindow implements Closeable
 				lGL2.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT,
 										GL2.GL_NICEST);
 				lGL2.glDisable(GLLightingFunc.GL_LIGHTING);
-				lGL2.glColor4f(1, 1, 1, 1);
+				lGL2.glDisable(GLLightingFunc.GL_COLOR_MATERIAL);
+				
 				lGL2.glEnable(GL2.GL_TEXTURE_2D);
 				reportError(lGL2);
 
@@ -247,6 +248,7 @@ public class VideoWindow implements Closeable
 
 				// mGL2.glLoadIdentity();
 
+				lGL2.glColor4d(1, 1, 1, 1);
 				lGL2.glEnable(GL2.GL_TEXTURE_2D);
 				lGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
 				// lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
@@ -450,7 +452,7 @@ public class VideoWindow implements Closeable
 		{
 			final int lByteBufferLength = pNewContentBuffer.capacity();
 			final int lConvertedBuferLength = lByteBufferLength / 2;
-			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() < lConvertedBuferLength)
+			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() != lConvertedBuferLength)
 			{
 				mShortArray = new short[lConvertedBuferLength];
 				mByteArray = new byte[lConvertedBuferLength];
@@ -476,8 +478,8 @@ public class VideoWindow implements Closeable
 		pShortBuffer.get(mShortArray);
 		if (mManualMinMax)
 		{
-			mMinMax[0] = (int) Math.round(65536 * mMinIntensity);
-			mMinMax[1] = (int) Math.round(65536 * mMaxIntensity);
+			mMinMax[0] = (int) Math.round(65535 * mMinIntensity);
+			mMinMax[1] = (int) Math.round(65535 * mMaxIntensity);
 		}
 		convert16to8bitRescaled(mShortArray,
 														mByteArray,
@@ -523,7 +525,15 @@ public class VideoWindow implements Closeable
 			final int lShortValue = pShortArray[i];
 			byte lByteMappedValue = 0;
 			if (lCurrentWidth > 0)
-				lByteMappedValue = (byte) ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+			{
+				final int lIntegerMappedValue = ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+				if (lIntegerMappedValue <= 0)
+					lByteMappedValue = 0;
+				else if (lIntegerMappedValue >= 255)
+					lByteMappedValue = (byte) 255;
+				else
+					lByteMappedValue = (byte) (lIntegerMappedValue);
+			}
 			lByteArray[i] = lByteMappedValue;
 		}
 	}

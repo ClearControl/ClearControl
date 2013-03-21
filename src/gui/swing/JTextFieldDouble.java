@@ -112,7 +112,7 @@ public class JTextFieldDouble extends JPanel
 												catch (NumberFormatException e)
 												{
 													JOptionPane.showMessageDialog(null,
-																												"Error: Please enter number bigger than 0",
+																												"String cannot be parsed as double!",
 																												"Error Message",
 																												JOptionPane.ERROR_MESSAGE);
 													return;
