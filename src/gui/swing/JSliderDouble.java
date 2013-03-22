@@ -32,6 +32,9 @@ public class JSliderDouble extends JPanel
 	private DoubleVariable mDoubleVariable = new DoubleVariable(0);
 	private int mNumberOfLabels = 3;
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public JSliderDouble(String pValueName)
 	{
 		this(pValueName, 0, 1, 0.5);
@@ -62,7 +65,7 @@ public class JSliderDouble extends JPanel
 												double pValue)
 	{
 		super();
-		
+
 		mDoubleVariable.setValue(null, pValue);
 
 		setLayout(new BorderLayout(0, 0));
@@ -71,7 +74,7 @@ public class JSliderDouble extends JPanel
 																										pMin,
 																										pMax,
 																										pValue));
-		add(mSlider);
+		add(mSlider, BorderLayout.SOUTH);
 
 		mNameLabel = new JLabel(pValueName);
 		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -79,7 +82,7 @@ public class JSliderDouble extends JPanel
 
 		mValueTextField = new JTextField("" + pValue);
 		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mValueTextField, BorderLayout.SOUTH);
+		add(mValueTextField, BorderLayout.CENTER);
 
 		mLabelsFormatString = pLabelsFormatString;
 		mResolution = pResolution;

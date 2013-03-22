@@ -40,6 +40,11 @@ public class JButtonBoolean extends JButton
 		this(pInitialState, pOnLabel, pOffLabel, true);
 	}
 	
+	public JButtonBoolean(String pLabel)
+	{
+		this(false, pLabel, pLabel, false);
+	}
+	
 	public JButtonBoolean(String pRestLabel,
 												String pPressingLabel)
 	{
