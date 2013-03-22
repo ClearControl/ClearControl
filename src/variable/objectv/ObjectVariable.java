@@ -39,6 +39,11 @@ public class ObjectVariable<O>	implements
 		mReference = pNewReference;
 	}
 
+	public void setCurrentReference(Object pObjectEventSource)
+	{
+		setReference(pObjectEventSource, mReference);
+	}
+
 	@Override
 	public O getReference()
 	{
