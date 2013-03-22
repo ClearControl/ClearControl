@@ -25,7 +25,7 @@ public class JOpenFileChooserButton extends JButton
 																boolean pOnlyFolders)
 	{
 		super(pLabel);
-		mFileVariable.setReference(new File("."));
+		mFileVariable.setReference(pCurrentFolder);
 		mOnlyFolders = pOnlyFolders;
 
 		addActionListener(new ActionListener()
