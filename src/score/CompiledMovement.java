@@ -14,28 +14,32 @@ public class CompiledMovement implements MovementInterface
 	private final int mNumberOfTimePoints;
 	private final int mNumberOfStaves;
 	private final double mDeltaTimeInMicroseconds;
+	private final boolean mIsSync;
+	private final boolean mIsSyncOnRisingEdge;
+	private final int mSyncChannel;
 
-		
 	public CompiledMovement(MovementInterface pMovement)
 	{
 
 		mName = pMovement.getName();
 		mDeltaTimeInMicroseconds = pMovement.getDeltaTimeInMicroseconds();
-		mNumberOfStaves =  pMovement.getNumberOfStaves();
+		mNumberOfStaves = pMovement.getNumberOfStaves();
 		mMaxNumberOfTimePointsPerBuffer = pMovement.getMaxNumberOfTimePointsPerMovement();
 		mNumberOfTimePoints = pMovement.getNumberOfTimePoints();
-		
+		mIsSync = pMovement.isSync();
+		mIsSyncOnRisingEdge = pMovement.isSyncOnRisingEdge();
+		mSyncChannel = pMovement.getSyncChannel();
+
 		ShortBuffer lMovementBuffer = pMovement.getMovementBuffer();
 		final int lMovementBufferlength = lMovementBuffer.limit();
 
-		mMovementBuffer = ByteBuffer.allocateDirect(2*lMovementBufferlength)
+		mMovementBuffer = ByteBuffer.allocateDirect(2 * lMovementBufferlength)
 																.order(ByteOrder.nativeOrder())
 																.asShortBuffer();
 
 		lMovementBuffer.rewind();
 		mMovementBuffer.put(lMovementBuffer);
 	}
-
 
 	@Override
 	public boolean isUpToDate()
@@ -67,11 +71,11 @@ public class CompiledMovement implements MovementInterface
 		throw new UnsupportedOperationException(this.getClass()
 																								.getSimpleName() + " are final and cannot be modified");
 	}
-	
+
 	@Override
 	public double getDurationInMilliseconds()
 	{
-		return mNumberOfTimePoints*(mDeltaTimeInMicroseconds*0.001);
+		return mNumberOfTimePoints * (mDeltaTimeInMicroseconds * 0.001);
 	}
 
 	@Override
@@ -79,10 +83,25 @@ public class CompiledMovement implements MovementInterface
 	{
 		return mNumberOfTimePoints;
 	}
-	
+
 	public int getNumberOfStaves()
 	{
 		return mNumberOfStaves;
+	}
+
+	public boolean isSync()
+	{
+		return mIsSync;
+	}
+
+	public boolean isSyncOnRisingEdge()
+	{
+		return mIsSyncOnRisingEdge;
+	}
+
+	public int getSyncChannel()
+	{
+		return mSyncChannel;
 	}
 
 	@Override
@@ -101,7 +120,5 @@ public class CompiledMovement implements MovementInterface
 	{
 		return mMaxNumberOfTimePointsPerBuffer;
 	}
-
-
 
 }
