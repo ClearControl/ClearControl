@@ -16,8 +16,10 @@ public class CompiledScore
 	private volatile boolean mIsUpToDate = false;
 	private ShortBuffer mDeltaTimeShortBuffer;
 	private ShortBuffer mNumberTimePointsToPlayShortBuffer;
+	private ShortBuffer mSyncShortBuffer;
 	private ShortBuffer mMatricesShortBuffer;
 	private double mBufferDeltaTimeUnitInNanoseconds;
+
 
 	public CompiledScore(final String pName, double pBufferDeltaTimeUnitInNanoseconds)
 	{
@@ -59,6 +61,11 @@ public class CompiledScore
 		ensureMovementsBufferIsUpToDate();
 		return mNumberTimePointsToPlayShortBuffer;
 	}
+	
+	public ShortBuffer getSyncBuffer()
+	{
+		return mSyncShortBuffer;
+	}
 
 	public ShortBuffer getScoreBuffer()
 	{
@@ -92,6 +99,15 @@ public class CompiledScore
 																											.order(ByteOrder.nativeOrder())
 																											.asShortBuffer();
 		}
+		
+		final int lSyncBufferLengthInBytes = 2 * lNumberOfMatrices;
+		
+		if (mSyncShortBuffer == null || mSyncShortBuffer.capacity() < lSyncBufferLengthInBytes)
+		{
+			mSyncShortBuffer = ByteBuffer.allocateDirect(lSyncBufferLengthInBytes)
+																											.order(ByteOrder.nativeOrder())
+																											.asShortBuffer();
+		}
 
 		if (mMatricesShortBuffer == null || mMatricesShortBuffer.capacity() < lMatricesBufferLengthInBytes)
 		{
@@ -102,16 +118,22 @@ public class CompiledScore
 
 		mDeltaTimeShortBuffer.clear();
 		mNumberTimePointsToPlayShortBuffer.clear();
+		mSyncShortBuffer.clear();
 		mMatricesShortBuffer.clear();
 
 		short lDeltaTime = -1;
 		short lNumberOfTimePointsToPlay = 0;
+		short lSync = 0;
 		for (CompiledMovement lCompiledMovement : mCompiledMovementList)
 		{
 			mDeltaTimeShortBuffer.put(lDeltaTime);
 			mNumberTimePointsToPlayShortBuffer.put(lNumberOfTimePointsToPlay);
+			mSyncShortBuffer.put(lSync);
 			lDeltaTime = (short) ((lCompiledMovement.getDeltaTimeInMicroseconds()*1000)/mBufferDeltaTimeUnitInNanoseconds);
 			lNumberOfTimePointsToPlay = (short) lCompiledMovement.getNumberOfTimePoints();
+			final byte lSyncMode = (byte) (lCompiledMovement.isSync()?0:(lCompiledMovement.isSyncOnRisingEdge()?1:2));
+			final byte lSyncChannel = (byte) lCompiledMovement.getSyncChannel();
+			lSync = (short) twoBytesToShort(lSyncChannel,lSyncMode);
 			
 			ShortBuffer lMovementBuffer = lCompiledMovement.getMovementBuffer();
 			lMovementBuffer.rewind();
@@ -124,10 +146,19 @@ public class CompiledScore
 		mIsUpToDate = true;
 	}
 
+
+
 	@Override
 	public String toString()
 	{
 		return String.format("CompiledScore-%s", mName);
 	}
+
+	private static short twoBytesToShort(byte pHigh, byte pLow)
+	{
+		final short lShort = (short) ((pHigh << 8) | (pLow & 0xFF));
+		return lShort;
+	}
+
 
 }

@@ -15,8 +15,10 @@ public class Movement extends NameableAbstract implements
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
 	private double mDeltaTimeInMicroeconds;
-
 	private final StaveInterface[] mStaveListArray;
+	private boolean mIsSync = false;
+	private boolean mIsSyncOnRisingEdge = false;
+	private int mSyncChannel = 0;
 
 	private ShortBuffer mMovementShortBuffer;
 	private boolean mIsUpToDateBasedOnStaveList = false;
@@ -51,7 +53,7 @@ public class Movement extends NameableAbstract implements
 		final double lDeltaTimeInMicroseconds = pTotalDurationInMicroseconds / lMaxNumberOfTimePointsFittingInTotalDuration;
 
 		setDeltaTimeInMicroseconds(lDeltaTimeInMicroseconds);
-	
+
 	}
 
 	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroeconds)
@@ -178,6 +180,24 @@ public class Movement extends NameableAbstract implements
 	public double getDurationInMilliseconds()
 	{
 		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer * (getDeltaTimeInMicroseconds() * 0.001);
+	}
+
+	@Override
+	public boolean isSync()
+	{
+		return mIsSync;
+	}
+
+	@Override
+	public boolean isSyncOnRisingEdge()
+	{
+		return mIsSyncOnRisingEdge;
+	}
+
+	@Override
+	public int getSyncChannel()
+	{
+		return mSyncChannel;
 	}
 
 	@Override

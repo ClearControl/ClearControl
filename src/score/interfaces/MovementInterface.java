@@ -12,23 +12,23 @@ public interface MovementInterface
 	int computeMovementBufferLength();
 
 	double getDeltaTimeInMicroseconds();
-	
+
 	void setDeltaTimeInMicroseconds(double pDeltaTimeInMicroseconds);
 
 	double getDurationInMilliseconds();
 
 	int getMaxNumberOfTimePointsPerMovement();
-	
+
 	int getNumberOfTimePoints();
-	
+
 	int getNumberOfStaves();
 
+	boolean isSync();
+
+	boolean isSyncOnRisingEdge();
+
+	int getSyncChannel();
+
 	String getName();
-
-
-
-
-
-
 
 }
