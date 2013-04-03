@@ -8,7 +8,7 @@ public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 {
 	public volatile boolean mEnablePattern = true;
 	public volatile int mPatternPeriod = 8, mPatternPhase = 0,
-			mPatternOnLength = 1;
+			mPatternOnLength = 1, mPatternPhaseIncrement = 1;
 
 	public LaserTriggerBinaryPatternStave(String pName)
 	{
@@ -23,7 +23,8 @@ public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 			BinaryPattern.mult(	this,
 													mPatternPeriod,
 													mPatternPhase,
-													mPatternOnLength);
+													mPatternOnLength,
+													mPatternPhaseIncrement);
 	}
 
 }
