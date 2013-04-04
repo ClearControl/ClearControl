@@ -14,7 +14,7 @@ public class Movement extends NameableAbstract implements
 
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
-	private double mDeltaTimeInMicroeconds;
+	private double mDeltaTimeInMicroseconds;
 	private final StaveInterface[] mStaveListArray;
 	private boolean mIsSync = false;
 	private boolean mIsSyncOnRisingEdge = false;
@@ -58,12 +58,12 @@ public class Movement extends NameableAbstract implements
 
 	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroeconds)
 	{
-		mDeltaTimeInMicroeconds = pDeltaTimeInMicroeconds;
+		mDeltaTimeInMicroseconds = pDeltaTimeInMicroeconds;
 	}
 
 	public double getDeltaTimeInMicroseconds()
 	{
-		return mDeltaTimeInMicroeconds;
+		return mDeltaTimeInMicroseconds;
 	}
 
 	public int getNumberOfTimePoints()
@@ -123,7 +123,7 @@ public class Movement extends NameableAbstract implements
 		final int lMovementBufferLength = computeMovementBufferLength();
 		final int lCurrentMovementBufferCapacity = mMovementShortBuffer == null	? 0
 																																						: mMovementShortBuffer.capacity();
-		if (lCurrentMovementBufferCapacity < lMovementBufferLength)
+		if (mMovementShortBuffer==null || lCurrentMovementBufferCapacity < lMovementBufferLength)
 		{
 			final int lMovementBufferLengthInBytes = lMovementBufferLength * 2;
 			mMovementShortBuffer = ByteBuffer.allocateDirect(lMovementBufferLengthInBytes)
