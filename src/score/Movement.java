@@ -40,8 +40,8 @@ public class Movement extends NameableAbstract implements
 		}
 	}
 
-	public void setTotalDurationInMicroseconds(	final double pTotalDurationInMicroseconds,
-																							final double pMinDeltaTimeInMicroseconds)
+	public void setTotalDurationAndGranularityInMicroseconds(	final double pTotalDurationInMicroseconds,
+																														final double pMinDeltaTimeInMicroseconds)
 	{
 		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
 
@@ -51,6 +51,22 @@ public class Movement extends NameableAbstract implements
 		setNumberOfTimePoints(lMaxNumberOfTimePointsFittingInTotalDuration);
 
 		final double lDeltaTimeInMicroseconds = pTotalDurationInMicroseconds / lMaxNumberOfTimePointsFittingInTotalDuration;
+
+		setDeltaTimeInMicroseconds(lDeltaTimeInMicroseconds);
+
+	}
+
+	public void setTotalDurationInMicrosecondsAndNumberOfPoints(final double pTotalDurationInMicroseconds,
+																															final int pNumberOfPoints)
+	{
+		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
+
+		final int lNumberOfTimePointsForTotalDuration = Math.min(lMaxNumberOfTimePointsPerMovement,
+		                                                                  pNumberOfPoints);
+
+		setNumberOfTimePoints(lNumberOfTimePointsForTotalDuration);
+
+		final double lDeltaTimeInMicroseconds = pTotalDurationInMicroseconds / lNumberOfTimePointsForTotalDuration;
 
 		setDeltaTimeInMicroseconds(lDeltaTimeInMicroseconds);
 
@@ -123,7 +139,7 @@ public class Movement extends NameableAbstract implements
 		final int lMovementBufferLength = computeMovementBufferLength();
 		final int lCurrentMovementBufferCapacity = mMovementShortBuffer == null	? 0
 																																						: mMovementShortBuffer.capacity();
-		if (mMovementShortBuffer==null || lCurrentMovementBufferCapacity < lMovementBufferLength)
+		if (mMovementShortBuffer == null || lCurrentMovementBufferCapacity < lMovementBufferLength)
 		{
 			final int lMovementBufferLengthInBytes = lMovementBufferLength * 2;
 			mMovementShortBuffer = ByteBuffer.allocateDirect(lMovementBufferLengthInBytes)
