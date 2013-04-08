@@ -20,8 +20,8 @@ public class CompiledScore
 	private ShortBuffer mMatricesShortBuffer;
 	private double mBufferDeltaTimeUnitInNanoseconds;
 
-
-	public CompiledScore(final String pName, double pBufferDeltaTimeUnitInNanoseconds)
+	public CompiledScore(	final String pName,
+												double pBufferDeltaTimeUnitInNanoseconds)
 	{
 		mName = pName;
 		mBufferDeltaTimeUnitInNanoseconds = pBufferDeltaTimeUnitInNanoseconds;
@@ -52,16 +52,16 @@ public class CompiledScore
 
 	public ShortBuffer getDeltaTimeBuffer()
 	{
-		ensureMovementsBufferIsUpToDate();
+		ensureBuffersAreUpToDate();
 		return mDeltaTimeShortBuffer;
 	}
 
 	public ShortBuffer getNumberOfTimePointsToPlayBuffer()
 	{
-		ensureMovementsBufferIsUpToDate();
+		ensureBuffersAreUpToDate();
 		return mNumberTimePointsToPlayShortBuffer;
 	}
-	
+
 	public ShortBuffer getSyncBuffer()
 	{
 		return mSyncShortBuffer;
@@ -69,20 +69,16 @@ public class CompiledScore
 
 	public ShortBuffer getScoreBuffer()
 	{
-		ensureMovementsBufferIsUpToDate();
+		ensureBuffersAreUpToDate();
 		return mMatricesShortBuffer;
 	}
 
-	private void ensureMovementsBufferIsUpToDate()
+	private void ensureBuffersAreUpToDate()
 	{
 		if (mIsUpToDate)
 			return;
 
 		final int lNumberOfMatrices = mCompiledMovementList.size() + 1;
-
-		int lMatricesBufferLengthInBytes = lNumberOfMatrices * Movement.cDefaultNumberOfStavesPerMovement
-																				* StaveAbstract.cMaximumNumberOfTimePointsPerBuffer
-																				* 2;
 
 		final int lDeltaTimeAndNumberOfPointsBufferLengthInBytes = 2 * lNumberOfMatrices;
 
@@ -99,15 +95,19 @@ public class CompiledScore
 																											.order(ByteOrder.nativeOrder())
 																											.asShortBuffer();
 		}
-		
+
 		final int lSyncBufferLengthInBytes = 2 * lNumberOfMatrices;
-		
+
 		if (mSyncShortBuffer == null || mSyncShortBuffer.capacity() < lSyncBufferLengthInBytes)
 		{
 			mSyncShortBuffer = ByteBuffer.allocateDirect(lSyncBufferLengthInBytes)
-																											.order(ByteOrder.nativeOrder())
-																											.asShortBuffer();
+																		.order(ByteOrder.nativeOrder())
+																		.asShortBuffer();
 		}
+
+		int lMatricesBufferLengthInBytes = lNumberOfMatrices * Movement.cDefaultNumberOfStavesPerMovement
+																				* StaveAbstract.cMaximumNumberOfTimePointsPerBuffer
+																				* 2;
 
 		if (mMatricesShortBuffer == null || mMatricesShortBuffer.capacity() < lMatricesBufferLengthInBytes)
 		{
@@ -129,24 +129,30 @@ public class CompiledScore
 			mDeltaTimeShortBuffer.put(lDeltaTime);
 			mNumberTimePointsToPlayShortBuffer.put(lNumberOfTimePointsToPlay);
 			mSyncShortBuffer.put(lSync);
-			lDeltaTime = (short) ((lCompiledMovement.getDeltaTimeInMicroseconds()*1000)/mBufferDeltaTimeUnitInNanoseconds);
+			lDeltaTime = (short) ((lCompiledMovement.getDeltaTimeInMicroseconds() * 1000) / mBufferDeltaTimeUnitInNanoseconds);
 			lNumberOfTimePointsToPlay = (short) lCompiledMovement.getNumberOfTimePoints();
-			final byte lSyncMode = (byte) (lCompiledMovement.isSync()?0:(lCompiledMovement.isSyncOnRisingEdge()?1:2));
+			final byte lSyncMode = (byte) (lCompiledMovement.isSync()	? 0
+																																: (lCompiledMovement.isSyncOnRisingEdge()	? 1
+																																																					: 2));
 			final byte lSyncChannel = (byte) lCompiledMovement.getSyncChannel();
-			lSync = (short) twoBytesToShort(lSyncChannel,lSyncMode);
-			
+			lSync = (short) twoBytesToShort(lSyncChannel, lSyncMode);
+
 			ShortBuffer lMovementBuffer = lCompiledMovement.getMovementBuffer();
 			lMovementBuffer.rewind();
 			mMatricesShortBuffer.put(lMovementBuffer);
 		}
 		mDeltaTimeShortBuffer.put(lDeltaTime);
 		mNumberTimePointsToPlayShortBuffer.put(lNumberOfTimePointsToPlay);
-		mMatricesShortBuffer.clear();
+		mSyncShortBuffer.put(lSync);
+
+		mDeltaTimeShortBuffer.flip();
+		mNumberTimePointsToPlayShortBuffer.flip();
+		mSyncShortBuffer.flip();
+
+		mMatricesShortBuffer.flip();
 
 		mIsUpToDate = true;
 	}
-
-
 
 	@Override
 	public String toString()
@@ -159,6 +165,5 @@ public class CompiledScore
 		final short lShort = (short) ((pHigh << 8) | (pLow & 0xFF));
 		return lShort;
 	}
-
 
 }

@@ -12,6 +12,7 @@ public class Movement extends NameableAbstract implements
 																							MovementInterface
 {
 
+	public final static int cMaximumNumberOfTimePointsPerBuffer = StaveAbstract.cMaximumNumberOfTimePointsPerBuffer;
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
 	private double mDeltaTimeInMicroseconds;
@@ -61,8 +62,8 @@ public class Movement extends NameableAbstract implements
 	{
 		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
 
-		final int lNumberOfTimePointsForTotalDuration = Math.min(lMaxNumberOfTimePointsPerMovement,
-		                                                                  pNumberOfPoints);
+		final int lNumberOfTimePointsForTotalDuration = Math.min(	lMaxNumberOfTimePointsPerMovement,
+																															pNumberOfPoints);
 
 		setNumberOfTimePoints(lNumberOfTimePointsForTotalDuration);
 
@@ -117,8 +118,8 @@ public class Movement extends NameableAbstract implements
 
 	public int computeMovementBufferLength()
 	{
-		final StaveInterface lFirstStave = getFirstStave();
-		final int lStaveBufferLength = lFirstStave.getStaveBufferLength();
+		// final StaveInterface lFirstStave = getFirstStave();
+		final int lStaveBufferLength = cMaximumNumberOfTimePointsPerBuffer;
 		final int lMovementBufferLength = mStaveListArray.length * lStaveBufferLength;
 		return lMovementBufferLength;
 	}
@@ -160,8 +161,15 @@ public class Movement extends NameableAbstract implements
 			for (StaveInterface lStave : mStaveListArray)
 			{
 				final ShortBuffer lStaveShortBuffer = lStave.getStaveBuffer();
-				final short lShortValue = lStaveShortBuffer.get();
-				mMovementShortBuffer.put(lShortValue);
+				if (lStaveShortBuffer.hasRemaining())
+				{
+					final short lShortValue = lStaveShortBuffer.get();
+					mMovementShortBuffer.put(lShortValue);
+				}
+				else
+				{
+					mMovementShortBuffer.put((short) 0);
+				}
 			}
 		}
 		mMovementShortBuffer.flip();

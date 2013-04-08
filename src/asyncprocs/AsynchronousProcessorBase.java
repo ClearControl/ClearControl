@@ -18,7 +18,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		super();
 		mName = pName;
-		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize);
+		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize<=0?1:pMaxQueueSize);
 
 		mEnhancedThread = new EnhancedThread(mName)
 		{
