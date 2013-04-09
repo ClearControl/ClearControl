@@ -7,7 +7,7 @@ public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 																																StaveInterface
 {
 	public volatile boolean mEnablePattern = true;
-	public volatile int mPatternPeriod = 8, mPatternPhase = 0,
+	public volatile int mPatternPeriod = 8, mPatternPhaseIndex = 0,
 			mPatternOnLength = 1, mPatternPhaseIncrement = 1;
 
 	public LaserTriggerBinaryPatternStave(String pName)
@@ -22,8 +22,8 @@ public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 		if (mEnablePattern)
 			BinaryPattern.mult(	this,
 													mPatternPeriod,
-													mPatternPhase,
 													mPatternOnLength,
+													mPatternPhaseIndex,
 													mPatternPhaseIncrement);
 	}
 
