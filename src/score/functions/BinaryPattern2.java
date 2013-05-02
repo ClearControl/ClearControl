@@ -6,14 +6,22 @@ public class BinaryPattern2
 {
 
 	public static final void mult(final StaveInterface pStave,
-																final double pPatternLineLength,
-																final double pPatternPeriod,
-																final double pPatternOnLength,
-																final double pPatternPhaseIndex,
-																final double pPatternPhaseIncrement)
+																double pPatternLineLength,
+																double pPatternPeriod,
+																double pPatternOnLength,
+																double pPatternPhaseIndex,
+																double pPatternPhaseIncrement)
 	{
 		final int lArrayLength = pStave.getNumberOfTimePoints();
 		final short[] array = pStave.getStaveArray();
+
+		final double lGranularity = pPatternLineLength / (lArrayLength);
+
+		pPatternPeriod = constrain(pPatternPeriod, lGranularity);
+		pPatternOnLength = constrain(pPatternOnLength, lGranularity);
+		pPatternPhaseIndex = constrain(pPatternPhaseIndex, lGranularity);
+		pPatternPhaseIncrement = constrain(	pPatternPhaseIncrement,
+																				lGranularity);
 
 		final double lPatternPhase = pPatternPhaseIndex * pPatternPhaseIncrement;
 
@@ -24,7 +32,7 @@ public class BinaryPattern2
 			final double x = ((double) i) / (lArrayLength - 1);
 
 			final int value = f(pPatternLineLength,
-													pPatternPeriod,
+													lPatternPeriodNonZero,
 													lPatternPhase,
 													pPatternOnLength,
 													x);
@@ -52,6 +60,12 @@ public class BinaryPattern2
 	{
 		final double modulo = x - y * Math.floor(x / y);
 		return modulo;
+	}
+
+	private static final double constrain(double pX, double pGranularity)
+	{
+		return pGranularity * Math.round(pX / pGranularity);
+
 	}
 
 }
