@@ -10,16 +10,16 @@ public class DoubleVariable	implements
 	protected volatile double mValue;
 	private DoubleInputVariableInterface mInputVariable;
 	private CopyOnWriteArrayList<DoubleInputVariableInterface> mInputVariables;
-	private DoubleOutputVariableInterface mOutputVariable;
+	private DoubleOutputVariableInterface mOutputVariable = null;
 
 	public DoubleVariable(double pDoubleValue)
 	{
 		mValue = pDoubleValue;
 	}
-	
+
 	public void setCurrentValue(Object pDoubleEventSource)
 	{
-		setValue(pDoubleEventSource,mValue);
+		setValue(pDoubleEventSource, mValue);
 	}
 
 	public final void setValue(final double pNewValue)
@@ -83,9 +83,11 @@ public class DoubleVariable	implements
 	public final void syncWith(DoubleInputOutputVariableInterface pDoubleVariable)
 	{
 		sendUpdatesTo(pDoubleVariable);
+		if (mOutputVariable != null)
+		{
+			throw new UnsupportedOperationException("Cannot sync a variable twice!");
+		}
 		sendQueriesTo(pDoubleVariable);
 	}
-
-
 
 }

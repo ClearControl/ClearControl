@@ -10,11 +10,22 @@ import variable.doublev.DoubleInputVariableInterface;
 public class ObjectVariable<O>	implements
 																ObjectInputOutputVariableInterface<O>
 {
-	private volatile O mReference;
+	protected volatile O mReference;
 	private ObjectInputVariableInterface<O> mInputVariable;
 	private CopyOnWriteArrayList<ObjectInputVariableInterface<O>> mInputVariables;
 
 	private ObjectOutputVariableInterface<O> mOutputVariable;
+
+	public ObjectVariable()
+	{
+		mReference = null;
+	}
+
+	public ObjectVariable(O pReference)
+	{
+		super();
+		mReference = pReference;
+	}
 
 	public final void setReference(final O pNewReference)
 	{
@@ -99,6 +110,10 @@ public class ObjectVariable<O>	implements
 	public final void syncWith(ObjectInputOutputVariableInterface pObjectVariable)
 	{
 		sendUpdatesTo(pObjectVariable);
+		if (mOutputVariable != null)
+		{
+			throw new UnsupportedOperationException("Cannot sync a variable twice!");
+		}
 		sendQueriesTo(pObjectVariable);
 	}
 
