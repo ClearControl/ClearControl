@@ -75,6 +75,7 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O>
 	{
 		super(pReference);
 		mFile = pFile;
+		mFile.getParentFile().mkdirs();
 
 		syncWith(new ObjectInputOutputVariableInterface<O>()
 		{
@@ -89,7 +90,7 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O>
 				{
 					synchronized (mLock)
 					{
-						if (!pFile.exists())
+						if (!(mFile.exists() && mFile.isFile()))
 						{
 							mCachedReference = mReference;
 							return mCachedReference;
