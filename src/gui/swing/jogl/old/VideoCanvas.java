@@ -1,4 +1,4 @@
-package gui.swing.jogl;
+package gui.swing.jogl.old;
 
 import java.awt.Font;
 import java.io.Closeable;

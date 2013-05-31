@@ -2,8 +2,8 @@ package gui.swing.jogl.test;
 
 import static org.junit.Assert.*;
 
-import gui.swing.jogl.VideoCanvas;
 import gui.swing.jogl.VideoWindow;
+import gui.swing.jogl.old.VideoCanvas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

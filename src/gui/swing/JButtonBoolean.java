@@ -1,63 +1,74 @@
 package gui.swing;
 
-import gui.swing.test.TestVideoCanvasFrameDisplay;
-
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import variable.booleanv.BooleanVariable;
-import variable.doublev.DoubleInputVariableInterface;
-import variable.doublev.DoubleOutputVariableInterface;
-import variable.doublev.DoubleVariable;
 
 public class JButtonBoolean extends JButton
 {
 	private final JButtonBoolean mThis;
-	private BooleanVariable mBooleanVariable;
-	private String mOnLabel, mOffLabel;
+	private final BooleanVariable mBooleanVariable;
+	private final String mOnLabel, mOffLabel;
 
 	private boolean mButtonIsOnOffSwitch = true;
 
 	public JButtonBoolean(final boolean pInitialState,
-												String pOnLabel,
-												String pOffLabel)
+												final String pOnLabel,
+												final String pOffLabel)
 	{
 		this(pInitialState, pOnLabel, pOffLabel, true);
 	}
-	
-	public JButtonBoolean(String pLabel)
+
+	public JButtonBoolean(final String pLabel)
 	{
 		this(false, pLabel, pLabel, false);
 	}
-	
-	public JButtonBoolean(String pRestLabel,
-												String pPressingLabel)
+
+	public JButtonBoolean(final String pRestLabel,
+												final String pPressingLabel)
 	{
 		this(false, pPressingLabel, pRestLabel, false);
 	}
 
 	public JButtonBoolean(final boolean pInitialState,
-												String pOnLabel,
-												String pOffLabel,
-												boolean pButtonIsOnOffSwitch)
+												final String pOnLabel,
+												final String pOffLabel,
+												final boolean pButtonIsOnOffSwitch)
 	{
 		mThis = this;
-		mBooleanVariable = new BooleanVariable(pInitialState);
+		mBooleanVariable = new BooleanVariable(pInitialState)
+		{
+			@Override
+			public double setEventHook(final double pNewValue)
+			{
+				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
+				// if (pDoubleEventSource != mThis)
+				{
+					EventQueue.invokeLater(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								setLabelFromState(lButtonState);
+							}
+							catch (final Throwable e)
+							{
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+
+				return pNewValue;
+			}
+		};
+
 		mOnLabel = pOnLabel;
 		mOffLabel = pOffLabel;
 		mButtonIsOnOffSwitch = pButtonIsOnOffSwitch;
@@ -65,7 +76,8 @@ public class JButtonBoolean extends JButton
 
 		addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent pE)
+			@Override
+			public void actionPerformed(final ActionEvent pE)
 			{
 				if (mButtonIsOnOffSwitch)
 				{
@@ -81,13 +93,14 @@ public class JButtonBoolean extends JButton
 
 				EventQueue.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						try
 						{
 							setLabelFromState(lButtonState);
 						}
-						catch (Throwable e)
+						catch (final Throwable e)
 						{
 							e.printStackTrace();
 						}
@@ -96,34 +109,6 @@ public class JButtonBoolean extends JButton
 			}
 
 		});
-
-		mBooleanVariable.sendUpdatesTo(new DoubleInputVariableInterface()
-		{
-
-			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
-			{
-				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
-				if (pDoubleEventSource != mThis)
-				{
-					EventQueue.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							try
-							{
-								setLabelFromState(lButtonState);
-							}
-							catch (Throwable e)
-							{
-								e.printStackTrace();
-							}
-						}
-					});
-				}
-
-			}
-		});/**/
 
 	}
 

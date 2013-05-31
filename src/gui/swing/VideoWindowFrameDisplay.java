@@ -1,29 +1,25 @@
 package gui.swing;
 
 import frames.Frame;
-import gui.swing.jogl.VideoCanvas;
 import gui.swing.jogl.VideoWindow;
 
 import javax.media.opengl.GLException;
 
 import variable.booleanv.BooleanVariable;
-import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectInputVariableInterface;
 import variable.objectv.ObjectVariable;
 
 public class VideoWindowFrameDisplay
 {
-	private VideoWindow mVideoWindow;
+	private final VideoWindow mVideoWindow;
 
-	private ObjectVariable<Frame> mObjectVariable = new ObjectVariable<Frame>();
+	private final ObjectVariable<Frame> mObjectVariable = new ObjectVariable<Frame>();
 
-	public BooleanVariable mDisplayOn = new BooleanVariable(true);
-	public BooleanVariable mManualMinMaxIntensity = new BooleanVariable(false);
-	public DoubleVariable mMinimumIntensity = new DoubleVariable(0);
-	public DoubleVariable mMaximumIntensity = new DoubleVariable(1);
-
-
+	public BooleanVariable mDisplayOn;
+	public BooleanVariable mManualMinMaxIntensity;
+	public DoubleVariable mMinimumIntensity;
+	public DoubleVariable mMaximumIntensity;
 
 	public VideoWindowFrameDisplay()
 	{
@@ -49,8 +45,8 @@ public class VideoWindowFrameDisplay
 		{
 
 			@Override
-			public void setReference(	Object pDoubleEventSource,
-																Frame pNewFrameReference)
+			public void setReference(	final Object pDoubleEventSource,
+																final Frame pNewFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 				mVideoWindow.setSourceBuffer(pNewFrameReference.buffer);
@@ -63,47 +59,46 @@ public class VideoWindowFrameDisplay
 				pNewFrameReference.releaseFrame();
 			}
 		});
-		
-		
-		mDisplayOn.sendUpdatesTo(new DoubleInputVariableInterface()
+
+		mDisplayOn = new BooleanVariable(true)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pBoolean)
+			public void setValue(final double pBoolean)
 			{
 				final boolean lDisplayOn = BooleanVariable.double2boolean(pBoolean);
 				mVideoWindow.setDisplayOn(lDisplayOn);
 			}
-		});
-		
-		mManualMinMaxIntensity.sendUpdatesTo(new DoubleInputVariableInterface()
+		};
+
+		mManualMinMaxIntensity = new BooleanVariable(false)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pBoolean)
+			public void setValue(final double pBoolean)
 			{
 				final boolean lManualMinMax = BooleanVariable.double2boolean(pBoolean);
 				mVideoWindow.setManualMinMax(lManualMinMax);
 			}
-		});
+		};
 
-		mMinimumIntensity.sendUpdatesTo(new DoubleInputVariableInterface()
+		mMinimumIntensity = new DoubleVariable(0)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pMinIntensity)
+			public void setValue(final double pMinIntensity)
 			{
-				final double lMinIntensity = Math.pow(pMinIntensity,6);
+				final double lMinIntensity = Math.pow(pMinIntensity, 6);
 				mVideoWindow.setMinIntensity(lMinIntensity);
 			}
-		});
-		
-		mMaximumIntensity.sendUpdatesTo(new DoubleInputVariableInterface()
+		};
+
+		mMaximumIntensity = new DoubleVariable(1)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pMaxIntensity)
+			public void setValue(final double pMaxIntensity)
 			{
-				final double lMaxIntensity = Math.pow(pMaxIntensity,6);
+				final double lMaxIntensity = Math.pow(pMaxIntensity, 6);
 				mVideoWindow.setMaxIntensity(lMaxIntensity);
 			}
-		});
+		};
 	}
 
 	public ObjectVariable<Frame> getFrameReferenceVariable()
@@ -111,7 +106,7 @@ public class VideoWindowFrameDisplay
 		return mObjectVariable;
 	}
 
-	public void setVisible(boolean pIsVisible)
+	public void setVisible(final boolean pIsVisible)
 	{
 		mVideoWindow.setVisible(pIsVisible);
 	}

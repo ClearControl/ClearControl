@@ -1,93 +1,77 @@
 package variable.doublev;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import variable.EventPropagator;
 
 public class DoubleVariable	implements
 														DoubleInputOutputVariableInterface
 
 {
 	protected volatile double mValue;
-	private DoubleInputVariableInterface mInputVariable;
-	private CopyOnWriteArrayList<DoubleInputVariableInterface> mInputVariables;
-	private DoubleOutputVariableInterface mOutputVariable = null;
+	private final CopyOnWriteArrayList<DoubleVariable> mInputVariables = new CopyOnWriteArrayList<DoubleVariable>();
 
-	public DoubleVariable(double pDoubleValue)
+	public DoubleVariable(final double pDoubleValue)
 	{
 		mValue = pDoubleValue;
 	}
 
-	public void setCurrentValue(Object pDoubleEventSource)
+	public void setCurrentValue(final Object pDoubleEventSource)
 	{
-		setValue(pDoubleEventSource, mValue);
-	}
-
-	public final void setValue(final double pNewValue)
-	{
-		setValue(this, pNewValue);
+		EventPropagator.clear();
+		setValue(mValue);
 	}
 
 	@Override
-	public void setValue(Object pDoubleEventSource, double pNewValue)
+	public void setValue(final double pNewValue)
 	{
+		EventPropagator.clear();
+		setValueInternal(pNewValue);
+	}
 
-		if (mInputVariable != null)
-			mInputVariable.setValue(pDoubleEventSource, pNewValue);
-		else if (mInputVariables != null)
+	public boolean setValueInternal(final double pNewValue)
+	{
+		if (EventPropagator.hasBeenTraversed(this))
+			return false;
+
+		final double lNewValueAfterHook = setEventHook(pNewValue);
+
+		EventPropagator.add(this);
+		if (mInputVariables != null)
 		{
-			for (DoubleInputVariableInterface lDoubleInputVariableInterface : mInputVariables)
-			{
-				lDoubleInputVariableInterface.setValue(	pDoubleEventSource,
-																								pNewValue);
-			}
+			for (final DoubleVariable lDoubleVariable : mInputVariables)
+				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
+				{
+					lDoubleVariable.setValueInternal(lNewValueAfterHook);
+				}
 		}
-		mValue = pNewValue;
+		mValue = lNewValueAfterHook;
+		return true;
+	}
+
+	public double setEventHook(final double pNewValue)
+	{
+		return pNewValue;
 	}
 
 	@Override
 	public double getValue()
 	{
-		if (mOutputVariable != null)
-			mValue = mOutputVariable.getValue();
-
 		return mValue;
 	}
 
-	public final void sendUpdatesTo(DoubleInputVariableInterface pDoubleVariable)
+	public final void sendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
 		synchronized (this)
 		{
-			if (mInputVariable == null && mInputVariables == null)
-			{
-				mInputVariable = pDoubleVariable;
-			}
-			else if (mInputVariable != null && mInputVariables == null)
-			{
-				mInputVariables = new CopyOnWriteArrayList<DoubleInputVariableInterface>();
-				mInputVariables.add(mInputVariable);
-				mInputVariables.add(pDoubleVariable);
-				mInputVariable = null;
-			}
-			else if (mInputVariable == null && mInputVariables != null)
-			{
-				mInputVariables.add(pDoubleVariable);
-			}
+			mInputVariables.add(pDoubleVariable);
 		}
 	}
 
-	public final void sendQueriesTo(DoubleOutputVariableInterface pDoubleVariable)
+	public final void syncWith(final DoubleVariable pDoubleVariable)
 	{
-		mOutputVariable = pDoubleVariable;
-	}
-
-	public final void syncWith(DoubleInputOutputVariableInterface pDoubleVariable)
-	{
-		sendUpdatesTo(pDoubleVariable);
-		if (mOutputVariable != null)
-		{
-			throw new UnsupportedOperationException("Cannot sync a variable twice!");
-		}
-		sendQueriesTo(pDoubleVariable);
+		this.sendUpdatesTo(pDoubleVariable);
+		pDoubleVariable.sendUpdatesTo(this);
 	}
 
 }

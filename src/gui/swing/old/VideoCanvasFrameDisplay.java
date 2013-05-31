@@ -1,7 +1,7 @@
-package gui.swing;
+package gui.swing.old;
 
 import frames.Frame;
-import gui.swing.jogl.VideoCanvas;
+import gui.swing.jogl.old.VideoCanvas;
 
 import javax.media.opengl.GLException;
 

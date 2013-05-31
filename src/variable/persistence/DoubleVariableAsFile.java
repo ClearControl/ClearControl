@@ -1,15 +1,11 @@
 package variable.persistence;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Scanner;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import variable.doublev.DoubleInputOutputVariableInterface;
 import variable.doublev.DoubleVariable;
 
 public class DoubleVariableAsFile extends DoubleVariable
@@ -35,7 +31,7 @@ public class DoubleVariableAsFile extends DoubleVariable
 			{
 				synchronized (mLock)
 				{
-					Formatter lFormatter = new Formatter(mFile);
+					final Formatter lFormatter = new Formatter(mFile);
 					try
 					{
 						lFormatter.format("%g\n", lValue);
@@ -48,7 +44,7 @@ public class DoubleVariableAsFile extends DoubleVariable
 				}
 
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				e.printStackTrace();
 			}
@@ -57,51 +53,49 @@ public class DoubleVariableAsFile extends DoubleVariable
 
 	};
 
-	public DoubleVariableAsFile(final File pFile, double pDoubleValue)
+	public DoubleVariableAsFile(final File pFile,
+															final double pDoubleValue)
 	{
 		super(pDoubleValue);
 		mFile = pFile;
 
-		syncWith(new DoubleInputOutputVariableInterface()
+	}
+
+	@Override
+	public double getValue()
+	{
+		if (mCachedValue != null)
+			return mCachedValue;
+
+		try
 		{
-
-			@Override
-			public double getValue()
+			synchronized (mLock)
 			{
-				if (mCachedValue != null)
-					return mCachedValue;
-
-				try
+				if (!mFile.exists())
 				{
-					synchronized (mLock)
-					{
-						if (!pFile.exists())
-						{
-							mCachedValue = mValue;
-							return mCachedValue;
-						}
-						final Scanner lScanner = new Scanner(pFile);
-						final String lLine = lScanner.nextLine().trim();
-						mCachedValue = Double.parseDouble(lLine);
-						lScanner.close();
-					}
+					mCachedValue = super.getValue();
 					return mCachedValue;
 				}
-				catch (Throwable e)
-				{
-					e.printStackTrace();
-					return mValue;
-				}
+				final Scanner lScanner = new Scanner(mFile);
+				final String lLine = lScanner.nextLine().trim();
+				mCachedValue = Double.parseDouble(lLine);
+				lScanner.close();
 			}
+			return mCachedValue;
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
+			return super.getValue();
+		}
+	}
 
-			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
-			{
-				mCachedValue = pNewValue;
-				mSingleThreadExecutor.execute(mFileSaverRunnable);
-			}
-		});
-
+	@Override
+	public void setValue(final double pNewValue)
+	{
+		super.setValue(pNewValue);
+		mCachedValue = pNewValue;
+		mSingleThreadExecutor.execute(mFileSaverRunnable);
 	}
 
 }

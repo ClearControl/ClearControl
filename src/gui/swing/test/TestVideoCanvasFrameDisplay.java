@@ -1,8 +1,9 @@
 package gui.swing.test;
 
 import frames.Frame;
+import gui.swing.JButtonBoolean;
 import gui.swing.JSliderDouble;
-import gui.swing.VideoCanvasFrameDisplay;
+import gui.swing.old.VideoCanvasFrameDisplay;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -14,10 +15,8 @@ import javax.swing.border.EmptyBorder;
 
 import utils.concurency.thread.EnhancedThread;
 import variable.booleanv.BooleanVariable;
-import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
-import gui.swing.JButtonBoolean;
 
 public class TestVideoCanvasFrameDisplay extends JFrame
 {
@@ -29,18 +28,19 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		EventQueue.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
 				{
-					TestVideoCanvasFrameDisplay frame = new TestVideoCanvasFrameDisplay();
+					final TestVideoCanvasFrameDisplay frame = new TestVideoCanvasFrameDisplay();
 					frame.setVisible(true);
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -49,7 +49,7 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 
 	}
 
-	private JPanel mcontentPane;
+	private final JPanel mcontentPane;
 
 	/**
 	 * Create the frame.
@@ -63,68 +63,68 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 		mcontentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(mcontentPane);
 
-		VideoCanvasFrameDisplay lVideoDisplayDevice = new VideoCanvasFrameDisplay(512,
-																																							512);
+		final VideoCanvasFrameDisplay lVideoDisplayDevice = new VideoCanvasFrameDisplay(512,
+																																										512);
 		lVideoDisplayDevice.setLinearInterpolation(true);
 		lVideoDisplayDevice.setSyncToRefresh(false);
 
 		mcontentPane.add(lVideoDisplayDevice, BorderLayout.CENTER);
 		final ObjectVariable<Frame> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();
 
-		JSliderDouble lJSliderDouble = new JSliderDouble("gray value");
-		mcontentPane.add(lJSliderDouble, BorderLayout.SOUTH);
+		final JSliderDouble lGrayValueJSliderDouble = new JSliderDouble("gray value");
+		final DoubleVariable lGrayValueDoubleVariable = lGrayValueJSliderDouble.getDoubleVariable();
+		mcontentPane.add(lGrayValueJSliderDouble, BorderLayout.SOUTH);
 
-		JButtonBoolean lJButtonBoolean = new JButtonBoolean(false,
-																												"Display",
-																												"No Display");
+		final JButtonBoolean lJButtonBoolean = new JButtonBoolean(false,
+																															"Display",
+																															"No Display");
 		mcontentPane.add(lJButtonBoolean, BorderLayout.NORTH);
 
-		BooleanVariable lStartStopVariable = lJButtonBoolean.getBooleanVariable();
+		final BooleanVariable lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
-		lStartStopVariable.sendUpdatesTo(new DoubleInputVariableInterface()
+		lStartStopVariable.sendUpdatesTo(new DoubleVariable(0)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
+			public double setEventHook(final double pNewValue)
 			{
 				final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 				sDisplay = lBoolean;
 				System.out.println("sDisplay=" + sDisplay);
+				return pNewValue;
 			}
 		});
 
-		JButtonBoolean lJButtonBoolean2 = new JButtonBoolean(	"Push Button",
-																													"No Display");
+		final JButtonBoolean lJButtonBoolean2 = new JButtonBoolean(	"Push Button",
+																																"");
 		mcontentPane.add(lJButtonBoolean2, BorderLayout.EAST);
 
-		BooleanVariable lPushVariable = lJButtonBoolean2.getBooleanVariable();
+		final BooleanVariable lPushVariable = lJButtonBoolean2.getBooleanVariable();
 
-		lPushVariable.sendUpdatesTo(new DoubleInputVariableInterface()
+		lPushVariable.sendUpdatesTo(new DoubleVariable(0)
 		{
 			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
+			public double setEventHook(final double pNewValue)
 			{
-				sValue = 0.5;
-
+				lGrayValueDoubleVariable.setValue(0.5);
 				System.out.println("push!!!");
+				return pNewValue;
 			}
 		});
-
-		DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
 		final Frame lFrame = new Frame(0, sImageSize, sImageSize, 1);
 
-		lDoubleVariable.sendUpdatesTo(new DoubleInputVariableInterface()
+		lGrayValueDoubleVariable.sendUpdatesTo(new DoubleVariable(0)
 		{
-
 			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
+			public double setEventHook(final double pNewValue)
 			{
 				sValue = pNewValue;
-				System.out.println(pNewValue);
+				System.out.println("new gray value+ " + pNewValue);
+				return pNewValue;
 			}
 		});
 
-		EnhancedThread lEnhancedThread = new EnhancedThread()
+		final EnhancedThread lEnhancedThread = new EnhancedThread()
 		{
 			@Override
 			public boolean initiate()
@@ -145,7 +145,7 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 
 	}
 
-	private void generateNoiseBuffer(	ByteBuffer pVideoByteBuffer,
+	private void generateNoiseBuffer(	final ByteBuffer pVideoByteBuffer,
 																		final double pAmplitude)
 	{
 		pVideoByteBuffer.clear();

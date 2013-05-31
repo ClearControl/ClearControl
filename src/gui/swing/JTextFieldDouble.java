@@ -2,20 +2,15 @@ package gui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.util.Hashtable;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleVariable;
 
 public class JTextFieldDouble extends JPanel
@@ -27,40 +22,61 @@ public class JTextFieldDouble extends JPanel
 	private double mMin, mMax;
 
 	private final JTextFieldDouble mThis;
-	private DoubleVariable mDoubleVariable = new DoubleVariable(0);
+	private final DoubleVariable mDoubleVariable;
 
-	public JTextFieldDouble(String pValueName, double pValue)
+	public JTextFieldDouble(final String pValueName, final double pValue)
 	{
-		this(pValueName, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, pValue);
+		this(	pValueName,
+					Double.NEGATIVE_INFINITY,
+					Double.POSITIVE_INFINITY,
+					pValue);
 	}
 
-	public JTextFieldDouble(String pValueName,
-													double pMin,
-													double pMax,
-													double pValue)
+	public JTextFieldDouble(final String pValueName,
+													final double pMin,
+													final double pMax,
+													final double pValue)
 	{
 		this(pValueName, 1024, pMin, pMax, pValue);
 	}
 
-	public JTextFieldDouble(String pValueName,
-													int pResolution,
-													double pMin,
-													double pMax,
-													double pValue)
+	public JTextFieldDouble(final String pValueName,
+													final int pResolution,
+													final double pMin,
+													final double pMax,
+													final double pValue)
 	{
 		this(pValueName, "%.1f", pResolution, pMin, pMax, pValue);
 	}
 
-	public JTextFieldDouble(String pValueName,
-													String pLabelsFormatString,
-													int pResolution,
-													double pMin,
-													double pMax,
-													double pValue)
+	public JTextFieldDouble(final String pValueName,
+													final String pLabelsFormatString,
+													final int pResolution,
+													final double pMin,
+													final double pMax,
+													final double pValue)
 	{
 		super();
 
-		mDoubleVariable.setValue(null, pValue);
+		mDoubleVariable = new DoubleVariable(pValue)
+		{
+			@Override
+			public double setEventHook(final double pNewValue)
+			{
+
+				EventQueue.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+
+						mValueTextField.setText("" + pNewValue);
+					}
+				});
+
+				return pNewValue;
+			}
+		};
 
 		setLayout(new BorderLayout(0, 0));
 
@@ -80,17 +96,20 @@ public class JTextFieldDouble extends JPanel
 		mValueTextField.getDocument()
 										.addDocumentListener(new DocumentListener()
 										{
-											public void changedUpdate(DocumentEvent e)
+											@Override
+											public void changedUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
 
-											public void removeUpdate(DocumentEvent e)
+											@Override
+											public void removeUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
 
-											public void insertUpdate(DocumentEvent e)
+											@Override
+											public void insertUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
@@ -105,11 +124,10 @@ public class JTextFieldDouble extends JPanel
 												try
 												{
 													final double lNewValue = Double.parseDouble(lTextString);
-													mDoubleVariable.setValue(	mValueTextField,
-																										lNewValue);
+													mDoubleVariable.setValue(lNewValue);
 
 												}
-												catch (NumberFormatException e)
+												catch (final NumberFormatException e)
 												{
 													JOptionPane.showMessageDialog(null,
 																												"String cannot be parsed as double!",
@@ -120,27 +138,6 @@ public class JTextFieldDouble extends JPanel
 											}
 										});
 
-		mDoubleVariable.sendUpdatesTo(new DoubleInputVariableInterface()
-		{
-			@Override
-			public void setValue(	Object pDoubleEventSource,
-														final double pNewValue)
-			{
-				if (pDoubleEventSource != mValueTextField)
-				{
-					EventQueue.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-
-							mValueTextField.setText("" + pNewValue);
-						}
-					});
-
-				}
-			}
-		});
-
 	}
 
 	public DoubleVariable getDoubleVariable()
@@ -148,19 +145,19 @@ public class JTextFieldDouble extends JPanel
 		return mDoubleVariable;
 	}
 
-	private static double toDouble(	int pResolution,
-																	double pMin,
-																	double pMax,
-																	int pIntValue)
+	private static double toDouble(	final int pResolution,
+																	final double pMin,
+																	final double pMax,
+																	final int pIntValue)
 	{
 		return pMin + (((double) pIntValue) / (pResolution - 1))
 						* (pMax - pMin);
 	}
 
-	private static int toInt(	int pResolution,
-														double pMin,
-														double pMax,
-														double pValue)
+	private static int toInt(	final int pResolution,
+														final double pMin,
+														final double pMax,
+														final double pValue)
 	{
 		return (int) Math.round((pResolution - 1) * (clamp(	pMin,
 																												pMax,
@@ -168,19 +165,21 @@ public class JTextFieldDouble extends JPanel
 														/ (pMax - pMin));
 	}
 
-	private static double clamp(double pMin, double pMax, double pValue)
+	private static double clamp(final double pMin,
+															final double pMax,
+															final double pValue)
 	{
 		return Math.min(pMax, Math.max(pMin, pValue));
 	}
 
-	public void setColumns(int pNumberColumns)
+	public void setColumns(final int pNumberColumns)
 	{
 		mValueTextField.setColumns(pNumberColumns);
 	}
 
-	public void setValue(double pValue)
+	public void setValue(final double pValue)
 	{
-		mValueTextField.setText(""+pValue);
+		mValueTextField.setText("" + pValue);
 	}
 
 }

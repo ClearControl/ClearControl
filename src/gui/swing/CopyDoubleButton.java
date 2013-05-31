@@ -1,29 +1,12 @@
 package gui.swing;
 
-import gui.swing.test.TestVideoCanvasFrameDisplay;
-
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleOutputVariableInterface;
-import variable.doublev.DoubleVariable;
 
 public class CopyDoubleButton extends JButton
 {
@@ -32,14 +15,14 @@ public class CopyDoubleButton extends JButton
 	private DoubleOutputVariableInterface mSource;
 	private DoubleInputVariableInterface mDestination;
 
-	public CopyDoubleButton(String pLabel)
+	public CopyDoubleButton(final String pLabel)
 	{
 		this(pLabel, null, null);
 	}
 
-	public CopyDoubleButton(String pLabel,
-													DoubleOutputVariableInterface pSource,
-													DoubleInputVariableInterface pDestination)
+	public CopyDoubleButton(final String pLabel,
+													final DoubleOutputVariableInterface pSource,
+													final DoubleInputVariableInterface pDestination)
 	{
 		mSource = pSource;
 		mDestination = pDestination;
@@ -48,21 +31,22 @@ public class CopyDoubleButton extends JButton
 
 		addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent pE)
+			@Override
+			public void actionPerformed(final ActionEvent pE)
 			{
 				final double lValue = mSource.getValue();
-				mDestination.setValue(mSource, lValue);
+				mDestination.setValue(lValue);
 			}
 		});
 
 	}
 
-	public void setSource(DoubleOutputVariableInterface pDoubleVariable)
+	public void setSource(final DoubleOutputVariableInterface pDoubleVariable)
 	{
 		mSource = pDoubleVariable;
 	}
 
-	public void setDestination(DoubleInputVariableInterface pDoubleVariable)
+	public void setDestination(final DoubleInputVariableInterface pDoubleVariable)
 	{
 		mDestination = pDoubleVariable;
 	}

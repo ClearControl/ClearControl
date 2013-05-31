@@ -1,53 +1,65 @@
 package gui.swing;
 
-import gui.swing.test.TestVideoCanvasFrameDisplay;
-
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import variable.booleanv.BooleanVariable;
-import variable.doublev.DoubleInputVariableInterface;
-import variable.doublev.DoubleOutputVariableInterface;
-import variable.doublev.DoubleVariable;
 
 public class JCheckBoxBoolean extends JCheckBox
 {
 
 	private final JCheckBoxBoolean mThis;
-	private BooleanVariable mBooleanVariable;
+	private final BooleanVariable mBooleanVariable;
 
-	public JCheckBoxBoolean(String pLabel)
+	public JCheckBoxBoolean(final String pLabel)
 	{
-		this(pLabel,false);
+		this(pLabel, false);
 	}
 
-	public JCheckBoxBoolean(String pLabel, final boolean pInitialState)
+	public JCheckBoxBoolean(final String pLabel,
+													final boolean pInitialState)
 	{
 		super(pLabel);
 		mThis = this;
-		mBooleanVariable = new BooleanVariable(pInitialState);
+		mBooleanVariable = new BooleanVariable(pInitialState)
+		{
+
+			@Override
+			public double setEventHook(final double pNewValue)
+			{
+				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
+				// if (pDoubleEventSource != mThis)
+				{
+					EventQueue.invokeLater(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								setCheckmarkFromState(lButtonState);
+							}
+							catch (final Throwable e)
+							{
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+
+				return pNewValue;
+			}
+		};
 
 		setCheckmarkFromState(mBooleanVariable.getBooleanValue());
 
 		addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent pE)
+			@Override
+			public void actionPerformed(final ActionEvent pE)
 			{
 				mBooleanVariable.toggle(mThis);
 
@@ -56,13 +68,14 @@ public class JCheckBoxBoolean extends JCheckBox
 
 				EventQueue.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						try
 						{
 							setCheckmarkFromState(lButtonState);
 						}
-						catch (Throwable e)
+						catch (final Throwable e)
 						{
 							e.printStackTrace();
 						}
@@ -71,34 +84,6 @@ public class JCheckBoxBoolean extends JCheckBox
 			}
 
 		});
-
-		mBooleanVariable.sendUpdatesTo(new DoubleInputVariableInterface()
-		{
-
-			@Override
-			public void setValue(Object pDoubleEventSource, double pNewValue)
-			{
-				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
-				if (pDoubleEventSource != mThis)
-				{
-					EventQueue.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							try
-							{
-								setCheckmarkFromState(lButtonState);
-							}
-							catch (Throwable e)
-							{
-								e.printStackTrace();
-							}
-						}
-					});
-				}
-
-			}
-		});/**/
 
 	}
 
@@ -120,7 +105,7 @@ public class JCheckBoxBoolean extends JCheckBox
 	}
 
 	@Override
-	public void setText(String pText)
+	public void setText(final String pText)
 	{
 		// TODO Auto-generated method stub
 		super.setText(pText);
@@ -136,7 +121,7 @@ public class JCheckBoxBoolean extends JCheckBox
 
 	@Override
 	@Deprecated
-	public void setLabel(String pLabel)
+	public void setLabel(final String pLabel)
 	{
 		// TODO Auto-generated method stub
 		super.setLabel(pLabel);

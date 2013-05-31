@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 import java.util.Hashtable;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -15,58 +14,82 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import variable.doublev.DoubleInputVariableInterface;
 import variable.doublev.DoubleVariable;
 
 public class JSliderDouble extends JPanel
 {
-	private JLabel mNameLabel;
-	private JTextField mValueTextField;
-	private JSlider mSlider;
+	private final JLabel mNameLabel;
+	private final JTextField mValueTextField;
+	private final JSlider mSlider;
 
 	private final String mLabelsFormatString;
-	private int mResolution;
-	private double mMin, mMax;
+	private final int mResolution;
+	private final double mMin, mMax;
+	private int mNumberOfLabels = 3;
+
+	private final DoubleVariable mSliderDoubleVariable;
 
 	private final JSliderDouble mThis;
-	private DoubleVariable mDoubleVariable = new DoubleVariable(0);
-	private int mNumberOfLabels = 3;
 
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public JSliderDouble(String pValueName)
+	public JSliderDouble(final String pValueName)
 	{
 		this(pValueName, 0, 1, 0.5);
 	}
 
-	public JSliderDouble(	String pValueName,
-												double pMin,
-												double pMax,
-												double pValue)
+	public JSliderDouble(	final String pValueName,
+												final double pMin,
+												final double pMax,
+												final double pValue)
 	{
 		this(pValueName, 1024, pMin, pMax, pValue);
 	}
 
-	public JSliderDouble(	String pValueName,
-												int pResolution,
-												double pMin,
-												double pMax,
-												double pValue)
+	public JSliderDouble(	final String pValueName,
+												final int pResolution,
+												final double pMin,
+												final double pMax,
+												final double pValue)
 	{
 		this(pValueName, "%.1f", pResolution, pMin, pMax, pValue);
 	}
 
-	public JSliderDouble(	String pValueName,
-												String pLabelsFormatString,
-												int pResolution,
-												double pMin,
-												double pMax,
-												double pValue)
+	public JSliderDouble(	final String pValueName,
+												final String pLabelsFormatString,
+												final int pResolution,
+												final double pMin,
+												final double pMax,
+												final double pValue)
 	{
 		super();
 
-		mDoubleVariable.setValue(null, pValue);
+		mSliderDoubleVariable = new DoubleVariable(pValue)
+		{
+			@Override
+			public double setEventHook(final double pNewValue)
+			{
+
+				final int lSliderIntegerValue = toInt(mResolution,
+																							mMin,
+																							mMax,
+																							pNewValue);
+
+				if (mSlider.getValue() != lSliderIntegerValue)
+					EventQueue.invokeLater(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							mSlider.setValue(lSliderIntegerValue);
+							mValueTextField.setText("" + pNewValue);
+						}
+					});
+
+				return pNewValue;
+			}
+		};
 
 		setLayout(new BorderLayout(0, 0));
 
@@ -93,14 +116,13 @@ public class JSliderDouble extends JPanel
 		mSlider.addChangeListener(new ChangeListener()
 		{
 			@Override
-			public void stateChanged(ChangeEvent pE)
+			public void stateChanged(final ChangeEvent pE)
 			{
 				final double lNewValue = toDouble(mResolution,
 																					mMin,
 																					mMax,
 																					mSlider.getValue());
-				mDoubleVariable.setValue(mSlider, lNewValue);
-				mValueTextField.setText("" + lNewValue);
+				mSliderDoubleVariable.setValue(lNewValue);
 				// System.out.println("change received from slider:" + lNewValue);
 			}
 		});
@@ -108,17 +130,20 @@ public class JSliderDouble extends JPanel
 		mValueTextField.getDocument()
 										.addDocumentListener(new DocumentListener()
 										{
-											public void changedUpdate(DocumentEvent e)
+											@Override
+											public void changedUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
 
-											public void removeUpdate(DocumentEvent e)
+											@Override
+											public void removeUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
 
-											public void insertUpdate(DocumentEvent e)
+											@Override
+											public void insertUpdate(final DocumentEvent e)
 											{
 												parseDoubleAndNotify();
 											}
@@ -133,62 +158,34 @@ public class JSliderDouble extends JPanel
 												try
 												{
 													final double lNewValue = Double.parseDouble(lTextString);
-													mDoubleVariable.setValue(	mValueTextField,
-																										lNewValue);
-													try
-													{
-														mSlider.setValue(toInt(	mResolution,
-																										mMin,
-																										mMax,
-																										lNewValue));
-													}
-													catch (Throwable e)
-													{
-													}
+													mSliderDoubleVariable.setValue(lNewValue);
+
+													final int lSliderIntegerValue = toInt(mResolution,
+																																mMin,
+																																mMax,
+																																lNewValue);
+													mSlider.setValue(lSliderIntegerValue);
+
 													// System.out.println("change received from textfield:"
 													// + lNewValue);
 												}
-												catch (NumberFormatException e)
+												catch (final NumberFormatException e)
 												{
-													JOptionPane.showMessageDialog(null,
+													/*JOptionPane.showMessageDialog(null,
 																												"Error: Please enter number bigger than 0",
 																												"Error Message",
-																												JOptionPane.ERROR_MESSAGE);
+																												JOptionPane.ERROR_MESSAGE);/**/
 													return;
 												}
 											}
 										});
-
-		mDoubleVariable.sendUpdatesTo(new DoubleInputVariableInterface()
-		{
-			@Override
-			public void setValue(	Object pDoubleEventSource,
-														final double pNewValue)
-			{
-				if (pDoubleEventSource != mSlider && pDoubleEventSource != mValueTextField)
-				{
-					EventQueue.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							mSlider.setValue(toInt(	mResolution,
-																			mMin,
-																			mMax,
-																			pNewValue));
-							mValueTextField.setText("" + pNewValue);
-						}
-					});
-
-				}
-			}
-		});
 
 		mSlider.setMajorTickSpacing(pResolution / 10);
 		mSlider.setMinorTickSpacing(pResolution / 100);
 		mSlider.setPaintTicks(true);
 
 		// Create the label table
-		Hashtable lLabelTable = new Hashtable();
+		final Hashtable lLabelTable = new Hashtable();
 		for (int i = 0; i <= mNumberOfLabels; i++)
 		{
 			final int lInteger = (i * (pResolution - 1)) / mNumberOfLabels;
@@ -207,22 +204,22 @@ public class JSliderDouble extends JPanel
 
 	public DoubleVariable getDoubleVariable()
 	{
-		return mDoubleVariable;
+		return mSliderDoubleVariable;
 	}
 
-	private static double toDouble(	int pResolution,
-																	double pMin,
-																	double pMax,
-																	int pIntValue)
+	private static double toDouble(	final int pResolution,
+																	final double pMin,
+																	final double pMax,
+																	final int pIntValue)
 	{
 		return pMin + (((double) pIntValue) / (pResolution - 1))
 						* (pMax - pMin);
 	}
 
-	private static int toInt(	int pResolution,
-														double pMin,
-														double pMax,
-														double pValue)
+	private static int toInt(	final int pResolution,
+														final double pMin,
+														final double pMax,
+														final double pValue)
 	{
 		return (int) Math.round((pResolution - 1) * (clamp(	pMin,
 																												pMax,
@@ -230,7 +227,9 @@ public class JSliderDouble extends JPanel
 														/ (pMax - pMin));
 	}
 
-	private static double clamp(double pMin, double pMax, double pValue)
+	private static double clamp(final double pMin,
+															final double pMax,
+															final double pValue)
 	{
 		return Math.min(pMax, Math.max(pMin, pValue));
 	}
@@ -240,7 +239,7 @@ public class JSliderDouble extends JPanel
 		return mNumberOfLabels;
 	}
 
-	public void setNumberOfLabels(int numberOfLabels)
+	public void setNumberOfLabels(final int numberOfLabels)
 	{
 		mNumberOfLabels = numberOfLabels;
 	}
