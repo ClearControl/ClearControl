@@ -2,21 +2,19 @@ package recycling;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import frames.Frame;
-
 public class Recycler<R extends RecyclableInterface>
 {
 	private final Class<R> mRecyclableClass;
 	private final ConcurrentLinkedQueue<R> mAvailableObjectsQueue = new ConcurrentLinkedQueue<R>();
 	private volatile int mCounter = 0;
 
-	public Recycler(Class<R> pRecyclableClass)
+	public Recycler(final Class<R> pRecyclableClass)
 	{
 		mRecyclableClass = pRecyclableClass;
 	}
 
-	public boolean ensurePreallocated(int pNumberofPrealocatedRecyclablesNeeded,
-																		int... pParameters)
+	public boolean ensurePreallocated(final int pNumberofPrealocatedRecyclablesNeeded,
+																		final int... pParameters)
 	{
 		final int lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
 		final int lNumberOfObjectsToAllocate = Math.max(0,
@@ -26,14 +24,14 @@ public class Recycler<R extends RecyclableInterface>
 		{
 			for (int i = 0; i < lNumberOfObjectsToAllocate; i++)
 			{
-				R lNewInstance = mRecyclableClass.newInstance();
+				final R lNewInstance = mRecyclableClass.newInstance();
 				lNewInstance.initialize(pParameters);
 				lNewInstance.setRecycler((Recycler<R>) this);
 				mAvailableObjectsQueue.add(lNewInstance);
 			}
 			return true;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 			return false;
@@ -45,7 +43,7 @@ public class Recycler<R extends RecyclableInterface>
 	public R requestFrame(final int... pRequestParameters)
 	{
 
-		R lHead = mAvailableObjectsQueue.poll();
+		final R lHead = mAvailableObjectsQueue.poll();
 
 		if (lHead != null)
 		{
@@ -67,7 +65,7 @@ public class Recycler<R extends RecyclableInterface>
 			mCounter++;
 			return lNewInstance;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 			return null;
@@ -75,7 +73,7 @@ public class Recycler<R extends RecyclableInterface>
 
 	}
 
-	public void release(R pObject)
+	public void release(final R pObject)
 	{
 		mAvailableObjectsQueue.add(pObject);
 		mCounter--;

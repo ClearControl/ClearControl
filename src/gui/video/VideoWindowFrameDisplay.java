@@ -1,7 +1,6 @@
-package gui.swing;
+package gui.video;
 
-import frames.Frame;
-import gui.swing.jogl.VideoWindow;
+import gui.video.jogl.VideoWindow;
 
 import javax.media.opengl.GLException;
 
@@ -14,7 +13,7 @@ public class VideoWindowFrameDisplay
 {
 	private final VideoWindow mVideoWindow;
 
-	private final ObjectVariable<Frame> mObjectVariable = new ObjectVariable<Frame>();
+	private final ObjectVariable<VideoFrame> mObjectVariable = new ObjectVariable<VideoFrame>();
 
 	public BooleanVariable mDisplayOn;
 	public BooleanVariable mManualMinMaxIntensity;
@@ -41,12 +40,12 @@ public class VideoWindowFrameDisplay
 																		pVideoWidth,
 																		pVideoHeight);
 
-		mObjectVariable.sendUpdatesTo(new ObjectInputVariableInterface<Frame>()
+		mObjectVariable.sendUpdatesTo(new ObjectInputVariableInterface<VideoFrame>()
 		{
 
 			@Override
 			public void setReference(	final Object pDoubleEventSource,
-																final Frame pNewFrameReference)
+																final VideoFrame pNewFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 				mVideoWindow.setSourceBuffer(pNewFrameReference.buffer);
@@ -101,7 +100,7 @@ public class VideoWindowFrameDisplay
 		};
 	}
 
-	public ObjectVariable<Frame> getFrameReferenceVariable()
+	public ObjectVariable<VideoFrame> getFrameReferenceVariable()
 	{
 		return mObjectVariable;
 	}

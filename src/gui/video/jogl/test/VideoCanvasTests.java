@@ -1,9 +1,9 @@
-package gui.swing.jogl.test;
+package gui.video.jogl.test;
 
 import static org.junit.Assert.*;
 
 
-import gui.swing.jogl.old.VideoCanvas;
+import gui.video.jogl.old.VideoCanvas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

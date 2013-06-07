@@ -1,9 +1,9 @@
-package gui.swing.test;
+package gui.video.test;
 
-import frames.Frame;
 import gui.swing.JButtonBoolean;
 import gui.swing.JSliderDouble;
-import gui.swing.old.VideoCanvasFrameDisplay;
+import gui.video.VideoFrame;
+import gui.video.old.VideoCanvasFrameDisplay;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -69,7 +69,7 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 		lVideoDisplayDevice.setSyncToRefresh(false);
 
 		mcontentPane.add(lVideoDisplayDevice, BorderLayout.CENTER);
-		final ObjectVariable<Frame> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();
+		final ObjectVariable<VideoFrame> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();
 
 		final JSliderDouble lGrayValueJSliderDouble = new JSliderDouble("gray value");
 		final DoubleVariable lGrayValueDoubleVariable = lGrayValueJSliderDouble.getDoubleVariable();
@@ -111,7 +111,7 @@ public class TestVideoCanvasFrameDisplay extends JFrame
 			}
 		});
 
-		final Frame lFrame = new Frame(0, sImageSize, sImageSize, 1);
+		final VideoFrame lFrame = new VideoFrame(0, sImageSize, sImageSize, 1);
 
 		lGrayValueDoubleVariable.sendUpdatesTo(new DoubleVariable(0)
 		{

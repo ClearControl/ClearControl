@@ -1,11 +1,6 @@
 package variable.objectv;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import frames.Frame;
-
-import variable.doublev.DoubleInputVariableInterface;
 
 public class ObjectVariable<O>	implements
 																ObjectInputOutputVariableInterface<O>
@@ -21,7 +16,7 @@ public class ObjectVariable<O>	implements
 		mReference = null;
 	}
 
-	public ObjectVariable(O pReference)
+	public ObjectVariable(final O pReference)
 	{
 		super();
 		mReference = pReference;
@@ -33,14 +28,15 @@ public class ObjectVariable<O>	implements
 	}
 
 	@Override
-	public void setReference(Object pObjectEventSource, O pNewReference)
+	public void setReference(	final Object pObjectEventSource,
+														final O pNewReference)
 	{
 
 		if (mInputVariable != null)
 			mInputVariable.setReference(pObjectEventSource, pNewReference);
 		else if (mInputVariables != null)
 		{
-			for (ObjectInputVariableInterface<O> lObjectInputVariableInterface : mInputVariables)
+			for (final ObjectInputVariableInterface<O> lObjectInputVariableInterface : mInputVariables)
 			{
 				lObjectInputVariableInterface.setReference(	pObjectEventSource,
 																										pNewReference);
@@ -50,7 +46,7 @@ public class ObjectVariable<O>	implements
 		mReference = pNewReference;
 	}
 
-	public void setCurrentReference(Object pObjectEventSource)
+	public void setCurrentReference(final Object pObjectEventSource)
 	{
 		setReference(pObjectEventSource, mReference);
 	}
@@ -64,7 +60,7 @@ public class ObjectVariable<O>	implements
 		return mReference;
 	}
 
-	public final void sendUpdatesTo(ObjectInputVariableInterface<O> pObjectVariable)
+	public final void sendUpdatesTo(final ObjectInputVariableInterface<O> pObjectVariable)
 	{
 		synchronized (this)
 		{
@@ -86,7 +82,7 @@ public class ObjectVariable<O>	implements
 		}
 	}
 
-	public void stopSendUpdatesTo(ObjectInputVariableInterface<O> pObjectVariable)
+	public void stopSendUpdatesTo(final ObjectInputVariableInterface<O> pObjectVariable)
 	{
 		synchronized (this)
 		{
@@ -102,12 +98,12 @@ public class ObjectVariable<O>	implements
 		}
 	}
 
-	public final void sendQueriesTo(ObjectOutputVariableInterface pObjectVariable)
+	public final void sendQueriesTo(final ObjectOutputVariableInterface pObjectVariable)
 	{
 		mOutputVariable = pObjectVariable;
 	}
 
-	public final void syncWith(ObjectInputOutputVariableInterface pObjectVariable)
+	public final void syncWith(final ObjectInputOutputVariableInterface pObjectVariable)
 	{
 		sendUpdatesTo(pObjectVariable);
 		if (mOutputVariable != null)

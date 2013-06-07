@@ -1,9 +1,8 @@
-package frames;
+package gui.video;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -11,24 +10,23 @@ import java.nio.channels.FileChannel;
 import recycling.RecyclableInterface;
 import recycling.Recycler;
 
-public class Frame implements RecyclableInterface
+public class VideoFrame implements RecyclableInterface
 {
 
-	private Recycler<Frame> mFrameRecycler;
+	private Recycler<VideoFrame> mFrameRecycler;
 	private volatile boolean isReleased;
 
-	private BufferHeader mBufferHeader = new BufferHeader();
 	public ByteBuffer buffer;
 	public int width;
 	public int height;
 	public int bpp;
 	public long index;
 
-	public Frame()
+	public VideoFrame()
 	{
 	}
 
-	public Frame(	final long pImageIndex,
+	public VideoFrame(	final long pImageIndex,
 								final int pWidth,
 								final int pHeight,
 								final int pBytesPerPixel)
@@ -42,11 +40,11 @@ public class Frame implements RecyclableInterface
 												.order(ByteOrder.nativeOrder());
 	}
 
-	public Frame(	ByteBuffer pByteBuffer,
-								long pImageIndex,
-								int pWidth,
-								int pHeight,
-								int pBytesPerPixel)
+	public VideoFrame(	final ByteBuffer pByteBuffer,
+								final long pImageIndex,
+								final int pWidth,
+								final int pHeight,
+								final int pBytesPerPixel)
 	{
 		index = pImageIndex;
 		width = pWidth;
@@ -55,11 +53,11 @@ public class Frame implements RecyclableInterface
 		buffer = pByteBuffer;
 	}
 
-	public void copyFrom(	ByteBuffer pByteBufferToBeCopied,
-												long pImageIndex,
-												int pWidth,
-												int pHeight,
-												int pBytesPerPixel)
+	public void copyFrom(	final ByteBuffer pByteBufferToBeCopied,
+												final long pImageIndex,
+												final int pWidth,
+												final int pHeight,
+												final int pBytesPerPixel)
 	{
 		index = pImageIndex;
 		width = pWidth;
@@ -82,7 +80,7 @@ public class Frame implements RecyclableInterface
 	}
 
 	@Override
-	public void initialize(int... pParameters)
+	public void initialize(final int... pParameters)
 	{
 		width = pParameters[0];
 		height = pParameters[1];
@@ -107,58 +105,12 @@ public class Frame implements RecyclableInterface
 		mFrameRecycler.release(this);
 	}
 
-	public void writeRaw(File pFile) throws IOException
+	public void writeRaw(final File pFile) throws IOException
 	{
 		final FileOutputStream lFileOutputStream = new FileOutputStream(pFile);
-		FileChannel lChannel = lFileOutputStream.getChannel();
+		final FileChannel lChannel = lFileOutputStream.getChannel();
 		lChannel.write(buffer);
 		lFileOutputStream.close();
-	}
-
-	public boolean writeTo(FileChannel pChannel)
-	{
-		BufferType lBufferType = null;
-		if (bpp == 1)
-			lBufferType = BufferType.FrameBuffer8Bit;
-		else if (bpp == 2)
-			lBufferType = BufferType.FrameBuffer16Bit;
-
-		mBufferHeader.set(lBufferType, buffer.limit());
-		try
-		{
-			mBufferHeader.writeTo(pChannel);
-			buffer.rewind();
-			pChannel.write(buffer);
-			return true;
-		}
-		catch (IOException e)
-		{
-			System.err.println(e.getLocalizedMessage());
-			return false;
-		}
-	}
-
-	public boolean writeTo(ByteBuffer pByteBuffer)
-	{
-		BufferType lBufferType = null;
-		if (bpp == 1)
-			lBufferType = BufferType.FrameBuffer8Bit;
-		else if (bpp == 2)
-			lBufferType = BufferType.FrameBuffer16Bit;
-
-		mBufferHeader.set(lBufferType, buffer.limit());
-		try
-		{
-			mBufferHeader.writeTo(pByteBuffer);
-			buffer.rewind();
-			pByteBuffer.put(buffer);
-			return true;
-		}
-		catch (BufferOverflowException e)
-		{
-			System.err.println(e.getLocalizedMessage());
-			return false;
-		}
 	}
 
 	@Override
@@ -176,15 +128,38 @@ public class Frame implements RecyclableInterface
 		return isReleased;
 	}
 
-	public void setReleased(boolean isReleased)
+	@Override
+	public void setReleased(final boolean isReleased)
 	{
 		this.isReleased = isReleased;
 	}
 
 	@Override
-	public void setRecycler(Recycler pRecycler)
+	public void setRecycler(final Recycler pRecycler)
 	{
 		mFrameRecycler = pRecycler;
 	}
+
+	/**
+	 * 
+	 * public boolean writeTo(final FileChannel pChannel) { BufferType lBufferType
+	 * = null; if (bpp == 1) lBufferType = BufferType.FrameBuffer8Bit; else if
+	 * (bpp == 2) lBufferType = BufferType.FrameBuffer16Bit;
+	 * 
+	 * mBufferHeader.set(lBufferType, buffer.limit()); try {
+	 * mBufferHeader.writeTo(pChannel); buffer.rewind(); pChannel.write(buffer);
+	 * return true; } catch (final IOException e) {
+	 * System.err.println(e.getLocalizedMessage()); return false; } }
+	 * 
+	 * public boolean writeTo(final ByteBuffer pByteBuffer) { BufferType
+	 * lBufferType = null; if (bpp == 1) lBufferType = BufferType.FrameBuffer8Bit;
+	 * else if (bpp == 2) lBufferType = BufferType.FrameBuffer16Bit;
+	 * 
+	 * mBufferHeader.set(lBufferType, buffer.limit()); try {
+	 * mBufferHeader.writeTo(pByteBuffer); buffer.rewind();
+	 * pByteBuffer.put(buffer); return true; } catch (final
+	 * BufferOverflowException e) { System.err.println(e.getLocalizedMessage());
+	 * return false; } }
+	 */
 
 }
