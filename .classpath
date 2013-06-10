@@ -4,9 +4,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OrionLib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TurboJpegJ"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/bridj"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NDArray"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/trove"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jscc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OrionLib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
