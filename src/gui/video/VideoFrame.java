@@ -21,15 +21,16 @@ public class VideoFrame implements RecyclableInterface
 	public int height;
 	public int bpp;
 	public long index;
+	public long timestampns;
 
 	public VideoFrame()
 	{
 	}
 
-	public VideoFrame(	final long pImageIndex,
-								final int pWidth,
-								final int pHeight,
-								final int pBytesPerPixel)
+	public VideoFrame(final long pImageIndex,
+										final int pWidth,
+										final int pHeight,
+										final int pBytesPerPixel)
 	{
 		index = pImageIndex;
 		width = pWidth;
@@ -40,11 +41,11 @@ public class VideoFrame implements RecyclableInterface
 												.order(ByteOrder.nativeOrder());
 	}
 
-	public VideoFrame(	final ByteBuffer pByteBuffer,
-								final long pImageIndex,
-								final int pWidth,
-								final int pHeight,
-								final int pBytesPerPixel)
+	public VideoFrame(final ByteBuffer pByteBuffer,
+										final long pImageIndex,
+										final int pWidth,
+										final int pHeight,
+										final int pBytesPerPixel)
 	{
 		index = pImageIndex;
 		width = pWidth;
@@ -98,11 +99,15 @@ public class VideoFrame implements RecyclableInterface
 
 	public void releaseFrame()
 	{
-		if (isReleased)
-			throw new RuntimeException("Object " + this.hashCode()
-																	+ " Already released!");
-		isReleased = true;
-		mFrameRecycler.release(this);
+		if (mFrameRecycler != null)
+		{
+			if (isReleased)
+				throw new RuntimeException("Object " + this.hashCode()
+																		+ " Already released!");
+			isReleased = true;
+
+			mFrameRecycler.release(this);
+		}
 	}
 
 	public void writeRaw(final File pFile) throws IOException

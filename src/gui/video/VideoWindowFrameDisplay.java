@@ -110,4 +110,14 @@ public class VideoWindowFrameDisplay
 		mVideoWindow.setVisible(pIsVisible);
 	}
 
+	public void setLinearInterpolation(boolean pLinearInterpolation)
+	{
+		mVideoWindow.setLinearInterpolation(pLinearInterpolation);
+	}
+
+	public void setSyncToRefresh(boolean pSyncToRefresh)
+	{
+		mVideoWindow.setSyncToRefresh(pSyncToRefresh);
+	}
+
 }
