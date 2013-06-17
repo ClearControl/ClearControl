@@ -7,6 +7,8 @@ public interface SerialInterface
 
 	public boolean connect() throws SerialPortException;
 
+	boolean connect(String pPortName) throws SerialPortException;
+
 	public void close() throws SerialPortException;
 
 	public void addListener(final SerialListener pSerialListener);

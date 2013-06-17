@@ -90,10 +90,16 @@ public class Serial implements SerialInterface
 	public final boolean connect() throws SerialPortException
 	{
 		final String lPortName = getOneSerialCommPortWithNameContaining(mPortNameHint);
+		System.out.format("Connecting to '%s'\n", lPortName);
+		return connect(lPortName);
+	}
 
-		if (lPortName != null)
+	@Override
+	public final boolean connect(final String pPortName) throws SerialPortException
+	{
+		if (pPortName != null)
 		{
-			mSerialPort = new SerialPort(lPortName);
+			mSerialPort = new SerialPort(pPortName);
 
 			mSerialPort.openPort();
 			mSerialPort.setParams(mBaudRate,
@@ -258,6 +264,11 @@ public class Serial implements SerialInterface
 	{
 		try
 		{
+			if (mEndOfMessageCharacter != 0)
+				while (mSerialPort.readBytes(1)[0] != mEndOfMessageCharacter)
+				{
+				}
+
 			final byte[] lReadBytes = mSerialPort.readBytes(mMessageLength);
 			return lReadBytes;
 		}
