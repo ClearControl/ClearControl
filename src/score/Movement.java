@@ -12,7 +12,6 @@ public class Movement extends NameableAbstract implements
 																							MovementInterface
 {
 
-	public final static int cMaximumNumberOfTimePointsPerBuffer = StaveAbstract.cMaximumNumberOfTimePointsPerBuffer;
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
 
 	private double mDeltaTimeInMicroseconds;
@@ -24,7 +23,7 @@ public class Movement extends NameableAbstract implements
 	private ShortBuffer mMovementShortBuffer;
 	private boolean mIsUpToDateBasedOnStaveList = false;
 
-	public static final Movement NullMovement = new Movement("NullMovement");
+
 
 	public Movement(final String pName)
 	{
@@ -42,11 +41,11 @@ public class Movement extends NameableAbstract implements
 	}
 
 	public void setTotalDurationAndGranularityInMicroseconds(	final double pTotalDurationInMicroseconds,
-																														final double pMinDeltaTimeInMicroseconds)
+																														final double pMinDeltaTimeInMicroseconds,
+																														final int pMaxNumberOfTimePointsPerMovement)
 	{
-		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
 
-		final int lMaxNumberOfTimePointsFittingInTotalDuration = Math.min(lMaxNumberOfTimePointsPerMovement,
+		final int lMaxNumberOfTimePointsFittingInTotalDuration = Math.min(pMaxNumberOfTimePointsPerMovement,
 																																			(int) (pTotalDurationInMicroseconds / pMinDeltaTimeInMicroseconds));
 
 		setNumberOfTimePoints(lMaxNumberOfTimePointsFittingInTotalDuration);
@@ -58,11 +57,10 @@ public class Movement extends NameableAbstract implements
 	}
 
 	public void setTotalDurationInMicrosecondsAndNumberOfPoints(final double pTotalDurationInMicroseconds,
-																															final int pNumberOfPoints)
+																															final int pNumberOfPoints,
+																															final int pMaxNumberOfTimePointsPerMovement)
 	{
-		final int lMaxNumberOfTimePointsPerMovement = getMaxNumberOfTimePointsPerMovement();
-
-		final int lNumberOfTimePointsForTotalDuration = Math.min(	lMaxNumberOfTimePointsPerMovement,
+		final int lNumberOfTimePointsForTotalDuration = Math.min(	pMaxNumberOfTimePointsPerMovement,
 																															pNumberOfPoints);
 
 		setNumberOfTimePoints(lNumberOfTimePointsForTotalDuration);
@@ -97,11 +95,6 @@ public class Movement extends NameableAbstract implements
 		}
 	}
 
-	@Override
-	public int getMaxNumberOfTimePointsPerMovement()
-	{
-		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer;
-	}
 
 	public boolean setStave(final int pStaveIndex,
 													final StaveInterface pNewStave)
@@ -119,7 +112,7 @@ public class Movement extends NameableAbstract implements
 	public int computeMovementBufferLength()
 	{
 		// final StaveInterface lFirstStave = getFirstStave();
-		final int lStaveBufferLength = cMaximumNumberOfTimePointsPerBuffer;
+		final int lStaveBufferLength = getNumberOfTimePoints();
 		final int lMovementBufferLength = mStaveListArray.length * lStaveBufferLength;
 		return lMovementBufferLength;
 	}
@@ -203,7 +196,7 @@ public class Movement extends NameableAbstract implements
 	@Override
 	public double getDurationInMilliseconds()
 	{
-		return StaveAbstract.cMaximumNumberOfTimePointsPerBuffer * (getDeltaTimeInMicroseconds() * 0.001);
+		return getNumberOfTimePoints() * (getDeltaTimeInMicroseconds() * 0.001);
 	}
 
 	@Override
@@ -228,6 +221,12 @@ public class Movement extends NameableAbstract implements
 	public String toString()
 	{
 		return String.format("Movement[%s]", getName());
+	}
+
+	public static Movement getNullMovement()
+	{
+		Movement lNullMovement = new Movement("NullMovement");
+		return lNullMovement;
 	}
 
 }

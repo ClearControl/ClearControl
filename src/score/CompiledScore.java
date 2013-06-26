@@ -15,7 +15,6 @@ public class CompiledScore
 
 	private volatile boolean mIsUpToDate = false;
 	private ShortBuffer mDeltaTimeShortBuffer;
-	private ShortBuffer mNumberTimePointsToPlayShortBuffer;
 	private ShortBuffer mSyncShortBuffer;
 	private ShortBuffer mMatricesShortBuffer;
 	private double mBufferDeltaTimeUnitInNanoseconds;
@@ -56,12 +55,6 @@ public class CompiledScore
 		return mDeltaTimeShortBuffer;
 	}
 
-	public ShortBuffer getNumberOfTimePointsToPlayBuffer()
-	{
-		ensureBuffersAreUpToDate();
-		return mNumberTimePointsToPlayShortBuffer;
-	}
-
 	public ShortBuffer getSyncBuffer()
 	{
 		return mSyncShortBuffer;
@@ -80,20 +73,13 @@ public class CompiledScore
 
 		final int lNumberOfMatrices = mCompiledMovementList.size() + 1;
 
-		final int lDeltaTimeAndNumberOfPointsBufferLengthInBytes = 2 * lNumberOfMatrices;
+		final int lDeltaTimeBufferLengthInBytes = 2 * lNumberOfMatrices;
 
-		if (mDeltaTimeShortBuffer == null || mDeltaTimeShortBuffer.capacity() < lDeltaTimeAndNumberOfPointsBufferLengthInBytes)
+		if (mDeltaTimeShortBuffer == null || mDeltaTimeShortBuffer.capacity() < lDeltaTimeBufferLengthInBytes)
 		{
-			mDeltaTimeShortBuffer = ByteBuffer.allocateDirect(lDeltaTimeAndNumberOfPointsBufferLengthInBytes)
+			mDeltaTimeShortBuffer = ByteBuffer.allocateDirect(lDeltaTimeBufferLengthInBytes)
 																				.order(ByteOrder.nativeOrder())
 																				.asShortBuffer();
-		}
-
-		if (mNumberTimePointsToPlayShortBuffer == null || mNumberTimePointsToPlayShortBuffer.capacity() < lDeltaTimeAndNumberOfPointsBufferLengthInBytes)
-		{
-			mNumberTimePointsToPlayShortBuffer = ByteBuffer.allocateDirect(lDeltaTimeAndNumberOfPointsBufferLengthInBytes)
-																											.order(ByteOrder.nativeOrder())
-																											.asShortBuffer();
 		}
 
 		final int lSyncBufferLengthInBytes = 2 * lNumberOfMatrices;
@@ -106,7 +92,7 @@ public class CompiledScore
 		}
 
 		int lMatricesBufferLengthInBytes = lNumberOfMatrices * Movement.cDefaultNumberOfStavesPerMovement
-																				* StaveAbstract.cMaximumNumberOfTimePointsPerBuffer
+																				* getNumberOfTimePointsPerMovement()
 																				* 2;
 
 		if (mMatricesShortBuffer == null || mMatricesShortBuffer.capacity() < lMatricesBufferLengthInBytes)
@@ -117,7 +103,6 @@ public class CompiledScore
 		}
 
 		mDeltaTimeShortBuffer.clear();
-		mNumberTimePointsToPlayShortBuffer.clear();
 		mSyncShortBuffer.clear();
 		mMatricesShortBuffer.clear();
 
@@ -127,7 +112,6 @@ public class CompiledScore
 		for (CompiledMovement lCompiledMovement : mCompiledMovementList)
 		{
 			mDeltaTimeShortBuffer.put(lDeltaTime);
-			mNumberTimePointsToPlayShortBuffer.put(lNumberOfTimePointsToPlay);
 			mSyncShortBuffer.put(lSync);
 			lDeltaTime = (short) ((lCompiledMovement.getDeltaTimeInMicroseconds() * 1000) / mBufferDeltaTimeUnitInNanoseconds);
 			lNumberOfTimePointsToPlay = (short) lCompiledMovement.getNumberOfTimePoints();
@@ -142,11 +126,9 @@ public class CompiledScore
 			mMatricesShortBuffer.put(lMovementBuffer);
 		}
 		mDeltaTimeShortBuffer.put(lDeltaTime);
-		mNumberTimePointsToPlayShortBuffer.put(lNumberOfTimePointsToPlay);
-		mSyncShortBuffer.put(lSync);
+			mSyncShortBuffer.put(lSync);
 
 		mDeltaTimeShortBuffer.flip();
-		mNumberTimePointsToPlayShortBuffer.flip();
 		mSyncShortBuffer.flip();
 
 		mMatricesShortBuffer.flip();
@@ -164,6 +146,13 @@ public class CompiledScore
 	{
 		final short lShort = (short) ((pHigh << 8) | (pLow & 0xFF));
 		return lShort;
+	}
+
+	public int getNumberOfTimePointsPerMovement()
+	{
+		if(mCompiledMovementList.isEmpty())
+			return -1;
+		return mCompiledMovementList.get(0).getNumberOfTimePoints();
 	}
 
 }

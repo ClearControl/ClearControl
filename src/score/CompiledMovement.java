@@ -10,7 +10,7 @@ public class CompiledMovement implements MovementInterface
 {
 	private String mName;
 	private final ShortBuffer mMovementBuffer;
-	private final int mMaxNumberOfTimePointsPerBuffer;
+	//private final int mMaxNumberOfTimePointsPerBuffer;
 	private final int mNumberOfTimePoints;
 	private final int mNumberOfStaves;
 	private final double mDeltaTimeInMicroseconds;
@@ -24,7 +24,6 @@ public class CompiledMovement implements MovementInterface
 		mName = pMovement.getName();
 		mDeltaTimeInMicroseconds = pMovement.getDeltaTimeInMicroseconds();
 		mNumberOfStaves = pMovement.getNumberOfStaves();
-		mMaxNumberOfTimePointsPerBuffer = pMovement.getMaxNumberOfTimePointsPerMovement();
 		mNumberOfTimePoints = pMovement.getNumberOfTimePoints();
 		mIsSync = pMovement.isSync();
 		mIsSyncOnRisingEdge = pMovement.isSyncOnRisingEdge();
@@ -116,9 +115,6 @@ public class CompiledMovement implements MovementInterface
 		return mName;
 	}
 
-	public int getMaxNumberOfTimePointsPerMovement()
-	{
-		return mMaxNumberOfTimePointsPerBuffer;
-	}
+
 
 }

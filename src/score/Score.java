@@ -10,6 +10,7 @@ import score.interfaces.ScoreInterface;
 
 public class Score extends NameableAbstract implements ScoreInterface
 {
+
 	private ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
 
 	private ShortBuffer mScoreShortBuffer;
@@ -20,10 +21,11 @@ public class Score extends NameableAbstract implements ScoreInterface
 		super(pName);
 	}
 
-	public void addMovement(final MovementInterface pMovement)
+	public boolean addMovement(final MovementInterface pMovement)
 	{
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.add(pMovement);
+		return true;
 	}
 
 	public void addMovementMultipleTimes(	Movement pMovement,
@@ -51,8 +53,6 @@ public class Score extends NameableAbstract implements ScoreInterface
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.clear();
 	}
-
-
 
 	public ShortBuffer getScoreBuffer()
 	{
@@ -112,13 +112,20 @@ public class Score extends NameableAbstract implements ScoreInterface
 	}
 
 	public ArrayList<MovementInterface> getMovements()
-	{	
+	{
 		return mMovementList;
 	}
-	
+
 	public int getNumberOfMovements()
 	{
 		return mMovementList.size();
+	}
+
+	public int getNumberOfTimePointsPerMovement()
+	{
+		if (mMovementList.isEmpty())
+			return -1;
+		return mMovementList.get(0).getNumberOfTimePoints();
 	}
 
 	@Override
@@ -126,6 +133,5 @@ public class Score extends NameableAbstract implements ScoreInterface
 	{
 		return String.format("Score-%s", getName());
 	}
-
 
 }

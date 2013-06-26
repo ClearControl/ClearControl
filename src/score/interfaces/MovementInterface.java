@@ -17,8 +17,6 @@ public interface MovementInterface
 
 	double getDurationInMilliseconds();
 
-	int getMaxNumberOfTimePointsPerMovement();
-
 	int getNumberOfTimePoints();
 
 	int getNumberOfStaves();
