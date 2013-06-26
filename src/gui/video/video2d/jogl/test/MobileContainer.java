@@ -1,4 +1,4 @@
-package gui.video.jogl.test;
+package gui.video.video2d.jogl.test;
 
 import java.awt.*;
 import java.awt.event.*;

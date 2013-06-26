@@ -1,47 +1,44 @@
 package asyncprocs;
 
-import java.io.IOException;
-
-import device.VirtualDevice;
-import variable.objectv.ObjectInputVariableInterface;
-import variable.objectv.ObjectOutputVariableInterface;
 import variable.objectv.ObjectVariable;
+import device.VirtualDevice;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
 																												VirtualDevice
 {
-	ObjectVariable<I> mInputObjectVariable = new ObjectVariable<I>();
-	ObjectVariable<O> mOutputObjectVariable = new ObjectVariable<O>();
+	ObjectVariable<I> mInputObjectVariable;
+	ObjectVariable<O> mOutputObjectVariable;
 
 	AsynchronousProcessorBase<I, O> mAsynchronousProcessorBase;
 
 	private Object mObjectEventSource;
 
-	public ObjectVariableAsynchronousProcessor(	String pName,
-																							int pMaxQueueSize,
+	public ObjectVariableAsynchronousProcessor(	final String pName,
+																							final int pMaxQueueSize,
 																							final ProcessorInterface<I, O> pProcessor,
 																							final boolean pDropIfQueueFull)
 	{
 		super();
 
-		mInputObjectVariable.sendUpdatesTo(new ObjectInputVariableInterface<I>()
+		mOutputObjectVariable = new ObjectVariable<O>(pName + "Output");
+		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
 		{
 			@Override
-			public void setReference(	Object pObjectEventSource,
-																I pNewReference)
+			public void setReference(final I pNewReference)
 			{
+
 				if (pDropIfQueueFull)
 					mAsynchronousProcessorBase.passOrFail(pNewReference);
 				else
 					mAsynchronousProcessorBase.passOrWait(pNewReference);
 			}
-		});
+		};
 
 		mAsynchronousProcessorBase = new AsynchronousProcessorBase<I, O>(	pName,
 																																			pMaxQueueSize)
 		{
 			@Override
-			public O process(I pInput)
+			public O process(final I pInput)
 			{
 				return pProcessor.process(pInput);
 			}
@@ -51,18 +48,16 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 		{
 
 			@Override
-			public boolean passOrWait(O pObject)
+			public boolean passOrWait(final O pObject)
 			{
-				mOutputObjectVariable.setReference(	mObjectEventSource,
-																						pObject);
+				mOutputObjectVariable.setReference(pObject);
 				return true;
 			}
 
 			@Override
-			public boolean passOrFail(O pObject)
+			public boolean passOrFail(final O pObject)
 			{
-				mOutputObjectVariable.setReference(	mObjectEventSource,
-																						pObject);
+				mOutputObjectVariable.setReference(pObject);
 				return true;
 			}
 

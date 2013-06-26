@@ -65,7 +65,7 @@ public class JSliderDouble extends JPanel
 	{
 		super();
 
-		mSliderDoubleVariable = new DoubleVariable(pValue)
+		mSliderDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
 			@Override
 			public double setEventHook(final double pNewValue)

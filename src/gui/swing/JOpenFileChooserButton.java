@@ -12,17 +12,18 @@ import variable.objectv.ObjectVariable;
 public class JOpenFileChooserButton extends JButton
 {
 	private static final File cDefaultFolder = new File(System.getProperty("user.home"));
-	private ObjectVariable<File> mFileVariable = new ObjectVariable<File>();
-	private boolean mOnlyFolders;
+	private final ObjectVariable<File> mFileVariable = new ObjectVariable<File>("FileVariable");
+	private final boolean mOnlyFolders;
 
-	public JOpenFileChooserButton(String pLabel, boolean pOnlyFolders)
+	public JOpenFileChooserButton(final String pLabel,
+																final boolean pOnlyFolders)
 	{
 		this(cDefaultFolder, pLabel, pOnlyFolders);
 	}
 
-	public JOpenFileChooserButton(File pCurrentFolder,
-																String pLabel,
-																boolean pOnlyFolders)
+	public JOpenFileChooserButton(final File pCurrentFolder,
+																final String pLabel,
+																final boolean pOnlyFolders)
 	{
 		super(pLabel);
 		mFileVariable.setReference(pCurrentFolder);
@@ -30,7 +31,8 @@ public class JOpenFileChooserButton extends JButton
 
 		addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent pE)
+			@Override
+			public void actionPerformed(final ActionEvent pE)
 			{
 				final File lSelectedFile = openFileChooser();
 				mFileVariable.setReference(lSelectedFile);
@@ -44,10 +46,10 @@ public class JOpenFileChooserButton extends JButton
 		File lCurrentFolder = mFileVariable.getReference();
 		if (lCurrentFolder == null)
 			lCurrentFolder = cDefaultFolder;
-		JFileChooser lJFileChooser = new JFileChooser();
+		final JFileChooser lJFileChooser = new JFileChooser();
 		if (mOnlyFolders)
 			lJFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		Integer lOption = lJFileChooser.showSaveDialog(this);
+		final Integer lOption = lJFileChooser.showSaveDialog(this);
 
 		if (lOption == JFileChooser.APPROVE_OPTION)
 			return lJFileChooser.getSelectedFile();

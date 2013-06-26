@@ -1,6 +1,6 @@
-package gui.video.jogl.test;
+package gui.video.video2d.jogl.test;
 
-import gui.video.jogl.VideoWindow;
+import gui.video.video2d.jogl.VideoWindow;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

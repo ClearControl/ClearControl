@@ -2,12 +2,12 @@ package asyncprocs;
 
 import java.io.IOException;
 
-public class AsynchronousProcessorAdapter<I,O>	implements
-																					AsynchronousProcessorInterface<I, O>
+public class AsynchronousProcessorAdapter<I, O> implements
+																								AsynchronousProcessorInterface<I, O>
 {
 
 	@Override
-	public O process(I pInput)
+	public O process(final I pInput)
 	{
 		return null;
 	}
@@ -18,7 +18,7 @@ public class AsynchronousProcessorAdapter<I,O>	implements
 	}
 
 	@Override
-	public void connectToReceiver(AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
+	public void connectToReceiver(final AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
 	{
 	}
 
@@ -29,13 +29,19 @@ public class AsynchronousProcessorAdapter<I,O>	implements
 	}
 
 	@Override
-	public boolean passOrWait(I pObject)
+	public boolean stop()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean passOrFail(I pObject)
+	public boolean passOrWait(final I pObject)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean passOrFail(final I pObject)
 	{
 		return true;
 	}

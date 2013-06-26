@@ -40,7 +40,9 @@ public class JButtonBoolean extends JButton
 												final boolean pButtonIsOnOffSwitch)
 	{
 		mThis = this;
-		mBooleanVariable = new BooleanVariable(pInitialState)
+		mBooleanVariable = new BooleanVariable(	pOnLabel + "/"
+																								+ pOffLabel,
+																						pInitialState)
 		{
 			@Override
 			public double setEventHook(final double pNewValue)

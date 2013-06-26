@@ -58,7 +58,7 @@ public class JTextFieldDouble extends JPanel
 	{
 		super();
 
-		mDoubleVariable = new DoubleVariable(pValue)
+		mDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
 			@Override
 			public double setEventHook(final double pNewValue)

@@ -1,12 +1,8 @@
 package gui.video;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
 
+import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferByte;
 import recycling.RecyclableInterface;
 import recycling.Recycler;
 
@@ -16,9 +12,7 @@ public class VideoFrame implements RecyclableInterface
 	private Recycler<VideoFrame> mFrameRecycler;
 	private volatile boolean isReleased;
 
-	public ByteBuffer buffer;
-	public int width;
-	public int height;
+	public NDArrayDirectBufferByte ndarray;
 	public int bpp;
 	public long index;
 	public long timestampns;
@@ -28,73 +22,97 @@ public class VideoFrame implements RecyclableInterface
 	}
 
 	public VideoFrame(final long pImageIndex,
+										final long pTimeStampInNanoseconds,
 										final int pWidth,
 										final int pHeight,
+										final int pDepth,
 										final int pBytesPerPixel)
 	{
 		index = pImageIndex;
-		width = pWidth;
-		height = pHeight;
+		timestampns = pTimeStampInNanoseconds;
 		bpp = pBytesPerPixel;
-		buffer = ByteBuffer.allocateDirect(pWidth * pHeight
-																				* pBytesPerPixel)
-												.order(ByteOrder.nativeOrder());
+
+		ndarray = NDArrayDirectBufferByte.allocateSXYZ(	bpp,
+																										pWidth,
+																										pHeight,
+																										pDepth);
 	}
 
-	public VideoFrame(final ByteBuffer pByteBuffer,
+	public VideoFrame(final NDArrayDirectBufferByte pNDArrayDirectBuffer,
 										final long pImageIndex,
-										final int pWidth,
-										final int pHeight,
-										final int pBytesPerPixel)
+										final long pTimeStampInNanoseconds)
 	{
 		index = pImageIndex;
-		width = pWidth;
-		height = pHeight;
-		bpp = pBytesPerPixel;
-		buffer = pByteBuffer;
+		timestampns = pTimeStampInNanoseconds;
+		bpp = 2;
+		ndarray = pNDArrayDirectBuffer;
+	}
+
+	public ByteBuffer getByteBuffer()
+	{
+		return ndarray.getUnderlyingByteBuffer();
+	}
+
+	public int getWidth()
+	{
+		return ndarray.getWidth();
+	}
+
+	public int getHeight()
+	{
+		return ndarray.getHeight();
+	}
+
+	public int getDepth()
+	{
+		return ndarray.getDepth();
+	}
+
+	public int getDimension()
+	{
+		return ndarray.getDimension();
 	}
 
 	public void copyFrom(	final ByteBuffer pByteBufferToBeCopied,
 												final long pImageIndex,
 												final int pWidth,
 												final int pHeight,
+												final int pDepth,
 												final int pBytesPerPixel)
 	{
 		index = pImageIndex;
-		width = pWidth;
-		height = pHeight;
 		bpp = pBytesPerPixel;
 
-		final int length = pByteBufferToBeCopied.limit();
-		if (buffer == null || buffer.capacity() < length)
+		final int lBufferLengthInBytes = pByteBufferToBeCopied.limit();
+		if (ndarray == null || ndarray.getArrayLengthInBytes() != lBufferLengthInBytes)
 		{
-			/*if (buffer != null)
-				System.out.format("length=%d, buffer.capacity()=%d \n",
-													length,
-													buffer.capacity());/**/
-			buffer = ByteBuffer.allocateDirect(length)
-													.order(ByteOrder.nativeOrder());
-			;
+			ndarray = NDArrayDirectBufferByte.allocateSXYZ(	pBytesPerPixel,
+																											pWidth,
+																											pHeight,
+																											pDepth);
+			final ByteBuffer lUnderlyingByteBuffer = ndarray.getUnderlyingByteBuffer();
+			lUnderlyingByteBuffer.clear();
 			pByteBufferToBeCopied.rewind();
-			buffer.put(pByteBufferToBeCopied);
+			lUnderlyingByteBuffer.put(pByteBufferToBeCopied);
 		}
 	}
 
 	@Override
 	public void initialize(final int... pParameters)
 	{
-		width = pParameters[0];
-		height = pParameters[1];
-		bpp = pParameters[2];
+		final int lWidth = pParameters[0];
+		final int lHeight = pParameters[1];
+		final int lDepth = pParameters[2];
+		bpp = pParameters[3];
 
-		final int length = width * height * bpp;
-		if (buffer == null || buffer.capacity() < length)
+		final int length = lWidth * lWidth * lDepth * bpp;
+		if (ndarray == null || ndarray.getArrayLengthInBytes() != length)
 		{
-			buffer = ByteBuffer.allocateDirect(length)
-													.order(ByteOrder.nativeOrder());
+			ndarray = NDArrayDirectBufferByte.allocateSXYZ(	bpp,
+																											lWidth,
+																											lHeight,
+																											lDepth);
 		}
-		buffer.limit(length);
-		buffer.rewind();
 	}
 
 	public void releaseFrame()
@@ -110,21 +128,14 @@ public class VideoFrame implements RecyclableInterface
 		}
 	}
 
-	public void writeRaw(final File pFile) throws IOException
-	{
-		final FileOutputStream lFileOutputStream = new FileOutputStream(pFile);
-		final FileChannel lChannel = lFileOutputStream.getChannel();
-		lChannel.write(buffer);
-		lFileOutputStream.close();
-	}
-
 	@Override
 	public String toString()
 	{
-		return String.format(	"Frame [index=%d, width=%s, height=%s, bpp=%s]",
+		return String.format(	"Frame [index=%d, width=%d, height=%d, depth=%d,  bpp=%s]",
 													index,
-													width,
-													height,
+													ndarray.getWidth(),
+													ndarray.getHeight(),
+													ndarray.getDepth(),
 													bpp);
 	}
 
@@ -144,27 +155,5 @@ public class VideoFrame implements RecyclableInterface
 	{
 		mFrameRecycler = pRecycler;
 	}
-
-	/**
-	 * 
-	 * public boolean writeTo(final FileChannel pChannel) { BufferType lBufferType
-	 * = null; if (bpp == 1) lBufferType = BufferType.FrameBuffer8Bit; else if
-	 * (bpp == 2) lBufferType = BufferType.FrameBuffer16Bit;
-	 * 
-	 * mBufferHeader.set(lBufferType, buffer.limit()); try {
-	 * mBufferHeader.writeTo(pChannel); buffer.rewind(); pChannel.write(buffer);
-	 * return true; } catch (final IOException e) {
-	 * System.err.println(e.getLocalizedMessage()); return false; } }
-	 * 
-	 * public boolean writeTo(final ByteBuffer pByteBuffer) { BufferType
-	 * lBufferType = null; if (bpp == 1) lBufferType = BufferType.FrameBuffer8Bit;
-	 * else if (bpp == 2) lBufferType = BufferType.FrameBuffer16Bit;
-	 * 
-	 * mBufferHeader.set(lBufferType, buffer.limit()); try {
-	 * mBufferHeader.writeTo(pByteBuffer); buffer.rewind();
-	 * pByteBuffer.put(buffer); return true; } catch (final
-	 * BufferOverflowException e) { System.err.println(e.getLocalizedMessage());
-	 * return false; } }
-	 */
 
 }

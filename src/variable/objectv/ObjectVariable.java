@@ -2,115 +2,121 @@ package variable.objectv;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ObjectVariable<O>	implements
-																ObjectInputOutputVariableInterface<O>
+import variable.EventPropagator;
+import variable.NamedVariable;
+import variable.ObjectVariableInterface;
+
+public class ObjectVariable<O> extends NamedVariable<O>	implements
+																												ObjectVariableInterface<O>,
+																												ObjectInputOutputVariableInterface<O>
 {
 	protected volatile O mReference;
-	private ObjectInputVariableInterface<O> mInputVariable;
-	private CopyOnWriteArrayList<ObjectInputVariableInterface<O>> mInputVariables;
+	private final CopyOnWriteArrayList<ObjectVariable<O>> mInputVariables = new CopyOnWriteArrayList<ObjectVariable<O>>();
 
-	private ObjectOutputVariableInterface<O> mOutputVariable;
-
-	public ObjectVariable()
+	public ObjectVariable(final String pVariableName)
 	{
+		super(pVariableName);
 		mReference = null;
 	}
 
-	public ObjectVariable(final O pReference)
+	public ObjectVariable(final String pVariableName, final O pReference)
 	{
-		super();
+		super(pVariableName);
 		mReference = pReference;
 	}
 
-	public final void setReference(final O pNewReference)
+	@Override
+	public void setCurrent()
 	{
-		setReference(this, pNewReference);
+		EventPropagator.clear();
+		setReference(mReference);
 	}
 
 	@Override
-	public void setReference(	final Object pObjectEventSource,
-														final O pNewReference)
+	public void set(final O pNewReference)
 	{
-
-		if (mInputVariable != null)
-			mInputVariable.setReference(pObjectEventSource, pNewReference);
-		else if (mInputVariables != null)
-		{
-			for (final ObjectInputVariableInterface<O> lObjectInputVariableInterface : mInputVariables)
-			{
-				lObjectInputVariableInterface.setReference(	pObjectEventSource,
-																										pNewReference);
-			}
-		}
-
-		mReference = pNewReference;
+		setReference(pNewReference);
 	}
 
-	public void setCurrentReference(final Object pObjectEventSource)
+	@Override
+	public void setReference(final O pNewReference)
 	{
-		setReference(pObjectEventSource, mReference);
+		EventPropagator.clear();
+		setReferenceInternal(pNewReference);
+	}
+
+	public boolean setReferenceInternal(final O pNewReference)
+	{
+		if (EventPropagator.hasBeenTraversed(this))
+			return false;
+
+		final O lNewValueAfterHook = setEventHook(pNewReference);
+
+		EventPropagator.add(this);
+		if (mInputVariables != null)
+		{
+			for (final ObjectVariable lObjectVariable : mInputVariables)
+				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
+				{
+					lObjectVariable.setReferenceInternal(lNewValueAfterHook);
+				}
+		}
+		mReference = lNewValueAfterHook;
+		return true;
+	}
+
+	public O setEventHook(final O pNewValue)
+	{
+		return pNewValue;
+	}
+
+	public O getEventHook(final O pCurrentReference)
+	{
+		return pCurrentReference;
 	}
 
 	@Override
 	public O getReference()
 	{
-		if (mOutputVariable != null)
-			mReference = mOutputVariable.getReference();
-
-		return mReference;
+		return getEventHook(mReference);
 	}
 
-	public final void sendUpdatesTo(final ObjectInputVariableInterface<O> pObjectVariable)
+	@Override
+	public O get()
 	{
-		synchronized (this)
-		{
-			if (mInputVariable == null && mInputVariables == null)
-			{
-				mInputVariable = pObjectVariable;
-			}
-			else if (mInputVariable != null && mInputVariables == null)
-			{
-				mInputVariables = new CopyOnWriteArrayList<ObjectInputVariableInterface<O>>();
-				mInputVariables.add(mInputVariable);
-				mInputVariables.add(pObjectVariable);
-				mInputVariable = null;
-			}
-			else if (mInputVariable == null && mInputVariables != null)
-			{
-				mInputVariables.add(pObjectVariable);
-			}
-		}
+		return getReference();
 	}
 
-	public void stopSendUpdatesTo(final ObjectInputVariableInterface<O> pObjectVariable)
+	@Override
+	public final void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
-		synchronized (this)
-		{
-			if (mInputVariable != null && mInputVariable == pObjectVariable
-					&& mInputVariables == null)
-			{
-				mInputVariable = null;
-			}
-			else if (mInputVariable == null && mInputVariables != null)
-			{
-				mInputVariables.remove(pObjectVariable);
-			}
-		}
+		mInputVariables.add(pObjectVariable);
 	}
 
-	public final void sendQueriesTo(final ObjectOutputVariableInterface pObjectVariable)
+	@Override
+	public final void doNotSendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
-		mOutputVariable = pObjectVariable;
+		mInputVariables.remove(pObjectVariable);
 	}
 
-	public final void syncWith(final ObjectInputOutputVariableInterface pObjectVariable)
+	@Override
+	public final void doNotSendAnyUpdates()
 	{
-		sendUpdatesTo(pObjectVariable);
-		if (mOutputVariable != null)
-		{
-			throw new UnsupportedOperationException("Cannot sync a variable twice!");
-		}
-		sendQueriesTo(pObjectVariable);
+		mInputVariables.clear();
+	}
+
+	@Override
+	public final void syncWith(final ObjectVariable<O> pObjectVariable)
+	{
+		this.sendUpdatesTo(pObjectVariable);
+		pObjectVariable.sendUpdatesTo(this);
+	}
+
+	@Override
+	public void doNotSyncWith(final ObjectVariable<O> pObjectVariable)
+	{
+		this.doNotSendUpdatesTo(pObjectVariable);
+		pObjectVariable.doNotSendUpdatesTo(this);
 	}
 
 	public boolean isNotNull()

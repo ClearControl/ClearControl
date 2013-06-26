@@ -1,10 +1,9 @@
-package gui.video.jogl;
+package gui.video.video2d.jogl;
 
 import java.awt.Font;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import javax.media.opengl.GL2;
@@ -14,13 +13,12 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
-import utils.concurency.thread.EnhancedThread;
-import utils.utils.Units;
+import thread.EnhancedThread;
+import units.Units;
 
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -46,16 +44,16 @@ public class VideoWindow implements Closeable
 	private ByteBuffer mConvertedSourceBuffer;
 
 	private volatile boolean mIsUpToDate = false;
-	private boolean mReportErrors = false;
+	private final boolean mReportErrors = false;
 
 	private volatile long mFrameIndex = 0;
 	private long mNanosecondsSinceLastFrame = EnhancedThread.getTimeInNanoseconds();
 	private volatile double mFrameRate;
 
 	private volatile boolean mDisplayFrameRate = true;
-	private TextRenderer mTextRenderer = new TextRenderer(new Font(	"Helvetica",
-																																	Font.PLAIN,
-																																	12));
+	private final TextRenderer mTextRenderer = new TextRenderer(new Font(	"Helvetica",
+																																				Font.PLAIN,
+																																				12));
 
 	private volatile boolean mDisplayOn = true,
 			mLinearInterpolation = false, mSyncToRefresh,
@@ -94,14 +92,14 @@ public class VideoWindow implements Closeable
 		{
 
 			@Override
-			public void reshape(GLAutoDrawable glautodrawable,
-													int x,
-													int y,
-													int pWidth,
-													int pHeight)
+			public void reshape(final GLAutoDrawable glautodrawable,
+													final int x,
+													final int y,
+													final int pWidth,
+													final int pHeight)
 			{
 				// System.out.println("reshape");
-				GL2 lGL2 = glautodrawable.getGL().getGL2();
+				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
 				lGL2.glLoadIdentity();
 				lGL2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
@@ -112,9 +110,9 @@ public class VideoWindow implements Closeable
 			}
 
 			@Override
-			public void init(GLAutoDrawable glautodrawable)
+			public void init(final GLAutoDrawable glautodrawable)
 			{
-				GL2 lGL2 = glautodrawable.getGL().getGL2();
+				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 				mGLU = new GLU();
 
 				if (!lGL2.isExtensionAvailable("GL_ARB_pixel_buffer_object"))
@@ -137,7 +135,7 @@ public class VideoWindow implements Closeable
 										GL2.GL_NICEST);
 				lGL2.glDisable(GLLightingFunc.GL_LIGHTING);
 				lGL2.glDisable(GLLightingFunc.GL_COLOR_MATERIAL);
-				
+
 				lGL2.glEnable(GL2.GL_TEXTURE_2D);
 				reportError(lGL2);
 
@@ -215,12 +213,12 @@ public class VideoWindow implements Closeable
 			}
 
 			@Override
-			public void dispose(GLAutoDrawable glautodrawable)
+			public void dispose(final GLAutoDrawable glautodrawable)
 			{
 			}
 
 			@Override
-			public void display(GLAutoDrawable glautodrawable)
+			public void display(final GLAutoDrawable glautodrawable)
 			{
 				if (mSourceBuffer == null)
 					return;
@@ -228,7 +226,7 @@ public class VideoWindow implements Closeable
 				final int lWidth = mVideoWidth;
 				final int lHeight = mVideoHeight;
 
-				GL2 lGL2 = glautodrawable.getGL().getGL2();
+				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
 				if (!mDisplayOn)
 				{
@@ -241,7 +239,7 @@ public class VideoWindow implements Closeable
 				{
 					updateVideoWithBuffer(lGL2, mSourceBuffer);
 				}
-				catch (Throwable e)
+				catch (final Throwable e)
 				{
 					e.printStackTrace();
 				}
@@ -289,28 +287,28 @@ public class VideoWindow implements Closeable
 
 	}
 
-	public void setBytesPerPixel(int pBytesPerPixel)
+	public void setBytesPerPixel(final int pBytesPerPixel)
 	{
 		mBytesPerPixel = pBytesPerPixel;
 	}
 
-	public void setWidth(int pVideoWidth)
+	public void setWidth(final int pVideoWidth)
 	{
 		mVideoWidth = pVideoWidth;
 	}
 
-	public void setHeight(int pVideoHeight)
+	public void setHeight(final int pVideoHeight)
 	{
 		mVideoHeight = pVideoHeight;
 	}
 
-	public void setSourceBuffer(ByteBuffer pSourceBuffer)
+	public void setSourceBuffer(final ByteBuffer pSourceBuffer)
 	{
 		mSourceBuffer = pSourceBuffer;
 	}
 
-	private boolean updateVideoWithBuffer(GL2 pGL2,
-																				ByteBuffer pNewContentBuffer)
+	private boolean updateVideoWithBuffer(final GL2 pGL2,
+																				final ByteBuffer pNewContentBuffer)
 	{
 		if (mIsUpToDate || !mDisplayOn) //
 			return true;
@@ -321,7 +319,7 @@ public class VideoWindow implements Closeable
 		final int lCurrentIndex = (int) (mFrameIndex % 2);
 		final int lNextIndex = (int) ((mFrameIndex + 1) % 2);
 
-		ByteBuffer lConvertedBuffer = convertBuffer(pNewContentBuffer);
+		final ByteBuffer lConvertedBuffer = convertBuffer(pNewContentBuffer);
 
 		boolean lResult;
 
@@ -342,7 +340,7 @@ public class VideoWindow implements Closeable
 		mIsUpToDate = true;
 		mFrameIndex++;
 
-		final long lCurrentTimeInNanoseconds = EnhancedThread.getTimeInNanoseconds();
+		final long lCurrentTimeInNanoseconds = System.nanoTime();
 		final long lTimelapsedInNanoseconds = lCurrentTimeInNanoseconds - mNanosecondsSinceLastFrame;
 		mNanosecondsSinceLastFrame = lCurrentTimeInNanoseconds;
 
@@ -355,8 +353,8 @@ public class VideoWindow implements Closeable
 		return lResult;
 	}
 
-	private boolean updateVideoWithBufferClassic(	GL2 pGL2,
-																								ByteBuffer pNewContentBuffer,
+	private boolean updateVideoWithBufferClassic(	final GL2 pGL2,
+																								final ByteBuffer pNewContentBuffer,
 																								final int pCurrentIndex,
 																								final int pNextIndex)
 	{
@@ -378,8 +376,8 @@ public class VideoWindow implements Closeable
 		return true;
 	}
 
-	private boolean updateVideoWithBufferPBO(	GL2 pGL2,
-																						ByteBuffer pNewContentBuffer,
+	private boolean updateVideoWithBufferPBO(	final GL2 pGL2,
+																						final ByteBuffer pNewContentBuffer,
 																						final int pCurrentIndex,
 																						final int pNextIndex)
 	{
@@ -419,8 +417,8 @@ public class VideoWindow implements Closeable
 		reportError(pGL2);
 
 		// Map buffer. Returns pointer to buffer memory
-		ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(	GL2.GL_PIXEL_UNPACK_BUFFER,
-																												GL2.GL_WRITE_ONLY);
+		final ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(	GL2.GL_PIXEL_UNPACK_BUFFER,
+																															GL2.GL_WRITE_ONLY);
 
 		reportError(pGL2);
 
@@ -442,7 +440,7 @@ public class VideoWindow implements Closeable
 		return true;
 	}
 
-	private ByteBuffer convertBuffer(ByteBuffer pNewContentBuffer)
+	private ByteBuffer convertBuffer(final ByteBuffer pNewContentBuffer)
 	{
 		if (mBytesPerPixel == 1)
 		{
@@ -472,7 +470,7 @@ public class VideoWindow implements Closeable
 	int[] mMinMax = new int[]
 	{ Integer.MAX_VALUE, Integer.MIN_VALUE };
 
-	private void convertFromShortBuffer(ShortBuffer pShortBuffer)
+	private void convertFromShortBuffer(final ShortBuffer pShortBuffer)
 	{
 		pShortBuffer.rewind();
 		pShortBuffer.get(mShortArray);
@@ -490,7 +488,7 @@ public class VideoWindow implements Closeable
 	private static final void convert16to8bitRescaled(final short[] pShortArray,
 																										final byte[] lByteArray,
 																										final boolean pAutoRescale,
-																										int[] pMinMax)
+																										final int[] pMinMax)
 	{
 		final int length = pShortArray.length;
 
@@ -513,7 +511,7 @@ public class VideoWindow implements Closeable
 
 	private static void convert16to8bitRescaledManual(final short[] pShortArray,
 																										final byte[] lByteArray,
-																										int[] pMinMax,
+																										final int[] pMinMax,
 																										final int length)
 	{
 		final int lCurrentMin = pMinMax[0];
@@ -540,7 +538,7 @@ public class VideoWindow implements Closeable
 
 	private static void convert16to8bitRescaledAuto(final short[] pShortArray,
 																									final byte[] lByteArray,
-																									int[] pMinMax,
+																									final int[] pMinMax,
 																									final int length)
 	{
 		final int lCurrentMin = pMinMax[0];
@@ -565,12 +563,12 @@ public class VideoWindow implements Closeable
 		pMinMax[1] = lNewMax;
 	}
 
-	private void reportError(GL2 pGL2)
+	private void reportError(final GL2 pGL2)
 	{
 		if (mReportErrors)
 		{
-			int errorCode = pGL2.glGetError();
-			String errorStr = mGLU.gluErrorString(errorCode);
+			final int errorCode = pGL2.glGetError();
+			final String errorStr = mGLU.gluErrorString(errorCode);
 
 			if (errorCode != 0)
 			{
@@ -608,7 +606,7 @@ public class VideoWindow implements Closeable
 		return mLinearInterpolation;
 	}
 
-	public void setLinearInterpolation(boolean pLinearInterpolation)
+	public void setLinearInterpolation(final boolean pLinearInterpolation)
 	{
 		mLinearInterpolation = pLinearInterpolation;
 	}
@@ -618,7 +616,7 @@ public class VideoWindow implements Closeable
 		return mSyncToRefresh;
 	}
 
-	public void setSyncToRefresh(boolean syncToRefresh)
+	public void setSyncToRefresh(final boolean syncToRefresh)
 	{
 		mSyncToRefresh = syncToRefresh;
 	}
@@ -628,7 +626,7 @@ public class VideoWindow implements Closeable
 		mGLWindow.display();
 	}
 
-	public void setVisible(boolean pB)
+	public void setVisible(final boolean pB)
 	{
 		mGLWindow.setVisible(pB);
 	}
@@ -638,7 +636,7 @@ public class VideoWindow implements Closeable
 		return mGLWindow.isVisible();
 	}
 
-	public void setDisplayOn(boolean pDisplayOn)
+	public void setDisplayOn(final boolean pDisplayOn)
 	{
 		mDisplayOn = pDisplayOn;
 	}
@@ -653,7 +651,7 @@ public class VideoWindow implements Closeable
 		return mMinIntensity;
 	}
 
-	public void setMinIntensity(double minIntensity)
+	public void setMinIntensity(final double minIntensity)
 	{
 		mMinIntensity = minIntensity;
 	}
@@ -663,7 +661,7 @@ public class VideoWindow implements Closeable
 		return mMaxIntensity;
 	}
 
-	public void setMaxIntensity(double maxIntensity)
+	public void setMaxIntensity(final double maxIntensity)
 	{
 		mMaxIntensity = maxIntensity;
 	}
@@ -673,7 +671,7 @@ public class VideoWindow implements Closeable
 		return mManualMinMax;
 	}
 
-	public void setManualMinMax(boolean manualMinMax)
+	public void setManualMinMax(final boolean manualMinMax)
 	{
 		mManualMinMax = manualMinMax;
 	}

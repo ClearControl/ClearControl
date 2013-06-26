@@ -40,7 +40,7 @@ public class Recycler<R extends RecyclableInterface>
 	}
 
 	@SuppressWarnings("unchecked")
-	public R requestFrame(final int... pRequestParameters)
+	public R requestRecyclableObject(final int... pRequestParameters)
 	{
 
 		final R lHead = mAvailableObjectsQueue.poll();

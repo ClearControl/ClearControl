@@ -10,10 +10,10 @@ public class BooleanVariable extends DoubleVariable	implements
 	private BooleanEventListenerInterface mEdgeListener,
 			mLowToHighEdgeListener, mHighToLowEdgeListener;
 
-	public BooleanVariable(final boolean pInitialState)
+	public BooleanVariable(	final String pVariableName,
+													final boolean pInitialState)
 	{
-		super(boolean2double(pInitialState));
-
+		super(pVariableName, boolean2double(pInitialState));
 	}
 
 	@Override
@@ -27,16 +27,16 @@ public class BooleanVariable extends DoubleVariable	implements
 
 		if (mEdgeListener != null)
 		{
-			mEdgeListener.fire(this, lNewBooleanValue);
+			mEdgeListener.fire(lNewBooleanValue);
 		}
 
 		if (mLowToHighEdgeListener != null && lNewBooleanValue)
 		{
-			mLowToHighEdgeListener.fire(this, lNewBooleanValue);
+			mLowToHighEdgeListener.fire(lNewBooleanValue);
 		}
 		else if (mHighToLowEdgeListener != null && !lNewBooleanValue)
 		{
-			mHighToLowEdgeListener.fire(this, lNewBooleanValue);
+			mHighToLowEdgeListener.fire(lNewBooleanValue);
 		}
 
 		super.setValue(pNewValue);

@@ -5,7 +5,8 @@ import variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableDevice implements VirtualDevice
 {
-	protected BooleanVariable mStartStopSignal = new BooleanVariable(false);
+	protected BooleanVariable mStartStopSignal = new BooleanVariable(	"Start",
+																																		false);
 
 	public SignalStartableDevice()
 	{
@@ -13,8 +14,7 @@ public abstract class SignalStartableDevice implements VirtualDevice
 		mStartStopSignal.detectEdgeWith(new BooleanEventListenerInterface()
 		{
 			@Override
-			public void fire(	Object pBooleanEventSource,
-												final boolean pCurrentBooleanValue)
+			public void fire(final boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue)
 					start();
@@ -29,8 +29,10 @@ public abstract class SignalStartableDevice implements VirtualDevice
 		return mStartStopSignal;
 	}
 
+	@Override
 	public abstract boolean start();
 
+	@Override
 	public abstract boolean stop();
 
 }

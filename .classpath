@@ -7,8 +7,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/bridj"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NDArray"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/trove"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jscc"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OrionLib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ClearVolume"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogamp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

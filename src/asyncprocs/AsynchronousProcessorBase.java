@@ -2,7 +2,7 @@ package asyncprocs;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import utils.concurency.thread.EnhancedThread;
+import thread.EnhancedThread;
 
 public abstract class AsynchronousProcessorBase<I, O> implements
 																											AsynchronousProcessorInterface<I, O>
@@ -18,7 +18,8 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		super();
 		mName = pName;
-		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize<=0?1:pMaxQueueSize);
+		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize <= 0	? 1
+																																: pMaxQueueSize);
 
 		mEnhancedThread = new EnhancedThread(mName)
 		{
@@ -32,47 +33,53 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 					if (lOutput != null)
 						send(lOutput);
 				}
-				catch (Throwable e)
+				catch (final Throwable e)
 				{
 					System.out.println(e.getLocalizedMessage());
 				}
-				
+
 				return true;
 			}
 		};
 
 	}
 
-	public void connectToReceiver(AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
+	@Override
+	public void connectToReceiver(final AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
 	{
 		mReceiver = pAsynchronousProcessor;
 	}
 
+	@Override
 	public boolean start()
 	{
 		mEnhancedThread.setDaemon(true);
 		return mEnhancedThread.start();
 	}
 
+	@Override
 	public boolean stop()
 	{
-		if(mEnhancedThread==null) return false;
-		
+		if (mEnhancedThread == null)
+			return false;
+
 		mEnhancedThread.stop();
-		mEnhancedThread=null;
+		mEnhancedThread = null;
 		return true;
 	}
-	
+
+	@Override
 	public void close()
 	{
 		this.stop();
 	}
-	
+
 	public void waitToStart()
 	{
 		mEnhancedThread.waitForRunning();
 	}
 
+	@Override
 	public boolean passOrWait(final I pObject)
 	{
 		if (!mEnhancedThread.isRunning())
@@ -88,15 +95,17 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 			return false;
 		}
 	}
-	
+
+	@Override
 	public boolean passOrFail(final I pObject)
 	{
 		if (!mEnhancedThread.isRunning())
 			return false;
-		
-		return	mInputQueue.offer(pObject);
+
+		return mInputQueue.offer(pObject);
 	}
 
+	@Override
 	public abstract O process(I pInput);
 
 	protected void send(final O lOutput)
@@ -104,7 +113,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		if (mReceiver != null)
 			mReceiver.passOrWait(lOutput);
 	}
-	
+
 	public int getQueueLength()
 	{
 		return mInputQueue.size();
@@ -119,9 +128,5 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		return mInputQueue;
 	}
-
-
-
-
 
 }

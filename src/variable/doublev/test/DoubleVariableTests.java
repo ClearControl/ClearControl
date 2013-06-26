@@ -1,4 +1,4 @@
-package variable.test;
+package variable.doublev.test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -6,14 +6,14 @@ import org.junit.Test;
 
 import variable.doublev.DoubleVariable;
 
-public class VariableTests
+public class DoubleVariableTests
 {
 
 	@Test
 	public void DoubleVariableTest()
 	{
-		final DoubleVariable x = new DoubleVariable(0);
-		final DoubleVariable y = new DoubleVariable(0);
+		final DoubleVariable x = new DoubleVariable("x", 0);
+		final DoubleVariable y = new DoubleVariable("y", 0);
 
 		x.syncWith(y);
 		assertTrue(x.getValue() == 0);

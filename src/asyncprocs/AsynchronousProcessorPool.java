@@ -3,39 +3,39 @@ package asyncprocs;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import utils.concurency.thread.EnhancedThread;
+import thread.EnhancedThread;
 
 public class AsynchronousProcessorPool<I, O>	extends
 																							AsynchronousProcessorBase<I, O>	implements
 																																							AsynchronousProcessorInterface<I, O>
 {
 
-	private int mThreadPoolSize;
-	private  ArrayList<ProcessorThread> mThreads = new ArrayList<ProcessorThread>();
+	private final int mThreadPoolSize;
+	private final ArrayList<ProcessorThread> mThreads = new ArrayList<ProcessorThread>();
 	private final LinkedBlockingQueue<ProcessorThread> mAvailableThreads = new LinkedBlockingQueue<ProcessorThread>();
 	private final LinkedBlockingQueue<ProcessorThread> mBusyThreads = new LinkedBlockingQueue<ProcessorThread>();
-	private ProcessorInterface<I, O> mProcessor;
+	private final ProcessorInterface<I, O> mProcessor;
 
 	private class ProcessorThread extends EnhancedThread
 	{
-		public volatile boolean mBusy=false;
+		public volatile boolean mBusy = false;
 		private final LinkedBlockingQueue<I> mProcessorThreadInputQueue = new LinkedBlockingQueue<I>(1);
 
 		public ProcessorThread(final int pIndex)
 		{
 			super(String.format("AsynchronousProcessorPool.ProcessorThread(%d)",
-			                    pIndex));
+													pIndex));
 		}
-		
-		public boolean receive(I pInput)
+
+		public boolean receive(final I pInput)
 		{
 			try
 			{
 				mProcessorThreadInputQueue.put(pInput);
-				//System.out.println("AsynchronousProcessorPool: pInput = "+pInput.hashCode());
+				// System.out.println("AsynchronousProcessorPool: pInput = "+pInput.hashCode());
 				return true;
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				System.err.println(e.getLocalizedMessage());
 				return false;
@@ -48,16 +48,16 @@ public class AsynchronousProcessorPool<I, O>	extends
 
 			try
 			{
-				mBusy=false;
+				mBusy = false;
 				final I lInput = mProcessorThreadInputQueue.take();
-				mBusy=true;
+				mBusy = true;
 				final O lOutput = mProcessor.process(lInput);
-				
+
 				while (mBusyThreads.peek() != this)
 				{
 					sleepNanos(100);
 				}
-				ProcessorThread lThreadShouldBeThis = mBusyThreads.poll();
+				final ProcessorThread lThreadShouldBeThis = mBusyThreads.poll();
 				if (lThreadShouldBeThis == this)
 				{
 					send(lOutput);
@@ -69,7 +69,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 				}
 
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				System.out.println(e.getLocalizedMessage());
 			}
@@ -79,83 +79,79 @@ public class AsynchronousProcessorPool<I, O>	extends
 
 	}
 
-	public AsynchronousProcessorPool(	String pName,
-																		int pMaxQueueSize,
-																		int pThreadPoolSize,
-																		ProcessorInterface<I,O> pProcessor)
+	public AsynchronousProcessorPool(	final String pName,
+																		final int pMaxQueueSize,
+																		final int pThreadPoolSize,
+																		final ProcessorInterface<I, O> pProcessor)
 	{
 		super(pName, pMaxQueueSize);
 		mThreadPoolSize = pThreadPoolSize;
 		mProcessor = pProcessor;
 	}
-	
-	
-	
-	
 
 	@Override
 	public boolean start()
 	{
-		if(mAvailableThreads.isEmpty())
+		if (mAvailableThreads.isEmpty())
 		{
 			for (int i = 0; i < mThreadPoolSize; i++)
 			{
-				ProcessorThread lProcessorThread = new ProcessorThread(i);
+				final ProcessorThread lProcessorThread = new ProcessorThread(i);
 				lProcessorThread.setDaemon(true);
 				lProcessorThread.start();
-				
+
 				mThreads.add(lProcessorThread);
 				mAvailableThreads.add(lProcessorThread);
 			}
-			
+
 			return super.start();
 		}
 		return false;
 	}
 
-
 	@Override
-	public final O process(I pInput)
+	public final O process(final I pInput)
 	{
 		try
 		{
-			ProcessorThread lAvailableProcessorThread = mAvailableThreads.take();
+			final ProcessorThread lAvailableProcessorThread = mAvailableThreads.take();
 			mBusyThreads.add(lAvailableProcessorThread);
 			lAvailableProcessorThread.receive(pInput);
 			return null;
 		}
-		catch (InterruptedException e)
+		catch (final InterruptedException e)
 		{
 			System.err.println(e.getLocalizedMessage());
 			return null;
 		}
 	}
 
-	
 	public final int getNumberOfThreadsInAvailableQueue()
 	{
 		return mAvailableThreads.size();
 	}
-	
+
 	public final int getNumberOfNonBusyThreads()
 	{
 		int lCounter = 0;
-		for(ProcessorThread lProcessorThread : mThreads)
+		for (final ProcessorThread lProcessorThread : mThreads)
 		{
-			if(!lProcessorThread.mBusy) lCounter++;
+			if (!lProcessorThread.mBusy)
+				lCounter++;
 		}
 		return lCounter;
 	}
-	
+
 	public final double getLoad()
 	{
-		final double lLoad = (double)(mThreadPoolSize-getNumberOfNonBusyThreads())/mThreadPoolSize;
+		final double lLoad = (double) (mThreadPoolSize - getNumberOfNonBusyThreads()) / mThreadPoolSize;
 		return lLoad;
 	}
-	
+
+	@Override
 	public final boolean stop()
 	{
-		for (ProcessorThread lProcessorThread: mThreads)
+		for (final ProcessorThread lProcessorThread : mThreads)
 		{
 			lProcessorThread.stop();
 		}
@@ -165,14 +161,14 @@ public class AsynchronousProcessorPool<I, O>	extends
 		super.stop();
 		return true;
 	}
-	
+
+	@Override
 	public final void close()
 	{
-		if(!mThreads.isEmpty())
+		if (!mThreads.isEmpty())
 			stop();
-			
+
 		super.close();
 	}
-	
 
 }

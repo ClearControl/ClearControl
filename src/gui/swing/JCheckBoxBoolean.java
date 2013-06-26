@@ -24,7 +24,7 @@ public class JCheckBoxBoolean extends JCheckBox
 	{
 		super(pLabel);
 		mThis = this;
-		mBooleanVariable = new BooleanVariable(pInitialState)
+		mBooleanVariable = new BooleanVariable(pLabel, pInitialState)
 		{
 
 			@Override

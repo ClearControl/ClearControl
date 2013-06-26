@@ -1,42 +1,36 @@
 package asyncprocs;
 
-import java.io.IOException;
-
-import device.VirtualDevice;
-import variable.objectv.ObjectInputVariableInterface;
-import variable.objectv.ObjectOutputVariableInterface;
 import variable.objectv.ObjectVariable;
+import device.VirtualDevice;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 																															VirtualDevice
 {
-	ObjectVariable<I> mInputObjectVariable = new ObjectVariable<I>();
-	ObjectVariable<O> mOutputObjectVariable = new ObjectVariable<O>();
+	private final ObjectVariable<I> mInputObjectVariable;
+	private final ObjectVariable<O> mOutputObjectVariable;
 
-	AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
+	private final AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
 
-	private Object mObjectEventSource;
-
-	public ObjectVariableAsynchronousPooledProcessor(	String pName,
-																										int pMaxQueueSize,
-																										int pThreadPoolSize,
-																										ProcessorInterface<I, O> pProcessor,
+	public ObjectVariableAsynchronousPooledProcessor(	final String pName,
+																										final int pMaxQueueSize,
+																										final int pThreadPoolSize,
+																										final ProcessorInterface<I, O> pProcessor,
 																										final boolean pDropIfQueueFull)
 	{
 		super();
+
 		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(	pName,
 																																			pMaxQueueSize,
 																																			pThreadPoolSize,
 																																			pProcessor);
 
-		mInputObjectVariable.sendUpdatesTo(new ObjectInputVariableInterface<I>()
-		{
+		mOutputObjectVariable = new ObjectVariable<O>(pName + "Output");
 
+		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
+		{
 			@Override
-			public void setReference(	Object pObjectEventSource,
-																I pNewReference)
+			public void setReference(final I pNewReference)
 			{
-				mObjectEventSource = pObjectEventSource;
 				if (pDropIfQueueFull)
 				{
 					mAsynchronousProcessorPool.passOrFail(pNewReference);
@@ -46,16 +40,16 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 					mAsynchronousProcessorPool.passOrWait(pNewReference);
 				}
 			}
-		});
+		};
 
-		AsynchronousProcessorBase<O, O> lConnector = new AsynchronousProcessorBase<O, O>(	"AsynchronousProcessorPool->OutputObjectVariable",
-																																											pMaxQueueSize)
+		final AsynchronousProcessorBase<O, O> lConnector = new AsynchronousProcessorBase<O, O>(	"AsynchronousProcessorPool->OutputObjectVariable",
+																																														pMaxQueueSize)
 		{
 
 			@Override
-			public O process(O pInput)
+			public O process(final O pInput)
 			{
-				mOutputObjectVariable.setReference(mObjectEventSource, pInput);
+				mOutputObjectVariable.setReference(pInput);
 				return null;
 			}
 		};

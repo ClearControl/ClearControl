@@ -2,21 +2,32 @@ package variable.doublev;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import variable.DoubleVariableInterface;
 import variable.EventPropagator;
+import variable.NamedVariable;
 
-public class DoubleVariable	implements
-														DoubleInputOutputVariableInterface
+public class DoubleVariable extends NamedVariable	implements
+																									DoubleVariableInterface,
+																									DoubleInputOutputVariableInterface
 
 {
 	protected volatile double mValue;
 	private final CopyOnWriteArrayList<DoubleVariable> mInputVariables = new CopyOnWriteArrayList<DoubleVariable>();
 
-	public DoubleVariable(final double pDoubleValue)
+	public DoubleVariable(final String pVariableName)
 	{
+		this(pVariableName, 0);
+	}
+
+	public DoubleVariable(final String pVariableName,
+												final double pDoubleValue)
+	{
+		super(pVariableName);
 		mValue = pDoubleValue;
 	}
 
-	public void setCurrentValue(final Object pDoubleEventSource)
+	@Override
+	public void setCurrent()
 	{
 		EventPropagator.clear();
 		setValue(mValue);
@@ -27,6 +38,17 @@ public class DoubleVariable	implements
 	{
 		EventPropagator.clear();
 		setValueInternal(pNewValue);
+	}
+
+	public void setLongValue(final long pNewValue)
+	{
+		setValue(Double.longBitsToDouble(pNewValue));
+	}
+
+	@Override
+	public void set(final Double pNewValue)
+	{
+		setValue(pNewValue);
 	}
 
 	public boolean setValueInternal(final double pNewValue)
@@ -54,24 +76,58 @@ public class DoubleVariable	implements
 		return pNewValue;
 	}
 
+	public double getEventHook(final double pCurrentValue)
+	{
+		return pCurrentValue;
+	}
+
+	@Override
+	public Double get()
+	{
+		return getEventHook(getValue());
+	}
+
 	@Override
 	public double getValue()
 	{
-		return mValue;
+		return getEventHook(mValue);
 	}
 
+	public long getLongValue()
+	{
+		return Double.doubleToRawLongBits(mValue);
+	}
+
+	@Override
 	public final void sendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
-		synchronized (this)
-		{
-			mInputVariables.add(pDoubleVariable);
-		}
+		mInputVariables.add(pDoubleVariable);
 	}
 
+	@Override
+	public final void doNotSendUpdatesTo(final DoubleVariable pDoubleVariable)
+	{
+		mInputVariables.remove(pDoubleVariable);
+	}
+
+	@Override
+	public final void doNotSendAnyUpdates()
+	{
+		mInputVariables.clear();
+	}
+
+	@Override
 	public final void syncWith(final DoubleVariable pDoubleVariable)
 	{
 		this.sendUpdatesTo(pDoubleVariable);
 		pDoubleVariable.sendUpdatesTo(this);
+	}
+
+	@Override
+	public void doNotSyncWith(final DoubleVariable pDoubleVariable)
+	{
+		this.doNotSendUpdatesTo(pDoubleVariable);
+		pDoubleVariable.doNotSendUpdatesTo(this);
 	}
 
 }
