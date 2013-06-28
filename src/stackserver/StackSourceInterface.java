@@ -1,15 +1,16 @@
 package stackserver;
 
+import recycling.Recycler;
 import stack.Stack;
-import ndarray.InterfaceNDArray;
 
 public interface StackSourceInterface
 {
 
 	public long getNumberOfStacks();
 
-	public Stack getStack(	final long pStackIndex,
-															final Stack pStack);
+	public void setStackRecycler(Recycler<Stack> pStackRecycler);
+
+	public Stack getStack(final long pStackIndex);
 
 	public long getStackTimeStampInNanoseconds(final long pStackIndex);
 

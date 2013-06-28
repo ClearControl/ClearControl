@@ -4,9 +4,8 @@ import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;
 
+import recycling.Recycler;
 import stack.Stack;
-
-import ndarray.InterfaceNDArray;
 
 public class StackRAMServer	implements
 														StackSinkInterface,
@@ -15,6 +14,7 @@ public class StackRAMServer	implements
 
 	ArrayList<Stack> mStackList = new ArrayList<Stack>();
 	TLongArrayList mStackTimePointList = new TLongArrayList();
+	private Recycler<Stack> mStackRecycler;
 
 	public StackRAMServer()
 	{
@@ -28,8 +28,12 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public Stack getStack(	final long pStackIndex,
-																		final Stack pStack)
+	public void setStackRecycler(final Recycler<Stack> pStackRecycler)
+	{
+	}
+
+	@Override
+	public Stack getStack(final long pStackIndex)
 	{
 		return mStackList.get((int) pStackIndex);
 	}
@@ -41,7 +45,7 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public boolean appendStack(	final Stack pStack)
+	public boolean appendStack(final Stack pStack)
 	{
 		mStackTimePointList.add(pStack.timestampns);
 		return mStackList.add(pStack);

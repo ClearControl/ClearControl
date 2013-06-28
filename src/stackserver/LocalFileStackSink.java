@@ -1,14 +1,12 @@
 package stackserver;
 
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Formatter;
 
 import stack.Stack;
-
-import ndarray.InterfaceNDArray;
 
 public class LocalFileStackSink extends LocalFileStackBase implements
 																													StackSinkInterface,
@@ -24,28 +22,36 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	}
 
 	@Override
-	public boolean appendStack(	final Stack pStack)
+	public boolean appendStack(final Stack pStack)
 	{
 
 		try
 		{
 			mVariableBundleAsFile.write();
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
-			                                           	pStack.timestampns);
+																									pStack.timestampns);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
-			
-			//mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex, pStack.ndarray.);
+
+			final int[] lDimensionsWithoutSize = pStack.ndarray.getDimensions();
+			mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex,
+																					lDimensionsWithoutSize);
 
 			final long lNewNextFreeTypePosition = pStack.ndarray.writeToFileChannel(mBinaryFileChannel,
-																																			mNextFreeTypePosition);
+																																							mNextFreeTypePosition);
 
 			mBinaryFileChannel.force(false);
 
-			mIndexFileFormatter.format(	"%d\t%d\t%d\n",
+			final String lDimensionsString = Arrays.toString(lDimensionsWithoutSize);
+			final String lTruncatedDimensionsString = lDimensionsString.substring(1,
+																																						lDimensionsString.length() - 1);
+
+			mIndexFileFormatter.format(	"%d\t%d\t%s\t%d\n",
 																	mNextFreeStackIndex,
 																	pStack.timestampns,
+																	lTruncatedDimensionsString,
 																	mNextFreeTypePosition);
+
 			mIndexFileFormatter.flush();
 
 			mNextFreeTypePosition = lNewNextFreeTypePosition;

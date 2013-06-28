@@ -6,10 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferShort;
-
 import org.junit.Test;
 
+import recycling.Recycler;
 import stack.Stack;
 import stackserver.LocalFileStackSink;
 import stackserver.LocalFileStackSource;
@@ -44,8 +43,8 @@ public class LocalFileStackTests
 
 			final Stack lStack = new Stack(0, 0, 128, 128, 32, 2);
 
-			assertEquals(	128 * 128 * 32 *2,
-			             	lStack.ndarray.getArrayLength());
+			assertEquals(	128 * 128 * 32 * 2,
+										lStack.ndarray.getArrayLength());
 			System.out.println(lStack.ndarray.getArrayLength() * 2);
 
 			for (int i = 0; i < 10; i++)
@@ -64,7 +63,10 @@ public class LocalFileStackTests
 			final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
 																																									"testSink");
 
-			final Stack lStack = new Stack(0, 0, 128, 128, 32, 2);
+			final Recycler<Stack> lStackRecycler = new Recycler<Stack>(Stack.class);
+			lLocalFileStackSource.setStackRecycler(lStackRecycler);
+
+			Stack lStack;
 
 			lLocalFileStackSource.update();
 
@@ -72,7 +74,7 @@ public class LocalFileStackTests
 
 			for (int i = 0; i < 10; i++)
 			{
-				lLocalFileStackSource.getStack(i, lStack);
+				lStack = lLocalFileStackSource.getStack(i);
 				final byte lValue = lStack.ndarray.getAt(0, 0, 0);
 				System.out.println(lValue);
 				assertEquals(i, lValue);

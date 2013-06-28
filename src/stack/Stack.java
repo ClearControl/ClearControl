@@ -21,12 +21,12 @@ public class Stack implements RecyclableInterface
 	{
 	}
 
-	public Stack(final long pImageIndex,
-										final long pTimeStampInNanoseconds,
-										final int pWidth,
-										final int pHeight,
-										final int pDepth,
-										final int pBytesPerPixel)
+	public Stack(	final long pImageIndex,
+								final long pTimeStampInNanoseconds,
+								final int pWidth,
+								final int pHeight,
+								final int pDepth,
+								final int pBytesPerPixel)
 	{
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
@@ -38,9 +38,9 @@ public class Stack implements RecyclableInterface
 																										pDepth);
 	}
 
-	public Stack(final NDArrayDirectBufferByte pNDArrayDirectBuffer,
-										final long pImageIndex,
-										final long pTimeStampInNanoseconds)
+	public Stack(	final NDArrayDirectBufferByte pNDArrayDirectBuffer,
+								final long pImageIndex,
+								final long pTimeStampInNanoseconds)
 	{
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
@@ -100,10 +100,10 @@ public class Stack implements RecyclableInterface
 	@Override
 	public void initialize(final int... pParameters)
 	{
-		final int lWidth = pParameters[0];
-		final int lHeight = pParameters[1];
-		final int lDepth = pParameters[2];
-		bpp = pParameters[3];
+		bpp = pParameters[0];
+		final int lWidth = pParameters[1];
+		final int lHeight = pParameters[2];
+		final int lDepth = pParameters[3];
 
 		final int length = lWidth * lHeight * lDepth * bpp;
 		if (ndarray == null || ndarray.getArrayLengthInBytes() != length)
