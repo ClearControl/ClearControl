@@ -21,23 +21,26 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 
 	public VideoFrame3DDisplay()
 	{
-		this("3d Video Display", 512, 512);
+		this("3d Video Display", 512, 512, 1);
 	}
 
 	public VideoFrame3DDisplay(	final String pWindowName,
 															final int pVideoWidth,
-															final int pVideoHeight)
+															final int pVideoHeight,
+															final int pBytesperVoxel)
 	{
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															pVideoWidth,
-																															pVideoHeight);
+																															pVideoHeight,
+																															pBytesperVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
+		mJCudaClearVolumeRenderer.setupControlFrame();
 
 		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
 		{
 
 			@Override
-			public void setReference(final Stack pNewVideoFrameReference)
+			public Stack setEventHook(Stack pNewVideoFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 				if (pNewVideoFrameReference.getDimension() == 3)
@@ -52,9 +55,11 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 																												lHeight,
 																												lDepth);
 					mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
-					pNewVideoFrameReference.releaseFrame();
+					//pNewVideoFrameReference.releaseFrame();
 				}
+				return super.setEventHook(pNewVideoFrameReference);
 			}
+
 		};
 
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
