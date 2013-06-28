@@ -1,10 +1,9 @@
 package gui.video.video3d;
 
-import gui.video.VideoFrame;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.objectv.ObjectVariable;
 import clearvolume.jcuda.JCudaClearVolumeRenderer;
@@ -16,7 +15,7 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
 
-	private final ObjectVariable<VideoFrame> mObjectVariable;
+	private final ObjectVariable<Stack> mObjectVariable;
 
 	private final BooleanVariable mDisplayOn;
 
@@ -34,11 +33,11 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 																															pVideoHeight);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 
-		mObjectVariable = new ObjectVariable<VideoFrame>("VideoFrame")
+		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
 		{
 
 			@Override
-			public void setReference(final VideoFrame pNewVideoFrameReference)
+			public void setReference(final Stack pNewVideoFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 				if (pNewVideoFrameReference.getDimension() == 3)
@@ -75,7 +74,7 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<VideoFrame> getFrameReferenceVariable()
+	public ObjectVariable<Stack> getFrameReferenceVariable()
 	{
 		return mObjectVariable;
 	}

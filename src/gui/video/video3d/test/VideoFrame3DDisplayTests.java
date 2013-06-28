@@ -1,12 +1,12 @@
 package gui.video.video3d.test;
 
-import gui.video.VideoFrame;
 import gui.video.video3d.VideoFrame3DDisplay;
 
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
+import stack.Stack;
 import variable.objectv.ObjectVariable;
 
 public class VideoFrame3DDisplayTests
@@ -20,7 +20,7 @@ public class VideoFrame3DDisplayTests
 		final int lResolutionY = 512;
 		final int lResolutionZ = 512;
 
-		final VideoFrame lVideoFrame = new VideoFrame(0,
+		final Stack lVideoFrame = new Stack(0,
 																									0,
 																									lResolutionX,
 																									lResolutionX,
@@ -30,7 +30,7 @@ public class VideoFrame3DDisplayTests
 
 		final VideoFrame3DDisplay lVideoFrame3DDisplay = new VideoFrame3DDisplay();
 
-		final ObjectVariable<VideoFrame> lFrameReferenceVariable = lVideoFrame3DDisplay.getFrameReferenceVariable();
+		final ObjectVariable<Stack> lFrameReferenceVariable = lVideoFrame3DDisplay.getFrameReferenceVariable();
 
 		lVideoFrame3DDisplay.open();
 

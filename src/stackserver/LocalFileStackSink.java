@@ -1,9 +1,12 @@
 package stackserver;
 
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Formatter;
+
+import stack.Stack;
 
 import ndarray.InterfaceNDArray;
 
@@ -21,27 +24,29 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	}
 
 	@Override
-	public boolean appendStack(	final long pTimeStampInNanoseconds,
-															final InterfaceNDArray pStack)
+	public boolean appendStack(	final Stack pStack)
 	{
 
 		try
 		{
 			mVariableBundleAsFile.write();
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
-																									pTimeStampInNanoseconds);
+			                                           	pStack.timestampns);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
+			
+			//mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex, pStack.ndarray.);
 
-			final long lNewNextFreeTypePosition = mNextFreeTypePosition + pStack.writeToFileChannel(mBinaryFileChannel,
-																																															mNextFreeTypePosition);
+			final long lNewNextFreeTypePosition = pStack.ndarray.writeToFileChannel(mBinaryFileChannel,
+																																			mNextFreeTypePosition);
 
 			mBinaryFileChannel.force(false);
 
 			mIndexFileFormatter.format(	"%d\t%d\t%d\n",
 																	mNextFreeStackIndex,
-																	pTimeStampInNanoseconds,
+																	pStack.timestampns,
 																	mNextFreeTypePosition);
+			mIndexFileFormatter.flush();
 
 			mNextFreeTypePosition = lNewNextFreeTypePosition;
 

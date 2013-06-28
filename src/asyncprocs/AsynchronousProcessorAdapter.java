@@ -46,4 +46,15 @@ public class AsynchronousProcessorAdapter<I, O> implements
 		return true;
 	}
 
+	@Override
+	public void waitToFinish(final int pPollInterval)
+	{
+	}
+
+	@Override
+	public int getInputQueueLength()
+	{
+		return 0;
+	}
+
 }

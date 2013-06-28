@@ -1,5 +1,6 @@
 package stackserver;
 
+import stack.Stack;
 import ndarray.InterfaceNDArray;
 
 public interface StackSourceInterface
@@ -7,8 +8,8 @@ public interface StackSourceInterface
 
 	public long getNumberOfStacks();
 
-	public InterfaceNDArray getStack(	final long pStackIndex,
-																		final InterfaceNDArray pStack);
+	public Stack getStack(	final long pStackIndex,
+															final Stack pStack);
 
 	public long getStackTimeStampInNanoseconds(final long pStackIndex);
 

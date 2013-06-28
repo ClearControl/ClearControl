@@ -1,5 +1,7 @@
 package thread.test;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import thread.EnhancedThread;
@@ -39,6 +41,7 @@ public class EnhancedThreadTest
 
 		lEnhancedThread.start();
 		EnhancedThread.sleep(1);
+		assertTrue(lEnhancedThread.isStarted());
 		lEnhancedThread.pause();
 		System.out.println("Suspended");
 		EnhancedThread.sleep(100);

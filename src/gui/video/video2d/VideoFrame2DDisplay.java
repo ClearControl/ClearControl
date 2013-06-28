@@ -1,12 +1,12 @@
 package gui.video.video2d;
 
-import gui.video.VideoFrame;
 import gui.video.video2d.jogl.VideoWindow;
 
 import java.io.IOException;
 
 import javax.media.opengl.GLException;
 
+import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
@@ -16,7 +16,7 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 {
 	private final VideoWindow mVideoWindow;
 
-	private final ObjectVariable<VideoFrame> mObjectVariable;
+	private final ObjectVariable<Stack> mObjectVariable;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
@@ -51,11 +51,11 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 																		pVideoWidth,
 																		pVideoHeight);
 
-		mObjectVariable = new ObjectVariable<VideoFrame>(pWindowName)
+		mObjectVariable = new ObjectVariable<Stack>(pWindowName)
 		{
 
 			@Override
-			public void setReference(final VideoFrame pNewFrameReference)
+			public void setReference(final Stack pNewFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 				if (pNewFrameReference.getDimension() == 2)
@@ -134,7 +134,7 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<VideoFrame> getFrameReferenceVariable()
+	public ObjectVariable<Stack> getFrameReferenceVariable()
 	{
 		return mObjectVariable;
 	}

@@ -1,4 +1,4 @@
-package gui.video;
+package stack;
 
 import java.nio.ByteBuffer;
 
@@ -6,10 +6,10 @@ import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferByte;
 import recycling.RecyclableInterface;
 import recycling.Recycler;
 
-public class VideoFrame implements RecyclableInterface
+public class Stack implements RecyclableInterface
 {
 
-	private Recycler<VideoFrame> mFrameRecycler;
+	private Recycler<Stack> mFrameRecycler;
 	private volatile boolean isReleased;
 
 	public NDArrayDirectBufferByte ndarray;
@@ -17,11 +17,11 @@ public class VideoFrame implements RecyclableInterface
 	public long index;
 	public long timestampns;
 
-	public VideoFrame()
+	public Stack()
 	{
 	}
 
-	public VideoFrame(final long pImageIndex,
+	public Stack(final long pImageIndex,
 										final long pTimeStampInNanoseconds,
 										final int pWidth,
 										final int pHeight,
@@ -38,7 +38,7 @@ public class VideoFrame implements RecyclableInterface
 																										pDepth);
 	}
 
-	public VideoFrame(final NDArrayDirectBufferByte pNDArrayDirectBuffer,
+	public Stack(final NDArrayDirectBufferByte pNDArrayDirectBuffer,
 										final long pImageIndex,
 										final long pTimeStampInNanoseconds)
 	{
@@ -105,7 +105,7 @@ public class VideoFrame implements RecyclableInterface
 		final int lDepth = pParameters[2];
 		bpp = pParameters[3];
 
-		final int length = lWidth * lWidth * lDepth * bpp;
+		final int length = lWidth * lHeight * lDepth * bpp;
 		if (ndarray == null || ndarray.getArrayLengthInBytes() != length)
 		{
 			ndarray = NDArrayDirectBufferByte.allocateSXYZ(	bpp,
@@ -131,8 +131,9 @@ public class VideoFrame implements RecyclableInterface
 	@Override
 	public String toString()
 	{
-		return String.format(	"Frame [index=%d, width=%d, height=%d, depth=%d,  bpp=%s]",
+		return String.format(	"Frame [index=%d, timestampns=%d, width=%d, height=%d, depth=%d,  bpp=%s]",
 													index,
+													timestampns,
 													ndarray.getWidth(),
 													ndarray.getHeight(),
 													ndarray.getDepth(),

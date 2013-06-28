@@ -1,5 +1,6 @@
 package asyncprocs;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import thread.EnhancedThread;
@@ -35,7 +36,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 				}
 				catch (final Throwable e)
 				{
-					System.out.println(e.getLocalizedMessage());
+					e.printStackTrace();
 				}
 
 				return true;
@@ -83,7 +84,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	public boolean passOrWait(final I pObject)
 	{
 		if (!mEnhancedThread.isRunning())
-			return false;
+			mEnhancedThread.waitForRunning();
 		try
 		{
 			mInputQueue.put(pObject);
@@ -114,7 +115,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 			mReceiver.passOrWait(lOutput);
 	}
 
-	public int getQueueLength()
+	public int getInputQueueLength()
 	{
 		return mInputQueue.size();
 	}
@@ -123,10 +124,19 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		return mInputQueue.remainingCapacity();
 	}
+	
+	public void waitToFinish(final int pPollInterval)
+	{
+		while(!mInputQueue.isEmpty())
+		{
+			EnhancedThread.sleep(pPollInterval);
+		}
+	}
 
 	public LinkedBlockingQueue<I> getInputQueue()
 	{
 		return mInputQueue;
 	}
+	
 
 }

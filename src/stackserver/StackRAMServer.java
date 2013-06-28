@@ -4,6 +4,8 @@ import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;
 
+import stack.Stack;
+
 import ndarray.InterfaceNDArray;
 
 public class StackRAMServer	implements
@@ -11,7 +13,7 @@ public class StackRAMServer	implements
 														StackSourceInterface
 {
 
-	ArrayList<InterfaceNDArray> mStackList = new ArrayList<InterfaceNDArray>();
+	ArrayList<Stack> mStackList = new ArrayList<Stack>();
 	TLongArrayList mStackTimePointList = new TLongArrayList();
 
 	public StackRAMServer()
@@ -26,8 +28,8 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public InterfaceNDArray getStack(	final long pStackIndex,
-																		final InterfaceNDArray pStack)
+	public Stack getStack(	final long pStackIndex,
+																		final Stack pStack)
 	{
 		return mStackList.get((int) pStackIndex);
 	}
@@ -39,10 +41,9 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public boolean appendStack(	final long pTimeStampInNanoseconds,
-															final InterfaceNDArray pStack)
+	public boolean appendStack(	final Stack pStack)
 	{
-		mStackTimePointList.add(pTimeStampInNanoseconds);
+		mStackTimePointList.add(pStack.timestampns);
 		return mStackList.add(pStack);
 	}
 

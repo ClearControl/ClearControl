@@ -242,6 +242,7 @@ public abstract class EnhancedThread implements Runnable
 
 	public void waitForRunning()
 	{
+		if(!isRunning())
 		synchronized (mWaitForRunningLock)
 		{
 			while (!mStarted || !isRunning())
@@ -260,6 +261,7 @@ public abstract class EnhancedThread implements Runnable
 
 	public void waitForPause()
 	{
+		if(!isPaused())
 		synchronized (mWaitForPauseLock)
 		{
 			while (!isPaused() && isRunning())

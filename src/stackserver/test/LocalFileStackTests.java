@@ -10,6 +10,7 @@ import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferShort;
 
 import org.junit.Test;
 
+import stack.Stack;
 import stackserver.LocalFileStackSink;
 import stackserver.LocalFileStackSource;
 import variable.VariableInterface;
@@ -41,19 +42,16 @@ public class LocalFileStackTests
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 
-			final NDArrayDirectBufferShort lNDArrayDirectBufferShort = NDArrayDirectBufferShort.allocateXYZ(128,
-																																																			128,
-																																																			32);
+			final Stack lStack = new Stack(0, 0, 128, 128, 32, 2);
 
-			assertEquals(	128 * 128 * 32,
-										lNDArrayDirectBufferShort.getArrayLength());
-			System.out.println(lNDArrayDirectBufferShort.getArrayLength() * 2);
+			assertEquals(	128 * 128 * 32 *2,
+			             	lStack.ndarray.getArrayLength());
+			System.out.println(lStack.ndarray.getArrayLength() * 2);
 
 			for (int i = 0; i < 10; i++)
 			{
-				assertTrue(lLocalFileStackSink.appendStack(	System.nanoTime(),
-																										lNDArrayDirectBufferShort));
-				lNDArrayDirectBufferShort.add((short) 1);
+				assertTrue(lLocalFileStackSink.appendStack(lStack));
+				lStack.ndarray.add((byte) 1);
 			}
 
 			assertEquals(10, lLocalFileStackSink.getNumberOfStacks());
@@ -66,9 +64,7 @@ public class LocalFileStackTests
 			final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
 																																									"testSink");
 
-			final NDArrayDirectBufferShort lNDArrayDirectBufferShort = new NDArrayDirectBufferShort(128,
-																																															128,
-																																															32);
+			final Stack lStack = new Stack(0, 0, 128, 128, 32, 2);
 
 			lLocalFileStackSource.update();
 
@@ -76,8 +72,8 @@ public class LocalFileStackTests
 
 			for (int i = 0; i < 10; i++)
 			{
-				lLocalFileStackSource.getStack(i, lNDArrayDirectBufferShort);
-				final short lValue = lNDArrayDirectBufferShort.getAt(0, 0, 0);
+				lLocalFileStackSource.getStack(i, lStack);
+				final byte lValue = lStack.ndarray.getAt(0, 0, 0);
 				System.out.println(lValue);
 				assertEquals(i, lValue);
 			}

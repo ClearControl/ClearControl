@@ -1,11 +1,12 @@
 package recycling;
 
+import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Recycler<R extends RecyclableInterface>
 {
 	private final Class<R> mRecyclableClass;
-	private final ConcurrentLinkedQueue<R> mAvailableObjectsQueue = new ConcurrentLinkedQueue<R>();
+	private final ConcurrentLinkedQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedQueue<SoftReference<R>>();
 	private volatile int mCounter = 0;
 
 	public Recycler(final Class<R> pRecyclableClass)
@@ -27,7 +28,7 @@ public class Recycler<R extends RecyclableInterface>
 				final R lNewInstance = mRecyclableClass.newInstance();
 				lNewInstance.initialize(pParameters);
 				lNewInstance.setRecycler((Recycler<R>) this);
-				mAvailableObjectsQueue.add(lNewInstance);
+				mAvailableObjectsQueue.add(new SoftReference<R>(lNewInstance));
 			}
 			return true;
 		}
@@ -43,15 +44,28 @@ public class Recycler<R extends RecyclableInterface>
 	public R requestRecyclableObject(final int... pRequestParameters)
 	{
 
-		final R lHead = mAvailableObjectsQueue.poll();
+		final SoftReference<R> lPolledSoftReference = mAvailableObjectsQueue.poll();
 
-		if (lHead != null)
+		if (lPolledSoftReference != null)
 		{
-			lHead.setReleased(false);
-			if (pRequestParameters != null)
-				lHead.initialize(pRequestParameters);
-			return lHead;
+
+			final R lObtainedReference = lPolledSoftReference.get();
+			lPolledSoftReference.clear();
+
+			if (lObtainedReference != null)
+			{
+				lObtainedReference.setReleased(false);
+				if (pRequestParameters != null)
+					lObtainedReference.initialize(pRequestParameters);
+				return lObtainedReference;
+			}
+			else
+			{
+				return requestRecyclableObject(pRequestParameters);
+			}
+
 		}
+		
 
 		R lNewInstance;
 		try
@@ -75,7 +89,7 @@ public class Recycler<R extends RecyclableInterface>
 
 	public void release(final R pObject)
 	{
-		mAvailableObjectsQueue.add(pObject);
+		mAvailableObjectsQueue.add(new SoftReference<R>(pObject));
 		mCounter--;
 	}
 

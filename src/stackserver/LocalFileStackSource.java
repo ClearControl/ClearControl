@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
+import stack.Stack;
+
 import ndarray.InterfaceNDArray;
 
 public class LocalFileStackSource extends LocalFileStackBase implements
@@ -28,17 +30,20 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 	}
 
 	@Override
-	public InterfaceNDArray getStack(	final long pStackIndex,
-																		final InterfaceNDArray pStack)
+	public Stack getStack(final long pStackIndex, final Stack pStack)
 	{
-		final FileChannel lFileChannel = null;
 
 		try
 		{
 			final long lPositionInFileInType = mStackIndexToBinaryFilePositionMap.get(pStackIndex);
-			pStack.readFromFileChannel(	mBinaryFileChannel,
-																	lPositionInFileInType,
-																	pStack.getArrayLength());
+
+			pStack.ndarray.readFromFileChannel(	mBinaryFileChannel,
+																					lPositionInFileInType,
+																					pStack.ndarray.getArrayLength());
+
+			long lTimeStampNs = mStackIndexToTimeStampInNanosecondsMap.get(pStackIndex);
+			pStack.timestampns = lTimeStampNs;
+			pStack.index = pStackIndex;
 
 			return pStack;
 		}
