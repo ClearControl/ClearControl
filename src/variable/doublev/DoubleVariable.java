@@ -73,7 +73,7 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 
 	public double setEventHook(final double pNewValue)
 	{
-		notifyListenersOfSetEvent(pNewValue);
+		notifyListenersOfSetEvent(mValue,pNewValue);
 		return pNewValue;
 	}
 

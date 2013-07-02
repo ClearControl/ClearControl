@@ -35,11 +35,11 @@ public abstract class NamedVariable<O>
 		return mVariableListeners;
 	}
 
-	public void notifyListenersOfSetEvent(final O pNewValue)
+	public void notifyListenersOfSetEvent(final O pCurentValue, O pNewValue)
 	{
 		for (VariableListener<O> lDoubleVariableListener : getVariableListeners())
 		{
-			lDoubleVariableListener.setEvent(pNewValue);
+			lDoubleVariableListener.setEvent(pCurentValue,pNewValue);
 		}
 	}
 

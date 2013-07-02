@@ -67,7 +67,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 	public O setEventHook(final O pNewValue)
 	{
-		notifyListenersOfSetEvent(pNewValue);
+		notifyListenersOfSetEvent(mReference,pNewValue);
 		return pNewValue;
 	}
 

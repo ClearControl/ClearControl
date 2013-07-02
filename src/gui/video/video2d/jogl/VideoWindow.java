@@ -66,6 +66,7 @@ public class VideoWindow implements Closeable
 	public VideoWindow() throws GLException
 	{
 		mGLWindow = GLWindow.create(cGLCapabilities);
+		mGLWindow.setAutoSwapBufferMode(true);
 	}
 
 	public VideoWindow(	final int pBytesPerPixel,

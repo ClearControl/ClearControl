@@ -1,5 +1,6 @@
 package variable.booleanv;
 
+import variable.VariableListener;
 import variable.doublev.DoubleVariable;
 
 public class BooleanVariable extends DoubleVariable	implements
@@ -14,32 +15,40 @@ public class BooleanVariable extends DoubleVariable	implements
 													final boolean pInitialState)
 	{
 		super(pVariableName, boolean2double(pInitialState));
-	}
 
-	@Override
-	public void setValue(final double pNewValue)
-	{
-		final boolean lOldBooleanValue = double2boolean(mValue);
-		final boolean lNewBooleanValue = double2boolean(pNewValue);
-
-		if (lNewBooleanValue == lOldBooleanValue)
-			return;
-
-		if (mEdgeListener != null)
+		addListener(new VariableListener<Double>()
 		{
-			mEdgeListener.fire(lNewBooleanValue);
-		}
 
-		if (mLowToHighEdgeListener != null && lNewBooleanValue)
-		{
-			mLowToHighEdgeListener.fire(lNewBooleanValue);
-		}
-		else if (mHighToLowEdgeListener != null && !lNewBooleanValue)
-		{
-			mHighToLowEdgeListener.fire(lNewBooleanValue);
-		}
+			@Override
+			public void getEvent(Double pCurrentValue)
+			{
+			}
 
-		super.setValue(pNewValue);
+			@Override
+			public void setEvent(Double pCurrentValue, Double pNewValue)
+			{
+				final boolean lOldBooleanValue = double2boolean(pCurrentValue);
+				final boolean lNewBooleanValue = double2boolean(pNewValue);
+
+				if (lNewBooleanValue == lOldBooleanValue)
+					return;
+
+				if (mEdgeListener != null)
+				{
+					mEdgeListener.fire(lNewBooleanValue);
+				}
+
+				if (mLowToHighEdgeListener != null && lNewBooleanValue)
+				{
+					mLowToHighEdgeListener.fire(lNewBooleanValue);
+				}
+				else if (mHighToLowEdgeListener != null && !lNewBooleanValue)
+				{
+					mHighToLowEdgeListener.fire(lNewBooleanValue);
+				}
+			}
+
+		});
 	}
 
 	public void detectEdgeWith(final BooleanEventListenerInterface pEdgeListener)

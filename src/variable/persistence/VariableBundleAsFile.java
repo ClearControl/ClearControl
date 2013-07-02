@@ -52,7 +52,7 @@ public class VariableBundleAsFile extends VariableBundle
 			}
 
 			@Override
-			public void setEvent(Object pNewValue)
+			public void setEvent(Object pCurrentValue, Object pNewValue)
 			{
 				writeAsynchronously();
 			}
