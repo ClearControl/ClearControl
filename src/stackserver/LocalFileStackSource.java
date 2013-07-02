@@ -20,7 +20,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 															final String pName) throws IOException
 	{
 		super(pRootFolder, pName, true);
-		mVariableBundleAsFile.read();
+		mMetaDataVariableBundleAsFile.read();
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 	{
 		try
 		{
-			mVariableBundleAsFile.read();
+			mMetaDataVariableBundleAsFile.read();
 
 			final Scanner lIndexFileScanner = new Scanner(mIndexFile);
 
@@ -117,7 +117,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 		mBinaryFileChannel.force(true);
 		mBinaryFileChannel.close();
 
-		mVariableBundleAsFile.close();
+		mMetaDataVariableBundleAsFile.close();
 	}
 
 }

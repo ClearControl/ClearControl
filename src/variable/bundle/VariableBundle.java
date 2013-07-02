@@ -1,6 +1,8 @@
 package variable.bundle;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import variable.NamedVariable;
 import variable.VariableInterface;
@@ -24,6 +26,11 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 		return this;
 	}
 
+	protected Collection<VariableInterface<?>> getAllVariables()
+	{
+		return mVariableNameToVariableMap.values();
+	}
+	
 	public <O> void addVariable(final VariableInterface<O> pVariable)
 	{
 		mVariableNameToVariableMap.put(pVariable.getName(), pVariable);

@@ -24,6 +24,8 @@ public class JTextFieldDouble extends JPanel
 	private final JTextFieldDouble mThis;
 	private final DoubleVariable mDoubleVariable;
 
+	private volatile double mNewValue;
+
 	public JTextFieldDouble(final String pValueName, final double pValue)
 	{
 		this(	pValueName,
@@ -64,15 +66,16 @@ public class JTextFieldDouble extends JPanel
 			public double setEventHook(final double pNewValue)
 			{
 
-				EventQueue.invokeLater(new Runnable()
-				{
-					@Override
-					public void run()
+				if (pNewValue != mNewValue)
+					EventQueue.invokeLater(new Runnable()
 					{
-
-						mValueTextField.setText("" + pNewValue);
-					}
-				});
+						@Override
+						public void run()
+						{
+							//	System.out.println("mValueTextField.setText('' + pNewValue);");
+							mValueTextField.setText("" + pNewValue);
+						}
+					});
 
 				return pNewValue;
 			}
@@ -123,8 +126,8 @@ public class JTextFieldDouble extends JPanel
 
 												try
 												{
-													final double lNewValue = Double.parseDouble(lTextString);
-													mDoubleVariable.setValue(lNewValue);
+													mNewValue = Double.parseDouble(lTextString);
+													mDoubleVariable.setValue(mNewValue);
 
 												}
 												catch (final NumberFormatException e)

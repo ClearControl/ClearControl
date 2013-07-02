@@ -11,7 +11,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 																												ObjectInputOutputVariableInterface<O>
 {
 	protected volatile O mReference;
-	private final CopyOnWriteArrayList<ObjectVariable<O>> mInputVariables = new CopyOnWriteArrayList<ObjectVariable<O>>();
+	private final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
 
 	public ObjectVariable(final String pVariableName)
 	{
@@ -53,9 +53,9 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		final O lNewValueAfterHook = setEventHook(pNewReference);
 
 		EventPropagator.add(this);
-		if (mInputVariables != null)
+		if (mVariablesToSendUpdatesTo != null)
 		{
-			for (final ObjectVariable lObjectVariable : mInputVariables)
+			for (final ObjectVariable lObjectVariable : mVariablesToSendUpdatesTo)
 				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
 				{
 					lObjectVariable.setReferenceInternal(lNewValueAfterHook);
@@ -67,11 +67,13 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 	public O setEventHook(final O pNewValue)
 	{
+		notifyListenersOfSetEvent(pNewValue);
 		return pNewValue;
 	}
 
 	public O getEventHook(final O pCurrentReference)
 	{
+		notifyListenersOfGetEvent(pCurrentReference);
 		return pCurrentReference;
 	}
 
@@ -90,19 +92,19 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	@Override
 	public final void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
-		mInputVariables.add(pObjectVariable);
+		mVariablesToSendUpdatesTo.add(pObjectVariable);
 	}
 
 	@Override
 	public final void doNotSendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
-		mInputVariables.remove(pObjectVariable);
+		mVariablesToSendUpdatesTo.remove(pObjectVariable);
 	}
 
 	@Override
 	public final void doNotSendAnyUpdates()
 	{
-		mInputVariables.clear();
+		mVariablesToSendUpdatesTo.clear();
 	}
 
 	@Override

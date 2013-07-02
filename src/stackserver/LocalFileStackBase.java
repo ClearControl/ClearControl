@@ -20,7 +20,7 @@ public abstract class LocalFileStackBase extends StackBase implements
 
 	protected final File mIndexFile;
 	protected final File mMetaDataFile;
-	protected final VariableBundleAsFile mVariableBundleAsFile;
+	protected final VariableBundleAsFile mMetaDataVariableBundleAsFile;
 
 	public LocalFileStackBase(final File pRootFolder,
 														final String pName,
@@ -55,14 +55,15 @@ public abstract class LocalFileStackBase extends StackBase implements
 		if (!pReadOnly)
 			mMetaDataFile.getParentFile().mkdirs();
 
-		mVariableBundleAsFile = new VariableBundleAsFile(	pName,
-																											mMetaDataFile);
+		mMetaDataVariableBundleAsFile = new VariableBundleAsFile(	pName + "MetaData",
+																															mMetaDataFile,
+																															false);
 	}
 
 	@Override
-	public VariableBundle getVariableBundle()
+	public VariableBundle getMetaDataVariableBundle()
 	{
-		return mVariableBundleAsFile;
+		return mMetaDataVariableBundleAsFile;
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public abstract class LocalFileStackBase extends StackBase implements
 	{
 		mBinaryFileChannel.force(true);
 		mBinaryFileChannel.close();
-		mVariableBundleAsFile.close();
+		mMetaDataVariableBundleAsFile.close();
 	}
 
 }

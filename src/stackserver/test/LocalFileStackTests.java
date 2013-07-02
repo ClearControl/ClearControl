@@ -34,7 +34,7 @@ public class LocalFileStackTests
 			final LocalFileStackSink lLocalFileStackSink = new LocalFileStackSink(lRootFolder,
 																																						"testSink");
 
-			final VariableBundle lVariableBundle = lLocalFileStackSink.getVariableBundle();
+			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
 																											312));
@@ -80,7 +80,7 @@ public class LocalFileStackTests
 				assertEquals(i, lValue);
 			}
 
-			final VariableBundle lVariableBundle = lLocalFileStackSource.getVariableBundle();
+			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
 																											312));
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",

@@ -19,7 +19,7 @@ public abstract class StackBase implements Closeable
 		super();
 	}
 
-	public abstract VariableBundle getVariableBundle();
+	public abstract VariableBundle getMetaDataVariableBundle();
 
 	public long getNumberOfStacks()
 	{

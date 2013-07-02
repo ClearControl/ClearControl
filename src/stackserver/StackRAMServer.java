@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import recycling.Recycler;
 import stack.Stack;
+import variable.VariableInterface;
+import variable.bundle.VariableBundle;
+import variable.persistence.VariableBundleAsFile;
 
 public class StackRAMServer	implements
 														StackSinkInterface,
@@ -14,7 +17,8 @@ public class StackRAMServer	implements
 
 	ArrayList<Stack> mStackList = new ArrayList<Stack>();
 	TLongArrayList mStackTimePointList = new TLongArrayList();
-	private Recycler<Stack> mStackRecycler;
+
+	protected final VariableBundle mMetaDataVariableBundle = new VariableBundle("MetaData");
 
 	public StackRAMServer()
 	{
@@ -49,6 +53,19 @@ public class StackRAMServer	implements
 	{
 		mStackTimePointList.add(pStack.timestampns);
 		return mStackList.add(pStack);
+	}
+
+	@Override
+	public void addMetaDataVariable(String pPrefix,
+																	VariableInterface<?> pVariable)
+	{
+		mMetaDataVariableBundle.addVariable(pVariable);
+	}
+
+	@Override
+	public void removeAllMetaDataVariables()
+	{
+		mMetaDataVariableBundle.removeAllVariables();
 	}
 
 }

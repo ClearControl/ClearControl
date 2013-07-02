@@ -1,6 +1,7 @@
 package variable.persistence;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Formatter;
 import java.util.Map;
 import java.util.Scanner;
@@ -9,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import variable.VariableInterface;
+import variable.VariableListener;
 import variable.bundle.VariableBundle;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
@@ -19,8 +21,7 @@ public class VariableBundleAsFile extends VariableBundle
 
 	private final TreeMap<String, VariableInterface> mPrefixWithNameToVariableMap = new TreeMap<String, VariableInterface>();
 
-	private final DoubleVariable mDoubleVariableListener;
-	private final ObjectVariable mObjectVariableListener;
+	private final VariableListener mVariableListener;
 
 	private final File mFile;
 
@@ -29,44 +30,35 @@ public class VariableBundleAsFile extends VariableBundle
 	public VariableBundleAsFile(final String pBundleName,
 															final File pFile)
 	{
+		this(pBundleName, pFile, false);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public VariableBundleAsFile(final String pBundleName,
+															final File pFile,
+															final boolean pAutoReadOnGet)
+	{
 		super(pBundleName);
 		mFile = pFile;
-		mDoubleVariableListener = new DoubleVariable("DoubleVariableListener")
+
+		mVariableListener = new VariableListener()
 		{
 
 			@Override
-			public double getEventHook(final double pCurrentValue)
+			public void getEvent(Object pCurrentValue)
 			{
-				read();
-				return super.getEventHook(pCurrentValue);
+				if (pAutoReadOnGet)
+					read();
 			}
 
 			@Override
-			public double setEventHook(final double pNewValue)
+			public void setEvent(Object pNewValue)
 			{
 				writeAsynchronously();
-				return super.setEventHook(pNewValue);
 			}
 
 		};
-		mObjectVariableListener = new ObjectVariable("ObjectVariableListener")
-		{
 
-			@Override
-			public Object getEventHook(final Object pCurrentReference)
-			{
-				read();
-				return super.getEventHook(pCurrentReference);
-			}
-
-			@Override
-			public Object setEventHook(final Object pNewValue)
-			{
-				writeAsynchronously();
-				return super.setEventHook(pNewValue);
-			}
-
-		};
 	}
 
 	@Override
@@ -85,6 +77,12 @@ public class VariableBundleAsFile extends VariableBundle
 		registerListener(pVariable);
 	}
 
+	public void removeAllVariables()
+	{
+		unregisterListenerForAllVariables();
+		super.removeAllVariables();
+	}
+
 	@Override
 	public VariableInterface getVariable(final String pPrefixAndName)
 	{
@@ -96,12 +94,21 @@ public class VariableBundleAsFile extends VariableBundle
 		if (pVariable instanceof DoubleVariable)
 		{
 			final DoubleVariable lDoubleVariable = (DoubleVariable) pVariable;
-			lDoubleVariable.syncWith(mDoubleVariableListener);
+			lDoubleVariable.addListener(mVariableListener);
 		}
 		else if (pVariable instanceof ObjectVariable<?>)
 		{
 			final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) pVariable;
-			lObjectVariable.syncWith(mObjectVariableListener);
+			lObjectVariable.addListener(mVariableListener);
+		}
+	}
+
+	private void unregisterListenerForAllVariables()
+	{
+		Collection<VariableInterface<?>> lAllVariables = getAllVariables();
+		for (VariableInterface<?> lVariable : lAllVariables)
+		{
+			lVariable.removeListener(mVariableListener);
 		}
 	}
 
@@ -184,20 +191,11 @@ public class VariableBundleAsFile extends VariableBundle
 	private void readObjectVariable(final String lValue,
 																	final VariableInterface lVariable)
 	{
-		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
+		/*final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
 
-		final Object lReference = lObjectVariable.getReference();
+		final ObjectVariable<String> lStringVariable = (ObjectVariable<String>) lObjectVariable;
+		lStringVariable.setReference(lValue);/**/
 
-		if (lReference instanceof String)
-		{
-			final ObjectVariable<String> lStringVariable = (ObjectVariable<String>) lObjectVariable;
-			lStringVariable.setReference(lValue);
-		}
-		else if (lReference instanceof StringSerializable)
-		{
-			final StringSerializable lStringSerializable = (StringSerializable) lReference;
-			lStringSerializable.fromString(lValue);
-		}
 	}
 
 	public boolean write()
@@ -211,7 +209,7 @@ public class VariableBundleAsFile extends VariableBundle
 				for (final Map.Entry<String, VariableInterface> lVariableEntry : mPrefixWithNameToVariableMap.entrySet())
 				{
 					final String lVariablePrefixAndName = lVariableEntry.getKey();
-					final VariableInterface lVariable = lVariableEntry.getValue();
+					final VariableInterface<?> lVariable = lVariableEntry.getValue();
 
 					if (lVariable instanceof DoubleVariable)
 					{
@@ -234,18 +232,16 @@ public class VariableBundleAsFile extends VariableBundle
 				}
 
 				lFormatter.flush();
+				if (lFormatter != null)
+					lFormatter.close();
+				return true;
 			}
 			catch (final Throwable e)
 			{
 				e.printStackTrace();
 				return false;
 			}
-			finally
-			{
-				if (lFormatter != null)
-					lFormatter.close();
-				return true;
-			}
+
 		}
 
 	}

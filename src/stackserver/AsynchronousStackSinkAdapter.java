@@ -1,6 +1,10 @@
 package stackserver;
 
+import java.io.IOException;
+
 import stack.Stack;
+import variable.VariableInterface;
+import variable.bundle.VariableBundle;
 import asyncprocs.AsynchronousProcessorBase;
 import asyncprocs.AsynchronousProcessorInterface;
 
@@ -19,7 +23,7 @@ public class AsynchronousStackSinkAdapter	implements
 		mStackSink = pStackSink;
 
 		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<Stack, Stack>(	"AsynchronousStackSinkAdapter",
-																																															pMaxQueueSize)
+																																										pMaxQueueSize)
 		{
 			@Override
 			public Stack process(final Stack pStack)
@@ -30,7 +34,7 @@ public class AsynchronousStackSinkAdapter	implements
 			}
 		};
 	}
-	
+
 	public boolean start()
 	{
 		return mAsynchronousConversionProcessor.start();
@@ -41,7 +45,7 @@ public class AsynchronousStackSinkAdapter	implements
 	{
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
-	
+
 	public void waitToFinish(final int pPollIntervall)
 	{
 		mAsynchronousConversionProcessor.waitToFinish(pPollIntervall);
@@ -56,4 +60,17 @@ public class AsynchronousStackSinkAdapter	implements
 	{
 		return mAsynchronousConversionProcessor.getInputQueueLength();
 	}
+
+	@Override
+	public void addMetaDataVariable(String pPrefix,
+																	VariableInterface<?> pVariable)
+	{
+		mStackSink.addMetaDataVariable(pPrefix, pVariable);
+	}
+
+	public void removeAllMetaDataVariables()
+	{
+		mStackSink.removeAllMetaDataVariables();
+	}
+
 }

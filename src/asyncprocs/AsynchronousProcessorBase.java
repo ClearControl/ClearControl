@@ -22,6 +22,17 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize <= 0	? 1
 																																: pMaxQueueSize);
 
+	}
+
+	@Override
+	public void connectToReceiver(final AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
+	{
+		mReceiver = pAsynchronousProcessor;
+	}
+
+	@Override
+	public boolean start()
+	{
 		mEnhancedThread = new EnhancedThread(mName)
 		{
 			@Override
@@ -43,17 +54,6 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 			}
 		};
 
-	}
-
-	@Override
-	public void connectToReceiver(final AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
-	{
-		mReceiver = pAsynchronousProcessor;
-	}
-
-	@Override
-	public boolean start()
-	{
 		mEnhancedThread.setDaemon(true);
 		return mEnhancedThread.start();
 	}
@@ -124,10 +124,10 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		return mInputQueue.remainingCapacity();
 	}
-	
+
 	public void waitToFinish(final int pPollInterval)
 	{
-		while(!mInputQueue.isEmpty())
+		while (!mInputQueue.isEmpty())
 		{
 			EnhancedThread.sleep(pPollInterval);
 		}
@@ -137,6 +137,5 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		return mInputQueue;
 	}
-	
 
 }

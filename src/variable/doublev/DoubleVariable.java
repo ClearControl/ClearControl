@@ -3,16 +3,17 @@ package variable.doublev;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import variable.DoubleVariableInterface;
+import variable.VariableListener;
 import variable.EventPropagator;
 import variable.NamedVariable;
 
-public class DoubleVariable extends NamedVariable	implements
-																									DoubleVariableInterface,
-																									DoubleInputOutputVariableInterface
+public class DoubleVariable extends NamedVariable<Double>	implements
+																													DoubleVariableInterface,
+																													DoubleInputOutputVariableInterface
 
 {
 	protected volatile double mValue;
-	private final CopyOnWriteArrayList<DoubleVariable> mInputVariables = new CopyOnWriteArrayList<DoubleVariable>();
+	private final CopyOnWriteArrayList<DoubleVariable> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<DoubleVariable>();
 
 	public DoubleVariable(final String pVariableName)
 	{
@@ -59,9 +60,9 @@ public class DoubleVariable extends NamedVariable	implements
 		final double lNewValueAfterHook = setEventHook(pNewValue);
 
 		EventPropagator.add(this);
-		if (mInputVariables != null)
+		if (mVariablesToSendUpdatesTo != null)
 		{
-			for (final DoubleVariable lDoubleVariable : mInputVariables)
+			for (final DoubleVariable lDoubleVariable : mVariablesToSendUpdatesTo)
 				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
 				{
 					lDoubleVariable.setValueInternal(lNewValueAfterHook);
@@ -73,11 +74,13 @@ public class DoubleVariable extends NamedVariable	implements
 
 	public double setEventHook(final double pNewValue)
 	{
+		notifyListenersOfSetEvent(pNewValue);
 		return pNewValue;
 	}
 
 	public double getEventHook(final double pCurrentValue)
 	{
+		notifyListenersOfGetEvent(pCurrentValue);
 		return pCurrentValue;
 	}
 
@@ -101,19 +104,19 @@ public class DoubleVariable extends NamedVariable	implements
 	@Override
 	public final void sendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
-		mInputVariables.add(pDoubleVariable);
+		mVariablesToSendUpdatesTo.add(pDoubleVariable);
 	}
 
 	@Override
 	public final void doNotSendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
-		mInputVariables.remove(pDoubleVariable);
+		mVariablesToSendUpdatesTo.remove(pDoubleVariable);
 	}
 
 	@Override
 	public final void doNotSendAnyUpdates()
 	{
-		mInputVariables.clear();
+		mVariablesToSendUpdatesTo.clear();
 	}
 
 	@Override

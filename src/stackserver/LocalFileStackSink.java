@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 import stack.Stack;
+import variable.VariableInterface;
 
 public class LocalFileStackSink extends LocalFileStackBase implements
 																													StackSinkInterface,
@@ -27,7 +28,9 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 
 		try
 		{
-			mVariableBundleAsFile.write();
+			if (getNumberOfStacks() == 0)
+				mMetaDataVariableBundleAsFile.write();
+			
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
 																									pStack.timestampns);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
@@ -56,6 +59,8 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 
 			mNextFreeTypePosition = lNewNextFreeTypePosition;
 
+			pStack.releaseFrame();
+
 			mNextFreeStackIndex++;
 			return true;
 		}
@@ -64,7 +69,6 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 			e.printStackTrace();
 			return false;
 		}
-
 	}
 
 	@Override
@@ -72,6 +76,19 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	{
 		super.close();
 		mIndexFileFormatter.close();
+	}
+
+	@Override
+	public void addMetaDataVariable(String pPrefix,
+																	VariableInterface<?> pVariable)
+	{
+		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
+	}
+
+	@Override
+	public void removeAllMetaDataVariables()
+	{
+		mMetaDataVariableBundleAsFile.removeAllVariables();
 	}
 
 }

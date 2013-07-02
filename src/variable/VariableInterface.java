@@ -11,15 +11,10 @@ public interface VariableInterface<O>
 
 	public O get();
 
-	/*
-	public void sendUpdatesTo(VariableInterface<O> pVariable);
+	public void addListener(VariableListener<O> pDoubleVariableListener);
 
-	public void doNotSendUpdatesTo(VariableInterface<O> pVariable);
+	public void removeListener(VariableListener<O> pDoubleVariableListener);
 
-	public void doNotSendAnyUpdates();
+	public void removeAllListener();
 
-	public void syncWith(VariableInterface<O> pVariable);
-
-	public void doNotSyncWith(VariableInterface<O> pVariable);
-	/**/
 }
