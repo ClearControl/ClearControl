@@ -3,7 +3,6 @@ package variable.doublev;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import variable.DoubleVariableInterface;
-import variable.VariableListener;
 import variable.EventPropagator;
 import variable.NamedVariable;
 
