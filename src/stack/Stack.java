@@ -72,6 +72,11 @@ public class Stack implements RecyclableInterface
 	{
 		return ndarray.getDimension();
 	}
+	
+	public int getDimensionWithoutSizeDimension()
+	{
+		return ndarray.getDimension();
+	}
 
 	public void copyFrom(	final ByteBuffer pByteBufferToBeCopied,
 												final long pImageIndex,

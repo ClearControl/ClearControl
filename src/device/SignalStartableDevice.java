@@ -11,7 +11,7 @@ public abstract class SignalStartableDevice implements VirtualDevice
 	public SignalStartableDevice()
 	{
 		super();
-		mStartStopSignal.detectEdgeWith(new BooleanEventListenerInterface()
+		mStartStopSignal.addEdgeListener(new BooleanEventListenerInterface()
 		{
 			@Override
 			public void fire(final boolean pCurrentBooleanValue)

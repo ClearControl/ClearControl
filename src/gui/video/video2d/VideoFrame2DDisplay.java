@@ -25,26 +25,26 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 
 	public VideoFrame2DDisplay()
 	{
-		this("2D Video Display", 1, 512, 512);
+		this("2D Video Display",  512, 512, 1);
 	}
 
 	public VideoFrame2DDisplay(	final int pVideoWidth,
 															final int pVideoHeight)
 	{
-		this("2D Video Display", 1, pVideoWidth, pVideoHeight);
+		this("2D Video Display", pVideoWidth, pVideoHeight, 1);
 	}
 
 	public VideoFrame2DDisplay(	final String pWindowName,
 															final int pVideoWidth,
 															final int pVideoHeight)
 	{
-		this(pWindowName, 1, pVideoWidth, pVideoHeight);
+		this(pWindowName, pVideoWidth, pVideoHeight, 1);
 	}
 
 	public VideoFrame2DDisplay(	final String pWindowName,
-															final int pBytesPerPixel,
 															final int pVideoWidth,
-															final int pVideoHeight) throws GLException
+															final int pVideoHeight,
+															final int pBytesPerPixel)
 	{
 
 		mVideoWindow = new VideoWindow(	pBytesPerPixel,
@@ -55,21 +55,21 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 		{
 
 			@Override
-			public void setReference(final Stack pNewFrameReference)
+			public Stack setEventHook(Stack pNewFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
-				if (pNewFrameReference.getDimension() == 2)
-				{
-					mVideoWindow.setSourceBuffer(pNewFrameReference.getByteBuffer());
-					mVideoWindow.setWidth(pNewFrameReference.getWidth());
-					mVideoWindow.setHeight(pNewFrameReference.getHeight());
-					mVideoWindow.setBytesPerPixel(pNewFrameReference.bpp);
-					mVideoWindow.notifyNewFrame();
 
-					mVideoWindow.display();
-					pNewFrameReference.releaseFrame();
-				}
+				mVideoWindow.setSourceBuffer(pNewFrameReference.getByteBuffer());
+				mVideoWindow.setWidth(pNewFrameReference.getWidth());
+				mVideoWindow.setHeight(pNewFrameReference.getHeight());
+				mVideoWindow.setBytesPerPixel(pNewFrameReference.bpp);
+				mVideoWindow.notifyNewFrame();
+
+				mVideoWindow.display();
+				pNewFrameReference.releaseFrame();
+				return super.setEventHook(pNewFrameReference);
 			}
+
 		};
 
 		mDisplayOn = new BooleanVariable("DisplayOn", true)

@@ -27,12 +27,12 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 	public VideoFrame3DDisplay(	final String pWindowName,
 															final int pVideoWidth,
 															final int pVideoHeight,
-															final int pBytesperVoxel)
+															final int pBytesPerVoxel)
 	{
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															pVideoWidth,
 																															pVideoHeight,
-																															pBytesperVoxel);
+																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setupControlFrame();
 
@@ -43,20 +43,21 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 			public Stack setEventHook(Stack pNewVideoFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
-				if (pNewVideoFrameReference.getDimension() == 3)
-				{
-					final ByteBuffer lByteBuffer = pNewVideoFrameReference.getByteBuffer();
-					final int lWidth = pNewVideoFrameReference.getWidth();
-					final int lHeight = pNewVideoFrameReference.getHeight();
-					final int lDepth = pNewVideoFrameReference.getDepth();
 
-					mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
-																												lWidth,
-																												lHeight,
-																												lDepth);
-					mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
-					//pNewVideoFrameReference.releaseFrame();
-				}
+				final ByteBuffer lByteBuffer = pNewVideoFrameReference.getByteBuffer();
+				final int lWidth = pNewVideoFrameReference.getWidth();
+				final int lHeight = pNewVideoFrameReference.getHeight();
+				final int lDepth = pNewVideoFrameReference.getDepth();
+
+				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
+																											lWidth,
+																											lHeight,
+																											lDepth);
+				mJCudaClearVolumeRenderer.requestDisplay();
+				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
+				
+				// pNewVideoFrameReference.releaseFrame();
+
 				return super.setEventHook(pNewVideoFrameReference);
 			}
 
@@ -87,7 +88,6 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 	public void setDisplayOn(final boolean pIsDisplayOn)
 	{
 		mJCudaClearVolumeRenderer.setVisible(pIsDisplayOn);
-		mJCudaClearVolumeRenderer.pause(pIsDisplayOn);
 	}
 
 	@Override
@@ -100,14 +100,14 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 	@Override
 	public boolean start()
 	{
-		mJCudaClearVolumeRenderer.start();
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		mJCudaClearVolumeRenderer.stop();
+
 		return true;
 	}
 

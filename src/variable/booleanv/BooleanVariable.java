@@ -1,5 +1,9 @@
 package variable.booleanv;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import variable.VariableListener;
 import variable.doublev.DoubleVariable;
 
@@ -8,13 +12,18 @@ public class BooleanVariable extends DoubleVariable	implements
 
 {
 
-	private BooleanEventListenerInterface mEdgeListener,
-			mLowToHighEdgeListener, mHighToLowEdgeListener;
+	private CopyOnWriteArrayList<BooleanEventListenerInterface> mEdgeListenerList;
+	private CopyOnWriteArrayList<BooleanEventListenerInterface> mLowToHighEdgeListenerList;
+	private CopyOnWriteArrayList<BooleanEventListenerInterface> mHighToLowEdgeListenerList;
 
 	public BooleanVariable(	final String pVariableName,
 													final boolean pInitialState)
 	{
 		super(pVariableName, boolean2double(pInitialState));
+
+		mEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
+		mLowToHighEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
+		mHighToLowEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
 
 		addListener(new VariableListener<Double>()
 		{
@@ -33,37 +42,58 @@ public class BooleanVariable extends DoubleVariable	implements
 				if (lNewBooleanValue == lOldBooleanValue)
 					return;
 
-				if (mEdgeListener != null)
+				for (BooleanEventListenerInterface lEdgeListener : mEdgeListenerList)
 				{
-					mEdgeListener.fire(lNewBooleanValue);
+					lEdgeListener.fire(lNewBooleanValue);
 				}
 
-				if (mLowToHighEdgeListener != null && lNewBooleanValue)
+				if (lNewBooleanValue)
 				{
-					mLowToHighEdgeListener.fire(lNewBooleanValue);
+					for (BooleanEventListenerInterface lEdgeListener : mLowToHighEdgeListenerList)
+					{
+						lEdgeListener.fire(lNewBooleanValue);
+					}
 				}
-				else if (mHighToLowEdgeListener != null && !lNewBooleanValue)
+				else if (!lNewBooleanValue)
 				{
-					mHighToLowEdgeListener.fire(lNewBooleanValue);
+					for (BooleanEventListenerInterface lEdgeListener : mHighToLowEdgeListenerList)
+					{
+						lEdgeListener.fire(lNewBooleanValue);
+					}
 				}
 			}
 
 		});
 	}
 
-	public void detectEdgeWith(final BooleanEventListenerInterface pEdgeListener)
+	public void addEdgeListener(final BooleanEventListenerInterface pEdgeListener)
 	{
-		mEdgeListener = pEdgeListener;
+		mEdgeListenerList.add(pEdgeListener);
 	}
 
-	public void detectLowToHighEdgeWith(final BooleanEventListenerInterface pLowToHighEdgeListener)
+	public void removeEdgeListener(final BooleanEventListenerInterface pEdgeListener)
 	{
-		mLowToHighEdgeListener = pLowToHighEdgeListener;
+		mEdgeListenerList.remove(pEdgeListener);
 	}
 
-	public void detectHighToLowEdgeWith(final BooleanEventListenerInterface pHighToLowEdgeListener)
+	public void addLowToHighEdgelistener(final BooleanEventListenerInterface pLowToHighEdgeListener)
 	{
-		mHighToLowEdgeListener = pHighToLowEdgeListener;
+		mLowToHighEdgeListenerList.add(pLowToHighEdgeListener);
+	}
+
+	public void removeLowToHighEdgelistener(final BooleanEventListenerInterface pLowToHighEdgeListener)
+	{
+		mLowToHighEdgeListenerList.add(pLowToHighEdgeListener);
+	}
+
+	public void addHighToLowEdgeWith(final BooleanEventListenerInterface pHighToLowEdgeListener)
+	{
+		mHighToLowEdgeListenerList.add(pHighToLowEdgeListener);
+	}
+
+	public void removeHighToLowEdgeWith(final BooleanEventListenerInterface pHighToLowEdgeListener)
+	{
+		mHighToLowEdgeListenerList.add(pHighToLowEdgeListener);
 	}
 
 	public final void setValue(final boolean pNewBooleanValue)
@@ -75,8 +105,7 @@ public class BooleanVariable extends DoubleVariable	implements
 	{
 		final double lOldValue = getValue();
 		final double lNewToggledValue = lOldValue > 0 ? 0 : 1;
-		// System.out.println("lOldValue="+lOldValue);
-		// System.out.println("lNewToggledValue="+lNewToggledValue);
+
 		setValue(lNewToggledValue);
 	}
 
@@ -85,6 +114,11 @@ public class BooleanVariable extends DoubleVariable	implements
 												final boolean pNewBooleanValue)
 	{
 		setValue(boolean2double(pNewBooleanValue));
+	}
+
+	protected void setBooleanValueInternal(boolean pNewBooleanValue)
+	{
+		setValueInternal(boolean2double(pNewBooleanValue));
 	}
 
 	@Override
@@ -103,6 +137,52 @@ public class BooleanVariable extends DoubleVariable	implements
 	public static double boolean2double(final boolean pBooleanValue)
 	{
 		return pBooleanValue ? 1 : 0;
+	}
+
+	public void waitForTrueAndToggle()
+	{
+		waitForStateAndToggle(true, 1, TimeUnit.MILLISECONDS);
+	}
+
+	public void waitForFalseAndToggle()
+	{
+		waitForStateAndToggle(true, 1, TimeUnit.MILLISECONDS);
+	}
+
+	public void waitForStateAndToggle(final boolean pState,
+																		final long pMaxPollingPeriod,
+																		final TimeUnit pTimeUnit)
+	{
+		final CountDownLatch lIsTrueSignal = new CountDownLatch(1);
+		final BooleanVariable lThis = this;
+		BooleanEventListenerInterface lBooleanEventListenerInterface = new BooleanEventListenerInterface()
+		{
+			@Override
+			public void fire(boolean pCurrentBooleanValue)
+			{
+				if (pCurrentBooleanValue == pState)
+				{
+					lIsTrueSignal.countDown();
+					lThis.setBooleanValueInternal(false);
+				}
+			}
+		};
+
+		addEdgeListener(lBooleanEventListenerInterface);
+
+		while (getBooleanValue() != pState)
+		{
+			try
+			{
+				lIsTrueSignal.await(pMaxPollingPeriod, pTimeUnit);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		removeEdgeListener(lBooleanEventListenerInterface);
 	}
 
 }

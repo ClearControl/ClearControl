@@ -131,7 +131,7 @@ public abstract class EnhancedThread implements Runnable
 
 	public boolean start()
 	{
-		if (!mStarted)
+		if (!mStarted || mStopped)
 		{
 			setPauseRequest(false);
 			setStopRequest(false);
