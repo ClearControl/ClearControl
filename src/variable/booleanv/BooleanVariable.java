@@ -146,7 +146,7 @@ public class BooleanVariable extends DoubleVariable	implements
 
 	public void waitForFalseAndToggle()
 	{
-		waitForStateAndToggle(true, 1, TimeUnit.MILLISECONDS);
+		waitForStateAndToggle(false, 1, TimeUnit.MILLISECONDS);
 	}
 
 	public void waitForStateAndToggle(final boolean pState,
@@ -163,7 +163,7 @@ public class BooleanVariable extends DoubleVariable	implements
 				if (pCurrentBooleanValue == pState)
 				{
 					lIsTrueSignal.countDown();
-					lThis.setBooleanValueInternal(false);
+					lThis.setValue(!pState);
 				}
 			}
 		};
@@ -174,7 +174,8 @@ public class BooleanVariable extends DoubleVariable	implements
 		{
 			try
 			{
-				lIsTrueSignal.await(pMaxPollingPeriod, pTimeUnit);
+				if (lIsTrueSignal.await(pMaxPollingPeriod, pTimeUnit))
+					break;
 			}
 			catch (InterruptedException e)
 			{
@@ -183,6 +184,8 @@ public class BooleanVariable extends DoubleVariable	implements
 		}
 
 		removeEdgeListener(lBooleanEventListenerInterface);
+
+		setValue(!pState);
 	}
 
 }
