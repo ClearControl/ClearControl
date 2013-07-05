@@ -21,17 +21,15 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 
 	public VideoFrame3DDisplay()
 	{
-		this("3d Video Display", 512, 512, 1);
+		this("3d Video Display", 1);
 	}
 
 	public VideoFrame3DDisplay(	final String pWindowName,
-															final int pVideoWidth,
-															final int pVideoHeight,
 															final int pBytesPerVoxel)
 	{
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
-																															pVideoWidth,
-																															pVideoHeight,
+																															768,
+																															768,
 																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setupControlFrame();

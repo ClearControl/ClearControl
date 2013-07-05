@@ -72,7 +72,7 @@ public class Stack implements RecyclableInterface
 	{
 		return ndarray.getDimension();
 	}
-	
+
 	public int getDimensionWithoutSizeDimension()
 	{
 		return ndarray.getDimension();
@@ -136,13 +136,13 @@ public class Stack implements RecyclableInterface
 	@Override
 	public String toString()
 	{
-		return String.format(	"Frame [index=%d, timestampns=%d, width=%d, height=%d, depth=%d,  bpp=%s]",
-													index,
-													timestampns,
+		return String.format(	this.getClass().getSimpleName() + " [ BytesPerVoxel=%d, width=%d, height=%d, depth=%d, index=%d, timestampns=%d ]",
+													bpp,
 													ndarray.getWidth(),
 													ndarray.getHeight(),
 													ndarray.getDepth(),
-													bpp);
+													index,
+													timestampns);
 	}
 
 	public boolean isReleased()

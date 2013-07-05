@@ -69,7 +69,8 @@ public class VideoWindow implements Closeable
 		mGLWindow.setAutoSwapBufferMode(true);
 	}
 
-	public VideoWindow(	final int pBytesPerPixel,
+	public VideoWindow(	final String pWindowName,
+											final int pBytesPerPixel,
 											final int pVideoMaxWidth,
 											final int pVideoMaxHeight) throws GLException
 	{
@@ -82,12 +83,12 @@ public class VideoWindow implements Closeable
 		mMaxBufferLength = mVideoMaxWidth * mVideoMaxWidth
 												* mBytesPerPixel;
 
-		if (pVideoMaxWidth > 512 || pVideoMaxHeight > 512)
-			mGLWindow.setSize(512, 512);
+		if (pVideoMaxWidth > 768 || pVideoMaxHeight > 768)
+			mGLWindow.setSize(768, 768);
 		else
 			mGLWindow.setSize(pVideoMaxWidth, pVideoMaxHeight);
 
-		mGLWindow.setTitle(VideoWindow.class.getSimpleName());
+		mGLWindow.setTitle(pWindowName);
 
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{

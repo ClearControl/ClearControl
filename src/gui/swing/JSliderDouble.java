@@ -2,6 +2,8 @@ package gui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.JLabel;
@@ -123,62 +125,61 @@ public class JSliderDouble extends JPanel
 																					mMax,
 																					mSlider.getValue());
 				mSliderDoubleVariable.setValue(lNewValue);
+				try
+				{
+					if (Double.parseDouble(mValueTextField.getText().trim()) != lNewValue)
+						mValueTextField.setText("" + lNewValue);
+				}
+				catch (Throwable e)
+				{
+					System.err.println(e.getLocalizedMessage());
+				}
 				// System.out.println("change received from slider:" + lNewValue);
 			}
 		});
 
-		mValueTextField.getDocument()
-										.addDocumentListener(new DocumentListener()
-										{
-											@Override
-											public void changedUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+		mValueTextField.addActionListener(new ActionListener()
+		{
 
-											@Override
-											public void removeUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+			@Override
+			public void actionPerformed(ActionEvent pE)
+			{
 
-											@Override
-											public void insertUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+				final String lTextString = mValueTextField.getText().trim();
+				if (lTextString.isEmpty())
+					return;
 
-											public void parseDoubleAndNotify()
-											{
-												final String lTextString = mValueTextField.getText()
-																																	.trim();
-												if (lTextString.isEmpty())
-													return;
+				try
+				{
+					final double lNewValue = Double.parseDouble(lTextString);
+					mSliderDoubleVariable.setValue(lNewValue);
 
-												try
-												{
-													final double lNewValue = Double.parseDouble(lTextString);
-													mSliderDoubleVariable.setValue(lNewValue);
+					final int lSliderIntegerValue = toInt(mResolution,
+																								mMin,
+																								mMax,
+																								lNewValue);
 
-													final int lSliderIntegerValue = toInt(mResolution,
-																																mMin,
-																																mMax,
-																																lNewValue);
-													mSlider.setValue(lSliderIntegerValue);
+					try
+					{
+						if (mSlider.getValue() != lSliderIntegerValue)
+							mSlider.setValue(lSliderIntegerValue);
+					}
+					catch (Throwable e)
+					{
+						System.err.println(e.getLocalizedMessage());
+					}
 
-													// System.out.println("change received from textfield:"
-													// + lNewValue);
-												}
-												catch (final NumberFormatException e)
-												{
-													/*JOptionPane.showMessageDialog(null,
-																												"Error: Please enter number bigger than 0",
-																												"Error Message",
-																												JOptionPane.ERROR_MESSAGE);/**/
-													return;
-												}
-											}
-										});
+					// System.out.println("change received from textfield:"
+					// + lNewValue);
+				}
+				catch (final NumberFormatException e)
+				{
+					System.err.println(e.getLocalizedMessage());
+					return;
+				}
+
+			}
+		});
 
 		mSlider.setMajorTickSpacing(pResolution / 10);
 		mSlider.setMinorTickSpacing(pResolution / 100);

@@ -25,7 +25,7 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 
 	public VideoFrame2DDisplay()
 	{
-		this("2D Video Display",  512, 512, 1);
+		this("2D Video Display", 512, 512, 1);
 	}
 
 	public VideoFrame2DDisplay(	final int pVideoWidth,
@@ -47,7 +47,8 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 															final int pBytesPerPixel)
 	{
 
-		mVideoWindow = new VideoWindow(	pBytesPerPixel,
+		mVideoWindow = new VideoWindow(	pWindowName,
+																		pBytesPerPixel,
 																		pVideoWidth,
 																		pVideoHeight);
 
@@ -75,10 +76,11 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
 		{
 			@Override
-			public void setValue(final double pBoolean)
+			public double setEventHook(final double pNewValue)
 			{
-				final boolean lDisplayOn = BooleanVariable.double2boolean(pBoolean);
+				final boolean lDisplayOn = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setDisplayOn(lDisplayOn);
+				return super.setEventHook(pNewValue);
 			}
 		};
 
@@ -86,30 +88,33 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 																									false)
 		{
 			@Override
-			public void setValue(final double pBoolean)
+			public double setEventHook(final double pNewValue)
 			{
-				final boolean lManualMinMax = BooleanVariable.double2boolean(pBoolean);
+				final boolean lManualMinMax = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setManualMinMax(lManualMinMax);
+				return super.setEventHook(pNewValue);
 			}
 		};
 
 		mMinimumIntensity = new DoubleVariable("MinimumIntensity", 0)
 		{
 			@Override
-			public void setValue(final double pMinIntensity)
+			public double setEventHook(final double pNewMinIntensity)
 			{
-				final double lMinIntensity = Math.pow(pMinIntensity, 6);
+				final double lMinIntensity = Math.pow(pNewMinIntensity, 6);
 				mVideoWindow.setMinIntensity(lMinIntensity);
+				return super.setEventHook(pNewMinIntensity);
 			}
 		};
 
 		mMaximumIntensity = new DoubleVariable("MaximumIntensity", 1)
 		{
 			@Override
-			public void setValue(final double pMaxIntensity)
+			public double setEventHook(final double pNewMaxIntensity)
 			{
-				final double lMaxIntensity = Math.pow(pMaxIntensity, 6);
+				final double lMaxIntensity = Math.pow(pNewMaxIntensity, 6);
 				mVideoWindow.setMaxIntensity(lMaxIntensity);
+				return super.setEventHook(pNewMaxIntensity);
 			}
 		};
 	}
