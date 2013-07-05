@@ -30,7 +30,7 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 		{
 			if (getNumberOfStacks() == 0)
 				mMetaDataVariableBundleAsFile.write();
-			
+
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
 																									pStack.timestampns);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
@@ -89,6 +89,12 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	public void removeAllMetaDataVariables()
 	{
 		mMetaDataVariableBundleAsFile.removeAllVariables();
+	}
+
+	@Override
+	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	{
+		mMetaDataVariableBundleAsFile.removeVariable(pVariable);
 	}
 
 }

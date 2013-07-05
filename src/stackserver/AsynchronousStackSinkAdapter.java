@@ -68,6 +68,13 @@ public class AsynchronousStackSinkAdapter	implements
 		mStackSink.addMetaDataVariable(pPrefix, pVariable);
 	}
 
+	@Override
+	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	{
+		mStackSink.removeMetaDataVariable(pVariable);
+	}
+
+	@Override
 	public void removeAllMetaDataVariables()
 	{
 		mStackSink.removeAllMetaDataVariables();

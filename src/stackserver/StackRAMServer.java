@@ -68,4 +68,11 @@ public class StackRAMServer	implements
 		mMetaDataVariableBundle.removeAllVariables();
 	}
 
+	@Override
+	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	{
+		mMetaDataVariableBundle.removeVariable(pVariable);
+		
+	}
+
 }
