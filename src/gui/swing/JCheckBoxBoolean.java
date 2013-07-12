@@ -61,7 +61,7 @@ public class JCheckBoxBoolean extends JCheckBox
 			@Override
 			public void actionPerformed(final ActionEvent pE)
 			{
-				mBooleanVariable.toggle(mThis);
+				mBooleanVariable.toggle();
 
 				final boolean lButtonState = mBooleanVariable.getBooleanValue();
 				// System.out.println(lButtonState);

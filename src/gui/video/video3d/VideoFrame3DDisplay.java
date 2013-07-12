@@ -8,9 +8,10 @@ import variable.booleanv.BooleanVariable;
 import variable.objectv.ObjectVariable;
 import clearvolume.jcuda.JCudaClearVolumeRenderer;
 import clearvolume.transfertf.TransfertFunctions;
+import device.NamedDevice;
 import device.SignalStartableDevice;
 
-public class VideoFrame3DDisplay extends SignalStartableDevice
+public class VideoFrame3DDisplay extends NamedDevice
 {
 
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
@@ -27,6 +28,8 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 	public VideoFrame3DDisplay(	final String pWindowName,
 															final int pBytesPerVoxel)
 	{
+		super(pWindowName);
+		
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															768,
 																															768,

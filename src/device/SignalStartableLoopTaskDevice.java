@@ -9,9 +9,10 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	private SignalStartableLoopTaskDevice lThis;
 
-	public SignalStartableLoopTaskDevice()
+	public SignalStartableLoopTaskDevice(	final String pDeviceName,
+																				final boolean pOnlyStart)
 	{
-		super();
+		super(pDeviceName, pOnlyStart);
 		lThis = this;
 	}
 
@@ -26,22 +27,20 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	protected abstract boolean loop();
 
-
-
 	@Override
 	public boolean start()
 	{
 		mTaskThread.start();
 		return true;
 	}
-	
+
 	public boolean pause()
 	{
 		mTaskThread.pause();
 		mTaskThread.waitForPause();
 		return true;
 	}
-	
+
 	public boolean resume()
 	{
 		mTaskThread.resume();
@@ -52,6 +51,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	public boolean stop()
 	{
 		mTaskThread.stop();
+		mTaskThread.waitToFinish();
 		return true;
 	}
 

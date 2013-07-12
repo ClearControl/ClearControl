@@ -10,9 +10,10 @@ import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
+import device.NamedDevice;
 import device.SignalStartableDevice;
 
-public class VideoFrame2DDisplay extends SignalStartableDevice
+public class VideoFrame2DDisplay extends NamedDevice
 {
 	private final VideoWindow mVideoWindow;
 
@@ -46,6 +47,7 @@ public class VideoFrame2DDisplay extends SignalStartableDevice
 															final int pVideoHeight,
 															final int pBytesPerPixel)
 	{
+		super(pWindowName);
 
 		mVideoWindow = new VideoWindow(	pWindowName,
 																		pBytesPerPixel,

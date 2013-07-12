@@ -177,20 +177,7 @@ public abstract class EnhancedThread implements Runnable
 		setStopRequest(true);
 	}
 
-	public final void joinWhenStarted(final int pWaitTime)
-	{
-		while (isStarted() == false)
-		{
-			try
-			{
-				Thread.sleep(pWaitTime);
-			}
-			catch (final InterruptedException e)
-			{
-				e.printStackTrace(System.out);
-			}
-		}
-	}
+	
 
 	public final boolean isStarted()
 	{
@@ -222,6 +209,21 @@ public abstract class EnhancedThread implements Runnable
 		return mStarted && !mStopped && !mPaused;
 	}
 
+	public final void joinWhenStarted(final int pWaitTime)
+	{
+		while (isStarted() == false)
+		{
+			try
+			{
+				Thread.sleep(pWaitTime);
+			}
+			catch (final InterruptedException e)
+			{
+				e.printStackTrace(System.out);
+			}
+		}
+	}
+	
 	public final void waitToFinish()
 	{
 		synchronized (mWaitToFinnishLock)
@@ -352,5 +354,7 @@ public abstract class EnhancedThread implements Runnable
 			sleep(Long.MAX_VALUE);
 		}
 	}
+
+
 
 }

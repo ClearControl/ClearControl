@@ -6,9 +6,9 @@ public abstract class BaseDisplayDevice extends SignalStartableDevice	implements
 																																			Displayable
 {
 
-	public BaseDisplayDevice()
+	public BaseDisplayDevice(final String pDeviceName)
 	{
-		super();
+		super(pDeviceName);
 	}
 
 }

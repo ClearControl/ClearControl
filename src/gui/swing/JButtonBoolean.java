@@ -67,7 +67,7 @@ public class JButtonBoolean extends JButton
 					});
 				}
 
-				return pNewValue;
+				return super.setEventHook(pNewValue);
 			}
 		};
 
@@ -83,12 +83,12 @@ public class JButtonBoolean extends JButton
 			{
 				if (mButtonIsOnOffSwitch)
 				{
-					mBooleanVariable.toggle(mThis);
+					mBooleanVariable.toggle();
 				}
 				else
 				{
-					mBooleanVariable.setValue(mThis, true);
-					mBooleanVariable.setValue(mThis, false);
+					mBooleanVariable.setValue(true);
+					mBooleanVariable.setValue(false);
 				}
 
 				final boolean lButtonState = mBooleanVariable.getBooleanValue();

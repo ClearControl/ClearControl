@@ -101,19 +101,12 @@ public class BooleanVariable extends DoubleVariable	implements
 		setValue(boolean2double(pNewBooleanValue));
 	}
 
-	public final void toggle(final Object pDoubleEventSource)
+	public final void toggle()
 	{
 		final double lOldValue = getValue();
 		final double lNewToggledValue = lOldValue > 0 ? 0 : 1;
 
 		setValue(lNewToggledValue);
-	}
-
-	@Override
-	public void setValue(	final Object pDoubleEventSource,
-												final boolean pNewBooleanValue)
-	{
-		setValue(boolean2double(pNewBooleanValue));
 	}
 
 	protected void setBooleanValueInternal(boolean pNewBooleanValue)

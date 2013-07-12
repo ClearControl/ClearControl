@@ -3,30 +3,57 @@ package device;
 import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
-public abstract class SignalStartableDevice implements VirtualDevice
+public abstract class SignalStartableDevice extends NamedDevice	implements
+																																VirtualDevice
 {
-	protected BooleanVariable mStartStopSignal = new BooleanVariable(	"Start",
-																																		false);
 
-	public SignalStartableDevice()
+	protected final BooleanVariable mStartSignal;
+
+	protected final BooleanVariable mStopSignal;
+
+	public SignalStartableDevice(final String pDeviceName)
 	{
-		super();
-		mStartStopSignal.addEdgeListener(new BooleanEventListenerInterface()
+		this(pDeviceName, false);
+	}
+
+	public SignalStartableDevice(	final String pDeviceName,
+																final boolean pOnlyStart)
+	{
+		super(pDeviceName);
+
+		mStartSignal = new BooleanVariable(pDeviceName + "Start", false);
+
+		mStopSignal = new BooleanVariable(pDeviceName + "Stop", false);
+
+		mStartSignal.addEdgeListener(new BooleanEventListenerInterface()
 		{
 			@Override
 			public void fire(final boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue)
 					start();
-				else
+			}
+		});
+
+		mStopSignal.addEdgeListener(new BooleanEventListenerInterface()
+		{
+			@Override
+			public void fire(final boolean pCurrentBooleanValue)
+			{
+				if (pCurrentBooleanValue)
 					stop();
 			}
 		});
 	}
 
-	public BooleanVariable getStartStopBooleanVariable()
+	public BooleanVariable getStartSignalBooleanVariable()
 	{
-		return mStartStopSignal;
+		return mStartSignal;
+	}
+
+	public BooleanVariable getStopSignalBooleanVariable()
+	{
+		return mStopSignal;
 	}
 
 	@Override
