@@ -3,6 +3,9 @@ package stackserver;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Formatter;
 
@@ -14,12 +17,10 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 																													Closeable
 {
 
-	protected final Formatter mIndexFileFormatter;
-
 	public LocalFileStackSink(final File pRootFolder, final String pName) throws IOException
 	{
 		super(pRootFolder, pName, false);
-		mIndexFileFormatter = new Formatter(mIndexFile);
+
 	}
 
 	@Override
@@ -40,26 +41,34 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 			mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex,
 																					lDimensionsWithoutSize);
 
-			final long lNewNextFreeTypePosition = pStack.ndarray.writeToFileChannel(mBinaryFileChannel,
+			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false);
+			final long lNewNextFreeTypePosition = pStack.ndarray.writeToFileChannel(lBinnaryFileChannel,
 																																							mNextFreeTypePosition);
 
-			mBinaryFileChannel.force(false);
+			lBinnaryFileChannel.force(false);
+			lBinnaryFileChannel.close();
 
 			final String lDimensionsString = Arrays.toString(lDimensionsWithoutSize);
 			final String lTruncatedDimensionsString = lDimensionsString.substring(1,
 																																						lDimensionsString.length() - 1);
 
-			mIndexFileFormatter.format(	"%d\t%d\t%s\t%d\n",
-																	mNextFreeStackIndex,
-																	pStack.timestampns,
-																	lTruncatedDimensionsString,
-																	mNextFreeTypePosition);
+			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),
+																												StandardOpenOption.APPEND,
+																												StandardOpenOption.WRITE,
+																												StandardOpenOption.CREATE);
 
-			mIndexFileFormatter.flush();
+			final String lIndexLineString = String.format("%d\t%d\t%s\t%d\n",
+																										mNextFreeStackIndex,
+																										pStack.timestampns,
+																										lTruncatedDimensionsString,
+																										mNextFreeTypePosition);
+			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
+			final ByteBuffer lIndexLineStringByteBuffer = ByteBuffer.wrap(lIndexLineStringBytes);
+			lIndexFileChannel.write(lIndexLineStringByteBuffer);
+			lIndexFileChannel.force(true);
+			lIndexFileChannel.close();
 
 			mNextFreeTypePosition = lNewNextFreeTypePosition;
-
-			pStack.releaseFrame();
 
 			mNextFreeStackIndex++;
 			return true;
@@ -75,7 +84,6 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	public void close() throws IOException
 	{
 		super.close();
-		mIndexFileFormatter.close();
 	}
 
 	@Override

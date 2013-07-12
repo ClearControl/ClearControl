@@ -5,6 +5,7 @@ import java.io.IOException;
 import stack.Stack;
 import variable.VariableInterface;
 import variable.bundle.VariableBundle;
+import variable.objectv.ObjectVariable;
 import asyncprocs.AsynchronousProcessorBase;
 import asyncprocs.AsynchronousProcessorInterface;
 
@@ -15,6 +16,8 @@ public class AsynchronousStackSinkAdapter	implements
 	private StackSinkInterface mStackSink;
 
 	private AsynchronousProcessorInterface<Stack, Stack> mAsynchronousConversionProcessor;
+
+	private ObjectVariable<Stack> mFinishedProcessingStackVariable;
 
 	public AsynchronousStackSinkAdapter(final StackSinkInterface pStackSink,
 																			final int pMaxQueueSize)
@@ -29,7 +32,8 @@ public class AsynchronousStackSinkAdapter	implements
 			public Stack process(final Stack pStack)
 			{
 				mStackSink.appendStack(pStack);
-
+				if (mFinishedProcessingStackVariable != null)
+					mFinishedProcessingStackVariable.set(pStack);
 				return null;
 			}
 		};
@@ -79,5 +83,12 @@ public class AsynchronousStackSinkAdapter	implements
 	{
 		mStackSink.removeAllMetaDataVariables();
 	}
+
+	public void setFinishedProcessingStackVariable(ObjectVariable<Stack> pVariable)
+	{
+		mFinishedProcessingStackVariable = pVariable;
+	}
+
+
 
 }

@@ -1,5 +1,7 @@
 package stackserver;
 
+import java.io.Closeable;
+
 import stack.Stack;
 import variable.VariableInterface;
 import variable.bundle.VariableBundle;

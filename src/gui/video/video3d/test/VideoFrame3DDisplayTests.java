@@ -30,7 +30,7 @@ public class VideoFrame3DDisplayTests
 
 		final VideoFrame3DDisplay lVideoFrame3DDisplay = new VideoFrame3DDisplay();
 
-		final ObjectVariable<Stack> lFrameReferenceVariable = lVideoFrame3DDisplay.getFrameReferenceVariable();
+		final ObjectVariable<Stack> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackReferenceVariable();
 
 		lVideoFrame3DDisplay.open();
 

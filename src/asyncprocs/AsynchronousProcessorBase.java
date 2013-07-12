@@ -2,6 +2,7 @@ package asyncprocs;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import thread.EnhancedThread;
 
@@ -13,15 +14,24 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	private final LinkedBlockingQueue<I> mInputQueue;
 	private EnhancedThread mEnhancedThread;
 	private String mName;
+	private long mPollPeriodInSeconds;
+
+	public AsynchronousProcessorBase(	final String pName,
+																		final int pMaxQueueSize,
+																		final int pPollPeriodInSeconds)
+	{
+		super();
+		mName = pName;
+		mPollPeriodInSeconds = pPollPeriodInSeconds;
+		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize <= 0	? 1
+																																: pMaxQueueSize);
+
+	}
 
 	public AsynchronousProcessorBase(	final String pName,
 																		final int pMaxQueueSize)
 	{
-		super();
-		mName = pName;
-		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize <= 0	? 1
-																																: pMaxQueueSize);
-
+		this(pName, pMaxQueueSize, 1);
 	}
 
 	@Override
@@ -35,12 +45,16 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		mEnhancedThread = new EnhancedThread(mName)
 		{
+
 			@Override
 			public boolean loop()
 			{
 				try
 				{
-					final I lInput = mInputQueue.take();
+					final I lInput = mInputQueue.poll(mPollPeriodInSeconds,
+																						TimeUnit.SECONDS);
+					if (lInput == null)
+						return true;
 					final O lOutput = process(lInput);
 					if (lOutput != null)
 						send(lOutput);

@@ -2,6 +2,7 @@ package stackserver;
 
 import gnu.trove.list.array.TLongArrayList;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import recycling.Recycler;
@@ -74,5 +75,6 @@ public class StackRAMServer	implements
 		mMetaDataVariableBundle.removeVariable(pVariable);
 		
 	}
+
 
 }

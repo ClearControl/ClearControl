@@ -139,20 +139,22 @@ public class BooleanVariable extends DoubleVariable	implements
 		return pBooleanValue ? 1 : 0;
 	}
 
-	public void waitForTrueAndToggle()
+	public void waitForTrueAndToggleToFalse()
 	{
-		waitForStateAndToggle(true, 1, TimeUnit.MILLISECONDS);
+		waitForStateAndToggle(true, 1, 20000, TimeUnit.MILLISECONDS);
 	}
 
 	public void waitForFalseAndToggle()
 	{
-		waitForStateAndToggle(false, 1, TimeUnit.MILLISECONDS);
+		waitForStateAndToggle(false, 1, 20000, TimeUnit.MILLISECONDS);
 	}
 
 	public void waitForStateAndToggle(final boolean pState,
 																		final long pMaxPollingPeriod,
+																		final long pTimeOut,
 																		final TimeUnit pTimeUnit)
 	{
+		System.out.println("waitForStateAndToggle");
 		final CountDownLatch lIsTrueSignal = new CountDownLatch(1);
 		final BooleanVariable lThis = this;
 		BooleanEventListenerInterface lBooleanEventListenerInterface = new BooleanEventListenerInterface()
@@ -164,18 +166,31 @@ public class BooleanVariable extends DoubleVariable	implements
 				{
 					lIsTrueSignal.countDown();
 					lThis.setValue(!pState);
+					System.out.println("lThis.setValue(!pState);");
 				}
 			}
 		};
 
 		addEdgeListener(lBooleanEventListenerInterface);
 
+		long lTimeOutCounter = 0;
 		while (getBooleanValue() != pState)
 		{
+			System.out.println("while (getBooleanValue() != pState)");
 			try
 			{
 				if (lIsTrueSignal.await(pMaxPollingPeriod, pTimeUnit))
+				{
+					System.out.println("System.out.println(while (getBooleanValue() != pState));");
 					break;
+				}
+				else
+				{
+					System.out.println("lTimeOutCounter += pMaxPollingPeriod;");
+					lTimeOutCounter += pMaxPollingPeriod;
+					if (lTimeOutCounter >= pTimeOut)
+						break;
+				}
 			}
 			catch (InterruptedException e)
 			{

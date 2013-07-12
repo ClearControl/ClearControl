@@ -32,7 +32,6 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 																															768,
 																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
-		mJCudaClearVolumeRenderer.setupControlFrame();
 
 		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
 		{
@@ -54,7 +53,7 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 				
-				// pNewVideoFrameReference.releaseFrame();
+				pNewVideoFrameReference.releaseFrame();
 
 				return super.setEventHook(pNewVideoFrameReference);
 			}
@@ -78,7 +77,7 @@ public class VideoFrame3DDisplay extends SignalStartableDevice
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<Stack> getFrameReferenceVariable()
+	public ObjectVariable<Stack> getStackReferenceVariable()
 	{
 		return mObjectVariable;
 	}

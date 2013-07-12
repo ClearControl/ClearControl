@@ -14,7 +14,6 @@ public abstract class LocalFileStackBase extends StackBase implements
 {
 	protected final File mFolder;
 	protected final File mBinaryFile;
-	protected final FileChannel mBinaryFileChannel;
 	protected long mNextFreeStackIndex;
 	protected long mNextFreeTypePosition;
 
@@ -29,23 +28,17 @@ public abstract class LocalFileStackBase extends StackBase implements
 		super();
 		mFolder = new File(pRootFolder, pName);
 		mBinaryFile = new File(mFolder, "/data/data.bin");
+		
+		if(!pReadOnly && mBinaryFile.exists())
+			throw new IOException(this.getClass().getSimpleName()+": Cannot overwrite an existing file!");
+		
 		if (!pReadOnly)
-			mBinaryFile.getParentFile().mkdirs();
+		{
+			File lParentFile = mBinaryFile.getParentFile();
+			lParentFile.mkdirs();
+		}
 
 		mNextFreeTypePosition = 0;
-
-		if (pReadOnly)
-		{
-			mBinaryFileChannel = FileChannel.open(mBinaryFile.toPath(),
-																						StandardOpenOption.READ);
-		}
-		else
-		{
-			mBinaryFileChannel = FileChannel.open(mBinaryFile.toPath(),
-																						StandardOpenOption.APPEND,
-																						StandardOpenOption.WRITE,
-																						StandardOpenOption.CREATE_NEW);
-		}
 
 		mIndexFile = new File(mFolder, "/data/index.txt");
 		if (!pReadOnly)
@@ -60,6 +53,24 @@ public abstract class LocalFileStackBase extends StackBase implements
 																															false);
 	}
 
+	protected FileChannel getFileChannelForBinaryFile(final boolean pReadOnly) throws IOException
+	{
+		FileChannel lFileChannel;
+		if (pReadOnly)
+		{
+			lFileChannel = FileChannel.open(mBinaryFile.toPath(),
+																			StandardOpenOption.READ);
+		}
+		else
+		{
+			lFileChannel = FileChannel.open(mBinaryFile.toPath(),
+																			StandardOpenOption.APPEND,
+																			StandardOpenOption.WRITE,
+																			StandardOpenOption.CREATE);
+		}
+		return lFileChannel;
+	}
+
 	@Override
 	public VariableBundle getMetaDataVariableBundle()
 	{
@@ -69,8 +80,6 @@ public abstract class LocalFileStackBase extends StackBase implements
 	@Override
 	public void close() throws IOException
 	{
-		mBinaryFileChannel.force(true);
-		mBinaryFileChannel.close();
 		mMetaDataVariableBundleAsFile.close();
 	}
 

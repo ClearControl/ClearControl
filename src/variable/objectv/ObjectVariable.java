@@ -11,7 +11,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 																												ObjectInputOutputVariableInterface<O>
 {
 	protected volatile O mReference;
-	private final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
+	protected final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
 
 	public ObjectVariable(final String pVariableName)
 	{
@@ -90,25 +90,25 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	}
 
 	@Override
-	public final void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
+	public void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
 		mVariablesToSendUpdatesTo.add(pObjectVariable);
 	}
 
 	@Override
-	public final void doNotSendUpdatesTo(final ObjectVariable<O> pObjectVariable)
+	public void doNotSendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
 		mVariablesToSendUpdatesTo.remove(pObjectVariable);
 	}
 
 	@Override
-	public final void doNotSendAnyUpdates()
+	public void doNotSendAnyUpdates()
 	{
 		mVariablesToSendUpdatesTo.clear();
 	}
 
 	@Override
-	public final void syncWith(final ObjectVariable<O> pObjectVariable)
+	public void syncWith(final ObjectVariable<O> pObjectVariable)
 	{
 		this.sendUpdatesTo(pObjectVariable);
 		pObjectVariable.sendUpdatesTo(this);

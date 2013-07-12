@@ -1,18 +1,17 @@
 package variable;
 
-import stack.Stack;
 
-public class VariableListenerAdapter<T> implements
-																				VariableListener<Stack>
+public class VariableListenerAdapter<O> implements
+																				VariableListener<O>
 {
 
 	@Override
-	public void getEvent(Stack pCurrentValue)
+	public void getEvent(O pCurrentValue)
 	{
 	}
 
 	@Override
-	public void setEvent(Stack pCurrentValue, Stack pNewValue)
+	public void setEvent(O pCurrentValue, O pNewValue)
 	{
 	}
 

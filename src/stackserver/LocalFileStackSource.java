@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
 import recycling.Recycler;
@@ -49,9 +50,11 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 
 			final Stack lStack = mStackRecycler.requestRecyclableObject(lStackDimensions);
 
-			lStack.ndarray.readFromFileChannel(	mBinaryFileChannel,
+			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true);
+			lStack.ndarray.readFromFileChannel(	lBinarylFileChannel,
 																					lPositionInFileInType,
 																					lStack.ndarray.getArrayLength());
+			lBinarylFileChannel.close();
 
 			final long lTimeStampNs = mStackIndexToTimeStampInNanosecondsMap.get(pStackIndex);
 			lStack.timestampns = lTimeStampNs;
@@ -114,9 +117,6 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 	@Override
 	public void close() throws IOException
 	{
-		mBinaryFileChannel.force(true);
-		mBinaryFileChannel.close();
-
 		mMetaDataVariableBundleAsFile.close();
 	}
 

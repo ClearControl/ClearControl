@@ -22,6 +22,7 @@ import units.Units;
 
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 public class VideoWindow implements Closeable
 {
@@ -32,6 +33,7 @@ public class VideoWindow implements Closeable
 			mVideoWidth, mVideoHeight, mMaxBufferLength;
 	private int[] mPixelBufferIds;
 	private GLU mGLU;
+	private GLUT mGLUT;
 	private boolean mIsContextAvailable = false;
 
 	private int mTextureId;
@@ -93,6 +95,8 @@ public class VideoWindow implements Closeable
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{
 
+			
+
 			@Override
 			public void reshape(final GLAutoDrawable glautodrawable,
 													final int x,
@@ -106,9 +110,25 @@ public class VideoWindow implements Closeable
 				lGL2.glLoadIdentity();
 				lGL2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 				lGL2.glLoadIdentity();
-				lGL2.glOrtho(0, 1, 1, 0, 0, 2000);
+				final double lAspectRatioWH = ((double) pWidth) / pHeight;
+				final double lAspectRatioHW = ((double) pHeight) / pWidth;
+				
+				final double lOffsetWH = (lAspectRatioWH-1)/2;
+				final double lOffsetHW = (lAspectRatioHW-1)/2;
+
+				if (lAspectRatioWH >= 1)
+					lGL2.glOrtho(-lOffsetWH, lAspectRatioWH-lOffsetWH, 1, 0, 0, 2000);
+				else if (lAspectRatioHW >= 1)
+					lGL2.glOrtho(0, 1, lAspectRatioHW-lOffsetHW, -lOffsetHW, 0, 2000);
+
 				lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 				lGL2.glViewport(0, 0, pWidth, pHeight);
+				lGL2.glClearColor(0, 0, 0, 0);
+				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				lGL2.glFlush();
+				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				lGL2.glFlush();
+
 			}
 
 			@Override
@@ -116,6 +136,7 @@ public class VideoWindow implements Closeable
 			{
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 				mGLU = new GLU();
+				mGLUT = new GLUT();
 
 				if (!lGL2.isExtensionAvailable("GL_ARB_pixel_buffer_object"))
 				{
@@ -230,12 +251,12 @@ public class VideoWindow implements Closeable
 
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
+				
+				
+				lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 				if (!mDisplayOn)
-				{
-					lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-					lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT);
 					return;
-				}/**/
 
 				try
 				{
@@ -256,6 +277,9 @@ public class VideoWindow implements Closeable
 
 				final double lRatioEffective2MaxWidth = ((double) mVideoWidth) / mVideoMaxWidth;
 				final double lRatioEffective2MaxHeight = ((double) mVideoHeight) / mVideoMaxHeight;
+
+				final double lRatio = Math.min(	lRatioEffective2MaxWidth,
+																				lRatioEffective2MaxHeight);
 
 				lGL2.glTexCoord2d(0.0, 0.0);
 				lGL2.glVertex3d(0.0, 0.0, 0.0);

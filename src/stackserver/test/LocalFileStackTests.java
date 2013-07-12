@@ -29,6 +29,7 @@ public class LocalFileStackTests
 																					.getParentFile(),
 																			"LocalFileStackTests" + Math.random());
 		lRootFolder.mkdirs();
+		System.out.println(lRootFolder);
 
 		{
 			final LocalFileStackSink lLocalFileStackSink = new LocalFileStackSink(lRootFolder,
