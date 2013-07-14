@@ -103,7 +103,7 @@ public class JTextFieldString extends JPanel
 
 	}
 
-	public ObjectVariable<String> getDoubleVariable()
+	public ObjectVariable<String> getStringVariable()
 	{
 		return mObjectVariable;
 	}

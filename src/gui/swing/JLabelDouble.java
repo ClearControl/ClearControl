@@ -12,6 +12,8 @@ public class JLabelDouble extends JLabel
 	private JLabelDouble mThis;
 	private final String mFormatString;
 
+	private volatile double mNewValue;
+
 	private boolean mIntegerConstraint = false;
 
 	public JLabelDouble(final String pLabelName,
@@ -23,7 +25,7 @@ public class JLabelDouble extends JLabel
 														pFormatString,
 														pInicialValue));
 		mFormatString = pFormatString;
-		mIntegerConstraint = mIntegerConstraint;
+		mIntegerConstraint = pIntegerConstraint;
 		mThis = this;
 
 		mDoubleVariable = new DoubleVariable(pLabelName, pInicialValue)
@@ -31,7 +33,7 @@ public class JLabelDouble extends JLabel
 			@Override
 			public double setEventHook(final double pNewValue)
 			{
-				if (pNewValue != mThis.getDoubleValue())
+				if (pNewValue != mNewValue)
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -40,6 +42,7 @@ public class JLabelDouble extends JLabel
 							mThis.setText(getTextFromValue(	mIntegerConstraint,
 																							pFormatString,
 																							pNewValue));
+							mNewValue = pNewValue;
 						}
 
 					});
@@ -58,11 +61,6 @@ public class JLabelDouble extends JLabel
 			}
 		});
 
-	}
-
-	protected double getDoubleValue()
-	{
-		return Double.parseDouble(getText());
 	}
 
 	public DoubleVariable getDoubleVariable()

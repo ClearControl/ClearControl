@@ -50,8 +50,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean stop()
 	{
-		mTaskThread.stop();
-		mTaskThread.waitToFinish();
+		if (mTaskThread.isRunning())
+		{
+			mTaskThread.stop();
+			mTaskThread.waitToFinish();
+		}
 		return true;
 	}
 

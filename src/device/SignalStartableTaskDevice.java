@@ -39,6 +39,7 @@ public abstract class SignalStartableTaskDevice	extends
 	public boolean start()
 	{
 		mTaskThread.start();
+		mCancelBooleanVariable.setValue(false);
 		return true;
 	}
 
@@ -61,7 +62,6 @@ public abstract class SignalStartableTaskDevice	extends
 	{
 		mCancelBooleanVariable.setValue(true);
 		mTaskThread.stop();
-		mTaskThread.waitToFinish();
 		return true;
 	}
 
