@@ -164,8 +164,6 @@ public class JSliderDouble extends JPanel
 											@Override
 											public void changedUpdate(final DocumentEvent pE)
 											{
-												// TODO Auto-generated method stub
-
 											}
 										});
 
