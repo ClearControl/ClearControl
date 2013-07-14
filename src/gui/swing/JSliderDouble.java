@@ -92,7 +92,7 @@ public class JSliderDouble extends JPanel
 						}
 					});
 
-				return pNewValue;
+				return super.setEventHook(pNewValue);
 			}
 		};
 
@@ -136,7 +136,7 @@ public class JSliderDouble extends JPanel
 						mValueTextField.setBackground(Color.white);
 					}
 				}
-				catch (Throwable e)
+				catch (final Throwable e)
 				{
 					System.err.println(e.getLocalizedMessage());
 				}
@@ -150,19 +150,19 @@ public class JSliderDouble extends JPanel
 										{
 
 											@Override
-											public void removeUpdate(DocumentEvent pE)
+											public void removeUpdate(final DocumentEvent pE)
 											{
 												mValueTextField.setBackground(Color.red);
 											}
 
 											@Override
-											public void insertUpdate(DocumentEvent pE)
+											public void insertUpdate(final DocumentEvent pE)
 											{
 												mValueTextField.setBackground(Color.red);
 											}
 
 											@Override
-											public void changedUpdate(DocumentEvent pE)
+											public void changedUpdate(final DocumentEvent pE)
 											{
 												// TODO Auto-generated method stub
 
@@ -173,7 +173,7 @@ public class JSliderDouble extends JPanel
 		{
 
 			@Override
-			public void actionPerformed(ActionEvent pE)
+			public void actionPerformed(final ActionEvent pE)
 			{
 
 				final String lTextString = mValueTextField.getText().trim();
@@ -202,7 +202,7 @@ public class JSliderDouble extends JPanel
 						if (mSlider.getValue() != lSliderIntegerValue)
 							mSlider.setValue(lSliderIntegerValue);
 					}
-					catch (Throwable e)
+					catch (final Throwable e)
 					{
 						System.err.println(e.getLocalizedMessage());
 					}
@@ -248,11 +248,11 @@ public class JSliderDouble extends JPanel
 		return mSliderDoubleVariable;
 	}
 
-	private void writeValueIntoTextField(double lNewValue)
+	private void writeValueIntoTextField(final double lNewValue)
 	{
 		if (mIntegerConstraint)
 			mValueTextField.setText(String.format("%d", ((long) lNewValue)));
-		else 
+		else
 			mValueTextField.setText("" + lNewValue);
 	}
 
@@ -303,7 +303,7 @@ public class JSliderDouble extends JPanel
 		mIntegerConstraint = pIsIntegerConstraint;
 	}
 
-	private double constraintToIntegerIfNescessary(double pDouble)
+	private double constraintToIntegerIfNescessary(final double pDouble)
 	{
 		return mIntegerConstraint ? Math.round(pDouble) : pDouble;
 	}
