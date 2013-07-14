@@ -139,12 +139,16 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		return mInputQueue.remainingCapacity();
 	}
 
-	public void waitToFinish(final int pPollInterval)
+	public boolean waitToFinish(final int pTimeOutInMilliseconds)
 	{
-		while (!mInputQueue.isEmpty())
+		int lTimeOut = 0;
+		while (!mInputQueue.isEmpty() && lTimeOut < pTimeOutInMilliseconds)
 		{
-			EnhancedThread.sleep(pPollInterval);
+			EnhancedThread.sleep(1);
+			lTimeOut++;
 		}
+
+		return mInputQueue.isEmpty();
 	}
 
 	public LinkedBlockingQueue<I> getInputQueue()

@@ -21,9 +21,9 @@ public class AsynchronousProcessorNull<I,O> extends AsynchronousProcessorBase<I,
 
 
 	@Override
-	public void waitToFinish(final int pPollInterval)
+	public boolean waitToFinish(final int pPollInterval)
 	{
-		
+		return true;
 	}
 
 

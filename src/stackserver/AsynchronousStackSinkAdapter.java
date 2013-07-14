@@ -50,9 +50,9 @@ public class AsynchronousStackSinkAdapter	implements
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
 
-	public void waitToFinish(final int pPollIntervall)
+	public boolean waitToFinish(final int pTimeOutInMilliseconds)
 	{
-		mAsynchronousConversionProcessor.waitToFinish(pPollIntervall);
+		return mAsynchronousConversionProcessor.waitToFinish(pTimeOutInMilliseconds);
 	}
 
 	public boolean stop()

@@ -17,7 +17,7 @@ public interface AsynchronousProcessorInterface<I, O> extends
 	
 	public int getInputQueueLength();
 	
-	public void waitToFinish(final int pPollInterval);
+	public boolean waitToFinish(final int pPollInterval);
 
 	public boolean stop();
 

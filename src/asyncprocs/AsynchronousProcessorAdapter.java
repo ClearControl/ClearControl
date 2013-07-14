@@ -47,8 +47,9 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	}
 
 	@Override
-	public void waitToFinish(final int pPollInterval)
+	public boolean waitToFinish(final int pPollInterval)
 	{
+		return true;
 	}
 
 	@Override
