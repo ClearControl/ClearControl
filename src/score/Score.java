@@ -121,13 +121,6 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return mMovementList.size();
 	}
 
-	public int getNumberOfTimePointsPerMovement()
-	{
-		if (mMovementList.isEmpty())
-			return -1;
-		return mMovementList.get(0).getNumberOfTimePoints();
-	}
-
 	@Override
 	public String toString()
 	{
