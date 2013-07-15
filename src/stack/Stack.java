@@ -16,9 +16,14 @@ public class Stack implements RecyclableInterface
 	public int bpp;
 	public long index;
 	public long timestampns;
+	public double[] voxel;
 
 	public Stack()
 	{
+		voxel = new double[3];
+		voxel[0] = 1;
+		voxel[1] = 1;
+		voxel[2] = 1;
 	}
 
 	public Stack(	final long pImageIndex,
@@ -28,6 +33,8 @@ public class Stack implements RecyclableInterface
 								final int pDepth,
 								final int pBytesPerPixel)
 	{
+		this();
+
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
 		bpp = pBytesPerPixel;
@@ -36,12 +43,14 @@ public class Stack implements RecyclableInterface
 																										pWidth,
 																										pHeight,
 																										pDepth);
+
 	}
 
 	public Stack(	final NDArrayDirectBufferByte pNDArrayDirectBuffer,
 								final long pImageIndex,
 								final long pTimeStampInNanoseconds)
 	{
+		this();
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
 		bpp = 2;

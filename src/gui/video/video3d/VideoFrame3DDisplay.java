@@ -35,6 +35,7 @@ public class VideoFrame3DDisplay extends NamedDevice
 																															768,
 																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
+		mJCudaClearVolumeRenderer.setVoxelSize(1,1,1);
 
 		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
 		{
@@ -53,6 +54,7 @@ public class VideoFrame3DDisplay extends NamedDevice
 																											lWidth,
 																											lHeight,
 																											lDepth);
+				mJCudaClearVolumeRenderer.setVoxelSize(pNewVideoFrameReference.voxel[0],pNewVideoFrameReference.voxel[1],pNewVideoFrameReference.voxel[2]);
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 				
