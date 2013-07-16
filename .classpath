@@ -10,5 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ClearVolume"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogamp"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmathplot"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
