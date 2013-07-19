@@ -35,7 +35,7 @@ public class VideoFrame3DDisplay extends NamedDevice
 																															768,
 																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
-		mJCudaClearVolumeRenderer.setVoxelSize(1,1,1);
+		mJCudaClearVolumeRenderer.setVolumeSize(1,1,1);
 
 		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
 		{
@@ -54,7 +54,7 @@ public class VideoFrame3DDisplay extends NamedDevice
 																											lWidth,
 																											lHeight,
 																											lDepth);
-				mJCudaClearVolumeRenderer.setVoxelSize(pNewVideoFrameReference.voxel[0],pNewVideoFrameReference.voxel[1],pNewVideoFrameReference.voxel[2]);
+				mJCudaClearVolumeRenderer.setVolumeSize(pNewVideoFrameReference.volumeSize[0],pNewVideoFrameReference.volumeSize[1],pNewVideoFrameReference.volumeSize[2]);
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 				
@@ -131,5 +131,10 @@ public class VideoFrame3DDisplay extends NamedDevice
 	public boolean isShowing()
 	{
 		return mJCudaClearVolumeRenderer.isShowing();
+	}
+
+	public void disableClose()
+	{
+		mJCudaClearVolumeRenderer.disableClose();
 	}
 }

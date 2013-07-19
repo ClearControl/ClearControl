@@ -6,7 +6,7 @@ import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferByte;
 import recycling.RecyclableInterface;
 import recycling.Recycler;
 
-public class Stack implements RecyclableInterface
+public class Stack implements RecyclableInterface<Stack>
 {
 
 	private Recycler<Stack> mFrameRecycler;
@@ -16,14 +16,17 @@ public class Stack implements RecyclableInterface
 	public int bpp;
 	public long index;
 	public long timestampns;
-	public double[] voxel;
+	public double[] volumeSize;
 
 	public Stack()
 	{
-		voxel = new double[3];
-		voxel[0] = 1;
-		voxel[1] = 1;
-		voxel[2] = 1;
+	}
+	
+	public Stack(final int pStackDimension)
+	{
+		volumeSize = new double[pStackDimension];
+		for (int i = 0; i < pStackDimension; i++)
+			volumeSize[i] = 1;
 	}
 
 	public Stack(	final long pImageIndex,
@@ -33,7 +36,7 @@ public class Stack implements RecyclableInterface
 								final int pDepth,
 								final int pBytesPerPixel)
 	{
-		this();
+		this(3);
 
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
@@ -50,7 +53,7 @@ public class Stack implements RecyclableInterface
 								final long pImageIndex,
 								final long pTimeStampInNanoseconds)
 	{
-		this();
+		this(pNDArrayDirectBuffer.getDimension());
 		index = pImageIndex;
 		timestampns = pTimeStampInNanoseconds;
 		bpp = 2;
@@ -104,6 +107,8 @@ public class Stack implements RecyclableInterface
 																											pWidth,
 																											pHeight,
 																											pDepth);
+			
+			volumeSize = new double[3];
 			final ByteBuffer lUnderlyingByteBuffer = ndarray.getUnderlyingByteBuffer();
 			lUnderlyingByteBuffer.clear();
 			pByteBufferToBeCopied.rewind();
@@ -126,6 +131,7 @@ public class Stack implements RecyclableInterface
 																											lWidth,
 																											lHeight,
 																											lDepth);
+			volumeSize = new double[3];
 		}
 	}
 
@@ -166,7 +172,7 @@ public class Stack implements RecyclableInterface
 	}
 
 	@Override
-	public void setRecycler(final Recycler pRecycler)
+	public void setRecycler(final Recycler<Stack> pRecycler)
 	{
 		mFrameRecycler = pRecycler;
 	}

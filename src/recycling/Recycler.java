@@ -3,7 +3,7 @@ package recycling;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Recycler<R extends RecyclableInterface>
+public class Recycler<R extends RecyclableInterface<R>>
 {
 	private final Class<R> mRecyclableClass;
 	private final ConcurrentLinkedQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedQueue<SoftReference<R>>();

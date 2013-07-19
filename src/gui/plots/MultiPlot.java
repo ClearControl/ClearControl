@@ -37,7 +37,8 @@ public class MultiPlot
 		mFrame = new JFrame(pName);
 		mFrame.setSize(512, 320);
 		mFrame.getContentPane().setLayout(new BorderLayout(0, 0));
-		mFrame.setIconImage(sIcon.getImage());
+		if (sIcon != null)
+			mFrame.setIconImage(sIcon.getImage());
 
 		mTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		mFrame.getContentPane().add(mTabbedPane, BorderLayout.CENTER);
@@ -56,6 +57,17 @@ public class MultiPlot
 		}
 
 		return lPlotTab;
+	}
+	
+	public void clear()
+	{
+		mTabbedPane.removeAll();
+		mNameToPlotMap.clear();
+	}
+
+	public void setVisible(boolean pIsVisible)
+	{
+		mFrame.setVisible(pIsVisible);
 	}
 
 }

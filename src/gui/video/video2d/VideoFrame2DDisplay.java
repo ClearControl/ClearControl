@@ -198,4 +198,9 @@ public class VideoFrame2DDisplay extends NamedDevice
 		return true;
 	}
 
+	public void disableClose()
+	{
+		mVideoWindow.disableClose();
+	}
+
 }

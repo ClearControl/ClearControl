@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
+import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
 import javax.media.opengl.GLAutoDrawable;
@@ -27,7 +28,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class VideoWindow implements Closeable
 {
 
-	GLWindow mGLWindow;
+	private GLWindow mGLWindow;
 
 	private int mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
 			mVideoWidth, mVideoHeight, mMaxBufferLength;
@@ -95,8 +96,6 @@ public class VideoWindow implements Closeable
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{
 
-			
-
 			@Override
 			public void reshape(final GLAutoDrawable glautodrawable,
 													final int x,
@@ -112,14 +111,26 @@ public class VideoWindow implements Closeable
 				lGL2.glLoadIdentity();
 				final double lAspectRatioWH = ((double) pWidth) / pHeight;
 				final double lAspectRatioHW = ((double) pHeight) / pWidth;
-				
-				final double lOffsetWH = (lAspectRatioWH-1)/2;
-				final double lOffsetHW = (lAspectRatioHW-1)/2;
 
-				if (lAspectRatioWH >= 1)
-					lGL2.glOrtho(-lOffsetWH, lAspectRatioWH-lOffsetWH, 1, 0, 0, 2000);
-				else if (lAspectRatioHW >= 1)
-					lGL2.glOrtho(0, 1, lAspectRatioHW-lOffsetHW, -lOffsetHW, 0, 2000);
+				// final double lOffsetWH = (lAspectRatioWH - 1) / 2;
+				// final double lOffsetHW = (lAspectRatioHW - 1) / 2;
+
+				lGL2.glOrtho(0, 1, 1, 0, 0, 2000);
+
+				// if (lAspectRatioWH >= 1)
+				/*	lGL2.glOrtho(	-lOffsetWH,
+												lAspectRatioWH - lOffsetWH,
+												1,
+												0,
+												0,
+												2000);
+				/*else if (lAspectRatioHW >= 1)
+					lGL2.glOrtho(	0,
+												1,
+												lAspectRatioHW - lOffsetHW,
+												-lOffsetHW,
+												0,
+												2000);/*/
 
 				lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 				lGL2.glViewport(0, 0, pWidth, pHeight);
@@ -251,8 +262,6 @@ public class VideoWindow implements Closeable
 
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
-				
-				
 				lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 				if (!mDisplayOn)
@@ -275,24 +284,37 @@ public class VideoWindow implements Closeable
 				// lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 				lGL2.glBegin(GL2.GL_QUADS);
 
-				final double lRatioEffective2MaxWidth = ((double) mVideoWidth) / mVideoMaxWidth;
-				final double lRatioEffective2MaxHeight = ((double) mVideoHeight) / mVideoMaxHeight;
+				final double lRatioEffective2MaxWidth = ((double) lWidth) / mVideoMaxWidth;
+				final double lRatioEffective2MaxHeight = ((double) lHeight) / mVideoMaxHeight;
 
-				final double lRatio = Math.min(	lRatioEffective2MaxWidth,
-																				lRatioEffective2MaxHeight);
+				double x, y, w, h;
+				if (lWidth < lHeight)
+				{
+					w = (double) lWidth / lHeight;
+					h = (double) 1;
+					x = (1 - w) / 2;
+					y = 0;
+				}
+				else
+				{
+					w = (double) 1;
+					h = (double) lHeight / lWidth;
+					x = 0;
+					y = (1 - h) / 2;
+				}
 
 				lGL2.glTexCoord2d(0.0, 0.0);
-				lGL2.glVertex3d(0.0, 0.0, 0.0);
+				lGL2.glVertex3d(x, y, 0.0);
 
 				lGL2.glTexCoord2d(lRatioEffective2MaxWidth, 0.0);
-				lGL2.glVertex3d(1, 0.0, 0.0);
+				lGL2.glVertex3d(x + w, y, 0.0);
 
 				lGL2.glTexCoord2d(lRatioEffective2MaxWidth,
 													lRatioEffective2MaxHeight);
-				lGL2.glVertex3d(1, 1, 0.0);
+				lGL2.glVertex3d(x + w, y + h, 0.0);
 
 				lGL2.glTexCoord2d(0.0, lRatioEffective2MaxHeight);
-				lGL2.glVertex3d(0.0, 1, 0.0);
+				lGL2.glVertex3d(x, y + h, 0.0);
 				lGL2.glEnd();
 				/**/
 
@@ -700,6 +722,11 @@ public class VideoWindow implements Closeable
 	public void setManualMinMax(final boolean manualMinMax)
 	{
 		mManualMinMax = manualMinMax;
+	}
+
+	public void disableClose()
+	{
+		mGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
 
 }
