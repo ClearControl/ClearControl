@@ -84,12 +84,13 @@ public class VideoFrame2DDisplayTests extends JFrame
 																												0)
 		{
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 				sDisplay = lBoolean;
 				System.out.println("sDisplay=" + sDisplay);
-				return pNewValue;
+				return setEventHook(pOldValue, pNewValue);
 			}
 		});
 
@@ -102,14 +103,15 @@ public class VideoFrame2DDisplayTests extends JFrame
 		{
 
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				sValue = pNewValue;
 				System.out.println(pNewValue);
 
 				// generateNoiseBuffer(lFrame.buffer, pNewValue);
 				// lFrameVariable.setReference(lFrame);
-				return pNewValue;
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		});
 

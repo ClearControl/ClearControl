@@ -29,7 +29,6 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	@Override
 	public void setCurrent()
 	{
-		EventPropagator.clear();
 		setValue(mValue);
 	}
 
@@ -51,29 +50,36 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		setValue(pNewValue);
 	}
 
+	public void markAsTraversed()
+	{
+		EventPropagator.add(this);
+	}
+
 	public boolean setValueInternal(final double pNewValue)
 	{
 		if (EventPropagator.hasBeenTraversed(this))
 			return false;
+		markAsTraversed();
 
-		final double lNewValueAfterHook = setEventHook(pNewValue);
+		final double lOldValueBeforeHook = mValue;
+		mValue = setEventHook(lOldValueBeforeHook, pNewValue);
+		notifyListenersOfSetEvent(lOldValueBeforeHook, pNewValue);
 
-		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
 		{
 			for (final DoubleVariable lDoubleVariable : mVariablesToSendUpdatesTo)
 				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
 				{
-					lDoubleVariable.setValueInternal(lNewValueAfterHook);
+					lDoubleVariable.setValueInternal(mValue);
 				}
 		}
-		mValue = lNewValueAfterHook;
+
 		return true;
 	}
 
-	public double setEventHook(final double pNewValue)
+	public double setEventHook(	final double pOldValue,
+															final double pNewValue)
 	{
-		notifyListenersOfSetEvent(mValue,pNewValue);
 		return pNewValue;
 	}
 

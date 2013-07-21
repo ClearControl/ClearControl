@@ -4,14 +4,11 @@ import gui.video.video2d.jogl.VideoWindow;
 
 import java.io.IOException;
 
-import javax.media.opengl.GLException;
-
 import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
 import device.NamedDevice;
-import device.SignalStartableDevice;
 
 public class VideoFrame2DDisplay extends NamedDevice
 {
@@ -58,7 +55,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 		{
 
 			@Override
-			public Stack setEventHook(Stack pNewFrameReference)
+			public Stack setEventHook(final Stack pNewFrameReference)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 
@@ -78,11 +75,12 @@ public class VideoFrame2DDisplay extends NamedDevice
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
 		{
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				final boolean lDisplayOn = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setDisplayOn(lDisplayOn);
-				return super.setEventHook(pNewValue);
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 
@@ -90,33 +88,36 @@ public class VideoFrame2DDisplay extends NamedDevice
 																									false)
 		{
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				final boolean lManualMinMax = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setManualMinMax(lManualMinMax);
-				return super.setEventHook(pNewValue);
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 
 		mMinimumIntensity = new DoubleVariable("MinimumIntensity", 0)
 		{
 			@Override
-			public double setEventHook(final double pNewMinIntensity)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewMinIntensity)
 			{
 				final double lMinIntensity = Math.pow(pNewMinIntensity, 6);
 				mVideoWindow.setMinIntensity(lMinIntensity);
-				return super.setEventHook(pNewMinIntensity);
+				return super.setEventHook(pOldValue, pNewMinIntensity);
 			}
 		};
 
 		mMaximumIntensity = new DoubleVariable("MaximumIntensity", 1)
 		{
 			@Override
-			public double setEventHook(final double pNewMaxIntensity)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewMaxIntensity)
 			{
 				final double lMaxIntensity = Math.pow(pNewMaxIntensity, 6);
 				mVideoWindow.setMaxIntensity(lMaxIntensity);
-				return super.setEventHook(pNewMaxIntensity);
+				return super.setEventHook(pOldValue, pNewMaxIntensity);
 			}
 		};
 	}

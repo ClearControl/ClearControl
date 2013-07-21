@@ -45,7 +45,8 @@ public class JButtonBoolean extends JButton
 																						pInitialState)
 		{
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
 				// if (pDoubleEventSource != mThis)
@@ -67,7 +68,7 @@ public class JButtonBoolean extends JButton
 					});
 				}
 
-				return super.setEventHook(pNewValue);
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 

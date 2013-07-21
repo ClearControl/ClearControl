@@ -28,7 +28,8 @@ public class JCheckBoxBoolean extends JCheckBox
 		{
 
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
 				// if (pDoubleEventSource != mThis)
@@ -50,7 +51,7 @@ public class JCheckBoxBoolean extends JCheckBox
 					});
 				}
 
-				return pNewValue;
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 

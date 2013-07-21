@@ -31,7 +31,8 @@ public class JLabelDouble extends JLabel
 		mDoubleVariable = new DoubleVariable(pLabelName, pInicialValue)
 		{
 			@Override
-			public double setEventHook(final double pNewValue)
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
 			{
 				if (pNewValue != mNewValue)
 					EventQueue.invokeLater(new Runnable()
@@ -46,7 +47,7 @@ public class JLabelDouble extends JLabel
 						}
 
 					});
-				return super.setEventHook(pNewValue);
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 
