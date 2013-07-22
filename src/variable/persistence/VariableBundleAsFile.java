@@ -19,7 +19,7 @@ public class VariableBundleAsFile extends VariableBundle
 {
 	private final ExecutorService cSingleThreadExecutor = Executors.newSingleThreadExecutor();
 
-	private final TreeMap<String, VariableInterface> mPrefixWithNameToVariableMap = new TreeMap<String, VariableInterface>();
+	private final TreeMap<String, VariableInterface<?>> mPrefixWithNameToVariableMap = new TreeMap<String, VariableInterface<?>>();
 
 	private final VariableListener mVariableListener;
 
@@ -77,6 +77,13 @@ public class VariableBundleAsFile extends VariableBundle
 		registerListener(pVariable);
 	}
 
+	@Override
+	public <O> void removeVariable(VariableInterface<O> pVariable)
+	{
+		unregisterListener(pVariable);
+		super.removeVariable(pVariable);
+	}
+
 	public void removeAllVariables()
 	{
 		unregisterListenerForAllVariables();
@@ -84,23 +91,28 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	@Override
-	public VariableInterface getVariable(final String pPrefixAndName)
+	public VariableInterface<?> getVariable(final String pPrefixAndName)
 	{
 		return mPrefixWithNameToVariableMap.get(pPrefixAndName);
 	}
 
-	private void registerListener(final VariableInterface pVariable)
+	private void registerListener(final VariableInterface<?> pVariable)
 	{
 		if (pVariable instanceof DoubleVariable)
 		{
 			final DoubleVariable lDoubleVariable = (DoubleVariable) pVariable;
-			lDoubleVariable.addListener(mVariableListener);
+			lDoubleVariable.addListener((VariableListener<Double>) mVariableListener);
 		}
 		else if (pVariable instanceof ObjectVariable<?>)
 		{
 			final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) pVariable;
 			lObjectVariable.addListener(mVariableListener);
 		}
+	}
+
+	private void unregisterListener(final VariableInterface<?> pVariable)
+	{
+		pVariable.removeListener(mVariableListener);
 	}
 
 	private void unregisterListenerForAllVariables()
@@ -133,7 +145,7 @@ public class VariableBundleAsFile extends VariableBundle
 							final String lKey = lEqualsSplitStringArray[0].trim();
 							final String lValue = lEqualsSplitStringArray[1].trim();
 
-							final VariableInterface lVariable = mPrefixWithNameToVariableMap.get(lKey);
+							final VariableInterface<?> lVariable = mPrefixWithNameToVariableMap.get(lKey);
 
 							if (lVariable instanceof DoubleVariable)
 							{
@@ -168,7 +180,7 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	private void readDoubleVariable(final String lValue,
-																	final VariableInterface lVariable)
+																	final VariableInterface<?> lVariable)
 	{
 		final DoubleVariable lDoubleVariable = (DoubleVariable) lVariable;
 
@@ -189,7 +201,7 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	private void readObjectVariable(final String lValue,
-																	final VariableInterface lVariable)
+																	final VariableInterface<?> lVariable)
 	{
 		/*final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
 
@@ -206,7 +218,7 @@ public class VariableBundleAsFile extends VariableBundle
 			try
 			{
 				lFormatter = new Formatter(mFile);
-				for (final Map.Entry<String, VariableInterface> lVariableEntry : mPrefixWithNameToVariableMap.entrySet())
+				for (final Map.Entry<String, VariableInterface<?>> lVariableEntry : mPrefixWithNameToVariableMap.entrySet())
 				{
 					final String lVariablePrefixAndName = lVariableEntry.getKey();
 					final VariableInterface<?> lVariable = lVariableEntry.getValue();
