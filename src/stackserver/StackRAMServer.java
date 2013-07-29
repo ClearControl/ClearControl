@@ -52,7 +52,7 @@ public class StackRAMServer	implements
 	@Override
 	public boolean appendStack(final Stack pStack)
 	{
-		mStackTimePointList.add(pStack.timestampns);
+		mStackTimePointList.add(pStack.mTimeStampInNanoseconds);
 		return mStackList.add(pStack);
 	}
 

@@ -51,14 +51,14 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 			final Stack lStack = mStackRecycler.requestRecyclableObject(lStackDimensions);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true);
-			lStack.ndarray.readFromFileChannel(	lBinarylFileChannel,
-																					lPositionInFileInType,
-																					lStack.ndarray.getArrayLength());
+			lStack.mNDimensionalArray.readFromFileChannel(lBinarylFileChannel,
+																										lPositionInFileInType,
+																										lStack.mNDimensionalArray.getArrayLength());
 			lBinarylFileChannel.close();
 
 			final long lTimeStampNs = mStackIndexToTimeStampInNanosecondsMap.get(pStackIndex);
-			lStack.timestampns = lTimeStampNs;
-			lStack.index = pStackIndex;
+			lStack.mTimeStampInNanoseconds = lTimeStampNs;
+			lStack.mStackIndex = pStackIndex;
 
 			return lStack;
 		}

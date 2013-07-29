@@ -10,23 +10,24 @@ public class Stack implements RecyclableInterface<Stack>
 {
 
 	private Recycler<Stack> mFrameRecycler;
-	private volatile boolean isReleased;
+	private volatile boolean mIsReleased;
 
-	public NDArrayDirectBufferByte ndarray;
-	public int bpp;
-	public long index;
-	public long timestampns;
-	public double[] volumeSize;
+	public NDArrayDirectBufferByte mNDimensionalArray;
+	public int mBytesPerPixel;
+	public long mStackIndex;
+	public long mTimeStampInNanoseconds;
+	public double[] mVolumeSize;
+	public int mNumberOfImagesPerPlane = 1;
 
 	public Stack()
 	{
 	}
-	
+
 	public Stack(final int pStackDimension)
 	{
-		volumeSize = new double[pStackDimension];
+		mVolumeSize = new double[pStackDimension];
 		for (int i = 0; i < pStackDimension; i++)
-			volumeSize[i] = 1;
+			mVolumeSize[i] = 1;
 	}
 
 	public Stack(	final long pImageIndex,
@@ -38,14 +39,14 @@ public class Stack implements RecyclableInterface<Stack>
 	{
 		this(3);
 
-		index = pImageIndex;
-		timestampns = pTimeStampInNanoseconds;
-		bpp = pBytesPerPixel;
+		mStackIndex = pImageIndex;
+		mTimeStampInNanoseconds = pTimeStampInNanoseconds;
+		mBytesPerPixel = pBytesPerPixel;
 
-		ndarray = NDArrayDirectBufferByte.allocateSXYZ(	bpp,
-																										pWidth,
-																										pHeight,
-																										pDepth);
+		mNDimensionalArray = NDArrayDirectBufferByte.allocateSXYZ(mBytesPerPixel,
+																															pWidth,
+																															pHeight,
+																															pDepth);
 
 	}
 
@@ -54,40 +55,40 @@ public class Stack implements RecyclableInterface<Stack>
 								final long pTimeStampInNanoseconds)
 	{
 		this(pNDArrayDirectBuffer.getDimension());
-		index = pImageIndex;
-		timestampns = pTimeStampInNanoseconds;
-		bpp = 2;
-		ndarray = pNDArrayDirectBuffer;
+		mStackIndex = pImageIndex;
+		mTimeStampInNanoseconds = pTimeStampInNanoseconds;
+		mBytesPerPixel = 2;
+		mNDimensionalArray = pNDArrayDirectBuffer;
 	}
 
 	public ByteBuffer getByteBuffer()
 	{
-		return ndarray.getUnderlyingByteBuffer();
+		return mNDimensionalArray.getUnderlyingByteBuffer();
 	}
 
 	public int getWidth()
 	{
-		return ndarray.getWidth();
+		return mNDimensionalArray.getWidth();
 	}
 
 	public int getHeight()
 	{
-		return ndarray.getHeight();
+		return mNDimensionalArray.getHeight();
 	}
 
 	public int getDepth()
 	{
-		return ndarray.getDepth();
+		return mNDimensionalArray.getDepth();
 	}
 
 	public int getDimension()
 	{
-		return ndarray.getDimension();
+		return mNDimensionalArray.getDimension();
 	}
 
 	public int getDimensionWithoutSizeDimension()
 	{
-		return ndarray.getDimension();
+		return mNDimensionalArray.getDimension();
 	}
 
 	public void copyFrom(	final ByteBuffer pByteBufferToBeCopied,
@@ -97,19 +98,19 @@ public class Stack implements RecyclableInterface<Stack>
 												final int pDepth,
 												final int pBytesPerPixel)
 	{
-		index = pImageIndex;
-		bpp = pBytesPerPixel;
+		mStackIndex = pImageIndex;
+		mBytesPerPixel = pBytesPerPixel;
 
 		final int lBufferLengthInBytes = pByteBufferToBeCopied.limit();
-		if (ndarray == null || ndarray.getArrayLengthInBytes() != lBufferLengthInBytes)
+		if (mNDimensionalArray == null || mNDimensionalArray.getArrayLengthInBytes() != lBufferLengthInBytes)
 		{
-			ndarray = NDArrayDirectBufferByte.allocateSXYZ(	pBytesPerPixel,
-																											pWidth,
-																											pHeight,
-																											pDepth);
-			
-			volumeSize = new double[3];
-			final ByteBuffer lUnderlyingByteBuffer = ndarray.getUnderlyingByteBuffer();
+			mNDimensionalArray = NDArrayDirectBufferByte.allocateSXYZ(pBytesPerPixel,
+																																pWidth,
+																																pHeight,
+																																pDepth);
+
+			mVolumeSize = new double[3];
+			final ByteBuffer lUnderlyingByteBuffer = mNDimensionalArray.getUnderlyingByteBuffer();
 			lUnderlyingByteBuffer.clear();
 			pByteBufferToBeCopied.rewind();
 			lUnderlyingByteBuffer.put(pByteBufferToBeCopied);
@@ -119,19 +120,19 @@ public class Stack implements RecyclableInterface<Stack>
 	@Override
 	public void initialize(final int... pParameters)
 	{
-		bpp = pParameters[0];
+		mBytesPerPixel = pParameters[0];
 		final int lWidth = pParameters[1];
 		final int lHeight = pParameters[2];
 		final int lDepth = pParameters[3];
 
-		final int length = lWidth * lHeight * lDepth * bpp;
-		if (ndarray == null || ndarray.getArrayLengthInBytes() != length)
+		final int length = lWidth * lHeight * lDepth * mBytesPerPixel;
+		if (mNDimensionalArray == null || mNDimensionalArray.getArrayLengthInBytes() != length)
 		{
-			ndarray = NDArrayDirectBufferByte.allocateSXYZ(	bpp,
-																											lWidth,
-																											lHeight,
-																											lDepth);
-			volumeSize = new double[3];
+			mNDimensionalArray = NDArrayDirectBufferByte.allocateSXYZ(mBytesPerPixel,
+																																lWidth,
+																																lHeight,
+																																lDepth);
+			mVolumeSize = new double[3];
 		}
 	}
 
@@ -139,10 +140,10 @@ public class Stack implements RecyclableInterface<Stack>
 	{
 		if (mFrameRecycler != null)
 		{
-			if (isReleased)
+			if (mIsReleased)
 				throw new RuntimeException("Object " + this.hashCode()
 																		+ " Already released!");
-			isReleased = true;
+			mIsReleased = true;
 
 			mFrameRecycler.release(this);
 		}
@@ -152,23 +153,23 @@ public class Stack implements RecyclableInterface<Stack>
 	public String toString()
 	{
 		return String.format(	this.getClass().getSimpleName() + " [ BytesPerVoxel=%d, width=%d, height=%d, depth=%d, index=%d, timestampns=%d ]",
-													bpp,
-													ndarray.getWidth(),
-													ndarray.getHeight(),
-													ndarray.getDepth(),
-													index,
-													timestampns);
+													mBytesPerPixel,
+													mNDimensionalArray.getWidth(),
+													mNDimensionalArray.getHeight(),
+													mNDimensionalArray.getDepth(),
+													mStackIndex,
+													mTimeStampInNanoseconds);
 	}
 
 	public boolean isReleased()
 	{
-		return isReleased;
+		return mIsReleased;
 	}
 
 	@Override
 	public void setReleased(final boolean isReleased)
 	{
-		this.isReleased = isReleased;
+		this.mIsReleased = isReleased;
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.Formatter;
 
 import stack.Stack;
 import variable.VariableInterface;
@@ -33,17 +32,17 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 				mMetaDataVariableBundleAsFile.write();
 
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
-																									pStack.timestampns);
+																									pStack.mTimeStampInNanoseconds);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
-			final int[] lDimensionsWithoutSize = pStack.ndarray.getDimensions();
+			final int[] lDimensionsWithoutSize = pStack.mNDimensionalArray.getDimensions();
 			mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex,
 																					lDimensionsWithoutSize);
 
 			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false);
-			final long lNewNextFreeTypePosition = pStack.ndarray.writeToFileChannel(lBinnaryFileChannel,
-																																							mNextFreeTypePosition);
+			final long lNewNextFreeTypePosition = pStack.mNDimensionalArray.writeToFileChannel(	lBinnaryFileChannel,
+																																													mNextFreeTypePosition);
 
 			lBinnaryFileChannel.force(false);
 			lBinnaryFileChannel.close();
@@ -53,13 +52,13 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 																																						lDimensionsString.length() - 1);
 
 			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),
-																												StandardOpenOption.APPEND,
-																												StandardOpenOption.WRITE,
-																												StandardOpenOption.CREATE);
+																															StandardOpenOption.APPEND,
+																															StandardOpenOption.WRITE,
+																															StandardOpenOption.CREATE);
 
 			final String lIndexLineString = String.format("%d\t%d\t%s\t%d\n",
 																										mNextFreeStackIndex,
-																										pStack.timestampns,
+																										pStack.mTimeStampInNanoseconds,
 																										lTruncatedDimensionsString,
 																										mNextFreeTypePosition);
 			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
@@ -87,8 +86,8 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	}
 
 	@Override
-	public void addMetaDataVariable(String pPrefix,
-																	VariableInterface<?> pVariable)
+	public void addMetaDataVariable(final String pPrefix,
+																	final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
 	}
@@ -100,7 +99,7 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	}
 
 	@Override
-	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.removeVariable(pVariable);
 	}

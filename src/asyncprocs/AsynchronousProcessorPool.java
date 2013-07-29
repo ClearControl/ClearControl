@@ -89,6 +89,16 @@ public class AsynchronousProcessorPool<I, O>	extends
 		mProcessor = pProcessor;
 	}
 
+	public AsynchronousProcessorPool(	final String pName,
+																		final int pMaxQueueSize,
+																		final ProcessorInterface<I, O> pProcessor)
+	{
+		this(	pName,
+					pMaxQueueSize,
+					Runtime.getRuntime().availableProcessors(),
+					pProcessor);
+	}
+
 	@Override
 	public boolean start()
 	{
@@ -170,7 +180,5 @@ public class AsynchronousProcessorPool<I, O>	extends
 
 		super.close();
 	}
-
-
 
 }

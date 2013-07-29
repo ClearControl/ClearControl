@@ -62,7 +62,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 				mVideoWindow.setSourceBuffer(pNewFrameReference.getByteBuffer());
 				mVideoWindow.setWidth(pNewFrameReference.getWidth());
 				mVideoWindow.setHeight(pNewFrameReference.getHeight());
-				mVideoWindow.setBytesPerPixel(pNewFrameReference.bpp);
+				mVideoWindow.setBytesPerPixel(pNewFrameReference.mBytesPerPixel);
 				mVideoWindow.notifyNewFrame();
 
 				mVideoWindow.display();

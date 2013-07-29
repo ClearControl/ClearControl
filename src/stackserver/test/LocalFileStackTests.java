@@ -45,13 +45,13 @@ public class LocalFileStackTests
 			final Stack lStack = new Stack(0, 0, 128, 128, 32, 2);
 
 			assertEquals(	128 * 128 * 32 * 2,
-										lStack.ndarray.getArrayLength());
-			System.out.println(lStack.ndarray.getArrayLength() * 2);
+										lStack.mNDimensionalArray.getArrayLength());
+			System.out.println(lStack.mNDimensionalArray.getArrayLength() * 2);
 
 			for (int i = 0; i < 10; i++)
 			{
 				assertTrue(lLocalFileStackSink.appendStack(lStack));
-				lStack.ndarray.add((byte) 1);
+				lStack.mNDimensionalArray.add((byte) 1);
 			}
 
 			assertEquals(10, lLocalFileStackSink.getNumberOfStacks());
@@ -76,7 +76,7 @@ public class LocalFileStackTests
 			for (int i = 0; i < 10; i++)
 			{
 				lStack = lLocalFileStackSource.getStack(i);
-				final byte lValue = lStack.ndarray.getAt(0, 0, 0);
+				final byte lValue = lStack.mNDimensionalArray.getAt(0, 0, 0);
 				System.out.println(lValue);
 				assertEquals(i, lValue);
 			}

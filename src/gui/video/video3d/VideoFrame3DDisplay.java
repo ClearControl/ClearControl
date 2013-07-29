@@ -54,7 +54,7 @@ public class VideoFrame3DDisplay extends NamedDevice
 																											lWidth,
 																											lHeight,
 																											lDepth);
-				mJCudaClearVolumeRenderer.setVolumeSize(pNewVideoFrameReference.volumeSize[0],pNewVideoFrameReference.volumeSize[1],pNewVideoFrameReference.volumeSize[2]);
+				mJCudaClearVolumeRenderer.setVolumeSize(pNewVideoFrameReference.mVolumeSize[0],pNewVideoFrameReference.mVolumeSize[1],pNewVideoFrameReference.mVolumeSize[2]);
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 				
