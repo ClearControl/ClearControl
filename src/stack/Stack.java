@@ -9,7 +9,7 @@ import recycling.Recycler;
 public class Stack implements RecyclableInterface<Stack>
 {
 
-	private Recycler<Stack> mFrameRecycler;
+	private Recycler<Stack> mStackRecycler;
 	private volatile boolean mIsReleased;
 
 	public NDArrayDirectBufferByte mNDimensionalArray;
@@ -138,14 +138,14 @@ public class Stack implements RecyclableInterface<Stack>
 
 	public void releaseFrame()
 	{
-		if (mFrameRecycler != null)
+		if (mStackRecycler != null)
 		{
 			if (mIsReleased)
 				throw new RuntimeException("Object " + this.hashCode()
 																		+ " Already released!");
 			mIsReleased = true;
 
-			mFrameRecycler.release(this);
+			mStackRecycler.release(this);
 		}
 	}
 
@@ -175,7 +175,7 @@ public class Stack implements RecyclableInterface<Stack>
 	@Override
 	public void setRecycler(final Recycler<Stack> pRecycler)
 	{
-		mFrameRecycler = pRecycler;
+		mStackRecycler = pRecycler;
 	}
 
 }

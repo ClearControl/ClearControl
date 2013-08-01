@@ -29,6 +29,7 @@ public class VideoWindow implements Closeable
 {
 
 	private GLWindow mGLWindow;
+	private String mWindowName;
 
 	private int mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
 			mVideoWidth, mVideoHeight, mMaxBufferLength;
@@ -54,6 +55,7 @@ public class VideoWindow implements Closeable
 	private volatile double mFrameRate;
 
 	private volatile boolean mDisplayFrameRate = true;
+	private volatile long mDisplayFrameRateLastDisplayTime = 0;
 	private final TextRenderer mTextRenderer = new TextRenderer(new Font(	"Helvetica",
 																																				Font.PLAIN,
 																																				12));
@@ -78,6 +80,7 @@ public class VideoWindow implements Closeable
 											final int pVideoMaxHeight) throws GLException
 	{
 		this();
+		mWindowName = pWindowName;
 		mBytesPerPixel = pBytesPerPixel;
 		mVideoMaxWidth = pVideoMaxWidth;
 		mVideoMaxHeight = pVideoMaxHeight;
@@ -91,7 +94,7 @@ public class VideoWindow implements Closeable
 		else
 			mGLWindow.setSize(pVideoMaxWidth, pVideoMaxHeight);
 
-		mGLWindow.setTitle(pWindowName);
+		mGLWindow.setTitle(mWindowName);
 
 		mGLWindow.addGLEventListener(new GLEventListener()
 		{
@@ -318,16 +321,23 @@ public class VideoWindow implements Closeable
 				lGL2.glEnd();
 				/**/
 
-				if (mDisplayFrameRate)
+				final long lTimeInNanoseconds = System.nanoTime();
+				if (mDisplayFrameRate && lTimeInNanoseconds>mDisplayFrameRateLastDisplayTime+20*1000*1000)
 				{
+					mDisplayFrameRateLastDisplayTime = lTimeInNanoseconds;
+					final String lTitleString = String.format("%s %.0f fps",
+																						mWindowName,
+																						mFrameRate);
+					mGLWindow.setTitle(lTitleString);
+					/*
 					mTextRenderer.beginRendering(	mGLWindow.getWidth(),
 																				mGLWindow.getHeight());
 					// optionally set the color
 					mTextRenderer.setColor(1f, 1f, 1f, 0.5f);
-					mTextRenderer.draw(	String.format("%.0f fps", mFrameRate),
+					mTextRenderer.draw(	,
 															15,
 															15);
-					mTextRenderer.endRendering();
+					mTextRenderer.endRendering();/**/
 
 				}
 			}
