@@ -3,6 +3,8 @@ package gui.video.video3d;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import asyncprocs.AsynchronousProcessorBase;
+
 import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.objectv.ObjectVariable;
@@ -17,50 +19,79 @@ public class VideoFrame3DDisplay extends NamedDevice
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
 
 	private final ObjectVariable<Stack> mObjectVariable;
+	
+	private AsynchronousProcessorBase<Stack, Object> mAsynchronousDisplayUpdater;
 
 	private final BooleanVariable mDisplayOn;
+
+
 
 	public VideoFrame3DDisplay()
 	{
 		this("3d Video Display", 1);
 	}
-
+	
 	public VideoFrame3DDisplay(	final String pWindowName,
 															final int pBytesPerVoxel)
 	{
+		this(pWindowName,pBytesPerVoxel,2);
+	}
+
+	public VideoFrame3DDisplay(	final String pWindowName,
+															final int pBytesPerVoxel,
+															final int pUpdaterQueueLength)
+	{
 		super(pWindowName);
-		
+
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															768,
 																															768,
 																															pBytesPerVoxel);
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
-		mJCudaClearVolumeRenderer.setVolumeSize(1,1,1);
+		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);
 
-		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack, Object>(	"AsynchronousDisplayUpdater-"+pWindowName,
+																																								pUpdaterQueueLength)
 		{
-
 			@Override
-			public Stack setEventHook(Stack pNewVideoFrameReference)
+			public Object process(Stack pStack)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 
-				final ByteBuffer lByteBuffer = pNewVideoFrameReference.getByteBuffer();
-				final int lWidth = pNewVideoFrameReference.getWidth();
-				final int lHeight = pNewVideoFrameReference.getHeight();
-				final int lDepth = pNewVideoFrameReference.getDepth();
+				final ByteBuffer lByteBuffer = pStack.getByteBuffer();
+				final int lWidth = pStack.getWidth();
+				final int lHeight = pStack.getHeight();
+				final int lDepth = pStack.getDepth();
 
 				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
 																											lWidth,
 																											lHeight,
 																											lDepth);
-				mJCudaClearVolumeRenderer.setVolumeSize(pNewVideoFrameReference.mVolumeSize[0],pNewVideoFrameReference.mVolumeSize[1],pNewVideoFrameReference.mVolumeSize[2]);
+				mJCudaClearVolumeRenderer.setVolumeSize(pStack.mVolumeSize[0],
+				                                        pStack.mVolumeSize[1],
+				                                        pStack.mVolumeSize[2]);
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
-				
-				pNewVideoFrameReference.releaseFrame();
 
-				return super.setEventHook(pNewVideoFrameReference);
+				pStack.releaseFrame();
+
+				return null;
+			}
+		};
+
+		mAsynchronousDisplayUpdater.start();
+
+		mObjectVariable = new ObjectVariable<Stack>("VideoFrame")
+		{
+
+			@Override
+			public Stack setEventHook(Stack pStack)
+			{
+				if(!mAsynchronousDisplayUpdater.passOrFail(pStack))
+				{
+					pStack.releaseFrame();
+				}
+				return super.setEventHook(pStack);
 			}
 
 		};

@@ -4,6 +4,8 @@ import gui.video.video2d.jogl.VideoWindow;
 
 import java.io.IOException;
 
+import asyncprocs.AsynchronousProcessorBase;
+
 import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
@@ -14,12 +16,14 @@ public class VideoFrame2DDisplay extends NamedDevice
 {
 	private final VideoWindow mVideoWindow;
 
-	private final ObjectVariable<Stack> mObjectVariable;
+	private final ObjectVariable<Stack> mInputStackVariable;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
 	private final DoubleVariable mMinimumIntensity;
 	private final DoubleVariable mMaximumIntensity;
+
+	private AsynchronousProcessorBase<Stack, Object> mAsynchronousDisplayUpdater;
 
 	public VideoFrame2DDisplay()
 	{
@@ -44,6 +48,15 @@ public class VideoFrame2DDisplay extends NamedDevice
 															final int pVideoHeight,
 															final int pBytesPerPixel)
 	{
+		this(pWindowName, pVideoWidth, pVideoHeight, pBytesPerPixel, 10);
+	}
+
+	public VideoFrame2DDisplay(	final String pWindowName,
+															final int pVideoWidth,
+															final int pVideoHeight,
+															final int pBytesPerPixel,
+															final int pUpdaterQueueLength)
+	{
 		super(pWindowName);
 
 		mVideoWindow = new VideoWindow(	pWindowName,
@@ -51,23 +64,37 @@ public class VideoFrame2DDisplay extends NamedDevice
 																		pVideoWidth,
 																		pVideoHeight);
 
-		mObjectVariable = new ObjectVariable<Stack>(pWindowName)
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack, Object>(	"AsynchronousDisplayUpdater",
+																																								pUpdaterQueueLength)
 		{
-
 			@Override
-			public Stack setEventHook(final Stack pNewFrameReference)
+			public Object process(Stack pStack)
 			{
-				// System.out.println(pNewFrameReference.buffer);
-
-				mVideoWindow.setSourceBuffer(pNewFrameReference.getByteBuffer());
-				mVideoWindow.setWidth(pNewFrameReference.getWidth());
-				mVideoWindow.setHeight(pNewFrameReference.getHeight());
-				mVideoWindow.setBytesPerPixel(pNewFrameReference.mBytesPerPixel);
+				mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
+				mVideoWindow.setWidth(pStack.getWidth());
+				mVideoWindow.setHeight(pStack.getHeight());
+				mVideoWindow.setBytesPerPixel(pStack.mBytesPerPixel);
 				mVideoWindow.notifyNewFrame();
 
 				mVideoWindow.display();
-				pNewFrameReference.releaseFrame();
-				return super.setEventHook(pNewFrameReference);
+				pStack.releaseFrame();
+				return null;
+			}
+		};
+
+		mAsynchronousDisplayUpdater.start();
+
+		mInputStackVariable = new ObjectVariable<Stack>(pWindowName)
+		{
+
+			@Override
+			public Stack setEventHook(final Stack pStack)
+			{
+				if (!mAsynchronousDisplayUpdater.passOrFail(pStack))
+				{
+					pStack.releaseFrame();
+				}
+				return super.setEventHook(pStack);
 			}
 
 		};
@@ -144,7 +171,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 
 	public ObjectVariable<Stack> getFrameReferenceVariable()
 	{
-		return mObjectVariable;
+		return mInputStackVariable;
 	}
 
 	public void setVisible(final boolean pIsVisible)
@@ -188,6 +215,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 	@Override
 	public boolean start()
 	{
+
 		mDisplayOn.setValue(true);
 		return true;
 	}
@@ -195,6 +223,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 	@Override
 	public boolean stop()
 	{
+
 		mDisplayOn.setValue(false);
 		return true;
 	}

@@ -58,4 +58,10 @@ public class AsynchronousProcessorAdapter<I, O> implements
 		return 0;
 	}
 
+	@Override
+	public int getRemainingCapacity()
+	{
+		return 0;
+	}
+
 }

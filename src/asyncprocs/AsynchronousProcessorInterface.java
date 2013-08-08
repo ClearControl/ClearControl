@@ -15,11 +15,13 @@ public interface AsynchronousProcessorInterface<I, O> extends
 
 	public boolean passOrFail(I pObject);
 	
-	public int getInputQueueLength();
-	
 	public boolean waitToFinish(final int pPollInterval);
 
 	public boolean stop();
+
+	public int getInputQueueLength();
+	
+	public int getRemainingCapacity();
 
 
 
