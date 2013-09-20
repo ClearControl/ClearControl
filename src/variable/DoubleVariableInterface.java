@@ -1,9 +1,13 @@
 package variable;
 
+import variable.doublev.DoubleInputVariableInterface;
+import variable.doublev.DoubleOutputVariableInterface;
 import variable.doublev.DoubleVariable;
 
 public interface DoubleVariableInterface extends
-																				VariableInterface<Double>
+																				VariableInterface<Double>,
+																				DoubleInputVariableInterface,
+																				DoubleOutputVariableInterface
 {
 
 	public void sendUpdatesTo(DoubleVariable pVariable);
@@ -15,5 +19,5 @@ public interface DoubleVariableInterface extends
 	public void syncWith(DoubleVariable pVariable);
 
 	public void doNotSyncWith(DoubleVariable pVariable);
-	/**/
+
 }

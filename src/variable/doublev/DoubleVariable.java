@@ -7,8 +7,7 @@ import variable.EventPropagator;
 import variable.NamedVariable;
 
 public class DoubleVariable extends NamedVariable<Double>	implements
-																													DoubleVariableInterface,
-																													DoubleInputOutputVariableInterface
+																													DoubleVariableInterface
 
 {
 	protected volatile double mValue;
