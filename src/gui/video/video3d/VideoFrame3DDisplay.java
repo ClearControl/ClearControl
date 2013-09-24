@@ -3,15 +3,13 @@ package gui.video.video3d;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import asyncprocs.AsynchronousProcessorBase;
-
 import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.objectv.ObjectVariable;
+import asyncprocs.AsynchronousProcessorBase;
 import clearvolume.jcuda.JCudaClearVolumeRenderer;
 import clearvolume.transfertf.TransfertFunctions;
 import device.NamedDevice;
-import device.SignalStartableDevice;
 
 public class VideoFrame3DDisplay extends NamedDevice
 {

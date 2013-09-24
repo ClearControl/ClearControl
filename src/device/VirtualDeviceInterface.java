@@ -1,6 +1,6 @@
 package device;
 
-public interface VirtualDevice
+public interface VirtualDeviceInterface
 {
 	public boolean open();
 

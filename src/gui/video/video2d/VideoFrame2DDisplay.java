@@ -4,12 +4,11 @@ import gui.video.video2d.jogl.VideoWindow;
 
 import java.io.IOException;
 
-import asyncprocs.AsynchronousProcessorBase;
-
 import stack.Stack;
 import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
+import asyncprocs.AsynchronousProcessorBase;
 import device.NamedDevice;
 
 public class VideoFrame2DDisplay extends NamedDevice

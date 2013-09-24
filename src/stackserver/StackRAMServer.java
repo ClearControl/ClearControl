@@ -2,14 +2,12 @@ package stackserver;
 
 import gnu.trove.list.array.TLongArrayList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import recycling.Recycler;
 import stack.Stack;
 import variable.VariableInterface;
 import variable.bundle.VariableBundle;
-import variable.persistence.VariableBundleAsFile;
 
 public class StackRAMServer	implements
 														StackSinkInterface,

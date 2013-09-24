@@ -4,7 +4,7 @@ import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableDevice extends NamedDevice	implements
-																																VirtualDevice
+																																VirtualDeviceInterface
 {
 
 	protected final BooleanVariable mStartSignal;

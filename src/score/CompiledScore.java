@@ -7,7 +7,6 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import score.interfaces.MovementInterface;
-import score.interfaces.ScoreInterface;
 
 public class CompiledScore
 {

@@ -43,10 +43,7 @@ public class Parallel
 		public int end; // exclusive ending point
 	}
 
-	/**
-	 * Parallel.Tasks
-	 */
-	public static void Tasks(final Task[] tasks)
+	public static void runTasks(final Task[] tasks)
 	{
 		final ExecutorService executor = Executors.newFixedThreadPool(iCPU);
 		final ArrayList<Future<?>> futures = new ArrayList<Future<?>>();

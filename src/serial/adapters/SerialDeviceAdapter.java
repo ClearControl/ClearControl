@@ -1,11 +1,9 @@
-package serial;
+package serial.adapters;
 
-public interface SerialBinaryDeviceAdapter
+public interface SerialDeviceAdapter
 {
 
 	public byte[] getGetValueCommandMessage();
-
-	public int getGetValueReturnMessageLength();
 
 	public Double parseValue(byte[] pMessage);
 	
@@ -13,8 +11,6 @@ public interface SerialBinaryDeviceAdapter
 
 	public byte[] getSetValueCommandMessage(double value);
 
-	public int getSetValueReturnMessageLength();
-	
 	public long getSetValueReturnWaitTimeInMilliseconds();
 
 	public boolean checkAcknowledgementSetValueReturnMessage(byte[] pMessage);

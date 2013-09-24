@@ -1,10 +1,10 @@
 package asyncprocs;
 
 import variable.objectv.ObjectVariable;
-import device.VirtualDevice;
+import device.VirtualDeviceInterface;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
-																															VirtualDevice
+																															VirtualDeviceInterface
 {
 	private final ObjectVariable<I> mInputObjectVariable;
 	private final ObjectVariable<O> mOutputObjectVariable;

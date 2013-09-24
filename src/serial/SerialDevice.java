@@ -1,22 +1,21 @@
 package serial;
 
 import jssc.SerialPortException;
+import serial.adapters.SerialBinaryDeviceAdapter;
+import serial.adapters.SerialTextDeviceAdapter;
 import serialcom.Serial;
-import serialcom.SerialInterface;
-import serialcom.SerialListener;
-import serialcom.SerialListenerAdapter;
-import thread.EnhancedThread;
 import variable.VariableInterface;
+import variable.booleanv.BooleanVariable;
 import variable.bundle.VariableBundle;
 import variable.doublev.DoubleVariable;
 import device.NamedDevice;
-import device.VirtualDevice;
+import device.VirtualDeviceInterface;
 
 public class SerialDevice extends NamedDevice	implements
-																							VirtualDevice
+																							VirtualDeviceInterface
 {
 
-	private final Serial mSerial;
+	protected final Serial mSerial;
 	private final String mPortName;
 	private final VariableBundle mVariableBundle;
 
@@ -49,22 +48,23 @@ public class SerialDevice extends NamedDevice	implements
 			{
 				try
 				{
-					synchronized (mDeviceLock)
-					{
-						mSerial.setBinaryMode(true);
-						mSerial.setMessageLength(pSerialBinaryDevice.getGetValueReturnMessageLength());
-						mSerial.write(cGetValueCommand);
-						sleep(pSerialBinaryDevice.getGetValueReturnWaitTimeInMilliseconds());
-						final byte[] lAnswerMessage = mSerial.readBinaryMessage();
-						return pSerialBinaryDevice.parseValue(lAnswerMessage);
-					}
+					if (cGetValueCommand != null)
+						synchronized (mDeviceLock)
+						{
+							mSerial.setBinaryMode(true);
+							mSerial.setMessageLength(pSerialBinaryDevice.getGetValueReturnMessageLength());
+							mSerial.write(cGetValueCommand);
+							sleep(pSerialBinaryDevice.getGetValueReturnWaitTimeInMilliseconds());
+							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
+							return pSerialBinaryDevice.parseValue(lAnswerMessage);
+						}
 				}
 				catch (final SerialPortException e)
 				{
 					// TODO handle error
 					return pCurrentValue;
 				}
-
+				return Double.NaN;
 			}
 
 			@Override
@@ -73,16 +73,81 @@ public class SerialDevice extends NamedDevice	implements
 			{
 				try
 				{
-					synchronized (mDeviceLock)
-					{
-						mSerial.setBinaryMode(true);
-						mSerial.setMessageLength(pSerialBinaryDevice.getSetValueReturnMessageLength());
-						mSerial.write(pSerialBinaryDevice.getSetValueCommandMessage(pNewValue));
-						sleep(pSerialBinaryDevice.getSetValueReturnWaitTimeInMilliseconds());
-						final byte[] lAnswerMessage = mSerial.readBinaryMessage();
-						if (lAnswerMessage != null)
-							pSerialBinaryDevice.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
-					}
+					byte[] lSetValueCommandMessage = pSerialBinaryDevice.getSetValueCommandMessage(pNewValue);
+					if (lSetValueCommandMessage != null)
+						synchronized (mDeviceLock)
+						{
+							mSerial.setBinaryMode(true);
+							mSerial.setMessageLength(pSerialBinaryDevice.getSetValueReturnMessageLength());
+							mSerial.write(lSetValueCommandMessage);
+							sleep(pSerialBinaryDevice.getSetValueReturnWaitTimeInMilliseconds());
+							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
+							if (lAnswerMessage != null)
+								pSerialBinaryDevice.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+						}
+				}
+				catch (final SerialPortException e)
+				{
+					// TODO handle error
+				}
+				return super.setEventHook(pOldValue, pNewValue);
+			}
+
+		};
+
+		mVariableBundle.addVariable(lDoubleVariable);
+		return lDoubleVariable;
+	}
+
+	public DoubleVariable addSerialDoubleVariable(final String pVariableName,
+																								final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
+	{
+		final DoubleVariable lDoubleVariable = new DoubleVariable(pVariableName)
+		{
+			final byte[] cGetValueCommand = pSerialTextDeviceAdapter.getGetValueCommandMessage();
+
+			@Override
+			public double getEventHook(final double pCurrentValue)
+			{
+				try
+				{
+					if (cGetValueCommand != null && mSerial.isConnected())
+						synchronized (mDeviceLock)
+						{
+							mSerial.setBinaryMode(false);
+							mSerial.setLineTerminationCharacter(pSerialTextDeviceAdapter.getGetValueReturnMessageTerminationCharacter());
+							mSerial.write(cGetValueCommand);
+							sleep(pSerialTextDeviceAdapter.getGetValueReturnWaitTimeInMilliseconds());
+							final byte[] lAnswerMessage = mSerial.readTextMessage();
+							return pSerialTextDeviceAdapter.parseValue(lAnswerMessage);
+						}
+				}
+				catch (final SerialPortException e)
+				{
+					// TODO handle error
+					return pCurrentValue;
+				}
+				return Double.NaN;
+			}
+
+			@Override
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
+			{
+				try
+				{
+					byte[] lSetValueCommandMessage = pSerialTextDeviceAdapter.getSetValueCommandMessage(pNewValue);
+					if (lSetValueCommandMessage != null && mSerial.isConnected())
+						synchronized (mDeviceLock)
+						{
+							mSerial.setBinaryMode(false);
+							mSerial.setLineTerminationCharacter(pSerialTextDeviceAdapter.getSetValueReturnMessageTerminationCharacter());
+							mSerial.write(lSetValueCommandMessage);
+							sleep(pSerialTextDeviceAdapter.getSetValueReturnWaitTimeInMilliseconds());
+							final byte[] lAnswerMessage = mSerial.readTextMessage();
+							if (lAnswerMessage != null)
+								pSerialTextDeviceAdapter.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+						}
 				}
 				catch (final SerialPortException e)
 				{
@@ -99,13 +164,36 @@ public class SerialDevice extends NamedDevice	implements
 
 	protected void sleep(long pSleepTimeInMilliseconds)
 	{
-		try
-		{
-			Thread.sleep(pSleepTimeInMilliseconds);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		if (pSleepTimeInMilliseconds > 0)
+			try
+			{
+				Thread.sleep(pSleepTimeInMilliseconds);
+			}
+			catch (InterruptedException e)
+			{
+			}
+	}
+	
+	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
+																									final SerialBinaryDeviceAdapter pSerialBinaryDevice)
+	{
+		DoubleVariable lDoubleVariable = addSerialDoubleVariable(pVariableName, pSerialBinaryDevice);
+		
+		BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,false);
+		lProxyBooleanVariable.syncWith(lDoubleVariable);
+		
+		return lProxyBooleanVariable;
+	}
+	
+	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
+																									final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
+	{
+		DoubleVariable lDoubleVariable = addSerialDoubleVariable(pVariableName, pSerialTextDeviceAdapter);
+		
+		BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,false);
+		lProxyBooleanVariable.syncWith(lDoubleVariable);
+		
+		return lProxyBooleanVariable;
 	}
 
 	public final VariableBundle getVariableBundle()
@@ -131,7 +219,9 @@ public class SerialDevice extends NamedDevice	implements
 	{
 		try
 		{
-			return mSerial.connect(mPortName);
+			boolean lConnected = mSerial.connect(mPortName);
+			mSerial.purge();
+			return lConnected;
 		}
 		catch (final SerialPortException e)
 		{

@@ -1,10 +1,7 @@
 package stackserver;
 
-import java.io.IOException;
-
 import stack.Stack;
 import variable.VariableInterface;
-import variable.bundle.VariableBundle;
 import variable.objectv.ObjectVariable;
 import asyncprocs.AsynchronousProcessorBase;
 import asyncprocs.AsynchronousProcessorInterface;

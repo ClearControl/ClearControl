@@ -66,7 +66,7 @@ public class ParallelTests
 
 		// parallel tasks
 		System.out.println("Parallel Tasks:");
-		Parallel.Tasks(new Task[]
+		Parallel.runTasks(new Task[]
 		{
 			// task-1
 			new Task()

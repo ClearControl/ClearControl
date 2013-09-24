@@ -1,12 +1,11 @@
 package device;
 
 import thread.EnhancedThread;
-import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
 																								SignalStartableDevice	implements
-																																			VirtualDevice,
+																																			VirtualDeviceInterface,
 																																			Runnable
 {
 

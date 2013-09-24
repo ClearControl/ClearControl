@@ -2,7 +2,6 @@ package variable.bundle;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import variable.NamedVariable;
 import variable.VariableInterface;

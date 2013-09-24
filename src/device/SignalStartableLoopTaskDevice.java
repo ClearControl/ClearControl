@@ -4,7 +4,7 @@ import thread.EnhancedThread;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
-																																					VirtualDevice
+																																					VirtualDeviceInterface
 {
 
 	private SignalStartableLoopTaskDevice lThis;

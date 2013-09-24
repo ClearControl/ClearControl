@@ -1,6 +1,5 @@
 package score.staves;
 
-import score.functions.BinaryPattern;
 import score.functions.BinaryPattern2;
 import score.interfaces.StaveInterface;
 
