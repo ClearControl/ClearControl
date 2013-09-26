@@ -35,15 +35,18 @@ public abstract class SignalStartableDevice extends NamedDevice	implements
 			}
 		});
 
-		mStopSignal.addEdgeListener(new BooleanEventListenerInterface()
+		if (!pOnlyStart)
 		{
-			@Override
-			public void fire(final boolean pCurrentBooleanValue)
+			mStopSignal.addEdgeListener(new BooleanEventListenerInterface()
 			{
-				if (pCurrentBooleanValue)
-					stop();
-			}
-		});
+				@Override
+				public void fire(final boolean pCurrentBooleanValue)
+				{
+					if (pCurrentBooleanValue)
+						stop();
+				}
+			});
+		}
 	}
 
 	public BooleanVariable getStartSignalBooleanVariable()
