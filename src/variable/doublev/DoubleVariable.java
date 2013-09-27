@@ -63,17 +63,23 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		final double lOldValueBeforeHook = mValue;
 		mValue = setEventHook(lOldValueBeforeHook, pNewValue);
 		notifyListenersOfSetEvent(lOldValueBeforeHook, pNewValue);
+		sync(pNewValue,false);
 
+		return true;
+	}
+
+	public void sync(final double pNewValue, boolean pClearEventQueue)
+	{
+		if (pClearEventQueue)
+			EventPropagator.clear();
 		if (mVariablesToSendUpdatesTo != null)
 		{
 			for (final DoubleVariable lDoubleVariable : mVariablesToSendUpdatesTo)
 				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
 				{
-					lDoubleVariable.setValueInternal(mValue);
+					lDoubleVariable.setValueInternal(pNewValue);
 				}
 		}
-
-		return true;
 	}
 
 	public double setEventHook(	final double pOldValue,
