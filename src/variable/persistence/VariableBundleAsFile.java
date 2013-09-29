@@ -45,14 +45,17 @@ public class VariableBundleAsFile extends VariableBundle
 		{
 
 			@Override
-			public void getEvent(Object pCurrentValue)
+			public void getEvent(final Object pCurrentValue)
 			{
 				if (pAutoReadOnGet)
+				{
 					read();
+				}
 			}
 
 			@Override
-			public void setEvent(Object pCurrentValue, Object pNewValue)
+			public void setEvent(	final Object pCurrentValue,
+														final Object pNewValue)
 			{
 				writeAsynchronously();
 			}
@@ -78,12 +81,13 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	@Override
-	public <O> void removeVariable(VariableInterface<O> pVariable)
+	public <O> void removeVariable(final VariableInterface<O> pVariable)
 	{
 		unregisterListener(pVariable);
 		super.removeVariable(pVariable);
 	}
 
+	@Override
 	public void removeAllVariables()
 	{
 		unregisterListenerForAllVariables();
@@ -101,7 +105,7 @@ public class VariableBundleAsFile extends VariableBundle
 		if (pVariable instanceof DoubleVariable)
 		{
 			final DoubleVariable lDoubleVariable = (DoubleVariable) pVariable;
-			lDoubleVariable.addListener((VariableListener<Double>) mVariableListener);
+			lDoubleVariable.addListener(mVariableListener);
 		}
 		else if (pVariable instanceof ObjectVariable<?>)
 		{
@@ -117,8 +121,8 @@ public class VariableBundleAsFile extends VariableBundle
 
 	private void unregisterListenerForAllVariables()
 	{
-		Collection<VariableInterface<?>> lAllVariables = getAllVariables();
-		for (VariableInterface<?> lVariable : lAllVariables)
+		final Collection<VariableInterface<?>> lAllVariables = getAllVariables();
+		for (final VariableInterface<?> lVariable : lAllVariables)
 		{
 			lVariable.removeListener(mVariableListener);
 		}
@@ -133,6 +137,7 @@ public class VariableBundleAsFile extends VariableBundle
 			{
 				Scanner lScanner = null;
 				if (mFile.exists())
+				{
 					try
 					{
 						lScanner = new Scanner(mFile);
@@ -167,6 +172,7 @@ public class VariableBundleAsFile extends VariableBundle
 					{
 						lScanner.close();
 					}
+				}
 
 				return true;
 			}
@@ -245,7 +251,9 @@ public class VariableBundleAsFile extends VariableBundle
 
 				lFormatter.flush();
 				if (lFormatter != null)
+				{
 					lFormatter.close();
+				}
 				return true;
 			}
 			catch (final Throwable e)

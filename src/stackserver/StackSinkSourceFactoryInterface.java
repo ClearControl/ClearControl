@@ -4,7 +4,5 @@ public interface StackSinkSourceFactoryInterface
 {
 
 	public StackSinkInterface getStackSink();
-	
-	
-	
+
 }

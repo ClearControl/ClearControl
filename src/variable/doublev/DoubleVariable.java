@@ -57,28 +57,35 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	public boolean setValueInternal(final double pNewValue)
 	{
 		if (EventPropagator.hasBeenTraversed(this))
+		{
 			return false;
+		}
 		markAsTraversed();
 
 		final double lOldValueBeforeHook = mValue;
 		mValue = setEventHook(lOldValueBeforeHook, pNewValue);
 		notifyListenersOfSetEvent(lOldValueBeforeHook, pNewValue);
-		sync(pNewValue,false);
+		sync(pNewValue, false);
 
 		return true;
 	}
 
-	public void sync(final double pNewValue, boolean pClearEventQueue)
+	public void sync(	final double pNewValue,
+										final boolean pClearEventQueue)
 	{
 		if (pClearEventQueue)
+		{
 			EventPropagator.clear();
+		}
 		if (mVariablesToSendUpdatesTo != null)
 		{
 			for (final DoubleVariable lDoubleVariable : mVariablesToSendUpdatesTo)
+			{
 				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
 				{
 					lDoubleVariable.setValueInternal(pNewValue);
 				}
+			}
 		}
 	}
 

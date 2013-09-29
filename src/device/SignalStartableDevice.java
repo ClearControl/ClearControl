@@ -3,8 +3,9 @@ package device;
 import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
-public abstract class SignalStartableDevice extends NamedDevice	implements
-																																VirtualDeviceInterface
+public abstract class SignalStartableDevice	extends
+																						NamedVirtualDevice implements
+																															VirtualDeviceInterface
 {
 
 	protected final BooleanVariable mStartSignal;
@@ -31,7 +32,9 @@ public abstract class SignalStartableDevice extends NamedDevice	implements
 			public void fire(final boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue)
+				{
 					start();
+				}
 			}
 		});
 
@@ -43,7 +46,9 @@ public abstract class SignalStartableDevice extends NamedDevice	implements
 				public void fire(final boolean pCurrentBooleanValue)
 				{
 					if (pCurrentBooleanValue)
+					{
 						stop();
+					}
 				}
 			});
 		}

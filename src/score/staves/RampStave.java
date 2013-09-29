@@ -5,13 +5,14 @@ import score.functions.Ramp;
 import score.functions.Set;
 import score.interfaces.StaveInterface;
 
-public class RampStave extends StaveAbstract implements StaveInterface
+public class RampStave extends StaveAbstract implements
+																						StaveInterface
 {
 	public volatile double mSyncStart, mSyncStop, mStartValue,
 			mStopValue, mOutsideValue;
 	public volatile boolean mNoJump = false;
 
-	public RampStave(String pName)
+	public RampStave(final String pName)
 	{
 		super("Ramp Stave - " + pName);
 	}

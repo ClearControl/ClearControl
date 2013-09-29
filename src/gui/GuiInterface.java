@@ -6,5 +6,5 @@ public interface GuiInterface
 	boolean start();
 
 	boolean stop();
-	
+
 }

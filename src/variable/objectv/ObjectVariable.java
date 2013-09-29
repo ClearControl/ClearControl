@@ -48,7 +48,9 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	public boolean setReferenceInternal(final O pNewReference)
 	{
 		if (EventPropagator.hasBeenTraversed(this))
+		{
 			return false;
+		}
 
 		final O lNewValueAfterHook = setEventHook(pNewReference);
 
@@ -56,10 +58,12 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		if (mVariablesToSendUpdatesTo != null)
 		{
 			for (final ObjectVariable lObjectVariable : mVariablesToSendUpdatesTo)
+			{
 				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
 				{
 					lObjectVariable.setReferenceInternal(lNewValueAfterHook);
 				}
+			}
 		}
 		mReference = lNewValueAfterHook;
 		return true;
@@ -67,7 +71,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 	public O setEventHook(final O pNewValue)
 	{
-		notifyListenersOfSetEvent(mReference,pNewValue);
+		notifyListenersOfSetEvent(mReference, pNewValue);
 		return pNewValue;
 	}
 

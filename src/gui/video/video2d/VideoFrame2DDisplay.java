@@ -9,9 +9,9 @@ import variable.booleanv.BooleanVariable;
 import variable.doublev.DoubleVariable;
 import variable.objectv.ObjectVariable;
 import asyncprocs.AsynchronousProcessorBase;
-import device.NamedDevice;
+import device.NamedVirtualDevice;
 
-public class VideoFrame2DDisplay extends NamedDevice
+public class VideoFrame2DDisplay extends NamedVirtualDevice
 {
 	private final VideoWindow mVideoWindow;
 
@@ -67,7 +67,7 @@ public class VideoFrame2DDisplay extends NamedDevice
 																																								pUpdaterQueueLength)
 		{
 			@Override
-			public Object process(Stack pStack)
+			public Object process(final Stack pStack)
 			{
 				mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
 				mVideoWindow.setWidth(pStack.getWidth());

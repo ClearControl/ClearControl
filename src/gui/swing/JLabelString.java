@@ -24,6 +24,7 @@ public class JLabelString extends JLabel
 			public String setEventHook(final String pNewValue)
 			{
 				if (!pNewValue.equals(mThis.getText()))
+				{
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -32,6 +33,7 @@ public class JLabelString extends JLabel
 							mThis.setText(pNewValue);
 						}
 					});
+				}
 				return super.setEventHook(pNewValue);
 			}
 		};

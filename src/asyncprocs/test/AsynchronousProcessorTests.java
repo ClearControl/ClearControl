@@ -112,11 +112,15 @@ public class AsynchronousProcessorTests
 		for (int i = 0; i < 1000000000; i++)
 		{
 			if (lProcessorA.passOrWait("test" + i) && i % 1000 == 0)
+			{
 				System.out.println(".");
+			}
 
 			if (i % 1000 == 0)
+			{
 				System.out.format("Load: %g \n", lProcessorB.getLoad());
-			// EnhancedThread.sleepnanos(1);
+				// EnhancedThread.sleepnanos(1);
+			}
 		}
 
 	}

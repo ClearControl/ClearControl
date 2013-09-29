@@ -7,8 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
+import javax.media.opengl.GL2ES2;
+import javax.media.opengl.GL2GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
@@ -28,7 +31,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class VideoWindow implements Closeable
 {
 
-	private GLWindow mGLWindow;
+	private final GLWindow mGLWindow;
 	private String mWindowName;
 
 	private int mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
@@ -90,9 +93,13 @@ public class VideoWindow implements Closeable
 												* mBytesPerPixel;
 
 		if (pVideoMaxWidth > 768 || pVideoMaxHeight > 768)
+		{
 			mGLWindow.setSize(768, 768);
+		}
 		else
+		{
 			mGLWindow.setSize(pVideoMaxWidth, pVideoMaxHeight);
+		}
 
 		mGLWindow.setTitle(mWindowName);
 
@@ -112,8 +119,6 @@ public class VideoWindow implements Closeable
 				lGL2.glLoadIdentity();
 				lGL2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 				lGL2.glLoadIdentity();
-				final double lAspectRatioWH = ((double) pWidth) / pHeight;
-				final double lAspectRatioHW = ((double) pHeight) / pWidth;
 
 				// final double lOffsetWH = (lAspectRatioWH - 1) / 2;
 				// final double lOffsetHW = (lAspectRatioHW - 1) / 2;
@@ -138,9 +143,9 @@ public class VideoWindow implements Closeable
 				lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 				lGL2.glViewport(0, 0, pWidth, pHeight);
 				lGL2.glClearColor(0, 0, 0, 0);
-				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 				lGL2.glFlush();
-				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 				lGL2.glFlush();
 
 			}
@@ -166,50 +171,52 @@ public class VideoWindow implements Closeable
 								mGLWindow.getWidth(),
 								mGLWindow.getHeight());
 
-				lGL2.glDisable(GL2.GL_CULL_FACE);
-				lGL2.glDisable(GL2.GL_DEPTH_TEST);
+				lGL2.glDisable(GL.GL_CULL_FACE);
+				lGL2.glDisable(GL.GL_DEPTH_TEST);
 				lGL2.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT,
-										GL2.GL_NICEST);
+										GL.GL_NICEST);
 				lGL2.glDisable(GLLightingFunc.GL_LIGHTING);
 				lGL2.glDisable(GLLightingFunc.GL_COLOR_MATERIAL);
 
-				lGL2.glEnable(GL2.GL_TEXTURE_2D);
+				lGL2.glEnable(GL.GL_TEXTURE_2D);
 				reportError(lGL2);
 
 				final int[] tmp = new int[1];
 				lGL2.glGenTextures(1, tmp, 0);
 				mTextureId = tmp[0];
-				lGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
+				lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
 				reportError(lGL2);
 
-				lGL2.glTexParameteri(	GL2.GL_TEXTURE_2D,
-															GL2.GL_TEXTURE_MIN_FILTER,
-															mLinearInterpolation ? GL2.GL_LINEAR
-																									: GL2.GL_NEAREST);
-				lGL2.glTexParameteri(	GL2.GL_TEXTURE_2D,
-															GL2.GL_TEXTURE_MAG_FILTER,
-															mLinearInterpolation ? GL2.GL_LINEAR
-																									: GL2.GL_NEAREST);
-				lGL2.glTexParameteri(	GL2.GL_TEXTURE_2D,
-															GL2.GL_TEXTURE_WRAP_S,
+				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+															GL.GL_TEXTURE_MIN_FILTER,
+															mLinearInterpolation ? GL.GL_LINEAR
+																									: GL.GL_NEAREST);
+				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+															GL.GL_TEXTURE_MAG_FILTER,
+															mLinearInterpolation ? GL.GL_LINEAR
+																									: GL.GL_NEAREST);
+				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+															GL.GL_TEXTURE_WRAP_S,
 															GL2.GL_CLAMP);
-				lGL2.glTexParameteri(	GL2.GL_TEXTURE_2D,
-															GL2.GL_TEXTURE_WRAP_T,
+				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+															GL.GL_TEXTURE_WRAP_T,
 															GL2.GL_CLAMP);
 				reportError(lGL2);
 
 				if (mSourceBuffer == null)
+				{
 					mSourceBuffer = ByteBuffer.allocate(mMaxBufferLength);
+				}
 
 				mSourceBuffer.rewind();
-				lGL2.glTexImage2D(GL2.GL_TEXTURE_2D,
+				lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
 													0,
-													GL2.GL_LUMINANCE,
+													GL.GL_LUMINANCE,
 													mVideoMaxWidth,
 													mVideoMaxHeight,
 													0,
-													GL2.GL_LUMINANCE,
-													GL2.GL_UNSIGNED_BYTE,
+													GL.GL_LUMINANCE,
+													GL.GL_UNSIGNED_BYTE,
 													mSourceBuffer);
 				reportError(lGL2);
 
@@ -222,27 +229,27 @@ public class VideoWindow implements Closeable
 					mPixelBufferIds = new int[2];
 					lGL2.glGenBuffers(2, mPixelBufferIds, 0);
 					reportError(lGL2);
-					lGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER,
+					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 														mPixelBufferIds[0]);
 					reportError(lGL2);
 
-					lGL2.glBufferData(GL2.GL_PIXEL_UNPACK_BUFFER,
+					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 														mMaxBufferLength,
 														null,
-														GL2.GL_STREAM_DRAW);
+														GL2ES2.GL_STREAM_DRAW);
 					reportError(lGL2);
 
-					lGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER,
+					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 														mPixelBufferIds[1]);
 					reportError(lGL2);
 
-					lGL2.glBufferData(GL2.GL_PIXEL_UNPACK_BUFFER,
+					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 														mMaxBufferLength,
 														null,
-														GL2.GL_STREAM_DRAW);
+														GL2ES2.GL_STREAM_DRAW);
 					reportError(lGL2);
 
-					lGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER, 0);
+					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER, 0);
 					reportError(lGL2);
 				}
 
@@ -258,7 +265,9 @@ public class VideoWindow implements Closeable
 			public void display(final GLAutoDrawable glautodrawable)
 			{
 				if (mSourceBuffer == null)
+				{
 					return;
+				}
 
 				final int lWidth = mVideoWidth;
 				final int lHeight = mVideoHeight;
@@ -266,9 +275,11 @@ public class VideoWindow implements Closeable
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
 				lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-				lGL2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 				if (!mDisplayOn)
+				{
 					return;
+				}
 
 				try
 				{
@@ -282,25 +293,25 @@ public class VideoWindow implements Closeable
 				// mGL2.glLoadIdentity();
 
 				lGL2.glColor4d(1, 1, 1, 1);
-				lGL2.glEnable(GL2.GL_TEXTURE_2D);
-				lGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
+				lGL2.glEnable(GL.GL_TEXTURE_2D);
+				lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
 				// lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 				lGL2.glBegin(GL2.GL_QUADS);
 
-				final double lRatioEffective2MaxWidth = ((double) lWidth) / mVideoMaxWidth;
-				final double lRatioEffective2MaxHeight = ((double) lHeight) / mVideoMaxHeight;
+				final double lRatioEffective2MaxWidth = (double) lWidth / mVideoMaxWidth;
+				final double lRatioEffective2MaxHeight = (double) lHeight / mVideoMaxHeight;
 
 				double x, y, w, h;
 				if (lWidth < lHeight)
 				{
 					w = (double) lWidth / lHeight;
-					h = (double) 1;
+					h = 1;
 					x = (1 - w) / 2;
 					y = 0;
 				}
 				else
 				{
-					w = (double) 1;
+					w = 1;
 					h = (double) lHeight / lWidth;
 					x = 0;
 					y = (1 - h) / 2;
@@ -322,12 +333,12 @@ public class VideoWindow implements Closeable
 				/**/
 
 				final long lTimeInNanoseconds = System.nanoTime();
-				if (mDisplayFrameRate && lTimeInNanoseconds>mDisplayFrameRateLastDisplayTime+20*1000*1000)
+				if (mDisplayFrameRate && lTimeInNanoseconds > mDisplayFrameRateLastDisplayTime + 20 * 1000 * 1000)
 				{
 					mDisplayFrameRateLastDisplayTime = lTimeInNanoseconds;
 					final String lTitleString = String.format("%s %.0f fps",
-																						mWindowName,
-																						mFrameRate);
+																										mWindowName,
+																										mFrameRate);
 					mGLWindow.setTitle(lTitleString);
 					/*
 					mTextRenderer.beginRendering(	mGLWindow.getWidth(),
@@ -368,11 +379,15 @@ public class VideoWindow implements Closeable
 	private boolean updateVideoWithBuffer(final GL2 pGL2,
 																				final ByteBuffer pNewContentBuffer)
 	{
-		if (mIsUpToDate || !mDisplayOn) //
+		if (mIsUpToDate || !mDisplayOn)
+		{
 			return true;
+		}
 
 		if (!isContextAvailable())
+		{
 			return false;
+		}
 
 		final int lCurrentIndex = (int) (mFrameIndex % 2);
 		final int lNextIndex = (int) ((mFrameIndex + 1) % 2);
@@ -416,18 +431,18 @@ public class VideoWindow implements Closeable
 																								final int pCurrentIndex,
 																								final int pNextIndex)
 	{
-		pGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
+		pGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
 
 		// System.out.println("pNewContentBuffer=" + pNewContentBuffer);
 		pNewContentBuffer.rewind();
-		pGL2.glTexSubImage2D(	GL2.GL_TEXTURE_2D,
+		pGL2.glTexSubImage2D(	GL.GL_TEXTURE_2D,
 													0,
 													0,
 													0,
 													mVideoWidth,
 													mVideoHeight,
-													GL2.GL_LUMINANCE,
-													GL2.GL_UNSIGNED_BYTE,
+													GL.GL_LUMINANCE,
+													GL.GL_UNSIGNED_BYTE,
 													pNewContentBuffer);
 		reportError(pGL2);
 
@@ -441,58 +456,60 @@ public class VideoWindow implements Closeable
 	{
 
 		// Bind texture:
-		pGL2.glBindTexture(GL2.GL_TEXTURE_2D, mTextureId);
+		pGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
 		reportError(pGL2);
 
 		// Bind buffer for drawing
-		pGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER,
+		pGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 											mPixelBufferIds[pCurrentIndex]);
 		reportError(pGL2);
 
 		// copy pixels from PBO to texture object
 		// Use offset instead of pointer.
-		pGL2.glTexSubImage2D(	GL2.GL_TEXTURE_2D,
+		pGL2.glTexSubImage2D(	GL.GL_TEXTURE_2D,
 													0,
 													0,
 													0,
 													mVideoMaxWidth,
 													mVideoMaxHeight,
-													GL2.GL_LUMINANCE,
-													GL2.GL_UNSIGNED_BYTE,
+													GL.GL_LUMINANCE,
+													GL.GL_UNSIGNED_BYTE,
 													0);
 		reportError(pGL2);
 
 		// Bind buffer to update:
-		pGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER,
+		pGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 											mPixelBufferIds[pNextIndex]);
 		reportError(pGL2);
 
 		// Null existing data
-		pGL2.glBufferData(GL2.GL_PIXEL_UNPACK_BUFFER,
+		pGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
 											mVideoWidth * mVideoHeight * 4,
 											null,
-											GL2.GL_STREAM_DRAW);
+											GL2ES2.GL_STREAM_DRAW);
 		reportError(pGL2);
 
 		// Map buffer. Returns pointer to buffer memory
-		final ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(	GL2.GL_PIXEL_UNPACK_BUFFER,
-																															GL2.GL_WRITE_ONLY);
+		final ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(	GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+																															GL.GL_WRITE_ONLY);
 
 		reportError(pGL2);
 
 		if (lTextureMappedBuffer == null)
+		{
 			return false;
+		}
 
 		lTextureMappedBuffer.clear();
 		pNewContentBuffer.rewind();
 		lTextureMappedBuffer.put(pNewContentBuffer);
 
 		// Unmaps buffer, indicating we are done writing data to it
-		pGL2.glUnmapBuffer(GL2.GL_PIXEL_UNPACK_BUFFER);
+		pGL2.glUnmapBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER);
 		reportError(pGL2);
 
 		// Unbind buffer
-		pGL2.glBindBuffer(GL2.GL_PIXEL_UNPACK_BUFFER, 0);
+		pGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER, 0);
 		reportError(pGL2);
 
 		return true;
@@ -582,13 +599,20 @@ public class VideoWindow implements Closeable
 			byte lByteMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				final int lIntegerMappedValue = ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+				final int lIntegerMappedValue = 255 * (lShortValue - lCurrentMin)
+																				/ lCurrentWidth;
 				if (lIntegerMappedValue <= 0)
+				{
 					lByteMappedValue = 0;
+				}
 				else if (lIntegerMappedValue >= 255)
+				{
 					lByteMappedValue = (byte) 255;
+				}
 				else
-					lByteMappedValue = (byte) (lIntegerMappedValue);
+				{
+					lByteMappedValue = (byte) lIntegerMappedValue;
+				}
 			}
 			lByteArray[i] = lByteMappedValue;
 		}
@@ -613,7 +637,9 @@ public class VideoWindow implements Closeable
 			lNewMax = Math.max(lNewMax, lShortValue);
 			byte lByteMappedValue = 0;
 			if (lCurrentWidth > 0)
-				lByteMappedValue = (byte) ((255 * (lShortValue - lCurrentMin)) / lCurrentWidth);
+			{
+				lByteMappedValue = (byte) (255 * (lShortValue - lCurrentMin) / lCurrentWidth);
+			}
 			lByteArray[i] = lByteMappedValue;
 		}
 

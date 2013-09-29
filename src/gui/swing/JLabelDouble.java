@@ -35,6 +35,7 @@ public class JLabelDouble extends JLabel
 																	final double pNewValue)
 			{
 				if (pNewValue != mNewValue)
+				{
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -47,6 +48,7 @@ public class JLabelDouble extends JLabel
 						}
 
 					});
+				}
 				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
@@ -74,10 +76,13 @@ public class JLabelDouble extends JLabel
 																					final double pNewValue)
 	{
 		if (pIntegerConstraint)
-			return String.format(	pFormatString,
-														(long) Math.round(pNewValue));
+		{
+			return String.format(pFormatString, Math.round(pNewValue));
+		}
 		else
+		{
 			return String.format(pFormatString, pNewValue);
+		}
 	}
 
 	public boolean isIntegerConstraint()

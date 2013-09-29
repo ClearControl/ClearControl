@@ -46,7 +46,9 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 	public O getReference()
 	{
 		if (mCachedReference != null)
+		{
 			return mCachedReference;
+		}
 
 		try
 		{

@@ -5,11 +5,11 @@ import score.interfaces.StaveInterface;
 public class Interval
 {
 
-	public static void add(	StaveInterface pStave,
-														double pSyncStart,
-														double pSyncStop,
-														double pValueInside,
-														double pValueOutside)
+	public static void add(	final StaveInterface pStave,
+													final double pSyncStart,
+													final double pSyncStop,
+													final double pValueInside,
+													final double pValueOutside)
 	{
 		final int lArrayLength = pStave.getNumberOfTimePoints();
 		final short[] array = pStave.getStaveArray();

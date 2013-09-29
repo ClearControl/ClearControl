@@ -45,16 +45,24 @@ public class JOpenFileChooserButton extends JButton
 	{
 		File lCurrentFolder = mFileVariable.getReference();
 		if (lCurrentFolder == null)
+		{
 			lCurrentFolder = cDefaultFolder;
+		}
 		final JFileChooser lJFileChooser = new JFileChooser(lCurrentFolder);
 		if (mOnlyFolders)
+		{
 			lJFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		}
 		final Integer lOption = lJFileChooser.showSaveDialog(this);
 
 		if (lOption == JFileChooser.APPROVE_OPTION)
+		{
 			return lJFileChooser.getSelectedFile();
+		}
 		else
+		{
 			return null;
+		}
 	}
 
 	public ObjectVariable<File> getSelectedFileVariable()

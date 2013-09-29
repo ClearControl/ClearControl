@@ -11,7 +11,7 @@ import score.interfaces.ScoreInterface;
 public class Score extends NameableAbstract implements ScoreInterface
 {
 
-	private ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
+	private final ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
 
 	private ShortBuffer mScoreShortBuffer;
 	private boolean mIsUpToDateBasedOnMovementList = false;
@@ -28,11 +28,13 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return true;
 	}
 
-	public void addMovementMultipleTimes(	Movement pMovement,
-																				int pNumberOfTimes)
+	public void addMovementMultipleTimes(	final Movement pMovement,
+																				final int pNumberOfTimes)
 	{
 		for (int i = 0; i < pNumberOfTimes; i++)
+		{
 			addMovement(pMovement);
+		}
 	}
 
 	public void addMovementAt(final int pIndex,
@@ -68,7 +70,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 	public boolean isUpToDate()
 	{
 		boolean lIsUpToDate = mIsUpToDateBasedOnMovementList;
-		for (MovementInterface lMovement : mMovementList)
+		for (final MovementInterface lMovement : mMovementList)
 		{
 			lIsUpToDate &= lMovement.isUpToDate();
 		}
@@ -83,16 +85,16 @@ public class Score extends NameableAbstract implements ScoreInterface
 		if (lCurrentScoreBufferCapacity < lScoreBufferLength)
 		{
 			final int lScoreBufferLengthInBytes = lScoreBufferLength * 2;
-			ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(lScoreBufferLengthInBytes)
-																					.order(ByteOrder.nativeOrder());
+			final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(lScoreBufferLengthInBytes)
+																								.order(ByteOrder.nativeOrder());
 			mScoreShortBuffer = lByteBuffer.asShortBuffer();
 		}
 
 		mScoreShortBuffer.limit(lScoreBufferLength);
 		mScoreShortBuffer.clear();
-		for (MovementInterface lMovement : mMovementList)
+		for (final MovementInterface lMovement : mMovementList)
 		{
-			ShortBuffer lMovementShortBuffer = lMovement.getMovementBuffer();
+			final ShortBuffer lMovementShortBuffer = lMovement.getMovementBuffer();
 			lMovementShortBuffer.rewind();
 			mScoreShortBuffer.put(lMovementShortBuffer);
 		}
@@ -104,7 +106,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 	private int computeScoreBufferLength()
 	{
 		int lScoreBufferLength = 0;
-		for (MovementInterface lMovement : mMovementList)
+		for (final MovementInterface lMovement : mMovementList)
 		{
 			lScoreBufferLength += lMovement.computeMovementBufferLength();
 		}

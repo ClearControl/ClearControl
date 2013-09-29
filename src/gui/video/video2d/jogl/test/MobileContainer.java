@@ -25,21 +25,24 @@ public class MobileContainer
 		final JButton add = new JButton("add"), // add a new component
 		sort = new JButton("sort"), // re-order components
 		clear = new JButton("clear"); // remove all components
-		ActionListener l = new ActionListener()
+		final ActionListener l = new ActionListener()
 		{
 			int componentCount = 0;
 
-			public void actionPerformed(ActionEvent e)
+			@Override
+			public void actionPerformed(final ActionEvent e)
 			{
-				JButton button = (JButton) e.getSource();
+				final JButton button = (JButton) e.getSource();
 				if (button == add)
 				{
-					JSlider label = new JSlider();
+					final JSlider label = new JSlider();
 					label.setBorder(BorderFactory.createEtchedBorder());
 					mcp.addNext(label);
 				}
 				if (button == sort)
+				{
 					mcp.renewLayout();
+				}
 				if (button == clear)
 				{
 					mcp.clear();
@@ -50,11 +53,11 @@ public class MobileContainer
 		add.addActionListener(l);
 		sort.addActionListener(l);
 		clear.addActionListener(l);
-		JPanel north = new JPanel();
+		final JPanel north = new JPanel();
 		north.add(add);
 		north.add(sort);
 		north.add(clear);
-		JFrame f = new JFrame();
+		final JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.getContentPane().add(north, "North");
 		f.getContentPane().add(mcp);
@@ -63,7 +66,7 @@ public class MobileContainer
 		f.setVisible(true);
 	}
 
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		new MobileContainer();
 	}
@@ -87,19 +90,19 @@ class MobileContainerPanel extends JPanel
 		setLayout(null);
 	}
 
-	public void addNext(Component c)
+	public void addNext(final Component c)
 	{
 		componentList.add(c);
 		c.addMouseListener(wrangler);
 		c.addMouseMotionListener(wrangler);
 		add(c);
-		Dimension d = c.getPreferredSize();
-		Point p = getNextLocation(d);
+		final Dimension d = c.getPreferredSize();
+		final Point p = getNextLocation(d);
 		c.setBounds(p.x, p.y, d.width, d.height);
 		repaint();
 	}
 
-	private Point getNextLocation(Dimension d)
+	private Point getNextLocation(final Dimension d)
 	{
 		int maxX = 0, maxY = 0;
 		Component c, last = null;
@@ -127,7 +130,7 @@ class MobileContainerPanel extends JPanel
 			}
 		}
 		// determine location of next component based on location of last
-		Point p = new Point();
+		final Point p = new Point();
 		if (last == null) // first component
 		{
 			p.x = PAD;
@@ -135,7 +138,6 @@ class MobileContainerPanel extends JPanel
 			return p;
 		}
 		r = last.getBounds();
-		int x, y;
 		if (r.x + r.width + PAD + d.width < getWidth()) // next in row
 		{
 			p.x = r.x + r.width + PAD;
@@ -196,7 +198,8 @@ class MobileContainerPanel extends JPanel
 			dragging = false;
 		}
 
-		public void mousePressed(MouseEvent e)
+		@Override
+		public void mousePressed(final MouseEvent e)
 		{
 			if (e.isControlDown())
 			{
@@ -206,7 +209,8 @@ class MobileContainerPanel extends JPanel
 			}
 		}
 
-		public void mouseReleased(MouseEvent e)
+		@Override
+		public void mouseReleased(final MouseEvent e)
 		{
 			if (e.isControlDown())
 			{
@@ -214,12 +218,13 @@ class MobileContainerPanel extends JPanel
 			}
 		}
 
-		public void mouseDragged(MouseEvent e)
+		@Override
+		public void mouseDragged(final MouseEvent e)
 		{
 
 			if (e.isControlDown() && dragging)
 			{
-				Rectangle r = selectedComponent.getBounds();
+				final Rectangle r = selectedComponent.getBounds();
 				r.x += e.getX() - offset.x;
 				r.y += e.getY() - offset.y;
 				selectedComponent.setBounds(r);

@@ -36,7 +36,9 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 	public double getValue()
 	{
 		if (mCachedValue != null)
+		{
 			return mCachedValue;
+		}
 
 		try
 		{

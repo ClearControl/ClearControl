@@ -8,11 +8,11 @@ import variable.VariableInterface;
 import variable.booleanv.BooleanVariable;
 import variable.bundle.VariableBundle;
 import variable.doublev.DoubleVariable;
-import device.NamedDevice;
+import device.NamedVirtualDevice;
 import device.VirtualDeviceInterface;
 
-public class SerialDevice extends NamedDevice	implements
-																							VirtualDeviceInterface
+public class SerialDevice extends NamedVirtualDevice implements
+																										VirtualDeviceInterface
 {
 
 	protected final Serial mSerial;
@@ -49,6 +49,7 @@ public class SerialDevice extends NamedDevice	implements
 				try
 				{
 					if (cGetValueCommand != null)
+					{
 						synchronized (mDeviceLock)
 						{
 							mSerial.setBinaryMode(true);
@@ -58,6 +59,7 @@ public class SerialDevice extends NamedDevice	implements
 							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
 							return pSerialBinaryDevice.parseValue(lAnswerMessage);
 						}
+					}
 				}
 				catch (final SerialPortException e)
 				{
@@ -73,8 +75,9 @@ public class SerialDevice extends NamedDevice	implements
 			{
 				try
 				{
-					byte[] lSetValueCommandMessage = pSerialBinaryDevice.getSetValueCommandMessage(pNewValue);
+					final byte[] lSetValueCommandMessage = pSerialBinaryDevice.getSetValueCommandMessage(pNewValue);
 					if (lSetValueCommandMessage != null)
+					{
 						synchronized (mDeviceLock)
 						{
 							mSerial.setBinaryMode(true);
@@ -83,8 +86,11 @@ public class SerialDevice extends NamedDevice	implements
 							sleep(pSerialBinaryDevice.getSetValueReturnWaitTimeInMilliseconds());
 							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
 							if (lAnswerMessage != null)
+							{
 								pSerialBinaryDevice.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+							}
 						}
+					}
 				}
 				catch (final SerialPortException e)
 				{
@@ -112,6 +118,7 @@ public class SerialDevice extends NamedDevice	implements
 				try
 				{
 					if (cGetValueCommand != null && mSerial.isConnected())
+					{
 						synchronized (mDeviceLock)
 						{
 							mSerial.setBinaryMode(false);
@@ -121,6 +128,7 @@ public class SerialDevice extends NamedDevice	implements
 							final byte[] lAnswerMessage = mSerial.readTextMessage();
 							return pSerialTextDeviceAdapter.parseValue(lAnswerMessage);
 						}
+					}
 				}
 				catch (final SerialPortException e)
 				{
@@ -136,8 +144,9 @@ public class SerialDevice extends NamedDevice	implements
 			{
 				try
 				{
-					byte[] lSetValueCommandMessage = pSerialTextDeviceAdapter.getSetValueCommandMessage(pNewValue);
+					final byte[] lSetValueCommandMessage = pSerialTextDeviceAdapter.getSetValueCommandMessage(pNewValue);
 					if (lSetValueCommandMessage != null && mSerial.isConnected())
+					{
 						synchronized (mDeviceLock)
 						{
 							mSerial.setBinaryMode(false);
@@ -146,8 +155,11 @@ public class SerialDevice extends NamedDevice	implements
 							sleep(pSerialTextDeviceAdapter.getSetValueReturnWaitTimeInMilliseconds());
 							final byte[] lAnswerMessage = mSerial.readTextMessage();
 							if (lAnswerMessage != null)
+							{
 								pSerialTextDeviceAdapter.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+							}
 						}
+					}
 				}
 				catch (final SerialPortException e)
 				{
@@ -162,37 +174,43 @@ public class SerialDevice extends NamedDevice	implements
 		return lDoubleVariable;
 	}
 
-	protected void sleep(long pSleepTimeInMilliseconds)
+	protected void sleep(final long pSleepTimeInMilliseconds)
 	{
 		if (pSleepTimeInMilliseconds > 0)
+		{
 			try
 			{
 				Thread.sleep(pSleepTimeInMilliseconds);
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 			}
+		}
 	}
-	
+
 	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
 																									final SerialBinaryDeviceAdapter pSerialBinaryDevice)
 	{
-		DoubleVariable lDoubleVariable = addSerialDoubleVariable(pVariableName, pSerialBinaryDevice);
-		
-		BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,false);
+		final DoubleVariable lDoubleVariable = addSerialDoubleVariable(	pVariableName,
+																																		pSerialBinaryDevice);
+
+		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,
+																																			false);
 		lProxyBooleanVariable.syncWith(lDoubleVariable);
-		
+
 		return lProxyBooleanVariable;
 	}
-	
+
 	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
 																									final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
 	{
-		DoubleVariable lDoubleVariable = addSerialDoubleVariable(pVariableName, pSerialTextDeviceAdapter);
-		
-		BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,false);
+		final DoubleVariable lDoubleVariable = addSerialDoubleVariable(	pVariableName,
+																																		pSerialTextDeviceAdapter);
+
+		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,
+																																			false);
 		lProxyBooleanVariable.syncWith(lDoubleVariable);
-		
+
 		return lProxyBooleanVariable;
 	}
 
@@ -201,16 +219,18 @@ public class SerialDevice extends NamedDevice	implements
 		return mVariableBundle;
 	}
 
-	public final VariableInterface<Double> getVariableByName(String pVariableName)
+	public final VariableInterface<Double> getVariableByName(final String pVariableName)
 	{
 		return mVariableBundle.getVariable(pVariableName);
 	}
 
-	public final DoubleVariable getDoubleVariableByName(String pVariableName)
+	public final DoubleVariable getDoubleVariableByName(final String pVariableName)
 	{
-		final Object lVariable = (Object) mVariableBundle.getVariable(pVariableName);
+		final Object lVariable = mVariableBundle.getVariable(pVariableName);
 		if (lVariable instanceof DoubleVariable)
-			return (DoubleVariable) (lVariable);
+		{
+			return (DoubleVariable) lVariable;
+		}
 		return null;
 	}
 
@@ -219,7 +239,7 @@ public class SerialDevice extends NamedDevice	implements
 	{
 		try
 		{
-			boolean lConnected = mSerial.connect(mPortName);
+			final boolean lConnected = mSerial.connect(mPortName);
 			mSerial.purge();
 			return lConnected;
 		}

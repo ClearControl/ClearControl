@@ -8,9 +8,9 @@ import score.interfaces.MovementInterface;
 
 public class CompiledMovement implements MovementInterface
 {
-	private String mName;
+	private final String mName;
 	private final ShortBuffer mMovementBuffer;
-	//private final int mMaxNumberOfTimePointsPerBuffer;
+	// private final int mMaxNumberOfTimePointsPerBuffer;
 	private final int mNumberOfTimePoints;
 	private final int mNumberOfStaves;
 	private final double mDeltaTimeInMicroseconds;
@@ -18,7 +18,7 @@ public class CompiledMovement implements MovementInterface
 	private final boolean mIsSyncOnRisingEdge;
 	private final int mSyncChannel;
 
-	public CompiledMovement(MovementInterface pMovement)
+	public CompiledMovement(final MovementInterface pMovement)
 	{
 
 		mName = pMovement.getName();
@@ -29,7 +29,7 @@ public class CompiledMovement implements MovementInterface
 		mIsSyncOnRisingEdge = pMovement.isSyncOnRisingEdge();
 		mSyncChannel = pMovement.getSyncChannel();
 
-		ShortBuffer lMovementBuffer = pMovement.getMovementBuffer();
+		final ShortBuffer lMovementBuffer = pMovement.getMovementBuffer();
 		final int lMovementBufferlength = lMovementBuffer.limit();
 
 		mMovementBuffer = ByteBuffer.allocateDirect(2 * lMovementBufferlength)
@@ -65,7 +65,7 @@ public class CompiledMovement implements MovementInterface
 	}
 
 	@Override
-	public void setDeltaTimeInMicroseconds(double pDeltaTimeInMicroseconds)
+	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroseconds)
 	{
 		throw new UnsupportedOperationException(this.getClass()
 																								.getSimpleName() + " are final and cannot be modified");
@@ -83,21 +83,25 @@ public class CompiledMovement implements MovementInterface
 		return mNumberOfTimePoints;
 	}
 
+	@Override
 	public int getNumberOfStaves()
 	{
 		return mNumberOfStaves;
 	}
 
+	@Override
 	public boolean isSync()
 	{
 		return mIsSync;
 	}
 
+	@Override
 	public boolean isSyncOnRisingEdge()
 	{
 		return mIsSyncOnRisingEdge;
 	}
 
+	@Override
 	public int getSyncChannel()
 	{
 		return mSyncChannel;
@@ -114,7 +118,5 @@ public class CompiledMovement implements MovementInterface
 	{
 		return mName;
 	}
-
-
 
 }

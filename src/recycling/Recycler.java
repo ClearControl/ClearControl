@@ -27,7 +27,7 @@ public class Recycler<R extends RecyclableInterface<R>>
 			{
 				final R lNewInstance = mRecyclableClass.newInstance();
 				lNewInstance.initialize(pParameters);
-				lNewInstance.setRecycler((Recycler<R>) this);
+				lNewInstance.setRecycler(this);
 				mAvailableObjectsQueue.add(new SoftReference<R>(lNewInstance));
 			}
 			return true;
@@ -56,7 +56,9 @@ public class Recycler<R extends RecyclableInterface<R>>
 			{
 				lObtainedReference.setReleased(false);
 				if (pRequestParameters != null)
+				{
 					lObtainedReference.initialize(pRequestParameters);
+				}
 				return lObtainedReference;
 			}
 			else
@@ -65,15 +67,16 @@ public class Recycler<R extends RecyclableInterface<R>>
 			}
 
 		}
-		
 
 		R lNewInstance;
 		try
 		{
 			lNewInstance = mRecyclableClass.newInstance();
 			if (pRequestParameters != null)
+			{
 				lNewInstance.initialize(pRequestParameters);
-			lNewInstance.setRecycler((Recycler<R>) this);
+			}
+			lNewInstance.setRecycler(this);
 			lNewInstance.setReleased(false);
 
 			mCounter++;

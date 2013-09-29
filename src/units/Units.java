@@ -67,7 +67,7 @@ public class Units
 	{
 		return 0.001 * x;
 	}
-	
+
 	public static double unit2milli(final double x)
 	{
 		return 1000 * x;

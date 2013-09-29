@@ -10,11 +10,11 @@ public interface StaveInterface
 	int getStaveBufferLength();
 
 	boolean isUpToDate();
-	
+
 	void requestUpdate();
 
 	void setNumberOfTimePoints(final int pNumberOfTimePoints);
-	
+
 	int getNumberOfTimePoints();
 
 	ShortBuffer getStaveBuffer();
@@ -26,6 +26,5 @@ public interface StaveInterface
 	double getNormalizedTimePoint(int pIntegerTimePoint);
 
 	int getMaximalSignalIntegerAmplitude();
-
 
 }

@@ -10,26 +10,26 @@ import score.interfaces.MovementInterface;
 
 public class CompiledScore
 {
-	private ArrayList<CompiledMovement> mCompiledMovementList = new ArrayList<CompiledMovement>();
-	private String mName;
+	private final ArrayList<CompiledMovement> mCompiledMovementList = new ArrayList<CompiledMovement>();
+	private final String mName;
 
 	private volatile boolean mIsUpToDate = false;
 	private IntBuffer mDeltaTimeShortBuffer;
 	private IntBuffer mSyncShortBuffer;
 	private IntBuffer mNumberfOfTimePointsBuffer;
 	private ShortBuffer mMatricesShortBuffer;
-	private double mBufferDeltaTimeUnitInNanoseconds;
+	private final double mBufferDeltaTimeUnitInNanoseconds;
 
 	public CompiledScore(	final String pName,
-												double pBufferDeltaTimeUnitInNanoseconds)
+												final double pBufferDeltaTimeUnitInNanoseconds)
 	{
 		mName = pName;
 		mBufferDeltaTimeUnitInNanoseconds = pBufferDeltaTimeUnitInNanoseconds;
 	}
 
-	public void addMovement(MovementInterface pMovement)
+	public void addMovement(final MovementInterface pMovement)
 	{
-		CompiledMovement lCompiledMovement = new CompiledMovement(pMovement);
+		final CompiledMovement lCompiledMovement = new CompiledMovement(pMovement);
 		mCompiledMovementList.add(lCompiledMovement);
 		mIsUpToDate = false;
 	}
@@ -61,7 +61,7 @@ public class CompiledScore
 		ensureBuffersAreUpToDate();
 		return mSyncShortBuffer;
 	}
-	
+
 	public IntBuffer getNumberOfTimePointsBuffer()
 	{
 		ensureBuffersAreUpToDate();
@@ -77,7 +77,9 @@ public class CompiledScore
 	private void ensureBuffersAreUpToDate()
 	{
 		if (mIsUpToDate)
+		{
 			return;
+		}
 
 		final int lNumberOfMatrices = mCompiledMovementList.size();
 
@@ -108,9 +110,8 @@ public class CompiledScore
 																							.asIntBuffer();
 		}
 
-		int lMatricesBufferLengthInBytes = Movement.cDefaultNumberOfStavesPerMovement
-																				* getTotalNumberOfTimePoints()
-																				* 2;
+		final int lMatricesBufferLengthInBytes = Movement.cDefaultNumberOfStavesPerMovement * getTotalNumberOfTimePoints()
+																							* 2;
 
 		if (mMatricesShortBuffer == null || mMatricesShortBuffer.capacity() < lMatricesBufferLengthInBytes)
 		{
@@ -124,22 +125,22 @@ public class CompiledScore
 		mNumberfOfTimePointsBuffer.clear();
 		mMatricesShortBuffer.clear();
 
-		for (CompiledMovement lCompiledMovement : mCompiledMovementList)
+		for (final CompiledMovement lCompiledMovement : mCompiledMovementList)
 		{
-			mDeltaTimeShortBuffer.put((int) ((lCompiledMovement.getDeltaTimeInMicroseconds() * 1000) / mBufferDeltaTimeUnitInNanoseconds));
+			mDeltaTimeShortBuffer.put((int) (lCompiledMovement.getDeltaTimeInMicroseconds() * 1000 / mBufferDeltaTimeUnitInNanoseconds));
 
 			final byte lSyncMode = (byte) (lCompiledMovement.isSync()	? 0
-																																: (lCompiledMovement.isSyncOnRisingEdge()	? 1
-																																																					: 2));
+																																: lCompiledMovement.isSyncOnRisingEdge() ? 1
+																																																				: 2);
 			final byte lSyncChannel = (byte) lCompiledMovement.getSyncChannel();
-			final int lSync = (int) twoBytesToShort(lSyncChannel, lSyncMode);
+			final int lSync = twoBytesToShort(lSyncChannel, lSyncMode);
 			mSyncShortBuffer.put(lSync);
 
 			mNumberfOfTimePointsBuffer.put(lCompiledMovement.getNumberOfTimePoints());
 
-			ShortBuffer lMovementBuffer = lCompiledMovement.getMovementBuffer();
+			final ShortBuffer lMovementBuffer = lCompiledMovement.getMovementBuffer();
 			lMovementBuffer.rewind();
-			
+
 			mMatricesShortBuffer.put(lMovementBuffer);
 		}
 
@@ -154,7 +155,7 @@ public class CompiledScore
 	private int getTotalNumberOfTimePoints()
 	{
 		int lTotalNumberOfTimePoints = 0;
-		for (CompiledMovement lCompiledMovement : mCompiledMovementList)
+		for (final CompiledMovement lCompiledMovement : mCompiledMovementList)
 		{
 			lTotalNumberOfTimePoints += lCompiledMovement.getNumberOfTimePoints();
 		}
@@ -167,11 +168,11 @@ public class CompiledScore
 		return String.format("CompiledScore-%s", mName);
 	}
 
-	private static short twoBytesToShort(byte pHigh, byte pLow)
+	private static short twoBytesToShort(	final byte pHigh,
+																				final byte pLow)
 	{
-		final short lShort = (short) ((pHigh << 8) | (pLow & 0xFF));
+		final short lShort = (short) (pHigh << 8 | pLow & 0xFF);
 		return lShort;
 	}
-
 
 }

@@ -29,7 +29,7 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	{
 		return mVariableNameToVariableMap.values();
 	}
-	
+
 	public <O> void addVariable(final VariableInterface<O> pVariable)
 	{
 		mVariableNameToVariableMap.put(pVariable.getName(), pVariable);

@@ -147,7 +147,9 @@ public class AsynchronousProcessorPool<I, O>	extends
 		for (final ProcessorThread lProcessorThread : mThreads)
 		{
 			if (!lProcessorThread.mBusy)
+			{
 				lCounter++;
+			}
 		}
 		return lCounter;
 	}
@@ -176,7 +178,9 @@ public class AsynchronousProcessorPool<I, O>	extends
 	public final void close()
 	{
 		if (!mThreads.isEmpty())
+		{
 			stop();
+		}
 
 		super.close();
 	}

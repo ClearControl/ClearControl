@@ -6,7 +6,7 @@ public class BinaryPattern2
 {
 
 	public static final void mult(final StaveInterface pStave,
-																double pPatternLineLength,
+																final double pPatternLineLength,
 																double pPatternPeriod,
 																double pPatternOnLength,
 																double pPatternPhaseIndex,
@@ -15,7 +15,7 @@ public class BinaryPattern2
 		final int lArrayLength = pStave.getNumberOfTimePoints();
 		final short[] array = pStave.getStaveArray();
 
-		final double lGranularity = pPatternLineLength / (lArrayLength);
+		final double lGranularity = pPatternLineLength / lArrayLength;
 
 		pPatternPeriod = constrain(pPatternPeriod, lGranularity);
 		pPatternOnLength = constrain(pPatternOnLength, lGranularity);
@@ -29,7 +29,7 @@ public class BinaryPattern2
 																														: pPatternPeriod;
 		for (int i = 0; i < lArrayLength; i++)
 		{
-			final double x = ((double) i) / (lArrayLength - 1);
+			final double x = (double) i / (lArrayLength - 1);
 
 			final int value = f(pPatternLineLength,
 													lPatternPeriodNonZero,
@@ -40,29 +40,34 @@ public class BinaryPattern2
 		}
 	}
 
-	private static final int f(	double L,
-															double l,
-															double Phi,
-															double lon,
-															double x)
+	private static final int f(	final double L,
+															final double l,
+															final double Phi,
+															final double lon,
+															final double x)
 	{
 		final double xp = L * x;
 		final double xpphi = xp + Phi;
 		final double y = mod(xpphi, l);
 		if (y <= lon)
+		{
 			return 1;
+		}
 		else
+		{
 			return 0;
+		}
 
 	}
 
-	private static final double mod(double x, double y)
+	private static final double mod(final double x, final double y)
 	{
 		final double modulo = x - y * Math.floor(x / y);
 		return modulo;
 	}
 
-	private static final double constrain(double pX, double pGranularity)
+	private static final double constrain(final double pX,
+																				final double pGranularity)
 	{
 		return pGranularity * Math.round(pX / pGranularity);
 

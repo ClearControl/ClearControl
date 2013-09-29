@@ -30,7 +30,9 @@ public class AsynchronousStackSinkAdapter	implements
 			{
 				mStackSink.appendStack(pStack);
 				if (mFinishedProcessingStackVariable != null)
+				{
 					mFinishedProcessingStackVariable.set(pStack);
+				}
 				return null;
 			}
 		};
@@ -63,14 +65,14 @@ public class AsynchronousStackSinkAdapter	implements
 	}
 
 	@Override
-	public void addMetaDataVariable(String pPrefix,
-																	VariableInterface<?> pVariable)
+	public void addMetaDataVariable(final String pPrefix,
+																	final VariableInterface<?> pVariable)
 	{
 		mStackSink.addMetaDataVariable(pPrefix, pVariable);
 	}
 
 	@Override
-	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
 	{
 		mStackSink.removeMetaDataVariable(pVariable);
 	}
@@ -81,11 +83,9 @@ public class AsynchronousStackSinkAdapter	implements
 		mStackSink.removeAllMetaDataVariables();
 	}
 
-	public void setFinishedProcessingStackVariable(ObjectVariable<Stack> pVariable)
+	public void setFinishedProcessingStackVariable(final ObjectVariable<Stack> pVariable)
 	{
 		mFinishedProcessingStackVariable = pVariable;
 	}
-
-
 
 }

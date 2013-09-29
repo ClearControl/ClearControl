@@ -28,9 +28,13 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 			{
 
 				if (pDropIfQueueFull)
+				{
 					mAsynchronousProcessorBase.passOrFail(pNewReference);
+				}
 				else
+				{
 					mAsynchronousProcessorBase.passOrWait(pNewReference);
+				}
 			}
 		};
 

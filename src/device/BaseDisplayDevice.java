@@ -1,6 +1,5 @@
 package device;
 
-
 public abstract class BaseDisplayDevice extends SignalStartableDevice	implements
 																																			VirtualDeviceInterface,
 																																			Displayable

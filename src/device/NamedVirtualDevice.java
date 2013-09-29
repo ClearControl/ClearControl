@@ -1,16 +1,19 @@
 package device;
 
-public abstract class NamedDevice implements VirtualDeviceInterface
+public class NamedVirtualDevice extends VirtualDeviceAdapter implements
+																														NamedDeviceInterface,
+																														VirtualDeviceInterface
 {
 
 	private final String mDeviceName;
 
-	public NamedDevice(String pDeviceName)
+	public NamedVirtualDevice(final String pDeviceName)
 	{
 		super();
 		mDeviceName = pDeviceName;
 	}
 
+	@Override
 	public String getDeviceName()
 	{
 		return mDeviceName;
@@ -21,5 +24,5 @@ public abstract class NamedDevice implements VirtualDeviceInterface
 	{
 		return String.format("NamedDevice [mDeviceName=%s]", mDeviceName);
 	}
-	
+
 }

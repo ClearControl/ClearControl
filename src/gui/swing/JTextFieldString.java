@@ -34,6 +34,7 @@ public class JTextFieldString extends JPanel
 			{
 
 				if (!pNewValue.equals(mValueTextField.getText()))
+				{
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -42,6 +43,7 @@ public class JTextFieldString extends JPanel
 							mValueTextField.setText("" + pNewValue);
 						}
 					});
+				}
 
 				return pNewValue;
 			}

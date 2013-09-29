@@ -122,8 +122,12 @@ public class FileEventNotifier implements Closeable
 	{
 		// System.out.format("%s \t\t %s \n", pFile, pEventKind);
 		if (pFile.getName().equals(mFileToMonitor.getName()))
+		{
 			for (final FileEventNotifierListener lFileEventNotifierListener : mListenerList)
+			{
 				lFileEventNotifierListener.fileEvent(pThis, pFile, pEventKind);
+			}
+		}
 	}
 
 	public void startMonitoring() throws Exception

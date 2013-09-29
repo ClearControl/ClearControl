@@ -41,7 +41,9 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 	public Stack getStack(final long pStackIndex)
 	{
 		if (mStackRecycler == null)
+		{
 			return null;
+		}
 		try
 		{
 			final long lPositionInFileInType = mStackIndexToBinaryFilePositionMap.get(pStackIndex);

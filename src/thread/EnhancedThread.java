@@ -177,8 +177,6 @@ public abstract class EnhancedThread implements Runnable
 		setStopRequest(true);
 	}
 
-	
-
 	public final boolean isStarted()
 	{
 		return mStarted;
@@ -223,7 +221,7 @@ public abstract class EnhancedThread implements Runnable
 			}
 		}
 	}
-	
+
 	public final void waitToFinish()
 	{
 		synchronized (mWaitToFinnishLock)
@@ -244,36 +242,40 @@ public abstract class EnhancedThread implements Runnable
 
 	public void waitForRunning()
 	{
-		if(!isRunning())
-		synchronized (mWaitForRunningLock)
+		if (!isRunning())
 		{
-			while (!mStarted || !isRunning())
+			synchronized (mWaitForRunningLock)
 			{
-				try
+				while (!mStarted || !isRunning())
 				{
-					mWaitForRunningLock.wait();
+					try
+					{
+						mWaitForRunningLock.wait();
+					}
+					catch (final InterruptedException e)
+					{
+					}
 				}
-				catch (final InterruptedException e)
-				{
-				}
-			}
 
+			}
 		}
 	}
 
 	public void waitForPause()
 	{
-		if(!isPaused())
-		synchronized (mWaitForPauseLock)
+		if (!isPaused())
 		{
-			while (!isPaused() && isRunning())
+			synchronized (mWaitForPauseLock)
 			{
-				try
+				while (!isPaused() && isRunning())
 				{
-					mWaitForPauseLock.wait();
-				}
-				catch (final InterruptedException e)
-				{
+					try
+					{
+						mWaitForPauseLock.wait();
+					}
+					catch (final InterruptedException e)
+					{
+					}
 				}
 			}
 		}
@@ -335,9 +337,13 @@ public abstract class EnhancedThread implements Runnable
 		do
 		{
 			if (lTimeLeftNanoseconds > 2 * pSleepGranularity)
+			{
 				LockSupport.parkNanos(pSleepGranularity);
+			}
 			else if (lTimeLeftNanoseconds >= 2)
+			{
 				LockSupport.parkNanos(lTimeLeftNanoseconds / 2);
+			}
 			final long lCurrentTimeNanoseconds = System.nanoTime();
 			lTimeLeftNanoseconds = lEndTimeNanoseconds - lCurrentTimeNanoseconds;
 
@@ -354,7 +360,5 @@ public abstract class EnhancedThread implements Runnable
 			sleep(Long.MAX_VALUE);
 		}
 	}
-
-
 
 }

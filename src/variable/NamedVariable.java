@@ -15,12 +15,12 @@ public abstract class NamedVariable<O>
 		mVariableName = pVariableName;
 	}
 
-	public void addListener(VariableListener<O> pDoubleVariableListener)
+	public void addListener(final VariableListener<O> pDoubleVariableListener)
 	{
 		mVariableListeners.add(pDoubleVariableListener);
 	}
 
-	public void removeListener(VariableListener<O> pDoubleVariableListener)
+	public void removeListener(final VariableListener<O> pDoubleVariableListener)
 	{
 		mVariableListeners.remove(pDoubleVariableListener);
 	}
@@ -35,17 +35,18 @@ public abstract class NamedVariable<O>
 		return mVariableListeners;
 	}
 
-	public void notifyListenersOfSetEvent(final O pCurentValue, O pNewValue)
+	public void notifyListenersOfSetEvent(final O pCurentValue,
+																				final O pNewValue)
 	{
-		for (VariableListener<O> lDoubleVariableListener : getVariableListeners())
+		for (final VariableListener<O> lDoubleVariableListener : getVariableListeners())
 		{
-			lDoubleVariableListener.setEvent(pCurentValue,pNewValue);
+			lDoubleVariableListener.setEvent(pCurentValue, pNewValue);
 		}
 	}
 
 	public void notifyListenersOfGetEvent(final O pCurrentValue)
 	{
-		for (VariableListener<O> lDoubleVariableListener : getVariableListeners())
+		for (final VariableListener<O> lDoubleVariableListener : getVariableListeners())
 		{
 			lDoubleVariableListener.getEvent(pCurrentValue);
 		}

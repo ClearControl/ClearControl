@@ -21,11 +21,11 @@ public class VideoFrame3DDisplayTests
 		final int lResolutionZ = 512;
 
 		final Stack lVideoFrame = new Stack(0,
-																									0,
-																									lResolutionX,
-																									lResolutionX,
-																									lResolutionZ,
-																									1);
+																				0,
+																				lResolutionX,
+																				lResolutionX,
+																				lResolutionZ,
+																				1);
 		final ByteBuffer lByteBuffer = lVideoFrame.getByteBuffer();
 
 		final VideoFrame3DDisplay lVideoFrame3DDisplay = new VideoFrame3DDisplay();
@@ -41,12 +41,16 @@ public class VideoFrame3DDisplayTests
 
 			lByteBuffer.clear();
 			for (int z = 0; z < lResolutionZ; z++)
+			{
 				for (int y = 0; y < lResolutionY; y++)
+				{
 					for (int x = 0; x < lResolutionX; x++)
 					{
 						final byte lValue = (byte) (i + x ^ y ^ z);
 						lByteBuffer.put(lValue);
 					}
+				}
+			}
 
 			lFrameReferenceVariable.setReference(lVideoFrame);
 			// Thread.sleep(100);

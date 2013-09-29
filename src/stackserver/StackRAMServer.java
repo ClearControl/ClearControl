@@ -55,8 +55,8 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public void addMetaDataVariable(String pPrefix,
-																	VariableInterface<?> pVariable)
+	public void addMetaDataVariable(final String pPrefix,
+																	final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundle.addVariable(pVariable);
 	}
@@ -68,11 +68,10 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public void removeMetaDataVariable(VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundle.removeVariable(pVariable);
-		
-	}
 
+	}
 
 }

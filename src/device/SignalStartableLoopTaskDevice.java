@@ -7,7 +7,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 																																					VirtualDeviceInterface
 {
 
-	private SignalStartableLoopTaskDevice lThis;
+	private final SignalStartableLoopTaskDevice lThis;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
 																				final boolean pOnlyStart)

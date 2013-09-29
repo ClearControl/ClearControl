@@ -53,10 +53,14 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 					final I lInput = mInputQueue.poll(mPollPeriodInSeconds,
 																						TimeUnit.SECONDS);
 					if (lInput == null)
+					{
 						return true;
+					}
 					final O lOutput = process(lInput);
 					if (lOutput != null)
+					{
 						send(lOutput);
+					}
 				}
 				catch (final Throwable e)
 				{
@@ -75,7 +79,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	public boolean stop()
 	{
 		if (mEnhancedThread == null)
+		{
 			return false;
+		}
 
 		mEnhancedThread.stop();
 		mEnhancedThread = null;
@@ -97,7 +103,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	public boolean passOrWait(final I pObject)
 	{
 		if (!mEnhancedThread.isRunning())
+		{
 			mEnhancedThread.waitForRunning();
+		}
 		try
 		{
 			mInputQueue.put(pObject);
@@ -114,7 +122,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	public boolean passOrFail(final I pObject)
 	{
 		if (!mEnhancedThread.isRunning())
+		{
 			return false;
+		}
 
 		return mInputQueue.offer(pObject);
 	}
@@ -125,19 +135,24 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	protected void send(final O lOutput)
 	{
 		if (mReceiver != null)
+		{
 			mReceiver.passOrWait(lOutput);
+		}
 	}
 
+	@Override
 	public int getInputQueueLength()
 	{
 		return mInputQueue.size();
 	}
 
+	@Override
 	public int getRemainingCapacity()
 	{
 		return mInputQueue.remainingCapacity();
 	}
 
+	@Override
 	public boolean waitToFinish(final int pTimeOutInMilliseconds)
 	{
 		int lTimeOut = 0;

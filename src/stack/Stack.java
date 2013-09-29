@@ -27,7 +27,9 @@ public class Stack implements RecyclableInterface<Stack>
 	{
 		mVolumeSize = new double[pStackDimension];
 		for (int i = 0; i < pStackDimension; i++)
+		{
 			mVolumeSize[i] = 1;
+		}
 	}
 
 	public Stack(	final long pImageIndex,
@@ -141,8 +143,10 @@ public class Stack implements RecyclableInterface<Stack>
 		if (mStackRecycler != null)
 		{
 			if (mIsReleased)
+			{
 				throw new RuntimeException("Object " + this.hashCode()
 																		+ " Already released!");
+			}
 			mIsReleased = true;
 
 			mStackRecycler.release(this);
@@ -169,7 +173,7 @@ public class Stack implements RecyclableInterface<Stack>
 	@Override
 	public void setReleased(final boolean isReleased)
 	{
-		this.mIsReleased = isReleased;
+		mIsReleased = isReleased;
 	}
 
 	@Override

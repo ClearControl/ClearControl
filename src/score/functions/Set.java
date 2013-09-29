@@ -5,7 +5,8 @@ import score.interfaces.StaveInterface;
 public class Set
 {
 
-	public static void write(StaveInterface pStave, final double pValue)
+	public static void write(	final StaveInterface pStave,
+														final double pValue)
 	{
 		final int lArrayLength = pStave.getNumberOfTimePoints();
 		final short[] array = pStave.getStaveArray();

@@ -17,7 +17,10 @@ public class VideoWindowTests
 	@Test
 	public void simpleRandomDataTest() throws InterruptedException
 	{
-		final VideoWindow lVideoWindow = new VideoWindow("VideoWindow test",1, 512, 512);
+		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
+																											1,
+																											512,
+																											512);
 		lVideoWindow.setDisplayOn(true);
 
 		final ByteBuffer lVideoByteBuffer = ByteBuffer.allocateDirect(lVideoWindow.getMaxBufferLength())
@@ -44,7 +47,7 @@ public class VideoWindowTests
 		final int lBufferLength = pVideoByteBuffer.limit();
 		for (int i = 0; i < lBufferLength; i++)
 		{
-			final byte lValue = (byte) ((int) (1 * 255) % 256); // Math.random()
+			final byte lValue = (byte) (1 * 255 % 256); // Math.random()
 			// System.out.print(lValue);
 			pVideoByteBuffer.put(lValue);
 		}

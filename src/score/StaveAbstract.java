@@ -15,13 +15,13 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	private ShortBuffer mStaveShortBuffer;
 	private boolean mIsUpToDate = false;
 
-	public StaveAbstract(String pName)
+	public StaveAbstract(final String pName)
 	{
-		this(	pName,
-					cDefaultMaximalSignalIntegerAmplitude);
+		this(pName, cDefaultMaximalSignalIntegerAmplitude);
 	}
 
-	public StaveAbstract(String pName, final int pNumberOfTimePoints)
+	public StaveAbstract(	final String pName,
+												final int pNumberOfTimePoints)
 	{
 		this(	pName,
 					pNumberOfTimePoints,
@@ -61,43 +61,50 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	public double getNormalizedTimePoint(final int pIntegerTimePoint)
 	{
 		final int lNumberOfTimePoints = getNumberOfTimePoints();
-		final double lNormalizedTimePoint = (((double) pIntegerTimePoint) / lNumberOfTimePoints);
+		final double lNormalizedTimePoint = (double) pIntegerTimePoint / lNumberOfTimePoints;
 		return lNormalizedTimePoint;
 	}
 
 	@Override
-	public int getTimePointFromNormalized(double pNormalizedTimePoint)
+	public int getTimePointFromNormalized(final double pNormalizedTimePoint)
 	{
 		final int lNumberOfTimePoints = getNumberOfTimePoints();
 		final int lIntegerTimePoint = (int) Math.round(lNumberOfTimePoints * pNormalizedTimePoint);
 		return lIntegerTimePoint;
 	}
 
+	@Override
 	public void setNumberOfTimePoints(final int pNumberOfTimePoints)
 	{
 		if (mArray != null && pNumberOfTimePoints == mArray.length)
+		{
 			return;
+		}
 		final int lArrayLength = pNumberOfTimePoints;
 		mArray = new short[lArrayLength];
 		mStaveShortBuffer = ShortBuffer.wrap(mArray);
 		requestUpdate();
 	}
 
+	@Override
 	public int getNumberOfTimePoints()
 	{
 		return getStaveBufferLength();
 	}
 
+	@Override
 	public int getStaveBufferLength()
 	{
 		return mArray.length;
 	}
 
+	@Override
 	public short[] getStaveArray()
 	{
 		return mArray;
 	}
 
+	@Override
 	public ShortBuffer getStaveBuffer()
 	{
 		if (!mIsUpToDate)
@@ -110,11 +117,13 @@ public abstract class StaveAbstract extends NameableAbstract implements
 
 	public abstract void updateStaveBuffer();
 
+	@Override
 	public void requestUpdate()
 	{
 		mIsUpToDate = false;
 	}
 
+	@Override
 	public boolean isUpToDate()
 	{
 		return mIsUpToDate;
@@ -126,7 +135,7 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	}
 
 	@Override
-	public boolean isCompatibleWith(StaveInterface pStave)
+	public boolean isCompatibleWith(final StaveInterface pStave)
 	{
 		final boolean lSameNumberOfTimePoints = getNumberOfTimePoints() == pStave.getNumberOfTimePoints();
 		return lSameNumberOfTimePoints;

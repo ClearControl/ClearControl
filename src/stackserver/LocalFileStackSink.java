@@ -29,7 +29,9 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 		try
 		{
 			if (getNumberOfStacks() == 0)
+			{
 				mMetaDataVariableBundleAsFile.write();
+			}
 
 			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
 																									pStack.mTimeStampInNanoseconds);

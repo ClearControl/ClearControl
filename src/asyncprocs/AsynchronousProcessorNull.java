@@ -1,32 +1,28 @@
 package asyncprocs;
 
-public class AsynchronousProcessorNull<I,O> extends AsynchronousProcessorBase<I,O> implements
-																																		AsynchronousProcessorInterface<I,O>
+public class AsynchronousProcessorNull<I, O>	extends
+																							AsynchronousProcessorBase<I, O>	implements
+																																							AsynchronousProcessorInterface<I, O>
 {
 
-	
-
-	public AsynchronousProcessorNull(String pName, int pMaxQueueSize)
+	public AsynchronousProcessorNull(	final String pName,
+																		final int pMaxQueueSize)
 	{
 		super(pName, pMaxQueueSize);
 	}
-	
-	
+
 	@Override
-	public O process(I pInput)
+	public O process(final I pInput)
 	{
-		//Example: here is where the logic happens, here nothing happens and it returns null
+		// Example: here is where the logic happens, here nothing happens and it
+		// returns null
 		return null;
 	}
-
 
 	@Override
 	public boolean waitToFinish(final int pPollInterval)
 	{
 		return true;
 	}
-
-
-
 
 }

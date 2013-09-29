@@ -73,6 +73,7 @@ public class JSliderDouble extends JPanel
 																							constraintIfNescessary(pNewValue));
 
 				if (mSlider.getValue() != lSliderIntegerValue)
+				{
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -83,6 +84,7 @@ public class JSliderDouble extends JPanel
 							mValueTextField.setBackground(Color.white);
 						}
 					});
+				}
 
 				return super.setEventHook(pOldValue, pNewValue);
 			}
@@ -172,7 +174,9 @@ public class JSliderDouble extends JPanel
 
 				final String lTextString = mValueTextField.getText().trim();
 				if (lTextString.isEmpty())
+				{
 					return;
+				}
 
 				try
 				{
@@ -194,7 +198,9 @@ public class JSliderDouble extends JPanel
 					try
 					{
 						if (mSlider.getValue() != lSliderIntegerValue)
+						{
 							mSlider.setValue(lSliderIntegerValue);
+						}
 					}
 					catch (final Throwable e)
 					{
@@ -223,7 +229,7 @@ public class JSliderDouble extends JPanel
 		final Hashtable lLabelTable = new Hashtable();
 		for (int i = 0; i <= mNumberOfLabels; i++)
 		{
-			final int lInteger = (i * (pResolution - 1)) / mNumberOfLabels;
+			final int lInteger = i * (pResolution - 1) / mNumberOfLabels;
 			final double lDouble = toDouble(mResolution,
 																			mMin,
 																			mMax,
@@ -249,25 +255,33 @@ public class JSliderDouble extends JPanel
 	private void writeValueIntoTextField(final double lNewValue)
 	{
 		if (mQuanta == 1)
+		{
 			mValueTextField.setText(String.format(getFormat(),
-																						((long) lNewValue)));
+																						(long) lNewValue));
+		}
 		else
-			mValueTextField.setText(String.format(getFormat(), (lNewValue)));
+		{
+			mValueTextField.setText(String.format(getFormat(), lNewValue));
+		}
 	}
 
 	private String getFormat()
 	{
 		if (mQuanta == 0)
+		{
 			return "%g";
+		}
 		else if (mQuanta == 1)
+		{
 			return "%d";
+		}
 		else
 		{
 			final int lQuantaLog10 = (int) Math.round(Math.log10(mQuanta));
 
 			if (lQuantaLog10 < 0)
 			{
-				return "%." + (-lQuantaLog10) + "f";
+				return "%." + -lQuantaLog10 + "f";
 			}
 			else
 			{
@@ -281,7 +295,8 @@ public class JSliderDouble extends JPanel
 																	final double pMax,
 																	final int pIntValue)
 	{
-		return pMin + (((double) pIntValue) / (pResolution - 1))
+		return pMin + (double) pIntValue
+						/ (pResolution - 1)
 						* (pMax - pMin);
 	}
 
@@ -336,11 +351,17 @@ public class JSliderDouble extends JPanel
 	private double constraintIfNescessary(final double pDouble)
 	{
 		if (mQuanta == 0)
+		{
 			return pDouble;
+		}
 		else if (mQuanta == 1)
+		{
 			return Math.round(pDouble);
+		}
 		else
+		{
 			return Math.round(pDouble / mQuanta) * mQuanta;
+		}
 	}
 
 }

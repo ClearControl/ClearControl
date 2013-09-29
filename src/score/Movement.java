@@ -16,14 +16,12 @@ public class Movement extends NameableAbstract implements
 
 	private double mDeltaTimeInMicroseconds;
 	private final StaveInterface[] mStaveListArray;
-	private boolean mIsSync = false;
-	private boolean mIsSyncOnRisingEdge = false;
-	private int mSyncChannel = 0;
+	private final boolean mIsSync = false;
+	private final boolean mIsSyncOnRisingEdge = false;
+	private final int mSyncChannel = 0;
 
 	private ShortBuffer mMovementShortBuffer;
 	private boolean mIsUpToDateBasedOnStaveList = false;
-
-
 
 	public Movement(final String pName)
 	{
@@ -71,30 +69,32 @@ public class Movement extends NameableAbstract implements
 
 	}
 
+	@Override
 	public void setDeltaTimeInMicroseconds(final double pDeltaTimeInMicroeconds)
 	{
 		mDeltaTimeInMicroseconds = pDeltaTimeInMicroeconds;
 	}
 
+	@Override
 	public double getDeltaTimeInMicroseconds()
 	{
 		return mDeltaTimeInMicroseconds;
 	}
 
+	@Override
 	public int getNumberOfTimePoints()
 	{
-		StaveInterface lFirstStave = getFirstStave();
+		final StaveInterface lFirstStave = getFirstStave();
 		return lFirstStave.getNumberOfTimePoints();
 	}
 
 	public void setNumberOfTimePoints(final int pNumberOfTimePoints)
 	{
-		for (StaveInterface lStave : mStaveListArray)
+		for (final StaveInterface lStave : mStaveListArray)
 		{
 			lStave.setNumberOfTimePoints(pNumberOfTimePoints);
 		}
 	}
-
 
 	public boolean setStave(final int pStaveIndex,
 													final StaveInterface pNewStave)
@@ -109,6 +109,7 @@ public class Movement extends NameableAbstract implements
 		return mStaveListArray[0];
 	}
 
+	@Override
 	public int computeMovementBufferLength()
 	{
 		// final StaveInterface lFirstStave = getFirstStave();
@@ -117,6 +118,7 @@ public class Movement extends NameableAbstract implements
 		return lMovementBufferLength;
 	}
 
+	@Override
 	public ShortBuffer getMovementBuffer()
 	{
 		if (!isUpToDate())
@@ -143,7 +145,7 @@ public class Movement extends NameableAbstract implements
 
 		mMovementShortBuffer.limit(lMovementBufferLength);
 		mMovementShortBuffer.rewind();
-		for (StaveInterface lStave : mStaveListArray)
+		for (final StaveInterface lStave : mStaveListArray)
 		{
 			final ShortBuffer lStaveShortBuffer = lStave.getStaveBuffer();
 			lStaveShortBuffer.rewind();
@@ -151,7 +153,7 @@ public class Movement extends NameableAbstract implements
 
 		while (mMovementShortBuffer.hasRemaining())
 		{
-			for (StaveInterface lStave : mStaveListArray)
+			for (final StaveInterface lStave : mStaveListArray)
 			{
 				final ShortBuffer lStaveShortBuffer = lStave.getStaveBuffer();
 				if (lStaveShortBuffer.hasRemaining())
@@ -169,16 +171,18 @@ public class Movement extends NameableAbstract implements
 
 	}
 
+	@Override
 	public boolean isUpToDate()
 	{
 		boolean lIsUpToDate = mIsUpToDateBasedOnStaveList;
-		for (StaveInterface lStave : mStaveListArray)
+		for (final StaveInterface lStave : mStaveListArray)
 		{
 			lIsUpToDate &= lStave.isUpToDate();
 		}
 		return lIsUpToDate;
 	}
 
+	@Override
 	public int getNumberOfStaves()
 	{
 		final int lNumberOfChannels = mStaveListArray.length;
@@ -187,7 +191,7 @@ public class Movement extends NameableAbstract implements
 
 	public void requestUpdateAllStaves()
 	{
-		for (StaveInterface lStave : mStaveListArray)
+		for (final StaveInterface lStave : mStaveListArray)
 		{
 			lStave.requestUpdate();
 		}
@@ -225,7 +229,7 @@ public class Movement extends NameableAbstract implements
 
 	public static Movement getNullMovement()
 	{
-		Movement lNullMovement = new Movement("NullMovement");
+		final Movement lNullMovement = new Movement("NullMovement");
 		return lNullMovement;
 	}
 

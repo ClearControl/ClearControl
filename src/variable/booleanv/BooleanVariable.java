@@ -29,34 +29,37 @@ public class BooleanVariable extends DoubleVariable	implements
 		{
 
 			@Override
-			public void getEvent(Double pCurrentValue)
+			public void getEvent(final Double pCurrentValue)
 			{
 			}
 
 			@Override
-			public void setEvent(Double pCurrentValue, Double pNewValue)
+			public void setEvent(	final Double pCurrentValue,
+														final Double pNewValue)
 			{
 				final boolean lOldBooleanValue = double2boolean(pCurrentValue);
 				final boolean lNewBooleanValue = double2boolean(pNewValue);
 
 				if (lNewBooleanValue == lOldBooleanValue)
+				{
 					return;
+				}
 
-				for (BooleanEventListenerInterface lEdgeListener : mEdgeListenerList)
+				for (final BooleanEventListenerInterface lEdgeListener : mEdgeListenerList)
 				{
 					lEdgeListener.fire(lNewBooleanValue);
 				}
 
 				if (lNewBooleanValue)
 				{
-					for (BooleanEventListenerInterface lEdgeListener : mLowToHighEdgeListenerList)
+					for (final BooleanEventListenerInterface lEdgeListener : mLowToHighEdgeListenerList)
 					{
 						lEdgeListener.fire(lNewBooleanValue);
 					}
 				}
 				else if (!lNewBooleanValue)
 				{
-					for (BooleanEventListenerInterface lEdgeListener : mHighToLowEdgeListenerList)
+					for (final BooleanEventListenerInterface lEdgeListener : mHighToLowEdgeListenerList)
 					{
 						lEdgeListener.fire(lNewBooleanValue);
 					}
@@ -96,6 +99,7 @@ public class BooleanVariable extends DoubleVariable	implements
 		mHighToLowEdgeListenerList.add(pHighToLowEdgeListener);
 	}
 
+	@Override
 	public final void setValue(final boolean pNewBooleanValue)
 	{
 		setValue(boolean2double(pNewBooleanValue));
@@ -109,7 +113,7 @@ public class BooleanVariable extends DoubleVariable	implements
 		setValue(lNewToggledValue);
 	}
 
-	protected void setBooleanValueInternal(boolean pNewBooleanValue)
+	protected void setBooleanValueInternal(final boolean pNewBooleanValue)
 	{
 		setValueInternal(boolean2double(pNewBooleanValue));
 	}
@@ -150,10 +154,10 @@ public class BooleanVariable extends DoubleVariable	implements
 		System.out.println("waitForStateAndToggle");
 		final CountDownLatch lIsTrueSignal = new CountDownLatch(1);
 		final BooleanVariable lThis = this;
-		BooleanEventListenerInterface lBooleanEventListenerInterface = new BooleanEventListenerInterface()
+		final BooleanEventListenerInterface lBooleanEventListenerInterface = new BooleanEventListenerInterface()
 		{
 			@Override
-			public void fire(boolean pCurrentBooleanValue)
+			public void fire(final boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue == pState)
 				{
@@ -182,10 +186,12 @@ public class BooleanVariable extends DoubleVariable	implements
 					System.out.println("lTimeOutCounter += pMaxPollingPeriod;");
 					lTimeOutCounter += pMaxPollingPeriod;
 					if (lTimeOutCounter >= pTimeOut)
+					{
 						break;
+					}
 				}
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				e.printStackTrace();
 			}

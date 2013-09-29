@@ -10,9 +10,9 @@ import java.util.concurrent.Executors;
 
 import org.math.plot.Plot2DPanel;
 
-public class PlotTab {
-	private static final ExecutorService sExecutor = Executors
-			.newSingleThreadExecutor();
+public class PlotTab
+{
+	private static final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 	private static final Object mLock = new Object();
 
 	private final TDoubleArrayList mX = new TDoubleArrayList();
@@ -22,62 +22,85 @@ public class PlotTab {
 
 	private boolean mIsLinePlot = false;
 
-	public PlotTab(final String pName) throws HeadlessException {
+	public PlotTab(final String pName) throws HeadlessException
+	{
 		mPlot = new Plot2DPanel();
 		mCorrectionVariables = new HashMap<String, TDoubleArrayList>();
 	}
 
-	public void addPoint(String pVariableName, final double pY) {
+	public void addPoint(final String pVariableName, final double pY)
+	{
 		addPoint(pVariableName, mX.size(), pY);
 	}
 
-	public void addPoint(String pVariableName, double pX, double pY) {
-		synchronized (mLock) {
-			try {
+	public void addPoint(	final String pVariableName,
+												final double pX,
+												final double pY)
+	{
+		synchronized (mLock)
+		{
+			try
+			{
 				TDoubleArrayList lY = mCorrectionVariables.get(pVariableName);
 
-				if (lY == null) {
+				if (lY == null)
+				{
 					lY = new TDoubleArrayList();
 					mCorrectionVariables.put(pVariableName, lY);
 				}
 
 				lY.add(pY);
 				if (mX.size() < lY.size())
+				{
 					mX.add(pX);
+				}
 
 				mUpToDate = false;
-			} catch (final Throwable e) {
+			}
+			catch (final Throwable e)
+			{
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void ensureUpToDate() {
-		Runnable lEnsureUpToDateRunnable = new Runnable() {
+	public void ensureUpToDate()
+	{
+		final Runnable lEnsureUpToDateRunnable = new Runnable()
+		{
 			@Override
-			public void run() {
-				synchronized (mLock) {
-					try {
-						if (!mUpToDate) {
+			public void run()
+			{
+				synchronized (mLock)
+				{
+					try
+					{
+						if (!mUpToDate)
+						{
 							mPlot.removeAllPlots();
 
-							for (Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables
-									.entrySet()) {
-								final String lCorrectionVariableName = lEntry
-										.getKey();
+							for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
+							{
+								final String lCorrectionVariableName = lEntry.getKey();
 								final TDoubleArrayList lY = lEntry.getValue();
 
 								if (!isDataComplete(lY))
+								{
 									continue;
+								}
 
 								if (mIsLinePlot && mX.size() >= 3)
-
+								{
 									mPlot.addLinePlot(lCorrectionVariableName,
-											mX.toArray(), lY.toArray());
+																		mX.toArray(),
+																		lY.toArray());
+								}
 								else
-									mPlot.addScatterPlot(
-											lCorrectionVariableName,
-											mX.toArray(), lY.toArray());
+								{
+									mPlot.addScatterPlot(	lCorrectionVariableName,
+																				mX.toArray(),
+																				lY.toArray());
+								}
 
 							}
 
@@ -86,9 +109,11 @@ public class PlotTab {
 
 							mUpToDate = true;
 						}
-					} catch (final Throwable e) {
+					}
+					catch (final Throwable e)
+					{
 						System.err.println(PlotTab.class.getSimpleName() + ": "
-								+ e.getLocalizedMessage());
+																+ e.getLocalizedMessage());
 					}
 				}
 			}
@@ -97,34 +122,41 @@ public class PlotTab {
 		execute(lEnsureUpToDateRunnable);
 	}
 
-	protected boolean isDataComplete() {
+	protected boolean isDataComplete()
+	{
 
-		for (Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables
-				.entrySet()) {
+		for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
+		{
 
 			final TDoubleArrayList lY = lEntry.getValue();
 			final boolean lIsDataComplete = isDataComplete(lY);
 			if (lIsDataComplete)
+			{
 				return false;
+			}
 		}
 
 		return true;
 	}
 
-	protected boolean isDataComplete(final TDoubleArrayList pY) {
+	protected boolean isDataComplete(final TDoubleArrayList pY)
+	{
 
 		return pY.size() == mX.size();
 	}
 
-	public Plot2DPanel getPlot() {
+	public Plot2DPanel getPlot()
+	{
 		return mPlot;
 	}
 
-	public void clearPoints() {
-		synchronized (mLock) {
+	public void clearPoints()
+	{
+		synchronized (mLock)
+		{
 			mX.clear();
-			for (Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables
-					.entrySet()) {
+			for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
+			{
 				final TDoubleArrayList lY = lEntry.getValue();
 				lY.clear();
 			}
@@ -132,19 +164,23 @@ public class PlotTab {
 		}
 	}
 
-	public void execute(Runnable pRunnable) {
+	public void execute(final Runnable pRunnable)
+	{
 		java.awt.EventQueue.invokeLater(pRunnable);
 	}
 
-	public boolean isIsLinePlot() {
+	public boolean isIsLinePlot()
+	{
 		return mIsLinePlot;
 	}
 
-	public void setLinePlot() {
+	public void setLinePlot()
+	{
 		mIsLinePlot = true;
 	}
 
-	public void setScatterPlot() {
+	public void setScatterPlot()
+	{
 		mIsLinePlot = false;
 	}
 

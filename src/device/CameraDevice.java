@@ -1,9 +1,10 @@
 package device;
 
-public abstract class CameraDevice extends SignalStartableDevice implements VirtualDeviceInterface
+public abstract class CameraDevice extends SignalStartableDevice implements
+																																VirtualDeviceInterface
 {
 
-	public CameraDevice(String pDeviceName)
+	public CameraDevice(final String pDeviceName)
 	{
 		super(pDeviceName);
 	}

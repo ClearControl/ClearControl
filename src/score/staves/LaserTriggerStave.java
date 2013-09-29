@@ -6,12 +6,9 @@ public class LaserTriggerStave extends TriggerStave	implements
 																										StaveInterface
 {
 
-	
-
-	public LaserTriggerStave(String pName)
+	public LaserTriggerStave(final String pName)
 	{
-		super("Laser Trigger - "+pName);
+		super("Laser Trigger - " + pName);
 	}
-
 
 }

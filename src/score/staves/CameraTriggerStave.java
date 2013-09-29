@@ -6,9 +6,9 @@ public class CameraTriggerStave extends TriggerStave implements
 																										StaveInterface
 {
 
-	public CameraTriggerStave(String pName)
+	public CameraTriggerStave(final String pName)
 	{
-		super("Camera Trigger - "+pName);
+		super("Camera Trigger - " + pName);
 	}
 
 }

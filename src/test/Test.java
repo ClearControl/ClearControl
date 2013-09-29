@@ -65,7 +65,7 @@ public final class Test
 
 	private static int subtest(	final Operation[] operations,
 															int value,
-															int i)
+															final int i)
 	{
 		System.out.println("*** Run each method in turn: loop " + i);
 
@@ -86,7 +86,10 @@ public final class Test
 			value += opRun(operation, value);
 
 			final long duration = System.nanoTime() - start;
-			final long opsPerSec = (ITERATIONS * 1000L * 1000L * 1000L) / duration;
+			final long opsPerSec = ITERATIONS * 1000L
+															* 1000L
+															* 1000L
+															/ duration;
 			System.out.printf("    %,d ops/sec\n", opsPerSec);
 		}
 

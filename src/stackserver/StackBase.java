@@ -12,7 +12,7 @@ public abstract class StackBase implements Closeable
 {
 	protected final TLongLongHashMap mStackIndexToTimeStampInNanosecondsMap = new TLongLongHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
-	protected final HashMap<Long,int[]> mStackIndexToStackDimensionsMap = new HashMap<Long,int[]>();
+	protected final HashMap<Long, int[]> mStackIndexToStackDimensionsMap = new HashMap<Long, int[]>();
 
 	public StackBase() throws IOException
 	{

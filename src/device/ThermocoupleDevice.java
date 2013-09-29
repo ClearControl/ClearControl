@@ -2,22 +2,23 @@ package device;
 
 import variable.doublev.DoubleVariable;
 
-public abstract class ThermocoupleDevice extends SignalStartableLoopTaskDevice
+public abstract class ThermocoupleDevice extends
+																				SignalStartableLoopTaskDevice
 {
 
 	DoubleVariable mTemperatureVariable;
-	
-	public ThermocoupleDevice(String pDeviceName)
+
+	public ThermocoupleDevice(final String pDeviceName)
 	{
 		super(pDeviceName, false);
-		mTemperatureVariable = new DoubleVariable(pDeviceName+"TemperatureInCelcius");
+		mTemperatureVariable = new DoubleVariable(pDeviceName + "TemperatureInCelcius");
 	}
-	
+
 	public DoubleVariable getTemperatureInCelciusVariable()
 	{
 		return mTemperatureVariable;
 	}
-	
+
 	public double getTemperatureInCelcius()
 	{
 		return mTemperatureVariable.getValue();

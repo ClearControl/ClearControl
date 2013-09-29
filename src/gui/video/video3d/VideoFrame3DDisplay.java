@@ -9,30 +9,28 @@ import variable.objectv.ObjectVariable;
 import asyncprocs.AsynchronousProcessorBase;
 import clearvolume.jcuda.JCudaClearVolumeRenderer;
 import clearvolume.transfertf.TransfertFunctions;
-import device.NamedDevice;
+import device.NamedVirtualDevice;
 
-public class VideoFrame3DDisplay extends NamedDevice
+public class VideoFrame3DDisplay extends NamedVirtualDevice
 {
 
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
 
 	private final ObjectVariable<Stack> mObjectVariable;
-	
+
 	private AsynchronousProcessorBase<Stack, Object> mAsynchronousDisplayUpdater;
 
 	private final BooleanVariable mDisplayOn;
-
-
 
 	public VideoFrame3DDisplay()
 	{
 		this("3d Video Display", 1);
 	}
-	
+
 	public VideoFrame3DDisplay(	final String pWindowName,
 															final int pBytesPerVoxel)
 	{
-		this(pWindowName,pBytesPerVoxel,2);
+		this(pWindowName, pBytesPerVoxel, 2);
 	}
 
 	public VideoFrame3DDisplay(	final String pWindowName,
@@ -48,11 +46,11 @@ public class VideoFrame3DDisplay extends NamedDevice
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);
 
-		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack, Object>(	"AsynchronousDisplayUpdater-"+pWindowName,
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack, Object>(	"AsynchronousDisplayUpdater-" + pWindowName,
 																																								pUpdaterQueueLength)
 		{
 			@Override
-			public Object process(Stack pStack)
+			public Object process(final Stack pStack)
 			{
 				// System.out.println(pNewFrameReference.buffer);
 
@@ -66,8 +64,8 @@ public class VideoFrame3DDisplay extends NamedDevice
 																											lHeight,
 																											lDepth);
 				mJCudaClearVolumeRenderer.setVolumeSize(pStack.mVolumeSize[0],
-				                                        pStack.mVolumeSize[1],
-				                                        pStack.mVolumeSize[2]);
+																								pStack.mVolumeSize[1],
+																								pStack.mVolumeSize[2]);
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 
@@ -83,9 +81,9 @@ public class VideoFrame3DDisplay extends NamedDevice
 		{
 
 			@Override
-			public Stack setEventHook(Stack pStack)
+			public Stack setEventHook(final Stack pStack)
 			{
-				if(!mAsynchronousDisplayUpdater.passOrFail(pStack))
+				if (!mAsynchronousDisplayUpdater.passOrFail(pStack))
 				{
 					pStack.releaseFrame();
 				}

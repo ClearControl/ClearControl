@@ -37,6 +37,7 @@ public class JProgressBarDouble extends JProgressBar
 																											pNewValue);
 
 				if (mThis.getValue() != lProgressBarNewIntegerValue)
+				{
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
@@ -45,6 +46,7 @@ public class JProgressBarDouble extends JProgressBar
 							mThis.setValue(lProgressBarNewIntegerValue);
 						}
 					});
+				}
 
 				return super.setEventHook(pOldValue, pNewValue);
 			}
@@ -62,7 +64,8 @@ public class JProgressBarDouble extends JProgressBar
 																	final double pMax,
 																	final int pIntValue)
 	{
-		return pMin + (((double) pIntValue) / (pResolution - 1))
+		return pMin + (double) pIntValue
+						/ (pResolution - 1)
 						* (pMax - pMin);
 	}
 

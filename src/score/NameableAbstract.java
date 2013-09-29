@@ -10,7 +10,7 @@ public abstract class NameableAbstract
 		super();
 	}
 
-	public NameableAbstract(String pName)
+	public NameableAbstract(final String pName)
 	{
 		super();
 		mName = pName;
@@ -21,7 +21,7 @@ public abstract class NameableAbstract
 		return mName;
 	}
 
-	public void setName(String name)
+	public void setName(final String name)
 	{
 		mName = name;
 	}

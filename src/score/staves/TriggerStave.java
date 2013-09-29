@@ -22,11 +22,17 @@ public class TriggerStave extends StaveAbstract	implements
 	{
 		Set.write(this, 0);
 		if (!mEnabled)
+		{
 			return;
+		}
 
 		if (mReverse)
+		{
 			Interval.add(this, mSyncStart, mSyncStop, 0, 1);
+		}
 		else
+		{
 			Interval.add(this, mSyncStart, mSyncStop, 1, 0);
+		}
 	}
 }

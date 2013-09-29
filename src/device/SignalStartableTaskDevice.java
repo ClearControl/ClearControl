@@ -9,7 +9,7 @@ public abstract class SignalStartableTaskDevice	extends
 																																			Runnable
 {
 
-	private SignalStartableTaskDevice lThis;
+	private final SignalStartableTaskDevice lThis;
 
 	protected final BooleanVariable mCancelBooleanVariable;
 
@@ -32,6 +32,7 @@ public abstract class SignalStartableTaskDevice	extends
 		}
 	};
 
+	@Override
 	public abstract void run();
 
 	@Override
