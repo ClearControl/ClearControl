@@ -18,10 +18,9 @@ public class JTextFieldDouble extends JPanel
 	private JLabel mNameLabel;
 	private JTextField mValueTextField;
 
-	private final String mLabelsFormatString;
-	private double mMin, mMax;
+	private String mLabelsFormatString = "%g";
 
-	private final JTextFieldDouble mThis;
+	// private final JTextFieldDouble mThis;
 	private final DoubleVariable mDoubleVariable;
 
 	private volatile double mNewValue;
@@ -30,44 +29,13 @@ public class JTextFieldDouble extends JPanel
 													final boolean pNorthSouthLayout,
 													final double pValue)
 	{
-		this(	pValueName,
-					pNorthSouthLayout,
-					Double.NEGATIVE_INFINITY,
-					Double.POSITIVE_INFINITY,
-					pValue);
-	}
 
-	public JTextFieldDouble(final String pValueName,
-													final boolean pNorthSouthLayout,
-													final double pMin,
-													final double pMax,
-													final double pValue)
-	{
-		this(pValueName, pNorthSouthLayout, 1024, pMin, pMax, pValue);
-	}
-
-	public JTextFieldDouble(final String pValueName,
-													final boolean pNorthSouthLayout,
-													final int pResolution,
-													final double pMin,
-													final double pMax,
-													final double pValue)
-	{
-		this(	pValueName,
-					pNorthSouthLayout,
-					"%.1f",
-					pResolution,
-					pMin,
-					pMax,
-					pValue);
+		this(pValueName, pNorthSouthLayout, "%.1f", pValue);
 	}
 
 	public JTextFieldDouble(final String pValueName,
 													final boolean pNorthSouthLayout,
 													final String pLabelsFormatString,
-													final int pResolution,
-													final double pMin,
-													final double pMax,
 													final double pValue)
 	{
 		super();
@@ -87,7 +55,9 @@ public class JTextFieldDouble extends JPanel
 						public void run()
 						{
 							// System.out.println("mValueTextField.setText('' + pNewValue);");
-							mValueTextField.setText("" + pNewValue);
+							final String lString = String.format(	mLabelsFormatString,
+																										pNewValue);
+							mValueTextField.setText(lString);
 						}
 					});
 				}
@@ -123,9 +93,6 @@ public class JTextFieldDouble extends JPanel
 																					: BorderLayout.CENTER);
 
 		mLabelsFormatString = pLabelsFormatString;
-		mMin = pMin;
-		mMax = pMax;
-		mThis = this;
 
 		mValueTextField.getDocument()
 										.addDocumentListener(new DocumentListener()
@@ -179,34 +146,6 @@ public class JTextFieldDouble extends JPanel
 	public DoubleVariable getDoubleVariable()
 	{
 		return mDoubleVariable;
-	}
-
-	private static double toDouble(	final int pResolution,
-																	final double pMin,
-																	final double pMax,
-																	final int pIntValue)
-	{
-		return pMin + (double) pIntValue
-						/ (pResolution - 1)
-						* (pMax - pMin);
-	}
-
-	private static int toInt(	final int pResolution,
-														final double pMin,
-														final double pMax,
-														final double pValue)
-	{
-		return (int) Math.round((pResolution - 1) * (clamp(	pMin,
-																												pMax,
-																												pValue) - pMin)
-														/ (pMax - pMin));
-	}
-
-	private static double clamp(final double pMin,
-															final double pMax,
-															final double pValue)
-	{
-		return Math.min(pMax, Math.max(pMin, pValue));
 	}
 
 	public void setColumns(final int pNumberColumns)
