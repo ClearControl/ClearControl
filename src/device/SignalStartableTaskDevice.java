@@ -1,6 +1,7 @@
 package device;
 
 import thread.EnhancedThread;
+import variable.booleanv.BooleanEventListenerInterface;
 import variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
@@ -12,6 +13,8 @@ public abstract class SignalStartableTaskDevice	extends
 	private final SignalStartableTaskDevice lThis;
 
 	protected final BooleanVariable mCancelBooleanVariable;
+	
+	protected volatile boolean mCanceledSignal= false;
 
 	public SignalStartableTaskDevice(final String pDeviceName)
 	{
@@ -20,6 +23,19 @@ public abstract class SignalStartableTaskDevice	extends
 
 		mCancelBooleanVariable = new BooleanVariable(	pDeviceName + "Cancel",
 																									false);
+		
+		mCancelBooleanVariable.addEdgeListener(new BooleanEventListenerInterface()
+		{
+			
+			@Override
+			public void fire(boolean pCurrentBooleanValue)
+			{
+				if(pCurrentBooleanValue)
+				{
+					mCanceledSignal = true;
+				}
+			}
+		});
 	}
 
 	protected EnhancedThread mTaskThread = new EnhancedThread()
@@ -70,9 +86,14 @@ public abstract class SignalStartableTaskDevice	extends
 		return mCancelBooleanVariable;
 	}
 
+	public void clearCanceled()
+	{
+		mCanceledSignal=false;
+	}
+	
 	public boolean isCanceled()
 	{
-		return mCancelBooleanVariable.getBooleanValue();
+		return mCanceledSignal;
 	}
 
 }

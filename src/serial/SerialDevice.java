@@ -83,11 +83,14 @@ public class SerialDevice extends NamedVirtualDevice implements
 							mSerial.setBinaryMode(true);
 							mSerial.setMessageLength(pSerialBinaryDevice.getSetValueReturnMessageLength());
 							mSerial.write(lSetValueCommandMessage);
-							sleep(pSerialBinaryDevice.getSetValueReturnWaitTimeInMilliseconds());
-							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
-							if (lAnswerMessage != null)
+							if (pSerialBinaryDevice.getSetValueReturnMessageLength() > 0)
 							{
-								pSerialBinaryDevice.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+								sleep(pSerialBinaryDevice.getSetValueReturnWaitTimeInMilliseconds());
+								final byte[] lAnswerMessage = mSerial.readBinaryMessage();
+								if (lAnswerMessage != null)
+								{
+									pSerialBinaryDevice.checkAcknowledgementSetValueReturnMessage(lAnswerMessage);
+								}
 							}
 						}
 					}

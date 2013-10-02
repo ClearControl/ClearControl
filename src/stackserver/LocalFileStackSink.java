@@ -9,12 +9,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 import stack.Stack;
+import units.Units;
 import variable.VariableInterface;
 
 public class LocalFileStackSink extends LocalFileStackBase implements
 																													StackSinkInterface,
 																													Closeable
 {
+
+	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 
 	public LocalFileStackSink(final File pRootFolder, final String pName) throws IOException
 	{
@@ -58,9 +61,16 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 																															StandardOpenOption.WRITE,
 																															StandardOpenOption.CREATE);
 
-			final String lIndexLineString = String.format("%d\t%d\t%s\t%d\n",
+			
+			if(mNextFreeStackIndex==0)
+			{
+				mFirstTimePointAbsoluteNanoSeconds = pStack.mTimeStampInNanoseconds;
+			}
+			final double lTimeStampInSeconds = Units.nano2unit(pStack.mTimeStampInNanoseconds - mFirstTimePointAbsoluteNanoSeconds);
+			
+			final String lIndexLineString = String.format("%d\t%.4f\t%s\t%d\n",
 																										mNextFreeStackIndex,
-																										pStack.mTimeStampInNanoseconds,
+																										lTimeStampInSeconds,
 																										lTruncatedDimensionsString,
 																										mNextFreeTypePosition);
 			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();

@@ -31,6 +31,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class VideoWindow implements Closeable
 {
 
+	private static final double cMinMaxDampeningAlpha = 0.05;
 	private final GLWindow mGLWindow;
 	private String mWindowName;
 
@@ -599,24 +600,15 @@ public class VideoWindow implements Closeable
 			byte lByteMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				final int lIntegerMappedValue = 255 * (lShortValue - lCurrentMin)
+				final int lIntegerMappedValue = (255 * (lShortValue - lCurrentMin))
 																				/ lCurrentWidth;
-				if (lIntegerMappedValue <= 0)
-				{
-					lByteMappedValue = 0;
-				}
-				else if (lIntegerMappedValue >= 255)
-				{
-					lByteMappedValue = (byte) 255;
-				}
-				else
-				{
-					lByteMappedValue = (byte) lIntegerMappedValue;
-				}
+				lByteMappedValue = clamp(lIntegerMappedValue);
 			}
 			lByteArray[i] = lByteMappedValue;
 		}
 	}
+
+	
 
 	private static void convert16to8bitRescaledAuto(final short[] pShortArray,
 																									final byte[] lByteArray,
@@ -635,16 +627,34 @@ public class VideoWindow implements Closeable
 			final int lShortValue = pShortArray[i];
 			lNewMin = Math.min(lNewMin, lShortValue);
 			lNewMax = Math.max(lNewMax, lShortValue);
-			byte lByteMappedValue = 0;
+			int lIntegerMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				lByteMappedValue = (byte) (255 * (lShortValue - lCurrentMin) / lCurrentWidth);
+				lIntegerMappedValue = (255 * (lShortValue - lCurrentMin) / lCurrentWidth);
 			}
-			lByteArray[i] = lByteMappedValue;
+			lByteArray[i] = clamp(lIntegerMappedValue); 
 		}
 
-		pMinMax[0] = lNewMin;
-		pMinMax[1] = lNewMax;
+		pMinMax[0] = (int) ((1-cMinMaxDampeningAlpha)*pMinMax[0]+cMinMaxDampeningAlpha*lNewMin);
+		pMinMax[1] = (int) ((1-cMinMaxDampeningAlpha)*pMinMax[1]+cMinMaxDampeningAlpha*lNewMax);
+	}
+	
+	private static byte clamp(final int pIntegerMappedValue)
+	{
+		byte lByteMappedValue;
+		if (pIntegerMappedValue <= 0)
+		{
+			lByteMappedValue = 0;
+		}
+		else if (pIntegerMappedValue >= 255)
+		{
+			lByteMappedValue = (byte) 255;
+		}
+		else
+		{
+			lByteMappedValue = (byte) pIntegerMappedValue;
+		}
+		return lByteMappedValue;
 	}
 
 	private void reportError(final GL2 pGL2)

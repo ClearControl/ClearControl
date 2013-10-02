@@ -182,6 +182,7 @@ public class JSliderDouble extends JPanel
 				{
 					double lNewValue = Double.parseDouble(lTextString);
 					final double lNewIntegerValue = constraintIfNescessary(lNewValue);
+					
 					if (lNewValue != lNewIntegerValue)
 					{
 						lNewValue = lNewIntegerValue;
@@ -348,19 +349,20 @@ public class JSliderDouble extends JPanel
 		mQuanta = 0;
 	}
 
-	private double constraintIfNescessary(final double pDouble)
+	private double constraintIfNescessary(final double pValue)
 	{
+		double lMinMaxConstrained = clamp(mMin,mMax,pValue);
 		if (mQuanta == 0)
 		{
-			return pDouble;
+			return lMinMaxConstrained;
 		}
 		else if (mQuanta == 1)
 		{
-			return Math.round(pDouble);
+			return Math.round(lMinMaxConstrained);
 		}
 		else
 		{
-			return Math.round(pDouble / mQuanta) * mQuanta;
+			return Math.round(lMinMaxConstrained / mQuanta) * mQuanta;
 		}
 	}
 

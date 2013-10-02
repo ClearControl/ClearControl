@@ -137,6 +137,15 @@ public class Stack implements RecyclableInterface<Stack>
 			mVolumeSize = new double[3];
 		}
 	}
+	
+	public void copyMetaDataFrom(Stack pStack)
+	{
+		mVolumeSize = pStack.mVolumeSize;
+		mStackIndex = pStack.mStackIndex;
+		mTimeStampInNanoseconds = pStack.mTimeStampInNanoseconds;
+		mBytesPerPixel = pStack.mBytesPerPixel;
+		mNumberOfImagesPerPlane = pStack.mNumberOfImagesPerPlane;
+	}
 
 	public void releaseFrame()
 	{
@@ -181,5 +190,7 @@ public class Stack implements RecyclableInterface<Stack>
 	{
 		mStackRecycler = pRecycler;
 	}
+
+
 
 }
