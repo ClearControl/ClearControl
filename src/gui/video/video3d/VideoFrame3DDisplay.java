@@ -69,7 +69,7 @@ public class VideoFrame3DDisplay extends NamedVirtualDevice
 				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
 
-				pStack.releaseFrame();
+				pStack.releaseStack();
 
 				return null;
 			}
@@ -85,7 +85,7 @@ public class VideoFrame3DDisplay extends NamedVirtualDevice
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pStack))
 				{
-					pStack.releaseFrame();
+					pStack.releaseStack();
 				}
 				return super.setEventHook(pStack);
 			}

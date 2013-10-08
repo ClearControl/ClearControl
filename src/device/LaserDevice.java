@@ -23,4 +23,6 @@ public interface LaserDevice extends
 	public DoubleVariable getTargetPowerInMilliWattVariable();
 
 	public DoubleVariable getCurrentPowerInMilliWattVariable();
+
+	public DoubleVariable getWavelengthInNanoMeterVariable();
 }

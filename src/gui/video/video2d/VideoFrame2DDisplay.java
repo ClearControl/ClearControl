@@ -76,7 +76,7 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 				mVideoWindow.notifyNewFrame();
 
 				mVideoWindow.display();
-				pStack.releaseFrame();
+				pStack.releaseStack();
 				return null;
 			}
 		};
@@ -91,7 +91,7 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pStack))
 				{
-					pStack.releaseFrame();
+					pStack.releaseStack();
 				}
 				return super.setEventHook(pStack);
 			}

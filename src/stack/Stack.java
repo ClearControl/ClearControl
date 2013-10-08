@@ -147,7 +147,7 @@ public class Stack implements RecyclableInterface<Stack>
 		mNumberOfImagesPerPlane = pStack.mNumberOfImagesPerPlane;
 	}
 
-	public void releaseFrame()
+	public void releaseStack()
 	{
 		if (mStackRecycler != null)
 		{
