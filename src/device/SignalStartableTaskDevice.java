@@ -13,8 +13,8 @@ public abstract class SignalStartableTaskDevice	extends
 	private final SignalStartableTaskDevice lThis;
 
 	protected final BooleanVariable mCancelBooleanVariable;
-	
-	protected volatile boolean mCanceledSignal= false;
+
+	protected volatile boolean mCanceledSignal = false;
 
 	public SignalStartableTaskDevice(final String pDeviceName)
 	{
@@ -23,14 +23,14 @@ public abstract class SignalStartableTaskDevice	extends
 
 		mCancelBooleanVariable = new BooleanVariable(	pDeviceName + "Cancel",
 																									false);
-		
+
 		mCancelBooleanVariable.addEdgeListener(new BooleanEventListenerInterface()
 		{
-			
+
 			@Override
-			public void fire(boolean pCurrentBooleanValue)
+			public void fire(final boolean pCurrentBooleanValue)
 			{
-				if(pCurrentBooleanValue)
+				if (pCurrentBooleanValue)
 				{
 					mCanceledSignal = true;
 				}
@@ -54,8 +54,8 @@ public abstract class SignalStartableTaskDevice	extends
 	@Override
 	public boolean start()
 	{
+		clearCanceled();
 		mTaskThread.start();
-		mCancelBooleanVariable.setValue(false);
 		return true;
 	}
 
@@ -88,9 +88,10 @@ public abstract class SignalStartableTaskDevice	extends
 
 	public void clearCanceled()
 	{
-		mCanceledSignal=false;
+		mCancelBooleanVariable.setValue(false);
+		mCanceledSignal = false;
 	}
-	
+
 	public boolean isCanceled()
 	{
 		return mCanceledSignal;
