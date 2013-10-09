@@ -57,16 +57,16 @@ public class SerialDevice extends NamedVirtualDevice implements
 							mSerial.write(cGetValueCommand);
 							sleep(pSerialBinaryDevice.getGetValueReturnWaitTimeInMilliseconds());
 							final byte[] lAnswerMessage = mSerial.readBinaryMessage();
-							return pSerialBinaryDevice.parseValue(lAnswerMessage);
+							return super.getEventHook(pSerialBinaryDevice.parseValue(lAnswerMessage));
 						}
 					}
 				}
 				catch (final SerialPortException e)
 				{
 					// TODO handle error
-					return pCurrentValue;
+					return  super.getEventHook(pCurrentValue);
 				}
-				return Double.NaN;
+				return  super.getEventHook(pCurrentValue);
 			}
 
 			@Override
@@ -98,6 +98,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 				catch (final SerialPortException e)
 				{
 					// TODO handle error
+					return  super.setEventHook(pOldValue,pNewValue);
 				}
 				return super.setEventHook(pOldValue, pNewValue);
 			}

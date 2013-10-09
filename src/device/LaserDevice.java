@@ -14,6 +14,8 @@ public interface LaserDevice extends
 
 	public void setTargetPowerInPercent(double pTargetPowerInPercent);
 
+	public double getTargetPowerInMilliWatt();
+	
 	public double getMaxPowerInMilliWatt();
 
 	public double getCurrentPowerInMilliWatt();
@@ -25,4 +27,6 @@ public interface LaserDevice extends
 	public DoubleVariable getCurrentPowerInMilliWattVariable();
 
 	public DoubleVariable getWavelengthInNanoMeterVariable();
+
+
 }
