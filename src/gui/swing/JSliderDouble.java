@@ -124,7 +124,7 @@ public class JSliderDouble extends JPanel
 
 				if (mSliderDoubleVariable.getValue() != lNewValue)
 				{
-					mSliderDoubleVariable.setValue(lNewValue);
+					mSliderDoubleVariable.setValueIfChanged(lNewValue);
 					try
 					{
 						if (Double.parseDouble(mValueTextField.getText().trim()) != lNewValue)
@@ -189,7 +189,7 @@ public class JSliderDouble extends JPanel
 						writeValueIntoTextField(lNewValue);
 					}
 
-					mSliderDoubleVariable.setValue(lNewValue);
+					mSliderDoubleVariable.setValueIfChanged(lNewValue);
 
 					final int lSliderIntegerValue = toInt(mResolution,
 																								mMin,

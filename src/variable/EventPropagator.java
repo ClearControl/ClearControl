@@ -37,11 +37,18 @@ public class EventPropagator
 		return !getEventPropagator().mTraversedObjectList.contains(pObject);
 	}
 
+	public static final ArrayList<Object> getListOfTraversedObjects()
+	{
+		return getEventPropagator().mTraversedObjectList;
+	}
+	
 	private final ArrayList<Object> mTraversedObjectList = new ArrayList<Object>();
 
 	public EventPropagator()
 	{
 		super();
 	}
+	
+	
 
 }

@@ -32,6 +32,13 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	}
 
 	@Override
+	public void setValueIfChanged(final double pNewValue)
+	{
+		if(pNewValue==mValue) return;
+		setValue(pNewValue);
+	}
+	
+	@Override
 	public void setValue(final double pNewValue)
 	{
 		EventPropagator.clear();
