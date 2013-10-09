@@ -1,6 +1,8 @@
 package variable;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class EventPropagator
 {
@@ -41,14 +43,30 @@ public class EventPropagator
 	{
 		return getEventPropagator().mTraversedObjectList;
 	}
-	
+
+	public static final ArrayList<Object> getCopyOfListOfTraversedObjects()
+	{
+		return new ArrayList<Object>(getEventPropagator().mTraversedObjectList);
+	}
+
+	public static void setListOfTraversedObjects(final List<Object> pListOfTraversedObjects)
+	{
+		final ArrayList<Object> lTraversedObjectList = getEventPropagator().mTraversedObjectList;
+		lTraversedObjectList.clear();
+		lTraversedObjectList.addAll(pListOfTraversedObjects);
+	}
+
+	public static void addAllToListOfTraversedObjects(final Collection<?> pListOfTraversedObjects)
+	{
+		final ArrayList<Object> lTraversedObjectList = getEventPropagator().mTraversedObjectList;
+		lTraversedObjectList.addAll(pListOfTraversedObjects);
+	}
+
 	private final ArrayList<Object> mTraversedObjectList = new ArrayList<Object>();
 
 	public EventPropagator()
 	{
 		super();
 	}
-	
-	
 
 }

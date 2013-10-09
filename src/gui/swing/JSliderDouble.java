@@ -124,7 +124,7 @@ public class JSliderDouble extends JPanel
 
 				if (mSliderDoubleVariable.getValue() != lNewValue)
 				{
-					mSliderDoubleVariable.setValueIfChanged(lNewValue);
+					mSliderDoubleVariable.setValue(lNewValue);
 					try
 					{
 						if (Double.parseDouble(mValueTextField.getText().trim()) != lNewValue)
@@ -182,14 +182,14 @@ public class JSliderDouble extends JPanel
 				{
 					double lNewValue = Double.parseDouble(lTextString);
 					final double lNewIntegerValue = constraintIfNescessary(lNewValue);
-					
+
 					if (lNewValue != lNewIntegerValue)
 					{
 						lNewValue = lNewIntegerValue;
 						writeValueIntoTextField(lNewValue);
 					}
 
-					mSliderDoubleVariable.setValueIfChanged(lNewValue);
+					mSliderDoubleVariable.setValue(lNewValue);
 
 					final int lSliderIntegerValue = toInt(mResolution,
 																								mMin,
@@ -351,7 +351,7 @@ public class JSliderDouble extends JPanel
 
 	private double constraintIfNescessary(final double pValue)
 	{
-		double lMinMaxConstrained = clamp(mMin,mMax,pValue);
+		final double lMinMaxConstrained = clamp(mMin, mMax, pValue);
 		if (mQuanta == 0)
 		{
 			return lMinMaxConstrained;

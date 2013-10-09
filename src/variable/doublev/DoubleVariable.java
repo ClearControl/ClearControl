@@ -1,5 +1,6 @@
 package variable.doublev;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import variable.DoubleVariableInterface;
@@ -32,13 +33,6 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	}
 
 	@Override
-	public void setValueIfChanged(final double pNewValue)
-	{
-		if(pNewValue==mValue) return;
-		setValue(pNewValue);
-	}
-	
-	@Override
 	public void setValue(final double pNewValue)
 	{
 		EventPropagator.clear();
@@ -70,8 +64,14 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		markAsTraversed();
 
 		final double lOldValueBeforeHook = mValue;
+
+		// We protect ourselves from called code that might clear the Thread
+		// traversal list:
+		final ArrayList<Object> lCopyOfListOfTraversedObjects = EventPropagator.getCopyOfListOfTraversedObjects();
 		mValue = setEventHook(lOldValueBeforeHook, pNewValue);
 		notifyListenersOfSetEvent(lOldValueBeforeHook, pNewValue);
+		EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
+
 		sync(pNewValue, false);
 
 		return true;
@@ -84,16 +84,25 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		{
 			EventPropagator.clear();
 		}
+
+		// We protect ourselves from called code that might clear the Thread
+		// traversal list:
+		final ArrayList<Object> lCopyOfListOfTraversedObjects = EventPropagator.getCopyOfListOfTraversedObjects();
+
 		if (mVariablesToSendUpdatesTo != null)
 		{
 			for (final DoubleVariable lDoubleVariable : mVariablesToSendUpdatesTo)
 			{
+				EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
 				if (EventPropagator.hasNotBeenTraversed(lDoubleVariable))
 				{
 					lDoubleVariable.setValueInternal(pNewValue);
 				}
 			}
 		}
+		EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
+		EventPropagator.addAllToListOfTraversedObjects(mVariablesToSendUpdatesTo);
+
 	}
 
 	public double setEventHook(	final double pOldValue,

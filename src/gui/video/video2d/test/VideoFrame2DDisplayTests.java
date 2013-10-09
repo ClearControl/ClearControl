@@ -90,7 +90,7 @@ public class VideoFrame2DDisplayTests extends JFrame
 				final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 				sDisplay = lBoolean;
 				System.out.println("sDisplay=" + sDisplay);
-				return setEventHook(pOldValue, pNewValue);
+				return super.setEventHook(pOldValue, pNewValue);
 			}
 		});
 
@@ -146,7 +146,7 @@ public class VideoFrame2DDisplayTests extends JFrame
 		{
 			final byte lValue = (byte) ((int) (Math.random() * 256 * pAmplitude) % 256);
 			// System.out.print(lValue);
-			pVideoByteBuffer.put(lValue);
+			pVideoByteBuffer.put(i, lValue);
 		}
 	}
 }
