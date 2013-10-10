@@ -108,14 +108,16 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		}
 		try
 		{
+			if (pObject == null)
+				return false;
 			mInputQueue.put(pObject);
-			return true;
 		}
 		catch (final InterruptedException e)
 		{
 			System.err.println(e.getLocalizedMessage());
 			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -126,7 +128,10 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 			return false;
 		}
 
-		return mInputQueue.offer(pObject);
+		if (pObject != null)
+			return mInputQueue.offer(pObject);
+		else
+			return false;
 	}
 
 	@Override
