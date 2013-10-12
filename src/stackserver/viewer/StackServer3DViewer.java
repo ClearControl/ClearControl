@@ -49,6 +49,27 @@ public class StackServer3DViewer implements Closeable
 			{
 
 				lByteBuffer.rewind();
+				
+				
+				if(mRenderingRotationController==null) return;
+				mRenderingRotationController.getQuaternion();
+
+				//pGl.glPushAttrib(GL2.GL_COLOR)
+				//pGl.glColor3f(1, 0, 0);
+				
+//				pGl.glMatrixMode(pGl.GL_PROJECTION);
+//				pGl.glLoadIdentity();
+//				pGl.glOrtho(0.0f, 512, 512, 0.0f, 0.0f, 1.0f);
+//
+				
+				/*Quaternion lQuaternion = mRenderingRotationController.getQuaternion();
+				
+				pGl.glLineWidth(10.0f);
+				pGl.glBegin(GL2.GL_LINES); // doesnt work with GL_LINE either
+				pGl.glVertex3f(0, 0,-1000000);
+				pGl.glVertex3f(100,100,-100000);
+				pGl.glEnd(); /**/
+
 				pGl.glReadPixels(	0,
 													0,
 													512,
@@ -212,6 +233,16 @@ public class StackServer3DViewer implements Closeable
 	public void setGamma(final double pGamma)
 	{
 		mJCudaClearVolumeRenderer.setGamma(pGamma);
+	}
+
+	public void setMin(final double pMin)
+	{
+		mJCudaClearVolumeRenderer.setTransferRangeMin(pMin);
+	}
+
+	public void setMax(final double pMax)
+	{
+		mJCudaClearVolumeRenderer.setTransferRangeMax(pMax);
 	}
 
 }
