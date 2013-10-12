@@ -20,23 +20,27 @@ public class StackServer3DViewerTests
 	{
 		final File lRootFolder = new File("/Users/royer/Temp/");
 
-		final File lOutputFolder = new File("/Users/royer/Temp/HistonesCropped_NLM_1_2_100.2Drendered");
+		final File lOutputFolder = new File("/Users/royer/Temp/");
 
 		final Recycler<Stack> lStacksRecycler = new Recycler<Stack>(Stack.class);
 
 		final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
-																																								"HistonesCropped_NLM_1_2_100");
+																																								"Foo");
 		lLocalFileStackSource.setStackRecycler(lStacksRecycler);
 
 		final StackServer3DViewer lStackServer3DViewer = new StackServer3DViewer(lLocalFileStackSource);
 
+		lStackServer3DViewer.setScaleZ(1);
+		lStackServer3DViewer.setGamma(0.1);
+
 		System.out.println(lStackServer3DViewer.getNumberOfStacks());
 
-		final Quaternion lQuaternion = new Quaternion((float) Math.sin(0 / 2),
-																									0f,
-																									0f,
-																									(float) Math.cos(0 / 2));
+		final Quaternion lQuaternion = new Quaternion();
 		lQuaternion.normalize();
+
+		final File lMovieFile = new File(lOutputFolder, "output.raw");
+		if (lMovieFile.exists())
+			lMovieFile.delete();
 
 		for (int lStackIndex = 0; lStackIndex < lStackServer3DViewer.getNumberOfStacks(); lStackIndex++)
 		{
@@ -45,12 +49,13 @@ public class StackServer3DViewerTests
 			lQuaternion.setX((float) Math.sin(lTheta / 2));
 
 			System.out.format("Rendering frame %d !\n", lStackIndex);
-			final File l2DImageFile = new File(	lOutputFolder,
-																					"frame" + lStackIndex);
+
 			lStackServer3DViewer.setStackIndex(lStackIndex);
 			lStackServer3DViewer.setQuaternion(lQuaternion);
-			lStackServer3DViewer.renderToFile(l2DImageFile);
-			Thread.sleep(100);
+
+			Thread.sleep(200);
+			lStackServer3DViewer.renderToFile(lMovieFile);
+
 		}
 
 		while (lStackServer3DViewer.isShowing())

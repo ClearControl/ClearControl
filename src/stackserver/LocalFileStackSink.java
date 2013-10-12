@@ -36,8 +36,6 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 				mMetaDataVariableBundleAsFile.write();
 			}
 
-			mStackIndexToTimeStampInNanosecondsMap.put(	mNextFreeStackIndex,
-																									pStack.mTimeStampInNanoseconds);
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
@@ -61,13 +59,15 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 																															StandardOpenOption.WRITE,
 																															StandardOpenOption.CREATE);
 
-			
-			if(mNextFreeStackIndex==0)
+			if (mNextFreeStackIndex == 0)
 			{
 				mFirstTimePointAbsoluteNanoSeconds = pStack.mTimeStampInNanoseconds;
 			}
 			final double lTimeStampInSeconds = Units.nano2unit(pStack.mTimeStampInNanoseconds - mFirstTimePointAbsoluteNanoSeconds);
-			
+
+			mStackIndexToTimeStampInSecondsMap.put(	mNextFreeStackIndex,
+																							lTimeStampInSeconds);
+
 			final String lIndexLineString = String.format("%d\t%.4f\t%s\t%d\n",
 																										mNextFreeStackIndex,
 																										lTimeStampInSeconds,

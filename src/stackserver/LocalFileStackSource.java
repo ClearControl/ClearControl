@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import recycling.Recycler;
 import stack.Stack;
+import units.Units;
 
 public class LocalFileStackSource extends LocalFileStackBase implements
 																														StackSourceInterface,
@@ -58,8 +59,8 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 																										lStack.mNDimensionalArray.getArrayLength());
 			lBinarylFileChannel.close();
 
-			final long lTimeStampNs = mStackIndexToTimeStampInNanosecondsMap.get(pStackIndex);
-			lStack.mTimeStampInNanoseconds = lTimeStampNs;
+			final double lTimeStampInSeconds = mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
+			lStack.mTimeStampInNanoseconds = (long) Units.unit2nano(lTimeStampInSeconds);
 			lStack.mStackIndex = pStackIndex;
 
 			return lStack;
@@ -86,12 +87,12 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 				final String lLine = lIndexFileScanner.nextLine();
 				final String[] lSplittedLine = lLine.split("\t", -1);
 				final long lStackIndex = Long.parseLong(lSplittedLine[0].trim());
-				final long lTimeStamp = Long.parseLong(lSplittedLine[1].trim());
+				final double lTimeStampInSeconds = Double.parseDouble(lSplittedLine[1].trim());
 				final String[] lDimensionsStringArray = lSplittedLine[2].split(", ");
 				final int[] lDimensions = convertStringArrayToIntArray(lDimensionsStringArray);
 				final long lPositionInFile = Long.parseLong(lSplittedLine[3].trim());
-				mStackIndexToTimeStampInNanosecondsMap.put(	lStackIndex,
-																										lTimeStamp);
+				mStackIndexToTimeStampInSecondsMap.put(	lStackIndex,
+																								lTimeStampInSeconds);
 				mStackIndexToBinaryFilePositionMap.put(	lStackIndex,
 																								lPositionInFile);
 				mStackIndexToStackDimensionsMap.put(lStackIndex, lDimensions);

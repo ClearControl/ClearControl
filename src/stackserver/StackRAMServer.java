@@ -48,7 +48,7 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public long getStackTimeStampInNanoseconds(final long pStackIndex)
+	public double getStackTimeStampInSeconds(final long pStackIndex)
 	{
 		return mStackTimePointList.get((int) pStackIndex);
 	}

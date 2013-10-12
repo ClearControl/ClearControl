@@ -1,5 +1,6 @@
 package stackserver;
 
+import gnu.trove.map.hash.TLongDoubleHashMap;
 import gnu.trove.map.hash.TLongLongHashMap;
 
 import java.io.Closeable;
@@ -10,7 +11,7 @@ import variable.bundle.VariableBundle;
 
 public abstract class StackBase implements Closeable
 {
-	protected final TLongLongHashMap mStackIndexToTimeStampInNanosecondsMap = new TLongLongHashMap();
+	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
 	protected final HashMap<Long, int[]> mStackIndexToStackDimensionsMap = new HashMap<Long, int[]>();
 
@@ -23,12 +24,12 @@ public abstract class StackBase implements Closeable
 
 	public long getNumberOfStacks()
 	{
-		return mStackIndexToTimeStampInNanosecondsMap.size();
+		return mStackIndexToTimeStampInSecondsMap.size();
 	}
 
-	public long getStackTimeStampInNanoseconds(final long pStackIndex)
+	public double getStackTimeStampInSeconds(final long pStackIndex)
 	{
-		return mStackIndexToTimeStampInNanosecondsMap.get(pStackIndex);
+		return mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
 	}
 
 }

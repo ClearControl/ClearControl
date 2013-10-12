@@ -4,6 +4,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
+
+import javax.media.opengl.GL2;
 
 import ndarray.implementations.heapbuffer.directbuffer.NDArrayDirectBufferByte;
 import stack.Stack;
@@ -23,16 +27,70 @@ public class StackServer3DViewer implements Closeable
 	private int mStackIndex;
 	private final QuaternionRotationController mRenderingRotationController;
 
+	private double mScaleZ = 1;
+	private volatile FileChannel mMovieFileChannel;
+
 	public StackServer3DViewer(final StackSourceInterface pStackSourceInterface)
 	{
 		mStackSourceInterface = pStackSourceInterface;
 		mStackSourceInterface.update();
 
+		final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(512 * 512 * 4);
+
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	this.getClass()
 																																	.getSimpleName(),
 																															512,
 																															512,
-																															2);
+																															2)
+		{
+			@Override
+			public void renderedImageHook(final GL2 pGl,
+																		final int pPixelBufferObjectId)
+			{
+
+				lByteBuffer.rewind();
+				pGl.glReadPixels(	0,
+													0,
+													512,
+													512,
+													GL2.GL_RED,
+													GL2.GL_UNSIGNED_INT,
+													lByteBuffer);
+
+				if (mMovieFileChannel != null)
+					try
+					{
+						mMovieFileChannel.write(lByteBuffer);
+					}
+					catch (final IOException e)
+					{
+						e.printStackTrace();
+					}
+
+				/*
+				pGl.glBindBuffer(	GL2.GL_PIXEL_UNPACK_BUFFER,
+													pPixelBufferObjectId);
+
+				final ByteBuffer llMappedBuffer = pGl.glMapBuffer(pPixelBufferObjectId,
+																													GL2.GL_READ_ONLY);
+
+				if (mMovieFileChannel != null)
+					try
+					{
+						mMovieFileChannel.write(llMappedBuffer);
+					}
+					catch (final IOException e)
+					{
+						e.printStackTrace();
+					}
+
+				pGl.glUnmapBuffer(pPixelBufferObjectId);
+				
+				/**/
+				super.renderedImageHook(pGl, pPixelBufferObjectId);
+			}
+		};
+
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setVisible(true);
 		mJCudaClearVolumeRenderer.setGamma(0.1);
@@ -57,16 +115,38 @@ public class StackServer3DViewer implements Closeable
 		mStackIndex = pStackIndex;
 	}
 
-	public void renderToFile(final File p2DImageFile)
+	public boolean ensureFileOpen(final File pMovieFile)
 	{
+		if (mMovieFileChannel == null)
+			try
+			{
+				mMovieFileChannel = FileChannel.open(	pMovieFile.toPath(),
+																							StandardOpenOption.APPEND,
+																							StandardOpenOption.WRITE,
+																							StandardOpenOption.CREATE);
+
+				return true;
+			}
+			catch (final IOException e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+		return false;
+	}
+
+	public void renderToFile(final File pMovieFile)
+	{
+		ensureFileOpen(pMovieFile);
+
 		final Stack lStack = mStackSourceInterface.getStack(mStackIndex);
 
-		renderStackToFile(lStack, p2DImageFile);
+		renderStackToFileChannel(lStack, mMovieFileChannel);
 
 	}
 
-	private void renderStackToFile(	final Stack pStack,
-																	final File pP2dImageFile)
+	private void renderStackToFileChannel(final Stack pStack,
+																				final FileChannel pMovieFileChannel)
 	{
 		final NDArrayDirectBufferByte lNDimensionalArray = pStack.mNDimensionalArray;
 
@@ -84,6 +164,8 @@ public class StackServer3DViewer implements Closeable
 																									lResolutionX,
 																									lResolutionY,
 																									lResolutionZ);
+
+		mJCudaClearVolumeRenderer.setScaleZ(mScaleZ);
 
 		mJCudaClearVolumeRenderer.requestDisplay();
 
@@ -113,11 +195,23 @@ public class StackServer3DViewer implements Closeable
 	public void close() throws IOException
 	{
 		mJCudaClearVolumeRenderer.close();
+		if (mMovieFileChannel != null)
+			mMovieFileChannel.close();
 	}
 
 	public boolean isShowing()
 	{
 		return mJCudaClearVolumeRenderer.isShowing();
+	}
+
+	public void setScaleZ(final double pScaleZ)
+	{
+		mScaleZ = pScaleZ;
+	}
+
+	public void setGamma(final double pGamma)
+	{
+		mJCudaClearVolumeRenderer.setGamma(pGamma);
 	}
 
 }

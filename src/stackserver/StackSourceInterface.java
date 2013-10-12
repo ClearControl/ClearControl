@@ -14,6 +14,6 @@ public interface StackSourceInterface
 
 	public Stack getStack(final long pStackIndex);
 
-	public long getStackTimeStampInNanoseconds(final long pStackIndex);
+	public double getStackTimeStampInSeconds(final long pStackIndex);
 
 }
