@@ -72,6 +72,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 
 	}
 
+	@Override
 	public boolean update()
 	{
 		try
@@ -84,11 +85,11 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 			{
 				final String lLine = lIndexFileScanner.nextLine();
 				final String[] lSplittedLine = lLine.split("\t", -1);
-				final long lStackIndex = Long.parseLong(lSplittedLine[0]);
-				final long lTimeStamp = Long.parseLong(lSplittedLine[1]);
+				final long lStackIndex = Long.parseLong(lSplittedLine[0].trim());
+				final long lTimeStamp = Long.parseLong(lSplittedLine[1].trim());
 				final String[] lDimensionsStringArray = lSplittedLine[2].split(", ");
 				final int[] lDimensions = convertStringArrayToIntArray(lDimensionsStringArray);
-				final long lPositionInFile = Long.parseLong(lSplittedLine[3]);
+				final long lPositionInFile = Long.parseLong(lSplittedLine[3].trim());
 				mStackIndexToTimeStampInNanosecondsMap.put(	lStackIndex,
 																										lTimeStamp);
 				mStackIndexToBinaryFilePositionMap.put(	lStackIndex,
@@ -111,7 +112,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 		final int[] lIntArray = new int[pStringArray.length];
 		for (int i = 0; i < pStringArray.length; i++)
 		{
-			lIntArray[i] = Integer.parseInt(pStringArray[i]);
+			lIntArray[i] = Integer.parseInt(pStringArray[i].trim());
 		}
 		return lIntArray;
 	}

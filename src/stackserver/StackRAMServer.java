@@ -25,6 +25,12 @@ public class StackRAMServer	implements
 	}
 
 	@Override
+	public boolean update()
+	{
+		return true;
+	}
+
+	@Override
 	public long getNumberOfStacks()
 	{
 		return mStackList.size();

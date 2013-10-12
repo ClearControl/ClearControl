@@ -6,6 +6,8 @@ import stack.Stack;
 public interface StackSourceInterface
 {
 
+	public boolean update();
+
 	public long getNumberOfStacks();
 
 	public void setStackRecycler(Recycler<Stack> pStackRecycler);
