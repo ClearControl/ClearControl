@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 import javax.media.opengl.GL2;
 
@@ -27,20 +28,24 @@ public class StackServer3DViewer implements Closeable
 	private int mStackIndex;
 	private final QuaternionRotationController mRenderingRotationController;
 
+	private int mWidth;
+	private int mHeight;
 	private double mScaleZ = 1;
 	private volatile FileChannel mMovieFileChannel;
 
-	public StackServer3DViewer(final StackSourceInterface pStackSourceInterface)
+	public StackServer3DViewer(final StackSourceInterface pStackSourceInterface, final int pWidth, final int pHeight)
 	{
+		mWidth = pWidth;
+		mHeight = pHeight;
 		mStackSourceInterface = pStackSourceInterface;
 		mStackSourceInterface.update();
 
-		final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(512 * 512 * 4);
+		final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(mWidth * mHeight * 4);
 
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	this.getClass()
 																																	.getSimpleName(),
-																															512,
-																															512,
+																																	mWidth ,
+																																	mHeight,
 																															2)
 		{
 			@Override
@@ -50,30 +55,21 @@ public class StackServer3DViewer implements Closeable
 
 				lByteBuffer.rewind();
 				
-				
 				if(mRenderingRotationController==null) return;
-				mRenderingRotationController.getQuaternion();
+				
+				
 
-				//pGl.glPushAttrib(GL2.GL_COLOR)
-				//pGl.glColor3f(1, 0, 0);
+				/*drawAxes(pGl,
+				         mRenderingRotationController.getQuaternion(),
+				         1.f, 1.f,
+				         .12f,
+				         4);/**/
 				
-//				pGl.glMatrixMode(pGl.GL_PROJECTION);
-//				pGl.glLoadIdentity();
-//				pGl.glOrtho(0.0f, 512, 512, 0.0f, 0.0f, 1.0f);
-//
-				
-				/*Quaternion lQuaternion = mRenderingRotationController.getQuaternion();
-				
-				pGl.glLineWidth(10.0f);
-				pGl.glBegin(GL2.GL_LINES); // doesnt work with GL_LINE either
-				pGl.glVertex3f(0, 0,-1000000);
-				pGl.glVertex3f(100,100,-100000);
-				pGl.glEnd(); /**/
-
+					
 				pGl.glReadPixels(	0,
 													0,
-													512,
-													512,
+													mWidth,
+													mHeight,
 													GL2.GL_RED,
 													GL2.GL_UNSIGNED_INT,
 													lByteBuffer);
@@ -109,6 +105,88 @@ public class StackServer3DViewer implements Closeable
 				
 				/**/
 				super.renderedImageHook(pGl, pPixelBufferObjectId);
+			}
+			
+			private void drawAxes(final GL2 pGl, final Quaternion lQuaternion,
+			                      float x0, float y0,
+			                      float pAxesScale, 
+			                      final int nWires)
+			{
+				
+				pGl.glPushAttrib(GL2.GL_COLOR_BUFFER_BIT);
+				pGl.glLineWidth(1.0f);
+				pGl.glEnable(GL2.GL_LINE_SMOOTH);
+				pGl.glEnable(GL2.GL_BLEND);
+				pGl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+				
+				pGl.glColor4f(1, 1, 1, .4f);
+				
+				pGl.glMatrixMode(pGl.GL_PROJECTION);
+				pGl.glPushMatrix();
+				
+				pGl.glLoadIdentity();
+				gluPerspective(pGl, 45, 1.f, .1f, 20);
+
+				
+				//TODO: The normal rotation seems to be inverted,
+				//check whether we should negate the angle...
+				//float[] lViewMatrix = lQuaternion.toMatrix();
+				
+				Quaternion lQuatRot = lQuaternion;
+				lQuatRot.setW(-lQuatRot.getW());
+				float[] lViewMatrix = lQuatRot.toMatrix();
+				
+				//EndTODO
+				
+				pGl.glMatrixMode(GL2.GL_MODELVIEW);
+				pGl.glPushMatrix();
+				pGl.glLoadIdentity();
+				
+				pGl.glTranslatef(x0, y0 , -3);
+				pGl.glMultMatrixf(lViewMatrix,0);
+				
+				pGl.glScalef(pAxesScale, pAxesScale, pAxesScale);
+				for (int i = 0; i < 6; i++){
+					
+					int xRot = (i%2==0)?1:0;
+					int yRot = (i%2==0)?0:1;
+					
+				  pGl.glRotated(90, xRot, yRot, 0);
+				  
+				  for (float t = -1f; t<=1.f; t+=2.f/nWires)
+					{
+				  	
+				  	pGl.glBegin(GL2.GL_LINES);
+					  
+				  	pGl.glVertex3d(-1.f, t, 1.f);
+				  	pGl.glVertex3d(1.f, t, 1.f);
+				  	pGl.glVertex3d(t,-1.f, 1.f);
+				  	pGl.glVertex3d(t,1.f, 1.f);
+				  	
+				  	pGl.glEnd();
+					}
+				}
+				
+				pGl.glMatrixMode(GL2.GL_MODELVIEW);
+				pGl.glPopMatrix();
+		
+				pGl.glMatrixMode(pGl.GL_PROJECTION);
+				pGl.glPopMatrix();
+				pGl.glPopAttrib();
+				
+			}
+
+			private void gluPerspective(final GL2 pGl, final float fovy, final float aspect, final float zNear, final float zFar)
+				{
+				   final float xmin, xmax, ymin, ymax;
+
+				   ymax =  zNear * (float)Math.tan(fovy * Math.PI / 360.0f);
+				   ymin = -ymax;
+				   xmin = ymin * aspect;
+				   xmax = ymax * aspect;
+
+				   pGl.glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
+				
 			}
 		};
 

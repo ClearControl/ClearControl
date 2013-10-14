@@ -18,25 +18,27 @@ public class StackServer3DViewerTests
 	@Test
 	public void test() throws IOException, InterruptedException
 	{
-		final File lRootFolder = new File("D:/Loic");
+		final File lRootFolder = new File("D:/Loic/GoodOnes");
 
-		final String lDataSetName = "HisGFP_11Oct2013_spec1_try1_NLM_2_3_110";
+		final String lDataSetName = "HisGFP+BTub-GFP_12Oct2013_spec2_try1";
 
 		final Recycler<Stack> lStacksRecycler = new Recycler<Stack>(Stack.class);
 
 		final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
 		                                                                            lDataSetName);
 		
-		final File lOutputFolder = new File("D:/Loic",lDataSetName);
+		final File lOutputFolder = new File(lRootFolder,lDataSetName);
 		
 		lLocalFileStackSource.setStackRecycler(lStacksRecycler);
 
-		final StackServer3DViewer lStackServer3DViewer = new StackServer3DViewer(lLocalFileStackSource);
+		final StackServer3DViewer lStackServer3DViewer = new StackServer3DViewer(lLocalFileStackSource,512,512);
 
 		lStackServer3DViewer.setScaleZ(1.5);
-		lStackServer3DViewer.setGamma(0.3);
-		lStackServer3DViewer.setMin(0.001);
-		lStackServer3DViewer.setMax(0.045);
+		lStackServer3DViewer.setScaleZ(.8);
+		
+		lStackServer3DViewer.setGamma(0.4);
+		lStackServer3DViewer.setMin(0.0012);
+		lStackServer3DViewer.setMax(0.0185);
 
 		System.out.println(lStackServer3DViewer.getNumberOfStacks());
 
@@ -58,16 +60,17 @@ public class StackServer3DViewerTests
 			lStackServer3DViewer.setStackIndex(lStackIndex);
 			lStackServer3DViewer.setQuaternion(lQuaternion);
 
-			Thread.sleep(300);
+			Thread.sleep(200);
 			lStackServer3DViewer.renderToFile(lMovieFile);
 
 		}
 
-		while (lStackServer3DViewer.isShowing())
+		/*while (lStackServer3DViewer.isShowing())
 		{
 			Thread.sleep(100);
-		}
+		}/**/
 
+		Thread.sleep(2000);
 		lStackServer3DViewer.close();
 
 	}
