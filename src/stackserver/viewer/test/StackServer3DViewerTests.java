@@ -18,27 +18,29 @@ public class StackServer3DViewerTests
 	@Test
 	public void test() throws IOException, InterruptedException
 	{
-		final File lRootFolder = new File("D:/Loic/GoodOnes");
+		final File lRootFolder = new File("/Volumes/green-carpet/SPIM/DataSets/Loic");
 
-		final String lDataSetName = "HisGFP+BTub-GFP_12Oct2013_spec2_try1";
+		final String lDataSetName = "Volumetric  Scattered Light Experiement 2";
 
 		final Recycler<Stack> lStacksRecycler = new Recycler<Stack>(Stack.class);
 
 		final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
-		                                                                            lDataSetName);
-		
-		final File lOutputFolder = new File(lRootFolder,lDataSetName);
-		
+																																								lDataSetName);
+
+		final File lOutputFolder = new File(lRootFolder, lDataSetName);
+
 		lLocalFileStackSource.setStackRecycler(lStacksRecycler);
 
-		final StackServer3DViewer lStackServer3DViewer = new StackServer3DViewer(lLocalFileStackSource,512,512);
+		final StackServer3DViewer lStackServer3DViewer = new StackServer3DViewer(	lLocalFileStackSource,
+																																							512,
+																																							512);
 
 		lStackServer3DViewer.setScaleZ(1.5);
 		lStackServer3DViewer.setScaleZ(.8);
-		
+
 		lStackServer3DViewer.setGamma(0.4);
 		lStackServer3DViewer.setMin(0.0012);
-		lStackServer3DViewer.setMax(0.0185);
+		lStackServer3DViewer.setMax(0.1);
 
 		System.out.println(lStackServer3DViewer.getNumberOfStacks());
 
