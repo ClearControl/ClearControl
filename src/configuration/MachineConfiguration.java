@@ -67,7 +67,17 @@ public class MachineConfiguration
 		return mProperties.getProperty(pKey, pDefaultValue);
 	}
 
-	public long getIntegerProperty(String pKey, long pDefaultValue)
+	public int getIntegerProperty(String pKey, int pDefaultValue)
+	{
+		if(mProperties==null) return pDefaultValue;
+		String lProperty = mProperties.getProperty(pKey);
+		if (lProperty == null)
+			return pDefaultValue;
+
+		return Integer.parseInt(lProperty);
+	}
+	
+	public long getLongProperty(String pKey, long pDefaultValue)
 	{
 		if(mProperties==null) return pDefaultValue;
 		String lProperty = mProperties.getProperty(pKey);
@@ -75,7 +85,6 @@ public class MachineConfiguration
 			return pDefaultValue;
 
 		return Long.parseLong(lProperty);
-		
 	}
 
 	public double getDoubleProperty(String pKey, double pDefaultValue)
@@ -88,16 +97,48 @@ public class MachineConfiguration
 		return Double.parseDouble(lProperty);
 	}
 	
+	public boolean getBooleanProperty(String pKey, boolean pDefaultValue)
+	{
+		if(mProperties==null) return pDefaultValue;
+		String lProperty = mProperties.getProperty(pKey);
+		if (lProperty == null)
+			return pDefaultValue;
+
+		return Boolean.parseBoolean(lProperty.toLowerCase()) || lProperty.trim()
+																																			.equals("1")
+						|| lProperty.trim().equals("on")
+						|| lProperty.trim().equals("present");
+	}
+	
 	public String getSerialDevicePort(String pDeviceName, int pDeviceIndex, String pDefaultPort)
 	{
 		String lKey = "device.serial."+pDeviceName.toLowerCase()+"."+pDeviceIndex;
-		return getStringProperty(lKey, pDefaultPort);
+		String lPort = getStringProperty(lKey, pDefaultPort);
+		return lPort;
+	}
+	
+	public Integer getIODevicePort(String pDeviceName, Integer pDefaultPort)
+	{
+		String lKey = "device."+pDeviceName.toLowerCase();
+		Integer lPort = getIntegerProperty(lKey, pDefaultPort);
+		return lPort;
+	}
+	
+	public boolean getIsDevicePresent(	String pDeviceName,
+																	int pDeviceIndex)
+	{
+		String lKey = "device."+pDeviceName.toLowerCase()+"."+pDeviceIndex;
+		return getBooleanProperty(lKey, false);
 	}
 
 	public static MachineConfiguration getCurrentMachineConfiguration()
 	{
 		return sConfiguration;
 	}
+
+
+
+
 
 
 
