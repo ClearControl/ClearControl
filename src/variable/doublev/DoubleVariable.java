@@ -137,12 +137,14 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	@Override
 	public final void sendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
+		if(pDoubleVariable==null) return;
 		mVariablesToSendUpdatesTo.add(pDoubleVariable);
 	}
 
 	@Override
 	public final void doNotSendUpdatesTo(final DoubleVariable pDoubleVariable)
 	{
+		if(pDoubleVariable==null) return;
 		mVariablesToSendUpdatesTo.remove(pDoubleVariable);
 	}
 
@@ -155,6 +157,7 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	@Override
 	public final void syncWith(final DoubleVariable pDoubleVariable)
 	{
+		if(pDoubleVariable==null) return;
 		this.sendUpdatesTo(pDoubleVariable);
 		pDoubleVariable.sendUpdatesTo(this);
 	}
@@ -162,6 +165,7 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 	@Override
 	public void doNotSyncWith(final DoubleVariable pDoubleVariable)
 	{
+		if(pDoubleVariable==null) return;
 		this.doNotSendUpdatesTo(pDoubleVariable);
 		pDoubleVariable.doNotSendUpdatesTo(this);
 	}
