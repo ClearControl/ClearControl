@@ -1,0 +1,183 @@
+package rtlib.stack.test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+
+import rtlib.core.concurrent.executors.RTlibExecutors;
+import rtlib.core.memory.NativeMemoryAccess;
+import rtlib.core.recycling.Recycler;
+import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.stack.Stack;
+
+public class StackTests
+{
+
+	private static final long cMAXIMUM_LIVE_MEMORY_IN_BYTES = 2L * 1024L * 1024L * 1024L;
+	private static final long cBytesPerPixel = 2;
+	private static final long cSizeX = 320;
+	private static final long cSizeY = 321;
+	private static final long cSizeZ = 100;
+	private static final long cBig = 2;
+
+	private static final long cLengthInBytes = cSizeX * cSizeY
+																							* cSizeZ
+																							* cBytesPerPixel;
+
+	@Test
+	public void testLifeCycle()
+	{
+		Stack lStack = new Stack(	1,
+															2,
+															cSizeX,
+															cSizeY,
+															cSizeZ,
+															cBytesPerPixel);
+
+		assertEquals(1, lStack.getVolumePhysicalDimension(0), 0);
+
+		lStack.setVolumePhysicalDimension(1, 0.5);
+		lStack.setVolumePhysicalDimension(2, 1);
+		lStack.setVolumePhysicalDimension(3, 3);
+
+		assertEquals(0.5, lStack.getVolumePhysicalDimension(1), 0);
+		assertEquals(1, lStack.getVolumePhysicalDimension(2), 0);
+		assertEquals(3, lStack.getVolumePhysicalDimension(3), 0);
+
+		assertEquals(1, lStack.getStackIndex());
+		assertEquals(2, lStack.getTimeStampInNanoseconds());
+
+		assertEquals(cLengthInBytes, lStack.getLengthInElements());
+		assertEquals(cLengthInBytes, lStack.getSizeInBytes());
+
+		assertEquals(3, lStack.getDimension());
+
+		assertEquals(cBytesPerPixel, lStack.getBytesPerVoxel());
+		assertEquals(cSizeX, lStack.getWidth());
+		assertEquals(cSizeY, lStack.getHeight());
+		assertEquals(cSizeZ, lStack.getDepth());
+
+		assertEquals(cBytesPerPixel, lStack.getDimensions()[0]);
+		assertEquals(cSizeX, lStack.getDimensions()[1]);
+		assertEquals(cSizeY, lStack.getDimensions()[2]);
+		assertEquals(cSizeZ, lStack.getDimensions()[3]);
+
+		assertEquals(cBytesPerPixel, lStack.getSizeAlongDimension(0));
+		assertEquals(cSizeX, lStack.getSizeAlongDimension(1));
+		assertEquals(cSizeY, lStack.getSizeAlongDimension(2));
+		assertEquals(cSizeZ, lStack.getSizeAlongDimension(3));
+
+		lStack.free();
+
+		assertTrue(lStack.isFree());
+
+	}
+
+	@Test
+	public void testRecycling() throws InterruptedException
+	{
+
+		Recycler<Stack, Long> lRecycler = new Recycler<>(	Stack.class,
+																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+
+		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
+																																													Thread.NORM_PRIORITY,
+																																													1,
+																																													1,
+																																													100);
+
+		for (int i = 0; i < 100; i++)
+		{
+			System.out.println(i);
+			final Stack lStack;
+			if ((i % 100) < 50)
+			{
+				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
+																									10,
+																									TimeUnit.SECONDS,
+																									cBytesPerPixel,
+																									cSizeX * cBig,
+																									cSizeY * cBig,
+																									cSizeZ * cBig);
+				assertEquals(	cLengthInBytes * Math.pow(cBig, 3),
+											lStack.getSizeInBytes(),
+											0);
+			}
+			else
+			{
+				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
+																									10,
+																									TimeUnit.SECONDS,
+																									cBytesPerPixel,
+																									cSizeX,
+																									cSizeY,
+																									cSizeZ);
+				assertEquals(cLengthInBytes, lStack.getSizeInBytes());
+			}
+
+			assertNotNull(lStack);
+
+			NDArrayDirect lNdArray = lStack.getNDArray();
+			for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
+			{
+				lNdArray.setByteAligned(k, (byte) k);
+			}
+
+			Runnable lRunnable2 = () -> {
+				NDArrayDirect lNdArray2 = lStack.getNDArray();
+				for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
+				{
+					byte lByte = lNdArray2.getByteAligned(k);
+					assertEquals((byte) k, lByte);
+				}
+				lStack.releaseStack();
+				// System.out.println("released!");
+			};
+
+			lThreadPoolExecutor.execute(lRunnable2);
+
+			long lLiveObjectCount = lRecycler.getLiveObjectCount();
+			long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
+			System.out.format("count=%d mem=%d \n",
+												lLiveObjectCount,
+												lLiveMemoryInBytes);
+			assertTrue(lLiveObjectCount > 0);
+			assertTrue(lLiveMemoryInBytes > 0);
+
+			long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+			System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
+			assertTrue(lTotalAllocatedMemory > 0);
+
+			// assertTrue(lLiveMemoryInBytes < 2.5 * cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+
+			Thread.sleep(1);
+
+			System.out.println("totalMemory=" + Runtime.getRuntime()
+																								.totalMemory());
+			System.out.println("freeMemory=" + Runtime.getRuntime()
+																								.freeMemory());
+			System.out.println("maxMemory=" + Runtime.getRuntime()
+																								.maxMemory());
+
+		}
+
+		lThreadPoolExecutor.shutdown();
+
+		lRecycler.free();
+
+		long lLiveObjectCount = lRecycler.getLiveObjectCount();
+		assertEquals(0, lLiveObjectCount);
+
+		long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
+		assertEquals(0, lLiveMemoryInBytes);
+
+		long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+		assertEquals(0, lTotalAllocatedMemory);
+
+	}
+}

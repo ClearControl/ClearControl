@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+
+
+
+sourceSets 
+{
+  main 
+  {
+    java 
+    {
+      srcDir 'src'
+      //exclude "**/*Tests.java"
+    }
+    resources 
+    { 
+      srcDir 'src'
+    }
+  }
+  test
+  {
+    java 
+    {
+      srcDir 'src'
+      //include "**/*Tests.java"
+    }
+    resources 
+    { 
+      srcDir 'src'
+    }
+  }
+}
+
+dependencies 
+{
+    compile project(':RTlib-core')
+}
+
+

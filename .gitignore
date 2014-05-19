@@ -1,4 +1,7 @@
-bin
+bin/
+build/
+old/
+.gradle/
 *.class
 hs_err_pid*
 .DS_Store
