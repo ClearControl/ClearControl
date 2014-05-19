@@ -56,7 +56,7 @@ public class ExecutorServiceTests
 			{
 				final int j = i;
 				Runnable lTask = () -> {
-					System.out.println("scheduled task-" + j);
+					// System.out.println("scheduled task-" + j);
 					try
 					{
 						Thread.sleep(1);
@@ -122,7 +122,7 @@ public class ExecutorServiceTests
 		// System.out.print("WAITING");
 		lExecutorServiceTest.stopScheduledThreadPoolAndWaitForCompletion(100,
 																																			TimeUnit.MILLISECONDS);
-		System.out.println(mCounter.get());
+		// System.out.println(mCounter.get());
 		assertTrue(10 * 10 / 2 > mCounter.get());
 		// System.out.println("...done");
 

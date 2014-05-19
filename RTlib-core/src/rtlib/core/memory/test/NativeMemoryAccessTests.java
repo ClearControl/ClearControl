@@ -77,7 +77,7 @@ public class NativeMemoryAccessTests
 
 		try
 		{
-			final long lLength = 320L * 1000L * 1000L * 1000L;
+			final long lLength = 16L * 1000L * 1000L * 1000L;
 
 			System.out.println("allocateMemory");
 			long lAddress = NativeMemoryAccess.allocateMemory(lLength);

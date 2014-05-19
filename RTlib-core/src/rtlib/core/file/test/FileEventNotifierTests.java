@@ -1,6 +1,6 @@
 package rtlib.core.file.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Formatter;
@@ -8,8 +8,8 @@ import java.util.Formatter;
 import org.junit.Test;
 
 import rtlib.core.file.FileEventNotifier;
-import rtlib.core.file.FileEventNotifierListener;
 import rtlib.core.file.FileEventNotifier.FileEventKind;
+import rtlib.core.file.FileEventNotifierListener;
 
 public class FileEventNotifierTests
 {
@@ -45,32 +45,36 @@ public class FileEventNotifierTests
 		lEventCounter = 0;
 		lFileEventNotifier.startMonitoring();
 
+		assertEquals(0, lEventCounter);
+
 		final Formatter lTestFileFormatter = new Formatter(lTestFile);
 
 		lTestFileFormatter.format("test1\n");
 		lTestFileFormatter.flush();
 		Thread.sleep(1000);
-		assertTrue(lEventCounter == 1);
+		assertEquals(1, lEventCounter);
 
 		lTestFileFormatter.format("test2\n");
 		lTestFileFormatter.flush();
 		Thread.sleep(1000);
-		assertTrue(lEventCounter == 2);
+		assertEquals(2, lEventCounter);
 
 		final Formatter lOtherFileFormatter = new Formatter(lOtherFile);
 		lOtherFileFormatter.format("test3\n");
 		lOtherFileFormatter.flush();
 		Thread.sleep(1000);
-		assertTrue(lEventCounter == 2);
+		assertEquals(2, lEventCounter);
 
+		lTestFileFormatter.close();
+		
 		lTestFile.delete();
 		Thread.sleep(1000);
-		assertTrue(lEventCounter == 3);
+		assertEquals(3, lEventCounter);
 
 		lFileEventNotifier.stopMonitoring();
 
 		lOtherFileFormatter.close();
-		lTestFileFormatter.close();
+
 		lFileEventNotifier.close();
 	}
 }

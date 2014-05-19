@@ -1,6 +1,7 @@
 bin/
 build/
 old/
+.classpath
 .gradle/
 *.class
 hs_err_pid*

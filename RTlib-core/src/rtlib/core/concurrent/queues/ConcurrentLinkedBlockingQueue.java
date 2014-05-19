@@ -16,7 +16,7 @@ public class ConcurrentLinkedBlockingQueue<E> extends
 	final long mCapacity;
 	AtomicInteger mLength = new AtomicInteger();
 
-	public ConcurrentLinkedBlockingQueue(final long pCapacity)
+	public ConcurrentLinkedBlockingQueue(final int pCapacity)
 	{
 		super();
 		mCapacity = pCapacity;
