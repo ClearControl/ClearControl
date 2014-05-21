@@ -3,12 +3,15 @@ package rtlib.stack;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.bridj.Pointer;
+
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.recycling.RecyclableInterface;
 import rtlib.core.recycling.Recycler;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.ram.RAM;
 
 public class Stack implements
 									RecyclableInterface<Stack, Long>,
@@ -23,9 +26,11 @@ public class Stack implements
 	private NDArrayDirect mNDArray;
 
 	private long mBytesPerVoxel;
+
 	private long mStackIndex;
 	private long mTimeStampInNanoseconds;
 	protected double[] mVolumeSize;
+	private long mNumberOfImagesPerPlane = 1;
 
 	@SuppressWarnings("unused")
 	private Stack()
@@ -102,6 +107,16 @@ public class Stack implements
 		return mNDArray;
 	}
 
+	public Pointer<Byte> getPointer()
+	{
+		RAM lRam = mNDArray.getRAM();
+		@SuppressWarnings("unchecked")
+		Pointer<Byte> lPointerToAddress = (Pointer<Byte>) Pointer.pointerToAddress(	lRam.getAddress(),
+																																								lRam.getSizeInBytes(),
+																																								null);
+		return lPointerToAddress;
+	}
+
 	public long getBytesPerVoxel()
 	{
 		return mBytesPerVoxel;
@@ -117,6 +132,8 @@ public class Stack implements
 	{
 		return mNDArray.getSizeAlongDimension(pDimensionIndex);
 	}
+	
+
 
 	@Override
 	public long getDimension()
@@ -175,6 +192,16 @@ public class Stack implements
 	public void setTimeStampInNanoseconds(long pTimeStampInNanoseconds)
 	{
 		mTimeStampInNanoseconds = pTimeStampInNanoseconds;
+	}
+
+	public long getNumberOfImagesPerPlane()
+	{
+		return mNumberOfImagesPerPlane;
+	}
+
+	public void setNumberOfImagesPerPlane(long pNumberOfImagesPerPlane)
+	{
+		mNumberOfImagesPerPlane = pNumberOfImagesPerPlane;
 	}
 
 	public void copyMetaDataFrom(Stack pStack)
