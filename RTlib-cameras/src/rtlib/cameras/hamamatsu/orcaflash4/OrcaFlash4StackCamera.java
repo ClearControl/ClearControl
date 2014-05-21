@@ -19,7 +19,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 																											VirtualDeviceInterface,
 																											StackProcessing
 {
-	private static final int cStackProcessorQueueSize = 100;
+	public static final int cStackProcessorQueueSize = 100;
 
 	private final int mCameraDeviceIndex;
 
@@ -43,9 +43,6 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);
 		mDcamAcquisition.setTriggerType(pTriggerType);
 
-		// TODO
-		mFrameBytesPerPixelVariable.setValue(mDcamAcquisition.getFrameBytesPerPixel());
-
 		mDcamAcquisition.addListener(new DcamAcquisitionListener()
 		{
 
@@ -57,11 +54,15 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-
+				System.out.println(pArrivalTimeStamp);
 				mFrameReference.setReference(pDcamFrame);
 			}
 
 		});
+
+		// TODO
+		mFrameBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
+																											mDcamAcquisition.getFrameBytesPerPixel());
 
 		mFrameWidthVariable = new DoubleVariable("FrameWidth", 2048)
 		{
@@ -149,7 +150,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 
 		mFrameDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
 
-		mStackReference = mDcamJToStackConverterAndProcessing.getVideoFrameReferenceVariable();
+		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}
 
@@ -188,6 +189,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 		catch (final Throwable e)
 		{
 			System.err.println("Could not open DCAM!");
+			e.printStackTrace();
 			return false;
 		}
 	}

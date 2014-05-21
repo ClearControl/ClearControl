@@ -10,7 +10,7 @@ public interface StackProcessorInterface
 
 	public boolean isActive();
 
-	Stack process(Stack pStack,
-								Recycler<Stack, Long> pVideoFrameRecycler);
+	public Stack process(	Stack pStack,
+												Recycler<Stack, Long> pStackRecycler);
 
 }

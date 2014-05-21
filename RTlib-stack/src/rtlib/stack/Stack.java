@@ -113,7 +113,8 @@ public class Stack implements
 		@SuppressWarnings("unchecked")
 		Pointer<Byte> lPointerToAddress = (Pointer<Byte>) Pointer.pointerToAddress(	lRam.getAddress(),
 																																								lRam.getSizeInBytes(),
-																																								null);
+																																								null)
+																															.as(Byte.class);
 		return lPointerToAddress;
 	}
 
@@ -132,8 +133,6 @@ public class Stack implements
 	{
 		return mNDArray.getSizeAlongDimension(pDimensionIndex);
 	}
-	
-
 
 	@Override
 	public long getDimension()

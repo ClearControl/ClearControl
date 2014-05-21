@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bridj.Pointer;
 
+import rtlib.cameras.hamamatsu.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorPool;
@@ -35,7 +36,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 
 	private final Recycler<Stack, Long> mVideoFrameRecycler = new Recycler<Stack, Long>(Stack.class);
 
-	private final SingleUpdateTargetObjectVariable<Stack> mVideoFrameReference = new SingleUpdateTargetObjectVariable<Stack>("VideoFrame");
+	private final SingleUpdateTargetObjectVariable<Stack> mStackReference = new SingleUpdateTargetObjectVariable<Stack>("Stack");
 
 	private final DoubleVariable mStackDepthVariable = new DoubleVariable("StackDepth",
 																																				1);
@@ -57,6 +58,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			@Override
 			public DcamFrame setEventHook(final DcamFrame pNewDcamFrame)
 			{
+				System.out.println("mAsynchronousConversionProcessor.passOrWait(pNewDcamFrame);");
 				mAsynchronousConversionProcessor.passOrWait(pNewDcamFrame);
 				return super.setEventHook(pNewDcamFrame);
 			}
@@ -68,7 +70,8 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			public Stack process(final DcamFrame pInput)
 			{
 				final Stack lStack = convert(pInput);
-				// System.out.println("mAsynchronousConversionProcessor="+mAsynchronousConversionProcessor.getRemainingCapacity());
+				// System.out.println("mAsynchronousConversionProcessor=" +
+				// mAsynchronousConversionProcessor.getRemainingCapacity());
 				return lStack;
 			}
 
@@ -84,13 +87,14 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 																																												lProcessor);
 
 		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack, Object>("SendToVariableAsynchronousProcessor",
-																																												10)
+																																												OrcaFlash4StackCamera.cStackProcessorQueueSize)
 		{
 			@Override
 			public Object process(final Stack pStack)
 			{
-				mVideoFrameReference.setReference(pStack);
-				// System.out.println("mSendToVariableAsynchronousProcessor="+mSendToVariableAsynchronousProcessor.getRemainingCapacity());
+				mStackReference.setReference(pStack);
+				// System.out.println("mSendToVariableAsynchronousProcessor=" +
+				// mSendToVariableAsynchronousProcessor.getRemainingCapacity());
 				return null;
 			}
 		};
@@ -160,9 +164,9 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 		return mAsynchronousConversionProcessor.stop() && mSendToVariableAsynchronousProcessor.stop();
 	}
 
-	public SingleUpdateTargetObjectVariable<Stack> getVideoFrameReferenceVariable()
+	public SingleUpdateTargetObjectVariable<Stack> getStackReferenceVariable()
 	{
-		return mVideoFrameReference;
+		return mStackReference;
 	}
 
 	public DoubleVariable getStackDepthVariable()
