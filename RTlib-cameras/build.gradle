@@ -19,12 +19,19 @@ sourceSets
   }
 }
 
+configurations.all 
+{
+  // check for updates every build
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies 
 {
     compile project(':RTlib-core')
     compile project(':RTlib-stack')
 
-    compile 'royer:DcamJ:2.+'
+    compile group: "royer", name: "DcamJ", version: "2.+", changing: true
+
     compile 'com.github.sarxos:webcam-capture:0.3.9'
 
     compile group: 'junit', name: 'junit', version: '4.+'
