@@ -49,7 +49,7 @@ public class StackTests
 		assertEquals(1, lStack.getVolumePhysicalDimension(2), 0);
 		assertEquals(3, lStack.getVolumePhysicalDimension(3), 0);
 
-		assertEquals(1, lStack.getStackIndex());
+		assertEquals(1, lStack.getIndex());
 		assertEquals(2, lStack.getTimeStampInNanoseconds());
 
 		assertEquals(cLengthInBytes, lStack.getLengthInElements());

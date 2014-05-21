@@ -25,12 +25,12 @@ public class Stack implements
 
 	private NDArrayDirect mNDArray;
 
-	private long mBytesPerVoxel;
+	private volatile long mBytesPerVoxel;
 
-	private long mStackIndex;
-	private long mTimeStampInNanoseconds;
+	private volatile long mStackIndex;
+	private volatile long mTimeStampInNanoseconds;
 	protected double[] mVolumeSize;
-	private long mNumberOfImagesPerPlane = 1;
+	private volatile long mNumberOfImagesPerPlane = 1;
 
 	@SuppressWarnings("unused")
 	private Stack()
@@ -173,7 +173,7 @@ public class Stack implements
 		mVolumeSize[pIndex] = pPhysicalDimension;
 	}
 
-	public long getStackIndex()
+	public long getIndex()
 	{
 		return mStackIndex;
 	}
@@ -207,7 +207,7 @@ public class Stack implements
 	{
 		mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
 																mVolumeSize.length);
-		setStackIndex(pStack.getStackIndex());
+		setStackIndex(pStack.getIndex());
 		setTimeStampInNanoseconds(pStack.getTimeStampInNanoseconds());
 		setBytesPerVoxel(pStack.getBytesPerVoxel());
 	}
@@ -292,7 +292,7 @@ public class Stack implements
 													mNDArray.getWidth(),
 													mNDArray.getHeight(),
 													mNDArray.getDepth(),
-													getStackIndex(),
+													getIndex(),
 													getTimeStampInNanoseconds());
 	}
 

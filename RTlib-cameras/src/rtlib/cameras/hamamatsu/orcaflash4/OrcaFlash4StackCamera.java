@@ -54,7 +54,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				System.out.println(pArrivalTimeStamp);
+				System.out.println("frameArrived:" + pDcamFrame);
 				mFrameReference.setReference(pDcamFrame);
 			}
 
