@@ -3,7 +3,6 @@ package rtlib.core.concurrent.executors;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.queues.ConcurrentLinkedBlockingQueue;
@@ -52,7 +51,7 @@ public class RTlibExecutors
 		cScheduledThreadPoolExecutorMap.remove(lName);
 	}
 
-	public static final ThreadPoolExecutor getOrCreateThreadPoolExecutor(	final Object pObject,
+	public static final CompletingThreadPoolExecutor getOrCreateThreadPoolExecutor(	final Object pObject,
 																																				final int pPriority,
 																																				final int pCorePoolSize,
 																																				final int pMaxPoolSize,

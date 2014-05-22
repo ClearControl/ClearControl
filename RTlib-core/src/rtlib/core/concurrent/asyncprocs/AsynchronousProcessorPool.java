@@ -1,18 +1,22 @@
 package rtlib.core.concurrent.asyncprocs;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.executors.CompletingThreadPoolExecutor;
 import rtlib.core.concurrent.executors.RTlibExecutors;
 
-public class AsynchronousProcessorPool<I, O>	implements
-																							AsynchronousProcessorInterface<I, O>,
-																							AsynchronousExecutorServiceAccess
+public class AsynchronousProcessorPool<I, O>	extends
+																							AsynchronousProcessorBase<I, O>	implements
+																																							AsynchronousProcessorInterface<I, O>,
+																																							AsynchronousExecutorServiceAccess,
+																																							AsynchronousSchedulerServiceAccess
 {
 
 	private final ProcessorInterface<I, O> mProcessor;
-	private ThreadPoolExecutor mThreadPoolExecutor;
+	private CompletingThreadPoolExecutor mThreadPoolExecutor;
 
 	public AsynchronousProcessorPool(	final String pName,
 																		final int pMaxQueueSize,
@@ -42,20 +46,26 @@ public class AsynchronousProcessorPool<I, O>	implements
 	@Override
 	public boolean start()
 	{
-
+		Runnable lRunnable = () -> {
+			mThreadPoolExecutor.getFutur(1, TimeUnit.NANOSECONDS);
+		};
+		
+		scheduleAtFixedRate(lRunnable, 1, TimeUnit.NANOSECONDS);
+		
+		super.start();
 	}
 
 	@Override
-	public boolean passOrWait(I pObject)
+	public boolean stop()
 	{
-		return false;
-	}
+		if (mEnhancedThread == null)
+		{
+			return false;
+		}
 
-	@Override
-	public boolean passOrFail(I pObject)
-	{
-		// TODO Auto-generated method stub
-		return false;
+		mEnhancedThread.stop();
+		mEnhancedThread = null;
+		return true;
 	}
 
 	@Override
@@ -64,69 +74,7 @@ public class AsynchronousProcessorPool<I, O>	implements
 		Callable<O> lCallable = () -> {
 			return mProcessor.process(pInput);
 		};
-
-		mThreadPoolExecutor.submit(lCallable);
-	}
-
-	public final int getNumberOfThreadsInAvailableQueue()
-	{
-		return mAvailableThreads.size();
-	}
-
-	public final int getNumberOfNonBusyThreads()
-	{
-		return 0;
-	}
-
-	public final double getLoad()
-	{
-		final double lLoad = (double) (mThreadPoolSize - getNumberOfNonBusyThreads()) / mThreadPoolSize;
-		return lLoad;
-	}
-
-	@Override
-	public final boolean stop()
-	{
-
-	}
-
-	@Override
-	public final void close()
-	{
-		if (!mThreads.isEmpty())
-		{
-			stop();
-		}
-
-		super.close();
-	}
-
-	@Override
-	public void connectToReceiver(AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean waitToFinish(int pPollInterval)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getInputQueueLength()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getRemainingCapacity()
-	{
-		// TODO Auto-generated method stub
-		return 0;
+		return mThreadPoolExecutor.submit(lCallable);
 	}
 
 }
