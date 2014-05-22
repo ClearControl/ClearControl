@@ -1,83 +1,18 @@
 package rtlib.core.concurrent.asyncprocs;
 
-import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
+import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.concurrent.executors.RTlibExecutors;
 
-public class AsynchronousProcessorPool<I, O>	extends
-																							AsynchronousProcessorBase<I, O>	implements
-																																							AsynchronousProcessorInterface<I, O>
+public class AsynchronousProcessorPool<I, O>	implements
+																							AsynchronousProcessorInterface<I, O>,
+																							AsynchronousExecutorServiceAccess
 {
 
-	private final int mThreadPoolSize;
-	private final ArrayList<ProcessorThread> mThreads = new ArrayList<ProcessorThread>();
-	private final LinkedBlockingQueue<ProcessorThread> mAvailableThreads = new LinkedBlockingQueue<ProcessorThread>();
-	private final LinkedBlockingQueue<ProcessorThread> mBusyThreads = new LinkedBlockingQueue<ProcessorThread>();
 	private final ProcessorInterface<I, O> mProcessor;
-
-	private class ProcessorThread extends EnhancedThread
-	{
-		public volatile boolean mBusy = false;
-		private final LinkedBlockingQueue<I> mProcessorThreadInputQueue = new LinkedBlockingQueue<I>(1);
-
-		public ProcessorThread(final int pIndex)
-		{
-			super(String.format("AsynchronousProcessorPool.ProcessorThread(%d)",
-													pIndex));
-		}
-
-		public boolean receive(final I pInput)
-		{
-			try
-			{
-				mProcessorThreadInputQueue.put(pInput);
-				// System.out.println("AsynchronousProcessorPool: pInput = "+pInput.hashCode());
-				return true;
-			}
-			catch (final InterruptedException e)
-			{
-				System.err.println(e.getLocalizedMessage());
-				return false;
-			}
-		}
-
-		@Override
-		public boolean loop()
-		{
-
-			try
-			{
-				mBusy = false;
-				final I lInput = mProcessorThreadInputQueue.take();
-				mBusy = true;
-				final O lOutput = mProcessor.process(lInput);
-
-				while (mBusyThreads.peek() != this)
-				{
-					sleepNanos(100);
-				}
-				final ProcessorThread lThreadShouldBeThis = mBusyThreads.poll();
-				if (lThreadShouldBeThis == this)
-				{
-					send(lOutput);
-					mAvailableThreads.add(this);
-				}
-				else
-				{
-					System.err.println("Removed wrong Thread from busy threads!!");
-				}
-
-			}
-			catch (final InterruptedException e)
-			{
-				System.out.println(e.getLocalizedMessage());
-			}
-
-			return true;
-		}
-
-	}
+	private ThreadPoolExecutor mThreadPoolExecutor;
 
 	public AsynchronousProcessorPool(	final String pName,
 																		final int pMaxQueueSize,
@@ -85,7 +20,12 @@ public class AsynchronousProcessorPool<I, O>	extends
 																		final ProcessorInterface<I, O> pProcessor)
 	{
 		super(pName, pMaxQueueSize);
-		mThreadPoolSize = pThreadPoolSize;
+		mThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
+																																				Thread.NORM_PRIORITY,
+																																				pThreadPoolSize,
+																																				pThreadPoolSize,
+																																				pMaxQueueSize);
+
 		mProcessor = pProcessor;
 	}
 
@@ -102,38 +42,30 @@ public class AsynchronousProcessorPool<I, O>	extends
 	@Override
 	public boolean start()
 	{
-		if (mAvailableThreads.isEmpty())
-		{
-			for (int i = 0; i < mThreadPoolSize; i++)
-			{
-				final ProcessorThread lProcessorThread = new ProcessorThread(i);
-				lProcessorThread.setDaemon(true);
-				lProcessorThread.start();
 
-				mThreads.add(lProcessorThread);
-				mAvailableThreads.add(lProcessorThread);
-			}
+	}
 
-			return super.start();
-		}
+	@Override
+	public boolean passOrWait(I pObject)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean passOrFail(I pObject)
+	{
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public final O process(final I pInput)
 	{
-		try
-		{
-			final ProcessorThread lAvailableProcessorThread = mAvailableThreads.take();
-			mBusyThreads.add(lAvailableProcessorThread);
-			lAvailableProcessorThread.receive(pInput);
-			return null;
-		}
-		catch (final InterruptedException e)
-		{
-			System.err.println(e.getLocalizedMessage());
-			return null;
-		}
+		Callable<O> lCallable = () -> {
+			return mProcessor.process(pInput);
+		};
+
+		mThreadPoolExecutor.submit(lCallable);
 	}
 
 	public final int getNumberOfThreadsInAvailableQueue()
@@ -143,15 +75,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 
 	public final int getNumberOfNonBusyThreads()
 	{
-		int lCounter = 0;
-		for (final ProcessorThread lProcessorThread : mThreads)
-		{
-			if (!lProcessorThread.mBusy)
-			{
-				lCounter++;
-			}
-		}
-		return lCounter;
+		return 0;
 	}
 
 	public final double getLoad()
@@ -163,15 +87,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 	@Override
 	public final boolean stop()
 	{
-		for (final ProcessorThread lProcessorThread : mThreads)
-		{
-			lProcessorThread.stop();
-		}
-		mThreads.clear();
-		mBusyThreads.clear();
-		mAvailableThreads.clear();
-		super.stop();
-		return true;
+
 	}
 
 	@Override
@@ -183,6 +99,34 @@ public class AsynchronousProcessorPool<I, O>	extends
 		}
 
 		super.close();
+	}
+
+	@Override
+	public void connectToReceiver(AsynchronousProcessorInterface<O, ?> pAsynchronousProcessor)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean waitToFinish(int pPollInterval)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int getInputQueueLength()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getRemainingCapacity()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -3,9 +3,10 @@ package rtlib.core.concurrent.executors.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -57,6 +58,7 @@ public class ExecutorServiceTests
 				final int j = i;
 				Runnable lTask = () -> {
 					// System.out.println("scheduled task-" + j);
+					mCounter.incrementAndGet();
 					try
 					{
 						Thread.sleep(1);
@@ -64,14 +66,17 @@ public class ExecutorServiceTests
 					catch (Exception e)
 					{
 					}
-					mCounter.incrementAndGet();
+
 
 				};
 				// System.out.println("submitting : " + j);
-				ScheduledFuture<?> lScheduledFuture = scheduleAtFixedRate(LimitedExecutionsRunnable.wrap(	lTask,
-																																																	10),
-																																	100,
-																																	TimeUnit.MILLISECONDS);
+
+				LimitedExecutionsRunnable lLimitedExecutionsRunnable = LimitedExecutionsRunnable.wrap(lTask,
+																																															10);
+
+				lLimitedExecutionsRunnable.runNTimes(	this,
+																							100,
+																							TimeUnit.MILLISECONDS);
 
 				// System.out.println(" done.");
 
@@ -81,7 +86,9 @@ public class ExecutorServiceTests
 	}
 
 	@Test
-	public void testAsynhronousExecution() throws InterruptedException
+	public void testAsynhronousExecution() throws InterruptedException,
+																				ExecutionException,
+																				TimeoutException
 	{
 
 		ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
@@ -96,14 +103,17 @@ public class ExecutorServiceTests
 		mCounter.set(0);
 		lExecutorServiceTest.doSomething();
 		// System.out.print("WAITING");
-		lExecutorServiceTest.waitForCompletion(1, TimeUnit.MICROSECONDS);
+		lExecutorServiceTest.waitForCompletion(	1000,
+																						TimeUnit.MICROSECONDS);
 		assertTrue(cNumberOfTasks > mCounter.get());
 		// System.out.println("...done");
 
 	}
 
 	@Test
-	public void testPeriodicScheduling() throws InterruptedException
+	public void testPeriodicScheduling() throws InterruptedException,
+																			ExecutionException,
+																			TimeoutException
 	{
 
 		ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
@@ -120,9 +130,11 @@ public class ExecutorServiceTests
 		mCounter.set(0);
 		lExecutorServiceTest.scheduleSomething();
 		// System.out.print("WAITING");
-		lExecutorServiceTest.stopScheduledThreadPoolAndWaitForCompletion(100,
+		Thread.sleep(250);
+		lExecutorServiceTest.stopScheduledThreadPoolAndWaitForCompletion(	750,
 																																			TimeUnit.MILLISECONDS);
 		// System.out.println(mCounter.get());
+		assertTrue(mCounter.get() > 10);
 		assertTrue(10 * 10 / 2 > mCounter.get());
 		// System.out.println("...done");
 

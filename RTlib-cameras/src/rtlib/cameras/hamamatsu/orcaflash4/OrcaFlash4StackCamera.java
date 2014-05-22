@@ -222,6 +222,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 
 	private DcamFrame request3DFrame()
 	{
+
 		return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
 																	(long) getFrameWidthVariable().getValue(),
 																	(long) getFrameHeightVariable().getValue(),

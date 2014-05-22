@@ -22,6 +22,9 @@ public class LimitedExecutionsRunnable implements Runnable
 	@Override
 	public void run()
 	{
+		if (mScheduledFuture == null)
+			throw new UnsupportedOperationException("Scheduling and execution of " + LimitedExecutionsRunnable.class.getSimpleName()
+																							+ " instances should be done using this class methods only. ");
 		mDelegatedRunnable.run();
 		if (mExecutionCounter.incrementAndGet() == mMaximumNumberOfExecutions)
 		{
@@ -29,24 +32,26 @@ public class LimitedExecutionsRunnable implements Runnable
 		}
 	}
 
-	public void runNTimes(ScheduledExecutorService pScheduledExecutorService,
-												long pPeriod,
-												TimeUnit pTimeUnit)
+	public ScheduledFuture<?> runNTimes(ScheduledExecutorService pScheduledExecutorService,
+																			long pPeriod,
+																			TimeUnit pTimeUnit)
 	{
 		mScheduledFuture = pScheduledExecutorService.scheduleAtFixedRate(	this,
 																																			0,
 																																			pPeriod,
 																																			pTimeUnit);
+		return mScheduledFuture;
 	}
 
-	public void runNTimes(AsynchronousSchedulerServiceAccess pThis,
-												long pPeriod,
-												TimeUnit pUnit)
+	public ScheduledFuture<?> runNTimes(AsynchronousSchedulerServiceAccess pThis,
+																			long pPeriod,
+																			TimeUnit pUnit)
 	{
 		mScheduledFuture = pThis.scheduleAtFixedRate(this, pPeriod, pUnit);
+		return mScheduledFuture;
 	}
 
-	public static Runnable wrap(Runnable pDelegateRunnable,
+	public static LimitedExecutionsRunnable wrap(	Runnable pDelegateRunnable,
 															int pMaximumNumberOfExecutions)
 	{
 		return new LimitedExecutionsRunnable(	pDelegateRunnable,

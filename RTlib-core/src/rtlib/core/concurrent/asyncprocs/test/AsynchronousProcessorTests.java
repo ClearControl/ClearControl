@@ -1,8 +1,10 @@
 package rtlib.core.concurrent.asyncprocs.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.Test;
 
@@ -24,7 +26,7 @@ public class AsynchronousProcessorTests
 			@Override
 			public String process(final String pInput)
 			{
-				//System.out.println("Processor A received:" + pInput);
+				// System.out.println("Processor A received:" + pInput);
 				return "A" + pInput;
 			}
 		};
@@ -35,7 +37,7 @@ public class AsynchronousProcessorTests
 			@Override
 			public String process(final String pInput)
 			{
-				//System.out.println("Processor B received:" + pInput);
+				// System.out.println("Processor B received:" + pInput);
 				return "B" + pInput;
 			}
 		};
@@ -61,28 +63,28 @@ public class AsynchronousProcessorTests
 	}
 
 	@Test
-	public void testSimple2ProcessorPipelineWithPooledProcessor()
+	public void testSimple2ProcessorPipelineWithPooledProcessor() throws InterruptedException
 	{
-		final AsynchronousProcessorInterface<String, String> lProcessorA = new AsynchronousProcessorBase<String, String>(	"A",
-																																																											10)
+		final AsynchronousProcessorInterface<Integer, Integer> lProcessorA = new AsynchronousProcessorBase<Integer, Integer>(	"A",
+																																																													10)
 		{
 			@Override
-			public String process(final String pInput)
+			public Integer process(final Integer pInput)
 			{
-				// System.out.println("Processor A received:"+pInput);
-				return "A" + pInput;
+				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				return pInput;
 			}
 		};
 
-		final ProcessorInterface<String, String> lProcessor = new ProcessorInterface<String, String>()
+		final ProcessorInterface<Integer, Integer> lProcessor = new ProcessorInterface<Integer, Integer>()
 		{
 
 			@Override
-			public String process(final String pInput)
+			public Integer process(final Integer pInput)
 			{
 				// System.out.println("Processor B received:"+pInput);
-				EnhancedThread.sleepNanos(100);
-				return "B" + pInput;
+				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				return pInput;
 			}
 
 			@Override
@@ -92,35 +94,60 @@ public class AsynchronousProcessorTests
 			}
 		};
 
-		final AsynchronousProcessorPool<String, String> lProcessorB = new AsynchronousProcessorPool<String, String>("B",
-																																																								10,
-																																																								2,
-																																																								lProcessor);
+		final AsynchronousProcessorPool<Integer, Integer> lProcessorB = new AsynchronousProcessorPool<>("B",
+																																																		10,
+																																																		2,
+																																																		lProcessor);
 
-		lProcessorA.connectToReceiver(lProcessorB);
+		ConcurrentLinkedQueue<Integer> lIntList = new ConcurrentLinkedQueue<>();
+
+		final AsynchronousProcessorInterface<Integer, Integer> lProcessorC = new AsynchronousProcessorBase<Integer, Integer>(	"C",
+																																																													10)
+		{
+			@Override
+			public Integer process(final Integer pInput)
+			{
+				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				if (pInput > 0)
+					lIntList.add(pInput);
+				return pInput;
+			}
+		};
+
+		lProcessorA.connectToReceiver(lProcessorC);
+		// lProcessorA.connectToReceiver(lProcessorB);
+		// lProcessorB.connectToReceiver(lProcessorC);
 		lProcessorA.start();
 		lProcessorB.start();
+		lProcessorC.start();
 
 		boolean hasFailed = false;
 		for (int i = 0; i < 100; i++)
 		{
-			hasFailed |= lProcessorA.passOrFail("test" + i);
-			// if(i>50) assertFalse();
+			hasFailed |= lProcessorA.passOrFail(0);
 		}
 		assertTrue(hasFailed);
-		EnhancedThread.sleep(10);
-		for (int i = 0; i < 1000; i++)
-		{
-			if (lProcessorA.passOrWait("test" + i) && i % 1000 == 0)
-			{
-				//System.out.println(".");
-			}
 
-			if (i % 1000 == 0)
-			{
-				//System.out.format("Load: %g \n", lProcessorB.getLoad());
-				// EnhancedThread.sleepnanos(1);
-			}
+		EnhancedThread.sleep(10);
+		for (int i = 1; i <= 1000; i++)
+		{
+			lProcessorA.passOrWait(i);
+		}
+
+		lProcessorA.waitToFinish(1);
+		lProcessorB.waitToFinish(1);
+		lProcessorC.waitToFinish(1);
+
+		lProcessorA.stop();
+		lProcessorB.stop();
+		lProcessorC.stop();
+
+		for (int i = 1; i <= 1000; i++)
+		{
+			Integer lPoll = lIntList.poll();
+			// if (i != lPoll)
+				System.out.println(lPoll);
+			assertEquals(i, lPoll, 0);
 		}
 
 	}

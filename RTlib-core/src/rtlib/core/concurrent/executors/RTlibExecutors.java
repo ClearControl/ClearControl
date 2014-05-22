@@ -2,7 +2,6 @@ package rtlib.core.concurrent.executors;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -12,30 +11,30 @@ import rtlib.core.concurrent.queues.ConcurrentLinkedBlockingQueue;
 public class RTlibExecutors
 {
 
-	private static ConcurrentHashMap<String, SoftReference<ThreadPoolExecutor>> cThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
-	private static ConcurrentHashMap<String, SoftReference<ScheduledThreadPoolExecutor>> cScheduledThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
+	private static ConcurrentHashMap<String, SoftReference<CompletingThreadPoolExecutor>> cThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
+	private static ConcurrentHashMap<String, SoftReference<CompletingScheduledThreadPoolExecutor>> cScheduledThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
 
-	public static final <T> ThreadPoolExecutor getThreadPoolExecutor(final Class<T> pClass)
+	public static final <T> CompletingThreadPoolExecutor getThreadPoolExecutor(final Class<T> pClass)
 	{
 		return getThreadPoolExecutor(pClass.getName());
 	}
 
-	public static final <T> ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final Class<T> pClass)
+	public static final <T> CompletingScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final Class<T> pClass)
 	{
 		return getScheduledThreadPoolExecutor(pClass.getName());
 	}
 
-	public static final ThreadPoolExecutor getThreadPoolExecutor(final String pName)
+	public static final CompletingThreadPoolExecutor getThreadPoolExecutor(final String pName)
 	{
-		SoftReference<ThreadPoolExecutor> lSoftReference = cThreadPoolExecutorMap.get(pName);
+		SoftReference<CompletingThreadPoolExecutor> lSoftReference = cThreadPoolExecutorMap.get(pName);
 		if (lSoftReference == null)
 			return null;
 		return lSoftReference.get();
 	}
 
-	public static final ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final String pName)
+	public static final CompletingScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final String pName)
 	{
-		SoftReference<ScheduledThreadPoolExecutor> lSoftReference = cScheduledThreadPoolExecutorMap.get(pName);
+		SoftReference<CompletingScheduledThreadPoolExecutor> lSoftReference = cScheduledThreadPoolExecutorMap.get(pName);
 		if (lSoftReference == null)
 			return null;
 		return lSoftReference.get();
@@ -61,19 +60,19 @@ public class RTlibExecutors
 	{
 		final String lName = pObject.getClass().getName();
 		final String lSimpleName = pObject.getClass().getSimpleName();
-		SoftReference<ThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cThreadPoolExecutorMap.get(lName);
+		SoftReference<CompletingThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cThreadPoolExecutorMap.get(lName);
 
-		ThreadPoolExecutor lThreadPoolExecutor;
+		CompletingThreadPoolExecutor lThreadPoolExecutor;
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
-			lThreadPoolExecutor = new ThreadPoolExecutor(	pCorePoolSize,
-																										pMaxPoolSize,
-																										1,
-																										TimeUnit.MINUTES,
-																										new ConcurrentLinkedBlockingQueue<Runnable>(pMaxQueueLength),
-																										getThreadFactory(	lSimpleName,
-																																			pPriority));
+			lThreadPoolExecutor = new CompletingThreadPoolExecutor(pCorePoolSize,
+																																				pMaxPoolSize,
+																																				1,
+																																				TimeUnit.MINUTES,
+																																				new ConcurrentLinkedBlockingQueue<Runnable>(pMaxQueueLength),
+																																				getThreadFactory(	lSimpleName,
+																																													pPriority));
 
 			lThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lThreadPoolExecutor.prestartAllCoreThreads();
@@ -88,22 +87,22 @@ public class RTlibExecutors
 		return lThreadPoolExecutor;
 	}
 
-	public static final ScheduledThreadPoolExecutor getOrCreateScheduledThreadPoolExecutor(	final Object pObject,
+	public static final CompletingScheduledThreadPoolExecutor getOrCreateScheduledThreadPoolExecutor(	final Object pObject,
 																																													final int pPriority,
 																																													final int pCorePoolSize,
 																																													final int pMaxQueueLength)
 	{
 		final String lName = pObject.getClass().getName();
 		final String lSimpleName = pObject.getClass().getSimpleName();
-		SoftReference<ScheduledThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cScheduledThreadPoolExecutorMap.get(lName);
+		SoftReference<CompletingScheduledThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cScheduledThreadPoolExecutorMap.get(lName);
 
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor;
+		CompletingScheduledThreadPoolExecutor lScheduledThreadPoolExecutor;
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
-			lScheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(	pCorePoolSize,
-																														getThreadFactory(	lSimpleName,
-																																							pPriority));
+			lScheduledThreadPoolExecutor = new CompletingScheduledThreadPoolExecutor(	pCorePoolSize,
+																																			getThreadFactory(	lSimpleName,
+																																												pPriority));
 
 			lScheduledThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lScheduledThreadPoolExecutor.prestartAllCoreThreads();
@@ -113,7 +112,7 @@ public class RTlibExecutors
 
 			lSoftReferenceOnThreadPoolExecutor = new SoftReference<>(lScheduledThreadPoolExecutor);
 			cScheduledThreadPoolExecutorMap.put(lName,
-																	lSoftReferenceOnThreadPoolExecutor);
+																					lSoftReferenceOnThreadPoolExecutor);
 		}
 
 		lScheduledThreadPoolExecutor = lSoftReferenceOnThreadPoolExecutor.get();

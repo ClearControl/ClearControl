@@ -1,9 +1,10 @@
 package rtlib.core.concurrent.executors;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public interface AsynchronousExecutorServiceAccess
 {
@@ -17,7 +18,6 @@ public interface AsynchronousExecutorServiceAccess
 																												Integer.MAX_VALUE);
 	}
 
-
 	public default Future<?> executeAsynchronously(final Runnable pRunnable)
 	{
 		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
@@ -26,7 +26,6 @@ public interface AsynchronousExecutorServiceAccess
 
 		return lThreadPoolExecutor.submit(pRunnable);
 	}
-
 
 	public default boolean resetThreadPoolAndWaitForCompletion(	long pTimeOut,
 																															TimeUnit pTimeUnit) throws InterruptedException
@@ -39,35 +38,31 @@ public interface AsynchronousExecutorServiceAccess
 		return lThreadPoolExecutor.awaitTermination(pTimeOut, pTimeUnit);
 	}
 
-
 	public default boolean waitForCompletion(	long pTimeOut,
-																						TimeUnit pTimeUnit) throws InterruptedException
+																						TimeUnit pTimeUnit) throws ExecutionException
 	{
-		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		CompletingThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
 
 		if (lThreadPoolExecutor == null)
 			return true;
 
-		BlockingQueue<Runnable> lQueue = lThreadPoolExecutor.getQueue();
-
-		long lNanoTimeOut = System.nanoTime();
-		long lNanoTimeStart = pTimeUnit.toNanos(pTimeOut);
-		do
+		try
 		{
-			long lNanoTimeCurrent = System.nanoTime();
-			if (lNanoTimeCurrent > lNanoTimeStart + lNanoTimeOut)
-				return false;
-			Thread.sleep(1);
+			lThreadPoolExecutor.waitForCompletion(pTimeOut, pTimeUnit);
+			return true;
 		}
-		while (!lQueue.isEmpty() || lThreadPoolExecutor.getActiveCount() > 0);
+		catch (TimeoutException e)
+		{
+			return false;
+		}
 
-		return true;
 	}
 
-	public default boolean waitForCompletion() throws InterruptedException
+	public default boolean waitForCompletion() throws InterruptedException,
+																						ExecutionException,
+																						TimeoutException
 	{
 		return waitForCompletion(Long.MAX_VALUE, TimeUnit.DAYS);
 	}
-
 
 }

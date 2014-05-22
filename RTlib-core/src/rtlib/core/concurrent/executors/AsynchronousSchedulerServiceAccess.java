@@ -1,15 +1,15 @@
 package rtlib.core.concurrent.executors;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public interface AsynchronousSchedulerServiceAccess
 {
 
-
-	public default ScheduledThreadPoolExecutor initializeScheduledExecutors()
+	public default CompletingScheduledThreadPoolExecutor initializeScheduledExecutors()
 	{
 		return RTlibExecutors.getOrCreateScheduledThreadPoolExecutor(	this,
 																																	Thread.NORM_PRIORITY,
@@ -17,7 +17,6 @@ public interface AsynchronousSchedulerServiceAccess
 																																	Integer.MAX_VALUE);
 
 	}
-
 
 	public default ScheduledFuture<?> schedule(	Runnable pRunnable,
 																							long pDelay,
@@ -42,7 +41,7 @@ public interface AsynchronousSchedulerServiceAccess
 	public default ScheduledFuture<?> scheduleAtFixedRate(Runnable pRunnable,
 																												long pInitialDelay,
 																												long pPeriod,
-																												TimeUnit pUnit)
+																												TimeUnit pTimeUnit)
 	{
 		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 		if (lScheduledThreadPoolExecutor == null)
@@ -51,47 +50,54 @@ public interface AsynchronousSchedulerServiceAccess
 		return lScheduledThreadPoolExecutor.scheduleAtFixedRate(pRunnable,
 																														pInitialDelay,
 																														pPeriod,
-																														pUnit);
+																														pTimeUnit);
 	}
 
-	public default boolean stopScheduledThreadPoolAndWaitForCompletion(long pTimeOut,
-																																			TimeUnit pTimeUnit) throws InterruptedException
+	public default boolean stopScheduledThreadPoolAndWaitForCompletion(	long pTimeOut,
+																																			TimeUnit pTimeUnit) throws ExecutionException
 	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		CompletingScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 
-		lScheduledThreadPoolExecutor.shutdownNow();
-		RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
+		lScheduledThreadPoolExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+		lScheduledThreadPoolExecutor.shutdown();
+		try
+		{
+			lScheduledThreadPoolExecutor.waitForCompletion(	pTimeOut,
+																											pTimeUnit);
+			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
+			return true;
+		}
+		catch (TimeoutException e)
+		{
+			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
+			return false;
+		}
 
-		return lScheduledThreadPoolExecutor.awaitTermination(	pTimeOut,
-																													pTimeUnit);
+
 	}
-
 
 	public default boolean waitForScheduleCompletion(	long pTimeOut,
-																										TimeUnit pTimeUnit) throws InterruptedException
+																										TimeUnit pTimeUnit) throws ExecutionException
 	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		CompletingScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 
 		if (lScheduledThreadPoolExecutor == null)
 			return true;
 
-		BlockingQueue<Runnable> lQueue = lScheduledThreadPoolExecutor.getQueue();
-
-		long lNanoTimeOut = System.nanoTime();
-		long lNanoTimeStart = pTimeUnit.toNanos(pTimeOut);
-		do
+		try
 		{
-			long lNanoTimeCurrent = System.nanoTime();
-			if (lNanoTimeCurrent > lNanoTimeStart + lNanoTimeOut)
-				return false;
-			Thread.sleep(1);
+			lScheduledThreadPoolExecutor.waitForCompletion(	pTimeOut,
+																											pTimeUnit);
+			return true;
 		}
-		while (!lQueue.isEmpty() || lScheduledThreadPoolExecutor.getActiveCount() > 0);
+		catch (TimeoutException e)
+		{
+			return false;
+		}
 
-		return true;
 	}
 
-	public default boolean waitForScheduleCompletion() throws InterruptedException
+	public default boolean waitForScheduleCompletion() throws ExecutionException
 	{
 		return waitForScheduleCompletion(Long.MAX_VALUE, TimeUnit.DAYS);
 	}
