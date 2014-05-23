@@ -1,16 +1,15 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+
 
 ### RTlib - Real-Time and High-Performance Control Library ###
 
-* RTlib
 
 RTlib philosophy is that it is possible to design control software in
 Java for high-performance microscopes with a minimum of native code by
 leveraging the best Java practices and libraries available. 
 
-* Version 1.0
+Current version: 1.0
 
 
 ### How do I get set up? ###
