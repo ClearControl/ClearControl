@@ -18,6 +18,15 @@ Current version: 1.0
 To build RTlib you need Gradle build tool - http://www.gradle.org/overview
 Tip: Make sure that the gradle executable is in your path.
 
+to build the project:
+    gradle build
+
+To generate eclipse project files:
+    gradle eclipse
+
+
+That's it, now you can import all RTlib projects in Eclipse. 
+
 * Configuration
 
 * Dependencies
