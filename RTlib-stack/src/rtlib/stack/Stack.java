@@ -111,7 +111,7 @@ public class Stack implements
 	{
 		RAM lRam = mNDArray.getRAM();
 		@SuppressWarnings("unchecked")
-		Pointer<Byte> lPointerToAddress = (Pointer<Byte>) Pointer.pointerToAddress(	lRam.getAddress(),
+		Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
 																																								lRam.getSizeInBytes(),
 																																								null)
 																															.as(Byte.class);
@@ -205,8 +205,9 @@ public class Stack implements
 
 	public void copyMetaDataFrom(Stack pStack)
 	{
-		mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
-																mVolumeSize.length);
+		if (mVolumeSize != null)
+			mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
+																	mVolumeSize.length);
 		setStackIndex(pStack.getIndex());
 		setTimeStampInNanoseconds(pStack.getTimeStampInNanoseconds());
 		setBytesPerVoxel(pStack.getBytesPerVoxel());
@@ -252,7 +253,7 @@ public class Stack implements
 																								long pHeight,
 																								long pDepth)
 	{
-		return pRecycler.requestOrWaitRecyclableObject(	pWaitTime,
+		return pRecycler.waitOrRequestRecyclableObject(	pWaitTime,
 																										pTimeUnit,
 																										pBytesPerVoxel,
 																										pWidth,

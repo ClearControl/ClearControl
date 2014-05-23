@@ -1,36 +1,38 @@
 package rtlib.core.concurrent.asyncprocs;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
+import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.queues.BestBlockingQueue;
+import rtlib.core.concurrent.timing.Waiting;
+import rtlib.core.log.Loggable;
 
 public abstract class AsynchronousProcessorBase<I, O> implements
-																											AsynchronousProcessorInterface<I, O>
+																											AsynchronousProcessorInterface<I, O>,
+																											AsynchronousExecutorServiceAccess,
+																											AsynchronousSchedulerServiceAccess,
+																											Loggable,
+																											Waiting
 {
 
-	private AsynchronousProcessorInterface<O, ?> mReceiver;
-	private final LinkedBlockingQueue<I> mInputQueue;
-	private EnhancedThread mEnhancedThread;
 	private String mName;
-	private long mPollPeriodInSeconds;
-
-	public AsynchronousProcessorBase(	final String pName,
-																		final int pMaxQueueSize,
-																		final int pPollPeriodInSeconds)
-	{
-		super();
-		mName = pName;
-		mPollPeriodInSeconds = pPollPeriodInSeconds;
-		mInputQueue = new LinkedBlockingQueue<I>(pMaxQueueSize <= 0	? 1
-																																: pMaxQueueSize);
-
-	}
+	private AsynchronousProcessorInterface<O, ?> mReceiver;
+	private final BlockingQueue<I> mInputQueue;
+	private AtomicReference<ScheduledFuture<?>> mScheduledFuture = new AtomicReference<>();
 
 	public AsynchronousProcessorBase(	final String pName,
 																		final int pMaxQueueSize)
 	{
-		this(pName, pMaxQueueSize, 1);
+		super();
+		mName = pName;
+		mInputQueue = BestBlockingQueue.newQueue(pMaxQueueSize <= 0	? 1
+																																: pMaxQueueSize);
+
 	}
 
 	@Override
@@ -42,19 +44,16 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	@Override
 	public boolean start()
 	{
-		mEnhancedThread = new EnhancedThread(mName)
+		try
 		{
+			Runnable lRunnable = () -> {
 
-			@Override
-			public boolean loop()
-			{
 				try
 				{
-					final I lInput = mInputQueue.poll(mPollPeriodInSeconds,
-																						TimeUnit.SECONDS);
+					final I lInput = mInputQueue.poll(1, TimeUnit.SECONDS);
 					if (lInput == null)
 					{
-						return true;
+						return;
 					}
 					final O lOutput = process(lInput);
 					if (lOutput != null)
@@ -67,25 +66,35 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 					e.printStackTrace();
 				}
 
-				return true;
-			}
-		};
+			};
 
-		mEnhancedThread.setDaemon(true);
-		return mEnhancedThread.start();
+			mScheduledFuture.set(scheduleAtFixedRate(	lRunnable,
+																								1,
+																								TimeUnit.NANOSECONDS));
+
+			return true;
+		}
+		catch (Exception e)
+		{
+			error("Concurrent",
+						"Error while starting " + this.getClass().getSimpleName());
+			return false;
+		}
 	}
 
 	@Override
 	public boolean stop()
 	{
-		if (mEnhancedThread == null)
+		try
 		{
-			return false;
+			stopScheduledThreadPoolAndWaitForCompletion(1, TimeUnit.SECONDS);
+			mScheduledFuture.set(null);
+			return true;
 		}
-
-		mEnhancedThread.stop();
-		mEnhancedThread = null;
-		return true;
+		catch (ExecutionException e)
+		{
+			return stop();
+		}
 	}
 
 	@Override
@@ -94,18 +103,29 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		this.stop();
 	}
 
-	public void waitToStart()
+	@Override
+	public boolean passOrWait(final I pObject,
+														final long pTimeOut,
+														TimeUnit pTimeUnit)
 	{
-		mEnhancedThread.waitForRunning();
+		waitFor(pTimeOut, pTimeUnit, () -> mScheduledFuture.get() != null);
+		try
+		{
+			if (pObject == null)
+				return false;
+			mInputQueue.offer(pObject, pTimeOut, pTimeUnit);
+		}
+		catch (final InterruptedException e)
+		{
+			return passOrWait(pObject, pTimeOut, pTimeUnit);
+		}
+		return false;
 	}
 
 	@Override
 	public boolean passOrWait(final I pObject)
 	{
-		if (!mEnhancedThread.isRunning())
-		{
-			mEnhancedThread.waitForRunning();
-		}
+		waitFor(() -> mScheduledFuture.get() != null);
 		try
 		{
 			if (pObject == null)
@@ -114,8 +134,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 		}
 		catch (final InterruptedException e)
 		{
-			System.err.println(e.getLocalizedMessage());
-			return false;
+			return passOrWait(pObject);
 		}
 		return false;
 	}
@@ -123,7 +142,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	@Override
 	public boolean passOrFail(final I pObject)
 	{
-		if (!mEnhancedThread.isRunning())
+		if (mScheduledFuture.get() == null)
 		{
 			return false;
 		}
@@ -158,19 +177,13 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	}
 
 	@Override
-	public boolean waitToFinish(final int pTimeOutInMilliseconds)
+	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
 	{
-		int lTimeOut = 0;
-		while (!mInputQueue.isEmpty() && lTimeOut < pTimeOutInMilliseconds)
-		{
-			EnhancedThread.sleep(1);
-			lTimeOut++;
-		}
-
+		waitFor(pTimeOut, pTimeUnit, () -> mInputQueue.isEmpty());
 		return mInputQueue.isEmpty();
 	}
 
-	public LinkedBlockingQueue<I> getInputQueue()
+	public BlockingQueue<I> getInputQueue()
 	{
 		return mInputQueue;
 	}

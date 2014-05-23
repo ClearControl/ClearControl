@@ -136,8 +136,12 @@ public class CompletingScheduledThreadPoolExecutor extends
 			try
 			{
 				Future<?> lScheduledFuture = mScheduledFutureQueue.poll();
+				lScheduledFuture.cancel(false);
 				if (lScheduledFuture != null)
-					lScheduledFuture.get(pTimeOut, pTimeUnit);
+				{
+					Object lObject = lScheduledFuture.get(pTimeOut, pTimeUnit);
+					System.out.println(lObject);
+				}
 			}
 			catch (CancellationException ce)
 			{

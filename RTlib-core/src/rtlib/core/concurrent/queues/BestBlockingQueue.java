@@ -8,7 +8,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class BestBlockingQueue
+import rtlib.core.log.Loggable;
+
+public class BestBlockingQueue implements Loggable
 {
 	public static final int cNumberOfCycles = 10;
 	public static final int cQueuesCapacity = 100;
@@ -48,10 +50,10 @@ public class BestBlockingQueue
 		};
 
 		Runnable lParasite = () -> {
-			double[] lArray = new double[(int) pNumberOfPuts];
+			double[] lArray = new double[pNumberOfPuts];
 			for (int i = 0; i < pNumberOfPuts; i++)
 			{
-				lArray[i] = lArray[(int) ((i + (pNumberOfPuts / 2)) % pNumberOfPuts)] + i;
+				lArray[i] = lArray[(i + (pNumberOfPuts / 2)) % pNumberOfPuts] + i;
 			}
 		};
 
@@ -140,13 +142,17 @@ public class BestBlockingQueue
 																																				new ArrayBlockingQueue<String>(pQueueCapacity));
 		}
 
-		System.out.println("ConcurrentLinkedBlockingQueue -> " + lBenchmarkConcurrentLinkedBlockingQueue
+		BestBlockingQueue lBestBlockingQueue = new BestBlockingQueue();
+		lBestBlockingQueue.info("Concurrent",
+														"ConcurrentLinkedBlockingQueue -> " + lBenchmarkConcurrentLinkedBlockingQueue
+																+ " ms");
+
+		lBestBlockingQueue.info("Concurrent",
+														"LinkedBlockingQueue -> " + lBenchmarkLinkedBlockingQueue
 												+ " ms");
 
-		System.out.println("LinkedBlockingQueue -> " + lBenchmarkLinkedBlockingQueue
-												+ " ms");
-
-		System.out.println("ArrayBlockingQueue -> " + lBenchmarkArrayBlockingQueue
+		lBestBlockingQueue.info("Concurrent",
+														"ArrayBlockingQueue -> " + lBenchmarkArrayBlockingQueue
 												+ " ms");
 
 		if (lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkLinkedBlockingQueue && lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkArrayBlockingQueue)
@@ -165,7 +171,7 @@ public class BestBlockingQueue
 		if (sBestQueueClass.get() == null)
 		{
 			sBestQueueClass.set(benchmarkQueues(cNumberOfCycles,
-																				cNumberOfPuts,
+																					cNumberOfPuts,
 																					cQueuesCapacity));
 		}
 	}/**/
@@ -173,7 +179,7 @@ public class BestBlockingQueue
 	public static <T> BlockingQueue<T> newQueue(int pQueuesCapacity)
 	{
 		ensureBestBlockingQueueDetermined();
-		
+
 		try
 		{
 			if (sBestQueueClass.get() == null)

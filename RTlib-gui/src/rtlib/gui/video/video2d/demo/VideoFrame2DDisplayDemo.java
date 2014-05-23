@@ -123,7 +123,8 @@ public class VideoFrame2DDisplayDemo extends JFrame
 				{
 					if (sDisplay)
 					{
-						generateNoiseBuffer(lFrame.getByteBuffer(), sValue);
+						// TODO: get teh bufer using KAM source!!
+						// generateNoiseBuffer(lFrame.getByteBuffer(), sValue);
 						lFrameVariable.setReference(lFrame);
 					}
 					EnhancedThread.sleep(1);

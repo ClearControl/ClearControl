@@ -8,14 +8,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import rtlib.core.log.Loggable;
 import rtlib.core.rgc.Freeable;
 
 public class Recycler<R extends RecyclableInterface<R, P>, P> implements
-																															Freeable
+																															Freeable,
+																															Loggable
 {
 	private final Class<R> mRecyclableClass;
 	private final ConcurrentLinkedQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedQueue<SoftReference<R>>();
-	private final ConcurrentLinkedQueue<Long> mAllocatedMemoryQueue = new ConcurrentLinkedQueue<Long>();
+	private final ConcurrentLinkedQueue<Long> mAvailableMemoryQueue = new ConcurrentLinkedQueue<Long>();
 
 	private volatile AtomicLong mLiveObjectCounter = new AtomicLong(0);
 	private volatile AtomicLong mLiveMemoryInBytes = new AtomicLong(0);
@@ -33,35 +35,43 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	{
 		mRecyclableClass = pRecyclableClass;
 		if (pMaximumLiveMemoryInBytes < 0)
-			throw new IllegalArgumentException("Maximum live memory must be strictly positive!");
+		{
+			String lErrorString = "Maximum live memory must be strictly positive!";
+			error("Recycling", lErrorString);
+			throw new IllegalArgumentException(lErrorString);
+		}
 		mMaximumLiveMemoryInBytes = pMaximumLiveMemoryInBytes;
 	}
 
-	public boolean ensurePreallocated(final int pNumberofPrealocatedRecyclablesNeeded,
-																		@SuppressWarnings("unchecked") final P... pParameters)
+	public long ensurePreallocated(	final int pNumberofPrealocatedRecyclablesNeeded,
+																	@SuppressWarnings("unchecked") final P... pParameters)
 	{
 		complainIfFreed();
 		final int lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
 		final int lNumberOfObjectsToAllocate = Math.max(0,
 																										pNumberofPrealocatedRecyclablesNeeded - lNumberOfAvailableObjects);
-
+		long i = 1;
 		try
 		{
-			for (int i = 0; i < lNumberOfObjectsToAllocate; i++)
+			for (; i <= lNumberOfObjectsToAllocate; i++)
 			{
 
 				final R lNewInstance = createNewInstanceWithParameters(pParameters);
-				// lNewInstance.initialize(pParameters);
+				if (lNewInstance == null)
+					return i - 1;
+
 				lNewInstance.setRecycler(this);
 				mAvailableObjectsQueue.add(new SoftReference<R>(lNewInstance));
-				mAllocatedMemoryQueue.add(lNewInstance.getSizeInBytes());
+				mAvailableMemoryQueue.add(lNewInstance.getSizeInBytes());
+
 			}
-			return true;
+			return lNumberOfObjectsToAllocate;
 		}
 		catch (final Throwable e)
 		{
-			e.printStackTrace();
-			return false;
+			String lErrorString = "Error while creating new instance!";
+			error("Recycling", lErrorString, e);
+			return (i - 1);
 		}
 
 	}
@@ -78,11 +88,30 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 		lDefaultConstructor.setAccessible(false);
 		if (pParameters != null)
 			lNewInstance.initialize(pParameters);
+
+		if (mLiveMemoryInBytes.get() + lNewInstance.getSizeInBytes() > mMaximumLiveMemoryInBytes)
+		{
+			lNewInstance.free();
+			return null;
+		}
+
+		mLiveObjectCounter.incrementAndGet();
+		mLiveMemoryInBytes.addAndGet(lNewInstance.getSizeInBytes());
+
 		return lNewInstance;
 	}
 
+	void destroyInstance(R lRecyclableObject, boolean pCallFreeMethod)
+	{
+		long lSizeInBytes = lRecyclableObject.getSizeInBytes();
+		if (pCallFreeMethod)
+			lRecyclableObject.free();
+		mLiveObjectCounter.decrementAndGet();
+		mLiveMemoryInBytes.addAndGet(-lSizeInBytes);
+	}
+
 	@SuppressWarnings("unchecked")
-	public R requestOrWaitRecyclableObject(	final long pWaitTime,
+	public R waitOrRequestRecyclableObject(	final long pWaitTime,
 																					final TimeUnit pTimeUnit,
 																					final P... pRequestParameters)
 	{
@@ -93,7 +122,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public R requestOrFailRecyclableObject(final P... pRequestParameters)
+	public R failOrRequestRecyclableObject(final P... pRequestParameters)
 	{
 		return requestRecyclableObject(false, 0, null, pRequestParameters);
 	}
@@ -109,7 +138,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 
 		if (lPolledSoftReference != null)
 		{
-			Long lObjectsSizeInBytes = mAllocatedMemoryQueue.poll();
+			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 
 			final R lObtainedReference = lPolledSoftReference.get();
 			lPolledSoftReference.clear();
@@ -126,12 +155,10 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 			if (pRequestParameters != null)
 			{
 				lObtainedReference.setReleased(false);
-				
+
 				if (!lObtainedReference.isCompatible(pRequestParameters))
 				{
-					mLiveObjectCounter.decrementAndGet();
-					mLiveMemoryInBytes.addAndGet(-lObtainedReference.getSizeInBytes());
-					freeFreeableObject(lObtainedReference);
+					destroyInstance(lObtainedReference, true);
 					return requestRecyclableObject(	pWait,
 																					pWaitTime,
 																					pTimeUnit,
@@ -146,13 +173,21 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 
 		}
 
-		if (!pWait && mLiveMemoryInBytes.get() > mMaximumLiveMemoryInBytes)
-			throw new OutOfMemoryError("Recycler reached maximum allocation size!");
+		if (!pWait && mLiveMemoryInBytes.get() >= mMaximumLiveMemoryInBytes)
+		{
+			String lErrorString = "Recycler reached maximum allocation size!";
+			error("Recycling", lErrorString);
+			throw new OutOfMemoryError(lErrorString);
+		}
 
 		if (pWait && pWaitTime <= 0)
+		{
+			String lErrorString = "Recycler reached maximum allocation size! (timeout)";
+			error("Recycling", lErrorString);
 			throw new OutOfMemoryError("Recycler reached maximum allocation size! (timeout)");
+		}
 
-		if (pWait && mLiveMemoryInBytes.get() > mMaximumLiveMemoryInBytes)
+		if (pWait && mLiveMemoryInBytes.get() >= mMaximumLiveMemoryInBytes)
 		{
 			final long lWaitPeriodInMilliseconds = 1;
 			try
@@ -175,13 +210,12 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 			lNewInstance.setRecycler(this);
 			lNewInstance.setReleased(false);
 
-			mLiveObjectCounter.incrementAndGet();
-			mLiveMemoryInBytes.addAndGet(lNewInstance.getSizeInBytes());
 			return lNewInstance;
 		}
 		catch (final Throwable e)
 		{
-			e.printStackTrace();
+			String lErrorString = "Error while creating new instance!";
+			error("Recycling", lErrorString, e);
 			return null;
 		}
 
@@ -191,7 +225,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	{
 		complainIfFreed();
 		mAvailableObjectsQueue.add(new SoftReference<R>(pObject));
-		mAllocatedMemoryQueue.add(pObject.getSizeInBytes());
+		mAvailableMemoryQueue.add(pObject.getSizeInBytes());
 	}
 
 	public long getLiveObjectCount()
@@ -210,7 +244,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 
 		if (lPolledSoftReference != null)
 		{
-			Long lObjectsSizeInBytes = mAllocatedMemoryQueue.poll();
+			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 
 			final R lObtainedReference = lPolledSoftReference.get();
 			lPolledSoftReference.clear();
@@ -227,35 +261,33 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 		}
 	}
 
-	public void purge(final boolean pCallFreeMethod)
+	public void freeReleasedObjects(final boolean pCallFreeMethod)
 	{
 		SoftReference<R> lPolledSoftReference;
-
+		
 		while ((lPolledSoftReference = mAvailableObjectsQueue.poll()) != null)
 		{
-			Long lSizeInBytes = mAllocatedMemoryQueue.poll();
-			mLiveMemoryInBytes.addAndGet(-lSizeInBytes);
-
+			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 			R lRecyclableObject = lPolledSoftReference.get();
-			if (lRecyclableObject != null && pCallFreeMethod)
+			if (lRecyclableObject == null)
 			{
 				mLiveObjectCounter.decrementAndGet();
-				freeFreeableObject(lRecyclableObject);
+				mLiveMemoryInBytes.addAndGet(-lObjectsSizeInBytes);
+			}
+			else
+			{
+				destroyInstance(lRecyclableObject, pCallFreeMethod);
 			}
 		}
-	}
+		mAvailableMemoryQueue.clear();
 
-	void freeFreeableObject(R lRecyclableObject)
-	{
-		lRecyclableObject.free();
 	}
 
 	@Override
 	public void free()
 	{
 		mIsFreed.set(true);
-		purge(true);
-		assert (mLiveMemoryInBytes.get() == 0);
+		freeReleasedObjects(true);
 	}
 
 	@Override

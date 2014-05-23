@@ -69,7 +69,7 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 			public Object process(final Stack pStack)
 			{
 				// TODO: need to add method that handles RAMdirect sources!
-				mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
+				// mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
 				mVideoWindow.setWidth((int) pStack.getWidth());
 				mVideoWindow.setHeight((int) pStack.getHeight());
 				mVideoWindow.setBytesPerPixel((int) pStack.getBytesPerVoxel());

@@ -1,6 +1,7 @@
 package rtlib.core.concurrent.asyncprocs;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class AsynchronousProcessorAdapter<I, O> implements
 																								AsynchronousProcessorInterface<I, O>
@@ -41,13 +42,21 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	}
 
 	@Override
+	public boolean passOrWait(final I pObject,
+														final long pTimeOut,
+														TimeUnit pTimeUnit)
+	{
+		return true;
+	}
+
+	@Override
 	public boolean passOrFail(final I pObject)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean waitToFinish(final int pPollInterval)
+	public boolean waitToFinish(final long pTime, TimeUnit pTimeUnit)
 	{
 		return true;
 	}

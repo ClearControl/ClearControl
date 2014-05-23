@@ -106,7 +106,7 @@ public class Image3DGPUTests
 		// System.out.println("testReadWritePointerAccessible().END");
 	}
 
-	@Test
+	// @Test
 	public void testReadWriteToMappableFile()	throws IOException,
 																						InterruptedException
 	{

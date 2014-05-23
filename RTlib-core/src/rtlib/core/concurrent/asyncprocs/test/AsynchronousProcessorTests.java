@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -53,12 +54,19 @@ public class AsynchronousProcessorTests
 			// if(i>50) assertFalse();
 		}
 		assertTrue(hasFailed);
-		EnhancedThread.sleep(10);
+		EnhancedThread.sleep(1);
 		for (int i = 0; i < 100; i++)
 		{
 			assertTrue(lProcessorA.passOrFail("test" + i));
-			EnhancedThread.sleep(10);
+			EnhancedThread.sleep(1);
 		}
+
+		lProcessorB.stop();
+		lProcessorB.waitToFinish(1, TimeUnit.SECONDS);
+		lProcessorA.stop();
+		lProcessorA.waitToFinish(1, TimeUnit.SECONDS);
+
+
 
 	}
 
@@ -134,9 +142,9 @@ public class AsynchronousProcessorTests
 			lProcessorA.passOrWait(i);
 		}
 
-		lProcessorA.waitToFinish(1);
-		lProcessorB.waitToFinish(1);
-		lProcessorC.waitToFinish(1);
+		lProcessorA.waitToFinish(10, TimeUnit.SECONDS);
+		lProcessorB.waitToFinish(10, TimeUnit.SECONDS);
+		lProcessorC.waitToFinish(10, TimeUnit.SECONDS);
 
 		lProcessorA.stop();
 		lProcessorB.stop();
@@ -145,8 +153,6 @@ public class AsynchronousProcessorTests
 		for (int i = 1; i <= 1000; i++)
 		{
 			Integer lPoll = lIntList.poll();
-			// if (i != lPoll)
-				System.out.println(lPoll);
 			assertEquals(i, lPoll, 0);
 		}
 

@@ -106,7 +106,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	{
 		final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
 
-		Stack lStack = mVideoFrameRecycler.requestOrWaitRecyclableObject(	1,
+		Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
 																																			TimeUnit.SECONDS,
 																																			pDcamFrame.getPixelSizeInBytes(),
 																																			pDcamFrame.getWidth(),

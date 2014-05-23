@@ -190,10 +190,10 @@ public class RAMFile extends RAMMappedAbstract implements
 		if (!isCurrentlyMapped())
 			return;
 
-		force();
+		// force();
 		MemoryMappedFile.unmap(	mFileChannel,
 														mPageAlignedMappingAddressInBytes,
-														getSizeInBytes());
+														mMappingLengthInBytes);
 		setCurrentlyMapped(false);
 		mPageAlignedMappingAddressInBytes = 0;
 		mAddressInBytes = 0;

@@ -1,11 +1,12 @@
 package rtlib.core.concurrent.executors;
 
 import java.lang.ref.SoftReference;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.concurrent.queues.ConcurrentLinkedBlockingQueue;
+import rtlib.core.concurrent.queues.BestBlockingQueue;
 
 public class RTlibExecutors
 {
@@ -52,10 +53,10 @@ public class RTlibExecutors
 	}
 
 	public static final CompletingThreadPoolExecutor getOrCreateThreadPoolExecutor(	final Object pObject,
-																																				final int pPriority,
-																																				final int pCorePoolSize,
-																																				final int pMaxPoolSize,
-																																				final int pMaxQueueLength)
+																																									final int pPriority,
+																																									final int pCorePoolSize,
+																																									final int pMaxPoolSize,
+																																									final int pMaxQueueLength)
 	{
 		final String lName = pObject.getClass().getName();
 		final String lSimpleName = pObject.getClass().getSimpleName();
@@ -65,13 +66,15 @@ public class RTlibExecutors
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
-			lThreadPoolExecutor = new CompletingThreadPoolExecutor(pCorePoolSize,
-																																				pMaxPoolSize,
-																																				1,
-																																				TimeUnit.MINUTES,
-																																				new ConcurrentLinkedBlockingQueue<Runnable>(pMaxQueueLength),
-																																				getThreadFactory(	lSimpleName,
-																																													pPriority));
+			BlockingQueue<Runnable> lNewQueue = BestBlockingQueue.newQueue(pMaxQueueLength);
+
+			lThreadPoolExecutor = new CompletingThreadPoolExecutor(	pCorePoolSize,
+																															pMaxPoolSize,
+																															1,
+																															TimeUnit.MINUTES,
+																															lNewQueue,
+																															getThreadFactory(	lSimpleName,
+																																								pPriority));
 
 			lThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lThreadPoolExecutor.prestartAllCoreThreads();
@@ -87,9 +90,9 @@ public class RTlibExecutors
 	}
 
 	public static final CompletingScheduledThreadPoolExecutor getOrCreateScheduledThreadPoolExecutor(	final Object pObject,
-																																													final int pPriority,
-																																													final int pCorePoolSize,
-																																													final int pMaxQueueLength)
+																																																		final int pPriority,
+																																																		final int pCorePoolSize,
+																																																		final int pMaxQueueLength)
 	{
 		final String lName = pObject.getClass().getName();
 		final String lSimpleName = pObject.getClass().getSimpleName();
@@ -100,8 +103,8 @@ public class RTlibExecutors
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
 			lScheduledThreadPoolExecutor = new CompletingScheduledThreadPoolExecutor(	pCorePoolSize,
-																																			getThreadFactory(	lSimpleName,
-																																												pPriority));
+																																								getThreadFactory(	lSimpleName,
+																																																	pPriority));
 
 			lScheduledThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lScheduledThreadPoolExecutor.prestartAllCoreThreads();

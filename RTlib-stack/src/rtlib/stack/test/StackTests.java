@@ -81,6 +81,8 @@ public class StackTests
 	@Test
 	public void testRecycling() throws InterruptedException
 	{
+		long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+
 
 		Recycler<Stack, Long> lRecycler = new Recycler<>(	Stack.class,
 																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
@@ -93,7 +95,7 @@ public class StackTests
 
 		for (int i = 0; i < 100; i++)
 		{
-			System.out.println(i);
+			// System.out.println(i);
 			final Stack lStack;
 			if ((i % 100) < 50)
 			{
@@ -143,26 +145,28 @@ public class StackTests
 
 			long lLiveObjectCount = lRecycler.getLiveObjectCount();
 			long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
-			System.out.format("count=%d mem=%d \n",
+			/*System.out.format("count=%d mem=%d \n",
 												lLiveObjectCount,
-												lLiveMemoryInBytes);
+												lLiveMemoryInBytes);/**/
 			assertTrue(lLiveObjectCount > 0);
 			assertTrue(lLiveMemoryInBytes > 0);
 
 			long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
-			System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
+			// System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
 			assertTrue(lTotalAllocatedMemory > 0);
 
-			// assertTrue(lLiveMemoryInBytes < 2.5 * cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+			assertTrue(lLiveMemoryInBytes < 2.5 * cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
 			Thread.sleep(1);
 
-			System.out.println("totalMemory=" + Runtime.getRuntime()
-																								.totalMemory());
-			System.out.println("freeMemory=" + Runtime.getRuntime()
-																								.freeMemory());
-			System.out.println("maxMemory=" + Runtime.getRuntime()
-																								.maxMemory());
+			System.gc();
+			/*
+						System.out.println("totalMemory=" + Runtime.getRuntime()
+																											.totalMemory());
+						System.out.println("freeMemory=" + Runtime.getRuntime()
+																											.freeMemory());
+						System.out.println("maxMemory=" + Runtime.getRuntime()
+																											.maxMemory());/**/
 
 		}
 
@@ -176,8 +180,10 @@ public class StackTests
 		long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
 		assertEquals(0, lLiveMemoryInBytes);
 
-		long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
-		assertEquals(0, lTotalAllocatedMemory);
+
+
+		long lEndTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+		assertEquals(lStartTotalAllocatedMemory, lEndTotalAllocatedMemory);
 
 	}
 }

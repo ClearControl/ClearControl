@@ -1,18 +1,22 @@
 package rtlib.core.concurrent.asyncprocs;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.CompletingThreadPoolExecutor;
 import rtlib.core.concurrent.executors.RTlibExecutors;
+import rtlib.core.log.Loggable;
 
 public class AsynchronousProcessorPool<I, O>	extends
 																							AsynchronousProcessorBase<I, O>	implements
 																																							AsynchronousProcessorInterface<I, O>,
 																																							AsynchronousExecutorServiceAccess,
-																																							AsynchronousSchedulerServiceAccess
+																																							AsynchronousSchedulerServiceAccess,
+																																							Loggable
 {
 
 	private final ProcessorInterface<I, O> mProcessor;
@@ -47,25 +51,47 @@ public class AsynchronousProcessorPool<I, O>	extends
 	public boolean start()
 	{
 		Runnable lRunnable = () -> {
-			mThreadPoolExecutor.getFutur(1, TimeUnit.NANOSECONDS);
+			try
+			{
+				@SuppressWarnings("unchecked")
+				Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
+																																			TimeUnit.NANOSECONDS);
+				if (lFuture != null)
+				{
+					O lResult = lFuture.get();
+					send(lResult);
+				}
+			}
+			catch (InterruptedException e)
+			{
+				return;
+			}
+			catch (ExecutionException e)
+			{
+				error("Concurrent",
+							"Exception while collecting processed items",
+							e);
+			}
 		};
-		
+
 		scheduleAtFixedRate(lRunnable, 1, TimeUnit.NANOSECONDS);
-		
-		super.start();
+
+		return super.start();
 	}
 
 	@Override
 	public boolean stop()
 	{
-		if (mEnhancedThread == null)
+		try
 		{
+			stopScheduledThreadPoolAndWaitForCompletion(1, TimeUnit.SECONDS);
+			return true;
+		}
+		catch (ExecutionException e)
+		{
+			e.printStackTrace();
 			return false;
 		}
-
-		mEnhancedThread.stop();
-		mEnhancedThread = null;
-		return true;
 	}
 
 	@Override
@@ -74,7 +100,8 @@ public class AsynchronousProcessorPool<I, O>	extends
 		Callable<O> lCallable = () -> {
 			return mProcessor.process(pInput);
 		};
-		return mThreadPoolExecutor.submit(lCallable);
+		mThreadPoolExecutor.submit(lCallable);
+		return null;
 	}
 
 }

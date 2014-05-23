@@ -18,7 +18,8 @@ public class MemoryMappedFileTest
 {
 
 	@Test
-	public void test() throws IOException, InterruptedException
+	public void testMapLargeFile() throws IOException,
+																InterruptedException
 	{
 		File lTempFile = File.createTempFile(	"MemoryMappedFileTest",
 																					"test1");
@@ -95,6 +96,8 @@ public class MemoryMappedFileTest
 														lMappingLength);
 
 		lFileChannel.close();
+
+		lTempFile.delete();
 
 	}
 

@@ -1,5 +1,7 @@
 package rtlib.stack.server;
 
+import java.util.concurrent.TimeUnit;
+
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.variable.VariableInterface;
@@ -49,9 +51,10 @@ public class AsynchronousStackSinkAdapter	implements
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
 
-	public boolean waitToFinish(final int pTimeOutInMilliseconds)
+	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
 	{
-		return mAsynchronousConversionProcessor.waitToFinish(pTimeOutInMilliseconds);
+		return mAsynchronousConversionProcessor.waitToFinish(	pTimeOut,
+																													pTimeUnit);
 	}
 
 	public boolean stop()

@@ -1,5 +1,7 @@
 package rtlib.core.concurrent.asyncprocs;
 
+import java.util.concurrent.TimeUnit;
+
 public class AsynchronousProcessorNull<I, O>	extends
 																							AsynchronousProcessorBase<I, O>	implements
 																																							AsynchronousProcessorInterface<I, O>
@@ -20,7 +22,7 @@ public class AsynchronousProcessorNull<I, O>	extends
 	}
 
 	@Override
-	public boolean waitToFinish(final int pPollInterval)
+	public boolean waitToFinish(final long pTime, TimeUnit pTimeUnit)
 	{
 		return true;
 	}

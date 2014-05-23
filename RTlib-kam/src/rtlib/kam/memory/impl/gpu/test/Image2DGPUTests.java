@@ -102,7 +102,7 @@ public class Image2DGPUTests
 		// System.out.println("testReadWritePointerAccessible().END");
 	}
 
-	@Test
+	// @Test
 	public void testReadWriteToMappableFile()	throws IOException,
 																						InterruptedException
 	{

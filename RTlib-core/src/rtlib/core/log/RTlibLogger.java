@@ -17,6 +17,7 @@ public class RTlibLogger
 {
 
 	private static final File cTempFolder = new File(System.getProperty("java.io.tmpdir"));
+	private static File cLogRootFolder = cTempFolder;
 	private static final MachineConfiguration cMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 	private static final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy.MM.dd.E.HH.mm.ss.zzz");
 	private static final ConcurrentHashMap<String, RTlibLogger> sLoggerMap = new ConcurrentHashMap<String, RTlibLogger>();
@@ -103,7 +104,7 @@ public class RTlibLogger
 	private static File getLogFolderLocation()
 	{
 		File lLogFolder = cMachineConfiguration.getFileProperty("logging.folder",
-																														new File(	cTempFolder,
+																														new File(	cLogRootFolder,
 																																			"RTlib.log"));
 		lLogFolder.mkdir();
 		return lLogFolder;
@@ -185,6 +186,16 @@ public class RTlibLogger
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static File getLogRootFolder()
+	{
+		return cLogRootFolder;
+	}
+
+	public static void setLogRootFolder(File pLogRootFolder)
+	{
+		cLogRootFolder = pLogRootFolder;
 	}
 
 }

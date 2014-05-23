@@ -51,7 +51,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 
 			final Long[] lStackDimensions = mStackIndexToStackDimensionsMap.get(pStackIndex);
 
-			final Stack lStack = mStackRecycler.requestOrFailRecyclableObject(lStackDimensions);
+			final Stack lStack = mStackRecycler.failOrRequestRecyclableObject(lStackDimensions);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
 																																					true);
