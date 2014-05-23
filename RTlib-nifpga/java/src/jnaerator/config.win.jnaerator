@@ -1,0 +1,17 @@
+-library Direttore
+-beautifyNames
+//-libraryNamingPrefixes DCAM
+//-reification
+-f
+-o ..\
+-rootPackage direttore.bridj
+-package direttore.bridj
+-arch win64 
+-D _M_X64
+-libFile ..\..\..\labview\lib\Direttore.dll
+-runtime BridJ
+-mode Directory
+..\..\..\labview\lib\Direttore.h
+//lib\extcode.h
+//lib\platdefines.h
+//lib\fundtypes.h

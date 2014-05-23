@@ -1,0 +1,22 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceSets 
+{
+  main 
+  {
+    java 
+    {
+      srcDir 'src'
+    }
+  }
+  test
+  {
+    java 
+    {
+      srcDir 'src'
+    }
+  }
+}
+
+

@@ -1,0 +1,94 @@
+subprojects 
+{
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+
+
+    sourceCompatibility = 1.8
+    version = '1.0'
+
+    compileJava 
+    {
+        options.compilerArgs << '-XDignore.symbol.file'
+        options.fork = true // may not needed on 1.8
+        options.forkOptions.executable = 'javac' // may not needed on 1.8
+    }
+
+    test 
+    {
+        testLogging.showStandardStreams = true 
+        testLogging 
+        {
+            events "passed", "skipped", "failed"
+        }
+
+        exclude '**/demo/**'
+
+        maxHeapSize = "4G"
+    }
+
+    dependencies 
+    {
+        compile group: 'commons-collections', name: 'commons-collections', version: '3.+'
+        compile group: 'commons-lang', name: 'commons-lang', version: '2.+'
+        compile group: 'commons-io', name: 'commons-io', version: '2.+'
+        compile group: 'org.apache.commons', name: 'commons-math3', version: '3.+'
+        compile 'com.nativelibs4java:bridj:0.7-SNAPSHOT'
+        compile 'com.nativelibs4java:javacl:1.0-SNAPSHOT'
+        compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24'
+        compile 'com.github.rwl:jtransforms:2.4.0'
+        compile 'org.codehaus.groovy:groovy-all:2.2.2'
+        compile 'javax.mail:mail:1.4.7'
+        compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+        compile 'net.sf.trove4j:trove4j:3.0.3'
+        compile 'java3d:vecmath:1.3.1'
+        compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+
+        //compile 'org.jogamp.gluegen:gluegen-rt-main:2.1.5-01'
+        //compile 'org.jogamp.jogl:jogl-all:2.1.5-01'
+        //compile 'org.jogamp.jocl:jocl:2.1.5-01'
+        //compile 'org.jogamp.joal:joal:2.1.5-01'
+        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-linux-i586"
+        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-linux-amd64"
+        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-windows-i586"
+        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-windows-amd64"
+        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-macosx-universal"
+
+        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-linux-i586"
+        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-linux-amd64"
+        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-windows-i586"
+        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-windows-amd64"
+        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-macosx-universal"
+
+
+        compile 'net.openhft:compiler:2.1'
+        compile 'net.openhft:lang:6.3.5'
+        compile 'net.openhft:affinity:2.0.6'
+        compile 'net.openhft:collections:3.0.2' 
+        compile 'net.openhft:chronicle:3.0.1'
+
+        compile 'org.jscience:jscience:4.3.1'
+            
+
+        compile group: 'junit', name: 'junit', version: '4.+'
+        testCompile group: 'junit', name: 'junit', version: '4.+'
+
+        compile fileTree(dir: '../Libs/jmathplot', include: '*.jar')
+        compile fileTree(dir: '../Libs/jogamp', include: '*.jar')
+        compile fileTree(dir: '../Libs/jogamp/natives', include: '*.jar')
+    }
+
+    repositories 
+    {
+        mavenCentral()
+        maven 
+        {
+            url "http://oss.sonatype.org/content/groups/public"
+        } 
+
+    }
+
+}
+
+
+
