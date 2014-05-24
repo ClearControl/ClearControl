@@ -73,11 +73,10 @@ public class GPUProgramTests
 																											cBigSizeY);
 
 			lGPUProgram.execute("add_buffer",
-																			NDRangeUtils.range(	cBigSizeX,
-																													cBigSizeY),
-																			lIn,
-																			lOut,
-																			1);
+													NDRangeUtils.range(cBigSizeX, cBigSizeY),
+													lIn,
+													lOut,
+													1);
 
 			lOut.writeTo(lRAMDirect);
 

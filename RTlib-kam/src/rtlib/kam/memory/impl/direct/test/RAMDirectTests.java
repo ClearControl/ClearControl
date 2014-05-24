@@ -66,8 +66,8 @@ public class RAMDirectTests
 	public void testWriteToReadFromFileChannel() throws IOException
 	{
 		File lTempFile = File.createTempFile(	this.getClass()
-																										.getSimpleName(),
-																								"testWriteToReadFromFileChannel");
+																							.getSimpleName(),
+																					"testWriteToReadFromFileChannel");
 		lTempFile.delete();
 		lTempFile.deleteOnExit();
 

@@ -83,7 +83,6 @@ public class StackTests
 	{
 		long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 
-
 		Recycler<Stack, Long> lRecycler = new Recycler<>(	Stack.class,
 																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
@@ -171,6 +170,7 @@ public class StackTests
 		}
 
 		lThreadPoolExecutor.shutdown();
+		lThreadPoolExecutor.awaitTermination(1, TimeUnit.SECONDS);
 
 		lRecycler.free();
 
@@ -179,8 +179,6 @@ public class StackTests
 
 		long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
 		assertEquals(0, lLiveMemoryInBytes);
-
-
 
 		long lEndTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 		assertEquals(lStartTotalAllocatedMemory, lEndTotalAllocatedMemory);

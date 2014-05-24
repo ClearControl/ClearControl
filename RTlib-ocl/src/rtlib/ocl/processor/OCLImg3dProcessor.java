@@ -31,7 +31,7 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 		return mInputNz;
 	}
-	
+
 	public int getOutputNx()
 	{
 		return mOutputNx;
@@ -58,8 +58,8 @@ public class OCLImg3dProcessor extends OCLProcessor
 		final CLImageFormat lCLImageFormat = new CLImageFormat(	CLImageFormat.ChannelOrder.R,
 																														CLImageFormat.ChannelDataType.SignedInt16);
 
-		
-		if(mInputImage3D!=null) mInputImage3D.release();
+		if (mInputImage3D != null)
+			mInputImage3D.release();
 		mInputImage3D = mCLContext.createImage3D(	Usage.Input,
 																							lCLImageFormat,
 																							pNx,
@@ -75,7 +75,8 @@ public class OCLImg3dProcessor extends OCLProcessor
 		mOutputNy = pNy;
 		mOutputNz = pNz;
 
-		if(mOutputImageCLBuffer!=null) mOutputImageCLBuffer.release();
+		if (mOutputImageCLBuffer != null)
+			mOutputImageCLBuffer.release();
 		mOutputImageCLBuffer = mCLContext.createShortBuffer(Usage.Output,
 																												pNx	* pNy
 																														* pNz
@@ -134,11 +135,11 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 		mCLKernel.setArgs(pArgs);
 
-		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(mCLQueue,
-																											new int[]
-																											{ mInputNx,
-																												mInputNy,
-																												mInputNz });
+		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
+																												new int[]
+																												{ mInputNx,
+																													mInputNy,
+																													mInputNz });
 		lEnqueueNDRange.waitFor();
 		return lEnqueueNDRange;
 	}
@@ -147,10 +148,10 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 		mCLKernel.setArgs(pArgs);
 
-		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(mCLQueue,
-																											new int[]
-																											{ mInputNx,
-																												mInputNy, });
+		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
+																												new int[]
+																												{ mInputNx,
+																													mInputNy, });
 		lEnqueueNDRange.waitFor();
 		return lEnqueueNDRange;
 	}

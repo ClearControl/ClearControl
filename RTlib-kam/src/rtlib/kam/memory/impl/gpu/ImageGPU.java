@@ -126,16 +126,19 @@ public abstract class ImageGPU<T> implements
 	@Override
 	public abstract long getDimension();
 
+	@Override
 	public long getWidth()
 	{
 		return mWidth;
 	}
 
+	@Override
 	public long getHeight()
 	{
 		return mHeight;
 	}
 
+	@Override
 	public long getDepth()
 	{
 		return mDepth;

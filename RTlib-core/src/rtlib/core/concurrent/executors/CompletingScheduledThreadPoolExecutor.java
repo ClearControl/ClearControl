@@ -128,15 +128,18 @@ public class CompletingScheduledThreadPoolExecutor extends
 		return mScheduledFutureQueue.poll(pTimeOut, pTimeUnit);
 	}
 
-	public void waitForCompletion(long pTimeOut, TimeUnit pTimeUnit) throws ExecutionException,
-																																	TimeoutException
+	public void waitForCompletion(boolean pCancel,
+																long pTimeOut,
+																TimeUnit pTimeUnit)	throws ExecutionException,
+																										TimeoutException
 	{
 		while (mScheduledFutureQueue.peek() != null)
 		{
 			try
 			{
 				Future<?> lScheduledFuture = mScheduledFutureQueue.poll();
-				lScheduledFuture.cancel(false);
+				if (pCancel)
+					lScheduledFuture.cancel(false);
 				if (lScheduledFuture != null)
 				{
 					Object lObject = lScheduledFuture.get(pTimeOut, pTimeUnit);
@@ -145,9 +148,11 @@ public class CompletingScheduledThreadPoolExecutor extends
 			}
 			catch (CancellationException ce)
 			{
+				// System.out.println("CancellationException");
 			}
 			catch (InterruptedException e)
 			{
+				// System.out.println("InterruptedException");
 			}
 		}
 	}

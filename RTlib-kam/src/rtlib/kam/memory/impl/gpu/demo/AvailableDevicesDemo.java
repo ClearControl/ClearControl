@@ -40,7 +40,7 @@ public class AvailableDevicesDemo
 				CLContext lCreateContext = lCLPlatform.createContext(	null,
 																															lDevice);
 				CLImageFormat[] lSupported3DImageFormats = lCreateContext.getSupportedImageFormats(	Flags.ReadWrite,
-																																													ObjectType.Image3D);
+																																														ObjectType.Image3D);
 				for (CLImageFormat lCLImageFormat : lSupported3DImageFormats)
 				{
 					System.out.println(lCLImageFormat.toString());

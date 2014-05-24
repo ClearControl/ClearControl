@@ -7,10 +7,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 
 import rtlib.cameras.hamamatsu.orcaflash4.OrcaFlash4StackCamera;
-import rtlib.core.recycling.Recycler;
+import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.Stack;
-import rtlib.stack.processor.StackProcessorBase;
-import rtlib.stack.processor.StackProcessorInterface;
 import dcamj.DcamAcquisition.TriggerType;
 
 public class OrcaFlash4CameraDemo
@@ -23,35 +21,33 @@ public class OrcaFlash4CameraDemo
 		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
 																																							TriggerType.Internal);
 
-		StackProcessorInterface lCounterProcessor = new StackProcessorBase("Counter")
-		{
+		lOrcaFlash4StackCamera.getStackReferenceVariable()
+													.sendUpdatesTo(new ObjectVariable<Stack>("Receiver")
+													{
 
-			@Override
-			public Stack process(	Stack pStack,
-														Recycler<Stack, Long> pStackRecycler)
-			{
-				long lCounter = mCounter.incrementAndGet();
+														@Override
+														public Stack setEventHook(Stack pNewStack)
+														{
+															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
+																									+ " index="
+																									+ pNewStack.getIndex());/**/
+															System.out.println(pNewStack);
+															return super.setEventHook(pNewStack);
+														}
 
-				System.out.println(pStack);
-				// System.out.println(pStack.hashCode());
-				// assertTrue(pStack.getStackIndex() == lCounter);
-				return pStack;
-			}
-		};
-
-		lCounterProcessor.setActive(true);
-
-		lOrcaFlash4StackCamera.addStackProcessor(lCounterProcessor);
+													});
 
 		assertTrue(lOrcaFlash4StackCamera.open());
 
+		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(100);
+		lOrcaFlash4StackCamera.getStackModeVariable().setValue(true);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
 		Thread.sleep(1000);
 
 		assertTrue(lOrcaFlash4StackCamera.start());
 
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		lOrcaFlash4StackCamera.stop();
 
@@ -59,7 +55,7 @@ public class OrcaFlash4CameraDemo
 
 		System.out.println(mCounter.get());
 
-		assertTrue(mCounter.get() == 99);
+		assertTrue(mCounter.get() == 1);
 	}
 
 }

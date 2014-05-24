@@ -112,9 +112,9 @@ public class Stack implements
 		RAM lRam = mNDArray.getRAM();
 		@SuppressWarnings("unchecked")
 		Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
-																																								lRam.getSizeInBytes(),
-																																								null)
-																															.as(Byte.class);
+																																lRam.getSizeInBytes(),
+																																null)
+																							.as(Byte.class);
 		return lPointerToAddress;
 	}
 

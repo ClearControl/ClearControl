@@ -40,7 +40,6 @@ public class MemoryMappedFileTest
 																								lMappingLength,
 																								true);
 
-
 		System.out.println(NativeMemoryAccess.getByte(lMappingAddress));
 		for (long i = 0; i < lMappingLength; i++)
 		{
@@ -54,8 +53,6 @@ public class MemoryMappedFileTest
 		assertEquals(	(byte) 123,
 									NativeMemoryAccess.getByte(lMappingAddress + lMappingLength
 																							- 1));
-
-
 
 		MemoryMappedFile.unmap(	lFileChannel,
 														lMappingAddress,

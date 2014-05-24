@@ -3,12 +3,13 @@ package rtlib.gui.video.video2d.demo;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
@@ -114,25 +115,23 @@ public class VideoFrame2DDisplayDemo extends JFrame
 			}
 		});
 
-		final EnhancedThread lEnhancedThread = new EnhancedThread()
-		{
-			@Override
-			public boolean initiate()
+		Runnable lRunnable = () -> {
+			while (true)
 			{
-				while (true)
+				if (sDisplay)
 				{
-					if (sDisplay)
-					{
-						// TODO: get teh bufer using KAM source!!
-						// generateNoiseBuffer(lFrame.getByteBuffer(), sValue);
-						lFrameVariable.setReference(lFrame);
-					}
-					EnhancedThread.sleep(1);
+					// TODO: get teh bufer using KAM source!!
+					// generateNoiseBuffer(lFrame.getByteBuffer(), sValue);
+					lFrameVariable.setReference(lFrame);
 				}
+				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 			}
 		};
 
-		lEnhancedThread.start();
+		Thread lThread = new Thread(lRunnable);
+		lThread.setName(this.getName());
+		lThread.setDaemon(true);
+		lThread.start();
 
 	}
 

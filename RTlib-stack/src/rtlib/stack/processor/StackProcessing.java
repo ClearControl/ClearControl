@@ -1,6 +1,5 @@
 package rtlib.stack.processor;
 
-
 public interface StackProcessing
 {
 

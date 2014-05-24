@@ -43,9 +43,9 @@ public class RTlibLoggerTests
 		InputStream lInputStream = new FileInputStream(logFile);
 		try
 		{
-			 lString = IOUtils.toString(lInputStream);
+			lString = IOUtils.toString(lInputStream);
 		}
-		catch(Throwable e)
+		catch (Throwable e)
 		{
 			e.printStackTrace();
 			System.err.println(logFile.getAbsolutePath());
@@ -55,9 +55,9 @@ public class RTlibLoggerTests
 		{
 			IOUtils.closeQuietly(lInputStream);
 		}
-		
-	  //System.out.println(lString);
-		assertTrue(lString.contains("MAGIC"+cMaxWrites));
+
+		// System.out.println(lString);
+		assertTrue(lString.contains("MAGIC" + cMaxWrites));
 	}
 
 }

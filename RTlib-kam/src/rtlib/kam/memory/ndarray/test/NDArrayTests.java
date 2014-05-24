@@ -46,8 +46,7 @@ public class NDArrayTests
 																																		5,
 																																		7);
 			RAM lRAMBad = new RAMDirect(lNDCursor.getLengthInElements() - 10);
-			NDArray lNDArrayBad = NDArray.wrap(lRAMBad,
-																										lNDCursorBad);
+			NDArray lNDArrayBad = NDArray.wrap(lRAMBad, lNDCursorBad);
 			fail();
 		}
 		catch (InvalidNDArrayDefinitionException e)

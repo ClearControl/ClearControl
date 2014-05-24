@@ -42,16 +42,16 @@ public class DirettoreFPGADemo
 																												.order(ByteOrder.nativeOrder());
 
 		final IntBuffer lSyncControlShortBuffer = lSyncControlByteBuffer.asIntBuffer();
-		
+
 		final IntBuffer lNumberOfTimePointsBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * 4)
-				.order(ByteOrder.nativeOrder())
-				.asIntBuffer();
+																													.order(ByteOrder.nativeOrder())
+																													.asIntBuffer();
 
 		final ShortBuffer lMatrixBuffer = ByteBuffer.allocateDirect(lNumberOfMatrices * lNumberOfChannels
-																															* lNumberOfTimePoints
-																															* 2)
-																							.order(ByteOrder.nativeOrder())
-																							.asShortBuffer();
+																																* lNumberOfTimePoints
+																																* 2)
+																								.order(ByteOrder.nativeOrder())
+																								.asShortBuffer();
 
 		for (int m = 0; m < lNumberOfMatrices; m++)
 		{
@@ -77,7 +77,7 @@ public class DirettoreFPGADemo
 		{
 			System.out.println("Play #" + i);
 			long lEstimatedPlayBacktimeInNanoseconds = lDirettore.play(	lDeltaTimeBuffer,
-			                                                           	lNumberOfTimePointsBuffer,
+																																	lNumberOfTimePointsBuffer,
 																																	lSyncControlShortBuffer,
 																																	lNumberOfMatrices,
 																																	lMatrixBuffer);

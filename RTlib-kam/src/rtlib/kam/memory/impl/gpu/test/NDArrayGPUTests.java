@@ -36,7 +36,7 @@ public class NDArrayGPUTests
 		assertEquals(cSizeX, lNDArrayGPU.getWidth());
 		assertEquals(cSizeY, lNDArrayGPU.getHeight());
 		assertEquals(cSizeZ, lNDArrayGPU.getDepth());
-		
+
 		assertEquals(cVolume, lNDArrayGPU.getVolume());
 
 		assertEquals(cVolume, lNDArrayGPU.getLengthInElements());

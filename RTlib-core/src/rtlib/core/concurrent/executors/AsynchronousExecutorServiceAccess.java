@@ -58,9 +58,7 @@ public interface AsynchronousExecutorServiceAccess
 
 	}
 
-	public default boolean waitForCompletion() throws InterruptedException,
-																						ExecutionException,
-																						TimeoutException
+	public default boolean waitForCompletion() throws ExecutionException
 	{
 		return waitForCompletion(Long.MAX_VALUE, TimeUnit.DAYS);
 	}

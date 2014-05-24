@@ -149,7 +149,5 @@ public class Image2DGPU<T> extends ImageGPU<T> implements
 																	pPointer,
 																	false);
 	}
-	
-
 
 }

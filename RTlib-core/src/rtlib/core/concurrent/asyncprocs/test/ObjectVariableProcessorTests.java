@@ -1,12 +1,13 @@
 package rtlib.core.concurrent.asyncprocs.test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 import rtlib.core.concurrent.asyncprocs.ObjectVariableAsynchronousPooledProcessor;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
-import rtlib.core.concurrent.thread.EnhancedThread;
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.objectv.ObjectVariable;
 
 public class ObjectVariableProcessorTests
@@ -42,7 +43,7 @@ public class ObjectVariableProcessorTests
 		lObjectVariableProcessor.open();
 		lObjectVariableProcessor.start();
 
-		EnhancedThread.sleep(1000);
+		ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
 
 		lObjectVariableProcessor.getOutputObjectVariable()
 														.syncWith(new ObjectVariable<String>("Notifier")

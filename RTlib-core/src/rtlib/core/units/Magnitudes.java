@@ -28,7 +28,6 @@ public class Magnitudes
 		return 1000 * 1000 * 1000 * x;
 	}
 
-
 	public static final double milli2nano(final double x)
 	{
 		return unit2micro(x);
@@ -48,8 +47,6 @@ public class Magnitudes
 	{
 		return 0.001 * 0.001 * x;
 	}
-
-
 
 	public static final double nano2micro(final double x)
 	{
@@ -80,7 +77,5 @@ public class Magnitudes
 	{
 		return 1000 * x;
 	}
-
-
 
 }

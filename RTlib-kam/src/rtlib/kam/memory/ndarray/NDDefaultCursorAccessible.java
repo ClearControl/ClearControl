@@ -2,14 +2,13 @@ package rtlib.kam.memory.ndarray;
 
 import rtlib.kam.memory.cursor.NDCursor;
 
-
 public interface NDDefaultCursorAccessible
 {
 
 	public NDCursor getDefaultCursor();
 
 	public byte getByteAtCursor();
-	
+
 	public char getCharAtCursor();
 
 	public short getShortAtCursor();

@@ -21,7 +21,6 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
 import rtlib.core.units.Magnitudes;
 
 import com.jogamp.newt.opengl.GLWindow;
@@ -55,7 +54,7 @@ public class VideoWindow implements Closeable
 	private final boolean mReportErrors = false;
 
 	private volatile long mFrameIndex = 0;
-	private long mNanosecondsSinceLastFrame = EnhancedThread.getTimeInNanoseconds();
+	private long mNanosecondsSinceLastFrame = System.nanoTime();
 	private volatile double mFrameRate;
 
 	private volatile boolean mDisplayFrameRate = true;
@@ -600,15 +599,12 @@ public class VideoWindow implements Closeable
 			byte lByteMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				final int lIntegerMappedValue = (255 * (lShortValue - lCurrentMin))
-																				/ lCurrentWidth;
+				final int lIntegerMappedValue = (255 * (lShortValue - lCurrentMin)) / lCurrentWidth;
 				lByteMappedValue = clamp(lIntegerMappedValue);
 			}
 			lByteArray[i] = lByteMappedValue;
 		}
 	}
-
-	
 
 	private static void convert16to8bitRescaledAuto(final short[] pShortArray,
 																									final byte[] lByteArray,
@@ -632,13 +628,13 @@ public class VideoWindow implements Closeable
 			{
 				lIntegerMappedValue = (255 * (lShortValue - lCurrentMin) / lCurrentWidth);
 			}
-			lByteArray[i] = clamp(lIntegerMappedValue); 
+			lByteArray[i] = clamp(lIntegerMappedValue);
 		}
 
-		pMinMax[0] = (int) ((1-cMinMaxDampeningAlpha)*pMinMax[0]+cMinMaxDampeningAlpha*lNewMin);
-		pMinMax[1] = (int) ((1-cMinMaxDampeningAlpha)*pMinMax[1]+cMinMaxDampeningAlpha*lNewMax);
+		pMinMax[0] = (int) ((1 - cMinMaxDampeningAlpha) * pMinMax[0] + cMinMaxDampeningAlpha * lNewMin);
+		pMinMax[1] = (int) ((1 - cMinMaxDampeningAlpha) * pMinMax[1] + cMinMaxDampeningAlpha * lNewMax);
 	}
-	
+
 	private static byte clamp(final int pIntegerMappedValue)
 	{
 		byte lByteMappedValue;

@@ -5,8 +5,7 @@ public class MemoryMappedFileException extends RuntimeException
 
 	private static final long serialVersionUID = 1L;
 
-	public MemoryMappedFileException(String lErrorMessage,
-																			Throwable pE)
+	public MemoryMappedFileException(String lErrorMessage, Throwable pE)
 	{
 		super(lErrorMessage, pE);
 	}

@@ -98,6 +98,4 @@ public abstract class StackCameraBase extends CameraDevice
 		return mStackReference;
 	}
 
-
-
 }

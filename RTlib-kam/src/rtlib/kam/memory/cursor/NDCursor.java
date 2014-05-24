@@ -26,13 +26,9 @@ public interface NDCursor
 
 	public void setCursorPosition(int pDimensionIndex,
 																final long pNewPosition);
-	
+
 	public void incrementCursorPosition(final int pDimensionIndex);
 
 	public void decrementCursorPosition(final int pDimensionIndex);
-
-
-
-
 
 }

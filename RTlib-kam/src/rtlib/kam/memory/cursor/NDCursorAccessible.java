@@ -1,13 +1,12 @@
 package rtlib.kam.memory.cursor;
 
-
 public interface NDCursorAccessible
 {
 
 	public NDCursor getDefaultCursor();
 
 	public byte getByteAtCursor(NDBoundedCursor pCursor);
-	
+
 	public char getCharAtCursor(NDBoundedCursor pCursor);
 
 	public short getShortAtCursor(NDBoundedCursor pCursor);
@@ -32,5 +31,6 @@ public interface NDCursorAccessible
 
 	public void setFloatAtCursor(NDBoundedCursor pCursor, float pFloat);
 
-	public void setDoubleAtCursor(NDBoundedCursor pCursor, double pDouble);
+	public void setDoubleAtCursor(NDBoundedCursor pCursor,
+																double pDouble);
 }

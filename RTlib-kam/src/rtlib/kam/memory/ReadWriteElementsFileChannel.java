@@ -25,5 +25,4 @@ public interface ReadWriteElementsFileChannel
 																							Class<T> pType,
 																							long pLengthInElements);
 
-
 }

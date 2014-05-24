@@ -3,10 +3,9 @@ package rtlib.core.concurrent.executors;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import rtlib.core.concurrent.queues.BestBlockingQueue;
 
 public class RTlibExecutors
 {
@@ -66,7 +65,7 @@ public class RTlibExecutors
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
-			BlockingQueue<Runnable> lNewQueue = BestBlockingQueue.newQueue(pMaxQueueLength);
+			BlockingQueue<Runnable> lNewQueue = new LinkedBlockingQueue<>(pMaxQueueLength);
 
 			lThreadPoolExecutor = new CompletingThreadPoolExecutor(	pCorePoolSize,
 																															pMaxPoolSize,

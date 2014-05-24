@@ -57,7 +57,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 																																					true);
 			lStack.getNDArray()
 						.readBytesFromFileChannel(lBinarylFileChannel,
-																													lPositionInFileInBytes,
+																			lPositionInFileInBytes,
 																			lStack.getNDArray()
 																						.getSizeInBytes());
 			lBinarylFileChannel.close();

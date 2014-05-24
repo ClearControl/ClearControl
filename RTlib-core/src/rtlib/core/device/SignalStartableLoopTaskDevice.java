@@ -1,10 +1,17 @@
 package rtlib.core.device;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.log.Loggable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
-																																					VirtualDeviceInterface
+																																					VirtualDeviceInterface,
+																																					AsynchronousSchedulerServiceAccess,
+																																					Loggable
 {
 
 	private final SignalStartableLoopTaskDevice lThis;
@@ -16,46 +23,46 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		lThis = this;
 	}
 
-	protected EnhancedThread mTaskThread = new EnhancedThread()
-	{
-		@Override
-		public boolean loop()
-		{
-			return lThis.loop();
-		}
-	};
-
 	protected abstract boolean loop();
 
 	@Override
 	public boolean start()
 	{
-		mTaskThread.start();
-		return true;
+		Runnable lRunnable = () -> {
+			loop();
+		};
+		ScheduledFuture<?> lScheduledFuture = scheduleAtFixedRate(lRunnable,
+																															1,
+																															TimeUnit.NANOSECONDS);
+
+		return lScheduledFuture != null;
 	}
 
 	public boolean pause()
 	{
-		mTaskThread.pause();
-		mTaskThread.waitForPause();
-		return true;
+
+		return stop();
 	}
 
 	public boolean resume()
 	{
-		mTaskThread.resume();
-		return true;
+		return start();
 	}
 
 	@Override
 	public boolean stop()
 	{
-		if (mTaskThread.isRunning())
+		try
 		{
-			mTaskThread.stop();
-			mTaskThread.waitToFinish();
+			return stopScheduledThreadPoolAndWaitForCompletion();
 		}
-		return true;
+		catch (ExecutionException e)
+		{
+			String lError = "Error during previous execution of loop function!";
+			error("Device", lError, e);
+			return false;
+		}
+
 	}
 
 }

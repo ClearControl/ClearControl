@@ -11,11 +11,11 @@ public class TC01Demo
 	@Test
 	public void test() throws InterruptedException
 	{
-		
-		for(int i=0; i<100; i++)
+
+		for (int i = 0; i < 100; i++)
 		{
 			double lTemp = TC01libLibrary.tC01lib(NIThermoCoupleType.J.getValue());
-			System.out.format("Temp = %g deg C \n",lTemp);
+			System.out.format("Temp = %g deg C \n", lTemp);
 		}
 
 	}

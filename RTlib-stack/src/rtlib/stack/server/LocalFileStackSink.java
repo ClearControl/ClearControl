@@ -41,7 +41,8 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
-			final Long[] lDimensionsWithoutSize = ArrayUtils.toObject(pStack.getNDArray().getDimensions());
+			final Long[] lDimensionsWithoutSize = ArrayUtils.toObject(pStack.getNDArray()
+																																			.getDimensions());
 			mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex,
 																					lDimensionsWithoutSize);
 
@@ -49,7 +50,7 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 																																					true);
 			final long lNewNextFreeTypePosition = pStack.getNDArray()
 																									.writeBytesToFileChannel(	lBinnaryFileChannel,
-																																															mNextFreeTypePosition);
+																																						mNextFreeTypePosition);
 
 			lBinnaryFileChannel.force(false);
 			lBinnaryFileChannel.close();

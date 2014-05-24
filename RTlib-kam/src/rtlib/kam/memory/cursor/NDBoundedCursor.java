@@ -171,9 +171,9 @@ public class NDBoundedCursor implements NDCursor
 		return getLengthFor(pDim, 0, pDim.length);
 	}
 
-	public static final long getLengthFor(	long[] pDimensions,
-																			final int pStart,
-																			final int pEnd)
+	public static final long getLengthFor(long[] pDimensions,
+																				final int pStart,
+																				final int pEnd)
 	{
 		long volume = 1;
 		final long[] ldim = pDimensions;
@@ -226,10 +226,5 @@ public class NDBoundedCursor implements NDCursor
 			flatindex -= multipliers[pDimensionIndex];
 		}
 	}
-
-
-
-
-
 
 }

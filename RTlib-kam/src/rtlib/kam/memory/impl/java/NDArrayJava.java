@@ -23,7 +23,6 @@ public class NDArrayJava<T> extends RAMJava<T> implements
 	public static <T> NDArrayJava<T> allocate1DArray(	Class<T> pType,
 																										final long pLength)
 	{
-		
 
 		return new NDArrayJava<T>(pType, 1, pLength);
 	}
@@ -190,7 +189,8 @@ public class NDArrayJava<T> extends RAMJava<T> implements
 	}
 
 	@Override
-	public void setDoubleAtCursor(NDBoundedCursor pCursor, double pDouble)
+	public void setDoubleAtCursor(NDBoundedCursor pCursor,
+																double pDouble)
 	{
 		doublearray[Math.toIntExact(pCursor.getCurrentFlatIndex())] = pDouble;
 	}

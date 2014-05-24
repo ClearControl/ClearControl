@@ -56,8 +56,9 @@ public class ConcurrentLinkedBlockingQueueTests
 			double lBenchmarkLinkedBlockingQueue = 0;
 			double lBenchmarkArrayBlockingQueue = 0;
 
-			int lAvailableProcessors = Runtime.getRuntime().availableProcessors();
-			for (int i = 1; i < lAvailableProcessors+1 ; i++)
+			int lAvailableProcessors = Runtime.getRuntime()
+																				.availableProcessors();
+			for (int i = 1; i < lAvailableProcessors + 1; i++)
 			{
 				lBenchmarkConcurrentLinkedBlockingQueue += BestBlockingQueue.benchmarkQueue(i,
 																																										cNumberOfPuts,
@@ -66,14 +67,13 @@ public class ConcurrentLinkedBlockingQueueTests
 																																					cNumberOfPuts,
 																																					new LinkedBlockingQueue<String>(cQueuesCapacity));
 				lBenchmarkArrayBlockingQueue += BestBlockingQueue.benchmarkQueue(	i,
-																																				cNumberOfPuts,
-																																				new ArrayBlockingQueue<String>(cQueuesCapacity));
+																																					cNumberOfPuts,
+																																					new ArrayBlockingQueue<String>(cQueuesCapacity));
 			}
-			
-			lBenchmarkConcurrentLinkedBlockingQueue = lBenchmarkConcurrentLinkedBlockingQueue/lAvailableProcessors;
-			lBenchmarkLinkedBlockingQueue = lBenchmarkLinkedBlockingQueue/lAvailableProcessors;
-			lBenchmarkArrayBlockingQueue = lBenchmarkArrayBlockingQueue/lAvailableProcessors;
-			
+
+			lBenchmarkConcurrentLinkedBlockingQueue = lBenchmarkConcurrentLinkedBlockingQueue / lAvailableProcessors;
+			lBenchmarkLinkedBlockingQueue = lBenchmarkLinkedBlockingQueue / lAvailableProcessors;
+			lBenchmarkArrayBlockingQueue = lBenchmarkArrayBlockingQueue / lAvailableProcessors;
 
 			System.out.println("ConcurrentLinkedBlockingQueue -> " + lBenchmarkConcurrentLinkedBlockingQueue
 													+ " ms");
@@ -88,8 +88,10 @@ public class ConcurrentLinkedBlockingQueueTests
 			assertTrue(lBenchmarkLinkedBlockingQueue < 30);
 			assertTrue(lBenchmarkArrayBlockingQueue < 30);
 
-			//assertTrue(lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkLinkedBlockingQueue);
-			//assertTrue(lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkArrayBlockingQueue);
+			// assertTrue(lBenchmarkConcurrentLinkedBlockingQueue <
+			// lBenchmarkLinkedBlockingQueue);
+			// assertTrue(lBenchmarkConcurrentLinkedBlockingQueue <
+			// lBenchmarkArrayBlockingQueue);
 		}
 		catch (Throwable e)
 		{
@@ -99,17 +101,14 @@ public class ConcurrentLinkedBlockingQueueTests
 
 	}
 
-
-
 	@Test
 	public void testBestBlockingQueue() throws InterruptedException
 	{
-		BlockingQueue<String> lNewQueue = BestBlockingQueue.<String> newQueue(cQueuesCapacity);
+		BlockingQueue<String> lNewQueue = BestBlockingQueue.<String> newBoundedQueue(cQueuesCapacity);
 
 		assertNotNull(lNewQueue);
 
 		BestBlockingQueue.benchmarkQueue(2, cNumberOfPuts, lNewQueue);
-
 
 	}
 }

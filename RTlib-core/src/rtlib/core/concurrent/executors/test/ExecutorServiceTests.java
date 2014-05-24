@@ -1,6 +1,7 @@
 package rtlib.core.concurrent.executors.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.LimitedExecutionsRunnable;
+import rtlib.core.concurrent.thread.ThreadUtils;
 
 public class ExecutorServiceTests
 {
@@ -34,11 +36,10 @@ public class ExecutorServiceTests
 					// System.out.println("task-" + j);
 					try
 					{
-						Thread.sleep(1);
+						ThreadUtils.sleep(4, TimeUnit.MILLISECONDS);
 					}
 					catch (Exception e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					mCounter.incrementAndGet();
@@ -53,34 +54,29 @@ public class ExecutorServiceTests
 
 		public void scheduleSomething() throws InterruptedException
 		{
-			for (int i = 0; i < 10; i++)
-			{
-				final int j = i;
-				Runnable lTask = () -> {
-					// System.out.println("scheduled task-" + j);
-					mCounter.incrementAndGet();
-					try
-					{
-						Thread.sleep(1);
-					}
-					catch (Exception e)
-					{
-					}
 
+			Runnable lTask = () -> {
+				// System.out.println("scheduled task-" + j);
+				mCounter.incrementAndGet();
+				try
+				{
+					ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 
-				};
-				// System.out.println("submitting : " + j);
+			};
+			// System.out.println("submitting : " + j);
 
-				LimitedExecutionsRunnable lLimitedExecutionsRunnable = LimitedExecutionsRunnable.wrap(lTask,
-																																															10);
+			LimitedExecutionsRunnable lLimitedExecutionsRunnable = LimitedExecutionsRunnable.wrap(lTask,
+																																														100);
 
-				lLimitedExecutionsRunnable.runNTimes(	this,
-																							100,
-																							TimeUnit.MILLISECONDS);
+			lLimitedExecutionsRunnable.runNTimes(	this,
+																						10,
+																						TimeUnit.MILLISECONDS);
 
-				// System.out.println(" done.");
-
-			}
 		}
 
 	}
@@ -96,15 +92,18 @@ public class ExecutorServiceTests
 		mCounter.set(0);
 		lExecutorServiceTest.doSomething();
 		// System.out.print("WAITING");
-		lExecutorServiceTest.waitForCompletion(10, TimeUnit.SECONDS);
+		assertTrue(lExecutorServiceTest.waitForCompletion(10,
+																											TimeUnit.SECONDS));
 		assertEquals(cNumberOfTasks, mCounter.get());
 		// System.out.println("...done");
 
 		mCounter.set(0);
 		lExecutorServiceTest.doSomething();
 		// System.out.print("WAITING");
-		lExecutorServiceTest.waitForCompletion(	1000,
-																						TimeUnit.MICROSECONDS);
+		assertFalse(lExecutorServiceTest.waitForCompletion(	10,
+																												TimeUnit.MILLISECONDS));
+		if (cNumberOfTasks <= mCounter.get())
+			System.out.println("mCounter.get()=" + mCounter.get());
 		assertTrue(cNumberOfTasks > mCounter.get());
 		// System.out.println("...done");
 
@@ -121,10 +120,10 @@ public class ExecutorServiceTests
 		mCounter.set(0);
 		lExecutorServiceTest.scheduleSomething();
 		// System.out.print("WAITING");
-		lExecutorServiceTest.waitForCompletion(1, TimeUnit.SECONDS);
-		lExecutorServiceTest.waitForScheduleCompletion(	1010,
+		// lExecutorServiceTest.waitForCompletion(1, TimeUnit.SECONDS);
+		lExecutorServiceTest.waitForScheduleCompletion(	2000,
 																										TimeUnit.MILLISECONDS);
-		assertTrue(10 * 10 == mCounter.get());
+		assertEquals(10 * 10, mCounter.get());
 		// System.out.println("...done");
 
 		mCounter.set(0);

@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
@@ -24,13 +25,14 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	private AsynchronousProcessorInterface<O, ?> mReceiver;
 	private final BlockingQueue<I> mInputQueue;
 	private AtomicReference<ScheduledFuture<?>> mScheduledFuture = new AtomicReference<>();
+	private AtomicBoolean mIsProcessing = new AtomicBoolean(false);
 
 	public AsynchronousProcessorBase(	final String pName,
 																		final int pMaxQueueSize)
 	{
 		super();
 		mName = pName;
-		mInputQueue = BestBlockingQueue.newQueue(pMaxQueueSize <= 0	? 1
+		mInputQueue = BestBlockingQueue.newBoundedQueue(pMaxQueueSize <= 0	? 1
 																																: pMaxQueueSize);
 
 	}
@@ -55,7 +57,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 					{
 						return;
 					}
+					mIsProcessing.set(true);
 					final O lOutput = process(lInput);
+					mIsProcessing.set(false);
 					if (lOutput != null)
 					{
 						send(lOutput);
@@ -131,12 +135,13 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 			if (pObject == null)
 				return false;
 			mInputQueue.put(pObject);
+			return true;
 		}
 		catch (final InterruptedException e)
 		{
 			return passOrWait(pObject);
 		}
-		return false;
+
 	}
 
 	@Override
@@ -179,7 +184,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	@Override
 	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
 	{
-		waitFor(pTimeOut, pTimeUnit, () -> mInputQueue.isEmpty());
+		waitFor(pTimeOut,
+						pTimeUnit,
+						() -> !mIsProcessing.get() && mInputQueue.isEmpty());
 		return mInputQueue.isEmpty();
 	}
 

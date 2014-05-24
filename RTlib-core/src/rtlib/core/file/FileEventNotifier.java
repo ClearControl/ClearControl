@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -27,11 +28,14 @@ public class FileEventNotifier implements Closeable
 
 	public FileEventNotifier(final File pFileToMonitor)
 	{
-		this(pFileToMonitor, cDefaultMonitoringPeriodInMilliseconds);
+		this(	pFileToMonitor,
+					cDefaultMonitoringPeriodInMilliseconds,
+					TimeUnit.MILLISECONDS);
 	}
 
 	public FileEventNotifier(	final File pFileToMonitor,
-														final long pPeriodInMilliseconds)
+														final long pPeriod,
+														final TimeUnit pTimeUnit)
 	{
 		super();
 		mFileToMonitor = pFileToMonitor;
@@ -78,8 +82,7 @@ public class FileEventNotifier implements Closeable
 			@Override
 			public void onDirectoryDelete(final File pDirectory)
 			{
-				// TODO Auto-generated method stub
-
+				notifyFileEvent(lThis, pDirectory, FileEventKind.Deleted);
 			}
 
 			@Override
@@ -97,7 +100,7 @@ public class FileEventNotifier implements Closeable
 			}
 		});
 
-		mFileAlterationMonitor = new FileAlterationMonitor(pPeriodInMilliseconds);
+		mFileAlterationMonitor = new FileAlterationMonitor(pTimeUnit.toMillis(pPeriod));
 		mFileAlterationMonitor.addObserver(mFileAlterationObserver);
 	}
 
@@ -120,7 +123,7 @@ public class FileEventNotifier implements Closeable
 																	final File pFile,
 																	final FileEventKind pEventKind)
 	{
-		// System.out.format("%s \t\t %s \n", pFile, pEventKind);
+		System.out.format("%s \t\t %s \n", pFile, pEventKind);
 		if (pFile.getName().equals(mFileToMonitor.getName()))
 		{
 			for (final FileEventNotifierListener lFileEventNotifierListener : mListenerList)

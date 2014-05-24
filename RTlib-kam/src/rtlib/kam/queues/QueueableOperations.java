@@ -1,7 +1,5 @@
 package rtlib.kam.queues;
 
-
-
 public interface QueueableOperations<T>
 {
 	public Queue<T> getCurrentQueue();

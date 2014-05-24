@@ -2,7 +2,6 @@ package rtlib.kam.memory.ram;
 
 import rtlib.kam.memory.MemoryTyped;
 
-
 public interface WriteAt extends MemoryTyped
 {
 	public void setByte(final long pOffset, final byte pValue);
@@ -18,5 +17,5 @@ public interface WriteAt extends MemoryTyped
 	public void setFloat(final long pOffset, final float pValue);
 
 	public void setDouble(final long pOffset, final double pValue);
-	
+
 }

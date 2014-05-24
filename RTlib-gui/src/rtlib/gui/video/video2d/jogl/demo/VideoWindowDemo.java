@@ -15,7 +15,7 @@ public class VideoWindowDemo
 	}
 
 	static long rnd = 123456789;
-	
+
 	@Test
 	public void simpleRandomDataTest() throws InterruptedException
 	{
@@ -45,12 +45,12 @@ public class VideoWindowDemo
 	private void generateNoiseBuffer(final ByteBuffer pVideoByteBuffer)
 	{
 		pVideoByteBuffer.clear();
-		
+
 		final int lBufferLength = pVideoByteBuffer.limit();
 		for (int i = 0; i < lBufferLength; i++)
 		{
-			rnd = rnd+i+1;
-			rnd = rnd%256;
+			rnd = rnd + i + 1;
+			rnd = rnd % 256;
 			final byte lValue = (byte) (rnd); // Math.random()
 			// System.out.print(lValue);
 			pVideoByteBuffer.put(lValue);

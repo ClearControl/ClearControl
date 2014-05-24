@@ -20,35 +20,36 @@ public class ChronicleLoggerBackend implements LoggerBackendInterface
 	{
 		super();
 	}
-	
+
 	@Override
 	public void setLogFile(File lLogFile) throws IOException
 	{
-		if(mChronicle!=null) close();
+		if (mChronicle != null)
+			close();
 		mLogFile = lLogFile;
 		mChronicle = new IndexedChronicle(lLogFile.getAbsolutePath());
 	}
-	
+
 	@Override
 	public File getLogFile()
 	{
 		return mLogFile;
 	}
-	
+
 	@Override
 	public File getLogDataFile()
 	{
-		return new File(mLogFile.getAbsolutePath()+".data");
+		return new File(mLogFile.getAbsolutePath() + ".data");
 	}
 
 	public File getLogIndexFile()
 	{
-		return new File(mLogFile.getAbsolutePath()+".index");
+		return new File(mLogFile.getAbsolutePath() + ".index");
 	}
 
 	private void ensureAppenderAllocated()
 	{
-		if (mChronicle!=null && mAppender == null)
+		if (mChronicle != null && mAppender == null)
 			try
 			{
 				mAppender = mChronicle.createAppender();
@@ -88,11 +89,12 @@ public class ChronicleLoggerBackend implements LoggerBackendInterface
 		mAppender.append('\n');
 		mAppender.finish();
 	}
-	
+
 	@Override
 	public void flush()
 	{
-		if(mAppender==null) return;
+		if (mAppender == null)
+			return;
 		mAppender.flush();
 	}
 
@@ -110,16 +112,12 @@ public class ChronicleLoggerBackend implements LoggerBackendInterface
 	@Override
 	public void close() throws IOException
 	{
-		if(mAppender!=null) mAppender.close();
+		if (mAppender != null)
+			mAppender.close();
 		mAppender = null;
-		if(mChronicle!=null) mChronicle.close();
+		if (mChronicle != null)
+			mChronicle.close();
 		mChronicle = null;
 	}
-
-
-
-
-
-
 
 }

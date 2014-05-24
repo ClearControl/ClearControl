@@ -149,15 +149,15 @@ public class BestBlockingQueue implements Loggable
 
 		lBestBlockingQueue.info("Concurrent",
 														"LinkedBlockingQueue -> " + lBenchmarkLinkedBlockingQueue
-												+ " ms");
+																+ " ms");
 
 		lBestBlockingQueue.info("Concurrent",
 														"ArrayBlockingQueue -> " + lBenchmarkArrayBlockingQueue
-												+ " ms");
+																+ " ms");
 
-		if (lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkLinkedBlockingQueue && lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkArrayBlockingQueue)
-			return ConcurrentLinkedBlockingQueue.class;
-		else if (lBenchmarkLinkedBlockingQueue < lBenchmarkArrayBlockingQueue)
+		/*if (lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkLinkedBlockingQueue && lBenchmarkConcurrentLinkedBlockingQueue < lBenchmarkArrayBlockingQueue)
+			return ConcurrentLinkedBlockingQueue.class;/**/
+		if (lBenchmarkLinkedBlockingQueue < lBenchmarkArrayBlockingQueue)
 			return LinkedBlockingQueue.class;
 		else
 			return ArrayBlockingQueue.class;
@@ -176,13 +176,13 @@ public class BestBlockingQueue implements Loggable
 		}
 	}/**/
 
-	public static <T> BlockingQueue<T> newQueue(int pQueuesCapacity)
+	public static <T> BlockingQueue<T> newBoundedQueue(int pQueuesCapacity)
 	{
 		ensureBestBlockingQueueDetermined();
 
 		try
 		{
-			if (sBestQueueClass.get() == null)
+			if (sBestQueueClass.get() == null && Integer.MIN_VALUE != pQueuesCapacity)
 				return new ArrayBlockingQueue<T>(pQueuesCapacity);
 
 			Constructor<?> lDeclaredConstructors = sBestQueueClass.get()

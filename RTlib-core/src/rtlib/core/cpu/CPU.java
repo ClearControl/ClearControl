@@ -2,7 +2,6 @@ package rtlib.core.cpu;
 
 import java.lang.reflect.Field;
 
-import net.openhft.affinity.AffinityThreadFactory;
 import sun.misc.Unsafe;
 
 public class CPU
@@ -22,15 +21,15 @@ public class CPU
 				| IllegalArgumentException | IllegalAccessException e)
 		{
 			e.printStackTrace();
-		} 
+		}
 	}
-	
+
 	private static ThreadLocal<double[]> cLoadAverageThreadLocal = new ThreadLocal<double[]>();
-	
+
 	public static final double[] getLoadAverages()
 	{
 		double[] lLoadAverages = cLoadAverageThreadLocal.get();
-		if(lLoadAverages==null)
+		if (lLoadAverages == null)
 		{
 			lLoadAverages = new double[3];
 			cLoadAverageThreadLocal.set(lLoadAverages);
@@ -38,7 +37,5 @@ public class CPU
 		cUnsafe.getLoadAverage(lLoadAverages, 3);
 		return lLoadAverages;
 	}
-	
 
-	
 }

@@ -26,5 +26,4 @@ public class GPUQueue implements Queue<CLQueue>
 		mQueuePeer.finish();
 	}
 
-
 }

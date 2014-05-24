@@ -2,11 +2,13 @@ package rtlib.core.rgc.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.rgc.Cleanable;
 import rtlib.core.rgc.Cleaner;
 import rtlib.core.rgc.Freeable;
@@ -40,6 +42,7 @@ public class RessourceGarbageCollectorTests
 		static class MyCleaner implements Cleaner
 		{
 			private long mSomeRessource2;
+
 			public MyCleaner(long pSomeRessource)
 			{
 				mSomeRessource2 = pSomeRessource;
@@ -82,15 +85,16 @@ public class RessourceGarbageCollectorTests
 		{
 			ClassWithRessource a = new ClassWithRessource();
 			RessourceGarbageCollector.collectNow();
+			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 		}
 
 		for (int i = 0; i < 1000; i++)
 		{
+			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 			System.gc();
 			RessourceGarbageCollector.collectNow();
 			// System.out.println(i);
 		}
-
 
 		int lNumberOfRegisteredObjects = RessourceGarbageCollector.getNumberOfRegisteredObjects();
 		assertEquals(0, lNumberOfRegisteredObjects);

@@ -13,7 +13,7 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
-import rtlib.core.concurrent.thread.EnhancedThread;
+import rtlib.core.concurrent.thread.ThreadUtils;
 
 public class AsynchronousProcessorTests
 {
@@ -54,19 +54,17 @@ public class AsynchronousProcessorTests
 			// if(i>50) assertFalse();
 		}
 		assertTrue(hasFailed);
-		EnhancedThread.sleep(1);
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
 		for (int i = 0; i < 100; i++)
 		{
 			assertTrue(lProcessorA.passOrFail("test" + i));
-			EnhancedThread.sleep(1);
+			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
 		}
 
 		lProcessorB.stop();
 		lProcessorB.waitToFinish(1, TimeUnit.SECONDS);
 		lProcessorA.stop();
 		lProcessorA.waitToFinish(1, TimeUnit.SECONDS);
-
-
 
 	}
 
@@ -79,7 +77,8 @@ public class AsynchronousProcessorTests
 			@Override
 			public Integer process(final Integer pInput)
 			{
-				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				ThreadUtils.sleep((long) (Math.random() * 1000000),
+													TimeUnit.NANOSECONDS);
 				return pInput;
 			}
 		};
@@ -91,7 +90,8 @@ public class AsynchronousProcessorTests
 			public Integer process(final Integer pInput)
 			{
 				// System.out.println("Processor B received:"+pInput);
-				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				ThreadUtils.sleep((long) (Math.random() * 1000000),
+													TimeUnit.NANOSECONDS);
 				return pInput;
 			}
 
@@ -115,36 +115,31 @@ public class AsynchronousProcessorTests
 			@Override
 			public Integer process(final Integer pInput)
 			{
-				EnhancedThread.sleepNanos((long) (Math.random() * 1000000));
+				ThreadUtils.sleep((long) (Math.random() * 1000000),
+													TimeUnit.NANOSECONDS);
 				if (pInput > 0)
 					lIntList.add(pInput);
 				return pInput;
 			}
 		};
 
-		lProcessorA.connectToReceiver(lProcessorC);
-		// lProcessorA.connectToReceiver(lProcessorB);
-		// lProcessorB.connectToReceiver(lProcessorC);
+		// lProcessorA.connectToReceiver(lProcessorC);
+		lProcessorA.connectToReceiver(lProcessorB);
+		lProcessorB.connectToReceiver(lProcessorC);
 		lProcessorA.start();
 		lProcessorB.start();
 		lProcessorC.start();
 
-		boolean hasFailed = false;
-		for (int i = 0; i < 100; i++)
-		{
-			hasFailed |= lProcessorA.passOrFail(0);
-		}
-		assertTrue(hasFailed);
 
-		EnhancedThread.sleep(10);
 		for (int i = 1; i <= 1000; i++)
 		{
 			lProcessorA.passOrWait(i);
+			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 		}
 
-		lProcessorA.waitToFinish(10, TimeUnit.SECONDS);
-		lProcessorB.waitToFinish(10, TimeUnit.SECONDS);
-		lProcessorC.waitToFinish(10, TimeUnit.SECONDS);
+		lProcessorA.waitToFinish(1, TimeUnit.SECONDS);
+		lProcessorB.waitToFinish(2, TimeUnit.SECONDS);
+		lProcessorC.waitToFinish(3, TimeUnit.SECONDS);
 
 		lProcessorA.stop();
 		lProcessorB.stop();

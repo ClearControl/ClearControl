@@ -16,7 +16,7 @@ public class DirettoreFPGA implements Closeable
 {
 
 	public static final int cNanosecondsPerTicks = 25;
-	private static final int cMinimumDeltaTimeInNanoseconds = (int) (3000);
+	private static final int cMinimumDeltaTimeInNanoseconds = (3000);
 	public static final int cNumberOfChannels = 16;
 	public static final int cFIFODepth = 3;
 
@@ -46,6 +46,7 @@ public class DirettoreFPGA implements Closeable
 		}
 	}
 
+	@Override
 	public void close()
 	{
 		synchronized (mLockObject)
@@ -77,7 +78,6 @@ public class DirettoreFPGA implements Closeable
 			return !(mError = reportError(mErrorOut));
 		}
 	}
-
 
 	public long play(	double pDeltaTimeInMicroSeconds,
 										int pNumberOfTimePointsToPlay,
@@ -113,7 +113,7 @@ public class DirettoreFPGA implements Closeable
 			}
 
 			return play(lDeltaTimeBuffer,
-			            lNbTimePointsBuffer,
+									lNbTimePointsBuffer,
 									lSyncControlShortBuffer,
 									pNumberOfMatrices,
 									pMatricesBuffer);
@@ -257,7 +257,6 @@ public class DirettoreFPGA implements Closeable
 	{
 		return 0.001 * cMinimumDeltaTimeInNanoseconds;
 	}
-
 
 	public int getNumberOfChannels()
 	{

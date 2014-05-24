@@ -264,7 +264,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	public void freeReleasedObjects(final boolean pCallFreeMethod)
 	{
 		SoftReference<R> lPolledSoftReference;
-		
+
 		while ((lPolledSoftReference = mAvailableObjectsQueue.poll()) != null)
 		{
 			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();

@@ -53,6 +53,12 @@ public interface AsynchronousSchedulerServiceAccess
 																														pTimeUnit);
 	}
 
+	public default boolean stopScheduledThreadPoolAndWaitForCompletion() throws ExecutionException
+	{
+		return stopScheduledThreadPoolAndWaitForCompletion(	Long.MAX_VALUE,
+																												TimeUnit.DAYS);
+	}
+
 	public default boolean stopScheduledThreadPoolAndWaitForCompletion(	long pTimeOut,
 																																			TimeUnit pTimeUnit) throws ExecutionException
 	{
@@ -62,7 +68,8 @@ public interface AsynchronousSchedulerServiceAccess
 		lScheduledThreadPoolExecutor.shutdown();
 		try
 		{
-			lScheduledThreadPoolExecutor.waitForCompletion(	pTimeOut,
+			lScheduledThreadPoolExecutor.waitForCompletion(	true,
+																											pTimeOut,
 																											pTimeUnit);
 			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
 			return true;
@@ -72,7 +79,6 @@ public interface AsynchronousSchedulerServiceAccess
 			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
 			return false;
 		}
-
 
 	}
 
@@ -86,7 +92,8 @@ public interface AsynchronousSchedulerServiceAccess
 
 		try
 		{
-			lScheduledThreadPoolExecutor.waitForCompletion(	pTimeOut,
+			lScheduledThreadPoolExecutor.waitForCompletion(	false,
+																											pTimeOut,
 																											pTimeUnit);
 			return true;
 		}

@@ -9,7 +9,7 @@ class CleaningPhantomReference extends PhantomReference<Cleanable>
 	private final Cleaner mCleaner;
 
 	public CleaningPhantomReference(Cleanable pReferent,
-														Cleaner pCleaner,
+																	Cleaner pCleaner,
 																	ReferenceQueue<Cleanable> pReferencenQueue)
 	{
 		super(pReferent, pReferencenQueue);

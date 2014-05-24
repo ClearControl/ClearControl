@@ -1,12 +1,18 @@
 package rtlib.core.device;
 
-import rtlib.core.concurrent.thread.EnhancedThread;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.log.Loggable;
 import rtlib.core.variable.booleanv.BooleanEventListenerInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
 																								SignalStartableDevice	implements
 																																			VirtualDeviceInterface,
+																																			AsynchronousExecutorServiceAccess,
+																																			Loggable,
 																																			Runnable
 {
 
@@ -38,16 +44,6 @@ public abstract class SignalStartableTaskDevice	extends
 		});
 	}
 
-	protected EnhancedThread mTaskThread = new EnhancedThread()
-	{
-		@Override
-		public boolean loop()
-		{
-			lThis.run();
-			return false;
-		}
-	};
-
 	@Override
 	public abstract void run();
 
@@ -55,30 +51,35 @@ public abstract class SignalStartableTaskDevice	extends
 	public boolean start()
 	{
 		clearCanceled();
-		mTaskThread.start();
-		return true;
+		Future<?> lExecuteAsynchronously = executeAsynchronously(this);
+		return lExecuteAsynchronously != null;
 	}
 
 	public boolean pause()
 	{
-		mTaskThread.pause();
-		mTaskThread.waitForPause();
+
 		return true;
 	}
 
 	public boolean resume()
 	{
-		mTaskThread.resume();
-		mTaskThread.waitForRunning();
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		mCancelBooleanVariable.setValue(true);
-		mTaskThread.stop();
-		return true;
+		try
+		{
+			return waitForCompletion();
+		}
+		catch (ExecutionException e)
+		{
+			String lError = "Error during previous execution of loop function!";
+			error("Device", lError, e);
+			return false;
+		}
 	}
 
 	public BooleanVariable getIsCanceledBooleanVariable()

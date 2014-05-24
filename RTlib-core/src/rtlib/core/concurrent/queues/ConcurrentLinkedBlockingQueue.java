@@ -83,7 +83,7 @@ public class ConcurrentLinkedBlockingQueue<E> extends
 	public boolean offer(E event)
 	{
 		boolean lOffer = super.offer(event);
-		if(lOffer)
+		if (lOffer)
 			mLength.incrementAndGet();
 		return lOffer;
 	};

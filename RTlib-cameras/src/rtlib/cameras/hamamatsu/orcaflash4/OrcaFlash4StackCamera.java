@@ -15,9 +15,9 @@ import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
-public class OrcaFlash4StackCamera extends StackCameraBase	implements
-																											VirtualDeviceInterface,
-																											StackProcessing
+public class OrcaFlash4StackCamera extends StackCameraBase implements
+																													VirtualDeviceInterface,
+																													StackProcessing
 {
 	public static final int cStackProcessorQueueSize = 100;
 
@@ -34,8 +34,8 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 		this(pCameraDeviceIndex, TriggerType.ExternalFastEdge);
 	}
 
-	public OrcaFlash4StackCamera(final int pCameraDeviceIndex,
-													final TriggerType pTriggerType)
+	public OrcaFlash4StackCamera(	final int pCameraDeviceIndex,
+																final TriggerType pTriggerType)
 	{
 		super("OrcaFlash4Camera");
 
@@ -54,7 +54,9 @@ public class OrcaFlash4StackCamera extends StackCameraBase	implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				System.out.println("frameArrived:" + pDcamFrame);
+				/*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+														+ " index="
+														+ pDcamFrame.getIndex());/**/
 				mFrameReference.setReference(pDcamFrame);
 			}
 

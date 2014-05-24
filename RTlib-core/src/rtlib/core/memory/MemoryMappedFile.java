@@ -36,7 +36,6 @@ public final class MemoryMappedFile implements Loggable
 	public static final MemoryMapAccessMode ReadWrite = MemoryMapAccessMode.ReadWrite;
 	public static final MemoryMapAccessMode Private = MemoryMapAccessMode.Private;
 
-
 	public static final long map(	FileChannel pFileChannel,
 																MemoryMapAccessMode pAccessMode,
 																final long pFilePosition,
@@ -61,10 +60,9 @@ public final class MemoryMappedFile implements Loggable
 			if (pMappedRegionLength > Long.MAX_VALUE)
 				throw new IllegalArgumentException("Size exceeds Long.MAX_VALUE");
 
-			
-			if(pExtendIfNeeded)
+			if (pExtendIfNeeded)
 			{
-				if(pFileChannel.size()<pFilePosition+pMappedRegionLength)
+				if (pFileChannel.size() < pFilePosition + pMappedRegionLength)
 				{
 					long lCurrentPosition = pFileChannel.position();
 					pFileChannel.position(pFilePosition + pMappedRegionLength
@@ -74,11 +72,11 @@ public final class MemoryMappedFile implements Loggable
 					cZeroBuffer.clear();
 					pFileChannel.write(cZeroBuffer);
 					pFileChannel.force(false);
-					
+
 					pFileChannel.position(lCurrentPosition);
 				}
 			}
-			
+
 			lMemoryMapMethod = pFileChannel.getClass()
 																			.getDeclaredMethod(	"map0",
 																													Integer.TYPE,
@@ -89,9 +87,7 @@ public final class MemoryMappedFile implements Loggable
 																										pAccessMode.getValue(),
 																										pFilePosition,
 																										pMappedRegionLength);
-			
-			
-			
+
 			final Long lAddressAsLong = (Long) lReturnValue;
 
 			lAddress = lAddressAsLong.longValue();
@@ -197,13 +193,13 @@ public final class MemoryMappedFile implements Loggable
 
 		for (StandardOpenOption lStandardOpenOption : pStandardOpenOption)
 		{
-			lWrite |= lStandardOpenOption == lStandardOpenOption.CREATE;
-			lWrite |= lStandardOpenOption == lStandardOpenOption.CREATE_NEW;
-			lWrite |= lStandardOpenOption == lStandardOpenOption.WRITE;
-			lWrite |= lStandardOpenOption == lStandardOpenOption.APPEND;
-			lWrite |= lStandardOpenOption == lStandardOpenOption.DELETE_ON_CLOSE;
-			lWrite |= lStandardOpenOption == lStandardOpenOption.SYNC;
-			lRead |= lStandardOpenOption == lStandardOpenOption.READ;
+			lWrite |= lStandardOpenOption == StandardOpenOption.CREATE;
+			lWrite |= lStandardOpenOption == StandardOpenOption.CREATE_NEW;
+			lWrite |= lStandardOpenOption == StandardOpenOption.WRITE;
+			lWrite |= lStandardOpenOption == StandardOpenOption.APPEND;
+			lWrite |= lStandardOpenOption == StandardOpenOption.DELETE_ON_CLOSE;
+			lWrite |= lStandardOpenOption == StandardOpenOption.SYNC;
+			lRead |= lStandardOpenOption == StandardOpenOption.READ;
 		}
 
 		if (lWrite)

@@ -41,7 +41,6 @@ public class CalculateFPSExample
 			for (int k = 0; k < p; k++)
 			{
 
-
 				System.out.println(lWebcam.getViewSize());
 				lWebcam.getImage();
 
@@ -56,7 +55,6 @@ public class CalculateFPSExample
 				System.out.println("FPS " + k
 														+ ": "
 														+ (1000 * r / (t2 - t1 + 1)));
-
 
 			}
 			// lWebcam.close();

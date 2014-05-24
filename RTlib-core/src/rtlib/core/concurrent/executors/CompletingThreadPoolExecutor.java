@@ -11,17 +11,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CompletingThreadPoolExecutor extends
-																										ThreadPoolExecutor
+public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 {
 
 	private final BlockingQueue<Future<?>> mFutureQueue = new LinkedBlockingQueue<Future<?>>(Integer.MAX_VALUE);
 
-	public CompletingThreadPoolExecutor(	int pCorePoolSize,
-																									int pMaximumPoolSize,
-																									long pKeepAliveTime,
-																									TimeUnit pUnit,
-																									BlockingQueue<Runnable> pWorkQueue)
+	public CompletingThreadPoolExecutor(int pCorePoolSize,
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue)
 	{
 		super(pCorePoolSize,
 					pMaximumPoolSize,
@@ -30,12 +29,12 @@ public class CompletingThreadPoolExecutor extends
 					pWorkQueue);
 	}
 
-	public CompletingThreadPoolExecutor(	int pCorePoolSize,
-																									int pMaximumPoolSize,
-																									long pKeepAliveTime,
-																									TimeUnit pUnit,
-																									BlockingQueue<Runnable> pWorkQueue,
-																									RejectedExecutionHandler pHandler)
+	public CompletingThreadPoolExecutor(int pCorePoolSize,
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			RejectedExecutionHandler pHandler)
 	{
 		super(pCorePoolSize,
 					pMaximumPoolSize,
@@ -45,13 +44,13 @@ public class CompletingThreadPoolExecutor extends
 					pHandler);
 	}
 
-	public CompletingThreadPoolExecutor(	int pCorePoolSize,
-																									int pMaximumPoolSize,
-																									long pKeepAliveTime,
-																									TimeUnit pUnit,
-																									BlockingQueue<Runnable> pWorkQueue,
-																									ThreadFactory pThreadFactory,
-																									RejectedExecutionHandler pHandler)
+	public CompletingThreadPoolExecutor(int pCorePoolSize,
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			ThreadFactory pThreadFactory,
+																			RejectedExecutionHandler pHandler)
 	{
 		super(pCorePoolSize,
 					pMaximumPoolSize,
@@ -62,12 +61,12 @@ public class CompletingThreadPoolExecutor extends
 					pHandler);
 	}
 
-	public CompletingThreadPoolExecutor(	int pCorePoolSize,
-																									int pMaximumPoolSize,
-																									long pKeepAliveTime,
-																									TimeUnit pUnit,
-																									BlockingQueue<Runnable> pWorkQueue,
-																									ThreadFactory pThreadFactory)
+	public CompletingThreadPoolExecutor(int pCorePoolSize,
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			ThreadFactory pThreadFactory)
 	{
 		super(pCorePoolSize,
 					pMaximumPoolSize,
@@ -114,18 +113,42 @@ public class CompletingThreadPoolExecutor extends
 	public void waitForCompletion(long pTimeOut, TimeUnit pTimeUnit) throws ExecutionException,
 																																	TimeoutException
 	{
-		while (mFutureQueue.peek() != null)
+		final long lStartTimeNanos = System.nanoTime();
+		final long lDeadlineTimeNanos = lStartTimeNanos + pTimeUnit.toNanos(pTimeOut);
+
+		while (mFutureQueue.peek() != null && System.nanoTime() <= lDeadlineTimeNanos)
 		{
+			Future<?> lFuture = null;
 			try
 			{
-				Future<?> lFuture = mFutureQueue.poll();
+				lFuture = mFutureQueue.poll();
 				if (lFuture != null)
 					lFuture.get(pTimeOut, pTimeUnit);
 			}
 			catch (InterruptedException e)
 			{
+				// System.out.println("InterruptedException");
+				reinject(lFuture);
 			}
 		}
+		
+		if(System.nanoTime() > lDeadlineTimeNanos)
+			throw new TimeoutException("Run out of time waiting for " + this.getClass()
+																																			.getSimpleName()
+																	+ " tasks to finish!");
+	}
+
+	private void reinject(Future<?> lFuture)
+	{
+		if (lFuture != null)
+			try
+			{
+				mFutureQueue.put(lFuture);
+			}
+			catch (InterruptedException e1)
+			{
+				reinject(lFuture);
+			}
 	}
 
 }

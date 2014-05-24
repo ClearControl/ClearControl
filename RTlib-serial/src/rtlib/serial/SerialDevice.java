@@ -63,9 +63,9 @@ public class SerialDevice extends NamedVirtualDevice implements
 				catch (final SerialPortException e)
 				{
 					// TODO handle error
-					return  super.getEventHook(pCurrentValue);
+					return super.getEventHook(pCurrentValue);
 				}
-				return  super.getEventHook(pCurrentValue);
+				return super.getEventHook(pCurrentValue);
 			}
 
 			@Override
@@ -97,7 +97,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 				catch (final SerialPortException e)
 				{
 					// TODO handle error
-					return  super.setEventHook(pOldValue,pNewValue);
+					return super.setEventHook(pOldValue, pNewValue);
 				}
 				return super.setEventHook(pOldValue, pNewValue);
 			}

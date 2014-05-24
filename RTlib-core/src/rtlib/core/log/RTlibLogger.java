@@ -59,7 +59,7 @@ public class RTlibLogger
 	private final LoggerBackendInterface mLoggerBackend;
 
 	@Contended
-	private volatile boolean mStdOutputActive;
+	private volatile boolean mStdOutputActive = true;
 
 	public RTlibLogger(	LoggerBackendInterface pLoggerBackend,
 											String pSubSystemName)
@@ -118,11 +118,11 @@ public class RTlibLogger
 		if (isStdOutputActive())
 		{
 			if (pType.equals("ERROR"))
-				System.err.println(getMessageLineString(pType,
+				System.err.print(getMessageLineString(pType,
 																								pClass,
 																								pMessage));
 			else
-				System.out.println(getMessageLineString(pType,
+				System.out.print(getMessageLineString(pType,
 																								pClass,
 																								pMessage));
 		}

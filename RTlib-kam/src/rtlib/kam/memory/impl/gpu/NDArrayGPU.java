@@ -10,19 +10,19 @@ import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLMem.Usage;
 
 public class NDArrayGPU<T> extends BufferGPU<T>	implements
-																									MemoryTyped,
-																									NDStructured,
-																									SizedInBytes,
-																									Freeable
+																								MemoryTyped,
+																								NDStructured,
+																								SizedInBytes,
+																								Freeable
 
 {
 	protected long[] mDimensions;
 
 	public NDArrayGPU(ContextGPU pOpenCLContext,
-												final Class<T> pElementType,
-												final boolean pRead,
-												final boolean pWrite,
-												long... pDimensions)
+										final Class<T> pElementType,
+										final boolean pRead,
+										final boolean pWrite,
+										long... pDimensions)
 	{
 		super(pOpenCLContext,
 					pElementType,
@@ -63,8 +63,6 @@ public class NDArrayGPU<T> extends BufferGPU<T>	implements
 		return lUsage;
 	}
 
-
-
 	@Override
 	public long getDimension()
 	{
@@ -77,6 +75,7 @@ public class NDArrayGPU<T> extends BufferGPU<T>	implements
 		return mDimensions[pDimensionIndex];
 	}
 
+	@Override
 	public long getWidth()
 	{
 		if (getDimension() < 1)
@@ -85,6 +84,7 @@ public class NDArrayGPU<T> extends BufferGPU<T>	implements
 			return mDimensions[1];
 	}
 
+	@Override
 	public long getHeight()
 	{
 		if (getDimension() < 2)
@@ -93,6 +93,7 @@ public class NDArrayGPU<T> extends BufferGPU<T>	implements
 			return mDimensions[2];
 	}
 
+	@Override
 	public long getDepth()
 	{
 		if (getDimension() < 3)

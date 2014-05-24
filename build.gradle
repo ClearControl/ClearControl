@@ -7,12 +7,13 @@ subprojects
     sourceCompatibility = 1.8
     version = '1.0'
 
+    /*
     compileJava 
     {
         options.compilerArgs << '-XDignore.symbol.file'
         options.fork = true // may not needed on 1.8
         options.forkOptions.executable = 'javac' // may not needed on 1.8
-    }
+    }/**/
 
     test 
     {
@@ -24,7 +25,7 @@ subprojects
 
         exclude '**/demo/**'
 
-        maxHeapSize = "4G"
+        maxHeapSize = "16G"
     }
 
     dependencies 

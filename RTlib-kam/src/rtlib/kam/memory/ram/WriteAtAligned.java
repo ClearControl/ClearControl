@@ -2,7 +2,6 @@ package rtlib.kam.memory.ram;
 
 import rtlib.kam.memory.MemoryTyped;
 
-
 public interface WriteAtAligned extends MemoryTyped
 {
 	public void setByteAligned(final long pOffset, final byte pValue);
@@ -18,5 +17,5 @@ public interface WriteAtAligned extends MemoryTyped
 	public void setFloatAligned(final long pOffset, final float pValue);
 
 	public void setDoubleAligned(final long pOffset, final double pValue);
-	
+
 }

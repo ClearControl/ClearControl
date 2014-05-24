@@ -15,7 +15,6 @@ public abstract class StackProcessorBase implements
 		mIsActiveVariable = new BooleanVariable(pProcessorName, false);
 	}
 
-
 	@Override
 	public boolean isActive()
 	{

@@ -1,6 +1,5 @@
 package rtlib.serial;
 
-
 public class SerialListenerAdapter implements SerialListener
 {
 

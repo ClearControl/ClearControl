@@ -46,11 +46,9 @@ public class GPUProgramNDRange extends GPUProgram	implements
 		long[] lMaxThreadNDRange = mCLContext.getMaxThreadNDRange();
 
 		long[] lEffectiveNDRange = new long[pRange.length];
-		
-		for(int i=0; i<pRange.length; i++)
-			lEffectiveNDRange[i] =  Math.min(	lMaxThreadNDRange[i],
-																				pRange[i]);
-		
+
+		for (int i = 0; i < pRange.length; i++)
+			lEffectiveNDRange[i] = Math.min(lMaxThreadNDRange[i], pRange[i]);
 
 		long lEffectiveNDRangeVolume = NDRangeUtils.volume(lEffectiveNDRange);
 

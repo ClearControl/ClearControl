@@ -7,9 +7,9 @@ public class __NDArrayDirectBufferByte
 {
 
 	public static __NDArrayDirectBufferByte allocateSXYZ(	int mBytesPerPixel,
-																											int pWidth,
-																											int pHeight,
-																											int pDepth)
+																												int pWidth,
+																												int pHeight,
+																												int pDepth)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -62,7 +62,7 @@ public class __NDArrayDirectBufferByte
 																	Object arrayLength)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public int[] getDimensions()
@@ -81,7 +81,7 @@ public class __NDArrayDirectBufferByte
 	public void add(byte b)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public byte getAt(int i, int j, int k)
