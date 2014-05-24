@@ -53,20 +53,20 @@ public class FileEventNotifierTests
 
 		lTestFileFormatter.format("test1\n");
 		lTestFileFormatter.flush();
-		ThreadUtils.sleep(1, TimeUnit.SECONDS);
+		ThreadUtils.sleep(2, TimeUnit.SECONDS);
 		assertEquals(1, lEventCounter);
 
 		lTestFileFormatter.format("test2\n");
 		lTestFileFormatter.flush();
 		lTestFileFormatter.close();
-		ThreadUtils.sleep(1, TimeUnit.SECONDS);
+		ThreadUtils.sleep(2, TimeUnit.SECONDS);
 		assertEquals(2, lEventCounter);
 
 		final Formatter lOtherFileFormatter = new Formatter(lOtherFile);
 		lOtherFileFormatter.format("test3\n");
 		lOtherFileFormatter.flush();
 		lOtherFileFormatter.close();
-		ThreadUtils.sleep(1, TimeUnit.SECONDS);
+		ThreadUtils.sleep(2, TimeUnit.SECONDS);
 		assertEquals(2, lEventCounter);
 
 		lFileEventNotifier.stopMonitoring();
