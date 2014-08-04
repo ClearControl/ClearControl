@@ -1,1 +1,1 @@
-include "RTlib-compression", "RTlib-core", "RTlib-gui", "RTlib-kam", "RTlib-nidevices", "RTlib-nifpga", "RTlib-ocl", "RTlib-serial", "RTlib-serialdevices", "RTlib-stack", "RTlib-cameras"
+include "RTlib-compression", "RTlib-core", "RTlib-gui", "RTlib-kam", "RTlib-nidevices", "RTlib-nifpga", "RTlib-ocl", "RTlib-serial", "RTlib-serialdevices", "RTlib-stack", "RTlib-cameras", "RTlib-ao"
