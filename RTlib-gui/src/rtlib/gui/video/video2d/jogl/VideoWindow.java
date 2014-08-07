@@ -22,6 +22,7 @@ import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
 import rtlib.core.units.Magnitudes;
+import rtlib.kam.memory.ndarray.NDArray;
 
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -34,7 +35,7 @@ public class VideoWindow implements Closeable
 	private final GLWindow mGLWindow;
 	private String mWindowName;
 
-	private int mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
+	private long mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
 			mVideoWidth, mVideoHeight, mMaxBufferLength;
 	private int[] mPixelBufferIds;
 	private GLU mGLU;
@@ -78,9 +79,9 @@ public class VideoWindow implements Closeable
 	}
 
 	public VideoWindow(	final String pWindowName,
-											final int pBytesPerPixel,
-											final int pVideoMaxWidth,
-											final int pVideoMaxHeight) throws GLException
+											final long pBytesPerPixel,
+											final long pVideoMaxWidth,
+											final long pVideoMaxHeight) throws GLException
 	{
 		this();
 		mWindowName = pWindowName;
@@ -98,7 +99,7 @@ public class VideoWindow implements Closeable
 		}
 		else
 		{
-			mGLWindow.setSize(pVideoMaxWidth, pVideoMaxHeight);
+			mGLWindow.setSize((int) pVideoMaxWidth, (int) pVideoMaxHeight);
 		}
 
 		mGLWindow.setTitle(mWindowName);
@@ -205,15 +206,15 @@ public class VideoWindow implements Closeable
 
 				if (mSourceBuffer == null)
 				{
-					mSourceBuffer = ByteBuffer.allocate(mMaxBufferLength);
+					mSourceBuffer = ByteBuffer.allocate((int) Math.toIntExact(mMaxBufferLength));
 				}
 
 				mSourceBuffer.rewind();
 				lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
 													0,
 													GL.GL_LUMINANCE,
-													mVideoMaxWidth,
-													mVideoMaxHeight,
+													(int) mVideoMaxWidth,
+													(int) mVideoMaxHeight,
 													0,
 													GL.GL_LUMINANCE,
 													GL.GL_UNSIGNED_BYTE,
@@ -269,8 +270,8 @@ public class VideoWindow implements Closeable
 					return;
 				}
 
-				final int lWidth = mVideoWidth;
-				final int lHeight = mVideoHeight;
+				final int lWidth = (int) mVideoWidth;
+				final int lHeight = (int) mVideoHeight;
 
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
@@ -376,6 +377,11 @@ public class VideoWindow implements Closeable
 		mSourceBuffer = pSourceBuffer;
 	}
 
+	public void setSourceBuffer(NDArray pNDArray)
+	{
+		setSourceBuffer(pNDArray.getRAM().wrapWithByteBuffer());
+	}
+
 	private boolean updateVideoWithBuffer(final GL2 pGL2,
 																				final ByteBuffer pNewContentBuffer)
 	{
@@ -439,8 +445,8 @@ public class VideoWindow implements Closeable
 													0,
 													0,
 													0,
-													mVideoWidth,
-													mVideoHeight,
+													(int) mVideoWidth,
+													(int) mVideoHeight,
 													GL.GL_LUMINANCE,
 													GL.GL_UNSIGNED_BYTE,
 													pNewContentBuffer);
@@ -470,8 +476,8 @@ public class VideoWindow implements Closeable
 													0,
 													0,
 													0,
-													mVideoMaxWidth,
-													mVideoMaxHeight,
+													(int) mVideoMaxWidth,
+													(int) mVideoMaxHeight,
 													GL.GL_LUMINANCE,
 													GL.GL_UNSIGNED_BYTE,
 													0);
@@ -669,7 +675,7 @@ public class VideoWindow implements Closeable
 		}
 	}
 
-	public int getMaxBufferLength()
+	public long getMaxBufferLength()
 	{
 		return mMaxBufferLength;
 	}
@@ -770,5 +776,6 @@ public class VideoWindow implements Closeable
 	{
 		mGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
+
 
 }

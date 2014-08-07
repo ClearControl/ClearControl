@@ -1,8 +1,11 @@
 package rtlib.kam.memory.impl.direct;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
+
+import org.bridj.Pointer;
 
 import rtlib.core.memory.NativeMemoryAccess;
 import rtlib.core.memory.NativeMemoryCleaner;
@@ -164,6 +167,17 @@ public class RAMDirect extends RAMAbstract implements
 													pLengthInBytes);
 		lRAMFile.unmap();
 		lRAMFile.free();
+	}
+
+	@SuppressWarnings("deprecation")
+	public ByteBuffer wrapWithByteBuffer()
+	{
+		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
+																														getSizeInBytes());
+		ByteBuffer lByteBuffer = lPointerToAddress.getByteBuffer();
+
+		return lByteBuffer;
+
 	}
 
 }

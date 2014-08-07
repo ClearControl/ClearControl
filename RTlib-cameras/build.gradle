@@ -29,6 +29,7 @@ dependencies
 {
     compile project(':RTlib-core')
     compile project(':RTlib-stack')
+    compile project(':RTlib-gui')
 
     compile group: "royer", name: "DcamJ", version: "2.+", changing: true
 

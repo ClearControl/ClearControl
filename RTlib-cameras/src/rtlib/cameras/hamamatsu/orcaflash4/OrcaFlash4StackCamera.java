@@ -20,6 +20,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase implements
 																													StackProcessing
 {
 	public static final int cStackProcessorQueueSize = 100;
+	public static final int cDcamJNumberOfBuffers = 1024;
 
 	private final int mCameraDeviceIndex;
 
@@ -54,9 +55,11 @@ public class OrcaFlash4StackCamera extends StackCameraBase implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				/*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
 														+ " index="
-														+ pDcamFrame.getIndex());/**/
+														+ pDcamFrame.getIndex()
+														+ " pFrameIndexInBufferList="
+														+ pFrameIndexInBufferList);/**/
 				mFrameReference.setReference(pDcamFrame);
 			}
 
@@ -214,12 +217,12 @@ public class OrcaFlash4StackCamera extends StackCameraBase implements
 																(long) getFrameDepthVariable().getValue());
 	}
 
-	private DcamFrame request2DFrame()
+	private DcamFrame request2DFrames()
 	{
 		return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
 																	(long) getFrameWidthVariable().getValue(),
 																	(long) getFrameHeightVariable().getValue(),
-																	1);
+																	cDcamJNumberOfBuffers);
 	}
 
 	private DcamFrame request3DFrame()
@@ -270,7 +273,7 @@ public class OrcaFlash4StackCamera extends StackCameraBase implements
 			}
 			else
 			{
-				final DcamFrame lInitialVideoFrame = request2DFrame();
+				final DcamFrame lInitialVideoFrame = request2DFrames();
 				lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
 																											false,
 																											true,

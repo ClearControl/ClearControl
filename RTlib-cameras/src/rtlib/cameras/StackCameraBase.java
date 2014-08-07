@@ -68,7 +68,7 @@ public abstract class StackCameraBase extends CameraDevice
 		return mFrameDepthVariable;
 	}
 
-	public DoubleVariable getExposureVariable()
+	public DoubleVariable getExposureInMicrosecondsVariable()
 	{
 		return mExposureInMicroseconds;
 	}

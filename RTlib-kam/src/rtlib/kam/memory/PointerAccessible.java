@@ -1,6 +1,8 @@
 package rtlib.kam.memory;
 
-public interface PointerAccessible extends MemoryTyped
+public interface PointerAccessible extends
+																	MemoryTyped,
+																	ByteBufferWrappable
 {
 	long getAddress();
 

@@ -2,8 +2,11 @@ package rtlib.kam.memory.impl.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
+
+import org.bridj.Pointer;
 
 import rtlib.core.memory.MemoryMappedFile;
 import rtlib.core.memory.MemoryMappedFileException;
@@ -263,6 +266,18 @@ public class RAMFile extends RAMMappedAbstract implements
 		return new RAMFileCleaner(mFileChannel,
 															mPageAlignedMappingAddressInBytes,
 															mMappingLengthInBytes);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public ByteBuffer wrapWithByteBuffer()
+	{
+		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
+																														getSizeInBytes());
+		ByteBuffer lByteBuffer = lPointerToAddress.getByteBuffer();
+
+		return lByteBuffer;
+
 	}
 
 }
