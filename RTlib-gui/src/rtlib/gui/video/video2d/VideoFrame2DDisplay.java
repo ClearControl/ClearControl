@@ -87,13 +87,14 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 		{
 
 			@Override
-			public Stack setEventHook(final Stack pStack)
+			public Stack setEventHook(final Stack pOldStack,
+																final Stack pNewStack)
 			{
-				if (!mAsynchronousDisplayUpdater.passOrFail(pStack))
+				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
-					pStack.releaseStack();
+					pNewStack.releaseStack();
 				}
-				return super.setEventHook(pStack);
+				return super.setEventHook(pOldStack, pNewStack);
 			}
 
 		};

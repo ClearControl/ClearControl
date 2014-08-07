@@ -17,7 +17,7 @@ public class LasertHubDevice extends NamedVirtualDevice
 
 	public LasertHubDevice()
 	{
-		super("OmicronLightHub");
+		super("LasertHubDevice");
 	}
 
 	public void addLaser(final LaserDevice pLaserDevice)

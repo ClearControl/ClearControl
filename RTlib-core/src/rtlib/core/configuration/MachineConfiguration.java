@@ -133,6 +133,17 @@ public class MachineConfiguration
 		return lPort;
 	}
 
+	public String[] getNetworkDeviceHostnameAndPort(	String pDeviceName,
+																		int pDeviceIndex,
+																		String pDefaultHostNameAndPort)
+	{
+		String lKey = "device.network." + pDeviceName.toLowerCase()
+									+ "."
+									+ pDeviceIndex;
+		String lHostnameAndPort = getStringProperty(lKey, pDefaultHostNameAndPort);
+		return lHostnameAndPort.split(":");
+	}
+
 	public Integer getIODevicePort(	String pDeviceName,
 																	Integer pDefaultPort)
 	{

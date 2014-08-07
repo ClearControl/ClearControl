@@ -379,7 +379,7 @@ public class VideoWindow implements Closeable
 
 	public void setSourceBuffer(NDArray pNDArray)
 	{
-		setSourceBuffer(pNDArray.getRAM().wrapWithByteBuffer());
+		setSourceBuffer(pNDArray.getRAM().passNativePointerToByteBuffer());
 	}
 
 	private boolean updateVideoWithBuffer(final GL2 pGL2,

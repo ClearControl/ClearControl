@@ -55,10 +55,13 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 		mDcamFrameReference.sendUpdatesTo(new ObjectVariable<DcamFrame>("DcamFrame")
 		{
 			@Override
-			public DcamFrame setEventHook(final DcamFrame pNewDcamFrame)
+			public DcamFrame setEventHook(final DcamFrame pOldDcamFrame,
+																		final DcamFrame pNewDcamFrame)
 			{
+				// System.out.println("DcamJToVideoFrameConverterAndProcessing->" +
+				// pNewDcamFrame.toString());
 				mAsynchronousConversionProcessor.passOrWait(pNewDcamFrame);
-				return super.setEventHook(pNewDcamFrame);
+				return super.setEventHook(pOldDcamFrame, pNewDcamFrame);
 			}
 		});
 

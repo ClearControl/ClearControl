@@ -1,6 +1,6 @@
 package rtlib.cameras.hamamatsu.orcaflash4;
 
-import rtlib.cameras.StackCameraBase;
+import rtlib.cameras.StackCamera;
 import rtlib.cameras.hamamatsu.orcaflash4.utils.DcamJToVideoFrameConverterAndProcessing;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.units.Magnitudes;
@@ -15,7 +15,7 @@ import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
-public class OrcaFlash4StackCamera extends StackCameraBase implements
+public class OrcaFlash4StackCamera extends StackCamera implements
 																													VirtualDeviceInterface,
 																													StackProcessing
 {

@@ -270,7 +270,7 @@ public class RAMFile extends RAMMappedAbstract implements
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public ByteBuffer wrapWithByteBuffer()
+	public ByteBuffer passNativePointerToByteBuffer()
 	{
 		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
 																														getSizeInBytes());

@@ -57,7 +57,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 			return false;
 		}
 
-		final O lNewValueAfterHook = setEventHook(pNewReference);
+		final O lNewValueAfterHook = setEventHook(mReference,
+																							pNewReference);
 
 		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
@@ -74,7 +75,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		return true;
 	}
 
-	public O setEventHook(final O pNewValue)
+	public O setEventHook(final O pOldValue, final O pNewValue)
 	{
 		notifyListenersOfSetEvent(mReference, pNewValue);
 		return pNewValue;

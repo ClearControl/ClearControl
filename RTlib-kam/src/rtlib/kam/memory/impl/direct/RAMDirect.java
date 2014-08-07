@@ -170,7 +170,7 @@ public class RAMDirect extends RAMAbstract implements
 	}
 
 	@SuppressWarnings("deprecation")
-	public ByteBuffer wrapWithByteBuffer()
+	public ByteBuffer passNativePointerToByteBuffer()
 	{
 		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
 																														getSizeInBytes());

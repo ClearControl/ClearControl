@@ -16,12 +16,12 @@ import dcamj.DcamAcquisition.TriggerType;
 
 public class OrcaFlash4CameraDemo
 {
-	AtomicLong mCounter = new AtomicLong(0);
+	AtomicLong mFrameIndex = new AtomicLong(0);
 
 	@Test
 	public void testAcquireSingleFrames() throws InterruptedException
 	{
-		mCounter.set(0);
+		mFrameIndex.set(0);
 		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
 																																							TriggerType.Internal);
 
@@ -30,14 +30,16 @@ public class OrcaFlash4CameraDemo
 													{
 
 														@Override
-														public Stack setEventHook(Stack pNewStack)
+														public Stack setEventHook(Stack pOldStack,
+																											Stack pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
 																									+ pNewStack.getIndex());/**/
 															System.out.println(pNewStack);
-															mCounter.incrementAndGet();
-															return super.setEventHook(pNewStack);
+															mFrameIndex.incrementAndGet();
+															return super.setEventHook(pOldStack,
+																												pNewStack);
 														}
 
 													});
@@ -58,15 +60,15 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.close();
 
-		System.out.println(mCounter.get());
+		System.out.println(mFrameIndex.get());
 
-		assertTrue(mCounter.get() >= 199);
+		assertTrue(mFrameIndex.get() >= 199);
 	}
 
 	@Test
 	public void testAcquireStack() throws InterruptedException
 	{
-		mCounter.set(0);
+		mFrameIndex.set(0);
 		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
 																																							TriggerType.Internal);
 
@@ -75,14 +77,16 @@ public class OrcaFlash4CameraDemo
 													{
 
 														@Override
-														public Stack setEventHook(Stack pNewStack)
+														public Stack setEventHook(Stack pOldStack,
+																											Stack pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
 																									+ pNewStack.getIndex());/**/
 															System.out.println(pNewStack);
-															mCounter.incrementAndGet();
-															return super.setEventHook(pNewStack);
+															mFrameIndex.incrementAndGet();
+															return super.setEventHook(pOldStack,
+																												pNewStack);
 														}
 
 													});
@@ -107,11 +111,11 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.close();
 
-		System.out.println(mCounter.get());
+		System.out.println(mFrameIndex.get());
 
-		assertTrue(mCounter.get() == 6);
+		assertTrue(mFrameIndex.get() == 6);
 	}
-	
+
 	@Test
 	public void testDisplayVideo() throws InterruptedException,
 																IOException
@@ -120,7 +124,7 @@ public class OrcaFlash4CameraDemo
 																															256,
 																															256,
 																															1);
-		
+
 		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
 																											lNDArrayDirect.getSizeAlongDimension(0),
 																											lNDArrayDirect.getSizeAlongDimension(1),
@@ -128,9 +132,8 @@ public class OrcaFlash4CameraDemo
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setSourceBuffer(lNDArrayDirect);
 		lVideoWindow.setVisible(true);
-		
-		
-		mCounter.set(0);
+
+		mFrameIndex.set(0);
 		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
 																																							TriggerType.Internal);
 
@@ -139,31 +142,36 @@ public class OrcaFlash4CameraDemo
 													{
 
 														@Override
-														public Stack setEventHook(Stack pNewStack)
+														public Stack setEventHook(Stack pOldStack,
+																											Stack pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
 																									+ pNewStack.getIndex());/**/
+															System.out.println("mCounter=" + mFrameIndex.get());
 															System.out.println(pNewStack);
-															mCounter.incrementAndGet();
-															
+
+															assertTrue(mFrameIndex.get() == pNewStack.getIndex());
+
 															lVideoWindow.setSourceBuffer(pNewStack.getNDArray());
 															lVideoWindow.notifyNewFrame();
 															lVideoWindow.display();/**/
-															
-															
-															return super.setEventHook(pNewStack);
+
+															mFrameIndex.incrementAndGet();
+															return super.setEventHook(pOldStack,
+																												pNewStack);
 														}
 
 													});
 
-		
 		assertTrue(lOrcaFlash4StackCamera.open());
 
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.setValue(500);
-		lOrcaFlash4StackCamera.getFrameWidthVariable().setValue(lNDArrayDirect.getSizeAlongDimension(1));
-		lOrcaFlash4StackCamera.getFrameHeightVariable().setValue(lNDArrayDirect.getSizeAlongDimension(2));
+		lOrcaFlash4StackCamera.getFrameWidthVariable()
+													.setValue(lNDArrayDirect.getSizeAlongDimension(1));
+		lOrcaFlash4StackCamera.getFrameHeightVariable()
+													.setValue(lNDArrayDirect.getSizeAlongDimension(2));
 		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(1);
 		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
@@ -172,23 +180,20 @@ public class OrcaFlash4CameraDemo
 
 		assertTrue(lOrcaFlash4StackCamera.start());
 
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 
 		lOrcaFlash4StackCamera.stop();
-		Thread.sleep(2000);
+		// Thread.sleep(1000);
 
 		lOrcaFlash4StackCamera.close();
 
-		System.out.println(mCounter.get());
+		System.out.println(mFrameIndex.get());
 
-		assertTrue(mCounter.get() >= 1000);
+		assertTrue(mFrameIndex.get() >= 1000);
 
 		lVideoWindow.close();
 	}
-	
-	
-	
-	
+
 	/**/
 
 }

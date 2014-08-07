@@ -30,7 +30,8 @@ public class JTextFieldString extends JPanel
 																									pInicialValue)
 		{
 			@Override
-			public String setEventHook(final String pNewValue)
+			public String setEventHook(	final String pOldValue,
+																	final String pNewValue)
 			{
 
 				if (!pNewValue.equals(mValueTextField.getText()))

@@ -36,7 +36,7 @@ subprojects
         compile group: 'org.apache.commons', name: 'commons-math3', version: '3.+'
         compile 'com.nativelibs4java:bridj:0.7-SNAPSHOT'
         compile 'com.nativelibs4java:javacl:1.0-SNAPSHOT'
-        compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24'
+        compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
         //compile 'com.github.rwl:jtransforms:2.4.0'
         compile 'org.codehaus.groovy:groovy-all:2.2.2'
         compile 'javax.mail:mail:1.4.7'
