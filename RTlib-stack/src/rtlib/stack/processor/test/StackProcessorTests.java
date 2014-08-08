@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
 import rtlib.stack.processor.StackProcessorBase;
@@ -18,18 +19,19 @@ public class StackProcessorTests
 	@Test
 	public void test()
 	{
-		StackProcessorInterface lStackProcessor = new StackProcessorBase("Test")
+		StackProcessorInterface<Short, Short> lStackProcessor = new StackProcessorBase<Short, Short>("Test")
 		{
-			Recycler<Stack, Long> mRelayRecycler = new Recycler<Stack, Long>(Stack.class);
+
+			Recycler<Stack<Short>, Long> mRelayRecycler = new Recycler<Stack<Short>, Long>(Stack.class);
 
 			@Override
-			public Stack process(	Stack pStack,
-														Recycler<Stack, Long> pStackRecycler)
+			public Stack<Short> process(Stack<Short> pStack,
+																	Recycler<Stack<Short>, Long> pStackRecycler)
 			{
 				long lWidth = pStack.getWidth();
 				long lHeight = pStack.getHeight();
 				long lBytesPerVoxel = pStack.getBytesPerVoxel();
-				Stack lNewStack = mRelayRecycler.waitOrRequestRecyclableObject(	1L,
+				Stack<Short> lNewStack = mRelayRecycler.waitOrRequestRecyclableObject(1L,
 																																				TimeUnit.MILLISECONDS,
 																																				lBytesPerVoxel,
 																																				lWidth,
@@ -40,17 +42,19 @@ public class StackProcessorTests
 				pStackRecycler.release(pStack);
 				return lNewStack;
 			}
+
+
 		};
 
-		Recycler<Stack, Long> mStartRecycler = new Recycler<Stack, Long>(Stack.class);
+		Recycler<Stack<Short>, Long> mStartRecycler = new Recycler<Stack<Short>, Long>(Stack.class);
 
-		Stack lStack = mStartRecycler.failOrRequestRecyclableObject(2L,
+		Stack<Short> lStack = mStartRecycler.failOrRequestRecyclableObject(	(long) SizeOf.sizeOf(short.class),
 																																10L,
 																																10L,
 																																10L);
 		assertTrue(lStack.getBytesPerVoxel() == 2);
 
-		Stack lProcessedStack = lStackProcessor.process(lStack,
+		Stack<Short> lProcessedStack = lStackProcessor.process(	lStack,
 																										mStartRecycler);
 
 		assertFalse(lProcessedStack == lStack);

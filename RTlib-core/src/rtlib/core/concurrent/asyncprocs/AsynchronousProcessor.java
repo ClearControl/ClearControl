@@ -7,9 +7,11 @@ public class AsynchronousProcessor<I, O>	extends
 
 	private ProcessorInterface<I, O> mProcessor;
 
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
 	public AsynchronousProcessor(	String pName,
 																int pMaxQueueSize,
-																final ProcessorInterface<I, O> pProcessor)
+																final ProcessorInterface pProcessor)
 	{
 		super(pName, pMaxQueueSize);
 		mProcessor = pProcessor;

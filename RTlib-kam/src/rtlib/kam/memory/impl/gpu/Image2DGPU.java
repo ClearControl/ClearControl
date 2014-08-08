@@ -150,4 +150,33 @@ public class Image2DGPU<T> extends ImageGPU<T> implements
 																	false);
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Image2DGPU [mOpenCLContext=" + mOpenCLContext
+						+ ", mCLImage="
+						+ mCLImage
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", mElementType="
+						+ mElementType
+						+ ", mBytesPerVoxel="
+						+ mBytesPerVoxel
+						+ ", mRead="
+						+ mRead
+						+ ", mWrite="
+						+ mWrite
+						+ ", mWidth="
+						+ mWidth
+						+ ", mHeight="
+						+ mHeight
+						+ ", mDepth="
+						+ mDepth
+						+ ", getDimension()="
+						+ getDimension()
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

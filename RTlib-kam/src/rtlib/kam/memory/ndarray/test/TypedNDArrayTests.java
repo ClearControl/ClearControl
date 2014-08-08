@@ -10,7 +10,7 @@ import rtlib.core.memory.SizeOf;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.impl.direct.RAMDirect;
 import rtlib.kam.memory.ndarray.InvalidNDArrayDefinitionException;
-import rtlib.kam.memory.ndarray.TypedNDArray;
+import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
 
 public class TypedNDArrayTests
@@ -24,7 +24,7 @@ public class TypedNDArrayTests
 																																7);
 		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
 
-		TypedNDArray<Short> lNDArray = TypedNDArray.allocateNDArray(lRAM,
+		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lRAM,
 																																short.class,
 																																lNDCursor);
 
@@ -48,7 +48,7 @@ public class TypedNDArrayTests
 																																		5,
 																																		7);
 			RAM lRAMBad = new RAMDirect(lNDCursor.getLengthInElements() - 10);
-			TypedNDArray<Short> lNDArrayBad = TypedNDArray.allocateNDArray(	lRAMBad,
+			NDArrayTyped<Short> lNDArrayBad = NDArrayTyped.allocateNDArray(	lRAMBad,
 																																			short.class,
 																																			lNDCursorBad);
 			fail();
@@ -73,7 +73,7 @@ public class TypedNDArrayTests
 																																7);
 		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
 
-		TypedNDArray<Short> lNDArray = TypedNDArray.allocateNDArray(lRAM,
+		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lRAM,
 																																short.class,
 																																lNDCursor);
 

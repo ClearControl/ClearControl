@@ -18,10 +18,12 @@ public class RecyclerTests
 	@Test
 	public void test()
 	{
-		Recycler<RecyclableTestClass, Long> lRecycler = new Recycler<RecyclableTestClass, Long>(RecyclableTestClass.class,
+		Recycler<RecyclableTestClass, LongRequest> lRecycler = new Recycler<RecyclableTestClass, LongRequest>(RecyclableTestClass.class,
 																																														1000);
 
-		assertEquals(100, lRecycler.ensurePreallocated(100, 1L));
+		assertEquals(	100,
+									lRecycler.ensurePreallocated(	100,
+																								new LongRequest(1L)));
 
 		assertEquals(1000, lRecycler.getLiveMemoryInBytes());
 		assertEquals(100, lRecycler.getLiveObjectCount());
@@ -31,7 +33,9 @@ public class RecyclerTests
 		assertEquals(0, lRecycler.getLiveMemoryInBytes());
 		assertEquals(0, lRecycler.getLiveObjectCount());
 
-		assertEquals(100, lRecycler.ensurePreallocated(110, 1L));
+		assertEquals(	100,
+									lRecycler.ensurePreallocated(	110,
+																								new LongRequest(1L)));
 
 		assertEquals(1000, lRecycler.getLiveMemoryInBytes());
 		assertEquals(100, lRecycler.getLiveObjectCount());
@@ -39,7 +43,7 @@ public class RecyclerTests
 		HashSet<RecyclableTestClass> lRecyclableObjectSet = new HashSet<RecyclableTestClass>();
 		for (int i = 0; i < 100; i++)
 		{
-			RecyclableTestClass lRecyclableObject = lRecycler.failOrRequestRecyclableObject(1L);
+			RecyclableTestClass lRecyclableObject = lRecycler.failOrRequestRecyclableObject(new LongRequest(1L));
 			assertTrue(lRecyclableObject != null);
 			lRecyclableObjectSet.add(lRecyclableObject);
 		}
@@ -48,7 +52,7 @@ public class RecyclerTests
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.failOrRequestRecyclableObject(1L);
+				RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.failOrRequestRecyclableObject(new LongRequest(1L));
 				assertTrue(lFailOrRequestRecyclableObject == null);
 			}
 			fail();
@@ -71,7 +75,7 @@ public class RecyclerTests
 		for (int i = 0; i < 99; i++)
 		{
 			// System.out.println(i);
-			RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.failOrRequestRecyclableObject(1L);
+			RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.failOrRequestRecyclableObject(new LongRequest(1L));
 			assertTrue(lFailOrRequestRecyclableObject != null);
 			lRecycler.release(lFailOrRequestRecyclableObject);
 		}
@@ -91,7 +95,7 @@ public class RecyclerTests
 			{
 				lFailOrRequestRecyclableObject = lRecycler.waitOrRequestRecyclableObject(	1000,
 																																									TimeUnit.MILLISECONDS,
-																																									1L);
+																																									new LongRequest(1L));
 			}
 			catch (OutOfMemoryError e)
 			{

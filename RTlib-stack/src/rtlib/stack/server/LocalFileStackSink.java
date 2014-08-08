@@ -14,8 +14,8 @@ import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.VariableInterface;
 import rtlib.stack.Stack;
 
-public class LocalFileStackSink extends LocalFileStackBase implements
-																													StackSinkInterface,
+public class LocalFileStackSink<I> extends LocalFileStackBase	implements
+																													StackSinkInterface<I>,
 																													Closeable
 {
 
@@ -28,7 +28,7 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	}
 
 	@Override
-	public boolean appendStack(final Stack pStack)
+	public boolean appendStack(final Stack<I> pStack)
 	{
 
 		try

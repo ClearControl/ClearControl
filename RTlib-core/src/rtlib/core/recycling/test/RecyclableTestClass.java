@@ -6,14 +6,14 @@ import rtlib.core.recycling.RecyclableInterface;
 import rtlib.core.recycling.Recycler;
 
 public class RecyclableTestClass implements
-																RecyclableInterface<RecyclableTestClass, Long>
+																RecyclableInterface<RecyclableTestClass, LongRequest>
 {
 	// Proper class fields:
 	AtomicBoolean mFree = new AtomicBoolean(false);
 	double[] mArray;
 
 	// Recycling related fields:
-	private Recycler<RecyclableTestClass, Long> mRecycler;
+	private Recycler<RecyclableTestClass, LongRequest> mRecycler;
 	AtomicBoolean mReleased = new AtomicBoolean(false);
 
 	@Override
@@ -35,17 +35,15 @@ public class RecyclableTestClass implements
 	}
 
 	@Override
-	public boolean isCompatible(Long... pParameters)
+	public boolean isCompatible(LongRequest pRequest)
 	{
-		final long lLength = pParameters[0];
-		return mArray.length == lLength;
+		return mArray.length == pRequest.value;
 	}
 
 	@Override
-	public void initialize(Long... pParameters)
+	public void initialize(LongRequest pRequest)
 	{
-		final long lLength = pParameters[0];
-		mArray = new double[Math.toIntExact(lLength)];
+		mArray = new double[Math.toIntExact(pRequest.value)];
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class RecyclableTestClass implements
 	}
 
 	@Override
-	public void setRecycler(Recycler<RecyclableTestClass, Long> pRecycler)
+	public void setRecycler(Recycler<RecyclableTestClass, LongRequest> pRecycler)
 	{
 		mRecycler = pRecycler;
 	}

@@ -3,14 +3,16 @@ package rtlib.kam.memory.ndarray;
 import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.kam.memory.NDStructured;
+import rtlib.kam.memory.Typed;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.cursor.NDCursorAccessible;
 import rtlib.kam.memory.ram.RAM;
 
-public class TypedNDArray<T> extends NDArray implements
+public class NDArrayTyped<T> extends NDArray implements
 																						NDStructured,
 																						NDCursorAccessible,
 																						NDDefaultCursorAccessible,
+																						Typed<T>,
 																						SizedInBytes
 
 {
@@ -18,20 +20,44 @@ public class TypedNDArray<T> extends NDArray implements
 	private final Class<T> mType;
 	private final int mElementSize;
 
-	public static <T> TypedNDArray<T> allocateNDArray(RAM pRAM,
+	public static <T> NDArrayTyped<T> allocateNDArray(RAM pRAM,
 																										Class<T> pType,
 																										final NDBoundedCursor pCursor)
 	{
-		return new TypedNDArray<T>(pRAM, pType, pCursor);
+		return new NDArrayTyped<T>(pRAM, pType, pCursor);
 	}
 
-	public TypedNDArray(RAM pRAM,
+	public NDArrayTyped(RAM pRAM,
 											Class<T> pType,
 											NDBoundedCursor pCursor)
 	{
 		super(pRAM, SizeOf.sizeOf(pType), pCursor);
 		mType = pType;
 		mElementSize = SizeOf.sizeOf(pType);
+	}
+
+	@Override
+	public long getSizeInBytes()
+	{
+		return getLengthInElements() * mElementSize;
+	}
+
+	public Class<T> getType()
+	{
+		return mType;
+	}
+
+	public boolean isFloatingPointType()
+	{
+		return mType == float.class || mType == double.class;
+	}
+
+	public boolean isIntegralNumberType()
+	{
+		return mType == byte.class || mType == char.class
+						|| mType == short.class
+						|| mType == int.class
+						|| mType == long.class;
 	}
 
 	@Override
@@ -212,10 +238,6 @@ public class TypedNDArray<T> extends NDArray implements
 										pValue);
 	}
 
-	@Override
-	public long getSizeInBytes()
-	{
-		return getLengthInElements() * mElementSize;
-	}
+
 
 }

@@ -2,8 +2,8 @@ package rtlib.stack.processor;
 
 import rtlib.core.variable.booleanv.BooleanVariable;
 
-public abstract class StackProcessorBase implements
-																				StackProcessorInterface
+public abstract class StackProcessorBase<I, O>	implements
+																				StackProcessorInterface<I, O>
 {
 	private final BooleanVariable mIsActiveVariable;
 	private final String mProcessorName;

@@ -270,4 +270,31 @@ public class BufferGPU<T> implements
 		return mCLBuffer;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "BufferGPU [mOpenCLContext=" + mOpenCLContext
+						+ ", mCLBuffer="
+						+ mCLBuffer
+						+ ", mElementType="
+						+ mElementType
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", mBytesPerElement="
+						+ mBytesPerElement
+						+ ", mLengthInElements="
+						+ mLengthInElements
+						+ ", mRead="
+						+ mRead
+						+ ", mWrite="
+						+ mWrite
+						+ ", mMappingPointer="
+						+ mMappingPointer
+						+ ", mQueue="
+						+ mQueue
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

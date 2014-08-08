@@ -181,4 +181,17 @@ public class RAMJava<T> implements
 											Math.toIntExact(pLengthToCopy));
 	}
 
+	@Override
+	public String toString()
+	{
+		return "RAMJava [mDataType=" + mDataType
+						+ ", mLength="
+						+ mLength
+						+ ", mArray="
+						+ mArray
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

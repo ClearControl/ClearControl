@@ -215,4 +215,33 @@ public abstract class ImageGPU<T> implements
 		return mCLImage;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "ImageGPU [mOpenCLContext=" + mOpenCLContext
+						+ ", mCLImage="
+						+ mCLImage
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", mElementType="
+						+ mElementType
+						+ ", mBytesPerVoxel="
+						+ mBytesPerVoxel
+						+ ", mRead="
+						+ mRead
+						+ ", mWrite="
+						+ mWrite
+						+ ", mWidth="
+						+ mWidth
+						+ ", mHeight="
+						+ mHeight
+						+ ", mDepth="
+						+ mDepth
+						+ ", mQueue="
+						+ mQueue
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

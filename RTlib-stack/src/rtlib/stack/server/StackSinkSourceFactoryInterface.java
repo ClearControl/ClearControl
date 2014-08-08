@@ -1,8 +1,8 @@
 package rtlib.stack.server;
 
-public interface StackSinkSourceFactoryInterface
+public interface StackSinkSourceFactoryInterface<I>
 {
 
-	public StackSinkInterface getStackSink();
+	public StackSinkInterface<I> getStackSink();
 
 }

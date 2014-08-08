@@ -2,7 +2,6 @@ package rtlib.gui.video.video2d.demo;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
@@ -62,13 +61,13 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		mcontentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(mcontentPane);
 
-		final VideoFrame2DDisplay lVideoDisplayDevice = new VideoFrame2DDisplay(512,
+		final VideoFrame2DDisplay<Byte> lVideoDisplayDevice = new VideoFrame2DDisplay<Byte>(512,
 																																						512);
 		lVideoDisplayDevice.setLinearInterpolation(true);
 		lVideoDisplayDevice.setSyncToRefresh(false);
 		lVideoDisplayDevice.setVisible(true);
 
-		final ObjectVariable<Stack> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();
+		final ObjectVariable<Stack<Byte>> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();
 
 		final JSliderDouble lJSliderDouble = new JSliderDouble("gray value");
 		mcontentPane.add(lJSliderDouble, BorderLayout.SOUTH);
@@ -96,7 +95,12 @@ public class VideoFrame2DDisplayDemo extends JFrame
 
 		final DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
-		final Stack lFrame = new Stack(0L, 0L, 512, 512, 1, 1);
+		final Stack<Byte> lFrame = new Stack<Byte>(	0L,
+																					0L,
+																					512,
+																					512,
+																					1,
+																					Byte.class);
 
 		lDoubleVariable.sendUpdatesTo(new DoubleVariable(	"SliderDoubleEventHook",
 																											0)
@@ -135,17 +139,5 @@ public class VideoFrame2DDisplayDemo extends JFrame
 
 	}
 
-	private void generateNoiseBuffer(	final ByteBuffer pVideoByteBuffer,
-																		final double pAmplitude)
-	{
-		pVideoByteBuffer.clear();
 
-		final int lBufferLength = pVideoByteBuffer.limit();
-		for (int i = 0; i < lBufferLength; i++)
-		{
-			final byte lValue = (byte) ((int) (Math.random() * 256 * pAmplitude) % 256);
-			// System.out.print(lValue);
-			pVideoByteBuffer.put(i, lValue);
-		}
-	}
 }

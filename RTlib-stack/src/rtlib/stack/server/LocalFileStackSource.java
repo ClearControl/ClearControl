@@ -11,12 +11,12 @@ import rtlib.core.recycling.Recycler;
 import rtlib.core.units.Magnitudes;
 import rtlib.stack.Stack;
 
-public class LocalFileStackSource extends LocalFileStackBase implements
-																														StackSourceInterface,
+public class LocalFileStackSource<O> extends LocalFileStackBase	implements
+																														StackSourceInterface<O>,
 																														Closeable
 {
 
-	private Recycler<Stack, Long> mStackRecycler;
+	private Recycler<Stack<O>, Long> mStackRecycler;
 
 	public LocalFileStackSource(final File pRootFolder,
 															final String pName) throws IOException
@@ -32,14 +32,14 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack, Long> pStackRecycler)
+	public void setStackRecycler(final Recycler<Stack<O>, Long> pStackRecycler)
 	{
 		mStackRecycler = pStackRecycler;
 
 	}
 
 	@Override
-	public Stack getStack(final long pStackIndex)
+	public Stack<O> getStack(final long pStackIndex)
 	{
 		if (mStackRecycler == null)
 		{
@@ -51,7 +51,7 @@ public class LocalFileStackSource extends LocalFileStackBase implements
 
 			final Long[] lStackDimensions = mStackIndexToStackDimensionsMap.get(pStackIndex);
 
-			final Stack lStack = mStackRecycler.failOrRequestRecyclableObject(lStackDimensions);
+			final Stack<O> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackDimensions);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
 																																					true);

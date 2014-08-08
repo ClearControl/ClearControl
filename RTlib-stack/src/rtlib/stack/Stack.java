@@ -5,32 +5,38 @@ import java.util.concurrent.TimeUnit;
 
 import org.bridj.Pointer;
 
+import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
+import rtlib.core.memory.TypeId;
 import rtlib.core.recycling.RecyclableInterface;
 import rtlib.core.recycling.Recycler;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.NDStructured;
+import rtlib.kam.memory.Typed;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ram.RAM;
 
-public class Stack implements
-									RecyclableInterface<Stack, Long>,
-									NDStructured,
-									SizedInBytes,
-									Freeable
+public class Stack<T> implements
+											RecyclableInterface<Stack<T>, Long>,
+											NDStructured,
+											Typed<T>,
+											SizedInBytes,
+											Freeable
 {
 
-	private Recycler<Stack, Long> mStackRecycler;
+	private Recycler<Stack<T>, Long> mStackRecycler;
 	private volatile boolean mIsReleased;
 
-	private NDArrayDirect mNDArray;
+	private NDArrayDirect<T> mNDArray;
 
-	private volatile long mBytesPerVoxel;
+	private Class<T> mType;
 
 	private volatile long mStackIndex;
 	private volatile long mTimeStampInNanoseconds;
 	protected double[] mVolumeSize;
 	private volatile long mNumberOfImagesPerPlane = 1;
+
+
 
 	@SuppressWarnings("unused")
 	private Stack()
@@ -42,66 +48,75 @@ public class Stack implements
 								final long pWidth,
 								final long pHeight,
 								final long pDepth,
-								final long pBytesPerVoxel)
+								final Class<T> pType)
 	{
 		super();
 
 		setStackIndex(pImageIndex);
 		setTimeStampInNanoseconds(pTimeStampInNanoseconds);
-		setBytesPerVoxel(pBytesPerVoxel);
+		setType(pType);
 
-		mNDArray = NDArrayDirect.allocateSXYZ(getBytesPerVoxel(),
+		mNDArray = NDArrayDirect.allocateTXYZ(pType,
 																					pWidth,
 																					pHeight,
 																					pDepth);
 
 	}
 
-	public Stack(	final NDArrayDirect pNDArrayDirect,
+	@SuppressWarnings("unchecked")
+	public Stack(	final NDArrayDirect<T> pNDArrayDirect,
 								final long pImageIndex,
 								final long pTimeStampInNanoseconds)
 	{
 		super();
 		setStackIndex(pImageIndex);
 		setTimeStampInNanoseconds(pTimeStampInNanoseconds);
-		setBytesPerVoxel(2);
+		setType((Class<T>) Short.class);
 		mNDArray = pNDArrayDirect;
 	}
 
 	@Override
 	public boolean isCompatible(final Long... pParameters)
 	{
-		setBytesPerVoxel(pParameters[0]);
+		final long lTypeId = pParameters[0];
 		final long lWidth = pParameters[1];
 		final long lHeight = pParameters[2];
 		final long lDepth = pParameters[3];
+		
+		final Class<?> lType = TypeId.idToClass((int) lTypeId);
+		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
+			
 
 		final long lLengthInBytes = lWidth * lHeight
 																* lDepth
-																* getBytesPerVoxel();
+																* lBytesPerVoxel;
 		return (mNDArray != null && !mNDArray.isFree() && mNDArray.getSizeInBytes() == lLengthInBytes);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(final Long... pParameters)
 	{
-		setBytesPerVoxel(pParameters[0]);
+		final long lTypeId = pParameters[0];
 		final long lWidth = pParameters[1];
 		final long lHeight = pParameters[2];
 		final long lDepth = pParameters[3];
+
+		final Class<?> lType = TypeId.idToClass((int) lTypeId);
+		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
 
 		if (!isCompatible(pParameters))
 		{
 			if (mNDArray != null)
 				mNDArray.free();
-			mNDArray = NDArrayDirect.allocateSXYZ(getBytesPerVoxel(),
+			mNDArray = (NDArrayDirect<T>) NDArrayDirect.allocateTXYZ(	lType,
 																						lWidth,
 																						lHeight,
 																						lDepth);
 		}
 	}
 
-	public NDArrayDirect getNDArray()
+	public NDArrayDirect<T> getNDArray()
 	{
 		complainIfFreed();
 		return mNDArray;
@@ -120,13 +135,9 @@ public class Stack implements
 
 	public long getBytesPerVoxel()
 	{
-		return mBytesPerVoxel;
+		return SizeOf.sizeOf(mType);
 	}
 
-	private void setBytesPerVoxel(long pBytesPerVoxel)
-	{
-		mBytesPerVoxel = pBytesPerVoxel;
-	}
 
 	@Override
 	public long getSizeAlongDimension(int pDimensionIndex)
@@ -203,14 +214,14 @@ public class Stack implements
 		mNumberOfImagesPerPlane = pNumberOfImagesPerPlane;
 	}
 
-	public void copyMetaDataFrom(Stack pStack)
+	public void copyMetaDataFrom(Stack<T> pStack)
 	{
 		if (mVolumeSize != null)
 			mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
 																	mVolumeSize.length);
 		setStackIndex(pStack.getIndex());
 		setTimeStampInNanoseconds(pStack.getTimeStampInNanoseconds());
-		setBytesPerVoxel(pStack.getBytesPerVoxel());
+		setType(pStack.getType());
 	}
 
 	public void releaseStack()
@@ -240,12 +251,12 @@ public class Stack implements
 	}
 
 	@Override
-	public void setRecycler(final Recycler<Stack, Long> pRecycler)
+	public void setRecycler(final Recycler<Stack<T>, Long> pRecycler)
 	{
 		mStackRecycler = pRecycler;
 	}
 
-	public static Stack requestOrWaitWithRecycler(Recycler<Stack, Long> pRecycler,
+	public static <T> Stack<T> requestOrWaitWithRecycler(	Recycler<Stack<T>, Long> pRecycler,
 																								final long pWaitTime,
 																								final TimeUnit pTimeUnit,
 																								long pBytesPerVoxel,
@@ -296,5 +307,17 @@ public class Stack implements
 													getIndex(),
 													getTimeStampInNanoseconds());
 	}
+
+	@Override
+	public Class<T> getType()
+	{
+		return mType;
+	}
+
+	public void setType(Class<T> pType)
+	{
+		mType = pType;
+	}
+
 
 }

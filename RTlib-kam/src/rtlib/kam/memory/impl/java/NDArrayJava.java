@@ -1,5 +1,7 @@
 package rtlib.kam.memory.impl.java;
 
+import java.util.Arrays;
+
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.cursor.NDCursor;
@@ -207,6 +209,29 @@ public class NDArrayJava<T> extends RAMJava<T> implements
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "NDArrayJava [dimensions=" + Arrays.toString(dimensions)
+						+ ", bytearray="
+						+ Arrays.toString(bytearray)
+						+ ", chararray="
+						+ Arrays.toString(chararray)
+						+ ", shortarray="
+						+ Arrays.toString(shortarray)
+						+ ", intarray="
+						+ Arrays.toString(intarray)
+						+ ", longarray="
+						+ Arrays.toString(longarray)
+						+ ", floatarray="
+						+ Arrays.toString(floatarray)
+						+ ", doublearray="
+						+ Arrays.toString(doublearray)
+						+ ", mArray="
+						+ mArray
+						+ "]";
 	}
 
 }

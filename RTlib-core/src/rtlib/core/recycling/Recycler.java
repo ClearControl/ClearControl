@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import rtlib.core.log.Loggable;
 import rtlib.core.rgc.Freeable;
 
-public class Recycler<R extends RecyclableInterface<R, P>, P> implements
+public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest> implements
 																															Freeable,
 																															Loggable
 {
@@ -25,12 +25,12 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 
 	private AtomicBoolean mIsFreed = new AtomicBoolean(false);
 
-	public Recycler(final Class<R> pRecyclableClass)
+	public Recycler(final Class pRecyclableClass)
 	{
 		this(pRecyclableClass, Long.MAX_VALUE);
 	}
 
-	public Recycler(final Class<R> pRecyclableClass,
+	public Recycler(final Class pRecyclableClass,
 									final long pMaximumLiveMemoryInBytes)
 	{
 		mRecyclableClass = pRecyclableClass;
@@ -44,7 +44,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	}
 
 	public long ensurePreallocated(	final int pNumberofPrealocatedRecyclablesNeeded,
-																	@SuppressWarnings("unchecked") final P... pParameters)
+																	@SuppressWarnings("unchecked") final P pRecyclerRequest)
 	{
 		complainIfFreed();
 		final int lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
@@ -56,7 +56,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 			for (; i <= lNumberOfObjectsToAllocate; i++)
 			{
 
-				final R lNewInstance = createNewInstanceWithParameters(pParameters);
+				final R lNewInstance = createNewInstanceFromRequest(pRecyclerRequest);
 				if (lNewInstance == null)
 					return i - 1;
 
@@ -76,7 +76,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 
 	}
 
-	private R createNewInstanceWithParameters(final P[] pParameters) throws NoSuchMethodException,
+	private R createNewInstanceFromRequest(final P pRecyclerRequest) throws NoSuchMethodException,
 																																	InstantiationException,
 																																	IllegalAccessException,
 																																	InvocationTargetException
@@ -86,8 +86,8 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 		lDefaultConstructor.setAccessible(true);
 		final R lNewInstance = lDefaultConstructor.newInstance();
 		lDefaultConstructor.setAccessible(false);
-		if (pParameters != null)
-			lNewInstance.initialize(pParameters);
+		if (pRecyclerRequest != null)
+			lNewInstance.initialize(pRecyclerRequest);
 
 		if (mLiveMemoryInBytes.get() + lNewInstance.getSizeInBytes() > mMaximumLiveMemoryInBytes)
 		{
@@ -113,25 +113,25 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 	@SuppressWarnings("unchecked")
 	public R waitOrRequestRecyclableObject(	final long pWaitTime,
 																					final TimeUnit pTimeUnit,
-																					final P... pRequestParameters)
+																					final P pRecyclerRequest)
 	{
 		return requestRecyclableObject(	true,
 																		pWaitTime,
 																		pTimeUnit,
-																		pRequestParameters);
+																		pRecyclerRequest);
 	}
 
 	@SuppressWarnings("unchecked")
-	public R failOrRequestRecyclableObject(final P... pRequestParameters)
+	public R failOrRequestRecyclableObject(final P pRecyclerRequest)
 	{
-		return requestRecyclableObject(false, 0, null, pRequestParameters);
+		return requestRecyclableObject(false, 0, null, pRecyclerRequest);
 	}
 
 	@SuppressWarnings("unchecked")
 	public R requestRecyclableObject(	final boolean pWait,
 																		final long pWaitTime,
 																		final TimeUnit pTimeUnit,
-																		final P... pRequestParameters)
+																		final P pRecyclerRequest)
 	{
 		complainIfFreed();
 		final SoftReference<R> lPolledSoftReference = mAvailableObjectsQueue.poll();
@@ -150,23 +150,23 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 				return requestRecyclableObject(	pWait,
 																				pWaitTime,
 																				pTimeUnit,
-																				pRequestParameters);
+																				pRecyclerRequest);
 			}
-			if (pRequestParameters != null)
+			if (pRecyclerRequest != null)
 			{
 				lObtainedReference.setReleased(false);
 
-				if (!lObtainedReference.isCompatible(pRequestParameters))
+				if (!lObtainedReference.isCompatible(pRecyclerRequest))
 				{
 					destroyInstance(lObtainedReference, true);
 					return requestRecyclableObject(	pWait,
 																					pWaitTime,
 																					pTimeUnit,
-																					pRequestParameters);
+																					pRecyclerRequest);
 				}
 
 				mLiveMemoryInBytes.addAndGet(-lObtainedReference.getSizeInBytes());
-				lObtainedReference.initialize(pRequestParameters);
+				lObtainedReference.initialize(pRecyclerRequest);
 				mLiveMemoryInBytes.addAndGet(lObtainedReference.getSizeInBytes());
 			}
 			return lObtainedReference;
@@ -200,13 +200,13 @@ public class Recycler<R extends RecyclableInterface<R, P>, P> implements
 			return requestRecyclableObject(	pWait,
 																			pTimeUnit.toMillis(pWaitTime) - lWaitPeriodInMilliseconds,
 																			TimeUnit.MILLISECONDS,
-																			pRequestParameters);
+																			pRecyclerRequest);
 		}
 
 		R lNewInstance;
 		try
 		{
-			lNewInstance = createNewInstanceWithParameters(pRequestParameters);
+			lNewInstance = createNewInstanceFromRequest(pRecyclerRequest);
 			lNewInstance.setRecycler(this);
 			lNewInstance.setReleased(false);
 

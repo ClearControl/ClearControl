@@ -8,27 +8,27 @@ import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.Stack;
 
-public class AsynchronousStackSinkAdapter	implements
-																					StackSinkInterface
+public class AsynchronousStackSinkAdapter<I>	implements
+																					StackSinkInterface<I>
 {
 
-	private StackSinkInterface mStackSink;
+	private StackSinkInterface<I> mStackSink;
 
-	private AsynchronousProcessorInterface<Stack, Stack> mAsynchronousConversionProcessor;
+	private AsynchronousProcessorInterface<Stack<I>, Stack<I>> mAsynchronousConversionProcessor;
 
-	private ObjectVariable<Stack> mFinishedProcessingStackVariable;
+	private ObjectVariable<Stack<I>> mFinishedProcessingStackVariable;
 
-	public AsynchronousStackSinkAdapter(final StackSinkInterface pStackSink,
+	public AsynchronousStackSinkAdapter(final StackSinkInterface<I> pStackSink,
 																			final int pMaxQueueSize)
 	{
 		super();
 		mStackSink = pStackSink;
 
-		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<Stack, Stack>(	"AsynchronousStackSinkAdapter",
+		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<Stack<I>, Stack<I>>(	"AsynchronousStackSinkAdapter",
 																																										pMaxQueueSize)
 		{
 			@Override
-			public Stack process(final Stack pStack)
+			public Stack<I> process(final Stack<I> pStack)
 			{
 				mStackSink.appendStack(pStack);
 				if (mFinishedProcessingStackVariable != null)
@@ -46,7 +46,7 @@ public class AsynchronousStackSinkAdapter	implements
 	}
 
 	@Override
-	public boolean appendStack(final Stack pStack)
+	public boolean appendStack(final Stack<I> pStack)
 	{
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
@@ -86,7 +86,7 @@ public class AsynchronousStackSinkAdapter	implements
 		mStackSink.removeAllMetaDataVariables();
 	}
 
-	public void setFinishedProcessingStackVariable(final ObjectVariable<Stack> pVariable)
+	public void setFinishedProcessingStackVariable(final ObjectVariable<Stack<I>> pVariable)
 	{
 		mFinishedProcessingStackVariable = pVariable;
 	}

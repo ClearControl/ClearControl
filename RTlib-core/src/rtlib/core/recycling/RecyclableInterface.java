@@ -3,16 +3,16 @@ package rtlib.core.recycling;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.rgc.Freeable;
 
-public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P>	extends
+public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest>	extends
 																																							SizedInBytes,
 																																							Freeable
 {
 
 	@SuppressWarnings("unchecked")
-	boolean isCompatible(P... pParameters);
+	boolean isCompatible(P pParameters);
 
 	@SuppressWarnings("unchecked")
-	void initialize(P... pParameters);
+	void initialize(P pParameters);
 
 	void setRecycler(Recycler<O, P> pRecycler);
 

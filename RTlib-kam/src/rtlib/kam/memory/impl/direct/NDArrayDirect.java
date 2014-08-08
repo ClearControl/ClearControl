@@ -3,41 +3,79 @@ package rtlib.kam.memory.impl.direct;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.MemoryType;
 import rtlib.kam.memory.ReadWriteBytesFileChannel;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
-import rtlib.kam.memory.ndarray.NDArray;
+import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.ReadAtAligned;
 import rtlib.kam.memory.ram.WriteAtAligned;
 
-public class NDArrayDirect extends NDArray implements
-																					SizedInBytes,
-																					ReadWriteBytesFileChannel,
-																					WriteAtAligned,
-																					ReadAtAligned,
-																					Freeable
+public class NDArrayDirect<T> extends NDArrayTyped<T>	implements
+																											SizedInBytes,
+																											ReadWriteBytesFileChannel,
+																											WriteAtAligned,
+																											ReadAtAligned,
+																											Freeable
 {
 
-	public NDArrayDirect(	NDBoundedCursor pCursor,
-												long pElementSizeInBytes)
+	private NDArrayDirect(NDBoundedCursor pCursor,
+												RAMDirect pRAMDirect,
+												Class<T> pType)
 	{
-		super(RAMDirect.allocate(pCursor.getLengthInElements()),
-					1,
+		super(pRAMDirect, pType, pCursor);
+	}
+
+	public NDArrayDirect(	NDBoundedCursor pCursor,
+												long pElementSizeInBytes,
+												Class<T> pType)
+	{
+		super(RAMDirect.allocate(pCursor.getLengthInElements() * pElementSizeInBytes),
+					pType,
 					pCursor);
 	}
 
-	public static NDArrayDirect allocateSXYZ(	long pBytesPerPixel,
-																						long pWidth,
-																						long pHeight,
-																						long pDepth)
+	public static <T> NDArrayDirect<T> allocateTXYZ(Class<T> pType,
+																									long pWidth,
+																									long pHeight,
+																									long pDepth)
 	{
-		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(pBytesPerPixel,
+		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(1,
 																																						pWidth,
 																																						pHeight,
 																																						pDepth);
-		return new NDArrayDirect(lNDBoundedCursor, pBytesPerPixel);
+		return new NDArrayDirect<T>(lNDBoundedCursor,
+																SizeOf.sizeOf(pType),
+																pType);
+	}
+
+	public static <T> NDArrayDirect<T> allocateTXY(	Class<T> pType,
+																									long pWidth,
+																									long pHeight)
+	{
+		return allocateTXYZ(pType, pWidth, pHeight, 1);
+	}
+
+	public static <T> NDArrayDirect<T> wrapPointerTXYZ(	Object pParent,
+																											long pNativeAddress,
+																											long pLengthInBytes,
+																											Class<T> pType,
+																											int pWidth,
+																											int pHeight,
+																											int pDepth)
+	{
+
+		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(1,
+																																						pWidth,
+																																						pHeight,
+																																						pDepth);
+		return new NDArrayDirect<T>(lNDBoundedCursor,
+																RAMDirect.wrapPointer(pParent,
+																											pNativeAddress,
+																											pLengthInBytes),
+																pType);
 	}
 
 	private RAMDirect getRAMDirect()
@@ -193,6 +231,15 @@ public class NDArrayDirect extends NDArray implements
 	public boolean isFree()
 	{
 		return mRAM.isFree();
+	}
+
+	@Override
+	public String toString()
+	{
+		return "NDArrayDirect [mDefaultBoundedCursor=" + mDefaultBoundedCursor
+						+ ", mRAM="
+						+ mRAM
+						+ "]";
 	}
 
 }

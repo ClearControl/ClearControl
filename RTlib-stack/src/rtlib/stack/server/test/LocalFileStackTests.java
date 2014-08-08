@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
@@ -20,7 +21,7 @@ import rtlib.stack.server.LocalFileStackSource;
 public class LocalFileStackTests
 {
 
-	private static final int cBytesPerVoxel = 2;
+	private static final int cBytesPerVoxel = SizeOf.sizeOf(short.class);
 	private static final int cSizeZ = 2;
 	private static final int cSizeY = 2;
 	private static final int cSizeX = 2;
@@ -38,7 +39,7 @@ public class LocalFileStackTests
 		System.out.println(lRootFolder);
 
 		{
-			final LocalFileStackSink lLocalFileStackSink = new LocalFileStackSink(lRootFolder,
+			final LocalFileStackSink<Short> lLocalFileStackSink = new LocalFileStackSink<Short>(lRootFolder,
 																																						"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
@@ -48,12 +49,12 @@ public class LocalFileStackTests
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 
-			final Stack lStack = new Stack(	0,
+			final Stack<Short> lStack = new Stack<Short>(	0,
 																			0,
 																			cSizeX,
 																			cSizeY,
 																			cSizeZ,
-																			cBytesPerVoxel);
+																			short.class);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ * cBytesPerVoxel,
 										lStack.getNDArray().getLengthInElements());
@@ -84,7 +85,7 @@ public class LocalFileStackTests
 
 		{
 
-			final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lRootFolder,
+			final LocalFileStackSource<Short> lLocalFileStackSource = new LocalFileStackSource<Short>(lRootFolder,
 																																									"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
@@ -100,10 +101,11 @@ public class LocalFileStackTests
 			// System.out.println(lVariable2.get());
 			assertEquals("123", lVariable2.get());
 
-			final Recycler<Stack, Long> lStackRecycler = new Recycler<Stack, Long>(Stack.class);
+			@SuppressWarnings("rawtypes")
+			final Recycler<Stack<Short>, Long> lStackRecycler = new Recycler(Stack.class);
 			lLocalFileStackSource.setStackRecycler(lStackRecycler);
 
-			Stack lStack;
+			Stack<Short> lStack;
 
 			lLocalFileStackSource.update();
 

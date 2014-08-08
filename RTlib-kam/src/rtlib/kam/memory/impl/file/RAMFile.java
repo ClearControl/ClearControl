@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 import org.bridj.Pointer;
 
@@ -278,6 +279,35 @@ public class RAMFile extends RAMMappedAbstract implements
 
 		return lByteBuffer;
 
+	}
+
+	@Override
+	public String toString()
+	{
+		return "RAMFile [mFileChannel=" + mFileChannel
+						+ ", mStandardOpenOption="
+						+ Arrays.toString(mStandardOpenOption)
+						+ ", mFilePositionInBytes="
+						+ mFilePositionInBytes
+						+ ", mPositionWithinPageInBytes="
+						+ mPositionWithinPageInBytes
+						+ ", mPagePositionInBytes="
+						+ mPagePositionInBytes
+						+ ", mPageAlignedMappingAddressInBytes="
+						+ mPageAlignedMappingAddressInBytes
+						+ ", mMappingLengthInBytes="
+						+ mMappingLengthInBytes
+						+ ", mIsMapped="
+						+ mIsMapped
+						+ ", mAddressInBytes="
+						+ mAddressInBytes
+						+ ", mLengthInBytes="
+						+ mLengthInBytes
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
 	}
 
 }

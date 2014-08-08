@@ -227,4 +227,17 @@ public class NDBoundedCursor implements NDCursor
 		}
 	}
 
+	@Override
+	public String toString()
+	{
+		return "NDBoundedCursor [dimensions=" + Arrays.toString(dimensions)
+						+ ", multipliers="
+						+ Arrays.toString(multipliers)
+						+ ", ndindex="
+						+ Arrays.toString(ndindex)
+						+ ", flatindex="
+						+ flatindex
+						+ "]";
+	}
+
 }

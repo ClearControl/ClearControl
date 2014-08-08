@@ -1,10 +1,7 @@
 package rtlib.gui.video.video2d.jogl;
 
-import java.awt.Font;
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import javax.media.opengl.GL;
@@ -21,35 +18,33 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
+import org.bridj.Pointer;
+
 import rtlib.core.units.Magnitudes;
+import rtlib.gui.video.video2d.BitDepthAutoRescaler;
+import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ndarray.NDArray;
+import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 public class VideoWindow implements Closeable
 {
 
-	private static final double cMinMaxDampeningAlpha = 0.05;
 	private final GLWindow mGLWindow;
 	private String mWindowName;
 
-	private long mBytesPerPixel, mVideoMaxWidth, mVideoMaxHeight,
-			mVideoWidth, mVideoHeight, mMaxBufferLength;
+	private long mVideoMaxWidth, mVideoMaxHeight, mVideoWidth,
+			mVideoHeight;
 	private int[] mPixelBufferIds;
 	private GLU mGLU;
-	private GLUT mGLUT;
 	private boolean mIsContextAvailable = false;
 
 	private int mTextureId;
 	private boolean mUsePBO = false; // seems to be faster without PBOs!!
 
-	private ByteBuffer mSourceBuffer;
-
-	private short[] mShortArray;
-	private byte[] mByteArray;
-	private ByteBuffer mConvertedSourceBuffer;
+	private NDArrayTyped<?> mSourceBuffer;
+	private BitDepthAutoRescaler mBitDepthAutoRescaler = new BitDepthAutoRescaler();
 
 	private volatile boolean mIsUpToDate = false;
 	private final boolean mReportErrors = false;
@@ -60,15 +55,13 @@ public class VideoWindow implements Closeable
 
 	private volatile boolean mDisplayFrameRate = true;
 	private volatile long mDisplayFrameRateLastDisplayTime = 0;
-	private final TextRenderer mTextRenderer = new TextRenderer(new Font(	"Helvetica",
-																																				Font.PLAIN,
-																																				12));
+
 
 	private volatile boolean mDisplayOn = true,
-			mLinearInterpolation = false, mSyncToRefresh,
+			mLinearInterpolation = false, mSyncToRefresh = false,
 			mManualMinMax = false;
 
-	private volatile double mMinIntensity, mMaxIntensity;
+	private volatile double mMinIntensity = 0, mMaxIntensity = 255;
 
 	private static final GLCapabilities cGLCapabilities = new GLCapabilities(GLProfile.getDefault());
 
@@ -79,19 +72,15 @@ public class VideoWindow implements Closeable
 	}
 
 	public VideoWindow(	final String pWindowName,
-											final long pBytesPerPixel,
 											final long pVideoMaxWidth,
 											final long pVideoMaxHeight) throws GLException
 	{
 		this();
 		mWindowName = pWindowName;
-		mBytesPerPixel = pBytesPerPixel;
 		mVideoMaxWidth = pVideoMaxWidth;
 		mVideoMaxHeight = pVideoMaxHeight;
 		mVideoWidth = pVideoMaxWidth;
 		mVideoHeight = pVideoMaxHeight;
-		mMaxBufferLength = mVideoMaxWidth * mVideoMaxWidth
-												* mBytesPerPixel;
 
 		if (pVideoMaxWidth > 768 || pVideoMaxHeight > 768)
 		{
@@ -156,7 +145,6 @@ public class VideoWindow implements Closeable
 			{
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
 				mGLU = new GLU();
-				mGLUT = new GLUT();
 
 				if (!lGL2.isExtensionAvailable("GL_ARB_pixel_buffer_object"))
 				{
@@ -206,10 +194,11 @@ public class VideoWindow implements Closeable
 
 				if (mSourceBuffer == null)
 				{
-					mSourceBuffer = ByteBuffer.allocate((int) Math.toIntExact(mMaxBufferLength));
+					mSourceBuffer = NDArrayDirect.allocateTXY(Byte.class,
+																										mVideoWidth,
+																										mVideoHeight);
 				}
 
-				mSourceBuffer.rewind();
 				lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
 													0,
 													GL.GL_LUMINANCE,
@@ -218,7 +207,8 @@ public class VideoWindow implements Closeable
 													0,
 													GL.GL_LUMINANCE,
 													GL.GL_UNSIGNED_BYTE,
-													mSourceBuffer);
+													mSourceBuffer.getRAM()
+																				.passNativePointerToByteBuffer());
 				reportError(lGL2);
 
 				// mGL2.glEnable(GL2.GL_PIXEL_UNPACK_BUFFER);
@@ -235,7 +225,7 @@ public class VideoWindow implements Closeable
 					reportError(lGL2);
 
 					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mMaxBufferLength,
+														mSourceBuffer.getRAM().getSizeInBytes(),
 														null,
 														GL2ES2.GL_STREAM_DRAW);
 					reportError(lGL2);
@@ -245,7 +235,7 @@ public class VideoWindow implements Closeable
 					reportError(lGL2);
 
 					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mMaxBufferLength,
+														mSourceBuffer.getRAM().getSizeInBytes(),
 														null,
 														GL2ES2.GL_STREAM_DRAW);
 					reportError(lGL2);
@@ -334,7 +324,7 @@ public class VideoWindow implements Closeable
 				/**/
 
 				final long lTimeInNanoseconds = System.nanoTime();
-				if (mDisplayFrameRate && lTimeInNanoseconds > mDisplayFrameRateLastDisplayTime + 20 * 1000 * 1000)
+				if (isDisplayFrameRate() && lTimeInNanoseconds > mDisplayFrameRateLastDisplayTime + 200 * 1000 * 1000)
 				{
 					mDisplayFrameRateLastDisplayTime = lTimeInNanoseconds;
 					final String lTitleString = String.format("%s %.0f fps",
@@ -357,11 +347,6 @@ public class VideoWindow implements Closeable
 
 	}
 
-	public void setBytesPerPixel(final int pBytesPerPixel)
-	{
-		mBytesPerPixel = pBytesPerPixel;
-	}
-
 	public void setWidth(final int pVideoWidth)
 	{
 		mVideoWidth = pVideoWidth;
@@ -372,18 +357,31 @@ public class VideoWindow implements Closeable
 		mVideoHeight = pVideoHeight;
 	}
 
-	public void setSourceBuffer(final ByteBuffer pSourceBuffer)
+	public <T> void setSourceBuffer(final java.nio.ByteBuffer pSourceBuffer,
+															Class<T> pType,
+															final int pVideoBytesPerPixel,
+															final int pVideoWidth,
+															final int pVideoHeight)
+	{
+		Pointer<Byte> lPointerToBytes = Pointer.pointerToBytes(pSourceBuffer);
+		long lNativeAddress = lPointerToBytes.getPeer();
+		long lLengthInBytes = lPointerToBytes.getValidBytes();
+		mSourceBuffer = NDArrayDirect.wrapPointerTXYZ(pSourceBuffer,
+																									lNativeAddress,
+																									lLengthInBytes,
+																									pType,
+																									pVideoWidth,
+																									pVideoHeight,
+																									1);
+	}
+
+	public <T> void setSourceBuffer(NDArrayTyped<T> pSourceBuffer)
 	{
 		mSourceBuffer = pSourceBuffer;
 	}
 
-	public void setSourceBuffer(NDArray pNDArray)
-	{
-		setSourceBuffer(pNDArray.getRAM().passNativePointerToByteBuffer());
-	}
-
 	private boolean updateVideoWithBuffer(final GL2 pGL2,
-																				final ByteBuffer pNewContentBuffer)
+																				final NDArray pNewContentBuffer)
 	{
 		if (mIsUpToDate || !mDisplayOn)
 		{
@@ -398,21 +396,30 @@ public class VideoWindow implements Closeable
 		final int lCurrentIndex = (int) (mFrameIndex % 2);
 		final int lNextIndex = (int) ((mFrameIndex + 1) % 2);
 
-		final ByteBuffer lConvertedBuffer = convertBuffer(pNewContentBuffer);
+
+		if (mManualMinMax)
+		{
+			mBitDepthAutoRescaler.setMinimum(mMinIntensity);
+			mBitDepthAutoRescaler.setMaximum(mMaxIntensity);
+		}
+		mBitDepthAutoRescaler.setAutoRescale(!mManualMinMax);
+		final NDArray lConvertedBuffer = mBitDepthAutoRescaler.convertBuffer(pNewContentBuffer);
 
 		boolean lResult;
 
 		if (mUsePBO)
 		{
 			lResult = updateVideoWithBufferPBO(	pGL2,
-																					lConvertedBuffer,
+																					lConvertedBuffer.getRAM()
+																													.passNativePointerToByteBuffer(),
 																					lCurrentIndex,
 																					lNextIndex);
 		}
 		else
 		{
 			lResult = updateVideoWithBufferClassic(	pGL2,
-																							lConvertedBuffer,
+																							lConvertedBuffer.getRAM()
+																															.passNativePointerToByteBuffer(),
 																							lCurrentIndex,
 																							lNextIndex);
 		}
@@ -433,7 +440,7 @@ public class VideoWindow implements Closeable
 	}
 
 	private boolean updateVideoWithBufferClassic(	final GL2 pGL2,
-																								final ByteBuffer pNewContentBuffer,
+																								final java.nio.ByteBuffer pNewContentBuffer,
 																								final int pCurrentIndex,
 																								final int pNextIndex)
 	{
@@ -456,7 +463,7 @@ public class VideoWindow implements Closeable
 	}
 
 	private boolean updateVideoWithBufferPBO(	final GL2 pGL2,
-																						final ByteBuffer pNewContentBuffer,
+																						final java.nio.ByteBuffer pNewContentBuffer,
 																						final int pCurrentIndex,
 																						final int pNextIndex)
 	{
@@ -496,8 +503,8 @@ public class VideoWindow implements Closeable
 		reportError(pGL2);
 
 		// Map buffer. Returns pointer to buffer memory
-		final ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(	GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-																															GL.GL_WRITE_ONLY);
+		final java.nio.ByteBuffer lTextureMappedBuffer = pGL2.glMapBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+																																			GL.GL_WRITE_ONLY);
 
 		reportError(pGL2);
 
@@ -521,144 +528,6 @@ public class VideoWindow implements Closeable
 		return true;
 	}
 
-	private ByteBuffer convertBuffer(final ByteBuffer pNewContentBuffer)
-	{
-		if (mBytesPerPixel == 1)
-		{
-			return pNewContentBuffer;
-		}
-		else if (mBytesPerPixel == 2)
-		{
-			final int lByteBufferLength = pNewContentBuffer.capacity();
-			final int lConvertedBuferLength = lByteBufferLength / 2;
-			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.capacity() != lConvertedBuferLength)
-			{
-				mShortArray = new short[lConvertedBuferLength];
-				mByteArray = new byte[lConvertedBuferLength];
-				mConvertedSourceBuffer = ByteBuffer.wrap(mByteArray);
-			}
-
-			pNewContentBuffer.rewind();
-			convertFromShortBuffer(pNewContentBuffer.asShortBuffer());
-
-			return mConvertedSourceBuffer;
-
-		}
-
-		return null;
-	}
-
-	int[] mMinMax = new int[]
-	{ Integer.MAX_VALUE, Integer.MIN_VALUE };
-
-	private void convertFromShortBuffer(final ShortBuffer pShortBuffer)
-	{
-		pShortBuffer.rewind();
-		pShortBuffer.get(mShortArray);
-		if (mManualMinMax)
-		{
-			mMinMax[0] = (int) Math.round(65535 * mMinIntensity);
-			mMinMax[1] = (int) Math.round(65535 * mMaxIntensity);
-		}
-		convert16to8bitRescaled(mShortArray,
-														mByteArray,
-														!mManualMinMax,
-														mMinMax);
-	}
-
-	private static final void convert16to8bitRescaled(final short[] pShortArray,
-																										final byte[] lByteArray,
-																										final boolean pAutoRescale,
-																										final int[] pMinMax)
-	{
-		final int length = pShortArray.length;
-
-		if (pAutoRescale)
-		{
-			convert16to8bitRescaledAuto(pShortArray,
-																	lByteArray,
-																	pMinMax,
-																	length);
-		}
-		else
-		{
-			convert16to8bitRescaledManual(pShortArray,
-																		lByteArray,
-																		pMinMax,
-																		length);
-		}
-
-	}
-
-	private static void convert16to8bitRescaledManual(final short[] pShortArray,
-																										final byte[] lByteArray,
-																										final int[] pMinMax,
-																										final int length)
-	{
-		final int lCurrentMin = pMinMax[0];
-		final int lCurrentMax = pMinMax[1];
-		final int lCurrentWidth = lCurrentMax - lCurrentMin;
-
-		for (int i = 0; i < length; i++)
-		{
-			final int lShortValue = pShortArray[i];
-			byte lByteMappedValue = 0;
-			if (lCurrentWidth > 0)
-			{
-				final int lIntegerMappedValue = (255 * (lShortValue - lCurrentMin)) / lCurrentWidth;
-				lByteMappedValue = clamp(lIntegerMappedValue);
-			}
-			lByteArray[i] = lByteMappedValue;
-		}
-	}
-
-	private static void convert16to8bitRescaledAuto(final short[] pShortArray,
-																									final byte[] lByteArray,
-																									final int[] pMinMax,
-																									final int length)
-	{
-		final int lCurrentMin = pMinMax[0];
-		final int lCurrentMax = pMinMax[1];
-		final int lCurrentWidth = lCurrentMax - lCurrentMin;
-
-		int lNewMin = Integer.MAX_VALUE;
-		int lNewMax = Integer.MIN_VALUE;
-
-		for (int i = 0; i < length; i++)
-		{
-			final int lShortValue = pShortArray[i];
-			lNewMin = Math.min(lNewMin, lShortValue);
-			lNewMax = Math.max(lNewMax, lShortValue);
-			int lIntegerMappedValue = 0;
-			if (lCurrentWidth > 0)
-			{
-				lIntegerMappedValue = (255 * (lShortValue - lCurrentMin) / lCurrentWidth);
-			}
-			lByteArray[i] = clamp(lIntegerMappedValue);
-		}
-
-		pMinMax[0] = (int) ((1 - cMinMaxDampeningAlpha) * pMinMax[0] + cMinMaxDampeningAlpha * lNewMin);
-		pMinMax[1] = (int) ((1 - cMinMaxDampeningAlpha) * pMinMax[1] + cMinMaxDampeningAlpha * lNewMax);
-	}
-
-	private static byte clamp(final int pIntegerMappedValue)
-	{
-		byte lByteMappedValue;
-		if (pIntegerMappedValue <= 0)
-		{
-			lByteMappedValue = 0;
-		}
-		else if (pIntegerMappedValue >= 255)
-		{
-			lByteMappedValue = (byte) 255;
-		}
-		else
-		{
-			lByteMappedValue = (byte) pIntegerMappedValue;
-		}
-		return lByteMappedValue;
-	}
-
 	private void reportError(final GL2 pGL2)
 	{
 		if (mReportErrors)
@@ -673,11 +542,6 @@ public class VideoWindow implements Closeable
 				System.out.println("ERROR!!");
 			}
 		}
-	}
-
-	public long getMaxBufferLength()
-	{
-		return mMaxBufferLength;
 	}
 
 	public void notifyNewFrame()
@@ -712,9 +576,9 @@ public class VideoWindow implements Closeable
 		return mSyncToRefresh;
 	}
 
-	public void setSyncToRefresh(final boolean syncToRefresh)
+	public void setSyncToRefresh(final boolean pSyncToRefresh)
 	{
-		mSyncToRefresh = syncToRefresh;
+		mSyncToRefresh = pSyncToRefresh;
 	}
 
 	public void display()
@@ -722,9 +586,9 @@ public class VideoWindow implements Closeable
 		mGLWindow.display();
 	}
 
-	public void setVisible(final boolean pB)
+	public void setVisible(final boolean pVisible)
 	{
-		mGLWindow.setVisible(pB);
+		mGLWindow.setVisible(pVisible);
 	}
 
 	public boolean isVisible()
@@ -747,9 +611,9 @@ public class VideoWindow implements Closeable
 		return mMinIntensity;
 	}
 
-	public void setMinIntensity(final double minIntensity)
+	public void setMinIntensity(final double pMinIntensity)
 	{
-		mMinIntensity = minIntensity;
+		mMinIntensity = pMinIntensity;
 	}
 
 	public double getMaxIntensity()
@@ -757,9 +621,9 @@ public class VideoWindow implements Closeable
 		return mMaxIntensity;
 	}
 
-	public void setMaxIntensity(final double maxIntensity)
+	public void setMaxIntensity(final double pMaxIntensity)
 	{
-		mMaxIntensity = maxIntensity;
+		mMaxIntensity = pMaxIntensity;
 	}
 
 	public boolean isManualMinMax()
@@ -767,15 +631,26 @@ public class VideoWindow implements Closeable
 		return mManualMinMax;
 	}
 
-	public void setManualMinMax(final boolean manualMinMax)
+	public boolean isDisplayFrameRate()
 	{
-		mManualMinMax = manualMinMax;
+		return mDisplayFrameRate;
+	}
+
+	public void setDisplayFrameRate(boolean pDisplayFrameRate)
+	{
+		mDisplayFrameRate = pDisplayFrameRate;
+	}
+
+	public void setManualMinMax(final boolean pManualMinMax)
+	{
+		mManualMinMax = pManualMinMax;
 	}
 
 	public void disableClose()
 	{
 		mGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
+
 
 
 }

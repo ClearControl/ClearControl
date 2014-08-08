@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.memory.NativeMemoryAccess;
+import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.stack.Stack;
@@ -19,7 +20,7 @@ public class StackTests
 {
 
 	private static final long cMAXIMUM_LIVE_MEMORY_IN_BYTES = 2L * 1024L * 1024L * 1024L;
-	private static final long cBytesPerPixel = 2;
+	private static final long cBytesPerPixel = SizeOf.sizeOf(short.class);
 	private static final long cSizeX = 320;
 	private static final long cSizeY = 321;
 	private static final long cSizeZ = 100;
@@ -32,12 +33,12 @@ public class StackTests
 	@Test
 	public void testLifeCycle()
 	{
-		Stack lStack = new Stack(	1,
+		Stack<Short> lStack = new Stack<Short>(	1,
 															2,
 															cSizeX,
 															cSizeY,
 															cSizeZ,
-															cBytesPerPixel);
+																						short.class);
 
 		assertEquals(1, lStack.getVolumePhysicalDimension(0), 0);
 
@@ -83,7 +84,8 @@ public class StackTests
 	{
 		long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 
-		Recycler<Stack, Long> lRecycler = new Recycler<>(	Stack.class,
+		@SuppressWarnings("rawtypes")
+		Recycler<Stack<Short>, Long> lRecycler = new Recycler(Stack.class,
 																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
 		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
@@ -95,7 +97,7 @@ public class StackTests
 		for (int i = 0; i < 100; i++)
 		{
 			// System.out.println(i);
-			final Stack lStack;
+			final Stack<?> lStack;
 			if ((i % 100) < 50)
 			{
 				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
@@ -123,14 +125,14 @@ public class StackTests
 
 			assertNotNull(lStack);
 
-			NDArrayDirect lNdArray = lStack.getNDArray();
+			NDArrayDirect<?> lNdArray = lStack.getNDArray();
 			for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 			{
 				lNdArray.setByteAligned(k, (byte) k);
 			}
 
 			Runnable lRunnable2 = () -> {
-				NDArrayDirect lNdArray2 = lStack.getNDArray();
+				NDArrayDirect<?> lNdArray2 = lStack.getNDArray();
 				for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 				{
 					byte lByte = lNdArray2.getByteAligned(k);

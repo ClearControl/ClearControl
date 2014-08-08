@@ -1,4 +1,4 @@
-package rtlib.cameras.hamamatsu.orcaflash4.utils;
+package rtlib.cameras.orcaflash4.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,13 +29,13 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
 
-	private AsynchronousProcessorInterface<DcamFrame, Stack> mAsynchronousConversionProcessor;
+	private AsynchronousProcessorInterface<DcamFrame, Stack<Short>> mAsynchronousConversionProcessor;
 
-	private AsynchronousProcessorBase<Stack, Object> mSendToVariableAsynchronousProcessor;
+	private AsynchronousProcessorBase<Stack<Short>, Object> mSendToVariableAsynchronousProcessor;
 
-	private final Recycler<Stack, Long> mVideoFrameRecycler = new Recycler<Stack, Long>(Stack.class);
+	private final Recycler<Stack<Short>, Long> mVideoFrameRecycler = new Recycler<Stack<Short>, Long>(Stack.class);
 
-	private final SingleUpdateTargetObjectVariable<Stack> mStackReference = new SingleUpdateTargetObjectVariable<Stack>("Stack");
+	private final SingleUpdateTargetObjectVariable<Stack<Short>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Short>>("Stack");
 
 	private final DoubleVariable mStackDepthVariable = new DoubleVariable("StackDepth",
 																																				1);
@@ -43,7 +43,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	private final DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfPhases",
 																																										1);
 
-	private final ArrayList<StackProcessorInterface> mStackProcessorList = new ArrayList<StackProcessorInterface>();
+	private final ArrayList<StackProcessorInterface<?, ?>> mStackProcessorList = new ArrayList<StackProcessorInterface<?, ?>>();
 
 	public DcamJToVideoFrameConverterAndProcessing(	final ObjectVariable<DcamFrame> pDcamFrameReference,
 																									final int pMaxQueueSize)
@@ -65,8 +65,10 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			}
 		});
 
+		@SuppressWarnings("rawtypes")
 		final ProcessorInterface<DcamFrame, Stack> lProcessor = new ProcessorInterface<DcamFrame, Stack>()
 		{
+			@SuppressWarnings("rawtypes")
 			@Override
 			public Stack process(final DcamFrame pInput)
 			{
@@ -83,15 +85,15 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			}
 		};
 
-		mAsynchronousConversionProcessor = new AsynchronousProcessor<DcamFrame, Stack>(	"DcamJToVideoFrameConverter",
-																																										pMaxQueueSize,
-																																										lProcessor);
+		mAsynchronousConversionProcessor = new AsynchronousProcessor<DcamFrame, Stack<Short>>("DcamJToVideoFrameConverter",
+																																													pMaxQueueSize,
+																																													lProcessor);
 
-		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack, Object>("SendToVariableAsynchronousProcessor",
-																																												pMaxQueueSize)
+		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack<Short>, Object>(	"SendToVariableAsynchronousProcessor",
+																																																pMaxQueueSize)
 		{
 			@Override
-			public Object process(final Stack pStack)
+			public Object process(final Stack<Short> pStack)
 			{
 				/*System.out.println("sendtovar: hashcode=" + pStack.hashCode()
 														+ " index="
@@ -105,6 +107,8 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 
 	}
 
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
 	protected Stack convert(final DcamFrame pDcamFrame)
 	{
 		try
@@ -179,7 +183,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 		return mAsynchronousConversionProcessor.stop() && mSendToVariableAsynchronousProcessor.stop();
 	}
 
-	public SingleUpdateTargetObjectVariable<Stack> getStackReferenceVariable()
+	public SingleUpdateTargetObjectVariable<Stack<Short>> getStackReferenceVariable()
 	{
 		return mStackReference;
 	}
@@ -195,13 +199,13 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	}
 
 	@Override
-	public void addStackProcessor(final StackProcessorInterface pStackProcessor)
+	public void addStackProcessor(@SuppressWarnings("rawtypes") final StackProcessorInterface pStackProcessor)
 	{
 		mStackProcessorList.add(pStackProcessor);
 	}
 
 	@Override
-	public void removeStackProcessor(StackProcessorInterface pStackProcessor)
+	public void removeStackProcessor(@SuppressWarnings("rawtypes") StackProcessorInterface pStackProcessor)
 	{
 		mStackProcessorList.remove(pStackProcessor);
 	}

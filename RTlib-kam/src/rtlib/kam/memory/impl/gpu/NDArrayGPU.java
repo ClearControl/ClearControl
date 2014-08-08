@@ -1,5 +1,7 @@
 package rtlib.kam.memory.impl.gpu;
 
+import java.util.Arrays;
+
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.context.impl.gpu.ContextGPU;
@@ -126,6 +128,29 @@ public class NDArrayGPU<T> extends BufferGPU<T>	implements
 	public boolean isVectorized()
 	{
 		return false;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "NDArrayGPU [mDimensions=" + Arrays.toString(mDimensions)
+						+ ", mOpenCLContext="
+						+ mOpenCLContext
+						+ ", mCLBuffer="
+						+ mCLBuffer
+						+ ", mElementType="
+						+ mElementType
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", mBytesPerElement="
+						+ mBytesPerElement
+						+ ", mLengthInElements="
+						+ mLengthInElements
+						+ ", mRead="
+						+ mRead
+						+ ", mWrite="
+						+ mWrite
+						+ "]";
 	}
 
 }

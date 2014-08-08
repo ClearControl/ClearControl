@@ -10,18 +10,18 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.stack.Stack;
 
-public class VideoFrame2DDisplay extends NamedVirtualDevice
+public class VideoFrame2DDisplay<T> extends NamedVirtualDevice
 {
 	private final VideoWindow mVideoWindow;
 
-	private final ObjectVariable<Stack> mInputStackVariable;
+	private final ObjectVariable<Stack<T>> mInputStackVariable;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
 	private final DoubleVariable mMinimumIntensity;
 	private final DoubleVariable mMaximumIntensity;
 
-	private AsynchronousProcessorBase<Stack, Object> mAsynchronousDisplayUpdater;
+	private AsynchronousProcessorBase<Stack<T>, Object> mAsynchronousDisplayUpdater;
 
 	public VideoFrame2DDisplay()
 	{
@@ -31,48 +31,38 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 	public VideoFrame2DDisplay(	final int pVideoWidth,
 															final int pVideoHeight)
 	{
-		this("2D Video Display", pVideoWidth, pVideoHeight, 1);
+		this("2D Video Display", pVideoWidth, pVideoHeight, 10);
 	}
+
 
 	public VideoFrame2DDisplay(	final String pWindowName,
 															final int pVideoWidth,
 															final int pVideoHeight)
 	{
-		this(pWindowName, pVideoWidth, pVideoHeight, 1);
+		this(pWindowName, pVideoWidth, pVideoHeight, 10);
 	}
 
 	public VideoFrame2DDisplay(	final String pWindowName,
 															final int pVideoWidth,
 															final int pVideoHeight,
-															final int pBytesPerPixel)
-	{
-		this(pWindowName, pVideoWidth, pVideoHeight, pBytesPerPixel, 10);
-	}
-
-	public VideoFrame2DDisplay(	final String pWindowName,
-															final int pVideoWidth,
-															final int pVideoHeight,
-															final int pBytesPerPixel,
 															final int pUpdaterQueueLength)
 	{
 		super(pWindowName);
 
 		mVideoWindow = new VideoWindow(	pWindowName,
-																		pBytesPerPixel,
 																		pVideoWidth,
 																		pVideoHeight);
 
-		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack, Object>(	"AsynchronousDisplayUpdater",
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack<T>, Object>("AsynchronousDisplayUpdater",
 																																								pUpdaterQueueLength)
 		{
 			@Override
-			public Object process(final Stack pStack)
+			public Object process(final Stack<T> pStack)
 			{
 				// TODO: need to add method that handles RAMdirect sources!
 				// mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
 				mVideoWindow.setWidth((int) pStack.getWidth());
 				mVideoWindow.setHeight((int) pStack.getHeight());
-				mVideoWindow.setBytesPerPixel((int) pStack.getBytesPerVoxel());
 				mVideoWindow.notifyNewFrame();
 
 				mVideoWindow.display();
@@ -83,12 +73,12 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 
 		mAsynchronousDisplayUpdater.start();
 
-		mInputStackVariable = new ObjectVariable<Stack>(pWindowName)
+		mInputStackVariable = new ObjectVariable<Stack<T>>(pWindowName)
 		{
 
 			@Override
-			public Stack setEventHook(final Stack pOldStack,
-																final Stack pNewStack)
+			public Stack<T> setEventHook(	final Stack<T> pOldStack,
+																		final Stack<T> pNewStack)
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
@@ -169,7 +159,7 @@ public class VideoFrame2DDisplay extends NamedVirtualDevice
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<Stack> getFrameReferenceVariable()
+	public ObjectVariable<Stack<T>> getFrameReferenceVariable()
 	{
 		return mInputStackVariable;
 	}

@@ -1,7 +1,7 @@
-package rtlib.cameras.hamamatsu.orcaflash4;
+package rtlib.cameras.orcaflash4;
 
 import rtlib.cameras.StackCamera;
-import rtlib.cameras.hamamatsu.orcaflash4.utils.DcamJToVideoFrameConverterAndProcessing;
+import rtlib.cameras.orcaflash4.utils.DcamJToVideoFrameConverterAndProcessing;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.booleanv.BooleanVariable;

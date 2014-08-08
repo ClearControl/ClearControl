@@ -17,24 +17,25 @@ public class VideoWindowDemo
 	static volatile long rnd = 123456789;
 
 	@Test
-	public void simpleRandomDataTest() throws InterruptedException,
-																		IOException
+	public void simpleRandom8BitDataTest() throws InterruptedException,
+																				IOException
 	{
-		NDArrayDirect lNDArrayDirect = NDArrayDirect.allocateSXYZ(1,
+		NDArrayDirect<Byte> lNDArrayDirect = NDArrayDirect.allocateTXYZ(byte.class,
 																															512,
 																															512,
 																															1);
 
 		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
-																											lNDArrayDirect.getSizeAlongDimension(0),
 																											lNDArrayDirect.getSizeAlongDimension(1),
 																											lNDArrayDirect.getSizeAlongDimension(2));
 		lVideoWindow.setDisplayOn(true);
+		lVideoWindow.setManualMinMax(true);
+		// lVideoWindow.setLinearInterpolation(true);
 
 		lVideoWindow.setSourceBuffer(lNDArrayDirect);
 
 		lVideoWindow.setVisible(true);
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 			generateNoiseBuffer(lNDArrayDirect);
 			lVideoWindow.notifyNewFrame();
@@ -46,15 +47,48 @@ public class VideoWindowDemo
 
 	}
 
-	private void generateNoiseBuffer(final NDArrayDirect pNDArrayDirect)
+	@Test
+	public void simpleRandom16BitDataTest()	throws InterruptedException,
+																		IOException
+	{
+		NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
+																															512,
+																															512,
+																															1);
+
+		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
+																											lNDArrayDirect.getSizeAlongDimension(1),
+																											lNDArrayDirect.getSizeAlongDimension(2));
+		lVideoWindow.setSyncToRefresh(false);
+		lVideoWindow.setDisplayOn(true);
+		lVideoWindow.setManualMinMax(false);
+		lVideoWindow.setDisplayFrameRate(true);
+		// lVideoWindow.setLinearInterpolation(true);
+
+		lVideoWindow.setSourceBuffer(lNDArrayDirect);
+
+		lVideoWindow.setVisible(true);
+		for (int i = 0; i < 10000; i++)
+		{
+			generateNoiseBuffer(lNDArrayDirect);
+			lVideoWindow.notifyNewFrame();
+			lVideoWindow.display();
+			// Thread.sleep(10);
+		}
+
+		lVideoWindow.close();
+
+	}
+
+	private void generateNoiseBuffer(final NDArrayDirect<?> pNDArrayDirect)
 	{
 
-		final int lBufferLength = (int) pNDArrayDirect.getLengthInElements();
+		final int lBufferLength = (int) pNDArrayDirect.getRAM()
+																									.getSizeInBytes();
 		for (int i = 0; i < lBufferLength; i++)
 		{
-			rnd = (long) (rnd + 1 + 512 * Math.random());
-			rnd = rnd % 256;
-			final byte lValue = (byte) (rnd); // Math.random()
+			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
+			final byte lValue = (byte) (rnd & 0xFF); // Math.random()
 			// System.out.print(lValue);
 			pNDArrayDirect.setByteAligned(i, lValue);
 		}

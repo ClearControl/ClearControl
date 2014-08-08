@@ -180,4 +180,19 @@ public class RAMDirect extends RAMAbstract implements
 
 	}
 
+	@Override
+	public String toString()
+	{
+		return "RAMDirect [mParent=" + mParent
+						+ ", mAddressInBytes="
+						+ mAddressInBytes
+						+ ", mLengthInBytes="
+						+ mLengthInBytes
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

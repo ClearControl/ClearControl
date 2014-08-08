@@ -3,7 +3,7 @@ package rtlib.stack.server;
 import rtlib.core.variable.VariableInterface;
 import rtlib.stack.Stack;
 
-public interface StackSinkInterface
+public interface StackSinkInterface<I>
 {
 
 	public void addMetaDataVariable(final String pPrefix,
@@ -11,7 +11,7 @@ public interface StackSinkInterface
 
 	public void removeAllMetaDataVariables();
 
-	public boolean appendStack(final Stack pStack);
+	public boolean appendStack(final Stack<I> pStack);
 
 	public void removeMetaDataVariable(VariableInterface<?> pVariable);
 

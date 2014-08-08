@@ -9,12 +9,12 @@ import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.Stack;
 
-public class StackRAMServer	implements
-														StackSinkInterface,
-														StackSourceInterface
+public class StackRAMServer<T>	implements
+																StackSinkInterface<T>,
+																StackSourceInterface<T>
 {
 
-	ArrayList<Stack> mStackList = new ArrayList<Stack>();
+	ArrayList<Stack<T>> mStackList = new ArrayList<Stack<T>>();
 	TLongArrayList mStackTimePointList = new TLongArrayList();
 
 	protected final VariableBundle mMetaDataVariableBundle = new VariableBundle("MetaData");
@@ -37,12 +37,12 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack, Long> pStackRecycler)
+	public void setStackRecycler(final Recycler<Stack<T>, Long> pStackRecycler)
 	{
 	}
 
 	@Override
-	public Stack getStack(final long pStackIndex)
+	public Stack<T> getStack(final long pStackIndex)
 	{
 		return mStackList.get((int) pStackIndex);
 	}
@@ -54,7 +54,7 @@ public class StackRAMServer	implements
 	}
 
 	@Override
-	public boolean appendStack(final Stack pStack)
+	public boolean appendStack(final Stack<T> pStack)
 	{
 		mStackTimePointList.add(pStack.getTimeStampInNanoseconds());
 		return mStackList.add(pStack);

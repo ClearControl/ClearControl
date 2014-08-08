@@ -208,4 +208,33 @@ public class Image3DGPU<T> extends ImageGPU<T> implements
 															pDepth);
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Image3DGPU [mOpenCLContext=" + mOpenCLContext
+						+ ", mCLImage="
+						+ mCLImage
+						+ ", mIsFree="
+						+ mIsFree
+						+ ", mElementType="
+						+ mElementType
+						+ ", mBytesPerVoxel="
+						+ mBytesPerVoxel
+						+ ", mRead="
+						+ mRead
+						+ ", mWrite="
+						+ mWrite
+						+ ", mWidth="
+						+ mWidth
+						+ ", mHeight="
+						+ mHeight
+						+ ", mDepth="
+						+ mDepth
+						+ ", getDimension()="
+						+ getDimension()
+						+ ", getMemoryType()="
+						+ getMemoryType()
+						+ "]";
+	}
+
 }

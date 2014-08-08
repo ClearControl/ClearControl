@@ -14,7 +14,7 @@ public abstract class StackCamera extends CameraDevice
 	protected BooleanVariable mStackModeVariable;
 	protected BooleanVariable mSingleShotModeVariable;
 
-	protected ObjectVariable<Stack> mStackReference;
+	protected ObjectVariable<Stack<Short>> mStackReference;
 
 	public StackCamera(String pDeviceName)
 	{
@@ -46,7 +46,7 @@ public abstract class StackCamera extends CameraDevice
 		return mSingleShotModeVariable;
 	}
 
-	public ObjectVariable<Stack> getStackReferenceVariable()
+	public ObjectVariable<Stack<Short>> getStackReferenceVariable()
 	{
 		return mStackReference;
 	}
