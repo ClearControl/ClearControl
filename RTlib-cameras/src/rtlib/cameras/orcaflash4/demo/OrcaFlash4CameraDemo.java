@@ -22,16 +22,16 @@ public class OrcaFlash4CameraDemo
 	public void testAcquireSingleFrames() throws InterruptedException
 	{
 		mFrameIndex.set(0);
-		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																							TriggerType.Internal);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
+																																										TriggerType.Internal);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	Stack<Short> pOldStack,
-																															Stack<Short> pNewStack)
+														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
+																															final Stack<Short> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -69,16 +69,16 @@ public class OrcaFlash4CameraDemo
 	public void testAcquireStack() throws InterruptedException
 	{
 		mFrameIndex.set(0);
-		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																							TriggerType.Internal);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
+																																										TriggerType.Internal);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	Stack<Short> pOldStack,
-																															Stack<Short> pNewStack)
+														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
+																															final Stack<Short> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -120,10 +120,10 @@ public class OrcaFlash4CameraDemo
 	public void testDisplayVideo() throws InterruptedException,
 																IOException
 	{
-		NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
-																															256,
-																															256,
-																															1);
+		final NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
+																																						256,
+																																						256,
+																																						1);
 
 		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
 																											lNDArrayDirect.getSizeAlongDimension(1),
@@ -133,16 +133,16 @@ public class OrcaFlash4CameraDemo
 		lVideoWindow.setVisible(true);
 
 		mFrameIndex.set(0);
-		OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																							TriggerType.Internal);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
+																																										TriggerType.Internal);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	Stack<Short> pOldStack,
-																															Stack<Short> pNewStack)
+														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
+																															final Stack<Short> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="

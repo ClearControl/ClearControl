@@ -8,15 +8,15 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
-
+import rtlib.core.memory.SizeOf;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.VariableInterface;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 
 public class LocalFileStackSink<I> extends LocalFileStackBase	implements
-																													StackSinkInterface<I>,
-																													Closeable
+																															StackSinkInterface<I>,
+																															Closeable
 {
 
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
@@ -41,10 +41,10 @@ public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
-			final Long[] lDimensionsWithoutSize = ArrayUtils.toObject(pStack.getNDArray()
-																																			.getDimensions());
-			mStackIndexToStackDimensionsMap.put(mNextFreeStackIndex,
-																					lDimensionsWithoutSize);
+			final StackRequest<Stack<I>> lStackRequest = StackRequest.buildFrom(pStack);
+
+			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
+																				lStackRequest);
 
 			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false,
 																																					true);
@@ -55,7 +55,16 @@ public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 			lBinnaryFileChannel.force(false);
 			lBinnaryFileChannel.close();
 
-			final String lDimensionsString = Arrays.toString(lDimensionsWithoutSize);
+			final long[] lDimensions = lStackRequest.getDimensions();
+
+			// TODO: this is a temporary fix for the change in semantics of the first
+			// dimension. In the current file format, teh first entry is teh sizeof of
+			// the integer type, the new stack semantics incorprate the type in a
+			// separate field, so we can now have vctorized stacks of double for
+			// example.
+			lDimensions[0] = SizeOf.sizeOf(lStackRequest.getType());
+
+			final String lDimensionsString = Arrays.toString(lDimensions);
 			final String lTruncatedDimensionsString = lDimensionsString.substring(1,
 																																						lDimensionsString.length() - 1);
 

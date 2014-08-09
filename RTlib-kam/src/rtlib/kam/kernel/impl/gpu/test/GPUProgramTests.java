@@ -32,13 +32,13 @@ public class GPUProgramTests
 	{
 		try
 		{
-			ContextGPU lBestOpenCLContext = ContextGPU.getBestOpenCLContext("GeForce");
+			final ContextGPU lBestOpenCLContext = ContextGPU.getBestOpenCLContext("GeForce");
 			/*System.out.println(lBestOpenCLContext.getDefaultQueue()
 																						.getPeer()
 																						.getDevice()
 																						.getName());/**/
 
-			GPUProgramNDRange lGPUProgram = new GPUProgramNDRange(lBestOpenCLContext);
+			final GPUProgramNDRange lGPUProgram = new GPUProgramNDRange(lBestOpenCLContext);
 
 			lGPUProgram.setProgramStringFromRessource(this.getClass(),
 																								"kernels/add.cl");
@@ -49,15 +49,15 @@ public class GPUProgramTests
 
 			assertTrue(lGPUProgram.isUpToDate());
 
-			NDArrayGPU<Short> lIn = new NDArrayGPU<Short>(lBestOpenCLContext,
-																										short.class,
-																										false,
-																										true,
-																										cBigSizeX,
-																										cBigSizeY);
+			final NDArrayGPU<Short> lIn = new NDArrayGPU<Short>(lBestOpenCLContext,
+																													short.class,
+																													false,
+																													true,
+																													cBigSizeX,
+																													cBigSizeY);
 
-			RAMDirect lRAMDirect = new RAMDirect(cBigSizeX * cBigSizeY
-																						* SizeOf.sizeOfShort());
+			final RAMDirect lRAMDirect = new RAMDirect(cBigSizeX * cBigSizeY
+																									* SizeOf.sizeOfShort());
 
 			for (long i = 0; i < cBigSizeX * cBigSizeY; i++)
 				lRAMDirect.setShortAligned(i, (short) i);
@@ -65,12 +65,12 @@ public class GPUProgramTests
 			lIn.mapAndReadFrom(lRAMDirect);
 			lIn.getCurrentQueue().waitForCompletion();
 
-			NDArrayGPU<Short> lOut = new NDArrayGPU<Short>(	lBestOpenCLContext,
-																											short.class,
-																											true,
-																											false,
-																											cBigSizeX,
-																											cBigSizeY);
+			final NDArrayGPU<Short> lOut = new NDArrayGPU<Short>(	lBestOpenCLContext,
+																														short.class,
+																														true,
+																														false,
+																														cBigSizeX,
+																														cBigSizeY);
 
 			lGPUProgram.execute("add_buffer",
 													NDRangeUtils.range(cBigSizeX, cBigSizeY),
@@ -84,12 +84,16 @@ public class GPUProgramTests
 
 			for (long i = 0; i < cBigSizeX * cBigSizeY; i++)
 			{
-				short lShort = lRAMDirect.getShortAligned(i);
+				final short lShort = lRAMDirect.getShortAligned(i);
 				assertEquals((short) (i + 1), lShort);
 			}
 
 		}
-		catch (Throwable e)
+		catch (final java.lang.AssertionError etest)
+		{
+			throw etest;
+		}
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}
@@ -101,13 +105,13 @@ public class GPUProgramTests
 	{
 		try
 		{
-			ContextGPU lBestOpenCLContext = ContextGPU.getBestOpenCLContext("GeForce");
+			final ContextGPU lBestOpenCLContext = ContextGPU.getBestOpenCLContext("GeForce");
 			/*System.out.println(lBestOpenCLContext.getDefaultQueue()
 																						.getPeer()
 																						.getDevice()
 																						.getName());/**/
 
-			GPUProgramNDRange lGPUprogram = new GPUProgramNDRange(lBestOpenCLContext);
+			final GPUProgramNDRange lGPUprogram = new GPUProgramNDRange(lBestOpenCLContext);
 
 			lGPUprogram.setProgramStringFromRessource(this.getClass(),
 																								"kernels/add.cl");
@@ -118,17 +122,17 @@ public class GPUProgramTests
 
 			assertTrue(lGPUprogram.isUpToDate());
 
-			Image3DGPU<Float> lIn = new Image3DGPU<Float>(lBestOpenCLContext,
-																										float.class,
-																										false,
-																										true,
-																										cImage3DSizeX,
-																										cImage3DSizeY,
-																										cImage3DSizeZ);
+			final Image3DGPU<Float> lIn = new Image3DGPU<Float>(lBestOpenCLContext,
+																													float.class,
+																													false,
+																													true,
+																													cImage3DSizeX,
+																													cImage3DSizeY,
+																													cImage3DSizeZ);
 
-			RAMDirect lRAMDirect = new RAMDirect(cImage3DSizeX * cImage3DSizeY
-																						* cImage3DSizeZ
-																						* SizeOf.sizeOfFloat());
+			final RAMDirect lRAMDirect = new RAMDirect(cImage3DSizeX * cImage3DSizeY
+																									* cImage3DSizeZ
+																									* SizeOf.sizeOfFloat());
 
 			for (long i = 0; i < cImage3DSizeX * cImage3DSizeY
 														* cImage3DSizeZ; i++)
@@ -137,20 +141,20 @@ public class GPUProgramTests
 			for (long i = 0; i < cImage3DSizeX * cImage3DSizeY
 														* cImage3DSizeZ; i++)
 			{
-				float lFloat = lRAMDirect.getFloatAligned(i);
+				final float lFloat = lRAMDirect.getFloatAligned(i);
 				assertEquals(i, lFloat, 0);
 			}
 
 			lIn.readFrom(lRAMDirect);
 			lIn.getCurrentQueue().waitForCompletion();
 
-			Image3DGPU<Float> lOut = new Image3DGPU<Float>(	lBestOpenCLContext,
-																											float.class,
-																											true,
-																											false,
-																											cImage3DSizeX,
-																											cImage3DSizeY,
-																											cImage3DSizeZ);
+			final Image3DGPU<Float> lOut = new Image3DGPU<Float>(	lBestOpenCLContext,
+																														float.class,
+																														true,
+																														false,
+																														cImage3DSizeX,
+																														cImage3DSizeY,
+																														cImage3DSizeZ);
 
 			lGPUprogram.execute("add_image",
 													NDRangeUtils.range(	cImage3DSizeX,
@@ -167,7 +171,7 @@ public class GPUProgramTests
 														* cImage3DSizeZ; i++)
 			{
 
-				float lFloat = lRAMDirect.getFloatAligned(i);
+				final float lFloat = lRAMDirect.getFloatAligned(i);
 				// System.out.println(lFloat);
 				assertEquals(i + 3, lFloat, 0);
 			}
@@ -179,7 +183,11 @@ public class GPUProgramTests
 			lBestOpenCLContext.free();
 
 		}
-		catch (Throwable e)
+		catch (final java.lang.AssertionError etest)
+		{
+			throw etest;
+		}
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}

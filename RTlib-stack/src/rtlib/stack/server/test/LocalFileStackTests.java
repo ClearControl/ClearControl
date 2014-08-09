@@ -15,6 +15,7 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 import rtlib.stack.server.LocalFileStackSink;
 import rtlib.stack.server.LocalFileStackSource;
 
@@ -40,7 +41,7 @@ public class LocalFileStackTests
 
 		{
 			final LocalFileStackSink<Short> lLocalFileStackSink = new LocalFileStackSink<Short>(lRootFolder,
-																																						"testSink");
+																																													"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
@@ -50,13 +51,13 @@ public class LocalFileStackTests
 																															"123"));
 
 			final Stack<Short> lStack = new Stack<Short>(	0,
-																			0,
-																			cSizeX,
-																			cSizeY,
-																			cSizeZ,
-																			short.class);
+																										0,
+																										short.class,
+																										cSizeX,
+																										cSizeY,
+																										cSizeZ);
 
-			assertEquals(	cSizeX * cSizeY * cSizeZ * cBytesPerVoxel,
+			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNDArray().getLengthInElements());
 			// System.out.println(lStack.mNDimensionalArray.getLengthInElements() *
 			// 2);
@@ -86,7 +87,7 @@ public class LocalFileStackTests
 		{
 
 			final LocalFileStackSource<Short> lLocalFileStackSource = new LocalFileStackSource<Short>(lRootFolder,
-																																									"testSink");
+																																																"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
@@ -102,7 +103,7 @@ public class LocalFileStackTests
 			assertEquals("123", lVariable2.get());
 
 			@SuppressWarnings("rawtypes")
-			final Recycler<Stack<Short>, Long> lStackRecycler = new Recycler(Stack.class);
+			final Recycler<Stack<Short>, StackRequest<Stack<Short>>> lStackRecycler = new Recycler(Stack.class);
 			lLocalFileStackSource.setStackRecycler(lStackRecycler);
 
 			Stack<Short> lStack;
@@ -127,5 +128,4 @@ public class LocalFileStackTests
 		}
 
 	}
-
 }

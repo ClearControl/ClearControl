@@ -8,6 +8,8 @@ import rtlib.core.recycling.Recycler;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
+import rtlib.stack.StackRequest;
 
 public class StackRAMServer<T>	implements
 																StackSinkInterface<T>,
@@ -37,7 +39,7 @@ public class StackRAMServer<T>	implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack<T>, Long> pStackRecycler)
+	public void setStackRecycler(final Recycler<Stack<T>, StackRequest<Stack<T>>> pStackRecycler)
 	{
 	}
 

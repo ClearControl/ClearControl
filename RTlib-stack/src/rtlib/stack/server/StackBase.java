@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import rtlib.core.variable.bundle.VariableBundle;
+import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 
-public abstract class StackBase implements Closeable
+public abstract class StackBase<T> implements Closeable
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
-	protected final HashMap<Long, Long[]> mStackIndexToStackDimensionsMap = new HashMap<Long, Long[]>();
+	protected final HashMap<Long, StackRequest<Stack<T>>> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest<Stack<T>>>();
 
 	public StackBase() throws IOException
 	{

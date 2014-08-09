@@ -12,8 +12,8 @@ import rtlib.core.log.Loggable;
 import rtlib.core.rgc.Freeable;
 
 public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest> implements
-																															Freeable,
-																															Loggable
+																																											Freeable,
+																																											Loggable
 {
 	private final Class<R> mRecyclableClass;
 	private final ConcurrentLinkedQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedQueue<SoftReference<R>>();
@@ -23,7 +23,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	private volatile AtomicLong mLiveMemoryInBytes = new AtomicLong(0);
 	private long mMaximumLiveMemoryInBytes;
 
-	private AtomicBoolean mIsFreed = new AtomicBoolean(false);
+	private final AtomicBoolean mIsFreed = new AtomicBoolean(false);
 
 	public Recycler(final Class pRecyclableClass)
 	{
@@ -36,7 +36,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		mRecyclableClass = pRecyclableClass;
 		if (pMaximumLiveMemoryInBytes < 0)
 		{
-			String lErrorString = "Maximum live memory must be strictly positive!";
+			final String lErrorString = "Maximum live memory must be strictly positive!";
 			error("Recycling", lErrorString);
 			throw new IllegalArgumentException(lErrorString);
 		}
@@ -69,7 +69,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		}
 		catch (final Throwable e)
 		{
-			String lErrorString = "Error while creating new instance!";
+			final String lErrorString = "Error while creating new instance!";
 			error("Recycling", lErrorString, e);
 			return (i - 1);
 		}
@@ -82,7 +82,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 																																	InvocationTargetException
 	{
 		complainIfFreed();
-		Constructor<R> lDefaultConstructor = mRecyclableClass.getDeclaredConstructor();
+		final Constructor<R> lDefaultConstructor = mRecyclableClass.getDeclaredConstructor();
 		lDefaultConstructor.setAccessible(true);
 		final R lNewInstance = lDefaultConstructor.newInstance();
 		lDefaultConstructor.setAccessible(false);
@@ -101,9 +101,10 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		return lNewInstance;
 	}
 
-	void destroyInstance(R lRecyclableObject, boolean pCallFreeMethod)
+	void destroyInstance(	final R lRecyclableObject,
+												final boolean pCallFreeMethod)
 	{
-		long lSizeInBytes = lRecyclableObject.getSizeInBytes();
+		final long lSizeInBytes = lRecyclableObject.getSizeInBytes();
 		if (pCallFreeMethod)
 			lRecyclableObject.free();
 		mLiveObjectCounter.decrementAndGet();
@@ -138,7 +139,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 		if (lPolledSoftReference != null)
 		{
-			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
+			final Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 
 			final R lObtainedReference = lPolledSoftReference.get();
 			lPolledSoftReference.clear();
@@ -175,14 +176,14 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 		if (!pWait && mLiveMemoryInBytes.get() >= mMaximumLiveMemoryInBytes)
 		{
-			String lErrorString = "Recycler reached maximum allocation size!";
+			final String lErrorString = "Recycler reached maximum allocation size!";
 			error("Recycling", lErrorString);
 			throw new OutOfMemoryError(lErrorString);
 		}
 
 		if (pWait && pWaitTime <= 0)
 		{
-			String lErrorString = "Recycler reached maximum allocation size! (timeout)";
+			final String lErrorString = "Recycler reached maximum allocation size! (timeout)";
 			error("Recycling", lErrorString);
 			throw new OutOfMemoryError("Recycler reached maximum allocation size! (timeout)");
 		}
@@ -194,7 +195,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 			{
 				Thread.sleep(lWaitPeriodInMilliseconds);
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 			}
 			return requestRecyclableObject(	pWait,
@@ -214,7 +215,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		}
 		catch (final Throwable e)
 		{
-			String lErrorString = "Error while creating new instance!";
+			final String lErrorString = "Error while creating new instance!";
 			error("Recycling", lErrorString, e);
 			return null;
 		}
@@ -244,7 +245,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 		if (lPolledSoftReference != null)
 		{
-			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
+			final Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 
 			final R lObtainedReference = lPolledSoftReference.get();
 			lPolledSoftReference.clear();
@@ -267,8 +268,8 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 		while ((lPolledSoftReference = mAvailableObjectsQueue.poll()) != null)
 		{
-			Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
-			R lRecyclableObject = lPolledSoftReference.get();
+			final Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
+			final R lRecyclableObject = lPolledSoftReference.get();
 			if (lRecyclableObject == null)
 			{
 				mLiveObjectCounter.decrementAndGet();

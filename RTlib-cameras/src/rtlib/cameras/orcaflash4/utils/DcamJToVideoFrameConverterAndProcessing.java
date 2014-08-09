@@ -17,6 +17,7 @@ import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.objectv.SingleUpdateTargetObjectVariable;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessing;
 import rtlib.stack.processor.StackProcessorInterface;
 import dcamj.DcamFrame;
@@ -33,7 +34,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 
 	private AsynchronousProcessorBase<Stack<Short>, Object> mSendToVariableAsynchronousProcessor;
 
-	private final Recycler<Stack<Short>, Long> mVideoFrameRecycler = new Recycler<Stack<Short>, Long>(Stack.class);
+	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> mVideoFrameRecycler = new Recycler<>(Stack.class);
 
 	private final SingleUpdateTargetObjectVariable<Stack<Short>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Short>>("Stack");
 
@@ -117,12 +118,15 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			/*System.out.println("convert: pDcamFrame.index=" + pDcamFrame.getIndex());/**/
 			final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
 
+			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
+																																					1,
+																																					pDcamFrame.getWidth(),
+																																					pDcamFrame.getHeight(),
+																																					(long) mStackDepthVariable.getValue());
+
 			Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
 																																				TimeUnit.SECONDS,
-																																				pDcamFrame.getPixelSizeInBytes(),
-																																				pDcamFrame.getWidth(),
-																																				pDcamFrame.getHeight(),
-																																				(long) mStackDepthVariable.getValue());
+																																				lStackRequest);
 			/*System.out.println("convert: hashcode=" + lStack.hashCode()
 													+ " index="
 													+ pDcamFrame.getIndex());/**/
@@ -152,7 +156,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 			System.out.println("SHOULD NOT BE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return null;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 			return null;
@@ -205,7 +209,7 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	}
 
 	@Override
-	public void removeStackProcessor(@SuppressWarnings("rawtypes") StackProcessorInterface pStackProcessor)
+	public void removeStackProcessor(@SuppressWarnings("rawtypes") final StackProcessorInterface pStackProcessor)
 	{
 		mStackProcessorList.remove(pStackProcessor);
 	}

@@ -34,7 +34,6 @@ public class VideoFrame2DDisplay<T> extends NamedVirtualDevice
 		this("2D Video Display", pVideoWidth, pVideoHeight, 10);
 	}
 
-
 	public VideoFrame2DDisplay(	final String pWindowName,
 															final int pVideoWidth,
 															final int pVideoHeight)
@@ -54,13 +53,13 @@ public class VideoFrame2DDisplay<T> extends NamedVirtualDevice
 																		pVideoHeight);
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack<T>, Object>("AsynchronousDisplayUpdater",
-																																								pUpdaterQueueLength)
+																																									pUpdaterQueueLength)
 		{
 			@Override
 			public Object process(final Stack<T> pStack)
 			{
 				// TODO: need to add method that handles RAMdirect sources!
-				// mVideoWindow.setSourceBuffer(pStack.getByteBuffer());
+				mVideoWindow.setSourceBuffer(pStack.getNDArray());
 				mVideoWindow.setWidth((int) pStack.getWidth());
 				mVideoWindow.setHeight((int) pStack.getHeight());
 				mVideoWindow.notifyNewFrame();

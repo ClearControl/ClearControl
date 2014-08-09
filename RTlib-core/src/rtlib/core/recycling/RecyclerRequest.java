@@ -1,6 +1,6 @@
 package rtlib.core.recycling;
 
-public interface RecyclerRequest
+public interface RecyclerRequest<O>
 {
 
 }

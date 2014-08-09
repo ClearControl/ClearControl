@@ -7,7 +7,6 @@ import org.bridj.Pointer;
 
 import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
-import rtlib.core.memory.TypeId;
 import rtlib.core.recycling.RecyclableInterface;
 import rtlib.core.recycling.Recycler;
 import rtlib.core.rgc.Freeable;
@@ -17,26 +16,23 @@ import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ram.RAM;
 
 public class Stack<T> implements
-											RecyclableInterface<Stack<T>, Long>,
+											RecyclableInterface<Stack<T>, StackRequest<Stack<T>>>,
 											NDStructured,
 											Typed<T>,
 											SizedInBytes,
 											Freeable
 {
 
-	private Recycler<Stack<T>, Long> mStackRecycler;
+	private Recycler<Stack<T>, StackRequest<Stack<T>>> mStackRecycler;
 	private volatile boolean mIsReleased;
 
 	private NDArrayDirect<T> mNDArray;
 
 	private Class<T> mType;
-
 	private volatile long mStackIndex;
 	private volatile long mTimeStampInNanoseconds;
 	protected double[] mVolumeSize;
 	private volatile long mNumberOfImagesPerPlane = 1;
-
-
 
 	@SuppressWarnings("unused")
 	private Stack()
@@ -45,10 +41,10 @@ public class Stack<T> implements
 
 	public Stack(	final long pImageIndex,
 								final long pTimeStampInNanoseconds,
+								final Class<T> pType,
 								final long pWidth,
 								final long pHeight,
-								final long pDepth,
-								final Class<T> pType)
+								final long pDepth)
 	{
 		super();
 
@@ -76,43 +72,32 @@ public class Stack<T> implements
 	}
 
 	@Override
-	public boolean isCompatible(final Long... pParameters)
+	public boolean isCompatible(final StackRequest pStackRequest)
 	{
-		final long lTypeId = pParameters[0];
-		final long lWidth = pParameters[1];
-		final long lHeight = pParameters[2];
-		final long lDepth = pParameters[3];
-		
-		final Class<?> lType = TypeId.idToClass((int) lTypeId);
+		final Class<?> lType = pStackRequest.getType();
 		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
-			
 
-		final long lLengthInBytes = lWidth * lHeight
-																* lDepth
-																* lBytesPerVoxel;
-		return (mNDArray != null && !mNDArray.isFree() && mNDArray.getSizeInBytes() == lLengthInBytes);
+		final long lLengthInBytes = pStackRequest.getWidth() * pStackRequest.getHeight()
+																* pStackRequest.getDepth()
+																* SizeOf.sizeOf(pStackRequest.getType());
+		return (mNDArray != null && lType == getType()
+						&& !mNDArray.isFree() && mNDArray.getSizeInBytes() == lLengthInBytes);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void initialize(final Long... pParameters)
+	public void initialize(final StackRequest pStackRequest)
 	{
-		final long lTypeId = pParameters[0];
-		final long lWidth = pParameters[1];
-		final long lHeight = pParameters[2];
-		final long lDepth = pParameters[3];
-
-		final Class<?> lType = TypeId.idToClass((int) lTypeId);
-		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
-
-		if (!isCompatible(pParameters))
+		final int lBytesPerVoxel = SizeOf.sizeOf(pStackRequest.getType());
+		mType = pStackRequest.getType();
+		if (!isCompatible(pStackRequest))
 		{
 			if (mNDArray != null)
 				mNDArray.free();
-			mNDArray = (NDArrayDirect<T>) NDArrayDirect.allocateTXYZ(	lType,
-																						lWidth,
-																						lHeight,
-																						lDepth);
+			mNDArray = (NDArrayDirect<T>) NDArrayDirect.allocateTXYZ(	pStackRequest.getType(),
+																																pStackRequest.getWidth(),
+																																pStackRequest.getHeight(),
+																																pStackRequest.getDepth());
 		}
 	}
 
@@ -124,12 +109,12 @@ public class Stack<T> implements
 
 	public Pointer<Byte> getPointer()
 	{
-		RAM lRam = mNDArray.getRAM();
+		final RAM lRam = mNDArray.getRAM();
 		@SuppressWarnings("unchecked")
-		Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
-																																lRam.getSizeInBytes(),
-																																null)
-																							.as(Byte.class);
+		final Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
+																																			lRam.getSizeInBytes(),
+																																			null)
+																										.as(Byte.class);
 		return lPointerToAddress;
 	}
 
@@ -138,9 +123,8 @@ public class Stack<T> implements
 		return SizeOf.sizeOf(mType);
 	}
 
-
 	@Override
-	public long getSizeAlongDimension(int pDimensionIndex)
+	public long getSizeAlongDimension(final int pDimensionIndex)
 	{
 		return mNDArray.getSizeAlongDimension(pDimensionIndex);
 	}
@@ -189,7 +173,7 @@ public class Stack<T> implements
 		return mStackIndex;
 	}
 
-	public void setStackIndex(long pStackIndex)
+	public void setStackIndex(final long pStackIndex)
 	{
 		mStackIndex = pStackIndex;
 	}
@@ -199,7 +183,7 @@ public class Stack<T> implements
 		return mTimeStampInNanoseconds;
 	}
 
-	public void setTimeStampInNanoseconds(long pTimeStampInNanoseconds)
+	public void setTimeStampInNanoseconds(final long pTimeStampInNanoseconds)
 	{
 		mTimeStampInNanoseconds = pTimeStampInNanoseconds;
 	}
@@ -209,12 +193,12 @@ public class Stack<T> implements
 		return mNumberOfImagesPerPlane;
 	}
 
-	public void setNumberOfImagesPerPlane(long pNumberOfImagesPerPlane)
+	public void setNumberOfImagesPerPlane(final long pNumberOfImagesPerPlane)
 	{
 		mNumberOfImagesPerPlane = pNumberOfImagesPerPlane;
 	}
 
-	public void copyMetaDataFrom(Stack<T> pStack)
+	public void copyMetaDataFrom(final Stack<T> pStack)
 	{
 		if (mVolumeSize != null)
 			mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
@@ -251,25 +235,28 @@ public class Stack<T> implements
 	}
 
 	@Override
-	public void setRecycler(final Recycler<Stack<T>, Long> pRecycler)
+	public void setRecycler(final Recycler<Stack<T>, StackRequest<Stack<T>>> pRecycler)
 	{
 		mStackRecycler = pRecycler;
 	}
 
-	public static <T> Stack<T> requestOrWaitWithRecycler(	Recycler<Stack<T>, Long> pRecycler,
-																								final long pWaitTime,
-																								final TimeUnit pTimeUnit,
-																								long pBytesPerVoxel,
-																								long pWidth,
-																								long pHeight,
-																								long pDepth)
+	public static <T> Stack<T> requestOrWaitWithRecycler(	final Recycler<Stack<T>, StackRequest<Stack<T>>> pRecycler,
+																												final long pWaitTime,
+																												final TimeUnit pTimeUnit,
+																												final Class<?> pType,
+																												final long pWidth,
+																												final long pHeight,
+																												final long pDepth)
 	{
+		final StackRequest lStackRequest = new StackRequest(pType,
+																												1,
+																												pWidth,
+																												pHeight,
+																												pDepth);
+
 		return pRecycler.waitOrRequestRecyclableObject(	pWaitTime,
 																										pTimeUnit,
-																										pBytesPerVoxel,
-																										pWidth,
-																										pHeight,
-																										pDepth);
+																										lStackRequest);
 	}
 
 	@Override
@@ -314,10 +301,9 @@ public class Stack<T> implements
 		return mType;
 	}
 
-	public void setType(Class<T> pType)
+	public void setType(final Class<T> pType)
 	{
 		mType = pType;
 	}
-
 
 }

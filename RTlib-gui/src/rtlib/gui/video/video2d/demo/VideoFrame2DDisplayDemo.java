@@ -15,6 +15,7 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.VideoFrame2DDisplay;
+import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.stack.Stack;
 
 public class VideoFrame2DDisplayDemo extends JFrame
@@ -48,6 +49,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 	}
 
 	private final JPanel mcontentPane;
+	private volatile long rnd;
 
 	/**
 	 * Create the VideoFrame.
@@ -62,7 +64,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		setContentPane(mcontentPane);
 
 		final VideoFrame2DDisplay<Byte> lVideoDisplayDevice = new VideoFrame2DDisplay<Byte>(512,
-																																						512);
+																																												512);
 		lVideoDisplayDevice.setLinearInterpolation(true);
 		lVideoDisplayDevice.setSyncToRefresh(false);
 		lVideoDisplayDevice.setVisible(true);
@@ -96,11 +98,11 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		final DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
 		final Stack<Byte> lFrame = new Stack<Byte>(	0L,
-																					0L,
-																					512,
-																					512,
-																					1,
-																					Byte.class);
+																								0L,
+																								Byte.class,
+																								512,
+																								512,
+																								1);
 
 		lDoubleVariable.sendUpdatesTo(new DoubleVariable(	"SliderDoubleEventHook",
 																											0)
@@ -113,31 +115,43 @@ public class VideoFrame2DDisplayDemo extends JFrame
 				sValue = pNewValue;
 				System.out.println(pNewValue);
 
-				// generateNoiseBuffer(lFrame.buffer, pNewValue);
-				// lFrameVariable.setReference(lFrame);
 				return super.setEventHook(pOldValue, pNewValue);
 			}
 		});
 
-		Runnable lRunnable = () -> {
+		final Runnable lRunnable = () -> {
 			while (true)
 			{
 				if (sDisplay)
 				{
-					// TODO: get teh bufer using KAM source!!
-					// generateNoiseBuffer(lFrame.getByteBuffer(), sValue);
+					// TODO: get the buffer using KAM source!!
+					generateNoiseBuffer(lFrame.getNDArray());
 					lFrameVariable.setReference(lFrame);
 				}
 				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 			}
 		};
 
-		Thread lThread = new Thread(lRunnable);
+		final Thread lThread = new Thread(lRunnable);
 		lThread.setName(this.getName());
 		lThread.setDaemon(true);
 		lThread.start();
 
 	}
 
+	private void generateNoiseBuffer(final NDArrayDirect<?> pNDArrayDirect)
+	{
+		// System.out.println(rnd);
+
+		final int lBufferLength = (int) pNDArrayDirect.getRAM()
+																									.getSizeInBytes();
+		for (int i = 0; i < lBufferLength; i++)
+		{
+			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
+			final byte lValue = (byte) ((rnd & 0xFF) * sValue); // Math.random()
+			// System.out.print(lValue);
+			pNDArrayDirect.setByteAligned(i, lValue);
+		}
+	}
 
 }

@@ -7,16 +7,18 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
+import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
 import rtlib.core.units.Magnitudes;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 
 public class LocalFileStackSource<O> extends LocalFileStackBase	implements
-																														StackSourceInterface<O>,
-																														Closeable
+																																StackSourceInterface<O>,
+																																Closeable
 {
 
-	private Recycler<Stack<O>, Long> mStackRecycler;
+	private Recycler<Stack<O>, StackRequest<Stack<O>>> mStackRecycler;
 
 	public LocalFileStackSource(final File pRootFolder,
 															final String pName) throws IOException
@@ -32,7 +34,7 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack<O>, Long> pStackRecycler)
+	public void setStackRecycler(final Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler)
 	{
 		mStackRecycler = pStackRecycler;
 
@@ -49,9 +51,9 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 		{
 			final long lPositionInFileInBytes = mStackIndexToBinaryFilePositionMap.get(pStackIndex);
 
-			final Long[] lStackDimensions = mStackIndexToStackDimensionsMap.get(pStackIndex);
+			final StackRequest<Stack<O>> lStackRequest = (StackRequest<Stack<O>>) mStackIndexToStackRequestMap.get(pStackIndex);
 
-			final Stack<O> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackDimensions);
+			final Stack<O> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackRequest);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
 																																					true);
@@ -92,13 +94,24 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 				final long lStackIndex = Long.parseLong(lSplittedLine[0].trim());
 				final double lTimeStampInSeconds = Double.parseDouble(lSplittedLine[1].trim());
 				final String[] lDimensionsStringArray = lSplittedLine[2].split(", ");
-				final Long[] lDimensions = convertStringArrayToLongArray(lDimensionsStringArray);
+
+				final int lBytesPerVoxel = Integer.parseInt(lDimensionsStringArray[0]);
+				final Class<?> lType = SizeOf.integralTypeFromSize(lBytesPerVoxel);
+				final long lWidth = Long.parseLong(lDimensionsStringArray[1]);
+				final long lHeight = Long.parseLong(lDimensionsStringArray[2]);
+				final long lDepth = Long.parseLong(lDimensionsStringArray[3]);
+
+				final StackRequest lStackRequest = StackRequest.build(lType,
+																															1,
+																															lWidth,
+																															lHeight,
+																															lDepth);
 				final long lPositionInFile = Long.parseLong(lSplittedLine[3].trim());
 				mStackIndexToTimeStampInSecondsMap.put(	lStackIndex,
 																								lTimeStampInSeconds);
 				mStackIndexToBinaryFilePositionMap.put(	lStackIndex,
 																								lPositionInFile);
-				mStackIndexToStackDimensionsMap.put(lStackIndex, lDimensions);
+				mStackIndexToStackRequestMap.put(lStackIndex, lStackRequest);
 			}
 
 			lIndexFileScanner.close();

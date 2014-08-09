@@ -15,6 +15,7 @@ import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 
 public class StackTests
 {
@@ -33,12 +34,12 @@ public class StackTests
 	@Test
 	public void testLifeCycle()
 	{
-		Stack<Short> lStack = new Stack<Short>(	1,
-															2,
-															cSizeX,
-															cSizeY,
-															cSizeZ,
-																						short.class);
+		final Stack<Short> lStack = new Stack<Short>(	1,
+																									2,
+																									short.class,
+																									cSizeX,
+																									cSizeY,
+																									cSizeZ);
 
 		assertEquals(1, lStack.getVolumePhysicalDimension(0), 0);
 
@@ -53,7 +54,7 @@ public class StackTests
 		assertEquals(1, lStack.getIndex());
 		assertEquals(2, lStack.getTimeStampInNanoseconds());
 
-		assertEquals(cLengthInBytes, lStack.getLengthInElements());
+		assertEquals(cLengthInBytes, 2 * lStack.getLengthInElements());
 		assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 
 		assertEquals(3, lStack.getDimension());
@@ -63,12 +64,12 @@ public class StackTests
 		assertEquals(cSizeY, lStack.getHeight());
 		assertEquals(cSizeZ, lStack.getDepth());
 
-		assertEquals(cBytesPerPixel, lStack.getDimensions()[0]);
+		assertEquals(1, lStack.getDimensions()[0]);
 		assertEquals(cSizeX, lStack.getDimensions()[1]);
 		assertEquals(cSizeY, lStack.getDimensions()[2]);
 		assertEquals(cSizeZ, lStack.getDimensions()[3]);
 
-		assertEquals(cBytesPerPixel, lStack.getSizeAlongDimension(0));
+		assertEquals(1, lStack.getSizeAlongDimension(0));
 		assertEquals(cSizeX, lStack.getSizeAlongDimension(1));
 		assertEquals(cSizeY, lStack.getSizeAlongDimension(2));
 		assertEquals(cSizeZ, lStack.getSizeAlongDimension(3));
@@ -82,17 +83,17 @@ public class StackTests
 	@Test
 	public void testRecycling() throws InterruptedException
 	{
-		long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+		final long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 
 		@SuppressWarnings("rawtypes")
-		Recycler<Stack<Short>, Long> lRecycler = new Recycler(Stack.class,
-																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+		final Recycler<Stack<Short>, StackRequest<Stack<Short>>> lRecycler = new Recycler(Stack.class,
+																																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
-		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
-																																													Thread.NORM_PRIORITY,
-																																													1,
-																																													1,
-																																													100);
+		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
+																																																Thread.NORM_PRIORITY,
+																																																1,
+																																																1,
+																																																100);
 
 		for (int i = 0; i < 100; i++)
 		{
@@ -100,10 +101,11 @@ public class StackTests
 			final Stack<?> lStack;
 			if ((i % 100) < 50)
 			{
+
 				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
 																									10,
 																									TimeUnit.SECONDS,
-																									cBytesPerPixel,
+																									short.class,
 																									cSizeX * cBig,
 																									cSizeY * cBig,
 																									cSizeZ * cBig);
@@ -116,7 +118,7 @@ public class StackTests
 				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
 																									10,
 																									TimeUnit.SECONDS,
-																									cBytesPerPixel,
+																									short.class,
 																									cSizeX,
 																									cSizeY,
 																									cSizeZ);
@@ -125,17 +127,17 @@ public class StackTests
 
 			assertNotNull(lStack);
 
-			NDArrayDirect<?> lNdArray = lStack.getNDArray();
+			final NDArrayDirect<?> lNdArray = lStack.getNDArray();
 			for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 			{
 				lNdArray.setByteAligned(k, (byte) k);
 			}
 
-			Runnable lRunnable2 = () -> {
-				NDArrayDirect<?> lNdArray2 = lStack.getNDArray();
+			final Runnable lRunnable2 = () -> {
+				final NDArrayDirect<?> lNdArray2 = lStack.getNDArray();
 				for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 				{
-					byte lByte = lNdArray2.getByteAligned(k);
+					final byte lByte = lNdArray2.getByteAligned(k);
 					assertEquals((byte) k, lByte);
 				}
 				lStack.releaseStack();
@@ -144,15 +146,15 @@ public class StackTests
 
 			lThreadPoolExecutor.execute(lRunnable2);
 
-			long lLiveObjectCount = lRecycler.getLiveObjectCount();
-			long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
+			final long lLiveObjectCount = lRecycler.getLiveObjectCount();
+			final long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
 			/*System.out.format("count=%d mem=%d \n",
 												lLiveObjectCount,
 												lLiveMemoryInBytes);/**/
 			assertTrue(lLiveObjectCount > 0);
 			assertTrue(lLiveMemoryInBytes > 0);
 
-			long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+			final long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 			// System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
 			assertTrue(lTotalAllocatedMemory > 0);
 
@@ -176,13 +178,13 @@ public class StackTests
 
 		lRecycler.free();
 
-		long lLiveObjectCount = lRecycler.getLiveObjectCount();
+		final long lLiveObjectCount = lRecycler.getLiveObjectCount();
 		assertEquals(0, lLiveObjectCount);
 
-		long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
+		final long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
 		assertEquals(0, lLiveMemoryInBytes);
 
-		long lEndTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+		final long lEndTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 		assertEquals(lStartTotalAllocatedMemory, lEndTotalAllocatedMemory);
 
 	}

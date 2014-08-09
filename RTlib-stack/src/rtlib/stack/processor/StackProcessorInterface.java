@@ -2,6 +2,7 @@ package rtlib.stack.processor;
 
 import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
+import rtlib.stack.StackRequest;
 
 public interface StackProcessorInterface<I, O>
 {
@@ -10,7 +11,7 @@ public interface StackProcessorInterface<I, O>
 
 	public boolean isActive();
 
-	public Stack<O> process(	Stack<I> pStack,
-														Recycler<Stack<O>, Long> pStackRecycler);
+	public Stack<O> process(Stack<I> pStack,
+													Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler);
 
 }
