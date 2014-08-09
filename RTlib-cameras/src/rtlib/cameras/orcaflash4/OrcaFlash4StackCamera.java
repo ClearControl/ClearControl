@@ -32,17 +32,18 @@ public class OrcaFlash4StackCamera extends StackCamera implements
 
 	public OrcaFlash4StackCamera(final int pCameraDeviceIndex)
 	{
-		this(pCameraDeviceIndex, TriggerType.ExternalFastEdge);
+		this(pCameraDeviceIndex, false);
 	}
 
 	public OrcaFlash4StackCamera(	final int pCameraDeviceIndex,
-																final TriggerType pTriggerType)
+																final boolean pInternalTrigger)
 	{
 		super("OrcaFlash4Camera");
 
 		mCameraDeviceIndex = pCameraDeviceIndex;
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);
-		mDcamAcquisition.setTriggerType(pTriggerType);
+		mDcamAcquisition.setTriggerType(pInternalTrigger ? TriggerType.Internal
+																										: TriggerType.ExternalFastEdge);
 
 		mDcamAcquisition.addListener(new DcamAcquisitionListener()
 		{

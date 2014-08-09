@@ -20,10 +20,10 @@ import javax.media.opengl.glu.GLU;
 
 import org.bridj.Pointer;
 
+import rtlib.core.memory.TypeId;
 import rtlib.core.units.Magnitudes;
 import rtlib.gui.video.video2d.BitDepthAutoRescaler;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
-import rtlib.kam.memory.ndarray.NDArray;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 import com.jogamp.newt.opengl.GLWindow;
@@ -44,7 +44,7 @@ public class VideoWindow implements Closeable
 	private boolean mUsePBO = false; // seems to be faster without PBOs!!
 
 	private NDArrayTyped<?> mSourceBuffer;
-	private BitDepthAutoRescaler mBitDepthAutoRescaler = new BitDepthAutoRescaler();
+	private BitDepthAutoRescaler mBitDepthAutoRescaler;
 
 	private volatile boolean mIsUpToDate = false;
 	private final boolean mReportErrors = false;
@@ -86,9 +86,9 @@ public class VideoWindow implements Closeable
 		{
 			mGLWindow.setSize(768, 768);
 		}
-		else
+		else if (pVideoMaxWidth < 256 || pVideoMaxHeight < 256)
 		{
-			mGLWindow.setSize((int) pVideoMaxWidth, (int) pVideoMaxHeight);
+			mGLWindow.setSize(256, 256);
 		}
 
 		mGLWindow.setTitle(mWindowName);
@@ -381,7 +381,7 @@ public class VideoWindow implements Closeable
 	}
 
 	private boolean updateVideoWithBuffer(final GL2 pGL2,
-																				final NDArray pNewContentBuffer)
+																				final NDArrayTyped<?> pNewContentBuffer)
 	{
 		if (mIsUpToDate || !mDisplayOn)
 		{
@@ -396,14 +396,21 @@ public class VideoWindow implements Closeable
 		final int lCurrentIndex = (int) (mFrameIndex % 2);
 		final int lNextIndex = (int) ((mFrameIndex + 1) % 2);
 
-
+		boolean lIsFloatingPointType = TypeId.isFloatingPointType(pNewContentBuffer.getType());
+		if (mBitDepthAutoRescaler == null || mBitDepthAutoRescaler.isFloat() != lIsFloatingPointType)
+		{
+			mBitDepthAutoRescaler = new BitDepthAutoRescaler(lIsFloatingPointType);
+		}
 		if (mManualMinMax)
 		{
 			mBitDepthAutoRescaler.setMinimum(mMinIntensity);
 			mBitDepthAutoRescaler.setMaximum(mMaxIntensity);
 		}
 		mBitDepthAutoRescaler.setAutoRescale(!mManualMinMax);
-		final NDArray lConvertedBuffer = mBitDepthAutoRescaler.convertBuffer(pNewContentBuffer);
+		final NDArrayTyped<?> lConvertedBuffer = mBitDepthAutoRescaler.convertBuffer(pNewContentBuffer);
+
+		if (lConvertedBuffer == null)
+			throw new RuntimeException(this.getClass().getSimpleName() + ": new buffer is null or could not b converted to 8bit for display");
 
 		boolean lResult;
 

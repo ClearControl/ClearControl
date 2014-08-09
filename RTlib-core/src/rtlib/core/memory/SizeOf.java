@@ -3,16 +3,7 @@ package rtlib.core.memory;
 public class SizeOf
 {
 
-	public static boolean isFloat(final Class<?> pClass)
-	{
-		if (pClass == Float.class || pClass == float.class)
-			return true;
-		else if (pClass == Double.class || pClass == double.class
-							|| pClass == Double.TYPE)
-			return true;
-		else
-			return false;
-	}
+
 
 	public static int sizeOf(final Class<?> pClass)
 	{

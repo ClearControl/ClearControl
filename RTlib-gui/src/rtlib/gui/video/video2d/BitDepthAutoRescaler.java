@@ -2,8 +2,10 @@ package rtlib.gui.video.video2d;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import rtlib.core.memory.TypeId;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ndarray.NDArray;
+import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
 
 public class BitDepthAutoRescaler
@@ -13,57 +15,148 @@ public class BitDepthAutoRescaler
 	private boolean mIsFloat = false;
 	private volatile boolean mAutoRescale;
 
-	private volatile long mIntMinimum = Short.MAX_VALUE,
-			mIntMaximum = Short.MIN_VALUE;
+	private volatile long mIntMinimum = 0,
+			mIntMaximum = Short.MAX_VALUE;
 
-	private volatile double mFloatMinimum = Short.MAX_VALUE,
-			mFloatMaximum = Short.MIN_VALUE;
+	private volatile double mFloatMinimum = 0,
+			mFloatMaximum = Short.MAX_VALUE;
 
-	private NDArray mConvertedSourceBuffer;
+	private NDArrayTyped<Byte> mConvertedSourceBuffer;
 
-	public BitDepthAutoRescaler()
+	public BitDepthAutoRescaler(boolean pIsFloat)
 	{
 		super();
+		mIsFloat = pIsFloat;
 	}
 
-	public NDArray convertBuffer(final NDArray pNewContentBuffer)
+	@SuppressWarnings("unchecked")
+	public NDArrayTyped<Byte> convertBuffer(final NDArrayTyped<?> pNewContentBuffer)
 	{
-		if (pNewContentBuffer.getSizeAlongDimension(0) == 1)
+		if (TypeId.isByte(pNewContentBuffer.getType()))
 		{
-			return pNewContentBuffer;
+			return (NDArrayTyped<Byte>) pNewContentBuffer;
 		}
-		else if (pNewContentBuffer.getSizeAlongDimension(0) == 2)
-		{
-			final long lByteBufferLength = pNewContentBuffer.getRAM()
-																											.getSizeInBytes();
-			final long lConvertedBuferLength = lByteBufferLength / 2;
-			if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.getRAM()
-																																	.getSizeInBytes() != lConvertedBuferLength)
-			{
-				mConvertedSourceBuffer = NDArrayDirect.allocateTXY(	Byte.class,
-																														pNewContentBuffer.getWidth(),
-																														pNewContentBuffer.getHeight());
-			}
 
-			if (mIsFloat)
-			{
-				// TODO: Implement float,double to byte rescaling too
-			}
-			else
-			{
-				convert16to8bitIntegerRescaledAuto(	pNewContentBuffer,
+		final long lNDArrayLength = pNewContentBuffer.getVolume();
+		if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.getVolume() != lNDArrayLength)
+		{
+			mConvertedSourceBuffer = NDArrayDirect.allocateTXY(	Byte.class,
+																													pNewContentBuffer.getWidth(),
+																													pNewContentBuffer.getHeight());
+		}
+
+		if (TypeId.isShort(pNewContentBuffer.getType()))
+		{
+
+			convertFrom16bitIntegerAndRescaledAuto(	pNewContentBuffer,
 																						mConvertedSourceBuffer,
 																						mAutoRescale);
-			}
+		}
+		else if (TypeId.isFloat(pNewContentBuffer.getType()))
+		{
 
-			return mConvertedSourceBuffer;
+			convertFrom32bitFloatAndRescaledAuto(	pNewContentBuffer,
+																						mConvertedSourceBuffer,
+																						mAutoRescale);
+
+		}
+		else if (TypeId.isDouble(pNewContentBuffer.getType()))
+		{
+
+			convertFrom64bitFloatAndRescaledAuto(	pNewContentBuffer,
+																						mConvertedSourceBuffer,
+																						mAutoRescale);
 
 		}
 
-		return null;
+		return mConvertedSourceBuffer;
 	}
 
-	private void convert16to8bitIntegerRescaledAuto(NDArray pNDArraySource,
+	private void convertFrom64bitFloatAndRescaledAuto(NDArray pNDArraySource,
+																										NDArray pNDArrayDestination,
+																										boolean pAutoRescale)
+	{
+
+		final double lMinimum = mFloatMinimum;
+		final double lMaximum = mFloatMaximum;
+		final double lCurrentWidth = lMaximum - lMinimum;
+
+		double lNewMin = Float.POSITIVE_INFINITY;
+		double lNewMax = Float.NEGATIVE_INFINITY;
+
+		final RAM lSourceRam = pNDArraySource.getRAM();
+		final RAM lDestinationRam = pNDArrayDestination.getRAM();
+		long length = pNDArraySource.getVolume();
+		for (int i = 0; i < length; i++)
+		{
+			final double lDoubleValue = lSourceRam.getDoubleAligned(i);
+
+			if (pAutoRescale)
+			{
+				lNewMin = min(lNewMin, lDoubleValue);
+				lNewMax = max(lNewMax, lDoubleValue);
+			}
+			int lIntegerMappedValue = 0;
+			if (lCurrentWidth > 0)
+			{
+				lIntegerMappedValue = (int) ((255 * (lDoubleValue - lMinimum)) / lCurrentWidth);
+			}
+
+			/*
+			System.out.println("lDoubleValue=" + lDoubleValue);
+			System.out.println("lMaximum=" + lMaximum);
+			System.out.println("lCurrentWidth=" + lCurrentWidth);
+			System.out.println("lIntegerMappedValue=" + lIntegerMappedValue);/**/
+
+			lDestinationRam.setByte(i, clampToByte(lIntegerMappedValue));
+		}
+
+		if (pAutoRescale)
+		{
+			mFloatMinimum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMinimum + cMinMaxDampeningAlpha * lNewMin);
+			mFloatMaximum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMaximum + cMinMaxDampeningAlpha * lNewMax);
+		}
+	}
+
+	private void convertFrom32bitFloatAndRescaledAuto(NDArray pNDArraySource,
+																										NDArray pNDArrayDestination,
+																										boolean pAutoRescale)
+	{
+
+		final double lMinimum = mFloatMinimum;
+		final double lMaximum = mFloatMaximum;
+		final double lCurrentWidth = lMaximum - lMinimum;
+
+		float lNewMin = Float.MAX_VALUE;
+		float lNewMax = Float.MIN_VALUE;
+
+		final RAM lSourceRam = pNDArraySource.getRAM();
+		final RAM lDestinationRam = pNDArrayDestination.getRAM();
+		long length = pNDArraySource.getVolume();
+		for (int i = 0; i < length; i++)
+		{
+			final float lFloatValue = lSourceRam.getFloatAligned(i);
+			if (pAutoRescale)
+			{
+				lNewMin = min(lNewMin, lFloatValue);
+				lNewMax = max(lNewMax, lFloatValue);
+			}
+			int lIntegerMappedValue = 0;
+			if (lCurrentWidth > 0)
+			{
+				lIntegerMappedValue = (int) ((255 * (lFloatValue - lMinimum)) / lCurrentWidth);
+			}
+			lDestinationRam.setByte(i, clampToByte(lIntegerMappedValue));
+		}
+
+		if (pAutoRescale)
+		{
+			mFloatMinimum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMinimum + cMinMaxDampeningAlpha * lNewMin);
+			mFloatMaximum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMaximum + cMinMaxDampeningAlpha * lNewMax);
+		}
+	}
+
+	private void convertFrom16bitIntegerAndRescaledAuto(NDArray pNDArraySource,
 																									NDArray pNDArrayDestination,
 																									boolean pAutoRescale)
 	{
@@ -153,6 +246,11 @@ public class BitDepthAutoRescaler
 			mFloatMaximum = pMaximum;
 		else
 			mIntMaximum = (long) pMaximum;
+	}
+
+	public boolean isFloat()
+	{
+		return mIsFloat;
 	}
 
 }

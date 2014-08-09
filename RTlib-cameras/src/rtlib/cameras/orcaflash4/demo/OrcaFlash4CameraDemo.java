@@ -12,7 +12,6 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.stack.Stack;
-import dcamj.DcamAcquisition.TriggerType;
 
 public class OrcaFlash4CameraDemo
 {
@@ -23,7 +22,7 @@ public class OrcaFlash4CameraDemo
 	{
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																										TriggerType.Internal);
+																																										true);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
@@ -70,7 +69,7 @@ public class OrcaFlash4CameraDemo
 	{
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																										TriggerType.Internal);
+																																										true);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
@@ -134,7 +133,7 @@ public class OrcaFlash4CameraDemo
 
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																										TriggerType.Internal);
+																																										true);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
 													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")

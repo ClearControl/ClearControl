@@ -88,8 +88,8 @@ public class TransformMatrices
 																									int v,
 																									double pZernikeValue)
 	{
-		final int lColumnOffset = v * pSquareImageWidthHeight + u;
-		final int lRowOffset = j * pSquareImageWidthHeight + i;
+		final int lColumnOffset = j * pSquareImageWidthHeight + i;
+		final int lRowOffset = v * pSquareImageWidthHeight + u;
 		pDenseMatrix64F.set(lRowOffset, lColumnOffset, pZernikeValue);
 	}
 }

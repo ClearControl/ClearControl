@@ -11,23 +11,21 @@ public class MatrixConversions
 {
 
 	public static final void convertMatrixToNDArray(DenseMatrix64F pDenseMatrix64F,
-																							NDArray pNDArray)
+																									NDArray pNDArray)
 	{
 		RAM lRam = pNDArray.getRAM();
 		double[] lArray = pDenseMatrix64F.data;
-		int length = (int) min(	lArray.length,
-														pNDArray.getLengthInElements());
+		int length = (int) min(lArray.length, pNDArray.getVolume());
 		for (int i = 0; i < length; i++)
 			lRam.setDoubleAligned(i, lArray[i]);
 	}
 
 	public static final void convertNDArrayToMatrix(NDArray pNDArray,
-																							DenseMatrix64F pDenseMatrix64F)
+																									DenseMatrix64F pDenseMatrix64F)
 	{
 		RAM lRam = pNDArray.getRAM();
 		double[] lArray = pDenseMatrix64F.data;
-		int length = (int) min(	lArray.length,
-														pNDArray.getLengthInElements());
+		int length = (int) min(lArray.length, pNDArray.getVolume());
 		for (int i = 0; i < length; i++)
 			lArray[i] = lRam.getDoubleAligned(i);
 	}

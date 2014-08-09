@@ -2,6 +2,7 @@ package rtlib.kam.memory.impl.gpu;
 
 import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
+import rtlib.core.memory.TypeId;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.HasPeer;
 import rtlib.kam.context.impl.gpu.ContextGPU;
@@ -66,7 +67,7 @@ public abstract class ImageGPU<T> implements
 		ChannelOrder lChannelOrder = ChannelOrder.R;
 		ChannelDataType lChannelDataType = null;
 
-		if (SizeOf.isFloat(mElementType))
+		if (TypeId.isFloatingPointType(mElementType))
 		{
 			if (mBytesPerVoxel == 2)
 				lChannelDataType = ChannelDataType.HalfFloat;

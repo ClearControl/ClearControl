@@ -55,5 +55,57 @@ public class TypeId
 
 	}
 
+	public static boolean isFloatingPointType(final Class<?> pClass)
+	{
+		if (pClass == Float.class || pClass == float.class)
+			return true;
+		else if (pClass == Double.class || pClass == double.class
+							|| pClass == Double.TYPE)
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isByte(Class<?> pType)
+	{
+		return byte.class == pType || Byte.class == pType
+						|| Byte.TYPE == pType;
+	}
+
+	public static boolean isChar(Class<?> pType)
+	{
+		return char.class == pType || Character.class == pType
+						|| Character.TYPE == pType;
+	}
+
+	public static boolean isShort(Class<?> pType)
+	{
+		return short.class == pType || Short.class == pType
+						|| Short.TYPE == pType;
+	}
+
+	public static boolean isInt(Class<?> pType)
+	{
+		return int.class == pType || Integer.class == pType
+						|| Integer.TYPE == pType;
+	}
+
+	public static boolean isLong(Class<?> pType)
+	{
+		return long.class == pType || Long.class == pType
+						|| Long.TYPE == pType;
+	}
+
+	public static boolean isFloat(Class<?> pType)
+	{
+		return float.class == pType || Float.class == pType
+						|| Float.TYPE == pType;
+	}
+
+	public static boolean isDouble(Class<?> pType)
+	{
+		return double.class == pType || Double.class == pType
+						|| Double.TYPE == pType;
+	}
 
 }
