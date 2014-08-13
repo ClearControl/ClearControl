@@ -114,7 +114,6 @@ public class RTlibLogger
 																		Class<?> pClass,
 																		String pMessage)
 	{
-
 		if (isStdOutputActive())
 		{
 			if (pType.equals("ERROR"))

@@ -240,4 +240,12 @@ public class NDBoundedCursor implements NDCursor
 						+ "]";
 	}
 
+	@Override
+	public void reset()
+	{
+		for (int i = 0; i < ndindex.length; i++)
+			ndindex[i] = 0;
+		flatindex = 0;
+
+	}
 }

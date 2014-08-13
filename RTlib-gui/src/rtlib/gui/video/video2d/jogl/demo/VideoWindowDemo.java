@@ -26,8 +26,8 @@ public class VideoWindowDemo
 																															1);
 
 		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
-																											lNDArrayDirect.getSizeAlongDimension(1),
-																											lNDArrayDirect.getSizeAlongDimension(2));
+																											(int) lNDArrayDirect.getSizeAlongDimension(1),
+																											(int) lNDArrayDirect.getSizeAlongDimension(2));
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setManualMinMax(true);
 		// lVideoWindow.setLinearInterpolation(true);
@@ -57,8 +57,8 @@ public class VideoWindowDemo
 																															1);
 
 		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
-																											lNDArrayDirect.getSizeAlongDimension(1),
-																											lNDArrayDirect.getSizeAlongDimension(2));
+																											(int) lNDArrayDirect.getSizeAlongDimension(1),
+																											(int) lNDArrayDirect.getSizeAlongDimension(2));
 		lVideoWindow.setSyncToRefresh(false);
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setManualMinMax(false);

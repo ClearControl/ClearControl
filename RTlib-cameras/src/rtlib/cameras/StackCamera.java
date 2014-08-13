@@ -51,4 +51,9 @@ public abstract class StackCamera extends CameraDevice
 		return mStackReference;
 	}
 
+	public void trigger()
+	{
+
+	}
+
 }

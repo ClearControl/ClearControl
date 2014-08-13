@@ -26,15 +26,18 @@ import rtlib.gui.video.video2d.BitDepthAutoRescaler;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 
+import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.opengl.GLWindow;
 
 public class VideoWindow implements Closeable
 {
 
 	private final GLWindow mGLWindow;
+	private final MouseControl mMouseControl;
+	private final KeyListener mKeyboardControl;
 	private String mWindowName;
 
-	private long mVideoMaxWidth, mVideoMaxHeight, mVideoWidth,
+	private volatile int mVideoMaxWidth, mVideoMaxHeight, mVideoWidth,
 			mVideoHeight;
 	private int[] mPixelBufferIds;
 	private GLU mGLU;
@@ -50,12 +53,11 @@ public class VideoWindow implements Closeable
 	private final boolean mReportErrors = false;
 
 	private volatile long mFrameIndex = 0;
-	private long mNanosecondsSinceLastFrame = System.nanoTime();
+	private volatile long mNanosecondsSinceLastFrame = System.nanoTime();
 	private volatile double mFrameRate;
 
 	private volatile boolean mDisplayFrameRate = true;
 	private volatile long mDisplayFrameRateLastDisplayTime = 0;
-
 
 	private volatile boolean mDisplayOn = true,
 			mLinearInterpolation = false, mSyncToRefresh = false,
@@ -69,11 +71,16 @@ public class VideoWindow implements Closeable
 	{
 		mGLWindow = GLWindow.create(cGLCapabilities);
 		mGLWindow.setAutoSwapBufferMode(true);
+
+		mMouseControl = new MouseControl(this);
+		mGLWindow.addMouseListener(mMouseControl);
+		mKeyboardControl = new KeyboardControl(this);
+		mGLWindow.addKeyListener(mKeyboardControl);
 	}
 
 	public VideoWindow(	final String pWindowName,
-											final long pVideoMaxWidth,
-											final long pVideoMaxHeight) throws GLException
+											final int pVideoMaxWidth,
+											final int pVideoMaxHeight) throws GLException
 	{
 		this();
 		mWindowName = pWindowName;
@@ -84,11 +91,11 @@ public class VideoWindow implements Closeable
 
 		if (pVideoMaxWidth > 768 || pVideoMaxHeight > 768)
 		{
-			mGLWindow.setSize(768, 768);
+			setWindowSize(768, 768);
 		}
 		else if (pVideoMaxWidth < 256 || pVideoMaxHeight < 256)
 		{
-			mGLWindow.setSize(256, 256);
+			setWindowSize(512, 512);
 		}
 
 		mGLWindow.setTitle(mWindowName);
@@ -100,8 +107,8 @@ public class VideoWindow implements Closeable
 			public void reshape(final GLAutoDrawable glautodrawable,
 													final int x,
 													final int y,
-													final int pWidth,
-													final int pHeight)
+													final int pWindowWidth,
+													final int pWindowHeight)
 			{
 				// System.out.println("reshape");
 				final GL2 lGL2 = glautodrawable.getGL().getGL2();
@@ -131,7 +138,7 @@ public class VideoWindow implements Closeable
 												2000);/*/
 
 				lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-				lGL2.glViewport(0, 0, pWidth, pHeight);
+				lGL2.glViewport(0, 0, pWindowWidth, pWindowHeight);
 				lGL2.glClearColor(0, 0, 0, 0);
 				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 				lGL2.glFlush();
@@ -347,6 +354,21 @@ public class VideoWindow implements Closeable
 
 	}
 
+	private void setWindowSize(int pWindowWidth, int pWindowHeigth)
+	{
+		mGLWindow.setSize(pWindowWidth, pWindowWidth);
+	}
+
+	public int getWindowWidth()
+	{
+		return mGLWindow.getWidth();
+	}
+
+	public int getWindowHeight()
+	{
+		return mGLWindow.getHeight();
+	}
+
 	public void setWidth(final int pVideoWidth)
 	{
 		mVideoWidth = pVideoWidth;
@@ -358,10 +380,10 @@ public class VideoWindow implements Closeable
 	}
 
 	public <T> void setSourceBuffer(final java.nio.ByteBuffer pSourceBuffer,
-															Class<T> pType,
-															final int pVideoBytesPerPixel,
-															final int pVideoWidth,
-															final int pVideoHeight)
+																	Class<T> pType,
+																	final int pVideoBytesPerPixel,
+																	final int pVideoWidth,
+																	final int pVideoHeight)
 	{
 		Pointer<Byte> lPointerToBytes = Pointer.pointerToBytes(pSourceBuffer);
 		long lNativeAddress = lPointerToBytes.getPeer();
@@ -658,6 +680,9 @@ public class VideoWindow implements Closeable
 		mGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
 
-
+	public void setGamma(double pGamma)
+	{
+		mBitDepthAutoRescaler.setGamma(pGamma);
+	}
 
 }

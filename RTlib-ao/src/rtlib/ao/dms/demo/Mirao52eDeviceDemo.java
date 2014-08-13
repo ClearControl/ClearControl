@@ -10,18 +10,23 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.junit.Test;
 
+import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.dms.Mirao52eDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.cameras.orcaflash4.OrcaFlash4StackCamera;
+import rtlib.cameras.StackCamera;
+import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
+import rtlib.kam.memory.ram.RAM;
 import rtlib.stack.Stack;
 
 public class Mirao52eDeviceDemo
 {
+	private volatile boolean mReceivedStack = false;
+	private volatile Stack<Short> mNewStack;
 
 	/**
 	 * First start the Mirao52 UDP server on the localhost and then fire this
@@ -33,52 +38,58 @@ public class Mirao52eDeviceDemo
 	@Test
 	public void demo() throws IOException, InterruptedException
 	{
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithSoftwareTriggering(0);
+		Mirao52eDevice lMirao52eDevice = new Mirao52eDevice(1);
+
+		optimizePSF(lOrcaFlash4StackCamera, lMirao52eDevice);
+
+	}
+
+	private void optimizePSF(	final StackCamera pStackCamera,
+														DeformableMirrorDevice pDeformableMirrorDevice)	throws InterruptedException,
+																																						IOException
+	{
 		final NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
 																																						128,
 																																						128,
 																																						1);
 
-		final VideoWindow lOrcaVideoWindow = new VideoWindow(	"Camera image",
-																											lNDArrayDirect.getSizeAlongDimension(1),
-																											lNDArrayDirect.getSizeAlongDimension(2));
-		lOrcaVideoWindow.setDisplayOn(true);
-		lOrcaVideoWindow.setSourceBuffer(lNDArrayDirect);
-		lOrcaVideoWindow.setVisible(true);
-		lOrcaVideoWindow.setManualMinMax(false);
+		final VideoWindow lCameraVideoWindow = new VideoWindow(	"Camera image",
+																														(int) lNDArrayDirect.getSizeAlongDimension(1),
+																														(int) lNDArrayDirect.getSizeAlongDimension(2));
+		lCameraVideoWindow.setDisplayOn(true);
+		lCameraVideoWindow.setSourceBuffer(lNDArrayDirect);
+		lCameraVideoWindow.setVisible(true);
+		lCameraVideoWindow.setManualMinMax(false);
 
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = new OrcaFlash4StackCamera(	0,
-																																										true);
+		pStackCamera.getStackReferenceVariable()
+								.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+								{
 
-		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
-													{
+									@Override
+									public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
+																										final Stack<Short> pNewStack)
+									{
+										mReceivedStack = true;
+										mNewStack = pNewStack;
+										lCameraVideoWindow.setSourceBuffer(pNewStack.getNDArray());
+										lCameraVideoWindow.notifyNewFrame();
+										lCameraVideoWindow.display();/**/
 
-														@Override
-														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																															final Stack<Short> pNewStack)
-														{
+										return super.setEventHook(pOldStack, pNewStack);
+									}
 
-															lOrcaVideoWindow.setSourceBuffer(pNewStack.getNDArray());
-															lOrcaVideoWindow.notifyNewFrame();
-															lOrcaVideoWindow.display();/**/
+								});
 
-															return super.setEventHook(pOldStack,
-																												pNewStack);
-														}
+		assertTrue(pStackCamera.open());
 
-													});
-
-		assertTrue(lOrcaFlash4StackCamera.open());
-
-		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
-													.setValue(100000);
-		lOrcaFlash4StackCamera.getFrameWidthVariable()
-													.setValue(lNDArrayDirect.getSizeAlongDimension(1));
-		lOrcaFlash4StackCamera.getFrameHeightVariable()
-													.setValue(lNDArrayDirect.getSizeAlongDimension(2));
-		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(1);
-		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
-		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
+		pStackCamera.getExposureInMicrosecondsVariable().setValue(100000);
+		pStackCamera.getFrameWidthVariable()
+								.setValue(lNDArrayDirect.getSizeAlongDimension(1));
+		pStackCamera.getFrameHeightVariable()
+								.setValue(lNDArrayDirect.getSizeAlongDimension(2));
+		pStackCamera.getFrameDepthVariable().setValue(1);
+		pStackCamera.getStackModeVariable().setValue(false);
 
 		//
 
@@ -90,27 +101,25 @@ public class Mirao52eDeviceDemo
 																																8,
 																																1);
 		generateRandomVector(lZernikeVector);
-		MatrixConversions.convertMatrixToNDArray(lZernikeVector,lNDArray);
+		MatrixConversions.convertMatrixToNDArray(lZernikeVector, lNDArray);
 
-		final VideoWindow lMirrorVideoWindow = new VideoWindow(	"Deformable mirror shape",
-																											8,
-																											8);
-		lMirrorVideoWindow.setDisplayOn(true);
-		lMirrorVideoWindow.setSourceBuffer(lNDArray);
-		lMirrorVideoWindow.setVisible(true);
-		lMirrorVideoWindow.setManualMinMax(true);
-		lMirrorVideoWindow.setMinIntensity(-0.1);
-		lMirrorVideoWindow.setMaxIntensity(0.1);
+		final VideoWindow lDMShapeVideoWindow = new VideoWindow(	"Deformable mirror shape",
+																														8,
+																														8);
+		lDMShapeVideoWindow.setDisplayOn(true);
+		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
+		lDMShapeVideoWindow.setVisible(true);
+		lDMShapeVideoWindow.setManualMinMax(true);
+		lDMShapeVideoWindow.setMinIntensity(-0.1);
+		lDMShapeVideoWindow.setMaxIntensity(0.1);
 
-		Mirao52eDevice lMirao52eDevice = new Mirao52eDevice(1);
+		assertTrue(pDeformableMirrorDevice.open());
 
-		assertTrue(lMirao52eDevice.open());
+		long lStartValueForLastNumberOfShapes = (long) pDeformableMirrorDevice.getNumberOfReceivedShapesVariable()
+																																					.getValue();
 
-		long lStartValueForLastNumberOfShapes = (long) lMirao52eDevice.getNumberOfReceivedShapesVariable()
-																																	.getValue();
-
-		assertTrue(lOrcaFlash4StackCamera.start());
-		lMirrorVideoWindow.setSourceBuffer(lNDArray);
+		assertTrue(pStackCamera.start());
+		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
 		for (int i = 1; i <= 1000000; i++)
 		{
 			// generateRandomVector(lVector);
@@ -120,23 +129,39 @@ public class Mirao52eDeviceDemo
 			DenseMatrix64F lShapeVector = new DenseMatrix64F(64, 1);
 			CommonOps.mult(lTransformMatrix, lZernikeVector, lShapeVector);
 			MatrixConversions.convertMatrixToNDArray(lShapeVector, lNDArray);
-			lMirao52eDevice.getMatrixReference().set(lNDArray);
+			pDeformableMirrorDevice.getMatrixReference().set(lNDArray);
 			// assertTrue(((long) lMirao52eDevice.getNumberOfReceivedShapesVariable()
 			// .getValue()) == lStartValueForLastNumberOfShapes + i);
 
-			lMirrorVideoWindow.notifyNewFrame();
-			lMirrorVideoWindow.display();/**/
+			lDMShapeVideoWindow.notifyNewFrame();
+			lDMShapeVideoWindow.display();/**/
+			Thread.sleep(5);
+			pStackCamera.trigger();
+			while (!mReceivedStack)
+				Thread.sleep(1);
+
+			long lVolume = mNewStack.getNDArray().getVolume();
+			RAM lRAM = mNewStack.getNDArray().getRAM();
+			long lMax = Long.MIN_VALUE;
+			for (long j = 0; j < lVolume; j++)
+			{
+				int lCharAligned = lRAM.getCharAligned(j);
+				lMax = Math.max(lMax, lCharAligned);
+			}
+
+			System.out.println(lZernikeVector);
+			System.out.println("lMax=" + lMax);
+
 			Thread.sleep(100);
 		}
-		lOrcaFlash4StackCamera.stop();
+		pStackCamera.stop();
 
-		assertTrue(lMirao52eDevice.close());
+		assertTrue(pDeformableMirrorDevice.close());
 
-		lMirrorVideoWindow.close();
-		lOrcaFlash4StackCamera.close();
+		lDMShapeVideoWindow.close();
+		pStackCamera.close();
 
-		lOrcaVideoWindow.close();
-
+		lCameraVideoWindow.close();
 	}
 
 	private void generateRandomNDArrayVector(NDArrayTyped<Double> pNDArray)

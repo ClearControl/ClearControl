@@ -65,7 +65,7 @@ public class SizeOf
 
 	public static int sizeOfChar()
 	{
-		return 1;
+		return 2;
 	}
 
 	public static Class<?> integralTypeFromSize(final int pNumberOfBytes)

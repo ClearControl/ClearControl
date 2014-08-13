@@ -1,1 +1,0 @@
- "\Program Files\Java\jre7\bin\java.exe" -jar ..\..\..\..\Libraries\jnaerator\jar\jnaerator.jar config.win.jnaerator

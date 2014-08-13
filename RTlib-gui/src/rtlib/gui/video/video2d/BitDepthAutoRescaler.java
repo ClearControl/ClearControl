@@ -2,6 +2,7 @@ package rtlib.gui.video.video2d;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.pow;
 import rtlib.core.memory.TypeId;
 import rtlib.kam.memory.impl.direct.NDArrayDirect;
 import rtlib.kam.memory.ndarray.NDArray;
@@ -15,6 +16,9 @@ public class BitDepthAutoRescaler
 	private boolean mIsFloat = false;
 	private volatile boolean mAutoRescale;
 
+	private volatile double mGamma = 1;
+	private volatile boolean mGammaOn = false;
+
 	private volatile long mIntMinimum = 0,
 			mIntMaximum = Short.MAX_VALUE;
 
@@ -22,6 +26,7 @@ public class BitDepthAutoRescaler
 			mFloatMaximum = Short.MAX_VALUE;
 
 	private NDArrayTyped<Byte> mConvertedSourceBuffer;
+
 
 	public BitDepthAutoRescaler(boolean pIsFloat)
 	{
@@ -99,8 +104,12 @@ public class BitDepthAutoRescaler
 			int lIntegerMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				lIntegerMappedValue = (int) ((255 * (lDoubleValue - lMinimum)) / lCurrentWidth);
+				double lNormalizedValue=  (((lDoubleValue - lMinimum)) / lCurrentWidth);
+				if (mGammaOn)
+					lNormalizedValue = pow(lNormalizedValue, getGamma());
+				lIntegerMappedValue = (int)(255*lNormalizedValue) ;
 			}
+			
 
 			/*
 			System.out.println("lDoubleValue=" + lDoubleValue);
@@ -123,12 +132,15 @@ public class BitDepthAutoRescaler
 																										boolean pAutoRescale)
 	{
 
-		final double lMinimum = mFloatMinimum;
+		final float lMinimum = (float) mFloatMinimum;
 		final double lMaximum = mFloatMaximum;
-		final double lCurrentWidth = lMaximum - lMinimum;
+		final float lCurrentWidth = (float) (lMaximum - lMinimum);
 
 		float lNewMin = Float.MAX_VALUE;
 		float lNewMax = Float.MIN_VALUE;
+
+		final boolean lGammaOn = mGammaOn;
+		final float lGamma = (float) mGamma;
 
 		final RAM lSourceRam = pNDArraySource.getRAM();
 		final RAM lDestinationRam = pNDArrayDestination.getRAM();
@@ -144,7 +156,10 @@ public class BitDepthAutoRescaler
 			int lIntegerMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				lIntegerMappedValue = (int) ((255 * (lFloatValue - lMinimum)) / lCurrentWidth);
+				float lNormalizedValue = (((lFloatValue - lMinimum)) / lCurrentWidth);
+				if (lGammaOn)
+					lNormalizedValue = (float) pow(lNormalizedValue, lGamma);
+				lIntegerMappedValue = (int) (255 * lNormalizedValue);
 			}
 			lDestinationRam.setByte(i, clampToByte(lIntegerMappedValue));
 		}
@@ -161,36 +176,50 @@ public class BitDepthAutoRescaler
 																									boolean pAutoRescale)
 	{
 
-		final long lMinimum = mIntMinimum;
-		final long lMaximum = mIntMaximum;
-		final long lCurrentWidth = lMaximum - lMinimum;
-
-		long lNewMin = Long.MAX_VALUE;
-		long lNewMax = Long.MIN_VALUE;
-
-		final RAM lSourceRam = pNDArraySource.getRAM();
-		final RAM lDestinationRam = pNDArrayDestination.getRAM();
-		long length = pNDArraySource.getVolume();
-		for (int i = 0; i < length; i++)
+		try
 		{
-			final int lShortValue = lSourceRam.getShortAligned(i) & 0xFFFF;
+			final float lMinimum = mIntMinimum;
+			final long lMaximum = mIntMaximum;
+			final float lCurrentWidth = lMaximum - lMinimum;
+
+			long lNewMin = Long.MAX_VALUE;
+			long lNewMax = Long.MIN_VALUE;
+
+			final boolean lGammaOn = mGammaOn;
+			final float lGamma = (float) mGamma;
+
+			final RAM lSourceRam = pNDArraySource.getRAM();
+			final RAM lDestinationRam = pNDArrayDestination.getRAM();
+			long length = pNDArraySource.getVolume();
+			for (int i = 0; i < length; i++)
+			{
+				final int lShortValue = lSourceRam.getShortAligned(i) & 0xFFFF;
+				if (pAutoRescale)
+				{
+					lNewMin = min(lNewMin, lShortValue);
+					lNewMax = max(lNewMax, lShortValue);
+				}
+				int lIntegerMappedValue = 0;
+				if (lCurrentWidth > 0)
+				{
+					float lNormalizedValue = (((lShortValue - lMinimum)) / lCurrentWidth);
+					if (lGammaOn)
+						lNormalizedValue = (float) pow(lNormalizedValue, lGamma);
+					lIntegerMappedValue = (int) (255 * lNormalizedValue);
+				}
+				lDestinationRam.setByte(i, clampToByte(lIntegerMappedValue));
+			}
+
 			if (pAutoRescale)
 			{
-				lNewMin = min(lNewMin, lShortValue);
-				lNewMax = max(lNewMax, lShortValue);
+				mIntMinimum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMinimum + cMinMaxDampeningAlpha * lNewMin);
+				mIntMaximum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMaximum + cMinMaxDampeningAlpha * lNewMax);
 			}
-			int lIntegerMappedValue = 0;
-			if (lCurrentWidth > 0)
-			{
-				lIntegerMappedValue = (int) ((255 * (lShortValue - lMinimum)) / lCurrentWidth);
-			}
-			lDestinationRam.setByte(i, clampToByte(lIntegerMappedValue));
 		}
-
-		if (pAutoRescale)
+		catch (Throwable e)
 		{
-			mIntMinimum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMinimum + cMinMaxDampeningAlpha * lNewMin);
-			mIntMaximum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMaximum + cMinMaxDampeningAlpha * lNewMax);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -251,6 +280,20 @@ public class BitDepthAutoRescaler
 	public boolean isFloat()
 	{
 		return mIsFloat;
+	}
+
+	public double getGamma()
+	{
+		return mGamma;
+	}
+
+	public void setGamma(double pGamma)
+	{
+		mGamma = pGamma;
+		if (mGamma != 1)
+			mGammaOn = true;
+		else if (mGamma == 1)
+			mGammaOn = false;
 	}
 
 }

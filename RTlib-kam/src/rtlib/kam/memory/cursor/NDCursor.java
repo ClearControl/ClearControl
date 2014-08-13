@@ -31,4 +31,5 @@ public interface NDCursor
 
 	public void decrementCursorPosition(final int pDimensionIndex);
 
+	public void reset();
 }
