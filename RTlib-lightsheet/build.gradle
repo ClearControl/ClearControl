@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceSets 
+{
+  main 
+  {
+    java 
+    {
+      srcDir 'src'
+    }
+  }
+  test
+  {
+    java 
+    {
+      srcDir 'src'
+    }
+  }
+}
+
+dependencies 
+{
+    compile project(':RTlib-core')
+    compile project(':RTlib-symphony')
+}
+
+repositories 
+{
+    mavenCentral()
+    maven 
+    {
+        url "http://bitbucket.org/api/1.0/repositories/royerloic/repos/raw/master/"
+    } 
+}
+
+

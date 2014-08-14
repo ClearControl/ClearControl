@@ -1,5 +1,6 @@
 package rtlib.core.concurrent.executors;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,6 +26,15 @@ public interface AsynchronousExecutorServiceAccess
 			lThreadPoolExecutor = initializeExecutors();
 
 		return lThreadPoolExecutor.submit(pRunnable);
+	}
+
+	public default <O> Future<O> executeAsynchronously(final Callable<O> pCallable)
+	{
+		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		if (lThreadPoolExecutor == null)
+			lThreadPoolExecutor = initializeExecutors();
+
+		return lThreadPoolExecutor.submit(pCallable);
 	}
 
 	public default boolean resetThreadPoolAndWaitForCompletion(	long pTimeOut,
