@@ -26,6 +26,13 @@ dependencies
     compile group: "royer", name: "NIRIOJ", version: "1.+", changing: true
 }
 
+configurations.all 
+{
+  // check for updates every build
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+
 repositories 
 {
     mavenCentral()
