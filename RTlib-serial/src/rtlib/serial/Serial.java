@@ -117,6 +117,7 @@ public class Serial implements SerialInterface
 														SerialPort.PARITY_NONE);
 
 			mSerialPort.setFlowControlMode(mFlowControl);
+			mSerialPort.purgePort(SerialPort.PURGE_RXCLEAR | SerialPort.PURGE_TXCLEAR);
 
 			// System.out.println("Flow Control: " +
 			// mSerialPort.getFlowControlMode());

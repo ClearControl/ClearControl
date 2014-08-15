@@ -4,7 +4,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import rtlib.core.memory.TypeId;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArray;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
@@ -45,7 +45,7 @@ public class BitDepthAutoRescaler
 		final long lNDArrayLength = pNewContentBuffer.getVolume();
 		if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.getVolume() != lNDArrayLength)
 		{
-			mConvertedSourceBuffer = NDArrayDirect.allocateTXY(	Byte.class,
+			mConvertedSourceBuffer = NDArrayTypedDirect.allocateTXY(Byte.class,
 																													pNewContentBuffer.getWidth(),
 																													pNewContentBuffer.getHeight());
 		}

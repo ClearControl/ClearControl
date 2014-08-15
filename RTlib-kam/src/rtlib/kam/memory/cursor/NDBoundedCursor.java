@@ -27,25 +27,9 @@ public class NDBoundedCursor implements NDCursor
 		return new NDBoundedCursor(1, pWidth, pHeight, pDepth);
 	}
 
-	public static final NDBoundedCursor createNDCursor(final long... pDimensions)
+	public static final NDBoundedCursor createNDVectorCursor(long... pDimensions)
 	{
-		return createNDVectorCursor(1, pDimensions);
-	}
-
-	public static final NDBoundedCursor createNDVectorCursor(	long pVectorLength,
-																														long... pDimensions)
-	{
-
-		long[] lDimensions = new long[pDimensions.length + 1];
-		for (int i = 0; i < lDimensions.length; i++)
-		{
-			if (i == 0)
-				lDimensions[i] = pVectorLength;
-			else
-				lDimensions[i] = pDimensions[i - 1];
-		}
-
-		return new NDBoundedCursor(lDimensions);
+		return new NDBoundedCursor(pDimensions);
 	}
 
 	private NDBoundedCursor(long... pDimensions)
@@ -69,7 +53,7 @@ public class NDBoundedCursor implements NDCursor
 	}
 
 	@Override
-	public long getDimension()
+	public int getDimension()
 	{
 		return dimensions.length - 1;
 	}

@@ -96,7 +96,7 @@ public class Image3DGPUTests
 		for (int i = 0; i < cVolume; i++)
 		{
 			final short lShort = lRAMDirect.getShortAligned(i);
-			System.out.println(lShort);
+			// System.out.println(lShort);
 			//
 
 			assertEquals((short) i, lShort);

@@ -45,6 +45,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 			mVideoWindow.setGamma(Math.tan(Math.PI * nx / 2));
 
 		}
+
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.nio.file.StandardOpenOption;
 
 import org.bridj.Pointer;
 
+import rtlib.core.memory.InvalidNativeMemoryAccessException;
 import rtlib.core.memory.NativeMemoryAccess;
 import rtlib.core.memory.NativeMemoryCleaner;
 import rtlib.core.memory.SizedInBytes;
@@ -59,6 +60,19 @@ public class RAMDirect extends RAMAbstract implements
 		this(	null,
 					NativeMemoryAccess.allocateMemory(pLengthInBytes),
 					pLengthInBytes);
+	}
+
+	public RAMDirect subRegion(	final long pOffset,
+															final long pLenghInBytes)
+	{
+		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes + mLengthInBytes)
+			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate RAMDirect on subregion staring at offset %d and length %d  ",
+																																	pOffset,
+																																	pLenghInBytes));
+		RAMDirect lRAMDirect = new RAMDirect(	this,
+																					mAddressInBytes + pOffset,
+																					pLenghInBytes);
+		return lRAMDirect;
 	}
 
 	@Override

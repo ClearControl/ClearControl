@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import org.bridj.Pointer;
 
+import rtlib.core.memory.InvalidNativeMemoryAccessException;
 import rtlib.core.memory.MemoryMappedFile;
 import rtlib.core.memory.MemoryMappedFileException;
 import rtlib.core.memory.NativeMemoryAccess;
@@ -17,6 +18,7 @@ import rtlib.core.rgc.Cleaner;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.MappableMemory;
 import rtlib.kam.memory.MemoryType;
+import rtlib.kam.memory.impl.direct.RAMDirect;
 import rtlib.kam.memory.ram.RAM;
 import rtlib.kam.memory.ram.RAMMappedAbstract;
 import rtlib.kam.memory.ram.Resizable;
@@ -205,6 +207,19 @@ public class RAMFile extends RAMMappedAbstract implements
 	}
 
 	@Override
+	public RAMDirect subRegion(long pOffset, long pLenghInBytes)
+	{
+		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes + mLengthInBytes)
+			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate RAMDirect from RAMFile on subregion staring at offset %d and length %d  ",
+																																	pOffset,
+																																	pLenghInBytes));
+		RAMDirect lRAMDirect = new RAMDirect(	this,
+																					mAddressInBytes + pOffset,
+																					pLenghInBytes);
+		return lRAMDirect;
+	}
+
+	@Override
 	public MemoryType getMemoryType()
 	{
 		complainIfFreed();
@@ -309,5 +324,7 @@ public class RAMFile extends RAMMappedAbstract implements
 						+ getMemoryType()
 						+ "]";
 	}
+
+
 
 }

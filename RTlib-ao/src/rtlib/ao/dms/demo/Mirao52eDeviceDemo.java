@@ -14,11 +14,11 @@ import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.dms.Mirao52eDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.cameras.StackCamera;
+import rtlib.cameras.StackCameraDevice;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
 import rtlib.stack.Stack;
@@ -45,14 +45,14 @@ public class Mirao52eDeviceDemo
 
 	}
 
-	private void optimizePSF(	final StackCamera pStackCamera,
+	private void optimizePSF(	final StackCameraDevice<Short, Short> pStackCamera,
 														DeformableMirrorDevice pDeformableMirrorDevice)	throws InterruptedException,
 																																						IOException
 	{
-		final NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
-																																						128,
-																																						128,
-																																						1);
+		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
+																																											128,
+																																											128,
+																																											1);
 
 		final VideoWindow lCameraVideoWindow = new VideoWindow(	"Camera image",
 																														(int) lNDArrayDirect.getSizeAlongDimension(1),
@@ -96,14 +96,14 @@ public class Mirao52eDeviceDemo
 		DenseMatrix64F lTransformMatrix = TransformMatrices.computeCosineTransformMatrix(8);
 
 		DenseMatrix64F lZernikeVector = new DenseMatrix64F(64, 1);
-		NDArrayTyped<Double> lNDArray = NDArrayDirect.allocateTXYZ(	Double.TYPE,
-																																8,
-																																8,
-																																1);
+		NDArrayTypedDirect<Double> lNDArray = NDArrayTypedDirect.allocateTXYZ(Double.TYPE,
+																																					8,
+																																					8,
+																																					1);
 		generateRandomVector(lZernikeVector);
 		MatrixConversions.convertMatrixToNDArray(lZernikeVector, lNDArray);
 
-		final VideoWindow lDMShapeVideoWindow = new VideoWindow(	"Deformable mirror shape",
+		final VideoWindow lDMShapeVideoWindow = new VideoWindow("Deformable mirror shape",
 																														8,
 																														8);
 		lDMShapeVideoWindow.setDisplayOn(true);

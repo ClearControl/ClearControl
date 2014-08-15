@@ -13,7 +13,7 @@ import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.memory.NativeMemoryAccess;
 import rtlib.core.memory.SizeOf;
 import rtlib.core.recycling.Recycler;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
@@ -127,14 +127,14 @@ public class StackTests
 
 			assertNotNull(lStack);
 
-			final NDArrayDirect<?> lNdArray = lStack.getNDArray();
+			final NDArrayTypedDirect<?> lNdArray = lStack.getNDArray();
 			for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 			{
 				lNdArray.setByteAligned(k, (byte) k);
 			}
 
 			final Runnable lRunnable2 = () -> {
-				final NDArrayDirect<?> lNdArray2 = lStack.getNDArray();
+				final NDArrayTypedDirect<?> lNdArray2 = lStack.getNDArray();
 				for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
 				{
 					final byte lByte = lNdArray2.getByteAligned(k);

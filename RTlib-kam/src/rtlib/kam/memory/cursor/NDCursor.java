@@ -2,7 +2,7 @@ package rtlib.kam.memory.cursor;
 
 public interface NDCursor
 {
-	public long getDimension();
+	public int getDimension();
 
 	public long[] getDimensions();
 

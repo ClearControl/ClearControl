@@ -102,7 +102,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	@Override
 	public void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
 	{
-		mVariablesToSendUpdatesTo.add(pObjectVariable);
+		if (!mVariablesToSendUpdatesTo.contains(pObjectVariable))
+			mVariablesToSendUpdatesTo.add(pObjectVariable);
 	}
 
 	@Override
@@ -115,6 +116,13 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	public void doNotSendAnyUpdates()
 	{
 		mVariablesToSendUpdatesTo.clear();
+	}
+
+	public ObjectVariable<O> sendUpdatesToInstead(ObjectVariable<O> pObjectVariable)
+	{
+		ObjectVariable<O> lObjectVariable = mVariablesToSendUpdatesTo.get(0);
+		mVariablesToSendUpdatesTo.set(0, pObjectVariable);
+		return lObjectVariable;
 	}
 
 	@Override

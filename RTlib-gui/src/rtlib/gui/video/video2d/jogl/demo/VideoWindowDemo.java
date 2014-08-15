@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import rtlib.gui.video.video2d.jogl.VideoWindow;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 
 public class VideoWindowDemo
 {
@@ -20,7 +20,7 @@ public class VideoWindowDemo
 	public void simpleRandom8BitDataTest() throws InterruptedException,
 																				IOException
 	{
-		NDArrayDirect<Byte> lNDArrayDirect = NDArrayDirect.allocateTXYZ(byte.class,
+		NDArrayTypedDirect<Byte> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(byte.class,
 																															512,
 																															512,
 																															1);
@@ -51,7 +51,7 @@ public class VideoWindowDemo
 	public void simpleRandom16BitDataTest()	throws InterruptedException,
 																		IOException
 	{
-		NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
+		NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
 																															512,
 																															512,
 																															1);
@@ -80,7 +80,7 @@ public class VideoWindowDemo
 
 	}
 
-	private void generateNoiseBuffer(final NDArrayDirect<?> pNDArrayDirect)
+	private void generateNoiseBuffer(final NDArrayTypedDirect<?> pNDArrayDirect)
 	{
 
 		final int lBufferLength = (int) pNDArrayDirect.getRAM()

@@ -114,7 +114,7 @@ public class RecyclerTests
 				assertTrue(lFailOrRequestRecyclableObject == null);
 				if (lMilliSecondsElapsed < 1000)
 					System.out.println("lMilliSecondsElapsed=" + lMilliSecondsElapsed);
-				assertTrue(lMilliSecondsElapsed >= 1000);
+				assertTrue(lMilliSecondsElapsed >= 999);
 			}
 
 		}

@@ -14,8 +14,8 @@ import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
-import rtlib.gui.video.video2d.VideoFrame2DDisplay;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.gui.video.video2d.Stack2DDisplay;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.stack.Stack;
 
 public class VideoFrame2DDisplayDemo extends JFrame
@@ -63,7 +63,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		mcontentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(mcontentPane);
 
-		final VideoFrame2DDisplay<Byte> lVideoDisplayDevice = new VideoFrame2DDisplay<Byte>(512,
+		final Stack2DDisplay<Byte> lVideoDisplayDevice = new Stack2DDisplay<Byte>(512,
 																																												512);
 		lVideoDisplayDevice.setLinearInterpolation(true);
 		lVideoDisplayDevice.setSyncToRefresh(false);
@@ -139,7 +139,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 
 	}
 
-	private void generateNoiseBuffer(final NDArrayDirect<?> pNDArrayDirect)
+	private void generateNoiseBuffer(final NDArrayTypedDirect<?> pNDArrayDirect)
 	{
 		// System.out.println(rnd);
 

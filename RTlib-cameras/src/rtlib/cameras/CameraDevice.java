@@ -20,6 +20,8 @@ public abstract class CameraDevice extends SignalStartableDevice implements
 		super(pDeviceName);
 	}
 
+	public abstract void reopen();
+
 	public DoubleVariable getFrameBytesPerPixelVariable()
 	{
 		return mFrameBytesPerPixelVariable;
@@ -55,5 +57,7 @@ public abstract class CameraDevice extends SignalStartableDevice implements
 	{
 		return mIsAcquiring;
 	}
+
+
 
 }

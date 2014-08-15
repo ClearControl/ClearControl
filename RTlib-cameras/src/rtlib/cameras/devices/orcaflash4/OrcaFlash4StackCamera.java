@@ -1,13 +1,12 @@
 package rtlib.cameras.devices.orcaflash4;
 
-import rtlib.cameras.StackCamera;
+import rtlib.cameras.StackCameraDevice;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverterAndProcessing;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.processor.StackProcessing;
 import rtlib.stack.processor.StackProcessorInterface;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
@@ -15,9 +14,9 @@ import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
-public class OrcaFlash4StackCamera extends StackCamera implements
-																											VirtualDeviceInterface,
-																											StackProcessing
+public class OrcaFlash4StackCamera extends
+																	StackCameraDevice<Short, Short>	implements
+																																	VirtualDeviceInterface
 {
 	public static final int cStackProcessorQueueSize = 100;
 	public static final int cDcamJNumberOfBuffers = 1024;
@@ -183,13 +182,13 @@ public class OrcaFlash4StackCamera extends StackCamera implements
 	}
 
 	@Override
-	public void addStackProcessor(final StackProcessorInterface pStackProcessor)
+	public void addStackProcessor(final StackProcessorInterface<Short, Short> pStackProcessor)
 	{
 		mDcamJToStackConverterAndProcessing.addStackProcessor(pStackProcessor);
 	}
 
 	@Override
-	public void removeStackProcessor(final StackProcessorInterface pStackProcessor)
+	public void removeStackProcessor(final StackProcessorInterface<Short, Short> pStackProcessor)
 	{
 		mDcamJToStackConverterAndProcessing.removeStackProcessor(pStackProcessor);
 	}
@@ -272,10 +271,10 @@ public class OrcaFlash4StackCamera extends StackCamera implements
 
 			mDcamJToStackConverterAndProcessing.start();
 
-			final boolean lContinuousAcquisition = !mSingleShotModeVariable.getBooleanValue();
+			final boolean lContinuousAcquisition = !getSingleShotModeVariable().getBooleanValue();
 
 			boolean lSuccess;
-			if (mStackModeVariable.getBooleanValue())
+			if (getStackModeVariable().getBooleanValue())
 			{
 				final DcamFrame lInitialVideoFrame = request3DFrame();
 				lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
@@ -311,10 +310,10 @@ public class OrcaFlash4StackCamera extends StackCamera implements
 			stop();
 		}
 
-		final int lWidth = (int) mFrameWidthVariable.getValue();
-		final int lHeight = (int) mFrameHeightVariable.getValue();
-		mFrameWidthVariable.setValue(mDcamAcquisition.setFrameWidth(lWidth));
-		mFrameHeightVariable.setValue(mDcamAcquisition.setFrameHeight(lHeight));
+		final int lWidth = (int) getFrameWidthVariable().getValue();
+		final int lHeight = (int) getFrameHeightVariable().getValue();
+		getFrameWidthVariable().setValue(mDcamAcquisition.setFrameWidth(lWidth));
+		getFrameHeightVariable().setValue(mDcamAcquisition.setFrameHeight(lHeight));
 		DcamFrame.clearFrames();
 		mDcamAcquisition.reopen();
 

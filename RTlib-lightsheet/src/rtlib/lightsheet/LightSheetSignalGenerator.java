@@ -103,6 +103,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	private volatile boolean mIsUpToDate = false;
 
 	private volatile QueueProvider<LightSheetSignalGenerator> mQueueProvider;
+	private volatile Future<Boolean> mFuture;
 
 	public LightSheetSignalGenerator(	SignalGenerator pSignalGenerator,
 																		final double pReadoutTimeInMicrosecondsPerLine,
@@ -509,8 +510,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 			lCurrentThread.setPriority(lCurrentThreadPriority);
 			return lPlayed;
 		};
-		Future<Boolean> lFuture = executeAsynchronously(lCall);
-		return lFuture;
+		mFuture = executeAsynchronously(lCall);
+		return mFuture;
 	}
 
 	@Override
@@ -544,6 +545,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	public boolean close()
 	{
 		return mSignalGenerator.close();
+	}
+
+	public boolean isPlaying()
+	{
+		return mFuture != null && !mFuture.isDone()
+						&& !mFuture.isCancelled();
 	}
 
 }

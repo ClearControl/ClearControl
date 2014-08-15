@@ -10,7 +10,7 @@ import org.junit.Test;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.stack.Stack;
 
 public class OrcaFlash4CameraDemo
@@ -117,7 +117,7 @@ public class OrcaFlash4CameraDemo
 	public void testDisplayVideo() throws InterruptedException,
 																IOException
 	{
-		final NDArrayDirect<Short> lNDArrayDirect = NDArrayDirect.allocateTXYZ(	Short.class,
+		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
 																																						256,
 																																						256,
 																																						1);

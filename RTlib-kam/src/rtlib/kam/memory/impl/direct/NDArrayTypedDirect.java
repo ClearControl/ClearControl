@@ -13,69 +13,86 @@ import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.ReadAtAligned;
 import rtlib.kam.memory.ram.WriteAtAligned;
 
-public class NDArrayDirect<T> extends NDArrayTyped<T>	implements
-																											SizedInBytes,
-																											ReadWriteBytesFileChannel,
-																											WriteAtAligned,
-																											ReadAtAligned,
-																											Freeable
+public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
+																													SizedInBytes,
+																													ReadWriteBytesFileChannel,
+																													WriteAtAligned,
+																													ReadAtAligned,
+																													Freeable
 {
 
-	private NDArrayDirect(NDBoundedCursor pCursor,
-												RAMDirect pRAMDirect,
-												Class<T> pType)
+	private NDArrayTypedDirect(	RAMDirect pRAMDirect,
+															Class<T> pType,
+															NDBoundedCursor pCursor)
 	{
 		super(pRAMDirect, pType, pCursor);
 	}
 
-	public NDArrayDirect(	NDBoundedCursor pCursor,
-												long pElementSizeInBytes,
-												Class<T> pType)
+	public NDArrayTypedDirect(long pElementSizeInBytes,
+														Class<T> pType,
+														NDBoundedCursor pCursor)
 	{
 		super(RAMDirect.allocate(pCursor.getLengthInElements() * pElementSizeInBytes),
 					pType,
 					pCursor);
 	}
 
-	public static <T> NDArrayDirect<T> allocateTXYZ(Class<T> pType,
-																									long pWidth,
-																									long pHeight,
-																									long pDepth)
+	public static <T> NDArrayTypedDirect<T> allocateNDArray(RAMDirect pRAM,
+																													Class<T> pType,
+																													final NDBoundedCursor pCursor)
+	{
+		return new NDArrayTypedDirect<T>(pRAM, pType, pCursor);
+	}
+
+	public static <T> NDArrayTypedDirect<T> allocateTVND(	Class<T> pType,
+																												long... pDimensions)
+	{
+		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(pDimensions);
+		return new NDArrayTypedDirect<T>(	SizeOf.sizeOf(pType),
+																			pType,
+																			lNDBoundedCursor);
+	}
+
+
+	public static <T> NDArrayTypedDirect<T> allocateTXYZ(	Class<T> pType,
+																												long pWidth,
+																												long pHeight,
+																												long pDepth)
 	{
 		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(1,
 																																						pWidth,
 																																						pHeight,
 																																						pDepth);
-		return new NDArrayDirect<T>(lNDBoundedCursor,
-																SizeOf.sizeOf(pType),
-																pType);
+		return new NDArrayTypedDirect<T>(	SizeOf.sizeOf(pType),
+																			pType,
+																			lNDBoundedCursor);
 	}
 
-	public static <T> NDArrayDirect<T> allocateTXY(	Class<T> pType,
-																									long pWidth,
-																									long pHeight)
+	public static <T> NDArrayTypedDirect<T> allocateTXY(Class<T> pType,
+																											long pWidth,
+																											long pHeight)
 	{
 		return allocateTXYZ(pType, pWidth, pHeight, 1);
 	}
 
-	public static <T> NDArrayDirect<T> wrapPointerTXYZ(	Object pParent,
-																											long pNativeAddress,
-																											long pLengthInBytes,
-																											Class<T> pType,
-																											int pWidth,
-																											int pHeight,
-																											int pDepth)
+	public static <T> NDArrayTypedDirect<T> wrapPointerTXYZ(Object pParent,
+																													long pNativeAddress,
+																													long pLengthInBytes,
+																													Class<T> pType,
+																													int pWidth,
+																													int pHeight,
+																													int pDepth)
 	{
 
 		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(1,
 																																						pWidth,
 																																						pHeight,
 																																						pDepth);
-		return new NDArrayDirect<T>(lNDBoundedCursor,
-																RAMDirect.wrapPointer(pParent,
-																											pNativeAddress,
-																											pLengthInBytes),
-																pType);
+		return new NDArrayTypedDirect<T>(	RAMDirect.wrapPointer(pParent,
+																														pNativeAddress,
+																														pLengthInBytes),
+																			pType,
+																			lNDBoundedCursor);
 	}
 
 	private RAMDirect getRAMDirect()
@@ -242,4 +259,28 @@ public class NDArrayDirect<T> extends NDArrayTyped<T>	implements
 						+ "]";
 	}
 
+	public NDArrayTypedDirect<T> sliceMajorAxis(long pSliceIndex)
+	{
+		Class<T> lType = this.getType();
+		int lDimension = mDefaultBoundedCursor.getDimension();
+		long[] lDimensions = mDefaultBoundedCursor.getDimensions();
+		long[] lDimensionsSlice = new long[lDimensions.length - 1];
+		for (int i = 0; i < lDimensions.length - 1; i++)
+			lDimensionsSlice[i] = lDimensions[i];
+
+		long[] lSliceVector = new long[(int) lDimension];
+		lSliceVector[lDimension - 1] = pSliceIndex;
+
+		long lSliceLinearIndex = NDBoundedCursor.getIndex(lDimensions,
+																											lSliceVector);
+
+		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(lDimensionsSlice);
+		RAMDirect lRAM = mRAM.subRegion(lSliceLinearIndex * SizeOf.sizeOf(lType),
+																		lNDBoundedCursor.getVolume() * SizeOf.sizeOf(lType));
+
+		NDArrayTypedDirect<T> lNDArraySlice = NDArrayTypedDirect.allocateNDArray(	lRAM,
+																																							lType,
+																																							lNDBoundedCursor);
+		return lNDArraySlice;
+	}
 }

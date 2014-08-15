@@ -12,7 +12,7 @@ import rtlib.core.recycling.Recycler;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.Typed;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ram.RAM;
 
 public class Stack<T> implements
@@ -26,7 +26,7 @@ public class Stack<T> implements
 	private Recycler<Stack<T>, StackRequest<Stack<T>>> mStackRecycler;
 	private volatile boolean mIsReleased;
 
-	private NDArrayDirect<T> mNDArray;
+	private NDArrayTypedDirect<T> mNDArray;
 
 	private Class<T> mType;
 	private volatile long mStackIndex;
@@ -52,7 +52,7 @@ public class Stack<T> implements
 		setTimeStampInNanoseconds(pTimeStampInNanoseconds);
 		setType(pType);
 
-		mNDArray = NDArrayDirect.allocateTXYZ(pType,
+		mNDArray = NDArrayTypedDirect.allocateTXYZ(	pType,
 																					pWidth,
 																					pHeight,
 																					pDepth);
@@ -60,7 +60,7 @@ public class Stack<T> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public Stack(	final NDArrayDirect<T> pNDArrayDirect,
+	public Stack(	final NDArrayTypedDirect<T> pNDArrayDirect,
 								final long pImageIndex,
 								final long pTimeStampInNanoseconds)
 	{
@@ -88,20 +88,19 @@ public class Stack<T> implements
 	@Override
 	public void initialize(final StackRequest pStackRequest)
 	{
-		final int lBytesPerVoxel = SizeOf.sizeOf(pStackRequest.getType());
 		mType = pStackRequest.getType();
 		if (!isCompatible(pStackRequest))
 		{
 			if (mNDArray != null)
 				mNDArray.free();
-			mNDArray = (NDArrayDirect<T>) NDArrayDirect.allocateTXYZ(	pStackRequest.getType(),
+			mNDArray = (NDArrayTypedDirect<T>) NDArrayTypedDirect.allocateTXYZ(	pStackRequest.getType(),
 																																pStackRequest.getWidth(),
 																																pStackRequest.getHeight(),
 																																pStackRequest.getDepth());
 		}
 	}
 
-	public NDArrayDirect<T> getNDArray()
+	public NDArrayTypedDirect<T> getNDArray()
 	{
 		complainIfFreed();
 		return mNDArray;
@@ -114,6 +113,8 @@ public class Stack<T> implements
 		final Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
 																																			lRam.getSizeInBytes(),
 																																			null)
+																										// TODO: write releaser that
+																										// does the job
 																										.as(Byte.class);
 		return lPointerToAddress;
 	}

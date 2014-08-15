@@ -12,13 +12,13 @@ import org.ejml.ops.CommonOps;
 import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.cameras.StackCamera;
+import rtlib.cameras.StackCameraDevice;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
 import rtlib.stack.Stack;
@@ -27,7 +27,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 {
 	private volatile boolean mReceivedStack = false;
 	private volatile Stack<Short> mNewStack;
-	private StackCamera mStackCamera;
+	private StackCameraDevice mStackCamera;
 	private DeformableMirrorDevice mDeformableMirrorDevice;
 	private VideoWindow mCameraVideoWindow;
 	private DenseMatrix64F mTransformMatrix;
@@ -36,7 +36,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 	private int mMatrixWidth;
 	private int mMatrixHeight;
 
-	public PSFOptimizer(final StackCamera pStackCamera,
+	public PSFOptimizer(final StackCameraDevice pStackCamera,
 											DeformableMirrorDevice pDeformableMirrorDevice)
 	{
 		super();
@@ -188,12 +188,12 @@ public class PSFOptimizer implements VirtualDeviceInterface
 	{
 		if (mNDArray == null)
 		{
-			mNDArray = NDArrayDirect.allocateTXYZ(Double.TYPE,
-																						(int) mDeformableMirrorDevice.getMatrixWidthVariable()
-																																					.getValue(),
-																						(int) mDeformableMirrorDevice.getMatrixHeightVariable()
-																																					.getValue(),
-																						1);
+			mNDArray = NDArrayTypedDirect.allocateTXYZ(	Double.TYPE,
+																									(int) mDeformableMirrorDevice.getMatrixWidthVariable()
+																																								.getValue(),
+																									(int) mDeformableMirrorDevice.getMatrixHeightVariable()
+																																								.getValue(),
+																									1);
 			mDMShapeVideoWindow.setSourceBuffer(mNDArray);
 		}
 

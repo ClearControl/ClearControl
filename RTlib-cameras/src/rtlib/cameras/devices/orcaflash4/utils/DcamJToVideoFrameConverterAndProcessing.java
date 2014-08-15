@@ -115,7 +115,8 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 		try
 		{
 
-			/*System.out.println("convert: pDcamFrame.index=" + pDcamFrame.getIndex());/**/
+			// System.out.println("convert: pDcamFrame.index=" +
+			// pDcamFrame.getIndex());/**/
 			final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
 
 			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,

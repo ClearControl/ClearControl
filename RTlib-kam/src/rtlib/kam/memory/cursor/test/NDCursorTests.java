@@ -166,9 +166,10 @@ public class NDCursorTests
 	@Test
 	public void testNDArray()
 	{
-		NDBoundedCursor lCursor = NDBoundedCursor.createNDCursor(	100L,
-																															100L,
-																															100L);
+		NDBoundedCursor lCursor = NDBoundedCursor.createNDVectorCursor(	1,
+																																		100L,
+																																		100L,
+																																		100L);
 
 		lCursor.setCursorPosition(1, 0);
 		for (int x = 0; x < 100; x++)

@@ -23,7 +23,7 @@ import org.bridj.Pointer;
 import rtlib.core.memory.TypeId;
 import rtlib.core.units.Magnitudes;
 import rtlib.gui.video.video2d.BitDepthAutoRescaler;
-import rtlib.kam.memory.impl.direct.NDArrayDirect;
+import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 import com.jogamp.newt.event.KeyListener;
@@ -67,15 +67,17 @@ public class VideoWindow implements Closeable
 
 	private static final GLCapabilities cGLCapabilities = new GLCapabilities(GLProfile.getDefault());
 
+	private Object mDisplayLock = new Object();
+
 	public VideoWindow() throws GLException
 	{
 		mGLWindow = GLWindow.create(cGLCapabilities);
-		mGLWindow.setAutoSwapBufferMode(true);
+		getGLWindow().setAutoSwapBufferMode(true);
 
 		mMouseControl = new MouseControl(this);
-		mGLWindow.addMouseListener(mMouseControl);
+		getGLWindow().addMouseListener(mMouseControl);
 		mKeyboardControl = new KeyboardControl(this);
-		mGLWindow.addKeyListener(mKeyboardControl);
+		getGLWindow().addKeyListener(mKeyboardControl);
 	}
 
 	public VideoWindow(	final String pWindowName,
@@ -98,9 +100,9 @@ public class VideoWindow implements Closeable
 			setWindowSize(512, 512);
 		}
 
-		mGLWindow.setTitle(mWindowName);
+		getGLWindow().setTitle(mWindowName);
 
-		mGLWindow.addGLEventListener(new GLEventListener()
+		getGLWindow().addGLEventListener(new GLEventListener()
 		{
 
 			@Override
@@ -110,148 +112,154 @@ public class VideoWindow implements Closeable
 													final int pWindowWidth,
 													final int pWindowHeight)
 			{
-				// System.out.println("reshape");
-				final GL2 lGL2 = glautodrawable.getGL().getGL2();
+				synchronized (mDisplayLock)
+				{
+					// System.out.println("reshape");
+					final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
-				lGL2.glLoadIdentity();
-				lGL2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-				lGL2.glLoadIdentity();
+					lGL2.glLoadIdentity();
+					lGL2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+					lGL2.glLoadIdentity();
 
-				// final double lOffsetWH = (lAspectRatioWH - 1) / 2;
-				// final double lOffsetHW = (lAspectRatioHW - 1) / 2;
+					// final double lOffsetWH = (lAspectRatioWH - 1) / 2;
+					// final double lOffsetHW = (lAspectRatioHW - 1) / 2;
 
-				lGL2.glOrtho(0, 1, 1, 0, 0, 2000);
+					lGL2.glOrtho(0, 1, 1, 0, 0, 2000);
 
-				// if (lAspectRatioWH >= 1)
-				/*	lGL2.glOrtho(	-lOffsetWH,
-												lAspectRatioWH - lOffsetWH,
-												1,
-												0,
-												0,
-												2000);
-				/*else if (lAspectRatioHW >= 1)
-					lGL2.glOrtho(	0,
-												1,
-												lAspectRatioHW - lOffsetHW,
-												-lOffsetHW,
-												0,
-												2000);/*/
+					// if (lAspectRatioWH >= 1)
+					/*	lGL2.glOrtho(	-lOffsetWH,
+													lAspectRatioWH - lOffsetWH,
+													1,
+													0,
+													0,
+													2000);
+					/*else if (lAspectRatioHW >= 1)
+						lGL2.glOrtho(	0,
+													1,
+													lAspectRatioHW - lOffsetHW,
+													-lOffsetHW,
+													0,
+													2000);/*/
 
-				lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-				lGL2.glViewport(0, 0, pWindowWidth, pWindowHeight);
-				lGL2.glClearColor(0, 0, 0, 0);
-				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-				lGL2.glFlush();
-				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-				lGL2.glFlush();
+					lGL2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+					lGL2.glViewport(0, 0, pWindowWidth, pWindowHeight);
+					lGL2.glClearColor(0, 0, 0, 0);
+					lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+					lGL2.glFlush();
+					lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+					lGL2.glFlush();
+				}
 
 			}
 
 			@Override
 			public void init(final GLAutoDrawable glautodrawable)
 			{
-				final GL2 lGL2 = glautodrawable.getGL().getGL2();
-				mGLU = new GLU();
-
-				if (!lGL2.isExtensionAvailable("GL_ARB_pixel_buffer_object"))
+				synchronized (mDisplayLock)
 				{
-					System.out.println("Extension not available!");
-					mUsePBO = false;
+					final GL2 lGL2 = glautodrawable.getGL().getGL2();
+					mGLU = new GLU();
+
+					if (!lGL2.isExtensionAvailable("GL_ARB_pixel_buffer_object"))
+					{
+						System.out.println("Extension not available!");
+						mUsePBO = false;
+					}
+
+					lGL2.setSwapInterval(mSyncToRefresh ? 1 : 0);
+
+					reshape(glautodrawable,
+									0,
+									0,
+									getGLWindow().getWidth(),
+									getGLWindow().getHeight());
+
+					lGL2.glDisable(GL.GL_CULL_FACE);
+					lGL2.glDisable(GL.GL_DEPTH_TEST);
+					lGL2.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT,
+											GL.GL_NICEST);
+					lGL2.glDisable(GLLightingFunc.GL_LIGHTING);
+					lGL2.glDisable(GLLightingFunc.GL_COLOR_MATERIAL);
+
+					lGL2.glEnable(GL.GL_TEXTURE_2D);
+					reportError(lGL2);
+
+					final int[] tmp = new int[1];
+					lGL2.glGenTextures(1, tmp, 0);
+					mTextureId = tmp[0];
+					lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
+					reportError(lGL2);
+
+					lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+																GL.GL_TEXTURE_MIN_FILTER,
+																mLinearInterpolation ? GL.GL_LINEAR
+																										: GL.GL_NEAREST);
+					lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+																GL.GL_TEXTURE_MAG_FILTER,
+																mLinearInterpolation ? GL.GL_LINEAR
+																										: GL.GL_NEAREST);
+					lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+																GL.GL_TEXTURE_WRAP_S,
+																GL2.GL_CLAMP);
+					lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
+																GL.GL_TEXTURE_WRAP_T,
+																GL2.GL_CLAMP);
+					reportError(lGL2);
+
+					if (mSourceBuffer == null)
+					{
+						mSourceBuffer = NDArrayTypedDirect.allocateTXY(	Byte.class,
+																														mVideoWidth,
+																														mVideoHeight);
+					}
+
+					lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
+														0,
+														GL.GL_LUMINANCE,
+														(int) mVideoMaxWidth,
+														(int) mVideoMaxHeight,
+														0,
+														GL.GL_LUMINANCE,
+														GL.GL_UNSIGNED_BYTE,
+														mSourceBuffer.getRAM()
+																					.passNativePointerToByteBuffer());
+					reportError(lGL2);
+
+					// mGL2.glEnable(GL2.GL_PIXEL_UNPACK_BUFFER);
+					// reportError();
+
+					if (mUsePBO)
+					{
+
+						mPixelBufferIds = new int[2];
+						lGL2.glGenBuffers(2, mPixelBufferIds, 0);
+						reportError(lGL2);
+						lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+															mPixelBufferIds[0]);
+						reportError(lGL2);
+
+						lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+															mSourceBuffer.getRAM().getSizeInBytes(),
+															null,
+															GL2ES2.GL_STREAM_DRAW);
+						reportError(lGL2);
+
+						lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+															mPixelBufferIds[1]);
+						reportError(lGL2);
+
+						lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
+															mSourceBuffer.getRAM().getSizeInBytes(),
+															null,
+															GL2ES2.GL_STREAM_DRAW);
+						reportError(lGL2);
+
+						lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER, 0);
+						reportError(lGL2);
+					}
+
+					mIsContextAvailable = true;
 				}
-
-				lGL2.setSwapInterval(mSyncToRefresh ? 1 : 0);
-
-				reshape(glautodrawable,
-								0,
-								0,
-								mGLWindow.getWidth(),
-								mGLWindow.getHeight());
-
-				lGL2.glDisable(GL.GL_CULL_FACE);
-				lGL2.glDisable(GL.GL_DEPTH_TEST);
-				lGL2.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT,
-										GL.GL_NICEST);
-				lGL2.glDisable(GLLightingFunc.GL_LIGHTING);
-				lGL2.glDisable(GLLightingFunc.GL_COLOR_MATERIAL);
-
-				lGL2.glEnable(GL.GL_TEXTURE_2D);
-				reportError(lGL2);
-
-				final int[] tmp = new int[1];
-				lGL2.glGenTextures(1, tmp, 0);
-				mTextureId = tmp[0];
-				lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
-				reportError(lGL2);
-
-				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
-															GL.GL_TEXTURE_MIN_FILTER,
-															mLinearInterpolation ? GL.GL_LINEAR
-																									: GL.GL_NEAREST);
-				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
-															GL.GL_TEXTURE_MAG_FILTER,
-															mLinearInterpolation ? GL.GL_LINEAR
-																									: GL.GL_NEAREST);
-				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
-															GL.GL_TEXTURE_WRAP_S,
-															GL2.GL_CLAMP);
-				lGL2.glTexParameteri(	GL.GL_TEXTURE_2D,
-															GL.GL_TEXTURE_WRAP_T,
-															GL2.GL_CLAMP);
-				reportError(lGL2);
-
-				if (mSourceBuffer == null)
-				{
-					mSourceBuffer = NDArrayDirect.allocateTXY(Byte.class,
-																										mVideoWidth,
-																										mVideoHeight);
-				}
-
-				lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
-													0,
-													GL.GL_LUMINANCE,
-													(int) mVideoMaxWidth,
-													(int) mVideoMaxHeight,
-													0,
-													GL.GL_LUMINANCE,
-													GL.GL_UNSIGNED_BYTE,
-													mSourceBuffer.getRAM()
-																				.passNativePointerToByteBuffer());
-				reportError(lGL2);
-
-				// mGL2.glEnable(GL2.GL_PIXEL_UNPACK_BUFFER);
-				// reportError();
-
-				if (mUsePBO)
-				{
-
-					mPixelBufferIds = new int[2];
-					lGL2.glGenBuffers(2, mPixelBufferIds, 0);
-					reportError(lGL2);
-					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mPixelBufferIds[0]);
-					reportError(lGL2);
-
-					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mSourceBuffer.getRAM().getSizeInBytes(),
-														null,
-														GL2ES2.GL_STREAM_DRAW);
-					reportError(lGL2);
-
-					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mPixelBufferIds[1]);
-					reportError(lGL2);
-
-					lGL2.glBufferData(GL2GL3.GL_PIXEL_UNPACK_BUFFER,
-														mSourceBuffer.getRAM().getSizeInBytes(),
-														null,
-														GL2ES2.GL_STREAM_DRAW);
-					reportError(lGL2);
-
-					lGL2.glBindBuffer(GL2GL3.GL_PIXEL_UNPACK_BUFFER, 0);
-					reportError(lGL2);
-				}
-
-				mIsContextAvailable = true;
 			}
 
 			@Override
@@ -262,92 +270,98 @@ public class VideoWindow implements Closeable
 			@Override
 			public void display(final GLAutoDrawable glautodrawable)
 			{
-				if (mSourceBuffer == null)
+				synchronized (mDisplayLock)
 				{
-					return;
-				}
+					if (mSourceBuffer == null)
+					{
+						return;
+					}
 
-				final int lWidth = (int) mVideoWidth;
-				final int lHeight = (int) mVideoHeight;
+					final int lWidth = (int) mVideoWidth;
+					final int lHeight = (int) mVideoHeight;
 
-				final GL2 lGL2 = glautodrawable.getGL().getGL2();
+					final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
-				lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-				lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-				if (!mDisplayOn)
-				{
-					return;
-				}
+					lGL2.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+					lGL2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+					if (!mDisplayOn)
+					{
+						return;
+					}
 
-				try
-				{
-					updateVideoWithBuffer(lGL2, mSourceBuffer);
-				}
-				catch (final Throwable e)
-				{
-					e.printStackTrace();
-				}
+					try
+					{
+						updateVideoWithBuffer(lGL2, mSourceBuffer);
+					}
+					catch (final Throwable e)
+					{
+						e.printStackTrace();
+					}
 
-				// mGL2.glLoadIdentity();
+					// mGL2.glLoadIdentity();
 
-				lGL2.glColor4d(1, 1, 1, 1);
-				lGL2.glEnable(GL.GL_TEXTURE_2D);
-				lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
-				// lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-				lGL2.glBegin(GL2.GL_QUADS);
+					lGL2.glColor4d(1, 1, 1, 1);
+					lGL2.glEnable(GL.GL_TEXTURE_2D);
+					lGL2.glBindTexture(GL.GL_TEXTURE_2D, mTextureId);
+					// lGL2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+					lGL2.glBegin(GL2.GL_QUADS);
 
-				final double lRatioEffective2MaxWidth = (double) lWidth / mVideoMaxWidth;
-				final double lRatioEffective2MaxHeight = (double) lHeight / mVideoMaxHeight;
+					final double lRatioEffective2MaxWidth = (double) lWidth / mVideoMaxWidth;
+					final double lRatioEffective2MaxHeight = (double) lHeight / mVideoMaxHeight;
 
-				double x, y, w, h;
-				if (lWidth < lHeight)
-				{
-					w = (double) lWidth / lHeight;
-					h = 1;
-					x = (1 - w) / 2;
-					y = 0;
-				}
-				else
-				{
-					w = 1;
-					h = (double) lHeight / lWidth;
-					x = 0;
-					y = (1 - h) / 2;
-				}
+					double x, y, w, h;
+					if (lWidth < lHeight)
+					{
+						w = (double) lWidth / lHeight;
+						h = 1;
+						x = (1 - w) / 2;
+						y = 0;
+					}
+					else
+					{
+						w = 1;
+						h = (double) lHeight / lWidth;
+						x = 0;
+						y = (1 - h) / 2;
+					}
 
-				lGL2.glTexCoord2d(0.0, 0.0);
-				lGL2.glVertex3d(x, y, 0.0);
+					lGL2.glTexCoord2d(0.0, 0.0);
+					lGL2.glVertex3d(x, y, 0.0);
 
-				lGL2.glTexCoord2d(lRatioEffective2MaxWidth, 0.0);
-				lGL2.glVertex3d(x + w, y, 0.0);
+					lGL2.glTexCoord2d(lRatioEffective2MaxWidth, 0.0);
+					lGL2.glVertex3d(x + w, y, 0.0);
 
-				lGL2.glTexCoord2d(lRatioEffective2MaxWidth,
-													lRatioEffective2MaxHeight);
-				lGL2.glVertex3d(x + w, y + h, 0.0);
+					lGL2.glTexCoord2d(lRatioEffective2MaxWidth,
+														lRatioEffective2MaxHeight);
+					lGL2.glVertex3d(x + w, y + h, 0.0);
 
-				lGL2.glTexCoord2d(0.0, lRatioEffective2MaxHeight);
-				lGL2.glVertex3d(x, y + h, 0.0);
-				lGL2.glEnd();
-				/**/
+					lGL2.glTexCoord2d(0.0, lRatioEffective2MaxHeight);
+					lGL2.glVertex3d(x, y + h, 0.0);
+					lGL2.glEnd();
+					/**/
 
-				final long lTimeInNanoseconds = System.nanoTime();
-				if (isDisplayFrameRate() && lTimeInNanoseconds > mDisplayFrameRateLastDisplayTime + 200 * 1000 * 1000)
-				{
-					mDisplayFrameRateLastDisplayTime = lTimeInNanoseconds;
-					final String lTitleString = String.format("%s %.0f fps",
-																										mWindowName,
-																										mFrameRate);
-					mGLWindow.setTitle(lTitleString);
 					/*
-					mTextRenderer.beginRendering(	mGLWindow.getWidth(),
-																				mGLWindow.getHeight());
-					// optionally set the color
-					mTextRenderer.setColor(1f, 1f, 1f, 0.5f);
-					mTextRenderer.draw(	,
-															15,
-															15);
-					mTextRenderer.endRendering();/**/
+					final long lTimeInNanoseconds = System.nanoTime();
+					if (isDisplayFrameRate() && lTimeInNanoseconds > mDisplayFrameRateLastDisplayTime + 200 * 1000 * 1000)
+					{
+						mDisplayFrameRateLastDisplayTime = lTimeInNanoseconds;
+						final String lTitleString = String.format("%s %.0f fps",
+																											mWindowName,
+																											mFrameRate);
+						
+						//TODO: this causes a crash when calling display too fast from multiple threads:
+						// getGLWindow().setTitle(lTitleString);
+						/*
+						mTextRenderer.beginRendering(	mGLWindow.getWidth(),
+																					mGLWindow.getHeight());
+						// optionally set the color
+						mTextRenderer.setColor(1f, 1f, 1f, 0.5f);
+						mTextRenderer.draw(	,
+																15,
+																15);
+						mTextRenderer.endRendering();
 
+					}/**/
 				}
 			}
 		});
@@ -356,17 +370,17 @@ public class VideoWindow implements Closeable
 
 	private void setWindowSize(int pWindowWidth, int pWindowHeigth)
 	{
-		mGLWindow.setSize(pWindowWidth, pWindowWidth);
+		getGLWindow().setSize(pWindowWidth, pWindowWidth);
 	}
 
 	public int getWindowWidth()
 	{
-		return mGLWindow.getWidth();
+		return getGLWindow().getWidth();
 	}
 
 	public int getWindowHeight()
 	{
-		return mGLWindow.getHeight();
+		return getGLWindow().getHeight();
 	}
 
 	public void setWidth(final int pVideoWidth)
@@ -388,13 +402,13 @@ public class VideoWindow implements Closeable
 		Pointer<Byte> lPointerToBytes = Pointer.pointerToBytes(pSourceBuffer);
 		long lNativeAddress = lPointerToBytes.getPeer();
 		long lLengthInBytes = lPointerToBytes.getValidBytes();
-		mSourceBuffer = NDArrayDirect.wrapPointerTXYZ(pSourceBuffer,
-																									lNativeAddress,
-																									lLengthInBytes,
-																									pType,
-																									pVideoWidth,
-																									pVideoHeight,
-																									1);
+		mSourceBuffer = NDArrayTypedDirect.wrapPointerTXYZ(	pSourceBuffer,
+																												lNativeAddress,
+																												lLengthInBytes,
+																												pType,
+																												pVideoWidth,
+																												pVideoHeight,
+																												1);
 	}
 
 	public <T> void setSourceBuffer(NDArrayTyped<T> pSourceBuffer)
@@ -612,17 +626,17 @@ public class VideoWindow implements Closeable
 
 	public void display()
 	{
-		mGLWindow.display();
+		getGLWindow().display();
 	}
 
 	public void setVisible(final boolean pVisible)
 	{
-		mGLWindow.setVisible(pVisible);
+		getGLWindow().setVisible(pVisible);
 	}
 
 	public boolean isVisible()
 	{
-		return mGLWindow.isVisible();
+		return getGLWindow().isVisible();
 	}
 
 	public void setDisplayOn(final boolean pDisplayOn)
@@ -677,12 +691,17 @@ public class VideoWindow implements Closeable
 
 	public void disableClose()
 	{
-		mGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
+		getGLWindow().setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
 
 	public void setGamma(double pGamma)
 	{
 		mBitDepthAutoRescaler.setGamma(pGamma);
+	}
+
+	public GLWindow getGLWindow()
+	{
+		return mGLWindow;
 	}
 
 }
