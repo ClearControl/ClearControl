@@ -74,14 +74,25 @@ public class Stack<T> implements
 	@Override
 	public boolean isCompatible(final StackRequest pStackRequest)
 	{
+		if (mNDArray == null)
+			return false;
+		if (mNDArray.isFree())
+			return false;
+		
 		final Class<?> lType = pStackRequest.getType();
 		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
+		
+		if(lBytesPerVoxel!= SizeOf.sizeOf(mNDArray.getType()))
+				return false;
 
 		final long lLengthInBytes = pStackRequest.getWidth() * pStackRequest.getHeight()
 																* pStackRequest.getDepth()
 																* SizeOf.sizeOf(pStackRequest.getType());
-		return (mNDArray != null && lType == getType()
-						&& !mNDArray.isFree() && mNDArray.getSizeInBytes() == lLengthInBytes);
+		
+		if(mNDArray.getSizeInBytes() != lLengthInBytes)
+			return false;
+		
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -215,6 +226,7 @@ public class Stack<T> implements
 		{
 			if (mIsReleased)
 			{
+				mIsReleased = true;
 				throw new RuntimeException("Object " + this.hashCode()
 																		+ " Already released!");
 			}

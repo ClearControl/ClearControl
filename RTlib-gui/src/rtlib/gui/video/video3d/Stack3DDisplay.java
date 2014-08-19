@@ -63,6 +63,13 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 				final long lWidth = pStack.getWidth();
 				final long lHeight = pStack.getHeight();
 				final long lDepth = pStack.getDepth();
+				final long lBytePerVoxel = mJCudaClearVolumeRenderer.getBytesPerVoxel();
+
+				if (lWidth * lHeight * lDepth * lBytePerVoxel != lByteBuffer.capacity())
+				{
+					System.err.println(Stack3DDisplay.class.getSimpleName() + ": receiving wrong pointer size!");
+					return null;
+				}
 
 				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
 																											lWidth,
@@ -93,9 +100,11 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																		final Stack<T> pNewStack)
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
-				{
-					// pNewStack.releaseStack();
-				}
+					if (!pNewStack.isReleased())
+					{
+						System.err.println("RELEASING STACK IN DISPLAY 3D BECAUSE PASS FAILED!");
+						pNewStack.releaseStack();
+					}
 				return super.setEventHook(pOldStack, pNewStack);
 			}
 

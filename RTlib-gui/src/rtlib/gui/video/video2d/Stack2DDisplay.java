@@ -196,7 +196,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		mVideoWindow.notifyNewFrame();
 		mVideoWindow.display();
 
-		synchronized (mReleaseLock)
+		// synchronized (mReleaseLock)
 		{
 			if (getOutputStackVariable() != null)
 			{

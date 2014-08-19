@@ -3,6 +3,7 @@ package rtlib.lightsheet;
 import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -16,6 +17,7 @@ import rtlib.core.variable.doublev.DoubleInputVariableInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.symphony.devices.SignalGenerator;
+import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.CompiledScore;
 import rtlib.symphony.score.Score;
@@ -514,6 +516,19 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return mFuture;
 	}
 
+	public long estimatePlayTimeInMilliseconds()
+	{
+		long lDurationInMilliseconds = 0;
+		for(MovementInterface lMovement : mScore.getMovements())
+		{
+			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
+		}
+
+		lDurationInMilliseconds *= mCompiledScore.getNumberOfMovements();
+		return TimeUnit.SECONDS.convert(lDurationInMilliseconds,
+																					TimeUnit.MILLISECONDS);
+	}
+
 	@Override
 	public boolean open()
 	{
@@ -552,5 +567,6 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return mFuture != null && !mFuture.isDone()
 						&& !mFuture.isCancelled();
 	}
+
 
 }

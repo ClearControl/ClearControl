@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import rtlib.core.concurrent.queues.ConcurrentLinkedBlockingQueue;
 import rtlib.core.log.Loggable;
 import rtlib.core.rgc.Freeable;
 
@@ -16,7 +17,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 																																											Loggable
 {
 	private final Class<R> mRecyclableClass;
-	private final ConcurrentLinkedQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedQueue<SoftReference<R>>();
+	private final ConcurrentLinkedBlockingQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedBlockingQueue<SoftReference<R>>(Integer.MAX_VALUE);
 	private final ConcurrentLinkedQueue<Long> mAvailableMemoryQueue = new ConcurrentLinkedQueue<Long>();
 
 	private volatile AtomicLong mLiveObjectCounter = new AtomicLong(0);
@@ -134,11 +135,28 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 																		final TimeUnit pTimeUnit,
 																		final P pRecyclerRequest)
 	{
+		System.out.println("mAvailableObjectsQueue.size()=" + mAvailableObjectsQueue.size());
 		complainIfFreed();
-		final SoftReference<R> lPolledSoftReference = mAvailableObjectsQueue.poll();
-
-		if (lPolledSoftReference != null)
+		SoftReference<R> lPolledSoftReference = null;
+		try
 		{
+			lPolledSoftReference = mAvailableObjectsQueue.poll(pWaitTime,
+																																								pTimeUnit);
+		}
+		catch (InterruptedException e1)
+		{
+		}
+		// System.out.println("requestRecyclableObject.lPolledSoftReference=" +
+		// lPolledSoftReference);
+
+
+		if (lPolledSoftReference == null)
+		{
+			System.err.println("SOFTREFERENCE IS NULL!!!!");
+		}
+		else if (lPolledSoftReference != null)
+		{
+
 			final Long lObjectsSizeInBytes = mAvailableMemoryQueue.poll();
 
 			final R lObtainedReference = lPolledSoftReference.get();
@@ -146,6 +164,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 			if (lObtainedReference == null)
 			{
+				System.err.println("SOFTREFERENCE CLEARED!!!!");
 				mLiveObjectCounter.decrementAndGet();
 				mLiveMemoryInBytes.addAndGet(-lObjectsSizeInBytes);
 				return requestRecyclableObject(	pWait,
@@ -156,9 +175,10 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 			if (pRecyclerRequest != null)
 			{
 				lObtainedReference.setReleased(false);
-
 				if (!lObtainedReference.isCompatible(pRecyclerRequest))
 				{
+					System.err.println("RECYCLABLE INVALID!!!");
+					lObtainedReference.setReleased(true);
 					destroyInstance(lObtainedReference, true);
 					return requestRecyclableObject(	pWait,
 																					pWaitTime,
@@ -173,6 +193,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 			return lObtainedReference;
 
 		}
+
 
 		if (!pWait && mLiveMemoryInBytes.get() >= mMaximumLiveMemoryInBytes)
 		{

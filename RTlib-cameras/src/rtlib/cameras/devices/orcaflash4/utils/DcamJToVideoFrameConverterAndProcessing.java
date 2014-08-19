@@ -112,49 +112,60 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	{ "unchecked", "rawtypes" })
 	protected Stack convert(final DcamFrame pDcamFrame)
 	{
+
 		try
 		{
+			boolean lCopySucceeded = false;
+			do
+			{
+				// System.out.println("convert: pDcamFrame.index=" +
+				// pDcamFrame.getIndex());/**/
+				final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
 
-			// System.out.println("convert: pDcamFrame.index=" +
-			// pDcamFrame.getIndex());/**/
-			final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
+				final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
+																																						1,
+																																						pDcamFrame.getWidth(),
+																																						pDcamFrame.getHeight(),
+																																						(long) mStackDepthVariable.getValue());
 
-			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
-																																					1,
-																																					pDcamFrame.getWidth(),
-																																					pDcamFrame.getHeight(),
-																																					(long) mStackDepthVariable.getValue());
+				Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
+																																					TimeUnit.SECONDS,
+																																					lStackRequest);
+				/*System.out.println("convert: hashcode=" + lStack.hashCode()
+														+ " index="
+														+ pDcamFrame.getIndex());/**/
 
-			Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
-																																				TimeUnit.SECONDS,
-																																				lStackRequest);
-			/*System.out.println("convert: hashcode=" + lStack.hashCode()
-													+ " index="
-													+ pDcamFrame.getIndex());/**/
-
-			lStack.setStackIndex(pDcamFrame.getIndex());
-			lStack.setTimeStampInNanoseconds(pDcamFrame.getFrameTimeStampInNs());
-			lStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);
-
-			final Pointer<Byte> lVideoFramePointer = lStack.getPointer();
-
-			final boolean lCopySucceeded = pDcamFrame.copyAllPlanesToSinglePointer(	lVideoFramePointer,
-																																							(long) (mStackDepthVariable.getValue() * mNumberOfImagesPerPlaneVariable.getValue()));
-
-			for (final StackProcessorInterface lStackProcessor : mStackProcessorList)
-				if (lStackProcessor.isActive())
+				if (lStack != null)
 				{
-					lStack = lStackProcessor.process(	lStack,
-																						mVideoFrameRecycler);
+					lStack.setStackIndex(pDcamFrame.getIndex());
+					lStack.setTimeStampInNanoseconds(pDcamFrame.getFrameTimeStampInNs());
+					lStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);
+
+					final Pointer<Byte> lVideoFramePointer = lStack.getPointer();
+
+					lCopySucceeded = pDcamFrame.copyAllPlanesToSinglePointer(	lVideoFramePointer,
+																																		(long) (mStackDepthVariable.getValue() * mNumberOfImagesPerPlaneVariable.getValue()));
+
+					if (lCopySucceeded)
+					{
+						pDcamFrame.release();
+
+						for (final StackProcessorInterface lStackProcessor : mStackProcessorList)
+							if (lStackProcessor.isActive())
+							{
+								lStack = lStackProcessor.process(	lStack,
+																									mVideoFrameRecycler);
+							}
+
+						return lStack;
+					}
 				}
 
-			pDcamFrame.release();
-			if (lCopySucceeded)
-			{
-				return lStack;
+				System.out.println("SHOULD NOT BE HERE 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			}
+			while (!lCopySucceeded);
 
-			System.out.println("SHOULD NOT BE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println("SHOULD NOT BE HERE 2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return null;
 		}
 		catch (final Throwable e)

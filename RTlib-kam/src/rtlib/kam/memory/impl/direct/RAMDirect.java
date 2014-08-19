@@ -13,6 +13,7 @@ import rtlib.core.memory.NativeMemoryCleaner;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.rgc.Cleaner;
 import rtlib.core.rgc.Freeable;
+import rtlib.core.rgc.RessourceGarbageCollector;
 import rtlib.kam.memory.MemoryType;
 import rtlib.kam.memory.PointerAccessible;
 import rtlib.kam.memory.ReadWriteBytesFileChannel;
@@ -53,6 +54,7 @@ public class RAMDirect extends RAMAbstract implements
 		mParent = pParent;
 		mAddressInBytes = pAddress;
 		mLengthInBytes = pLengthInBytes;
+		RessourceGarbageCollector.register(this);
 	}
 
 	public RAMDirect(final long pLengthInBytes)

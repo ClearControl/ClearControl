@@ -1,13 +1,12 @@
 package rtlib.ao.optimization;
 
-import static java.lang.Math.min;
-
 import java.io.IOException;
 
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
+import org.jtransforms.dct.FloatDCT_2D;
 
 import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.utils.MatrixConversions;
@@ -233,6 +232,49 @@ public class PSFOptimizer implements VirtualDeviceInterface
 				double lValue = Math.log(1 + lRAM.getCharAligned(j));
 				lNonMax += lValue;
 			}
+
+		return lMax; // - (lNonMax / (lVolume - 1))
+	}
+
+	FloatDCT_2D mFloatDCT_2D;
+	private double getObjectiveValueForShapeDCTS(DenseMatrix64F pBasisVector) throws InterruptedException
+	{
+		if (mNDArray == null)
+		{
+			mNDArray = NDArrayTypedDirect.allocateTXYZ(	Double.TYPE,
+																									(int) mDeformableMirrorDevice.getMatrixWidthVariable()
+																																								.getValue(),
+																									(int) mDeformableMirrorDevice.getMatrixHeightVariable()
+																																								.getValue(),
+																									1);
+			mDMShapeVideoWindow.setSourceBuffer(mNDArray);
+		}
+
+		DenseMatrix64F lShapeVector = new DenseMatrix64F(64, 1);
+		CommonOps.mult(mTransformMatrix, pBasisVector, lShapeVector);
+		MatrixConversions.convertMatrixToNDArray(lShapeVector, mNDArray);
+		mDeformableMirrorDevice.getMatrixReference().set(mNDArray);
+		// assertTrue(((long)
+		// lMirao52eDevice.getNumberOfReceivedShapesVariable()
+		// .getValue()) == lStartValueForLastNumberOfShapes + i);
+
+		mDMShapeVideoWindow.notifyNewFrame();
+		mDMShapeVideoWindow.display();/**/
+		Thread.sleep(5);
+		mStackCamera.trigger();
+		while (!mReceivedStack)
+			Thread.sleep(1);
+		mReceivedStack = false;
+
+		long lVolume = mNewStack.getNDArray().getVolume();
+		RAM lRAM = mNewStack.getNDArray().getRAM();
+
+		if (mFloatDCT_2D == null)
+			mFloatDCT_2D = new FloatDCT_2D(	mNewStack.getWidth(),
+																			mNewStack.getHeight());
+
+		FloatLargeArray lFloatLargeArray = new FloatLargeArray();
+		mFloatDCT_2D.forward();
 
 		return lMax; // - (lNonMax / (lVolume - 1))
 	}

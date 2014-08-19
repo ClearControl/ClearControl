@@ -29,6 +29,8 @@ public class OrcaFlash4StackCamera extends
 
 	private final DcamJToVideoFrameConverterAndProcessing mDcamJToStackConverterAndProcessing;
 
+	private Object mLock = new Object();
+
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
@@ -87,13 +89,16 @@ public class OrcaFlash4StackCamera extends
 			public double setEventHook(	final double pOldValue,
 																	final double pNewValue)
 			{
-				requestReOpen();
-				final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
-				if (lRoundto4 != pNewValue)
+				synchronized (mLock)
 				{
-					this.setValue(lRoundto4);
+					requestReOpen();
+					final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
+					if (lRoundto4 != pNewValue)
+					{
+						this.setValue(lRoundto4);
+					}
+					return super.setEventHook(pOldValue, lRoundto4);
 				}
-				return super.setEventHook(pOldValue, lRoundto4);
 			}
 
 		};
@@ -104,13 +109,16 @@ public class OrcaFlash4StackCamera extends
 			public double setEventHook(	final double pOldValue,
 																	final double pNewValue)
 			{
-				requestReOpen();
-				final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
-				if (lRoundto4 != pNewValue)
+				synchronized (mLock)
 				{
-					this.setValue(lRoundto4);
+					requestReOpen();
+					final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
+					if (lRoundto4 != pNewValue)
+					{
+						this.setValue(lRoundto4);
+					}
+					return super.setEventHook(pOldValue, lRoundto4);
 				}
-				return super.setEventHook(pOldValue, lRoundto4);
 			}
 		};
 
@@ -134,10 +142,13 @@ public class OrcaFlash4StackCamera extends
 			public double setEventHook(	final double pOldExposureInMicroseconds,
 																	final double pExposureInMicroseconds)
 			{
-				final double lEffectiveExposureInSeconds = mDcamAcquisition.setExposureInSeconds(Magnitudes.micro2unit(pExposureInMicroseconds));
-				final double lEffectiveExposureInMicroSeconds = Magnitudes.unit2micro(lEffectiveExposureInSeconds);
-				return super.setEventHook(pOldExposureInMicroseconds,
-																	lEffectiveExposureInMicroSeconds);
+				synchronized (mLock)
+				{
+					final double lEffectiveExposureInSeconds = mDcamAcquisition.setExposureInSeconds(Magnitudes.micro2unit(pExposureInMicroseconds));
+					final double lEffectiveExposureInMicroSeconds = Magnitudes.unit2micro(lEffectiveExposureInSeconds);
+					return super.setEventHook(pOldExposureInMicroseconds,
+																		lEffectiveExposureInMicroSeconds);
+				}
 			}
 
 			@Override
@@ -196,169 +207,195 @@ public class OrcaFlash4StackCamera extends
 	@Override
 	public boolean open()
 	{
-		try
+		synchronized (mLock)
 		{
-			final boolean lOpenResult = mDcamAcquisition.open();
-			mDcamAcquisition.setDefectCorrection(false);
-			mDcamJToStackConverterAndProcessing.open();
-			return lOpenResult;
-		}
-		catch (final Throwable e)
-		{
-			System.err.println("Could not open DCAM!");
-			e.printStackTrace();
-			return false;
+			try
+			{
+				final boolean lOpenResult = mDcamAcquisition.open();
+				mDcamAcquisition.setDefectCorrection(false);
+				mDcamJToStackConverterAndProcessing.open();
+				return lOpenResult;
+			}
+			catch (final Throwable e)
+			{
+				System.err.println("Could not open DCAM!");
+				e.printStackTrace();
+				return false;
+			}
 		}
 	}
 
 	public final void ensureEnough2DFramesAreAvailable(final int pNumberOf2DFramesNeeded)
 	{
-		DcamFrame.preallocateFrames(pNumberOf2DFramesNeeded,
-																(long) getFrameBytesPerPixelVariable().getValue(),
-																(long) getFrameWidthVariable().getValue(),
-																(long) getFrameHeightVariable().getValue(),
-																1);
+		synchronized (mLock)
+		{
+			DcamFrame.preallocateFrames(pNumberOf2DFramesNeeded,
+																	(long) getFrameBytesPerPixelVariable().getValue(),
+																	(long) getFrameWidthVariable().getValue(),
+																	(long) getFrameHeightVariable().getValue(),
+																	1);
+		}
 	}
 
 	public final void ensureEnough3DFramesAreAvailable(final int pNumberOf3DFramesNeeded)
 	{
-		DcamFrame.preallocateFrames(pNumberOf3DFramesNeeded,
-																(long) getFrameBytesPerPixelVariable().getValue(),
-																(long) getFrameWidthVariable().getValue(),
-																(long) getFrameHeightVariable().getValue(),
-																(long) getFrameDepthVariable().getValue());
+		synchronized (mLock)
+		{
+			DcamFrame.preallocateFrames(pNumberOf3DFramesNeeded,
+																	(long) getFrameBytesPerPixelVariable().getValue(),
+																	(long) getFrameWidthVariable().getValue(),
+																	(long) getFrameHeightVariable().getValue(),
+																	(long) getFrameDepthVariable().getValue());
+		}
 	}
 
 	private DcamFrame request2DFrames()
 	{
-		return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
-																	(long) getFrameWidthVariable().getValue(),
-																	(long) getFrameHeightVariable().getValue(),
-																	cDcamJNumberOfBuffers);
+		synchronized (mLock)
+		{
+			return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
+																		(long) getFrameWidthVariable().getValue(),
+																		(long) getFrameHeightVariable().getValue(),
+																		cDcamJNumberOfBuffers);
+		}
 	}
 
 	private DcamFrame request3DFrame()
 	{
-
-		return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
-																	(long) getFrameWidthVariable().getValue(),
-																	(long) getFrameHeightVariable().getValue(),
-																	(long) getFrameDepthVariable().getValue());
+		synchronized (mLock)
+		{
+			return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
+																		(long) getFrameWidthVariable().getValue(),
+																		(long) getFrameHeightVariable().getValue(),
+																		(long) getFrameDepthVariable().getValue());
+		}
 	}
 
 	@Override
 	public boolean start()
 	{
-		if (getIsAcquiringVariable().getBooleanValue())
+		synchronized (mLock)
 		{
-			if (isReOpenDeviceNeeded())
+			if (getIsAcquiringVariable().getBooleanValue())
 			{
-				stop();
+				if (isReOpenDeviceNeeded())
+				{
+					stop();
+				}
+				else
+				{
+					return true;
+				}
 			}
-			else
+			try
 			{
-				return true;
-			}
-		}
-		try
-		{
-			System.out.println(this.getClass().getSimpleName() + ": start()");
+				System.out.println(this.getClass().getSimpleName() + ": start()");
 
-			if (isReOpenDeviceNeeded())
+				if (isReOpenDeviceNeeded())
+				{
+					reopen();
+				}
+
+				mDcamJToStackConverterAndProcessing.start();
+
+				final boolean lContinuousAcquisition = !getSingleShotModeVariable().getBooleanValue();
+
+				boolean lSuccess;
+				if (getStackModeVariable().getBooleanValue())
+				{
+					final DcamFrame lInitialVideoFrame = request3DFrame();
+					lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
+																												true,
+																												true,
+																												false,
+																												lInitialVideoFrame);
+				}
+				else
+				{
+					final DcamFrame lInitialVideoFrame = request2DFrames();
+					lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
+																												false,
+																												true,
+																												false,
+																												lInitialVideoFrame);
+				}
+
+				return lSuccess;
+			}
+			catch (final Throwable e)
 			{
-				reopen();
+				e.printStackTrace();
+				return false;
 			}
-
-			mDcamJToStackConverterAndProcessing.start();
-
-			final boolean lContinuousAcquisition = !getSingleShotModeVariable().getBooleanValue();
-
-			boolean lSuccess;
-			if (getStackModeVariable().getBooleanValue())
-			{
-				final DcamFrame lInitialVideoFrame = request3DFrame();
-				lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
-																											true,
-																											true,
-																											false,
-																											lInitialVideoFrame);
-			}
-			else
-			{
-				final DcamFrame lInitialVideoFrame = request2DFrames();
-				lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
-																											false,
-																											true,
-																											false,
-																											lInitialVideoFrame);
-			}
-
-			return lSuccess;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
 		}
 	}
 
 	public void reopen()
 	{
-		final boolean lIsAcquiring = getIsAcquiringVariable().getBooleanValue();
-		if (lIsAcquiring)
+		synchronized (mLock)
 		{
-			stop();
-		}
+			final boolean lIsAcquiring = getIsAcquiringVariable().getBooleanValue();
+			if (lIsAcquiring)
+			{
+				stop();
+			}
 
-		final int lWidth = (int) getFrameWidthVariable().getValue();
-		final int lHeight = (int) getFrameHeightVariable().getValue();
-		getFrameWidthVariable().setValue(mDcamAcquisition.setFrameWidth(lWidth));
-		getFrameHeightVariable().setValue(mDcamAcquisition.setFrameHeight(lHeight));
-		DcamFrame.clearFrames();
-		mDcamAcquisition.reopen();
+			final int lWidth = (int) getFrameWidthVariable().getValue();
+			final int lHeight = (int) getFrameHeightVariable().getValue();
+			getFrameWidthVariable().setValue(mDcamAcquisition.setFrameWidth(lWidth));
+			getFrameHeightVariable().setValue(mDcamAcquisition.setFrameHeight(lHeight));
+			DcamFrame.clearFrames();
+			mDcamAcquisition.reopen();
 
-		System.out.println(this.getClass().getSimpleName() + ": reopened() done !!!!");
-		clearReOpen();
+			System.out.println(this.getClass().getSimpleName() + ": reopened() done !!!!");
+			clearReOpen();
 
-		if (lIsAcquiring)
-		{
-			start();
+			if (lIsAcquiring)
+			{
+				start();
+			}
 		}
 	}
 
 	@Override
 	public boolean stop()
 	{
-		try
+		synchronized (mLock)
 		{
-			System.out.println(this.getClass().getSimpleName() + ": stop()");
-			if (mDcamAcquisition.isAcquiring())
+			try
 			{
-				mDcamAcquisition.stopAcquisition();
+				System.out.println(this.getClass().getSimpleName() + ": stop()");
+				if (mDcamAcquisition.isAcquiring())
+				{
+					mDcamAcquisition.stopAcquisition();
+				}
+				mDcamJToStackConverterAndProcessing.stop();
+				return true;
 			}
-			mDcamJToStackConverterAndProcessing.stop();
-			return true;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
+			catch (final Throwable e)
+			{
+				e.printStackTrace();
+				return false;
+			}
 		}
 	}
 
 	@Override
 	public boolean close()
 	{
-		try
+		synchronized (mLock)
 		{
-			mDcamAcquisition.close();
-			mDcamJToStackConverterAndProcessing.close();
-			return true;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
+			try
+			{
+				mDcamAcquisition.close();
+				mDcamJToStackConverterAndProcessing.close();
+				return true;
+			}
+			catch (final Throwable e)
+			{
+				e.printStackTrace();
+				return false;
+			}
 		}
 	}
 
