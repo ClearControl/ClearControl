@@ -1,5 +1,7 @@
 package rtlib.ao.optimization;
 
+import static java.lang.Math.min;
+
 import java.io.IOException;
 
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
@@ -125,7 +127,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 																	lBasisElementValue);
 
 					// System.out.println("lBasisElementValue=" + lBasisElementValue);
-					double lObjectiveValueForShape = getObjectiveValueForShape(lCurrentBestVector);
+					double lObjectiveValueForShape = getObjectiveValueForShapeTenengrad(lCurrentBestVector);
 					lWeightedObservedPoints.add(lBasisElementValue,
 																			lObjectiveValueForShape);
 
@@ -237,7 +239,8 @@ public class PSFOptimizer implements VirtualDeviceInterface
 	}
 
 	FloatDCT_2D mFloatDCT_2D;
-	private double getObjectiveValueForShapeDCTS(DenseMatrix64F pBasisVector) throws InterruptedException
+
+	private double getObjectiveValueForShapeTenengrad(DenseMatrix64F pBasisVector) throws InterruptedException
 	{
 		if (mNDArray == null)
 		{
@@ -267,16 +270,42 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		mReceivedStack = false;
 
 		long lVolume = mNewStack.getNDArray().getVolume();
+		NDArrayTypedDirect<Short> lNdArray = mNewStack.getNDArray();
+
+		final long lWidth = lNdArray.getWidth();
+		final long lHeight = lNdArray.getHeight();
+
 		RAM lRAM = mNewStack.getNDArray().getRAM();
 
-		if (mFloatDCT_2D == null)
-			mFloatDCT_2D = new FloatDCT_2D(	mNewStack.getWidth(),
-																			mNewStack.getHeight());
 
-		FloatLargeArray lFloatLargeArray = new FloatLargeArray();
-		mFloatDCT_2D.forward();
+		float lSum = 0;
+		for (long y = 1; y < lHeight - 1; y++)
+		{
 
-		return lMax; // - (lNonMax / (lVolume - 1))
+			for (long x = 1; x < lWidth - 1; x++)
+			{
+
+				short a = lRAM.getShortAligned(x - 1 + lWidth * (y - 1));
+				short b = lRAM.getShortAligned(x + lWidth * (y - 1));
+				short c = lRAM.getShortAligned(x + 1 + lWidth * (y - 1));
+				short d = lRAM.getShortAligned(x - 1 + lWidth * y);
+				short e = lRAM.getShortAligned(x + lWidth * y);
+				short f = lRAM.getShortAligned(x + 1 + lWidth * y);
+				short g = lRAM.getShortAligned(x - 1 + lWidth * (y + 1));
+				short h = lRAM.getShortAligned(x + lWidth * (y + 1));
+				short i = lRAM.getShortAligned(x + 1 + lWidth * (y + 1));
+
+				float dx = c + 2 * f + i - a - 2 * d - g;
+				float dy = a + 2 * b + c - g - 2 * h - i;
+
+				float dx2dy2 = dx * dx + dy * dy;
+
+				lSum += dx2dy2;
+			}
+
+		}
+
+		return lSum / (lHeight * lHeight); // - (lNonMax / (lVolume - 1))
 	}
 
 	@Override

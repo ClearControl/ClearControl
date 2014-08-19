@@ -22,6 +22,8 @@ public class PSFOptimizerDemo
 													.setValue(10000);
 		lOrcaFlash4StackCamera.getFrameWidthVariable().setValue(64);
 		lOrcaFlash4StackCamera.getFrameHeightVariable().setValue(64);
+		lOrcaFlash4StackCamera.getSingleShotModeVariable()
+													.setValue(false);
 
 		PSFOptimizer lPSFOptimizer = new PSFOptimizer(lOrcaFlash4StackCamera,
 																									lMirao52eDevice);

@@ -54,7 +54,8 @@ public class RAMDirect extends RAMAbstract implements
 		mParent = pParent;
 		mAddressInBytes = pAddress;
 		mLengthInBytes = pLengthInBytes;
-		RessourceGarbageCollector.register(this);
+		if (pParent != null)
+			RessourceGarbageCollector.register(this);
 	}
 
 	public RAMDirect(final long pLengthInBytes)

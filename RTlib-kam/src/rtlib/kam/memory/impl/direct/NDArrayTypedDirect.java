@@ -261,6 +261,7 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 
 	public NDArrayTypedDirect<T> sliceMajorAxis(long pSliceIndex)
 	{
+		// TODO: this is very inelegant way to slice, allocates memory forcefully...
 		Class<T> lType = this.getType();
 		int lDimension = mDefaultBoundedCursor.getDimension();
 		long[] lDimensions = mDefaultBoundedCursor.getDimensions();
