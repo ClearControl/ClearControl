@@ -5,10 +5,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.Stack;
-import rtlib.stack.processor.StackProcessing;
 
-public abstract class StackCameraDevice<I, O> extends CameraDevice implements
-																																	StackProcessing<I, O>
+public abstract class StackCameraDevice<I, O> extends CameraDevice
 {
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);

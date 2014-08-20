@@ -44,12 +44,12 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		mMaximumLiveMemoryInBytes = pMaximumLiveMemoryInBytes;
 	}
 
-	public long ensurePreallocated(	final int pNumberofPrealocatedRecyclablesNeeded,
+	public long ensurePreallocated(	final long pNumberofPrealocatedRecyclablesNeeded,
 																	@SuppressWarnings("unchecked") final P pRecyclerRequest)
 	{
 		complainIfFreed();
-		final int lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
-		final int lNumberOfObjectsToAllocate = Math.max(0,
+		final long lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
+		final long lNumberOfObjectsToAllocate = Math.max(	0,
 																										pNumberofPrealocatedRecyclablesNeeded - lNumberOfAvailableObjects);
 		long i = 1;
 		try
@@ -238,6 +238,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		{
 			final String lErrorString = "Error while creating new instance!";
 			error("Recycling", lErrorString, e);
+			e.printStackTrace();
 			return null;
 		}
 
@@ -258,6 +259,12 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	public long getLiveMemoryInBytes()
 	{
 		return mLiveMemoryInBytes.get();
+	}
+
+
+	public long getNumberOfAvailableObjects()
+	{
+		return mAvailableObjectsQueue.size();
 	}
 
 	public void cleanupOnce()
@@ -317,5 +324,6 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	{
 		return mIsFreed.get();
 	}
+
 
 }

@@ -16,7 +16,7 @@ public class RecyclerTests
 {
 
 	@Test
-	public void test()
+	public void testBasics()
 	{
 		Recycler<RecyclableTestClass, LongRequest> lRecycler = new Recycler<RecyclableTestClass, LongRequest>(RecyclableTestClass.class,
 																																														1000);
@@ -122,6 +122,27 @@ public class RecyclerTests
 		assertTrue(lOutOfMemoryHappened);
 
 		lRecycler.free();
+
+	}
+
+	@Test
+	public void testTightRecycling()
+	{
+		Recycler<RecyclableTestClass, LongRequest> lRecycler = new Recycler<RecyclableTestClass, LongRequest>(RecyclableTestClass.class,
+																																																					1000);
+
+		for (int i = 0; i < 100; i++)
+		{
+			RecyclableTestClass lRecyclableObject = lRecycler.waitOrRequestRecyclableObject(1,
+																																											TimeUnit.SECONDS,
+																																											new LongRequest(1L));
+			assertTrue(lRecyclableObject != null);
+
+			// if (i % 2 == 0)
+				lRecycler.release(lRecyclableObject);
+		}
+
+
 
 	}
 

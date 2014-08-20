@@ -18,15 +18,14 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.objectv.SingleUpdateTargetObjectVariable;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
-import rtlib.stack.processor.StackProcessing;
 import rtlib.stack.processor.StackProcessorInterface;
 import dcamj.DcamFrame;
 
-public class DcamJToVideoFrameConverterAndProcessing extends
-																										SignalStartableDevice	implements
-																																					VirtualDeviceInterface,
-																																					StackProcessing
+public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
+																																			VirtualDeviceInterface
 {
+
+	private static final long cMinimalNumberOfAvailableStacks = 10;
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
 
@@ -46,8 +45,8 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 
 	private final ArrayList<StackProcessorInterface<?, ?>> mStackProcessorList = new ArrayList<StackProcessorInterface<?, ?>>();
 
-	public DcamJToVideoFrameConverterAndProcessing(	final ObjectVariable<DcamFrame> pDcamFrameReference,
-																									final int pMaxQueueSize)
+	public DcamJToVideoFrameConverter(final ObjectVariable<DcamFrame> pDcamFrameReference,
+																		final int pMaxQueueSize)
 	{
 		super("DcamJToVideoFrameConverter");
 
@@ -116,57 +115,44 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 		try
 		{
 			boolean lCopySucceeded = false;
-			do
+
+			final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
+
+			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
+																																					1,
+																																					pDcamFrame.getWidth(),
+																																					pDcamFrame.getHeight(),
+																																					(long) mStackDepthVariable.getValue());
+
+			if (mVideoFrameRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
+				mVideoFrameRecycler.ensurePreallocated(	cMinimalNumberOfAvailableStacks,
+																								lStackRequest);
+
+			Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
+																																				TimeUnit.MILLISECONDS,
+																																				lStackRequest);
+
+			if (lStack == null)
 			{
-				// System.out.println("convert: pDcamFrame.index=" +
-				// pDcamFrame.getIndex());/**/
-				final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
-
-				final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
-																																						1,
-																																						pDcamFrame.getWidth(),
-																																						pDcamFrame.getHeight(),
-																																						(long) mStackDepthVariable.getValue());
-
-				Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
-																																					TimeUnit.SECONDS,
-																																					lStackRequest);
-				/*System.out.println("convert: hashcode=" + lStack.hashCode()
-														+ " index="
-														+ pDcamFrame.getIndex());/**/
-
-				if (lStack != null)
-				{
-					lStack.setStackIndex(pDcamFrame.getIndex());
-					lStack.setTimeStampInNanoseconds(pDcamFrame.getFrameTimeStampInNs());
-					lStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);
-
-					final Pointer<Byte> lVideoFramePointer = lStack.getPointer();
-
-					lCopySucceeded = pDcamFrame.copyAllPlanesToSinglePointer(	lVideoFramePointer,
-																																		(long) (mStackDepthVariable.getValue() * mNumberOfImagesPerPlaneVariable.getValue()));
-
-					if (lCopySucceeded)
-					{
-						pDcamFrame.release();
-
-						for (final StackProcessorInterface lStackProcessor : mStackProcessorList)
-							if (lStackProcessor.isActive())
-							{
-								lStack = lStackProcessor.process(	lStack,
-																									mVideoFrameRecycler);
-							}
-
-						return lStack;
-					}
-				}
-
-				System.out.println("SHOULD NOT BE HERE 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.err.println("Failed to obtain stack from request");
+				return null;
 			}
-			while (!lCopySucceeded);
 
-			System.out.println("SHOULD NOT BE HERE 2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			return null;
+			lStack.setStackIndex(pDcamFrame.getIndex());
+			lStack.setTimeStampInNanoseconds(pDcamFrame.getFrameTimeStampInNs());
+			lStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);
+
+			final Pointer<Byte> lVideoFramePointer = lStack.getPointer();
+
+			lCopySucceeded = pDcamFrame.copyAllPlanesToSinglePointer(	lVideoFramePointer,
+																																(long) (mStackDepthVariable.getValue() * mNumberOfImagesPerPlaneVariable.getValue()));
+
+			if (!lCopySucceeded)
+				System.err.println("Copy failed!");
+
+			pDcamFrame.release();
+			return lStack;
+
 		}
 		catch (final Throwable e)
 		{
@@ -212,18 +198,6 @@ public class DcamJToVideoFrameConverterAndProcessing extends
 	public DoubleVariable getNumberOfPhasesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
-	}
-
-	@Override
-	public void addStackProcessor(@SuppressWarnings("rawtypes") final StackProcessorInterface pStackProcessor)
-	{
-		mStackProcessorList.add(pStackProcessor);
-	}
-
-	@Override
-	public void removeStackProcessor(@SuppressWarnings("rawtypes") final StackProcessorInterface pStackProcessor)
-	{
-		mStackProcessorList.remove(pStackProcessor);
 	}
 
 }

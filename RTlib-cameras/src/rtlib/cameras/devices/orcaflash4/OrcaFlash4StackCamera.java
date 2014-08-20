@@ -1,13 +1,12 @@
 package rtlib.cameras.devices.orcaflash4;
 
 import rtlib.cameras.StackCameraDevice;
-import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverterAndProcessing;
+import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.processor.StackProcessorInterface;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
@@ -27,7 +26,7 @@ public class OrcaFlash4StackCamera extends
 
 	private final ObjectVariable<DcamFrame> mFrameReference = new ObjectVariable<DcamFrame>("DCamJVideoFrame");
 
-	private final DcamJToVideoFrameConverterAndProcessing mDcamJToStackConverterAndProcessing;
+	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private Object mLock = new Object();
 
@@ -173,7 +172,7 @@ public class OrcaFlash4StackCamera extends
 		mSingleShotModeVariable = new BooleanVariable("SingleShotMode",
 																									false);
 
-		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverterAndProcessing(mFrameReference,
+		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(mFrameReference,
 																																											cStackProcessorQueueSize);
 
 		mFrameDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
@@ -190,18 +189,6 @@ public class OrcaFlash4StackCamera extends
 	public DoubleVariable getNumberOfPhasesVariable()
 	{
 		return mDcamJToStackConverterAndProcessing.getNumberOfPhasesPerPlaneVariable();
-	}
-
-	@Override
-	public void addStackProcessor(final StackProcessorInterface<Short, Short> pStackProcessor)
-	{
-		mDcamJToStackConverterAndProcessing.addStackProcessor(pStackProcessor);
-	}
-
-	@Override
-	public void removeStackProcessor(final StackProcessorInterface<Short, Short> pStackProcessor)
-	{
-		mDcamJToStackConverterAndProcessing.removeStackProcessor(pStackProcessor);
 	}
 
 	@Override
