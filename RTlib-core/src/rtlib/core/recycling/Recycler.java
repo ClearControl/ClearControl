@@ -135,7 +135,8 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 																		final TimeUnit pTimeUnit,
 																		final P pRecyclerRequest)
 	{
-		System.out.println("mAvailableObjectsQueue.size()=" + mAvailableObjectsQueue.size());
+		// System.out.println("mAvailableObjectsQueue.size()=" +
+		// mAvailableObjectsQueue.size());
 		complainIfFreed();
 		SoftReference<R> lPolledSoftReference = null;
 		try
@@ -152,7 +153,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 		if (lPolledSoftReference == null)
 		{
-			System.err.println("SOFTREFERENCE IS NULL!!!!");
+			// System.err.println("SOFTREFERENCE IS NULL!!!!");
 		}
 		else if (lPolledSoftReference != null)
 		{
@@ -164,7 +165,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 			if (lObtainedReference == null)
 			{
-				System.err.println("SOFTREFERENCE CLEARED!!!!");
+				// System.err.println("SOFTREFERENCE CLEARED!!!!");
 				mLiveObjectCounter.decrementAndGet();
 				mLiveMemoryInBytes.addAndGet(-lObjectsSizeInBytes);
 				return requestRecyclableObject(	pWait,
@@ -177,7 +178,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 				lObtainedReference.setReleased(false);
 				if (!lObtainedReference.isCompatible(pRecyclerRequest))
 				{
-					System.err.println("RECYCLABLE INVALID!!!");
+					// System.err.println("RECYCLABLE INVALID!!!");
 					lObtainedReference.setReleased(true);
 					destroyInstance(lObtainedReference, true);
 					return requestRecyclableObject(	pWait,

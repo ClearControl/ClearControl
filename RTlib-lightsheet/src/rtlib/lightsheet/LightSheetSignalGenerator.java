@@ -9,14 +9,12 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.device.queue.QueueProvider;
-import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleInputVariableInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.symphony.devices.SignalGenerator;
+import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.CompiledScore;
@@ -26,8 +24,7 @@ import rtlib.symphony.staves.GalvoScannerStave;
 import rtlib.symphony.staves.LaserTriggerBinaryPattern2Stave;
 
 public class LightSheetSignalGenerator extends SignalStartableDevice implements
-																																		VirtualDeviceInterface,
-																																		StateQueueDeviceInterface,
+																																		LightSheetSignalGeneratorInterface,
 																																		AsynchronousExecutorServiceAccess
 {
 
@@ -39,7 +36,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	private static File cPifoc2LightSheetModelFile = new File(cBScopeFolder,
 																														"Pifoc2LightSheetModel.bin");
 
-	private final SignalGenerator mSignalGenerator;
+	private final SignalGeneratorInterface mSignalGenerator;
 	private final Score mScore;
 	private final CompiledScore mCompiledScore;
 	private volatile int mEnqueuedStateCounter = 0;
@@ -107,7 +104,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	private volatile QueueProvider<LightSheetSignalGenerator> mQueueProvider;
 	private volatile Future<Boolean> mFuture;
 
-	public LightSheetSignalGenerator(	SignalGenerator pSignalGenerator,
+	public LightSheetSignalGenerator(	SignalGeneratorInterface pSignalGenerator,
 																		final double pReadoutTimeInMicrosecondsPerLine,
 																		final int pNumberOfLines)
 	{
@@ -519,14 +516,14 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	public long estimatePlayTimeInMilliseconds()
 	{
 		long lDurationInMilliseconds = 0;
-		for(MovementInterface lMovement : mScore.getMovements())
+		for (MovementInterface lMovement : mScore.getMovements())
 		{
 			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
 		}
 
 		lDurationInMilliseconds *= mCompiledScore.getNumberOfMovements();
 		return TimeUnit.SECONDS.convert(lDurationInMilliseconds,
-																					TimeUnit.MILLISECONDS);
+																		TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -568,5 +565,106 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 						&& !mFuture.isCancelled();
 	}
 
+	@Override
+	public DoubleVariable getEffectiveExposureInMicrosecondsVariable()
+	{
+		return mEffectiveExposureInMicroseconds;
+	}
+
+	@Override
+	public DoubleVariable getLineExposureInMicrosecondsVariable()
+	{
+		return mLineExposureInMicroseconds;
+	}
+
+	@Override
+	public DoubleVariable getMarginTimeInMicrosecondsVariable()
+	{
+		return mMarginTimeInMicroseconds;
+	}
+
+	@Override
+	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable()
+	{
+		return mReadoutTimeInMicrosecondsPerLine;
+	}
+
+	@Override
+	public DoubleVariable getLightSheetYInMicronsVariable()
+	{
+		return mLightSheetYInMicrons;
+	}
+
+	@Override
+	public DoubleVariable getLightSheetZInMicronsVariable()
+	{
+		return mLightSheetZInMicrons;
+	}
+
+	@Override
+	public DoubleVariable getLightSheetThetaInDegreesVariable()
+	{
+		return mLightSheetThetaInDegrees;
+	}
+
+	@Override
+	public DoubleVariable getFocusZVariable()
+	{
+		return mFocusZ;
+	}
+
+	@Override
+	public DoubleVariable getLightSheetLengthInMicronsVariable()
+	{
+		return mLightSheetLengthInMicrons;
+	}
+
+	@Override
+	public DoubleVariable getStageYVariable()
+	{
+		return mStageY;
+	}
+
+	@Override
+	public DoubleVariable getPatternOnOffVariable()
+	{
+		return mPatternOnOff;
+	}
+
+	@Override
+	public DoubleVariable getPatternPeriodVariable()
+	{
+		return mPatternPeriod;
+	}
+
+	@Override
+	public DoubleVariable getPatternPhaseIndexVariable()
+	{
+		return mPatternPhaseIndex;
+	}
+
+	@Override
+	public DoubleVariable getPatternOnLengthVariable()
+	{
+		return mPatternOnOff;
+	}
+
+	@Override
+	public DoubleVariable getPatternPhaseIncrementVariable()
+	{
+		return mPatternPhaseIncrement;
+	}
+
+	@Override
+	public DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex)
+	{
+		return mLaserOnOffArray[pLaserIndex];
+	}
+
+	@Override
+	public BooleanVariable getLockLightSheetToPifocVariable()
+	{
+		return mLockLightSheetToPifoc;
+	}
 
 }

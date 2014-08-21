@@ -14,7 +14,7 @@ import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.dms.Mirao52eDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.cameras.StackCameraDevice;
+import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
@@ -45,7 +45,7 @@ public class Mirao52eDeviceDemo
 
 	}
 
-	private void optimizePSF(	final StackCameraDevice<Short, Short> pStackCamera,
+	private void optimizePSF(	final StackCameraDeviceBase<Short, Short> pStackCamera,
 														DeformableMirrorDevice pDeformableMirrorDevice)	throws InterruptedException,
 																																						IOException
 	{

@@ -1,5 +1,6 @@
 package rtlib.core.device;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 {
 
 	private final SignalStartableLoopTaskDevice lThis;
+	private volatile ScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
 																				final boolean pOnlyStart)
@@ -31,11 +33,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		Runnable lRunnable = () -> {
 			loop();
 		};
-		ScheduledFuture<?> lScheduledFuture = scheduleAtFixedRate(lRunnable,
+		mScheduledFuture = scheduleAtFixedRate(lRunnable,
 																															1,
 																															TimeUnit.NANOSECONDS);
 
-		return lScheduledFuture != null;
+		return mScheduledFuture != null;
 	}
 
 	public boolean pause()
@@ -54,14 +56,23 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	{
 		try
 		{
-			return stopScheduledThreadPoolAndWaitForCompletion();
+			boolean lStopScheduledThreadPoolAndWaitForCompletion = stopScheduledThreadPoolAndWaitForCompletion();
+			return lStopScheduledThreadPoolAndWaitForCompletion;
 		}
 		catch (ExecutionException e)
 		{
 			String lError = "Error during previous execution of loop function!";
 			error("Device", lError, e);
-			return false;
 		}
+		catch (InterruptedException e)
+		{
+			System.err.println(e.getLocalizedMessage());
+		}
+		catch (CancellationException e)
+		{
+			System.err.println(e.getLocalizedMessage());
+		}
+		return false;
 
 	}
 

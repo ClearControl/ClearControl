@@ -1,23 +1,41 @@
 package rtlib.cameras;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 
-public abstract class CameraDevice extends SignalStartableDevice implements
-																																VirtualDeviceInterface
+public abstract class CameraDeviceBase extends SignalStartableDevice implements
+																																		CameraDeviceInterface
 {
 
 	protected DoubleVariable mFrameBytesPerPixelVariable,
 			mFrameWidthVariable, mFrameHeightVariable, mFrameDepthVariable,
-			mExposureInMicroseconds, mPixelSizeinNanometers;
+			mExposureInMicrosecondsVariable, mPixelSizeinNanometersVariable;
+
+	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
 	protected BooleanVariable mIsAcquiring;
 
-	public CameraDevice(final String pDeviceName)
+	public CameraDeviceBase(final String pDeviceName)
 	{
 		super(pDeviceName);
+	}
+
+	public boolean isReOpenDeviceNeeded()
+	{
+		return mReOpenDeviceNeeded.get();
+	}
+
+	public void requestReOpen()
+	{
+		mReOpenDeviceNeeded.set(true);
+	}
+
+	public void clearReOpen()
+	{
+		mReOpenDeviceNeeded.set(false);
 	}
 
 	public abstract void reopen();
@@ -44,20 +62,17 @@ public abstract class CameraDevice extends SignalStartableDevice implements
 
 	public DoubleVariable getExposureInMicrosecondsVariable()
 	{
-		return mExposureInMicroseconds;
+		return mExposureInMicrosecondsVariable;
 	}
 
 	public DoubleVariable getPixelSizeInNanometersVariable()
 	{
-		return mPixelSizeinNanometers;
+		return mPixelSizeinNanometersVariable;
 	}
-
 
 	public BooleanVariable getIsAcquiringVariable()
 	{
 		return mIsAcquiring;
 	}
-
-
 
 }

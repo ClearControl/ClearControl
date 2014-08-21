@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
+import rtlib.core.memory.SizeOf;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
@@ -15,6 +16,8 @@ import clearvolume.transfertf.TransfertFunctions;
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
 {
+
+	private static final int cDefaultDisplayQueueLength = 2;
 
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
 
@@ -27,17 +30,18 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 	public Stack3DDisplay()
 	{
-		this("3d Video Display", 1);
+		this("3d Video Display", byte.class);
 	}
 
-	public Stack3DDisplay(final String pWindowName,
-												final int pBytesPerVoxel)
+	public Stack3DDisplay(final String pWindowName, final Class<?> pType)
 	{
-		this(pWindowName, pBytesPerVoxel, 2);
+		this(	pWindowName,
+ pType,
+					cDefaultDisplayQueueLength);
 	}
 
 	public Stack3DDisplay(final String pWindowName,
-												final int pBytesPerVoxel,
+												final Class<?> pType,
 												final int pUpdaterQueueLength)
 	{
 		super(pWindowName);
@@ -45,7 +49,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															768,
 																															768,
-																															pBytesPerVoxel);
+																															SizeOf.sizeOf(pType));
 		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);
 

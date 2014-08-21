@@ -2,15 +2,18 @@ package rtlib.symphony.devices.nirio;
 
 import nirioj.direttore.Direttore;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.symphony.devices.SignalGenerator;
+import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.CompiledScore;
 
 public class NIRIOSignalGenerator extends NamedVirtualDevice implements
-
-																														SignalGenerator
+																														SignalGeneratorInterface
 {
 
 	private final Direttore mDirettore;
+
+	private BooleanVariable mTriggerVariable = new BooleanVariable(	"Trigger",
+																																	false);
 
 	public NIRIOSignalGenerator()
 	{
@@ -30,12 +33,14 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 		final int lCurrentThreadPriority = lCurrentThread.getPriority();
 		lCurrentThread.setPriority(Thread.MAX_PRIORITY);
 
+		mTriggerVariable.setValue(true);
 		boolean lPlayed = mDirettore.play(pCompiledScore.getDeltaTimeBuffer(Direttore.cNanosecondsPerTicks),
 																			pCompiledScore.getNumberOfTimePointsBuffer(Direttore.cNanosecondsPerTicks),
 																			pCompiledScore.getSyncBuffer(Direttore.cNanosecondsPerTicks),
 																			pCompiledScore.getNumberOfMovements(),
 																			pCompiledScore.getScoreBuffer(Direttore.cNanosecondsPerTicks));
 		lCurrentThread.setPriority(lCurrentThreadPriority);
+		mTriggerVariable.setValue(false);
 
 		return lPlayed;
 	}
@@ -82,6 +87,7 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 
 	double mWaitTimeInMilliseconds = 0;
 
+
 	@Override
 	public boolean close()
 	{
@@ -98,6 +104,12 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 			return false;
 		}
 
+	}
+
+	@Override
+	public BooleanVariable getTriggerVariable()
+	{
+		return mTriggerVariable;
 	}
 
 }

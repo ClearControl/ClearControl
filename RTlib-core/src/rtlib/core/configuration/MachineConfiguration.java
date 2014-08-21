@@ -113,13 +113,16 @@ public class MachineConfiguration
 
 		return Boolean.parseBoolean(lProperty.toLowerCase()) || lProperty.trim()
 																																			.equals("1")
-						|| lProperty.trim().equals("on")
-						|| lProperty.trim().equals("present");
+						|| lProperty.trim().toLowerCase().equals("on")
+						|| lProperty.trim().toLowerCase().equals("present")
+						|| lProperty.trim().toLowerCase().equals("true");
 	}
 
-	public File getFileProperty(String pKey, File pFile)
+	public File getFileProperty(String pKey, File pDefaultFile)
 	{
-		return new File(getStringProperty(pKey, pFile.getPath()));
+		return new File(getStringProperty(pKey,
+																			pDefaultFile == null ? null
+																													: pDefaultFile.getPath()));
 	}
 
 	public String getSerialDevicePort(String pDeviceName,
@@ -133,14 +136,15 @@ public class MachineConfiguration
 		return lPort;
 	}
 
-	public String[] getNetworkDeviceHostnameAndPort(	String pDeviceName,
-																		int pDeviceIndex,
-																		String pDefaultHostNameAndPort)
+	public String[] getNetworkDeviceHostnameAndPort(String pDeviceName,
+																									int pDeviceIndex,
+																									String pDefaultHostNameAndPort)
 	{
 		String lKey = "device.network." + pDeviceName.toLowerCase()
 									+ "."
 									+ pDeviceIndex;
-		String lHostnameAndPort = getStringProperty(lKey, pDefaultHostNameAndPort);
+		String lHostnameAndPort = getStringProperty(lKey,
+																								pDefaultHostNameAndPort);
 		return lHostnameAndPort.split(":");
 	}
 

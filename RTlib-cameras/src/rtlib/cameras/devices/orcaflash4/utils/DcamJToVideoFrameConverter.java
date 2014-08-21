@@ -26,6 +26,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 {
 
 	private static final long cMinimalNumberOfAvailableStacks = 10;
+	private static final long cWaitForReycledStackTimeInMicroSeconds = 1;
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
 
@@ -33,7 +34,8 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private AsynchronousProcessorBase<Stack<Short>, Object> mSendToVariableAsynchronousProcessor;
 
-	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> mVideoFrameRecycler = new Recycler<>(Stack.class);
+	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> m2DStackRecycler = new Recycler<>(Stack.class);
+	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> m3DStackRecycler = new Recycler<>(Stack.class);
 
 	private final SingleUpdateTargetObjectVariable<Stack<Short>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Short>>("Stack");
 
@@ -116,21 +118,36 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		{
 			boolean lCopySucceeded = false;
 
-			final int lNumberOfImagesPerPlane = (int) mNumberOfImagesPerPlaneVariable.getValue();
+			final long lNumberOfImagesPerPlane = (long) mNumberOfImagesPerPlaneVariable.getValue();
+			final long lStackDepthVariable = (long) mStackDepthVariable.getValue();
 
 			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
 																																					1,
 																																					pDcamFrame.getWidth(),
 																																					pDcamFrame.getHeight(),
-																																					(long) mStackDepthVariable.getValue());
+																																					lNumberOfImagesPerPlane * lStackDepthVariable);
 
-			if (mVideoFrameRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
-				mVideoFrameRecycler.ensurePreallocated(	cMinimalNumberOfAvailableStacks,
-																								lStackRequest);
+			Stack lStack = null;
+			if (lStackDepthVariable == 1)
+			{
+				if (m2DStackRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
+					m2DStackRecycler.ensurePreallocated(cMinimalNumberOfAvailableStacks,
+																							lStackRequest);
 
-			Stack lStack = mVideoFrameRecycler.waitOrRequestRecyclableObject(	1,
-																																				TimeUnit.MILLISECONDS,
-																																				lStackRequest);
+				lStack = m2DStackRecycler.waitOrRequestRecyclableObject(cWaitForReycledStackTimeInMicroSeconds,
+																																TimeUnit.MICROSECONDS,
+																																lStackRequest);
+			}
+			else
+			{
+				if (m3DStackRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
+					m3DStackRecycler.ensurePreallocated(cMinimalNumberOfAvailableStacks,
+																							lStackRequest);
+
+				lStack = m3DStackRecycler.waitOrRequestRecyclableObject(cWaitForReycledStackTimeInMicroSeconds,
+																																TimeUnit.MICROSECONDS,
+																																lStackRequest);
+			}
 
 			if (lStack == null)
 			{
@@ -145,7 +162,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			final Pointer<Byte> lVideoFramePointer = lStack.getPointer();
 
 			lCopySucceeded = pDcamFrame.copyAllPlanesToSinglePointer(	lVideoFramePointer,
-																																(long) (mStackDepthVariable.getValue() * mNumberOfImagesPerPlaneVariable.getValue()));
+																																lNumberOfImagesPerPlane * lStackDepthVariable);
 
 			if (!lCopySucceeded)
 				System.err.println("Copy failed!");

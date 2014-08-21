@@ -1,6 +1,6 @@
 package rtlib.cameras.devices.orcaflash4;
 
-import rtlib.cameras.StackCameraDevice;
+import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.units.Magnitudes;
@@ -14,7 +14,7 @@ import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
 public class OrcaFlash4StackCamera extends
-																	StackCameraDevice<Short, Short>	implements
+																	StackCameraDeviceBase<Short, Short>	implements
 																																	VirtualDeviceInterface
 {
 	public static final int cStackProcessorQueueSize = 100;
@@ -131,10 +131,10 @@ public class OrcaFlash4StackCamera extends
 			}
 		};
 
-		mPixelSizeinNanometers = new DoubleVariable("PixelSizeInNanometers",
+		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeInNanometers",
 																								160);
 
-		mExposureInMicroseconds = new DoubleVariable(	"ExposureInMicroseconds",
+		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
 																									5000)
 		{
 			@Override

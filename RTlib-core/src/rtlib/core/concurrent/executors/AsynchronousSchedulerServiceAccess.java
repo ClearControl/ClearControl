@@ -4,12 +4,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public interface AsynchronousSchedulerServiceAccess
 {
 
-	public default CompletingScheduledThreadPoolExecutor initializeScheduledExecutors()
+	public default ScheduledThreadPoolExecutor initializeScheduledExecutors()
 	{
 		return RTlibExecutors.getOrCreateScheduledThreadPoolExecutor(	this,
 																																	Thread.NORM_PRIORITY,
@@ -53,30 +52,32 @@ public interface AsynchronousSchedulerServiceAccess
 																														pTimeUnit);
 	}
 
-	public default boolean stopScheduledThreadPoolAndWaitForCompletion() throws ExecutionException
+	public default boolean stopScheduledThreadPoolAndWaitForCompletion() throws ExecutionException,
+																																			InterruptedException
 	{
+		// TODO this does not seem to work!!!
 		return stopScheduledThreadPoolAndWaitForCompletion(	Long.MAX_VALUE,
 																												TimeUnit.DAYS);
 	}
 
 	public default boolean stopScheduledThreadPoolAndWaitForCompletion(	long pTimeOut,
 																																			TimeUnit pTimeUnit) throws ExecutionException
+
 	{
-		CompletingScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 
 		lScheduledThreadPoolExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
 		lScheduledThreadPoolExecutor.shutdown();
 		try
 		{
-			lScheduledThreadPoolExecutor.waitForCompletion(	true,
-																											pTimeOut,
+			boolean lTerminatedBeforeTimeout = lScheduledThreadPoolExecutor.awaitTermination(	pTimeOut,
 																											pTimeUnit);
 			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
-			return true;
+			return lTerminatedBeforeTimeout;
 		}
-		catch (TimeoutException e)
+		catch (InterruptedException e)
 		{
-			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
+			e.printStackTrace();
 			return false;
 		}
 
@@ -85,26 +86,26 @@ public interface AsynchronousSchedulerServiceAccess
 	public default boolean waitForScheduleCompletion(	long pTimeOut,
 																										TimeUnit pTimeUnit) throws ExecutionException
 	{
-		CompletingScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 
 		if (lScheduledThreadPoolExecutor == null)
 			return true;
 
 		try
 		{
-			lScheduledThreadPoolExecutor.waitForCompletion(	false,
-																											pTimeOut,
+			return lScheduledThreadPoolExecutor.awaitTermination(	pTimeOut,
 																											pTimeUnit);
-			return true;
 		}
-		catch (TimeoutException e)
+		catch (InterruptedException e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 
 	}
 
-	public default boolean waitForScheduleCompletion() throws ExecutionException
+	public default boolean waitForScheduleCompletion() throws ExecutionException,
+																										InterruptedException
 	{
 		return waitForScheduleCompletion(Long.MAX_VALUE, TimeUnit.DAYS);
 	}

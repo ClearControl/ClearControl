@@ -13,7 +13,7 @@ import org.jtransforms.dct.FloatDCT_2D;
 import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.cameras.StackCameraDevice;
+import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
@@ -28,7 +28,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 {
 	private volatile boolean mReceivedStack = false;
 	private volatile Stack<Short> mNewStack;
-	private StackCameraDevice mStackCamera;
+	private StackCameraDeviceBase mStackCamera;
 	private DeformableMirrorDevice mDeformableMirrorDevice;
 	private VideoWindow mCameraVideoWindow;
 	private DenseMatrix64F mTransformMatrix;
@@ -37,7 +37,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 	private int mMatrixWidth;
 	private int mMatrixHeight;
 
-	public PSFOptimizer(final StackCameraDevice pStackCamera,
+	public PSFOptimizer(final StackCameraDeviceBase pStackCamera,
 											DeformableMirrorDevice pDeformableMirrorDevice)
 	{
 		super();
