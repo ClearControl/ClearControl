@@ -24,12 +24,12 @@ public class OrcaFlash4CameraDemo
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																															final Stack<Short> pNewStack)
+														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
+																																	final Stack<Character> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -70,12 +70,12 @@ public class OrcaFlash4CameraDemo
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																															final Stack<Short> pNewStack)
+														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
+																																	final Stack<Character> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -133,12 +133,12 @@ public class OrcaFlash4CameraDemo
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
 													{
 
 														@Override
-														public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																															final Stack<Short> pNewStack)
+														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
+																															final Stack<Character> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="

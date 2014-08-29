@@ -26,7 +26,7 @@ import rtlib.stack.Stack;
 public class Mirao52eDeviceDemo
 {
 	private volatile boolean mReceivedStack = false;
-	private volatile Stack<Short> mNewStack;
+	private volatile Stack<Character> mNewStack;
 
 	/**
 	 * First start the Mirao52 UDP server on the localhost and then fire this
@@ -45,11 +45,11 @@ public class Mirao52eDeviceDemo
 
 	}
 
-	private void optimizePSF(	final StackCameraDeviceBase<Short, Short> pStackCamera,
+	private void optimizePSF(	final StackCameraDeviceBase<Character, Character> pStackCamera,
 														DeformableMirrorDevice pDeformableMirrorDevice)	throws InterruptedException,
 																																						IOException
 	{
-		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
+		final NDArrayTypedDirect<Character> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Character.class,
 																																											128,
 																																											128,
 																																											1);
@@ -63,12 +63,12 @@ public class Mirao52eDeviceDemo
 		lCameraVideoWindow.setManualMinMax(false);
 
 		pStackCamera.getStackReferenceVariable()
-								.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+								.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
 								{
 
 									@Override
-									public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																										final Stack<Short> pNewStack)
+									public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
+																												final Stack<Character> pNewStack)
 									{
 										mReceivedStack = true;
 										mNewStack = pNewStack;

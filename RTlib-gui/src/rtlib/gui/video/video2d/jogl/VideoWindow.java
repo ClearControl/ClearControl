@@ -63,7 +63,7 @@ public class VideoWindow implements Closeable
 			mLinearInterpolation = false, mSyncToRefresh = false,
 			mManualMinMax = false;
 
-	private volatile double mMinIntensity = 0, mMaxIntensity = 255;
+	private volatile double mMinIntensity = 0, mMaxIntensity = 1;
 
 	private static final GLCapabilities cGLCapabilities = new GLCapabilities(GLProfile.getDefault());
 
@@ -439,7 +439,7 @@ public class VideoWindow implements Closeable
 		}
 		if (mManualMinMax)
 		{
-			mBitDepthAutoRescaler.setMinimum(mMinIntensity);
+			mBitDepthAutoRescaler.setManualMinimum(mMinIntensity);
 			mBitDepthAutoRescaler.setMaximum(mMaxIntensity);
 		}
 		mBitDepthAutoRescaler.setAutoRescale(!mManualMinMax);

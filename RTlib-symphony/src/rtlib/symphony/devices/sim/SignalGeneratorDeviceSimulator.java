@@ -9,6 +9,16 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 
 	private BooleanVariable mTriggerVariable;
 
+	private int mNumberOfFramesPerMovement = 1;
+
+	public SignalGeneratorDeviceSimulator(int pNumberOfFramesPerMovement)
+	{
+		super();
+		mNumberOfFramesPerMovement = pNumberOfFramesPerMovement;
+
+		mTriggerVariable = new BooleanVariable("Trigger", false);
+	}
+
 	@Override
 	public boolean open()
 	{
@@ -18,24 +28,26 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 	@Override
 	public boolean start()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean close()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean play(CompiledScore pCompiledScore)
 	{
+		mTriggerVariable.setValue(false);
+		mTriggerVariable.setValue(true);
 		return false;
 	}
 

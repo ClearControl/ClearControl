@@ -30,14 +30,14 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
 
-	private AsynchronousProcessorInterface<DcamFrame, Stack<Short>> mAsynchronousConversionProcessor;
+	private AsynchronousProcessorInterface<DcamFrame, Stack<Character>> mAsynchronousConversionProcessor;
 
-	private AsynchronousProcessorBase<Stack<Short>, Object> mSendToVariableAsynchronousProcessor;
+	private AsynchronousProcessorBase<Stack<Character>, Object> mSendToVariableAsynchronousProcessor;
 
-	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> m2DStackRecycler = new Recycler<>(Stack.class);
-	private final Recycler<Stack<Short>, StackRequest<Stack<Short>>> m3DStackRecycler = new Recycler<>(Stack.class);
+	private final Recycler<Stack<Character>, StackRequest<Stack<Character>>> m2DStackRecycler = new Recycler<>(Stack.class);
+	private final Recycler<Stack<Character>, StackRequest<Stack<Character>>> m3DStackRecycler = new Recycler<>(Stack.class);
 
-	private final SingleUpdateTargetObjectVariable<Stack<Short>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Short>>("Stack");
+	private final SingleUpdateTargetObjectVariable<Stack<Character>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Character>>("Stack");
 
 	private final DoubleVariable mStackDepthVariable = new DoubleVariable("StackDepth",
 																																				1);
@@ -87,15 +87,15 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			}
 		};
 
-		mAsynchronousConversionProcessor = new AsynchronousProcessor<DcamFrame, Stack<Short>>("DcamJToVideoFrameConverter",
+		mAsynchronousConversionProcessor = new AsynchronousProcessor<DcamFrame, Stack<Character>>("DcamJToVideoFrameConverter",
 																																													pMaxQueueSize,
 																																													lProcessor);
 
-		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack<Short>, Object>(	"SendToVariableAsynchronousProcessor",
+		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack<Character>, Object>(	"SendToVariableAsynchronousProcessor",
 																																																pMaxQueueSize)
 		{
 			@Override
-			public Object process(final Stack<Short> pStack)
+			public Object process(final Stack<Character> pStack)
 			{
 				/*System.out.println("sendtovar: hashcode=" + pStack.hashCode()
 														+ " index="
@@ -121,7 +121,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			final long lNumberOfImagesPerPlane = (long) mNumberOfImagesPerPlaneVariable.getValue();
 			final long lStackDepthVariable = (long) mStackDepthVariable.getValue();
 
-			final StackRequest<Stack<Short>> lStackRequest = StackRequest.build(short.class,
+			final StackRequest<Stack<Character>> lStackRequest = StackRequest.build(char.class,
 																																					1,
 																																					pDcamFrame.getWidth(),
 																																					pDcamFrame.getHeight(),
@@ -202,7 +202,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		return mAsynchronousConversionProcessor.stop() && mSendToVariableAsynchronousProcessor.stop();
 	}
 
-	public SingleUpdateTargetObjectVariable<Stack<Short>> getStackReferenceVariable()
+	public SingleUpdateTargetObjectVariable<Stack<Character>> getStackReferenceVariable()
 	{
 		return mStackReference;
 	}

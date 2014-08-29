@@ -40,8 +40,8 @@ public class LocalFileStackTests
 		System.out.println(lRootFolder);
 
 		{
-			final LocalFileStackSink<Short> lLocalFileStackSink = new LocalFileStackSink<Short>(lRootFolder,
-																																													"testSink");
+			final LocalFileStackSink<Character> lLocalFileStackSink = new LocalFileStackSink<Character>(lRootFolder,
+																																																	"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
@@ -50,12 +50,12 @@ public class LocalFileStackTests
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 
-			final Stack<Short> lStack = new Stack<Short>(	0,
-																										0,
-																										short.class,
-																										cSizeX,
-																										cSizeY,
-																										cSizeZ);
+			final Stack<Character> lStack = new Stack<Character>(	0,
+																														0,
+																														char.class,
+																														cSizeX,
+																														cSizeY,
+																														cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNDArray().getLengthInElements());
@@ -85,9 +85,12 @@ public class LocalFileStackTests
 		}
 
 		{
+			@SuppressWarnings("rawtypes")
+			final Recycler<Stack<Character>, StackRequest<Stack<Character>>> lStackRecycler = new Recycler(Stack.class);
 
-			final LocalFileStackSource<Short> lLocalFileStackSource = new LocalFileStackSource<Short>(lRootFolder,
-																																																"testSink");
+			final LocalFileStackSource<Character> lLocalFileStackSource = new LocalFileStackSource<Character>(lStackRecycler,
+																																																				lRootFolder,
+																																																				"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
@@ -102,11 +105,7 @@ public class LocalFileStackTests
 			// System.out.println(lVariable2.get());
 			assertEquals("123", lVariable2.get());
 
-			@SuppressWarnings("rawtypes")
-			final Recycler<Stack<Short>, StackRequest<Stack<Short>>> lStackRecycler = new Recycler(Stack.class);
-			lLocalFileStackSource.setStackRecycler(lStackRecycler);
-
-			Stack<Short> lStack;
+			Stack<Character> lStack;
 
 			lLocalFileStackSource.update();
 

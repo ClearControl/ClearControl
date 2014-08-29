@@ -11,6 +11,7 @@ import java.nio.file.StandardOpenOption;
 import org.junit.Test;
 
 import rtlib.core.memory.MemoryMappedFile;
+import rtlib.core.memory.MemoryMappedFile.MemoryMap;
 import rtlib.core.memory.MemoryMappedFileException;
 import rtlib.core.memory.NativeMemoryAccess;
 
@@ -23,46 +24,48 @@ public class MemoryMappedFileTest
 	{
 		File lTempFile = File.createTempFile(	"MemoryMappedFileTest",
 																					"test1");
-		lTempFile.deleteOnExit();
+		// lTempFile.deleteOnExit();
 		System.out.println(lTempFile);
+
+		System.out.println("test part 1");
 		FileChannel lFileChannel = FileChannel.open(lTempFile.toPath(),
 																								StandardOpenOption.CREATE,
 																								StandardOpenOption.READ,
-																								StandardOpenOption.WRITE,
-																								StandardOpenOption.DELETE_ON_CLOSE);
+																								StandardOpenOption.WRITE);
 
-		long lMappingLength = (2 * (Integer.MAX_VALUE - 8L));
+		long lMappingLength = 2 * 4096 + 1;// (2 * (Integer.MAX_VALUE - 8L));
 		System.out.println("lMappingLength=" + lMappingLength);
 
-		long lMappingAddress = MemoryMappedFile.map(lFileChannel,
+		MemoryMap lMemoryMap1 = MemoryMappedFile.map(	lFileChannel,
 																								MemoryMappedFile.ReadWrite,
 																								0,
 																								lMappingLength,
 																								true);
 
-		System.out.println(NativeMemoryAccess.getByte(lMappingAddress));
-		for (long i = 0; i < lMappingLength; i++)
+		System.out.println(NativeMemoryAccess.getByte(lMemoryMap1.mMappedRegionAddress));
+		for (long i = 0; i < lMappingLength; i += 1)
 		{
-			NativeMemoryAccess.setByte(lMappingAddress + i, (byte) 123);
+			NativeMemoryAccess.setByte(	lMemoryMap1.mMappedRegionAddress + i,
+																	(byte) 123);
 		}
 
 		// MemoryMappedFile.force(lFileChannel, true);
 
 		assertEquals(	(byte) 123,
-									NativeMemoryAccess.getByte(lMappingAddress));
+									NativeMemoryAccess.getByte(lMemoryMap1.mMappedRegionAddress));
 		assertEquals(	(byte) 123,
-									NativeMemoryAccess.getByte(lMappingAddress + lMappingLength
+									NativeMemoryAccess.getByte(lMemoryMap1.mMappedRegionAddress + lMappingLength
 																							- 1));
 
 		MemoryMappedFile.unmap(	lFileChannel,
-														lMappingAddress,
+														lMemoryMap1.mMappedRegionAddress,
 														lMappingLength);
 
 		try
 		{
 			MemoryMappedFile.unmap(	lFileChannel,
-															lMappingAddress - 1024,
-															lMappingLength);
+															lMemoryMap1.mMappedRegionAddress - 1024,
+															lMappingLength);/**/
 			// We should not reach this point, exception should be raised
 			fail();
 		}
@@ -76,25 +79,60 @@ public class MemoryMappedFileTest
 			fail();
 		}
 
-		long lMappingAddress2 = MemoryMappedFile.map(	lFileChannel,
+		lFileChannel.close();
+
+		Thread.sleep(1000);
+
+		System.out.println("test part 2");
+		lFileChannel = FileChannel.open(lTempFile.toPath(),
+																		StandardOpenOption.READ,
+																		StandardOpenOption.WRITE);
+
+		MemoryMap lMemoryMap2 = MemoryMappedFile.map(	lFileChannel,
 																									MemoryMappedFile.ReadOnly,
 																									0,
 																									lMappingLength,
 																									true);
 
 		assertEquals(	(byte) 123,
-									NativeMemoryAccess.getByte(lMappingAddress2));
+									NativeMemoryAccess.getByte(lMemoryMap2.mMappedRegionAddress));
 		assertEquals(	(byte) 123,
-									NativeMemoryAccess.getByte(lMappingAddress2 + lMappingLength
+									NativeMemoryAccess.getByte(lMemoryMap2.mMappedRegionAddress + lMappingLength
 																							- 1));
 
 		MemoryMappedFile.unmap(	lFileChannel,
-														lMappingAddress2,
+														lMemoryMap2.mMappedRegionAddress,
 														lMappingLength);
+
 
 		lFileChannel.close();
 
-		lTempFile.delete();
+		System.out.println("test part 3");
+
+		long lMappingOffset = 4096;
+		lFileChannel = FileChannel.open(lTempFile.toPath(),
+																		StandardOpenOption.READ,
+																		StandardOpenOption.WRITE);
+
+		MemoryMap lMemoryMap3 = MemoryMappedFile.map(	lFileChannel,
+																									MemoryMappedFile.ReadOnly,
+																									lMappingOffset,
+																									lMappingOffset,
+																									true);
+
+		assertEquals(	(byte) 123,
+									NativeMemoryAccess.getByte(lMemoryMap3.mMappedRegionAddress + lMappingLength
+																							- lMappingOffset
+																							- 2));
+
+		MemoryMappedFile.unmap(	lFileChannel,
+														lMemoryMap3.mMappedRegionAddress,
+														lMappingOffset);
+
+		lFileChannel.close();
+		/**/
+
+		// lTempFile.delete();
 
 	}
 

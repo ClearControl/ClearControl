@@ -11,7 +11,7 @@ public interface StackCameraDeviceInterface<I, O> extends
 
 	BooleanVariable getSingleShotModeVariable();
 
-	ObjectVariable<Stack<Short>> getStackReferenceVariable();
+	ObjectVariable<Stack<O>> getStackReferenceVariable();
 
 	void trigger();
 

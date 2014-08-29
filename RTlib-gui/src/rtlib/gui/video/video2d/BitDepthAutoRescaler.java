@@ -11,7 +11,7 @@ import rtlib.kam.memory.ram.RAM;
 
 public class BitDepthAutoRescaler
 {
-	private static final double cMinMaxDampeningAlpha = 0.05;
+	private static final float cMinMaxDampeningAlpha = 0.05f;
 
 	private boolean mIsFloat = false;
 	private volatile boolean mAutoRescale;
@@ -19,14 +19,12 @@ public class BitDepthAutoRescaler
 	private volatile double mGamma = 1;
 	private volatile boolean mGammaOn = false;
 
-	private volatile long mIntMinimum = 0,
-			mIntMaximum = Short.MAX_VALUE;
+	private volatile float mMinimum = 0,
+			mMaximum = Character.MAX_VALUE;
 
-	private volatile double mFloatMinimum = 0,
-			mFloatMaximum = Short.MAX_VALUE;
+	private float mManualMinimum = 0, mManualMaximum = 1;
 
 	private NDArrayTyped<Byte> mConvertedSourceBuffer;
-
 
 	public BitDepthAutoRescaler(boolean pIsFloat)
 	{
@@ -46,16 +44,16 @@ public class BitDepthAutoRescaler
 		if (mConvertedSourceBuffer == null || mConvertedSourceBuffer.getVolume() != lNDArrayLength)
 		{
 			mConvertedSourceBuffer = NDArrayTypedDirect.allocateTXY(Byte.class,
-																													pNewContentBuffer.getWidth(),
-																													pNewContentBuffer.getHeight());
+																															pNewContentBuffer.getWidth(),
+																															pNewContentBuffer.getHeight());
 		}
 
 		if (TypeId.isShort(pNewContentBuffer.getType()))
 		{
 
 			convertFrom16bitIntegerAndRescaledAuto(	pNewContentBuffer,
-																						mConvertedSourceBuffer,
-																						mAutoRescale);
+																							mConvertedSourceBuffer,
+																							mAutoRescale);
 		}
 		else if (TypeId.isFloat(pNewContentBuffer.getType()))
 		{
@@ -82,12 +80,17 @@ public class BitDepthAutoRescaler
 																										boolean pAutoRescale)
 	{
 
-		final double lMinimum = mFloatMinimum;
-		final double lMaximum = mFloatMaximum;
+		final double lMinimum = pAutoRescale ? mMinimum
+																				: mManualMinimum;
+		final double lMaximum = pAutoRescale ? mMaximum
+																				: mManualMaximum;
 		final double lCurrentWidth = lMaximum - lMinimum;
 
 		double lNewMin = Float.POSITIVE_INFINITY;
 		double lNewMax = Float.NEGATIVE_INFINITY;
+
+		final boolean lGammaOn = mGammaOn;
+		final double lGamma = getGamma();
 
 		final RAM lSourceRam = pNDArraySource.getRAM();
 		final RAM lDestinationRam = pNDArrayDestination.getRAM();
@@ -104,12 +107,11 @@ public class BitDepthAutoRescaler
 			int lIntegerMappedValue = 0;
 			if (lCurrentWidth > 0)
 			{
-				double lNormalizedValue=  (((lDoubleValue - lMinimum)) / lCurrentWidth);
-				if (mGammaOn)
-					lNormalizedValue = pow(lNormalizedValue, getGamma());
-				lIntegerMappedValue = (int)(255*lNormalizedValue) ;
+				double lNormalizedValue = (((lDoubleValue - lMinimum)) / lCurrentWidth);
+				if (lGammaOn)
+					lNormalizedValue = pow(lNormalizedValue, lGamma);
+				lIntegerMappedValue = (int) (255 * lNormalizedValue);
 			}
-			
 
 			/*
 			System.out.println("lDoubleValue=" + lDoubleValue);
@@ -122,8 +124,8 @@ public class BitDepthAutoRescaler
 
 		if (pAutoRescale)
 		{
-			mFloatMinimum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMinimum + cMinMaxDampeningAlpha * lNewMin);
-			mFloatMaximum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMaximum + cMinMaxDampeningAlpha * lNewMax);
+			mMinimum = (float) ((1 - cMinMaxDampeningAlpha) * mMinimum + cMinMaxDampeningAlpha * lNewMin);
+			mMaximum = (float) ((1 - cMinMaxDampeningAlpha) * mMaximum + cMinMaxDampeningAlpha * lNewMax);
 		}
 	}
 
@@ -132,8 +134,10 @@ public class BitDepthAutoRescaler
 																										boolean pAutoRescale)
 	{
 
-		final float lMinimum = (float) mFloatMinimum;
-		final double lMaximum = mFloatMaximum;
+		final float lMinimum = (float) (pAutoRescale ? mMinimum
+																								: mManualMinimum);
+		final double lMaximum = pAutoRescale ? mMaximum
+																					: mManualMaximum;
 		final float lCurrentWidth = (float) (lMaximum - lMinimum);
 
 		float lNewMin = Float.MAX_VALUE;
@@ -166,20 +170,22 @@ public class BitDepthAutoRescaler
 
 		if (pAutoRescale)
 		{
-			mFloatMinimum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMinimum + cMinMaxDampeningAlpha * lNewMin);
-			mFloatMaximum = (double) ((1 - cMinMaxDampeningAlpha) * mFloatMaximum + cMinMaxDampeningAlpha * lNewMax);
+			mMinimum = ((1 - cMinMaxDampeningAlpha) * mMinimum + cMinMaxDampeningAlpha * lNewMin);
+			mMaximum = ((1 - cMinMaxDampeningAlpha) * mMaximum + cMinMaxDampeningAlpha * lNewMax);
 		}
 	}
 
 	private void convertFrom16bitIntegerAndRescaledAuto(NDArray pNDArraySource,
-																									NDArray pNDArrayDestination,
-																									boolean pAutoRescale)
+																											NDArray pNDArrayDestination,
+																											boolean pAutoRescale)
 	{
 
 		try
 		{
-			final float lMinimum = mIntMinimum;
-			final long lMaximum = mIntMaximum;
+			final float lMinimum = pAutoRescale	? mMinimum
+																					: mManualMinimum * 65535;
+			final float lMaximum = pAutoRescale	? mMaximum
+																					: mManualMaximum * 65535;
 			final float lCurrentWidth = lMaximum - lMinimum;
 
 			long lNewMin = Long.MAX_VALUE;
@@ -193,7 +199,7 @@ public class BitDepthAutoRescaler
 			long length = pNDArraySource.getVolume();
 			for (int i = 0; i < length; i++)
 			{
-				final int lShortValue = lSourceRam.getShortAligned(i) & 0xFFFF;
+				final int lShortValue = lSourceRam.getCharAligned(i) & 0xFFFF;
 				if (pAutoRescale)
 				{
 					lNewMin = min(lNewMin, lShortValue);
@@ -212,8 +218,8 @@ public class BitDepthAutoRescaler
 
 			if (pAutoRescale)
 			{
-				mIntMinimum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMinimum + cMinMaxDampeningAlpha * lNewMin);
-				mIntMaximum = (long) ((1 - cMinMaxDampeningAlpha) * mIntMaximum + cMinMaxDampeningAlpha * lNewMax);
+				mMinimum = ((1 - cMinMaxDampeningAlpha) * mMinimum + cMinMaxDampeningAlpha * lNewMin);
+				mMaximum = ((1 - cMinMaxDampeningAlpha) * mMaximum + cMinMaxDampeningAlpha * lNewMax);
 			}
 		}
 		catch (Throwable e)
@@ -250,30 +256,24 @@ public class BitDepthAutoRescaler
 		mAutoRescale = pAutoRescale;
 	}
 
-	public double getMinimum()
+	public double getManualMinimum()
 	{
-		return mIsFloat ? mFloatMinimum : mIntMinimum;
+		return mManualMinimum;
 	}
 
-	public void setMinimum(double pMinimum)
+	public void setManualMinimum(double pManualMinimum)
 	{
-		if (mIsFloat)
-			mFloatMinimum = pMinimum;
-		else
-			mIntMinimum = (long) pMinimum;
+		mManualMinimum = (float) pManualMinimum;
 	}
 
 	public double getMaximum()
 	{
-		return mIsFloat ? mFloatMaximum : mIntMaximum;
+		return mManualMaximum;
 	}
 
-	public void setMaximum(double pMaximum)
+	public void setMaximum(double pManualMaximum)
 	{
-		if (mIsFloat)
-			mFloatMaximum = pMaximum;
-		else
-			mIntMaximum = (long) pMaximum;
+		mManualMaximum = (float) pManualMaximum;
 	}
 
 	public boolean isFloat()

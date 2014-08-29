@@ -14,6 +14,7 @@ public final class MemoryMappedFile implements Loggable
 	private static final ByteBuffer cZeroBuffer = ByteBuffer.allocateDirect(1);
 
 	public static final long cPageSize = 4096;
+	public static final long cAllocationGranularity = 65536;
 
 	public static enum MemoryMapAccessMode
 	{
@@ -36,13 +37,39 @@ public final class MemoryMappedFile implements Loggable
 	public static final MemoryMapAccessMode ReadWrite = MemoryMapAccessMode.ReadWrite;
 	public static final MemoryMapAccessMode Private = MemoryMapAccessMode.Private;
 
-	public static final long map(	FileChannel pFileChannel,
-																MemoryMapAccessMode pAccessMode,
-																final long pFilePosition,
-																final long pMappedRegionLength,
-																final boolean pExtendIfNeeded) throws MemoryMappedFileException
+	public static class MemoryMap
 	{
-		long lAddress = 0;
+		public final long mRequestedFilePosition;
+		public final long mRequestedRegionlength;
+		public final long mObtainedFilePosition;
+		public final long mObtainedRegionLength;
+
+		public final long mMappedRegionAddress;
+
+		public MemoryMap(	long pRequestedFilePosition,
+											long pRequestedRegionlength,
+											long pObtainedFilePosition,
+											long pObtainedRegionLength,
+											long pMappedRegionAddress)
+		{
+			super();
+			mRequestedFilePosition = pRequestedFilePosition;
+			mRequestedRegionlength = pRequestedRegionlength;
+			mObtainedFilePosition = pObtainedFilePosition;
+			mObtainedRegionLength = pObtainedRegionLength;
+
+			mMappedRegionAddress = pMappedRegionAddress;
+		}
+
+	}
+
+	public static final MemoryMap map(FileChannel pFileChannel,
+																		MemoryMapAccessMode pAccessMode,
+																		final long pFilePosition,
+																		final long pMappedRegionLength,
+																		final boolean pExtendIfNeeded) throws MemoryMappedFileException
+	{
+		MemoryMap lMemoryMap = null;
 		Method lMemoryMapMethod;
 		try
 		{
@@ -90,21 +117,34 @@ public final class MemoryMappedFile implements Loggable
 
 			final Long lAddressAsLong = (Long) lReturnValue;
 
-			lAddress = lAddressAsLong.longValue();
+			long lAddress = lAddressAsLong.longValue();
 			NativeMemoryAccess.registerMemoryRegion(lAddress,
 																							pMappedRegionLength);
+
+			final long lMappedFilePosition = pFilePosition - (pFilePosition % cAllocationGranularity);
+			final long lMappedRegionLength = (pFilePosition % cAllocationGranularity) + pMappedRegionLength;
+
+			lMemoryMap = new MemoryMap(	pFilePosition,
+																	pMappedRegionLength,
+																	lMappedFilePosition,
+																	lMappedRegionLength,
+																	lAddress);
+
 		}
 		catch (Throwable e)
 		{
-			String lErrorMessage = String.format(	"Cannot memory map file: %s at file position %d width length %d",
+			String lErrorMessage = String.format(	"Cannot memory map file: %s at file position %d with length %d (%s)",
 																						pFileChannel.toString(),
 																						pFilePosition,
-																						pMappedRegionLength);
+																						pMappedRegionLength,
+																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
+																																						: e.getCause()
+																																								.getLocalizedMessage());
 			new MemoryMappedFile().error("Native", lErrorMessage);
 			throw new MemoryMappedFileException(lErrorMessage, e);
 		}
 
-		return lAddress;
+		return lMemoryMap;
 	}
 
 	public static final int unmap(FileChannel pFileChannel,
@@ -132,9 +172,13 @@ public final class MemoryMappedFile implements Loggable
 		}
 		catch (Throwable e)
 		{
-			String lErrorMessage = String.format(	"Cannot unmap memory at address %d with length %d",
+			String lErrorMessage = String.format(	"Cannot unmap memory at address %d with length %d (%s)",
 																						pMemoryMapAddress,
-																						pMappedRegionLength);
+																						pMappedRegionLength,
+																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
+																																						: e.getCause()
+																																								.getLocalizedMessage());
+			// e.printStackTrace();
 			new MemoryMappedFile().error("Native", lErrorMessage);
 			throw new MemoryMappedFileException(lErrorMessage, e);
 		}
@@ -179,7 +223,9 @@ public final class MemoryMappedFile implements Loggable
 			String lErrorMessage = String.format(	"Cannot truncate file %s at length %d (%s)",
 																						pFileChannel,
 																						pLength,
-																						e.getMessage());
+																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
+																																						: e.getCause()
+																																								.getLocalizedMessage());
 			new MemoryMappedFile().error("Native", lErrorMessage);
 			throw new IOException(e);
 		}

@@ -14,7 +14,7 @@ public abstract class StackCameraDeviceBase<I, O> extends
 	protected BooleanVariable mSingleShotModeVariable = new BooleanVariable("SingleShotMode",
 																																					false);
 
-	protected ObjectVariable<Stack<Short>> mStackReference;
+	protected ObjectVariable<Stack<O>> mStackReference;
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
@@ -31,7 +31,7 @@ public abstract class StackCameraDeviceBase<I, O> extends
 		return mSingleShotModeVariable;
 	}
 
-	public ObjectVariable<Stack<Short>> getStackReferenceVariable()
+	public ObjectVariable<Stack<O>> getStackReferenceVariable()
 	{
 		return mStackReference;
 	}

@@ -1,23 +1,29 @@
 package rtlib.cameras.devices.sim;
 
 import rtlib.cameras.StackCameraDeviceBase;
+import rtlib.core.log.Loggable;
+import rtlib.core.variable.booleanv.BooleanEventListenerInterface;
+import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.stack.Stack;
 import rtlib.stack.server.StackSourceInterface;
 
 public class StackCameraDeviceSimulator<I, O> extends
-																							StackCameraDeviceBase<I, O>
+																							StackCameraDeviceBase<I, O>	implements
+																																					Loggable
 {
 
+	private StackSourceInterface<O> mStackSource;
+	private BooleanVariable mTriggerVariable;
+	protected long mCurrentStackIndex = 0;
 
-
-	private StackSourceInterface<I> mStackSource;
-	private DoubleVariable mTriggervariable;
-
-	public StackCameraDeviceSimulator(StackSourceInterface<I> pStackSource, DoubleVariable pTriggervariable)
+	public StackCameraDeviceSimulator(StackSourceInterface<O> pStackSource,
+																		BooleanVariable pTriggerVariable)
 	{
 		super("StackCameraSimulator");
 		mStackSource = pStackSource;
-		mTriggervariable = pTriggervariable;
+		mTriggerVariable = pTriggerVariable;
 
 		mFrameBytesPerPixelVariable = new DoubleVariable(	"FrameBytesPerPixel",
 																											2);
@@ -25,31 +31,53 @@ public class StackCameraDeviceSimulator<I, O> extends
 		mFrameHeightVariable = new DoubleVariable("FrameHeight", 320);
 		mFrameDepthVariable = new DoubleVariable("FrameDepth", 100);
 		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
-																									1000);
+																													1000);
 		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeinNanometers",
-																								160);
-		
-		// TODO: implement simulator
+																												160);
+
+		mStackReference = new ObjectVariable<>("StackReference");
+
+		if (mTriggerVariable == null)
+		{
+			error("cameras",
+						"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
+								+ " because trigger variable is null!");
+			return;
+		}
+
+		mTriggerVariable.addEdgeListener(new BooleanEventListenerInterface()
+		{
+
+			@Override
+			public void fire(boolean pCurrentBooleanValue)
+			{
+				if (pCurrentBooleanValue)
+				{
+					Stack<O> lStack = mStackSource.getStack(mCurrentStackIndex);
+					mStackReference.set(lStack);
+					mCurrentStackIndex = (mCurrentStackIndex + 1) % mStackSource.getNumberOfStacks();
+				}
+			}
+		});
+
 	}
 
 	@Override
 	public void reopen()
 	{
-		// TODO Auto-generated method stub
+		return;
 	}
 
 	@Override
 	public boolean start()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

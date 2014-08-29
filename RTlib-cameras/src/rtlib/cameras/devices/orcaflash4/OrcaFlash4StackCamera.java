@@ -14,7 +14,7 @@ import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
 public class OrcaFlash4StackCamera extends
-																	StackCameraDeviceBase<Short, Short>	implements
+																	StackCameraDeviceBase<Character, Character>	implements
 																																	VirtualDeviceInterface
 {
 	public static final int cStackProcessorQueueSize = 100;

@@ -120,8 +120,31 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 	public ObjectVariable<O> sendUpdatesToInstead(ObjectVariable<O> pObjectVariable)
 	{
-		ObjectVariable<O> lObjectVariable = mVariablesToSendUpdatesTo.get(0);
-		mVariablesToSendUpdatesTo.set(0, pObjectVariable);
+
+		ObjectVariable<O> lObjectVariable = null;
+		if (mVariablesToSendUpdatesTo.size() == 0)
+		{
+			if (pObjectVariable == null)
+				return null;
+			mVariablesToSendUpdatesTo.add(pObjectVariable);
+		}
+		else if (mVariablesToSendUpdatesTo.size() == 1)
+		{
+			if (pObjectVariable == null)
+				return mVariablesToSendUpdatesTo.get(0);
+			lObjectVariable = mVariablesToSendUpdatesTo.get(0);
+			mVariablesToSendUpdatesTo.set(0, pObjectVariable);
+		}
+		else if (mVariablesToSendUpdatesTo.size() > 1)
+		{
+			if (pObjectVariable == null)
+				return mVariablesToSendUpdatesTo.get(0);
+
+			lObjectVariable = mVariablesToSendUpdatesTo.get(0);
+			mVariablesToSendUpdatesTo.clear();
+			mVariablesToSendUpdatesTo.add(pObjectVariable);
+		}
+
 		return lObjectVariable;
 	}
 

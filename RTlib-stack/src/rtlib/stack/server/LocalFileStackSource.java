@@ -20,11 +20,14 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 
 	private Recycler<Stack<O>, StackRequest<Stack<O>>> mStackRecycler;
 
-	public LocalFileStackSource(final File pRootFolder,
+	public LocalFileStackSource(final Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler,
+															final File pRootFolder,
 															final String pName) throws IOException
 	{
 		super(pRootFolder, pName, true);
+		mStackRecycler = pStackRecycler;
 		mMetaDataVariableBundleAsFile.read();
+		update();
 	}
 
 	@Override
