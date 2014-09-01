@@ -78,7 +78,6 @@ subprojects
 
         compile fileTree(dir: '../Libs/jmathplot', include: '*.jar')
         compile fileTree(dir: '../Libs/jogamp', include: '*.jar')
-        compile fileTree(dir: '../Libs/jogamp/natives', include: '*.jar')
         compile fileTree(dir: '../Libs/jtransforms', include: '*.jar')
     }
 
