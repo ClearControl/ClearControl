@@ -1,7 +1,7 @@
 package rtlib.gui.video.video3d;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
@@ -16,8 +16,8 @@ import clearvolume.transfertf.TransfertFunctions;
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
 {
-
 	private static final int cDefaultDisplayQueueLength = 2;
+	private static final long cWaitToCopyTimeInMilliseconds = 2000;
 
 	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
 
@@ -83,7 +83,8 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																								pStack.getVolumePhysicalDimension(1),
 																								pStack.getVolumePhysicalDimension(2));
 				mJCudaClearVolumeRenderer.requestDisplay();
-				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy();
+				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy(	cWaitToCopyTimeInMilliseconds,
+																															TimeUnit.MILLISECONDS);
 
 				if (mOutputObjectVariable != null)
 					mOutputObjectVariable.set(pStack);
@@ -106,7 +107,6 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 					if (!pNewStack.isReleased())
 					{
-						System.err.println("RELEASING STACK IN DISPLAY 3D BECAUSE PASS FAILED!");
 						pNewStack.releaseStack();
 					}
 				return super.setEventHook(pOldStack, pNewStack);
@@ -182,7 +182,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 			mJCudaClearVolumeRenderer.close();
 			return true;
 		}
-		catch (final IOException e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 			return false;
