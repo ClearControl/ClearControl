@@ -10,10 +10,10 @@ import java.util.Arrays;
 import org.bridj.Pointer;
 
 import rtlib.core.memory.InvalidNativeMemoryAccessException;
-import rtlib.core.memory.MemoryMappedFile;
-import rtlib.core.memory.MemoryMappedFileException;
-import rtlib.core.memory.NativeMemoryAccess;
 import rtlib.core.memory.SizedInBytes;
+import rtlib.core.memory.map.MemoryMappedFile;
+import rtlib.core.memory.map.MemoryMappedFileException;
+import rtlib.core.memory.map.MemoryMappedFileUtils;
 import rtlib.core.rgc.Cleaner;
 import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.MappableMemory;
@@ -36,11 +36,7 @@ public class RAMFile extends RAMMappedAbstract implements
 	private FileChannel mFileChannel;
 	private StandardOpenOption[] mStandardOpenOption;
 	private long mFilePositionInBytes;
-	private long mPositionWithinPageInBytes;
-	private long mPagePositionInBytes;
-
-	private long mPageAlignedMappingAddressInBytes;
-	private long mMappingLengthInBytes;
+	private MemoryMappedFile mMemoryMappedFile;
 
 	public RAMFile createNewRAMFile(File pFile,
 																	final long pLengthInBytes) throws IOException
@@ -127,9 +123,6 @@ public class RAMFile extends RAMMappedAbstract implements
 		super();
 		mFileChannel = pFileChannel;
 		mFilePositionInBytes = pPositionInBytes;
-		mPositionWithinPageInBytes = pPositionInBytes % MemoryMappedFile.cPageSize;
-		mPagePositionInBytes = pPositionInBytes - mPositionWithinPageInBytes;
-		mMappingLengthInBytes = mPositionWithinPageInBytes + pLengthInBytes;
 		mLengthInBytes = pLengthInBytes;
 		mStandardOpenOption = pStandardOpenOption;
 	}
@@ -159,13 +152,12 @@ public class RAMFile extends RAMMappedAbstract implements
 			return mAddressInBytes;
 		try
 		{
-			mPageAlignedMappingAddressInBytes = MemoryMappedFile.map(	mFileChannel,
-																																MemoryMappedFile.bestMode(mStandardOpenOption),
-																																mPagePositionInBytes,
-																																mMappingLengthInBytes,
-																																mFileChannel.size() < mPagePositionInBytes + mMappingLengthInBytes);
-			mAddressInBytes = mPageAlignedMappingAddressInBytes + mPositionWithinPageInBytes;
-
+			mMemoryMappedFile = new MemoryMappedFile(	mFileChannel,
+																								MemoryMappedFileUtils.bestMode(mStandardOpenOption),
+																								mFilePositionInBytes,
+																								mLengthInBytes,
+																								mFileChannel.size() < mFilePositionInBytes + mLengthInBytes);
+			mAddressInBytes = mMemoryMappedFile.getAddressAtFilePosition(mFilePositionInBytes);
 			setCurrentlyMapped(true);
 			return mAddressInBytes;
 		}
@@ -197,13 +189,23 @@ public class RAMFile extends RAMMappedAbstract implements
 			return;
 
 		// force();
-		MemoryMappedFile.unmap(	mFileChannel,
-														mPageAlignedMappingAddressInBytes,
-														mMappingLengthInBytes);
-		setCurrentlyMapped(false);
-		mPageAlignedMappingAddressInBytes = 0;
-		mAddressInBytes = 0;
-		mMappingLengthInBytes = 0;
+		try
+		{
+			mMemoryMappedFile.close();
+			setCurrentlyMapped(false);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(	"Exception while unmapping " + this.getClass()
+																																			.getSimpleName(),
+																	e);
+		}
+		finally
+		{
+			mMemoryMappedFile = null;
+			mAddressInBytes = 0;
+			mLengthInBytes = 0;
+		}
 	}
 
 	@Override
@@ -250,40 +252,6 @@ public class RAMFile extends RAMMappedAbstract implements
 
 	}
 
-	static class RAMFileCleaner implements Cleaner
-	{
-		private long mAddressToClean;
-		private FileChannel mFileChannelToClean;
-		private long mMappedRegionLength;
-
-		public RAMFileCleaner(FileChannel pFileChannel,
-													final long pMemoryMapAddress,
-													final long pMappedRegionLength)
-		{
-			mFileChannelToClean = pFileChannel;
-			mAddressToClean = pMemoryMapAddress;
-			mMappedRegionLength = pMappedRegionLength;
-		}
-
-		@Override
-		public void run()
-		{
-			if (NativeMemoryAccess.isAllocatedMemory(mAddressToClean))
-				MemoryMappedFile.unmap(	mFileChannelToClean,
-																mAddressToClean,
-																mMappedRegionLength);
-		}
-
-	}
-
-	@Override
-	public Cleaner getCleaner()
-	{
-		return new RAMFileCleaner(mFileChannel,
-															mPageAlignedMappingAddressInBytes,
-															mMappingLengthInBytes);
-	}
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public ByteBuffer passNativePointerToByteBuffer()
@@ -304,16 +272,10 @@ public class RAMFile extends RAMMappedAbstract implements
 						+ Arrays.toString(mStandardOpenOption)
 						+ ", mFilePositionInBytes="
 						+ mFilePositionInBytes
-						+ ", mPositionWithinPageInBytes="
-						+ mPositionWithinPageInBytes
-						+ ", mPagePositionInBytes="
-						+ mPagePositionInBytes
-						+ ", mPageAlignedMappingAddressInBytes="
-						+ mPageAlignedMappingAddressInBytes
-						+ ", mMappingLengthInBytes="
-						+ mMappingLengthInBytes
+						+ ", mLengthInBytes="
+						+ mLengthInBytes
 						+ ", mIsMapped="
-						+ mIsMapped
+						+ isCurrentlyMapped()
 						+ ", mAddressInBytes="
 						+ mAddressInBytes
 						+ ", mLengthInBytes="
@@ -325,6 +287,12 @@ public class RAMFile extends RAMMappedAbstract implements
 						+ "]";
 	}
 
-
+	@Override
+	public Cleaner getCleaner()
+	{
+		// no need to return a cleaner since MemoryMappedFile already cleans behind
+		// itself.
+		return null;
+	}
 
 }

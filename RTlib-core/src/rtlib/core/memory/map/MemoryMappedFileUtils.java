@@ -1,4 +1,4 @@
-package rtlib.core.memory;
+package rtlib.core.memory.map;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -8,69 +8,31 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
 import rtlib.core.log.Loggable;
+import rtlib.core.memory.NativeMemoryAccess;
 
-public final class MemoryMappedFile implements Loggable
+public final class MemoryMappedFileUtils implements Loggable
 {
-	private static final ByteBuffer cZeroBuffer = ByteBuffer.allocateDirect(1);
-
+	
 	public static final long cPageSize = 4096;
 	public static final long cAllocationGranularity = 65536;
+	
+	private static final ByteBuffer cZeroBuffer = ByteBuffer.allocateDirect(1);
 
-	public static enum MemoryMapAccessMode
-	{
-		ReadOnly(0), ReadWrite(1), Private(2);
+	public static final MemoryMappedFileAccessMode ReadOnly = MemoryMappedFileAccessMode.ReadOnly;
+	public static final MemoryMappedFileAccessMode ReadWrite = MemoryMappedFileAccessMode.ReadWrite;
+	public static final MemoryMappedFileAccessMode Private = MemoryMappedFileAccessMode.Private;
 
-		private final int mValue;
+	
 
-		private MemoryMapAccessMode(final int pValue)
-		{
-			mValue = pValue;
-		}
-
-		public int getValue()
-		{
-			return mValue;
-		}
-	}
-
-	public static final MemoryMapAccessMode ReadOnly = MemoryMapAccessMode.ReadOnly;
-	public static final MemoryMapAccessMode ReadWrite = MemoryMapAccessMode.ReadWrite;
-	public static final MemoryMapAccessMode Private = MemoryMapAccessMode.Private;
-
-	public static class MemoryMap
-	{
-		public final long mRequestedFilePosition;
-		public final long mRequestedRegionlength;
-		public final long mObtainedFilePosition;
-		public final long mObtainedRegionLength;
-
-		public final long mMappedRegionAddress;
-
-		public MemoryMap(	long pRequestedFilePosition,
-											long pRequestedRegionlength,
-											long pObtainedFilePosition,
-											long pObtainedRegionLength,
-											long pMappedRegionAddress)
-		{
-			super();
-			mRequestedFilePosition = pRequestedFilePosition;
-			mRequestedRegionlength = pRequestedRegionlength;
-			mObtainedFilePosition = pObtainedFilePosition;
-			mObtainedRegionLength = pObtainedRegionLength;
-
-			mMappedRegionAddress = pMappedRegionAddress;
-		}
-
-	}
-
-	public static final MemoryMap map(FileChannel pFileChannel,
-																		MemoryMapAccessMode pAccessMode,
+	public static final long map(	FileChannel pFileChannel,
+																		MemoryMappedFileAccessMode pAccessMode,
 																		final long pFilePosition,
 																		final long pMappedRegionLength,
 																		final boolean pExtendIfNeeded) throws MemoryMappedFileException
 	{
-		MemoryMap lMemoryMap = null;
 		Method lMemoryMapMethod;
+		long lMappedAddress;
+
 		try
 		{
 			if (!pFileChannel.isOpen())
@@ -121,14 +83,8 @@ public final class MemoryMappedFile implements Loggable
 			NativeMemoryAccess.registerMemoryRegion(lAddress,
 																							pMappedRegionLength);
 
-			final long lMappedFilePosition = pFilePosition - (pFilePosition % cAllocationGranularity);
-			final long lMappedRegionLength = (pFilePosition % cAllocationGranularity) + pMappedRegionLength;
+			lMappedAddress = lAddressAsLong;
 
-			lMemoryMap = new MemoryMap(	pFilePosition,
-																	pMappedRegionLength,
-																	lMappedFilePosition,
-																	lMappedRegionLength,
-																	lAddress);
 
 		}
 		catch (Throwable e)
@@ -140,11 +96,11 @@ public final class MemoryMappedFile implements Loggable
 																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
 																																						: e.getCause()
 																																								.getLocalizedMessage());
-			new MemoryMappedFile().error("Native", lErrorMessage);
+			new MemoryMappedFileUtils().error("Native", lErrorMessage);
 			throw new MemoryMappedFileException(lErrorMessage, e);
 		}
 
-		return lMemoryMap;
+		return lMappedAddress;
 	}
 
 	public static final int unmap(FileChannel pFileChannel,
@@ -179,7 +135,7 @@ public final class MemoryMappedFile implements Loggable
 																																						: e.getCause()
 																																								.getLocalizedMessage());
 			// e.printStackTrace();
-			new MemoryMappedFile().error("Native", lErrorMessage);
+			new MemoryMappedFileUtils().error("Native", lErrorMessage);
 			throw new MemoryMappedFileException(lErrorMessage, e);
 		}
 
@@ -226,13 +182,13 @@ public final class MemoryMappedFile implements Loggable
 																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
 																																						: e.getCause()
 																																								.getLocalizedMessage());
-			new MemoryMappedFile().error("Native", lErrorMessage);
+			new MemoryMappedFileUtils().error("Native", lErrorMessage);
 			throw new IOException(e);
 		}
 
 	}
 
-	public static MemoryMapAccessMode bestMode(StandardOpenOption[] pStandardOpenOption)
+	public static MemoryMappedFileAccessMode bestMode(StandardOpenOption[] pStandardOpenOption)
 	{
 		boolean lWrite = false;
 		boolean lRead = false;
@@ -249,12 +205,12 @@ public final class MemoryMappedFile implements Loggable
 		}
 
 		if (lWrite)
-			return MemoryMapAccessMode.ReadWrite;
+			return MemoryMappedFileAccessMode.ReadWrite;
 
 		if (lRead)
-			return MemoryMapAccessMode.ReadOnly;
+			return MemoryMappedFileAccessMode.ReadOnly;
 
-		return MemoryMapAccessMode.ReadWrite;
+		return MemoryMappedFileAccessMode.ReadWrite;
 	}
 
 }

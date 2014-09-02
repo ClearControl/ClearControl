@@ -1,4 +1,4 @@
-package rtlib.core.memory;
+package rtlib.core.memory.map;
 
 public class MemoryMappedFileException extends RuntimeException
 {

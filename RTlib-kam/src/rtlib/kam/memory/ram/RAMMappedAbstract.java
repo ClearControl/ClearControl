@@ -7,7 +7,7 @@ public abstract class RAMMappedAbstract extends RAMAbstract	implements
 
 {
 
-	protected boolean mIsMapped;
+	private volatile boolean mIsMapped;
 
 	@Override
 	public abstract long map();

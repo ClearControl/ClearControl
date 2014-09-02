@@ -50,7 +50,9 @@ public class RessourceGarbageCollector implements
 				CleaningPhantomReference lReference = (CleaningPhantomReference) mReferenceQueue.poll();
 				if (lReference == null)
 					return;
-				executeAsynchronously(lReference.getCleaner());
+				Cleaner lCleaner = lReference.getCleaner();
+				if (lCleaner != null)
+					executeAsynchronously(lCleaner);
 				sCleaningPhantomReferenceList.remove(lReference);
 			}
 			while (true);
