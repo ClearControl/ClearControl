@@ -23,5 +23,15 @@ dependencies
 {
     compile project(':RTlib-core')
     compile project(':RTlib-stack')
+
+    compile group: "royer", name: "ClearVolume", version: "3.+", changing: true
 }
 
+repositories 
+{
+    mavenCentral()
+    maven 
+    {
+        url "http://bitbucket.org/api/1.0/repositories/royerloic/repos/raw/master/"
+    } 
+}
