@@ -22,6 +22,8 @@ public class OrcaFlash4StackCamera extends
 
 	private final int mCameraDeviceIndex;
 
+
+
 	private final DcamAcquisition mDcamAcquisition;
 
 	private final ObjectVariable<DcamFrame> mFrameReference = new ObjectVariable<DcamFrame>("DCamJVideoFrame");
@@ -29,6 +31,7 @@ public class OrcaFlash4StackCamera extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private Object mLock = new Object();
+
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
 	{
@@ -77,6 +80,9 @@ public class OrcaFlash4StackCamera extends
 			}
 
 		});
+
+		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
+																																9.74);
 
 		// TODO
 		mFrameBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
@@ -389,6 +395,12 @@ public class OrcaFlash4StackCamera extends
 	public void trigger()
 	{
 		mDcamAcquisition.trigger();
+	}
+
+	@Override
+	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
+	{
+		return mLineReadOutTimeInMicrosecondsVariable;
 	}
 
 }

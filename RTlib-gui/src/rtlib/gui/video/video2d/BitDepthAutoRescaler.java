@@ -48,7 +48,7 @@ public class BitDepthAutoRescaler
 																															pNewContentBuffer.getHeight());
 		}
 
-		if (TypeId.isShort(pNewContentBuffer.getType()))
+		if (TypeId.is16bitInt(pNewContentBuffer.getType()))
 		{
 
 			convertFrom16bitIntegerAndRescaledAuto(	pNewContentBuffer,

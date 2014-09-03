@@ -299,8 +299,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 				final double lGalvoZffsetInNormalizedUnitsToY = -lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
 				final double lGalvoZOffsetInNormalizedUnitsToZ = lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.sin(lGalvoAngle);
 
-				final double lGalvoYOffsetInNormalizedUnits = lGalvoYOffsetInNormalizedUnitsBeforeRotation; // lGalvoYOffsetInNormalizedUnitsToY+lGalvoZffsetInNormalizedUnitsToY;
-				final double lGalvoZOffsetInNormalizedUnits = lGalvoZOffsetInNormalizedUnitsBeforeRotation; // lGalvoYOffsetInNormalizedUnitsToZ+lGalvoZOffsetInNormalizedUnitsToZ;
+				final double lGalvoYOffsetInNormalizedUnits = lGalvoYOffsetInNormalizedUnitsToY + lGalvoZffsetInNormalizedUnitsToY;
+				final double lGalvoZOffsetInNormalizedUnits = lGalvoYOffsetInNormalizedUnitsToZ + lGalvoZOffsetInNormalizedUnitsToZ;
 
 				final double lGalvoAmplitudeZInNormalizedUnits = lGalvoAmplitude * Math.sin(lGalvoAngle);
 				final double lGalvoAmplitudeYInNormalizedUnits = lGalvoAmplitude * Math.cos(lGalvoAngle);

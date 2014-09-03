@@ -15,4 +15,6 @@ public interface StackCameraDeviceInterface<I, O> extends
 
 	void trigger();
 
+
+
 }

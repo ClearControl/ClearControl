@@ -6,7 +6,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
+import rtlib.core.variable.doublev.DoubleVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
@@ -16,12 +18,21 @@ public abstract class SignalStartableLoopTaskDevice	extends
 {
 
 	private final SignalStartableLoopTaskDevice lThis;
+	private TimeUnit mTimeUnit;
+	private final DoubleVariable mLoopPeriodVariable;
 	private volatile ScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
-																				final boolean pOnlyStart)
+																				final boolean pOnlyStart,
+																				TimeUnit pTimeUnit)
 	{
 		super(pDeviceName, pOnlyStart);
+		mTimeUnit = pTimeUnit;
+
+		mLoopPeriodVariable = new DoubleVariable(	pDeviceName + "LoopPeriodIn"
+																									+ pTimeUnit.name(),
+																							0);
+
 		lThis = this;
 	}
 
@@ -31,11 +42,21 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	public boolean start()
 	{
 		Runnable lRunnable = () -> {
+			final long lStartTime = System.nanoTime();
 			loop();
+			final long lStopTime = System.nanoTime();
+
+			final long lElapsedTimeInNanoseconds = lStopTime - lStartTime;
+			final long lExtraWaitTimeInNanoseconds = TimeUnit.NANOSECONDS.convert((long) mLoopPeriodVariable.getValue(),
+																																						mTimeUnit) - lElapsedTimeInNanoseconds;
+			if (lExtraWaitTimeInNanoseconds > 0)
+				ThreadUtils.sleep(lExtraWaitTimeInNanoseconds,
+													TimeUnit.NANOSECONDS);
+
 		};
-		mScheduledFuture = scheduleAtFixedRate(lRunnable,
-																															1,
-																															TimeUnit.NANOSECONDS);
+		mScheduledFuture = scheduleAtFixedRate(	lRunnable,
+																						(long) 1,
+																						TimeUnit.NANOSECONDS);
 
 		return mScheduledFuture != null;
 	}
@@ -74,6 +95,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		}
 		return false;
 
+	}
+
+	public DoubleVariable getLoopPeriodVariable()
+	{
+		return mLoopPeriodVariable;
 	}
 
 }

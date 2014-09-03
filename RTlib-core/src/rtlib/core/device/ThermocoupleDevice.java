@@ -1,5 +1,7 @@
 package rtlib.core.device;
 
+import java.util.concurrent.TimeUnit;
+
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public abstract class ThermocoupleDevice extends
@@ -10,7 +12,7 @@ public abstract class ThermocoupleDevice extends
 
 	public ThermocoupleDevice(final String pDeviceName)
 	{
-		super(pDeviceName, false);
+		super(pDeviceName, false, TimeUnit.MILLISECONDS);
 		mTemperatureVariable = new DoubleVariable(pDeviceName + "TemperatureInCelcius");
 	}
 

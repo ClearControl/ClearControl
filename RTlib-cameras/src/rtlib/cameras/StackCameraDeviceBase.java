@@ -40,5 +40,7 @@ public abstract class StackCameraDeviceBase<I, O> extends
 	{
 
 	}
+	
+
 
 }

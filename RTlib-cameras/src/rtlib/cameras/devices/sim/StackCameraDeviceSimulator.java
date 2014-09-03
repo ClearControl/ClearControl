@@ -25,6 +25,8 @@ public class StackCameraDeviceSimulator<I, O> extends
 		mStackSource = pStackSource;
 		mTriggerVariable = pTriggerVariable;
 
+		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
+																																1);
 		mFrameBytesPerPixelVariable = new DoubleVariable(	"FrameBytesPerPixel",
 																											2);
 		mFrameWidthVariable = new DoubleVariable("FrameWidth", 320);

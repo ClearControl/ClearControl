@@ -15,6 +15,8 @@ public interface CameraDeviceInterface extends VirtualDeviceInterface
 
 	void reopen();
 
+	DoubleVariable getLineReadOutTimeInMicrosecondsVariable();
+
 	DoubleVariable getFrameBytesPerPixelVariable();
 
 	DoubleVariable getFrameWidthVariable();

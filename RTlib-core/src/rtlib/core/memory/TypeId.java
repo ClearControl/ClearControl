@@ -108,4 +108,9 @@ public class TypeId
 						|| Double.TYPE == pType;
 	}
 
+	public static boolean is16bitInt(Class<?> pType)
+	{
+		return isChar(pType) || isShort(pType);
+	}
+
 }

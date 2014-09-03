@@ -12,7 +12,9 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 
 	protected DoubleVariable mFrameBytesPerPixelVariable,
 			mFrameWidthVariable, mFrameHeightVariable, mFrameDepthVariable,
-			mExposureInMicrosecondsVariable, mPixelSizeinNanometersVariable;
+			mExposureInMicrosecondsVariable,
+			mPixelSizeinNanometersVariable,
+			mLineReadOutTimeInMicrosecondsVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
@@ -73,6 +75,12 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	public BooleanVariable getIsAcquiringVariable()
 	{
 		return mIsAcquiring;
+	}
+
+
+	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
+	{
+		return mLineReadOutTimeInMicrosecondsVariable;
 	}
 
 }
