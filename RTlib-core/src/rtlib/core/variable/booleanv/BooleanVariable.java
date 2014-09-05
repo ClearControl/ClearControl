@@ -113,6 +113,12 @@ public class BooleanVariable extends DoubleVariable	implements
 		setValue(lNewToggledValue);
 	}
 
+	public void setEdge(boolean pState)
+	{
+		setValue(!pState);
+		setValue(pState);
+	}
+
 	protected void setBooleanValueInternal(final boolean pNewBooleanValue)
 	{
 		setValueInternal(boolean2double(pNewBooleanValue));
@@ -201,5 +207,7 @@ public class BooleanVariable extends DoubleVariable	implements
 
 		setValue(!pState);
 	}
+
+
 
 }

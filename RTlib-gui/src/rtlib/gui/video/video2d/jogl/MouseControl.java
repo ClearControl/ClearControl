@@ -1,5 +1,7 @@
 package rtlib.gui.video.video2d.jogl;
 
+import static java.lang.Math.abs;
+
 import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.event.MouseAdapter;
 import com.jogamp.newt.event.MouseEvent;
@@ -28,14 +30,27 @@ class MouseControl extends MouseAdapter implements MouseListener
 	@Override
 	public void mouseDragged(final MouseEvent pMouseEvent)
 	{
-		setTransfertFunctionRange(pMouseEvent);
+		handleGammaMinMax(pMouseEvent);
 
 		// mVideoWindow.repaint();
 
 	}
 
-	public void setTransfertFunctionRange(final MouseEvent pMouseEvent)
+	public void handleGammaMinMax(final MouseEvent pMouseEvent)
 	{
+		if (!pMouseEvent.isShiftDown() && pMouseEvent.isControlDown()
+				&& pMouseEvent.isButtonDown(1))
+		{
+
+			final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
+			final double ny = ((double) mVideoWindow.getWindowHeight() - (double) pMouseEvent.getY()) / mVideoWindow.getWindowHeight();
+
+			mVideoWindow.setManualMinMax(true);
+			mVideoWindow.setMinIntensity(abs(Math.pow(nx, 3)));
+			mVideoWindow.setMaxIntensity(abs(Math.pow(ny, 3)));
+
+		}
+
 		if (pMouseEvent.isShiftDown() && !pMouseEvent.isControlDown()
 				&& pMouseEvent.isButtonDown(1))
 		{
@@ -45,7 +60,6 @@ class MouseControl extends MouseAdapter implements MouseListener
 			mVideoWindow.setGamma(Math.tan(Math.PI * nx / 2));
 
 		}
-
 	}
 
 	@Override

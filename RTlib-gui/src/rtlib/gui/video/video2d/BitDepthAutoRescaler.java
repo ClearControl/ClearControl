@@ -271,7 +271,7 @@ public class BitDepthAutoRescaler
 		return mManualMaximum;
 	}
 
-	public void setMaximum(double pManualMaximum)
+	public void setManualMaximum(double pManualMaximum)
 	{
 		mManualMaximum = (float) pManualMaximum;
 	}

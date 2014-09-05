@@ -19,4 +19,6 @@ public class GetCurrentPowerAdapter extends CoboltAdapter	implements
 		return 1000 * ProtocolCobolt.parseFloat(pMessage);
 	}
 
+
+
 }

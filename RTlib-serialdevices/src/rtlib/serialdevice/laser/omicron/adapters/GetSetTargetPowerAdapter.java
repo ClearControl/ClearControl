@@ -36,19 +36,20 @@ public class GetSetTargetPowerAdapter extends OmicronAdapter implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pPowerInMilliWatt)
+	public byte[] getSetValueCommandMessage(final double pOldPowerInMilliWatt,
+																					final double pNewPowerInMilliWatt)
 	{
-		final double lPowerInPercent = pPowerInMilliWatt / mMaxPowerInMilliWatt;
+		final double lPowerInPercent = pNewPowerInMilliWatt / mMaxPowerInMilliWatt;
 		// System.out.format("SET: power %g (percent) \n",lPowerInPercent);
 		final int lPower = (int) Math.round(lPowerInPercent * (4096 - 1));
 		// System.out.format("SET: power %d (percent*(4096-1)) \n",lPower);
 		final String lHexPowerString = ProtocolXX.toHexadecimalString(lPower,
 																																	3);
 		// System.out.format("SET: power %s (percent*(4096-1) HEX) \n",lHexPowerString);
-		final String lSetTragetPowerCommandString = String.format(ProtocolXX.cSetPowerLevelCommand,
+		final String lSetTargetPowerCommandString = String.format(ProtocolXX.cSetPowerLevelCommand,
 																															lHexPowerString);
 
-		final byte[] lSetTargetPowerCommandBytes = lSetTragetPowerCommandString.getBytes();
+		final byte[] lSetTargetPowerCommandBytes = lSetTargetPowerCommandString.getBytes();
 		// System.out.println("SET: sent: "+new
 		// String(lSetTargetPowerCommandBytes));
 		return lSetTargetPowerCommandBytes;

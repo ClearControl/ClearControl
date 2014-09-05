@@ -21,9 +21,10 @@ public class GetSetTargetPowerAdapter extends CoboltAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pPowerInMilliWatt)
+	public byte[] getSetValueCommandMessage(final double pOldPowerInMilliWatt,
+																					final double pNewPowerInMilliWatt)
 	{
-		final double lPowerInWatt = pPowerInMilliWatt * 0.001;
+		final double lPowerInWatt = pNewPowerInMilliWatt * 0.001;
 		final String lSetTargetPowerCommandString = String.format(ProtocolCobolt.cSetOutputPowerCommand,
 																															lPowerInWatt);
 		final byte[] lSetTargetPowerCommandBytes = lSetTargetPowerCommandString.getBytes();

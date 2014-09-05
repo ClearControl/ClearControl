@@ -20,9 +20,10 @@ public class SetOperatingModeAdapter extends OmicronAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pValue)
+	public byte[] getSetValueCommandMessage(final double pOldValue,
+																					final double pNewValue)
 	{
-		final int lPower = (int) Math.round(pValue * (4096 - 1));
+		final int lPower = (int) Math.round(pNewValue * (4096 - 1));
 		final String lHexOperatingModeString = ProtocolXX.toHexadecimalString(lPower,
 																																					1);
 		final String lSetOperatingModeCommandString = String.format(ProtocolXX.cRecallOperatingModeCommand,

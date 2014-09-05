@@ -1,10 +1,13 @@
 package rtlib.lightsheet;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.objectv.ObjectVariable;
 
 public interface LightSheetSignalGeneratorInterface	extends
 																										VirtualDeviceInterface,
@@ -47,6 +50,8 @@ public interface LightSheetSignalGeneratorInterface	extends
 
 	BooleanVariable getLockLightSheetToPifocVariable();
 
+	ObjectVariable<UnivariateFunction> getPifoc2LightSheetModelVariable();
+
 	void requestUpdate();
 
 	boolean isPlaying();
@@ -62,5 +67,6 @@ public interface LightSheetSignalGeneratorInterface	extends
 	void finalizeQueueFor3DStackAcquisition();
 
 	int getNumberOfPhases();
+
 
 }

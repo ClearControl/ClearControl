@@ -33,6 +33,12 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 		case KeyEvent.VK_G:
 			mVideoWindow.setGamma(1);
 			break;
+		case KeyEvent.VK_M:
+			mVideoWindow.setManualMinMax(true);
+			break;
+		case KeyEvent.VK_A:
+			mVideoWindow.setManualMinMax(false);
+			break;
 		}
 		// mVideoWindow.display();
 	}

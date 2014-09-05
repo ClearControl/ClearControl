@@ -440,7 +440,7 @@ public class VideoWindow implements Closeable
 		if (mManualMinMax)
 		{
 			mBitDepthAutoRescaler.setManualMinimum(mMinIntensity);
-			mBitDepthAutoRescaler.setMaximum(mMaxIntensity);
+			mBitDepthAutoRescaler.setManualMaximum(mMaxIntensity);
 		}
 		mBitDepthAutoRescaler.setAutoRescale(!mManualMinMax);
 		final NDArrayTyped<?> lConvertedBuffer = mBitDepthAutoRescaler.convertBuffer(pNewContentBuffer);

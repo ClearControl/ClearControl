@@ -20,7 +20,8 @@ public abstract class OmicronAdapter implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pValue)
+	public byte[] getSetValueCommandMessage(final double pOldValue,
+																					final double pNewValue)
 	{
 		return null;
 	}
@@ -41,6 +42,18 @@ public abstract class OmicronAdapter implements
 	public boolean checkAcknowledgementSetValueReturnMessage(final byte[] pMessage)
 	{
 		return pMessage[0] == '!';
+	}
+
+	@Override
+	public boolean hasResponseForSet()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean hasResponseForGet()
+	{
+		return true;
 	}
 
 }

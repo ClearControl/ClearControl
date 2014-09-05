@@ -20,9 +20,10 @@ public class SetPowerOnOffAdapter extends CoboltAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pValue)
+	public byte[] getSetValueCommandMessage(final double pOldValue,
+																					final double pNewValue)
 	{
-		return pValue > 0	? ProtocolCobolt.cSetLaserOnCommand.getBytes()
+		return pNewValue > 0 ? ProtocolCobolt.cSetLaserOnCommand.getBytes()
 											: ProtocolCobolt.cSetLaserOffCommand.getBytes();
 	}
 

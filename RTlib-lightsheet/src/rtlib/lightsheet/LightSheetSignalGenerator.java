@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.SignalStartableDevice;
@@ -172,6 +173,9 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mFocusZ.sendUpdatesTo(lDoubleUpdateListener);
 		mStageY.sendUpdatesTo(lDoubleUpdateListener);
 
+		PolynomialFunction lPolynomialFunction = new PolynomialFunction(new double[]
+		{ 0.0, 1.0 });
+		mPifoc2LightSheetModel.set(lPolynomialFunction);
 		mLockLightSheetToPifoc.sendUpdatesTo(lDoubleUpdateListener);
 		mPifoc2LightSheetModel.sendUpdatesTo(lReferenceUpdateListener);
 
@@ -283,6 +287,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 
 				final double lLightSheetZInMicronsLockedToPifoc = lPifoc2LightSheetModel == null ? mLightSheetZInMicrons.getValue()
 																																												: lPifoc2LightSheetModel.value(mFocusZ.getValue());
+
 				final boolean lIsLocking = mPifoc2LightSheetModel.isNotNull() && lLockLightSheetToPifoc;
 
 				double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
@@ -292,12 +297,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 				}
 
 				final double lGalvoYOffsetInNormalizedUnitsBeforeRotation = mMicronsToNormGalvoUnit.getValue() * mLightSheetYInMicrons.getValue();
-				final double lGalvoYOffsetInNormalizedUnitsToY = lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.sin(lGalvoAngle);
-				final double lGalvoYOffsetInNormalizedUnitsToZ = lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
+				final double lGalvoYOffsetInNormalizedUnitsToY = lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
+				final double lGalvoYOffsetInNormalizedUnitsToZ = -lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.sin(lGalvoAngle);
 
 				final double lGalvoZOffsetInNormalizedUnitsBeforeRotation = mMicronsToNormGalvoUnit.getValue() * lLightSheetZInMicrons;
-				final double lGalvoZffsetInNormalizedUnitsToY = -lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
-				final double lGalvoZOffsetInNormalizedUnitsToZ = lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.sin(lGalvoAngle);
+				final double lGalvoZffsetInNormalizedUnitsToY = lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.sin(lGalvoAngle);
+				final double lGalvoZOffsetInNormalizedUnitsToZ = lGalvoZOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
 
 				final double lGalvoYOffsetInNormalizedUnits = lGalvoYOffsetInNormalizedUnitsToY + lGalvoZffsetInNormalizedUnitsToY;
 				final double lGalvoZOffsetInNormalizedUnits = lGalvoYOffsetInNormalizedUnitsToZ + lGalvoZOffsetInNormalizedUnitsToZ;
@@ -665,6 +670,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	public BooleanVariable getLockLightSheetToPifocVariable()
 	{
 		return mLockLightSheetToPifoc;
+	}
+
+	@Override
+	public ObjectVariable<UnivariateFunction> getPifoc2LightSheetModelVariable()
+	{
+		return mPifoc2LightSheetModel;
 	}
 
 }

@@ -40,4 +40,6 @@ public class GetCurrentPowerAdapter extends OmicronAdapter implements
 		return mCurrentPowerInMilliwatts;
 	}
 
+
+
 }

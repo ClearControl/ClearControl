@@ -20,9 +20,10 @@ public class SetPowerOnOffAdapter extends OmicronAdapter implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pValue)
+	public byte[] getSetValueCommandMessage(final double pOldValue,
+																					final double pNewValue)
 	{
-		return pValue > 0	? ProtocolXX.cSetPowerOnCommand.getBytes()
+		return pNewValue > 0 ? ProtocolXX.cSetPowerOnCommand.getBytes()
 											: ProtocolXX.cSetPowerOffCommand.getBytes();
 	}
 

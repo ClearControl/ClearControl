@@ -20,7 +20,8 @@ public abstract class CoboltAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pValue)
+	public byte[] getSetValueCommandMessage(final double pOldValue,
+																					final double pNewValue)
 	{
 		return null;
 	}
@@ -42,6 +43,18 @@ public abstract class CoboltAdapter	implements
 	{
 		final String lResponseString = new String(pMessage);
 		return lResponseString.contains("OK");
+	}
+
+	@Override
+	public boolean hasResponseForSet()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean hasResponseForGet()
+	{
+		return true;
 	}
 
 }
