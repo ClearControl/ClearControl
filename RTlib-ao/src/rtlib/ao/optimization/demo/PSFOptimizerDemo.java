@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.ejml.data.DenseMatrix64F;
 import org.junit.Test;
 
-import rtlib.ao.dms.Mirao52eDevice;
 import rtlib.ao.optimization.PSFOptimizer;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
+import rtlib.slms.dms.devices.mirao52e.Mirao52eDevice;
 
 public class PSFOptimizerDemo
 {

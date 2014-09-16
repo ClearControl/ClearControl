@@ -10,7 +10,6 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.jtransforms.dct.FloatDCT_2D;
 
-import rtlib.ao.DeformableMirrorDevice;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
 import rtlib.cameras.StackCameraDeviceBase;
@@ -22,6 +21,7 @@ import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.kam.memory.ram.RAM;
+import rtlib.slms.dms.DeformableMirrorDevice;
 import rtlib.stack.Stack;
 
 public class PSFOptimizer implements VirtualDeviceInterface

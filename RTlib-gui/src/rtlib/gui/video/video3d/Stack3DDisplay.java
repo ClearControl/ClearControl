@@ -63,7 +63,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 				final ByteBuffer lByteBuffer = pStack.getNDArray()
 																							.getRAM()
-																							.passNativePointerToByteBuffer();
+																							.passNativePointerToByteBuffer(Character.class);
 				final long lWidth = pStack.getWidth();
 				final long lHeight = pStack.getHeight();
 				final long lDepth = pStack.getDepth();

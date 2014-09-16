@@ -4,5 +4,5 @@ import java.nio.ByteBuffer;
 
 public interface ByteBufferWrappable
 {
-	public ByteBuffer passNativePointerToByteBuffer();
+	public ByteBuffer passNativePointerToByteBuffer(Class<?> pTargetClass);
 }

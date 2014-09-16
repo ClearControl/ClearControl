@@ -8,6 +8,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 import org.bridj.Pointer;
+import org.bridj.Pointer.Releaser;
+import org.bridj.PointerIO;
 
 import rtlib.core.memory.InvalidNativeMemoryAccessException;
 import rtlib.core.memory.SizedInBytes;
@@ -252,13 +254,31 @@ public class RAMFile extends RAMMappedAbstract implements
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	@SuppressWarnings("deprecation")
-	public ByteBuffer passNativePointerToByteBuffer()
+	public Pointer getBridJPointer(Class pTargetClass)
 	{
-		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
-																														getSizeInBytes());
-		ByteBuffer lByteBuffer = lPointerToAddress.getByteBuffer();
+		PointerIO<?> lPointerIO = PointerIO.getInstance(pTargetClass);
+		Releaser lReleaser = new Releaser()
+		{
+			@Override
+			public void release(Pointer<?> pP)
+			{
+				// TODO: should this really be empty?
+			}
+		};
+		Pointer lPointerToAddress = Pointer.pointerToAddress(	getAddress(),
+																														getSizeInBytes(),
+																														lPointerIO,
+																														lReleaser);
+		return lPointerToAddress;
+	}
+
+	@Override
+	public ByteBuffer passNativePointerToByteBuffer(Class<?> pTargetClass)
+	{
+
+		ByteBuffer lByteBuffer = getBridJPointer(pTargetClass).getByteBuffer();
 
 		return lByteBuffer;
 
@@ -294,5 +314,6 @@ public class RAMFile extends RAMMappedAbstract implements
 		// itself.
 		return null;
 	}
+
 
 }

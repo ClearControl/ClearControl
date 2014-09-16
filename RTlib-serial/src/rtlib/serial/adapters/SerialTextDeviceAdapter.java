@@ -7,7 +7,4 @@ public interface SerialTextDeviceAdapter extends SerialDeviceAdapter
 
 	public Character getSetValueReturnMessageTerminationCharacter();
 
-	public boolean hasResponseForGet();
-
-	public boolean hasResponseForSet();
 }

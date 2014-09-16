@@ -9,10 +9,14 @@ public interface SerialDeviceAdapter
 
 	public long getGetValueReturnWaitTimeInMilliseconds();
 
+	public boolean hasResponseForGet();
+
 	public byte[] getSetValueCommandMessage(double pOldValue,
 																					double pNewValue);
 
 	public long getSetValueReturnWaitTimeInMilliseconds();
+
+	public boolean hasResponseForSet();
 
 	public boolean checkAcknowledgementSetValueReturnMessage(byte[] pMessage);
 

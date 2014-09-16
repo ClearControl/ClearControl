@@ -1,7 +1,10 @@
 package rtlib.kam.memory.ndarray;
 
+import org.bridj.Pointer;
+
 import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
+import rtlib.kam.memory.BridJPointerWrappable;
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.Typed;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
@@ -13,7 +16,8 @@ public class NDArrayTyped<T> extends NDArray implements
 																						NDCursorAccessible,
 																						NDDefaultCursorAccessible,
 																						Typed<T>,
-																						SizedInBytes
+																						SizedInBytes,
+																						BridJPointerWrappable<T>
 
 {
 
@@ -238,6 +242,12 @@ public class NDArrayTyped<T> extends NDArray implements
 										pValue);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Pointer<T> getBridJPointer(Class<T> pTargetClass)
+	{
+		return (Pointer<T>) mRAM.getBridJPointer(pTargetClass);
+	}
 
 
 }

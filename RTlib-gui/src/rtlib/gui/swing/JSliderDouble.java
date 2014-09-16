@@ -30,10 +30,12 @@ public class JSliderDouble extends JPanel
 	private final double mMin, mMax;
 	private double mQuanta = 0;
 	private int mNumberOfLabels = 3;
+	private boolean mWaitForMouseRelease = false;
 
 	private final DoubleVariable mSliderDoubleVariable;
 
 	private final JSliderDouble mThis;
+
 
 	/**
 	 * @wbp.parser.constructor
@@ -117,6 +119,7 @@ public class JSliderDouble extends JPanel
 			@Override
 			public void stateChanged(final ChangeEvent pE)
 			{
+
 				final double lNewValue = constraintIfNescessary(toDouble(	mResolution,
 																																	mMin,
 																																	mMax,
@@ -124,7 +127,6 @@ public class JSliderDouble extends JPanel
 
 				if (mSliderDoubleVariable.getValue() != lNewValue)
 				{
-					mSliderDoubleVariable.setValue(lNewValue);
 					try
 					{
 						if (Double.parseDouble(mValueTextField.getText().trim()) != lNewValue)
@@ -137,6 +139,13 @@ public class JSliderDouble extends JPanel
 					{
 						System.err.println(e.getLocalizedMessage());
 					}
+
+					if (isWaitForMouseRelease() && mSlider.getValueIsAdjusting())
+					{
+						return;
+					}
+
+					mSliderDoubleVariable.setValue(lNewValue);
 				}
 				// System.out.println("change received from slider:" + lNewValue);
 			}
@@ -364,6 +373,16 @@ public class JSliderDouble extends JPanel
 		{
 			return Math.round(lMinMaxConstrained / mQuanta) * mQuanta;
 		}
+	}
+
+	public boolean isWaitForMouseRelease()
+	{
+		return mWaitForMouseRelease;
+	}
+
+	public void setWaitForMouseRelease(boolean pWaitForMouseRelease)
+	{
+		mWaitForMouseRelease = pWaitForMouseRelease;
 	}
 
 }

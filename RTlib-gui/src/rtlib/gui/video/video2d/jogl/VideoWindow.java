@@ -222,7 +222,7 @@ public class VideoWindow implements Closeable
 														GL.GL_LUMINANCE,
 														GL.GL_UNSIGNED_BYTE,
 														mSourceBuffer.getRAM()
-																					.passNativePointerToByteBuffer());
+																					.passNativePointerToByteBuffer(Character.class));
 					reportError(lGL2);
 
 					// mGL2.glEnable(GL2.GL_PIXEL_UNPACK_BUFFER);
@@ -454,7 +454,7 @@ public class VideoWindow implements Closeable
 		{
 			lResult = updateVideoWithBufferPBO(	pGL2,
 																					lConvertedBuffer.getRAM()
-																													.passNativePointerToByteBuffer(),
+																													.passNativePointerToByteBuffer(Character.class),
 																					lCurrentIndex,
 																					lNextIndex);
 		}
@@ -462,7 +462,7 @@ public class VideoWindow implements Closeable
 		{
 			lResult = updateVideoWithBufferClassic(	pGL2,
 																							lConvertedBuffer.getRAM()
-																															.passNativePointerToByteBuffer(),
+																															.passNativePointerToByteBuffer(Character.class),
 																							lCurrentIndex,
 																							lNextIndex);
 		}

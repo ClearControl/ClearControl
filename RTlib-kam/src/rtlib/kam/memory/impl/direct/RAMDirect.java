@@ -6,6 +6,8 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
 import org.bridj.Pointer;
+import org.bridj.Pointer.Releaser;
+import org.bridj.PointerIO;
 
 import rtlib.core.memory.InvalidNativeMemoryAccessException;
 import rtlib.core.memory.NativeMemoryAccess;
@@ -186,12 +188,31 @@ public class RAMDirect extends RAMAbstract implements
 		lRAMFile.free();
 	}
 
-	@SuppressWarnings("deprecation")
-	public ByteBuffer passNativePointerToByteBuffer()
+	@SuppressWarnings(
+	{ "deprecation", "unchecked", "rawtypes" })
+	public Pointer getBridJPointer(Class pTargetClass)
 	{
+		PointerIO<?> lPointerIO = PointerIO.getInstance(pTargetClass);
+		Releaser lReleaser = new Releaser()
+		{
+			@Override
+			public void release(Pointer<?> pP)
+			{
+				// TODO: should this really be empty?
+			}
+		};
 		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
-																														getSizeInBytes());
-		ByteBuffer lByteBuffer = lPointerToAddress.getByteBuffer();
+																														getSizeInBytes(),
+																														lPointerIO,
+																														lReleaser);
+
+		return lPointerToAddress;
+
+	}
+
+	public ByteBuffer passNativePointerToByteBuffer(Class<?> pTargetClass)
+	{
+		ByteBuffer lByteBuffer = getBridJPointer(pTargetClass).getByteBuffer();
 
 		return lByteBuffer;
 
@@ -211,5 +232,6 @@ public class RAMDirect extends RAMAbstract implements
 						+ getMemoryType()
 						+ "]";
 	}
+
 
 }

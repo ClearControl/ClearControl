@@ -17,6 +17,10 @@ public class RTlibLogger
 {
 
 	private static final File cTempFolder = new File(System.getProperty("java.io.tmpdir"));
+	static
+	{
+		System.out.println(cTempFolder);
+	}
 	private static File cLogRootFolder = cTempFolder;
 	private static final MachineConfiguration cMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 	private static final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy.MM.dd.E.HH.mm.ss.zzz");

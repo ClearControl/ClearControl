@@ -34,6 +34,7 @@ subprojects
         compile group: 'commons-lang', name: 'commons-lang', version: '2.+'
         compile group: 'commons-io', name: 'commons-io', version: '2.+'
         compile group: 'org.apache.commons', name: 'commons-math3', version: '3.+'
+        compile 'com.google.guava:guava:18.0'
         compile 'com.nativelibs4java:bridj:0.7-SNAPSHOT'
         compile 'com.nativelibs4java:javacl:1.0-SNAPSHOT'
         compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
