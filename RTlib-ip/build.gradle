@@ -36,6 +36,8 @@ dependencies
 {
     compile project(':RTlib-core')
     compile project(':RTlib-kam')
+
+    compile fileTree(dir: '../Libs/jtransforms', include: '*.jar')
 }
 
 
