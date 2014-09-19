@@ -2,7 +2,7 @@ bin/
 build/
 old/
 .classpath
-.project/
+.project
 .settings/
 .gradle/
 *.class
