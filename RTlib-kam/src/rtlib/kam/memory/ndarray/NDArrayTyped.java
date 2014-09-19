@@ -5,16 +5,21 @@ import org.bridj.Pointer;
 import rtlib.core.memory.SizeOf;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.kam.memory.BridJPointerWrappable;
+import rtlib.kam.memory.MemoryType;
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.Typed;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.cursor.NDCursorAccessible;
 import rtlib.kam.memory.ram.RAM;
+import rtlib.kam.memory.ram.ReadAtAligned;
+import rtlib.kam.memory.ram.WriteAtAligned;
 
 public class NDArrayTyped<T> extends NDArray implements
 																						NDStructured,
 																						NDCursorAccessible,
 																						NDDefaultCursorAccessible,
+																						WriteAtAligned,
+																						ReadAtAligned,
 																						Typed<T>,
 																						SizedInBytes,
 																						BridJPointerWrappable<T>
@@ -240,6 +245,96 @@ public class NDArrayTyped<T> extends NDArray implements
 	{
 		mRAM.setDouble(	mElementSize * pCursor.getCurrentFlatIndex(),
 										pValue);
+	}
+
+	@Override
+	public MemoryType getMemoryType()
+	{
+		return mRAM.getMemoryType();
+	}
+
+	@Override
+	public void setByteAligned(long pOffset, byte pValue)
+	{
+		mRAM.setByteAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setCharAligned(long pOffset, char pValue)
+	{
+		mRAM.setCharAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setShortAligned(long pOffset, short pValue)
+	{
+		mRAM.setShortAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setIntAligned(long pOffset, int pValue)
+	{
+		mRAM.setIntAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setLongAligned(long pOffset, long pValue)
+	{
+		mRAM.setLongAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setFloatAligned(long pOffset, float pValue)
+	{
+		mRAM.setFloatAligned(pOffset, pValue);
+	}
+
+	@Override
+	public void setDoubleAligned(long pOffset, double pValue)
+	{
+		mRAM.setDoubleAligned(pOffset, pValue);
+	}
+
+	@Override
+	public byte getByteAligned(long pOffset)
+	{
+		return mRAM.getByteAligned(pOffset);
+	}
+
+	@Override
+	public char getCharAligned(long pOffset)
+	{
+		return mRAM.getCharAligned(pOffset);
+	}
+
+	@Override
+	public short getShortAligned(long pOffset)
+	{
+		return mRAM.getShortAligned(pOffset);
+	}
+
+	@Override
+	public int getIntAligned(long pOffset)
+	{
+		return mRAM.getIntAligned(pOffset);
+	}
+
+	@Override
+	public long getLongAligned(long pOffset)
+	{
+		return mRAM.getLongAligned(pOffset);
+	}
+
+	@Override
+	public float getFloatAligned(long pOffset)
+	{
+		return mRAM.getFloatAligned(pOffset);
+	}
+
+	@Override
+	public double getDoubleAligned(long pOffset)
+	{
+		return mRAM.getDoubleAligned(pOffset);
 	}
 
 	@SuppressWarnings("unchecked")

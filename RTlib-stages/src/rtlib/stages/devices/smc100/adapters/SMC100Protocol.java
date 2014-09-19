@@ -22,15 +22,26 @@ public class SMC100Protocol
 	public static final String cSetMaxPosCommand = "1SR%g" + cMessageTerminationStringForSending;
 	public static final String cGetMaxPosCommand = "1SR?" + cMessageTerminationStringForSending;
 
-
 	public static double parseFloat(String pSentMessage,
 																	final byte[] pReceivedMessage)
 	{
-		final String lReceivedMessageString = new String(pReceivedMessage);
-		final String lReceivedMessageDoubleString = lReceivedMessageString.substring(pSentMessage.length() - 3)
-																																			.trim();
-		final double lDoubleValue = Double.parseDouble(lReceivedMessageDoubleString);
-		return lDoubleValue;
+		try
+		{
+			String lReceivedMessageString = new String(pReceivedMessage);
+			lReceivedMessageString = lReceivedMessageString.trim();
+			/*System.out.println("lReceivedMessageString='" + lReceivedMessageString
+													+ "'");/**/
+
+			final String lReceivedMessageDoubleString = lReceivedMessageString.substring(pSentMessage.length() - 3)
+																																				.trim();
+			final double lDoubleValue = Double.parseDouble(lReceivedMessageDoubleString);
+			return lDoubleValue;
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			return Double.NaN;
+		}
 	}
 
 	public static Double parseReadyFromState(byte[] pMessage)

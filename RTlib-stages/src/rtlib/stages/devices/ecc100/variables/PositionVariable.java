@@ -26,7 +26,7 @@ public class PositionVariable extends DoubleVariable
 	@Override
 	public double getEventHook(double pCurrentValue)
 	{
-		int lCurrentPosition = mECC100Axis.getCurrentPosition();
+		double lCurrentPosition = mECC100Axis.getCurrentPosition();
 		return super.getEventHook(lCurrentPosition);
 	}
 }

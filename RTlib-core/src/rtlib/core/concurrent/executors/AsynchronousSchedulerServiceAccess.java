@@ -66,6 +66,9 @@ public interface AsynchronousSchedulerServiceAccess
 	{
 		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
 
+		if (lScheduledThreadPoolExecutor == null)
+			return false;
+
 		lScheduledThreadPoolExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
 		lScheduledThreadPoolExecutor.shutdown();
 		try

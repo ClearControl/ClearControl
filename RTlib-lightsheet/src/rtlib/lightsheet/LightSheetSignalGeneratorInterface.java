@@ -1,7 +1,5 @@
 package rtlib.lightsheet;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
@@ -9,7 +7,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 
-public interface LightSheetSignalGeneratorInterface	extends
+public interface LightSheetSignalGeneratorInterface<O>	extends
 																										VirtualDeviceInterface,
 																										StateQueueDeviceInterface
 {
@@ -50,7 +48,7 @@ public interface LightSheetSignalGeneratorInterface	extends
 
 	BooleanVariable getLockLightSheetToPifocVariable();
 
-	ObjectVariable<UnivariateFunction> getPifoc2LightSheetModelVariable();
+	ObjectVariable<O> getPifoc2LightSheetModelVariable();
 
 	void requestUpdate();
 

@@ -50,6 +50,11 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		setValue(pNewValue);
 	}
 
+	public void addValue(double pDelta)
+	{
+		setValue(getValue() + pDelta);
+	}
+
 	public void markAsTraversed()
 	{
 		EventPropagator.add(this);
@@ -173,5 +178,6 @@ public class DoubleVariable extends NamedVariable<Double>	implements
 		this.doNotSendUpdatesTo(pDoubleVariable);
 		pDoubleVariable.doNotSendUpdatesTo(this);
 	}
+
 
 }

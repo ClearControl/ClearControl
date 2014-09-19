@@ -1,5 +1,7 @@
 package rtlib.gui.swing;
 
+import static java.lang.Math.max;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -7,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -28,6 +31,7 @@ public class JSliderDouble extends JPanel
 	private final String mLabelsFormatString;
 	private final int mResolution;
 	private final double mMin, mMax;
+	private double mStep;
 	private double mQuanta = 0;
 	private int mNumberOfLabels = 3;
 	private boolean mWaitForMouseRelease = false;
@@ -35,6 +39,8 @@ public class JSliderDouble extends JPanel
 	private final DoubleVariable mSliderDoubleVariable;
 
 	private final JSliderDouble mThis;
+	private JButton mMinusStepButton;
+	private JButton mPlusStepButton;
 
 
 	/**
@@ -50,7 +56,7 @@ public class JSliderDouble extends JPanel
 												final double pMax,
 												final double pValue)
 	{
-		this(pValueName, "%.1f", Integer.MAX_VALUE, pMin, pMax, pValue);
+		this(pValueName, "%.1f", Integer.MAX_VALUE, pMin, pMax, pValue, 1);
 	}
 
 	public JSliderDouble(	final String pValueName,
@@ -58,7 +64,8 @@ public class JSliderDouble extends JPanel
 												final int pResolution,
 												final double pMin,
 												final double pMax,
-												final double pValue)
+												final double pValue,
+												final double pStep)
 	{
 		super();
 
@@ -112,6 +119,7 @@ public class JSliderDouble extends JPanel
 		mResolution = pResolution;
 		mMin = pMin;
 		mMax = pMax;
+		mStep = pStep;
 		mThis = this;
 
 		mSlider.addChangeListener(new ChangeListener()
@@ -234,6 +242,44 @@ public class JSliderDouble extends JPanel
 		mSlider.setMajorTickSpacing(pResolution / 10);
 		mSlider.setMinorTickSpacing(pResolution / 100);
 		mSlider.setPaintTicks(true);
+
+		mMinusStepButton = new JButton("–");
+		add(mMinusStepButton, BorderLayout.WEST);
+		mMinusStepButton.addActionListener((e) -> {
+			double lStep = max(mStep, mQuanta);
+			int lModifiers = e.getModifiers();
+			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+																																												: 10;
+			double lNewValue = getDoubleVariable().getValue();
+			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
+				lNewValue += -lStep / lFactor;
+			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
+				lNewValue += -lStep * lFactor;
+			else
+				lNewValue += -lStep;
+			lNewValue = constraintIfNescessary(lNewValue);
+			getDoubleVariable().setValue(lNewValue);
+
+		});
+
+		mPlusStepButton = new JButton("+");
+		add(mPlusStepButton, BorderLayout.EAST);
+		mPlusStepButton.addActionListener((e) -> {
+			double lStep = max(mStep, mQuanta);
+			int lModifiers = e.getModifiers();
+			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+																																												: 10;
+			double lNewValue = getDoubleVariable().getValue();
+			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
+				lNewValue += lStep / lFactor;
+			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
+				lNewValue += lStep * lFactor;
+			else
+				lNewValue += lStep;
+			lNewValue = constraintIfNescessary(lNewValue);
+			getDoubleVariable().setValue(lNewValue);
+		});
+
 
 		// Create the label table
 		final Hashtable lLabelTable = new Hashtable();

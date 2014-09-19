@@ -66,15 +66,14 @@ public class SMC100PositionAdapter implements SerialTextDeviceAdapter
 
 		if (!lIsReady)
 		{
-			System.out.println("Not ready-> stopping");
+			// System.out.println("Not ready-> stopping");
 			mStopVariable.setEdge(true);
+			mSmc100StageDevice.waitToBeReady(0, 5, TimeUnit.SECONDS);
 		}
-
-		mSmc100StageDevice.waitToBeReady(0, 5, TimeUnit.SECONDS);
 
 		String lSetPositionMessage = String.format(	SMC100Protocol.cSetAbsPosCommand,
 																								pNewValue * 0.001);
-		System.out.println(lSetPositionMessage);
+		// System.out.println(lSetPositionMessage);
 		return lSetPositionMessage.getBytes();
 	}
 

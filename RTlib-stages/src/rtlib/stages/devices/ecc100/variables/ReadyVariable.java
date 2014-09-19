@@ -24,6 +24,6 @@ public class ReadyVariable extends BooleanVariable
 	@Override
 	public double getEventHook(double pCurrentValue)
 	{
-		return BooleanVariable.boolean2double(mECC100Axis.isReady());
+		return BooleanVariable.boolean2double(mECC100Axis.isReady() && mECC100Axis.hasArrived());
 	}
 }

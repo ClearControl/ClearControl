@@ -43,4 +43,13 @@ public class UnivariateAffineFunction implements UnivariateFunction
 		return mA * pX + mB;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "UnivariateAffineFunction [Y = " + mA
+						+ " * X + "
+						+ mB
+						+ "]";
+	}
+
 }

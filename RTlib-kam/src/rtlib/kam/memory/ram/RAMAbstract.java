@@ -155,7 +155,7 @@ public abstract class RAMAbstract	implements
 	@Override
 	public void setCharAligned(long pOffset, char pValue)
 	{
-		NativeMemoryAccess.setChar(mAddressInBytes + SizeOf.sizeOfByte()
+		NativeMemoryAccess.setChar(mAddressInBytes + SizeOf.sizeOfChar()
 																* pOffset, pValue);
 	}
 

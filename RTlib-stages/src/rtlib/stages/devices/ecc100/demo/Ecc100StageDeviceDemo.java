@@ -12,7 +12,7 @@ public class Ecc100StageDeviceDemo
 {
 
 	@Test
-	public void test()
+	public void test() throws InterruptedException
 	{
 		ECC100StageDevice lECC100StageDevice = new ECC100StageDevice();
 		
@@ -33,23 +33,14 @@ public class Ecc100StageDeviceDemo
 		
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
-			lECC100StageDevice.goToPosition(dof, 10000);
+			lECC100StageDevice.goToPosition(dof, 1000);
 		}
 		
-		for (int dof = 0; dof < lNumberOfDOFs; dof++)
-		{
-			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);
-			System.out.println("lCurrentPosition" + dof
-													+ "="
-													+ lCurrentPosition);
-		}
-
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
 			lECC100StageDevice.waitToBeReady(dof, 1, TimeUnit.MINUTES);
 
 		}
-
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
 			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);

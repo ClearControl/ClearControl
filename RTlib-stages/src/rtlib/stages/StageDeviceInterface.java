@@ -12,7 +12,7 @@ public interface StageDeviceInterface extends VirtualDeviceInterface
 
 	int getDOFIndexByName(String pName);
 
-	String getDOFNameByIndex(String pName);
+	String getDOFNameByIndex(int pDOFIndex);
 
 	void home(int pDOFIndex);
 

@@ -39,6 +39,7 @@ public class ECC100StageDevice extends NamedVirtualDevice	implements
 	private BiMap<String, ECC100Axis> mNameToAxisMap = HashBiMap.create();
 	private BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
 
+
 	public ECC100StageDevice()
 	{
 		super("ECC100");
@@ -251,9 +252,20 @@ public class ECC100StageDevice extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public String getDOFNameByIndex(String pName)
+	public String getDOFNameByIndex(int pIndex)
 	{
-		return mIndexToNameMap.get(pName);
+		return mIndexToNameMap.get(pIndex);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ECC100StageDevice [mECC100Controller=" + mECC100Controller
+						+ ", getNumberOfDOFs()="
+						+ getNumberOfDOFs()
+						+ ", getDeviceName()="
+						+ getDeviceName()
+						+ "]";
 	}
 
 }

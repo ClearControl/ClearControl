@@ -75,9 +75,8 @@ public class SMC100StageDevice extends SerialDevice implements
 
 		if (lStart)
 		{
-			// reset();
-			enable(0);
 			home(0);
+			waitToBeReady(0, 1, TimeUnit.MINUTES);
 			enable(0);
 			return true;
 		}
@@ -98,7 +97,7 @@ public class SMC100StageDevice extends SerialDevice implements
 	}
 
 	@Override
-	public String getDOFNameByIndex(String pName)
+	public String getDOFNameByIndex(int pIndex)
 	{
 		return getDeviceName();
 	}
@@ -191,7 +190,16 @@ public class SMC100StageDevice extends SerialDevice implements
 	}
 
 
-
+	@Override
+	public String toString()
+	{
+		return "SMC100StageDevice [mSerial=" + mSerial
+						+ ", getNumberOfDOFs()="
+						+ getNumberOfDOFs()
+						+ ", getDeviceName()="
+						+ getDeviceName()
+						+ "]";
+	}
 
 
 }
