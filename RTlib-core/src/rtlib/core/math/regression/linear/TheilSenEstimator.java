@@ -7,7 +7,7 @@ import org.apache.commons.math3.stat.descriptive.rank.Median;
 /**
  * Theil-Sen estimator
  * 
- * In non-parametric statistics, the Theil–Sen estimator, also known as Sen's
+ * In non-parametric statistics, the Theil-Sen estimator, also known as Sen's
  * slope estimator, slope selection, the single median method, or the Kendall
  * robust line-fit method,[6] is a method for robust linear regression that
  * chooses the median slope among all lines through pairs of two-dimensional
@@ -19,17 +19,17 @@ import org.apache.commons.math3.stat.descriptive.rank.Median;
  * data. It has been called
  * "the most popular nonparametric technique for estimating a linear trend" .
  * 
- * A variation of the Theil–Sen estimator due to Siegel (1982) determines, for
+ * A variation of the Theil-Sen estimator due to Siegel (1982) determines, for
  * each sample point (xi,yi), the median mi of the slopes (yj - yi)/(xj - xi) of
  * lines through that point, and then determines the overall estimator as the
  * median of these medians.
  * 
- * The Theil–Sen estimator is an unbiased estimator of the true slope in simple
+ * The Theil-Sen estimator is an unbiased estimator of the true slope in simple
  * linear regression. For many distributions of the response error, this
  * estimator has high asymptotic efficiency relative to least-squares
  * estimation. Estimators with low efficiency require more independent
  * observations to attain the same sample variance of efficient unbiased
- * estimators. The Theil–Sen estimator is more robust than the least-squares
+ * estimators. The Theil-Sen estimator is more robust than the least-squares
  * estimator because it is much less sensitive to outliers: It has a breakdown
  * point of, meaning that it can tolerate arbitrary corruption of up to 29.3% of
  * the input data-points without degradation of its accuracy. However, the
