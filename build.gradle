@@ -6,6 +6,7 @@ subprojects
 
 
     sourceCompatibility = 1.8
+    group = 'royer'
     version = '1.0'
 
     /*
@@ -113,7 +114,7 @@ subprojects
         {
             mavenDeployer 
             {
-                repository(url: "file:../../Repos/")
+                repository(url: "file:../Repos/")
             }
         }
     }
