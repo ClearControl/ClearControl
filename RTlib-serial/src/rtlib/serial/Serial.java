@@ -157,6 +157,10 @@ public class Serial implements SerialInterface
 	@Override
 	public final void purge() throws SerialPortException
 	{
+		while (mSerialPort.getInputBufferBytesCount() > 0)
+		{
+			mSerialPort.readBytes();
+		}
 		mSerialPort.purgePort(SerialPort.PURGE_TXCLEAR | SerialPort.PURGE_RXCLEAR);
 	}
 

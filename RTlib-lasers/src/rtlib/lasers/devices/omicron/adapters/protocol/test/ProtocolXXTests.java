@@ -15,7 +15,8 @@ public class ProtocolXXTests
 	public void testSplitMessage() throws InterruptedException
 	{
 		final String lTestMessage = new String("!GFwLuxX񘄵.30.");
-		final String[] lSplitMessage = ProtocolXX.splitMessage(lTestMessage.getBytes());
+		final String[] lSplitMessage = ProtocolXX.splitMessage(	"!GFw",
+																														lTestMessage.getBytes());
 		assertEquals(lSplitMessage[0], "LuxX");
 		assertEquals(lSplitMessage[1], "4");
 		assertEquals(lSplitMessage[2], "1.30.");

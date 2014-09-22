@@ -40,6 +40,23 @@ public class LaserDeviceBase extends SerialDevice	implements
 		try
 		{
 			lOpen = super.open();
+
+			return lOpen;
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean start()
+	{
+		try
+		{
+			final boolean lStartResult = super.start();
+
 			setTargetPowerInPercent(0);
 			setPowerOn(true);
 
@@ -64,21 +81,7 @@ public class LaserDeviceBase extends SerialDevice	implements
 																																												1,
 																																												300,
 																																												TimeUnit.MILLISECONDS);
-			return lOpen;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
 
-	@Override
-	public boolean start()
-	{
-		try
-		{
-			final boolean lStartResult = super.start();
 			setLaserOn(true);
 			return lStartResult;
 		}
@@ -95,6 +98,7 @@ public class LaserDeviceBase extends SerialDevice	implements
 		try
 		{
 			setLaserOn(false);
+			mCurrentPowerPollerScheduledFutur.cancel(true);
 			return super.stop();
 		}
 		catch (final Throwable e)
@@ -109,7 +113,6 @@ public class LaserDeviceBase extends SerialDevice	implements
 	{
 		try
 		{
-			mCurrentPowerPollerScheduledFutur.cancel(true);
 			setTargetPowerInPercent(0);
 			setLaserOn(false);
 			setPowerOn(false);

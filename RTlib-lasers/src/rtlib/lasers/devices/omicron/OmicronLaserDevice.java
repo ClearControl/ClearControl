@@ -1,8 +1,8 @@
 package rtlib.lasers.devices.omicron;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.LaserDeviceBase;
+import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.omicron.adapters.GetCurrentPowerAdapter;
 import rtlib.lasers.devices.omicron.adapters.GetDeviceIdAdapter;
 import rtlib.lasers.devices.omicron.adapters.GetMaxPowerAdapter;
@@ -82,10 +82,10 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 		{
 			lOpen = super.open();
 			ProtocolXX.setNoAdHocMode(mSerial);
-			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.getValue());
 			setTargetPowerInPercent(0);
 			setOperatingMode(2);
 			setPowerOn(true);
+			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.getValue());
 			return lOpen;
 		}
 		catch (final Throwable e)

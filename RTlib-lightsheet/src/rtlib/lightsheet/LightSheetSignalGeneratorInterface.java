@@ -48,6 +48,8 @@ public interface LightSheetSignalGeneratorInterface<O>	extends
 
 	BooleanVariable getLockLightSheetToPifocVariable();
 
+	DoubleVariable getMicronsToNormGalvoUnitVariable();
+
 	ObjectVariable<O> getPifoc2LightSheetModelVariable();
 
 	void requestUpdate();
@@ -65,6 +67,7 @@ public interface LightSheetSignalGeneratorInterface<O>	extends
 	void finalizeQueueFor3DStackAcquisition();
 
 	int getNumberOfPhases();
+
 
 
 }

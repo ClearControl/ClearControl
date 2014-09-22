@@ -17,7 +17,8 @@ public class GetMaxPowerAdapter extends OmicronAdapter implements
 	public Double parseValue(final byte[] pMessage)
 	{
 		// System.out.println(new String(pMessage));
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetMaxPowerReplyPrefix,
+																															pMessage);
 		final String lMaxPowerString = lSplittedMessage[0];
 		final int lMaxPower = Integer.parseInt(lMaxPowerString);
 		return (double) lMaxPower;

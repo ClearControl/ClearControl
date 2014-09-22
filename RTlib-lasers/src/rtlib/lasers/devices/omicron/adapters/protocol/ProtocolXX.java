@@ -8,15 +8,26 @@ public class ProtocolXX
 	public static final long cWaitTimeInMilliSeconds = 0;
 
 	public static final String cGetFirmwareCommand = "?GFw\r";
+	public static final String cGetFirmwareReplyPrefix = "!GFw";
+
 	public static final String cGetOperatingModeCommand = "?GOM\r";
+	public static final String cGetOperatingModeReplyPrefix = "!GOM";
 	public static final String cSetOperatingModeCommand = "?SOM%s\r";
 	public static final String cGetSpecInfoCommand = "?GSI\r";
+	public static final String cGetSpecInfoReplyPrefix = "!GSI";
+
 	public static final String cGetMaxPowerCommand = "?GMP\r";
+	public static final String cGetMaxPowerReplyPrefix = "!GMP";
+
 	public static final String cGetWorkingHoursCommand = "?GWH\r";
+	public static final String cGetWorkingHoursReplyPrefix = "!GWH";
 	public static final String cRecallOperatingModeCommand = "?ROM%s\r";
 	public static final String cGetPowerLevelCommand = "?GLP\r";
+	public static final String cGetPowerLevelReplyPrefix = "!GLP";
+
 	public static final String cSetPowerLevelCommand = "?SLP%s\r";
 	public static final String cMeasureDiodePowerCommand = "?MDP\r";
+	public static final String cMeasureDiodePowerReplyPrefix = "!MDP";
 	public static final String cGetDiodeTempCommand = "?MTD\r";
 	public static final String cGetAmbientTempCommand = "?MTA\r";
 
@@ -31,11 +42,23 @@ public class ProtocolXX
 
 	private static final int cAdGocModeMask = 1 << 13;
 
-	public static final String[] splitMessage(final byte[] pMessage)
+
+	public static double parseDouble(	String pPrefix,
+																		String pReceivedString)
 	{
-		final String lMessageString = new String(	pMessage,
-																							4,
-																							pMessage.length - 4);
+		int lIndex = pReceivedString.indexOf(pPrefix) + pPrefix.length();
+		String lStringWithoutPrefix = pReceivedString.substring(lIndex)
+																									.trim();
+		double lDoubleValue = Double.parseDouble(lStringWithoutPrefix);
+		return lDoubleValue;
+	}
+
+	public static final String[] splitMessage(String pPrefix,
+																						final byte[] pMessage)
+	{
+		String lMessageString = new String(pMessage);
+		int lIndex = lMessageString.indexOf(pPrefix) + pPrefix.length();
+		lMessageString = lMessageString.substring(lIndex);
 		final String[] lSplittedMessageString = lMessageString.split(cParagraphCode);
 
 		return lSplittedMessageString;
@@ -68,7 +91,8 @@ public class ProtocolXX
 			pSerial.setLineTerminationCharacter(cMessageTerminationCharacter);
 			pSerial.write(cGetOperatingModeCommand);
 			final byte[] lReadTextMessage = pSerial.readTextMessage();
-			final String[] lSplitMessage = splitMessage(lReadTextMessage);
+			final String[] lSplitMessage = splitMessage(cGetOperatingModeReplyPrefix,
+																									lReadTextMessage);
 			final String lOperatingModeAsHexString = lSplitMessage[0];
 
 			int lOperatingModeAsInteger = Integer.parseInt(	lOperatingModeAsHexString,
@@ -121,4 +145,5 @@ public class ProtocolXX
 		{
 		}
 	}
+
 }

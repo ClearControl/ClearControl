@@ -26,7 +26,8 @@ public class GetSetTargetPowerAdapter extends OmicronAdapter implements
 	public Double parseValue(final byte[] pMessage)
 	{
 		// System.out.println("GET: received: "+new String(pMessage));
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetPowerLevelReplyPrefix,
+																															pMessage);
 		final String lSpecPowerString = lSplittedMessage[0];
 		final int lCurrentPowerInBinaryUnits = Integer.parseInt(lSpecPowerString,
 																														16);

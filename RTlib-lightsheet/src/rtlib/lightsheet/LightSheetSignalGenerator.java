@@ -673,9 +673,16 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	}
 
 	@Override
+	public DoubleVariable getMicronsToNormGalvoUnitVariable()
+	{
+		return mMicronsToNormGalvoUnit;
+	}
+
+	@Override
 	public ObjectVariable<UnivariateFunction> getPifoc2LightSheetModelVariable()
 	{
 		return mPifoc2LightSheetModel;
 	}
+
 
 }

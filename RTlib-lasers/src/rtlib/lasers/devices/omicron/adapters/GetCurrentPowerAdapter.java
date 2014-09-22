@@ -21,9 +21,11 @@ public class GetCurrentPowerAdapter extends OmicronAdapter implements
 	{
 		try
 		{
-			final String[] lSplittedMessage = ProtocolXX.splitMessage(pMessage);
-			final String lCurrentPowerString = lSplittedMessage[0];
-			final double lCurrentPowerInMilliwatts = Double.parseDouble(lCurrentPowerString);
+			// final String[] lSplittedMessage = ProtocolXX.splitMessage(pMessage);
+			// final String lCurrentPowerString = lSplittedMessage[0];
+			final String lCurrentPowerString = new String(pMessage);
+			final double lCurrentPowerInMilliwatts = ProtocolXX.parseDouble(ProtocolXX.cMeasureDiodePowerReplyPrefix,
+																																			lCurrentPowerString);
 
 			mCurrentPowerInMilliwatts = (1 - cCurrentPowerFilteringAlpha) * mCurrentPowerInMilliwatts
 																	+ cCurrentPowerFilteringAlpha
@@ -39,7 +41,5 @@ public class GetCurrentPowerAdapter extends OmicronAdapter implements
 
 		return mCurrentPowerInMilliwatts;
 	}
-
-
 
 }
