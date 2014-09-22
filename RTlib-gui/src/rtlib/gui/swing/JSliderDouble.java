@@ -243,7 +243,7 @@ public class JSliderDouble extends JPanel
 		mSlider.setMinorTickSpacing(pResolution / 100);
 		mSlider.setPaintTicks(true);
 
-		mMinusStepButton = new JButton("–");
+		mMinusStepButton = new JButton("\u2013");
 		add(mMinusStepButton, BorderLayout.WEST);
 		mMinusStepButton.addActionListener((e) -> {
 			double lStep = max(mStep, mQuanta);
