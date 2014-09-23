@@ -19,6 +19,12 @@ sourceSets
   }
 }
 
+configurations.all 
+{
+  // check for updates every build
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies 
 {
     compile project(':RTlib-core')
