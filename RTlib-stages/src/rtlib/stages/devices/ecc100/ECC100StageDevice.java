@@ -39,7 +39,6 @@ public class ECC100StageDevice extends NamedVirtualDevice	implements
 	private BiMap<String, ECC100Axis> mNameToAxisMap = HashBiMap.create();
 	private BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
 
-
 	public ECC100StageDevice()
 	{
 		super("ECC100");
@@ -51,88 +50,87 @@ public class ECC100StageDevice extends NamedVirtualDevice	implements
 	{
 		boolean lStart = super.open();
 
-		if (lStart)
+		if (!lStart)
+			return false;
+
+		if (mECC100Controller.open())
 		{
+			MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
-			if (mECC100Controller.open())
+			Collection<Integer> lDeviceIdList = mECC100Controller.getDeviceIdList();
+			if (lDeviceIdList.size() == 0)
+				return false;
+
+			int lDOFIndex = 0;
+
+			for (int lDeviceId : lDeviceIdList)
 			{
-				MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
-
-				Collection<Integer> lDeviceIdList = mECC100Controller.getDeviceIdList();
-				if (lDeviceIdList.size() == 0)
-					return false;
-
-				int lDOFIndex = 0;
-
-				for (int lDeviceId : lDeviceIdList)
+				for (int axis = 0; axis < 3; axis++)
 				{
-					for (int axis = 0; axis < 3; axis++)
+					ECC100Axis lAxis = mECC100Controller.getAxis(	lDeviceId,
+																												axis);
+
+					String lDeviceConfigString = "device.stage.ecc100." + lDeviceId
+																				+ "."
+																				+ axis;
+					System.out.println("Found device: " + lDeviceConfigString);
+					String lDeviceName = lCurrentMachineConfiguration.getStringProperty(lDeviceConfigString,
+																																							"");
+					if (!lDeviceName.isEmpty())
 					{
-						ECC100Axis lAxis = mECC100Controller.getAxis(	lDeviceId,
-																													axis);
-
-						String lDeviceConfigString = "device.stage.ecc100." + lDeviceId
-																					+ "."
-																					+ axis;
-						String lDeviceName = lCurrentMachineConfiguration.getStringProperty(lDeviceConfigString,
-																																								"");
-						if (!lDeviceName.isEmpty())
-						{
-							mIndexToAxisMap.put(lDOFIndex, lAxis);
-							mNameToAxisMap.put(lDeviceName, lAxis);
-							mIndexToNameMap.put(lDOFIndex, lDeviceName);
-							lDOFIndex++;
-						}
-
+						mIndexToAxisMap.put(lDOFIndex, lAxis);
+						mNameToAxisMap.put(lDeviceName, lAxis);
+						mIndexToNameMap.put(lDOFIndex, lDeviceName);
+						lDOFIndex++;
 					}
+
 				}
+			}
 
-				final int lNumberOfDofs = lDOFIndex;
+			final int lNumberOfDofs = lDOFIndex;
 
-				mEnableVariables = new BooleanVariable[lNumberOfDofs];
-				mReadyVariables = new BooleanVariable[lNumberOfDofs];
-				mHomingVariables = new BooleanVariable[lNumberOfDofs];
-				mStopVariables = new BooleanVariable[lNumberOfDofs];
-				mResetVariables = new BooleanVariable[lNumberOfDofs];
-				mPositionVariables = new DoubleVariable[lNumberOfDofs];
-				mMinPositionVariables = new DoubleVariable[lNumberOfDofs];
-				mMaxPositionVariables = new DoubleVariable[lNumberOfDofs];
+			mEnableVariables = new BooleanVariable[lNumberOfDofs];
+			mReadyVariables = new BooleanVariable[lNumberOfDofs];
+			mHomingVariables = new BooleanVariable[lNumberOfDofs];
+			mStopVariables = new BooleanVariable[lNumberOfDofs];
+			mResetVariables = new BooleanVariable[lNumberOfDofs];
+			mPositionVariables = new DoubleVariable[lNumberOfDofs];
+			mMinPositionVariables = new DoubleVariable[lNumberOfDofs];
+			mMaxPositionVariables = new DoubleVariable[lNumberOfDofs];
 
-				for (int dof = 0; dof < lNumberOfDofs; dof++)
-				{
-					ECC100Axis lEcc100Axis = mIndexToAxisMap.get(dof);
+			for (int dof = 0; dof < lNumberOfDofs; dof++)
+			{
+				ECC100Axis lEcc100Axis = mIndexToAxisMap.get(dof);
 
-					mEnableVariables[dof] = new EnableVariable(	"Enable" + mIndexToNameMap.get(dof),
-																											lEcc100Axis);
-
-					mReadyVariables[dof] = new ReadyVariable(	"Ready" + mIndexToNameMap.get(dof),
+				mEnableVariables[dof] = new EnableVariable(	"Enable" + mIndexToNameMap.get(dof),
 																										lEcc100Axis);
 
-					mHomingVariables[dof] = new HomingVariable(	"Homing" + mIndexToNameMap.get(dof),
-																											lEcc100Axis);
-
-					mStopVariables[dof] = new StopVariable(	"Stop" + mIndexToNameMap.get(dof),
+				mReadyVariables[dof] = new ReadyVariable(	"Ready" + mIndexToNameMap.get(dof),
 																									lEcc100Axis);
 
-					mResetVariables[dof] = new ResetVariable(	"Reset" + mIndexToNameMap.get(dof),
+				mHomingVariables[dof] = new HomingVariable(	"Homing" + mIndexToNameMap.get(dof),
 																										lEcc100Axis);
 
-					mPositionVariables[dof] = new PositionVariable(	"Position" + mIndexToNameMap.get(dof),
-																													lEcc100Axis);
+				mStopVariables[dof] = new StopVariable(	"Stop" + mIndexToNameMap.get(dof),
+																								lEcc100Axis);
 
-					mMinPositionVariables[dof] = new MinPositionVariable(	"MinPosition" + mIndexToNameMap.get(dof),
-																																lEcc100Axis);
+				mResetVariables[dof] = new ResetVariable(	"Reset" + mIndexToNameMap.get(dof),
+																									lEcc100Axis);
 
-					mMinPositionVariables[dof] = new MaxPositionVariable(	"MaxPosition" + mIndexToNameMap.get(dof),
-																																lEcc100Axis);
-				}
+				mPositionVariables[dof] = new PositionVariable(	"Position" + mIndexToNameMap.get(dof),
+																												lEcc100Axis);
 
+				mMinPositionVariables[dof] = new MinPositionVariable(	"MinPosition" + mIndexToNameMap.get(dof),
+																															lEcc100Axis);
 
-				return true;
+				mMinPositionVariables[dof] = new MaxPositionVariable(	"MaxPosition" + mIndexToNameMap.get(dof),
+																															lEcc100Axis);
 			}
-			return false;
+
+			return true;
 		}
-		return lStart;
+		return false;
+
 	}
 
 	@Override
