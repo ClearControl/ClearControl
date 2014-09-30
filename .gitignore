@@ -5,6 +5,11 @@ old/
 .project
 .settings/
 .gradle/
+gradle/
+gradlew
+gradlew.*
+.idea
+*.iml
 *.class
 hs_err_pid*
 .DS_Store
