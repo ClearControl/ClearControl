@@ -10,7 +10,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.stack.Stack;
-import clearvolume.renderer.jcuda.JCudaClearVolumeRenderer;
+import clearvolume.renderer.clearcuda.JCudaClearVolumeRenderer;
 import clearvolume.transfertf.TransfertFunctions;
 
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements

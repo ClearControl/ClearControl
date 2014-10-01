@@ -30,7 +30,7 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-stack')
 
-    compile group: "royer", name: "ClearVolume", version: "3.+", changing: true
+    compile group: "royer", name: "ClearVolume", version: "1.+", changing: true
 }
 
 repositories 
