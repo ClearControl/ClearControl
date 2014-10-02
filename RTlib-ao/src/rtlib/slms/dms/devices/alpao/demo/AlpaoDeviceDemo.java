@@ -28,29 +28,7 @@ public class AlpaoDeviceDemo
 	private volatile boolean mReceivedStack = false;
 	private volatile Stack<Character> mNewStack;
 
-	@Test
-	public void simpledemo() throws IOException, InterruptedException
-	{
-		AlpaoDMDevice lAlpaoDevice = new AlpaoDMDevice(1);
-		lAlpaoDevice.open();
 
-		lAlpaoDevice.start();
-
-		lAlpaoDevice.
-
-		lAlpaoDevice.stop();
-
-		lAlpaoDevice.close();
-
-	}
-
-	/**
-	 * First start the Mirao52 UDP server on the localhost and then fire this
-	 * demo.
-	 * 
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
 	@Test
 	public void demo() throws IOException, InterruptedException
 	{

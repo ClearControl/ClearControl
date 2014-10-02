@@ -80,7 +80,6 @@ subprojects
         testCompile group: 'junit', name: 'junit', version: '4.+'
 
         compile fileTree(dir: '../Libs/jmathplot', include: '*.jar')
-        compile fileTree(dir: '../Libs/jogamp', include: '*.jar')
         compile fileTree(dir: '../Libs/jcuda', include: '*.jar')
     }
     
