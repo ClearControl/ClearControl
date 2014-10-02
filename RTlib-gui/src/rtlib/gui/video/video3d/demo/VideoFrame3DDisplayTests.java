@@ -1,4 +1,4 @@
-package rtlib.gui.video.video3d.test;
+package rtlib.gui.video.video3d.demo;
 
 import java.nio.ByteBuffer;
 
@@ -12,7 +12,7 @@ public class VideoFrame3DDisplayTests
 {
 
 	@Test
-	public void test() throws InterruptedException
+	public void demo() throws InterruptedException
 	{
 
 		final int lResolutionX = 512;

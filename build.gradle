@@ -3,6 +3,7 @@ subprojects
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
 
     sourceCompatibility = 1.8
@@ -48,24 +49,6 @@ subprojects
         compile 'java3d:vecmath:1.3.1'
         compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
         compile 'com.miglayout:miglayout:3.7.4'
-
-
-        //compile 'org.jogamp.gluegen:gluegen-rt-main:2.1.5-01'
-        //compile 'org.jogamp.jogl:jogl-all:2.1.5-01'
-        //compile 'org.jogamp.jocl:jocl:2.1.5-01'
-        //compile 'org.jogamp.joal:joal:2.1.5-01'
-        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-linux-i586"
-        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-linux-amd64"
-        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-windows-i586"
-        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-windows-amd64"
-        //runtime "org.jogamp.jogl:jogl-all:2.1.5-01:natives-macosx-universal"
-
-        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-linux-i586"
-        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-linux-amd64"
-        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-windows-i586"
-        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-windows-amd64"
-        //runtime "org.jogamp.gluegen:gluegen-rt:2.1.5-01:natives-macosx-universal"
-
 
         compile 'net.openhft:compiler:2.1'
         compile 'net.openhft:lang:6.3.5'
