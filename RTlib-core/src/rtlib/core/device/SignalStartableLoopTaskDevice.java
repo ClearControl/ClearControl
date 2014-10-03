@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
+import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
@@ -20,6 +21,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	private final SignalStartableLoopTaskDevice lThis;
 	private TimeUnit mTimeUnit;
 	private final DoubleVariable mLoopPeriodVariable;
+	private final BooleanVariable mIsRunningVariable;
 	private volatile ScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
@@ -32,6 +34,9 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		mLoopPeriodVariable = new DoubleVariable(	pDeviceName + "LoopPeriodIn"
 																									+ pTimeUnit.name(),
 																							0);
+
+		mIsRunningVariable = new BooleanVariable(	pDeviceName + "IsRunning",
+																							false);
 
 		lThis = this;
 	}
@@ -58,7 +63,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 																						(long) 1,
 																						TimeUnit.NANOSECONDS);
 
-		return mScheduledFuture != null;
+		boolean lStarted = mScheduledFuture != null;
+
+		mIsRunningVariable.setValue(lStarted);
+
+		return lStarted;
 	}
 
 	public boolean pause()
@@ -78,6 +87,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		try
 		{
 			boolean lStopScheduledThreadPoolAndWaitForCompletion = stopScheduledThreadPoolAndWaitForCompletion();
+			mIsRunningVariable.setValue(false);
 			return lStopScheduledThreadPoolAndWaitForCompletion;
 		}
 		catch (ExecutionException e)
@@ -100,6 +110,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	public DoubleVariable getLoopPeriodVariable()
 	{
 		return mLoopPeriodVariable;
+	}
+
+	public BooleanVariable getIsRunningVariable()
+	{
+		return mIsRunningVariable;
 	}
 
 }

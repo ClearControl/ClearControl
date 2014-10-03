@@ -6,15 +6,14 @@ import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 
-public abstract class SpatialPhaseModulatorDevice extends
-																						SignalStartableDevice	implements
-																																	VirtualDeviceInterface
+public abstract class SpatialPhaseModulatorDevice	extends
+																									SignalStartableDevice	implements
+																																				VirtualDeviceInterface
 {
 	protected DoubleVariable mMatrixWidthVariable;
 	protected DoubleVariable mMatrixHeightVariable;
 	protected DoubleVariable mActuatorResolutionVariable;
 	protected DoubleVariable mNumberOfActuatorsVariable;
-
 
 	protected ObjectVariable<NDArrayTyped<Double>> mMatrixVariable;
 
@@ -48,6 +47,8 @@ public abstract class SpatialPhaseModulatorDevice extends
 		return mMatrixVariable;
 	}
 
+	public abstract void flatten();
 
+	public abstract long getRelaxationTimeInMilliseconds();
 
 }

@@ -265,6 +265,8 @@ public class Serial implements SerialInterface
 
 	public boolean isConnected()
 	{
+		if (mSerialPort == null)
+			return false;
 		return mSerialPort.isOpened();
 	}
 

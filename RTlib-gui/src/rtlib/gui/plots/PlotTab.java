@@ -77,7 +77,14 @@ public class PlotTab
 					{
 						if (!mUpToDate)
 						{
-							mPlot.removeAllPlots();
+							try
+							{
+								mPlot.removeAllPlots();
+							}
+							catch (Throwable e)
+							{
+								System.err.println(e.getLocalizedMessage());
+							}
 
 							for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
 							{
@@ -112,6 +119,7 @@ public class PlotTab
 					}
 					catch (final Throwable e)
 					{
+						e.printStackTrace();
 						System.err.println(PlotTab.class.getSimpleName() + ": "
 																+ e.getLocalizedMessage());
 					}

@@ -79,6 +79,12 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 	}
 
 	@Override
+	public void flatten()
+	{
+		mAlpaoDeformableMirror.sendFlatMirrorShapeVector();
+	}
+
+	@Override
 	public boolean stop()
 	{
 		return true;
@@ -98,6 +104,12 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 			error("AO", lErrorString);
 			return false;
 		}
+	}
+
+	@Override
+	public long getRelaxationTimeInMilliseconds()
+	{
+		return 1;
 	}
 
 }

@@ -14,7 +14,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 {
 	private static final int cFullMatrixWidthHeight = 8;
 	private static final int cActuatorResolution = 2 << 14;
-	
+
 	private Mirao52eDeformableMirror mMirao52eDeformableMirror;
 	private String mHostname;
 	private int mPort;
@@ -29,15 +29,15 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
 																											(double) cActuatorResolution);
 		mNumberOfActuatorsVariable = new DoubleVariable("NumberOfActuators",
-																											(double) cActuatorResolution);
-		
+																										(double) cActuatorResolution);
+
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
 		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
 		{
 			@Override
 			public NDArrayTyped<Double> setEventHook(	final NDArrayTyped<Double> pOldValue,
-																	final NDArrayTyped<Double> pNewValue)
+																								final NDArrayTyped<Double> pNewValue)
 			{
 				if (mMirao52eDeformableMirror.isOpen())
 					mMirao52eDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.getBridJPointer(Double.class));
@@ -46,7 +46,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 			}
 
 		};
-		
+
 	}
 
 	@Override
@@ -73,6 +73,12 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 	}
 
 	@Override
+	public void flatten()
+	{
+		mMirao52eDeformableMirror.sendFlatMirrorShapeVector();
+	}
+
+	@Override
 	public boolean stop()
 	{
 		return true;
@@ -94,8 +100,10 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 		}
 	}
 
-
-
-	
+	@Override
+	public long getRelaxationTimeInMilliseconds()
+	{
+		return 5;
+	}
 
 }

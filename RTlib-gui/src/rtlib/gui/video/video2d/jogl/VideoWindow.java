@@ -9,6 +9,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
 import javax.media.opengl.GL2ES2;
 import javax.media.opengl.GL2GL3;
+import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
@@ -497,7 +498,7 @@ public class VideoWindow implements Closeable
 													0,
 													(int) mVideoWidth,
 													(int) mVideoHeight,
-													GL.GL_LUMINANCE,
+													GL3.GL_RED,
 													GL.GL_UNSIGNED_BYTE,
 													pNewContentBuffer);
 		reportError(pGL2);
