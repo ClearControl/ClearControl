@@ -1,6 +1,5 @@
 package rtlib.core.file;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,7 +9,7 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
-public class FileEventNotifier implements Closeable
+public class FileEventNotifier implements AutoCloseable
 {
 
 	private static final long cDefaultMonitoringPeriodInMilliseconds = 100;

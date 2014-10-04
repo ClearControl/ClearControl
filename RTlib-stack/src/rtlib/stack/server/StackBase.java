@@ -3,7 +3,6 @@ package rtlib.stack.server;
 import gnu.trove.map.hash.TLongDoubleHashMap;
 import gnu.trove.map.hash.TLongLongHashMap;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -11,7 +10,7 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
-public abstract class StackBase<T> implements Closeable
+public abstract class StackBase<T> implements AutoCloseable
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();

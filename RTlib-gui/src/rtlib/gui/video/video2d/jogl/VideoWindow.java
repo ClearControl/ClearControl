@@ -1,6 +1,5 @@
 package rtlib.gui.video.video2d.jogl;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
@@ -30,7 +29,7 @@ import rtlib.kam.memory.ndarray.NDArrayTyped;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.opengl.GLWindow;
 
-public class VideoWindow implements Closeable
+public class VideoWindow implements AutoCloseable
 {
 
 	private final GLWindow mGLWindow;
@@ -217,8 +216,8 @@ public class VideoWindow implements Closeable
 					lGL2.glTexImage2D(GL.GL_TEXTURE_2D,
 														0,
 														GL.GL_LUMINANCE,
-														(int) mVideoMaxWidth,
-														(int) mVideoMaxHeight,
+														mVideoMaxWidth,
+														mVideoMaxHeight,
 														0,
 														GL.GL_LUMINANCE,
 														GL.GL_UNSIGNED_BYTE,
@@ -278,8 +277,8 @@ public class VideoWindow implements Closeable
 						return;
 					}
 
-					final int lWidth = (int) mVideoWidth;
-					final int lHeight = (int) mVideoHeight;
+					final int lWidth = mVideoWidth;
+					final int lHeight = mVideoHeight;
 
 					final GL2 lGL2 = glautodrawable.getGL().getGL2();
 
@@ -496,8 +495,8 @@ public class VideoWindow implements Closeable
 													0,
 													0,
 													0,
-													(int) mVideoWidth,
-													(int) mVideoHeight,
+													mVideoWidth,
+													mVideoHeight,
 													GL3.GL_RED,
 													GL.GL_UNSIGNED_BYTE,
 													pNewContentBuffer);
@@ -527,8 +526,8 @@ public class VideoWindow implements Closeable
 													0,
 													0,
 													0,
-													(int) mVideoMaxWidth,
-													(int) mVideoMaxHeight,
+													mVideoMaxWidth,
+													mVideoMaxHeight,
 													GL.GL_LUMINANCE,
 													GL.GL_UNSIGNED_BYTE,
 													0);

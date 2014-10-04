@@ -1,6 +1,5 @@
 package rtlib.core.memory.map;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -8,7 +7,7 @@ import rtlib.core.memory.NativeMemoryAccess;
 import rtlib.core.rgc.Cleanable;
 import rtlib.core.rgc.Cleaner;
 
-public class MemoryMappedFile implements Closeable, Cleanable
+public class MemoryMappedFile implements AutoCloseable, Cleanable
 {
 
 	
