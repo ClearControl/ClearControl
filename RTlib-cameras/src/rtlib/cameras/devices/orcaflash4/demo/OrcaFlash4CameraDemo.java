@@ -117,14 +117,18 @@ public class OrcaFlash4CameraDemo
 	public void testDisplayVideo() throws InterruptedException,
 																IOException
 	{
-		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
-																																						256,
-																																						256,
-																																						1);
+		final int lWidth = 256;
+		final int lHeight = 256;
 
-		final VideoWindow lVideoWindow = new VideoWindow(	"VideoWindow test",
-																											(int) lNDArrayDirect.getSizeAlongDimension(1),
-																											(int) lNDArrayDirect.getSizeAlongDimension(2));
+		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
+																																											lWidth,
+																																											lHeight,
+																																											1);
+
+		final VideoWindow<Short> lVideoWindow = new VideoWindow<Short>(	"VideoWindow test",
+																																		Short.class,
+																																		lWidth,
+																																		lHeight);
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setSourceBuffer(lNDArrayDirect);
 		lVideoWindow.setVisible(true);
@@ -138,7 +142,7 @@ public class OrcaFlash4CameraDemo
 
 														@Override
 														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
-																															final Stack<Character> pNewStack)
+																																	final Stack<Character> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -150,7 +154,7 @@ public class OrcaFlash4CameraDemo
 
 															lVideoWindow.setSourceBuffer(pNewStack.getNDArray());
 															lVideoWindow.notifyNewFrame();
-															lVideoWindow.display();/**/
+															lVideoWindow.requestDisplay();/**/
 
 															mFrameIndex.incrementAndGet();
 															return super.setEventHook(pOldStack,

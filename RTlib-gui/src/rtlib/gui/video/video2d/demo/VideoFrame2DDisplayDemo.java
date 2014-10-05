@@ -63,10 +63,9 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		mcontentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(mcontentPane);
 
-		final Stack2DDisplay<Byte> lVideoDisplayDevice = new Stack2DDisplay<Byte>(512,
-																																												512);
-		lVideoDisplayDevice.setLinearInterpolation(true);
-		lVideoDisplayDevice.setSyncToRefresh(false);
+		final Stack2DDisplay<Byte> lVideoDisplayDevice = new Stack2DDisplay<Byte>(Byte.class,
+																																							512,
+																																							512);
 		lVideoDisplayDevice.setVisible(true);
 
 		final ObjectVariable<Stack<Byte>> lFrameVariable = lVideoDisplayDevice.getFrameReferenceVariable();

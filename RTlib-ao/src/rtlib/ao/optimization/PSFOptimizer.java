@@ -56,7 +56,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 										mNewStack = pNewStack;
 										mCameraVideoWindow.setSourceBuffer(pNewStack.getNDArray());
 										mCameraVideoWindow.notifyNewFrame();
-										mCameraVideoWindow.display();/**/
+										mCameraVideoWindow.requestDisplay();/**/
 
 										return super.setEventHook(pOldStack, pNewStack);
 									}
@@ -207,7 +207,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		// .getValue()) == lStartValueForLastNumberOfShapes + i);
 
 		mDMShapeVideoWindow.notifyNewFrame();
-		mDMShapeVideoWindow.display();/**/
+		mDMShapeVideoWindow.requestDisplay();/**/
 		Thread.sleep(5);
 		mStackCamera.trigger();
 		while (!mReceivedStack)
@@ -262,7 +262,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		// .getValue()) == lStartValueForLastNumberOfShapes + i);
 
 		mDMShapeVideoWindow.notifyNewFrame();
-		mDMShapeVideoWindow.display();/**/
+		mDMShapeVideoWindow.requestDisplay();/**/
 		Thread.sleep(5);
 		mStackCamera.trigger();
 		while (!mReceivedStack)

@@ -1,6 +1,8 @@
 package rtlib.gui.video.video2d.jogl;
 
-import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
 
 import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.event.MouseAdapter;
@@ -26,7 +28,6 @@ class MouseControl extends MouseAdapter implements MouseListener
 		mVideoWindow = pVideoWindow;
 	}
 
-
 	@Override
 	public void mouseDragged(final MouseEvent pMouseEvent)
 	{
@@ -42,24 +43,48 @@ class MouseControl extends MouseAdapter implements MouseListener
 				&& pMouseEvent.isButtonDown(1))
 		{
 
-			final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
-			final double ny = ((double) mVideoWindow.getWindowHeight() - (double) pMouseEvent.getY()) / mVideoWindow.getWindowHeight();
+			final double nx = getNormalizedX(pMouseEvent);
+			final double ny = getNormalizedY(pMouseEvent);
+
+			final double lMin = pow(nx, 2);
+			final double lMax = pow(1 - ny, 2);
+
+			System.out.println("lMin=" + lMin);
+			System.out.println("lMax=" + lMax);
 
 			mVideoWindow.setManualMinMax(true);
-			mVideoWindow.setMinIntensity(abs(Math.pow(nx, 3)));
-			mVideoWindow.setMaxIntensity(abs(Math.pow(ny, 3)));
+			mVideoWindow.setMinIntensity(lMin);
+			mVideoWindow.setMaxIntensity(lMax);
 
+			mVideoWindow.requestDisplay();
 		}
 
 		if (pMouseEvent.isShiftDown() && !pMouseEvent.isControlDown()
 				&& pMouseEvent.isButtonDown(1))
 		{
+			final double nx = getNormalizedX(pMouseEvent);
 
-			final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
-
-			mVideoWindow.setGamma(Math.tan(Math.PI * nx / 2));
-
+			double lGamma = Math.tan(0.5 * Math.PI * nx);
+			mVideoWindow.setGamma(lGamma);
 		}
+	}
+
+	private double getNormalizedX(final MouseEvent pMouseEvent)
+	{
+		final double lWindowWidth = mVideoWindow.getWindowWidth();
+		final double lMouseX = max(	0,
+																min(lWindowWidth, pMouseEvent.getX()));
+		final double nx = lMouseX / lWindowWidth;
+		return nx;
+	}
+
+	private double getNormalizedY(final MouseEvent pMouseEvent)
+	{
+		final double lWindowHeight = mVideoWindow.getWindowHeight();
+		final double lMouseY = max(	0,
+																min(lWindowHeight, pMouseEvent.getY()));
+		final double ny = lMouseY / lWindowHeight;
+		return ny;
 	}
 
 	@Override

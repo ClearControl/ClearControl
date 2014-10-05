@@ -36,24 +36,28 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 
 	private Object mReleaseLock = new Object();
 
-	public Stack2DDisplay()
+	public Stack2DDisplay(Class<T> pType)
 	{
-		this("2D Video Display", 512, 512, 1);
+		this("2D Video Display", pType, 512, 512, 1);
 	}
 
-	public Stack2DDisplay(final int pVideoWidth, final int pVideoHeight)
-	{
-		this("2D Video Display", pVideoWidth, pVideoHeight, 10);
-	}
-
-	public Stack2DDisplay(final String pWindowName,
+	public Stack2DDisplay(Class<T> pType,
 												final int pVideoWidth,
 												final int pVideoHeight)
 	{
-		this(pWindowName, pVideoWidth, pVideoHeight, 10);
+		this("2D Video Display", pType, pVideoWidth, pVideoHeight, 10);
 	}
 
 	public Stack2DDisplay(final String pWindowName,
+												Class<T> pType,
+												final int pVideoWidth,
+												final int pVideoHeight)
+	{
+		this(pWindowName, pType, pVideoWidth, pVideoHeight, 10);
+	}
+
+	public Stack2DDisplay(final String pWindowName,
+												Class<T> pType,
 												final int pVideoWidth,
 												final int pVideoHeight,
 												final int pUpdaterQueueLength)
@@ -61,6 +65,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		super(pWindowName);
 
 		mVideoWindow = new VideoWindow(	pWindowName,
+																		pType,
 																		pVideoWidth,
 																		pVideoHeight);
 
@@ -194,7 +199,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		mVideoWindow.setHeight((int) lStackHeight);
 
 		mVideoWindow.notifyNewFrame();
-		mVideoWindow.display();
+		mVideoWindow.requestDisplay();
 
 		// synchronized (mReleaseLock)
 		{
@@ -218,11 +223,13 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		}
 	}
 
+	@Override
 	public ObjectVariable<Stack<T>> getOutputStackVariable()
 	{
 		return mOutputStackVariable;
 	}
 
+	@Override
 	public void setOutputStackVariable(ObjectVariable<Stack<T>> pOutputStackVariable)
 	{
 		mOutputStackVariable = pOutputStackVariable;
@@ -258,15 +265,6 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		mVideoWindow.setVisible(pIsVisible);
 	}
 
-	public void setLinearInterpolation(final boolean pLinearInterpolation)
-	{
-		mVideoWindow.setLinearInterpolation(pLinearInterpolation);
-	}
-
-	public void setSyncToRefresh(final boolean pSyncToRefresh)
-	{
-		mVideoWindow.setSyncToRefresh(pSyncToRefresh);
-	}
 
 	@Override
 	public boolean open()

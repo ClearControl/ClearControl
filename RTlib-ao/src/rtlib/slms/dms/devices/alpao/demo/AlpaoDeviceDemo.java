@@ -68,7 +68,7 @@ public class AlpaoDeviceDemo
 										mNewStack = pNewStack;
 										lCameraVideoWindow.setSourceBuffer(pNewStack.getNDArray());
 										lCameraVideoWindow.notifyNewFrame();
-										lCameraVideoWindow.display();/**/
+										lCameraVideoWindow.requestDisplay();/**/
 
 										return super.setEventHook(pOldStack, pNewStack);
 									}
@@ -138,7 +138,7 @@ public class AlpaoDeviceDemo
 			// .getValue()) == lStartValueForLastNumberOfShapes + i);
 
 			lDMShapeVideoWindow.notifyNewFrame();
-			lDMShapeVideoWindow.display();/**/
+			lDMShapeVideoWindow.requestDisplay();/**/
 			Thread.sleep(5);
 			pStackCamera.trigger();
 			while (!mReceivedStack)

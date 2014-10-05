@@ -50,13 +50,14 @@ public class Mirao52eDeviceDemo
 																																						IOException
 	{
 		final NDArrayTypedDirect<Character> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Character.class,
-																																											128,
-																																											128,
-																																											1);
+																																													128,
+																																													128,
+																																													1);
 
-		final VideoWindow lCameraVideoWindow = new VideoWindow(	"Camera image",
-																														(int) lNDArrayDirect.getSizeAlongDimension(1),
-																														(int) lNDArrayDirect.getSizeAlongDimension(2));
+		final VideoWindow<Character> lCameraVideoWindow = new VideoWindow<Character>(	"Camera image",
+																																									Character.class,
+																																									(int) lNDArrayDirect.getSizeAlongDimension(1),
+																																									(int) lNDArrayDirect.getSizeAlongDimension(2));
 		lCameraVideoWindow.setDisplayOn(true);
 		lCameraVideoWindow.setSourceBuffer(lNDArrayDirect);
 		lCameraVideoWindow.setVisible(true);
@@ -74,7 +75,7 @@ public class Mirao52eDeviceDemo
 										mNewStack = pNewStack;
 										lCameraVideoWindow.setSourceBuffer(pNewStack.getNDArray());
 										lCameraVideoWindow.notifyNewFrame();
-										lCameraVideoWindow.display();/**/
+										lCameraVideoWindow.requestDisplay();/**/
 
 										return super.setEventHook(pOldStack, pNewStack);
 									}
@@ -103,9 +104,10 @@ public class Mirao52eDeviceDemo
 		generateRandomVector(lZernikeVector);
 		MatrixConversions.convertMatrixToNDArray(lZernikeVector, lNDArray);
 
-		final VideoWindow lDMShapeVideoWindow = new VideoWindow("Deformable mirror shape",
-																														8,
-																														8);
+		final VideoWindow<Double> lDMShapeVideoWindow = new VideoWindow<Double>("Deformable mirror shape",
+																																						Double.class,
+																																						8,
+																																						8);
 		lDMShapeVideoWindow.setDisplayOn(true);
 		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
 		lDMShapeVideoWindow.setVisible(true);
@@ -114,7 +116,6 @@ public class Mirao52eDeviceDemo
 		lDMShapeVideoWindow.setMaxIntensity(0.1);
 
 		assertTrue(pDeformableMirrorDevice.open());
-
 
 		assertTrue(pStackCamera.start());
 		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
@@ -132,7 +133,7 @@ public class Mirao52eDeviceDemo
 			// .getValue()) == lStartValueForLastNumberOfShapes + i);
 
 			lDMShapeVideoWindow.notifyNewFrame();
-			lDMShapeVideoWindow.display();/**/
+			lDMShapeVideoWindow.requestDisplay();/**/
 			Thread.sleep(5);
 			pStackCamera.trigger();
 			while (!mReceivedStack)
