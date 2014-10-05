@@ -12,7 +12,7 @@ leveraging the best Java practices and libraries available.
 Current version: 1.0
 
 
-### How do I get set up? ###
+### How to build the project? ###
 
 * Building RTlib
 To build RTlib you need Gradle build tool - http://www.gradle.org/overview
@@ -25,6 +25,10 @@ to build the project:
 To generate eclipse project files:
 
     gradle eclipse
+
+To clean-up modified eclipse project files:
+
+    gradle cleanEclipse
 
 That's it, now you can import all RTlib projects in Eclipse. 
 
