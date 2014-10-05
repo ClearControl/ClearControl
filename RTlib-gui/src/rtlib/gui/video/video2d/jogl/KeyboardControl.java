@@ -13,12 +13,12 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 	/**
 	 * 
 	 */
-	private final VideoWindow mVideoWindow;
+	private final VideoWindow<?> mVideoWindow;
 
 	/**
 	 * @param pJoglVolumeRenderer
 	 */
-	KeyboardControl(final VideoWindow pVideoWindow)
+	KeyboardControl(final VideoWindow<?> pVideoWindow)
 	{
 		mVideoWindow = pVideoWindow;
 	}

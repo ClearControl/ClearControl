@@ -123,7 +123,6 @@ public class VideoFrame2DDisplayDemo extends JFrame
 			{
 				if (sDisplay)
 				{
-					// TODO: get the buffer using KAM source!!
 					generateNoiseBuffer(lFrame.getNDArray());
 					lFrameVariable.setReference(lFrame);
 				}
@@ -148,7 +147,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 		{
 			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
 			final byte lValue = (byte) ((rnd & 0xFF) * sValue); // Math.random()
-			// System.out.print(lValue);
+			// System.out.println(lValue);
 			pNDArrayDirect.setByteAligned(i, lValue);
 		}
 	}

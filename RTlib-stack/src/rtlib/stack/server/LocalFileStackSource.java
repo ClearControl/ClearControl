@@ -99,7 +99,8 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 				final String[] lDimensionsStringArray = lSplittedLine[2].split(", ");
 
 				final int lBytesPerVoxel = Integer.parseInt(lDimensionsStringArray[0]);
-				final Class<?> lType = SizeOf.integralTypeFromSize(lBytesPerVoxel);
+				final Class<?> lType = SizeOf.integralTypeFromSize(	lBytesPerVoxel,
+																														false);
 				final long lWidth = Long.parseLong(lDimensionsStringArray[1]);
 				final long lHeight = Long.parseLong(lDimensionsStringArray[2]);
 				final long lDepth = Long.parseLong(lDimensionsStringArray[3]);

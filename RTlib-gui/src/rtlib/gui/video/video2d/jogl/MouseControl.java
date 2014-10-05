@@ -18,12 +18,12 @@ class MouseControl extends MouseAdapter implements MouseListener
 	/**
 	 * 
 	 */
-	private final VideoWindow mVideoWindow;
+	private final VideoWindow<?> mVideoWindow;
 
 	/**
 	 * @param pJoglVolumeRenderer
 	 */
-	MouseControl(final VideoWindow pVideoWindow)
+	MouseControl(final VideoWindow<?> pVideoWindow)
 	{
 		mVideoWindow = pVideoWindow;
 	}
@@ -49,8 +49,8 @@ class MouseControl extends MouseAdapter implements MouseListener
 			final double lMin = pow(nx, 2);
 			final double lMax = pow(1 - ny, 2);
 
-			System.out.println("lMin=" + lMin);
-			System.out.println("lMax=" + lMax);
+			// System.out.println("lMin=" + lMin);
+			// System.out.println("lMax=" + lMax);
 
 			mVideoWindow.setManualMinMax(true);
 			mVideoWindow.setMinIntensity(lMin);

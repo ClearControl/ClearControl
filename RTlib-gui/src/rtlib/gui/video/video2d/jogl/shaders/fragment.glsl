@@ -15,5 +15,5 @@ void main()
 	float value = texture(texUnit, ftexcoord).x;
 	float mappedvalue = (value-minimum)/(maximum-minimum);
 	float gammavalue = pow(mappedvalue,gamma);
-    outColor = vec4(gammavalue,gammavalue,gammavalue,1);
+	outColor = vec4(gammavalue,gammavalue,gammavalue,1);
 }

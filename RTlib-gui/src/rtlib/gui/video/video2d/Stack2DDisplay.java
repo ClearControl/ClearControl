@@ -18,7 +18,7 @@ import com.jogamp.newt.event.MouseEvent;
 public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
 {
-	private final VideoWindow mVideoWindow;
+	private final VideoWindow<T> mVideoWindow;
 
 	private final ObjectVariable<Stack<T>> mInputStackVariable;
 	private ObjectVariable<Stack<T>> mOutputStackVariable;
@@ -64,7 +64,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 	{
 		super(pWindowName);
 
-		mVideoWindow = new VideoWindow(	pWindowName,
+		mVideoWindow = new VideoWindow<T>(pWindowName,
 																		pType,
 																		pVideoWidth,
 																		pVideoHeight);
@@ -78,7 +78,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 				{
 					final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
 					mStackSliceNormalizedIndex.setValue(nx);
-					// TODO: could be asynchronous for performance
+					// TODO: could be asynchronous for better performance
 					displayStack(mLastReceivedStack, false);
 				}
 
