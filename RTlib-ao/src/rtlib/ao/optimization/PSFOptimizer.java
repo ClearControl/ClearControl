@@ -27,12 +27,12 @@ import rtlib.stack.Stack;
 public class PSFOptimizer implements VirtualDeviceInterface
 {
 	private volatile boolean mReceivedStack = false;
-	private volatile Stack<Short> mNewStack;
-	private StackCameraDeviceBase mStackCamera;
+	private volatile Stack<Character> mNewStack;
+	private StackCameraDeviceBase<Character, Character> mStackCamera;
 	private DeformableMirrorDevice mDeformableMirrorDevice;
-	private VideoWindow mCameraVideoWindow;
+	private VideoWindow<Character> mCameraVideoWindow;
 	private DenseMatrix64F mTransformMatrix;
-	private VideoWindow mDMShapeVideoWindow;
+	private VideoWindow<Double> mDMShapeVideoWindow;
 	private NDArrayTyped<Double> mNDArray;
 	private int mMatrixWidth;
 	private int mMatrixHeight;
@@ -45,12 +45,12 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		mDeformableMirrorDevice = pDeformableMirrorDevice;
 
 		mStackCamera.getStackReferenceVariable()
-								.sendUpdatesTo(new ObjectVariable<Stack<Short>>("Receiver")
+								.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
 								{
 
 									@Override
-									public Stack<Short> setEventHook(	final Stack<Short> pOldStack,
-																										final Stack<Short> pNewStack)
+									public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
+																										final Stack<Character> pNewStack)
 									{
 										mReceivedStack = true;
 										mNewStack = pNewStack;
@@ -68,14 +68,16 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		mMatrixHeight = (int) mDeformableMirrorDevice.getMatrixHeightVariable()
 																									.getValue();
 
-		mCameraVideoWindow = new VideoWindow(	"Camera image",
-																					(int) (pStackCamera.getFrameWidthVariable().getValue()),
-																					(int) (pStackCamera.getFrameWidthVariable().getValue()));
+		mCameraVideoWindow = new VideoWindow<Character>("Camera image",
+																										Character.class,
+																										(int) (pStackCamera.getFrameWidthVariable().getValue()),
+																										(int) (pStackCamera.getFrameWidthVariable().getValue()));
 		mCameraVideoWindow.setDisplayOn(true);
 		mCameraVideoWindow.setVisible(true);
 		mCameraVideoWindow.setManualMinMax(false);
 
-		mDMShapeVideoWindow = new VideoWindow("Deformable mirror shape",
+		mDMShapeVideoWindow = new VideoWindow<Double>("Deformable mirror shape",
+																									Double.class,
 																					mMatrixWidth,
 																					mMatrixHeight);
 		mDMShapeVideoWindow.setDisplayOn(true);
@@ -270,13 +272,12 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		mReceivedStack = false;
 
 		long lVolume = mNewStack.getNDArray().getVolume();
-		NDArrayTypedDirect<Short> lNdArray = mNewStack.getNDArray();
+		NDArrayTypedDirect<Character> lNdArray = mNewStack.getNDArray();
 
 		final long lWidth = lNdArray.getWidth();
 		final long lHeight = lNdArray.getHeight();
 
 		RAM lRAM = mNewStack.getNDArray().getRAM();
-
 
 		float lSum = 0;
 		for (long y = 1; y < lHeight - 1; y++)

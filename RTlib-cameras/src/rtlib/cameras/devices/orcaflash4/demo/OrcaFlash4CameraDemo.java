@@ -120,13 +120,13 @@ public class OrcaFlash4CameraDemo
 		final int lWidth = 256;
 		final int lHeight = 256;
 
-		final NDArrayTypedDirect<Short> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Short.class,
+		final NDArrayTypedDirect<Character> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Character.class,
 																																											lWidth,
 																																											lHeight,
 																																											1);
 
-		final VideoWindow<Short> lVideoWindow = new VideoWindow<Short>(	"VideoWindow test",
-																																		Short.class,
+		final VideoWindow<Character> lVideoWindow = new VideoWindow<Character>(	"VideoWindow test",
+																																						Character.class,
 																																		lWidth,
 																																		lHeight);
 		lVideoWindow.setDisplayOn(true);

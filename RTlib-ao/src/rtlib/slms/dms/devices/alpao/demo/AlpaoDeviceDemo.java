@@ -28,7 +28,6 @@ public class AlpaoDeviceDemo
 	private volatile boolean mReceivedStack = false;
 	private volatile Stack<Character> mNewStack;
 
-
 	@Test
 	public void demo() throws IOException, InterruptedException
 	{
@@ -43,14 +42,18 @@ public class AlpaoDeviceDemo
 														DeformableMirrorDevice pDeformableMirrorDevice)	throws InterruptedException,
 																																						IOException
 	{
+		final int lWidth = 128;
+		final int lHeight = 128;
+
 		final NDArrayTypedDirect<Character> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Character.class,
-																																													128,
-																																													128,
+																																													lWidth,
+																																													lHeight,
 																																													1);
 
-		final VideoWindow lCameraVideoWindow = new VideoWindow(	"Camera image",
-																														(int) lNDArrayDirect.getSizeAlongDimension(1),
-																														(int) lNDArrayDirect.getSizeAlongDimension(2));
+		final VideoWindow<Character> lCameraVideoWindow = new VideoWindow<Character>(	"Camera image",
+																																									Character.class,
+																																									lWidth,
+																																									lHeight);
 		lCameraVideoWindow.setDisplayOn(true);
 		lCameraVideoWindow.setSourceBuffer(lNDArrayDirect);
 		lCameraVideoWindow.setVisible(true);
@@ -77,7 +80,6 @@ public class AlpaoDeviceDemo
 
 		assertTrue(pStackCamera.open());
 
-
 		pStackCamera.getExposureInMicrosecondsVariable().setValue(100000);
 		pStackCamera.getFrameWidthVariable()
 								.setValue(lNDArrayDirect.getSizeAlongDimension(1));
@@ -89,19 +91,18 @@ public class AlpaoDeviceDemo
 		assertTrue(pDeformableMirrorDevice.open());
 
 		int lNumberOfActuators = (int) pDeformableMirrorDevice.getNumberOfActuatorVariable()
-		.getValue();
+																													.getValue();
 
 		int lDMWidth = (int) pDeformableMirrorDevice.getMatrixWidthVariable()
 																								.getValue();
 		int lDMHeight = (int) pDeformableMirrorDevice.getMatrixHeightVariable()
 																									.getValue();
-		
+
 		int lMatrixSize = lDMWidth * lDMHeight;
 
 		DenseMatrix64F lTransformMatrix = TransformMatrices.computeCosineTransformMatrix(lDMWidth);
 
-		DenseMatrix64F lZernikeVector = new DenseMatrix64F(	lMatrixSize,
-																												1);
+		DenseMatrix64F lZernikeVector = new DenseMatrix64F(lMatrixSize, 1);
 		NDArrayTypedDirect<Double> lNDArray = NDArrayTypedDirect.allocateTXYZ(Double.TYPE,
 																																					lDMWidth,
 																																					lDMHeight,
@@ -109,17 +110,16 @@ public class AlpaoDeviceDemo
 		generateRandomVector(lZernikeVector);
 		MatrixConversions.convertMatrixToNDArray(lZernikeVector, lNDArray);
 
-		final VideoWindow lDMShapeVideoWindow = new VideoWindow("Deformable mirror shape",
-																														lDMWidth,
-																														lDMHeight);
+		final VideoWindow<Double> lDMShapeVideoWindow = new VideoWindow<Double>("Deformable mirror shape",
+																																						Double.class,
+																																						lDMWidth,
+																																						lDMHeight);
 		lDMShapeVideoWindow.setDisplayOn(true);
 		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
 		lDMShapeVideoWindow.setVisible(true);
 		lDMShapeVideoWindow.setManualMinMax(true);
 		lDMShapeVideoWindow.setMinIntensity(-0.1);
 		lDMShapeVideoWindow.setMaxIntensity(0.1);
-
-
 
 		assertTrue(pStackCamera.start());
 		lDMShapeVideoWindow.setSourceBuffer(lNDArray);
@@ -129,8 +129,7 @@ public class AlpaoDeviceDemo
 
 			lZernikeVector.set(7, 0.5 * cos(2 * PI * i / 100));
 
-			DenseMatrix64F lShapeVector = new DenseMatrix64F(lMatrixSize,
-																												1);
+			DenseMatrix64F lShapeVector = new DenseMatrix64F(lMatrixSize, 1);
 			CommonOps.mult(lTransformMatrix, lZernikeVector, lShapeVector);
 			MatrixConversions.convertMatrixToNDArray(lShapeVector, lNDArray);
 			pDeformableMirrorDevice.getMatrixReference().set(lNDArray);
