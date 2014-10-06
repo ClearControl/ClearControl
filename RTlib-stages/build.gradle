@@ -30,7 +30,7 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
 
-    compile group: "royer", name: "ECC100J", version: "1.+", changing: true
+    compile group: "royer", name: "ECC100J", version: "1.+", changing: true, transitive: true
 }
 
 repositories 
