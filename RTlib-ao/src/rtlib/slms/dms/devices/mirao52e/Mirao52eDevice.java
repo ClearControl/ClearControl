@@ -73,7 +73,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 	}
 
 	@Override
-	public void flatten()
+	public void zero()
 	{
 		mMirao52eDeformableMirror.sendFlatMirrorShapeVector();
 	}

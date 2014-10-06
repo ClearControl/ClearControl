@@ -47,7 +47,7 @@ public abstract class SpatialPhaseModulatorDevice	extends
 		return mMatrixVariable;
 	}
 
-	public abstract void flatten();
+	public abstract void zero();
 
 	public abstract long getRelaxationTimeInMilliseconds();
 

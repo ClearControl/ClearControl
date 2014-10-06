@@ -55,7 +55,6 @@ class MouseControl extends MouseAdapter implements MouseListener
 			mVideoWindow.setManualMinMax(true);
 			mVideoWindow.setMinIntensity(lMin);
 			mVideoWindow.setMaxIntensity(lMax);
-
 			mVideoWindow.requestDisplay();
 		}
 
@@ -66,6 +65,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 
 			double lGamma = Math.tan(0.5 * Math.PI * nx);
 			mVideoWindow.setGamma(lGamma);
+			mVideoWindow.requestDisplay();
 		}
 	}
 

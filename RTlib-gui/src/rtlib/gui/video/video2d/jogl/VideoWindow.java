@@ -205,7 +205,9 @@ public class VideoWindow<T> implements AutoCloseable
 				final int lBufferWidth = (int) mSourceBuffer.getWidth();
 				final int lBufferHeight = (int) mSourceBuffer.getHeight();
 
-				if (mVideoWidth != lBufferWidth || mVideoHeight != lBufferWidth)
+				if (mVideoWidth != lBufferWidth || mVideoHeight != lBufferHeight
+						|| mTexture.getWidth() != lBufferWidth
+						|| mTexture.getHeight() != lBufferHeight)
 				{
 					mVideoWidth = lBufferWidth;
 					mVideoHeight = lBufferHeight;
@@ -281,7 +283,7 @@ public class VideoWindow<T> implements AutoCloseable
 			private void fastMinMaxSampling(NDArrayTyped<T> pSourceBuffer)
 			{
 				long lLength = pSourceBuffer.getVolume();
-				int lStep = (int) round(cPercentageOfPixelsToSample * lLength);
+				int lStep = (int) (1 + round(cPercentageOfPixelsToSample * lLength));
 				int lStartPixel = (int) round(random() * lStep);
 
 				double lMin = Double.POSITIVE_INFINITY;
@@ -330,11 +332,11 @@ public class VideoWindow<T> implements AutoCloseable
 						lMax = max(lMax, lDoubleAligned);
 					}
 
-				mSampledMinIntensity = 0.9 * mSampledMinIntensity
-																+ 0.1
+				mSampledMinIntensity = 0.97 * mSampledMinIntensity
+																+ 0.03
 																* lMin;
-				mSampledMaxIntensity = 0.9 * mSampledMaxIntensity
-																+ 0.1
+				mSampledMaxIntensity = 0.97 * mSampledMaxIntensity
+																+ 0.03
 																* lMax;
 
 				// System.out.println("mSampledMinIntensity=" + mSampledMinIntensity);
@@ -517,6 +519,11 @@ public class VideoWindow<T> implements AutoCloseable
 		return mManualMinMax;
 	}
 
+	public void setManualMinMax(final boolean pManualMinMax)
+	{
+		mManualMinMax = pManualMinMax;
+	}
+
 	public boolean isDisplayFrameRate()
 	{
 		return mDisplayFrameRate;
@@ -527,10 +534,7 @@ public class VideoWindow<T> implements AutoCloseable
 		mDisplayFrameRate = pDisplayFrameRate;
 	}
 
-	public void setManualMinMax(final boolean pManualMinMax)
-	{
-		mManualMinMax = pManualMinMax;
-	}
+
 
 	public void disableClose()
 	{

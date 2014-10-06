@@ -75,11 +75,12 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 	@Override
 	public boolean start()
 	{
+		zero();
 		return true;
 	}
 
 	@Override
-	public void flatten()
+	public void zero()
 	{
 		mAlpaoDeformableMirror.sendFlatMirrorShapeVector();
 	}
