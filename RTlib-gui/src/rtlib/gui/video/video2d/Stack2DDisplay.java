@@ -56,18 +56,20 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		this(pWindowName, pType, pVideoWidth, pVideoHeight, 10);
 	}
 
+
+
 	public Stack2DDisplay(final String pWindowName,
 												Class<T> pType,
-												final int pVideoWidth,
-												final int pVideoHeight,
+												final int pWindowWidth,
+												final int pWindowHeight,
 												final int pUpdaterQueueLength)
 	{
 		super(pWindowName);
 
 		mVideoWindow = new VideoWindow<T>(pWindowName,
-																		pType,
-																		pVideoWidth,
-																		pVideoHeight);
+																			pType,
+																			pWindowWidth,
+																			pWindowHeight);
 
 		MouseAdapter lMouseAdapter = new MouseAdapter()
 		{
@@ -264,7 +266,6 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 	{
 		mVideoWindow.setVisible(pIsVisible);
 	}
-
 
 	@Override
 	public boolean open()

@@ -75,29 +75,15 @@ public class VideoWindow<T> implements AutoCloseable
 
 	// private GLPixelBufferObject mPixelBufferObject;
 
-	public VideoWindow(	final String pWindowName,
-											final Class<T> pClass,
-											final int pVideoWidth,
-											final int pVideoHeight) throws GLException
-	{
-		this(	pWindowName,
-					pClass,
-					pVideoWidth,
-					pVideoHeight,
-					pVideoWidth,
-					pVideoHeight);
-	}
 
 	public VideoWindow(	final String pWindowName,
 											final Class<T> pClass,
-											final int pVideoWidth,
-											final int pVideoHeight,
 											final int pWindowWidth,
 											final int pWindowHeight) throws GLException
 	{
 		mType = pClass;
-		mVideoWidth = pVideoWidth;
-		mVideoHeight = pVideoHeight;
+		mVideoWidth = pWindowWidth;
+		mVideoHeight = pWindowHeight;
 
 		mClearGLDebugEventListener = new ClearGLDefaultEventListener()
 		{
