@@ -75,14 +75,13 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 					return null;
 				}
 
+				mJCudaClearVolumeRenderer.setVolumeSize(pStack.getVolumePhysicalDimension(0),
+																								pStack.getVolumePhysicalDimension(1),
+																								pStack.getVolumePhysicalDimension(2));
 				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
 																											lWidth,
 																											lHeight,
 																											lDepth);
-				mJCudaClearVolumeRenderer.setVolumeSize(pStack.getVolumePhysicalDimension(0),
-																								pStack.getVolumePhysicalDimension(1),
-																								pStack.getVolumePhysicalDimension(2));
-				mJCudaClearVolumeRenderer.requestDisplay();
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy(	cWaitToCopyTimeInMilliseconds,
 																															TimeUnit.MILLISECONDS);
 
