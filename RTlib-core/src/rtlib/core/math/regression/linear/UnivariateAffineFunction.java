@@ -17,24 +17,24 @@ public class UnivariateAffineFunction implements UnivariateFunction
 		mB = pB;
 	}
 
-	public void setConstant(double pA)
-	{
-		mA = pA;
-	}
-
-	public void setSlope(double pB)
+	public void setConstant(double pB)
 	{
 		mB = pB;
 	}
 
+	public void setSlope(double pA)
+	{
+		mA = pA;
+	}
+
 	public double getConstant()
 	{
-		return mA;
+		return mB;
 	}
 
 	public double getSlope()
 	{
-		return mB;
+		return mA;
 	}
 
 	@Override

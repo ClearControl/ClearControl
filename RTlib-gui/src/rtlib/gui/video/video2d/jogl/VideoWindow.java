@@ -39,6 +39,8 @@ import com.jogamp.newt.opengl.GLWindow;
 public class VideoWindow<T> implements AutoCloseable
 {
 
+	private static final double cEpsilon = 0.01;
+
 	private static final double cPercentageOfPixelsToSample = 0.001;
 
 	private static final int cMipMapLevel = 3;
@@ -51,7 +53,7 @@ public class VideoWindow<T> implements AutoCloseable
 
 	private volatile boolean mIsContextAvailable = false,
 			mIsUpToDate = false, mDisplayFrameRate = true,
-			mDisplayOn = true, mManualMinMax = false;
+			mDisplayOn = true, mManualMinMax = false, mMinMaxFixed = false;
 
 	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
 			mGamma = 1;
@@ -87,6 +89,7 @@ public class VideoWindow<T> implements AutoCloseable
 
 		mClearGLDebugEventListener = new ClearGLDefaultEventListener()
 		{
+
 
 			@Override
 			public void init(final GLAutoDrawable pGLAutoDrawable)
@@ -216,7 +219,8 @@ public class VideoWindow<T> implements AutoCloseable
 
 				if (!mIsUpToDate)
 				{
-					fastMinMaxSampling(mSourceBuffer);
+					if (!mMinMaxFixed)
+						fastMinMaxSampling(mSourceBuffer);
 					Buffer lBuffer = convertBuffer();
 					lBuffer.rewind();
 					mTexture.copyFrom(lBuffer);
@@ -332,11 +336,11 @@ public class VideoWindow<T> implements AutoCloseable
 						lMax = max(lMax, lDoubleAligned);
 					}
 
-				mSampledMinIntensity = 0.97 * mSampledMinIntensity
-																+ 0.03
+				mSampledMinIntensity = (1 - cEpsilon) * mSampledMinIntensity
+																+ cEpsilon
 																* lMin;
-				mSampledMaxIntensity = 0.97 * mSampledMaxIntensity
-																+ 0.03
+				mSampledMaxIntensity = (1 - cEpsilon) * mSampledMaxIntensity
+																+ cEpsilon
 																* lMax;
 
 				// System.out.println("mSampledMinIntensity=" + mSampledMinIntensity);
@@ -522,6 +526,16 @@ public class VideoWindow<T> implements AutoCloseable
 	public void setManualMinMax(final boolean pManualMinMax)
 	{
 		mManualMinMax = pManualMinMax;
+	}
+
+	public boolean isMinMaxFixed()
+	{
+		return mMinMaxFixed;
+	}
+
+	public void setMinMaxFixed(final boolean pMinMaxFixed)
+	{
+		mMinMaxFixed = pMinMaxFixed;
 	}
 
 	public boolean isDisplayFrameRate()
