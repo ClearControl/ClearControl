@@ -62,8 +62,8 @@ public class JSliderDouble extends JPanel
 	public JSliderDouble(	final String pValueName,
 												final double pMin,
 												final double pMax,
-												final double pValue,
-												final double pStep)
+												final double pStep,
+												final double pValue)
 	{
 		this(	pValueName,
 					"%.1f",

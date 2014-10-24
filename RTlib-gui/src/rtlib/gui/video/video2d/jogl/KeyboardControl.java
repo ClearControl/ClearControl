@@ -42,6 +42,10 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 			mVideoWindow.setManualMinMax(false);
 			mVideoWindow.requestDisplay();
 			break;
+		case KeyEvent.VK_F:
+			mVideoWindow.setMinMaxFixed(!mVideoWindow.isMinMaxFixed());
+			mVideoWindow.requestDisplay();
+			break;
 		}
 
 	}

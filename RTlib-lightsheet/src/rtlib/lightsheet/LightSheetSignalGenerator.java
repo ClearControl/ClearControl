@@ -291,11 +291,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 
 				final boolean lIsLocking = mPifoc2LightSheetModel.isNotNull() && lLockLightSheetToPifoc;
 
-				double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
+
 				if (lIsLocking)
 				{
-					lLightSheetZInMicrons = lLightSheetZInMicronsLockedToPifoc;
+					mLightSheetZInMicrons.setValue(lLightSheetZInMicronsLockedToPifoc);
 				}
+				double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
 
 				final double lGalvoYOffsetInNormalizedUnitsBeforeRotation = mMicronsToNormGalvoUnit.getValue() * mLightSheetYInMicrons.getValue();
 				final double lGalvoYOffsetInNormalizedUnitsToY = lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
