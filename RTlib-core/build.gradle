@@ -19,4 +19,9 @@ sourceSets
   }
 }
 
+dependencies 
+{
+    compile group: 'de.mukis', name: 'de.mukis.jama', version: '2.0.0.M1'
+}
+
 

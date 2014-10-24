@@ -26,6 +26,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 {
 
 	private static final long cMinimalNumberOfAvailableStacks = 10;
+	private static final int cMaximalNumberOfAvailableStacks = 20;
 	private static final long cWaitForReycledStackTimeInMicroSeconds = 1;
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
@@ -34,8 +35,10 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private AsynchronousProcessorBase<Stack<Character>, Object> mSendToVariableAsynchronousProcessor;
 
-	private final Recycler<Stack<Character>, StackRequest<Stack<Character>>> m2DStackRecycler = new Recycler<>(Stack.class);
-	private final Recycler<Stack<Character>, StackRequest<Stack<Character>>> m3DStackRecycler = new Recycler<>(Stack.class);
+	private final Recycler<Stack<Character>, StackRequest<Character>> m2DStackRecycler = new Recycler<Stack<Character>, StackRequest<Character>>(	Stack.class,
+																																																																								cMaximalNumberOfAvailableStacks);
+	private final Recycler<Stack<Character>, StackRequest<Character>> m3DStackRecycler = new Recycler<Stack<Character>, StackRequest<Character>>(	Stack.class,
+																																																																								cMaximalNumberOfAvailableStacks);
 
 	private final SingleUpdateTargetObjectVariable<Stack<Character>> mStackReference = new SingleUpdateTargetObjectVariable<Stack<Character>>("Stack");
 
@@ -88,11 +91,11 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		};
 
 		mAsynchronousConversionProcessor = new AsynchronousProcessor<DcamFrame, Stack<Character>>("DcamJToVideoFrameConverter",
-																																													pMaxQueueSize,
-																																													lProcessor);
+																																															pMaxQueueSize,
+																																															lProcessor);
 
 		mSendToVariableAsynchronousProcessor = new AsynchronousProcessorBase<Stack<Character>, Object>(	"SendToVariableAsynchronousProcessor",
-																																																pMaxQueueSize)
+																																																		pMaxQueueSize)
 		{
 			@Override
 			public Object process(final Stack<Character> pStack)
@@ -121,11 +124,11 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			final long lNumberOfImagesPerPlane = (long) mNumberOfImagesPerPlaneVariable.getValue();
 			final long lStackDepthVariable = (long) mStackDepthVariable.getValue();
 
-			final StackRequest<Stack<Character>> lStackRequest = StackRequest.build(char.class,
-																																					1,
-																																					pDcamFrame.getWidth(),
-																																					pDcamFrame.getHeight(),
-																																					lNumberOfImagesPerPlane * lStackDepthVariable);
+			final StackRequest<Character> lStackRequest = StackRequest.build(	Character.class,
+																																							1,
+																																							pDcamFrame.getWidth(),
+																																							pDcamFrame.getHeight(),
+																																							lNumberOfImagesPerPlane * lStackDepthVariable);
 
 			Stack lStack = null;
 			if (lStackDepthVariable == 1)

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import rtlib.core.recycling.RecyclerRequest;
 
-public class StackRequest<O> implements RecyclerRequest<O>
+public class StackRequest<T> implements RecyclerRequest<Stack<T>>
 {
 
 	private final Class<?> mType;
@@ -29,15 +29,15 @@ public class StackRequest<O> implements RecyclerRequest<O>
 		mDimensions = Arrays.copyOf(pDimensions, pDimensions.length);
 	}
 
-	public static <O> StackRequest<Stack<O>> build(	final Class<O> pType,
+	public static <LT> StackRequest<LT> build(final Class<LT> pType,
 																									final long... pDimensions)
 	{
-		return new StackRequest<Stack<O>>(pType, pDimensions);
+		return new StackRequest<LT>(pType, pDimensions);
 	}
 
-	public static <O> StackRequest<Stack<O>> buildFrom(final Stack<O> pStack)
+	public static <LT> StackRequest<LT> buildFrom(final Stack<LT> pStack)
 	{
-		return new StackRequest<Stack<O>>(pStack.getType(),
+		return new StackRequest<LT>(pStack.getType(),
 																			pStack.getDimensions());
 	}
 

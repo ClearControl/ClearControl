@@ -16,14 +16,14 @@ import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ram.RAM;
 
 public class Stack<T> implements
-											RecyclableInterface<Stack<T>, StackRequest<Stack<T>>>,
+											RecyclableInterface<Stack<T>, StackRequest<T>>,
 											NDStructured,
 											Typed<T>,
 											SizedInBytes,
 											Freeable
 {
 
-	private Recycler<Stack<T>, StackRequest<Stack<T>>> mStackRecycler;
+	private Recycler<Stack<T>, StackRequest<T>> mStackRecycler;
 	private volatile boolean mIsReleased;
 
 	private NDArrayTypedDirect<T> mNDArray;
@@ -104,7 +104,7 @@ public class Stack<T> implements
 		{
 			if (mNDArray != null)
 				mNDArray.free();
-			mNDArray = (NDArrayTypedDirect<T>) NDArrayTypedDirect.allocateTXYZ(	pStackRequest.getType(),
+			mNDArray = NDArrayTypedDirect.allocateTXYZ(	pStackRequest.getType(),
 																																pStackRequest.getWidth(),
 																																pStackRequest.getHeight(),
 																																pStackRequest.getDepth());
@@ -248,12 +248,12 @@ public class Stack<T> implements
 	}
 
 	@Override
-	public void setRecycler(final Recycler<Stack<T>, StackRequest<Stack<T>>> pRecycler)
+	public void setRecycler(final Recycler<Stack<T>, StackRequest<T>> pRecycler)
 	{
 		mStackRecycler = pRecycler;
 	}
 
-	public static <T> Stack<T> requestOrWaitWithRecycler(	final Recycler<Stack<T>, StackRequest<Stack<T>>> pRecycler,
+	public static <T> Stack<T> requestOrWaitWithRecycler(	final Recycler<Stack<T>, StackRequest<T>> pRecycler,
 																												final long pWaitTime,
 																												final TimeUnit pTimeUnit,
 																												final Class<?> pType,
@@ -261,7 +261,7 @@ public class Stack<T> implements
 																												final long pHeight,
 																												final long pDepth)
 	{
-		final StackRequest lStackRequest = new StackRequest(pType,
+		final StackRequest<T> lStackRequest = new StackRequest<T>(pType,
 																												1,
 																												pWidth,
 																												pHeight,

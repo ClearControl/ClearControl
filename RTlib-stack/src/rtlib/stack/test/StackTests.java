@@ -20,6 +20,7 @@ import rtlib.stack.StackRequest;
 public class StackTests
 {
 
+	private static final int cMaximumNumberOfAvalableObjects = 1024;
 	private static final long cMAXIMUM_LIVE_MEMORY_IN_BYTES = 2L * 1024L * 1024L * 1024L;
 	private static final long cBytesPerPixel = SizeOf.sizeOf(short.class);
 	private static final long cSizeX = 320;
@@ -86,8 +87,9 @@ public class StackTests
 		final long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
 
 		@SuppressWarnings("rawtypes")
-		final Recycler<Stack<Short>, StackRequest<Stack<Short>>> lRecycler = new Recycler(Stack.class,
-																																											cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+		final Recycler<Stack<Short>, StackRequest<Short>> lRecycler = new Recycler(	Stack.class,
+																																								cMaximumNumberOfAvalableObjects,
+																																								cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
 		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
 																																																Thread.NORM_PRIORITY,

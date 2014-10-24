@@ -41,7 +41,7 @@ public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
-			final StackRequest<Stack<I>> lStackRequest = StackRequest.buildFrom(pStack);
+			final StackRequest<I> lStackRequest = StackRequest.buildFrom(pStack);
 
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
 																				lStackRequest);

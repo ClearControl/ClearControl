@@ -3,7 +3,7 @@ package rtlib.core.recycling;
 import rtlib.core.memory.SizedInBytes;
 import rtlib.core.rgc.Freeable;
 
-public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest>	extends
+public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest<O>> extends
 																																							SizedInBytes,
 																																							Freeable
 {

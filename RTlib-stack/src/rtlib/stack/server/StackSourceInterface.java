@@ -4,16 +4,16 @@ import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
-public interface StackSourceInterface<O>
+public interface StackSourceInterface<T>
 {
 
 	public boolean update();
 
 	public long getNumberOfStacks();
 
-	public void setStackRecycler(Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler);
+	public void setStackRecycler(Recycler<Stack<T>, StackRequest<T>> pStackRecycler);
 
-	public Stack<O> getStack(final long pStackIndex);
+	public Stack<T> getStack(final long pStackIndex);
 
 	public double getStackTimeStampInSeconds(final long pStackIndex);
 

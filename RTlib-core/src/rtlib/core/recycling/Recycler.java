@@ -3,21 +3,21 @@ package rtlib.core.recycling;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import rtlib.core.concurrent.queues.ConcurrentLinkedBlockingQueue;
 import rtlib.core.log.Loggable;
 import rtlib.core.rgc.Freeable;
 
-public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest> implements
+public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest<R>>	implements
 																																											Freeable,
 																																											Loggable
 {
 	private final Class<R> mRecyclableClass;
-	private final ConcurrentLinkedBlockingQueue<SoftReference<R>> mAvailableObjectsQueue = new ConcurrentLinkedBlockingQueue<SoftReference<R>>(Integer.MAX_VALUE);
+	private final ArrayBlockingQueue<SoftReference<R>> mAvailableObjectsQueue;
 	private final ConcurrentLinkedQueue<Long> mAvailableMemoryQueue = new ConcurrentLinkedQueue<Long>();
 
 	private volatile AtomicLong mLiveObjectCounter = new AtomicLong(0);
@@ -26,15 +26,20 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 	private final AtomicBoolean mIsFreed = new AtomicBoolean(false);
 
-	public Recycler(final Class pRecyclableClass)
+	public Recycler(final Class<?> pRecyclableClass,
+									final int pMaximumNumberOfAvailableObjects)
 	{
-		this(pRecyclableClass, Long.MAX_VALUE);
+		this(	pRecyclableClass,
+					pMaximumNumberOfAvailableObjects,
+					Long.MAX_VALUE);
 	}
 
-	public Recycler(final Class pRecyclableClass,
+	public Recycler(final Class<?> pRecyclableClass,
+									final int pMaximumNumberOfAvailableObjects,
 									final long pMaximumLiveMemoryInBytes)
 	{
-		mRecyclableClass = pRecyclableClass;
+		mAvailableObjectsQueue = new ArrayBlockingQueue<SoftReference<R>>(pMaximumNumberOfAvailableObjects);
+		mRecyclableClass = (Class<R>) pRecyclableClass;
 		if (pMaximumLiveMemoryInBytes < 0)
 		{
 			final String lErrorString = "Maximum live memory must be strictly positive!";
@@ -50,7 +55,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		complainIfFreed();
 		final long lNumberOfAvailableObjects = mAvailableObjectsQueue.size();
 		final long lNumberOfObjectsToAllocate = Math.max(	0,
-																										pNumberofPrealocatedRecyclablesNeeded - lNumberOfAvailableObjects);
+																											pNumberofPrealocatedRecyclablesNeeded - lNumberOfAvailableObjects);
 		long i = 1;
 		try
 		{
@@ -141,15 +146,14 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		SoftReference<R> lPolledSoftReference = null;
 		try
 		{
-			lPolledSoftReference = mAvailableObjectsQueue.poll(pWaitTime,
-																																								pTimeUnit);
+			lPolledSoftReference = mAvailableObjectsQueue.poll(	pWaitTime,
+																													pTimeUnit);
 		}
 		catch (InterruptedException e1)
 		{
 		}
 		// System.out.println("requestRecyclableObject.lPolledSoftReference=" +
 		// lPolledSoftReference);
-
 
 		if (lPolledSoftReference == null)
 		{
@@ -194,7 +198,6 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 			return lObtainedReference;
 
 		}
-
 
 		if (!pWait && mLiveMemoryInBytes.get() >= mMaximumLiveMemoryInBytes)
 		{
@@ -262,7 +265,6 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 		return mLiveMemoryInBytes.get();
 	}
 
-
 	public long getNumberOfAvailableObjects()
 	{
 		return mAvailableObjectsQueue.size();
@@ -325,6 +327,5 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	{
 		return mIsFreed.get();
 	}
-
 
 }

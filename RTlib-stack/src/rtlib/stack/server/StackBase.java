@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
 public abstract class StackBase<T> implements AutoCloseable
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
-	protected final HashMap<Long, StackRequest<Stack<T>>> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest<Stack<T>>>();
+	protected final HashMap<Long, StackRequest<T>> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest<T>>();
 
 	public StackBase() throws IOException
 	{

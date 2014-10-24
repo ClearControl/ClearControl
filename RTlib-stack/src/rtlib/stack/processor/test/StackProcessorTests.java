@@ -16,17 +16,20 @@ import rtlib.stack.processor.StackProcessorInterface;
 public class StackProcessorTests
 {
 
+	private static final int cMaximalNumberOfAvailableObjects = 10;
+
 	@Test
 	public void test()
 	{
 		final StackProcessorInterface<Short, Short> lStackProcessor = new StackProcessorBase<Short, Short>("Test")
 		{
 
-			Recycler<Stack<Short>, StackRequest<Stack<Short>>> mRelayRecycler = new Recycler<>(Stack.class);
+			Recycler<Stack<Short>, StackRequest<Short>> mRelayRecycler = new Recycler<Stack<Short>, StackRequest<Short>>(	Stack.class,
+																																													10);
 
 			@Override
 			public Stack<Short> process(final Stack<Short> pStack,
-																	final Recycler<Stack<Short>, StackRequest<Stack<Short>>> pStackRecycler)
+																	final Recycler<Stack<Short>, StackRequest<Short>> pStackRecycler)
 			{
 
 				final StackRequest lStackRequest = StackRequest.build(pStack.getType(),
@@ -46,9 +49,10 @@ public class StackProcessorTests
 
 		};
 
-		final Recycler<Stack<Short>, StackRequest<Stack<Short>>> mStartRecycler = new Recycler<>(Stack.class);
+		final Recycler<Stack<Short>, StackRequest<Short>> mStartRecycler = new Recycler<Stack<Short>, StackRequest<Short>>(	Stack.class,
+																																																												cMaximalNumberOfAvailableObjects);
 
-		final Stack<Short> lStack = mStartRecycler.failOrRequestRecyclableObject((StackRequest<Stack<Short>>) StackRequest.build(	short.class,
+		final Stack<Short> lStack = mStartRecycler.failOrRequestRecyclableObject(StackRequest.build(	short.class,
 																																																															1L,
 																																																															10L,
 																																																															10L,

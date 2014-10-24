@@ -13,14 +13,14 @@ import rtlib.core.units.Magnitudes;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
-public class LocalFileStackSource<O> extends LocalFileStackBase	implements
-																																StackSourceInterface<O>,
+public class LocalFileStackSource<T> extends LocalFileStackBase	implements
+																																StackSourceInterface<T>,
 																																Closeable
 {
 
-	private Recycler<Stack<O>, StackRequest<Stack<O>>> mStackRecycler;
+	private Recycler<Stack<T>, StackRequest<T>> mStackRecycler;
 
-	public LocalFileStackSource(final Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler,
+	public LocalFileStackSource(final Recycler<Stack<T>, StackRequest<T>> pStackRecycler,
 															final File pRootFolder,
 															final String pName) throws IOException
 	{
@@ -37,14 +37,14 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler)
+	public void setStackRecycler(final Recycler<Stack<T>, StackRequest<T>> pStackRecycler)
 	{
 		mStackRecycler = pStackRecycler;
 
 	}
 
 	@Override
-	public Stack<O> getStack(final long pStackIndex)
+	public Stack<T> getStack(final long pStackIndex)
 	{
 		if (mStackRecycler == null)
 		{
@@ -54,9 +54,10 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 		{
 			final long lPositionInFileInBytes = mStackIndexToBinaryFilePositionMap.get(pStackIndex);
 
-			final StackRequest<Stack<O>> lStackRequest = (StackRequest<Stack<O>>) mStackIndexToStackRequestMap.get(pStackIndex);
+			@SuppressWarnings("unchecked")
+			final StackRequest<T> lStackRequest = (StackRequest<T>) mStackIndexToStackRequestMap.get(pStackIndex);
 
-			final Stack<O> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackRequest);
+			final Stack<T> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackRequest);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
 																																					true);
@@ -105,7 +106,7 @@ public class LocalFileStackSource<O> extends LocalFileStackBase	implements
 				final long lHeight = Long.parseLong(lDimensionsStringArray[2]);
 				final long lDepth = Long.parseLong(lDimensionsStringArray[3]);
 
-				final StackRequest lStackRequest = StackRequest.build(lType,
+				final StackRequest<?> lStackRequest = StackRequest.build(	lType,
 																															1,
 																															lWidth,
 																															lHeight,

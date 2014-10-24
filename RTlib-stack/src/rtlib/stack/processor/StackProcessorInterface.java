@@ -4,14 +4,14 @@ import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 
-public interface StackProcessorInterface<I, O>
+public interface StackProcessorInterface<IT, OT>
 {
 
 	public void setActive(boolean pIsActive);
 
 	public boolean isActive();
 
-	public Stack<O> process(Stack<I> pStack,
-													Recycler<Stack<O>, StackRequest<Stack<O>>> pStackRecycler);
+	public Stack<OT> process(	Stack<IT> pStack,
+														Recycler<Stack<OT>, StackRequest<OT>> pStackRecycler);
 
 }

@@ -27,6 +27,7 @@ public class LocalFileStackTests
 	private static final int cSizeY = 2;
 	private static final int cSizeX = 2;
 	private static final int cNumberOfStacks = 10;
+	private static final int cMaximalNumberOfAvailableStacks = 20;
 
 	@Test
 	public void testSinkAndSource() throws IOException
@@ -85,8 +86,8 @@ public class LocalFileStackTests
 		}
 
 		{
-			@SuppressWarnings("rawtypes")
-			final Recycler<Stack<Character>, StackRequest<Stack<Character>>> lStackRecycler = new Recycler(Stack.class);
+			final Recycler<Stack<Character>, StackRequest<Character>> lStackRecycler = new Recycler<Stack<Character>, StackRequest<Character>>(	Stack.class,
+																																																																					cMaximalNumberOfAvailableStacks);
 
 			final LocalFileStackSource<Character> lLocalFileStackSource = new LocalFileStackSource<Character>(lStackRecycler,
 																																																				lRootFolder,
