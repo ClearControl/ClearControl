@@ -26,26 +26,25 @@ public class GPUProgramNDRange extends GPUProgram	implements
 
 	@Override
 	public void execute(String pFunctionName,
-											long[] pRange,
+											int[] pRange,
 											Object... pArgs)
 	{
-		execute(pFunctionName, null, pRange, null, pArgs);
+		execute(pFunctionName, pRange, null, pArgs);
 	}
 
 	@Override
 	public void execute(String pFunctionName,
-											long[] pRangeOffset,
-											long[] pRange,
-											long[] pLocalRange,
+											int[] pRange,
+											int[] pLocalRange,
 											Object... pArgs)
 	{
 		ArrayList<Object> lArgList = new ArrayList<>();
 
-		long lNDRangeVolume = NDRangeUtils.volume(pRange);
+		int lNDRangeVolume = NDRangeUtils.volume(pRange);
 
-		long[] lMaxThreadNDRange = mCLContext.getMaxThreadNDRange();
+		int[] lMaxThreadNDRange = mCLContext.getMaxThreadNDRange();
 
-		long[] lEffectiveNDRange = new long[pRange.length];
+		int[] lEffectiveNDRange = new int[pRange.length];
 
 		for (int i = 0; i < pRange.length; i++)
 			lEffectiveNDRange[i] = Math.min(lMaxThreadNDRange[i], pRange[i]);
@@ -57,17 +56,12 @@ public class GPUProgramNDRange extends GPUProgram	implements
 		if (lRatio != Math.round(lRatio))
 			throw new KernelException("Work volume is not divisible by the max thread volume");
 
-		if (pRangeOffset == null)
-			lArgList.add(NDRangeUtils.zero(pRange.length));
-		else
-			lArgList.add(pRangeOffset);
 		lArgList.add(pRange);
 
 		for (Object lArg : pArgs)
 			lArgList.add(lArg);
 
 		super.execute(pFunctionName,
-									pRangeOffset,
 									lEffectiveNDRange,
 									pLocalRange,
 									lArgList.toArray());

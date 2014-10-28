@@ -3,14 +3,14 @@ package rtlib.kam.kernel;
 public class NDRangeUtils
 {
 
-	public static long[] range(long... pRange)
+	public static int[] range(int... pRange)
 	{
 		return pRange;
 	}
 
-	public static long volume(long... pRange)
+	public static int volume(int... pRange)
 	{
-		long lVolume = 1;
+		int lVolume = 1;
 		for (long value : pRange)
 			lVolume *= value;
 		return lVolume;

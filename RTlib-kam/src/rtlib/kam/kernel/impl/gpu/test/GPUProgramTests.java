@@ -17,15 +17,15 @@ import rtlib.kam.memory.impl.gpu.NDArrayGPU;
 
 public class GPUProgramTests
 {
-	static final long cSizeX = 128;
-	static final long cSizeY = 128;
-	static final long cBigSizeX = 4096;
-	static final long cBigSizeY = 4096;
-	static final long cBigSizeZ = 4096;
+	static final int cSizeX = 128;
+	static final int cSizeY = 128;
+	static final int cBigSizeX = 4096;
+	static final int cBigSizeY = 4096;
+	static final int cBigSizeZ = 4096;
 
-	static final long cImage3DSizeX = 64;
-	static final long cImage3DSizeY = cImage3DSizeX;
-	static final long cImage3DSizeZ = cImage3DSizeX;
+	static final int cImage3DSizeX = 64;
+	static final int cImage3DSizeY = cImage3DSizeX;
+	static final int cImage3DSizeZ = cImage3DSizeX;
 
 	@Test
 	public void testUnlimitedAdd2DBuffer() throws IOException

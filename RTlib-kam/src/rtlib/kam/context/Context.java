@@ -15,8 +15,8 @@ public interface Context<T> extends HasPeer<T>, Freeable
 
 	Queue<CLQueue> getDefaultQueue();
 
-	long getMaxWorkVolume();
+	int getMaxWorkVolume();
 
-	long[] getMaxThreadNDRange();
+	int[] getMaxThreadNDRange();
 
 }

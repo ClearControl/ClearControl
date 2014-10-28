@@ -18,11 +18,10 @@ public interface Program<T> extends Freeable
 	boolean isUpToDate();
 
 	void execute(	String pFunctionName,
-								long[] pRangeOffset,
-								long[] pRange,
-								long[] pLocalRange,
+								int[] pRange,
+								int[] pLocalRange,
 								Object... args);
 
-	void execute(String pFunctionName, long[] pRange, Object... pArgs);
+	void execute(String pFunctionName, int[] pRange, Object... pArgs);
 
 }

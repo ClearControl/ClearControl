@@ -147,18 +147,5 @@ public class CSVtoMatrix
 		{ new Matrix(inmat), new Matrix(outmat) };
 	}
 
-	/**
-	 * Simple example of how to use this class.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-
-		Matrix[] data = CSVtoMatrix.load(	"../machinelearning/src/machinelearning/gaussianprocess/armdata.csv",
-																			6,
-																			1);
-
-	}
 
 }

@@ -1,5 +1,7 @@
 package rtlib.kam.context.impl.gpu;
 
+import static java.lang.Math.toIntExact;
+
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
@@ -127,18 +129,21 @@ public class ContextGPU implements Context<CLContext>
 	}
 
 	@Override
-	public long[] getMaxThreadNDRange()
+	public int[] getMaxThreadNDRange()
 	{
 		complainIfFreed();
 		long[] lDimensions = getPeer().getDevices()[0].getMaxWorkItemSizes();
-		return lDimensions;
+		int[] lDimensionsInt = new int[lDimensions.length];
+		for (int i = 0; i < lDimensions.length; i++)
+			lDimensionsInt[i] = toIntExact(lDimensions[i]);
+		return lDimensionsInt;
 	}
 
 	@Override
-	public long getMaxWorkVolume()
+	public int getMaxWorkVolume()
 	{
 		complainIfFreed();
-		long lVolume = 1;
+		int lVolume = 1;
 		for (long lSize : getMaxThreadNDRange())
 			lVolume *= lSize;
 		return lVolume;

@@ -195,9 +195,8 @@ public class GPUProgram	implements
 
 	@Override
 	public void execute(String pFunctionName,
-											long[] pRangeOffset,
-											long[] pRange,
-											long[] pLocalRange,
+											int[] pRange,
+											int[] pLocalRange,
 											Object... pArgs)
 	{
 		ensureKernelsAreCompiled();
@@ -217,17 +216,16 @@ public class GPUProgram	implements
 
 		lClKernel.setArgs(lArgList.toArray());
 		lClKernel.enqueueNDRange(	lQueuePeer,
-															pRangeOffset,
 															pRange,
 															pLocalRange);
 	}
 
 	@Override
 	public void execute(String pFunctionName,
-											long[] pRange,
+											int[] pRange,
 											Object... pArgs)
 	{
-		execute(pFunctionName, null, pRange, null, pArgs);
+		execute(pFunctionName, pRange, null, pArgs);
 	}
 
 	@Override
