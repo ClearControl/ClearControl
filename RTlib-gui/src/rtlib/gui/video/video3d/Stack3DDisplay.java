@@ -11,7 +11,7 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.stack.Stack;
 import clearvolume.renderer.clearcuda.JCudaClearVolumeRenderer;
-import clearvolume.transfertf.TransfertFunctions;
+import clearvolume.transferf.TransferFunctions;
 
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
@@ -50,7 +50,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																															768,
 																															768,
 																															SizeOf.sizeOf(pType));
-		mJCudaClearVolumeRenderer.setTransfertFunction(TransfertFunctions.getGrayLevel());
+		mJCudaClearVolumeRenderer.setTransfertFunction(TransferFunctions.getGrayLevel());
 		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack<T>, Object>("AsynchronousDisplayUpdater-" + pWindowName,
@@ -75,15 +75,16 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 					return null;
 				}
 
-				mJCudaClearVolumeRenderer.setVolumeSize(pStack.getVolumePhysicalDimension(0),
-																								pStack.getVolumePhysicalDimension(1),
-																								pStack.getVolumePhysicalDimension(2));
 				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
 																											lWidth,
 																											lHeight,
-																											lDepth);
+																											lDepth,
+																											pStack.getVolumePhysicalDimension(0),
+																											pStack.getVolumePhysicalDimension(1),
+																											pStack.getVolumePhysicalDimension(2));
 				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy(	cWaitToCopyTimeInMilliseconds,
 																															TimeUnit.MILLISECONDS);
+				mJCudaClearVolumeRenderer.requestDisplay();
 
 				if (mOutputObjectVariable != null)
 					mOutputObjectVariable.set(pStack);

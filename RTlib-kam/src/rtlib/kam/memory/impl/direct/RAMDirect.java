@@ -192,13 +192,15 @@ public class RAMDirect extends RAMAbstract implements
 	{ "deprecation", "unchecked", "rawtypes" })
 	public Pointer getBridJPointer(Class pTargetClass)
 	{
+		RAMDirect mThis = this;
 		PointerIO<?> lPointerIO = PointerIO.getInstance(pTargetClass);
 		Releaser lReleaser = new Releaser()
 		{
+			RAMDirect mRAMDirect = mThis;
 			@Override
 			public void release(Pointer<?> pP)
 			{
-				// TODO: should this really be empty?
+				mRAMDirect = null;
 			}
 		};
 		Pointer<?> lPointerToAddress = Pointer.pointerToAddress(getAddress(),
