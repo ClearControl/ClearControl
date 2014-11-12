@@ -31,7 +31,7 @@ public class Stack<T> implements
 	private Class<T> mType;
 	private volatile long mStackIndex;
 	private volatile long mTimeStampInNanoseconds;
-	protected double[] mVolumeSize;
+	protected double[] mVoxelSizeInRealUnits;
 	private volatile long mNumberOfImagesPerPlane = 1;
 
 	@SuppressWarnings("unused")
@@ -53,9 +53,9 @@ public class Stack<T> implements
 		setType(pType);
 
 		mNDArray = NDArrayTypedDirect.allocateTXYZ(	pType,
-																					pWidth,
-																					pHeight,
-																					pDepth);
+																								pWidth,
+																								pHeight,
+																								pDepth);
 
 	}
 
@@ -78,20 +78,20 @@ public class Stack<T> implements
 			return false;
 		if (mNDArray.isFree())
 			return false;
-		
+
 		final Class<?> lType = pStackRequest.getType();
 		final int lBytesPerVoxel = SizeOf.sizeOf(lType);
-		
-		if(lBytesPerVoxel!= SizeOf.sizeOf(mNDArray.getType()))
-				return false;
+
+		if (lBytesPerVoxel != SizeOf.sizeOf(mNDArray.getType()))
+			return false;
 
 		final long lLengthInBytes = pStackRequest.getWidth() * pStackRequest.getHeight()
 																* pStackRequest.getDepth()
 																* SizeOf.sizeOf(pStackRequest.getType());
-		
-		if(mNDArray.getSizeInBytes() != lLengthInBytes)
+
+		if (mNDArray.getSizeInBytes() != lLengthInBytes)
 			return false;
-		
+
 		return true;
 	}
 
@@ -105,9 +105,9 @@ public class Stack<T> implements
 			if (mNDArray != null)
 				mNDArray.free();
 			mNDArray = NDArrayTypedDirect.allocateTXYZ(	pStackRequest.getType(),
-																																pStackRequest.getWidth(),
-																																pStackRequest.getHeight(),
-																																pStackRequest.getDepth());
+																									pStackRequest.getWidth(),
+																									pStackRequest.getHeight(),
+																									pStackRequest.getDepth());
 		}
 	}
 
@@ -159,25 +159,26 @@ public class Stack<T> implements
 		return mNDArray.getSizeInBytes();
 	}
 
-	public double getVolumePhysicalDimension(final int pIndex)
+	public double getVoxelSizeInRealUnits(final int pIndex)
 	{
-		if (mVolumeSize == null)
+		if (mVoxelSizeInRealUnits == null)
 			return 1;
-		return mVolumeSize[pIndex];
+		return mVoxelSizeInRealUnits[pIndex];
 	}
 
-	public void setVolumePhysicalDimension(	final int pIndex,
-																					final double pPhysicalDimension)
+	public void setVoxelSizeInRealUnits(final int pIndex,
+																			final double pVoxelSizeInRealUnits)
 	{
-		if (mVolumeSize == null)
-			mVolumeSize = new double[pIndex + 1];
-		if (mVolumeSize.length <= pIndex)
-			mVolumeSize = Arrays.copyOf(mVolumeSize, pIndex + 1);
-		for (int i = 0; i < mVolumeSize.length; i++)
-			if (mVolumeSize[i] == 0)
-				mVolumeSize[i] = 1;
+		if (mVoxelSizeInRealUnits == null)
+			mVoxelSizeInRealUnits = new double[pIndex + 1];
+		if (mVoxelSizeInRealUnits.length <= pIndex)
+			mVoxelSizeInRealUnits = Arrays.copyOf(mVoxelSizeInRealUnits,
+																						pIndex + 1);
+		for (int i = 0; i < mVoxelSizeInRealUnits.length; i++)
+			if (mVoxelSizeInRealUnits[i] == 0)
+				mVoxelSizeInRealUnits[i] = 1;
 
-		mVolumeSize[pIndex] = pPhysicalDimension;
+		mVoxelSizeInRealUnits[pIndex] = pVoxelSizeInRealUnits;
 	}
 
 	public long getIndex()
@@ -212,9 +213,9 @@ public class Stack<T> implements
 
 	public void copyMetaDataFrom(final Stack<T> pStack)
 	{
-		if (mVolumeSize != null)
-			mVolumeSize = Arrays.copyOf(pStack.mVolumeSize,
-																	mVolumeSize.length);
+		if (mVoxelSizeInRealUnits != null)
+			mVoxelSizeInRealUnits = Arrays.copyOf(pStack.mVoxelSizeInRealUnits,
+																						mVoxelSizeInRealUnits.length);
 		setStackIndex(pStack.getIndex());
 		setTimeStampInNanoseconds(pStack.getTimeStampInNanoseconds());
 		setType(pStack.getType());
@@ -262,10 +263,10 @@ public class Stack<T> implements
 																												final long pDepth)
 	{
 		final StackRequest<T> lStackRequest = new StackRequest<T>(pType,
-																												1,
-																												pWidth,
-																												pHeight,
-																												pDepth);
+																															1,
+																															pWidth,
+																															pHeight,
+																															pDepth);
 
 		return pRecycler.waitOrRequestRecyclableObject(	pWaitTime,
 																										pTimeUnit,

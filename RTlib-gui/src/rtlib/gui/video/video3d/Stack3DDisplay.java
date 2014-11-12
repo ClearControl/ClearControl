@@ -10,16 +10,27 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.stack.Stack;
-import clearvolume.renderer.clearcuda.JCudaClearVolumeRenderer;
+import clearvolume.renderer.ClearVolumeRendererInterface;
+import clearvolume.renderer.factory.ClearVolumeRendererFactory;
 import clearvolume.transferf.TransferFunctions;
+import clearvolume.volume.VolumeManager;
+import clearvolume.volume.sink.NullVolumeSink;
+import clearvolume.volume.sink.VolumeSinkInterface;
+import clearvolume.volume.sink.filter.ChannelFilterSink;
+import clearvolume.volume.sink.filter.gui.ChannelFilterSinkJFrame;
+import clearvolume.volume.sink.renderer.ClearVolumeRendererSink;
+import clearvolume.volume.sink.timeshift.TimeShiftingSink;
+import clearvolume.volume.sink.timeshift.gui.TimeShiftingSinkJFrame;
 
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
 {
 	private static final int cDefaultDisplayQueueLength = 2;
 	private static final long cWaitToCopyTimeInMilliseconds = 2000;
-
-	private final JCudaClearVolumeRenderer mJCudaClearVolumeRenderer;
+	private static final long cTimeShiftSoftHoryzon = 20;
+	private static final long cTimeShiftHardHoryzon = 60;
+	private static ClearVolumeRendererInterface mClearVolumeRenderer;
+	private static VolumeManager mVolumeManager;
 
 	private final ObjectVariable<Stack<T>> mInputObjectVariable;
 	private ObjectVariable<Stack<T>> mOutputObjectVariable;
@@ -27,6 +38,11 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 	private AsynchronousProcessorBase<Stack<T>, Object> mAsynchronousDisplayUpdater;
 
 	private final BooleanVariable mDisplayOn;
+	private TimeShiftingSinkJFrame mTimeShiftingSinkJFrame;
+	private ChannelFilterSinkJFrame mChannelFilterSinkJFrame;
+	private ChannelFilterSink mChannelFilterSink;
+	private TimeShiftingSink mTimeShiftingSink;
+	private CopyVolumeSink mVolumeSinkInterface;
 
 	public Stack3DDisplay()
 	{
@@ -35,9 +51,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 	public Stack3DDisplay(final String pWindowName, final Class<?> pType)
 	{
-		this(	pWindowName,
- pType,
-					cDefaultDisplayQueueLength);
+		this(pWindowName, pType, cDefaultDisplayQueueLength);
 	}
 
 	public Stack3DDisplay(final String pWindowName,
@@ -46,12 +60,25 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 	{
 		super(pWindowName);
 
+		/*
 		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
 																															768,
 																															768,
 																															SizeOf.sizeOf(pType));
-		mJCudaClearVolumeRenderer.setTransfertFunction(TransferFunctions.getGrayLevel());
-		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);
+		mJCudaClearVolumeRenderer.setTransfertFunction(TransferFunctions.getCoolWarm());
+		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);/**/
+
+		VolumeSinkInterface lVolumeSink = createRenderer(	pUpdaterQueueLength,
+																											pWindowName,
+																											768,
+																											768,
+																											SizeOf.sizeOf(pType),
+																											768,
+																											768,
+																											false,
+																											false);
+
+		mVolumeSinkInterface = new CopyVolumeSink(lVolumeSink, pType);
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<Stack<T>, Object>("AsynchronousDisplayUpdater-" + pWindowName,
 																																									pUpdaterQueueLength)
@@ -67,7 +94,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 				final long lWidth = pStack.getWidth();
 				final long lHeight = pStack.getHeight();
 				final long lDepth = pStack.getDepth();
-				final long lBytePerVoxel = mJCudaClearVolumeRenderer.getBytesPerVoxel();
+				final long lBytePerVoxel = mClearVolumeRenderer.getBytesPerVoxel();
 
 				if (lWidth * lHeight * lDepth * lBytePerVoxel != lByteBuffer.capacity())
 				{
@@ -75,16 +102,25 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 					return null;
 				}
 
-				mJCudaClearVolumeRenderer.setVolumeDataBuffer(lByteBuffer,
-																											lWidth,
-																											lHeight,
-																											lDepth,
-																											pStack.getVolumePhysicalDimension(0),
-																											pStack.getVolumePhysicalDimension(1),
-																											pStack.getVolumePhysicalDimension(2));
-				mJCudaClearVolumeRenderer.waitToFinishDataBufferCopy(	cWaitToCopyTimeInMilliseconds,
-																															TimeUnit.MILLISECONDS);
-				mJCudaClearVolumeRenderer.requestDisplay();
+				System.out.format("%g %g %g \n",
+													pStack.getVoxelSizeInRealUnits(0),
+													pStack.getVoxelSizeInRealUnits(1),
+													pStack.getVoxelSizeInRealUnits(2));
+
+				mVolumeSinkInterface.sendVolume(pStack);
+
+				/*
+				mClearVolumeRenderer.setVolumeDataBuffer(	lByteBuffer,
+																									lWidth,
+																									lHeight,
+																									lDepth,
+																									pStack.getVoxelSizeInRealUnits(0),
+																									pStack.getVoxelSizeInRealUnits(1),
+																									pStack.getVoxelSizeInRealUnits(2));
+
+				mClearVolumeRenderer.requestDisplay();
+				mClearVolumeRenderer.waitToFinishDataBufferCopy(cWaitToCopyTimeInMilliseconds,
+																												TimeUnit.MILLISECONDS);/**/
 
 				if (mOutputObjectVariable != null)
 					mOutputObjectVariable.set(pStack);
@@ -126,6 +162,69 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 	}
 
+	public VolumeSinkInterface createRenderer(final int pMaxQueueLength,
+																						final String pWindowName,
+																						final int pWindowWidth,
+																						final int pWindowHeight,
+																						final int pBytesPerVoxel,
+																						final int pMaxTextureWidth,
+																						final int pMaxTextureHeight,
+																						final boolean pTimeShift,
+																						final boolean pChannelSelector)
+	{
+		mClearVolumeRenderer = ClearVolumeRendererFactory.newBestRenderer(pWindowName,
+																																			pWindowWidth,
+																																			pWindowHeight,
+																																			pBytesPerVoxel,
+																																			pMaxTextureWidth,
+																																			pMaxTextureHeight);
+		mClearVolumeRenderer.setTransfertFunction(TransferFunctions.getGrayLevel());
+
+		mVolumeManager = mClearVolumeRenderer.createCompatibleVolumeManager(pMaxQueueLength);
+
+		mClearVolumeRenderer.setVisible(true);
+
+		ClearVolumeRendererSink lClearVolumeRendererSink = new ClearVolumeRendererSink(	mClearVolumeRenderer,
+																																										mVolumeManager,
+																																										1,
+																																										TimeUnit.MILLISECONDS);
+		VolumeSinkInterface lFirstSink = lClearVolumeRendererSink;
+
+		mTimeShiftingSink = null;
+		mTimeShiftingSinkJFrame = null;
+		if (pTimeShift)
+		{
+			mTimeShiftingSink = new TimeShiftingSink(	cTimeShiftSoftHoryzon,
+																								cTimeShiftHardHoryzon);
+
+			mTimeShiftingSinkJFrame = new TimeShiftingSinkJFrame(mTimeShiftingSink);
+			mTimeShiftingSinkJFrame.setVisible(true);
+
+			mTimeShiftingSink.setRelaySink(lFirstSink);
+
+			lClearVolumeRendererSink.setRelaySink(new NullVolumeSink());
+
+			lFirstSink = mTimeShiftingSink;
+		}
+
+		mChannelFilterSink = null;
+		mChannelFilterSinkJFrame = null;
+		if (pChannelSelector)
+		{
+			mChannelFilterSink = new ChannelFilterSink(new NullVolumeSink());
+
+			mChannelFilterSinkJFrame = new ChannelFilterSinkJFrame(mChannelFilterSink);
+			mChannelFilterSinkJFrame.setVisible(true);
+
+			mChannelFilterSink.setRelaySink(lFirstSink);
+
+			lFirstSink = mChannelFilterSink;
+		}
+
+		return lFirstSink;
+
+	}
+
 	@Override
 	public ObjectVariable<Stack<T>> getOutputStackVariable()
 	{
@@ -150,13 +249,13 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 	public void setDisplayOn(final boolean pIsDisplayOn)
 	{
-		mJCudaClearVolumeRenderer.setVisible(pIsDisplayOn);
+		mClearVolumeRenderer.setVisible(pIsDisplayOn);
 	}
 
 	@Override
 	public boolean open()
 	{
-		mJCudaClearVolumeRenderer.setVisible(true);
+		mClearVolumeRenderer.setVisible(true);
 		return false;
 	}
 
@@ -179,7 +278,11 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 	{
 		try
 		{
-			mJCudaClearVolumeRenderer.close();
+			mChannelFilterSinkJFrame.dispose();
+			mTimeShiftingSinkJFrame.dispose();
+			mChannelFilterSink.close();
+			mTimeShiftingSink.close();
+			mClearVolumeRenderer.close();
 			return true;
 		}
 		catch (final Throwable e)
@@ -191,12 +294,12 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 
 	public boolean isShowing()
 	{
-		return mJCudaClearVolumeRenderer.isShowing();
+		return mClearVolumeRenderer.isShowing();
 	}
 
 	public void disableClose()
 	{
-		mJCudaClearVolumeRenderer.disableClose();
+		mClearVolumeRenderer.disableClose();
 	}
 
 	public ObjectVariable<Stack<T>> getOutputObjectVariable()

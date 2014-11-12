@@ -39,7 +39,7 @@ import com.jogamp.newt.opengl.GLWindow;
 public class VideoWindow<T> implements AutoCloseable
 {
 
-	private static final double cEpsilon = 0.01;
+	private static final double cEpsilon = 0.05;
 
 	private static final double cPercentageOfPixelsToSample = 0.001;
 

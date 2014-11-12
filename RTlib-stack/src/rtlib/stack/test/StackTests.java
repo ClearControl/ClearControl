@@ -42,15 +42,15 @@ public class StackTests
 																									cSizeY,
 																									cSizeZ);
 
-		assertEquals(1, lStack.getVolumePhysicalDimension(0), 0);
+		assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
 
-		lStack.setVolumePhysicalDimension(1, 0.5);
-		lStack.setVolumePhysicalDimension(2, 1);
-		lStack.setVolumePhysicalDimension(3, 3);
+		lStack.setVoxelSizeInRealUnits(1, 0.5);
+		lStack.setVoxelSizeInRealUnits(2, 1);
+		lStack.setVoxelSizeInRealUnits(3, 3);
 
-		assertEquals(0.5, lStack.getVolumePhysicalDimension(1), 0);
-		assertEquals(1, lStack.getVolumePhysicalDimension(2), 0);
-		assertEquals(3, lStack.getVolumePhysicalDimension(3), 0);
+		assertEquals(0.5, lStack.getVoxelSizeInRealUnits(1), 0);
+		assertEquals(1, lStack.getVoxelSizeInRealUnits(2), 0);
+		assertEquals(3, lStack.getVoxelSizeInRealUnits(3), 0);
 
 		assertEquals(1, lStack.getIndex());
 		assertEquals(2, lStack.getTimeStampInNanoseconds());
