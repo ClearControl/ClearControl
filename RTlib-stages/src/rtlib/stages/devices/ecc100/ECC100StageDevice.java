@@ -78,11 +78,14 @@ public class ECC100StageDevice extends NamedVirtualDevice	implements
 																																							"");
 					if (!lDeviceName.isEmpty())
 					{
+						System.out.println(lDOFIndex);
 						mIndexToAxisMap.put(lDOFIndex, lAxis);
 						mNameToAxisMap.put(lDeviceName, lAxis);
 						mIndexToNameMap.put(lDOFIndex, lDeviceName);
 						lDOFIndex++;
+
 					}
+
 
 				}
 			}

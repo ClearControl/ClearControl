@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.apache.commons.math3.analysis.MultivariateFunction;
 import org.ejml.data.DenseMatrix64F;
 
-import rtlib.core.math.kdtree.KdTree;
-
 public class EnsembleLinearRegressors implements MultivariateFunction
 {
 	private int mDimension;
@@ -22,9 +20,10 @@ public class EnsembleLinearRegressors implements MultivariateFunction
 	@Override
 	public double value(double[] pPoint)
 	{
-		DenseMatrix64F lX = new DenseMatrix64F(pPoint);
-		
-		for(int)
+		// TODO: finish
+		// DenseMatrix64F lX = new DenseMatrix64F(pPoint);
+		//
+		// for(int)
 		return 0;
 	}
 
