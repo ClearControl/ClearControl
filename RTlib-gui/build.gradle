@@ -30,6 +30,11 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-stack')
 
+    compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
+    compile 'com.jgoodies:looks:2.2.2'
+    //compile 'org.devzendo:LibQuaqua:7.3.4'
+    compile 'org.devzendo:Quaqua:7.3.4'
+
     compile group: "royer", name: "ClearVolume", version: "1.+", changing: true, transitive: true
 }
 

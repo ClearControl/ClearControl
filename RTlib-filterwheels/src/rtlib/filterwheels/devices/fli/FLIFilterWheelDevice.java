@@ -111,6 +111,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	public boolean open()
 	{
 		boolean lIsOpened = super.open();
+		setSpeed(1);
 		setPosition(0);
 		return lIsOpened;
 	}

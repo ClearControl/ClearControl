@@ -183,7 +183,7 @@ public class SMC100StageDevice extends SerialDevice implements
 																int pTimeOut,
 																TimeUnit pTimeUnit)
 	{
-		System.out.println("waiting...");
+		// System.out.println("waiting...");
 		return waitFor(	pTimeOut,
 										pTimeUnit,
 										() -> mReadyVariable.getBooleanValue());
