@@ -96,8 +96,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	private ConstantStave mCameraTriggerStaveBeforeExposure,
 			mCameraTriggerStaveExposure;
 	private final LaserTriggerBinaryPattern2Stave[] mLaserTriggerStave = new LaserTriggerBinaryPattern2Stave[cNumberOfLaserDigitalControls];
-	private final ConstantStave mStageStaveBeforeExposureY,
-			mStageStaveExposureY, mFocusStaveBeforeExposureZ,
+	private final ConstantStave mLaserAnalogModulationBeforeExposure,
+			mLaserAnalogModulationExposure, mFocusStaveBeforeExposureZ,
 			mFocusStaveExposureZ;
 
 	private volatile boolean mIsUpToDate = false;
@@ -150,9 +150,10 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mFocusStaveBeforeExposureZ = new ConstantStave(	"Focus.beforeexp.z",
 																										0);
 		mFocusStaveExposureZ = new ConstantStave("Focus.exposure.z", 0);
-		mStageStaveBeforeExposureY = new ConstantStave(	"Stage.beforeexp.y",
+		mLaserAnalogModulationBeforeExposure = new ConstantStave(	"Laser.beforeexp.am",
 																										0);
-		mStageStaveExposureY = new ConstantStave("Stage.exposure.y", 0);
+		mLaserAnalogModulationExposure = new ConstantStave("Laser.exposure.am",
+																												0);
 
 		prepareBeforeExposureMovement(lDoubleUpdateListener);
 		prepareExposureMovement(lDoubleUpdateListener);
@@ -201,7 +202,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mBeforeExposureMovement.setStave(	1,
 																			mGalvoScannerStaveBeforeExposureY);
 		mBeforeExposureMovement.setStave(2, mFocusStaveBeforeExposureZ);
-		mBeforeExposureMovement.setStave(3, mStageStaveBeforeExposureY);
+		mBeforeExposureMovement.setStave(	3,
+																			mLaserAnalogModulationBeforeExposure);
 
 		mBeforeExposureMovement.setStave(	6,
 																			new ConstantStave("laser561",
@@ -227,7 +229,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mExposureMovement.setStave(0, mGalvoScannerStaveExposureZ);
 		mExposureMovement.setStave(1, mGalvoScannerStaveExposureY);
 		mExposureMovement.setStave(2, mFocusStaveExposureZ);
-		mExposureMovement.setStave(3, mStageStaveExposureY);
+		mExposureMovement.setStave(3, mLaserAnalogModulationExposure);
 
 		mExposureMovement.setStave(6, new ConstantStave("laser561",
 																										32628 / 10.0));
@@ -364,8 +366,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 				mFocusStaveExposureZ.mValue = clamp01(mFocusZ.getValue() / 100);
 				mFocusStaveBeforeExposureZ.mValue = 0.0 + mFocusStaveExposureZ.mValue;
 
-				mStageStaveExposureY.mValue = clamp01(mStageY.getValue() / 250);
-				mStageStaveBeforeExposureY.mValue = mStageStaveExposureY.mValue;
+				mLaserAnalogModulationExposure.mValue = 1;
+				mLaserAnalogModulationBeforeExposure.mValue = 1;
 
 				// System.out.println("mMovement.requestUpdateAllStaves();");
 
