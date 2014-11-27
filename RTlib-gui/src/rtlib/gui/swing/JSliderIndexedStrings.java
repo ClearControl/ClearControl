@@ -1,0 +1,232 @@
+package rtlib.gui.swing;
+
+import static java.lang.Math.round;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.util.Hashtable;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import net.miginfocom.swing.MigLayout;
+import rtlib.core.variable.doublev.DoubleVariable;
+
+public class JSliderIndexedStrings extends JPanel
+{
+	private static final long serialVersionUID = 1L;
+
+	private final JLabel mNameLabel;
+	private final JTextField mValueTextField;
+	private final JSlider mSlider;
+	private final JSliderIndexedStrings mThis;
+	private final JButton mMinusStepButton;
+	private final JButton mPlusStepButton;
+
+	private boolean mWaitForMouseRelease = false;
+
+	private final DoubleVariable mSliderVariable;
+
+	private List<String> mItemsList;
+
+	public JSliderIndexedStrings(	final String pValueName,
+																List<String> pItemsList,
+																int pInitialIndex)
+	{
+		super();
+		mItemsList = pItemsList;
+
+		mSliderVariable = new DoubleVariable(pValueName, 0)
+		{
+			@Override
+			public double setEventHook(	final double pOldValue,
+																	final double pNewValue)
+			{
+
+				final int lSliderIntegerValue = getInt(pNewValue);
+
+				if (mSlider.getValue() != lSliderIntegerValue)
+				{
+					EventQueue.invokeLater(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							mSlider.setValue(lSliderIntegerValue);
+							writeValueIntoTextField(pNewValue);
+							mValueTextField.setBackground(Color.white);
+						}
+					});
+				}
+
+				return super.setEventHook(pOldValue, pNewValue);
+			}
+		};
+		setLayout(new MigLayout("",
+														"[41px,center][368px,grow,center][41px,center]",
+														"[16px][25px:n:25px][27px]"));
+
+		mSlider = new JSlider(0, mItemsList.size() - 1, pInitialIndex);
+		// mSlider.setOrientation(SwingConstants.VERTICAL);
+		add(mSlider, "cell 0 2 3 1,growx,aligny top");
+
+		mNameLabel = new JLabel(pValueName);
+		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(mNameLabel, "cell 0 0 3 1,growx,aligny top");
+
+		mValueTextField = new JTextField(mItemsList.get(pInitialIndex));
+		mValueTextField.setEditable(false);
+		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		add(mValueTextField, "cell 1 1,grow");
+
+		mThis = this;
+
+		mSlider.addChangeListener(new ChangeListener()
+		{
+			@Override
+			public void stateChanged(final ChangeEvent pE)
+			{
+
+				final int lNewValue = getInt(mSlider.getValue());
+
+				if (mSliderVariable.getValue() != lNewValue)
+				{
+					try
+					{
+						writeValueIntoTextField(lNewValue);
+						mValueTextField.setBackground(Color.white);
+					}
+					catch (final Throwable e)
+					{
+						System.err.println(e.getLocalizedMessage());
+					}
+
+					if (isWaitForMouseRelease() && mSlider.getValueIsAdjusting())
+					{
+						return;
+					}
+
+					mSliderVariable.setValue(lNewValue);
+				}
+				// System.out.println("change received from slider:" + lNewValue);
+			}
+
+		});
+
+		mSlider.setMajorTickSpacing(1);
+		mSlider.setMinorTickSpacing(1);
+		mSlider.setPaintTicks(true);
+
+		mMinusStepButton = new JButton("\u2013");
+		add(mMinusStepButton, "cell 0 1,alignx left,growy");
+		mMinusStepButton.addActionListener((e) -> {
+			double lStep = 1;
+			int lModifiers = e.getModifiers();
+			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+																																												: 10;
+			int lNewValue = getInt(getDoubleVariable().getValue());
+			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
+				lNewValue += -lStep / lFactor;
+			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
+				lNewValue += -lStep * lFactor;
+			else
+				lNewValue += -lStep;
+			lNewValue = getInt(lNewValue);
+			getDoubleVariable().setValue(lNewValue);
+
+		});
+
+		mPlusStepButton = new JButton("+");
+		add(mPlusStepButton, "cell 2 1,alignx left,growy");
+		mPlusStepButton.addActionListener((e) -> {
+			double lStep = 1;
+			int lModifiers = e.getModifiers();
+			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+																																												: 10;
+			double lNewValue = getDoubleVariable().getValue();
+			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
+				lNewValue += lStep / lFactor;
+			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
+				lNewValue += lStep * lFactor;
+			else
+				lNewValue += lStep;
+			lNewValue = getInt(lNewValue);
+			getDoubleVariable().setValue(lNewValue);
+		});
+
+		// Create the label table
+		final Hashtable lLabelTable = new Hashtable();
+		for (int i = 0; i < mItemsList.size(); i++)
+		{
+			lLabelTable.put(i, new JLabel(mItemsList.get(i)));
+		}
+		mSlider.setLabelTable(lLabelTable);
+
+	}
+
+	public DoubleVariable getDoubleVariable()
+	{
+		return mSliderVariable;
+	}
+
+	public double getValue()
+	{
+		return mSliderVariable.getValue();
+	}
+
+	private void writeValueIntoTextField(final double pNewValue)
+	{
+		int lIntValue = getInt(pNewValue);
+		String lItemString = mItemsList.get(lIntValue);
+		mValueTextField.setText(lItemString);
+	}
+
+	private int getInt(final double pNewValue)
+	{
+		int lIntValue = (int) clamp(0,
+																mItemsList.size() - 1,
+																round(pNewValue));
+		return lIntValue;
+	}
+
+	private static double toDouble(	final int pResolution,
+																	final double pMin,
+																	final double pMax,
+																	final int pIntValue)
+	{
+		return pMin + (double) pIntValue
+						/ (pResolution - 1)
+						* (pMax - pMin);
+	}
+
+	private static double clamp(final double pMin,
+															final double pMax,
+															final double pValue)
+	{
+		return Math.min(pMax, Math.max(pMin, pValue));
+	}
+
+	public void displayTickLabels(final boolean pDislayTickLabels)
+	{
+		mSlider.setPaintLabels(pDislayTickLabels);
+	}
+
+	public boolean isWaitForMouseRelease()
+	{
+		return mWaitForMouseRelease;
+	}
+
+	public void setWaitForMouseRelease(boolean pWaitForMouseRelease)
+	{
+		mWaitForMouseRelease = pWaitForMouseRelease;
+	}
+
+}

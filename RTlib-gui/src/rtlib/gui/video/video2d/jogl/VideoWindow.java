@@ -41,7 +41,7 @@ public class VideoWindow<T> implements AutoCloseable
 
 	private static final double cEpsilon = 0.05;
 
-	private static final double cPercentageOfPixelsToSample = 0.001;
+	private static final float cPercentageOfPixelsToSample = 0.01f;
 
 	private static final int cMipMapLevel = 3;
 
@@ -53,14 +53,15 @@ public class VideoWindow<T> implements AutoCloseable
 
 	private volatile boolean mIsContextAvailable = false,
 			mIsUpToDate = false, mDisplayFrameRate = true,
-			mDisplayOn = true, mManualMinMax = false, mMinMaxFixed = false;
+			mDisplayOn = true, mManualMinMax = false, mMinMaxFixed = false,
+			mIsDisplayLines = false;
 
 	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
 			mGamma = 1;
 
 	private ReentrantLock mDisplayLock = new ReentrantLock();
 
-	private GLProgram mGLProgram;
+	private GLProgram mGLProgramVideoRender;
 	private GLAttribute mPositionAttribute, mTexCoordAttribute;
 	private GLUniform mTexUnit, mMinimumUniform, mMaximumUniform,
 			mGammaUniform;
@@ -69,6 +70,13 @@ public class VideoWindow<T> implements AutoCloseable
 			mTexCoordAttributeArray;
 	private GLTexture<T> mTexture;
 
+	private GLProgram mGLProgramGuides;
+	private GLAttribute mGuidesPositionAttribute;
+	private GLVertexAttributeArray mXLinesPositionAttributeArray;
+	private GLVertexAttributeArray mGridPositionAttributeArray;
+	private GLVertexArray mXLinesGuidesVertexArray;
+	private GLVertexArray mGridGuidesVertexArray;
+
 	private double mSampledMinIntensity, mSampledMaxIntensity;
 
 	private volatile FloatBuffer mTemporaryFloatBuffer;
@@ -76,7 +84,6 @@ public class VideoWindow<T> implements AutoCloseable
 	private ClearGLDefaultEventListener mClearGLDebugEventListener;
 
 	// private GLPixelBufferObject mPixelBufferObject;
-
 
 	public VideoWindow(	final String pWindowName,
 											final Class<T> pClass,
@@ -89,7 +96,6 @@ public class VideoWindow<T> implements AutoCloseable
 
 		mClearGLDebugEventListener = new ClearGLDefaultEventListener()
 		{
-
 
 			@Override
 			public void init(final GLAutoDrawable pGLAutoDrawable)
@@ -113,35 +119,36 @@ public class VideoWindow<T> implements AutoCloseable
 																											0,
 																											1);
 
-					mGLProgram = GLProgram.buildProgram(lGL4,
-																							VideoWindow.class,
-																							"shaders/vertex.glsl",
-																							"shaders/fragment.glsl");
+					mGLProgramVideoRender = GLProgram.buildProgram(	lGL4,
+																													VideoWindow.class,
+																													"shaders/video.vertex.glsl",
+																													"shaders/video.fragment.glsl");
 
-					mPositionAttribute = mGLProgram.getAtribute("position");
-					mTexCoordAttribute = mGLProgram.getAtribute("texcoord");
-					mTexUnit = mGLProgram.getUniform("texUnit");
+					mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
+					mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
+					mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
 					mTexUnit.set(0);
 
-					mMinimumUniform = mGLProgram.getUniform("minimum");
-					mMaximumUniform = mGLProgram.getUniform("maximum");
-					mGammaUniform = mGLProgram.getUniform("gamma");
+					mMinimumUniform = mGLProgramVideoRender.getUniform("minimum");
+					mMaximumUniform = mGLProgramVideoRender.getUniform("maximum");
+					mGammaUniform = mGLProgramVideoRender.getUniform("gamma");
 
-					mQuadVertexArray = new GLVertexArray(mGLProgram);
+					mQuadVertexArray = new GLVertexArray(mGLProgramVideoRender);
 					mQuadVertexArray.bind();
 					mPositionAttributeArray = new GLVertexAttributeArray(	mPositionAttribute,
 																																4);
 
-					GLFloatArray lVerticesFloatArray = new GLFloatArray(6, 4);
-					lVerticesFloatArray.add(-1, -1, 0, 1);
-					lVerticesFloatArray.add(1, -1, 0, 1);
-					lVerticesFloatArray.add(1, 1, 0, 1);
-					lVerticesFloatArray.add(-1, -1, 0, 1);
-					lVerticesFloatArray.add(1, 1, 0, 1);
-					lVerticesFloatArray.add(-1, 1, 0, 1);
+					GLFloatArray lQuadVerticesFloatArray = new GLFloatArray(6,
+																																	4);
+					lQuadVerticesFloatArray.add(-1, -1, 0, 1);
+					lQuadVerticesFloatArray.add(1, -1, 0, 1);
+					lQuadVerticesFloatArray.add(1, 1, 0, 1);
+					lQuadVerticesFloatArray.add(-1, -1, 0, 1);
+					lQuadVerticesFloatArray.add(1, 1, 0, 1);
+					lQuadVerticesFloatArray.add(-1, 1, 0, 1);
 
 					mQuadVertexArray.addVertexAttributeArray(	mPositionAttributeArray,
-																										lVerticesFloatArray.getFloatBuffer());
+																										lQuadVerticesFloatArray.getFloatBuffer());
 
 					mTexCoordAttributeArray = new GLVertexAttributeArray(	mTexCoordAttribute,
 																																2);
@@ -154,10 +161,83 @@ public class VideoWindow<T> implements AutoCloseable
 					lTexCoordFloatArray.add(1, 1);
 					lTexCoordFloatArray.add(0, 1);
 
+					initializeTexture();
+
 					mQuadVertexArray.addVertexAttributeArray(	mTexCoordAttributeArray,
 																										lTexCoordFloatArray.getFloatBuffer());
 
-					initializeTexture();
+					mGLProgramGuides = GLProgram.buildProgram(lGL4,
+																										VideoWindow.class,
+																										"shaders/guides.vertex.glsl",
+																										"shaders/guides.fragment.glsl");
+
+					mGuidesPositionAttribute = mGLProgramGuides.getAtribute("position");
+
+					mXLinesPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
+																																			4);
+					mXLinesGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
+					mXLinesGuidesVertexArray.bind();
+
+					GLFloatArray lXlinesGuidesVerticesFloatArray = new GLFloatArray(4,
+																																					4);
+					lXlinesGuidesVerticesFloatArray.add(-1, -1, 0, 1);
+					lXlinesGuidesVerticesFloatArray.add(+1, +1, 0, 1);
+					lXlinesGuidesVerticesFloatArray.add(-1, +1, 0, 1);
+					lXlinesGuidesVerticesFloatArray.add(+1, -1, 0, 1);
+
+					mXLinesGuidesVertexArray.addVertexAttributeArray(	mXLinesPositionAttributeArray,
+																														lXlinesGuidesVerticesFloatArray.getFloatBuffer());
+
+					mGridPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
+																																		4);
+					mGridGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
+					mGridGuidesVertexArray.bind();
+
+					GLFloatArray lGridGuidesVerticesFloatArray = new GLFloatArray(12,
+																																				4);
+					float lRatio = 0.5f;
+
+					lGridGuidesVerticesFloatArray.add(-1.0f, 0, 0, 1.0f);
+					lGridGuidesVerticesFloatArray.add(+1.0f, 0, 0, 1.0f);
+
+					lGridGuidesVerticesFloatArray.add(0, -1.0f, 0, 1.0f);
+					lGridGuidesVerticesFloatArray.add(0, +1.0f, 0, 1.0f);
+
+					lGridGuidesVerticesFloatArray.add(-1.0f,
+																						-lRatio,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(+1.0f,
+																						-lRatio,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(-1.0f,
+																						+lRatio,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(+1.0f,
+																						+lRatio,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(-lRatio,
+																						-1.0f,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(-lRatio,
+																						+1.0f,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(+lRatio,
+																						-1.0f,
+																						0.0f,
+																						1.0f);
+					lGridGuidesVerticesFloatArray.add(+lRatio,
+																						+1.0f,
+																						0.0f,
+																						1.0f);
+
+					mGridGuidesVertexArray.addVertexAttributeArray(	mGridPositionAttributeArray,
+																													lGridGuidesVerticesFloatArray.getFloatBuffer());
 
 				}
 				catch (IOException e)
@@ -172,7 +252,7 @@ public class VideoWindow<T> implements AutoCloseable
 				if (mTexture != null)
 					mTexture.close();
 
-				mTexture = new GLTexture<T>(mGLProgram,
+				mTexture = new GLTexture<T>(mGLProgramVideoRender,
 																		mType,
 																		1,
 																		mVideoWidth,
@@ -228,9 +308,8 @@ public class VideoWindow<T> implements AutoCloseable
 
 				if (mManualMinMax)
 				{
-					final double lSampledIntensityRange = mSampledMaxIntensity - mSampledMinIntensity;
-					mMinimumUniform.set((float) (mSampledMinIntensity + mMinIntensity * lSampledIntensityRange));
-					mMaximumUniform.set((float) (mSampledMinIntensity + mMaxIntensity * lSampledIntensityRange));
+					mMinimumUniform.set((float) mMinIntensity);
+					mMaximumUniform.set((float) mMaxIntensity);
 				}
 				else
 				{
@@ -239,9 +318,16 @@ public class VideoWindow<T> implements AutoCloseable
 				}
 				mGammaUniform.set((float) mGamma);
 
-				mGLProgram.use(lGL4);
-				mTexture.bind(mGLProgram);
+				mGLProgramVideoRender.use(lGL4);
+				mTexture.bind(mGLProgramVideoRender);
 				mQuadVertexArray.draw(GL.GL_TRIANGLES);
+
+				if (isDisplayLines())
+				{
+					mGLProgramGuides.bind();
+					// mXLinesGuidesVertexArray.draw(GL.GL_LINES);
+					mGridGuidesVertexArray.draw(GL.GL_LINES);
+				}
 			}
 
 			private Buffer convertBuffer()
@@ -548,7 +634,15 @@ public class VideoWindow<T> implements AutoCloseable
 		mDisplayFrameRate = pDisplayFrameRate;
 	}
 
+	public boolean isDisplayLines()
+	{
+		return mIsDisplayLines;
+	}
 
+	public void setDisplayLines(boolean pIsDisplayLines)
+	{
+		mIsDisplayLines = pIsDisplayLines;
+	}
 
 	public void disableClose()
 	{

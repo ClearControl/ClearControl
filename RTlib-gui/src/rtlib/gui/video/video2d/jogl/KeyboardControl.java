@@ -46,6 +46,10 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 			mVideoWindow.setMinMaxFixed(!mVideoWindow.isMinMaxFixed());
 			mVideoWindow.requestDisplay();
 			break;
+		case KeyEvent.VK_L:
+			mVideoWindow.setDisplayLines(!mVideoWindow.isDisplayLines());
+			mVideoWindow.requestDisplay();
+			break;
 		}
 
 	}

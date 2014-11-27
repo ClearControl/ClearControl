@@ -46,11 +46,8 @@ class MouseControl extends MouseAdapter implements MouseListener
 			final double nx = getNormalizedX(pMouseEvent);
 			final double ny = getNormalizedY(pMouseEvent);
 
-			final double lMin = pow(nx, 2);
-			final double lMax = pow(1 - ny, 2);
-
-			// System.out.println("lMin=" + lMin);
-			// System.out.println("lMax=" + lMax);
+			final double lMin = pow(nx, 3);
+			final double lMax = lMin + pow(1 - ny, 3);
 
 			mVideoWindow.setManualMinMax(true);
 			mVideoWindow.setMinIntensity(lMin);

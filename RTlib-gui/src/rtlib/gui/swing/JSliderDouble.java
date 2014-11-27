@@ -1,8 +1,8 @@
 package rtlib.gui.swing;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -20,10 +20,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import net.miginfocom.swing.MigLayout;
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public class JSliderDouble extends JPanel
 {
+	private static final int cMaxResolution = 1024 * 1024;
 	private final JLabel mNameLabel;
 	private final JTextField mValueTextField;
 	private final JSlider mSlider;
@@ -84,6 +86,8 @@ public class JSliderDouble extends JPanel
 	{
 		super();
 
+		mResolution = min(cMaxResolution, pResolution);
+
 		mSliderDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
 			@Override
@@ -113,25 +117,27 @@ public class JSliderDouble extends JPanel
 				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
+		setLayout(new MigLayout("",
+														"[41px,center][368px,grow,center][41px,center]",
+														"[16px][25px:n:25px,center][27px]"));
 
-		setLayout(new BorderLayout(0, 0));
 
-		mSlider = new JSlider(0, pResolution - 1, toInt(pResolution,
+		mSlider = new JSlider(0, mResolution - 1, toInt(mResolution,
 																										pMin,
 																										pMax,
 																										pValue));
-		add(mSlider, BorderLayout.SOUTH);
+		add(mSlider, "cell 0 2 3 1,growx,aligny top");
 
 		mNameLabel = new JLabel(pValueName);
 		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mNameLabel, BorderLayout.NORTH);
+		add(mNameLabel, "cell 0 0 3 1,growx,aligny top");
 
 		mValueTextField = new JTextField("" + pValue);
 		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mValueTextField, BorderLayout.CENTER);
+		add(mValueTextField, "cell 1 1,grow");
 
 		mLabelsFormatString = pLabelsFormatString;
-		mResolution = pResolution;
+
 		mMin = pMin;
 		mMax = pMax;
 		mStep = pStep;
@@ -254,12 +260,13 @@ public class JSliderDouble extends JPanel
 
 		});
 
-		mSlider.setMajorTickSpacing(pResolution / 10);
-		mSlider.setMinorTickSpacing(pResolution / 100);
+		mSlider.setMajorTickSpacing(mResolution / 10);
+		mSlider.setMinorTickSpacing(mResolution / 100);
 		mSlider.setPaintTicks(true);
 
 		mMinusStepButton = new JButton("\u2013");
-		add(mMinusStepButton, BorderLayout.WEST);
+		mMinusStepButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		add(mMinusStepButton, "cell 0 1,alignx left,growy");
 		mMinusStepButton.addActionListener((e) -> {
 			double lStep = max(mStep, mQuanta);
 			int lModifiers = e.getModifiers();
@@ -278,7 +285,7 @@ public class JSliderDouble extends JPanel
 		});
 
 		mPlusStepButton = new JButton("+");
-		add(mPlusStepButton, BorderLayout.EAST);
+		add(mPlusStepButton, "cell 2 1,alignx left,growy");
 		mPlusStepButton.addActionListener((e) -> {
 			double lStep = max(mStep, mQuanta);
 			int lModifiers = e.getModifiers();

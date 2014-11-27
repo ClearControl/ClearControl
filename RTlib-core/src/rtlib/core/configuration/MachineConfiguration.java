@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class MachineConfiguration
@@ -163,6 +164,20 @@ public class MachineConfiguration
 									+ "."
 									+ pDeviceIndex;
 		return getBooleanProperty(lKey, false);
+	}
+
+	public ArrayList<String> getList(String pPrefix)
+	{
+		ArrayList<String> lList = new ArrayList<String>();
+		for (int i = 0; i < Integer.MAX_VALUE; i++)
+		{
+			String lKey = pPrefix + "." + i;
+			String lProperty = mProperties.getProperty(lKey, null);
+			if (lProperty == null)
+				break;
+			lList.add(lProperty);
+		}
+		return lList;
 	}
 
 }

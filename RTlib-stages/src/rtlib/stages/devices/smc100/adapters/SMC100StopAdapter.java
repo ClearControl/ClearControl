@@ -29,7 +29,7 @@ public class SMC100StopAdapter implements SerialTextDeviceAdapter
 	{
 		if (pOldValue == 0 && pNewValue > 0)
 		{
-			System.out.println("Stopping!");
+			// System.out.println("Stopping!");
 			return SMC100Protocol.cStopCommand.getBytes();
 		}
 		else

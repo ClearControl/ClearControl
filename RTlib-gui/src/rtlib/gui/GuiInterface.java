@@ -1,10 +1,8 @@
 package rtlib.gui;
 
-public interface GuiInterface
+import rtlib.core.device.VirtualDeviceInterface;
+
+public interface GuiInterface extends VirtualDeviceInterface
 {
-
-	boolean start();
-
-	boolean stop();
 
 }

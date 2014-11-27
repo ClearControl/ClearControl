@@ -278,11 +278,16 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 	{
 		try
 		{
-			mChannelFilterSinkJFrame.dispose();
-			mTimeShiftingSinkJFrame.dispose();
-			mChannelFilterSink.close();
-			mTimeShiftingSink.close();
-			mClearVolumeRenderer.close();
+			if (mChannelFilterSinkJFrame != null)
+				mChannelFilterSinkJFrame.dispose();
+			if (mTimeShiftingSinkJFrame != null)
+				mTimeShiftingSinkJFrame.dispose();
+			if (mChannelFilterSink != null)
+				mChannelFilterSink.close();
+			if (mTimeShiftingSink != null)
+				mTimeShiftingSink.close();
+			if (mClearVolumeRenderer != null)
+				mClearVolumeRenderer.close();
 			return true;
 		}
 		catch (final Throwable e)
