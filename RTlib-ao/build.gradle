@@ -47,6 +47,6 @@ repositories
     mavenCentral()
     maven 
     {
-        url "http://bitbucket.org/api/1.0/repositories/royerloic/repos/raw/master/"
+        url "http://bitbucket.org/api/1.0/repositories/rtlib/rtlibmavenrepo/raw/master/"
     } 
 }

@@ -96,7 +96,7 @@ subprojects
         {
             mavenDeployer 
             {
-                repository(url: "file:../Repos/")
+                repository(url: "file:../Repos/RTlibMavenRepo")
             }
         }
     }

@@ -178,7 +178,7 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																																			pBytesPerVoxel,
 																																			pMaxTextureWidth,
 																																			pMaxTextureHeight);
-		mClearVolumeRenderer.setTransfertFunction(TransferFunctions.getGrayLevel());
+		mClearVolumeRenderer.setTransferFunction(TransferFunctions.getGrayLevel());
 
 		mVolumeManager = mClearVolumeRenderer.createCompatibleVolumeManager(pMaxQueueLength);
 
