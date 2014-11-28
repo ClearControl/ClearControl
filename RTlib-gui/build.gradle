@@ -44,6 +44,11 @@ repositories
     maven 
     {
         url "http://bitbucket.org/api/1.0/repositories/clearvolume/clearvolumemavenrepo/raw/master/"
+
+    } 
+    maven 
+    {
+
         url "http://bitbucket.org/api/1.0/repositories/rtlib/rtlibmavenrepo/raw/master/"
     } 
 }
