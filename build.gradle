@@ -110,6 +110,10 @@ subprojects
         {
             url "http://oss.sonatype.org/content/groups/public"
         } 
+        maven 
+        {
+            url "http://bitbucket.org/api/1.0/repositories/clearvolume/clearvolumemavenrepo/raw/master/"
+        } 
 
     }
 
