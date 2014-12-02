@@ -1,10 +1,12 @@
-package rtlib.ip.iqm.fitting;
+package rtlib.core.math.argmax.methods;
+
+import rtlib.core.math.argmax.ArgMaxFinder1D;
 
 public class ModeArgMaxFinder implements ArgMaxFinder1D
 {
 
 	@Override
-	public double argmax(double[] pX, double[] pY)
+	public Double argmax(double[] pX, double[] pY)
 	{
 		double lArgMax = 0;
 		double lMaxY = Double.NEGATIVE_INFINITY;

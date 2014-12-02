@@ -1,12 +1,13 @@
-package rtlib.ip.iqm.fitting;
+package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.round;
+import rtlib.core.math.argmax.ArgMaxFinder1D;
 
 public class MedianArgMaxFinder implements ArgMaxFinder1D
 {
 
 	@Override
-	public double argmax(double[] pX, double[] pY)
+	public Double argmax(double[] pX, double[] pY)
 	{
 		double lHalfSum = 0;
 
