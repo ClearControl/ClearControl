@@ -28,4 +28,10 @@ public class COMArgMaxFinder implements ArgMaxFinder1D
 		return lCenterOfMass;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format("COMArgMaxFinder []");
+	}
+
 }

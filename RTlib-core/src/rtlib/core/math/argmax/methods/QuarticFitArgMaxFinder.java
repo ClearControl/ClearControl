@@ -56,4 +56,11 @@ public class QuarticFitArgMaxFinder extends Fitting1DBase	implements
 		return lFittedY;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format(	"QuarticFitArgMaxFinder [mPolynomialFunction=%s]",
+													mPolynomialFunction);
+	}
+
 }

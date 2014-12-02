@@ -41,4 +41,10 @@ public class MedianArgMaxFinder implements ArgMaxFinder1D
 		return pX[(int) round(0.5 * (pX.length - 1))];
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format("MedianArgMaxFinder []");
+	}
+
 }

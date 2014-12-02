@@ -51,4 +51,11 @@ public class LoessFitArgMaxFinder extends Fitting1DBase	implements
 		return lFittedY;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format(	"LoessFitArgMaxFinder [mPolynomialSplineFunction=%s]",
+													mPolynomialSplineFunction);
+	}
+
 }

@@ -1,5 +1,7 @@
 package rtlib.core.math.argmax.test;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.BufferedReader;
@@ -44,10 +46,12 @@ public class ArgMaxTester
 		return lList;
 	}
 
-	public static void test(ArgMaxFinder1D pArgMaxFinder1D)	throws IOException,
-																													URISyntaxException
+	public static double test(ArgMaxFinder1D pArgMaxFinder1D,
+														int pNumberOfDatasets) throws IOException,
+																														URISyntaxException
 	{
-		for (int i = 1; i <= 9; i++)
+		double lMaxError = 0;
+		for (int i = 1; i <= pNumberOfDatasets; i++)
 		{
 			TDoubleArrayList lY = loadData(	ArgMaxTester.class,
 																			"./benchmark/Benchmark.txt",
@@ -66,14 +70,26 @@ public class ArgMaxTester
 
 			System.out.println("LArgMaxReference: " + LArgMaxReference);
 
-			double lArgmax = pArgMaxFinder1D.argmax(lX.toArray(),
+			Double lArgmax = pArgMaxFinder1D.argmax(lX.toArray(),
 																							lY.toArray());
 
 			System.out.println("class: " + pArgMaxFinder1D
-													+ " argmax: "
-													+ lArgmax);
+													+ "\n\t\targmax: "
+													+ lArgmax);/**/
+			
+			double lError = 0;
+			
+			if (lArgmax == null)
+				lError = Double.POSITIVE_INFINITY;
+			else
+				lError = abs(LArgMaxReference - lArgmax);
+
+			if (LArgMaxReference == -1)
+				lError = 0;
+
+			lMaxError = max(lMaxError, lError);
 
 		}
-
+		return lMaxError;
 	}
 }

@@ -53,4 +53,11 @@ public class SplineFitArgMaxFinder extends Fitting1DBase implements
 		return lFittedY;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format(	"SplineFitArgMaxFinder [mPolynomialSplineFunction=%s]",
+													mPolynomialSplineFunction);
+	}
+
 }

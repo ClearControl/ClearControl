@@ -60,9 +60,16 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1D
 		double[] lTop5XArray = lTop5X.toArray();
 		double[] lTop5YArray =lTop5Y.toArray();
 		
-		double lArgmax = mArgMaxFinder1D.argmax(lTop5XArray, lTop5YArray);
+		Double lArgmax = mArgMaxFinder1D.argmax(lTop5XArray, lTop5YArray);
 
 		return lArgmax;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"Top5ArgMaxFinder [mArgMaxFinder1D=%s]",
+													mArgMaxFinder1D);
 	}
 
 }

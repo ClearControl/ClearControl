@@ -14,8 +14,8 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 																													Fitting1D
 {
 
-	private double[] mlLastResults;
 	private PolynomialCurveFitter mPolynomialCurveFitter;
+	private PolynomialFunction mPolynomialFunction;
 
 	public ParabolaFitArgMaxFinder()
 	{
@@ -31,17 +31,37 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 	@Override
 	public Double argmax(double[] pX, double[] pY)
 	{
-		if (mlLastResults == null)
+		if (mPolynomialFunction == null)
 			fit(pX, pY);
 
-		double a = mlLastResults[2];
-		double b = mlLastResults[1];
-		// double c = mlLastResults[0];
+		double[] lCoefficients = mPolynomialFunction.getCoefficients();
+		mPolynomialFunction = null;
 
-		double lArgMax = -b / (2 * a);
+		if (lCoefficients.length == 3)
+		{
+			double a = lCoefficients[2];
+			double b = lCoefficients[1];
 
-		mlLastResults = null;
-		return lArgMax;
+			double lArgMax = -b / (2 * a);
+
+			return lArgMax;
+		}
+		else if (lCoefficients.length == 2)
+		{
+			double b = lCoefficients[1];
+
+			if (b > 0)
+				return pX[pX.length - 1];
+			else
+				return pX[0];
+
+		}
+		else if (lCoefficients.length == 1)
+		{
+			return null;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -52,17 +72,38 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 		for (int i = 0; i < pX.length; i++)
 			lObservedPoints.add(pX[i], pY[i]);
 
-		mlLastResults = mPolynomialCurveFitter.fit(lObservedPoints.toList());
+		try
+		{
+			double[] lFitInfo = mPolynomialCurveFitter.fit(lObservedPoints.toList());
 
-		PolynomialFunction lPolynomialFunction = new PolynomialFunction(mlLastResults);
+			mPolynomialFunction = new PolynomialFunction(lFitInfo);
 
-		double[] lFittedY = new double[pY.length];
+			double[] lFittedY = new double[pY.length];
 
-		for (int i = 0; i < pX.length; i++)
-			lFittedY[i] = lPolynomialFunction.value(pX[i]);
+			for (int i = 0; i < pX.length; i++)
+				lFittedY[i] = mPolynomialFunction.value(pX[i]);
 
-		mRMSD = ComputeFitError.rmsd(pY, lFittedY);
+			mRMSD = ComputeFitError.rmsd(pY, lFittedY);
 
-		return lFittedY;
+			return lFittedY;
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
+
+	public PolynomialFunction getFunction()
+	{
+		return mPolynomialFunction;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"ParabolaFitArgMaxFinder [mPolynomialFunction=%s]",
+													mPolynomialFunction);
+	}
+
 }

@@ -29,10 +29,17 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1D
 		}
 		lY.set(0, 0.25 * (3 * pY[lLength - 1] + pY[lLength - 2]));
 
-		final double lArgmax = mArgMaxFinder1D.argmax(pX,
+		final Double lArgmax = mArgMaxFinder1D.argmax(pX,
 																									lY.toArray());
 
 		return lArgmax;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"DenoisingArgMaxFinder [%s]",
+													mArgMaxFinder1D);
 	}
 
 }

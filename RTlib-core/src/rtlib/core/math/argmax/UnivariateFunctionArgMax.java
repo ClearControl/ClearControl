@@ -74,7 +74,7 @@ public class UnivariateFunctionArgMax
 			lYList.add(lY);
 		}
 
-		double lArgMax = sModeArgMaxFinder.argmax(lXList.toArray(),
+		Double lArgMax = sModeArgMaxFinder.argmax(lXList.toArray(),
 																							lYList.toArray());
 		return lArgMax;
 	}

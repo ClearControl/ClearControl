@@ -16,7 +16,7 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 
 	private double mLastMean;
 	private GaussianCurveFitter mGaussianCurveFitter;
-	protected Gaussian mOffsetGaussian;
+	protected Gaussian mGaussian;
 
 	public GaussianFitArgMaxFinder()
 	{
@@ -33,10 +33,11 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 	@Override
 	public Double argmax(double[] pX, double[] pY)
 	{
-		if (mOffsetGaussian == null)
-			fit(pX, pY);
+		if (mGaussian == null)
+			if (fit(pX, pY) == null)
+				return null;
 
-		mOffsetGaussian = null;
+		mGaussian = null;
 		return mLastMean;
 	}
 
@@ -49,26 +50,49 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 		for (int i = 0; i < pX.length; i++)
 			lObservedPoints.add(pX[i], pY[i]);
 
-		double[] lFitInfo = mGaussianCurveFitter.fit(lObservedPoints.toList());
-		// System.out.println(Arrays.toString(lFitInfo));
+		mGaussian = null;
 
-		double lNorm = lFitInfo[0];
-		double lMean = lFitInfo[1];
-		double lSigma = lFitInfo[2];
+		try
+		{
+			double[] lFitInfo = mGaussianCurveFitter.fit(lObservedPoints.toList());
+			// System.out.println(Arrays.toString(lFitInfo));
 
-		mLastMean = lMean;
+			double lNorm = lFitInfo[0];
+			double lMean = lFitInfo[1];
+			double lSigma = lFitInfo[2];
 
-		mOffsetGaussian = new Gaussian(lNorm, lMean, lSigma);
+			mLastMean = lMean;
 
-		double[] lFittedY = new double[pY.length];
+			mGaussian = new Gaussian(lNorm, lMean, lSigma);
 
-		for (int i = 0; i < pX.length; i++)
-			lFittedY[i] = mOffsetGaussian.value(pX[i]);
+			double[] lFittedY = new double[pY.length];
 
-		mRMSD = ComputeFitError.rmsd(pY, lFittedY);
+			for (int i = 0; i < pX.length; i++)
+				lFittedY[i] = mGaussian.value(pX[i]);
 
-		return lFittedY;
+			mRMSD = ComputeFitError.rmsd(pY, lFittedY);
+
+			return lFittedY;
+		}
+		catch (Throwable e)
+		{
+			return null;
+		}
 
 	}
+
+	public Gaussian getFunction()
+	{
+		return mGaussian;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"GaussianFitArgMaxFinder [mLastMean=%s, mGaussian=%s]",
+													mLastMean,
+													mGaussian);
+	}
+
 
 }

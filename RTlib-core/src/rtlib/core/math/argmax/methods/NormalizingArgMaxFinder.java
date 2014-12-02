@@ -35,10 +35,17 @@ public class NormalizingArgMaxFinder implements ArgMaxFinder1D
 			lNormY.add(lScaledValue);
 		}
 
-		final double lArgmax = mArgMaxFinder1D.argmax(pX,
+		final Double lArgmax = mArgMaxFinder1D.argmax(pX,
 																									lNormY.toArray());
 
 		return lArgmax;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"NormalizingArgMaxFinder [%s]",
+													mArgMaxFinder1D);
 	}
 
 }

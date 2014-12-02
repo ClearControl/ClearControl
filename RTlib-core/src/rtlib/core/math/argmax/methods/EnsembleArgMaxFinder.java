@@ -20,6 +20,8 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 	private ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
 	private Median mMedian;
 
+	private boolean mDebug = false;
+
 	public EnsembleArgMaxFinder()
 	{
 		super();
@@ -49,14 +51,14 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		@Override
 		public Double call() throws Exception
 		{
-			double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
+			Double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
 			return lArgMax;
 		}
 
 		@Override
 		public String toString()
 		{
-			return mArgMaxFinder1D.getClass().toString();
+			return mArgMaxFinder1D.toString();
 		}
 
 	}
@@ -83,11 +85,15 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		{
 			try
 			{
-				double lArgMax = lArgMaxFutureTask.get();
-				System.out.println("class: " + lTaskToCallableMap.get(lArgMaxFutureTask)
-														+ " argmax="
-														+ lArgMax);
-				lArgMaxList.add(lArgMax);
+				Double lArgMax = lArgMaxFutureTask.get();
+				if (lArgMax != null)
+				{
+					if (mDebug)
+						System.out.println("class: " + lTaskToCallableMap.get(lArgMaxFutureTask)
+																+ "\n\t\targmax="
+																+ lArgMax);
+					lArgMaxList.add(lArgMax);
+				}
 			}
 			catch (Throwable e)
 			{
@@ -99,4 +105,12 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 
 		return lArgMaxMedian;
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"EnsembleArgMaxFinder [mArgMaxFinder1DList=%s]",
+													mArgMaxFinder1DList);
+	}
+
 }

@@ -4,19 +4,20 @@ import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
-import rtlib.core.math.argmax.GaussianFitEstimator;
+import rtlib.core.math.argmax.FitQualityEstimator;
 import rtlib.core.units.Magnitudes;
 
-public class GaussianFitEstimatorTests
+public class FitQualityEstimatorTests
 {
 
 	@Test
 	public void basicTest()
 	{
-		GaussianFitEstimator lGaussianFitEstimator = new GaussianFitEstimator();
+		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
 
 		{
 			double[] lX = new double[]
@@ -24,7 +25,7 @@ public class GaussianFitEstimatorTests
 			double[] lY = new double[]
 			{ 3.71E-05, 3.80E-05, 3.86E-05, 3.86E-05, 3.79E-05 };
 
-			Double lPvalue = lGaussianFitEstimator.pvalue(lX, lY);
+			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 
 			System.out.println(lPvalue);
 		}
@@ -39,7 +40,7 @@ public class GaussianFitEstimatorTests
 			int lNumberOfIterations = 1;
 			long lStart = System.nanoTime();
 			for (int i = 0; i < lNumberOfIterations; i++)
-				lPvalue = lGaussianFitEstimator.pvalue(lX, lY);
+				lPvalue = lFitQualityEstimator.probability(lX, lY);
 			long lStop = System.nanoTime();
 			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
 
@@ -53,23 +54,23 @@ public class GaussianFitEstimatorTests
 	@Test
 	public void benchmark() throws IOException, URISyntaxException
 	{
-		GaussianFitEstimator lGaussianFitEstimator = new GaussianFitEstimator();
+		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
 
 		System.out.println("nofit:");
-		run(lGaussianFitEstimator,
-				GaussianFitEstimatorTests.class,
+		run(lFitQualityEstimator,
+				FitQualityEstimatorTests.class,
 				"./benchmark/nofit.txt",
 				6);
 
 		System.out.println("fit:");
-		run(lGaussianFitEstimator,
-				GaussianFitEstimatorTests.class,
+		run(lFitQualityEstimator,
+				FitQualityEstimatorTests.class,
 				"./benchmark/fit.txt",
-				7);
+				9);
 
 	}
 
-	private void run(	GaussianFitEstimator lGaussianFitEstimator,
+	private void run(	FitQualityEstimator lGaussianFitEstimator,
 										Class<?> lContextClass,
 										String lRessource,
 										int lNumberOfDatasets) throws IOException,
@@ -84,10 +85,20 @@ public class GaussianFitEstimatorTests
 			for (int j = 0; j < lY.size(); j++)
 				lX.add(j);
 
-			Double lPValue = lGaussianFitEstimator.pvalue(lX.toArray(),
+			Double lProbability = lGaussianFitEstimator.probability(lX.toArray(),
 																										lY.toArray());
 
-			System.out.println("probability=" + (1 - lPValue));
+
+
+			double[] lFittedY = lGaussianFitEstimator.getFit(	lX.toArray(),
+																										lY.toArray());
+
+			System.out.println("__________________________________________________________________________");
+			System.out.println("lX=" + Arrays.toString(lX.toArray()));
+			System.out.println("lY=" + Arrays.toString(lY.toArray()));
+			System.out.println("lFittedY=" + Arrays.toString(lFittedY));
+			System.out.println("probability=" + lProbability);
+			System.out.println("rmsd=" + lGaussianFitEstimator.getRMSD());
 
 			/*
 			Double lNRMSD = lGaussianFitEstimator.nrmsd(lX.toArray(),

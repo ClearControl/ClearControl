@@ -104,4 +104,12 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 
 		return lFittedY;
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"RandomSplineFitArgMaxFinder [mPolynomialSplineFunctions=%s]",
+													Arrays.toString(mPolynomialSplineFunctions));
+	}
+
 }

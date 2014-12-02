@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
+import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
@@ -20,10 +21,14 @@ import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import rtlib.core.math.argmax.methods.GaussianFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.ParabolaFitArgMaxFinder;
 
-public class GaussianFitEstimator
+public class FitQualityEstimator
 {
 
 	private static final Executor sExecutor = Executors.newCachedThreadPool();
+
+	private UnivariateDifferentiableFunction mUnivariateDifferentiableFunction;
+
+	private Double mRealDataRMSD;
 
 	private class RandomizedDataGaussianFitter implements
 																						Callable<Double>
@@ -32,14 +37,13 @@ public class GaussianFitEstimator
 		private Random lRandom = new Random();
 		private double[] mX;
 		private double[] mY;
-		private boolean mShuffle;
+		private UnivariateDifferentiableFunction mUnivariateDifferentiableFunction;
 
 		public RandomizedDataGaussianFitter(double[] pX,
 																				double[] pY,
 																				boolean pShuffle)
 		{
 			mX = pX;
-			mShuffle = pShuffle;
 			mY = shuffle(pShuffle, lRandom, pY);
 		}
 
@@ -49,31 +53,65 @@ public class GaussianFitEstimator
 			GaussianFitArgMaxFinder lGaussianFitArgMaxFinder = new GaussianFitArgMaxFinder(cMaxIterationsForRandomizedDataFitting);
 			try
 			{
-				lGaussianFitArgMaxFinder.fit(mX, mY);
+				double[] lFit = lGaussianFitArgMaxFinder.fit(mX, mY);
+				if (lFit == null)
+					throw new Exception();
+				setFunction(lGaussianFitArgMaxFinder.getFunction());
+
 				double lRMSD = lGaussianFitArgMaxFinder.getRMSD();
+				// System.out.println("Gaussian lRMSD=" + lRMSD);
 				return lRMSD;
 			}
 			catch (Throwable e)
 			{
+				// e.printStackTrace();
 				ParabolaFitArgMaxFinder lParabolaFitArgMaxFinder = new ParabolaFitArgMaxFinder(cMaxIterationsForRandomizedDataFitting);
 				try
 				{
-					lParabolaFitArgMaxFinder.fit(mX, mY);
+					double[] lFit = lParabolaFitArgMaxFinder.fit(mX, mY);
+					if (lFit == null)
+						return null;
+					setFunction(lParabolaFitArgMaxFinder.getFunction());
 					double lRMSD = lParabolaFitArgMaxFinder.getRMSD();
+
+					double[] lCoefficients = lParabolaFitArgMaxFinder.getFunction()
+																														.getCoefficients();
+
+					if (lCoefficients.length == 1)
+						return null;
+					if (lCoefficients.length == 3)
+					{
+						double a = lCoefficients[2];
+						if (a > 0)
+							return null;
+					}
+
+					// System.out.println("Parabola lRMSD=" + lRMSD);/**/
+
 					return lRMSD;
 				}
 				catch (Throwable e1)
 				{
-					// e1.printStackTrace();
+					e1.printStackTrace();
 					return null;
 				}/**/
 
 			}
 		}
 
+		public UnivariateDifferentiableFunction getFunction()
+		{
+			return mUnivariateDifferentiableFunction;
+		}
+
+		public void setFunction(UnivariateDifferentiableFunction pUnivariateDifferentiableFunction)
+		{
+			mUnivariateDifferentiableFunction = pUnivariateDifferentiableFunction;
+		}
+
 	}
 
-	public Double pvalue(double[] pX, double[] pY)
+	public Double probability(double[] pX, double[] pY)
 	{
 		TDoubleArrayList lNormY = new TDoubleArrayList();
 		double lMin = Double.POSITIVE_INFINITY;
@@ -95,12 +133,14 @@ public class GaussianFitEstimator
 																																												false);
 		try
 		{
-			Double lRealDataRMSD = lDataGaussianFitter.call();
+			mRealDataRMSD = lDataGaussianFitter.call();
 
-			if (lRealDataRMSD == null)
-				return 1.0;
+			if (mRealDataRMSD == null)
+				return 0.0;
 
-			final int lNumberOfRandomizedDatasets = 16 * pX.length;
+			mUnivariateDifferentiableFunction = lDataGaussianFitter.getFunction();
+
+			final int lNumberOfRandomizedDatasets = max(128, 32 * pX.length);
 			ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>(lNumberOfRandomizedDatasets);
 
 			for (int i = 0; i < lNumberOfRandomizedDatasets; i++)
@@ -137,46 +177,22 @@ public class GaussianFitEstimator
 			NormalDistribution lNormalDistribution = new NormalDistribution(lMeanValue,
 																																			lStandardDeviation);
 
-			final double lProbabilityThatRandomDataHasWorseFit = lNormalDistribution.cumulativeProbability(lRealDataRMSD);
+			final double lProbabilityThatRandomDataHasWorseFit = lNormalDistribution.cumulativeProbability(mRealDataRMSD);
 
-			final double lPValue = lProbabilityThatRandomDataHasWorseFit;
+			final double lFitProbability = 1 - lProbabilityThatRandomDataHasWorseFit;
 
-			return lPValue;
+			return lFitProbability;
 		}
 		catch (Throwable e)
 		{
 			e.printStackTrace();
-			return 1.0;
+			return 0.0;
 		}
 	}
 
-	public Double nrmsd(double[] pX, double[] pY)
+	public Double getRMSD()
 	{
-		try
-		{
-			TDoubleArrayList lNormY = new TDoubleArrayList();
-			double lMin = Double.POSITIVE_INFINITY;
-			double lMax = Double.NEGATIVE_INFINITY;
-			for (int i = 0; i < pY.length; i++)
-			{
-				lMin = min(lMin, pY[i]);/**/
-				lMax = max(lMax, pY[i]);/**/
-			}
-
-			for (int i = 0; i < pX.length; i++)
-			{
-				final double lScaledValue = (pY[i] - lMin) / (lMax - lMin);
-				lNormY.add(lScaledValue);
-			}
-			GaussianFitArgMaxFinder lGaussianFitArgMaxFinder = new GaussianFitArgMaxFinder();
-			lGaussianFitArgMaxFinder.fit(pX, lNormY.toArray());
-			double lRMSD = lGaussianFitArgMaxFinder.getRMSD();
-			return lRMSD;
-		}
-		catch (Exception e)
-		{
-			return 1.0;
-		}
+		return mRealDataRMSD;
 	}
 
 	public static double[] shuffle(	boolean pShuffle,
@@ -194,6 +210,25 @@ public class GaussianFitEstimator
 			}
 
 		return lNewArray;
+	}
+
+	public double[] getFit(double[] pX, double[] pY)
+	{
+		double lMin = Double.POSITIVE_INFINITY;
+		double lMax = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < pY.length; i++)
+		{
+			lMin = min(lMin, pY[i]);/**/
+			lMax = max(lMax, pY[i]);/**/
+		}
+
+		double[] lFittedY = new double[pX.length];
+		for (int i = 0; i < pX.length; i++)
+		{
+			lFittedY[i] = lMin + (lMax - lMin)
+										* mUnivariateDifferentiableFunction.value(pX[i]);
+		}
+		return lFittedY;
 	}
 
 }

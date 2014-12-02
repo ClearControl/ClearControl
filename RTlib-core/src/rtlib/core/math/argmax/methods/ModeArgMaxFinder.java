@@ -24,4 +24,10 @@ public class ModeArgMaxFinder implements ArgMaxFinder1D
 		return lArgMax;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format("ModeArgMaxFinder []");
+	}
+
 }
