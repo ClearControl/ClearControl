@@ -1,6 +1,7 @@
-package rtlib.ip.iqm.fitting;
+package rtlib.core.math.argmax.methods;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import rtlib.core.math.argmax.ArgMaxFinder1D;
 
 public class Top5ArgMaxFinder implements ArgMaxFinder1D
 {
@@ -14,7 +15,7 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1D
 	}
 
 	@Override
-	public double argmax(double[] pX, double[] pY)
+	public Double argmax(double[] pX, double[] pY)
 	{
 		int lIndexMax = 0;
 		double lMaxY = Double.NEGATIVE_INFINITY;
