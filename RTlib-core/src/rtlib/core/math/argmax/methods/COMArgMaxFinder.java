@@ -1,11 +1,16 @@
-package rtlib.ip.iqm.fitting;
+package rtlib.core.math.argmax.methods;
+
+import rtlib.core.math.argmax.ArgMaxFinder1D;
 
 public class COMArgMaxFinder implements ArgMaxFinder1D
 {
 
 	@Override
-	public double argmax(double[] pX, double[] pY)
+	public Double argmax(double[] pX, double[] pY)
 	{
+		if (pX.length == 0)
+			return null;
+
 		double lWeightedSum = 0;
 		double lWeightsSum = 0;
 
