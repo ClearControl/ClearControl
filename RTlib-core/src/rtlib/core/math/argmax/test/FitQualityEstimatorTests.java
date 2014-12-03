@@ -4,7 +4,6 @@ import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -66,7 +65,7 @@ public class FitQualityEstimatorTests
 		run(lFitQualityEstimator,
 				FitQualityEstimatorTests.class,
 				"./benchmark/fit.txt",
-				9);
+				10);
 
 	}
 
@@ -93,12 +92,12 @@ public class FitQualityEstimatorTests
 			double[] lFittedY = lGaussianFitEstimator.getFit(	lX.toArray(),
 																										lY.toArray());
 
-			System.out.println("__________________________________________________________________________");
-			System.out.println("lX=" + Arrays.toString(lX.toArray()));
-			System.out.println("lY=" + Arrays.toString(lY.toArray()));
-			System.out.println("lFittedY=" + Arrays.toString(lFittedY));
+			// System.out.println("__________________________________________________________________________");
+			// System.out.println("lX=" + Arrays.toString(lX.toArray()));
+			// System.out.println("lY=" + Arrays.toString(lY.toArray()));
+			// System.out.println("lFittedY=" + Arrays.toString(lFittedY));
 			System.out.println("probability=" + lProbability);
-			System.out.println("rmsd=" + lGaussianFitEstimator.getRMSD());
+			// System.out.println("rmsd=" + lGaussianFitEstimator.getRMSD());
 
 			/*
 			Double lNRMSD = lGaussianFitEstimator.nrmsd(lX.toArray(),
