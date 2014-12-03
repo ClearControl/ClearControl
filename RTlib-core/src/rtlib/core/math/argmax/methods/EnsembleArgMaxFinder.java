@@ -97,7 +97,8 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 			}
 			catch (Throwable e)
 			{
-				e.printStackTrace();
+				if (mDebug)
+					e.printStackTrace();
 			}
 		}
 

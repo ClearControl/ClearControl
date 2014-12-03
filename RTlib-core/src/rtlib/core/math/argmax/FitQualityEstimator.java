@@ -159,7 +159,7 @@ public class FitQualityEstimator
 				try
 				{
 					Double lRMSD = lFutureTask.get();
-					if (lIRMSDList != null)
+					if (lRMSD != null)
 						lIRMSDList.add(lRMSD);
 				}
 				catch (Throwable e)

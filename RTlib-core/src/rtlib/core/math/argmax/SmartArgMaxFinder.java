@@ -36,22 +36,13 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 	private MedianArgMaxFinder mMedianArgMaxFinder;
 	private DenoisingArgMaxFinder mDenoisingArgMaxFinder;
 
-	private double mFitProbabilityThreshold;
-
 	private Double mFitProbability;
 	private Double mRMSD;
 
 
-
 	public SmartArgMaxFinder()
 	{
-		this(cDefaultFitProbabilityThreshold);
-	}
-
-	public SmartArgMaxFinder(double pFitProbabilityThreshold)
-	{
 		super();
-		mFitProbabilityThreshold = pFitProbabilityThreshold;
 
 		mSymetricParabolaFitArgMaxFinder = new SymetricParabolaFitArgMaxFinder();
 		mParabolaFitArgMaxFinder = new ParabolaFitArgMaxFinder();
@@ -84,8 +75,8 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 
 		// System.out.println("lFitProbability=" + lFitProbability);
 
-		if (mFitProbability < mFitProbabilityThreshold)
-			return null;
+		// if (mFitProbability < mFitProbabilityThreshold)
+		// return null;
 
 		EnsembleArgMaxFinder lEnsembleArgMaxFinder = new EnsembleArgMaxFinder();
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,

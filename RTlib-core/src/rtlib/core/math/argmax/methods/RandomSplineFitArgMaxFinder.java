@@ -63,6 +63,7 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 			TDoubleArrayList lXList = new TDoubleArrayList();
 			TDoubleArrayList lYList = new TDoubleArrayList();
 
+			int lMaxAttempts = 1024;
 			do
 			{
 				lXList.clear();
@@ -73,8 +74,9 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 						lXList.add(pX[d]);
 						lYList.add(pY[d]);
 					}
+				lMaxAttempts--;
 			}
-			while (lXList.size() < lNumberOfControlPoints);
+			while (lXList.size() < lNumberOfControlPoints && lMaxAttempts > 0);
 
 			mPolynomialSplineFunctions[i] = mSplineInterpolator.interpolate(lXList.toArray(),
 																																			lYList.toArray());

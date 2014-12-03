@@ -37,7 +37,7 @@ public class FitQualityEstimatorTests
 			{ 0.2, 0.4, 0.1, 0.2, 0.1 };
 
 			double lPvalue = 0;
-			int lNumberOfIterations = 1;
+			int lNumberOfIterations = 100;
 			long lStart = System.nanoTime();
 			for (int i = 0; i < lNumberOfIterations; i++)
 				lPvalue = lFitQualityEstimator.probability(lX, lY);

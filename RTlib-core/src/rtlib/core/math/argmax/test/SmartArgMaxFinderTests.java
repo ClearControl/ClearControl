@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import rtlib.core.math.argmax.SmartArgMaxFinder;
+import rtlib.core.units.Magnitudes;
 
 public class SmartArgMaxFinderTests
 {
@@ -22,11 +23,21 @@ public class SmartArgMaxFinderTests
 			double[] lX = new double[]
 			{ 0, 1, 2, 3, 4 };
 			double[] lY = new double[]
-			{ 0.1, 0.2, 0.3, 0.2, 0.1 };
+			{ 0.11, 0.21, 0.3, 0.19, 0.09 };
+			double[] lFittedY = null;
+			Double lArgmax = null;
 
-			Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+			int lNumberOfIterations = 100;
+			long lStart = System.nanoTime();
+			for (int i = 0; i < lNumberOfIterations; i++)
+			{
+				lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+				lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			}
+			long lStop = System.nanoTime();
+			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
 
-			double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			System.out.format("%g ms per estimation. \n", lElapsed);
 
 			System.out.println(Arrays.toString(lX));
 			System.out.println(Arrays.toString(lY));
@@ -34,7 +45,7 @@ public class SmartArgMaxFinderTests
 
 			System.out.println(lArgmax);
 
-			assertEquals(2, lArgmax, 0);
+			assertEquals(2, lArgmax, 0.15);
 		}
 
 		{
@@ -62,7 +73,7 @@ public class SmartArgMaxFinderTests
 	public void benchmark() throws IOException, URISyntaxException
 	{
 
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder(0.1);
+		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
 		double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 15);
 		assertEquals(0, lMaxError, 1);
 
@@ -72,9 +83,9 @@ public class SmartArgMaxFinderTests
 	public void benchmarkWithFitEstimation() throws IOException,
 																					URISyntaxException
 	{
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder(0.99);
+		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
 		double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
-		assertEquals(0, lMaxError, 1);
+		assertEquals(0, lMaxError, 0.5);
 
 	}
 
