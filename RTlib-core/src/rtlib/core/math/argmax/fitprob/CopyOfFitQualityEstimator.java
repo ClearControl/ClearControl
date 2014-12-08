@@ -1,4 +1,4 @@
-package rtlib.core.math.argmax;
+package rtlib.core.math.argmax.fitprob;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -17,12 +17,15 @@ import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiabl
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import rtlib.core.math.argmax.methods.GaussianFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.ParabolaFitArgMaxFinder;
 
-public class FitQualityEstimator
+public class CopyOfFitQualityEstimator
 {
+	private static final int cMaxNumberOfRandomizedDatasets = 4096;
+	private static final int cMaxIterationsForRandomizedDataFitting = 512;
 
 	private static final Executor sExecutor = Executors.newCachedThreadPool();
 
@@ -33,7 +36,7 @@ public class FitQualityEstimator
 	private class RandomizedDataGaussianFitter implements
 																						Callable<Double>
 	{
-		private static final int cMaxIterationsForRandomizedDataFitting = 128;
+
 		private Random lRandom = new Random();
 		private double[] mX;
 		private double[] mY;
@@ -65,7 +68,7 @@ public class FitQualityEstimator
 			catch (Throwable e)
 			{
 				// e.printStackTrace();
-				ParabolaFitArgMaxFinder lParabolaFitArgMaxFinder = new ParabolaFitArgMaxFinder(cMaxIterationsForRandomizedDataFitting);
+				ParabolaFitArgMaxFinder lParabolaFitArgMaxFinder = new ParabolaFitArgMaxFinder(cMaxIterationsForRandomizedDataFitting / 2);
 				try
 				{
 					double[] lFit = lParabolaFitArgMaxFinder.fit(mX, mY);
@@ -140,7 +143,9 @@ public class FitQualityEstimator
 
 			mUnivariateDifferentiableFunction = lDataGaussianFitter.getFunction();
 
-			final int lNumberOfRandomizedDatasets = max(128, 32 * pX.length);
+			final int lNumberOfRandomizedDatasets = (int) min(CombinatoricsUtils.factorial(min(	9,
+																																													pX.length)),
+																												cMaxNumberOfRandomizedDatasets);
 			ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>(lNumberOfRandomizedDatasets);
 
 			for (int i = 0; i < lNumberOfRandomizedDatasets; i++)
@@ -167,14 +172,25 @@ public class FitQualityEstimator
 				}
 			}
 
+			double[] lIRMSDArray = lIRMSDList.toArray();
+			System.out.println("mRealDataRMSD=" + mRealDataRMSD);
+			// for (double lValue : lIRMSDArray)
+			// System.out.println(lValue);
 			Mean lMean = new Mean();
-			Variance lVariance = new Variance();
 
-			double lMeanValue = lMean.evaluate(lIRMSDList.toArray());
-			double lVarianceValue = lVariance.evaluate(lIRMSDList.toArray());
+			Variance lVariance = new Variance();
+			double lVarianceValue = lVariance.evaluate(lIRMSDArray);
+			double lCenterValue = lMean.evaluate(lIRMSDArray);
 			double lStandardDeviation = sqrt(lVarianceValue);
 
-			NormalDistribution lNormalDistribution = new NormalDistribution(lMeanValue,
+			System.out.format("mu=%g, sigma=%g \n",
+												lCenterValue,
+												lStandardDeviation);/**/
+
+			lCenterValue = 0.25;// lMean.evaluate(lIRMSDArray);
+			lStandardDeviation = 0.0625; // sqrt(lVarianceValue);
+
+			NormalDistribution lNormalDistribution = new NormalDistribution(lCenterValue,
 																																			lStandardDeviation);
 
 			final double lProbabilityThatRandomDataHasWorseFit = lNormalDistribution.cumulativeProbability(mRealDataRMSD);

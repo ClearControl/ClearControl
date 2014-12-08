@@ -1,5 +1,6 @@
 package rtlib.core.math.argmax;
 
+import rtlib.core.math.argmax.fitprob.FitQualityEstimator;
 import rtlib.core.math.argmax.methods.COMArgMaxFinder;
 import rtlib.core.math.argmax.methods.ClampingArgMaxFinder;
 import rtlib.core.math.argmax.methods.DenoisingArgMaxFinder;

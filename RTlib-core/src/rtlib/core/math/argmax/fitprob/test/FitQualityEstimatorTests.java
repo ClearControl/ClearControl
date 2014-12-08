@@ -1,13 +1,16 @@
-package rtlib.core.math.argmax.test;
+package rtlib.core.math.argmax.fitprob.test;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Random;
 
 import org.junit.Test;
 
-import rtlib.core.math.argmax.FitQualityEstimator;
+import rtlib.core.math.argmax.fitprob.FitQualityEstimator;
+import rtlib.core.math.argmax.fitprob.RandomizedDataGaussianFitter;
+import rtlib.core.math.argmax.test.ArgMaxTester;
 import rtlib.core.units.Magnitudes;
 
 public class FitQualityEstimatorTests
@@ -20,6 +23,17 @@ public class FitQualityEstimatorTests
 
 		{
 			double[] lX = new double[]
+			{ 0, 1, 2, 3, 4, 5, 6 };
+			double[] lY = new double[]
+			{ 0, 2, 2, 7, 6, 1, 0 };
+
+			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			System.out.format("p=%g \n", lPvalue);
+
+		}
+
+		{
+			double[] lX = new double[]
 			{ -2.0, -1.0, 0.0, 1.0, 2.0 };
 			double[] lY = new double[]
 			{ 3.71E-05, 3.80E-05, 3.86E-05, 3.86E-05, 3.79E-05 };
@@ -27,6 +41,31 @@ public class FitQualityEstimatorTests
 			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 
 			System.out.println(lPvalue);
+		}
+
+	}
+
+	@Test
+	public void performancesTest()
+	{
+		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+
+		for (int i = 0; i < 100; i++)
+		{
+			double[] lX = new double[]
+			{ 0, 1, 2, 3, 4, 5, 6 };
+			double[] lY = new double[]
+			{ 0, 2, 2, 7, 6, 1, 0 };
+
+			long lStart = System.nanoTime();
+			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			long lStop = System.nanoTime();
+			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / 1);
+
+			System.out.format("%g ms elpased to find: p=%g \n",
+												lElapsed,
+												lPvalue);
+
 		}
 
 		{
@@ -41,11 +80,34 @@ public class FitQualityEstimatorTests
 			for (int i = 0; i < lNumberOfIterations; i++)
 				lPvalue = lFitQualityEstimator.probability(lX, lY);
 			long lStop = System.nanoTime();
-			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
+			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - 1.0 * lStart) / lNumberOfIterations);
 
 			System.out.format("%g ms per estimation. \n", lElapsed);
 
 			System.out.println(lPvalue);
+		}
+
+	}
+
+	@Test
+	public void randomDataTest()
+	{
+		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+		double[] lX = new double[]
+		{ 0, 1, 2, 3, 4, 5, 6 };
+		double[] lY = new double[lX.length];
+		Random lRandom = new Random(System.nanoTime());
+
+		for (int i = 0; i < 1024; i++)
+		{
+
+			RandomizedDataGaussianFitter.generateRandomVector(lRandom, lY);
+
+			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+
+			System.out.format(" p=%g \n",
+												lPvalue);
+
 		}
 
 	}
@@ -59,13 +121,13 @@ public class FitQualityEstimatorTests
 		run(lFitQualityEstimator,
 				FitQualityEstimatorTests.class,
 				"./benchmark/nofit.txt",
-				6);
+				9);
 
 		System.out.println("fit:");
 		run(lFitQualityEstimator,
 				FitQualityEstimatorTests.class,
 				"./benchmark/fit.txt",
-				10);
+				15);
 
 	}
 
@@ -85,18 +147,17 @@ public class FitQualityEstimatorTests
 				lX.add(j);
 
 			Double lProbability = lGaussianFitEstimator.probability(lX.toArray(),
-																										lY.toArray());
-
-
+																															lY.toArray());
+			Double lRMSD = lGaussianFitEstimator.getRMSD();
 
 			double[] lFittedY = lGaussianFitEstimator.getFit(	lX.toArray(),
-																										lY.toArray());
+																												lY.toArray());
 
 			// System.out.println("__________________________________________________________________________");
 			// System.out.println("lX=" + Arrays.toString(lX.toArray()));
 			// System.out.println("lY=" + Arrays.toString(lY.toArray()));
 			// System.out.println("lFittedY=" + Arrays.toString(lFittedY));
-			System.out.println("probability=" + lProbability);
+			System.out.format("p=%g, rmsd=%g \n", lProbability, lRMSD);
 			// System.out.println("rmsd=" + lGaussianFitEstimator.getRMSD());
 
 			/*
