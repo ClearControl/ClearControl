@@ -7,13 +7,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import rtlib.core.memory.SizeOf;
 import rtlib.kam.context.impl.gpu.ContextGPU;
 import rtlib.kam.kernel.NDRangeUtils;
 import rtlib.kam.kernel.impl.gpu.GPUProgramNDRange;
-import rtlib.kam.memory.impl.direct.RAMDirect;
 import rtlib.kam.memory.impl.gpu.Image3DGPU;
 import rtlib.kam.memory.impl.gpu.NDArrayGPU;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.util.SizeOf;
+
 
 public class GPUProgramTests
 {
@@ -56,13 +57,13 @@ public class GPUProgramTests
 																													cBigSizeX,
 																													cBigSizeY);
 
-			final RAMDirect lRAMDirect = new RAMDirect(cBigSizeX * cBigSizeY
+			final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cBigSizeX * cBigSizeY
 																									* SizeOf.sizeOfShort());
 
 			for (long i = 0; i < cBigSizeX * cBigSizeY; i++)
-				lRAMDirect.setShortAligned(i, (short) i);
+				lOffHeapMemoryRegion.setShortAligned(i, (short) i);
 
-			lIn.mapAndReadFrom(lRAMDirect);
+			lIn.mapAndReadFrom(lOffHeapMemoryRegion);
 			lIn.getCurrentQueue().waitForCompletion();
 
 			final NDArrayGPU<Short> lOut = new NDArrayGPU<Short>(	lBestOpenCLContext,
@@ -78,13 +79,13 @@ public class GPUProgramTests
 													lOut,
 													1);
 
-			lOut.writeTo(lRAMDirect);
+			lOut.writeTo(lOffHeapMemoryRegion);
 
 			lOut.getCurrentQueue().waitForCompletion();
 
 			for (long i = 0; i < cBigSizeX * cBigSizeY; i++)
 			{
-				final short lShort = lRAMDirect.getShortAligned(i);
+				final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 				assertEquals((short) (i + 1), lShort);
 			}
 
@@ -130,22 +131,22 @@ public class GPUProgramTests
 																													cImage3DSizeY,
 																													cImage3DSizeZ);
 
-			final RAMDirect lRAMDirect = new RAMDirect(cImage3DSizeX * cImage3DSizeY
+			final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cImage3DSizeX * cImage3DSizeY
 																									* cImage3DSizeZ
 																									* SizeOf.sizeOfFloat());
 
 			for (long i = 0; i < cImage3DSizeX * cImage3DSizeY
 														* cImage3DSizeZ; i++)
-				lRAMDirect.setFloatAligned(i, i);
+				lOffHeapMemoryRegion.setFloatAligned(i, i);
 
 			for (long i = 0; i < cImage3DSizeX * cImage3DSizeY
 														* cImage3DSizeZ; i++)
 			{
-				final float lFloat = lRAMDirect.getFloatAligned(i);
+				final float lFloat = lOffHeapMemoryRegion.getFloatAligned(i);
 				assertEquals(i, lFloat, 0);
 			}
 
-			lIn.readFrom(lRAMDirect);
+			lIn.readFrom(lOffHeapMemoryRegion);
 			lIn.getCurrentQueue().waitForCompletion();
 
 			final Image3DGPU<Float> lOut = new Image3DGPU<Float>(	lBestOpenCLContext,
@@ -164,14 +165,14 @@ public class GPUProgramTests
 													lOut,
 													3.0f);
 
-			lOut.writeTo(lRAMDirect);
+			lOut.writeTo(lOffHeapMemoryRegion);
 			lOut.getCurrentQueue().waitForCompletion();
 
 			for (long i = 0; i < cImage3DSizeX * cImage3DSizeY
 														* cImage3DSizeZ; i++)
 			{
 
-				final float lFloat = lRAMDirect.getFloatAligned(i);
+				final float lFloat = lOffHeapMemoryRegion.getFloatAligned(i);
 				// System.out.println(lFloat);
 				assertEquals(i + 3, lFloat, 0);
 			}
@@ -179,7 +180,7 @@ public class GPUProgramTests
 			lIn.free();
 			lOut.free();
 			lGPUprogram.free();
-			lRAMDirect.free();
+			lOffHeapMemoryRegion.free();
 			lBestOpenCLContext.free();
 
 		}

@@ -10,6 +10,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.jtransforms.dct.FloatDCT_2D;
 
+import coremem.MemoryRegionInterface;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
 import rtlib.cameras.StackCameraDeviceBase;
@@ -20,7 +21,6 @@ import rtlib.gui.plots.PlotTab;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
-import rtlib.kam.memory.ram.RAM;
 import rtlib.slms.dms.DeformableMirrorDevice;
 import rtlib.stack.Stack;
 
@@ -217,12 +217,12 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		mReceivedStack = false;
 
 		long lVolume = mNewStack.getNDArray().getVolume();
-		RAM lRAM = mNewStack.getNDArray().getRAM();
+		MemoryRegionInterface lMemoryRegionInterface = mNewStack.getNDArray().getMemoryRegionInterface();
 		double lMax = Long.MIN_VALUE;
 		long lMaxIndex = 0;
 		for (long j = 0; j < lVolume; j++)
 		{
-			double lValue = Math.log(1 + lRAM.getCharAligned(j));
+			double lValue = Math.log(1 + lMemoryRegionInterface.getCharAligned(j));
 			if (lValue > lMax)
 			{
 				lMaxIndex = j;
@@ -233,7 +233,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		for (long j = 0; j < lVolume; j++)
 			if (j != lMaxIndex)
 			{
-				double lValue = Math.log(1 + lRAM.getCharAligned(j));
+				double lValue = Math.log(1 + lMemoryRegionInterface.getCharAligned(j));
 				lNonMax += lValue;
 			}
 
@@ -277,7 +277,7 @@ public class PSFOptimizer implements VirtualDeviceInterface
 		final long lWidth = lNdArray.getWidth();
 		final long lHeight = lNdArray.getHeight();
 
-		RAM lRAM = mNewStack.getNDArray().getRAM();
+		MemoryRegionInterface lMemoryRegionInterface = mNewStack.getNDArray().getMemoryRegionInterface();
 
 		float lSum = 0;
 		for (long y = 1; y < lHeight - 1; y++)
@@ -286,15 +286,15 @@ public class PSFOptimizer implements VirtualDeviceInterface
 			for (long x = 1; x < lWidth - 1; x++)
 			{
 
-				short a = lRAM.getShortAligned(x - 1 + lWidth * (y - 1));
-				short b = lRAM.getShortAligned(x + lWidth * (y - 1));
-				short c = lRAM.getShortAligned(x + 1 + lWidth * (y - 1));
-				short d = lRAM.getShortAligned(x - 1 + lWidth * y);
-				short e = lRAM.getShortAligned(x + lWidth * y);
-				short f = lRAM.getShortAligned(x + 1 + lWidth * y);
-				short g = lRAM.getShortAligned(x - 1 + lWidth * (y + 1));
-				short h = lRAM.getShortAligned(x + lWidth * (y + 1));
-				short i = lRAM.getShortAligned(x + 1 + lWidth * (y + 1));
+				short a = lMemoryRegionInterface.getShortAligned(x - 1 + lWidth * (y - 1));
+				short b = lMemoryRegionInterface.getShortAligned(x + lWidth * (y - 1));
+				short c = lMemoryRegionInterface.getShortAligned(x + 1 + lWidth * (y - 1));
+				short d = lMemoryRegionInterface.getShortAligned(x - 1 + lWidth * y);
+				short e = lMemoryRegionInterface.getShortAligned(x + lWidth * y);
+				short f = lMemoryRegionInterface.getShortAligned(x + 1 + lWidth * y);
+				short g = lMemoryRegionInterface.getShortAligned(x - 1 + lWidth * (y + 1));
+				short h = lMemoryRegionInterface.getShortAligned(x + lWidth * (y + 1));
+				short i = lMemoryRegionInterface.getShortAligned(x + 1 + lWidth * (y + 1));
 
 				float dx = c + 2 * f + i - a - 2 * d - g;
 				float dy = a + 2 * b + c - g - 2 * h - i;

@@ -10,6 +10,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.junit.Test;
 
+import coremem.MemoryRegionInterface;
 import rtlib.ao.utils.MatrixConversions;
 import rtlib.ao.zernike.TransformMatrices;
 import rtlib.cameras.StackCameraDeviceBase;
@@ -18,7 +19,6 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
-import rtlib.kam.memory.ram.RAM;
 import rtlib.slms.dms.DeformableMirrorDevice;
 import rtlib.slms.dms.devices.mirao52e.Mirao52eDevice;
 import rtlib.stack.Stack;
@@ -140,11 +140,11 @@ public class Mirao52eDeviceDemo
 				Thread.sleep(1);
 
 			long lVolume = mNewStack.getNDArray().getVolume();
-			RAM lRAM = mNewStack.getNDArray().getRAM();
+			MemoryRegionInterface lMemoryRegionInterface = mNewStack.getNDArray().getMemoryRegionInterface();
 			long lMax = Long.MIN_VALUE;
 			for (long j = 0; j < lVolume; j++)
 			{
-				int lCharAligned = lRAM.getCharAligned(j);
+				int lCharAligned = lMemoryRegionInterface.getCharAligned(j);
 				lMax = Math.max(lMax, lCharAligned);
 			}
 
@@ -166,7 +166,7 @@ public class Mirao52eDeviceDemo
 	private void generateRandomNDArrayVector(NDArrayTyped<Double> pNDArray)
 	{
 		for (int i = 0; i < pNDArray.getVolume(); i++)
-			pNDArray.getRAM()
+			pNDArray.getMemoryRegionInterface()
 							.setDoubleAligned(i, 0.001 * (2 * Math.random() - 1));
 	}
 

@@ -30,6 +30,15 @@ sourceSets
 dependencies 
 {
     compile group: 'de.mukis', name: 'de.mukis.jama', version: '2.0.0.M1'
+    compile group: "royer", name: "CoreMem", version: "1.+", changing: true, transitive:true
 }
 
 
+repositories 
+{
+    mavenCentral()
+    maven 
+    {
+        url "http://bitbucket.org/api/1.0/repositories/rtlib/rtlibmavenrepo/raw/master/"
+    } 
+}

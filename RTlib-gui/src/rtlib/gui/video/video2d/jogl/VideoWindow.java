@@ -373,7 +373,7 @@ public class VideoWindow<T> implements AutoCloseable
 			private void fastMinMaxSampling(NDArrayTyped<T> pSourceBuffer)
 			{
 				long lLength = pSourceBuffer.getVolume();
-				int lStep = (int) (1 + round(cPercentageOfPixelsToSample * lLength));
+				int lStep = 1 + round(cPercentageOfPixelsToSample * lLength);
 				int lStartPixel = (int) round(random() * lStep);
 
 				double lMin = Double.POSITIVE_INFINITY;

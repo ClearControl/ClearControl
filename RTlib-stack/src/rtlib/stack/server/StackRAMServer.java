@@ -4,11 +4,11 @@ import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;
 
-import rtlib.core.recycling.Recycler;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
+import coremem.recycling.Recycler;
 
 public class StackRAMServer<T>	implements
 																StackSinkInterface<T>,

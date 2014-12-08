@@ -7,11 +7,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorBase;
 import rtlib.stack.processor.StackProcessorInterface;
+import coremem.recycling.Recycler;
 
 public class StackProcessorTests
 {

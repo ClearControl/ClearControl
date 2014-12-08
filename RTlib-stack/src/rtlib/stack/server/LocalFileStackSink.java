@@ -8,11 +8,11 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import rtlib.core.memory.SizeOf;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.VariableInterface;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
+import coremem.util.SizeOf;
 
 public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 																															StackSinkInterface<I>,

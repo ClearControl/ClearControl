@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.memory.SizeOf;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
@@ -21,6 +20,7 @@ import clearvolume.volume.sink.filter.gui.ChannelFilterSinkJFrame;
 import clearvolume.volume.sink.renderer.ClearVolumeRendererSink;
 import clearvolume.volume.sink.timeshift.TimeShiftingSink;
 import clearvolume.volume.sink.timeshift.gui.TimeShiftingSinkJFrame;
+import coremem.util.SizeOf;
 
 public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 																													StackDisplayInterface<T>
@@ -89,8 +89,8 @@ public class Stack3DDisplay<T> extends NamedVirtualDevice	implements
 				// System.out.println(pNewFrameReference.buffer);
 
 				final ByteBuffer lByteBuffer = pStack.getNDArray()
-																							.getRAM()
-																							.passNativePointerToByteBuffer(Character.class);
+																							.getMemoryRegionInterface()
+																							.passNativePointerToByteBuffer();
 				final long lWidth = pStack.getWidth();
 				final long lHeight = pStack.getHeight();
 				final long lDepth = pStack.getDepth();

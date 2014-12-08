@@ -6,13 +6,14 @@ import static java.lang.Math.toIntExact;
 import org.jtransforms.dct.DoubleDCT_2D;
 
 import pl.edu.icm.jlargearrays.DoubleLargeArray;
-import rtlib.core.memory.SizeOf;
 import rtlib.kam.memory.cursor.NDCursor;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+
+import coremem.util.SizeOf;
 
 public class DCTS2D implements ImageQualityMetricInterface<Character>
 {
@@ -50,6 +51,7 @@ public class DCTS2D implements ImageQualityMetricInterface<Character>
 		return lDoubleDCT_2D;
 	}
 
+	@Override
 	public final double[] computeImageQualityMetric(NDArrayTyped<Character> pNDArray)
 	{
 		final long lLengthInElements = pNDArray.getLengthInElements();
@@ -85,7 +87,7 @@ public class DCTS2D implements ImageQualityMetricInterface<Character>
 
 		double[] lDCTSArray = new double[toIntExact(lDepth)];
 
-		long lBaseAddress = mDoubleWorkingNDArray.getRAM().getAddress();
+		long lBaseAddress = mDoubleWorkingNDArray.getMemoryRegionInterface().getAddress();
 		NDCursor lDefaultCursor = mDoubleWorkingNDArray.getDefaultCursor();
 		for (int z = 0; z < lDepth; z++, lDefaultCursor.incrementCursorPosition(3))
 		{

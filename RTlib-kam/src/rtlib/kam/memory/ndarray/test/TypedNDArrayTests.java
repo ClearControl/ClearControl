@@ -6,12 +6,13 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import rtlib.core.memory.SizeOf;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
-import rtlib.kam.memory.impl.direct.RAMDirect;
 import rtlib.kam.memory.ndarray.InvalidNDArrayDefinitionException;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
-import rtlib.kam.memory.ram.RAM;
+import coremem.MemoryRegionInterface;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.util.SizeOf;
+
 
 public class TypedNDArrayTests
 {
@@ -22,9 +23,9 @@ public class TypedNDArrayTests
 		NDBoundedCursor lNDCursor = NDBoundedCursor.create3DCursor(	3,
 																																5,
 																																7);
-		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
+		MemoryRegionInterface lMemoryRegionInterface = new OffHeapMemoryRegion(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
 
-		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lRAM,
+		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lMemoryRegionInterface,
 																																short.class,
 																																lNDCursor);
 
@@ -47,8 +48,8 @@ public class TypedNDArrayTests
 			NDBoundedCursor lNDCursorBad = NDBoundedCursor.create3DCursor(3,
 																																		5,
 																																		7);
-			RAM lRAMBad = new RAMDirect(lNDCursor.getLengthInElements() - 10);
-			NDArrayTyped<Short> lNDArrayBad = NDArrayTyped.allocateNDArray(	lRAMBad,
+			MemoryRegionInterface lMemoryRegionInterfaceBad = new OffHeapMemoryRegion(lNDCursor.getLengthInElements() - 10);
+			NDArrayTyped<Short> lNDArrayBad = NDArrayTyped.allocateNDArray(	lMemoryRegionInterfaceBad,
 																																			short.class,
 																																			lNDCursorBad);
 			fail();
@@ -71,9 +72,9 @@ public class TypedNDArrayTests
 		NDBoundedCursor lNDCursor = NDBoundedCursor.create3DCursor(	3,
 																																5,
 																																7);
-		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
+		MemoryRegionInterface lMemoryRegionInterface = new OffHeapMemoryRegion(lNDCursor.getLengthInElements() * SizeOf.sizeOfShort());
 
-		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lRAM,
+		NDArrayTyped<Short> lNDArray = NDArrayTyped.allocateNDArray(lMemoryRegionInterface,
 																																short.class,
 																																lNDCursor);
 
@@ -113,7 +114,7 @@ public class TypedNDArrayTests
 		}
 
 		for (int i = 0; i < lNDCursor.getLengthInElements(); i++)
-			assertEquals((short) (123), lRAM.getShortAligned(i));
+			assertEquals((short) (123), lMemoryRegionInterface.getShortAligned(i));
 
 	}
 

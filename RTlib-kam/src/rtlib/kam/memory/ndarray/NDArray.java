@@ -1,10 +1,12 @@
 package rtlib.kam.memory.ndarray;
 
+import org.bridj.Pointer;
+
 import rtlib.kam.memory.NDStructured;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.cursor.NDCursor;
 import rtlib.kam.memory.cursor.NDCursorAccessible;
-import rtlib.kam.memory.ram.RAM;
+import coremem.MemoryRegionInterface;
 
 public class NDArray implements
 										NDStructured,
@@ -14,37 +16,39 @@ public class NDArray implements
 {
 
 	protected final NDBoundedCursor mDefaultBoundedCursor;
-	protected final RAM mRAM;
+	protected final MemoryRegionInterface<?> mMemoryRegionInterface;
 
-	public static NDArray wrap(RAM pRAM, final NDBoundedCursor pCursor)
+	public static NDArray wrap(	MemoryRegionInterface<?> pMemoryRegionInterface,
+															final NDBoundedCursor pCursor)
 	{
-		return new NDArray(pRAM, pCursor);
+		return new NDArray(pMemoryRegionInterface, pCursor);
 	}
 
-	public NDArray(RAM pRAM, NDBoundedCursor pCursor)
+	public NDArray(	MemoryRegionInterface<?> pMemoryRegionInterface,
+									NDBoundedCursor pCursor)
 	{
-		this(pRAM, 1, pCursor);
+		this(pMemoryRegionInterface, 1, pCursor);
 	}
 
-	public NDArray(	RAM pRAM,
+	public NDArray(	MemoryRegionInterface<?> pMemoryRegionInterface,
 									long pElementSizeInBytes,
 									NDBoundedCursor pCursor)
 	{
 		super();
-		if (pRAM.getSizeInBytes() != pCursor.getLengthInElements() * pElementSizeInBytes)
+		if (pMemoryRegionInterface.getSizeInBytes() != pCursor.getLengthInElements() * pElementSizeInBytes)
 		{
 			String lErrorMessage = String.format(	"Can't create NDArray, wrong dimensions (ram.length=%d, cursor.length=%d )   ",
-																						pRAM.getSizeInBytes(),
+																						pMemoryRegionInterface.getSizeInBytes(),
 																						pCursor.getLengthInElements());
 			throw new InvalidNDArrayDefinitionException(lErrorMessage);
 		}
-		mRAM = pRAM;
+		mMemoryRegionInterface = pMemoryRegionInterface;
 		mDefaultBoundedCursor = pCursor;
 	}
 
-	public RAM getRAM()
+	public MemoryRegionInterface<?> getMemoryRegionInterface()
 	{
-		return mRAM;
+		return mMemoryRegionInterface;
 	}
 
 	@Override
@@ -68,170 +72,170 @@ public class NDArray implements
 	@Override
 	public byte getByteAtCursor()
 	{
-		return mRAM.getByte(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getByte(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public char getCharAtCursor()
 	{
-		return mRAM.getChar(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getChar(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public short getShortAtCursor()
 	{
-		return mRAM.getShort(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getShort(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public int getIntAtCursor()
 	{
-		return mRAM.getInt(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getInt(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public long getLongAtCursor()
 	{
-		return mRAM.getLong(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getLong(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public float getFloatAtCursor()
 	{
-		return mRAM.getFloat(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getFloat(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public double getDoubleAtCursor()
 	{
-		return mRAM.getDouble(mDefaultBoundedCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getDouble(mDefaultBoundedCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public void setByteAtCursor(byte pValue)
 	{
-		mRAM.setByte(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setByte(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setCharAtCursor(char pValue)
 	{
-		mRAM.setChar(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setChar(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setShortAtCursor(short pValue)
 	{
-		mRAM.setShort(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setShort(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setIntAtCursor(int pValue)
 	{
-		mRAM.setInt(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setInt(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setLongAtCursor(long pValue)
 	{
-		mRAM.setLong(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setLong(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setFloatAtCursor(float pValue)
 	{
-		mRAM.setFloat(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setFloat(mDefaultBoundedCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setDoubleAtCursor(double pValue)
 	{
-		mRAM.setDouble(	mDefaultBoundedCursor.getCurrentFlatIndex(),
+		mMemoryRegionInterface.setDouble(	mDefaultBoundedCursor.getCurrentFlatIndex(),
 										pValue);
 	}
 
 	@Override
 	public byte getByteAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getByte(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getByte(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public char getCharAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getChar(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getChar(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public short getShortAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getShort(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getShort(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public int getIntAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getInt(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getInt(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public long getLongAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getLong(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getLong(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public float getFloatAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getFloat(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getFloat(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public double getDoubleAtCursor(NDBoundedCursor pCursor)
 	{
-		return mRAM.getDouble(pCursor.getCurrentFlatIndex());
+		return mMemoryRegionInterface.getDouble(pCursor.getCurrentFlatIndex());
 	}
 
 	@Override
 	public void setByteAtCursor(NDBoundedCursor pCursor, byte pValue)
 	{
-		mRAM.setByte(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setByte(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setCharAtCursor(NDBoundedCursor pCursor, char pValue)
 	{
-		mRAM.setChar(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setChar(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setShortAtCursor(NDBoundedCursor pCursor, short pValue)
 	{
-		mRAM.setShort(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setShort(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setIntAtCursor(NDBoundedCursor pCursor, int pValue)
 	{
-		mRAM.setInt(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setInt(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setLongAtCursor(NDBoundedCursor pCursor, long pValue)
 	{
-		mRAM.setLong(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setLong(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setFloatAtCursor(NDBoundedCursor pCursor, float pValue)
 	{
-		mRAM.setFloat(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setFloat(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
 	public void setDoubleAtCursor(NDBoundedCursor pCursor, double pValue)
 	{
-		mRAM.setDouble(pCursor.getCurrentFlatIndex(), pValue);
+		mMemoryRegionInterface.setDouble(pCursor.getCurrentFlatIndex(), pValue);
 	}
 
 	@Override
@@ -251,5 +255,13 @@ public class NDArray implements
 	{
 		return mDefaultBoundedCursor.isVectorized();
 	}
+
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
+	public Pointer getBridJPointer()
+	{
+		return mMemoryRegionInterface.getBridJPointer((Class) Byte.class);
+	}
+
 
 }

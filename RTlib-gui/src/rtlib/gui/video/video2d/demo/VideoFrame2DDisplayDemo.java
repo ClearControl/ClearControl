@@ -141,7 +141,7 @@ public class VideoFrame2DDisplayDemo extends JFrame
 	{
 		// System.out.println(rnd);
 
-		final int lBufferLength = (int) pNDArrayDirect.getRAM()
+		final int lBufferLength = (int) pNDArrayDirect.getMemoryRegionInterface()
 																									.getSizeInBytes();
 		for (int i = 0; i < lBufferLength; i++)
 		{

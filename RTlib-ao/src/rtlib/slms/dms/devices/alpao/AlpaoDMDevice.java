@@ -31,11 +31,11 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		mAlpaoDeformableMirror = new AlpaoDeformableMirror(pAlpaoSerialName);
 
 		mMatrixWidthVariable = new DoubleVariable("MatrixWidth",
-																							(double) cFullMatrixWidthHeight);
+																							cFullMatrixWidthHeight);
 		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-																								(double) cFullMatrixWidthHeight);
+																								cFullMatrixWidthHeight);
 		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-																											(double) cActuatorResolution);
+																											cActuatorResolution);
 
 		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
 		{
@@ -60,7 +60,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		{
 			boolean lOpen = mAlpaoDeformableMirror.open();
 			mNumberOfActuatorsVariable = new DoubleVariable("NumberOfActuators",
-																											(double) mAlpaoDeformableMirror.getNumberOfActuators());
+																											mAlpaoDeformableMirror.getNumberOfActuators());
 			return lOpen;
 		}
 		catch (Throwable e)

@@ -3,7 +3,7 @@ package rtlib.kam.kernel;
 import java.io.IOException;
 import java.net.URL;
 
-import rtlib.core.rgc.Freeable;
+import coremem.rgc.Freeable;
 
 public interface Program<T> extends Freeable
 {

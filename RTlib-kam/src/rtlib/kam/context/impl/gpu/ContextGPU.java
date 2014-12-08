@@ -15,7 +15,10 @@ import com.nativelibs4java.opencl.CLPlatform;
 import com.nativelibs4java.opencl.CLQueue;
 import com.nativelibs4java.opencl.JavaCL;
 
-public class ContextGPU implements Context<CLContext>
+import coremem.rgc.FreeableBase;
+
+public class ContextGPU extends FreeableBase implements
+																						Context<CLContext>
 {
 	private static final ContextGPU mBestContext = new ContextGPU();
 

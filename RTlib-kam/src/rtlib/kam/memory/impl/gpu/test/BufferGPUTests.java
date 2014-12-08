@@ -10,13 +10,13 @@ import java.nio.file.Files;
 
 import org.junit.Test;
 
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.memory.SizeOf;
 import rtlib.core.units.Magnitudes;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.impl.direct.RAMDirect;
-import rtlib.kam.memory.impl.file.RAMFile;
 import rtlib.kam.memory.impl.gpu.BufferGPU;
+import coremem.memmap.FileMappedMemoryRegion;
+import coremem.offheap.NativeMemoryAccess;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.util.SizeOf;
 
 public class BufferGPUTests
 {
@@ -75,17 +75,17 @@ public class BufferGPUTests
 																															true,
 																															true);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cSize * SizeOf.sizeOfShort());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cSize * SizeOf.sizeOfShort());
 
 		for (int i = 0; i < cSize; i++)
-			lRAMDirect.setShortAligned(i, (short) i);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) i);
 
-		lBufferGPU.readFrom(lRAMDirect);
+		lBufferGPU.readFrom(lOffHeapMemoryRegion);
 
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
 		for (int i = 0; i < cSize; i++)
-			lRAMDirect.setShortAligned(i, (short) 0);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) 0);
 
 		final long lMapAddress = lBufferGPU.map();
 
@@ -100,12 +100,12 @@ public class BufferGPUTests
 
 		lBufferGPU.unmap();
 
-		lBufferGPU.writeTo(lRAMDirect);
+		lBufferGPU.writeTo(lOffHeapMemoryRegion);
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
 		for (int i = 0; i < cSize; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			assertEquals((short) i, lShort);
 		}
 
@@ -128,31 +128,31 @@ public class BufferGPUTests
 																															true,
 																															true);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cSize * SizeOf.sizeOfShort());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cSize * SizeOf.sizeOfShort());
 
 		// System.out.println("for (int i = 0; i < cSize; i++)");
 		for (int i = 0; i < cSize; i++)
-			lRAMDirect.setShortAligned(i, (short) i);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) i);
 
 		// System.out.println("lBufferGPU.mapAndReadFrom(lRAMDirect);");
-		lBufferGPU.mapAndReadFrom(lRAMDirect);
+		lBufferGPU.mapAndReadFrom(lOffHeapMemoryRegion);
 
 		for (int i = 0; i < cSize; i++)
-			lRAMDirect.setShortAligned(i, (short) 0);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) 0);
 
 		// System.out.println("lBufferGPU.mapAndWriteTo(lRAMDirect);");
-		lBufferGPU.mapAndWriteTo(lRAMDirect);
+		lBufferGPU.mapAndWriteTo(lOffHeapMemoryRegion);
 
 		// System.out.println("for (int i = 0; i < cSize; i++)");
 		for (int i = 0; i < cSize; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			// System.out.println(lShort);
 			assertEquals((short) i, lShort);
 		}
 
 		// System.out.println("lRAMDirect.free();");
-		lRAMDirect.free();
+		lOffHeapMemoryRegion.free();
 		// System.out.println("lBufferGPU.free();");
 		lBufferGPU.free();
 		// System.out.println("testMapAndReadWrite().END");
@@ -175,15 +175,15 @@ public class BufferGPUTests
 		final File lTempFile = File.createTempFile(	this.getClass()
 																										.getSimpleName(),
 																								"testWriteToMappableMemory");
-		final RAMFile lRAMFile = new RAMFile(	lTempFile,
+		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(	lTempFile,
 																					4096 * SizeOf.sizeOfShort());
 
 		// System.out.println("lBufferGPU.readFromMapped(lRAMFile);");
-		lBufferGPU.readFromMapped(lRAMFile);
+		lBufferGPU.readFromMapped(lFileMappedMemoryRegion);
 		// System.out.println("lBufferGPU.writeToMapped(lRAMFile);");
-		lBufferGPU.writeToMapped(lRAMFile);
+		lBufferGPU.writeToMapped(lFileMappedMemoryRegion);
 		// System.out.println("lRAMFile.free();");
-		lRAMFile.free();
+		lFileMappedMemoryRegion.free();
 		// System.out.println("lBufferGPU.free();");
 		lBufferGPU.free();
 
@@ -205,17 +205,17 @@ public class BufferGPUTests
 																														false,
 																														true);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cPerfSize * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cPerfSize * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cPerfSize; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
 
 		final int lNumberOfCycles = 10;
 
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lBufferGPU.readFrom(lRAMDirect);
+			lBufferGPU.readFrom(lOffHeapMemoryRegion);
 		}
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
@@ -246,11 +246,11 @@ public class BufferGPUTests
 																														true,
 																														false);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cPerfSize * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cPerfSize * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cPerfSize; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
-		lBufferGPU.readFrom(lRAMDirect);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
+		lBufferGPU.readFrom(lOffHeapMemoryRegion);
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
 		final int lNumberOfCycles = 10;
@@ -258,7 +258,7 @@ public class BufferGPUTests
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lBufferGPU.writeTo(lRAMDirect);
+			lBufferGPU.writeTo(lOffHeapMemoryRegion);
 		}
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
@@ -289,17 +289,17 @@ public class BufferGPUTests
 																														false,
 																														true);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cPerfSize * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cPerfSize * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cPerfSize; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
 
 		final int lNumberOfCycles = 10;
 
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lBufferGPU.mapAndReadFrom(lRAMDirect);
+			lBufferGPU.mapAndReadFrom(lOffHeapMemoryRegion);
 		}
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 		final long lStopNanos = System.nanoTime();
@@ -329,11 +329,11 @@ public class BufferGPUTests
 																														true,
 																														false);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cPerfSize * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cPerfSize * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cPerfSize; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
-		lBufferGPU.readFrom(lRAMDirect);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
+		lBufferGPU.readFrom(lOffHeapMemoryRegion);
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 
 		final int lNumberOfCycles = 10;
@@ -341,7 +341,7 @@ public class BufferGPUTests
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lBufferGPU.mapAndWriteTo(lRAMDirect);
+			lBufferGPU.mapAndWriteTo(lOffHeapMemoryRegion);
 		}
 		lBufferGPU.getCurrentQueue().waitForCompletion();
 

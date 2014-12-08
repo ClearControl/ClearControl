@@ -10,12 +10,13 @@ import java.nio.file.Files;
 
 import org.junit.Test;
 
-import rtlib.core.memory.SizeOf;
 import rtlib.core.units.Magnitudes;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.impl.direct.RAMDirect;
-import rtlib.kam.memory.impl.file.RAMFile;
 import rtlib.kam.memory.impl.gpu.Image2DGPU;
+import coremem.memmap.FileMappedMemoryRegion;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.util.SizeOf;
+
 
 public class Image2DGPUTests
 {
@@ -67,31 +68,31 @@ public class Image2DGPUTests
 																																cSizeX,
 																																cSizeY);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfShort());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfShort());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setShortAligned(i, (short) i);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) i);
 
 		for (int i = 0; i < cVolume; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			assertEquals((short) i, lShort);
 		}
 
-		lImage2DGPU.readFrom(lRAMDirect);
+		lImage2DGPU.readFrom(lOffHeapMemoryRegion);
 		lImage2DGPU.getCurrentQueue().waitForCompletion();
 		// Thread.sleep(2000);
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setShortAligned(i, (short) 0);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) 0);
 
-		lImage2DGPU.writeTo(lRAMDirect);
+		lImage2DGPU.writeTo(lOffHeapMemoryRegion);
 		lImage2DGPU.getCurrentQueue().waitForCompletion();
 		// Thread.sleep(2000);
 
 		for (int i = 0; i < cVolume; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			// System.out.println(lShort);
 			assertEquals((short) i, lShort);
 		}
@@ -118,12 +119,12 @@ public class Image2DGPUTests
 		final File lTempFile = File.createTempFile(	this.getClass()
 																										.getSimpleName(),
 																								"testWriteToMappableMemory");
-		final RAMFile lRAMFile = new RAMFile(	lTempFile,
+		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(	lTempFile,
 																					cVolume * SizeOf.sizeOfShort());
 
-		lImage2DGPU.readFromMapped(lRAMFile);
-		lImage2DGPU.writeToMapped(lRAMFile);
-		lRAMFile.free();
+		lImage2DGPU.readFromMapped(lFileMappedMemoryRegion);
+		lImage2DGPU.writeToMapped(lFileMappedMemoryRegion);
+		lFileMappedMemoryRegion.free();
 		lImage2DGPU.free();
 
 		assertTrue(lTempFile.exists());
@@ -144,17 +145,17 @@ public class Image2DGPUTests
 																															cSizeX,
 																															cSizeY);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
 
 		final int lNumberOfCycles = 10;
 
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lImage2DGPU.readFrom(lRAMDirect);
+			lImage2DGPU.readFrom(lOffHeapMemoryRegion);
 		}
 		lImage2DGPU.getCurrentQueue().waitForCompletion();
 
@@ -186,11 +187,11 @@ public class Image2DGPUTests
 																															cSizeX,
 																															cSizeY);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
-		lImage2DGPU.readFrom(lRAMDirect);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
+		lImage2DGPU.readFrom(lOffHeapMemoryRegion);
 		lImage2DGPU.getCurrentQueue().waitForCompletion();
 
 		final int lNumberOfCycles = 10;
@@ -198,7 +199,7 @@ public class Image2DGPUTests
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lImage2DGPU.writeTo(lRAMDirect);
+			lImage2DGPU.writeTo(lOffHeapMemoryRegion);
 		}
 		lImage2DGPU.getCurrentQueue().waitForCompletion();
 

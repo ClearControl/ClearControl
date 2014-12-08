@@ -1,16 +1,7 @@
 package rtlib.kam.memory.impl.gpu;
 
-import rtlib.core.memory.SizeOf;
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.memory.TypeId;
-import rtlib.core.rgc.Freeable;
-import rtlib.kam.HasPeer;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.MemoryType;
-import rtlib.kam.memory.MemoryTyped;
 import rtlib.kam.memory.NDStructured;
-import rtlib.kam.memory.ReadWriteToMappableMemory;
-import rtlib.kam.memory.ReadWriteToPointerAccessible;
 import rtlib.kam.queues.Queue;
 import rtlib.kam.queues.QueueableOperations;
 
@@ -21,15 +12,26 @@ import com.nativelibs4java.opencl.CLImageFormat.ChannelOrder;
 import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLQueue;
 
-public abstract class ImageGPU<T> implements
-																	MemoryTyped,
-																	HasPeer<CLImage>,
-																	SizedInBytes,
-																	Freeable,
-																	NDStructured,
-																	QueueableOperations<CLQueue>,
-																	ReadWriteToPointerAccessible,
-																	ReadWriteToMappableMemory
+import coremem.interfaces.HasPeer;
+import coremem.interfaces.MemoryType;
+import coremem.interfaces.MemoryTyped;
+import coremem.interfaces.ReadWriteToMappableMemory;
+import coremem.interfaces.ReadWriteToPointerAccessible;
+import coremem.interfaces.SizedInBytes;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreeableBase;
+import coremem.util.SizeOf;
+import coremem.util.TypeId;
+
+public abstract class ImageGPU<T> extends FreeableBase implements
+																											MemoryTyped,
+																											HasPeer<CLImage>,
+																											SizedInBytes,
+																											Freeable,
+																											NDStructured,
+																											QueueableOperations<CLQueue>,
+																											ReadWriteToPointerAccessible,
+																											ReadWriteToMappableMemory
 
 {
 

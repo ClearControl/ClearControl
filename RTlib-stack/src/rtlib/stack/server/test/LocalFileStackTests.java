@@ -8,8 +8,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import rtlib.core.memory.SizeOf;
-import rtlib.core.recycling.Recycler;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.doublev.DoubleVariable;
@@ -18,6 +16,8 @@ import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 import rtlib.stack.server.LocalFileStackSink;
 import rtlib.stack.server.LocalFileStackSource;
+import coremem.recycling.Recycler;
+import coremem.util.SizeOf;
 
 public class LocalFileStackTests
 {

@@ -2,14 +2,15 @@ package rtlib.kam.memory.impl.gpu;
 
 import java.util.Arrays;
 
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.rgc.Freeable;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.MemoryTyped;
 import rtlib.kam.memory.NDStructured;
 
 import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLMem.Usage;
+
+import coremem.interfaces.MemoryTyped;
+import coremem.interfaces.SizedInBytes;
+import coremem.rgc.Freeable;
 
 public class NDArrayGPU<T> extends BufferGPU<T>	implements
 																								MemoryTyped,

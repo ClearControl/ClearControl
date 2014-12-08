@@ -1,8 +1,8 @@
 package rtlib.stack.server;
 
-import rtlib.core.recycling.Recycler;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
+import coremem.recycling.Recycler;
 
 public interface StackSourceInterface<T>
 {

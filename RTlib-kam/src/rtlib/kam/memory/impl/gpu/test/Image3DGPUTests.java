@@ -10,12 +10,13 @@ import java.nio.file.Files;
 
 import org.junit.Test;
 
-import rtlib.core.memory.SizeOf;
 import rtlib.core.units.Magnitudes;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.impl.direct.RAMDirect;
-import rtlib.kam.memory.impl.file.RAMFile;
 import rtlib.kam.memory.impl.gpu.Image3DGPU;
+import coremem.memmap.FileMappedMemoryRegion;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.util.SizeOf;
+
 
 public class Image3DGPUTests
 {
@@ -71,31 +72,31 @@ public class Image3DGPUTests
 																																cSizeY,
 																																cSizeZ);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfShort());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfShort());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setShortAligned(i, (short) i);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) i);
 
 		for (int i = 0; i < cVolume; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			assertEquals((short) i, lShort);
 		}
 
-		lImage3DGPU.readFrom(lRAMDirect);
+		lImage3DGPU.readFrom(lOffHeapMemoryRegion);
 		lImage3DGPU.getCurrentQueue().waitForCompletion();
 		// Thread.sleep(2000);
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setShortAligned(i, (short) 0);
+			lOffHeapMemoryRegion.setShortAligned(i, (short) 0);
 
-		lImage3DGPU.writeTo(lRAMDirect);
+		lImage3DGPU.writeTo(lOffHeapMemoryRegion);
 		lImage3DGPU.getCurrentQueue().waitForCompletion();
 		// Thread.sleep(2000);
 
 		for (int i = 0; i < cVolume; i++)
 		{
-			final short lShort = lRAMDirect.getShortAligned(i);
+			final short lShort = lOffHeapMemoryRegion.getShortAligned(i);
 			// System.out.println(lShort);
 			//
 
@@ -125,12 +126,12 @@ public class Image3DGPUTests
 		final File lTempFile = File.createTempFile(	this.getClass()
 																										.getSimpleName(),
 																								"testWriteToMappableMemory");
-		final RAMFile lRAMFile = new RAMFile(	lTempFile,
+		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(	lTempFile,
 																					cVolume * SizeOf.sizeOfShort());
 
-		lImage3DGPU.readFromMapped(lRAMFile);
-		lImage3DGPU.writeToMapped(lRAMFile);
-		lRAMFile.free();
+		lImage3DGPU.readFromMapped(lFileMappedMemoryRegion);
+		lImage3DGPU.writeToMapped(lFileMappedMemoryRegion);
+		lFileMappedMemoryRegion.free();
 		lImage3DGPU.free();
 
 		assertTrue(lTempFile.exists());
@@ -152,17 +153,17 @@ public class Image3DGPUTests
 																															cSizeY,
 																															cSizeZ);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
 
 		final int lNumberOfCycles = 10;
 
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lImage3DGPU.readFrom(lRAMDirect);
+			lImage3DGPU.readFrom(lOffHeapMemoryRegion);
 		}
 		lImage3DGPU.getCurrentQueue().waitForCompletion();
 		final long lStopNanos = System.nanoTime();
@@ -194,11 +195,11 @@ public class Image3DGPUTests
 																															cSizeY,
 																															cSizeZ);
 
-		final RAMDirect lRAMDirect = new RAMDirect(cVolume * SizeOf.sizeOfByte());
+		final OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(cVolume * SizeOf.sizeOfByte());
 
 		for (int i = 0; i < cVolume; i++)
-			lRAMDirect.setByteAligned(i, (byte) i);
-		lImage3DGPU.readFrom(lRAMDirect);
+			lOffHeapMemoryRegion.setByteAligned(i, (byte) i);
+		lImage3DGPU.readFrom(lOffHeapMemoryRegion);
 		lImage3DGPU.getCurrentQueue().waitForCompletion();
 
 		final int lNumberOfCycles = 10;
@@ -206,7 +207,7 @@ public class Image3DGPUTests
 		final long lStartNanos = System.nanoTime();
 		for (int cycle = 0; cycle < lNumberOfCycles; cycle++)
 		{
-			lImage3DGPU.writeTo(lRAMDirect);
+			lImage3DGPU.writeTo(lOffHeapMemoryRegion);
 		}
 		lImage3DGPU.getCurrentQueue().waitForCompletion();
 

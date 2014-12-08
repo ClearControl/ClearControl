@@ -2,21 +2,9 @@ package rtlib.kam.memory.impl.gpu;
 
 import org.bridj.Pointer;
 
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.memory.SizeOf;
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.rgc.Freeable;
-import rtlib.kam.HasPeer;
 import rtlib.kam.context.Context;
 import rtlib.kam.context.HasContext;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.MapAndReadWrite;
-import rtlib.kam.memory.MappableMemory;
-import rtlib.kam.memory.MemoryType;
-import rtlib.kam.memory.MemoryTyped;
-import rtlib.kam.memory.PointerAccessible;
-import rtlib.kam.memory.ReadWriteToMappableMemory;
-import rtlib.kam.memory.ReadWriteToPointerAccessible;
 import rtlib.kam.queues.Queue;
 import rtlib.kam.queues.QueueableOperations;
 
@@ -26,17 +14,31 @@ import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLMem.Usage;
 import com.nativelibs4java.opencl.CLQueue;
 
-public class BufferGPU<T> implements
-													MemoryTyped,
-													HasPeer<CLBuffer<T>>,
-													MappableMemory,
-													SizedInBytes,
-													Freeable,
-													QueueableOperations<CLQueue>,
-													ReadWriteToPointerAccessible,
-													ReadWriteToMappableMemory,
-													MapAndReadWrite,
-													HasContext<CLContext>
+import coremem.interfaces.HasPeer;
+import coremem.interfaces.MapAndReadWrite;
+import coremem.interfaces.MappableMemory;
+import coremem.interfaces.MemoryType;
+import coremem.interfaces.MemoryTyped;
+import coremem.interfaces.PointerAccessible;
+import coremem.interfaces.ReadWriteToMappableMemory;
+import coremem.interfaces.ReadWriteToPointerAccessible;
+import coremem.interfaces.SizedInBytes;
+import coremem.offheap.NativeMemoryAccess;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreeableBase;
+import coremem.util.SizeOf;
+
+public class BufferGPU<T> extends FreeableBase implements
+																							MemoryTyped,
+																							HasPeer<CLBuffer<T>>,
+																							MappableMemory,
+																							SizedInBytes,
+																							Freeable,
+																							QueueableOperations<CLQueue>,
+																							ReadWriteToPointerAccessible,
+																							ReadWriteToMappableMemory,
+																							MapAndReadWrite,
+																							HasContext<CLContext>
 
 {
 

@@ -2,7 +2,7 @@ package rtlib.stack;
 
 import java.util.Arrays;
 
-import rtlib.core.recycling.RecyclerRequest;
+import coremem.recycling.RecyclerRequest;
 
 public class StackRequest<T> implements RecyclerRequest<Stack<T>>
 {

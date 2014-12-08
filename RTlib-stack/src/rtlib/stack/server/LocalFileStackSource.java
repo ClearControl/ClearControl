@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Scanner;
 
-import rtlib.core.memory.SizeOf;
-import rtlib.core.recycling.Recycler;
 import rtlib.core.units.Magnitudes;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
+import coremem.recycling.Recycler;
+import coremem.util.SizeOf;
 
 public class LocalFileStackSource<T> extends LocalFileStackBase	implements
 																																StackSourceInterface<T>,

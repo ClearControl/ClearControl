@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.memory.SizeOf;
 import rtlib.kam.context.impl.gpu.ContextGPU;
 import rtlib.kam.memory.impl.gpu.NDArrayGPU;
+import coremem.offheap.NativeMemoryAccess;
+import coremem.util.SizeOf;
 
 public class NDArrayGPUTests
 {

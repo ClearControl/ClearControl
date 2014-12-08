@@ -2,17 +2,18 @@ package rtlib.kam.memory.impl.gpu;
 
 import org.bridj.Pointer;
 
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.rgc.Freeable;
 import rtlib.kam.context.impl.gpu.ContextGPU;
-import rtlib.kam.memory.MappableMemory;
-import rtlib.kam.memory.MemoryTyped;
 import rtlib.kam.memory.NDStructured;
-import rtlib.kam.memory.PointerAccessible;
 import rtlib.kam.memory.impl.gpu.util.JavaCLUtils;
 
 import com.nativelibs4java.opencl.CLImageFormat;
 import com.nativelibs4java.opencl.CLMem;
+
+import coremem.interfaces.MappableMemory;
+import coremem.interfaces.MemoryTyped;
+import coremem.interfaces.PointerAccessible;
+import coremem.interfaces.SizedInBytes;
+import coremem.rgc.Freeable;
 
 public class Image3DGPU<T> extends ImageGPU<T> implements
 																							MemoryTyped,

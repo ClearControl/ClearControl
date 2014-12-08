@@ -1,6 +1,6 @@
 package rtlib.kam.queues;
 
-import rtlib.kam.HasPeer;
+import coremem.interfaces.HasPeer;
 
 public interface Queue<T> extends HasPeer<T>
 {

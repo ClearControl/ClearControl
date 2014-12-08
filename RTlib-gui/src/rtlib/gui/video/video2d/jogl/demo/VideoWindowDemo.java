@@ -217,7 +217,7 @@ public class VideoWindowDemo
 	private void generateNoiseBuffer(final NDArrayTypedDirect<?> pNDArrayDirect)
 	{
 
-		final int lBufferLength = (int) pNDArrayDirect.getRAM()
+		final int lBufferLength = (int) pNDArrayDirect.getMemoryRegionInterface()
 																									.getSizeInBytes();
 		for (int i = 0; i < lBufferLength; i++)
 		{

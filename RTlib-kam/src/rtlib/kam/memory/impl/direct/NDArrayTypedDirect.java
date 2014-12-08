@@ -3,14 +3,17 @@ package rtlib.kam.memory.impl.direct;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import rtlib.core.memory.SizeOf;
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.rgc.Freeable;
-import rtlib.kam.memory.ReadWriteBytesFileChannel;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
-import rtlib.kam.memory.ram.ReadAtAligned;
-import rtlib.kam.memory.ram.WriteAtAligned;
+import coremem.MemoryRegionInterface;
+import coremem.interfaces.ReadAtAligned;
+import coremem.interfaces.ReadWriteBytesFileChannel;
+import coremem.interfaces.SizedInBytes;
+import coremem.interfaces.WriteAtAligned;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreedException;
+import coremem.util.SizeOf;
 
 public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																													SizedInBytes,
@@ -20,27 +23,29 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																													Freeable
 {
 
-	private NDArrayTypedDirect(	RAMDirect pRAMDirect,
+	private NDArrayTypedDirect(	MemoryRegionInterface<T> pMemoryRegionInterface,
 															Class<T> pType,
 															NDBoundedCursor pCursor)
 	{
-		super(pRAMDirect, pType, pCursor);
+		super(pMemoryRegionInterface, pType, pCursor);
 	}
 
 	public NDArrayTypedDirect(long pElementSizeInBytes,
 														Class<T> pType,
 														NDBoundedCursor pCursor)
 	{
-		super(RAMDirect.allocate(pCursor.getLengthInElements() * pElementSizeInBytes),
+		super(OffHeapMemoryRegion.allocate(pCursor.getLengthInElements() * pElementSizeInBytes),
 					pType,
 					pCursor);
 	}
 
-	public static <T> NDArrayTypedDirect<T> allocateNDArray(RAMDirect pRAM,
+	public static <T> NDArrayTypedDirect<T> allocateNDArray(MemoryRegionInterface<T> pMemoryRegionInterface,
 																													Class<T> pType,
 																													final NDBoundedCursor pCursor)
 	{
-		return new NDArrayTypedDirect<T>(pRAM, pType, pCursor);
+		return new NDArrayTypedDirect<T>(	pMemoryRegionInterface,
+																			pType,
+																			pCursor);
 	}
 
 	public static <T> NDArrayTypedDirect<T> allocateTVND(	Class<T> pType,
@@ -51,7 +56,6 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																			pType,
 																			lNDBoundedCursor);
 	}
-
 
 	public static <T> NDArrayTypedDirect<T> allocateTXYZ(	Class<T> pType,
 																												long pWidth,
@@ -93,30 +97,25 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																																						pWidth,
 																																						pHeight,
 																																						pDepth);
-		return new NDArrayTypedDirect<T>(	RAMDirect.wrapPointer(pParent,
-																														pNativeAddress,
-																														pLengthInBytes),
+		return new NDArrayTypedDirect<T>(	OffHeapMemoryRegion.wrapPointer(pParent,
+																																			pNativeAddress,
+																																			pLengthInBytes),
 																			pType,
 																			lNDBoundedCursor);
-	}
-
-	private RAMDirect getRAMDirect()
-	{
-		return (RAMDirect) getRAM();
 	}
 
 	@Override
 	public long getSizeInBytes()
 	{
-		return getRAMDirect().getSizeInBytes();
+		return getMemoryRegionInterface().getSizeInBytes();
 	}
 
 	@Override
 	public long writeBytesToFileChannel(FileChannel pFileChannel,
 																			long pFilePositionInBytes) throws IOException
 	{
-		return getRAMDirect().writeBytesToFileChannel(pFileChannel,
-																									pFilePositionInBytes);
+		return getMemoryRegionInterface().writeBytesToFileChannel(pFileChannel,
+																															pFilePositionInBytes);
 	}
 
 	@Override
@@ -125,10 +124,10 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																			long pFilePositionInBytes,
 																			long pLengthInBytes) throws IOException
 	{
-		return getRAMDirect().writeBytesToFileChannel(pBufferPositionInBytes,
-																									pFileChannel,
-																									pFilePositionInBytes,
-																									pLengthInBytes);
+		return getMemoryRegionInterface().writeBytesToFileChannel(pBufferPositionInBytes,
+																															pFileChannel,
+																															pFilePositionInBytes,
+																															pLengthInBytes);
 	}
 
 	@Override
@@ -136,9 +135,9 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																				long pFilePositionInBytes,
 																				long pLengthInBytes) throws IOException
 	{
-		getRAMDirect().readBytesFromFileChannel(pFileChannel,
-																						pFilePositionInBytes,
-																						pLengthInBytes);
+		getMemoryRegionInterface().readBytesFromFileChannel(pFileChannel,
+																												pFilePositionInBytes,
+																												pLengthInBytes);
 	}
 
 	@Override
@@ -147,32 +146,30 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 																				long pFilePositionInBytes,
 																				long pLengthInBytes) throws IOException
 	{
-		getRAMDirect().readBytesFromFileChannel(pBufferPositionInBytes,
-																						pFileChannel,
-																						pFilePositionInBytes,
-																						pLengthInBytes);
+		getMemoryRegionInterface().readBytesFromFileChannel(pBufferPositionInBytes,
+																												pFileChannel,
+																												pFilePositionInBytes,
+																												pLengthInBytes);
 	}
-
-
 
 	@Override
 	public void free()
 	{
-		mRAM.free();
+		mMemoryRegionInterface.free();
 	}
 
 	@Override
 	public boolean isFree()
 	{
-		return mRAM.isFree();
+		return mMemoryRegionInterface.isFree();
 	}
 
 	@Override
 	public String toString()
 	{
 		return "NDArrayDirect [mDefaultBoundedCursor=" + mDefaultBoundedCursor
-						+ ", mRAM="
-						+ mRAM
+						+ ", mMemoryRegionInterface="
+						+ mMemoryRegionInterface
 						+ "]";
 	}
 
@@ -186,20 +183,31 @@ public class NDArrayTypedDirect<T> extends NDArrayTyped<T> implements
 		for (int i = 0; i < lDimensions.length - 1; i++)
 			lDimensionsSlice[i] = lDimensions[i];
 
-		long[] lSliceVector = new long[(int) lDimension];
+		long[] lSliceVector = new long[lDimension];
 		lSliceVector[lDimension - 1] = pSliceIndex;
 
 		long lSliceLinearIndex = NDBoundedCursor.getIndex(lDimensions,
 																											lSliceVector);
 
 		NDBoundedCursor lNDBoundedCursor = NDBoundedCursor.createNDVectorCursor(lDimensionsSlice);
-		RAMDirect lRAM = mRAM.subRegion(lSliceLinearIndex * SizeOf.sizeOf(lType),
-																		lNDBoundedCursor.getVolume() * SizeOf.sizeOf(lType));
+		@SuppressWarnings("unchecked")
+		MemoryRegionInterface<T> lRAM = ((MemoryRegionInterface<T>) mMemoryRegionInterface).subRegion(lSliceLinearIndex * SizeOf.sizeOf(lType),
+																																																	lNDBoundedCursor.getVolume() * SizeOf.sizeOf(lType));
 
 		NDArrayTypedDirect<T> lNDArraySlice = NDArrayTypedDirect.allocateNDArray(	lRAM,
 																																							lType,
 																																							lNDBoundedCursor);
 		return lNDArraySlice;
+	}
+
+	@Override
+	public void complainIfFreed() throws FreedException
+	{
+		if (isFree())
+		{
+			final String lErrorMessage = "Underlying ressource has been freed!";
+			throw new FreedException(lErrorMessage);
+		}
 	}
 
 }

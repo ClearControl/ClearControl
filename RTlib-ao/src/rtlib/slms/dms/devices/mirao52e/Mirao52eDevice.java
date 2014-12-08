@@ -23,13 +23,13 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 	{
 		super("MIRAO52e_" + pDeviceIndex);
 		mMatrixWidthVariable = new DoubleVariable("MatrixWidth",
-																							(double) cFullMatrixWidthHeight);
+																							cFullMatrixWidthHeight);
 		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-																								(double) cFullMatrixWidthHeight);
+																								cFullMatrixWidthHeight);
 		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-																											(double) cActuatorResolution);
+																											cActuatorResolution);
 		mNumberOfActuatorsVariable = new DoubleVariable("NumberOfActuators",
-																										(double) cActuatorResolution);
+																										cActuatorResolution);
 
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 

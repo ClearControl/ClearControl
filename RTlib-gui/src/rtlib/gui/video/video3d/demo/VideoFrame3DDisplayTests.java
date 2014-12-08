@@ -26,8 +26,8 @@ public class VideoFrame3DDisplayTests
 																											lResolutionX,
 																											lResolutionZ);
 		final ByteBuffer lByteBuffer = lVideoFrame.getNDArray()
-																							.getRAM()
-																							.passNativePointerToByteBuffer(Character.class);
+																							.getMemoryRegionInterface()
+																							.passNativePointerToByteBuffer();
 
 		final Stack3DDisplay<Byte> lVideoFrame3DDisplay = new Stack3DDisplay<Byte>();
 

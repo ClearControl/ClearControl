@@ -10,12 +10,12 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.memory.SizeOf;
-import rtlib.core.recycling.Recycler;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
+import coremem.offheap.NativeMemoryAccess;
+import coremem.recycling.Recycler;
+import coremem.util.SizeOf;
 
 public class StackTests
 {

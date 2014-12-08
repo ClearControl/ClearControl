@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import rtlib.kam.HasPeer;
 import rtlib.kam.context.Context;
 import rtlib.kam.context.HasContext;
 import rtlib.kam.kernel.KernelException;
@@ -22,7 +21,10 @@ import com.nativelibs4java.opencl.CLProgram;
 import com.nativelibs4java.opencl.CLQueue;
 import com.nativelibs4java.util.IOUtils;
 
-public class GPUProgram	implements
+import coremem.interfaces.HasPeer;
+import coremem.rgc.FreeableBase;
+
+public class GPUProgram extends FreeableBase implements
 												Program<CLKernel>,
 												HasContext<CLContext>,
 												QueueableOperations<CLQueue>

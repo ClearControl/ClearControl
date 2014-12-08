@@ -7,11 +7,11 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import coremem.MemoryRegionInterface;
+import coremem.offheap.OffHeapMemoryRegion;
 import rtlib.kam.memory.cursor.NDBoundedCursor;
-import rtlib.kam.memory.impl.direct.RAMDirect;
 import rtlib.kam.memory.ndarray.InvalidNDArrayDefinitionException;
 import rtlib.kam.memory.ndarray.NDArray;
-import rtlib.kam.memory.ram.RAM;
 
 public class NDArrayTests
 {
@@ -22,9 +22,9 @@ public class NDArrayTests
 		NDBoundedCursor lNDCursor = NDBoundedCursor.create3DCursor(	3,
 																																5,
 																																7);
-		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements());
+		MemoryRegionInterface lMemoryRegionInterface = new OffHeapMemoryRegion(lNDCursor.getLengthInElements());
 
-		NDArray lNDArray = NDArray.wrap(lRAM, lNDCursor);
+		NDArray lNDArray = NDArray.wrap(lMemoryRegionInterface, lNDCursor);
 
 		assertEquals(lNDCursor, lNDArray.getDefaultCursor());
 
@@ -45,8 +45,8 @@ public class NDArrayTests
 			NDBoundedCursor lNDCursorBad = NDBoundedCursor.create3DCursor(3,
 																																		5,
 																																		7);
-			RAM lRAMBad = new RAMDirect(lNDCursor.getLengthInElements() - 10);
-			NDArray lNDArrayBad = NDArray.wrap(lRAMBad, lNDCursorBad);
+			MemoryRegionInterface lMemoryRegionInterfaceBad = new OffHeapMemoryRegion(lNDCursor.getLengthInElements() - 10);
+			NDArray lNDArrayBad = NDArray.wrap(lMemoryRegionInterfaceBad, lNDCursorBad);
 			fail();
 		}
 		catch (InvalidNDArrayDefinitionException e)
@@ -67,9 +67,9 @@ public class NDArrayTests
 		NDBoundedCursor lNDCursor = NDBoundedCursor.create3DCursor(	3,
 																																5,
 																																7);
-		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements());
+		MemoryRegionInterface lMemoryRegionInterface = new OffHeapMemoryRegion(lNDCursor.getLengthInElements());
 
-		NDArray lNDArray = NDArray.wrap(lRAM, lNDCursor);
+		NDArray lNDArray = NDArray.wrap(lMemoryRegionInterface, lNDCursor);
 
 		assertEquals(lNDCursor, lNDArray.getDefaultCursor());
 
@@ -106,8 +106,8 @@ public class NDArrayTests
 			lNDCursor.incrementCursorPosition(1);
 		}
 
-		for (int i = 0; i < lRAM.getSizeInBytes(); i++)
-			assertEquals((byte) (123), lRAM.getByteAligned(i));
+		for (int i = 0; i < lMemoryRegionInterface.getSizeInBytes(); i++)
+			assertEquals((byte) (123), lMemoryRegionInterface.getByteAligned(i));
 
 	}
 
@@ -118,9 +118,9 @@ public class NDArrayTests
 																																			3,
 																																			5,
 																																			7);
-		RAM lRAM = new RAMDirect(lNDCursor.getLengthInElements());
+		MemoryRegionInterface lMemoryRegionInterface = new OffHeapMemoryRegion(lNDCursor.getLengthInElements());
 
-		NDArray lNDArray = NDArray.wrap(lRAM, lNDCursor);
+		NDArray lNDArray = NDArray.wrap(lMemoryRegionInterface, lNDCursor);
 
 		assertEquals(lNDCursor, lNDArray.getDefaultCursor());
 
@@ -203,7 +203,7 @@ public class NDArrayTests
 		}
 
 		for (int i = 0; i < lNDCursor.getVolume(); i++)
-			assertEquals(1234567890, lRAM.getIntAligned(i));
+			assertEquals(1234567890, lMemoryRegionInterface.getIntAligned(i));
 
 	}
 

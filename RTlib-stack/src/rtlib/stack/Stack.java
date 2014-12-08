@@ -5,22 +5,23 @@ import java.util.concurrent.TimeUnit;
 
 import org.bridj.Pointer;
 
-import rtlib.core.memory.SizeOf;
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.recycling.RecyclableInterface;
-import rtlib.core.recycling.Recycler;
-import rtlib.core.rgc.Freeable;
 import rtlib.kam.memory.NDStructured;
-import rtlib.kam.memory.Typed;
 import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
-import rtlib.kam.memory.ram.RAM;
+import coremem.MemoryRegionInterface;
+import coremem.interfaces.SizedInBytes;
+import coremem.interfaces.Typed;
+import coremem.recycling.RecyclableInterface;
+import coremem.recycling.Recycler;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreeableBase;
+import coremem.util.SizeOf;
 
-public class Stack<T> implements
-											RecyclableInterface<Stack<T>, StackRequest<T>>,
-											NDStructured,
-											Typed<T>,
-											SizedInBytes,
-											Freeable
+public class Stack<T> extends FreeableBase implements
+																					RecyclableInterface<Stack<T>, StackRequest<T>>,
+																					NDStructured,
+																					Typed<T>,
+																					SizedInBytes,
+																					Freeable
 {
 
 	private Recycler<Stack<T>, StackRequest<T>> mStackRecycler;
@@ -119,10 +120,10 @@ public class Stack<T> implements
 
 	public Pointer<Byte> getPointer()
 	{
-		final RAM lRam = mNDArray.getRAM();
+		final MemoryRegionInterface lMemoryRegionInterface = mNDArray.getMemoryRegionInterface();
 		@SuppressWarnings("unchecked")
-		final Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lRam.getAddress(),
-																																			lRam.getSizeInBytes(),
+		final Pointer<Byte> lPointerToAddress = Pointer.pointerToAddress(	lMemoryRegionInterface.getAddress(),
+																																			lMemoryRegionInterface.getSizeInBytes(),
 																																			null)
 																										// TODO: write releaser that
 																										// does the job

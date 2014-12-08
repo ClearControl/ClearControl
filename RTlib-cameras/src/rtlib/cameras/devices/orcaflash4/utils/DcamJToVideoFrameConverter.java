@@ -12,13 +12,13 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.device.VirtualDeviceInterface;
-import rtlib.core.recycling.Recycler;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.objectv.SingleUpdateTargetObjectVariable;
 import rtlib.stack.Stack;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorInterface;
+import coremem.recycling.Recycler;
 import dcamj.DcamFrame;
 
 public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
