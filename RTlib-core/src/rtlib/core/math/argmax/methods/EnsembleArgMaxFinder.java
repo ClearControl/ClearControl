@@ -3,11 +3,13 @@ package rtlib.core.math.argmax.methods;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
@@ -16,6 +18,7 @@ import rtlib.core.math.argmax.ArgMaxFinder1D;
 public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 {
 	private static final Executor sExecutor = Executors.newCachedThreadPool();
+	private static final int cTimeOutInSeconds = 1;
 
 	private ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
 	private Median mMedian;
@@ -51,7 +54,14 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		@Override
 		public Double call() throws Exception
 		{
+			long lStartTimeInNs = System.nanoTime();
 			Double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
+			long lStopTimeInNs = System.nanoTime();
+			/*double lElapsedtimeInSeconds = Magnitudes.nano2unit(lStopTimeInNs - lStartTimeInNs);
+			System.out.format("elapsed time: %g for %s \n",
+													lElapsedtimeInSeconds,
+													mArgMaxFinder1D.toString());/**/
+
 			return lArgMax;
 		}
 
@@ -66,6 +76,11 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 	@Override
 	public Double argmax(double[] pX, double[] pY)
 	{
+		println("pX=" + Arrays.toString(pX));
+		println("pY=" + Arrays.toString(pY));
+		if (constant(pY))
+			return null;
+
 		ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>();
 		HashMap<FutureTask<Double>, ArgMaxCallable> lTaskToCallableMap = new HashMap<FutureTask<Double>, ArgMaxCallable>();
 
@@ -85,7 +100,8 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		{
 			try
 			{
-				Double lArgMax = lArgMaxFutureTask.get();
+				Double lArgMax = lArgMaxFutureTask.get(	cTimeOutInSeconds,
+																								TimeUnit.SECONDS);
 				if (lArgMax != null)
 				{
 					if (mDebug)
@@ -107,11 +123,24 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		return lArgMaxMedian;
 	}
 
+	private boolean constant(double[] pY)
+	{
+		for (int i = 0; i < pY.length; i++)
+			if (pY[i] != pY[0])
+				return false;
+		return true;
+	}
+
 	@Override
 	public String toString()
 	{
 		return String.format(	"EnsembleArgMaxFinder [mArgMaxFinder1DList=%s]",
 													mArgMaxFinder1DList);
+	}
+
+	private void println(String pString)
+	{
+
 	}
 
 }

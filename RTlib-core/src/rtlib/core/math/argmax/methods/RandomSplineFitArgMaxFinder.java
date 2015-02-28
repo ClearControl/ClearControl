@@ -4,7 +4,7 @@ import static java.lang.Math.max;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -33,9 +33,9 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 		if (mPolynomialSplineFunctions == null)
 			fit(pX, pY);
 
-		double lArgMax = UnivariateFunctionArgMax.argmax(	pX,
-																											mPolynomialSplineFunctions,
-																											cNumberOfSamples);
+		double lArgMax = UnivariateFunctionArgMax.argmaxmean(	pX,
+																													mPolynomialSplineFunctions,
+																													cNumberOfSamples);
 
 		mPolynomialSplineFunctions = null;
 		return lArgMax;
@@ -44,7 +44,7 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 	@Override
 	public double[] fit(double[] pX, double[] pY)
 	{
-		final int lNumberOfWeakInterpolators = 16 * pX.length;
+		final int lNumberOfWeakInterpolators = 3 * pX.length;
 
 		if (pX.length < 3)
 		{
@@ -56,14 +56,14 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 
 		mPolynomialSplineFunctions = new PolynomialSplineFunction[lNumberOfWeakInterpolators];
 
-		Random lRandom = new Random();
+		ThreadLocalRandom lRandom = ThreadLocalRandom.current();
 
 		for (int i = 0; i < lNumberOfWeakInterpolators; i++)
 		{
 			TDoubleArrayList lXList = new TDoubleArrayList();
 			TDoubleArrayList lYList = new TDoubleArrayList();
 
-			int lMaxAttempts = 1024;
+			int lMaxAttempts = 128;
 			do
 			{
 				lXList.clear();
@@ -78,8 +78,9 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 			}
 			while (lXList.size() < lNumberOfControlPoints && lMaxAttempts > 0);
 
-			mPolynomialSplineFunctions[i] = mSplineInterpolator.interpolate(lXList.toArray(),
-																																			lYList.toArray());
+			if (lMaxAttempts > 0)
+				mPolynomialSplineFunctions[i] = mSplineInterpolator.interpolate(lXList.toArray(),
+																																				lYList.toArray());
 		}
 
 		double[] lFittedY = new double[pY.length];

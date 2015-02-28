@@ -89,7 +89,7 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 	}

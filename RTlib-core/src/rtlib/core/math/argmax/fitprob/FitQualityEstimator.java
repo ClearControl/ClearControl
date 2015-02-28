@@ -21,15 +21,14 @@ public class FitQualityEstimator
 {
 	private static final int cMaxNumberOfRandomizedDatasets = 10000;
 
-	private static final Executor sExecutor = Executors.newCachedThreadPool();
+	private static final Executor sExecutor = Executors.newFixedThreadPool(Runtime.getRuntime()
+																																								.availableProcessors());
 
 	private static final ConcurrentHashMap<Integer, NormalDistribution> sNullHypothesisDistribution = new ConcurrentHashMap<>();
 
 	private UnivariateDifferentiableFunction mUnivariateDifferentiableFunction;
 
 	private Double mRealDataRMSD;
-
-
 
 	public NormalDistribution getNullHypothesisDistribution(int lLength)
 	{
@@ -59,7 +58,10 @@ public class FitQualityEstimator
 		for (int i = 0; i < lNumberOfRandomizedDatasets; i++)
 		{
 			RandomizedDataGaussianFitter lRandomizedDataGaussianFitter = new RandomizedDataGaussianFitter();
-			Callable<Double> lCallable = () -> lRandomizedDataGaussianFitter.computeRMSDForRandomData(lX);
+			Callable<Double> lCallable = () -> {
+				Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+				return lRandomizedDataGaussianFitter.computeRMSDForRandomData(lX);
+			};
 			FutureTask<Double> lFutureTask = new FutureTask<Double>(lCallable);
 			sExecutor.execute(lFutureTask);
 			lTaskList.add(lFutureTask);
@@ -129,7 +131,6 @@ public class FitQualityEstimator
 			return 0.0;
 		}
 	}
-
 
 	public Double getRMSD()
 	{
