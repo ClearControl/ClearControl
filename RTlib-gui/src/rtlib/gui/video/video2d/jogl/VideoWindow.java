@@ -34,8 +34,6 @@ import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
 
-import com.jogamp.newt.opengl.GLWindow;
-
 public class VideoWindow<T> implements AutoCloseable
 {
 
@@ -59,7 +57,7 @@ public class VideoWindow<T> implements AutoCloseable
 	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
 			mGamma = 1;
 
-	private ReentrantLock mDisplayLock = new ReentrantLock();
+	private final ReentrantLock mDisplayLock = new ReentrantLock();
 
 	private GLProgram mGLProgramVideoRender;
 	private GLAttribute mPositionAttribute, mTexCoordAttribute;
@@ -138,7 +136,7 @@ public class VideoWindow<T> implements AutoCloseable
 					mPositionAttributeArray = new GLVertexAttributeArray(	mPositionAttribute,
 																																4);
 
-					GLFloatArray lQuadVerticesFloatArray = new GLFloatArray(6,
+					final GLFloatArray lQuadVerticesFloatArray = new GLFloatArray(6,
 																																	4);
 					lQuadVerticesFloatArray.add(-1, -1, 0, 1);
 					lQuadVerticesFloatArray.add(1, -1, 0, 1);
@@ -153,7 +151,7 @@ public class VideoWindow<T> implements AutoCloseable
 					mTexCoordAttributeArray = new GLVertexAttributeArray(	mTexCoordAttribute,
 																																2);
 
-					GLFloatArray lTexCoordFloatArray = new GLFloatArray(6, 2);
+					final GLFloatArray lTexCoordFloatArray = new GLFloatArray(6, 2);
 					lTexCoordFloatArray.add(0, 0);
 					lTexCoordFloatArray.add(1, 0);
 					lTexCoordFloatArray.add(1, 1);
@@ -178,7 +176,7 @@ public class VideoWindow<T> implements AutoCloseable
 					mXLinesGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
 					mXLinesGuidesVertexArray.bind();
 
-					GLFloatArray lXlinesGuidesVerticesFloatArray = new GLFloatArray(4,
+					final GLFloatArray lXlinesGuidesVerticesFloatArray = new GLFloatArray(4,
 																																					4);
 					lXlinesGuidesVerticesFloatArray.add(-1, -1, 0, 1);
 					lXlinesGuidesVerticesFloatArray.add(+1, +1, 0, 1);
@@ -193,9 +191,9 @@ public class VideoWindow<T> implements AutoCloseable
 					mGridGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
 					mGridGuidesVertexArray.bind();
 
-					GLFloatArray lGridGuidesVerticesFloatArray = new GLFloatArray(12,
+					final GLFloatArray lGridGuidesVerticesFloatArray = new GLFloatArray(12,
 																																				4);
-					float lRatio = 0.5f;
+					final float lRatio = 0.5f;
 
 					lGridGuidesVerticesFloatArray.add(-1.0f, 0, 0, 1.0f);
 					lGridGuidesVerticesFloatArray.add(+1.0f, 0, 0, 1.0f);
@@ -240,7 +238,7 @@ public class VideoWindow<T> implements AutoCloseable
 																													lGridGuidesVerticesFloatArray.getFloatBuffer());
 
 				}
-				catch (IOException e)
+				catch (final IOException e)
 				{
 					e.printStackTrace();
 				}
@@ -301,7 +299,7 @@ public class VideoWindow<T> implements AutoCloseable
 				{
 					if (!mMinMaxFixed)
 						fastMinMaxSampling(mSourceBuffer);
-					Buffer lBuffer = convertBuffer();
+					final Buffer lBuffer = convertBuffer();
 					lBuffer.rewind();
 					mTexture.copyFrom(lBuffer);
 				}
@@ -344,7 +342,7 @@ public class VideoWindow<T> implements AutoCloseable
 															.getFloatBuffer();
 				if (mType == Double.class)
 				{
-					int lLength = toIntExact(mSourceBuffer.getVolume());
+					final int lLength = toIntExact(mSourceBuffer.getVolume());
 					if (mTemporaryFloatBuffer == null || mTemporaryFloatBuffer.capacity() != mSourceBuffer.getVolume())
 					{
 						mTemporaryFloatBuffer = ByteBuffer.allocateDirect(lLength * Float.BYTES)
@@ -352,14 +350,14 @@ public class VideoWindow<T> implements AutoCloseable
 																							.asFloatBuffer();
 					}
 
-					DoubleBuffer lDoubleBuffer = mSourceBuffer.getBridJPointer(mType)
+					final DoubleBuffer lDoubleBuffer = mSourceBuffer.getBridJPointer(mType)
 																										.getDoubleBuffer();
 
 					lDoubleBuffer.clear();
 					mTemporaryFloatBuffer.clear();
 					for (int i = 0; i < lLength; i++)
 					{
-						double lValue = lDoubleBuffer.get();
+						final double lValue = lDoubleBuffer.get();
 						mTemporaryFloatBuffer.put((float) lValue);
 					}
 
@@ -372,9 +370,9 @@ public class VideoWindow<T> implements AutoCloseable
 
 			private void fastMinMaxSampling(NDArrayTyped<T> pSourceBuffer)
 			{
-				long lLength = pSourceBuffer.getVolume();
-				int lStep = 1 + round(cPercentageOfPixelsToSample * lLength);
-				int lStartPixel = (int) round(random() * lStep);
+				final long lLength = pSourceBuffer.getVolume();
+				final int lStep = 1 + round(cPercentageOfPixelsToSample * lLength);
+				final int lStartPixel = (int) round(random() * lStep);
 
 				double lMin = Double.POSITIVE_INFINITY;
 				double lMax = Double.NEGATIVE_INFINITY;
@@ -382,42 +380,42 @@ public class VideoWindow<T> implements AutoCloseable
 				if (mType == Byte.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						double lValue = (0xFF & pSourceBuffer.getByteAligned(i)) / 255d;
+						final double lValue = (0xFF & pSourceBuffer.getByteAligned(i)) / 255d;
 						lMin = min(lMin, lValue);
 						lMax = max(lMax, lValue);
 					}
 				else if (mType == Short.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						double lValue = (0xFFFF & pSourceBuffer.getShortAligned(i)) / (65535d);
+						final double lValue = (0xFFFF & pSourceBuffer.getShortAligned(i)) / (65535d);
 						lMin = min(lMin, lValue);
 						lMax = max(lMax, lValue);
 					}
 				else if (mType == Character.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						double lValue = (0xFFFF & pSourceBuffer.getCharAligned(i)) / 65535d;
+						final double lValue = (0xFFFF & pSourceBuffer.getCharAligned(i)) / 65535d;
 						lMin = min(lMin, lValue);
 						lMax = max(lMax, lValue);
 					}
 				else if (mType == Integer.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						double lValue = (0xFFFFFFFF & pSourceBuffer.getIntAligned(i)) / 4294967296d;
+						final double lValue = (0xFFFFFFFF & pSourceBuffer.getIntAligned(i)) / 4294967296d;
 						lMin = min(lMin, lValue);
 						lMax = max(lMax, lValue);
 					}
 				else if (mType == Float.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						float lFloatAligned = pSourceBuffer.getFloatAligned(i);
+						final float lFloatAligned = pSourceBuffer.getFloatAligned(i);
 						lMin = min(lMin, lFloatAligned);
 						lMax = max(lMax, lFloatAligned);
 					}
 				else if (mType == Double.class)
 					for (int i = lStartPixel; i < lLength; i += lStep)
 					{
-						double lDoubleAligned = pSourceBuffer.getDoubleAligned(i);
+						final double lDoubleAligned = pSourceBuffer.getDoubleAligned(i);
 						lMin = min(lMin, lDoubleAligned);
 						lMax = max(lMax, lDoubleAligned);
 					}
@@ -458,25 +456,25 @@ public class VideoWindow<T> implements AutoCloseable
 																				mClearGLDebugEventListener);
 		mClearGLDebugEventListener.setClearGLWindow(mClearGLWindow);
 
-		MouseControl lMouseControl = new MouseControl(this);
-		mClearGLWindow.getGLWindow().addMouseListener(lMouseControl);
-		KeyboardControl lKeyboardControl = new KeyboardControl(this);
-		mClearGLWindow.getGLWindow().addKeyListener(lKeyboardControl);
+		final MouseControl lMouseControl = new MouseControl(this);
+		mClearGLWindow.addMouseListener(lMouseControl);
+		final KeyboardControl lKeyboardControl = new KeyboardControl(this);
+		mClearGLWindow.addKeyListener(lKeyboardControl);
 	}
 
 	public void setWindowSize(int pWindowWidth, int pWindowHeigth)
 	{
-		mClearGLWindow.getGLWindow().setSize(pWindowWidth, pWindowWidth);
+		mClearGLWindow.setSize(pWindowWidth, pWindowWidth);
 	}
 
 	public int getWindowWidth()
 	{
-		return mClearGLWindow.getGLWindow().getWidth();
+		return mClearGLWindow.getWidth();
 	}
 
 	public int getWindowHeight()
 	{
-		return mClearGLWindow.getGLWindow().getHeight();
+		return mClearGLWindow.getHeight();
 	}
 
 	public void setWidth(final int pVideoWidth)
@@ -497,9 +495,9 @@ public class VideoWindow<T> implements AutoCloseable
 		mDisplayLock.lock();
 		try
 		{
-			Pointer<Byte> lPointerToBytes = Pointer.pointerToBytes(pSourceBuffer);
-			long lNativeAddress = lPointerToBytes.getPeer();
-			long lLengthInBytes = lPointerToBytes.getValidBytes();
+			final Pointer<Byte> lPointerToBytes = Pointer.pointerToBytes(pSourceBuffer);
+			final long lNativeAddress = lPointerToBytes.getPeer();
+			final long lLengthInBytes = lPointerToBytes.getValidBytes();
 			mSourceBuffer = NDArrayTypedDirect.wrapPointerTXYZ(	pSourceBuffer,
 																													lNativeAddress,
 																													lLengthInBytes,
@@ -508,7 +506,7 @@ public class VideoWindow<T> implements AutoCloseable
 																													pVideoHeight,
 																													1);
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}
@@ -540,14 +538,14 @@ public class VideoWindow<T> implements AutoCloseable
 
 	public void requestDisplay()
 	{
-		boolean lLocked = mDisplayLock.tryLock();
+		final boolean lLocked = mDisplayLock.tryLock();
 		if (!lLocked)
 			return;
 		try
 		{
-			mClearGLWindow.getGLWindow().display();
+			mClearGLWindow.display();
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}
@@ -556,12 +554,12 @@ public class VideoWindow<T> implements AutoCloseable
 
 	public void setVisible(final boolean pVisible)
 	{
-		mClearGLWindow.getGLWindow().setVisible(pVisible);
+		mClearGLWindow.setVisible(pVisible);
 	}
 
 	public boolean isVisible()
 	{
-		return mClearGLWindow.getGLWindow().isVisible();
+		return mClearGLWindow.isVisible();
 	}
 
 	public void setDisplayOn(final boolean pDisplayOn)
@@ -646,13 +644,12 @@ public class VideoWindow<T> implements AutoCloseable
 
 	public void disableClose()
 	{
-		mClearGLWindow.getGLWindow()
-									.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
+		mClearGLWindow.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 	}
 
-	public GLWindow getGLWindow()
+	public ClearGLWindow getGLWindow()
 	{
-		return mClearGLWindow.getGLWindow();
+		return mClearGLWindow;
 	}
 
 }
