@@ -47,7 +47,7 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 
 		mSymetricParabolaFitArgMaxFinder = new SymetricParabolaFitArgMaxFinder();
 		mParabolaFitArgMaxFinder = new ParabolaFitArgMaxFinder();
-		mGaussianFitArgMaxFinder = new GaussianFitArgMaxFinder(16 * 1024);
+		mGaussianFitArgMaxFinder = new GaussianFitArgMaxFinder(128);
 		mQuarticFitArgMaxFinder = new QuarticFitArgMaxFinder();
 		mSplineFitArgMaxFinder = new SplineFitArgMaxFinder();
 		mRandomSplineFitArgMaxFinder = new RandomSplineFitArgMaxFinder();
@@ -90,8 +90,8 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 																						mQuarticFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
 																						mSplineFitArgMaxFinder));
-		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-																						mRandomSplineFitArgMaxFinder));
+		/*lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
+																						mRandomSplineFitArgMaxFinder));/**/
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
 																						mLoessFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
