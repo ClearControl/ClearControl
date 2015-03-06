@@ -1,14 +1,35 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+    }
+}
+
+
 subprojects 
 {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+        dependencies {
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+        }
+    }   
+
     apply plugin: 'java'
     apply plugin: 'eclipse'
+    apply plugin: 'idea'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-
+    apply plugin: "com.jfrog.bintray"
 
     sourceCompatibility = 1.8
-    group = 'royer'
-    version = '1.0'
+
+    group = 'net.rtlib'
+    version = '0.1'
 
     /*
     compileJava 
@@ -52,7 +73,6 @@ subprojects
         compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
         compile 'com.miglayout:miglayout:3.7.4'
 
-
         compile 'net.openhft:compiler:2.1'
         compile 'net.openhft:lang:6.3.5'
         compile 'net.openhft:affinity:2.0.6'
@@ -65,7 +85,6 @@ subprojects
         testCompile group: 'junit', name: 'junit', version: '4.11'
 
         compile fileTree(dir: '../Libs/jmathplot', include: '*.jar')
-        compile fileTree(dir: '../Libs/jcuda', include: '*.jar')
     }
     
     task sourcesJar(type: Jar, dependsOn:classes) {
@@ -86,11 +105,6 @@ subprojects
         }
       }
 
-    artifacts 
-    {
-        archives sourcesJar
-        archives javadocJar
-    }
 
     uploadArchives 
     {
@@ -115,8 +129,20 @@ subprojects
         {
             url "http://dl.bintray.com/clearvolume/ClearVolume"
         } 
+        maven 
+        {
+            url  "http://dl.bintray.com/rtlib/RTlib" 
+        }
+        maven 
+        { 
+            url  "http://dl.bintray.com/royerloic/maven"  
+        }
 
     }
+
+    
+
+ 
 
 }
 

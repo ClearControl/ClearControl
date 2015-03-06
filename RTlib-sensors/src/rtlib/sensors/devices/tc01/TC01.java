@@ -3,11 +3,11 @@ package rtlib.sensors.devices.tc01;
 import org.bridj.Pointer;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.ThermocoupleDevice;
 import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.devices.tc01.bridj.TC01libLibrary;
 
-public class TC01 extends ThermocoupleDevice
+public class TC01 extends TemperatureSensorDeviceBase
 {
 
 	private NIThermoCoupleType mThermoCoupleNIType = NIThermoCoupleType.K;

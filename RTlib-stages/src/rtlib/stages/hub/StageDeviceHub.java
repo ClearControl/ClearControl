@@ -17,9 +17,9 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 																								StageDeviceInterface
 {
 
-	private ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
-	private ArrayList<StageDeviceDOF> mDOFList = new ArrayList<StageDeviceDOF>();
-	private BiMap<String, StageDeviceDOF> mNameToStageDeviceDOFMap = HashBiMap.create();
+	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
+	private final ArrayList<StageDeviceDOF> mDOFList = new ArrayList<StageDeviceDOF>();
+	private final BiMap<String, StageDeviceDOF> mNameToStageDeviceDOFMap = HashBiMap.create();
 
 	public StageDeviceHub(String pDeviceName)
 	{
@@ -30,8 +30,8 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 												int pDOFIndex)
 	{
 		mStageDeviceInterfaceList.add(pStageDeviceInterface);
-		String lDOFName = pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
-		StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(pStageDeviceInterface,
+		final String lDOFName = pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
+		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(pStageDeviceInterface,
 																												pDOFIndex);
 		mDOFList.add(lStageDeviceDOF);
 		mNameToStageDeviceDOFMap.put(lDOFName, lStageDeviceDOF);
@@ -47,7 +47,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	public boolean open()
 	{
 		boolean lOpen = true;
-		for (StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
 			lOpen &= lStageDeviceInterface.open();
 		return lOpen;
 	}
@@ -56,7 +56,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	public boolean start()
 	{
 		boolean lStart = true;
-		for (StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
 			lStart &= lStageDeviceInterface.start();
 		return lStart;
 	}
@@ -65,7 +65,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	public boolean stop()
 	{
 		boolean lStop = true;
-		for (StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
 			lStop &= lStageDeviceInterface.stop();
 		return lStop;
 	}
@@ -74,7 +74,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	public boolean close()
 	{
 		boolean lClose = true;
-		for (StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
 			lClose &= lStageDeviceInterface.close();
 		return lClose;
 	}
@@ -82,24 +82,30 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	@Override
 	public int getNumberOfDOFs()
 	{
-		int lNumberOFDOFs = mDOFList.size();
+		final int lNumberOFDOFs = mDOFList.size();
 		return lNumberOFDOFs;
 	}
 
 	@Override
 	public int getDOFIndexByName(String pName)
 	{
-		StageDeviceDOF lStageDeviceDOF = mNameToStageDeviceDOFMap.get(pName);
-		int lIndex = mDOFList.indexOf(lStageDeviceDOF);
+		final StageDeviceDOF lStageDeviceDOF = mNameToStageDeviceDOFMap.get(pName);
+		final int lIndex = mDOFList.indexOf(lStageDeviceDOF);
 		return lIndex;
 	}
 
 	@Override
 	public String getDOFNameByIndex(int pDOFIndex)
 	{
-		StageDeviceDOF lStageDeviceDOF = mDOFList.get(pDOFIndex);
-		String lName = lStageDeviceDOF.getName();
+		final StageDeviceDOF lStageDeviceDOF = mDOFList.get(pDOFIndex);
+		final String lName = lStageDeviceDOF.getName();
 		return lName;
+	}
+
+	@Override
+	public void reset(int pDOFIndex)
+	{
+		mDOFList.get(pDOFIndex).reset();
 	}
 
 	@Override
@@ -185,5 +191,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 						+ getNumberOfDOFs()
 						+ "]";
 	}
+
+
 
 }

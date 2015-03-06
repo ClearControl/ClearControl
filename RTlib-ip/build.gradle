@@ -40,4 +40,56 @@ dependencies
     compile fileTree(dir: '../Libs/jtransforms', include: '*.jar')
 }
 
+//***********************************************************************************
+ 
+ // PUBLISHING
+ 
+ 
+ 
+ artifacts
+ {
+	 archives sourcesJar
+	 archives javadocJar
+ }
+ 
+ publishing {
+	 publications {
+		 maven(MavenPublication) {
+			 from components.java
+			 artifact sourcesJar { classifier "sources" }
+		 }
+	 }
+ }
 
+if(hasProperty('bintray_user') && hasProperty('bintray_key') )
+{
+	bintray {
+
+		// property must be set in ~/.gradle/gradle.properties
+		user = bintray_user
+		key =  bintray_key
+
+		publications = [
+			'maven'] //When uploading configuration files
+		dryRun = false //Whether to run this as dry-run, without deploying
+		publish = true //If version should be auto published after an upload
+		pkg {
+			repo = 'RTlib'
+			userOrg = 'rtlib' //An optional organization name when the repo belongs to one of the user's orgs
+			name = project.name
+			desc = project.name
+			websiteUrl = 'https://github.com/RTlib'
+			issueTrackerUrl = 'https://github.com/RTlib/RTlib/issues'
+			vcsUrl = 'https://github.com/RTlib/RTlib.git'
+			licenses = ['GPL-3.0']
+			publicDownloadNumbers = true
+			version {
+				name = '0.1' //Bintray logical version name
+				desc = '.'
+				released  = new java.util.Date()
+				vcsTag = '0.1.0'
+
+			}
+		}
+	}
+}

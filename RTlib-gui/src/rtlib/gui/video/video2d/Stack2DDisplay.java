@@ -34,7 +34,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 
 	private AsynchronousProcessorBase<Stack<T>, Object> mAsynchronousDisplayUpdater;
 
-	private Object mReleaseLock = new Object();
+	private final Object mReleaseLock = new Object();
 
 	public Stack2DDisplay(Class<T> pType)
 	{
@@ -71,7 +71,9 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 																			pWindowWidth,
 																			pWindowHeight);
 
-		MouseAdapter lMouseAdapter = new MouseAdapter()
+		mVideoWindow.setVisible(true);
+
+		final MouseAdapter lMouseAdapter = new MouseAdapter()
 		{
 			@Override
 			public void mouseDragged(MouseEvent pMouseEvent)
@@ -176,10 +178,10 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 														boolean pReleaseLastReceivedStack)
 	{
 
-		NDArrayTypedDirect<T> lNDArray = pStack.getNDArray();
-		long lStackWidth = lNDArray.getWidth();
-		long lStackHeight = lNDArray.getHeight();
-		long lStackDepth = lNDArray.getDepth();
+		final NDArrayTypedDirect<T> lNDArray = pStack.getNDArray();
+		final long lStackWidth = lNDArray.getWidth();
+		final long lStackHeight = lNDArray.getHeight();
+		final long lStackDepth = lNDArray.getDepth();
 		if (lStackDepth > 1)
 		{
 
@@ -207,7 +209,7 @@ public class Stack2DDisplay<T> extends NamedVirtualDevice	implements
 		{
 			if (getOutputStackVariable() != null)
 			{
-				boolean lIsLastReceivedStack = mLastReceivedStack == pStack;
+				final boolean lIsLastReceivedStack = mLastReceivedStack == pStack;
 				if (!lIsLastReceivedStack)
 				{
 					mLastReceivedStack = pStack; // TODO: this is dangerous, this stack

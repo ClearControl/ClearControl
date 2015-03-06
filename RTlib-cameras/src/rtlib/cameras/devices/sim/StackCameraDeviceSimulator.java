@@ -55,7 +55,9 @@ public class StackCameraDeviceSimulator<I, O> extends
 			{
 				if (pCurrentBooleanValue)
 				{
-					Stack<O> lStack = mStackSource.getStack(mCurrentStackIndex);
+					System.out.println("TADA!!!");
+					
+					final Stack<O> lStack = mStackSource.getStack(mCurrentStackIndex);
 					mStackReference.set(lStack);
 					mCurrentStackIndex = (mCurrentStackIndex + 1) % mStackSource.getNumberOfStacks();
 				}

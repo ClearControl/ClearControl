@@ -3,17 +3,20 @@ package rtlib.lasers.devices.cobolt;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.LaserDeviceBase;
+import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.cobolt.adapters.GetCurrentPowerAdapter;
 import rtlib.lasers.devices.cobolt.adapters.GetSetTargetPowerAdapter;
 import rtlib.lasers.devices.cobolt.adapters.GetWorkingHoursAdapter;
 import rtlib.lasers.devices.cobolt.adapters.SetPowerOnOffAdapter;
 import rtlib.lasers.devices.cobolt.models.CoboltDeviceEnum;
+import rtlib.serial.SerialDevice;
 
 public class CoboltLaserDevice extends LaserDeviceBase implements
 																											LaserDeviceInterface
 {
+	private final SerialDevice mSerialDevice;
+
 	private final CoboltDeviceEnum mCoboltModel;
 	private final int mMaxPowerInMilliWatt;
 
@@ -33,7 +36,12 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 														final int pMaxPowerInMilliWatt,
 														final String pPortName)
 	{
-		super("Cobol" + pCoboltModelName, pPortName, 115200);
+		super("Cobol" + pCoboltModelName);
+
+		mSerialDevice = new SerialDevice(	"Cobol" + pCoboltModelName,
+																			pPortName,
+																			115200);
+
 		mCoboltModel = CoboltDeviceEnum.valueOf(pCoboltModelName);
 		mMaxPowerInMilliWatt = pMaxPowerInMilliWatt;
 
@@ -52,46 +60,46 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 		mSetOperatingModeVariable = new DoubleVariable("OperatingMode", 0);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
-		mPowerOnVariable = addSerialBooleanVariable("PowerOn",
+		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable("PowerOn",
 																								lSetPowerOnOffAdapter);
 
 		mLaserOnVariable = new BooleanVariable("LaserOn", true);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
-		mWorkingHoursVariable = addSerialDoubleVariable("WorkingHours",
+		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable("WorkingHours",
 																										lGetWorkingHoursAdapter);
 
 		final GetSetTargetPowerAdapter lGetSetTargetPowerAdapter = new GetSetTargetPowerAdapter();
-		mTargetPowerInMilliWattVariable = addSerialDoubleVariable("TargetPowerMilliWatt",
+		mTargetPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable("TargetPowerMilliWatt",
 																															lGetSetTargetPowerAdapter);
 
 		final GetCurrentPowerAdapter lGetCurrentPowerAdapter = new GetCurrentPowerAdapter();
-		mCurrentPowerInMilliWattVariable = addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
+		mCurrentPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
 																																lGetCurrentPowerAdapter);
 	}
 
 	@Override
 	public boolean open()
 	{
-		return super.open();
+		return mSerialDevice.open();
 	}
 
 	@Override
 	public boolean start()
 	{
-		return super.start();
+		return mSerialDevice.start();
 	}
 
 	@Override
 	public boolean stop()
 	{
-		return super.stop();
+		return mSerialDevice.stop();
 	}
 
 	@Override
 	public boolean close()
 	{
-		return super.close();
+		return mSerialDevice.close();
 	}
 
 }

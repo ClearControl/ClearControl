@@ -300,4 +300,9 @@ public class SerialDevice extends NamedVirtualDevice implements
 
 	}
 
+	public Serial getSerial()
+	{
+		return mSerial;
+	}
+
 }

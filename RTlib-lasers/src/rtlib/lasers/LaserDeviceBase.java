@@ -5,11 +5,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.serial.SerialDevice;
 
-public class LaserDeviceBase extends SerialDevice	implements
+public class LaserDeviceBase extends NamedVirtualDevice	implements
 																									LaserDeviceInterface
 {
 
@@ -25,12 +25,9 @@ public class LaserDeviceBase extends SerialDevice	implements
 
 	private ScheduledFuture<?> mCurrentPowerPollerScheduledFutur;
 
-	public LaserDeviceBase(	final String pDeviceName,
-													final String pPortName,
-													final int pBaudRate)
+	public LaserDeviceBase(final String pDeviceName)
 	{
-		super(pDeviceName, pPortName, pBaudRate);
-
+		super(pDeviceName);
 	}
 
 	@Override

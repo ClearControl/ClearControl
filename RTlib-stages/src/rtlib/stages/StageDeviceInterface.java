@@ -14,6 +14,8 @@ public interface StageDeviceInterface extends VirtualDeviceInterface
 
 	String getDOFNameByIndex(int pDOFIndex);
 
+	void reset(int pDOFIndex);
+
 	void home(int pDOFIndex);
 
 	void enable(int pDOFIndex);
@@ -22,7 +24,6 @@ public interface StageDeviceInterface extends VirtualDeviceInterface
 
 	void goToPosition(int pDOFIndex, double pValue);
 	
-
 
 	Boolean waitToBeReady(int pDOFIndex, int pTimeOut, TimeUnit pTimeUnit);
 
@@ -39,6 +40,7 @@ public interface StageDeviceInterface extends VirtualDeviceInterface
 	DoubleVariable getHomingVariable(int pDOFIndex);
 
 	BooleanVariable getStopVariable(int pDOFIndex);
+
 
 
 }

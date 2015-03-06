@@ -26,16 +26,11 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 
 	public AlpaoDMDevice(String pAlpaoSerialName)
 	{
-		super("ALPAO_" + pAlpaoSerialName);
+		super("ALPAO_" + pAlpaoSerialName,
+					cFullMatrixWidthHeight,
+					cActuatorResolution);
 
 		mAlpaoDeformableMirror = new AlpaoDeformableMirror(pAlpaoSerialName);
-
-		mMatrixWidthVariable = new DoubleVariable("MatrixWidth",
-																							cFullMatrixWidthHeight);
-		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-																								cFullMatrixWidthHeight);
-		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-																											cActuatorResolution);
 
 		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
 		{
@@ -58,14 +53,14 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 	{
 		try
 		{
-			boolean lOpen = mAlpaoDeformableMirror.open();
+			final boolean lOpen = mAlpaoDeformableMirror.open();
 			mNumberOfActuatorsVariable = new DoubleVariable("NumberOfActuators",
 																											mAlpaoDeformableMirror.getNumberOfActuators());
 			return lOpen;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorString = "Could not open connection to ALPAO DM - " + e.getLocalizedMessage();
+			final String lErrorString = "Could not open connection to ALPAO DM - " + e.getLocalizedMessage();
 			error("AO", lErrorString);
 			return false;
 		}
@@ -99,9 +94,9 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 			mAlpaoDeformableMirror.close();
 			return true;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorString = "Could not close connection to ALPAO DM - " + e.getLocalizedMessage();
+			final String lErrorString = "Could not close connection to ALPAO DM - " + e.getLocalizedMessage();
 			error("AO", lErrorString);
 			return false;
 		}

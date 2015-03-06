@@ -11,4 +11,12 @@ public interface FilterWheelDeviceInterface	extends
 
 	DoubleVariable getSpeedVariable();
 
+	int getPosition();
+
+	void setPosition(int pPosition);
+
+	int getSpeed();
+
+	void setSpeed(int pSpeed);
+
 }

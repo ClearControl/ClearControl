@@ -14,10 +14,12 @@ import rtlib.lasers.devices.omicron.adapters.SetLaserOnOffAdapter;
 import rtlib.lasers.devices.omicron.adapters.SetOperatingModeAdapter;
 import rtlib.lasers.devices.omicron.adapters.SetPowerOnOffAdapter;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
+import rtlib.serial.SerialDevice;
 
 public class OmicronLaserDevice extends LaserDeviceBase	implements
 																												LaserDeviceInterface
 {
+	private final SerialDevice mSerialDevice;
 
 	private final GetSetTargetPowerAdapter mGetSetTargetPowerAdapter;
 
@@ -31,46 +33,50 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 
 	public OmicronLaserDevice(final String pPortName)
 	{
-		super("OmicronLaserDevice", pPortName, ProtocolXX.cBaudRate);
+		super("OmicronLaserDevice" + pPortName);
+
+		mSerialDevice = new SerialDevice(	"OmicronLaserDevice",
+																			pPortName,
+																			ProtocolXX.cBaudRate);
 
 		final GetDeviceIdAdapter lGetDeviceIdAdapter = new GetDeviceIdAdapter();
-		mDeviceIdVariable = addSerialDoubleVariable("DeviceId",
+		mDeviceIdVariable = mSerialDevice.addSerialDoubleVariable("DeviceId",
 																								lGetDeviceIdAdapter);
 
 		final GetWavelengthAdapter lGetWavelengthAdapter = new GetWavelengthAdapter();
-		mWavelengthVariable = addSerialDoubleVariable("WavelengthInNanoMeter",
+		mWavelengthVariable = mSerialDevice.addSerialDoubleVariable("WavelengthInNanoMeter",
 																									lGetWavelengthAdapter);
 
 		final GetSpecPowerAdapter lGetSpecPowerAdapter = new GetSpecPowerAdapter();
-		mSpecInMilliWattPowerVariable = addSerialDoubleVariable("SpecPowerInMilliWatt",
+		mSpecInMilliWattPowerVariable = mSerialDevice.addSerialDoubleVariable("SpecPowerInMilliWatt",
 																														lGetSpecPowerAdapter);
 
 		final GetMaxPowerAdapter lGetMaxPowerAdapter = new GetMaxPowerAdapter();
-		mMaxPowerInMilliWattVariable = addSerialDoubleVariable(	"MaxPowerInMilliWatt",
+		mMaxPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"MaxPowerInMilliWatt",
 																														lGetMaxPowerAdapter);
 
 		final SetOperatingModeAdapter lSetOperatingModeAdapter = new SetOperatingModeAdapter();
-		mSetOperatingModeVariable = addSerialDoubleVariable("OperatingMode",
+		mSetOperatingModeVariable = mSerialDevice.addSerialDoubleVariable("OperatingMode",
 																												lSetOperatingModeAdapter);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
-		mPowerOnVariable = addSerialBooleanVariable("PowerOn",
+		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable("PowerOn",
 																								lSetPowerOnOffAdapter);
 
 		final SetLaserOnOffAdapter lSetLaserOnOffAdapter = new SetLaserOnOffAdapter();
-		mLaserOnVariable = addSerialBooleanVariable("LaserOn",
+		mLaserOnVariable = mSerialDevice.addSerialBooleanVariable("LaserOn",
 																								lSetLaserOnOffAdapter);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
-		mWorkingHoursVariable = addSerialDoubleVariable("WorkingHours",
+		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable("WorkingHours",
 																										lGetWorkingHoursAdapter);
 
 		mGetSetTargetPowerAdapter = new GetSetTargetPowerAdapter();
-		mTargetPowerInMilliWattVariable = addSerialDoubleVariable("TargetPowerInMilliWatt",
+		mTargetPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable("TargetPowerInMilliWatt",
 																															mGetSetTargetPowerAdapter);
 
 		final GetCurrentPowerAdapter lGetCurrentPowerAdapter = new GetCurrentPowerAdapter();
-		mCurrentPowerInMilliWattVariable = addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
+		mCurrentPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
 																																lGetCurrentPowerAdapter);
 	}
 
@@ -81,7 +87,7 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 		try
 		{
 			lOpen = super.open();
-			ProtocolXX.setNoAdHocMode(mSerial);
+			ProtocolXX.setNoAdHocMode(mSerialDevice.getSerial());
 			setTargetPowerInPercent(0);
 			setOperatingMode(2);
 			setPowerOn(true);

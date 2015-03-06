@@ -44,6 +44,11 @@ public class StageDeviceDOF
 		return mStageDeviceInterface.getDOFNameByIndex(mDOFIndex);
 	}
 
+	public void reset()
+	{
+		mStageDeviceInterface.reset(mDOFIndex);
+	}
+
 	public void home()
 	{
 		mStageDeviceInterface.home(mDOFIndex);
@@ -114,5 +119,7 @@ public class StageDeviceDOF
 						+ mDOFIndex
 						+ "]";
 	}
+
+
 
 }

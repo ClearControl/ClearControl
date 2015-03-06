@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import mirao52e.Mirao52eDeformableMirror;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.slms.dms.DeformableMirrorDevice;
@@ -21,15 +20,9 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 
 	public Mirao52eDevice(int pDeviceIndex)
 	{
-		super("MIRAO52e_" + pDeviceIndex);
-		mMatrixWidthVariable = new DoubleVariable("MatrixWidth",
-																							cFullMatrixWidthHeight);
-		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-																								cFullMatrixWidthHeight);
-		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-																											cActuatorResolution);
-		mNumberOfActuatorsVariable = new DoubleVariable("NumberOfActuators",
-																										cActuatorResolution);
+		super("MIRAO52e_" + pDeviceIndex,
+					cFullMatrixWidthHeight,
+					cActuatorResolution);
 
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
@@ -57,9 +50,9 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 			mMirao52eDeformableMirror.open();
 			return true;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorString = "Could not open connection to Mirao52e DM - " + e.getLocalizedMessage();
+			final String lErrorString = "Could not open connection to Mirao52e DM - " + e.getLocalizedMessage();
 			error("AO", lErrorString);
 			return false;
 		}
@@ -92,9 +85,9 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 			mMirao52eDeformableMirror.close();
 			return true;
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
-			String lErrorString = "Could not close connection to Mirao52e DM - " + e.getLocalizedMessage();
+			final String lErrorString = "Could not close connection to Mirao52e DM - " + e.getLocalizedMessage();
 			error("AO", lErrorString);
 			return false;
 		}
