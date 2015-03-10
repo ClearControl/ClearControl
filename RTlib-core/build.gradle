@@ -18,6 +18,7 @@ dependencies {
 
 repositories {
 	mavenCentral()
+	maven { url  "http://dl.bintray.com/royerloic/maven" }
 }
 
 //***********************************************************************************

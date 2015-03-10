@@ -1,5 +1,8 @@
 package rtlib.gui.swing;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -21,24 +24,35 @@ public class JTextFieldDouble extends JPanel
 	private String mLabelsFormatString = "%g";
 
 	// private final JTextFieldDouble mThis;
-	private final DoubleVariable mDoubleVariable;
+	private DoubleVariable mDoubleVariable;
 
+	private double mMin;
+	private double mMax;
 	private volatile double mNewValue;
+
+	public JTextFieldDouble()
+	{
+		this("default", true, 0);
+	}
 
 	public JTextFieldDouble(final String pValueName,
 													final boolean pNorthSouthLayout,
 													final double pValue)
 	{
 
-		this(pValueName, pNorthSouthLayout, "%.1f", pValue);
+		this(pValueName, pNorthSouthLayout, "%.1f", 0, 1, pValue);
 	}
 
 	public JTextFieldDouble(final String pValueName,
 													final boolean pNorthSouthLayout,
 													final String pLabelsFormatString,
+													final double pMin,
+													final double pMax,
 													final double pValue)
 	{
 		super();
+		mMin = pMin;
+		mMax = pMax;
 
 		mDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
@@ -69,28 +83,26 @@ public class JTextFieldDouble extends JPanel
 		setLayout(new BorderLayout(0, 0));
 
 		mNameLabel = new JLabel(pValueName);
-		if (pNorthSouthLayout)
-		{
-			mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		else
-		{
-			mNameLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		}
+		mValueTextField = new JTextField("" + pValue);
+
 		add(mNameLabel, pNorthSouthLayout	? BorderLayout.NORTH
 																			: BorderLayout.WEST);
+		add(mValueTextField, pNorthSouthLayout ? BorderLayout.SOUTH
+																					: BorderLayout.CENTER);
 
-		mValueTextField = new JTextField("" + pValue);
+
 		if (pNorthSouthLayout)
 		{
 			mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		else
 		{
 			mNameLabel.setHorizontalAlignment(SwingConstants.LEFT);
+			mValueTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		}
-		add(mValueTextField, pNorthSouthLayout ? BorderLayout.SOUTH
-																					: BorderLayout.CENTER);
+
+
 
 		mLabelsFormatString = pLabelsFormatString;
 
@@ -126,7 +138,7 @@ public class JTextFieldDouble extends JPanel
 
 												try
 												{
-													mNewValue = Double.parseDouble(lTextString);
+													mNewValue = clamp(Double.parseDouble(lTextString));
 													mDoubleVariable.setValue(mNewValue);
 
 												}
@@ -138,6 +150,11 @@ public class JTextFieldDouble extends JPanel
 																												JOptionPane.ERROR_MESSAGE);
 													return;
 												}
+											}
+
+											private double clamp(double pValue)
+											{
+												return min(max(pValue, mMin), mMax);
 											}
 										});
 

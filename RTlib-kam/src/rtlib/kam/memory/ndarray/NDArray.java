@@ -37,7 +37,7 @@ public class NDArray implements
 		super();
 		if (pMemoryRegionInterface.getSizeInBytes() != pCursor.getLengthInElements() * pElementSizeInBytes)
 		{
-			String lErrorMessage = String.format(	"Can't create NDArray, wrong dimensions (ram.length=%d, cursor.length=%d )   ",
+			final String lErrorMessage = String.format(	"Can't create NDArray, wrong dimensions (ram.length=%d, cursor.length=%d )   ",
 																						pMemoryRegionInterface.getSizeInBytes(),
 																						pCursor.getLengthInElements());
 			throw new InvalidNDArrayDefinitionException(lErrorMessage);

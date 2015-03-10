@@ -71,21 +71,21 @@ public class JSliderIndexedStrings extends JPanel
 			}
 		};
 		setLayout(new MigLayout("",
-														"[41px,center][368px,grow,center][41px,center]",
-														"[16px][25px:n:25px][27px]"));
-
-		mSlider = new JSlider(0, mItemsList.size() - 1, pInitialIndex);
-		// mSlider.setOrientation(SwingConstants.VERTICAL);
-		add(mSlider, "cell 0 2 3 1,growx,aligny top");
+														"[41px,center][16.00%,grow,center][368px,grow,center][41px,center]",
+														"[25px:n:25px][27px]"));
 
 		mNameLabel = new JLabel(pValueName);
 		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mNameLabel, "cell 0 0 3 1,growx,aligny top");
+		add(mNameLabel, "cell 1 0,growx,aligny center");
+
+		mSlider = new JSlider(0, mItemsList.size() - 1, pInitialIndex);
+		// mSlider.setOrientation(SwingConstants.VERTICAL);
+		add(mSlider, "cell 0 1 4 1,growx,aligny top");
 
 		mValueTextField = new JTextField(mItemsList.get(pInitialIndex));
 		mValueTextField.setEditable(false);
 		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mValueTextField, "cell 1 1,grow");
+		add(mValueTextField, "cell 2 0,grow");
 
 		mThis = this;
 
@@ -126,11 +126,11 @@ public class JSliderIndexedStrings extends JPanel
 		mSlider.setPaintTicks(true);
 
 		mMinusStepButton = new JButton("\u2013");
-		add(mMinusStepButton, "cell 0 1,alignx left,growy");
+		add(mMinusStepButton, "cell 0 0,alignx left,growy");
 		mMinusStepButton.addActionListener((e) -> {
-			double lStep = 1;
-			int lModifiers = e.getModifiers();
-			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+			final double lStep = 1;
+			final int lModifiers = e.getModifiers();
+			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																																												: 10;
 			int lNewValue = getInt(getDoubleVariable().getValue());
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
@@ -145,11 +145,11 @@ public class JSliderIndexedStrings extends JPanel
 		});
 
 		mPlusStepButton = new JButton("+");
-		add(mPlusStepButton, "cell 2 1,alignx left,growy");
+		add(mPlusStepButton, "cell 3 0,alignx left,growy");
 		mPlusStepButton.addActionListener((e) -> {
-			double lStep = 1;
-			int lModifiers = e.getModifiers();
-			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+			final double lStep = 1;
+			final int lModifiers = e.getModifiers();
+			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																																												: 10;
 			double lNewValue = getDoubleVariable().getValue();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
@@ -184,14 +184,14 @@ public class JSliderIndexedStrings extends JPanel
 
 	private void writeValueIntoTextField(final double pNewValue)
 	{
-		int lIntValue = getInt(pNewValue);
-		String lItemString = mItemsList.get(lIntValue);
+		final int lIntValue = getInt(pNewValue);
+		final String lItemString = mItemsList.get(lIntValue);
 		mValueTextField.setText(lItemString);
 	}
 
 	private int getInt(final double pNewValue)
 	{
-		int lIntValue = (int) clamp(0,
+		final int lIntValue = (int) clamp(0,
 																mItemsList.size() - 1,
 																round(pNewValue));
 		return lIntValue;

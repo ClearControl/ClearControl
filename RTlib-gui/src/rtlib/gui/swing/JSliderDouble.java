@@ -118,23 +118,23 @@ public class JSliderDouble extends JPanel
 			}
 		};
 		setLayout(new MigLayout("",
-														"[41px,center][368px,grow,center][41px,center]",
-														"[16px][25px:n:25px,center][27px]"));
+														"[center][18.63%,grow,center][368px,grow,center][center]",
+														"[25px:n:25px,grow,center][27px]"));
+
+		mNameLabel = new JLabel(pValueName);
+		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(mNameLabel, "cell 1 0,growx,aligny center");
 
 
 		mSlider = new JSlider(0, mResolution - 1, toInt(mResolution,
 																										pMin,
 																										pMax,
 																										pValue));
-		add(mSlider, "cell 0 2 3 1,growx,aligny top");
-
-		mNameLabel = new JLabel(pValueName);
-		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mNameLabel, "cell 0 0 3 1,growx,aligny top");
+		add(mSlider, "cell 0 1 4 1,growx,aligny top");
 
 		mValueTextField = new JTextField("" + pValue);
 		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mValueTextField, "cell 1 1,grow");
+		add(mValueTextField, "cell 2 0,grow");
 
 		mLabelsFormatString = pLabelsFormatString;
 
@@ -266,11 +266,11 @@ public class JSliderDouble extends JPanel
 
 		mMinusStepButton = new JButton("\u2013");
 		mMinusStepButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		add(mMinusStepButton, "cell 0 1,alignx left,growy");
+		add(mMinusStepButton, "cell 0 0,alignx left,growy");
 		mMinusStepButton.addActionListener((e) -> {
-			double lStep = max(mStep, mQuanta);
-			int lModifiers = e.getModifiers();
-			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+			final double lStep = max(mStep, mQuanta);
+			final int lModifiers = e.getModifiers();
+			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																																												: 10;
 			double lNewValue = getDoubleVariable().getValue();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
@@ -285,11 +285,11 @@ public class JSliderDouble extends JPanel
 		});
 
 		mPlusStepButton = new JButton("+");
-		add(mPlusStepButton, "cell 2 1,alignx left,growy");
+		add(mPlusStepButton, "cell 3 0,alignx left,growy");
 		mPlusStepButton.addActionListener((e) -> {
-			double lStep = max(mStep, mQuanta);
-			int lModifiers = e.getModifiers();
-			double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
+			final double lStep = max(mStep, mQuanta);
+			final int lModifiers = e.getModifiers();
+			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																																												: 10;
 			double lNewValue = getDoubleVariable().getValue();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
@@ -451,6 +451,12 @@ public class JSliderDouble extends JPanel
 	public void setWaitForMouseRelease(boolean pWaitForMouseRelease)
 	{
 		mWaitForMouseRelease = pWaitForMouseRelease;
+	}
+
+	public void setPlusMinusButtonsVisible(boolean pShow)
+	{
+		mPlusStepButton.setVisible(pShow);
+		mMinusStepButton.setVisible(pShow);
 	}
 
 }
