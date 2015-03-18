@@ -2,43 +2,32 @@ package rtlib.stack;
 
 import java.util.Arrays;
 
+import net.imglib2.type.NativeType;
 import coremem.recycling.RecyclerRequest;
 
-public class StackRequest<T> implements RecyclerRequest<Stack<T>>
+public class StackRequest<T extends NativeType<T>>	implements
+																										RecyclerRequest
 {
 
-	private final Class<?> mType;
+	private final T mType;
 	private final long[] mDimensions;
 
-	/*public StackRequest(final Class<?> pType,
-											final long pWidth,
-											final long pHeight,
-											final long pDepth)
-	{
-		mType = pType;
-		mDimensions = new long[4];
-		mDimensions[0] = 1;
-		mDimensions[1] = pWidth;
-		mDimensions[2] = pHeight;
-		mDimensions[3] = pDepth;
-	}/**/
-
-	public StackRequest(final Class<?> pType, final long... pDimensions)
+	public StackRequest(final T pType, final long... pDimensions)
 	{
 		mType = pType;
 		mDimensions = Arrays.copyOf(pDimensions, pDimensions.length);
 	}
 
-	public static <LT> StackRequest<LT> build(final Class<LT> pType,
-																									final long... pDimensions)
+	public static <LT extends NativeType<LT>> StackRequest<LT> build(	final LT pType,
+																																		final long... pDimensions)
 	{
 		return new StackRequest<LT>(pType, pDimensions);
 	}
 
-	public static <LT> StackRequest<LT> buildFrom(final Stack<LT> pStack)
+	public static <LT extends NativeType<LT>> StackRequest<LT> buildFrom(final StackInterface<LT, ?> pStack)
 	{
 		return new StackRequest<LT>(pStack.getType(),
-																			pStack.getDimensions());
+																pStack.getDimensions());
 	}
 
 	public long[] getDimensions()
@@ -48,20 +37,20 @@ public class StackRequest<T> implements RecyclerRequest<Stack<T>>
 
 	public long getWidth()
 	{
-		return mDimensions[1];
+		return mDimensions[0];
 	}
 
 	public long getHeight()
 	{
-		return mDimensions[2];
+		return mDimensions[1];
 	}
 
 	public long getDepth()
 	{
-		return mDimensions[3];
+		return mDimensions[2];
 	}
 
-	public Class<?> getType()
+	public T getType()
 	{
 		return mType;
 	}

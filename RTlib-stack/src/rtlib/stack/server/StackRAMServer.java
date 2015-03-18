@@ -4,19 +4,21 @@ import gnu.trove.list.array.TLongArrayList;
 
 import java.util.ArrayList;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.Recycler;
 
-public class StackRAMServer<T>	implements
-																StackSinkInterface<T>,
-																StackSourceInterface<T>
+public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
+																																										StackSinkInterface<T, A>,
+																																										StackSourceInterface<T, A>
 {
 
-	ArrayList<Stack<T>> mStackList = new ArrayList<Stack<T>>();
-	TLongArrayList mStackTimePointList = new TLongArrayList();
+	ArrayList<StackInterface<T, A>> mStackList = new ArrayList<StackInterface<T, A>>();
+	final TLongArrayList mStackTimePointList = new TLongArrayList();
 
 	protected final VariableBundle mMetaDataVariableBundle = new VariableBundle("MetaData");
 
@@ -38,12 +40,12 @@ public class StackRAMServer<T>	implements
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<Stack<T>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final Recycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
 	{
 	}
 
 	@Override
-	public Stack<T> getStack(final long pStackIndex)
+	public StackInterface<T, A> getStack(final long pStackIndex)
 	{
 		return mStackList.get((int) pStackIndex);
 	}
@@ -55,7 +57,7 @@ public class StackRAMServer<T>	implements
 	}
 
 	@Override
-	public boolean appendStack(final Stack<T> pStack)
+	public boolean appendStack(final StackInterface<T, A> pStack)
 	{
 		mStackTimePointList.add(pStack.getTimeStampInNanoseconds());
 		return mStackList.add(pStack);

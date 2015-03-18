@@ -30,15 +30,12 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
 
-    compile group: "royer", name: "ECC100J", version: "1.+", changing: true, transitive: true
+    compile group: "net.rtlib", name: "ECC100J", version: "1.+", changing: true, transitive: true
 }
 
 repositories 
 {
-    maven 
-    {
-        url "http://bitbucket.org/api/1.0/repositories/rtlib/rtlibmavenrepo/raw/master/"
-    } 
+	maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
 }
 
 

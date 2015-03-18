@@ -1,6 +1,5 @@
 package rtlib.stack.server;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,27 +7,31 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.VariableInterface;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.util.SizeOf;
 
-public class LocalFileStackSink<I> extends LocalFileStackBase	implements
-																															StackSinkInterface<I>,
-																															Closeable
+public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
+																																												LocalFileStackBase<T, A> implements
+																																																								StackSinkInterface<T, A>,
+																																																								AutoCloseable
 {
 
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 
-	public LocalFileStackSink(final File pRootFolder, final String pName) throws IOException
+	public LocalFileStackSink(T pType,
+														final File pRootFolder,
+														final String pName) throws IOException
 	{
-		super(pRootFolder, pName, false);
+		super(pType, pRootFolder, pName, false);
 
 	}
 
 	@Override
-	public boolean appendStack(final Stack<I> pStack)
+	public boolean appendStack(final StackInterface<T, A> pStack)
 	{
 
 		try
@@ -41,14 +44,14 @@ public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 																							mNextFreeTypePosition);
 
-			final StackRequest<I> lStackRequest = StackRequest.buildFrom(pStack);
+			final StackRequest<T> lStackRequest = StackRequest.buildFrom(pStack);
 
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
 																				lStackRequest);
 
 			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false,
 																																					true);
-			final long lNewNextFreeTypePosition = pStack.getNDArray()
+			final long lNewNextFreeTypePosition = pStack.getFragmentedMemory()
 																									.writeBytesToFileChannel(	lBinnaryFileChannel,
 																																						mNextFreeTypePosition);
 
@@ -56,13 +59,6 @@ public class LocalFileStackSink<I> extends LocalFileStackBase	implements
 			lBinnaryFileChannel.close();
 
 			final long[] lDimensions = lStackRequest.getDimensions();
-
-			// TODO: this is a temporary fix for the change in semantics of the first
-			// dimension. In the current file format, teh first entry is teh sizeof of
-			// the integer type, the new stack semantics incorprate the type in a
-			// separate field, so we can now have vctorized stacks of double for
-			// example.
-			lDimensions[0] = SizeOf.sizeOf(lStackRequest.getType());
 
 			final String lDimensionsString = Arrays.toString(lDimensions);
 			final String lTruncatedDimensionsString = lDimensionsString.substring(1,

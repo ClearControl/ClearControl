@@ -1,10 +1,11 @@
 package rtlib.slms.dms.devices.alpao;
 
+import org.ejml.data.DenseMatrix64F;
+
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.slms.dms.DeformableMirrorDevice;
 import asdk.AlpaoDeformableMirror;
 
@@ -32,14 +33,14 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 
 		mAlpaoDeformableMirror = new AlpaoDeformableMirror(pAlpaoSerialName);
 
-		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
+		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
-			public NDArrayTyped<Double> setEventHook(	final NDArrayTyped<Double> pOldValue,
-																								final NDArrayTyped<Double> pNewValue)
+			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
+																					final DenseMatrix64F pNewValue)
 			{
 
-				mAlpaoDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.getBridJPointer(Double.class));
+				mAlpaoDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.data);
 
 				return super.setEventHook(pOldValue, pNewValue);
 			}

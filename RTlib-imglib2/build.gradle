@@ -1,0 +1,110 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+
+
+
+sourceSets 
+{
+  main 
+  {
+    java 
+    {
+      srcDir 'src'
+      //exclude "**/*Tests.java"
+    }
+    resources 
+    { 
+      srcDir 'src'
+    }
+  }
+  test
+  {
+    java 
+    {
+      srcDir 'src'
+      //include "**/*Tests.java"
+    }
+    resources 
+    { 
+      srcDir 'src'
+    }
+  }
+}
+
+dependencies 
+{
+    compile project(':RTlib-core')
+		compile ('net.imglib2:imglib2:2.2.0'){transitive = true}
+		compile ('net.imglib2:imglib2-ui:2.0.0-beta-28'){transitive = true}
+		compile ('net.imglib2:imglib2-ij:2.0.0-beta-30'){transitive = true}
+		compile ('net.imglib2:imglib2-algorithm:0.2.1'){transitive = true}
+		
+		compile ('io.scif:pom-scifio:5.8.0'){transitive = true}
+		compile ('io.scif:scifio:0.21.0'){transitive = true}
+		
+		
+}
+
+repositories
+{
+	mavenCentral()
+	maven { url  "http://maven.imagej.net/content/repositories/releases" }
+	maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
+	maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+	
+}
+
+//***********************************************************************************
+ 
+ // PUBLISHING
+ 
+ 
+ 
+ artifacts
+ {
+	 archives sourcesJar
+	 archives javadocJar
+ }
+ 
+ publishing {
+	 publications {
+		 maven(MavenPublication) {
+			 from components.java
+			 artifact sourcesJar { classifier "sources" }
+		 }
+	 }
+ }
+
+if(hasProperty('bintray_user') && hasProperty('bintray_key') )
+{
+	bintray {
+
+		// property must be set in ~/.gradle/gradle.properties
+		user = bintray_user
+		key =  bintray_key
+
+		publications = [
+			'maven'] //When uploading configuration files
+		dryRun = false //Whether to run this as dry-run, without deploying
+		publish = true //If version should be auto published after an upload
+		pkg {
+			repo = 'RTlib'
+			userOrg = 'rtlib' //An optional organization name when the repo belongs to one of the user's orgs
+			name = project.name
+			desc = project.name
+			websiteUrl = 'https://github.com/RTlib'
+			issueTrackerUrl = 'https://github.com/RTlib/RTlib/issues'
+			vcsUrl = 'https://github.com/RTlib/RTlib.git'
+			licenses = ['GPL-3.0']
+			publicDownloadNumbers = true
+			version {
+				name = '0.1' //Bintray logical version name
+				desc = '.'
+				released  = new java.util.Date()
+				vcsTag = '0.1.0'
+
+			}
+		}
+	}
+}

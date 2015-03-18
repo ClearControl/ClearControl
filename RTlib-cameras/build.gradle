@@ -31,7 +31,7 @@ dependencies
     compile project(':RTlib-stack')
     compile project(':RTlib-gui')
 
-    compile group: "royer", name: "DcamJ", version: "2.+", transitive: true, changing: true
+    compile group: "net.rtlib", name: "DcamJ", version: "1.+", transitive: true, changing: true
 
     compile 'com.github.sarxos:webcam-capture:0.3.9'
 
@@ -42,10 +42,7 @@ dependencies
 repositories 
 {
     mavenCentral()
-    maven 
-    {
-        url "http://bitbucket.org/api/1.0/repositories/rtlib/rtlibmavenrepo/raw/master/"
-    } 
+	maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
 }
 
 //***********************************************************************************

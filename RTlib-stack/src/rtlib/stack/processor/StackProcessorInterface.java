@@ -1,17 +1,19 @@
 package rtlib.stack.processor;
 
-import rtlib.stack.Stack;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
+import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.Recycler;
 
-public interface StackProcessorInterface<IT, OT>
+public interface StackProcessorInterface<TI extends NativeType<TI>, AI extends ArrayDataAccess<AI>, TO extends NativeType<TO>, AO extends ArrayDataAccess<AO>>
 {
 
 	public void setActive(boolean pIsActive);
 
 	public boolean isActive();
 
-	public Stack<OT> process(	Stack<IT> pStack,
-														Recycler<Stack<OT>, StackRequest<OT>> pStackRecycler);
+	public StackInterface<TO, AO> process(StackInterface<TI, AI> pStack,
+																				Recycler<StackInterface<TO, AO>, StackRequest<TO>> pStackRecycler);
 
 }

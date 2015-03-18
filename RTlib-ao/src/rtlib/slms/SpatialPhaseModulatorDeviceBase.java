@@ -1,9 +1,10 @@
 package rtlib.slms;
 
+import org.ejml.data.DenseMatrix64F;
+
 import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
 																											SignalStartableDevice	implements
@@ -14,7 +15,7 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	protected DoubleVariable mActuatorResolutionVariable;
 	protected DoubleVariable mNumberOfActuatorsVariable;
 
-	protected ObjectVariable<NDArrayTyped<Double>> mMatrixVariable;
+	protected ObjectVariable<DenseMatrix64F> mMatrixVariable;
 
 	public SpatialPhaseModulatorDeviceBase(	String pDeviceName,
 																					int pFullMatrixWidthHeight,
@@ -56,7 +57,7 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	}
 
 	@Override
-	public ObjectVariable<NDArrayTyped<Double>> getMatrixReference()
+	public ObjectVariable<DenseMatrix64F> getMatrixReference()
 	{
 		return mMatrixVariable;
 	}

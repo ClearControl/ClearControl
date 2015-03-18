@@ -5,13 +5,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.junit.Test;
 
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.jogl.VideoWindow;
-import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
+import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 
 public class OrcaFlash4CameraDemo
 {
@@ -24,12 +28,12 @@ public class OrcaFlash4CameraDemo
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
 													{
 
 														@Override
-														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
-																																	final Stack<Character> pNewStack)
+														public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(final StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
+																																																			final StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -70,12 +74,12 @@ public class OrcaFlash4CameraDemo
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
 													{
 
 														@Override
-														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
-																																	final Stack<Character> pNewStack)
+														public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(final StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
+																																																			final StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -120,29 +124,25 @@ public class OrcaFlash4CameraDemo
 		final int lWidth = 256;
 		final int lHeight = 256;
 
-		final NDArrayTypedDirect<Character> lNDArrayDirect = NDArrayTypedDirect.allocateTXYZ(	Character.class,
-																																											lWidth,
-																																											lHeight,
-																																											1);
+		final ContiguousMemoryInterface lBuffer = OffHeapMemory.allocateShorts(lWidth * lHeight);
 
-		final VideoWindow<Character> lVideoWindow = new VideoWindow<Character>(	"VideoWindow test",
-																																						Character.class,
-																																		lWidth,
-																																		lHeight);
+		final VideoWindow<UnsignedShortType> lVideoWindow = new VideoWindow<UnsignedShortType>(	"VideoWindow test",
+																																														new UnsignedShortType(),
+																																														lWidth,
+																																														lHeight);
 		lVideoWindow.setDisplayOn(true);
-		lVideoWindow.setSourceBuffer(lNDArrayDirect);
 		lVideoWindow.setVisible(true);
 
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
 
 		lOrcaFlash4StackCamera.getStackReferenceVariable()
-													.sendUpdatesTo(new ObjectVariable<Stack<Character>>("Receiver")
+													.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
 													{
 
 														@Override
-														public Stack<Character> setEventHook(	final Stack<Character> pOldStack,
-																																	final Stack<Character> pNewStack)
+														public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(final StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
+																																																			final StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack)
 														{
 															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
@@ -152,9 +152,9 @@ public class OrcaFlash4CameraDemo
 
 															assertTrue(mFrameIndex.get() == pNewStack.getIndex());
 
-															lVideoWindow.setSourceBuffer(pNewStack.getNDArray());
-															lVideoWindow.notifyNewFrame();
-															lVideoWindow.requestDisplay();/**/
+															lVideoWindow.sendBuffer(lBuffer,
+																											lWidth,
+																											lHeight);
 
 															mFrameIndex.incrementAndGet();
 															return super.setEventHook(pOldStack,
@@ -167,10 +167,8 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.setValue(500);
-		lOrcaFlash4StackCamera.getFrameWidthVariable()
-													.setValue(lNDArrayDirect.getSizeAlongDimension(1));
-		lOrcaFlash4StackCamera.getFrameHeightVariable()
-													.setValue(lNDArrayDirect.getSizeAlongDimension(2));
+		lOrcaFlash4StackCamera.getFrameWidthVariable().setValue(lWidth);
+		lOrcaFlash4StackCamera.getFrameHeightVariable().setValue(lHeight);
 		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(1);
 		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);

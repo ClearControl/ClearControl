@@ -2,33 +2,35 @@ package rtlib.stack.server;
 
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
 
-public class AsynchronousStackSinkAdapter<I>	implements
-																					StackSinkInterface<I>
+public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
+																																																	StackSinkInterface<T, A>
 {
 
-	private StackSinkInterface<I> mStackSink;
+	private StackSinkInterface<T, A> mStackSink;
 
-	private AsynchronousProcessorInterface<Stack<I>, Stack<I>> mAsynchronousConversionProcessor;
+	private AsynchronousProcessorInterface<StackInterface<T, A>, StackInterface<T, A>> mAsynchronousConversionProcessor;
 
-	private ObjectVariable<Stack<I>> mFinishedProcessingStackVariable;
+	private ObjectVariable<StackInterface<T, A>> mFinishedProcessingStackVariable;
 
-	public AsynchronousStackSinkAdapter(final StackSinkInterface<I> pStackSink,
+	public AsynchronousStackSinkAdapter(final StackSinkInterface<T, A> pStackSink,
 																			final int pMaxQueueSize)
 	{
 		super();
 		mStackSink = pStackSink;
 
-		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<Stack<I>, Stack<I>>(	"AsynchronousStackSinkAdapter",
+		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>(	"AsynchronousStackSinkAdapter",
 																																										pMaxQueueSize)
 		{
 			@Override
-			public Stack<I> process(final Stack<I> pStack)
+			public StackInterface<T, A> process(final StackInterface<T, A> pStack)
 			{
 				mStackSink.appendStack(pStack);
 				if (mFinishedProcessingStackVariable != null)
@@ -46,7 +48,7 @@ public class AsynchronousStackSinkAdapter<I>	implements
 	}
 
 	@Override
-	public boolean appendStack(final Stack<I> pStack)
+	public boolean appendStack(final StackInterface<T, A> pStack)
 	{
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
@@ -86,7 +88,7 @@ public class AsynchronousStackSinkAdapter<I>	implements
 		mStackSink.removeAllMetaDataVariables();
 	}
 
-	public void setFinishedProcessingStackVariable(final ObjectVariable<Stack<I>> pVariable)
+	public void setFinishedProcessingStackVariable(final ObjectVariable<StackInterface<T, A>> pVariable)
 	{
 		mFinishedProcessingStackVariable = pVariable;
 	}

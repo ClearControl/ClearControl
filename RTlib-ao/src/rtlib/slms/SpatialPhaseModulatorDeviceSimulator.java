@@ -1,7 +1,8 @@
 package rtlib.slms;
 
+import org.ejml.data.DenseMatrix64F;
+
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 public class SpatialPhaseModulatorDeviceSimulator	extends
 																									SpatialPhaseModulatorDeviceBase
@@ -12,11 +13,11 @@ public class SpatialPhaseModulatorDeviceSimulator	extends
 																							int pActuatorResolution)
 	{
 		super(pDeviceName, pFullMatrixWidthHeight, pActuatorResolution);
-		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
+		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
-			public NDArrayTyped<Double> setEventHook(	final NDArrayTyped<Double> pOldValue,
-																								final NDArrayTyped<Double> pNewValue)
+			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
+																					final DenseMatrix64F pNewValue)
 			{
 				System.out.format("Device: %s received new data: %s",
 													getName(),

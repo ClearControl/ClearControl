@@ -1,18 +1,21 @@
 package rtlib.cameras;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
 
-public interface StackCameraDeviceInterface<I, O> extends
+public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																						CameraDeviceInterface
 {
 	BooleanVariable getStackModeVariable();
 
 	BooleanVariable getSingleShotModeVariable();
 
-	ObjectVariable<Stack<O>> getStackReferenceVariable();
+	ObjectVariable<StackInterface<T, A>> getStackReferenceVariable();
 
+	@Override
 	void trigger();
 
 

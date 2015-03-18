@@ -1,5 +1,7 @@
 package rtlib.cameras.devices.orcaflash4;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.device.VirtualDeviceInterface;
@@ -14,7 +16,7 @@ import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 
 public class OrcaFlash4StackCamera extends
-																	StackCameraDeviceBase<Character, Character>	implements
+																	StackCameraDeviceBase<UnsignedShortType, ShortOffHeapAccess> implements
 																																	VirtualDeviceInterface
 {
 	public static final int cStackProcessorQueueSize = 100;
@@ -30,7 +32,7 @@ public class OrcaFlash4StackCamera extends
 
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
-	private Object mLock = new Object();
+	private final Object mLock = new Object();
 
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
@@ -323,6 +325,7 @@ public class OrcaFlash4StackCamera extends
 		}
 	}
 
+	@Override
 	public void reopen()
 	{
 		synchronized (mLock)
@@ -392,6 +395,7 @@ public class OrcaFlash4StackCamera extends
 		}
 	}
 
+	@Override
 	public void trigger()
 	{
 		mDcamAcquisition.trigger();

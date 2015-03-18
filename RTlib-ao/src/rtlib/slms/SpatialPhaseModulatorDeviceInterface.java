@@ -1,9 +1,10 @@
 package rtlib.slms;
 
+import org.ejml.data.DenseMatrix64F;
+
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 
 public interface SpatialPhaseModulatorDeviceInterface	extends
@@ -18,7 +19,7 @@ public interface SpatialPhaseModulatorDeviceInterface	extends
 
 	DoubleVariable getNumberOfActuatorVariable();
 
-	ObjectVariable<NDArrayTyped<Double>> getMatrixReference();
+	ObjectVariable<DenseMatrix64F> getMatrixReference();
 
 	void zero();
 

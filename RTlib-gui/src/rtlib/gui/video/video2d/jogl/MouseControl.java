@@ -60,7 +60,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 		{
 			final double nx = getNormalizedX(pMouseEvent);
 
-			double lGamma = Math.tan(0.5 * Math.PI * nx);
+			final double lGamma = Math.tan(0.5 * Math.PI * nx);
 			mVideoWindow.setGamma(lGamma);
 			mVideoWindow.requestDisplay();
 		}
@@ -68,7 +68,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 
 	private double getNormalizedX(final MouseEvent pMouseEvent)
 	{
-		final double lWindowWidth = mVideoWindow.getWindowWidth();
+		final double lWindowWidth = mVideoWindow.getEffectiveWindowWidth();
 		final double lMouseX = max(	0,
 																min(lWindowWidth, pMouseEvent.getX()));
 		final double nx = lMouseX / lWindowWidth;
@@ -77,7 +77,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 
 	private double getNormalizedY(final MouseEvent pMouseEvent)
 	{
-		final double lWindowHeight = mVideoWindow.getWindowHeight();
+		final double lWindowHeight = mVideoWindow.getEffectiveWindowHeight();
 		final double lMouseY = max(	0,
 																min(lWindowHeight, pMouseEvent.getY()));
 		final double ny = lMouseY / lWindowHeight;

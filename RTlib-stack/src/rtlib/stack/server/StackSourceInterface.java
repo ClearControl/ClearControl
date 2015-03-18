@@ -1,19 +1,21 @@
 package rtlib.stack.server;
 
-import rtlib.stack.Stack;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
+import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.Recycler;
 
-public interface StackSourceInterface<T>
+public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {
 
 	public boolean update();
 
 	public long getNumberOfStacks();
 
-	public void setStackRecycler(Recycler<Stack<T>, StackRequest<T>> pStackRecycler);
+	public void setStackRecycler(Recycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler);
 
-	public Stack<T> getStack(final long pStackIndex);
+	public StackInterface<T, A> getStack(final long pStackIndex);
 
 	public double getStackTimeStampInSeconds(final long pStackIndex);
 

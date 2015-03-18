@@ -3,9 +3,11 @@ package rtlib.slms.dms.devices.mirao52e;
 import java.io.IOException;
 
 import mirao52e.Mirao52eDeformableMirror;
+
+import org.ejml.data.DenseMatrix64F;
+
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 import rtlib.slms.dms.DeformableMirrorDevice;
 
 public class Mirao52eDevice extends DeformableMirrorDevice implements
@@ -26,14 +28,14 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
-		mMatrixVariable = new ObjectVariable<NDArrayTyped<Double>>("MatrixReference")
+		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
-			public NDArrayTyped<Double> setEventHook(	final NDArrayTyped<Double> pOldValue,
-																								final NDArrayTyped<Double> pNewValue)
+			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
+																					final DenseMatrix64F pNewValue)
 			{
 				if (mMirao52eDeformableMirror.isOpen())
-					mMirao52eDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.getBridJPointer(Double.class));
+					mMirao52eDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.data);
 
 				return super.setEventHook(pOldValue, pNewValue);
 			}

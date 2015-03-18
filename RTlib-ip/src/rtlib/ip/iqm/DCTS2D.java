@@ -1,25 +1,29 @@
 package rtlib.ip.iqm;
 
 import static java.lang.Math.sqrt;
-import static java.lang.Math.toIntExact;
+import net.imglib2.img.basictypeaccess.offheap.DoubleOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.img.planar.OffHeapPlanarImgFactory;
+import net.imglib2.img.planar.PlanarCursor;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.type.numeric.real.DoubleType;
 
 import org.jtransforms.dct.DoubleDCT_2D;
 
 import pl.edu.icm.jlargearrays.DoubleLargeArray;
-import rtlib.kam.memory.cursor.NDCursor;
-import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
-import rtlib.kam.memory.ndarray.NDArrayTyped;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import coremem.util.SizeOf;
+import coremem.ContiguousMemoryInterface;
 
-public class DCTS2D implements ImageQualityMetricInterface<Character>
+public class DCTS2D	implements
+										ImageQualityMetricInterface<UnsignedShortType, ShortOffHeapAccess>
 {
-	private Table<Long, Long, DoubleDCT_2D> mDoubleDCT2DCache = HashBasedTable.create();
+	private final Table<Long, Long, DoubleDCT_2D> mDoubleDCT2DCache = HashBasedTable.create();
 
-	private NDArrayTypedDirect<Double> mDoubleWorkingNDArray;
+	private OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess> mDoubleWorkingStack;
 
 	private double mPSFSupportRadius = 3;
 
@@ -41,7 +45,7 @@ public class DCTS2D implements ImageQualityMetricInterface<Character>
 				lDoubleDCT_2D = new DoubleDCT_2D(pHeight, pWidth, true);
 				mDoubleDCT2DCache.put(pWidth, pHeight, lDoubleDCT_2D);
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -51,52 +55,52 @@ public class DCTS2D implements ImageQualityMetricInterface<Character>
 		return lDoubleDCT_2D;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final double[] computeImageQualityMetric(NDArrayTyped<Character> pNDArray)
+	public final double[] computeImageQualityMetric(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pOffHeapPlanarImg)
 	{
-		final long lLengthInElements = pNDArray.getLengthInElements();
-		final long lWidth = pNDArray.getWidth();
-		final long lHeight = pNDArray.getHeight();
-		final long lDepth = pNDArray.getDepth();
+		final int lWidth = (int) pOffHeapPlanarImg.dimension(0);
+		final int lHeight = (int) pOffHeapPlanarImg.dimension(1);
+		final int lDepth = (int) pOffHeapPlanarImg.dimension(2);
 
-		if (mDoubleWorkingNDArray != null)
+		if (mDoubleWorkingStack != null)
 		{
-			boolean lWrongDimensions = mDoubleWorkingNDArray.getWidth() != lWidth || mDoubleWorkingNDArray.getHeight() != lHeight
-																	|| mDoubleWorkingNDArray.getDepth() != lDepth;
+			final boolean lWrongDimensions = mDoubleWorkingStack.dimension(0) != lWidth || mDoubleWorkingStack.dimension(1) != lHeight
+																				|| mDoubleWorkingStack.dimension(2) != lDepth;
 			if (lWrongDimensions)
 			{
-				mDoubleWorkingNDArray.free();
-				mDoubleWorkingNDArray = null;
+				mDoubleWorkingStack.free();
+				mDoubleWorkingStack = null;
 			}
 		}
 
-		if (mDoubleWorkingNDArray == null)
+		if (mDoubleWorkingStack == null)
 		{
-			mDoubleWorkingNDArray = NDArrayTypedDirect.allocateTXYZ(Double.class,
-																															lWidth,
-																															lHeight,
-																															lDepth);
+			final OffHeapPlanarImgFactory<DoubleType> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<DoubleType>();
+			final int[] lDimensions = new int[]
+			{ lWidth, lHeight, lDepth };
+			mDoubleWorkingStack = (OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess>) lOffHeapPlanarImgFactory.create(lDimensions,
+																																																								new DoubleType());
 		}
 
-		for (long i = 0; i < lLengthInElements; i++)
+		final PlanarCursor<UnsignedShortType> lCursorShort = pOffHeapPlanarImg.cursor();
+		final PlanarCursor<DoubleType> lCursorDouble = mDoubleWorkingStack.cursor();
+
+		while (lCursorShort.hasNext())
 		{
-			final char lChar = pNDArray.getCharAligned(i);
-			final double lDouble = lChar;
-			mDoubleWorkingNDArray.setDoubleAligned(i, lDouble);
+			final int lValue = lCursorShort.next().get();
+			lCursorDouble.next().set(lValue);
 		}
 
-		double[] lDCTSArray = new double[toIntExact(lDepth)];
-
-		long lBaseAddress = mDoubleWorkingNDArray.getMemoryRegionInterface().getAddress();
-		NDCursor lDefaultCursor = mDoubleWorkingNDArray.getDefaultCursor();
-		for (int z = 0; z < lDepth; z++, lDefaultCursor.incrementCursorPosition(3))
+		final double[] lDCTSArray = new double[lDepth];
+		for (int z = 0; z < lDepth; z++)
 		{
-			long lCurrentFlatIndex = lDefaultCursor.getCurrentFlatIndex();
-			long lAddress = lBaseAddress + SizeOf.sizeOfDouble()
-											* lCurrentFlatIndex;
-			DoubleLargeArray lDoubleLargeArray = new DoubleLargeArray(mDoubleWorkingNDArray,
-																																lAddress,
-																																lWidth * lHeight);
+			final ContiguousMemoryInterface lPlaneContiguousMemory = mDoubleWorkingStack.getPlaneContiguousMemory(z);
+			final long lAddress = lPlaneContiguousMemory.getAddress();
+			final long lLengthInElements = lWidth * lHeight;
+			final DoubleLargeArray lDoubleLargeArray = new DoubleLargeArray(mDoubleWorkingStack,
+																																			lAddress,
+																																			lLengthInElements);
 
 			final double lDCTS = computeDCTSForSinglePlane(	lDoubleLargeArray,
 																											lWidth,
@@ -109,13 +113,13 @@ public class DCTS2D implements ImageQualityMetricInterface<Character>
 		return lDCTSArray;
 	}
 
-	public final double computeDCTSForSinglePlane(DoubleLargeArray pDoubleLargeArray,
-																								long pWidth,
-																								long pHeight,
-																								double pPSFSupportRadius)
+	private final double computeDCTSForSinglePlane(	DoubleLargeArray pDoubleLargeArray,
+																									long pWidth,
+																									long pHeight,
+																									double pPSFSupportRadius)
 	{
-		DoubleDCT_2D lDCTForWidthAndHeight = getDCTForWidthAndHeight(	pWidth,
-																																	pHeight);
+		final DoubleDCT_2D lDCTForWidthAndHeight = getDCTForWidthAndHeight(	pWidth,
+																																				pHeight);
 
 		lDCTForWidthAndHeight.forward(pDoubleLargeArray, false);
 

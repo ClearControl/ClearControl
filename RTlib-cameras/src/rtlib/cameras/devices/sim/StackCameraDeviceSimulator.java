@@ -1,24 +1,26 @@
 package rtlib.cameras.devices.sim;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.booleanv.BooleanEventListenerInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.Stack;
+import rtlib.stack.StackInterface;
 import rtlib.stack.server.StackSourceInterface;
 
-public class StackCameraDeviceSimulator<I, O> extends
-																							StackCameraDeviceBase<I, O>	implements
-																																					Loggable
+public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
+																																																StackCameraDeviceBase<T, A>	implements
+																																																														Loggable
 {
 
-	private StackSourceInterface<O> mStackSource;
+	private StackSourceInterface<T, A> mStackSource;
 	private BooleanVariable mTriggerVariable;
 	protected long mCurrentStackIndex = 0;
 
-	public StackCameraDeviceSimulator(StackSourceInterface<O> pStackSource,
+	public StackCameraDeviceSimulator(StackSourceInterface<T, A> pStackSource,
 																		BooleanVariable pTriggerVariable)
 	{
 		super("StackCameraSimulator");
@@ -55,7 +57,7 @@ public class StackCameraDeviceSimulator<I, O> extends
 			{
 				if (pCurrentBooleanValue)
 				{
-					final Stack<O> lStack = mStackSource.getStack(mCurrentStackIndex);
+					final StackInterface<T, A> lStack = mStackSource.getStack(mCurrentStackIndex);
 					mStackReference.set(lStack);
 					mCurrentStackIndex = (mCurrentStackIndex + 1) % mStackSource.getNumberOfStacks();
 				}

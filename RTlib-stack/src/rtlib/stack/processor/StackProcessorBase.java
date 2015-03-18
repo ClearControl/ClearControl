@@ -1,9 +1,11 @@
 package rtlib.stack.processor;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.variable.booleanv.BooleanVariable;
 
-public abstract class StackProcessorBase<I, O>	implements
-																				StackProcessorInterface<I, O>
+public abstract class StackProcessorBase<TI extends NativeType<TI>, AI extends ArrayDataAccess<AI>, TO extends NativeType<TO>, AO extends ArrayDataAccess<AO>>	implements
+																																																																StackProcessorInterface<TI, AI, TO, AO>
 {
 	private final BooleanVariable mIsActiveVariable;
 	private final String mProcessorName;

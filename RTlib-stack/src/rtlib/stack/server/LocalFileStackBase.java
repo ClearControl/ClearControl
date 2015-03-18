@@ -1,17 +1,21 @@
 package rtlib.stack.server;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
 
-public abstract class LocalFileStackBase extends StackBase implements
-																													Closeable
+public abstract class LocalFileStackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>> extends
+																																																StackServerBase<T, A>	implements
+																																																											AutoCloseable
 {
+	protected final T mType;
+
 	protected final File mFolder;
 	private final File mDataFolder;
 	protected final File mBinaryFile;
@@ -22,11 +26,13 @@ public abstract class LocalFileStackBase extends StackBase implements
 	protected final File mMetaDataFile;
 	protected final VariableBundleAsFile mMetaDataVariableBundleAsFile;
 
-	public LocalFileStackBase(final File pRootFolder,
+	public LocalFileStackBase(final T pType,
+														final File pRootFolder,
 														final String pName,
 														final boolean pReadOnly) throws IOException
 	{
 		super();
+		mType = pType;
 		mFolder = new File(pRootFolder, pName);
 		mDataFolder = new File(mFolder, "/data/");
 		mBinaryFile = new File(mDataFolder, "data.bin");

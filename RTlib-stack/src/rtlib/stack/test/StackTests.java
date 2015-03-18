@@ -7,22 +7,27 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
-import rtlib.kam.memory.impl.direct.NDArrayTypedDirect;
-import rtlib.stack.Stack;
+import rtlib.stack.OffHeapPlanarStack;
+import rtlib.stack.OffHeapPlanarStackFactory;
+import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.offheap.NativeMemoryAccess;
+import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemoryAccess;
 import coremem.recycling.Recycler;
-import coremem.util.SizeOf;
+import coremem.util.Size;
 
 public class StackTests
 {
 
 	private static final int cMaximumNumberOfAvalableObjects = 1024;
 	private static final long cMAXIMUM_LIVE_MEMORY_IN_BYTES = 2L * 1024L * 1024L * 1024L;
-	private static final long cBytesPerPixel = SizeOf.sizeOf(short.class);
+	private static final long cBytesPerPixel = Size.of(short.class);
 	private static final long cSizeX = 320;
 	private static final long cSizeY = 321;
 	private static final long cSizeZ = 100;
@@ -35,12 +40,12 @@ public class StackTests
 	@Test
 	public void testLifeCycle()
 	{
-		final Stack<Short> lStack = new Stack<Short>(	1,
-																									2,
-																									short.class,
-																									cSizeX,
-																									cSizeY,
-																									cSizeZ);
+		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = new OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>(	1,
+																																																																						2,
+																																																																						new UnsignedShortType(),
+																																																																						cSizeX,
+																																																																						cSizeY,
+																																																																						cSizeZ);
 
 		assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
 
@@ -55,25 +60,22 @@ public class StackTests
 		assertEquals(1, lStack.getIndex());
 		assertEquals(2, lStack.getTimeStampInNanoseconds());
 
-		assertEquals(cLengthInBytes, 2 * lStack.getLengthInElements());
 		assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 
-		assertEquals(3, lStack.getDimension());
+		assertEquals(3, lStack.getNumberOfDimensions());
 
 		assertEquals(cBytesPerPixel, lStack.getBytesPerVoxel());
 		assertEquals(cSizeX, lStack.getWidth());
 		assertEquals(cSizeY, lStack.getHeight());
 		assertEquals(cSizeZ, lStack.getDepth());
 
-		assertEquals(1, lStack.getDimensions()[0]);
-		assertEquals(cSizeX, lStack.getDimensions()[1]);
-		assertEquals(cSizeY, lStack.getDimensions()[2]);
-		assertEquals(cSizeZ, lStack.getDimensions()[3]);
+		assertEquals(cSizeX, lStack.getDimensions()[0]);
+		assertEquals(cSizeY, lStack.getDimensions()[1]);
+		assertEquals(cSizeZ, lStack.getDimensions()[2]);
 
-		assertEquals(1, lStack.getSizeAlongDimension(0));
-		assertEquals(cSizeX, lStack.getSizeAlongDimension(1));
-		assertEquals(cSizeY, lStack.getSizeAlongDimension(2));
-		assertEquals(cSizeZ, lStack.getSizeAlongDimension(3));
+		assertEquals(cSizeX, lStack.getDimension(0));
+		assertEquals(cSizeY, lStack.getDimension(1));
+		assertEquals(cSizeZ, lStack.getDimension(2));
 
 		lStack.free();
 
@@ -84,12 +86,13 @@ public class StackTests
 	@Test
 	public void testRecycling() throws InterruptedException
 	{
-		final long lStartTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+		final long lStartTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 
-		@SuppressWarnings("rawtypes")
-		final Recycler<Stack<Short>, StackRequest<Short>> lRecycler = new Recycler(	Stack.class,
-																																								cMaximumNumberOfAvalableObjects,
-																																								cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+		final OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+
+		final Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
+																																																																																																														cMaximumNumberOfAvalableObjects,
+																																																																																																														cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
 		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
 																																																Thread.NORM_PRIORITY,
@@ -100,46 +103,48 @@ public class StackTests
 		for (int i = 0; i < 100; i++)
 		{
 			// System.out.println(i);
-			final Stack<?> lStack;
+			final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack;
 			if ((i % 100) < 50)
 			{
 
-				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
-																									10,
-																									TimeUnit.SECONDS,
-																									short.class,
-																									cSizeX * cBig,
-																									cSizeY * cBig,
-																									cSizeZ * cBig);
+				lStack = OffHeapPlanarStack.requestOrWaitWithRecycler(lRecycler,
+																															10,
+																															TimeUnit.SECONDS,
+																															new UnsignedShortType(),
+																															cSizeX * cBig,
+																															cSizeY * cBig,
+																															cSizeZ * cBig);
 				assertEquals(	cLengthInBytes * Math.pow(cBig, 3),
 											lStack.getSizeInBytes(),
 											0);
 			}
 			else
 			{
-				lStack = Stack.requestOrWaitWithRecycler(	lRecycler,
-																									10,
-																									TimeUnit.SECONDS,
-																									short.class,
-																									cSizeX,
-																									cSizeY,
-																									cSizeZ);
+				lStack = OffHeapPlanarStack.requestOrWaitWithRecycler(lRecycler,
+																															10,
+																															TimeUnit.SECONDS,
+																															new UnsignedShortType(),
+																															cSizeX,
+																															cSizeY,
+																															cSizeZ);
 				assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 			}
 
 			assertNotNull(lStack);
 
-			final NDArrayTypedDirect<?> lNdArray = lStack.getNDArray();
-			for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
+			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory((int) (cSizeZ / 2));
+
+			for (int k = 0; k < lContiguousMemory.getSizeInBytes(); k++)
 			{
-				lNdArray.setByteAligned(k, (byte) k);
+				lContiguousMemory.setByteAligned(k, (byte) k);
 			}
 
 			final Runnable lRunnable2 = () -> {
-				final NDArrayTypedDirect<?> lNdArray2 = lStack.getNDArray();
-				for (int k = 0; k < lStack.getSizeInBytes(); k += 1000)
+
+				final ContiguousMemoryInterface lContiguousMemory2 = lStack.getContiguousMemory((int) (cSizeZ / 2));
+				for (int k = 0; k < lContiguousMemory2.getSizeInBytes(); k++)
 				{
-					final byte lByte = lNdArray2.getByteAligned(k);
+					final byte lByte = lContiguousMemory2.getByteAligned(k);
 					assertEquals((byte) k, lByte);
 				}
 				lStack.releaseStack();
@@ -156,7 +161,7 @@ public class StackTests
 			assertTrue(lLiveObjectCount > 0);
 			assertTrue(lLiveMemoryInBytes > 0);
 
-			final long lTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
+			final long lTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 			// System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
 			assertTrue(lTotalAllocatedMemory > 0);
 
@@ -186,8 +191,8 @@ public class StackTests
 		final long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
 		assertEquals(0, lLiveMemoryInBytes);
 
-		final long lEndTotalAllocatedMemory = NativeMemoryAccess.getTotalAllocatedMemory();
-		assertEquals(lStartTotalAllocatedMemory, lEndTotalAllocatedMemory);
+		final long lEndTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
+		assertTrue(lEndTotalAllocatedMemory < lStartTotalAllocatedMemory + 10);
 
 	}
 }

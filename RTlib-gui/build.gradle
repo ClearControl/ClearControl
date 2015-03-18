@@ -1,71 +1,57 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-sourceSets 
-{
-  main 
-  {
-    java 
-    {
-      srcDir 'src'
-    }
-  }
-  test
-  {
-    java 
-    {
-      srcDir 'src'
-    }
-  }
+sourceSets {
+	main {
+		java { srcDir 'src' }
+	}
+	test {
+		java { srcDir 'src' }
+	}
 }
 
-configurations.all 
-{
-  // check for updates every build
-  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+configurations.all {
+	// check for updates every build
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-dependencies 
-{
-    compile project(':RTlib-core')
-    compile project(':RTlib-stack')
+dependencies {
+	compile project(':RTlib-core')
+	compile project(':RTlib-stack')
 
-    compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
-    compile 'com.jgoodies:looks:2.2.2'
-    //compile 'org.devzendo:LibQuaqua:7.3.4'
-    compile 'org.devzendo:Quaqua:7.3.4'
+	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
+	compile 'com.jgoodies:looks:2.2.2'
+	//compile 'org.devzendo:LibQuaqua:7.3.4'
+	compile 'org.devzendo:Quaqua:7.3.4'
 
-    compile group: "net.clearvolume", name: "clearvolume", version: "1.0", changing: true, transitive: true
+	compile group: "net.clearvolume", name: "clearvolume", version: "1.0", changing: true, transitive: true
 }
 
-repositories 
-{
-    mavenCentral()
-    maven {
-        url  "http://dl.bintray.com/clearvolume/ClearVolume" 
-    }
+repositories {
+	mavenCentral()
+	maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
 }
 
 //***********************************************************************************
- 
- // PUBLISHING
- 
- 
- 
- artifacts
- {
-	 archives sourcesJar
-	 archives javadocJar
- }
- 
- publishing {
-	 publications {
-		 maven(MavenPublication) {
-			 from components.java
-			 artifact sourcesJar { classifier "sources" }
-		 }
-	 }
- }
+
+// PUBLISHING
+
+
+
+artifacts
+{
+	archives sourcesJar
+	archives javadocJar
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+			artifact sourcesJar { classifier "sources" }
+		}
+	}
+}
 
 if(hasProperty('bintray_user') && hasProperty('bintray_key') )
 {

@@ -1,10 +1,10 @@
 package rtlib.ip.iqm;
 
-import rtlib.kam.memory.ndarray.NDArrayTyped;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.NativeType;
 
-public interface ImageQualityMetricInterface<O>
+public interface ImageQualityMetricInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {
-
-	double[] computeImageQualityMetric(NDArrayTyped<O> pNDArray);
-
+	double[] computeImageQualityMetric(OffHeapPlanarImg<T, A> pOffHeapPlanarImg);
 }
