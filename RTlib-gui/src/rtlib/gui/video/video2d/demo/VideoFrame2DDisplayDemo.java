@@ -50,10 +50,10 @@ public class VideoFrame2DDisplayDemo
 	public void demo() throws InvocationTargetException,
 										InterruptedException
 	{
-		final Stack2DDisplay<UnsignedByteType> lVideoDisplayDevice = new Stack2DDisplay<UnsignedByteType>(new UnsignedByteType(),
-																																																			512,
-																																																			512);
-		lVideoDisplayDevice.setVisible(true);
+		final Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> lVideoDisplayDevice = new Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess>(new UnsignedByteType(),
+																																																																							512,
+																																																																							512);
+		lVideoDisplayDevice.open();
 		lVideoDisplayDevice.start();
 
 		final OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess> lStack = new OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess>(	0L,
@@ -62,7 +62,7 @@ public class VideoFrame2DDisplayDemo
 																																																																				512,
 																																																																				512,
 																																																																				1);
-		final ObjectVariable<StackInterface<UnsignedByteType, ?>> lStackVariable = lVideoDisplayDevice.getFrameReferenceVariable();
+		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getFrameReferenceVariable();
 
 		final Runnable lRunnable = () -> {
 			while (true)
@@ -88,10 +88,13 @@ public class VideoFrame2DDisplayDemo
 		{
 			Thread.sleep(100);
 		}
+
+		lVideoDisplayDevice.stop();
+		lVideoDisplayDevice.close();
 	}
 
-	public JFrame runDemo(Stack2DDisplay<UnsignedByteType> pVideoDisplayDevice)	throws InterruptedException,
-																																							InvocationTargetException
+	public JFrame runDemo(Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> pVideoDisplayDevice) throws InterruptedException,
+																																																	InvocationTargetException
 	{
 
 		final JFrame lJFrame = new JFrame("VideoFrame2DDisplayDemo");

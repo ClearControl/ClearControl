@@ -7,7 +7,7 @@ import rtlib.symphony.score.CompiledScore;
 public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 {
 
-	private BooleanVariable mTriggerVariable;
+	private final BooleanVariable mTriggerVariable;
 
 	private int mNumberOfFramesPerMovement = 1;
 
@@ -46,8 +46,18 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 	@Override
 	public boolean play(CompiledScore pCompiledScore)
 	{
+		final int lNumberOfMovements = pCompiledScore.getNumberOfMovements();
+
+		try
+		{
+			Thread.sleep(lNumberOfMovements / 2);
+		}
+		catch (final InterruptedException e)
+		{
+		}
 		mTriggerVariable.setValue(false);
 		mTriggerVariable.setValue(true);
+
 		return false;
 	}
 

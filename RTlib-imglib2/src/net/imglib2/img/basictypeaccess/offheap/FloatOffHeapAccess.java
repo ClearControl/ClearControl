@@ -12,7 +12,8 @@ public class FloatOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public FloatOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateFloats(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateFloats(	"FloatOffHeapAccess",
+																											numEntities);
 	}
 
 	public FloatOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

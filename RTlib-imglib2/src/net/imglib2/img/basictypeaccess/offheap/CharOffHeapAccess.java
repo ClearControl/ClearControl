@@ -12,7 +12,8 @@ public class CharOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public CharOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateChars(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateChars("CharOffHeapAccess",
+																										numEntities);
 	}
 
 	public CharOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

@@ -18,12 +18,12 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.OffHeapPlanarStackFactory;
+import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.server.LocalFileStackSink;
 import rtlib.stack.server.LocalFileStackSource;
-import coremem.recycling.Recycler;
+import coremem.recycling.BasicRecycler;
 
 public class LocalFileStackTests
 {
@@ -103,9 +103,9 @@ public class LocalFileStackTests
 		}
 
 		{
-			final OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+			final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
-			final Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
+			final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
 																																																																																																																		cMaximalNumberOfAvailableStacks);
 
 			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),

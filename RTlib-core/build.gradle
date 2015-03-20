@@ -12,13 +12,13 @@ sourceSets {
 
 dependencies {
 	compile group: 'de.mukis', name: 'de.mukis.jama', version: '2.0.0.M1'
-	compile group: "net.coremem", name: "coremem", version: "0.1", changing: true, transitive:true
+	compile group: "net.coremem", name: "CoreMem", version: "0.1", changing: true, transitive:true
 }
 
 
 repositories {
 	mavenCentral()
-	maven { url  "http://dl.bintray.com/royerloic/maven" }
+	maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
 }
 
 //***********************************************************************************

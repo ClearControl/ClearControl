@@ -1,6 +1,6 @@
-package rtlib.slms.dms;
+package rtlib.ao.slms.dms;
 
-import rtlib.slms.SpatialPhaseModulatorDeviceBase;
+import rtlib.ao.slms.SpatialPhaseModulatorDeviceBase;
 
 public abstract class DeformableMirrorDevice extends
 																						SpatialPhaseModulatorDeviceBase

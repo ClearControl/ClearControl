@@ -19,18 +19,13 @@ sourceSets
   }
 }
 
-configurations.all 
-{
-  // check for updates every build
-  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
 
 dependencies 
 {
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
 
-    compile group: "net.rtlib", name: "ECC100J", version: "1.+", changing: true, transitive: true
+    compile group: "net.rtlib", name: "ECC100J", version: "1.0", changing: true, transitive: true
 }
 
 repositories 

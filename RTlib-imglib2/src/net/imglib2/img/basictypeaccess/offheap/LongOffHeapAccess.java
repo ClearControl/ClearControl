@@ -12,7 +12,8 @@ public class LongOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public LongOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateInts(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateInts(	"LongOffHeapAccess",
+																										numEntities);
 	}
 
 	public LongOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

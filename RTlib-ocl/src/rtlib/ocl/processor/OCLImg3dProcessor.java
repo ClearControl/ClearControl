@@ -1,5 +1,6 @@
 package rtlib.ocl.processor;
 
+import java.nio.Buffer;
 import java.nio.ShortBuffer;
 
 import com.nativelibs4java.opencl.CLBuffer;
@@ -84,7 +85,7 @@ public class OCLImg3dProcessor extends OCLProcessor
 
 	}
 
-	public CLEvent writeInputImage(final ShortBuffer pShortBuffer)
+	public CLEvent writeInputImage(final Buffer pBuffer)
 	{
 
 		return mInputImage3D.write(	mCLQueue,
@@ -96,7 +97,7 @@ public class OCLImg3dProcessor extends OCLProcessor
 																mInputNz,
 																0,
 																0,
-																pShortBuffer,
+																pBuffer,
 																true);
 
 	}
@@ -135,7 +136,7 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 		mCLKernel.setArgs(pArgs);
 
-		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
+		final CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
 																												new int[]
 																												{ mInputNx,
 																													mInputNy,
@@ -148,7 +149,7 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 		mCLKernel.setArgs(pArgs);
 
-		CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
+		final CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
 																												new int[]
 																												{ mInputNx,
 																													mInputNy, });

@@ -12,7 +12,8 @@ public class DoubleOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public DoubleOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateDoubles(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateDoubles("DoubleOffHeapAccess",
+																											numEntities);
 	}
 
 	public DoubleOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

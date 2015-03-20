@@ -2,6 +2,7 @@ package rtlib.gui.video.video2d;
 
 import java.io.IOException;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
@@ -17,16 +18,16 @@ import com.jogamp.newt.event.MouseEvent;
 
 import coremem.ContiguousMemoryInterface;
 
-public class Stack2DDisplay<T extends NativeType<T>>	extends
-																											NamedVirtualDevice implements
-																													StackDisplayInterface<T>
+public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
+																																										NamedVirtualDevice implements
+																																																			StackDisplayInterface<T, A>
 {
 	private final VideoWindow<T> mVideoWindow;
 
-	private final ObjectVariable<StackInterface<T, ?>> mInputStackVariable;
-	private ObjectVariable<StackInterface<T, ?>> mOutputStackVariable;
+	private final ObjectVariable<StackInterface<T, A>> mInputStackVariable;
+	private ObjectVariable<StackInterface<T, A>> mOutputStackVariable;
 
-	private StackInterface<T, ?> mLastReceivedStack;
+	private StackInterface<T, A> mLastReceivedStackCopy;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
@@ -35,7 +36,7 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 
 	private final DoubleVariable mStackSliceNormalizedIndex;
 
-	private AsynchronousProcessorBase<StackInterface<T, ?>, Object> mAsynchronousDisplayUpdater;
+	private AsynchronousProcessorBase<StackInterface<T, A>, Object> mAsynchronousDisplayUpdater;
 
 	private final Object mReleaseLock = new Object();
 
@@ -58,8 +59,6 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 	{
 		this(pWindowName, pType, pVideoWidth, pVideoHeight, 10);
 	}
-
-
 
 	public Stack2DDisplay(final String pWindowName,
 												T pType,
@@ -85,8 +84,7 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 				{
 					final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
 					mStackSliceNormalizedIndex.setValue(nx);
-					// TODO: could be asynchronous for better performance
-					displayStack(mLastReceivedStack, false);
+					mAsynchronousDisplayUpdater.passOrFail(mLastReceivedStackCopy);
 				}
 
 				super.mouseDragged(pMouseEvent);
@@ -95,12 +93,28 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 
 		mVideoWindow.getGLWindow().addMouseListener(lMouseAdapter);
 
-		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, ?>, Object>("AsynchronousDisplayUpdater",
-																																									pUpdaterQueueLength)
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, A>, Object>("AsynchronousDisplayUpdater",
+																																															pUpdaterQueueLength)
 		{
 			@Override
-			public Object process(final StackInterface<T, ?> pStack)
+			public Object process(final StackInterface<T, A> pStack)
 			{
+				if(pStack!=mLastReceivedStackCopy)
+				{
+					if(mLastReceivedStackCopy==null || mLastReceivedStackCopy.getWidth()!=pStack.getWidth()
+							||mLastReceivedStackCopy.getHeight()!=pStack.getHeight()
+							||mLastReceivedStackCopy.getDepth()!=pStack.getDepth()
+							||mLastReceivedStackCopy.getContiguousMemory().getSizeInBytes()!=pStack.getContiguousMemory().getSizeInBytes())
+					{
+						if (mLastReceivedStackCopy != null)
+							mLastReceivedStackCopy.free();
+						mLastReceivedStackCopy = pStack.duplicate();
+					}
+
+					mLastReceivedStackCopy.getContiguousMemory()
+																.copyFrom(pStack.getContiguousMemory());
+
+				}
 				displayStack(pStack, true);
 				return null;
 			}
@@ -108,16 +122,16 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 
 		mAsynchronousDisplayUpdater.start();
 
-		mInputStackVariable = new ObjectVariable<StackInterface<T, ?>>(pWindowName + "StackInput")
+		mInputStackVariable = new ObjectVariable<StackInterface<T, A>>(pWindowName + "StackInput")
 		{
 
 			@Override
-			public StackInterface<T, ?> setEventHook(	final StackInterface<T, ?> pOldStack,
-																								final StackInterface<T, ?> pNewStack)
+			public StackInterface<T, A> setEventHook(	final StackInterface<T, A> pOldStack,
+																								final StackInterface<T, A> pNewStack)
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
-					pNewStack.releaseStack();
+					pNewStack.release();
 				}
 				return super.setEventHook(pOldStack, pNewStack);
 			}
@@ -177,7 +191,7 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 																										Double.NaN);
 	}
 
-	private void displayStack(final StackInterface<T, ?> pStack,
+	private void displayStack(final StackInterface<T, A> pStack,
 														boolean pReleaseLastReceivedStack)
 	{
 
@@ -210,37 +224,20 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 		mVideoWindow.setWidth(lStackWidth);
 		mVideoWindow.setHeight(lStackHeight);
 
-
-		// synchronized (mReleaseLock)
+		if (mOutputStackVariable != null)
 		{
-			if (getOutputOffHeapPlanarStackVariable() != null)
-			{
-				final boolean lIsLastReceivedStack = mLastReceivedStack == pStack;
-				if (!lIsLastReceivedStack)
-				{
-					mLastReceivedStack = pStack; // TODO: this is dangerous, this stack
-																				// could be released!
-					getOutputOffHeapPlanarStackVariable().setReference(pStack);
-				}
-			}
-			else
-			{
-				if (mLastReceivedStack != null && pReleaseLastReceivedStack
-						&& !mLastReceivedStack.isReleased())
-					mLastReceivedStack.releaseStack();
-				mLastReceivedStack = pStack;
-			}
+			mOutputStackVariable.setReference(pStack);
 		}
 	}
 
 	@Override
-	public ObjectVariable<StackInterface<T, ?>> getOutputOffHeapPlanarStackVariable()
+	public ObjectVariable<StackInterface<T, A>> getOutputStackVariable()
 	{
 		return mOutputStackVariable;
 	}
 
 	@Override
-	public void setOutputStackVariable(ObjectVariable<StackInterface<T, ?>> pOutputStackVariable)
+	public void setOutputStackVariable(ObjectVariable<StackInterface<T, A>> pOutputStackVariable)
 	{
 		mOutputStackVariable = pOutputStackVariable;
 	}
@@ -265,7 +262,7 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<StackInterface<T, ?>> getFrameReferenceVariable()
+	public ObjectVariable<StackInterface<T, A>> getFrameReferenceVariable()
 	{
 		return mInputStackVariable;
 	}
@@ -309,7 +306,6 @@ public class Stack2DDisplay<T extends NativeType<T>>	extends
 	@Override
 	public boolean stop()
 	{
-
 		mDisplayOn.setValue(false);
 		mVideoWindow.stop();
 		return true;

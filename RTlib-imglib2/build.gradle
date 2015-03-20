@@ -52,6 +52,7 @@ repositories
 	maven { url  "http://maven.imagej.net/content/repositories/releases" }
 	maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
 	maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+	maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
 	
 }
 

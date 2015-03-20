@@ -63,10 +63,10 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 
 	FragmentedMemoryInterface getFragmentedMemory();
 
-	void releaseStack();
 
 	void copyMetaDataFrom(StackInterface<T, A> pStack);
 
+	StackInterface<T, A> duplicate();
 
 
 

@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import coremem.recycling.Recycler;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
 
 public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
@@ -13,7 +14,7 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 																																																		StackInterface<T, A>
 {
 
-	protected Recycler<StackInterface<T, A>, StackRequest<T>> mStackRecycler;
+	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
 	protected volatile boolean mIsReleased;
 
 	protected T mType;
@@ -105,23 +106,6 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public void releaseStack()
-	{
-		if (mStackRecycler != null)
-		{
-			if (mIsReleased)
-			{
-				mIsReleased = true;
-				throw new RuntimeException("Object " + this.hashCode()
-																		+ " Already released!");
-			}
-			mIsReleased = true;
-
-			mStackRecycler.release(this);
-		}
-	}
-
-	@Override
 	public boolean isReleased()
 	{
 		return mIsReleased;
@@ -134,12 +118,26 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public void setRecycler(final Recycler<StackInterface<T, A>, StackRequest<T>> pRecycler)
+	public void release()
 	{
-		mStackRecycler = pRecycler;
+		if (mStackBasicRecycler != null)
+		{
+			// System.out.println(this);
+			// System.out.println("getNumberOfAvailableObjects=" +
+			// mStackBasicRecycler.getNumberOfAvailableObjects());
+			// System.out.println("getNumberOfLiveObjects=" +
+			// mStackBasicRecycler.getNumberOfLiveObjects());
+			mStackBasicRecycler.release(this);
+		}
 	}
 
-	public static <T extends NativeType<T>, A extends ArrayDataAccess<A>> StackInterface<T, A> requestOrWaitWithRecycler(	final Recycler<StackInterface<T, A>, StackRequest<T>> pRecycler,
+	@Override
+	public void setRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pRecycler)
+	{
+		mStackBasicRecycler = pRecycler;
+	}
+
+	public static <T extends NativeType<T>, A extends ArrayDataAccess<A>> StackInterface<T, A> requestOrWaitWithRecycler(	final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pRecycler,
 																																																												final long pWaitTime,
 																																																												final TimeUnit pTimeUnit,
 																																																												final T pType,
@@ -148,13 +146,11 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 																																																												final long pDepth)
 	{
 		final StackRequest<T> lStackRequest = new StackRequest<T>(pType,
-																																		pWidth,
-																																		pHeight,
-																																		pDepth);
+																															pWidth,
+																															pHeight,
+																															pDepth);
 
-		return pRecycler.waitOrRequestRecyclableObject(	pWaitTime,
-																										pTimeUnit,
-																										lStackRequest);
+		return pRecycler.getOrWait(pWaitTime, pTimeUnit, lStackRequest);
 	}
 
 	@Override
@@ -166,6 +162,19 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	public void setType(final T pType)
 	{
 		mType = pType;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"StackBase [mStackIndex=%s, mTimeStampInNanoseconds=%s, mType=%s, mVoxelSizeInRealUnits=%s, mNumberOfImagesPerPlane=%s, mIsReleased=%s, mStackBasicRecycler=%s]",
+													mStackIndex,
+													mTimeStampInNanoseconds,
+													mType,
+													Arrays.toString(mVoxelSizeInRealUnits),
+													mNumberOfImagesPerPlane,
+													mIsReleased,
+													mStackBasicRecycler);
 	}
 
 }

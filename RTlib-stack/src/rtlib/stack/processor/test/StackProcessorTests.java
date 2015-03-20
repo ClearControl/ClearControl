@@ -10,12 +10,12 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
-import rtlib.stack.OffHeapPlanarStackFactory;
+import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorBase;
 import rtlib.stack.processor.StackProcessorInterface;
-import coremem.recycling.Recycler;
+import coremem.recycling.BasicRecycler;
 
 public class StackProcessorTests
 {
@@ -26,17 +26,17 @@ public class StackProcessorTests
 	public void test()
 	{
 
-		final OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
 		final StackProcessorInterface<UnsignedShortType, ShortOffHeapAccess, UnsignedShortType, ShortOffHeapAccess> lStackProcessor = new StackProcessorBase<UnsignedShortType, ShortOffHeapAccess, UnsignedShortType, ShortOffHeapAccess>("Test")
 		{
 
-			Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mRelayRecycler = new Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
+			BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mRelayBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
 																																																																																																															10);
 
 			@Override
 			public StackInterface<UnsignedShortType, ShortOffHeapAccess> process(	final StackInterface<UnsignedShortType, ShortOffHeapAccess> pStack,
-																																						final Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pStackRecycler)
+																																						final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pStackRecycler)
 			{
 
 				final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	pStack.getType(),
@@ -44,7 +44,7 @@ public class StackProcessorTests
 																																									pStack.getHeight(),
 																																									1);
 
-				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lNewStack = mRelayRecycler.waitOrRequestRecyclableObject(	1L,
+				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lNewStack = mRelayBasicRecycler.getOrWait(	1L,
 																																																															TimeUnit.MILLISECONDS,
 																																																															lStackRequest);
 				assertTrue(lNewStack != null);
@@ -55,10 +55,10 @@ public class StackProcessorTests
 
 		};
 
-		final Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mStartRecycler = new Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
+		final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mStartRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
 																																																																																																																	cMaximalNumberOfAvailableObjects);
 
-		final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = mStartRecycler.failOrRequestRecyclableObject(StackRequest.build(	new UnsignedShortType(),
+		final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = mStartRecycler.getOrFail(StackRequest.build(	new UnsignedShortType(),
 																																																																					1L,
 																																																																					10L,
 																																																																					10L,

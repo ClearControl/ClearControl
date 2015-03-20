@@ -1,4 +1,4 @@
-package rtlib.slms.dms.devices.mirao52e;
+package rtlib.ao.slms.dms.devices.mirao52e;
 
 import java.io.IOException;
 
@@ -6,9 +6,9 @@ import mirao52e.Mirao52eDeformableMirror;
 
 import org.ejml.data.DenseMatrix64F;
 
+import rtlib.ao.slms.dms.DeformableMirrorDevice;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.slms.dms.DeformableMirrorDevice;
 
 public class Mirao52eDevice extends DeformableMirrorDevice implements
 																													Loggable

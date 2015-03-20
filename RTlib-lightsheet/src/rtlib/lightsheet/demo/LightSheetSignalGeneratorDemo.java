@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.junit.Test;
 
 import rtlib.lightsheet.LightSheetSignalGenerator;
@@ -17,10 +18,13 @@ public class LightSheetSignalGeneratorDemo
 	public void demo() throws InterruptedException, ExecutionException
 	{
 
-		NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
-		LightSheetSignalGenerator lLightSheetSignalGenerator = new LightSheetSignalGenerator(	lNIRIOSignalGenerator,
-																																													9.74,
-																																													512);
+		final PolynomialFunction lPolynomialFunction = new PolynomialFunction(new double[]
+		{ 0.0, 1.0 });
+		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
+		final LightSheetSignalGenerator<PolynomialFunction> lLightSheetSignalGenerator = new LightSheetSignalGenerator<PolynomialFunction>(	lNIRIOSignalGenerator,
+																																																																				lPolynomialFunction,
+																																																																				9.74,
+																																																																				512);
 
 		assertTrue(lLightSheetSignalGenerator.open());
 		assertTrue(lLightSheetSignalGenerator.start());
@@ -29,9 +33,9 @@ public class LightSheetSignalGeneratorDemo
 
 		for (int i = 0; i < 10000; i++)
 		{
-			Future<Boolean> lPlayQueue = lLightSheetSignalGenerator.playQueue();
+			final Future<Boolean> lPlayQueue = lLightSheetSignalGenerator.playQueue();
 			// System.out.println("waiting...");
-			Boolean lBoolean = lPlayQueue.get();
+			final Boolean lBoolean = lPlayQueue.get();
 			assertTrue(lBoolean);
 			// System.out.println("done");
 		}
@@ -39,5 +43,4 @@ public class LightSheetSignalGeneratorDemo
 		assertTrue(lLightSheetSignalGenerator.stop());
 		assertTrue(lLightSheetSignalGenerator.close());
 	}
-
 }

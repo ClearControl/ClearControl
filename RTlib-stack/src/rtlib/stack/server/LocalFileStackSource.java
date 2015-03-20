@@ -5,13 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitudes;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.Recycler;
+import coremem.recycling.BasicRecycler;
 
 public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																																													LocalFileStackBase<T, A> implements
@@ -19,16 +20,15 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 																																																									AutoCloseable
 {
 
-	private Recycler<StackInterface<T, A>, StackRequest<T>> mStackRecycler;
-
+	private BasicRecycler<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
 
 	public LocalFileStackSource(T pType,
-															final Recycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler,
+															final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler,
 															final File pRootFolder,
 															final String pName) throws IOException
 	{
 		super(pType, pRootFolder, pName, true);
-		mStackRecycler = pStackRecycler;
+		mStackBasicRecycler = pStackRecycler;
 		mMetaDataVariableBundleAsFile.read();
 		update();
 	}
@@ -40,16 +40,24 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 	}
 
 	@Override
-	public void setStackRecycler(final Recycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
 	{
-		mStackRecycler = pStackRecycler;
+		mStackBasicRecycler = pStackRecycler;
 
 	}
 
 	@Override
 	public StackInterface<T, A> getStack(final long pStackIndex)
 	{
-		if (mStackRecycler == null)
+		return getStack(pStackIndex, 1, TimeUnit.NANOSECONDS);
+	}
+
+	@Override
+	public StackInterface<T, A> getStack(	final long pStackIndex,
+																				long pTime,
+																				TimeUnit pTimeUnit)
+	{
+		if (mStackBasicRecycler == null)
 		{
 			return null;
 		}
@@ -57,17 +65,25 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 		{
 			final long lPositionInFileInBytes = mStackIndexToBinaryFilePositionMap.get(pStackIndex);
 
-			@SuppressWarnings("unchecked")
 			final StackRequest<T> lStackRequest = mStackIndexToStackRequestMap.get(pStackIndex);
 
-			final StackInterface<T, A> lStack = mStackRecycler.failOrRequestRecyclableObject(lStackRequest);
+			final StackInterface<T, A> lStack = mStackBasicRecycler.getOrWait(pTime,
+																																				pTimeUnit,
+																																				lStackRequest);
 
 			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
 																																					true);
-			lStack.getFragmentedMemory()
-						.readBytesFromFileChannel(lBinarylFileChannel,
-																			lPositionInFileInBytes,
-																			lStack.getSizeInBytes());
+
+			if (lStack.getContiguousMemory() != null)
+				lStack.getContiguousMemory()
+							.readBytesFromFileChannel(lBinarylFileChannel,
+																				lPositionInFileInBytes,
+																				lStack.getSizeInBytes());
+			else
+				lStack.getFragmentedMemory()
+							.readBytesFromFileChannel(lBinarylFileChannel,
+																				lPositionInFileInBytes,
+																				lStack.getSizeInBytes());
 			lBinarylFileChannel.close();
 
 			final double lTimeStampInSeconds = mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
@@ -106,9 +122,9 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 				final long lDepth = Long.parseLong(lDimensionsStringArray[2]);
 
 				final StackRequest<T> lStackRequest = StackRequest.build(	mType,
-																																		lWidth,
-																																		lHeight,
-																																		lDepth);
+																																	lWidth,
+																																	lHeight,
+																																	lDepth);
 
 				final long lPositionInFile = Long.parseLong(lSplittedLine[3].trim());
 				mStackIndexToTimeStampInSecondsMap.put(	lStackIndex,

@@ -60,8 +60,8 @@ public class VideoWindow<T extends NativeType<T>> implements
 	private volatile ContiguousMemoryInterface mConversionBuffer;
 
 	private volatile boolean mRequestRedraw = true,
-			mDisplayFrameRate = true,
-			mDisplayOn = true, mManualMinMax = false, mMinMaxFixed = false,
+			mDisplayFrameRate = true, mDisplayOn = true,
+			mManualMinMax = false, mMinMaxFixed = false,
 			mIsDisplayLines = false;
 
 	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
@@ -315,6 +315,9 @@ public class VideoWindow<T extends NativeType<T>> implements
 			{
 				super.display(pGLAutoDrawable);
 				final GL4 lGL4 = pGLAutoDrawable.getGL().getGL4();
+
+				if (!mDisplayOn)
+					return;
 
 				if (mSourceBuffer != null)
 				{
@@ -664,7 +667,5 @@ public class VideoWindow<T extends NativeType<T>> implements
 	{
 		return mEffectiveWindowHeight;
 	}
-
-
 
 }

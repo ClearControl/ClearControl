@@ -1,4 +1,4 @@
-package rtlib.slms;
+package rtlib.ao.slms;
 
 import org.ejml.data.DenseMatrix64F;
 

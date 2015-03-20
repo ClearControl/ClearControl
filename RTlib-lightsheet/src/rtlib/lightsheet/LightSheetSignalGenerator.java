@@ -6,7 +6,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.SignalStartableDevice;
@@ -24,9 +23,10 @@ import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.GalvoScannerStave;
 import rtlib.symphony.staves.LaserTriggerBinaryPattern2Stave;
 
-public class LightSheetSignalGenerator extends SignalStartableDevice implements
-																																		LightSheetSignalGeneratorInterface,
-																																		AsynchronousExecutorServiceAccess
+public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
+																																			SignalStartableDevice	implements
+																																														LightSheetSignalGeneratorInterface<M>,
+																																														AsynchronousExecutorServiceAccess
 {
 
 	private static final int cNumberOfLaserDigitalControls = 6;
@@ -85,7 +85,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 
 	public final BooleanVariable mLockLightSheetToPifoc = new BooleanVariable("LockLightSheetToPifoc",
 																																						false);
-	public final ObjectVariable<UnivariateFunction> mPifoc2LightSheetModel = new ObjectVariable<UnivariateFunction>("Pifoc2LightSheetModel"); // ,cPifoc2LightSheetModelFile
+	public final ObjectVariable<M> mPifoc2LightSheetModel = new ObjectVariable<M>("Pifoc2LightSheetModel"); // ,cPifoc2LightSheetModelFile
 
 	private Movement mBeforeExposureMovement;
 	private Movement mExposureMovement;
@@ -102,11 +102,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 
 	private volatile boolean mIsUpToDate = false;
 
-	private volatile QueueProvider<LightSheetSignalGenerator> mQueueProvider;
+	private volatile QueueProvider<LightSheetSignalGenerator<M>> mQueueProvider;
 	private volatile Future<Boolean> mFuture;
 	private volatile boolean mIsPlaying = false;
 
 	public LightSheetSignalGenerator(	SignalGeneratorInterface pSignalGenerator,
+																		M pPifoc2LightSheetModel,
 																		final double pReadoutTimeInMicrosecondsPerLine,
 																		final int pNumberOfLines)
 	{
@@ -128,12 +129,12 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		};
 
 		@SuppressWarnings("rawtypes")
-		final ObjectVariable lReferenceUpdateListener = new ObjectVariable("ReferenceUpdateListener")
+		final ObjectVariable<M> lReferenceUpdateListener = new ObjectVariable<M>("ReferenceUpdateListener")
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object setEventHook(	final Object pOldReference,
-																	final Object pNewReference)
+			public M setEventHook(final M pOldReference,
+														final M pNewReference)
 			{
 				mIsUpToDate = false;
 				// System.out.println("UPDATING!");
@@ -151,8 +152,8 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 																										0);
 		mFocusStaveExposureZ = new ConstantStave("Focus.exposure.z", 0);
 		mLaserAnalogModulationBeforeExposure = new ConstantStave(	"Laser.beforeexp.am",
-																										0);
-		mLaserAnalogModulationExposure = new ConstantStave("Laser.exposure.am",
+																															0);
+		mLaserAnalogModulationExposure = new ConstantStave(	"Laser.exposure.am",
 																												0);
 
 		prepareBeforeExposureMovement(lDoubleUpdateListener);
@@ -175,9 +176,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mFocusZ.sendUpdatesTo(lDoubleUpdateListener);
 		mStageY.sendUpdatesTo(lDoubleUpdateListener);
 
-		PolynomialFunction lPolynomialFunction = new PolynomialFunction(new double[]
-		{ 0.0, 1.0 });
-		mPifoc2LightSheetModel.set(lPolynomialFunction);
+		mPifoc2LightSheetModel.set(pPifoc2LightSheetModel);
 		mLockLightSheetToPifoc.sendUpdatesTo(lDoubleUpdateListener);
 		mPifoc2LightSheetModel.sendUpdatesTo(lReferenceUpdateListener);
 
@@ -293,12 +292,11 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 
 				final boolean lIsLocking = mPifoc2LightSheetModel.isNotNull() && lLockLightSheetToPifoc;
 
-
 				if (lIsLocking)
 				{
 					mLightSheetZInMicrons.setValue(lLightSheetZInMicronsLockedToPifoc);
 				}
-				double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
+				final double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
 
 				final double lGalvoYOffsetInNormalizedUnitsBeforeRotation = mMicronsToNormGalvoUnit.getValue() * mLightSheetYInMicrons.getValue();
 				final double lGalvoYOffsetInNormalizedUnitsToY = lGalvoYOffsetInNormalizedUnitsBeforeRotation * Math.cos(lGalvoAngle);
@@ -390,6 +388,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return pSubTime / pTotalTime;
 	}
 
+	@Override
 	public void requestUpdate()
 	{
 		mIsUpToDate = false;
@@ -400,21 +399,25 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return mScore;
 	}
 
+	@Override
 	public void setPatterned(final boolean pIsPatternOn)
 	{
 		mPatternOnOff.setValue(pIsPatternOn);
 	}
 
+	@Override
 	public boolean isPatterned()
 	{
 		return mPatternOnOff.getBooleanValue();
 	}
 
+	@Override
 	public DoubleVariable getImageHeightVariable()
 	{
 		return mImageHeight;
 	}
 
+	@Override
 	public int getNumberOfPhases()
 	{
 		final boolean lIsPatterned = isPatterned();
@@ -436,6 +439,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mEffectiveExposureInMicroseconds.setValue(pEffectiveExposureInMicroseconds);
 	}
 
+	@Override
 	public void ensureQueueIsUpToDate()
 	{
 		if (!mIsUpToDate)
@@ -448,12 +452,14 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		}
 	}
 
+	@Override
 	public void addCurrentStateToQueue()
 	{
 		mEnqueuedStateCounter++;
 		addCurrentStateToQueueNotCounting();
 	}
 
+	@Override
 	public void addCurrentStateToQueueNotCounting()
 	{
 		ensureIsUpToDate();
@@ -461,12 +467,14 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mCompiledScore.addMovement(mExposureMovement);
 	}
 
+	@Override
 	public void clearQueue()
 	{
 		mEnqueuedStateCounter = 0;
 		mCompiledScore.clear();
 	}
 
+	@Override
 	public final void finalizeQueueFor3DStackAcquisition()
 	{
 		// TODO: this is a workaround for a bug when acquiring a sequence of images
@@ -476,12 +484,13 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		mEnqueuedStateCounter--;
 	}
 
-	public QueueProvider<LightSheetSignalGenerator> getQueueProviderFor2DContinuousAcquisition()
+	@Override
+	public QueueProvider<LightSheetSignalGenerator<M>> getQueueProviderFor2DContinuousAcquisition()
 	{
-		final QueueProvider<LightSheetSignalGenerator> lQueueProvider = new QueueProvider<LightSheetSignalGenerator>()
+		final QueueProvider<LightSheetSignalGenerator<M>> lQueueProvider = new QueueProvider<LightSheetSignalGenerator<M>>()
 		{
 			@Override
-			public void buildQueue(final LightSheetSignalGenerator pFPGALightSheetSignalGenerator)
+			public void buildQueue(final LightSheetSignalGenerator<M> pFPGALightSheetSignalGenerator)
 			{
 				prepareQueueFor2DContinuousAcquisition();
 			}
@@ -499,17 +508,19 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	@Override
 	public void setQueueProvider(final QueueProvider<?> pQueueProvider)
 	{
-		mQueueProvider = (QueueProvider<LightSheetSignalGenerator>) pQueueProvider;
+		mQueueProvider = (QueueProvider<LightSheetSignalGenerator<M>>) pQueueProvider;
 	}
 
+	@Override
 	public int getQueueLength()
 	{
 		return mEnqueuedStateCounter;
 	}
 
+	@Override
 	public Future<Boolean> playQueue()
 	{
-		Callable<Boolean> lCall = () -> {
+		final Callable<Boolean> lCall = () -> {
 			final Thread lCurrentThread = Thread.currentThread();
 			final int lCurrentThreadPriority = lCurrentThread.getPriority();
 			lCurrentThread.setPriority(Thread.MAX_PRIORITY);
@@ -523,10 +534,11 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return mFuture;
 	}
 
+	@Override
 	public long estimatePlayTimeInMilliseconds()
 	{
 		long lDurationInMilliseconds = 0;
-		for (MovementInterface lMovement : mScore.getMovements())
+		for (final MovementInterface lMovement : mScore.getMovements())
 		{
 			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
 		}
@@ -569,6 +581,7 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 		return mSignalGenerator.close();
 	}
 
+	@Override
 	public boolean isPlaying()
 	{
 		return mIsPlaying;
@@ -683,10 +696,9 @@ public class LightSheetSignalGenerator extends SignalStartableDevice implements
 	}
 
 	@Override
-	public ObjectVariable<UnivariateFunction> getPifoc2LightSheetModelVariable()
+	public ObjectVariable<M> getPifoc2LightSheetModelVariable()
 	{
 		return mPifoc2LightSheetModel;
 	}
-
 
 }

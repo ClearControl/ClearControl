@@ -12,7 +12,8 @@ public class ShortOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public ShortOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateShorts(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateShorts(	"ShortOffHeapAccess",
+																											numEntities);
 	}
 
 	public ShortOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

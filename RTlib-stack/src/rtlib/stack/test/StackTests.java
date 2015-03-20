@@ -13,20 +13,21 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
+import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.OffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemoryAccess;
-import coremem.recycling.Recycler;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import coremem.util.Size;
 
 public class StackTests
 {
 
-	private static final int cMaximumNumberOfAvalableObjects = 1024;
-	private static final long cMAXIMUM_LIVE_MEMORY_IN_BYTES = 2L * 1024L * 1024L * 1024L;
+	private static final int cMaximumNumberOfObjects = 1024;
+	private static final long cMaximumLiveMemoryInBytes = 2L * 1024L * 1024L * 1024L;
 	private static final long cBytesPerPixel = Size.of(short.class);
 	private static final long cSizeX = 320;
 	private static final long cSizeY = 321;
@@ -88,11 +89,10 @@ public class StackTests
 	{
 		final long lStartTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 
-		final OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new OffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
-		final Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new Recycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
-																																																																																																														cMaximumNumberOfAvalableObjects,
-																																																																																																														cMAXIMUM_LIVE_MEMORY_IN_BYTES);
+		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
+																																																																																																																					cMaximumNumberOfObjects);
 
 		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
 																																																Thread.NORM_PRIORITY,
@@ -107,7 +107,7 @@ public class StackTests
 			if ((i % 100) < 50)
 			{
 
-				lStack = OffHeapPlanarStack.requestOrWaitWithRecycler(lRecycler,
+				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(lRecycler,
 																															10,
 																															TimeUnit.SECONDS,
 																															new UnsignedShortType(),
@@ -120,7 +120,7 @@ public class StackTests
 			}
 			else
 			{
-				lStack = OffHeapPlanarStack.requestOrWaitWithRecycler(lRecycler,
+				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(lRecycler,
 																															10,
 																															TimeUnit.SECONDS,
 																															new UnsignedShortType(),
@@ -147,25 +147,22 @@ public class StackTests
 					final byte lByte = lContiguousMemory2.getByteAligned(k);
 					assertEquals((byte) k, lByte);
 				}
-				lStack.releaseStack();
+				lStack.release();
 				// System.out.println("released!");
 			};
 
 			lThreadPoolExecutor.execute(lRunnable2);
 
-			final long lLiveObjectCount = lRecycler.getLiveObjectCount();
-			final long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
+			final long lLiveObjectCount = lRecycler.getNumberOfLiveObjects();
 			/*System.out.format("count=%d mem=%d \n",
 												lLiveObjectCount,
 												lLiveMemoryInBytes);/**/
 			assertTrue(lLiveObjectCount > 0);
-			assertTrue(lLiveMemoryInBytes > 0);
 
 			final long lTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 			// System.out.println("lTotalAllocatedMemory=" + lTotalAllocatedMemory);
 			assertTrue(lTotalAllocatedMemory > 0);
 
-			assertTrue(lLiveMemoryInBytes < 2.5 * cMAXIMUM_LIVE_MEMORY_IN_BYTES);
 
 			Thread.sleep(1);
 
@@ -185,11 +182,9 @@ public class StackTests
 
 		lRecycler.free();
 
-		final long lLiveObjectCount = lRecycler.getLiveObjectCount();
+		final long lLiveObjectCount = lRecycler.getNumberOfLiveObjects();
 		assertEquals(0, lLiveObjectCount);
 
-		final long lLiveMemoryInBytes = lRecycler.getLiveMemoryInBytes();
-		assertEquals(0, lLiveMemoryInBytes);
 
 		final long lEndTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 		assertTrue(lEndTotalAllocatedMemory < lStartTotalAllocatedMemory + 10);

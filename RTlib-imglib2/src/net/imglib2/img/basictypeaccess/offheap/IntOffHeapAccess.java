@@ -12,7 +12,8 @@ public class IntOffHeapAccess extends AbstractOffHeapAccess	implements
 
 	public IntOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateInts(numEntities);
+		mContiguousMemory = OffHeapMemory.allocateInts(	"IntOffHeapAccess",
+																										numEntities);
 	}
 
 	public IntOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

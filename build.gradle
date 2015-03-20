@@ -54,15 +54,16 @@ subprojects
 
     dependencies 
     {
-        compile group: 'commons-collections', name: 'commons-collections', version: '3.+'
-        compile group: 'commons-lang', name: 'commons-lang', version: '2.+'
-        compile group: 'commons-io', name: 'commons-io', version: '2.+'
-        compile group: 'org.apache.commons', name: 'commons-math3', version: '3.+'
+        compile group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+        compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+        compile group: 'commons-io', name: 'commons-io', version: '2.4'
+        compile group: 'org.apache.commons', name: 'commons-math3', version: '3.4.1'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.1'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.1'
+
         compile 'com.google.guava:guava:18.0'
-        compile 'com.nativelibs4java:bridj:0.7-SNAPSHOT'
-        compile 'com.nativelibs4java:javacl:1.0-SNAPSHOT'
+        compile 'com.nativelibs4java:bridj:0.7.0'
+        compile 'com.nativelibs4java:javacl:1.0.0-RC4'
         compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
         //compile 'com.github.rwl:jtransforms:2.4.0'
         compile 'org.codehaus.groovy:groovy-all:2.2.2'
@@ -106,17 +107,7 @@ subprojects
       }
 
 
-    uploadArchives 
-    {
-        repositories 
-        {
-            mavenDeployer 
-            {
-                repository(url: "file:../Repos/RTlibMavenRepo")
-            }
-        }
-    }
-
+    
 
     repositories 
     {
@@ -135,7 +126,7 @@ subprojects
         }
         maven 
         { 
-            url  "http://dl.bintray.com/royerloic/maven"  
+            url  "http://dl.bintray.com/RTlib/CoreMem"  
         }
 
     }
