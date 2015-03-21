@@ -1,6 +1,7 @@
-package rtlib.gui.video.video2d.jogl.demo;
+package rtlib.gui.video.video2d.videowindow.demo;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
@@ -10,7 +11,7 @@ import net.imglib2.type.numeric.real.FloatType;
 
 import org.junit.Test;
 
-import rtlib.gui.video.video2d.jogl.VideoWindow;
+import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import coremem.offheap.OffHeapMemory;
 
 public class VideoWindowDemo
@@ -42,6 +43,7 @@ public class VideoWindowDemo
 		{
 			generateUnsignedByteNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
+			lVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 			Thread.sleep(10);
 		}
 		lVideoWindow.stop();
@@ -72,6 +74,7 @@ public class VideoWindowDemo
 		{
 			generateUnsignedShortNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
+			lVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 			Thread.sleep(10);
 		}
 		lVideoWindow.stop();
@@ -102,6 +105,7 @@ public class VideoWindowDemo
 		{
 			generateUnsignedIntNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
+			lVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 			Thread.sleep(10);
 		}
 		lVideoWindow.stop();
@@ -132,6 +136,7 @@ public class VideoWindowDemo
 		{
 			generateFloatNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
+			lVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 			Thread.sleep(10);
 		}
 		lVideoWindow.stop();
@@ -162,6 +167,7 @@ public class VideoWindowDemo
 		{
 			generateDoubleNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
+			lVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 			Thread.sleep(10);
 		}
 		lVideoWindow.stop();

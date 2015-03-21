@@ -12,10 +12,8 @@ import org.junit.Test;
 
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.gui.video.video2d.jogl.VideoWindow;
+import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.StackInterface;
-import coremem.ContiguousMemoryInterface;
-import coremem.offheap.OffHeapMemory;
 
 public class OrcaFlash4CameraDemo
 {
@@ -40,6 +38,8 @@ public class OrcaFlash4CameraDemo
 																									+ pNewStack.getIndex());/**/
 															System.out.println(pNewStack);
 															mFrameIndex.incrementAndGet();
+
+															pNewStack.release();
 															return super.setEventHook(pOldStack,
 																												pNewStack);
 														}
@@ -124,14 +124,14 @@ public class OrcaFlash4CameraDemo
 		final int lWidth = 256;
 		final int lHeight = 256;
 
-		final ContiguousMemoryInterface lBuffer = OffHeapMemory.allocateShorts(lWidth * lHeight);
-
-		final VideoWindow<UnsignedShortType> lVideoWindow = new VideoWindow<UnsignedShortType>(	"VideoWindow test",
+		final rtlib.gui.video.video2d.videowindow.VideoWindow<UnsignedShortType> lVideoWindow = new VideoWindow<UnsignedShortType>(	"VideoWindow test",
 																																														new UnsignedShortType(),
 																																														lWidth,
 																																														lHeight);
+
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setVisible(true);
+
 
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
@@ -144,19 +144,34 @@ public class OrcaFlash4CameraDemo
 														public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(final StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
 																																																			final StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack)
 														{
-															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
-																									+ " index="
-																									+ pNewStack.getIndex());/**/
-															System.out.println("mCounter=" + mFrameIndex.get());
-															System.out.println(pNewStack);
+															try
+															{
+																/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
+																										+ " index="
+																										+ pNewStack.getIndex());/**/
+																System.out.println("mCounter=" + mFrameIndex.get());
+																System.out.println(pNewStack);
 
-															assertTrue(mFrameIndex.get() == pNewStack.getIndex());
+																assertTrue(mFrameIndex.get() == pNewStack.getIndex());
 
-															lVideoWindow.sendBuffer(lBuffer,
-																											lWidth,
-																											lHeight);
+																lVideoWindow.sendBuffer(pNewStack.getContiguousMemory(0),
+																												lWidth,
+																												lHeight);
+																// INFO: we are not waiting for the buffer to be
+																// copied, that's BAD but for display it is not
+																// a big deal.
+																
+																pNewStack.release();
 
-															mFrameIndex.incrementAndGet();
+																mFrameIndex.incrementAndGet();
+																return super.setEventHook(pOldStack,
+																													pNewStack);
+															}
+															catch (Throwable e)
+															{
+
+																e.printStackTrace();
+															}
 															return super.setEventHook(pOldStack,
 																												pNewStack);
 														}
@@ -175,17 +190,21 @@ public class OrcaFlash4CameraDemo
 
 		Thread.sleep(1000);
 
+		lVideoWindow.start();
 		assertTrue(lOrcaFlash4StackCamera.start());
+
 
 		Thread.sleep(20000);
 
 		lOrcaFlash4StackCamera.stop();
+		lVideoWindow.stop();
 		// Thread.sleep(1000);
 
 		lOrcaFlash4StackCamera.close();
 
 		System.out.println(mFrameIndex.get());
 
+		Thread.sleep(2000000000);
 		assertTrue(mFrameIndex.get() >= 1000);
 
 		lVideoWindow.close();

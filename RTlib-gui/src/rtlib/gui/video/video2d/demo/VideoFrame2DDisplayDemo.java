@@ -24,6 +24,7 @@ import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
 
 public class VideoFrame2DDisplayDemo
 {
@@ -32,17 +33,18 @@ public class VideoFrame2DDisplayDemo
 
 	private volatile long rnd;
 
-	private void generateNoiseBuffer(final ContiguousMemoryInterface pContiguousMemory)
+	private void generateNoiseBuffer(	double pIntensity,
+																		final ContiguousMemoryInterface pContiguousMemory)
 	{
 		// System.out.println(rnd);
 
 		final int lBufferLength = (int) pContiguousMemory.getSizeInBytes();
+		ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(pContiguousMemory);
 		for (int i = 0; i < lBufferLength; i++)
 		{
 			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
-			final byte lValue = (byte) ((rnd & 0xFF) * sValue); // Math.random()
-			// System.out.println(lValue);
-			pContiguousMemory.setByteAligned(i, lValue);
+			final byte lValue = (byte) ((rnd & 0xFF) * pIntensity * sValue); // Math.random()
+			lContiguousBuffer.writeByte(lValue);
 		}
 	}
 
@@ -51,17 +53,24 @@ public class VideoFrame2DDisplayDemo
 										InterruptedException
 	{
 		final Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> lVideoDisplayDevice = new Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess>(new UnsignedByteType(),
-																																																																							512,
-																																																																							512);
+																																																																						512,
+																																																																						512);
+
+		lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
+												.setValue(true);
 		lVideoDisplayDevice.open();
 		lVideoDisplayDevice.start();
 
-		final OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess> lStack = new OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess>(	0L,
-																																																																				0L,
-																																																																				new UnsignedByteType(),
-																																																																				512,
-																																																																				512,
-																																																																				1);
+		int lSizeXY = 256;
+		int lSizeZ = 16;
+
+		@SuppressWarnings("unchecked")
+		final OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedByteType(),
+																																																																																		false,
+																																																																																		lSizeXY,
+																																																																																		lSizeXY,
+																																																																																		lSizeZ);
+
 		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getFrameReferenceVariable();
 
 		final Runnable lRunnable = () -> {
@@ -69,7 +78,10 @@ public class VideoFrame2DDisplayDemo
 			{
 				if (sDisplay)
 				{
-					generateNoiseBuffer(lStack.getContiguousMemory((int) (lStack.getDepth() / 2)));
+					for (int i = 0; i < lStack.getDepth(); i++)
+						generateNoiseBuffer((i / 255.0),
+																lStack.getContiguousMemory(i));
+
 					lStackVariable.setReference(lStack);
 				}
 				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
@@ -94,7 +106,7 @@ public class VideoFrame2DDisplayDemo
 	}
 
 	public JFrame runDemo(Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> pVideoDisplayDevice) throws InterruptedException,
-																																																	InvocationTargetException
+																																																InvocationTargetException
 	{
 
 		final JFrame lJFrame = new JFrame("VideoFrame2DDisplayDemo");

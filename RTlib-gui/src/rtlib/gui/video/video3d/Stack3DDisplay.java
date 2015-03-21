@@ -70,6 +70,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																																			false);
 		mClearVolumeRenderer.setTransferFunction(TransferFunctions.getGrayLevel());
 		mClearVolumeRenderer.setVisible(true);
+		mClearVolumeRenderer.setMultiPass(false);
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, A>, Object>("AsynchronousDisplayUpdater-" + pWindowName,
 																																															pUpdaterQueueLength)
@@ -105,8 +106,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																									lHeight,
 																									lDepth);
 
-				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
-																														TimeUnit.SECONDS);
+				/*mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
+																														TimeUnit.SECONDS);/**/
 
 				if (mOutputObjectVariable != null)
 					mOutputObjectVariable.set(pStack);
@@ -180,24 +181,22 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public boolean open()
 	{
-
 		mClearVolumeRenderer.setVisible(true);
+		mAsynchronousDisplayUpdater.start();
 		return false;
 	}
 
 	@Override
 	public boolean start()
 	{
-		mAsynchronousDisplayUpdater.start();
-		mDisplayOn.setValue(true);
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		mDisplayOn.setValue(false);
-		mAsynchronousDisplayUpdater.stop();
+
 		return true;
 	}
 
@@ -207,6 +206,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		try
 		{
 
+			mAsynchronousDisplayUpdater.stop();
 			mAsynchronousDisplayUpdater.close();
 			mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
 																													TimeUnit.SECONDS);

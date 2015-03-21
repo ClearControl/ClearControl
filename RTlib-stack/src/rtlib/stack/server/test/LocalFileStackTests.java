@@ -17,8 +17,8 @@ import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
+import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.server.LocalFileStackSink;
@@ -58,12 +58,12 @@ public class LocalFileStackTests
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 
-			final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = new OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>(	0,
-																																																																							0,
-																																																																							new UnsignedShortType(),
-																																																																							cSizeX,
-																																																																							cSizeY,
-																																																																							cSizeZ);
+
+			@SuppressWarnings("unchecked")
+			final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedShortType(),
+																																																																																					cSizeX,
+																																																																																					cSizeY,
+																																																																																					cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNumberOfVoxels());
@@ -106,7 +106,7 @@ public class LocalFileStackTests
 			final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
 			final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																																																																																		cMaximalNumberOfAvailableStacks);
+																																																																																																																							cMaximalNumberOfAvailableStacks);
 
 			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
 																																																																																lStackRecycler,

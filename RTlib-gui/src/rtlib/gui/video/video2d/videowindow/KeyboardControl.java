@@ -1,4 +1,4 @@
-package rtlib.gui.video.video2d.jogl;
+package rtlib.gui.video.video2d.videowindow;
 
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;

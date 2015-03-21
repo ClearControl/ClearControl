@@ -18,6 +18,7 @@ import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
@@ -41,12 +42,15 @@ public class StackTests
 	@Test
 	public void testLifeCycle()
 	{
-		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = new OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>(	1,
-																																																																						2,
-																																																																						new UnsignedShortType(),
-																																																																						cSizeX,
-																																																																						cSizeY,
-																																																																						cSizeZ);
+
+		ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
+																																								* cSizeZ);
+		@SuppressWarnings("unchecked")
+		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(lContiguousMemory,
+																																																																																				new UnsignedShortType(),
+																																																																																				cSizeX,
+																																																																																				cSizeY,
+																																																																																				cSizeZ);
 
 		assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
 

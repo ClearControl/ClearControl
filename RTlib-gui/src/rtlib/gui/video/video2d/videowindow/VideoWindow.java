@@ -1,4 +1,4 @@
-package rtlib.gui.video.video2d.jogl;
+package rtlib.gui.video.video2d.videowindow;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -7,6 +7,8 @@ import static java.lang.Math.round;
 
 import java.io.IOException;
 import java.nio.Buffer;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
@@ -55,6 +57,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 	private volatile int mVideoWidth, mVideoHeight;
 
 	private volatile ContiguousMemoryInterface mSourceBuffer;
+	private volatile CountDownLatch mNotifyBufferCopy;
 	private volatile int mSourceBufferWidth, mSourceBufferHeight;
 
 	private volatile ContiguousMemoryInterface mConversionBuffer;
@@ -67,7 +70,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
 			mGamma = 1;
 
-	private final ReentrantLock mDisplayLock = new ReentrantLock();
+	private final ReentrantLock mSendBufferLock = new ReentrantLock();
 
 	private GLProgram mGLProgramVideoRender;
 	private GLAttribute mPositionAttribute, mTexCoordAttribute;
@@ -114,7 +117,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 				try
 				{
 					final GL4 lGL4 = pGLAutoDrawable.getGL().getGL4();
-					lGL4.setSwapInterval(0);
+					lGL4.setSwapInterval(1);
 					lGL4.glDisable(GL4.GL_DEPTH_TEST);
 					lGL4.glDisable(GL4.GL_STENCIL_TEST);
 					lGL4.glEnable(GL4.GL_TEXTURE_2D);
@@ -316,39 +319,51 @@ public class VideoWindow<T extends NativeType<T>> implements
 				super.display(pGLAutoDrawable);
 				final GL4 lGL4 = pGLAutoDrawable.getGL().getGL4();
 
+				// System.out.println("DISPLAY");
 				if (!mDisplayOn)
 					return;
 
 				if (mSourceBuffer != null)
 				{
-					// mDisplayLock.lock();
-					final int lBufferWidth = mSourceBufferWidth;
-					final int lBufferHeight = mSourceBufferHeight;
-					final ContiguousMemoryInterface lSourceBuffer = mSourceBuffer;
-					mSourceBuffer = null;
-					// mDisplayLock.unlock();
-
-					if (mVideoWidth != lBufferWidth || mVideoHeight != lBufferHeight
-							|| mTexture.getWidth() != lBufferWidth
-							|| mTexture.getHeight() != lBufferHeight)
+					mSendBufferLock.lock();
 					{
-						mVideoWidth = lBufferWidth;
-						mVideoHeight = lBufferHeight;
-						initializeTexture();
+						final int lBufferWidth = mSourceBufferWidth;
+						final int lBufferHeight = mSourceBufferHeight;
+						final ContiguousMemoryInterface lSourceBuffer = mSourceBuffer;
+						mSourceBuffer = null;
+
+						if (mVideoWidth != lBufferWidth || mVideoHeight != lBufferHeight
+								|| mTexture.getWidth() != lBufferWidth
+								|| mTexture.getHeight() != lBufferHeight)
+						{
+							mVideoWidth = lBufferWidth;
+							mVideoHeight = lBufferHeight;
+							initializeTexture();
+						}
+
+						if (!mMinMaxFixed)
+							fastMinMaxSampling(lSourceBuffer);
+						final ContiguousMemoryInterface lConvertedBuffer = convertBuffer(	lSourceBuffer,
+																																							lBufferWidth,
+																																							lBufferHeight);
+
+						mTexture.copyFrom(lConvertedBuffer);
+						mNotifyBufferCopy.countDown();
+						mRequestRedraw = true;
 					}
-
-					if (!mMinMaxFixed)
-						fastMinMaxSampling(lSourceBuffer);
-					final ContiguousMemoryInterface lConvertedBuffer = convertBuffer(	lSourceBuffer,
-																																						lBufferWidth,
-																																						lBufferHeight);
-
-					mTexture.copyFrom(lConvertedBuffer);
-					mRequestRedraw = true;
+					mSendBufferLock.unlock();
 				}
+				else
+				{
+					pGLAutoDrawable.setAutoSwapBufferMode(false);
+				}
+
+				// INFO: workaround for flickering screen in windows:
+				// mRequestRedraw = true;
 
 				if (mRequestRedraw)
 				{
+					pGLAutoDrawable.setAutoSwapBufferMode(true);
 					if (mManualMinMax)
 					{
 						mMinimumUniform.set((float) mMinIntensity);
@@ -363,6 +378,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 					mGLProgramVideoRender.use(lGL4);
 					mTexture.bind(mGLProgramVideoRender);
+					// System.out.println("DRAW");
 					mQuadVertexArray.draw(GL.GL_TRIANGLES);
 
 					if (isDisplayLines())
@@ -521,20 +537,42 @@ public class VideoWindow<T extends NativeType<T>> implements
 													int pWidth,
 													int pHeight)
 	{
-		mDisplayLock.lock();
-		mSourceBufferWidth = pWidth;
-		mSourceBufferHeight = pHeight;
-		mSourceBuffer = pSourceDataObject;
-		mDisplayLock.unlock();
+		mSendBufferLock.lock();
+		{
+			mRequestRedraw = true;
+			mNotifyBufferCopy = new CountDownLatch(1);
+			mSourceBufferWidth = pWidth;
+			mSourceBufferHeight = pHeight;
+			mSourceBuffer = pSourceDataObject;
+		}
+		mSendBufferLock.unlock();
 	}
 
 	public void sendBuffer(Buffer pBuffer, int pWidth, int pHeight)
 	{
-		mDisplayLock.lock();
-		mSourceBufferWidth = pWidth;
-		mSourceBufferHeight = pHeight;
-		mSourceBuffer = OffHeapMemory.wrapBuffer(pBuffer);
-		mDisplayLock.unlock();
+		mSendBufferLock.lock();
+		{
+			mRequestRedraw = true;
+			mNotifyBufferCopy = new CountDownLatch(1);
+			mSourceBufferWidth = pWidth;
+			mSourceBufferHeight = pHeight;
+			mSourceBuffer = OffHeapMemory.wrapBuffer(pBuffer);
+		}
+		mSendBufferLock.unlock();
+	}
+
+	public boolean waitForBufferCopy(long pTimeOut, TimeUnit pTimeUnit)
+	{
+		try
+		{
+			return mNotifyBufferCopy.await(pTimeOut, pTimeUnit);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+			return waitForBufferCopy(pTimeOut, pTimeUnit);
+		}
+
 	}
 
 	public void start()
@@ -570,6 +608,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayOn(final boolean pDisplayOn)
 	{
+		mRequestRedraw = true;
 		mDisplayOn = pDisplayOn;
 	}
 
@@ -585,6 +624,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setMinIntensity(final double pMinIntensity)
 	{
+		mRequestRedraw = true;
 		mMinIntensity = pMinIntensity;
 	}
 
@@ -595,11 +635,13 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setMaxIntensity(final double pMaxIntensity)
 	{
+		mRequestRedraw = true;
 		mMaxIntensity = pMaxIntensity;
 	}
 
 	public void setGamma(double pGamma)
 	{
+		mRequestRedraw = true;
 		mGamma = pGamma;
 	}
 
@@ -615,6 +657,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setManualMinMax(final boolean pManualMinMax)
 	{
+		mRequestRedraw = true;
 		mManualMinMax = pManualMinMax;
 	}
 
@@ -635,6 +678,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayFrameRate(boolean pDisplayFrameRate)
 	{
+		mRequestRedraw = true;
 		mDisplayFrameRate = pDisplayFrameRate;
 	}
 
@@ -645,6 +689,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayLines(boolean pIsDisplayLines)
 	{
+		mRequestRedraw = true;
 		mIsDisplayLines = pIsDisplayLines;
 	}
 

@@ -1,6 +1,7 @@
 package rtlib.gui.video.video2d;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
@@ -10,7 +11,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
-import rtlib.gui.video.video2d.jogl.VideoWindow;
+import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.StackInterface;
 
 import com.jogamp.newt.event.MouseAdapter;
@@ -27,7 +28,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	private final ObjectVariable<StackInterface<T, A>> mInputStackVariable;
 	private ObjectVariable<StackInterface<T, A>> mOutputStackVariable;
 
-	private StackInterface<T, A> mLastReceivedStackCopy;
+	private volatile StackInterface<T, A> mLastReceivedStackCopy;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
@@ -99,20 +100,26 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			@Override
 			public Object process(final StackInterface<T, A> pStack)
 			{
-				if(pStack!=mLastReceivedStackCopy)
+				if (pStack != mLastReceivedStackCopy)
 				{
-					if(mLastReceivedStackCopy==null || mLastReceivedStackCopy.getWidth()!=pStack.getWidth()
-							||mLastReceivedStackCopy.getHeight()!=pStack.getHeight()
-							||mLastReceivedStackCopy.getDepth()!=pStack.getDepth()
-							||mLastReceivedStackCopy.getContiguousMemory().getSizeInBytes()!=pStack.getContiguousMemory().getSizeInBytes())
+					if (mLastReceivedStackCopy == null || mLastReceivedStackCopy.getWidth() != pStack.getWidth()
+							|| mLastReceivedStackCopy.getHeight() != pStack.getHeight()
+							|| mLastReceivedStackCopy.getDepth() != pStack.getDepth()
+							|| mLastReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
 					{
 						if (mLastReceivedStackCopy != null)
-							mLastReceivedStackCopy.free();
-						mLastReceivedStackCopy = pStack.duplicate();
+						{
+							StackInterface<T, A> lStackToFree = mLastReceivedStackCopy;
+							mLastReceivedStackCopy = pStack.duplicate();
+							lStackToFree.free();
+						}
+						else
+							mLastReceivedStackCopy = pStack.duplicate();
 					}
 
-					mLastReceivedStackCopy.getContiguousMemory()
-																.copyFrom(pStack.getContiguousMemory());
+					if (!mLastReceivedStackCopy.isFree())
+						mLastReceivedStackCopy.getContiguousMemory()
+																	.copyFrom(pStack.getContiguousMemory());
 
 				}
 				displayStack(pStack, true);
@@ -213,6 +220,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			mVideoWindow.sendBuffer(lContiguousMemory,
 															lStackWidth,
 															lStackHeight);
+			mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 		}
 		else
 		{
@@ -220,6 +228,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			mVideoWindow.sendBuffer(lContiguousMemory,
 															lStackWidth,
 															lStackHeight);
+			mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
 		}
 		mVideoWindow.setWidth(lStackWidth);
 		mVideoWindow.setHeight(lStackHeight);
@@ -275,7 +284,9 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public boolean open()
 	{
+		mDisplayOn.setValue(true);
 		setVisible(true);
+		mVideoWindow.start();
 		return true;
 	}
 
@@ -285,6 +296,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		setVisible(false);
 		try
 		{
+			mVideoWindow.stop();
+			mDisplayOn.setValue(false);
 			mVideoWindow.close();
 			return true;
 		}
@@ -298,16 +311,14 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public boolean start()
 	{
-		mDisplayOn.setValue(true);
-		mVideoWindow.start();
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		mDisplayOn.setValue(false);
-		mVideoWindow.stop();
+
 		return true;
 	}
 

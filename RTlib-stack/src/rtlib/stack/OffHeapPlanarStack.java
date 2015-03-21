@@ -25,6 +25,7 @@ import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
+import coremem.util.Size;
 
 public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																																												StackBase<T, A>	implements
@@ -36,6 +37,23 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 	@SuppressWarnings("unchecked")
 	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final FragmentedMemoryInterface pFragmentedMemory,
 																																								final T pType,
+
+																																								final long pWidth,
+																																								final long pHeight,
+																																								final long pDepth)
+	{
+		return createStack(	pFragmentedMemory,
+												pType,
+												true,
+												pWidth,
+												pHeight,
+												pDepth);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final FragmentedMemoryInterface pFragmentedMemory,
+																																								final T pType,
+																																								final boolean pSafe,
 																																								final long pWidth,
 																																								final long pHeight,
 																																								final long pDepth)
@@ -45,7 +63,7 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 
 		lOffHeapPlanarStack.setType(pType);
 
-		final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(true);
+		final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(pSafe);
 
 		if (pType instanceof UnsignedByteType || pType instanceof ByteType)
 		{
@@ -107,8 +125,54 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@SuppressWarnings("unchecked")
+	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final T pType,
+																																								final long pWidth,
+																																								final long pHeight,
+																																								final long pDepth)
+	{
+
+		return createStack(pType, true, pWidth, pHeight, pDepth);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final T pType,
+																																								final boolean pSafe,
+																																								final long pWidth,
+																																								final long pHeight,
+																																								final long pDepth)
+	{
+
+		long lSizeInBytes = pWidth * pHeight
+												* pDepth
+												* Size.of(pType.getClass());
+		ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateBytes(lSizeInBytes);
+		return createStack(	lContiguousMemory,
+												pType,
+												pSafe,
+												pWidth,
+												pHeight,
+												pDepth);
+	}
+
+	@SuppressWarnings("unchecked")
 	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final ContiguousMemoryInterface pContiguousMemoryInterface,
 																																								final T pType,
+																																								final long pWidth,
+																																								final long pHeight,
+																																								final long pDepth)
+	{
+		return createStack(	pContiguousMemoryInterface,
+												pType,
+												true,
+												pWidth,
+												pHeight,
+												pDepth);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends NativeType<T>> OffHeapPlanarStack<T, ?> createStack(	final ContiguousMemoryInterface pContiguousMemoryInterface,
+																																								final T pType,
+																																								final boolean pSafe,
 																																								final long pWidth,
 																																								final long pHeight,
 																																								final long pDepth)
@@ -118,7 +182,7 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 
 		lOffHeapPlanarStack.setType(pType);
 
-		final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(true);
+		final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(pSafe);
 
 		if (pType instanceof UnsignedByteType || pType instanceof ByteType)
 		{
@@ -195,12 +259,12 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@SuppressWarnings("unchecked")
-	public OffHeapPlanarStack(final long pImageIndex,
-														final long pTimeStampInNanoseconds,
-														final T pType,
-														final long pWidth,
-														final long pHeight,
-														final long pDepth)
+	private OffHeapPlanarStack(	final long pImageIndex,
+															final long pTimeStampInNanoseconds,
+															final T pType,
+															final long pWidth,
+															final long pHeight,
+															final long pDepth)
 	{
 		super();
 
@@ -425,13 +489,13 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 	@Override
 	public StackInterface<T, A> duplicate()
 	{
-		final long lSizeInBytes = this.getContiguousMemory().getSizeInBytes();
+		final long lSizeInBytes = this.getSizeInBytes();
 		final OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(lSizeInBytes);
 		return (StackInterface<T, A>) OffHeapPlanarStack.createStack(	lOffHeapMemory,
-																					getType(),
-																					getWidth(),
-																					getHeight(),
-																					getDepth());
+																																	getType(),
+																																	getWidth(),
+																																	getHeight(),
+																																	getDepth());
 	}
 
 }

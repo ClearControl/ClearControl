@@ -1,4 +1,4 @@
-package rtlib.gui.video.video2d.jogl;
+package rtlib.gui.video.video2d.videowindow;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;

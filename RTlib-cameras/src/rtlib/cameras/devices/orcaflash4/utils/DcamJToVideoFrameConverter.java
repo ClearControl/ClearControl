@@ -30,6 +30,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private static final long cMinimalNumberOfAvailableStacks = 10;
 	private static final int cMaximalNumberOfAvailableStacks = 20;
+	private static final int cMaximalNumberOfLiveStacks = 20;
 	private static final long cWaitForReycledStackTimeInMicroSeconds = 1;
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
@@ -40,10 +41,14 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
-	private final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> m2DStackBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																																																																																					cMaximalNumberOfAvailableStacks);
-	private final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> m3DStackBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																																																																																					cMaximalNumberOfAvailableStacks);
+	private final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> m2DStackBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
+																																																																																																																												cMaximalNumberOfAvailableStacks,
+																																																																																																																												cMaximalNumberOfLiveStacks,
+																																																																																																																												true);
+	private final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> m3DStackBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
+																																																																																																																												cMaximalNumberOfAvailableStacks,
+																																																																																																																												cMaximalNumberOfLiveStacks,
+																																																																																																																												true);
 
 	private final SingleUpdateTargetObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> mStackReference = new SingleUpdateTargetObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("OffHeapPlanarStack");
 
@@ -74,7 +79,6 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 				return super.setEventHook(pOldDcamFrame, pNewDcamFrame);
 			}
 		});
-
 
 		final ProcessorInterface<DcamFrame, StackInterface<UnsignedShortType, ShortOffHeapAccess>> lProcessor = new ProcessorInterface<DcamFrame, StackInterface<UnsignedShortType, ShortOffHeapAccess>>()
 		{
@@ -130,31 +134,37 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			final long lStackDepth = (long) mStackDepthVariable.getValue();
 
 			final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	new UnsignedShortType(),
-																																																		pDcamFrame.getWidth(),
-																																																		pDcamFrame.getHeight(),
-																																																		lNumberOfImagesPerPlane * lStackDepth);
+																																								pDcamFrame.getWidth(),
+																																								pDcamFrame.getHeight(),
+																																								lNumberOfImagesPerPlane * lStackDepth);
 
 			StackInterface<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStack = null;
 			if (lStackDepth == 1)
 			{
 				if (m2DStackBasicRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
-					m2DStackBasicRecycler.ensurePreallocated(cMinimalNumberOfAvailableStacks,
-																							lStackRequest);
+					m2DStackBasicRecycler.ensurePreallocated(	cMinimalNumberOfAvailableStacks,
+																										lStackRequest);
 
-				lOffHeapPlanarStack = m2DStackBasicRecycler.getOrWait(	cWaitForReycledStackTimeInMicroSeconds,
-																																							TimeUnit.MICROSECONDS,
-																																							lStackRequest);
+				lOffHeapPlanarStack = m2DStackBasicRecycler.getOrWait(cWaitForReycledStackTimeInMicroSeconds,
+																															TimeUnit.MICROSECONDS,
+																															lStackRequest);
 			}
 			else
 			{
 				if (m3DStackBasicRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
-					m3DStackBasicRecycler.ensurePreallocated(cMinimalNumberOfAvailableStacks,
-																							lStackRequest);
+					m3DStackBasicRecycler.ensurePreallocated(	cMinimalNumberOfAvailableStacks,
+																										lStackRequest);
 
-				lOffHeapPlanarStack = m3DStackBasicRecycler.getOrWait(	cWaitForReycledStackTimeInMicroSeconds,
-																																							TimeUnit.MICROSECONDS,
-																																							lStackRequest);
+				lOffHeapPlanarStack = m3DStackBasicRecycler.getOrWait(cWaitForReycledStackTimeInMicroSeconds,
+																															TimeUnit.MICROSECONDS,
+																															lStackRequest);
 			}
+
+			System.out.println("m2DStackBasicRecycler.getNumberOfAvailableObjects()=" + m2DStackBasicRecycler.getNumberOfAvailableObjects());
+			System.out.println("m2DStackBasicRecycler.getNumberOfLiveObjects()=" + m2DStackBasicRecycler.getNumberOfLiveObjects());
+
+			/*System.out.println("m3DStackBasicRecycler.getNumberOfAvailableObjects()=" + m3DStackBasicRecycler.getNumberOfAvailableObjects());
+			System.out.println("m3DStackBasicRecycler.getNumberOfLiveObjects()=" + m3DStackBasicRecycler.getNumberOfLiveObjects());/**/
 
 			if (lOffHeapPlanarStack == null)
 			{
