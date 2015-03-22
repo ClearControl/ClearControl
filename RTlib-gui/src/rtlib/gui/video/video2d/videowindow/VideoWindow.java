@@ -175,7 +175,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 					lTexCoordFloatArray.add(1, 1);
 					lTexCoordFloatArray.add(0, 1);
 
-					initializeTexture();
+					initializeTexture(mVideoWidth, mVideoHeight);
 
 					mQuadVertexArray.addVertexAttributeArray(	mTexCoordAttributeArray,
 																										lTexCoordFloatArray.getFloatBuffer());
@@ -261,7 +261,8 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 			}
 
-			private void initializeTexture()
+			private void initializeTexture(	int pTextureWidth,
+																			int pTextureHeight)
 			{
 				if (mTexture != null)
 					mTexture.close();
@@ -288,8 +289,8 @@ public class VideoWindow<T extends NativeType<T>> implements
 				mTexture = new GLTexture(	mGLProgramVideoRender,
 																	lGLType,
 																	1,
-																	mVideoWidth,
-																	mVideoHeight,
+																	pTextureWidth,
+																	pTextureHeight,
 																	1,
 																	true,
 																	cMipMapLevel);
@@ -338,7 +339,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 						{
 							mVideoWidth = lBufferWidth;
 							mVideoHeight = lBufferHeight;
-							initializeTexture();
+							initializeTexture(mVideoWidth, mVideoHeight);
 						}
 
 						if (!mMinMaxFixed)
@@ -353,17 +354,13 @@ public class VideoWindow<T extends NativeType<T>> implements
 					}
 					mSendBufferLock.unlock();
 				}
-				else
-				{
-					pGLAutoDrawable.setAutoSwapBufferMode(false);
-				}
+
 
 				// INFO: workaround for flickering screen in windows:
 				// mRequestRedraw = true;
 
 				if (mRequestRedraw)
 				{
-					pGLAutoDrawable.setAutoSwapBufferMode(true);
 					if (mManualMinMax)
 					{
 						mMinimumUniform.set((float) mMinIntensity);
@@ -388,9 +385,13 @@ public class VideoWindow<T extends NativeType<T>> implements
 						mGridGuidesVertexArray.draw(GL.GL_LINES);
 					}
 					mRequestRedraw = false;
+					pGLAutoDrawable.setAutoSwapBufferMode(true);
 				}
 				else
+				{
 					Thread.yield();
+					pGLAutoDrawable.setAutoSwapBufferMode(false);
+				}
 			}
 
 			private ContiguousMemoryInterface convertBuffer(ContiguousMemoryInterface pSourceBuffer,
@@ -567,7 +568,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 		{
 			return mNotifyBufferCopy.await(pTimeOut, pTimeUnit);
 		}
-		catch (InterruptedException e)
+		catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 			return waitForBufferCopy(pTimeOut, pTimeUnit);

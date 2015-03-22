@@ -37,7 +37,7 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 			keys = Arrays.copyOf(keys, capacity);
 		}
 
-		// Insert new value at the end
+		// Insert new size at the end
 		size++;
 		data[size - 1] = value;
 		keys[size - 1] = key;
@@ -214,7 +214,7 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		else if (u % 2 == 1)
 		{
 			// Already paired. Ensure pair is ordered right
-			int p = (u / 2 - 1) | 1; // The larger value of the parent pair
+			int p = (u / 2 - 1) | 1; // The larger size of the parent pair
 			if (keys[u] < keys[u - 1])
 			{ // If less than it's pair
 				u = swap(u, u - 1); // Swap with it's pair
@@ -237,8 +237,8 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		}
 		else
 		{
-			// Inserted in the lower-value slot without a partner
-			int p = (u / 2 - 1) | 1; // The larger value of the parent pair
+			// Inserted in the lower-size slot without a partner
+			int p = (u / 2 - 1) | 1; // The larger size of the parent pair
 			if (keys[u] > keys[p])
 			{ // If larger that larger parent pair
 				// Swap into max-heap side

@@ -106,7 +106,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																									lHeight,
 																									lDepth);
 
-				/*mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
+				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
 																														TimeUnit.SECONDS);/**/
 
 				if (mOutputObjectVariable != null)
@@ -118,8 +118,6 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			}
 		};
 
-
-
 		mInputObjectVariable = new ObjectVariable<StackInterface<T, A>>("VideoFrame")
 		{
 
@@ -128,12 +126,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																								final StackInterface<T, A> pNewStack)
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
-					if (!pNewStack.isReleased())
-					{
-						pNewStack.release();
-					}
-					else
-						System.out.println("FAILED");
+					pNewStack.release();
+
 				return super.setEventHook(pOldStack, pNewStack);
 			}
 

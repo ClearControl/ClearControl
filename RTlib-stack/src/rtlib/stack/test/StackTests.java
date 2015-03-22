@@ -13,7 +13,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
-import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -43,7 +43,7 @@ public class StackTests
 	public void testLifeCycle()
 	{
 
-		ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
+		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
 																																								* cSizeZ);
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(lContiguousMemory,
@@ -93,7 +93,7 @@ public class StackTests
 	{
 		final long lStartTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 
-		final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
 		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
 																																																																																																																					cMaximumNumberOfObjects);

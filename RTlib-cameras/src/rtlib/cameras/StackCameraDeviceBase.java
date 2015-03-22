@@ -41,10 +41,5 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 		return mStackReference;
 	}
 
-	@Override
-	public void trigger()
-	{
-
-	}
 
 }

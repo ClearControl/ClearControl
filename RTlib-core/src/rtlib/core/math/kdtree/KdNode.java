@@ -86,7 +86,7 @@ class KdNode<T>
 			// If the node is getting too large
 			if (calculateSplit())
 			{
-				// If the node successfully had it's split value calculated, split node
+				// If the node successfully had it's split size calculated, split node
 				splitLeafNode();
 			}
 			else
@@ -184,7 +184,7 @@ class KdNode<T>
 			splitValue = -Double.MAX_VALUE;
 		}
 
-		// Don't let the split value be the same as the upper value as
+		// Don't let the split size be the same as the upper size as
 		// can happen due to rounding errors!
 		if (splitValue == maxBound[splitDimension])
 		{

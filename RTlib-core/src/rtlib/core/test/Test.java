@@ -60,7 +60,7 @@ public final class Test
 			value = subtest(operations, value, i);
 		}
 
-		System.out.println("value = " + value);
+		System.out.println("size = " + value);
 	}
 
 	private static int subtest(	final Operation[] operations,

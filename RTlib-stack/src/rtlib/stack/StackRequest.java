@@ -55,4 +55,12 @@ public class StackRequest<T extends NativeType<T>>	implements
 		return mType;
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format(	"StackRequest [mType=%s, mDimensions=%s]",
+													mType,
+													Arrays.toString(mDimensions));
+	}
+
 }

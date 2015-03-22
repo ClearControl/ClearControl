@@ -29,7 +29,7 @@ public abstract class BinaryHeap<T> {
             keys = Arrays.copyOf(keys, capacity);
         }
 
-        // Insert new value at the end
+        // Insert new size at the end
         data[size] = value;
         keys[size] = key;
         siftUp(size);

@@ -4,10 +4,12 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -40,7 +42,12 @@ public class JTextFieldDouble extends JPanel
 													final double pValue)
 	{
 
-		this(pValueName, pNorthSouthLayout, "%.1f", 0, 1, pValue);
+		this(	pValueName,
+					pNorthSouthLayout,
+					"%.1f",
+					Double.NEGATIVE_INFINITY,
+					Double.POSITIVE_INFINITY,
+					pValue);
 	}
 
 	public JTextFieldDouble(final String pValueName,
@@ -51,8 +58,8 @@ public class JTextFieldDouble extends JPanel
 													final double pValue)
 	{
 		super();
-		mMin = pMin;
-		mMax = pMax;
+		setMin(pMin);
+		setMax(pMax);
 
 		mDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
@@ -63,15 +70,18 @@ public class JTextFieldDouble extends JPanel
 
 				if (pNewValue != mNewValue)
 				{
+					mNewValue = pNewValue;
 					EventQueue.invokeLater(new Runnable()
 					{
 						@Override
 						public void run()
 						{
 							// System.out.println("mValueTextField.setText('' + pNewValue);");
-							final String lString = String.format(	mLabelsFormatString,
-																										pNewValue);
+							final String lString = String.format(	getLabelsFormatString(),
+																										clamp(pNewValue));
 							mValueTextField.setText(lString);
+							mValueTextField.setBackground(Color.white);
+
 						}
 					});
 				}
@@ -90,7 +100,6 @@ public class JTextFieldDouble extends JPanel
 		add(mValueTextField, pNorthSouthLayout ? BorderLayout.SOUTH
 																					: BorderLayout.CENTER);
 
-
 		if (pNorthSouthLayout)
 		{
 			mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -102,61 +111,65 @@ public class JTextFieldDouble extends JPanel
 			mValueTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		}
 
-
-
-		mLabelsFormatString = pLabelsFormatString;
+		setLabelsFormatString(pLabelsFormatString);
 
 		mValueTextField.getDocument()
 										.addDocumentListener(new DocumentListener()
 										{
-											@Override
-											public void changedUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
 
 											@Override
-											public void removeUpdate(final DocumentEvent e)
+											public void removeUpdate(final DocumentEvent pE)
 											{
-												parseDoubleAndNotify();
+												mValueTextField.setBackground(Color.red);
 											}
 
 											@Override
-											public void insertUpdate(final DocumentEvent e)
+											public void insertUpdate(final DocumentEvent pE)
 											{
-												parseDoubleAndNotify();
+												mValueTextField.setBackground(Color.red);
 											}
 
-											public void parseDoubleAndNotify()
+											@Override
+											public void changedUpdate(final DocumentEvent pE)
 											{
-												final String lTextString = mValueTextField.getText()
-																																	.trim();
-												if (lTextString.isEmpty())
-												{
-													return;
-												}
 
-												try
-												{
-													mNewValue = clamp(Double.parseDouble(lTextString));
-													mDoubleVariable.setValue(mNewValue);
-
-												}
-												catch (final NumberFormatException e)
-												{
-													JOptionPane.showMessageDialog(null,
-																												"String cannot be parsed as double!",
-																												"Error Message",
-																												JOptionPane.ERROR_MESSAGE);
-													return;
-												}
-											}
-
-											private double clamp(double pValue)
-											{
-												return min(max(pValue, mMin), mMax);
 											}
 										});
+
+		mValueTextField.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(final ActionEvent pE)
+			{
+
+				final String lTextString = mValueTextField.getText().trim();
+				if (lTextString.isEmpty())
+				{
+					return;
+				}
+
+				try
+				{
+
+					final double lNewValue = clamp(Double.parseDouble(lTextString));
+					if (lNewValue != mNewValue)
+					{
+						mNewValue = lNewValue;
+						mDoubleVariable.setValue(mNewValue);
+					}
+
+					mValueTextField.setBackground(Color.white);
+				}
+				catch (final NumberFormatException e)
+				{
+					mValueTextField.setBackground(Color.orange);
+					return;
+				}
+
+			}
+
+		});
 
 	}
 
@@ -173,6 +186,41 @@ public class JTextFieldDouble extends JPanel
 	public void setValue(final double pValue)
 	{
 		mValueTextField.setText("" + pValue);
+	}
+
+	private double clamp(double pValue)
+	{
+		return min(max(pValue, getMin()), getMax());
+	}
+
+	public double getMin()
+	{
+		return mMin;
+	}
+
+	public void setMin(double pMin)
+	{
+		mMin = pMin;
+	}
+
+	public double getMax()
+	{
+		return mMax;
+	}
+
+	public void setMax(double pMax)
+	{
+		mMax = pMax;
+	}
+
+	public String getLabelsFormatString()
+	{
+		return mLabelsFormatString;
+	}
+
+	public void setLabelsFormatString(String pLabelsFormatString)
+	{
+		mLabelsFormatString = pLabelsFormatString;
 	}
 
 }

@@ -278,7 +278,7 @@ public class JSliderDouble extends JPanel
 				}
 				catch (final NumberFormatException e)
 				{
-					System.err.println(e.getLocalizedMessage());
+					mValueTextField.setBackground(Color.orange);
 					return;
 				}
 

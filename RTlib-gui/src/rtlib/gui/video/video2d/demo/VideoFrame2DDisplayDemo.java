@@ -126,7 +126,7 @@ public class VideoFrame2DDisplayDemo
 					lJFrame.setContentPane(mcontentPane);
 					lJFrame.setVisible(true);
 
-					final JSliderDouble lJSliderDouble = new JSliderDouble("gray value");
+					final JSliderDouble lJSliderDouble = new JSliderDouble("gray size");
 					mcontentPane.add(lJSliderDouble, BorderLayout.SOUTH);
 
 					final JButtonBoolean lJButtonBoolean = new JButtonBoolean(false,

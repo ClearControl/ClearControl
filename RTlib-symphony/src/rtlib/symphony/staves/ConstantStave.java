@@ -10,7 +10,7 @@ public class ConstantStave extends StaveAbstract implements
 
 	public ConstantStave(final String pName, final double pValue)
 	{
-		super(pName + "(value=" + pValue + ")");
+		super(pName + "(size=" + pValue + ")");
 		mValue = pValue;
 	}
 

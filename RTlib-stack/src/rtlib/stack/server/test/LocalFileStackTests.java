@@ -17,7 +17,7 @@ import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.stack.FragmentedOffHeapPlanarStackFactory;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -103,7 +103,7 @@ public class LocalFileStackTests
 		}
 
 		{
-			final FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new FragmentedOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+			final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
 			final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
 																																																																																																																							cMaximalNumberOfAvailableStacks);
@@ -142,7 +142,7 @@ public class LocalFileStackTests
 				while (lCursor.hasNext())
 				{
 					final UnsignedShortType lValue = lCursor.next();
-					// System.out.println("value=" + lValue);
+					// System.out.println("size=" + lValue);
 					assertEquals(i, lValue.get());
 				}
 			}

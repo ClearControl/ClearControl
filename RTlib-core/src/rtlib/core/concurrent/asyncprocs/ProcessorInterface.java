@@ -1,8 +1,7 @@
 package rtlib.core.concurrent.asyncprocs;
 
-import java.io.Closeable;
 
-public interface ProcessorInterface<I, O> extends Closeable
+public interface ProcessorInterface<I, O> extends AutoCloseable
 {
 
 	public O process(I pInput);

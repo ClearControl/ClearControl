@@ -142,10 +142,10 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 																																								final long pDepth)
 	{
 
-		long lSizeInBytes = pWidth * pHeight
+		final long lSizeInBytes = pWidth * pHeight
 												* pDepth
 												* Size.of(pType.getClass());
-		ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateBytes(lSizeInBytes);
+		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateBytes(lSizeInBytes);
 		return createStack(	lContiguousMemory,
 												pType,
 												pSafe,
@@ -248,39 +248,9 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 		super();
 	}
 
-	public OffHeapPlanarStack(StackRequest<T> pParameters)
-	{
-		this(	0,
-					0,
-					pParameters.getType(),
-					pParameters.getWidth(),
-					pParameters.getHeight(),
-					pParameters.getDepth());
-	}
 
-	@SuppressWarnings("unchecked")
-	private OffHeapPlanarStack(	final long pImageIndex,
-															final long pTimeStampInNanoseconds,
-															final T pType,
-															final long pWidth,
-															final long pHeight,
-															final long pDepth)
-	{
-		super();
 
-		setIndex(pImageIndex);
-		setTimeStampInNanoseconds(pTimeStampInNanoseconds);
-		setType(pType);
 
-		final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(true);
-
-		mPlanarImage = (OffHeapPlanarImg<T, A>) lOffHeapPlanarImgFactory.create(new long[]
-																																						{ pWidth,
-																																							pHeight,
-																																							pDepth },
-																																						pType);
-
-	}
 
 	@SuppressWarnings("unchecked")
 	public OffHeapPlanarStack(final long pImageIndex,
@@ -319,19 +289,7 @@ public class OffHeapPlanarStack<T extends NativeType<T>, A extends ArrayDataAcce
 	@Override
 	public void recycle(final StackRequest<T> pStackRequest)
 	{
-		mType = pStackRequest.getType();
-		if (!isCompatible(pStackRequest))
-		{
-			if (mPlanarImage != null)
-				mPlanarImage.free();
-			final OffHeapPlanarImgFactory<T> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<T>(true);
-			final long[] lDimensions = new long[]
-			{ pStackRequest.getWidth(),
-				pStackRequest.getHeight(),
-				pStackRequest.getDepth() };
-			mPlanarImage = (OffHeapPlanarImg<T, A>) lOffHeapPlanarImgFactory.create(lDimensions,
-																																							mType);
-		}
+		// not much to do here...
 	}
 
 	public OffHeapPlanarImg<T, A> getPlanarImage()

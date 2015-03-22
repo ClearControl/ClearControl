@@ -426,7 +426,14 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 		final double lPatternPhaseIncrement = lIsPatterned ? mPatternPhaseIncrement.getValue()
 																											: 1;
 
-		return (int) (lPatternPeriod / lPatternPhaseIncrement);
+		final int lNumberOfPhases = (int) (lPatternPeriod / lPatternPhaseIncrement);
+
+		System.out.println("lIsPatterned=" + lIsPatterned);
+		System.out.println("lPatternPeriod=" + lPatternPeriod);
+		System.out.println("lPatternPhaseIncrement=" + lPatternPhaseIncrement);
+		System.out.println("lNumberOfPhases=" + lNumberOfPhases);
+
+		return lNumberOfPhases;
 	}
 
 	public int getEffectiveExposureInMicroseconds()

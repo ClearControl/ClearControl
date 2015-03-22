@@ -50,25 +50,26 @@ public class AsynchronousProcessorPool<I, O>	extends
 	@Override
 	public boolean start()
 	{
-		Runnable lRunnable = () -> {
+		final Runnable lRunnable = () -> {
 			try
 			{
-				System.out.print("(");
+				// System.out.print("(");
 				@SuppressWarnings("unchecked")
+				final
 				Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
 																																			TimeUnit.NANOSECONDS);
 				if (lFuture != null)
 				{
-					O lResult = lFuture.get();
+					final O lResult = lFuture.get();
 					send(lResult);
 				}
-				System.out.print(")");
+				// System.out.print(")");
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				return;
 			}
-			catch (ExecutionException e)
+			catch (final ExecutionException e)
 			{
 				error("Concurrent",
 							"Exception while collecting processed items",
@@ -89,9 +90,9 @@ public class AsynchronousProcessorPool<I, O>	extends
 			stopScheduledThreadPoolAndWaitForCompletion(1, TimeUnit.SECONDS);
 			return true;
 		}
-		catch (ExecutionException e)
+		catch (final ExecutionException e)
 		{
-			String lError = "Exception occured  while stopping async processor";
+			final String lError = "Exception occured  while stopping async processor";
 			error("Concurrent", lError, e);
 			return false;
 		}
@@ -100,16 +101,16 @@ public class AsynchronousProcessorPool<I, O>	extends
 	@Override
 	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
 	{
-		boolean lNoTimeOut = super.waitToFinish(pTimeOut, pTimeUnit);
+		final boolean lNoTimeOut = super.waitToFinish(pTimeOut, pTimeUnit);
 		if (!lNoTimeOut)
 			return false;
 		try
 		{
 			return waitForCompletion(pTimeOut, pTimeUnit);
 		}
-		catch (ExecutionException e)
+		catch (final ExecutionException e)
 		{
-			String lError = "Exception occured during async processor execution";
+			final String lError = "Exception occured during async processor execution";
 			error("Concurrent", lError, e);
 			return false;
 		}
@@ -119,7 +120,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 	@Override
 	public final O process(final I pInput)
 	{
-		Callable<O> lCallable = () -> {
+		final Callable<O> lCallable = () -> {
 			return mProcessor.process(pInput);
 		};
 		mThreadPoolExecutor.submit(lCallable);
