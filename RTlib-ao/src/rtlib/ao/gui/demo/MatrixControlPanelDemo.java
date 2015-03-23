@@ -1,7 +1,5 @@
 package rtlib.ao.gui.demo;
 
-import static java.lang.Math.cos;
-
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
@@ -33,14 +31,13 @@ public class MatrixControlPanelDemo
 																																					lTransformMatrix,
 																																					lTransformMatrixForDisplay);
 
-
-
+		final JFrame lTestFrame = new JFrame("Test");
 		SwingUtilities.invokeAndWait(new Runnable()
 		{
+
 			@Override
 			public void run()
 			{
-				final JFrame lTestFrame = new JFrame("Test");
 				lTestFrame.setSize(768, 768);
 				lTestFrame.setLayout(new MigLayout("insets 0", "[]", "[]"));
 				lTestFrame.add(lMatrixControlPanel, "cell 0 0 ");
@@ -54,17 +51,18 @@ public class MatrixControlPanelDemo
 		final DenseMatrix64F lShapeVector = new DenseMatrix64F(	lMatrixWidth * lMatrixWidth,
 																														1);
 
-		for (int i = 0; i < 10000; i++)
+		/*for (int i = 0; i < 10000; i++)
 		{
 			final double lValue = cos(0.1 * i);
 			lInputVector.set(lMatrixWidth + 1, lValue);
 
 			lMatrixControlPanel.getInputModeVectorVariable()
-													.setReference(lInputVector);/**/
+													.setReference(lInputVector);
 			Thread.sleep(100);
-		}
+		}/**/
 
-		Thread.sleep(1000000);
+		while (lTestFrame.isVisible())
+			Thread.sleep(10);
 	}
 
 }

@@ -55,9 +55,8 @@ public class AsynchronousProcessorPool<I, O>	extends
 			{
 				// System.out.print("(");
 				@SuppressWarnings("unchecked")
-				final
-				Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
-																																			TimeUnit.NANOSECONDS);
+				final Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
+																																						TimeUnit.NANOSECONDS);
 				if (lFuture != null)
 				{
 					final O lResult = lFuture.get();
@@ -71,9 +70,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 			}
 			catch (final ExecutionException e)
 			{
-				error("Concurrent",
-							"Exception while collecting processed items",
-							e);
+				e.printStackTrace();
 			}
 		};
 
@@ -92,8 +89,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		}
 		catch (final ExecutionException e)
 		{
-			final String lError = "Exception occured  while stopping async processor";
-			error("Concurrent", lError, e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -110,8 +106,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		}
 		catch (final ExecutionException e)
 		{
-			final String lError = "Exception occured during async processor execution";
-			error("Concurrent", lError, e);
+			e.printStackTrace();
 			return false;
 		}
 

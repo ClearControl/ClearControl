@@ -1,5 +1,7 @@
 package rtlib.ao.slms.devices.mirao52e;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import mirao52e.Mirao52eDeformableMirror;
@@ -7,6 +9,7 @@ import mirao52e.Mirao52eDeformableMirror;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.ao.slms.DeformableMirrorDevice;
+import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.objectv.ObjectVariable;
 
@@ -27,6 +30,22 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 					cActuatorResolution);
 
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
+
+		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
+		File lFlatCalibrationFile = lCurrentMachineConfiguration.getFileProperty(	"device.ao.mirao." + pDeviceIndex
+																																									+ ".flat",
+																																							null);
+		if (lFlatCalibrationFile != null && lFlatCalibrationFile.exists())
+			try
+			{
+				mMirao52eDeformableMirror.loadFlatCalibrationMatrix(lFlatCalibrationFile);
+				System.out.println(Mirao52eDevice.class.getSimpleName() + ":Loaded flat calibration info");
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+
 
 		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
 		{
@@ -70,6 +89,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 	@Override
 	public boolean start()
 	{
+		zero();
 		return true;
 	}
 

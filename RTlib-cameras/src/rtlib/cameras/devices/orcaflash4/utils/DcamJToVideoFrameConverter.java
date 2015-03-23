@@ -136,7 +136,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	new UnsignedShortType(),
 																																								pDcamFrame.getWidth(),
 																																								pDcamFrame.getHeight(),
-																																								lNumberOfImagesPerPlane * lStackDepth);
+																																								lStackDepth);
 
 			StackInterface<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStack = null;
 			if (lStackDepth == 1)
@@ -160,8 +160,10 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 																															lStackRequest);
 			}
 
-			System.out.println("m2DStackBasicRecycler.getNumberOfAvailableObjects()=" + m2DStackBasicRecycler.getNumberOfAvailableObjects());
-			System.out.println("m2DStackBasicRecycler.getNumberOfLiveObjects()=" + m2DStackBasicRecycler.getNumberOfLiveObjects());
+			// System.out.println("m2DStackBasicRecycler.getNumberOfAvailableObjects()="
+			// + m2DStackBasicRecycler.getNumberOfAvailableObjects());
+			// System.out.println("m2DStackBasicRecycler.getNumberOfLiveObjects()=" +
+			// m2DStackBasicRecycler.getNumberOfLiveObjects());
 
 			/*System.out.println("m3DStackBasicRecycler.getNumberOfAvailableObjects()=" + m3DStackBasicRecycler.getNumberOfAvailableObjects());
 			System.out.println("m3DStackBasicRecycler.getNumberOfLiveObjects()=" + m3DStackBasicRecycler.getNumberOfLiveObjects());/**/
@@ -232,7 +234,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		return mStackDepthVariable;
 	}
 
-	public DoubleVariable getNumberOfPhasesPerPlaneVariable()
+	public DoubleVariable getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
 	}

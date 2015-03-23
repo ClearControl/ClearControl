@@ -62,7 +62,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	private volatile ContiguousMemoryInterface mConversionBuffer;
 
-	private volatile boolean mRequestRedraw = true,
+	private volatile boolean
 			mDisplayFrameRate = true, mDisplayOn = true,
 			mManualMinMax = false, mMinMaxFixed = false,
 			mIsDisplayLines = false;
@@ -308,7 +308,6 @@ public class VideoWindow<T extends NativeType<T>> implements
 											y,
 											pWindowWidth,
 											pWindowHeight);
-				mRequestRedraw = true;
 				mEffectiveWindowWidth = pWindowWidth;
 				mEffectiveWindowHeight = pWindowHeight;
 
@@ -350,16 +349,13 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 						mTexture.copyFrom(lConvertedBuffer);
 						mNotifyBufferCopy.countDown();
-						mRequestRedraw = true;
+
 					}
 					mSendBufferLock.unlock();
 				}
 
 
-				// INFO: workaround for flickering screen in windows:
-				// mRequestRedraw = true;
 
-				if (mRequestRedraw)
 				{
 					if (mManualMinMax)
 					{
@@ -384,14 +380,10 @@ public class VideoWindow<T extends NativeType<T>> implements
 						// mXLinesGuidesVertexArray.draw(GL.GL_LINES);
 						mGridGuidesVertexArray.draw(GL.GL_LINES);
 					}
-					mRequestRedraw = false;
-					pGLAutoDrawable.setAutoSwapBufferMode(true);
+
+
 				}
-				else
-				{
-					Thread.yield();
-					pGLAutoDrawable.setAutoSwapBufferMode(false);
-				}
+
 			}
 
 			private ContiguousMemoryInterface convertBuffer(ContiguousMemoryInterface pSourceBuffer,
@@ -540,7 +532,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 	{
 		mSendBufferLock.lock();
 		{
-			mRequestRedraw = true;
+
 			mNotifyBufferCopy = new CountDownLatch(1);
 			mSourceBufferWidth = pWidth;
 			mSourceBufferHeight = pHeight;
@@ -553,7 +545,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 	{
 		mSendBufferLock.lock();
 		{
-			mRequestRedraw = true;
+
 			mNotifyBufferCopy = new CountDownLatch(1);
 			mSourceBufferWidth = pWidth;
 			mSourceBufferHeight = pHeight;
@@ -592,10 +584,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	}
 
-	public void requestDisplay()
-	{
-		mRequestRedraw = true;
-	}
+
 
 	public void setVisible(final boolean pVisible)
 	{
@@ -609,7 +598,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayOn(final boolean pDisplayOn)
 	{
-		mRequestRedraw = true;
+
 		mDisplayOn = pDisplayOn;
 	}
 
@@ -625,7 +614,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setMinIntensity(final double pMinIntensity)
 	{
-		mRequestRedraw = true;
+
 		mMinIntensity = pMinIntensity;
 	}
 
@@ -636,13 +625,13 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setMaxIntensity(final double pMaxIntensity)
 	{
-		mRequestRedraw = true;
+
 		mMaxIntensity = pMaxIntensity;
 	}
 
 	public void setGamma(double pGamma)
 	{
-		mRequestRedraw = true;
+
 		mGamma = pGamma;
 	}
 
@@ -658,7 +647,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setManualMinMax(final boolean pManualMinMax)
 	{
-		mRequestRedraw = true;
+
 		mManualMinMax = pManualMinMax;
 	}
 
@@ -679,7 +668,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayFrameRate(boolean pDisplayFrameRate)
 	{
-		mRequestRedraw = true;
+
 		mDisplayFrameRate = pDisplayFrameRate;
 	}
 
@@ -690,7 +679,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	public void setDisplayLines(boolean pIsDisplayLines)
 	{
-		mRequestRedraw = true;
+
 		mIsDisplayLines = pIsDisplayLines;
 	}
 

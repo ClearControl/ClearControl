@@ -17,14 +17,12 @@ import dcamj.DcamProperties;
 
 public class OrcaFlash4StackCamera extends
 																	StackCameraDeviceBase<UnsignedShortType, ShortOffHeapAccess> implements
-																																	VirtualDeviceInterface
+																																															VirtualDeviceInterface
 {
 	public static final int cStackProcessorQueueSize = 100;
 	public static final int cDcamJNumberOfBuffers = 1024;
 
 	private final int mCameraDeviceIndex;
-
-
 
 	private final DcamAcquisition mDcamAcquisition;
 
@@ -33,7 +31,6 @@ public class OrcaFlash4StackCamera extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private final Object mLock = new Object();
-
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
 	{
@@ -140,10 +137,10 @@ public class OrcaFlash4StackCamera extends
 		};
 
 		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeInNanometers",
-																								160);
+																												160);
 
 		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
-																									5000)
+																													5000)
 		{
 			@Override
 			public double setEventHook(	final double pOldExposureInMicroseconds,
@@ -180,12 +177,15 @@ public class OrcaFlash4StackCamera extends
 		mSingleShotModeVariable = new BooleanVariable("SingleShotMode",
 																									false);
 
-		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(mFrameReference,
-																																											cStackProcessorQueueSize);
+		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	mFrameReference,
+																																					cStackProcessorQueueSize);
+
+		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
 		mFrameDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
 
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
+
 
 	}
 
@@ -194,10 +194,10 @@ public class OrcaFlash4StackCamera extends
 		return mFrameReference;
 	}
 
-	public DoubleVariable getNumberOfPhasesVariable()
+	/*public DoubleVariable getNumberOfPhasesVariable()
 	{
 		return mDcamJToStackConverterAndProcessing.getNumberOfPhasesPerPlaneVariable();
-	}
+	}/**/
 
 	@Override
 	public boolean open()

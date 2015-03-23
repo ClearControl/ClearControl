@@ -87,12 +87,15 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 	@Override
 	public boolean start()
 	{
-		return mSerialDevice.start();
+		boolean lStart = mSerialDevice.start();
+		mPowerOnVariable.setValue(true);
+		return lStart;
 	}
 
 	@Override
 	public boolean stop()
 	{
+		mPowerOnVariable.setValue(false);
 		return mSerialDevice.stop();
 	}
 

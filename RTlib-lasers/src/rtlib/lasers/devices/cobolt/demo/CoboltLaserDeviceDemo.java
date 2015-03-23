@@ -14,7 +14,7 @@ public class CoboltLaserDeviceDemo
 	{
 		final CoboltLaserDevice lCoboltLaserDevice = new CoboltLaserDevice(	"Jive",
 																																				100,
-																																				"COM7");
+																																				"COM22");
 
 		assertTrue(lCoboltLaserDevice.open());
 
@@ -24,9 +24,19 @@ public class CoboltLaserDeviceDemo
 		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
 		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
 
+		lCoboltLaserDevice.getPowerOnVariable().setValue(true);
+		lCoboltLaserDevice.getLaserOnVariable().setValue(true);
+
+		for (int i = 0; i < 200; i++)
+		{
+			System.out.format("       current power at: \t%g mW \n",
+												lCoboltLaserDevice.getCurrentPowerInMilliWatt());
+			Thread.sleep(100);
+		}
+
 		assertTrue(lCoboltLaserDevice.start());
 
-		System.out.println("seting target power to 0mW ");
+		System.out.println("setting target power to 0mW ");
 		lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
 		System.out.println("target power (mW): " + lCoboltLaserDevice.getTargetPowerInMilliWatt());
 		System.out.println("target power (%): " + lCoboltLaserDevice.getTargetPowerInPercent());

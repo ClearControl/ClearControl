@@ -32,23 +32,18 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 		{
 		case KeyEvent.VK_G:
 			mVideoWindow.setGamma(1);
-			mVideoWindow.requestDisplay();
 			break;
 		case KeyEvent.VK_M:
 			mVideoWindow.setManualMinMax(true);
-			mVideoWindow.requestDisplay();
 			break;
 		case KeyEvent.VK_A:
 			mVideoWindow.setManualMinMax(false);
-			mVideoWindow.requestDisplay();
 			break;
 		case KeyEvent.VK_F:
 			mVideoWindow.setMinMaxFixed(!mVideoWindow.isMinMaxFixed());
-			mVideoWindow.requestDisplay();
 			break;
 		case KeyEvent.VK_L:
 			mVideoWindow.setDisplayLines(!mVideoWindow.isDisplayLines());
-			mVideoWindow.requestDisplay();
 			break;
 		}
 

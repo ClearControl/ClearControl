@@ -87,6 +87,7 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 		try
 		{
 			lOpen = super.open();
+			mSerialDevice.open();
 			ProtocolXX.setNoAdHocMode(mSerialDevice.getSerial());
 			setTargetPowerInPercent(0);
 			setOperatingMode(2);

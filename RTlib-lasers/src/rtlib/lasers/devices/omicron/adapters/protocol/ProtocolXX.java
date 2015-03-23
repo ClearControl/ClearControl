@@ -73,7 +73,7 @@ public class ProtocolXX
 
 	public static final boolean setNoAdHocMode(final Serial pSerial)
 	{
-		return setNoAdHocModeInternal(pSerial, 10);
+		return setNoAdHocModeInternal(pSerial, 40);
 	}
 
 	private static final boolean setNoAdHocModeInternal(final Serial pSerial,
@@ -124,6 +124,7 @@ public class ProtocolXX
 		}
 		catch (final Throwable e)
 		{
+			e.printStackTrace();
 			System.out.println(ProtocolXX.class.getSimpleName() + ": Failed to set non-AdHoc mode, trying again...");
 			purge(pSerial);
 			lSuccess = setNoAdHocModeInternal(pSerial, pMaxtries - 1);

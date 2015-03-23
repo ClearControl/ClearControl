@@ -105,6 +105,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 						System.err.println("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
 						return;
 					}
+					
+					lStack.setNumberOfImagesPerPlane((long) getNumberOfImagesPerPlaneVariable().getValue());
 					mStackReference.set(lStack);
 
 				}
@@ -230,5 +232,6 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		mHint = pHint;
 	}
+
 
 }

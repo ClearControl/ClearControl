@@ -59,7 +59,7 @@ public class TransformMatrices
 					for (int u = 0; u < pSquareImageWidthHeight; u++)
 					{
 						double lCosineValue = cos(lPiFactor * (u + 0.5) * i) * cos(lPiFactor * (v + 0.5)
-																																									* j);
+																																				* j);
 						if (i == 0)
 							lCosineValue *= 1 / sqrt(2.0);
 
@@ -77,7 +77,31 @@ public class TransformMatrices
 																				lCosineValue);
 					}
 
-		return lDenseMatrix64F;
+		return normalize(lDenseMatrix64F);
+	}
+
+	public static DenseMatrix64F normalize(DenseMatrix64F pDenseMatrix64F)
+	{
+		for (int col = 0; col < pDenseMatrix64F.getNumCols(); col++)
+		{
+			double lNorm = 0;
+			for (int row = 0; row < pDenseMatrix64F.getNumRows(); row++)
+			{
+				double lValue = pDenseMatrix64F.get(row, col);
+				lNorm += lValue * lValue;
+			}
+
+			lNorm = sqrt(lNorm);
+
+			for (int row = 0; row < pDenseMatrix64F.getNumRows(); row++)
+			{
+				double lValue = pDenseMatrix64F.get(row, col);
+				lValue = lValue / lNorm;
+				pDenseMatrix64F.set(row, col, lValue);
+			}
+		}
+
+		return pDenseMatrix64F;
 	}
 
 	private static void setMatrixToMatrixLinearMap(	DenseMatrix64F pDenseMatrix64F,

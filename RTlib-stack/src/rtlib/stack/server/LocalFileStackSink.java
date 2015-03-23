@@ -58,10 +58,13 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			lBinnaryFileChannel.force(false);
 			lBinnaryFileChannel.close();
 
-			final long[] lDimensions = lStackRequest.getDimensions();
+			long[] lDimensions = lStackRequest.getDimensions();
 
 			final String lDimensionsString = Arrays.toString(lDimensions);
-			final String lTruncatedDimensionsString = lDimensionsString.substring(1,
+
+			// the '2, ' part is to be compatible with the old format, that means 2
+			// bytes per voxel:
+			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(1,
 																																						lDimensionsString.length() - 1);
 
 			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),

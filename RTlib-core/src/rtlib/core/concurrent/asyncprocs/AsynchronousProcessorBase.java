@@ -78,10 +78,9 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 
 			return true;
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			error("Concurrent",
-						"Error while starting " + this.getClass().getSimpleName());
+			e.printStackTrace();
 			return false;
 		}
 	}

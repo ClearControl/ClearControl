@@ -2,9 +2,12 @@ package rtlib.ao.gui;
 
 import static java.lang.Math.sqrt;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -38,6 +41,8 @@ public class MatrixControlPanel extends JPanel
 	private final DenseMatrix64F mModeVector;
 
 	private JSliderDouble mSymetricRangeSlider;
+	private JButton mZeroAllModesButton;
+	private JButton mZeroCurrentModeButton;
 
 	public MatrixControlPanel(int pMatrixWidth,
 														int pMatrixHeight,
@@ -52,8 +57,8 @@ public class MatrixControlPanel extends JPanel
 		mModeVector = new DenseMatrix64F(mTransformMatrix.numRows, 1);
 
 		mInputModeVectorVariable = new ObjectVariable<DenseMatrix64F>("InputMatrix",
-																															new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
-																																									1))
+																																	new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
+																																											1))
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	DenseMatrix64F pOldValue,
@@ -66,10 +71,10 @@ public class MatrixControlPanel extends JPanel
 				for (int y = 0; y < pMatrixHeight; y++)
 					for (int x = 0; x < pMatrixWidth; x++)
 					{
-						final double lValue = pNewValue.get(x * mMatrixWidth
-																									+ y, 0);
+						final double lValue = pNewValue.get(x * mMatrixWidth + y,
+																								0);
 
-						setNewValueForModeMatrix(x, y, lValue);
+						setNewValueForModeMatrix(x, y, lValue, .5f);
 					}
 
 				return super.setEventHook(pOldValue, pNewValue);
@@ -101,7 +106,8 @@ public class MatrixControlPanel extends JPanel
 
 										setNewValueForModeMatrix(	mCurrentX,
 																							mCurrentY,
-																							pNewValue);
+																							pNewValue,
+																							0.5f);
 
 									}
 
@@ -176,14 +182,40 @@ public class MatrixControlPanel extends JPanel
 
 		setLayout(new MigLayout("insets 0",
 														"[grow][grow]",
-														"[grow][grow][grow]"));
+														"[][grow][grow][grow]"));
 
-		add(lModeSlider, "cell 0 0 2 1, grow"); // , "cell 0 1");
+		mZeroAllModesButton = new JButton("Zero all modes");
+		mZeroAllModesButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent pE)
+			{
+				mModeVector.set(mCurrentX + pMatrixWidth * mCurrentY, 0);
+				updateOutputMatrix();
+				zeroModeMatrix();
+			}
+		});
+		add(mZeroAllModesButton, "cell 0 0,growx,aligny center");
 
-		add(mModesMatrixPanel, "cell 0 1");
-		add(lMatrixPanel, "cell 1 1");
+		mZeroCurrentModeButton = new JButton("Zero current mode");
+		mZeroCurrentModeButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent pE)
+			{
+				mModeVector.zero();
+				updateOutputMatrix();
+				setNewValueForModeMatrix(mCurrentX, mCurrentY, 1, 0.2f);
+			}
+		});
+		add(mZeroCurrentModeButton, "cell 1 0,growx,aligny center");
 
-		add(mSymetricRangeSlider, "cell 0 2 2 1, grow"); // , "cell 0 1");
+		add(lModeSlider, "cell 0 1 2 1,grow"); // , "cell 0 1");
+
+		add(mModesMatrixPanel, "cell 0 2");
+		add(lMatrixPanel, "cell 1 2");
+
+		add(mSymetricRangeSlider, "cell 0 3 2 1,grow"); // , "cell 0 1");
 
 		validate();
 
@@ -191,7 +223,8 @@ public class MatrixControlPanel extends JPanel
 
 	private void setNewValueForModeMatrix(int pX,
 																				int pY,
-																				double pNewValue)
+																				double pNewValue,
+																				float pSaturation)
 	{
 		final DenseMatrix64F mTempVectorForDisplay = new DenseMatrix64F(mTransformMatrixForDisplay.numRows,
 																																		1);
@@ -208,9 +241,18 @@ public class MatrixControlPanel extends JPanel
 										lShapeVectorForDisplay);
 
 		final MatrixPanel lMatrixPanel = mMatrixPanels[pX][pY];
-		lMatrixPanel.setSaturation(0.5f);
+		lMatrixPanel.setSaturation(pSaturation);
 
 		lMatrixPanel.getMatrixVariable().set(lShapeVectorForDisplay);
+	}
+
+	private void zeroModeMatrix()
+	{
+		for (int y = 0; y < mMatrixHeight; y++)
+			for (int x = 0; x < mMatrixWidth; x++)
+			{
+				setNewValueForModeMatrix(x, y, 1, 0.2f);
+			}
 	}
 
 	private void updateOutputMatrix()

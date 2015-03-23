@@ -268,6 +268,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		}
 		catch (final SerialPortException e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 	}
