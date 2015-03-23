@@ -33,6 +33,18 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	}
 
 	@Override
+	public int getMatrixWidth()
+	{
+		return (int) mMatrixWidthVariable.getValue();
+	}
+
+	@Override
+	public int getMatrixHeight()
+	{
+		return (int) mMatrixHeightVariable.getValue();
+	}
+
+	@Override
 	public DoubleVariable getMatrixWidthVariable()
 	{
 		return mMatrixWidthVariable;

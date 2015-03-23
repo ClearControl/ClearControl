@@ -1,4 +1,4 @@
-package rtlib.ao.slms.dms.devices.alpao.demo;
+package rtlib.ao.slms.devices.alpao.demo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,8 +7,8 @@ import java.io.IOException;
 import org.ejml.data.DenseMatrix64F;
 import org.junit.Test;
 
-import rtlib.ao.slms.dms.demo.DeformableMirrorDeviceDemoHelper;
-import rtlib.ao.slms.dms.devices.alpao.AlpaoDMDevice;
+import rtlib.ao.slms.demo.DeformableMirrorDeviceDemoHelper;
+import rtlib.ao.slms.devices.alpao.AlpaoDMDevice;
 import rtlib.ao.zernike.TransformMatrices;
 
 public class AlpaoDeviceDemo
@@ -17,7 +17,7 @@ public class AlpaoDeviceDemo
 	public void demoZernicke() throws IOException, InterruptedException
 	{
 		final AlpaoDMDevice lAlpaoDMDevice = new AlpaoDMDevice(1);
-		final DenseMatrix64F lZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(8);
+		final DenseMatrix64F lZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lAlpaoDMDevice.getMatrixWidth());
 
 		assertTrue(lAlpaoDMDevice.open());
 
@@ -31,7 +31,7 @@ public class AlpaoDeviceDemo
 	public void demoCosine() throws IOException, InterruptedException
 	{
 		final AlpaoDMDevice lAlpaoDMDevice = new AlpaoDMDevice(1);
-		final DenseMatrix64F lCosineTransformMatrix = TransformMatrices.computeCosineTransformMatrix(8);
+		final DenseMatrix64F lCosineTransformMatrix = TransformMatrices.computeCosineTransformMatrix(lAlpaoDMDevice.getMatrixWidth());
 
 		assertTrue(lAlpaoDMDevice.open());
 
@@ -45,7 +45,7 @@ public class AlpaoDeviceDemo
 	public void demoRandom() throws IOException, InterruptedException
 	{
 		final AlpaoDMDevice lAlpaoDMDevice = new AlpaoDMDevice(1);
-		final DenseMatrix64F lCosineTransformMatrix = TransformMatrices.computeCosineTransformMatrix(8);
+		final DenseMatrix64F lCosineTransformMatrix = TransformMatrices.computeCosineTransformMatrix(lAlpaoDMDevice.getMatrixWidth());
 
 		assertTrue(lAlpaoDMDevice.open());
 

@@ -75,7 +75,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			@Override
 			public void fire(boolean pCurrentBooleanValue)
 			{
-				final long lWaitTimeMicroseconds = (long) mExposureInMicrosecondsVariable.getValue();
+				final long lWaitTimeMicroseconds = (long) (mExposureInMicrosecondsVariable.getValue() * mFrameDepthVariable.getValue());
 				ThreadUtils.sleep(lWaitTimeMicroseconds,
 													TimeUnit.MICROSECONDS);
 
@@ -137,8 +137,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 																														lStackRequest);
 
 		// mRecycler.printDebugInfo();
-		System.out.println(lStackRequest.toString());
+		// System.out.println(lStackRequest.toString());
 
+		final byte time = (byte) mCurrentStackIndex;
 		if (mHint == null || mHint.type.equals("normal"))
 		{
 			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
@@ -148,8 +149,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 				for (int y = 0; y < lHeight; y++)
 					for (int x = 0; x < lWidth; x++)
 					{
-						int lValueValue = (((byte) x ^ (byte) y ^ (byte) z ^ ((byte) mCurrentStackIndex)));
-						if (lValueValue < 12)
+						int lValueValue = (((byte) (x + time) ^ (byte) (y)
+																^ (byte) z ^ (time)));
+						if (lValueValue < 32)
 							lValueValue = 0;
 						lContiguousBuffer.writeShort((short) lValueValue);
 					}

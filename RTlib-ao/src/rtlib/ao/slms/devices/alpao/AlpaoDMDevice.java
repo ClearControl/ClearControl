@@ -1,8 +1,8 @@
-package rtlib.ao.slms.dms.devices.alpao;
+package rtlib.ao.slms.devices.alpao;
 
 import org.ejml.data.DenseMatrix64F;
 
-import rtlib.ao.slms.dms.DeformableMirrorDevice;
+import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.doublev.DoubleVariable;

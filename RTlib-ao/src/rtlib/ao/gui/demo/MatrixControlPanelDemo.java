@@ -23,11 +23,13 @@ public class MatrixControlPanelDemo
 										InterruptedException
 	{
 
-		final DenseMatrix64F lTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(8);
-		final DenseMatrix64F lTransformMatrixForDisplay = TransformMatrices.computeZernickeTransformMatrix(32);
+		final int lMatrixWidth = 11;
 
-		final MatrixControlPanel lMatrixControlPanel = new MatrixControlPanel(8,
-																																					8,
+		final DenseMatrix64F lTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lMatrixWidth);
+		final DenseMatrix64F lTransformMatrixForDisplay = TransformMatrices.computeZernickeTransformMatrix(lMatrixWidth * 4);
+
+		final MatrixControlPanel lMatrixControlPanel = new MatrixControlPanel(lMatrixWidth,
+																																					lMatrixWidth,
 																																					lTransformMatrix,
 																																					lTransformMatrixForDisplay);
 
@@ -47,13 +49,15 @@ public class MatrixControlPanelDemo
 			}
 		});
 
-		final DenseMatrix64F lInputVector = new DenseMatrix64F(64, 1);
-		final DenseMatrix64F lShapeVector = new DenseMatrix64F(64, 1);
+		final DenseMatrix64F lInputVector = new DenseMatrix64F(	lMatrixWidth * lMatrixWidth,
+																														1);
+		final DenseMatrix64F lShapeVector = new DenseMatrix64F(	lMatrixWidth * lMatrixWidth,
+																														1);
 
 		for (int i = 0; i < 10000; i++)
 		{
 			final double lValue = cos(0.1 * i);
-			lInputVector.set(9, lValue);
+			lInputVector.set(lMatrixWidth + 1, lValue);
 
 			lMatrixControlPanel.getInputModeVectorVariable()
 													.setReference(lInputVector);/**/

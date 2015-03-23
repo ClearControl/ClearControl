@@ -1,9 +1,9 @@
-package rtlib.ao.slms.dms.demo;
+package rtlib.ao.slms.demo;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import rtlib.ao.slms.dms.DeformableMirrorDevice;
+import rtlib.ao.slms.DeformableMirrorDevice;
 
 public class DeformableMirrorDeviceDemoHelper
 {
