@@ -125,6 +125,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		final int lWidth = (int) max(16, mFrameWidthVariable.getValue());
 		final int lHeight = (int) max(16, mFrameHeightVariable.getValue());
 		final int lDepth = (int) max(16, mFrameDepthVariable.getValue());
+		final int lNumberOfImagesPerPlane = (int) getNumberOfImagesPerPlaneVariable().getValue();
 
 		if (lWidth * lHeight * lDepth <= 0)
 			return null;
@@ -151,8 +152,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 				for (int y = 0; y < lHeight; y++)
 					for (int x = 0; x < lWidth; x++)
 					{
-						int lValueValue = (((byte) (x + time) ^ (byte) (y)
-																^ (byte) z ^ (time)));
+						int lValueValue = (((byte) (x + time) ^ (byte) (cos(lNumberOfImagesPerPlane * x
+																														+ (z % lNumberOfImagesPerPlane)))
+														^ (byte) z ^ (time)));/**/
 						if (lValueValue < 32)
 							lValueValue = 0;
 						lContiguousBuffer.writeShort((short) lValueValue);
