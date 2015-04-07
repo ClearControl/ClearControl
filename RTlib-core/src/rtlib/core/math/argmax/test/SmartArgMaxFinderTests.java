@@ -17,18 +17,17 @@ public class SmartArgMaxFinderTests
 	@Test
 	public void basicTest()
 	{
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-
+		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 1, 2, 3, 4, 5 };
 
-			Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+			final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 
-			double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			final double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 
 			System.out.println(Arrays.toString(lX));
 			System.out.println(Arrays.toString(lY));
@@ -40,14 +39,14 @@ public class SmartArgMaxFinderTests
 		}
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 0, 2, 2, 7, 6, 1, 0 };
 
-			Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+			final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 
-			double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			final double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 
 			System.out.println(Arrays.toString(lX));
 			System.out.println(Arrays.toString(lY));
@@ -59,9 +58,9 @@ public class SmartArgMaxFinderTests
 		}
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 1.542E-4,
 				1.547E-4,
 				1.555E-4,
@@ -70,9 +69,9 @@ public class SmartArgMaxFinderTests
 				1.545E-4,
 				1.547E-4 };
 
-			Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+			final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 
-			double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			final double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 
 			System.out.println(Arrays.toString(lX));
 			System.out.println(Arrays.toString(lY));
@@ -84,9 +83,9 @@ public class SmartArgMaxFinderTests
 		}
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 1.504E-4,
 				1.506E-4,
 				1.517E-4,
@@ -95,9 +94,9 @@ public class SmartArgMaxFinderTests
 				1.515E-4,
 				1.498E-4 };
 
-			Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+			final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 
-			double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
+			final double[] lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 
 			System.out.println(Arrays.toString(lX));
 			System.out.println(Arrays.toString(lY));
@@ -113,25 +112,25 @@ public class SmartArgMaxFinderTests
 	@Test
 	public void performanceTest()
 	{
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
+		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 0.11, 0.21, 0.3, 0.19, 0.09 };
 			double[] lFittedY = null;
 			Double lArgmax = null;
 
-			int lNumberOfIterations = 100;
-			long lStart = System.nanoTime();
+			final int lNumberOfIterations = 100;
+			final long lStart = System.nanoTime();
 			for (int i = 0; i < lNumberOfIterations; i++)
 			{
 				lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 				lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 			}
-			long lStop = System.nanoTime();
-			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
+			final long lStop = System.nanoTime();
+			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
 
 			System.out.format("%g ms per estimation. \n", lElapsed);
 
@@ -149,8 +148,8 @@ public class SmartArgMaxFinderTests
 	public void benchmark() throws IOException, URISyntaxException
 	{
 
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-		double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 15);
+		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
+		final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 15);
 		assertEquals(0, lMaxError, 1);
 
 	}
@@ -159,9 +158,68 @@ public class SmartArgMaxFinderTests
 	public void benchmarkWithFitEstimation() throws IOException,
 																					URISyntaxException
 	{
-		SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-		double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
+		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
+		final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
 		assertEquals(0, lMaxError, 0.6);
+
+	}
+
+	@Test
+	public void regressionTestBug()	throws IOException,
+																URISyntaxException
+	{
+		final double[] lX = new double[]
+		{ -4.000E+02,
+			-3.600E+02,
+			-3.200E+02,
+			-2.800E+02,
+			-2.400E+02,
+			-2.000E+02,
+			-1.600E+02,
+			-1.200E+02,
+			-8.000E+01,
+			-4.000E+01,
+			0.000E+00,
+			4.000E+01,
+			8.000E+01,
+			1.200E+02,
+			1.600E+02,
+			2.000E+02,
+			2.400E+02,
+			2.800E+02,
+			3.200E+02,
+			3.600E+02,
+			4.000E+02 };
+
+		final double[] lY = new double[]
+		{ 3.173E-04,
+			3.148E-04,
+			3.138E-04,
+			3.164E-04,
+			3.188E-04,
+			3.194E-04,
+			3.199E-04,
+			3.219E-04,
+			3.233E-04,
+			3.255E-04,
+			3.269E-04,
+			3.299E-04,
+			3.297E-04,
+			3.289E-04,
+			3.298E-04,
+			3.317E-04,
+			3.316E-04,
+			3.304E-04,
+			3.316E-04,
+			3.322E-04,
+			3.321E-04 };
+
+		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
+
+
+		final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
+
+		System.out.println("lArgmax=" + lArgmax);
 
 	}
 

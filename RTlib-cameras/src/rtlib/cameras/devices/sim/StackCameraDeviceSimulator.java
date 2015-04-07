@@ -63,7 +63,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 		if (mTriggerVariable == null)
 		{
-			error("cameras",
+			severe("cameras",
 						"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
 								+ " because trigger variable is null!");
 			return;

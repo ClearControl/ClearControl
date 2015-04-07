@@ -20,10 +20,10 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 	private static final Executor sExecutor = Executors.newCachedThreadPool();
 	private static final int cTimeOutInSeconds = 1;
 
-	private ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
-	private Median mMedian;
+	private final ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
+	private final Median mMedian;
 
-	private boolean mDebug = false;
+	private final boolean mDebug = true;
 
 	public EnsembleArgMaxFinder()
 	{
@@ -38,9 +38,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 
 	private class ArgMaxCallable implements Callable<Double>
 	{
-		private double[] mX;
-		private double[] mY;
-		private ArgMaxFinder1D mArgMaxFinder1D;
+		private final double[] mX;
+		private final double[] mY;
+		private final ArgMaxFinder1D mArgMaxFinder1D;
 
 		public ArgMaxCallable(ArgMaxFinder1D pArgMaxFinder1D,
 													double[] pX,
@@ -54,9 +54,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		@Override
 		public Double call() throws Exception
 		{
-			long lStartTimeInNs = System.nanoTime();
-			Double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
-			long lStopTimeInNs = System.nanoTime();
+			final long lStartTimeInNs = System.nanoTime();
+			final Double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
+			final long lStopTimeInNs = System.nanoTime();
 			/*double lElapsedtimeInSeconds = Magnitudes.nano2unit(lStopTimeInNs - lStartTimeInNs);
 			System.out.format("elapsed time: %g for %s \n",
 													lElapsedtimeInSeconds,
@@ -81,26 +81,26 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		if (constant(pY))
 			return null;
 
-		ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>();
-		HashMap<FutureTask<Double>, ArgMaxCallable> lTaskToCallableMap = new HashMap<FutureTask<Double>, ArgMaxCallable>();
+		final ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>();
+		final HashMap<FutureTask<Double>, ArgMaxCallable> lTaskToCallableMap = new HashMap<FutureTask<Double>, ArgMaxCallable>();
 
-		for (ArgMaxFinder1D lArgMaxFinder1D : mArgMaxFinder1DList)
+		for (final ArgMaxFinder1D lArgMaxFinder1D : mArgMaxFinder1DList)
 		{
-			ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(lArgMaxFinder1D,
+			final ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(lArgMaxFinder1D,
 																													pX,
 																													pY);
-			FutureTask<Double> lArgMaxFutureTask = new FutureTask<Double>(lArgMaxCallable);
+			final FutureTask<Double> lArgMaxFutureTask = new FutureTask<Double>(lArgMaxCallable);
 			sExecutor.execute(lArgMaxFutureTask);
 			lTaskList.add(lArgMaxFutureTask);
 			lTaskToCallableMap.put(lArgMaxFutureTask, lArgMaxCallable);
 		}
 
-		TDoubleArrayList lArgMaxList = new TDoubleArrayList();
-		for (FutureTask<Double> lArgMaxFutureTask : lTaskList)
+		final TDoubleArrayList lArgMaxList = new TDoubleArrayList();
+		for (final FutureTask<Double> lArgMaxFutureTask : lTaskList)
 		{
 			try
 			{
-				Double lArgMax = lArgMaxFutureTask.get(	cTimeOutInSeconds,
+				final Double lArgMax = lArgMaxFutureTask.get(	cTimeOutInSeconds,
 																								TimeUnit.SECONDS);
 				if (lArgMax != null)
 				{
@@ -111,14 +111,14 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 					lArgMaxList.add(lArgMax);
 				}
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				if (mDebug)
 					e.printStackTrace();
 			}
 		}
 
-		double lArgMaxMedian = mMedian.evaluate(lArgMaxList.toArray());
+		final double lArgMaxMedian = mMedian.evaluate(lArgMaxList.toArray());
 
 		return lArgMaxMedian;
 	}

@@ -62,7 +62,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		catch (final Throwable e)
 		{
 			final String lErrorString = "Could not open connection to ALPAO DM - " + e.getLocalizedMessage();
-			error("AO", lErrorString);
+			severe("AO", lErrorString);
 			return false;
 		}
 
@@ -98,7 +98,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		catch (final Throwable e)
 		{
 			final String lErrorString = "Could not close connection to ALPAO DM - " + e.getLocalizedMessage();
-			error("AO", lErrorString);
+			severe("AO", lErrorString);
 			return false;
 		}
 	}

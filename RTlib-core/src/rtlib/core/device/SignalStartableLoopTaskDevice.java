@@ -93,7 +93,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		catch (ExecutionException e)
 		{
 			String lError = "Error during previous execution of loop function!";
-			error("Device", lError, e);
+			severe("Device", lError, e);
 		}
 		catch (InterruptedException e)
 		{
