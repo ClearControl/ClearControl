@@ -62,8 +62,8 @@ public class StackTests
 		assertEquals(1, lStack.getVoxelSizeInRealUnits(2), 0);
 		assertEquals(3, lStack.getVoxelSizeInRealUnits(3), 0);
 
-		assertEquals(1, lStack.getIndex());
-		assertEquals(2, lStack.getTimeStampInNanoseconds());
+		assertEquals(0, lStack.getIndex());
+		assertEquals(0, lStack.getTimeStampInNanoseconds());
 
 		assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 

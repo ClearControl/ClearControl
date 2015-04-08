@@ -75,7 +75,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			@Override
 			public void fire(boolean pCurrentBooleanValue)
 			{
-				final long lWaitTimeMicroseconds = (long) (mExposureInMicrosecondsVariable.getValue() * mFrameDepthVariable.getValue());
+				final long lExposuretimeInMicroSeconds = (long) mExposureInMicrosecondsVariable.getValue();
+				final long lDepth = (long) mFrameDepthVariable.getValue();
+				final long lWaitTimeMicroseconds = lExposuretimeInMicroSeconds * lDepth;
 				ThreadUtils.sleep(lWaitTimeMicroseconds,
 													TimeUnit.MICROSECONDS);
 

@@ -70,7 +70,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 
 	public final BooleanVariable[] mLaserOnOffArray = new BooleanVariable[cNumberOfLaserDigitalControls];
 	public final BooleanVariable mPatternOnOff = new BooleanVariable(	"PatternOnOff",
-																																		true);
+																																		false);
 	public final DoubleVariable mPatternPeriod = new DoubleVariable("PatternPeriod",
 																																	2);
 	public final DoubleVariable mPatternPhaseIndex = new DoubleVariable("PatternPhaseIndex",

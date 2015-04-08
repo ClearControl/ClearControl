@@ -1,4 +1,4 @@
-package rtlib.gui.swing.test;
+package rtlib.gui.swing.demo;
 
 import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;

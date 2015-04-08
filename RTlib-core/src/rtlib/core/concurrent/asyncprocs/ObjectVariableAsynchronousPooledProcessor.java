@@ -1,11 +1,15 @@
 package rtlib.core.concurrent.asyncprocs;
 
+import java.util.concurrent.TimeUnit;
+
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 																															VirtualDeviceInterface
 {
+	private static final long cTimeOutInSeconds = 1;
+
 	private final ObjectVariable<I> mInputObjectVariable;
 	private final ObjectVariable<O> mOutputObjectVariable;
 
@@ -84,7 +88,8 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 	@Override
 	public boolean stop()
 	{
-		return mAsynchronousProcessorPool.stop();
+		return mAsynchronousProcessorPool.stop(	cTimeOutInSeconds,
+																						TimeUnit.SECONDS);
 	}
 
 	@Override

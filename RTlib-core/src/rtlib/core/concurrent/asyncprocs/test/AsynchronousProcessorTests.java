@@ -44,8 +44,8 @@ public class AsynchronousProcessorTests
 		};
 
 		lProcessorA.connectToReceiver(lProcessorB);
-		lProcessorA.start();
-		lProcessorB.start();
+		assertTrue(lProcessorA.start());
+		assertTrue(lProcessorB.start());
 
 		boolean hasFailed = false;
 		for (int i = 0; i < 100; i++)
@@ -61,10 +61,86 @@ public class AsynchronousProcessorTests
 			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
 		}
 
-		lProcessorB.stop();
-		lProcessorB.waitToFinish(1, TimeUnit.SECONDS);
-		lProcessorA.stop();
-		lProcessorA.waitToFinish(1, TimeUnit.SECONDS);
+		assertTrue(lProcessorB.waitToFinish(1, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorB.getInputQueueLength());
+		assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
+
+		assertTrue(lProcessorA.waitToFinish(1, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorA.getInputQueueLength());
+		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
+
+		assertTrue(lProcessorA.start());
+		assertTrue(lProcessorB.start());
+
+		for (int i = 0; i < 100; i++)
+		{
+			hasFailed |= lProcessorA.passOrFail("test" + i);
+			// if(i>50) assertFalse();
+		}
+		assertTrue(hasFailed);
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+		for (int i = 0; i < 100; i++)
+		{
+			assertTrue(lProcessorA.passOrFail("test" + i));
+			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+		}
+
+		assertTrue(lProcessorB.waitToFinish(1, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorB.getInputQueueLength());
+		assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
+
+		assertTrue(lProcessorA.waitToFinish(1, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorA.getInputQueueLength());
+		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
+
+
+	}
+
+	@Test
+	public void testLongQueue()
+	{
+		final AsynchronousProcessorInterface<String, String> lProcessorA = new AsynchronousProcessorBase<String, String>(	"A",
+																																																											1000)
+		{
+			@Override
+			public String process(final String pInput)
+			{
+				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+				return "A" + pInput;
+			}
+		};
+
+		final AsynchronousProcessorInterface<String, String> lProcessorB = new AsynchronousProcessorBase<String, String>(	"B",
+																																																											1000)
+		{
+			@Override
+			public String process(final String pInput)
+			{
+				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+				return "B" + pInput;
+			}
+		};
+
+		lProcessorA.connectToReceiver(lProcessorB);
+		assertTrue(lProcessorA.start());
+		assertTrue(lProcessorB.start());
+
+		for (int i = 0; i < 1000; i++)
+		{
+			lProcessorA.passOrFail("test" + i);
+		}
+
+		assertTrue(lProcessorA.getInputQueueLength() > 0);
+		assertTrue(lProcessorA.waitToFinish(2, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorA.getInputQueueLength());
+		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
+
+
+		assertTrue(lProcessorB.waitToFinish(2, TimeUnit.SECONDS));
+		assertEquals(0, lProcessorB.getInputQueueLength());
+		assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
+
+
 
 	}
 
@@ -126,9 +202,9 @@ public class AsynchronousProcessorTests
 		// lProcessorA.connectToReceiver(lProcessorC);
 		lProcessorA.connectToReceiver(lProcessorB);
 		lProcessorB.connectToReceiver(lProcessorC);
-		lProcessorA.start();
-		lProcessorB.start();
-		lProcessorC.start();
+		assertTrue(lProcessorA.start());
+		assertTrue(lProcessorB.start());
+		assertTrue(lProcessorC.start());
 
 
 		for (int i = 1; i <= 1000; i++)
@@ -137,13 +213,17 @@ public class AsynchronousProcessorTests
 			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 		}
 
-		lProcessorA.waitToFinish(1, TimeUnit.SECONDS);
-		lProcessorB.waitToFinish(2, TimeUnit.SECONDS);
-		lProcessorC.waitToFinish(3, TimeUnit.SECONDS);
+		assertTrue(lProcessorA.waitToFinish(2, TimeUnit.SECONDS));
+		assertTrue(lProcessorB.waitToFinish(2, TimeUnit.SECONDS));
+		assertTrue(lProcessorC.waitToFinish(2, TimeUnit.SECONDS));
 
-		lProcessorA.stop();
-		lProcessorB.stop();
-		lProcessorC.stop();
+		assertEquals(0, lProcessorB.getInputQueueLength());
+		assertEquals(0, lProcessorB.getInputQueueLength());
+		assertEquals(0, lProcessorC.getInputQueueLength());
+
+		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
+		assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
+		assertTrue(lProcessorC.stop(1, TimeUnit.SECONDS));
 
 		for (int i = 1; i <= 1000; i++)
 		{

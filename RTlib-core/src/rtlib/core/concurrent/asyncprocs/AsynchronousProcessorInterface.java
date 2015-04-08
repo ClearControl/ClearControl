@@ -24,6 +24,8 @@ public interface AsynchronousProcessorInterface<I, O> extends
 
 	public boolean stop();
 
+	public boolean stop(final long pTimeOut, TimeUnit pTimeUnit);
+
 	public int getInputQueueLength();
 
 	public int getRemainingCapacity();

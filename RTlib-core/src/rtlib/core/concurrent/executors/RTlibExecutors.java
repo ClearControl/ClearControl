@@ -11,45 +11,33 @@ import java.util.concurrent.TimeUnit;
 public class RTlibExecutors
 {
 
-	private static ConcurrentHashMap<String, SoftReference<CompletingThreadPoolExecutor>> cThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
-	private static ConcurrentHashMap<String, SoftReference<ScheduledThreadPoolExecutor>> cScheduledThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
+	private static ConcurrentHashMap<Object, SoftReference<CompletingThreadPoolExecutor>> cThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
+	private static ConcurrentHashMap<Object, SoftReference<ScheduledThreadPoolExecutor>> cScheduledThreadPoolExecutorMap = new ConcurrentHashMap<>(100);
 
-	public static final <T> CompletingThreadPoolExecutor getThreadPoolExecutor(final Class<T> pClass)
+	public static final CompletingThreadPoolExecutor getThreadPoolExecutor(final Object pObject)
 	{
-		return getThreadPoolExecutor(pClass.getName());
-	}
-
-	public static final <T> ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final Class<T> pClass)
-	{
-		return getScheduledThreadPoolExecutor(pClass.getName());
-	}
-
-	public static final CompletingThreadPoolExecutor getThreadPoolExecutor(final String pName)
-	{
-		SoftReference<CompletingThreadPoolExecutor> lSoftReference = cThreadPoolExecutorMap.get(pName);
+		final SoftReference<CompletingThreadPoolExecutor> lSoftReference = cThreadPoolExecutorMap.get(pObject);
 		if (lSoftReference == null)
 			return null;
 		return lSoftReference.get();
 	}
 
-	public static final ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final String pName)
+	public static final ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor(final Object pObject)
 	{
-		SoftReference<ScheduledThreadPoolExecutor> lSoftReference = cScheduledThreadPoolExecutorMap.get(pName);
+		final SoftReference<ScheduledThreadPoolExecutor> lSoftReference = cScheduledThreadPoolExecutorMap.get(pObject);
 		if (lSoftReference == null)
 			return null;
 		return lSoftReference.get();
 	}
 
-	public static void resetThreadPoolExecutor(Class<? extends AsynchronousExecutorServiceAccess> pClass)
+	public static void resetThreadPoolExecutor(final Object pObject)
 	{
-		final String lName = pClass.getName();
-		cThreadPoolExecutorMap.remove(lName);
+		cThreadPoolExecutorMap.remove(pObject);
 	}
 
-	public static void resetScheduledThreadPoolExecutor(Class<? extends AsynchronousSchedulerServiceAccess> pClass)
+	public static void resetScheduledThreadPoolExecutor(final Object pObject)
 	{
-		final String lName = pClass.getName();
-		cScheduledThreadPoolExecutorMap.remove(lName);
+		cScheduledThreadPoolExecutorMap.remove(pObject);
 	}
 
 	public static final CompletingThreadPoolExecutor getOrCreateThreadPoolExecutor(	final Object pObject,
@@ -58,29 +46,28 @@ public class RTlibExecutors
 																																									final int pMaxPoolSize,
 																																									final int pMaxQueueLength)
 	{
-		final String lName = pObject.getClass().getName();
-		final String lSimpleName = pObject.getClass().getSimpleName();
-		SoftReference<CompletingThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cThreadPoolExecutorMap.get(lName);
+		SoftReference<CompletingThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cThreadPoolExecutorMap.get(pObject);
 
 		CompletingThreadPoolExecutor lThreadPoolExecutor;
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
-			BlockingQueue<Runnable> lNewQueue = new LinkedBlockingQueue<>(pMaxQueueLength);
+			final BlockingQueue<Runnable> lNewQueue = new LinkedBlockingQueue<>(pMaxQueueLength);
 
 			lThreadPoolExecutor = new CompletingThreadPoolExecutor(	pCorePoolSize,
 																															pMaxPoolSize,
 																															1,
 																															TimeUnit.MINUTES,
 																															lNewQueue,
-																															getThreadFactory(	lSimpleName,
+																															getThreadFactory(	pObject.getClass()
+																																												.getSimpleName(),
 																																								pPriority));
 
 			lThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lThreadPoolExecutor.prestartAllCoreThreads();
 
 			lSoftReferenceOnThreadPoolExecutor = new SoftReference<>(lThreadPoolExecutor);
-			cThreadPoolExecutorMap.put(	lName,
+			cThreadPoolExecutorMap.put(	pObject,
 																	lSoftReferenceOnThreadPoolExecutor);
 		}
 
@@ -90,21 +77,21 @@ public class RTlibExecutors
 	}
 
 	public static final ScheduledThreadPoolExecutor getOrCreateScheduledThreadPoolExecutor(	final Object pObject,
-																																																		final int pPriority,
-																																																		final int pCorePoolSize,
-																																																		final int pMaxQueueLength)
+																																													final int pPriority,
+																																													final int pCorePoolSize,
+																																													final int pMaxQueueLength)
 	{
-		final String lName = pObject.getClass().getName();
-		final String lSimpleName = pObject.getClass().getSimpleName();
-		SoftReference<ScheduledThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cScheduledThreadPoolExecutorMap.get(lName);
+
+		SoftReference<ScheduledThreadPoolExecutor> lSoftReferenceOnThreadPoolExecutor = cScheduledThreadPoolExecutorMap.get(pObject);
 
 		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor;
 
 		if (lSoftReferenceOnThreadPoolExecutor == null || lSoftReferenceOnThreadPoolExecutor.get() == null)
 		{
 			lScheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(	pCorePoolSize,
-																																								getThreadFactory(	lSimpleName,
-																																																	pPriority));
+																																			getThreadFactory(	pObject.getClass()
+																																																.getSimpleName(),
+																																												pPriority));
 
 			lScheduledThreadPoolExecutor.allowCoreThreadTimeOut(false);
 			lScheduledThreadPoolExecutor.prestartAllCoreThreads();
@@ -113,7 +100,7 @@ public class RTlibExecutors
 			lScheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
 
 			lSoftReferenceOnThreadPoolExecutor = new SoftReference<>(lScheduledThreadPoolExecutor);
-			cScheduledThreadPoolExecutorMap.put(lName,
+			cScheduledThreadPoolExecutorMap.put(pObject,
 																					lSoftReferenceOnThreadPoolExecutor);
 		}
 
@@ -125,12 +112,12 @@ public class RTlibExecutors
 	public static final ThreadFactory getThreadFactory(	final String pName,
 																											final int pPriority)
 	{
-		ThreadFactory lThreadFactory = new ThreadFactory()
+		final ThreadFactory lThreadFactory = new ThreadFactory()
 		{
 			@Override
 			public Thread newThread(Runnable pRunnable)
 			{
-				Thread lThread = new Thread(pRunnable);
+				final Thread lThread = new Thread(pRunnable);
 				lThread.setName(pName + "-" + pRunnable.hashCode());
 				lThread.setPriority(pPriority);
 				lThread.setDaemon(true);

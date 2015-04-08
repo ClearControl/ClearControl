@@ -21,7 +21,7 @@ public interface AsynchronousExecutorServiceAccess
 
 	public default Future<?> executeAsynchronously(final Runnable pRunnable)
 	{
-		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 		if (lThreadPoolExecutor == null)
 			lThreadPoolExecutor = initializeExecutors();
 
@@ -30,7 +30,7 @@ public interface AsynchronousExecutorServiceAccess
 
 	public default <O> Future<O> executeAsynchronously(final Callable<O> pCallable)
 	{
-		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 		if (lThreadPoolExecutor == null)
 			lThreadPoolExecutor = initializeExecutors();
 
@@ -40,10 +40,10 @@ public interface AsynchronousExecutorServiceAccess
 	public default boolean resetThreadPoolAndWaitForCompletion(	long pTimeOut,
 																															TimeUnit pTimeUnit) throws InterruptedException
 	{
-		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 
 		lThreadPoolExecutor.shutdown();
-		RTlibExecutors.resetThreadPoolExecutor(this.getClass());
+		RTlibExecutors.resetThreadPoolExecutor(this);
 
 		return lThreadPoolExecutor.awaitTermination(pTimeOut, pTimeUnit);
 	}
@@ -51,7 +51,7 @@ public interface AsynchronousExecutorServiceAccess
 	public default boolean waitForCompletion(	long pTimeOut,
 																						TimeUnit pTimeUnit) throws ExecutionException
 	{
-		CompletingThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this.getClass());
+		final CompletingThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 
 		if (lThreadPoolExecutor == null)
 			return true;
@@ -61,7 +61,7 @@ public interface AsynchronousExecutorServiceAccess
 			lThreadPoolExecutor.waitForCompletion(pTimeOut, pTimeUnit);
 			return true;
 		}
-		catch (TimeoutException e)
+		catch (final TimeoutException e)
 		{
 			return false;
 		}

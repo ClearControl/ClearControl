@@ -36,6 +36,12 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	}
 
 	@Override
+	public boolean stop(final long pTimeOut, TimeUnit pTimeUnit)
+	{
+		return true;
+	}
+
+	@Override
 	public boolean passOrWait(final I pObject)
 	{
 		return true;
@@ -72,5 +78,7 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	{
 		return 0;
 	}
+
+
 
 }

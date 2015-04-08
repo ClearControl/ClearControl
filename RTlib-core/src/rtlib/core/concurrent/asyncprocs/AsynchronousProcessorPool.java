@@ -80,18 +80,9 @@ public class AsynchronousProcessorPool<I, O>	extends
 	}
 
 	@Override
-	public boolean stop()
+	public boolean stop(final long pTimeOut, TimeUnit pTimeUnit)
 	{
-		try
-		{
-			stopScheduledThreadPoolAndWaitForCompletion(1, TimeUnit.SECONDS);
-			return true;
-		}
-		catch (final ExecutionException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+		return super.stop(pTimeOut, pTimeUnit);
 	}
 
 	@Override

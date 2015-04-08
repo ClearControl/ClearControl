@@ -23,7 +23,7 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 	private final ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
 	private final Median mMedian;
 
-	private final boolean mDebug = true;
+	private final boolean mDebug = false;
 
 	public EnsembleArgMaxFinder()
 	{

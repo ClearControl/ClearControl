@@ -142,7 +142,7 @@ public class AsynchronousPoolStackProcessorPipelineTests
 																																																										12,
 																																																										13,
 																																																										14));
-			System.out.println(lStack);
+			// System.out.println(lStack);
 			lStack.getContiguousMemory().setByteAligned(0, (byte) 0);
 
 			lAsynchronousPoolStackProcessorPipeline.getInputVariable()

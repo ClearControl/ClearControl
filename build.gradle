@@ -112,22 +112,16 @@ subprojects
     repositories 
     {
         mavenCentral()
-        maven 
-        {
-            url "http://oss.sonatype.org/content/groups/public"
-        } 
-        maven 
-        {
-            url "http://dl.bintray.com/clearvolume/ClearVolume"
-        } 
-        maven 
-        {
-            url  "http://dl.bintray.com/rtlib/RTlib" 
-        }
-        maven 
-        { 
-            url  "http://dl.bintray.com/RTlib/CoreMem"  
-        }
+        maven { url "http://oss.sonatype.org/content/groups/public"} 
+
+        maven { url  "http://dl.bintray.com/rtlib/RTlib"}
+        maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
+        maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
+        maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
+
+        maven { url  "http://maven.imagej.net/content/repositories/releases" }
+        maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
+        maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
 
     }
 

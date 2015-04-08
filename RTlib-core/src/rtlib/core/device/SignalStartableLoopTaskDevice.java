@@ -2,10 +2,10 @@ package rtlib.core.device;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.booleanv.BooleanVariable;
@@ -19,10 +19,10 @@ public abstract class SignalStartableLoopTaskDevice	extends
 {
 
 	private final SignalStartableLoopTaskDevice lThis;
-	private TimeUnit mTimeUnit;
+	private final TimeUnit mTimeUnit;
 	private final DoubleVariable mLoopPeriodVariable;
 	private final BooleanVariable mIsRunningVariable;
-	private volatile ScheduledFuture<?> mScheduledFuture;
+	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
 																				final boolean pOnlyStart,
@@ -46,7 +46,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean start()
 	{
-		Runnable lRunnable = () -> {
+		final Runnable lRunnable = () -> {
 			final long lStartTime = System.nanoTime();
 			loop();
 			final long lStopTime = System.nanoTime();
@@ -60,10 +60,10 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 		};
 		mScheduledFuture = scheduleAtFixedRate(	lRunnable,
-																						(long) 1,
+																						1,
 																						TimeUnit.NANOSECONDS);
 
-		boolean lStarted = mScheduledFuture != null;
+		final boolean lStarted = mScheduledFuture != null;
 
 		mIsRunningVariable.setValue(lStarted);
 
@@ -86,20 +86,20 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	{
 		try
 		{
-			boolean lStopScheduledThreadPoolAndWaitForCompletion = stopScheduledThreadPoolAndWaitForCompletion();
+			if(mScheduledFuture!=null)
+			{
+				mScheduledFuture.cancel(false);
+				mScheduledFuture.waitForCompletion(10, TimeUnit.SECONDS);
+			}
 			mIsRunningVariable.setValue(false);
-			return lStopScheduledThreadPoolAndWaitForCompletion;
+			return true;
 		}
-		catch (ExecutionException e)
+		catch (final ExecutionException e)
 		{
-			String lError = "Error during previous execution of loop function!";
+			final String lError = "Error during previous execution of loop function!";
 			severe("Device", lError, e);
 		}
-		catch (InterruptedException e)
-		{
-			System.err.println(e.getLocalizedMessage());
-		}
-		catch (CancellationException e)
+		catch (final CancellationException e)
 		{
 			System.err.println(e.getLocalizedMessage());
 		}

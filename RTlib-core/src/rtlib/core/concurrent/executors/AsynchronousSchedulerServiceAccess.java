@@ -1,7 +1,5 @@
 package rtlib.core.concurrent.executors;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -17,100 +15,77 @@ public interface AsynchronousSchedulerServiceAccess
 
 	}
 
-	public default ScheduledFuture<?> schedule(	Runnable pRunnable,
-																							long pDelay,
-																							TimeUnit pUnit)
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
+	public default WaitingScheduledFuture<?> schedule(Runnable pRunnable,
+																										long pDelay,
+																										TimeUnit pUnit)
 	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this);
 		if (lScheduledThreadPoolExecutor == null)
 			lScheduledThreadPoolExecutor = initializeScheduledExecutors();
 
-		return lScheduledThreadPoolExecutor.schedule(	pRunnable,
-																									pDelay,
-																									pUnit);
+		return new WaitingScheduledFuture(lScheduledThreadPoolExecutor.schedule(pRunnable,
+																																						pDelay,
+																																						pUnit));
 	}
 
-	public default ScheduledFuture<?> scheduleAtFixedRate(Runnable pRunnable,
-																												long pPeriod,
-																												TimeUnit pUnit)
+	public default WaitingScheduledFuture<?> scheduleAtFixedRate(	Runnable pRunnable,
+																																long pPeriod,
+																																TimeUnit pUnit)
 	{
 		return scheduleAtFixedRate(pRunnable, 0, pPeriod, pUnit);
 	}
 
-	public default ScheduledFuture<?> scheduleAtFixedRate(Runnable pRunnable,
-																												long pInitialDelay,
-																												long pPeriod,
-																												TimeUnit pTimeUnit)
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
+	public default WaitingScheduledFuture<?> scheduleAtFixedRate(	Runnable pRunnable,
+																																long pInitialDelay,
+																																long pPeriod,
+																																TimeUnit pTimeUnit)
 	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this);
 		if (lScheduledThreadPoolExecutor == null)
 			lScheduledThreadPoolExecutor = initializeScheduledExecutors();
 
-		return lScheduledThreadPoolExecutor.scheduleAtFixedRate(pRunnable,
-																														pInitialDelay,
-																														pPeriod,
-																														pTimeUnit);
+		return new WaitingScheduledFuture(lScheduledThreadPoolExecutor.scheduleAtFixedRate(	pRunnable,
+																																												pInitialDelay,
+																																												pPeriod,
+																																												pTimeUnit));
 	}
 
-	public default boolean stopScheduledThreadPoolAndWaitForCompletion() throws ExecutionException,
-																																			InterruptedException
+	public default WaitingScheduledFuture<?> scheduleNTimesAtFixedRate(	Runnable pRunnable,
+																																			long pTimes,
+																																			long pPeriod,
+																																			TimeUnit pTimeUnit)
 	{
-		// TODO this does not seem to work!!!
-		return stopScheduledThreadPoolAndWaitForCompletion(	Long.MAX_VALUE,
-																												TimeUnit.DAYS);
+		return scheduleNTimesAtFixedRate(	pRunnable,
+																			pTimes,
+																			0,
+																			pPeriod,
+																			pTimeUnit);
 	}
 
-	public default boolean stopScheduledThreadPoolAndWaitForCompletion(	long pTimeOut,
-																																			TimeUnit pTimeUnit) throws ExecutionException
-
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
+	public default WaitingScheduledFuture<?> scheduleNTimesAtFixedRate(	Runnable pRunnable,
+																																			long pTimes,
+																																			long pInitialDelay,
+																																			long pPeriod,
+																																			TimeUnit pTimeUnit)
 	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
+		final LimitedExecutionsRunnable lLimitedExecutionsRunnable = LimitedExecutionsRunnable.wrap(pRunnable,
+																																																pTimes);
 
+		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this);
 		if (lScheduledThreadPoolExecutor == null)
-			return false;
+			lScheduledThreadPoolExecutor = initializeScheduledExecutors();
 
-		lScheduledThreadPoolExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-		lScheduledThreadPoolExecutor.shutdown();
-		try
-		{
-			boolean lTerminatedBeforeTimeout = lScheduledThreadPoolExecutor.awaitTermination(	pTimeOut,
-																											pTimeUnit);
-			RTlibExecutors.resetScheduledThreadPoolExecutor(this.getClass());
-			return lTerminatedBeforeTimeout;
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+		return new WaitingScheduledFuture(lLimitedExecutionsRunnable.runNTimes(	lScheduledThreadPoolExecutor,
+																																						pInitialDelay,
+																																						pPeriod,
+																																						pTimeUnit));
 
-	}
-
-	public default boolean waitForScheduleCompletion(	long pTimeOut,
-																										TimeUnit pTimeUnit) throws ExecutionException
-	{
-		ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor = RTlibExecutors.getScheduledThreadPoolExecutor(this.getClass());
-
-		if (lScheduledThreadPoolExecutor == null)
-			return true;
-
-		try
-		{
-			return lScheduledThreadPoolExecutor.awaitTermination(	pTimeOut,
-																											pTimeUnit);
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-
-	}
-
-	public default boolean waitForScheduleCompletion() throws ExecutionException,
-																										InterruptedException
-	{
-		return waitForScheduleCompletion(Long.MAX_VALUE, TimeUnit.DAYS);
 	}
 
 }

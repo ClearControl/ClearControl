@@ -68,10 +68,10 @@ if(hasProperty('bintray_user') && hasProperty('bintray_key') )
 			licenses = ['GPL-3.0']
 			publicDownloadNumbers = true
 			version {
-				name = '0.1' //Bintray logical version name
+				name = project.version //Bintray logical version name
 				desc = '.'
 				released  = new java.util.Date()
-				vcsTag = '0.1.0'
+				vcsTag = project.version
 
 			}
 		}

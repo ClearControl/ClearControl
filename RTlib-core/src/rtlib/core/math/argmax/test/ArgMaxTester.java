@@ -22,7 +22,7 @@ public class ArgMaxTester
 																					int pColumn) throws IOException,
 																											URISyntaxException
 	{
-		TDoubleArrayList lList = new TDoubleArrayList();
+		final TDoubleArrayList lList = new TDoubleArrayList();
 
 		try (BufferedReader lBufferedReader = Files.newBufferedReader(Paths.get(Resources.getResource(pContextClass,
 																																																	pRessource)
@@ -31,10 +31,10 @@ public class ArgMaxTester
 			String lLine;
 			while ((lLine = lBufferedReader.readLine()) != null)
 			{
-				String[] lSplittedLine = lLine.split("\t");
+				final String[] lSplittedLine = lLine.split("\t");
 				if (pColumn < lSplittedLine.length)
 				{
-					String lCell = lSplittedLine[pColumn];
+					final String lCell = lSplittedLine[pColumn];
 					if (!lCell.trim().isEmpty())
 					{
 						final double lValue = Double.parseDouble(lCell);
@@ -53,14 +53,14 @@ public class ArgMaxTester
 		double lMaxError = 0;
 		for (int i = 1; i <= pNumberOfDatasets; i++)
 		{
-			TDoubleArrayList lY = loadData(	ArgMaxTester.class,
+			final TDoubleArrayList lY = loadData(	ArgMaxTester.class,
 																			"./benchmark/Benchmark.txt",
 																			i);
 			final double LArgMaxReference = lY.get(0);
 			lY.remove(0, 1);
 			System.out.println(lY);
 
-			TDoubleArrayList lX = loadData(	ArgMaxTester.class,
+			final TDoubleArrayList lX = loadData(	ArgMaxTester.class,
 																			"./benchmark/Benchmark.txt",
 																			0);
 			lX.remove(0, 1);
@@ -70,7 +70,7 @@ public class ArgMaxTester
 
 			System.out.println("LArgMaxReference: " + LArgMaxReference);
 
-			Double lArgmax = pArgMaxFinder1D.argmax(lX.toArray(),
+			final Double lArgmax = pArgMaxFinder1D.argmax(lX.toArray(),
 																							lY.toArray());
 
 			System.out.println("class: " + pArgMaxFinder1D

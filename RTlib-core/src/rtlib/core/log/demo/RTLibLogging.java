@@ -1,4 +1,4 @@
-package rtlib.core.log.test;
+package rtlib.core.log.demo;
 
 import org.junit.Test;
 
@@ -9,7 +9,7 @@ public class RTLibLogging implements Loggable
 {
 
 	@Test
-	public void test() throws InterruptedException
+	public void demo() throws InterruptedException
 	{
 		for(int i=0; i<100; i++)
 			info("test", "bla");

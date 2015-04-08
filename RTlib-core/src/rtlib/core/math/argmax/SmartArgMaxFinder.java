@@ -24,18 +24,18 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 
 	private FitQualityEstimator mFitQualityEstimator;
 
-	private ParabolaFitArgMaxFinder mParabolaFitArgMaxFinder;
-	private SymetricParabolaFitArgMaxFinder mSymetricParabolaFitArgMaxFinder;
-	private GaussianFitArgMaxFinder mGaussianFitArgMaxFinder;
-	private QuarticFitArgMaxFinder mQuarticFitArgMaxFinder;
-	private SplineFitArgMaxFinder mSplineFitArgMaxFinder;
-	private RandomSplineFitArgMaxFinder mRandomSplineFitArgMaxFinder;
-	private LoessFitArgMaxFinder mLoessFitArgMaxFinder;
-	private Top5ArgMaxFinder mTop5ParabolaArgMaxFinder;
-	private COMArgMaxFinder mCOMArgMaxFinder;
-	private ModeArgMaxFinder mModeArgMaxFinder;
-	private MedianArgMaxFinder mMedianArgMaxFinder;
-	private DenoisingArgMaxFinder mDenoisingArgMaxFinder;
+	private final ParabolaFitArgMaxFinder mParabolaFitArgMaxFinder;
+	private final SymetricParabolaFitArgMaxFinder mSymetricParabolaFitArgMaxFinder;
+	private final GaussianFitArgMaxFinder mGaussianFitArgMaxFinder;
+	private final QuarticFitArgMaxFinder mQuarticFitArgMaxFinder;
+	private final SplineFitArgMaxFinder mSplineFitArgMaxFinder;
+	private final RandomSplineFitArgMaxFinder mRandomSplineFitArgMaxFinder;
+	private final LoessFitArgMaxFinder mLoessFitArgMaxFinder;
+	private final Top5ArgMaxFinder mTop5ParabolaArgMaxFinder;
+	private final COMArgMaxFinder mCOMArgMaxFinder;
+	private final ModeArgMaxFinder mModeArgMaxFinder;
+	private final MedianArgMaxFinder mMedianArgMaxFinder;
+	private final DenoisingArgMaxFinder mDenoisingArgMaxFinder;
 
 	private Double mFitProbability;
 	private Double mRMSD;
@@ -65,8 +65,8 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 	{
 		mFitQualityEstimator = new FitQualityEstimator();
 
-		int lLocalMaxima = countLocalMaxima(pY);
-		boolean lDenoiseBefore = lLocalMaxima > 1;
+		final int lLocalMaxima = countLocalMaxima(pY);
+		final boolean lDenoiseBefore = lLocalMaxima > 1;
 
 		mFitProbability = mFitQualityEstimator.probability(pX, pY);
 		mRMSD = mFitQualityEstimator.getRMSD();
@@ -79,7 +79,7 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 		// if (mFitProbability < mFitProbabilityThreshold)
 		// return null;
 
-		EnsembleArgMaxFinder lEnsembleArgMaxFinder = new EnsembleArgMaxFinder();
+		final EnsembleArgMaxFinder lEnsembleArgMaxFinder = new EnsembleArgMaxFinder();
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
 																						mParabolaFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
@@ -114,7 +114,7 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 			if (argmax(pX, pY) == null)
 				return null;
 
-		FitQualityEstimator lFitQualityEstimator = mFitQualityEstimator;
+		final FitQualityEstimator lFitQualityEstimator = mFitQualityEstimator;
 		mFitQualityEstimator = null;
 		return lFitQualityEstimator.getFit(pX, pY);
 	}

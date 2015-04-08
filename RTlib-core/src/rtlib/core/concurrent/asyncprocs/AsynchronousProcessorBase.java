@@ -2,13 +2,13 @@ package rtlib.core.concurrent.asyncprocs;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.queues.BestBlockingQueue;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.log.Loggable;
@@ -21,19 +21,19 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 																											Waiting
 {
 
-	private String mName;
+	private final String mName;
 	private AsynchronousProcessorInterface<O, ?> mReceiver;
 	private final BlockingQueue<I> mInputQueue;
-	private AtomicReference<ScheduledFuture<?>> mScheduledFuture = new AtomicReference<>();
-	private AtomicBoolean mIsProcessing = new AtomicBoolean(false);
+	private final AtomicReference<WaitingScheduledFuture<?>> mScheduledFuture = new AtomicReference<>();
+	private final AtomicBoolean mIsProcessing = new AtomicBoolean(false);
 
 	public AsynchronousProcessorBase(	final String pName,
 																		final int pMaxQueueSize)
 	{
 		super();
 		mName = pName;
-		mInputQueue = BestBlockingQueue.newBoundedQueue(pMaxQueueSize <= 0	? 1
-																																: pMaxQueueSize);
+		mInputQueue = BestBlockingQueue.newBoundedQueue(pMaxQueueSize <= 0 ? 1
+																																			: pMaxQueueSize);
 
 	}
 
@@ -48,7 +48,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		try
 		{
-			Runnable lRunnable = () -> {
+			final Runnable lRunnable = () -> {
 
 				try
 				{
@@ -78,7 +78,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 
 			return true;
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 			return false;
@@ -88,22 +88,41 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	@Override
 	public boolean stop()
 	{
+		return stop(Long.MAX_VALUE, TimeUnit.DAYS);
+	}
+
+	@Override
+	public boolean stop(final long pTimeOut, TimeUnit pTimeUnit)
+	{
 		try
 		{
-			stopScheduledThreadPoolAndWaitForCompletion(1, TimeUnit.SECONDS);
-			mScheduledFuture.set(null);
+			final WaitingScheduledFuture<?> lWaitingScheduledFuture = mScheduledFuture.getAndSet(null);
+			if (lWaitingScheduledFuture != null)
+			{
+				lWaitingScheduledFuture.cancel(false);
+				lWaitingScheduledFuture.waitForCompletion(pTimeOut, pTimeUnit);
+			}
 			return true;
 		}
-		catch (ExecutionException e)
+		catch (final ExecutionException e)
 		{
-			return stop();
+			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
+	{
+		waitFor(pTimeOut,
+						pTimeUnit,
+						() -> !mIsProcessing.get() && mInputQueue.isEmpty());
+		return mInputQueue.isEmpty();
 	}
 
 	@Override
 	public void close()
 	{
-		this.stop();
+
 	}
 
 	@Override
@@ -178,15 +197,6 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	public int getRemainingCapacity()
 	{
 		return mInputQueue.remainingCapacity();
-	}
-
-	@Override
-	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
-	{
-		waitFor(pTimeOut,
-						pTimeUnit,
-						() -> !mIsProcessing.get() && mInputQueue.isEmpty());
-		return mInputQueue.isEmpty();
 	}
 
 	public BlockingQueue<I> getInputQueue()

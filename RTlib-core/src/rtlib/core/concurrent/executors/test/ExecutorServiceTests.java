@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import rtlib.core.concurrent.executors.LimitedExecutionsRunnable;
+import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 
 public class ExecutorServiceTests
@@ -32,50 +32,50 @@ public class ExecutorServiceTests
 			for (int i = 0; i < cNumberOfTasks; i++)
 			{
 				final int j = i;
-				Runnable lTask = () -> {
+				final Runnable lTask = () -> {
 					// System.out.println("task-" + j);
 					try
 					{
 						ThreadUtils.sleep(4, TimeUnit.MILLISECONDS);
 					}
-					catch (Exception e)
+					catch (final Exception e)
 					{
 						e.printStackTrace();
 					}
 					mCounter.incrementAndGet();
 				};
 				// System.out.println("submitting : " + j);
-				Future<?> lFuture = executeAsynchronously(lTask);
+				final Future<?> lFuture = executeAsynchronously(lTask);
 
 				// System.out.println(" done.");
 
 			}
 		}
 
-		public void scheduleSomething() throws InterruptedException
+		public WaitingScheduledFuture<?> scheduleSomething() throws InterruptedException
 		{
 
-			Runnable lTask = () -> {
-				// System.out.println("scheduled task-" + j);
-				mCounter.incrementAndGet();
+			final Runnable lTask = () -> {
+				// System.out.println("scheduled task-");
 				try
 				{
+					// System.out.println("scheduled task start");
+					mCounter.incrementAndGet();
 					ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+					// System.out.println("scheduled task end");
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					e.printStackTrace();
 				}
 
 			};
-			// System.out.println("submitting : " + j);
+			// System.out.println("submitting");
 
-			LimitedExecutionsRunnable lLimitedExecutionsRunnable = LimitedExecutionsRunnable.wrap(lTask,
-																																														100);
-
-			lLimitedExecutionsRunnable.runNTimes(	this,
-																						10,
-																						TimeUnit.MILLISECONDS);
+			return scheduleNTimesAtFixedRate(	lTask,
+																20L,
+																10L,
+																TimeUnit.MILLISECONDS);
 
 		}
 
@@ -87,7 +87,15 @@ public class ExecutorServiceTests
 																				TimeoutException
 	{
 
-		ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
+		final ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
+
+		mCounter.set(0);
+		lExecutorServiceTest.doSomething();
+		// System.out.print("WAITING");
+		assertTrue(lExecutorServiceTest.waitForCompletion(10,
+																											TimeUnit.SECONDS));
+		assertEquals(cNumberOfTasks, mCounter.get());
+		// System.out.println("...done");
 
 		mCounter.set(0);
 		lExecutorServiceTest.doSomething();
@@ -115,26 +123,35 @@ public class ExecutorServiceTests
 																			TimeoutException
 	{
 
-		ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
+		final ExecutorServiceTest lExecutorServiceTest = new ExecutorServiceTest();
 
 		mCounter.set(0);
-		lExecutorServiceTest.scheduleSomething();
-		// System.out.print("WAITING");
-		// lExecutorServiceTest.waitForCompletion(1, TimeUnit.SECONDS);
-		lExecutorServiceTest.waitForScheduleCompletion(	2000,
-																										TimeUnit.MILLISECONDS);
-		assertEquals(10 * 10, mCounter.get());
-		// System.out.println("...done");
+		WaitingScheduledFuture<?> lWaitingScheduledFuture = lExecutorServiceTest.scheduleSomething();
+		System.out.print("WAITING");
+
+		assertTrue(lWaitingScheduledFuture.waitForCompletion(	100,
+																													TimeUnit.SECONDS));
+
+		System.out.println("mCounter.get()=" + mCounter.get());
+		assertEquals(20, mCounter.get());
+		System.out.println("...done");
 
 		mCounter.set(0);
-		lExecutorServiceTest.scheduleSomething();
-		// System.out.print("WAITING");
-		Thread.sleep(250);
-		lExecutorServiceTest.stopScheduledThreadPoolAndWaitForCompletion(	750,
-																																			TimeUnit.MILLISECONDS);
-		// System.out.println(mCounter.get());
-		assertTrue(mCounter.get() > 10);
-		assertTrue(10 * 10 / 2 > mCounter.get());
+		lWaitingScheduledFuture = lExecutorServiceTest.scheduleSomething();
+		System.out.print("WAITING");
+		assertTrue(lWaitingScheduledFuture.waitForCompletion(	100,
+																													TimeUnit.SECONDS));
+		assertEquals(20, mCounter.get());
+		System.out.println("...done");
+
+		mCounter.set(0);
+		lWaitingScheduledFuture = lExecutorServiceTest.scheduleSomething();
+		System.out.print("WAITING");
+		assertFalse(lWaitingScheduledFuture.waitForCompletion(10,
+																													TimeUnit.MILLISECONDS));
+		System.out.println(mCounter.get());
+		assertTrue(mCounter.get() > 1);
+		assertTrue(20 > mCounter.get());
 		// System.out.println("...done");
 
 	}

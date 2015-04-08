@@ -3,17 +3,17 @@ package rtlib.core.concurrent.executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class LimitedExecutionsRunnable implements Runnable
 {
-	private final AtomicInteger mExecutionCounter = new AtomicInteger();
+	private final AtomicLong mExecutionCounter = new AtomicLong();
 	private final Runnable mDelegatedRunnable;
 	private volatile ScheduledFuture<?> mScheduledFuture;
-	private final int mMaximumNumberOfExecutions;
+	private final long mMaximumNumberOfExecutions;
 
 	public LimitedExecutionsRunnable(	Runnable pDelegateRunnable,
-																		int pMaximumNumberOfExecutions)
+																		long pMaximumNumberOfExecutions)
 	{
 		this.mDelegatedRunnable = pDelegateRunnable;
 		this.mMaximumNumberOfExecutions = pMaximumNumberOfExecutions;
@@ -25,6 +25,7 @@ public class LimitedExecutionsRunnable implements Runnable
 		if (mScheduledFuture == null)
 			throw new UnsupportedOperationException("Scheduling and execution of " + LimitedExecutionsRunnable.class.getSimpleName()
 																							+ " instances should be done using this class methods only. ");
+
 		mDelegatedRunnable.run();
 		if (mExecutionCounter.incrementAndGet() == mMaximumNumberOfExecutions)
 		{
@@ -36,8 +37,16 @@ public class LimitedExecutionsRunnable implements Runnable
 																			long pPeriod,
 																			TimeUnit pTimeUnit)
 	{
+		return runNTimes(pScheduledExecutorService, pPeriod, pTimeUnit);
+	}
+
+	public ScheduledFuture<?> runNTimes(ScheduledExecutorService pScheduledExecutorService,
+																			long pInitialDelay,
+																			long pPeriod,
+																			TimeUnit pTimeUnit)
+	{
 		mScheduledFuture = pScheduledExecutorService.scheduleAtFixedRate(	this,
-																																			0,
+																																			pInitialDelay,
 																																			pPeriod,
 																																			pTimeUnit);
 		return mScheduledFuture;
@@ -52,7 +61,7 @@ public class LimitedExecutionsRunnable implements Runnable
 	}
 
 	public static LimitedExecutionsRunnable wrap(	Runnable pDelegateRunnable,
-																								int pMaximumNumberOfExecutions)
+																								long pMaximumNumberOfExecutions)
 	{
 		return new LimitedExecutionsRunnable(	pDelegateRunnable,
 																					pMaximumNumberOfExecutions);

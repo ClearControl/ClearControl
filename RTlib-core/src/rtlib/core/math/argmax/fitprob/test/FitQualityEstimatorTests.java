@@ -19,26 +19,27 @@ public class FitQualityEstimatorTests
 	@Test
 	public void basicTest()
 	{
-		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+		final FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 0, 2, 2, 7, 6, 1, 0 };
 
-			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 			System.out.format("p=%g \n", lPvalue);
 
 		}
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ -2.0, -1.0, 0.0, 1.0, 2.0 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 3.71E-05, 3.80E-05, 3.86E-05, 3.86E-05, 3.79E-05 };
 
-			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+
 
 			System.out.println(lPvalue);
 		}
@@ -48,19 +49,19 @@ public class FitQualityEstimatorTests
 	@Test
 	public void performancesTest()
 	{
-		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+		final FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
 
 		for (int i = 0; i < 100; i++)
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 0, 2, 2, 7, 6, 1, 0 };
 
-			long lStart = System.nanoTime();
-			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
-			long lStop = System.nanoTime();
-			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / 1);
+			final long lStart = System.nanoTime();
+			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			final long lStop = System.nanoTime();
+			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / 1);
 
 			System.out.format("%g ms elpased to find: p=%g \n",
 												lElapsed,
@@ -69,18 +70,18 @@ public class FitQualityEstimatorTests
 		}
 
 		{
-			double[] lX = new double[]
+			final double[] lX = new double[]
 			{ -2.0, -1.0, 0.0, 1.0, 2.0 };
-			double[] lY = new double[]
+			final double[] lY = new double[]
 			{ 0.2, 0.4, 0.1, 0.2, 0.1 };
 
 			double lPvalue = 0;
-			int lNumberOfIterations = 100;
-			long lStart = System.nanoTime();
+			final int lNumberOfIterations = 100;
+			final long lStart = System.nanoTime();
 			for (int i = 0; i < lNumberOfIterations; i++)
 				lPvalue = lFitQualityEstimator.probability(lX, lY);
-			long lStop = System.nanoTime();
-			double lElapsed = Magnitudes.nano2milli((1.0 * lStop - 1.0 * lStart) / lNumberOfIterations);
+			final long lStop = System.nanoTime();
+			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - 1.0 * lStart) / lNumberOfIterations);
 
 			System.out.format("%g ms per estimation. \n", lElapsed);
 
@@ -92,21 +93,21 @@ public class FitQualityEstimatorTests
 	@Test
 	public void randomDataTest()
 	{
-		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
-		double[] lX = new double[]
+		final FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+		final double[] lX = new double[]
 		{ 0, 1, 2, 3, 4, 5, 6 };
-		double[] lY = new double[lX.length];
-		Random lRandom = new Random(System.nanoTime());
+		final double[] lY = new double[lX.length];
+		final Random lRandom = new Random(System.nanoTime());
 
 		for (int i = 0; i < 1024; i++)
 		{
 
 			RandomizedDataGaussianFitter.generateRandomVector(lRandom, lY);
 
-			Double lPvalue = lFitQualityEstimator.probability(lX, lY);
+			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 
-			System.out.format(" p=%g \n",
-												lPvalue);
+			/*System.out.format(" p=%g \n",
+												lPvalue);/**/
 
 		}
 
@@ -115,7 +116,7 @@ public class FitQualityEstimatorTests
 	@Test
 	public void benchmark() throws IOException, URISyntaxException
 	{
-		FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
+		final FitQualityEstimator lFitQualityEstimator = new FitQualityEstimator();
 
 		System.out.println("nofit:");
 		run(lFitQualityEstimator,
@@ -139,18 +140,18 @@ public class FitQualityEstimatorTests
 	{
 		for (int i = 0; i < lNumberOfDatasets; i++)
 		{
-			TDoubleArrayList lY = ArgMaxTester.loadData(lContextClass,
+			final TDoubleArrayList lY = ArgMaxTester.loadData(lContextClass,
 																									lRessource,
 																									i);
-			TDoubleArrayList lX = new TDoubleArrayList();
+			final TDoubleArrayList lX = new TDoubleArrayList();
 			for (int j = 0; j < lY.size(); j++)
 				lX.add(j);
 
-			Double lProbability = lGaussianFitEstimator.probability(lX.toArray(),
+			final Double lProbability = lGaussianFitEstimator.probability(lX.toArray(),
 																															lY.toArray());
-			Double lRMSD = lGaussianFitEstimator.getRMSD();
+			final Double lRMSD = lGaussianFitEstimator.getRMSD();
 
-			double[] lFittedY = lGaussianFitEstimator.getFit(	lX.toArray(),
+			final double[] lFittedY = lGaussianFitEstimator.getFit(	lX.toArray(),
 																												lY.toArray());
 
 			// System.out.println("__________________________________________________________________________");

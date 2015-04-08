@@ -1,4 +1,4 @@
-package rtlib.test;
+package rtlib.demo;
 
 import static org.junit.Assert.assertTrue;
 import ij.ImagePlus;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import coremem.fragmented.FragmentedMemory;
 import coremem.offheap.OffHeapMemory;
 
-public class BasicImagLib2tests
+public class BasicImagLib2Demo
 {
 
 	@Test

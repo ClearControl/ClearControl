@@ -17,8 +17,8 @@ dependencies {
 	compile project(':RTlib-ip')
 	compile project(':RTlib-gui')
 
-	compile group: "net.rtlib", name: "Mirao52J", version: "1.0", transitive:true, changing: true
-	compile group: "net.rtlib", name: "ASDKJ", version: "1.0", transitive:true, changing: true
+	compile group: "net.rtlib", name: "Mirao52J", version: "(,2.0.0]", transitive:true, changing: true
+	compile group: "net.rtlib", name: "ASDKJ", version: "(,2.0.0]", transitive:true, changing: true
 
 	compile group: 'junit', name: 'junit', version: '4.11'
 	testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -28,7 +28,6 @@ dependencies {
 
 repositories {
 	mavenCentral()
-	maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
 }
 
 //***********************************************************************************
@@ -75,10 +74,10 @@ if(hasProperty('bintray_user') && hasProperty('bintray_key') )
 			licenses = ['GPL-3.0']
 			publicDownloadNumbers = true
 			version {
-				name = '0.1' //Bintray logical version name
+				name = project.version //Bintray logical version name
 				desc = '.'
 				released  = new java.util.Date()
-				vcsTag = '0.1.0'
+				vcsTag = project.version
 
 			}
 		}

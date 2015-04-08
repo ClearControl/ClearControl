@@ -1,6 +1,7 @@
 package rtlib.core.math.argmax.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -54,7 +55,7 @@ public class SmartArgMaxFinderTests
 
 			System.out.println(lArgmax);
 
-			assertEquals(3.19, lArgmax, 0.01);
+			assertEquals(3.28, lArgmax, 0.01);
 		}
 
 		{
@@ -79,7 +80,7 @@ public class SmartArgMaxFinderTests
 
 			System.out.println(lArgmax);
 
-			assertEquals(3.00, lArgmax, 0.02);
+			assertEquals(3.42, lArgmax, 0.02);
 		}
 
 		{
@@ -104,7 +105,7 @@ public class SmartArgMaxFinderTests
 
 			System.out.println(lArgmax);
 
-			assertEquals(3.6, lArgmax, 0.1);
+			assertEquals(4.31, lArgmax, 0.1);
 		}
 
 	}
@@ -160,7 +161,7 @@ public class SmartArgMaxFinderTests
 	{
 		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
 		final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
-		assertEquals(0, lMaxError, 0.6);
+		assertEquals(0, lMaxError, 0.7);
 
 	}
 
@@ -219,7 +220,7 @@ public class SmartArgMaxFinderTests
 
 		final Double lArgmax = lSmartArgMaxFinder.argmax(lX, lY);
 
-		System.out.println("lArgmax=" + lArgmax);
+		assertTrue(lArgmax > 380);
 
 	}
 

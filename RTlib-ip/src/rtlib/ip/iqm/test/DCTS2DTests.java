@@ -1,8 +1,6 @@
 package rtlib.ip.iqm.test;
 
 import static org.junit.Assert.assertFalse;
-import ij.ImageJ;
-import ij.ImagePlus;
 import io.scif.FormatException;
 import io.scif.Plane;
 import io.scif.Reader;
@@ -13,7 +11,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.img.planar.OffHeapPlanarImgFactory;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -71,8 +68,8 @@ public class DCTS2DTests
 				lPlaneContiguousMemory.setByteAligned(i, lBytes[i]);
 		}
 
-		new ImageJ();
-		final ImagePlus lShow = ImageJFunctions.show(lImage);
+		// new ImageJ();
+		// final ImagePlus lShow = ImageJFunctions.show(lImage);
 
 		double[] lComputeDCTS = new double[lDepth];
 
@@ -94,8 +91,6 @@ public class DCTS2DTests
 			assertFalse(lValue == 0);
 
 		}
-
-		Thread.sleep(200000);
 
 	}
 

@@ -20,12 +20,26 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1D
 
 		final double[] lY = new double[lLength];
 
-		lY[0] = 0.25 * (3 * pY[0] + pY[1]);
+		if (pY[0] > pY[1])
+			lY[0] = pY[1];
+		else
+			lY[0] = pY[0];
+
 		for (int i = 1; i < lLength - 1; i++)
 		{
-			lY[i] = 0.25 * (pY[i - 1] + 2 * pY[i] + pY[i + 1]);
+			if (pY[i] > pY[i - 1] && pY[i] > pY[i + 1])
+				lY[i] = 0.5 * (pY[i - 1] + pY[i + 1]);
+			else
+				lY[i] = pY[i];
 		}
-		lY[lLength - 1] = 0.25 * (3 * pY[lLength - 1] + pY[lLength - 2]);
+		if (pY[lLength - 2] < pY[lLength - 1])
+			lY[lLength - 1] = pY[lLength - 2];
+		else
+			lY[lLength - 1] = pY[lLength - 1];
+
+		/*System.out.println("_____________________");
+		for (final double y : lY)
+			System.out.println(y); /**/
 
 		final Double lArgmax = mArgMaxFinder1D.argmax(pX, lY);
 
