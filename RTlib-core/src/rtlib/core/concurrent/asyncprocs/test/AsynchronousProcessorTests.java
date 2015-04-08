@@ -228,7 +228,7 @@ public class AsynchronousProcessorTests
 		for (int i = 1; i <= 1000; i++)
 		{
 			final Integer lPoll = lIntList.poll();
-			assertEquals(i, lPoll, 0); // TODO: this sometimes fails! why??
+			assertEquals(i, lPoll, 0);
 		}
 
 	}

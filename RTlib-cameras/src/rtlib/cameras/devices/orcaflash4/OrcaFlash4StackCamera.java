@@ -83,7 +83,6 @@ public class OrcaFlash4StackCamera extends
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
 																																9.74);
 
-		// TODO
 		mFrameBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
 																											mDcamAcquisition.getFrameBytesPerPixel());
 

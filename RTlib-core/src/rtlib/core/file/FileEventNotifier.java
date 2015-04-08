@@ -49,15 +49,11 @@ public class FileEventNotifier implements AutoCloseable
 			@Override
 			public void onStop(final FileAlterationObserver pObserver)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void onStart(final FileAlterationObserver pObserver)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -87,15 +83,11 @@ public class FileEventNotifier implements AutoCloseable
 			@Override
 			public void onDirectoryCreate(final File pDirectory)
 			{
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void onDirectoryChange(final File pDirectory)
 			{
-				// TODO Auto-generated method stub
-
 			}
 		});
 

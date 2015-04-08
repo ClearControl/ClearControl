@@ -101,14 +101,12 @@ public class JCheckBoxBoolean extends JCheckBox
 	@Override
 	public String getText()
 	{
-		// TODO Auto-generated method stub
 		return super.getText();
 	}
 
 	@Override
 	public void setText(final String pText)
 	{
-		// TODO Auto-generated method stub
 		super.setText(pText);
 	}
 
@@ -116,7 +114,6 @@ public class JCheckBoxBoolean extends JCheckBox
 	@Deprecated
 	public String getLabel()
 	{
-		// TODO Auto-generated method stub
 		return super.getLabel();
 	}
 
@@ -124,7 +121,6 @@ public class JCheckBoxBoolean extends JCheckBox
 	@Deprecated
 	public void setLabel(final String pLabel)
 	{
-		// TODO Auto-generated method stub
 		super.setLabel(pLabel);
 	}
 

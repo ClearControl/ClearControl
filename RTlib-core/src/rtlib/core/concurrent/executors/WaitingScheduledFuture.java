@@ -16,7 +16,6 @@ public class WaitingScheduledFuture<V>	implements
 	public WaitingScheduledFuture(ScheduledFuture<V> pDelegatedScheduledFuture)
 	{
 		mDelegatedScheduledFuture = pDelegatedScheduledFuture;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

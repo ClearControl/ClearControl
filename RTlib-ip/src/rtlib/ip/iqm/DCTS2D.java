@@ -47,7 +47,6 @@ public class DCTS2D	implements
 			}
 			catch (final Throwable e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

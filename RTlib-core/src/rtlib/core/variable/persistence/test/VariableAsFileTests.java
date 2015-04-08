@@ -1,4 +1,4 @@
-package rtlib.core.variable.persistence.demo;
+package rtlib.core.variable.persistence.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,7 +13,7 @@ import rtlib.core.variable.persistence.DoubleVariableAsFile;
 import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
 
-public class VariableAsFileTestsFIXMEDemo
+public class VariableAsFileTests
 {
 
 	@Test
