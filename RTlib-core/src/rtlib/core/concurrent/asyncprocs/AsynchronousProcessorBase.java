@@ -1,5 +1,6 @@
 package rtlib.core.concurrent.asyncprocs;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
-import rtlib.core.concurrent.queues.BestBlockingQueue;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.log.Loggable;
 
@@ -32,7 +32,7 @@ public abstract class AsynchronousProcessorBase<I, O> implements
 	{
 		super();
 		mName = pName;
-		mInputQueue = BestBlockingQueue.newBoundedQueue(pMaxQueueSize <= 0 ? 1
+		mInputQueue = new ArrayBlockingQueue<I>(pMaxQueueSize <= 0 ? 1
 																																			: pMaxQueueSize);
 
 	}
