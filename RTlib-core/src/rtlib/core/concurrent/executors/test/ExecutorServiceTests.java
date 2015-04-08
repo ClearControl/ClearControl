@@ -147,7 +147,7 @@ public class ExecutorServiceTests
 		mCounter.set(0);
 		lWaitingScheduledFuture = lExecutorServiceTest.scheduleSomething();
 		System.out.print("WAITING");
-		assertFalse(lWaitingScheduledFuture.waitForCompletion(10,
+		assertFalse(lWaitingScheduledFuture.waitForCompletion(100,
 																													TimeUnit.MILLISECONDS));
 		System.out.println(mCounter.get());
 		assertTrue(mCounter.get() > 1);

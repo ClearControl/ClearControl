@@ -19,7 +19,7 @@ public class WaitingTests
 	{
 		public void switchOn()
 		{
-			Runnable lRunnable = () -> {
+			final Runnable lRunnable = () -> {
 				if (waitFor(() -> mWaitFlag.get()))
 					mDoneFlag.set(true);
 			};
@@ -28,7 +28,7 @@ public class WaitingTests
 
 		public void switchOff()
 		{
-			Runnable lRunnable = () -> {
+			final Runnable lRunnable = () -> {
 				if (waitFor(1, TimeUnit.NANOSECONDS, () -> mWaitFlag.get()))
 					mDoneFlag.set(true);
 			};
@@ -39,20 +39,20 @@ public class WaitingTests
 	@Test
 	public void test() throws InterruptedException
 	{
-		TestClass lTestClass = new TestClass();
+		final TestClass lTestClass = new TestClass();
 		lTestClass.switchOn();
 		assertFalse(mDoneFlag.get());
 		mWaitFlag.set(true);
-		Thread.sleep(10);
+		Thread.sleep(100);
 		assertTrue(mDoneFlag.get());
 		mDoneFlag.set(false);
 		mWaitFlag.set(false);
 
 		lTestClass.switchOff();
 		assertFalse(mDoneFlag.get());
-		Thread.sleep(10);
+		Thread.sleep(100);
 		mWaitFlag.set(true);
-		Thread.sleep(10);
+		Thread.sleep(100);
 		assertFalse(mDoneFlag.get());
 
 	}
