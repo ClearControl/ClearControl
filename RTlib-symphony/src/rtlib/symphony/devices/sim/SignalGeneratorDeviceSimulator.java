@@ -58,7 +58,7 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 		mTriggerVariable.setValue(false);
 		mTriggerVariable.setValue(true);
 
-		return false;
+		return true;
 	}
 
 	@Override
