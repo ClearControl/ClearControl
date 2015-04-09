@@ -49,11 +49,11 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
 																																1);
-		mFrameBytesPerPixelVariable = new DoubleVariable(	"FrameBytesPerPixel",
+		mStackBytesPerPixelVariable = new DoubleVariable(	"FrameBytesPerPixel",
 																											2);
-		mFrameWidthVariable = new DoubleVariable("FrameWidth", 320);
-		mFrameHeightVariable = new DoubleVariable("FrameHeight", 320);
-		mFrameDepthVariable = new DoubleVariable("FrameDepth", 100);
+		mStackWidthVariable = new DoubleVariable("FrameWidth", 320);
+		mStackHeightVariable = new DoubleVariable("FrameHeight", 320);
+		mStackDepthVariable = new DoubleVariable("FrameDepth", 100);
 		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
 																													1000);
 		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeinNanometers",
@@ -76,7 +76,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			public void fire(boolean pCurrentBooleanValue)
 			{
 				final long lExposuretimeInMicroSeconds = (long) mExposureInMicrosecondsVariable.getValue();
-				final long lDepth = (long) mFrameDepthVariable.getValue();
+				final long lDepth = (long) mStackDepthVariable.getValue();
 				final long lWaitTimeMicroseconds = lExposuretimeInMicroSeconds * lDepth;
 				ThreadUtils.sleep(lWaitTimeMicroseconds,
 													TimeUnit.MICROSECONDS);
@@ -124,9 +124,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 	protected StackInterface<T, A> generateSyntheticStack() throws IncompatibleTypeException
 	{
-		final int lWidth = (int) max(16, mFrameWidthVariable.getValue());
-		final int lHeight = (int) max(16, mFrameHeightVariable.getValue());
-		final int lDepth = (int) max(16, mFrameDepthVariable.getValue());
+		final int lWidth = (int) max(16, mStackWidthVariable.getValue());
+		final int lHeight = (int) max(16, mStackHeightVariable.getValue());
+		final int lDepth = (int) max(16, mStackDepthVariable.getValue());
 		final int lNumberOfImagesPerPlane = (int) getNumberOfImagesPerPlaneVariable().getValue();
 
 		if (lWidth * lHeight * lDepth <= 0)

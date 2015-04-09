@@ -17,13 +17,13 @@ public interface CameraDeviceInterface extends VirtualDeviceInterface
 
 	DoubleVariable getLineReadOutTimeInMicrosecondsVariable();
 
-	DoubleVariable getFrameBytesPerPixelVariable();
+	DoubleVariable getStackBytesPerPixelVariable();
 
-	DoubleVariable getFrameWidthVariable();
+	DoubleVariable getStackWidthVariable();
 
-	DoubleVariable getFrameHeightVariable();
+	DoubleVariable getStackHeightVariable();
 
-	DoubleVariable getFrameDepthVariable();
+	DoubleVariable getStackDepthVariable();
 
 	DoubleVariable getExposureInMicrosecondsVariable();
 

@@ -179,7 +179,16 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	@Override
 	public String toString()
 	{
-		return getName() + "=" + mReference.toString();
+		try
+		{
+			return getName() + "="
+							+ ((mReference == null)	? "null"
+																			: mReference.toString());
+		}
+		catch (NullPointerException e)
+		{
+			return getName() + "=null";
+		}
 	}
 
 }

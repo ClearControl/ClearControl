@@ -10,8 +10,8 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 																																		CameraDeviceInterface
 {
 
-	protected DoubleVariable mFrameBytesPerPixelVariable,
-			mFrameWidthVariable, mFrameHeightVariable, mFrameDepthVariable,
+	protected DoubleVariable mStackBytesPerPixelVariable,
+			mStackWidthVariable, mStackHeightVariable, mStackDepthVariable,
 			mExposureInMicrosecondsVariable,
 			mPixelSizeinNanometersVariable,
 			mLineReadOutTimeInMicrosecondsVariable;
@@ -42,24 +42,24 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 
 	public abstract void reopen();
 
-	public DoubleVariable getFrameBytesPerPixelVariable()
+	public DoubleVariable getStackBytesPerPixelVariable()
 	{
-		return mFrameBytesPerPixelVariable;
+		return mStackBytesPerPixelVariable;
 	}
 
-	public DoubleVariable getFrameWidthVariable()
+	public DoubleVariable getStackWidthVariable()
 	{
-		return mFrameWidthVariable;
+		return mStackWidthVariable;
 	}
 
-	public DoubleVariable getFrameHeightVariable()
+	public DoubleVariable getStackHeightVariable()
 	{
-		return mFrameHeightVariable;
+		return mStackHeightVariable;
 	}
 
-	public DoubleVariable getFrameDepthVariable()
+	public DoubleVariable getStackDepthVariable()
 	{
-		return mFrameDepthVariable;
+		return mStackDepthVariable;
 	}
 
 	public DoubleVariable getExposureInMicrosecondsVariable()

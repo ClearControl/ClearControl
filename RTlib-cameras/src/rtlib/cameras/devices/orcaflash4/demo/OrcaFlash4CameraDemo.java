@@ -48,7 +48,7 @@ public class OrcaFlash4CameraDemo
 
 		assertTrue(lOrcaFlash4StackCamera.open());
 
-		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(1);
+		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(1);
 		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
@@ -96,9 +96,9 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.setValue(500);
-		lOrcaFlash4StackCamera.getFrameWidthVariable().setValue(128);
-		lOrcaFlash4StackCamera.getFrameHeightVariable().setValue(128);
-		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(128);
+		lOrcaFlash4StackCamera.getStackWidthVariable().setValue(128);
+		lOrcaFlash4StackCamera.getStackHeightVariable().setValue(128);
+		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(128);
 		lOrcaFlash4StackCamera.getStackModeVariable().setValue(true);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(128);
 
@@ -125,13 +125,12 @@ public class OrcaFlash4CameraDemo
 		final int lHeight = 256;
 
 		final rtlib.gui.video.video2d.videowindow.VideoWindow<UnsignedShortType> lVideoWindow = new VideoWindow<UnsignedShortType>(	"VideoWindow test",
-																																														new UnsignedShortType(),
-																																														lWidth,
-																																														lHeight);
+																																																																new UnsignedShortType(),
+																																																																lWidth,
+																																																																lHeight);
 
 		lVideoWindow.setDisplayOn(true);
 		lVideoWindow.setVisible(true);
-
 
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
@@ -160,7 +159,7 @@ public class OrcaFlash4CameraDemo
 																// INFO: we are not waiting for the buffer to be
 																// copied, that's BAD but for display it is not
 																// a big deal.
-																
+
 																pNewStack.release();
 
 																mFrameIndex.incrementAndGet();
@@ -182,9 +181,9 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.setValue(500);
-		lOrcaFlash4StackCamera.getFrameWidthVariable().setValue(lWidth);
-		lOrcaFlash4StackCamera.getFrameHeightVariable().setValue(lHeight);
-		lOrcaFlash4StackCamera.getFrameDepthVariable().setValue(1);
+		lOrcaFlash4StackCamera.getStackWidthVariable().setValue(lWidth);
+		lOrcaFlash4StackCamera.getStackHeightVariable().setValue(lHeight);
+		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(1);
 		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
@@ -192,7 +191,6 @@ public class OrcaFlash4CameraDemo
 
 		lVideoWindow.start();
 		assertTrue(lOrcaFlash4StackCamera.start());
-
 
 		Thread.sleep(20000);
 

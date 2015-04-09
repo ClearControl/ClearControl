@@ -70,7 +70,7 @@ public class OrcaFlash4StackCamera extends
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				/*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
 														+ " index="
 														+ pDcamFrame.getIndex()
 														+ " pFrameIndexInBufferList="
@@ -83,10 +83,10 @@ public class OrcaFlash4StackCamera extends
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
 																																9.74);
 
-		mFrameBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
+		mStackBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
 																											mDcamAcquisition.getFrameBytesPerPixel());
 
-		mFrameWidthVariable = new DoubleVariable("FrameWidth", 2048)
+		mStackWidthVariable = new DoubleVariable("FrameWidth", 2048)
 		{
 			@Override
 			public double setEventHook(	final double pOldValue,
@@ -106,7 +106,7 @@ public class OrcaFlash4StackCamera extends
 
 		};
 
-		mFrameHeightVariable = new DoubleVariable("FrameHeight", 2048)
+		mStackHeightVariable = new DoubleVariable("FrameHeight", 2048)
 		{
 			@Override
 			public double setEventHook(	final double pOldValue,
@@ -125,7 +125,7 @@ public class OrcaFlash4StackCamera extends
 			}
 		};
 
-		mFrameDepthVariable = new DoubleVariable("FrameDepth", 64)
+		mStackDepthVariable = new DoubleVariable("FrameDepth", 64)
 		{
 			@Override
 			public double setEventHook(	final double pOldValue,
@@ -181,7 +181,7 @@ public class OrcaFlash4StackCamera extends
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
-		mFrameDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
+		mStackDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
 
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
@@ -224,9 +224,9 @@ public class OrcaFlash4StackCamera extends
 		synchronized (mLock)
 		{
 			DcamFrame.preallocateFrames(pNumberOf2DFramesNeeded,
-																	(long) getFrameBytesPerPixelVariable().getValue(),
-																	(long) getFrameWidthVariable().getValue(),
-																	(long) getFrameHeightVariable().getValue(),
+																	(long) getStackBytesPerPixelVariable().getValue(),
+																	(long) getStackWidthVariable().getValue(),
+																	(long) getStackHeightVariable().getValue(),
 																	1);
 		}
 	}
@@ -236,10 +236,10 @@ public class OrcaFlash4StackCamera extends
 		synchronized (mLock)
 		{
 			DcamFrame.preallocateFrames(pNumberOf3DFramesNeeded,
-																	(long) getFrameBytesPerPixelVariable().getValue(),
-																	(long) getFrameWidthVariable().getValue(),
-																	(long) getFrameHeightVariable().getValue(),
-																	(long) getFrameDepthVariable().getValue());
+																	(long) getStackBytesPerPixelVariable().getValue(),
+																	(long) getStackWidthVariable().getValue(),
+																	(long) getStackHeightVariable().getValue(),
+																	(long) getStackDepthVariable().getValue());
 		}
 	}
 
@@ -247,9 +247,9 @@ public class OrcaFlash4StackCamera extends
 	{
 		synchronized (mLock)
 		{
-			return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
-																		(long) getFrameWidthVariable().getValue(),
-																		(long) getFrameHeightVariable().getValue(),
+			return DcamFrame.requestFrame((long) getStackBytesPerPixelVariable().getValue(),
+																		(long) getStackWidthVariable().getValue(),
+																		(long) getStackHeightVariable().getValue(),
 																		cDcamJNumberOfBuffers);
 		}
 	}
@@ -258,10 +258,10 @@ public class OrcaFlash4StackCamera extends
 	{
 		synchronized (mLock)
 		{
-			return DcamFrame.requestFrame((long) getFrameBytesPerPixelVariable().getValue(),
-																		(long) getFrameWidthVariable().getValue(),
-																		(long) getFrameHeightVariable().getValue(),
-																		(long) getFrameDepthVariable().getValue());
+			return DcamFrame.requestFrame((long) getStackBytesPerPixelVariable().getValue(),
+																		(long) getStackWidthVariable().getValue(),
+																		(long) getStackHeightVariable().getValue(),
+																		(long) getStackDepthVariable().getValue());
 		}
 	}
 
@@ -335,10 +335,10 @@ public class OrcaFlash4StackCamera extends
 				stop();
 			}
 
-			final int lWidth = (int) getFrameWidthVariable().getValue();
-			final int lHeight = (int) getFrameHeightVariable().getValue();
-			getFrameWidthVariable().setValue(mDcamAcquisition.setFrameWidth(lWidth));
-			getFrameHeightVariable().setValue(mDcamAcquisition.setFrameHeight(lHeight));
+			final int lWidth = (int) getStackWidthVariable().getValue();
+			final int lHeight = (int) getStackHeightVariable().getValue();
+			getStackWidthVariable().setValue(mDcamAcquisition.setFrameWidth(lWidth));
+			getStackHeightVariable().setValue(mDcamAcquisition.setFrameHeight(lHeight));
 			DcamFrame.clearFrames();
 			mDcamAcquisition.reopen();
 

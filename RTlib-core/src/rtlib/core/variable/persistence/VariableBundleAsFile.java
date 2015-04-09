@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Formatter;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ public class VariableBundleAsFile extends VariableBundle
 {
 	private final ExecutorService cSingleThreadExecutor = Executors.newSingleThreadExecutor();
 
-	private final TreeMap<String, VariableInterface<?>> mPrefixWithNameToVariableMap = new TreeMap<String, VariableInterface<?>>();
+	private final ConcurrentSkipListMap<String, VariableInterface<?>> mPrefixWithNameToVariableMap = new ConcurrentSkipListMap<String, VariableInterface<?>>();
 
 	private final VariableListener mVariableListener;
 
@@ -227,7 +227,7 @@ public class VariableBundleAsFile extends VariableBundle
 					final String lVariablePrefixAndName = lVariableEntry.getKey();
 					final VariableInterface<?> lVariable = lVariableEntry.getValue();
 
-					System.out.println(lVariable);
+					// System.out.println(lVariable);
 
 					if (lVariable instanceof DoubleVariable)
 					{
@@ -252,7 +252,7 @@ public class VariableBundleAsFile extends VariableBundle
 				lFormatter.flush();
 				if (lFormatter != null)
 				{
-					System.out.println("close formatter");
+					// System.out.println("close formatter");
 					lFormatter.close();
 				}
 				return true;
