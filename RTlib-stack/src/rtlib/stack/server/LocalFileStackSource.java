@@ -117,9 +117,9 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 				final double lTimeStampInSeconds = Double.parseDouble(lSplittedLine[1].trim());
 				final String[] lDimensionsStringArray = lSplittedLine[2].split(", ");
 
-				final long lWidth = Long.parseLong(lDimensionsStringArray[0]);
-				final long lHeight = Long.parseLong(lDimensionsStringArray[1]);
-				final long lDepth = Long.parseLong(lDimensionsStringArray[2]);
+				final long lWidth = Long.parseLong(lDimensionsStringArray[1]);
+				final long lHeight = Long.parseLong(lDimensionsStringArray[2]);
+				final long lDepth = Long.parseLong(lDimensionsStringArray[3]);
 
 				final StackRequest<T> lStackRequest = StackRequest.build(	mType,
 																																	lWidth,

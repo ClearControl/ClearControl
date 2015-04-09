@@ -64,12 +64,5 @@ public abstract class NamedVariable<O>
 
 	public abstract O get();
 
-	@Override
-	public String toString()
-	{
-		return String.format(	"NamedVariable [mVariableName=%s]",
-													getName(),
-													get().toString());
-	}
 
 }

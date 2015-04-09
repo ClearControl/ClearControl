@@ -1,6 +1,6 @@
 package rtlib.core.variable.objectv.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -18,16 +18,16 @@ public class ObjectVariableTests
 																																0.0);
 
 		x.syncWith(y);
-		assertTrue(x.getReference() == 0.0);
-		assertTrue(y.getReference() == 0.0);
+		assertEquals(new Double(0.0), x.getReference());
+		assertEquals(new Double(0.0), y.getReference());
 
 		x.setReference(1.0);
-		assertTrue(x.getReference() == 1.0);
-		assertTrue(y.getReference() == 1.0);
+		assertEquals(new Double(1.0), x.getReference());
+		assertEquals(new Double(1.0), y.getReference());
 
 		y.setReference(2.0);
-		assertTrue(x.getReference() == 2.0);
-		assertTrue(y.getReference() == 2.0);
+		assertEquals(new Double(2.0), x.getReference());
+		assertEquals(new Double(2.0), y.getReference());
 
 	}
 

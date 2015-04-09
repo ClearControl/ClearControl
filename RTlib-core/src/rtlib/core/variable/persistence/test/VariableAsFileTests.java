@@ -92,7 +92,12 @@ public class VariableAsFileTests
 
 		x1.setValue(2);
 		y1.setReference("3");
-		Thread.sleep(100);
+		// Thread.sleep(1000);
+
+		lVariableBundleAsFile1.close();
+
+
+		// Thread.sleep(10000000);
 
 		final DoubleVariable x2 = new DoubleVariable("x", 1);
 		final ObjectVariable<String> y2 = new ObjectVariable<String>(	"y",
@@ -107,10 +112,13 @@ public class VariableAsFileTests
 		lVariableBundleAsFile2.read();
 
 		assertEquals(x1.getValue(), x2.getValue(), 0.01);
+		System.out.println("done");
 		assertEquals(y1.getReference(), y2.getReference());
 
-		lVariableBundleAsFile1.close();
+
+
 		lVariableBundleAsFile2.close();
+
 
 	}
 }

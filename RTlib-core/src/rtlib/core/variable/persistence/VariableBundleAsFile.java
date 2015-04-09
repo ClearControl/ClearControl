@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.VariableListener;
@@ -59,7 +60,6 @@ public class VariableBundleAsFile extends VariableBundle
 			{
 				writeAsynchronously();
 			}
-
 		};
 
 	}
@@ -160,7 +160,6 @@ public class VariableBundleAsFile extends VariableBundle
 							{
 								readObjectVariable(lValue, lVariable);
 							}
-
 						}
 					}
 					catch (final Exception e)
@@ -209,11 +208,10 @@ public class VariableBundleAsFile extends VariableBundle
 	private void readObjectVariable(final String lValue,
 																	final VariableInterface<?> lVariable)
 	{
-		/*final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
+		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
 
 		final ObjectVariable<String> lStringVariable = (ObjectVariable<String>) lObjectVariable;
-		lStringVariable.setReference(lValue);/**/
-
+		lStringVariable.setReference(lValue);
 	}
 
 	public boolean write()
@@ -228,6 +226,8 @@ public class VariableBundleAsFile extends VariableBundle
 				{
 					final String lVariablePrefixAndName = lVariableEntry.getKey();
 					final VariableInterface<?> lVariable = lVariableEntry.getValue();
+
+					System.out.println(lVariable);
 
 					if (lVariable instanceof DoubleVariable)
 					{
@@ -252,6 +252,7 @@ public class VariableBundleAsFile extends VariableBundle
 				lFormatter.flush();
 				if (lFormatter != null)
 				{
+					System.out.println("close formatter");
 					lFormatter.close();
 				}
 				return true;
@@ -268,7 +269,8 @@ public class VariableBundleAsFile extends VariableBundle
 
 	private void writeAsynchronously()
 	{
-		cSingleThreadExecutor.execute(mFileWriterRunnable);
+		// cSingleThreadExecutor.execute(mFileWriterRunnable);
+		write();
 	}
 
 	private final Runnable mFileWriterRunnable = new Runnable()
@@ -282,7 +284,14 @@ public class VariableBundleAsFile extends VariableBundle
 
 	public void close()
 	{
-
+		cSingleThreadExecutor.shutdown();
+		try
+		{
+			cSingleThreadExecutor.awaitTermination(100, TimeUnit.SECONDS);
+		}
+		catch (final InterruptedException e)
+		{
+		}
 	}
 
 }

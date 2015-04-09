@@ -23,7 +23,7 @@ public class RTLibLogging implements Loggable
 		for (int i = 0; i < 100; i++)
 			info("test", "blu");
 
-		Thread.sleep(20000);
+		Thread.sleep(4000);
 
 	}
 

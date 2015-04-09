@@ -71,13 +71,17 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 				}
 			}
 		}
+
+		final O lOldReference = mReference;
 		mReference = lNewValueAfterHook;
+
+		notifyListenersOfSetEvent(lOldReference, lNewValueAfterHook);
+
 		return true;
 	}
 
 	public O setEventHook(final O pOldValue, final O pNewValue)
 	{
-		notifyListenersOfSetEvent(mReference, pNewValue);
 		return pNewValue;
 	}
 
@@ -170,6 +174,12 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	public boolean isNull()
 	{
 		return mReference == null;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName() + "=" + mReference.toString();
 	}
 
 }
