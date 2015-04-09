@@ -1,5 +1,5 @@
 language: java
-script: "gradle build"
+script: "gradle build --debug"
 jdk:
   - oraclejdk8
 install: gradle assemble --stacktrace
