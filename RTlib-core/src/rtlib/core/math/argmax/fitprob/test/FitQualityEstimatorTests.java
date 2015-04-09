@@ -40,7 +40,6 @@ public class FitQualityEstimatorTests
 
 			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 
-
 			System.out.println(lPvalue);
 		}
 
