@@ -1,4 +1,4 @@
-package rtlib.core.log;
+package rtlib.core.gui;
 
 import javax.swing.JTextArea;
 import javax.swing.text.AttributeSet;

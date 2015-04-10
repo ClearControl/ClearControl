@@ -10,7 +10,7 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultCaret;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.log.LineLimitedDocumentFilter;
+import rtlib.core.gui.LineLimitedDocumentFilter;
 
 class LogPanel extends JPanel
 {
