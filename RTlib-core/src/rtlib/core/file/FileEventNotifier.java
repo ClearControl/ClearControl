@@ -140,6 +140,7 @@ public class FileEventNotifier implements AutoCloseable
 		try
 		{
 			mFileAlterationObserver.destroy();
+			mFileAlterationMonitor.stop();
 		}
 		catch (final Exception e)
 		{

@@ -29,7 +29,7 @@ subprojects
     sourceCompatibility = 1.8
 
     group = 'net.rtlib'
-    version = '0.1'
+    version = '0.1.1'
 
     /*
     compileJava 

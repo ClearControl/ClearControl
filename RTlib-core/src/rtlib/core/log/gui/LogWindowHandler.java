@@ -8,9 +8,10 @@ import rtlib.core.log.CompactFormatter;
 
 public class LogWindowHandler extends Handler
 {
+	private static LogWindowHandler sHandler = null;
+
 	private LogWindow mWindow = null;
 
-	private static LogWindowHandler mHandler = null;
 
 	/**
 	 * private constructor, preventing initialization
@@ -24,14 +25,14 @@ public class LogWindowHandler extends Handler
 
 	public static synchronized void setVisible(boolean pVisible)
 	{
-		if (mHandler != null)
-			mHandler.mWindow.setVisible(pVisible);
+		if (sHandler != null)
+			sHandler.mWindow.setVisible(pVisible);
 	}
 
 	public static void dispose()
 	{
-		if (mHandler != null)
-			mHandler.mWindow.dispose();
+		if (sHandler != null)
+			sHandler.mWindow.dispose();
 	}
 
 	public static synchronized LogWindowHandler getInstance(String pTitle)
@@ -43,36 +44,43 @@ public class LogWindowHandler extends Handler
 																													int pWidth,
 																													int pHeight)
 	{
-		if (mHandler == null)
+		if (sHandler == null)
 		{
-			mHandler = new LogWindowHandler(pTitle, pWidth, pHeight);
-			mHandler.setFormatter(new CompactFormatter());
+			sHandler = new LogWindowHandler(pTitle, pWidth, pHeight);
+			sHandler.setFormatter(new CompactFormatter());
 		}
-		return mHandler;
+		return sHandler;
 	}
 
 
 	@Override
 	public synchronized void publish(LogRecord record)
 	{
-		String message = null;
-		// check if the record is loggable
-		if (!isLoggable(record))
-			return;
 		try
 		{
-			message = getFormatter().format(record);
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
+			String message = null;
+			// check if the record is loggable
+			if (!isLoggable(record))
+				return;
+			try
+			{
+				message = getFormatter().format(record);
+			}
+			catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
 
-		try
-		{
-			mWindow.append(message);
+			try
+			{
+				mWindow.append(message);
+			}
+			catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (final Exception e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}
@@ -82,6 +90,15 @@ public class LogWindowHandler extends Handler
 	@Override
 	public void close()
 	{
+		try
+		{
+			if (mWindow != null)
+				mWindow.dispose();
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -98,8 +98,11 @@ public class GroovyUtils
 		if (pBinding == null)
 			pBinding = new Binding();
 
-		pBinding.setProperty("out", new PrintStream(pOutputStream));
-		pBinding.setProperty("err", new PrintStream(pOutputStream));
+		if (pOutputStream != null)
+		{
+			pBinding.setProperty("out", new PrintStream(pOutputStream));
+			pBinding.setProperty("err", new PrintStream(pOutputStream));
+		}
 
 		final GroovyShell lGroovyShell = new GroovyShell(	GroovyUtils.class.getClassLoader(),
 																											pBinding,

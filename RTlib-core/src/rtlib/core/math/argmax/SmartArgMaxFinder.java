@@ -37,8 +37,11 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 	private final MedianArgMaxFinder mMedianArgMaxFinder;
 	private final DenoisingArgMaxFinder mDenoisingArgMaxFinder;
 
+	private boolean mDenoisingActive = true;
+
 	private Double mFitProbability;
 	private Double mRMSD;
+
 
 
 	public SmartArgMaxFinder()
@@ -133,7 +136,7 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 	private ArgMaxFinder1D denoiseBefore(	boolean pDenoiseBefore,
 																				ArgMaxFinder1D pArgMaxFinder1D)
 	{
-		if (pDenoiseBefore)
+		if (pDenoiseBefore && mDenoisingActive)
 			return new DenoisingArgMaxFinder(normalize(clamp(pArgMaxFinder1D)));
 		else
 			return normalize(clamp(pArgMaxFinder1D));
@@ -174,6 +177,7 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 		return lCount;
 	}
 
+
 	@Override
 	public String toString()
 	{
@@ -190,6 +194,16 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 													mModeArgMaxFinder,
 													mMedianArgMaxFinder,
 													mDenoisingArgMaxFinder);
+	}
+
+	public boolean isDenoisingActive()
+	{
+		return mDenoisingActive;
+	}
+
+	public void setDenoisingActive(boolean pDenoisingActive)
+	{
+		mDenoisingActive = pDenoisingActive;
 	}
 
 }

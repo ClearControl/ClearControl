@@ -6,7 +6,6 @@ import java.util.Map;
 import org.python.core.Options;
 import org.python.util.PythonInterpreter;
 
-
 public class JythonUtils
 {
 
@@ -26,9 +25,12 @@ public class JythonUtils
 			lPythonInterpreter.set(lKey, lValue);
 		}
 
-		lPythonInterpreter.setOut(pOutputStream);
-		lPythonInterpreter.setErr(pOutputStream);
-		
+		if (pOutputStream != null)
+		{
+			lPythonInterpreter.setOut(pOutputStream);
+			lPythonInterpreter.setErr(pOutputStream);
+		}
+
 		lPythonInterpreter.exec(pScriptString);
 
 		for (final Map.Entry<String, Object> lEntry : pMap.entrySet())
@@ -41,8 +43,5 @@ public class JythonUtils
 		lPythonInterpreter.close();
 
 	}
-
-
-
 
 }
