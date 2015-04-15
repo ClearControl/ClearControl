@@ -19,6 +19,7 @@ public class FileEventNotifier implements AutoCloseable
 
 	private final CopyOnWriteArrayList<FileEventNotifierListener> mListenerList = new CopyOnWriteArrayList<FileEventNotifierListener>();
 	private final FileAlterationMonitor mFileAlterationMonitor;
+	private volatile boolean mIgnore = true;
 
 	public enum FileEventKind
 	{
@@ -114,6 +115,8 @@ public class FileEventNotifier implements AutoCloseable
 																	final File pFile,
 																	final FileEventKind pEventKind)
 	{
+		if (mIgnore)
+			return;
 		System.out.format("%s \t\t %s \n", pFile, pEventKind);
 		if (pFile.getName().equals(mFileToMonitor.getName()))
 		{
@@ -129,9 +132,17 @@ public class FileEventNotifier implements AutoCloseable
 		mFileAlterationMonitor.start();
 	}
 
-	public void stopMonitoring() throws Exception
+	public boolean stopMonitoring() throws Exception
 	{
-		mFileAlterationMonitor.stop();
+		try
+		{
+			mFileAlterationMonitor.stop();
+			return true;
+		}
+		catch (Throwable e)
+		{
+			return false;
+		}
 	}
 
 	@Override
@@ -146,6 +157,11 @@ public class FileEventNotifier implements AutoCloseable
 		{
 			throw new IOException(e);
 		}
+	}
+
+	public void setIgnore(boolean pIgnore)
+	{
+		mIgnore = pIgnore;
 	}
 
 }

@@ -12,4 +12,6 @@ public abstract class DeformableMirrorDevice extends
 		super(pDeviceName, pFullMatrixWidthHeight, pActuatorResolution);
 	}
 
+
+
 }

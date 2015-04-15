@@ -10,6 +10,7 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 																											SignalStartableDevice	implements
 																																						SpatialPhaseModulatorDeviceInterface
 {
+
 	protected DoubleVariable mMatrixWidthVariable;
 	protected DoubleVariable mMatrixHeightVariable;
 	protected DoubleVariable mActuatorResolutionVariable;
@@ -45,6 +46,12 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	}
 
 	@Override
+	public int getActuatorResolution()
+	{
+		return (int) mActuatorResolutionVariable.getValue();
+	}
+
+	@Override
 	public DoubleVariable getMatrixWidthVariable()
 	{
 		return mMatrixWidthVariable;
@@ -72,6 +79,13 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	public ObjectVariable<DenseMatrix64F> getMatrixReference()
 	{
 		return mMatrixVariable;
+	}
+
+	@Override
+	public void setMode(int pU, int pV, double pValue)
+	{
+		mMatrixVariable.get().set(pU + getMatrixWidth() * pV, 0, pValue);
+		mMatrixVariable.setCurrent();
 	}
 
 	@Override

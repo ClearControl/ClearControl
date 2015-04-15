@@ -46,7 +46,6 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 				e.printStackTrace();
 			}
 
-
 		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override

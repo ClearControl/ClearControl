@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -174,7 +175,8 @@ public class FitQualityEstimator
 		{
 			try
 			{
-				final Double lRMSD = lFutureTask.get();
+				final Double lRMSD = lFutureTask.get(	200,
+																							TimeUnit.MILLISECONDS);
 				if (lRMSD != null)
 					lIRMSDList.add(lRMSD);
 			}
