@@ -17,6 +17,8 @@ public interface SpatialPhaseModulatorDeviceInterface	extends
 
 	int getMatrixHeight();
 
+	int getActuatorResolution();
+
 	DoubleVariable getMatrixWidthVariable();
 
 	DoubleVariable getMatrixHeightVariable();
@@ -28,6 +30,8 @@ public interface SpatialPhaseModulatorDeviceInterface	extends
 	ObjectVariable<DenseMatrix64F> getMatrixReference();
 
 	void zero();
+
+	void setMode(int u, int v, double pValue);
 
 	long getRelaxationTimeInMilliseconds();
 

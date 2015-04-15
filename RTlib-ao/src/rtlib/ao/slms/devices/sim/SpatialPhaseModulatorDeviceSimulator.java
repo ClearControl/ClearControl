@@ -37,6 +37,12 @@ public class SpatialPhaseModulatorDeviceSimulator	extends
 	}
 
 	@Override
+	public void setMode(int pU, int pV, double pValue)
+	{
+
+	}
+
+	@Override
 	public long getRelaxationTimeInMilliseconds()
 	{
 		return 1;
@@ -53,5 +59,6 @@ public class SpatialPhaseModulatorDeviceSimulator	extends
 	{
 		return true;
 	}
+
 
 }

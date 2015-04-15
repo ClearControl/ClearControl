@@ -10,6 +10,8 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,6 +35,7 @@ import javax.swing.text.AbstractDocument;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -49,7 +52,8 @@ import rtlib.scripting.lang.jython.JythonScripting;
 public class ScriptingPanel extends JPanel implements
 																					DropTargetListener,
 																					FileEventNotifierListener,
-																					DocumentListener
+																					DocumentListener,
+																					KeyListener
 {
 
 	private static final long serialVersionUID = 1L;
@@ -150,6 +154,7 @@ public class ScriptingPanel extends JPanel implements
 		mRSyntaxTextArea.setPaintTabLines(true);
 		mRSyntaxTextArea.setTabLineColor(Color.LIGHT_GRAY);
 		mRSyntaxTextArea.getDocument().addDocumentListener(this);
+		mRSyntaxTextArea.addKeyListener(this);
 
 		final RTextScrollPane lRTextScrollPane = new RTextScrollPane(mRSyntaxTextArea);
 
@@ -248,12 +253,24 @@ public class ScriptingPanel extends JPanel implements
 
 	private void saveToFile(String pScriptText, String pFileName) throws IOException
 	{
-		if (pFileName == null || pFileName.isEmpty())
-			return;
-		final File lFile = new File(pFileName);
-		final FileOutputStream lFileOutputStream = new FileOutputStream(lFile);
-		IOUtils.write(pScriptText, lFileOutputStream);
-		lFileOutputStream.close();
+		try
+		{
+			if (mFileEventNotifier != null)
+				mFileEventNotifier.setIgnore(true);
+			if (pFileName == null || pFileName.isEmpty())
+				return;
+			final File lFile = new File(pFileName);
+			final FileOutputStream lFileOutputStream = new FileOutputStream(lFile);
+			IOUtils.write(pScriptText, lFileOutputStream);
+			lFileOutputStream.close();
+
+			if (mFileEventNotifier != null)
+				mFileEventNotifier.setIgnore(false);
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void loadFromFile(String pFileName) throws IOException,
@@ -299,31 +316,26 @@ public class ScriptingPanel extends JPanel implements
 	@Override
 	public void dragEnter(DropTargetDragEvent pDtde)
 	{
-		System.out.println("dragEnter");
 	}
 
 	@Override
 	public void dragOver(DropTargetDragEvent pDtde)
 	{
-		System.out.println("dragOver");
 	}
 
 	@Override
 	public void dropActionChanged(DropTargetDragEvent pDtde)
 	{
-		System.out.println("dropActionChanged");
 	}
 
 	@Override
 	public void dragExit(DropTargetEvent pDte)
 	{
-		System.out.println("dragExit");
 	}
 
 	@Override
 	public void drop(DropTargetDropEvent evt)
 	{
-		System.out.println("drop");
 
 		try
 		{
@@ -388,7 +400,7 @@ public class ScriptingPanel extends JPanel implements
 	{
 		try
 		{
-			if(pEventKind == FileEventKind.Created || pEventKind == FileEventKind.Modified)
+			if (pEventKind == FileEventKind.Created || pEventKind == FileEventKind.Modified)
 			{
 				loadFromFile(pFile);
 			}
@@ -405,8 +417,11 @@ public class ScriptingPanel extends JPanel implements
 	{
 		try
 		{
-			saveToFile(	mRSyntaxTextArea.getText(),
-									mCurrentFileTextField.getText());
+			if (!SystemUtils.IS_OS_WINDOWS)
+			{
+				saveToFile(	mRSyntaxTextArea.getText(),
+										mCurrentFileTextField.getText());
+			}
 		}
 		catch (final Throwable e)
 		{
@@ -425,6 +440,37 @@ public class ScriptingPanel extends JPanel implements
 	public void changedUpdate(DocumentEvent pE)
 	{
 		insertUpdate(pE);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent pE)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent pE)
+	{
+		try
+		{
+
+			if (pE.isControlDown() && pE.getKeyCode() == KeyEvent.VK_S)
+				saveToFile(	mRSyntaxTextArea.getText(),
+										mCurrentFileTextField.getText());
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent pE)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }
