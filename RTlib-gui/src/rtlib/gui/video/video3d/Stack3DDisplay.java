@@ -24,6 +24,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																																																			StackDisplayInterface<T, A>
 {
 	private static final int cDefaultDisplayQueueLength = 2;
+	protected static final long cTimeOutForBufferCopy = 5;
 
 	private ClearVolumeRendererInterface mClearVolumeRenderer;
 
@@ -93,20 +94,18 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 					return null;
 				}
 
-				/*System.out.format("%g %g %g \n",
-													pStack.getVoxelSizeInRealUnits(0),
-													pStack.getVoxelSizeInRealUnits(1),
-													pStack.getVoxelSizeInRealUnits(2));/**/
-
 				final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory();
 
 				mClearVolumeRenderer.setVolumeDataBuffer(	0,
 																									lContiguousMemory,
 																									lWidth,
 																									lHeight,
-																									lDepth);
+																									lDepth,
+																									lWidth * pStack.getVoxelSizeInRealUnits(0),
+																									lHeight * pStack.getVoxelSizeInRealUnits(1),
+																									lDepth * pStack.getVoxelSizeInRealUnits(2));
 
-				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
+				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	cTimeOutForBufferCopy,
 																														TimeUnit.SECONDS);/**/
 
 				if (mOutputObjectVariable != null)

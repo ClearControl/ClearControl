@@ -282,7 +282,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<StackInterface<T, A>> getFrameReferenceVariable()
+	public ObjectVariable<StackInterface<T, A>> getStackVariable()
 	{
 		return mInputStackVariable;
 	}

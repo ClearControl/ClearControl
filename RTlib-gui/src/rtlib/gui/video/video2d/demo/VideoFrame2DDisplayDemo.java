@@ -39,12 +39,13 @@ public class VideoFrame2DDisplayDemo
 		// System.out.println(rnd);
 
 		final int lBufferLength = (int) pContiguousMemory.getSizeInBytes();
-		ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(pContiguousMemory);
+		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(pContiguousMemory);
 		for (int i = 0; i < lBufferLength; i++)
 		{
 			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
 			final byte lValue = (byte) ((rnd & 0xFF) * pIntensity * sValue); // Math.random()
 			lContiguousBuffer.writeByte(lValue);
+			// System.out.println(lValue);
 		}
 	}
 
@@ -61,17 +62,18 @@ public class VideoFrame2DDisplayDemo
 		lVideoDisplayDevice.open();
 		lVideoDisplayDevice.start();
 
-		int lSizeXY = 256;
-		int lSizeZ = 16;
+		final int lSizeX = 256;
+		final int lSizeY = 256;
+		final int lSizeZ = 16;
 
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedByteType(),
 																																																																																		false,
-																																																																																		lSizeXY,
-																																																																																		lSizeXY,
+																																																																																		lSizeX,
+																																																																																		lSizeY,
 																																																																																		lSizeZ);
 
-		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getFrameReferenceVariable();
+		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getStackVariable();
 
 		final Runnable lRunnable = () -> {
 			while (true)
@@ -79,10 +81,11 @@ public class VideoFrame2DDisplayDemo
 				if (sDisplay)
 				{
 					for (int i = 0; i < lStack.getDepth(); i++)
-						generateNoiseBuffer((i / 255.0),
+						generateNoiseBuffer(1 + i,
 																lStack.getContiguousMemory(i));
 
 					lStackVariable.setReference(lStack);
+					// System.out.println(lStack);
 				}
 				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 			}

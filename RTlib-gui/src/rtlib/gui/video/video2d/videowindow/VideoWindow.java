@@ -125,12 +125,17 @@ public class VideoWindow<T extends NativeType<T>> implements
 					lGL4.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 					lGL4.glClear(GL4.GL_COLOR_BUFFER_BIT);
 
-					getClearGLWindow().setOrthoProjectionMatrix(0,
+					/*getClearGLWindow().setOrthoProjectionMatrix(0,
 																											pGLAutoDrawable.getSurfaceWidth(),
 																											0,
 																											pGLAutoDrawable.getSurfaceHeight(),
 																											0,
-																											1);
+																											1);/**/
+
+					final int lWidth = pGLAutoDrawable.getSurfaceWidth();
+					final int lHeight = pGLAutoDrawable.getSurfaceHeight();
+
+					setOrthoProjectionMatrixWithAspectRatio(lWidth, lHeight);
 
 					mGLProgramVideoRender = GLProgram.buildProgram(	lGL4,
 																													VideoWindow.class,
@@ -311,6 +316,32 @@ public class VideoWindow<T extends NativeType<T>> implements
 				mEffectiveWindowWidth = pWindowWidth;
 				mEffectiveWindowHeight = pWindowHeight;
 
+				final int lWidth = pWindowWidth;
+				final int lHeight = pWindowHeight;
+
+				setOrthoProjectionMatrixWithAspectRatio(lWidth, lHeight);
+
+			}
+
+			private void setOrthoProjectionMatrixWithAspectRatio(	final int lWidth,
+																														final int lHeight)
+			{
+				final float lAspectRatio = (1.0f * lWidth) / lHeight;
+
+				if (lAspectRatio >= 1)
+					getClearGLWindow().setOrthoProjectionMatrix(-1,
+																											1,
+																											-1	/ lAspectRatio,
+																											1 / lAspectRatio,
+																											0,
+																											1);
+				else
+					getClearGLWindow().setOrthoProjectionMatrix(-lAspectRatio,
+																											lAspectRatio,
+																											-1,
+																											1,
+																											0,
+																											1);/**/
 			}
 
 			@Override
