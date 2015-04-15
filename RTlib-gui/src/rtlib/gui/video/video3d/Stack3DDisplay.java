@@ -101,9 +101,9 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																									lWidth,
 																									lHeight,
 																									lDepth,
-																									lWidth * pStack.getVoxelSizeInRealUnits(0),
-																									lHeight * pStack.getVoxelSizeInRealUnits(1),
-																									lDepth * pStack.getVoxelSizeInRealUnits(2));
+																									pStack.getVoxelSizeInRealUnits(0),
+																									pStack.getVoxelSizeInRealUnits(1),
+																									pStack.getVoxelSizeInRealUnits(2));
 
 				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	cTimeOutForBufferCopy,
 																														TimeUnit.SECONDS);/**/
