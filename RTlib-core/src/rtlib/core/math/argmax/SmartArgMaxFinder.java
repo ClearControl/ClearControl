@@ -17,7 +17,10 @@ import rtlib.core.math.argmax.methods.SplineFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.SymetricParabolaFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.Top5ArgMaxFinder;
 
-public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
+public class SmartArgMaxFinder implements
+															ArgMaxFinder1DInterface,
+															Fitting1D,
+															FitProbabilityInterface
 {
 
 	private static final double cDefaultFitProbabilityThreshold = 0.95;
@@ -133,23 +136,23 @@ public class SmartArgMaxFinder implements ArgMaxFinder1D, Fitting1D
 		return mRMSD;
 	}
 
-	private ArgMaxFinder1D denoiseBefore(	boolean pDenoiseBefore,
-																				ArgMaxFinder1D pArgMaxFinder1D)
+	private ArgMaxFinder1DInterface denoiseBefore(	boolean pDenoiseBefore,
+																				ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
 		if (pDenoiseBefore && mDenoisingActive)
-			return new DenoisingArgMaxFinder(normalize(clamp(pArgMaxFinder1D)));
+			return new DenoisingArgMaxFinder(normalize(clamp(pArgMaxFinder1DInterface)));
 		else
-			return normalize(clamp(pArgMaxFinder1D));
+			return normalize(clamp(pArgMaxFinder1DInterface));
 	}
 
-	private ArgMaxFinder1D normalize(ArgMaxFinder1D pArgMaxFinder1D)
+	private ArgMaxFinder1DInterface normalize(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
-		return new NormalizingArgMaxFinder(pArgMaxFinder1D);
+		return new NormalizingArgMaxFinder(pArgMaxFinder1DInterface);
 	}
 
-	private ArgMaxFinder1D clamp(ArgMaxFinder1D pArgMaxFinder1D)
+	private ArgMaxFinder1DInterface clamp(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
-		return new ClampingArgMaxFinder(pArgMaxFinder1D);
+		return new ClampingArgMaxFinder(pArgMaxFinder1DInterface);
 	}
 
 	private int countLocalMaxima(double[] pY)

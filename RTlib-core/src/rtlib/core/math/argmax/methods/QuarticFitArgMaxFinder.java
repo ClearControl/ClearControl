@@ -4,14 +4,14 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
 public class QuarticFitArgMaxFinder extends Fitting1DBase	implements
-																		ArgMaxFinder1D,
+																		ArgMaxFinder1DInterface,
 																		Fitting1D
 {
 	private static final int cNumberOfSamples = 1024;

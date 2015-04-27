@@ -19,8 +19,9 @@ public class MachineConfiguration
 	}
 
 	private Properties mProperties;
-
-	int fummy = 0;
+	
+	private File mRTLibFolder;
+	private File mPersistentVariablesFolder;
 
 	public MachineConfiguration()
 	{
@@ -28,24 +29,27 @@ public class MachineConfiguration
 
 		try
 		{
-			String lUserHome = System.getProperty("user.home");
-			File lUserHomeFolder = new File(lUserHome);
-			File lRTLibFolder = new File(lUserHomeFolder, "RTlib/");
-			lRTLibFolder.mkdirs();
-			File lConfigurationFile = new File(	lRTLibFolder,
+			final String lUserHome = System.getProperty("user.home");
+			final File lUserHomeFolder = new File(lUserHome);
+			mRTLibFolder = new File(lUserHomeFolder, "RTlib/");
+			mRTLibFolder.mkdirs();
+			mPersistentVariablesFolder = new File(mRTLibFolder,
+																		"PersistentVariables");
+
+			final File lConfigurationFile = new File(	mRTLibFolder,
 																					"configuration.txt");
 
 			if (!lConfigurationFile.exists())
 			{
-				Writer lWriter = new FileWriter(lConfigurationFile);
+				final Writer lWriter = new FileWriter(lConfigurationFile);
 				mProperties.store(lWriter, cComments);
 			}
-			FileInputStream lFileInputStream = new FileInputStream(lConfigurationFile);
+			final FileInputStream lFileInputStream = new FileInputStream(lConfigurationFile);
 			mProperties = new Properties();
 			mProperties.load(lFileInputStream);
 		}
 
-		catch (IOException e2)
+		catch (final IOException e2)
 		{
 			e2.printStackTrace();
 			mProperties = null;
@@ -75,7 +79,7 @@ public class MachineConfiguration
 	{
 		if (mProperties == null)
 			return pDefaultValue;
-		String lProperty = mProperties.getProperty(pKey);
+		final String lProperty = mProperties.getProperty(pKey);
 		if (lProperty == null)
 			return pDefaultValue;
 
@@ -86,7 +90,7 @@ public class MachineConfiguration
 	{
 		if (mProperties == null)
 			return pDefaultValue;
-		String lProperty = mProperties.getProperty(pKey);
+		final String lProperty = mProperties.getProperty(pKey);
 		if (lProperty == null)
 			return pDefaultValue;
 
@@ -97,7 +101,7 @@ public class MachineConfiguration
 	{
 		if (mProperties == null)
 			return pDefaultValue;
-		String lProperty = mProperties.getProperty(pKey);
+		final String lProperty = mProperties.getProperty(pKey);
 		if (lProperty == null)
 			return pDefaultValue;
 
@@ -108,7 +112,7 @@ public class MachineConfiguration
 	{
 		if (mProperties == null)
 			return pDefaultValue;
-		String lProperty = mProperties.getProperty(pKey);
+		final String lProperty = mProperties.getProperty(pKey);
 		if (lProperty == null)
 			return pDefaultValue;
 
@@ -130,10 +134,10 @@ public class MachineConfiguration
 																		int pDeviceIndex,
 																		String pDefaultPort)
 	{
-		String lKey = "device.serial." + pDeviceName.toLowerCase()
+		final String lKey = "device.serial." + pDeviceName.toLowerCase()
 									+ "."
 									+ pDeviceIndex;
-		String lPort = getStringProperty(lKey, pDefaultPort);
+		final String lPort = getStringProperty(lKey, pDefaultPort);
 		return lPort;
 	}
 
@@ -141,10 +145,10 @@ public class MachineConfiguration
 																									int pDeviceIndex,
 																									String pDefaultHostNameAndPort)
 	{
-		String lKey = "device.network." + pDeviceName.toLowerCase()
+		final String lKey = "device.network." + pDeviceName.toLowerCase()
 									+ "."
 									+ pDeviceIndex;
-		String lHostnameAndPort = getStringProperty(lKey,
+		final String lHostnameAndPort = getStringProperty(lKey,
 																								pDefaultHostNameAndPort);
 		return lHostnameAndPort.split(":");
 	}
@@ -152,15 +156,15 @@ public class MachineConfiguration
 	public Integer getIODevicePort(	String pDeviceName,
 																	Integer pDefaultPort)
 	{
-		String lKey = "device." + pDeviceName.toLowerCase();
-		Integer lPort = getIntegerProperty(lKey, pDefaultPort);
+		final String lKey = "device." + pDeviceName.toLowerCase();
+		final Integer lPort = getIntegerProperty(lKey, pDefaultPort);
 		return lPort;
 	}
 
 	public boolean getIsDevicePresent(String pDeviceName,
 																		int pDeviceIndex)
 	{
-		String lKey = "device." + pDeviceName.toLowerCase()
+		final String lKey = "device." + pDeviceName.toLowerCase()
 									+ "."
 									+ pDeviceIndex;
 		return getBooleanProperty(lKey, false);
@@ -168,16 +172,26 @@ public class MachineConfiguration
 
 	public ArrayList<String> getList(String pPrefix)
 	{
-		ArrayList<String> lList = new ArrayList<String>();
+		final ArrayList<String> lList = new ArrayList<String>();
 		for (int i = 0; i < Integer.MAX_VALUE; i++)
 		{
-			String lKey = pPrefix + "." + i;
-			String lProperty = mProperties.getProperty(lKey, null);
+			final String lKey = pPrefix + "." + i;
+			final String lProperty = mProperties.getProperty(lKey, null);
 			if (lProperty == null)
 				break;
 			lList.add(lProperty);
 		}
 		return lList;
+	}
+
+	public File getPersistencyFolder()
+	{
+		return mPersistentVariablesFolder;
+	}
+
+	public File getPersistentVariableFile(String pVariableName)
+	{
+		return new File(getPersistencyFolder(), pVariableName);
 	}
 
 }

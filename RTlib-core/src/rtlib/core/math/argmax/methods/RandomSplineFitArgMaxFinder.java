@@ -10,14 +10,14 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
 public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
-																															ArgMaxFinder1D,
+																															ArgMaxFinder1DInterface,
 																															Fitting1D
 {
 

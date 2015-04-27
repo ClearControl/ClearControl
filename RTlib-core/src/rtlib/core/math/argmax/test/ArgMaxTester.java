@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 import com.google.common.io.Resources;
 
@@ -46,7 +46,7 @@ public class ArgMaxTester
 		return lList;
 	}
 
-	public static double test(ArgMaxFinder1D pArgMaxFinder1D,
+	public static double test(ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
 														int pNumberOfDatasets) throws IOException,
 																														URISyntaxException
 	{
@@ -70,10 +70,10 @@ public class ArgMaxTester
 
 			System.out.println("LArgMaxReference: " + LArgMaxReference);
 
-			final Double lArgmax = pArgMaxFinder1D.argmax(lX.toArray(),
+			final Double lArgmax = pArgMaxFinder1DInterface.argmax(lX.toArray(),
 																							lY.toArray());
 
-			System.out.println("class: " + pArgMaxFinder1D
+			System.out.println("class: " + pArgMaxFinder1DInterface
 													+ "\n\t\targmax: "
 													+ lArgmax);/**/
 			

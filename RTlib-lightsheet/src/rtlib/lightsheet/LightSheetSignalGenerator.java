@@ -1,6 +1,5 @@
 package rtlib.lightsheet;
 
-import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +13,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleInputVariableInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.movement.Movement;
@@ -30,12 +30,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 {
 
 	private static final int cNumberOfLaserDigitalControls = 6;
-	// CONFIG FILES:
-	private static File cUserHomeFile = new File(System.getProperty("user.home"));
-	private static File cBScopeFolder = new File(	cUserHomeFile,
-																								".BScope");
-	private static File cPifoc2LightSheetModelFile = new File(cBScopeFolder,
-																														"Pifoc2LightSheetModel.bin");
+
 
 	private final SignalGeneratorInterface mSignalGenerator;
 	private final Score mScore;
@@ -55,7 +50,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 																																		0);
 	public DoubleVariable mLightSheetZInMicrons = new DoubleVariable(	"LightSheetZInMicrons",
 																																		0);
-	public DoubleVariable mLightSheetThetaInDegrees = new DoubleVariable(	"LightSheetThetaInDegrees",
+	public DoubleVariable mLightSheetAlphaInDegrees = new DoubleVariable(	"LightSheetAlphaInDegrees",
 																																				0);
 	public DoubleVariable mLightSheetLengthInMicrons = new DoubleVariable("LightSheetLengthInMicrons",
 																																				100);
@@ -85,7 +80,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 
 	public final BooleanVariable mLockLightSheetToPifoc = new BooleanVariable("LockLightSheetToPifoc",
 																																						false);
-	public final ObjectVariable<M> mPifoc2LightSheetModel = new ObjectVariable<M>("Pifoc2LightSheetModel"); // ,cPifoc2LightSheetModelFile
+	public final ObjectVariable<M> mPifoc2LightSheetModel;
 
 	private Movement mBeforeExposureMovement;
 	private Movement mExposureMovement;
@@ -106,12 +101,15 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 	private volatile Future<Boolean> mFuture;
 	private volatile boolean mIsPlaying = false;
 
-	public LightSheetSignalGenerator(	SignalGeneratorInterface pSignalGenerator,
+	public LightSheetSignalGenerator(	String pName,
+																		SignalGeneratorInterface pSignalGenerator,
 																		M pPifoc2LightSheetModel,
 																		final double pReadoutTimeInMicrosecondsPerLine,
 																		final int pNumberOfLines)
 	{
-		super("LightSheetSignalGenerator");
+		super(pName);
+
+		mPifoc2LightSheetModel = new ObjectVariableAsFile<M>(pName + "Pifoc2LightSheetModel");
 
 		mSignalGenerator = pSignalGenerator;
 
@@ -169,7 +167,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 
 		mLightSheetYInMicrons.sendUpdatesTo(lDoubleUpdateListener);
 		mLightSheetZInMicrons.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetThetaInDegrees.sendUpdatesTo(lDoubleUpdateListener);
+		mLightSheetAlphaInDegrees.sendUpdatesTo(lDoubleUpdateListener);
 		mLightSheetLengthInMicrons.sendUpdatesTo(lDoubleUpdateListener);
 		mMicronsToNormGalvoUnit.sendUpdatesTo(lDoubleUpdateListener);
 
@@ -281,7 +279,7 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 				final double lMarginTimeInMicroseconds = mMarginTimeInMicroseconds.getValue();
 
 				final double lGalvoAmplitude = mMicronsToNormGalvoUnit.getValue() * mLightSheetLengthInMicrons.getValue();
-				final double lGalvoAngle = Math.toRadians(mLightSheetThetaInDegrees.getValue());
+				final double lGalvoAngle = Math.toRadians(mLightSheetAlphaInDegrees.getValue());
 
 				final boolean lLockLightSheetToPifoc = mLockLightSheetToPifoc.getBooleanValue();
 
@@ -631,9 +629,9 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 	}
 
 	@Override
-	public DoubleVariable getLightSheetThetaInDegreesVariable()
+	public DoubleVariable getLightSheetAlphaInDegreesVariable()
 	{
-		return mLightSheetThetaInDegrees;
+		return mLightSheetAlphaInDegrees;
 	}
 
 	@Override

@@ -1,0 +1,57 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceSets {
+	main {
+		java { srcDir 'src' }
+	}
+	test {
+		java { srcDir 'src' }
+	}
+}
+
+dependencies {
+	compile project(':RTlib-core')
+	compile project(':RTlib-ao')
+	compile project(':RTlib-cameras')
+	compile project(':RTlib-compression')
+	compile project(':RTlib-filterwheels')
+	compile project(':RTlib-gui')
+	compile project(':RTlib-imglib2')
+	compile project(':RTlib-ip')
+	compile project(':RTlib-lasers')
+	compile project(':RTlib-lightsheet')
+	compile project(':RTlib-ocl')
+	compile project(':RTlib-scripting')
+	compile project(':RTlib-sensors')
+	compile project(':RTlib-serial')
+	compile project(':RTlib-stack')
+	compile project(':RTlib-symphony')
+}
+
+repositories {
+	mavenCentral()
+}
+
+//***********************************************************************************
+
+// PUBLISHING
+
+
+
+artifacts
+{
+	archives sourcesJar
+	archives javadocJar
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+			artifact sourcesJar { classifier "sources" }
+		}
+	}
+}
+
+apply from: '../bintrayUpload.gradle'

@@ -1,8 +1,8 @@
 package rtlib.core.math.argmax.methods;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
-public class ModeArgMaxFinder implements ArgMaxFinder1D
+public class ModeArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
 	@Override

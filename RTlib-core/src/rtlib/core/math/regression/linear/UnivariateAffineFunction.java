@@ -1,10 +1,14 @@
 package rtlib.core.math.regression.linear;
 
+import java.io.Serializable;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
-public class UnivariateAffineFunction implements UnivariateFunction
+public class UnivariateAffineFunction	implements
+																			UnivariateFunction,
+																			Serializable
 {
 
 	private volatile double mA;

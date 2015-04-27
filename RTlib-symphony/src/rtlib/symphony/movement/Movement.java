@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import rtlib.symphony.NameableAbstract;
+import rtlib.core.device.NameableAbstract;
 import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.interfaces.StaveInterface;
 import rtlib.symphony.staves.ConstantStave;

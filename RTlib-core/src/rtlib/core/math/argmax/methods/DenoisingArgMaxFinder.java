@@ -1,16 +1,16 @@
 package rtlib.core.math.argmax.methods;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
-public class DenoisingArgMaxFinder implements ArgMaxFinder1D
+public class DenoisingArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
-	private final ArgMaxFinder1D mArgMaxFinder1D;
+	private final ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-	public DenoisingArgMaxFinder(ArgMaxFinder1D pArgMaxFinder1D)
+	public DenoisingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
 		super();
-		mArgMaxFinder1D = pArgMaxFinder1D;
+		mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1D
 		for (final double y : lY)
 			System.out.println(y); /**/
 
-		final Double lArgmax = mArgMaxFinder1D.argmax(pX, lY);
+		final Double lArgmax = mArgMaxFinder1DInterface.argmax(pX, lY);
 
 		return lArgmax;
 	}
@@ -50,7 +50,7 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1D
 	public String toString()
 	{
 		return String.format(	"DenoisingArgMaxFinder [%s]",
-													mArgMaxFinder1D);
+													mArgMaxFinder1DInterface);
 	}
 
 }

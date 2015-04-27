@@ -3,17 +3,17 @@ package rtlib.core.math.argmax.methods;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import gnu.trove.list.array.TDoubleArrayList;
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
-public class NormalizingArgMaxFinder implements ArgMaxFinder1D
+public class NormalizingArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
-	private ArgMaxFinder1D mArgMaxFinder1D;
+	private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-	public NormalizingArgMaxFinder(ArgMaxFinder1D pArgMaxFinder1D)
+	public NormalizingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
 		super();
-		mArgMaxFinder1D = pArgMaxFinder1D;
+		mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class NormalizingArgMaxFinder implements ArgMaxFinder1D
 			lNormY.add(lScaledValue);
 		}
 
-		final Double lArgmax = mArgMaxFinder1D.argmax(pX,
+		final Double lArgmax = mArgMaxFinder1DInterface.argmax(pX,
 																									lNormY.toArray());
 
 		return lArgmax;
@@ -45,7 +45,7 @@ public class NormalizingArgMaxFinder implements ArgMaxFinder1D
 	public String toString()
 	{
 		return String.format(	"NormalizingArgMaxFinder [%s]",
-													mArgMaxFinder1D);
+													mArgMaxFinder1DInterface);
 	}
 
 }

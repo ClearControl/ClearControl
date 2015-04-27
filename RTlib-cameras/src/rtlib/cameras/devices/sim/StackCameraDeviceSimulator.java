@@ -63,9 +63,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 		if (mTriggerVariable == null)
 		{
-			severe("cameras",
-						"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
-								+ " because trigger variable is null!");
+			severe(	"cameras",
+							"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
+									+ " because trigger variable is null!");
 			return;
 		}
 
@@ -107,7 +107,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 						System.err.println("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
 						return;
 					}
-					
+
 					lStack.setNumberOfImagesPerPlane((long) getNumberOfImagesPerPlaneVariable().getValue());
 					mStackReference.set(lStack);
 
@@ -126,7 +126,10 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		final int lWidth = (int) max(16, mStackWidthVariable.getValue());
 		final int lHeight = (int) max(16, mStackHeightVariable.getValue());
-		final int lDepth = (int) max(16, mStackDepthVariable.getValue());
+		int lDepth = (int) max(16, mStackDepthVariable.getValue());
+		if (mHint.type.startsWith("autofocus.angle"))
+			lDepth = mHint.nbangles;
+
 		final int lNumberOfImagesPerPlane = (int) getNumberOfImagesPerPlaneVariable().getValue();
 
 		if (lWidth * lHeight * lDepth <= 0)
@@ -145,7 +148,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		// System.out.println(lStackRequest.toString());
 
 		final byte time = (byte) mCurrentStackIndex;
-		if (mHint == null || mHint.type.equals("normal"))
+		if (mHint == null || mHint.type.startsWith("normal"))
 		{
 			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 			final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
@@ -155,16 +158,17 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 					for (int x = 0; x < lWidth; x++)
 					{
 						int lValueValue = (((byte) (x + time) ^ (byte) (cos(lNumberOfImagesPerPlane * x
-																														+ (z % lNumberOfImagesPerPlane)))
-														^ (byte) z ^ (time)));/**/
+																																+ (z % lNumberOfImagesPerPlane)))
+																^ (byte) z ^ (time)));/**/
 						if (lValueValue < 32)
 							lValueValue = 0;
 						lContiguousBuffer.writeShort((short) lValueValue);
 					}
 		}
-		else if (mHint.type.equals("autofocus"))
+		else if (mHint.type.startsWith("autofocus"))
 		{
 			final double lInFocusZ = mHint.focusz;
+
 
 			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 			final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
@@ -236,6 +240,5 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		mHint = pHint;
 	}
-
 
 }

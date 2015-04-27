@@ -21,7 +21,8 @@ public class LightSheetSignalGeneratorDemo
 		final PolynomialFunction lPolynomialFunction = new PolynomialFunction(new double[]
 		{ 0.0, 1.0 });
 		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
-		final LightSheetSignalGenerator<PolynomialFunction> lLightSheetSignalGenerator = new LightSheetSignalGenerator<PolynomialFunction>(	lNIRIOSignalGenerator,
+		final LightSheetSignalGenerator<PolynomialFunction> lLightSheetSignalGenerator = new LightSheetSignalGenerator<PolynomialFunction>(	"Lightsheet",
+																																																																				lNIRIOSignalGenerator,
 																																																																				lPolynomialFunction,
 																																																																				9.74,
 																																																																				512);

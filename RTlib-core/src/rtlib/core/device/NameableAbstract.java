@@ -1,4 +1,4 @@
-package rtlib.symphony;
+package rtlib.core.device;
 
 public abstract class NameableAbstract
 {
@@ -29,6 +29,6 @@ public abstract class NameableAbstract
 	@Override
 	public String toString()
 	{
-		return String.format("ScoreAbstract [mName=%s]", mName);
+		return String.format("NameableAbstract [mName=%s]", mName);
 	}
 }

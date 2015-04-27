@@ -68,6 +68,11 @@ public class VariableAsFileTests
 		final String lValue2 = lObjectVariable2.getReference();
 		assertEquals(lValue, lValue2);
 
+		lObjectVariable1.setReference("3");
+
+		final String lValue3 = lObjectVariable2.getReference();
+		assertEquals("3", lValue3);
+
 		lObjectVariable1.close();
 		lObjectVariable2.close();
 	}

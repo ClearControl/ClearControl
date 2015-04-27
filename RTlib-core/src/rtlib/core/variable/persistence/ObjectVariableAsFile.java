@@ -5,32 +5,32 @@ import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.objectv.ObjectVariable;
 
 public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 																															Closeable
 
 {
-	private final ExecutorService cSingleThreadExecutor = Executors.newSingleThreadExecutor();
-
-	private O mCachedReference;
+	private volatile long mCachedReferenceFileSignature = Long.MIN_VALUE;
 
 	private final File mFile;
-	// private FileEventNotifier mFileEventNotifier;
 
 	private final Object mLock = new Object();
 
-	public ObjectVariableAsFile(final String pVariableName,
-															final File pFile)
+	public ObjectVariableAsFile(final String pVariableName)
 	{
-		this(pVariableName, pFile, null);
+
+		this(	pVariableName,
+					MachineConfiguration.getCurrentMachineConfiguration()
+															.getPersistentVariableFile(pVariableName),
+					null);
 	}
 
 	public ObjectVariableAsFile(final String pVariableName,
@@ -45,124 +45,119 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 	@Override
 	public O getReference()
 	{
-		if (mCachedReference != null)
+		if (mReference != null && mFile != null
+				&& mFile.exists()
+				&& mFile.lastModified() < mCachedReferenceFileSignature)
 		{
-			return mCachedReference;
+			return mReference;
 		}
 
 		try
 		{
-			synchronized (mLock)
-			{
-				if (!(mFile.exists() && mFile.isFile()))
-				{
-					mCachedReference = mReference;
-					return mCachedReference;
-				}
-
-				final FileInputStream lFileInputStream = new FileInputStream(mFile);
-				final BufferedInputStream lBufferedInputStream = new BufferedInputStream(lFileInputStream);
-				final ObjectInputStream lObjectInputStream = new ObjectInputStream(lBufferedInputStream);
-				try
-				{
-					mCachedReference = (O) lObjectInputStream.readObject();
-				}
-				finally
-				{
-					lObjectInputStream.close();
-				}
-			}
-			return mCachedReference;
+			mReference = readFromFile();
+			return super.getReference();
 		}
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-			return mReference;
+			return super.getReference();
 		}
 	}
 
 	@Override
 	public void setReference(final O pNewReference)
 	{
-		mCachedReference = pNewReference;
-		cSingleThreadExecutor.execute(mFileSaverRunnable);
+		saveToFile(pNewReference);
+		super.setReference(pNewReference);
 	}
 
-	private final Runnable mFileSaverRunnable = new Runnable()
+	private O readFromFile() throws FileNotFoundException,
+													IOException,
+													ClassNotFoundException
 	{
-
-		@Override
-		public void run()
+		O lReference = null;
+		synchronized (mLock)
 		{
-			final O lReference = mCachedReference;
+			ObjectInputStream lObjectInputStream = null;
 			try
 			{
-				synchronized (mLock)
+				if (!(mFile.exists() && mFile.isFile()))
 				{
-
-					/*if (mFileEventNotifier != null)
-						mFileEventNotifier.stopMonitoring();/**/
-
-					final FileOutputStream lFileOutputStream = new FileOutputStream(mFile);
-					final BufferedOutputStream lBufferedOutputStream = new BufferedOutputStream(lFileOutputStream);
-					final ObjectOutputStream lObjectOutputStream = new ObjectOutputStream(lBufferedOutputStream);
-					try
-					{
-						lObjectOutputStream.writeObject(lReference);
-					}
-					finally
-					{
-						lObjectOutputStream.close();
-					}
-					/*if (mFileEventNotifier != null)
-						mFileEventNotifier.startMonitoring();/**/
+					return super.getReference();
 				}
 
-				// ensureFileEventNotifierActive();
+				final FileInputStream lFileInputStream = new FileInputStream(mFile);
+				final BufferedInputStream lBufferedInputStream = new BufferedInputStream(lFileInputStream);
+				lObjectInputStream = new ObjectInputStream(lBufferedInputStream);
+
+				lReference = (O) lObjectInputStream.readObject();
+				mCachedReferenceFileSignature = mFile.lastModified();
+
+				return lReference;
 			}
 			catch (final Throwable e)
 			{
 				e.printStackTrace();
 			}
+			finally
+			{
+				try
+				{
+					if (lObjectInputStream != null)
+						lObjectInputStream.close();
+				}
+				catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return lReference;
+	}
 
+	private void saveToFile(O pReference)
+	{
+		synchronized (mLock)
+		{
+			ObjectOutputStream lObjectOutputStream = null;
+			try
+			{
+				mFile.getParentFile().mkdirs();
+				final FileOutputStream lFileOutputStream = new FileOutputStream(mFile);
+				final BufferedOutputStream lBufferedOutputStream = new BufferedOutputStream(lFileOutputStream);
+				lObjectOutputStream = new ObjectOutputStream(lBufferedOutputStream);
+
+				lObjectOutputStream.writeObject(pReference);
+
+			}
+			catch (final FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				try
+				{
+					if (lObjectOutputStream != null)
+						lObjectOutputStream.close();
+				}
+				catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 
 	};
 
-	/*
-	private void ensureFileEventNotifierActive() throws Exception
-	{
-		if (mFileEventNotifier == null)
-		{
-			mFileEventNotifier = new FileEventNotifier(mFile);
-			mFileEventNotifier.startMonitoring();
-			mFileEventNotifier.addFileEventListener(new FileEventNotifierListener()
-			{
-
-				@Override
-				public void fileEvent(final FileEventNotifier pThis,
-															final File pFile,
-															final FileEventKind pEventKind)
-				{
-					getReference();
-				}
-			});
-
-		}
-	}/**/
-
 	@Override
 	public void close() throws IOException
 	{
-		/*
-		try
-		{
-			mFileEventNotifier.stopMonitoring();
-		}
-		catch (final Exception e)
-		{
-			throw new IOException(e);
-		}/**/
+
 	}
 
 }

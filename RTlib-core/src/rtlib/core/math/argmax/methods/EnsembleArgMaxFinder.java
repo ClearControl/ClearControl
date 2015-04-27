@@ -13,14 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
-public class EnsembleArgMaxFinder implements ArgMaxFinder1D
+public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 {
 	private static final Executor sExecutor = Executors.newCachedThreadPool();
 	private static final int cTimeOutInSeconds = 1;
 
-	private final ArrayList<ArgMaxFinder1D> mArgMaxFinder1DList = new ArrayList<ArgMaxFinder1D>();
+	private final ArrayList<ArgMaxFinder1DInterface> mArgMaxFinder1DInterfaceList = new ArrayList<ArgMaxFinder1DInterface>();
 	private final Median mMedian;
 
 	private final boolean mDebug = false;
@@ -31,22 +31,22 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		mMedian = new Median();
 	}
 
-	public void add(ArgMaxFinder1D pArgMaxFinder1D)
+	public void add(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
-		mArgMaxFinder1DList.add(pArgMaxFinder1D);
+		mArgMaxFinder1DInterfaceList.add(pArgMaxFinder1DInterface);
 	}
 
 	private class ArgMaxCallable implements Callable<Double>
 	{
 		private final double[] mX;
 		private final double[] mY;
-		private final ArgMaxFinder1D mArgMaxFinder1D;
+		private final ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-		public ArgMaxCallable(ArgMaxFinder1D pArgMaxFinder1D,
+		public ArgMaxCallable(ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
 													double[] pX,
 													double[] pY)
 		{
-			mArgMaxFinder1D = pArgMaxFinder1D;
+			mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
 			mX = pX;
 			mY = pY;
 		}
@@ -55,12 +55,12 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		public Double call() throws Exception
 		{
 			final long lStartTimeInNs = System.nanoTime();
-			final Double lArgMax = mArgMaxFinder1D.argmax(mX, mY);
+			final Double lArgMax = mArgMaxFinder1DInterface.argmax(mX, mY);
 			final long lStopTimeInNs = System.nanoTime();
 			/*double lElapsedtimeInSeconds = Magnitudes.nano2unit(lStopTimeInNs - lStartTimeInNs);
 			System.out.format("elapsed time: %g for %s \n",
 													lElapsedtimeInSeconds,
-													mArgMaxFinder1D.toString());/**/
+													mArgMaxFinder1DInterface.toString());/**/
 
 			return lArgMax;
 		}
@@ -68,7 +68,7 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		@Override
 		public String toString()
 		{
-			return mArgMaxFinder1D.toString();
+			return mArgMaxFinder1DInterface.toString();
 		}
 
 	}
@@ -84,9 +84,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 		final ArrayList<FutureTask<Double>> lTaskList = new ArrayList<FutureTask<Double>>();
 		final HashMap<FutureTask<Double>, ArgMaxCallable> lTaskToCallableMap = new HashMap<FutureTask<Double>, ArgMaxCallable>();
 
-		for (final ArgMaxFinder1D lArgMaxFinder1D : mArgMaxFinder1DList)
+		for (final ArgMaxFinder1DInterface lArgMaxFinder1DInterface : mArgMaxFinder1DInterfaceList)
 		{
-			final ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(lArgMaxFinder1D,
+			final ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(lArgMaxFinder1DInterface,
 																													pX,
 																													pY);
 			final FutureTask<Double> lArgMaxFutureTask = new FutureTask<Double>(lArgMaxCallable);
@@ -134,8 +134,8 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1D
 	@Override
 	public String toString()
 	{
-		return String.format(	"EnsembleArgMaxFinder [mArgMaxFinder1DList=%s]",
-													mArgMaxFinder1DList);
+		return String.format(	"EnsembleArgMaxFinder [mArgMaxFinder1DInterfaceList=%s]",
+													mArgMaxFinder1DInterfaceList);
 	}
 
 	private void println(String pString)

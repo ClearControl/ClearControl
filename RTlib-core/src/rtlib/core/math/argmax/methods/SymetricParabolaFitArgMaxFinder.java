@@ -6,11 +6,11 @@ import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1DBase;
 
 public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase implements
-																																	ArgMaxFinder1D
+																																	ArgMaxFinder1DInterface
 {
 
 	private PolynomialCurveFitter mPolynomialCurveFitter;

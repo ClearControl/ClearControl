@@ -2,7 +2,7 @@ package rtlib.symphony.staves;
 
 import java.nio.ShortBuffer;
 
-import rtlib.symphony.NameableAbstract;
+import rtlib.core.device.NameableAbstract;
 import rtlib.symphony.interfaces.StaveInterface;
 
 public abstract class StaveAbstract extends NameableAbstract implements

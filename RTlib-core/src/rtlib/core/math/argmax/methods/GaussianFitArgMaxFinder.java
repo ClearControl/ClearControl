@@ -4,13 +4,13 @@ import org.apache.commons.math3.analysis.function.Gaussian;
 import org.apache.commons.math3.fitting.GaussianCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 
 public class GaussianFitArgMaxFinder extends Fitting1DBase implements
-																													ArgMaxFinder1D,
+																													ArgMaxFinder1DInterface,
 																													Fitting1D
 {
 

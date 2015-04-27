@@ -1,17 +1,17 @@
 package rtlib.core.math.argmax.methods;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import rtlib.core.math.argmax.ArgMaxFinder1D;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
-public class Top5ArgMaxFinder implements ArgMaxFinder1D
+public class Top5ArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
-	private ArgMaxFinder1D mArgMaxFinder1D;
+	private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-	public Top5ArgMaxFinder(ArgMaxFinder1D pArgMaxFinder1D)
+	public Top5ArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
 		super();
-		mArgMaxFinder1D = pArgMaxFinder1D;
+		mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1D
 		double[] lTop5XArray = lTop5X.toArray();
 		double[] lTop5YArray =lTop5Y.toArray();
 		
-		Double lArgmax = mArgMaxFinder1D.argmax(lTop5XArray, lTop5YArray);
+		Double lArgmax = mArgMaxFinder1DInterface.argmax(lTop5XArray, lTop5YArray);
 
 		return lArgmax;
 	}
@@ -68,8 +68,8 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1D
 	@Override
 	public String toString()
 	{
-		return String.format(	"Top5ArgMaxFinder [mArgMaxFinder1D=%s]",
-													mArgMaxFinder1D);
+		return String.format(	"Top5ArgMaxFinder [mArgMaxFinder1DInterface=%s]",
+													mArgMaxFinder1DInterface);
 	}
 
 }

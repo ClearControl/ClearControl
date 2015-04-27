@@ -28,7 +28,7 @@ public interface LightSheetSignalGeneratorInterface<M extends UnivariateFunction
 
 	DoubleVariable getLightSheetZInMicronsVariable();
 
-	DoubleVariable getLightSheetThetaInDegreesVariable();
+	DoubleVariable getLightSheetAlphaInDegreesVariable();
 
 	DoubleVariable getFocusZVariable();
 
