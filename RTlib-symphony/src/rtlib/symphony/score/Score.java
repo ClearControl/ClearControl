@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-import rtlib.symphony.NameableAbstract;
+import rtlib.core.device.NameableAbstract;
 import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.interfaces.ScoreInterface;
 import rtlib.symphony.movement.Movement;
