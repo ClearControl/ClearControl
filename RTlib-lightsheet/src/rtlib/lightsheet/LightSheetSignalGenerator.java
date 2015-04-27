@@ -2,7 +2,6 @@ package rtlib.lightsheet;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -543,14 +542,12 @@ public class LightSheetSignalGenerator<M extends UnivariateFunction>	extends
 	public long estimatePlayTimeInMilliseconds()
 	{
 		long lDurationInMilliseconds = 0;
-		for (final MovementInterface lMovement : mScore.getMovements())
+		for (final MovementInterface lMovement : mCompiledScore.getMovements())
 		{
 			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
 		}
-
 		lDurationInMilliseconds *= mCompiledScore.getNumberOfMovements();
-		return TimeUnit.SECONDS.convert(lDurationInMilliseconds,
-																		TimeUnit.MILLISECONDS);
+		return lDurationInMilliseconds;
 	}
 
 	@Override
