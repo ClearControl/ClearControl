@@ -26,7 +26,7 @@ public class NIRIOSignalGeneratorDemo
 
 		for (int i = 0; i < 10000; i++)
 		{
-			lNIRIOSignalGenerator.play(lCompiledScore);
+			lNIRIOSignalGenerator.playScore(lCompiledScore);
 			System.out.println(i);
 		}
 

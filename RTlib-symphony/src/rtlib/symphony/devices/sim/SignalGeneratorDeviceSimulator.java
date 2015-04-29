@@ -1,20 +1,20 @@
 package rtlib.symphony.devices.sim;
 
 import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.CompiledScore;
 
-public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
+public class SignalGeneratorDeviceSimulator	extends
+																						SignalGeneratorBase	implements
+																																SignalGeneratorInterface
 {
 
 	private final BooleanVariable mTriggerVariable;
 
-	private int mNumberOfFramesPerMovement = 1;
-
-	public SignalGeneratorDeviceSimulator(int pNumberOfFramesPerMovement)
+	public SignalGeneratorDeviceSimulator()
 	{
-		super();
-		mNumberOfFramesPerMovement = pNumberOfFramesPerMovement;
+		super(SignalGeneratorDeviceSimulator.class.getSimpleName());
 
 		mTriggerVariable = new BooleanVariable("Trigger", false);
 	}
@@ -44,7 +44,7 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 	}
 
 	@Override
-	public boolean play(CompiledScore pCompiledScore)
+	public boolean playScore(CompiledScore pCompiledScore)
 	{
 		final int lNumberOfMovements = pCompiledScore.getNumberOfMovements();
 
@@ -72,5 +72,7 @@ public class SignalGeneratorDeviceSimulator implements SignalGeneratorInterface
 	{
 		return mTriggerVariable;
 	}
+
+
 
 }

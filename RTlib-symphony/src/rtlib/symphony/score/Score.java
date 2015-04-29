@@ -23,6 +23,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 		super(pName);
 	}
 
+	@Override
 	public boolean addMovement(final MovementInterface pMovement)
 	{
 		mIsUpToDateBasedOnMovementList = false;
@@ -30,6 +31,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return true;
 	}
 
+	@Override
 	public void addMovementMultipleTimes(	final Movement pMovement,
 																				final int pNumberOfTimes)
 	{
@@ -39,6 +41,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 		}
 	}
 
+	@Override
 	public void addMovementAt(final int pIndex,
 														final MovementInterface pMovement)
 	{
@@ -46,12 +49,14 @@ public class Score extends NameableAbstract implements ScoreInterface
 		mMovementList.add(pIndex, pMovement);
 	}
 
+	@Override
 	public void removeMovementAt(final int pIndex)
 	{
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.remove(pIndex);
 	}
 
+	@Override
 	public void clear()
 	{
 		mIsUpToDateBasedOnMovementList = false;
@@ -69,6 +74,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return mScoreShortBuffer;
 	}
 
+	@Override
 	public boolean isUpToDate()
 	{
 		boolean lIsUpToDate = mIsUpToDateBasedOnMovementList;
@@ -115,11 +121,13 @@ public class Score extends NameableAbstract implements ScoreInterface
 		return lScoreBufferLength;
 	}
 
+	@Override
 	public ArrayList<MovementInterface> getMovements()
 	{
 		return mMovementList;
 	}
 
+	@Override
 	public int getNumberOfMovements()
 	{
 		return mMovementList.size();

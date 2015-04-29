@@ -45,7 +45,7 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	}
 
 	@Override
-	public ObjectVariable<StackInterface<T, A>> getStackReferenceVariable()
+	public ObjectVariable<StackInterface<T, A>> getStackVariable()
 	{
 		return mStackReference;
 	}

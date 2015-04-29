@@ -25,6 +25,12 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
+																				final boolean pOnlyStart)
+	{
+		this(pDeviceName, pOnlyStart, TimeUnit.MILLISECONDS);
+	}
+
+	public SignalStartableLoopTaskDevice(	final String pDeviceName,
 																				final boolean pOnlyStart,
 																				TimeUnit pTimeUnit)
 	{

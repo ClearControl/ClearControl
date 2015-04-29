@@ -16,7 +16,7 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 
 	DoubleVariable getNumberOfImagesPerPlaneVariable();
 
-	ObjectVariable<StackInterface<T, A>> getStackReferenceVariable();
+	ObjectVariable<StackInterface<T, A>> getStackVariable();
 
 	@Override
 	void trigger();

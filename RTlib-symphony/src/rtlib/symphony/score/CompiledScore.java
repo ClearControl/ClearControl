@@ -7,6 +7,7 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import rtlib.symphony.interfaces.MovementInterface;
+import rtlib.symphony.interfaces.ScoreInterface;
 import rtlib.symphony.movement.CompiledMovement;
 import rtlib.symphony.movement.Movement;
 
@@ -31,10 +32,16 @@ public class CompiledScore
 	{
 		mName = pScore.getName() + "Compiled";
 
-		for (MovementInterface lMovement : pScore.getMovements())
+		for (final MovementInterface lMovement : pScore.getMovements())
 		{
 			addMovement(lMovement);
 		}
+	}
+
+	public void addScore(ScoreInterface pScore)
+	{
+		for (final MovementInterface lMovement : pScore.getMovements())
+			addMovement(lMovement);
 	}
 
 	public void addMovement(final MovementInterface pMovement)
@@ -185,5 +192,7 @@ public class CompiledScore
 		final short lShort = (short) (pHigh << 8 | pLow & 0xFF);
 		return lShort;
 	}
+
+
 
 }

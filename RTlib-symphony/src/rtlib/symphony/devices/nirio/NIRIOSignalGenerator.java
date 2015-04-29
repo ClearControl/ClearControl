@@ -1,24 +1,27 @@
 package rtlib.symphony.devices.nirio;
 
 import nirioj.direttore.Direttore;
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.CompiledScore;
 
-public class NIRIOSignalGenerator extends NamedVirtualDevice implements
+public class NIRIOSignalGenerator extends SignalGeneratorBase implements
 																														SignalGeneratorInterface
+
 {
+
 
 	private final Direttore mDirettore;
 
-	private BooleanVariable mTriggerVariable = new BooleanVariable(	"Trigger",
-																																	false);
+	double mWaitTimeInMilliseconds = 0;
+
+
 
 	public NIRIOSignalGenerator()
 	{
 		super("NIRIOSignalGenerator");
 		mDirettore = new Direttore();
+
 	}
 
 	@Override
@@ -27,18 +30,19 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 		return mDirettore.getTemporalGranularityInMicroseconds();
 	}
 
-	public boolean play(CompiledScore pCompiledScore)
+	@Override
+	public boolean playScore(CompiledScore pCompiledScore)
 	{
 		final Thread lCurrentThread = Thread.currentThread();
 		final int lCurrentThreadPriority = lCurrentThread.getPriority();
 		lCurrentThread.setPriority(Thread.MAX_PRIORITY);
 
 		mTriggerVariable.setValue(true);
-		boolean lPlayed = mDirettore.play(pCompiledScore.getDeltaTimeBuffer(Direttore.cNanosecondsPerTicks),
-																			pCompiledScore.getNumberOfTimePointsBuffer(Direttore.cNanosecondsPerTicks),
-																			pCompiledScore.getSyncBuffer(Direttore.cNanosecondsPerTicks),
-																			pCompiledScore.getNumberOfMovements(),
-																			pCompiledScore.getScoreBuffer(Direttore.cNanosecondsPerTicks));
+		final boolean lPlayed = mDirettore.play(pCompiledScore.getDeltaTimeBuffer(Direttore.cNanosecondsPerTicks),
+																						pCompiledScore.getNumberOfTimePointsBuffer(Direttore.cNanosecondsPerTicks),
+																						pCompiledScore.getSyncBuffer(Direttore.cNanosecondsPerTicks),
+																						pCompiledScore.getNumberOfMovements(),
+																						pCompiledScore.getScoreBuffer(Direttore.cNanosecondsPerTicks));
 		lCurrentThread.setPriority(lCurrentThreadPriority);
 		mTriggerVariable.setValue(false);
 
@@ -85,7 +89,6 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 		return true;
 	}
 
-	double mWaitTimeInMilliseconds = 0;
 
 
 	@Override
@@ -106,10 +109,5 @@ public class NIRIOSignalGenerator extends NamedVirtualDevice implements
 
 	}
 
-	@Override
-	public BooleanVariable getTriggerVariable()
-	{
-		return mTriggerVariable;
-	}
 
 }
