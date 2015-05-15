@@ -1,7 +1,7 @@
 package rtlib.symphony.functions;
 
 import static java.lang.Math.round;
-import rtlib.symphony.interfaces.StaveInterface;
+import rtlib.symphony.staves.StaveInterface;
 
 public class Ramp
 {

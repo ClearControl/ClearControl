@@ -2,7 +2,6 @@ package rtlib.symphony.staves;
 
 import rtlib.symphony.functions.Interval;
 import rtlib.symphony.functions.Set;
-import rtlib.symphony.interfaces.StaveInterface;
 
 public class TriggerStave extends StaveAbstract	implements
 																								StaveInterface
@@ -17,7 +16,7 @@ public class TriggerStave extends StaveAbstract	implements
 	}
 
 	@Override
-	public void updateStaveBuffer()
+	public void updateStaveArray()
 	{
 		Set.write(this, 0);
 		if (!mEnabled)

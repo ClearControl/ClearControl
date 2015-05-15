@@ -5,9 +5,8 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import rtlib.core.device.NameableAbstract;
-import rtlib.symphony.interfaces.MovementInterface;
-import rtlib.symphony.interfaces.StaveInterface;
 import rtlib.symphony.staves.ConstantStave;
+import rtlib.symphony.staves.StaveInterface;
 
 public class Movement extends NameableAbstract implements
 																							MovementInterface
@@ -97,6 +96,7 @@ public class Movement extends NameableAbstract implements
 		}
 	}
 
+	@Override
 	public boolean setStave(final int pStaveIndex,
 													final StaveInterface pNewStave)
 	{
@@ -105,9 +105,15 @@ public class Movement extends NameableAbstract implements
 		return true;
 	}
 
+	@Override
+	public StaveInterface getStave(final int pStaveIndex)
+	{
+		return mStaveListArray[pStaveIndex];
+	}
+
 	private StaveInterface getFirstStave()
 	{
-		return mStaveListArray[0];
+		return getStave(0);
 	}
 
 	@Override

@@ -1,14 +1,14 @@
 package rtlib.symphony.score;
 
+import static java.lang.Math.max;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import rtlib.core.device.NameableAbstract;
-import rtlib.symphony.interfaces.MovementInterface;
-import rtlib.symphony.interfaces.ScoreInterface;
-import rtlib.symphony.movement.Movement;
+import rtlib.symphony.movement.MovementInterface;
 
 public class Score extends NameableAbstract implements ScoreInterface
 {
@@ -24,15 +24,14 @@ public class Score extends NameableAbstract implements ScoreInterface
 	}
 
 	@Override
-	public boolean addMovement(final MovementInterface pMovement)
+	public void addMovement(final MovementInterface pMovement)
 	{
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.add(pMovement);
-		return true;
 	}
 
 	@Override
-	public void addMovementMultipleTimes(	final Movement pMovement,
+	public void addMovementMultipleTimes(	final MovementInterface pMovement,
 																				final int pNumberOfTimes)
 	{
 		for (int i = 0; i < pNumberOfTimes; i++)
@@ -42,8 +41,8 @@ public class Score extends NameableAbstract implements ScoreInterface
 	}
 
 	@Override
-	public void addMovementAt(final int pIndex,
-														final MovementInterface pMovement)
+	public void insertMovementAt(	final int pIndex,
+																final MovementInterface pMovement)
 	{
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.add(pIndex, pMovement);
@@ -57,10 +56,27 @@ public class Score extends NameableAbstract implements ScoreInterface
 	}
 
 	@Override
+	public MovementInterface getMovement(int pMovementIndex)
+	{
+		return mMovementList.get(pMovementIndex);
+	}
+
+	@Override
 	public void clear()
 	{
 		mIsUpToDateBasedOnMovementList = false;
 		mMovementList.clear();
+	}
+
+	@Override
+	public long getTotalNumberOfTimePoints()
+	{
+		int lTotalNumberOfTimePoints = 0;
+		for (final MovementInterface lMovement : mMovementList)
+		{
+			lTotalNumberOfTimePoints += lMovement.getNumberOfTimePoints();
+		}
+		return lTotalNumberOfTimePoints;
 	}
 
 	public ShortBuffer getScoreBuffer()
@@ -134,9 +150,22 @@ public class Score extends NameableAbstract implements ScoreInterface
 	}
 
 	@Override
+	public int getMaxNumberOfStaves()
+	{
+		int lMaxNumberOfStaves = 0;
+
+		for (final MovementInterface lMovement : mMovementList)
+			lMaxNumberOfStaves = max(	lMaxNumberOfStaves,
+																lMovement.getNumberOfStaves());
+
+		return lMaxNumberOfStaves;
+	}
+
+	@Override
 	public String toString()
 	{
 		return String.format("Score-%s", getName());
 	}
+
 
 }

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import rtlib.symphony.interfaces.MovementInterface;
+import rtlib.symphony.staves.StaveInterface;
 
 public class CompiledMovement implements MovementInterface
 {
@@ -44,6 +44,18 @@ public class CompiledMovement implements MovementInterface
 	public boolean isUpToDate()
 	{
 		return true;
+	}
+
+	@Override
+	public boolean setStave(int pStaveIndex, StaveInterface pNewStave)
+	{
+		throw new UnsupportedOperationException("Cannot set individual staves of a compiled movement");
+	}
+
+	@Override
+	public StaveInterface getStave(int pStaveIndex)
+	{
+		throw new UnsupportedOperationException("Cannot get individual staves of a compiled movement");
 	}
 
 	@Override
@@ -118,5 +130,6 @@ public class CompiledMovement implements MovementInterface
 	{
 		return mName;
 	}
+
 
 }

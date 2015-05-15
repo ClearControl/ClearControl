@@ -11,11 +11,19 @@ public class UnivariateAffineFunction	implements
 																			Serializable
 {
 
+	private static final long serialVersionUID = 1L;
+
 	private volatile double mA;
 	private volatile double mB;
 
+	public UnivariateAffineFunction()	throws NullArgumentException,
+																		NoDataException
+	{
+		this(1, 0);
+	}
+
 	public UnivariateAffineFunction(double pA, double pB)	throws NullArgumentException,
-																											NoDataException
+																												NoDataException
 	{
 		mA = pA;
 		mB = pB;

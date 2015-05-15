@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.lightsheet.demo;
+package rtlib.microscope.old;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.junit.Test;
 
-import rtlib.microscope.lightsheetmicroscope.lightsheet.LightSheet;
+import rtlib.microscope.lightsheetmicroscope.illumination.LightSheet;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 
 public class LightSheetDemo

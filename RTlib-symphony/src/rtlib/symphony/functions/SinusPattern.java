@@ -2,7 +2,7 @@ package rtlib.symphony.functions;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
-import rtlib.symphony.interfaces.StaveInterface;
+import rtlib.symphony.staves.StaveInterface;
 
 public class SinusPattern
 {

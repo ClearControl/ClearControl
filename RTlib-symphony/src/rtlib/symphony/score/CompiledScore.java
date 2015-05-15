@@ -1,19 +1,20 @@
 package rtlib.symphony.score;
 
+import static java.lang.Math.max;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-import rtlib.symphony.interfaces.MovementInterface;
-import rtlib.symphony.interfaces.ScoreInterface;
 import rtlib.symphony.movement.CompiledMovement;
 import rtlib.symphony.movement.Movement;
+import rtlib.symphony.movement.MovementInterface;
 
-public class CompiledScore
+public class CompiledScore implements ScoreInterface
 {
-	private final ArrayList<CompiledMovement> mCompiledMovementList = new ArrayList<CompiledMovement>();
+	private final ArrayList<MovementInterface> mCompiledMovementList = new ArrayList<>();
 	private final String mName;
 
 	private volatile boolean mIsUpToDate = false;
@@ -44,6 +45,7 @@ public class CompiledScore
 			addMovement(lMovement);
 	}
 
+	@Override
 	public void addMovement(final MovementInterface pMovement)
 	{
 		final CompiledMovement lCompiledMovement = new CompiledMovement(pMovement);
@@ -51,17 +53,34 @@ public class CompiledScore
 		mIsUpToDate = false;
 	}
 
+	@Override
+	public void addMovementMultipleTimes(	MovementInterface pMovement,
+																				int pNumberOfTimes)
+	{
+		for (int i = 0; i < pNumberOfTimes; i++)
+			addMovement(pMovement);
+	}
+
+	@Override
 	public void clear()
 	{
 		mCompiledMovementList.clear();
 		mIsUpToDate = false;
 	}
 
-	public ArrayList<CompiledMovement> getMovements()
+	@Override
+	public MovementInterface getMovement(int pMovementIndex)
+	{
+		return mCompiledMovementList.get(pMovementIndex);
+	}
+
+	@Override
+	public ArrayList<MovementInterface> getMovements()
 	{
 		return mCompiledMovementList;
 	}
 
+	@Override
 	public int getNumberOfMovements()
 	{
 		return mCompiledMovementList.size();
@@ -127,8 +146,7 @@ public class CompiledScore
 																							.asIntBuffer();
 		}
 
-		final int lMatricesBufferLengthInBytes = Movement.cDefaultNumberOfStavesPerMovement * getTotalNumberOfTimePoints()
-																							* 2;
+		final int lMatricesBufferLengthInBytes = (int) (Movement.cDefaultNumberOfStavesPerMovement * getTotalNumberOfTimePoints() * 2);
 
 		if (mMatricesShortBuffer == null || mMatricesShortBuffer.capacity() < lMatricesBufferLengthInBytes)
 		{
@@ -142,21 +160,21 @@ public class CompiledScore
 		mNumberfOfTimePointsBuffer.clear();
 		mMatricesShortBuffer.clear();
 
-		for (final CompiledMovement lCompiledMovement : mCompiledMovementList)
+		for (final MovementInterface lMovement : mCompiledMovementList)
 		{
-			final int lDeltaTime = (int) (lCompiledMovement.getDeltaTimeInMicroseconds() * 1000 / pBufferDeltaTimeUnitInNanoseconds);
+			final int lDeltaTime = (int) (lMovement.getDeltaTimeInMicroseconds() * 1000 / pBufferDeltaTimeUnitInNanoseconds);
 			mDeltaTimeShortBuffer.put(lDeltaTime);
 
-			final byte lSyncMode = (byte) (lCompiledMovement.isSync()	? 0
-																																: lCompiledMovement.isSyncOnRisingEdge() ? 1
+			final byte lSyncMode = (byte) (lMovement.isSync()	? 0
+																																: lMovement.isSyncOnRisingEdge() ? 1
 																																																				: 2);
-			final byte lSyncChannel = (byte) lCompiledMovement.getSyncChannel();
+			final byte lSyncChannel = (byte) lMovement.getSyncChannel();
 			final int lSync = twoBytesToShort(lSyncChannel, lSyncMode);
 			mSyncShortBuffer.put(lSync);
 
-			mNumberfOfTimePointsBuffer.put(lCompiledMovement.getNumberOfTimePoints());
+			mNumberfOfTimePointsBuffer.put(lMovement.getNumberOfTimePoints());
 
-			final ShortBuffer lMovementBuffer = lCompiledMovement.getMovementBuffer();
+			final ShortBuffer lMovementBuffer = lMovement.getMovementBuffer();
 			lMovementBuffer.rewind();
 
 			mMatricesShortBuffer.put(lMovementBuffer);
@@ -170,12 +188,13 @@ public class CompiledScore
 		mIsUpToDate = true;
 	}
 
-	private int getTotalNumberOfTimePoints()
+	@Override
+	public long getTotalNumberOfTimePoints()
 	{
 		int lTotalNumberOfTimePoints = 0;
-		for (final CompiledMovement lCompiledMovement : mCompiledMovementList)
+		for (final MovementInterface lMovement : mCompiledMovementList)
 		{
-			lTotalNumberOfTimePoints += lCompiledMovement.getNumberOfTimePoints();
+			lTotalNumberOfTimePoints += lMovement.getNumberOfTimePoints();
 		}
 		return lTotalNumberOfTimePoints;
 	}
@@ -191,6 +210,36 @@ public class CompiledScore
 	{
 		final short lShort = (short) (pHigh << 8 | pLow & 0xFF);
 		return lShort;
+	}
+
+	@Override
+	public boolean isUpToDate()
+	{
+		return true;
+	}
+
+	@Override
+	public void removeMovementAt(int pIndex)
+	{
+		throw new UnsupportedOperationException("Cannot remove movements from a compiled score");
+	}
+
+	@Override
+	public void insertMovementAt(int pIndex, MovementInterface pMovement)
+	{
+		throw new UnsupportedOperationException("Cannot remove movements from a compiled score");
+	}
+
+	@Override
+	public int getMaxNumberOfStaves()
+	{
+		int lMaxNumberOfStaves = 0;
+		
+		for(final MovementInterface lMovement : mCompiledMovementList)
+			lMaxNumberOfStaves = max(	lMaxNumberOfStaves,
+																lMovement.getNumberOfStaves());
+		
+		return lMaxNumberOfStaves;
 	}
 
 

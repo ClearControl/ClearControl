@@ -2,14 +2,16 @@ package rtlib.symphony.devices;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.symphony.interfaces.ScoreInterface;
+import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.CompiledScore;
 import rtlib.symphony.score.Score;
+import rtlib.symphony.score.ScoreInterface;
 
 public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 																																		SignalGeneratorInterface,
@@ -103,6 +105,19 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 		};
 		final Future<Boolean> lFuture = executeAsynchronously(lCall);
 		return lFuture;
+	}
+
+	@Override
+	public long estimatePlayTime(TimeUnit pTimeUnit)
+	{
+		long lDurationInMilliseconds = 0;
+		for (final MovementInterface lMovement : mCompiledScore.getMovements())
+		{
+			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
+		}
+		lDurationInMilliseconds *= mCompiledScore.getNumberOfMovements();
+		return pTimeUnit.convert(	lDurationInMilliseconds,
+															TimeUnit.MILLISECONDS);
 	}
 
 	@Override

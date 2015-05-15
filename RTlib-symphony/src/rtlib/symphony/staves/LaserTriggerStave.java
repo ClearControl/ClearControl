@@ -1,6 +1,5 @@
 package rtlib.symphony.staves;
 
-import rtlib.symphony.interfaces.StaveInterface;
 
 public class LaserTriggerStave extends TriggerStave	implements
 																										StaveInterface

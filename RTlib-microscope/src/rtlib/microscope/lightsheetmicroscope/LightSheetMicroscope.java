@@ -5,30 +5,32 @@ import java.util.concurrent.Future;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import org.apache.commons.math3.analysis.UnivariateFunction;
-
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
-import rtlib.microscope.lightsheetmicroscope.lightsheet.LightSheet;
+import rtlib.microscope.lightsheetmicroscope.detection.DetectionPathInterface;
+import rtlib.microscope.lightsheetmicroscope.illumination.LightSheetInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
 import rtlib.stages.StageDeviceInterface;
+import rtlib.symphony.devices.SignalGeneratorInterface;
 
 public class LightSheetMicroscope	extends
-																							SignalStartableLoopTaskDevice	implements
-																							StateQueueDeviceInterface
+																	SignalStartableLoopTaskDevice	implements
+																																StateQueueDeviceInterface
 {
 
 	private final ArrayList<Object> mAllDeviceList = new ArrayList<>();
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceList = new ArrayList<>();
-	private final ArrayList<LightSheet<UnivariateFunction>> mLightSheetList = new ArrayList<>();
+	private final ArrayList<SignalGeneratorInterface> mSignalGeneratorList = new ArrayList<>();
+	private final ArrayList<LightSheetInterface> mLightSheetList = new ArrayList<>();
+	private final ArrayList<DetectionPathInterface> mDetectionPathList = new ArrayList<>();
 	private final ArrayList<FilterWheelDeviceInterface> mFilterWheelList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mDetectionPhaseModulatorDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mIlluminationPhaseModulatorDeviceList = new ArrayList<>();
@@ -37,8 +39,7 @@ public class LightSheetMicroscope	extends
 	private final ArrayList<SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess>> mStackPipelineList = new ArrayList<>();
 	private final ArrayList<ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> mStackVariableList = new ArrayList<>();
 
-	public LightSheetMicroscope(String pDeviceName,
-																	boolean pOnlyStart)
+	public LightSheetMicroscope(String pDeviceName, boolean pOnlyStart)
 	{
 		super(pDeviceName, pOnlyStart);
 	}
@@ -78,7 +79,24 @@ public class LightSheetMicroscope	extends
 		return mStackPipelineList.get(pIndex);
 	}
 
-	public int addLightSheetDevice(LightSheet<UnivariateFunction> pLightSheet)
+	public int addSignalGeneratorDevice(SignalGeneratorInterface pSignalGenerator)
+	{
+		mAllDeviceList.add(pSignalGenerator);
+		mSignalGeneratorList.add(pSignalGenerator);
+		return mSignalGeneratorList.size() - 1;
+	}
+
+	public int getNumberOfSignalGeneratorDevices()
+	{
+		return mSignalGeneratorList.size();
+	}
+
+	public SignalGeneratorInterface getSignalGeneratorDevice(int pIndex)
+	{
+		return mSignalGeneratorList.get(pIndex);
+	}
+
+	public int addLightSheetDevice(LightSheetInterface pLightSheet)
 	{
 		mAllDeviceList.add(pLightSheet);
 		mLightSheetList.add(pLightSheet);
@@ -90,9 +108,26 @@ public class LightSheetMicroscope	extends
 		return mLightSheetList.size();
 	}
 
-	public LightSheet<UnivariateFunction> getLightSheetDevice(int pIndex)
+	public LightSheetInterface getLightSheetDevice(int pIndex)
 	{
 		return mLightSheetList.get(pIndex);
+	}
+
+	public int addLightSheetDevice(DetectionPathInterface pDetectionPath)
+	{
+		mAllDeviceList.add(pDetectionPath);
+		mDetectionPathList.add(pDetectionPath);
+		return mDetectionPathList.size() - 1;
+	}
+
+	public int getNumberOfDetectionPathDevices()
+	{
+		return mDetectionPathList.size();
+	}
+
+	public DetectionPathInterface getDetectionPathDevice(int pIndex)
+	{
+		return mDetectionPathList.get(pIndex);
 	}
 
 	public int addFilterWheelDevice(FilterWheelDeviceInterface pFilterWheelDeviceInterface)
@@ -185,10 +220,22 @@ public class LightSheetMicroscope	extends
 			lIsOpen &= lStackPipelineInterface.start();
 		}
 
-		for (final LightSheet<UnivariateFunction> lLightSheet : mLightSheetList)
+		for (final SignalGeneratorInterface lSignalGeneratorInterface : mSignalGeneratorList)
 		{
-			lIsOpen &= lLightSheet.open();
-			lIsOpen &= lLightSheet.start();
+			lIsOpen &= lSignalGeneratorInterface.open();
+			lIsOpen &= lSignalGeneratorInterface.start();
+		}
+
+		for (final LightSheetInterface lLightSheetInterface : mLightSheetList)
+		{
+			lIsOpen &= lLightSheetInterface.open();
+			lIsOpen &= lLightSheetInterface.start();
+		}
+
+		for (final DetectionPathInterface lDetectionPathInterface : mDetectionPathList)
+		{
+			lIsOpen &= lDetectionPathInterface.open();
+			lIsOpen &= lDetectionPathInterface.start();
 		}
 
 		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mDetectionPhaseModulatorDeviceList)
@@ -235,10 +282,22 @@ public class LightSheetMicroscope	extends
 			lIsClosed &= lStackPipelineInterface.close();
 		}
 
-		for (final LightSheet<UnivariateFunction> lLightSheet : mLightSheetList)
+		for (final SignalGeneratorInterface lSignalGeneratorInterface : mSignalGeneratorList)
 		{
-			lIsClosed &= lLightSheet.stop();
-			lIsClosed &= lLightSheet.close();
+			lIsClosed &= lSignalGeneratorInterface.stop();
+			lIsClosed &= lSignalGeneratorInterface.close();
+		}
+
+		for (final LightSheetInterface lLightSheetInterface : mLightSheetList)
+		{
+			lIsClosed &= lLightSheetInterface.stop();
+			lIsClosed &= lLightSheetInterface.close();
+		}
+
+		for (final DetectionPathInterface lDetectionPathInterface : mDetectionPathList)
+		{
+			lIsClosed &= lDetectionPathInterface.stop();
+			lIsClosed &= lDetectionPathInterface.close();
 		}
 
 		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mDetectionPhaseModulatorDeviceList)
@@ -325,15 +384,25 @@ public class LightSheetMicroscope	extends
 	@Override
 	public int getQueueLength()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public Future<Boolean> playQueue()
+	public FutureBooleanList playQueue()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
+
+		for (final Object lDevice : mAllDeviceList)
+		{
+			if (lDevice instanceof StateQueueDeviceInterface)
+			{
+				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+				final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
+				lFutureBooleanList.addFuture(lPlayQueueFuture);
+			}
+		}
+		
+		return lFutureBooleanList;
 	}
 
 	@Override
