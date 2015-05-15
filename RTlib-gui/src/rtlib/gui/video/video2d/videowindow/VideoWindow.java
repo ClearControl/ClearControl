@@ -13,7 +13,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import javax.media.opengl.GL;
-import javax.media.opengl.GL4;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
@@ -116,14 +115,14 @@ public class VideoWindow<T extends NativeType<T>> implements
 				super.init(pGLAutoDrawable);
 				try
 				{
-					final GL4 lGL4 = pGLAutoDrawable.getGL().getGL4();
-					lGL4.setSwapInterval(1);
-					lGL4.glDisable(GL4.GL_DEPTH_TEST);
-					lGL4.glDisable(GL4.GL_STENCIL_TEST);
-					lGL4.glEnable(GL4.GL_TEXTURE_2D);
+					final GL lGL = pGLAutoDrawable.getGL();
+					lGL.setSwapInterval(1);
+					lGL.glDisable(GL.GL_DEPTH_TEST);
+					lGL.glDisable(GL.GL_STENCIL_TEST);
+					lGL.glEnable(GL.GL_TEXTURE_2D);
 
-					lGL4.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-					lGL4.glClear(GL4.GL_COLOR_BUFFER_BIT);
+					lGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+					lGL.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 					/*getClearGLWindow().setOrthoProjectionMatrix(0,
 																											pGLAutoDrawable.getSurfaceWidth(),
@@ -137,7 +136,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 					setOrthoProjectionMatrixWithAspectRatio(lWidth, lHeight);
 
-					mGLProgramVideoRender = GLProgram.buildProgram(	lGL4,
+					mGLProgramVideoRender = GLProgram.buildProgram(	lGL,
 																													VideoWindow.class,
 																													"shaders/video.vertex.glsl",
 																													"shaders/video.fragment.glsl");
@@ -145,7 +144,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 					mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
 					mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
 					mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
-					mTexUnit.set(0);
+					mTexUnit.setInt(0);
 
 					mMinimumUniform = mGLProgramVideoRender.getUniform("minimum");
 					mMaximumUniform = mGLProgramVideoRender.getUniform("maximum");
@@ -185,7 +184,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 					mQuadVertexArray.addVertexAttributeArray(	mTexCoordAttributeArray,
 																										lTexCoordFloatArray.getFloatBuffer());
 
-					mGLProgramGuides = GLProgram.buildProgram(lGL4,
+					mGLProgramGuides = GLProgram.buildProgram(lGL,
 																										VideoWindow.class,
 																										"shaders/guides.vertex.glsl",
 																										"shaders/guides.fragment.glsl");
@@ -348,7 +347,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 			public void display(final GLAutoDrawable pGLAutoDrawable)
 			{
 				super.display(pGLAutoDrawable);
-				final GL4 lGL4 = pGLAutoDrawable.getGL().getGL4();
+				final GL lGL = pGLAutoDrawable.getGL().getGL();
 
 				// System.out.println("DISPLAY");
 				if (!mDisplayOn)
@@ -390,17 +389,17 @@ public class VideoWindow<T extends NativeType<T>> implements
 				{
 					if (mManualMinMax)
 					{
-						mMinimumUniform.set((float) mMinIntensity);
-						mMaximumUniform.set((float) mMaxIntensity);
+						mMinimumUniform.setFloat((float) mMinIntensity);
+						mMaximumUniform.setFloat((float) mMaxIntensity);
 					}
 					else
 					{
-						mMinimumUniform.set((float) mSampledMinIntensity);
-						mMaximumUniform.set((float) mSampledMaxIntensity);
+						mMinimumUniform.setFloat((float) mSampledMinIntensity);
+						mMaximumUniform.setFloat((float) mSampledMaxIntensity);
 					}
-					mGammaUniform.set((float) mGamma);
+					mGammaUniform.setFloat((float) mGamma);
 
-					mGLProgramVideoRender.use(lGL4);
+					mGLProgramVideoRender.use(lGL);
 					mTexture.bind(mGLProgramVideoRender);
 					// System.out.println("DRAW");
 					mQuadVertexArray.draw(GL.GL_TRIANGLES);

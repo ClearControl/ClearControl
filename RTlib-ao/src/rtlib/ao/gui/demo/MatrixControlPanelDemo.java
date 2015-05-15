@@ -17,7 +17,7 @@ public class MatrixControlPanelDemo
 {
 
 	@Test
-	public void test() throws InvocationTargetException,
+	public void demo() throws InvocationTargetException,
 										InterruptedException
 	{
 
@@ -31,7 +31,7 @@ public class MatrixControlPanelDemo
 																																					lTransformMatrix,
 																																					lTransformMatrixForDisplay);
 
-		final JFrame lTestFrame = new JFrame("Test");
+		final JFrame lTestFrame = new JFrame("Demo");
 		SwingUtilities.invokeAndWait(new Runnable()
 		{
 

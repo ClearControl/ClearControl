@@ -1,9 +1,19 @@
-package rtlib.symphony.interfaces;
+package rtlib.symphony.movement;
 
 import java.nio.ShortBuffer;
 
+import rtlib.symphony.staves.StaveInterface;
+
 public interface MovementInterface
 {
+
+	String getName();
+
+	boolean setStave(int pStaveIndex, StaveInterface pNewStave);
+
+	StaveInterface getStave(int pStaveIndex);
+
+	int getNumberOfStaves();
 
 	boolean isUpToDate();
 
@@ -11,22 +21,18 @@ public interface MovementInterface
 
 	int computeMovementBufferLength();
 
-	double getDeltaTimeInMicroseconds();
-
 	void setDeltaTimeInMicroseconds(double pDeltaTimeInMicroseconds);
+
+	double getDeltaTimeInMicroseconds();
 
 	double getDurationInMilliseconds();
 
 	int getNumberOfTimePoints();
-
-	int getNumberOfStaves();
 
 	boolean isSync();
 
 	boolean isSyncOnRisingEdge();
 
 	int getSyncChannel();
-
-	String getName();
 
 }

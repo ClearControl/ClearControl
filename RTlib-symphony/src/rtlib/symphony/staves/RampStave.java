@@ -2,7 +2,6 @@ package rtlib.symphony.staves;
 
 import rtlib.symphony.functions.Ramp;
 import rtlib.symphony.functions.Set;
-import rtlib.symphony.interfaces.StaveInterface;
 
 public class RampStave extends StaveAbstract implements
 																						StaveInterface
@@ -16,8 +15,23 @@ public class RampStave extends StaveAbstract implements
 		super("Ramp Stave - " + pName);
 	}
 
+	public RampStave(	final String pName,
+										double pSyncStart,
+										double pSyncStop,
+										double pStartValue,
+										double pStopValue,
+										double pOutsideValue)
+	{
+		super("Ramp Stave - " + pName);
+		mSyncStart = pSyncStart;
+		mSyncStop = pSyncStop;
+		mStartValue = pStartValue;
+		mStopValue = pStopValue;
+		mOutsideValue = pOutsideValue;
+	}
+
 	@Override
-	public void updateStaveBuffer()
+	public void updateStaveArray()
 	{
 		Set.write(this, 0);
 		if (mNoJump)

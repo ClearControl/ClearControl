@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.lightsheet;
+package rtlib.microscope.old;
 
 import java.util.concurrent.Future;
 
@@ -11,6 +11,8 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleInputVariableInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.persistence.ObjectVariableAsFile;
+import rtlib.microscope.lightsheetmicroscope.illumination.LightSheetInterface;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.movement.Movement;
@@ -18,11 +20,13 @@ import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.GalvoScannerStave;
 import rtlib.symphony.staves.LaserTriggerBinaryPattern2Stave;
 
-public class LightSheet<M extends UnivariateFunction> extends
+public class CopyOfLightSheet<M extends UnivariateFunction> extends
 																											SignalStartableDevice	implements
 																																						LightSheetInterface<M>,
 																																						AsynchronousExecutorServiceAccess
 {
+
+	private final SignalGeneratorInterface mSignalGenerator;
 
 
 	public DoubleVariable mEffectiveExposureInMicroseconds = new DoubleVariable("EffectiveExposureInMicroseconds",
@@ -66,6 +70,13 @@ public class LightSheet<M extends UnivariateFunction> extends
 	public final DoubleVariable mNumberOfPhasesPerPlane = new DoubleVariable(	"NumberOfPhases",
 																																						2);
 
+	public final BooleanVariable mLockLightSheetToPifoc = new BooleanVariable("LockLightSheetToPifoc",
+																																						false);
+	public final ObjectVariable<M> mPifoc2LightSheetModel;
+
+	private Movement mBeforeExposureMovement;
+	private Movement mExposureMovement;
+
 	private GalvoScannerStave mGalvoScannerStaveBeforeExposureZ,
 			mGalvoScannerStaveBeforeExposureY, mGalvoScannerStaveExposureZ,
 			mGalvoScannerStaveExposureY;
@@ -78,6 +89,8 @@ public class LightSheet<M extends UnivariateFunction> extends
 
 	private volatile boolean mIsUpToDate = false;
 
+	private volatile QueueProvider<CopyOfLightSheet<M>> mQueueProvider;
+
 	private final int mNumberOfLaserDigitalControls;
 	private int mGalvoScannerZStaveIndex;
 	private int mGalvoScannerYStaveIndex;
@@ -85,7 +98,7 @@ public class LightSheet<M extends UnivariateFunction> extends
 	private int mLaserAnalogModulationStaveIndex;
 	private int mCameraTriggerStaveIndex;
 
-	public LightSheet(String pName,
+	public CopyOfLightSheet(String pName,
 										SignalGeneratorInterface pSignalGenerator,
 										M pPifoc2LightSheetModel,
 										final double pReadoutTimeInMicrosecondsPerLine,
@@ -101,6 +114,9 @@ public class LightSheet<M extends UnivariateFunction> extends
 		setLaserAnalogModulationStaveIndex(3);
 		setCameraTriggerStaveIndex(8 + 7);
 
+		mPifoc2LightSheetModel = new ObjectVariableAsFile<M>(pName + "Pifoc2LightSheetModel");
+
+		mSignalGenerator = pSignalGenerator;
 
 		final DoubleVariable lDoubleUpdateListener = new DoubleVariable("UpdateListener",
 																																		0)
@@ -164,6 +180,10 @@ public class LightSheet<M extends UnivariateFunction> extends
 
 		mFocusZ.sendUpdatesTo(lDoubleUpdateListener);
 		mStageY.sendUpdatesTo(lDoubleUpdateListener);
+
+		mPifoc2LightSheetModel.set(pPifoc2LightSheetModel);
+		mLockLightSheetToPifoc.sendUpdatesTo(lDoubleUpdateListener);
+		mPifoc2LightSheetModel.sendUpdatesTo(lReferenceUpdateListener);
 
 		mPatternOnOff.sendUpdatesTo(lDoubleUpdateListener);
 		mPatternPeriod.sendUpdatesTo(lDoubleUpdateListener);
@@ -472,12 +492,12 @@ public class LightSheet<M extends UnivariateFunction> extends
 	}
 
 	@Override
-	public QueueProvider<LightSheet<M>> getQueueProviderFor2DContinuousAcquisition()
+	public QueueProvider<CopyOfLightSheet<M>> getQueueProviderFor2DContinuousAcquisition()
 	{
-		final QueueProvider<LightSheet<M>> lQueueProvider = new QueueProvider<LightSheet<M>>()
+		final QueueProvider<CopyOfLightSheet<M>> lQueueProvider = new QueueProvider<CopyOfLightSheet<M>>()
 		{
 			@Override
-			public void buildQueue(final LightSheet<M> pFPGALightSheetSignalGenerator)
+			public void buildQueue(final CopyOfLightSheet<M> pFPGALightSheetSignalGenerator)
 			{
 				prepareQueueFor2DContinuousAcquisition();
 			}
@@ -495,7 +515,7 @@ public class LightSheet<M extends UnivariateFunction> extends
 	@Override
 	public void setQueueProvider(final QueueProvider<?> pQueueProvider)
 	{
-		mQueueProvider = (QueueProvider<LightSheet<M>>) pQueueProvider;
+		mQueueProvider = (QueueProvider<CopyOfLightSheet<M>>) pQueueProvider;
 	}
 
 	@Override

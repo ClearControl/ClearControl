@@ -1,6 +1,6 @@
 package rtlib.symphony.functions;
 
-import rtlib.symphony.interfaces.StaveInterface;
+import rtlib.symphony.staves.StaveInterface;
 
 public class Set
 {

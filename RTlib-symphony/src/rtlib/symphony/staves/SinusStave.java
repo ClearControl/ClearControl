@@ -1,7 +1,6 @@
 package rtlib.symphony.staves;
 
 import rtlib.symphony.functions.SinusPattern;
-import rtlib.symphony.interfaces.StaveInterface;
 
 public class SinusStave extends StaveAbstract implements
 																								StaveInterface
@@ -19,10 +18,11 @@ public class SinusStave extends StaveAbstract implements
 		mSinusPeriod = pSinusPeriod;
 		mSinusPhase = pSinusPhase;
 		mSinusAmplitude = pSinusAmplitude;
+		updateStaveArray();
 	}
 
 	@Override
-	public void updateStaveBuffer()
+	public void updateStaveArray()
 	{
 		SinusPattern.add(this, mSinusPeriod, mSinusPhase, mSinusAmplitude);
 	}

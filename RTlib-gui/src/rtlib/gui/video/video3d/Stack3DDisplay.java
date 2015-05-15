@@ -71,7 +71,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																																			false);
 		mClearVolumeRenderer.setTransferFunction(TransferFunctions.getGrayLevel());
 		mClearVolumeRenderer.setVisible(true);
-		mClearVolumeRenderer.setMultiPass(false);
+		mClearVolumeRenderer.setAdaptiveLODActive(false);
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, A>, Object>("AsynchronousDisplayUpdater-" + pWindowName,
 																																															pUpdaterQueueLength)

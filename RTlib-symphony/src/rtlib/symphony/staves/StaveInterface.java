@@ -1,4 +1,4 @@
-package rtlib.symphony.interfaces;
+package rtlib.symphony.staves;
 
 import java.nio.ShortBuffer;
 
@@ -7,24 +7,27 @@ public interface StaveInterface
 
 	boolean isCompatibleWith(StaveInterface pNewStave);
 
-	int getStaveBufferLength();
+	void setNumberOfTimePoints(final int pNumberOfTimePoints);
+
+	int getNumberOfTimePoints();
 
 	boolean isUpToDate();
 
 	void requestUpdate();
 
-	void setNumberOfTimePoints(final int pNumberOfTimePoints);
+	void updateStaveArray();
 
-	int getNumberOfTimePoints();
+	short[] getStaveArray();
 
 	ShortBuffer getStaveBuffer();
 
-	short[] getStaveArray();
+	int getStaveBufferLength();
 
 	int getTimePointFromNormalized(double pNormalizedTimePoint);
 
 	double getNormalizedTimePoint(int pIntegerTimePoint);
 
 	int getMaximalSignalIntegerAmplitude();
+
 
 }

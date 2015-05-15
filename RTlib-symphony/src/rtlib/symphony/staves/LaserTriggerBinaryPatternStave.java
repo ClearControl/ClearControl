@@ -1,7 +1,6 @@
 package rtlib.symphony.staves;
 
 import rtlib.symphony.functions.BinaryPattern;
-import rtlib.symphony.interfaces.StaveInterface;
 
 public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 																																StaveInterface
@@ -16,9 +15,9 @@ public class LaserTriggerBinaryPatternStave extends TriggerStave implements
 	}
 
 	@Override
-	public void updateStaveBuffer()
+	public void updateStaveArray()
 	{
-		super.updateStaveBuffer();
+		super.updateStaveArray();
 		if (mEnablePattern)
 		{
 			BinaryPattern.mult(	this,

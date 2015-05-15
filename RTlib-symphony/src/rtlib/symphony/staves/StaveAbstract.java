@@ -3,7 +3,6 @@ package rtlib.symphony.staves;
 import java.nio.ShortBuffer;
 
 import rtlib.core.device.NameableAbstract;
-import rtlib.symphony.interfaces.StaveInterface;
 
 public abstract class StaveAbstract extends NameableAbstract implements
 																														StaveInterface
@@ -111,13 +110,14 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	{
 		if (!mIsUpToDate)
 		{
-			updateStaveBuffer();
+			updateStaveArray();
 			mIsUpToDate = true;
 		}
 		return mStaveShortBuffer;
 	}
 
-	public abstract void updateStaveBuffer();
+	@Override
+	public abstract void updateStaveArray();
 
 	@Override
 	public void requestUpdate()
