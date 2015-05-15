@@ -3,7 +3,10 @@ package rtlib.microscope.lightsheetmicroscope.illumination.demo;
 import org.junit.Test;
 
 import rtlib.microscope.lightsheetmicroscope.illumination.LightSheet;
+import rtlib.symphony.devices.SignalGeneratorInterface;
+import rtlib.symphony.devices.sim.SignalGeneratorDeviceSimulator;
 import rtlib.symphony.movement.Movement;
+import rtlib.symphony.score.ScoreInterface;
 
 public class LightSheetDemo
 {
@@ -18,6 +21,15 @@ public class LightSheetDemo
 
 		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 		lLightSheet.addStavesToExposureMovement(lExposureMovement);
+
+		SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorDeviceSimulator();
+
+		ScoreInterface lStagingScore = lSignalGeneratorDevice.getStagingScore();
+
+		lStagingScore.addMovement(lBeforeExposureMovement);
+		lStagingScore.addMovement(lExposureMovement);
+
+		lSignalGeneratorDevice.addCurrentStateToQueue();
 
 	}
 

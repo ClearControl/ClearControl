@@ -5,18 +5,20 @@ import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.CompiledScore;
 
-public class SignalGeneratorDeviceSimulator	extends
+public class SignalGeneratorSimulatorDevice	extends
 																						SignalGeneratorBase	implements
 																																SignalGeneratorInterface
 {
 
 	private final BooleanVariable mTriggerVariable;
 
-	public SignalGeneratorDeviceSimulator()
+	public SignalGeneratorSimulatorDevice()
 	{
-		super(SignalGeneratorDeviceSimulator.class.getSimpleName());
+		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
 
 		mTriggerVariable = new BooleanVariable("Trigger", false);
+		
+		
 	}
 
 	@Override
@@ -48,6 +50,8 @@ public class SignalGeneratorDeviceSimulator	extends
 	{
 		final int lNumberOfMovements = pCompiledScore.getNumberOfMovements();
 
+		
+		
 		try
 		{
 			Thread.sleep(lNumberOfMovements / 2);
