@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import rtlib.microscope.lightsheetmicroscope.illumination.LightSheet;
 import rtlib.symphony.devices.SignalGeneratorInterface;
-import rtlib.symphony.devices.sim.SignalGeneratorDeviceSimulator;
+import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.ScoreInterface;
 
@@ -22,7 +22,7 @@ public class LightSheetDemo
 		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 		lLightSheet.addStavesToExposureMovement(lExposureMovement);
 
-		SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorDeviceSimulator();
+		SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 
 		ScoreInterface lStagingScore = lSignalGeneratorDevice.getStagingScore();
 
@@ -30,6 +30,8 @@ public class LightSheetDemo
 		lStagingScore.addMovement(lExposureMovement);
 
 		lSignalGeneratorDevice.addCurrentStateToQueue();
+
+		lSignalGeneratorDevice.playQueue();
 
 	}
 
