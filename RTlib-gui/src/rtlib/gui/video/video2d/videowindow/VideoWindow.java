@@ -145,7 +145,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 					mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
 					mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
 					mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
-					mTexUnit.set(0);
+					mTexUnit.setInt(0);
 
 					mMinimumUniform = mGLProgramVideoRender.getUniform("minimum");
 					mMaximumUniform = mGLProgramVideoRender.getUniform("maximum");
@@ -390,15 +390,15 @@ public class VideoWindow<T extends NativeType<T>> implements
 				{
 					if (mManualMinMax)
 					{
-						mMinimumUniform.set((float) mMinIntensity);
-						mMaximumUniform.set((float) mMaxIntensity);
+						mMinimumUniform.setFloat((float) mMinIntensity);
+						mMaximumUniform.setFloat((float) mMaxIntensity);
 					}
 					else
 					{
-						mMinimumUniform.set((float) mSampledMinIntensity);
-						mMaximumUniform.set((float) mSampledMaxIntensity);
+						mMinimumUniform.setFloat((float) mSampledMinIntensity);
+						mMaximumUniform.setFloat((float) mSampledMaxIntensity);
 					}
-					mGammaUniform.set((float) mGamma);
+					mGammaUniform.setFloat((float) mGamma);
 
 					mGLProgramVideoRender.use(lGL4);
 					mTexture.bind(mGLProgramVideoRender);
