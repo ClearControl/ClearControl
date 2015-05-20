@@ -113,10 +113,12 @@ public class NIRIOScoreCompiler	implements
 		final int lNumberOfStaves = pMovement.getNumberOfStaves();
 
 		pScoreBuffer.pushPosition();
-		pScoreBuffer.writeBytes(lNumberOfTimePoints * lNumberOfStaves * 2,
+		long lNumberOfShortsInMovement = lNumberOfTimePoints * lNumberOfStaves;
+		pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement,
 														(byte) 0);
 		pScoreBuffer.popPosition();
 
+		pScoreBuffer.pushPosition();
 		for (int s = 0; s < lNumberOfStaves; s++)
 		{
 
@@ -155,8 +157,10 @@ public class NIRIOScoreCompiler	implements
 
 			pScoreBuffer.popPosition();
 			pScoreBuffer.skipShorts(1);
-
 		}
+		pScoreBuffer.popPosition();
+
+		pScoreBuffer.skipShorts(lNumberOfShortsInMovement);
 
 	}
 

@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.detection;
+package rtlib.microscope.lightsheet.detection;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 

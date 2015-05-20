@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 import rtlib.core.variable.objectv.ObjectVariable;
-import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;
 
 public class ScoreVisualizerJFrame extends JFrame
@@ -33,7 +32,7 @@ public class ScoreVisualizerJFrame extends JFrame
 	}
 
 	public static ScoreVisualizerJFrame visualizeAndWait(	String pString,
-																												Score pScore)
+																												ScoreInterface pScore)
 	{
 		final ScoreVisualizerJFrame lVisualize = visualize(	pString,
 																												pScore);

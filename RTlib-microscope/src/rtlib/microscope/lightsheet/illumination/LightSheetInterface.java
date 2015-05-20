@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.illumination;
+package rtlib.microscope.lightsheet.illumination;
 
 import rtlib.core.device.VirtualDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;

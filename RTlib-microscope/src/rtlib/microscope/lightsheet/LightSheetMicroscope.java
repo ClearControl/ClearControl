@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope;
+package rtlib.microscope.lightsheet;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -13,8 +13,8 @@ import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
-import rtlib.microscope.lightsheetmicroscope.detection.DetectionPathInterface;
-import rtlib.microscope.lightsheetmicroscope.illumination.LightSheetInterface;
+import rtlib.microscope.lightsheet.detection.DetectionPathInterface;
+import rtlib.microscope.lightsheet.illumination.LightSheetInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
 import rtlib.stages.StageDeviceInterface;

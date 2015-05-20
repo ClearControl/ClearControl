@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.illumination;
+package rtlib.microscope.lightsheet.illumination;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;

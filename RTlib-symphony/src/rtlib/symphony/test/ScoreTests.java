@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import rtlib.symphony.gui.ScoreVisualizerJFrame;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.Score;
 import rtlib.symphony.staves.RampSteppingStave;
@@ -44,7 +45,7 @@ public class ScoreTests
 
 		lScore.addMovementMultipleTimes(lMovement, 10);
 
-		/*final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
+		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
 																																							lScore);/**/
 
 

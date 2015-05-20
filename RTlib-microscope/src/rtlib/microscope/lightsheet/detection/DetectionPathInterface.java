@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheetmicroscope.detection;
+package rtlib.microscope.lightsheet.detection;
 
 import rtlib.core.device.VirtualDeviceInterface;
 

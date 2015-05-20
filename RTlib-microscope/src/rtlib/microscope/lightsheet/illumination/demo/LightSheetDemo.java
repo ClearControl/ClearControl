@@ -1,10 +1,10 @@
-package rtlib.microscope.lightsheetmicroscope.illumination.demo;
+package rtlib.microscope.lightsheet.illumination.demo;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import rtlib.microscope.lightsheetmicroscope.illumination.LightSheet;
+import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
 import rtlib.symphony.gui.ScoreVisualizerJFrame;
@@ -39,18 +39,23 @@ public class LightSheetDemo
 		lStagingScore.addMovement(lBeforeExposureMovement);
 		lStagingScore.addMovement(lExposureMovement);
 
-		for (int i = 0; i < 100; i++)
-			lSignalGeneratorDevice.addCurrentStateToQueue();
-
-		lSignalGeneratorDevice.playQueue();
-
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
 
-		while (lVisualizer.isVisible())
-		{
-			Thread.sleep(100);
-		}
+		
+		lSignalGeneratorDevice.open();
+		lSignalGeneratorDevice.start();
+		
+		for (int i = 0; i < 100; i++)
+			lSignalGeneratorDevice.addCurrentStateToQueue();
+
+		for (int i = 0; i < 1000000000 && lVisualizer.isVisible(); i++)
+			lSignalGeneratorDevice.playQueue();
+
+		lSignalGeneratorDevice.stop();
+		lSignalGeneratorDevice.close();
+
+		lVisualizer.dispose();
 
 	}
 
