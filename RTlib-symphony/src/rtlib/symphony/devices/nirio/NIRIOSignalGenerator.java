@@ -1,21 +1,21 @@
 package rtlib.symphony.devices.nirio;
 
+import static java.lang.Math.toIntExact;
 import nirioj.direttore.Direttore;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
-import rtlib.symphony.score.CompiledScore;
+import rtlib.symphony.devices.nirio.compiler.NIRIOCompiledScore;
+import rtlib.symphony.devices.nirio.compiler.NIRIOScoreCompiler;
+import rtlib.symphony.score.ScoreInterface;
 
-public class NIRIOSignalGenerator extends SignalGeneratorBase implements
-																														SignalGeneratorInterface
+public class NIRIOSignalGenerator extends SignalGeneratorBase	implements
+																															SignalGeneratorInterface
 
 {
 
-
-	private final Direttore mDirettore;
-
 	double mWaitTimeInMilliseconds = 0;
-
-
+	private final Direttore mDirettore;
+	private final NIRIOCompiledScore mNIRIOCompiledScore = new NIRIOCompiledScore();
 
 	public NIRIOSignalGenerator()
 	{
@@ -31,18 +31,27 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase implements
 	}
 
 	@Override
-	public boolean playScore(CompiledScore pCompiledScore)
+	public boolean playScore(ScoreInterface pScore)
 	{
 		final Thread lCurrentThread = Thread.currentThread();
 		final int lCurrentThreadPriority = lCurrentThread.getPriority();
 		lCurrentThread.setPriority(Thread.MAX_PRIORITY);
-
 		mTriggerVariable.setValue(true);
-		final boolean lPlayed = mDirettore.play(pCompiledScore.getDeltaTimeBuffer(Direttore.cNanosecondsPerTicks),
-																						pCompiledScore.getNumberOfTimePointsBuffer(Direttore.cNanosecondsPerTicks),
-																						pCompiledScore.getSyncBuffer(Direttore.cNanosecondsPerTicks),
-																						pCompiledScore.getNumberOfMovements(),
-																						pCompiledScore.getScoreBuffer(Direttore.cNanosecondsPerTicks));
+
+		boolean lPlayed = false;
+
+		NIRIOScoreCompiler.compile(mNIRIOCompiledScore, pScore);
+
+		lPlayed = mDirettore.play(mNIRIOCompiledScore.getDeltaTimeBuffer().getContiguousMemory()
+																																	.getBridJPointer(Integer.class),
+															mNIRIOCompiledScore.getNumberOfTimePointsBuffer().getContiguousMemory()
+																																						.getBridJPointer(Integer.class),
+															mNIRIOCompiledScore.getSyncBuffer().getContiguousMemory()
+																															.getBridJPointer(Integer.class),
+															toIntExact(mNIRIOCompiledScore.getNumberOfMovements()),
+															mNIRIOCompiledScore.getScoreBuffer().getContiguousMemory()
+																															.getBridJPointer(Short.class));
+
 		lCurrentThread.setPriority(lCurrentThreadPriority);
 		mTriggerVariable.setValue(false);
 
@@ -89,8 +98,6 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase implements
 		return true;
 	}
 
-
-
 	@Override
 	public boolean close()
 	{
@@ -108,6 +115,5 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase implements
 		}
 
 	}
-
 
 }

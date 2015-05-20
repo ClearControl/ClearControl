@@ -1,6 +1,6 @@
 package rtlib.core.device;
 
-public abstract class NameableAbstract
+public abstract class NameableAbstract implements NameableInterface
 {
 	private String mName;
 
@@ -16,11 +16,19 @@ public abstract class NameableAbstract
 		mName = pName;
 	}
 
+	/* (non-Javadoc)
+	 * @see rtlib.core.device.NameableInterface#getName()
+	 */
+	@Override
 	public String getName()
 	{
 		return mName;
 	}
 
+	/* (non-Javadoc)
+	 * @see rtlib.core.device.NameableInterface#setName(java.lang.String)
+	 */
+	@Override
 	public void setName(final String name)
 	{
 		mName = name;

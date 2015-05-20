@@ -1,11 +1,11 @@
 package rtlib.core.device;
 
 public class NamedVirtualDevice extends VirtualDeviceAdapter implements
-																														NamedDeviceInterface,
-																														VirtualDeviceInterface
+																														VirtualDeviceInterface,
+																														NameableInterface
 {
 
-	private final String mDeviceName;
+	private String mDeviceName;
 
 	public NamedVirtualDevice(final String pDeviceName)
 	{
@@ -14,7 +14,13 @@ public class NamedVirtualDevice extends VirtualDeviceAdapter implements
 	}
 
 	@Override
-	public String getDeviceName()
+	public void setName(String pName)
+	{
+		mDeviceName = pName;
+	}
+
+	@Override
+	public String getName()
 	{
 		return mDeviceName;
 	}

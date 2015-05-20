@@ -1,30 +1,75 @@
 package rtlib.symphony.staves;
 
-import rtlib.symphony.functions.SinusPattern;
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
 
-public class SinusStave extends StaveAbstract implements
-																								StaveInterface
+public class SinusStave extends StaveAbstract	implements
+																							StaveInterface
 {
-	public volatile double mSinusPeriod;
-	public volatile double mSinusPhase;
-	public volatile double mSinusAmplitude;
+	private volatile float mSinusPeriod;
+	private volatile float mSinusPhase;
+	private volatile float mSinusAmplitude;
+
+	private volatile float mOmega;
 
 	public SinusStave(final String pName,
-										final double pSinusPeriod,
-										final double pSinusPhase,
-										final double pSinusAmplitude)
+										final float pSinusPeriod,
+										final float pSinusPhase,
+										final float pSinusAmplitude)
 	{
 		super(pName);
-		mSinusPeriod = pSinusPeriod;
-		mSinusPhase = pSinusPhase;
-		mSinusAmplitude = pSinusAmplitude;
-		updateStaveArray();
+		setSinusPeriod(pSinusPeriod);
+		setSinusPhase(pSinusPhase);
+		setSinusAmplitude(pSinusAmplitude);
 	}
 
 	@Override
-	public void updateStaveArray()
+	public float getValue(float pNormalizedTime)
 	{
-		SinusPattern.add(this, mSinusPeriod, mSinusPhase, mSinusAmplitude);
+		final float lValue = (float) (getSinusAmplitude() * sin((pNormalizedTime + getSinusPhase()) * mOmega));
+
+		return lValue;
+	}
+
+	public float getSinusPeriod()
+	{
+		return mSinusPeriod;
+	}
+
+	public void setSinusPeriod(float pSinusPeriod)
+	{
+		mSinusPeriod = pSinusPeriod;
+		mOmega = (float) ((2 * PI) / getSinusPeriod());
+	}
+
+	public float getSinusPhase()
+	{
+		return mSinusPhase;
+	}
+
+	public void setSinusPhase(float pSinusPhase)
+	{
+		mSinusPhase = pSinusPhase;
+	}
+
+	public float getSinusAmplitude()
+	{
+		return mSinusAmplitude;
+	}
+
+	public void setSinusAmplitude(float pSinusAmplitude)
+	{
+		mSinusAmplitude = pSinusAmplitude;
+	}
+
+	@Override
+	public StaveInterface copy()
+	{
+
+		return new SinusStave(getName(),
+													getSinusPeriod(),
+													getSinusPhase(),
+													getSinusAmplitude());
 	}
 
 }

@@ -1,7 +1,11 @@
 package rtlib.core.math.kdtree;
 
 /**
+ * KDtree
  *
+ *
+ * @param <T>
+ *          type stored in tree
  */
 public class KdTree<T> extends KdNode<T>
 {
@@ -29,9 +33,9 @@ public class KdTree<T> extends KdNode<T>
 																					int maxPointsReturned,
 																					DistanceFunction distanceFunction)
 	{
-		BinaryHeap.Min<KdNode<T>> pendingPaths = new BinaryHeap.Min<KdNode<T>>();
-		BinaryHeap.Max<T> evaluatedPoints = new BinaryHeap.Max<T>();
-		int pointsRemaining = Math.min(maxPointsReturned, size());
+		final BinaryHeap.Min<KdNode<T>> pendingPaths = new BinaryHeap.Min<KdNode<T>>();
+		final BinaryHeap.Max<T> evaluatedPoints = new BinaryHeap.Max<T>();
+		final int pointsRemaining = Math.min(maxPointsReturned, size());
 		pendingPaths.offer(0, this);
 
 		while (pendingPaths.size() > 0 && (evaluatedPoints.size() < pointsRemaining || (pendingPaths.getMinKey() < evaluatedPoints.getMaxKey())))
@@ -72,7 +76,7 @@ public class KdTree<T> extends KdNode<T>
 				pathNotTaken = cursor.right;
 				cursor = cursor.left;
 			}
-			double otherDistance = distanceFunction.distanceToRect(	searchPoint,
+			final double otherDistance = distanceFunction.distanceToRect(	searchPoint,
 																															pathNotTaken.minBound,
 																															pathNotTaken.maxBound);
 			// Only add a path if we either need more points or it's closer than
@@ -85,7 +89,7 @@ public class KdTree<T> extends KdNode<T>
 
 		if (cursor.singlePoint)
 		{
-			double nodeDistance = distanceFunction.distance(cursor.points[0],
+			final double nodeDistance = distanceFunction.distance(cursor.points[0],
 																											searchPoint);
 			// Only add a point if either need more points or it's closer than
 			// furthest on list so far
@@ -93,7 +97,7 @@ public class KdTree<T> extends KdNode<T>
 			{
 				for (int i = 0; i < cursor.size(); i++)
 				{
-					T value = (T) cursor.data[i];
+					final T value = (T) cursor.data[i];
 
 					// If we don't need any more, replace max
 					if (evaluatedPoints.size() == desiredPoints)
@@ -112,9 +116,9 @@ public class KdTree<T> extends KdNode<T>
 			// Add the points at the cursor
 			for (int i = 0; i < cursor.size(); i++)
 			{
-				double[] point = cursor.points[i];
-				T value = (T) cursor.data[i];
-				double distance = distanceFunction.distance(point,
+				final double[] point = cursor.points[i];
+				final T value = (T) cursor.data[i];
+				final double distance = distanceFunction.distance(point,
 																										searchPoint);
 				// Only add a point if either need more points or it's closer than
 				// furthest on list so far

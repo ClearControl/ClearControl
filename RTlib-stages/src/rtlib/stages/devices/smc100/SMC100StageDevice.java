@@ -99,7 +99,7 @@ public class SMC100StageDevice extends SerialDevice implements
 	@Override
 	public String getDOFNameByIndex(int pIndex)
 	{
-		return getDeviceName();
+		return getName();
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class SMC100StageDevice extends SerialDevice implements
 						+ ", getNumberOfDOFs()="
 						+ getNumberOfDOFs()
 						+ ", getDeviceName()="
-						+ getDeviceName()
+						+ getName()
 						+ "]";
 	}
 

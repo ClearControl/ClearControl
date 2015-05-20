@@ -46,6 +46,10 @@ public class JSliderDouble extends JPanel
 	private JButton mPlusStepButton;
 
 	/**
+	 * Constructor
+	 * 
+	 * @param pValueName
+	 *          value name
 	 * @wbp.parser.constructor
 	 */
 	public JSliderDouble(final String pValueName)

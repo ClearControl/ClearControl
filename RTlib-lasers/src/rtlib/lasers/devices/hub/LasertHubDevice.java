@@ -37,7 +37,7 @@ public class LasertHubDevice extends NamedVirtualDevice
 
 	public DoubleVariable getOnVariableByWavelength(final int pWaveLengthInNanometer)
 	{
-		LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWaveLengthInNanometer);
+		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWaveLengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
 			return null;
 		return lLaserDeviceByWavelength.getLaserOnVariable();
@@ -45,7 +45,7 @@ public class LasertHubDevice extends NamedVirtualDevice
 
 	public DoubleVariable getTargetPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
-		LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
+		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
 			return null;
 		return lLaserDeviceByWavelength.getTargetPowerInMilliWattVariable();
@@ -53,7 +53,7 @@ public class LasertHubDevice extends NamedVirtualDevice
 
 	public DoubleVariable getCurrentPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
-		LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
+		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
 			return null;
 		return lLaserDeviceByWavelength.getCurrentPowerInMilliWattVariable();
@@ -77,7 +77,7 @@ public class LasertHubDevice extends NamedVirtualDevice
 			else
 			{
 				System.out.println(LasertHubDevice.class.getSimpleName() + ": could not open: "
-														+ lLaserDevice.getDeviceName());
+														+ lLaserDevice.getName());
 			}
 		}
 		return lAllLasersOpen;

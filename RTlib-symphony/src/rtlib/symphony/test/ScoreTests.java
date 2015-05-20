@@ -1,47 +1,52 @@
 package rtlib.symphony.test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.Score;
-import rtlib.symphony.staves.CameraTriggerStave;
-import rtlib.symphony.staves.GalvoScannerStave;
-import rtlib.symphony.staves.LaserTriggerStave;
+import rtlib.symphony.staves.RampSteppingStave;
+import rtlib.symphony.staves.TriggerStave;
 
 public class ScoreTests
 {
 
 	@Test
-	public void test() throws IOException
+	public void test() throws IOException, InterruptedException
 	{
 
 		final Score lScore = new Score("Test Score");
 
 		final Movement lMovement = new Movement("Test Movement");
 
-		final CameraTriggerStave lCameraTriggerStave = new CameraTriggerStave("test");
-		lCameraTriggerStave.mSyncStart = 0.2;
-		lCameraTriggerStave.mSyncStop = 0.6;
+		final TriggerStave lCameraTriggerStave = new TriggerStave("camera trigger");
+		lCameraTriggerStave.setSyncStart(0.2f);
+		lCameraTriggerStave.setSyncStop(0.6f);
 
-		final GalvoScannerStave lGalvoScannerStave = new GalvoScannerStave("test");
-		lGalvoScannerStave.mSyncStart = 0.1;
-		lGalvoScannerStave.mSyncStop = 0.7;
-		lGalvoScannerStave.mStartValue = 0;
-		lGalvoScannerStave.mStopValue = 1;
+		final RampSteppingStave lGalvoScannerStave = new RampSteppingStave("galvo");
+		lGalvoScannerStave.setSyncStart(0.1f);
+		lGalvoScannerStave.setSyncStop(0.7f);
+		lGalvoScannerStave.setStartValue(0f);
+		lGalvoScannerStave.setStopValue(1f);
+		lGalvoScannerStave.setStepHeight(0.02f);
 
-		final LaserTriggerStave lLaserTriggerStave = new LaserTriggerStave("test");
-		lLaserTriggerStave.mSyncStart = 0.3;
-		lLaserTriggerStave.mSyncStop = 0.5;
+		final TriggerStave lLaserTriggerStave = new TriggerStave("laser trigger");
+		lLaserTriggerStave.setSyncStart(0.3f);
+		lLaserTriggerStave.setSyncStop(0.5f);
 
 		lMovement.setStave(0, lCameraTriggerStave);
 		lMovement.setStave(1, lGalvoScannerStave);
 		lMovement.setStave(2, lLaserTriggerStave);
 
-		lScore.addMovementMultipleTimes(lMovement, 1);
+		lMovement.setDuration(1, TimeUnit.SECONDS);
 
-		System.out.println(lScore.getScoreBuffer());
+		lScore.addMovementMultipleTimes(lMovement, 10);
+
+		/*final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
+																																							lScore);/**/
+
 
 	}
 

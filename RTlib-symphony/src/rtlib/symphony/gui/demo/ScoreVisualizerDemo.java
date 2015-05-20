@@ -3,6 +3,7 @@ package rtlib.symphony.gui.demo;
 import static java.lang.Math.min;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -15,7 +16,7 @@ import rtlib.symphony.gui.ScoreVisualizer;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;
-import rtlib.symphony.staves.RampStave;
+import rtlib.symphony.staves.RampContinuousStave;
 import rtlib.symphony.staves.SinusStave;
 
 public class ScoreVisualizerDemo
@@ -67,27 +68,29 @@ public class ScoreVisualizerDemo
 		final Score lScore = new Score("SinusScore");
 
 		final Movement lMovement = new Movement("SinusScoreMovement");
+		lMovement.setDuration(1, TimeUnit.SECONDS);
 
 		for (int i = 0; i < 8; i++)
 		{
-			final RampStave lRampStave = new RampStave(	"i=" + i,
-																									0,
-																									min(1, 100 * pOmega),
-																									0,
-																									0.1 + i / 8f,
-																									0.5);
-			lRampStave.updateStaveArray();
-			lMovement.setStave(i, lRampStave);
+			final RampContinuousStave lRampContinuousStave = new RampContinuousStave(	"i=" + i,
+																																								0f,
+																																								(float) min(1,
+																																														100 * pOmega),
+																																								0f,
+																																								0.1f + i / 8f,
+																																								0);
+
+			lMovement.setStave(i, lRampContinuousStave);
 		}
 
 
 		for (int i = 8; i < 16; i++)
 		{
 			final SinusStave lSinusStave = new SinusStave("i=" + i,
-																										(pOmega * (1 + i)),
-																										((1 + i) / 16f) * pOmega,
-																										0.5);
-			lSinusStave.updateStaveArray();
+																										(float) (pOmega * (1 + i)),
+																										(float) ((1f + i) / 16f * pOmega),
+																										0.5f);
+
 			lMovement.setStave(i, lSinusStave);
 		}/**/
 

@@ -1,7 +1,10 @@
 package rtlib.core.math.kdtree;
 
 /**
- *
+ * Pair
+ * 
+ * @param <T>
+ *          type in pair.
  */
 public final class Pair<T>
 {

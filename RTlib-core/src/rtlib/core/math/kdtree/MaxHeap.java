@@ -1,7 +1,11 @@
 package rtlib.core.math.kdtree;
 
 /**
+ * Max Heap
  *
+ *
+ * @param <T>
+ *          type stored in heap
  */
 public interface MaxHeap<T>
 {

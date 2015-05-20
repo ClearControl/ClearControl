@@ -3,7 +3,7 @@ package rtlib.symphony.devices.sim;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
-import rtlib.symphony.score.CompiledScore;
+import rtlib.symphony.score.ScoreInterface;
 
 public class SignalGeneratorSimulatorDevice	extends
 																						SignalGeneratorBase	implements
@@ -46,12 +46,10 @@ public class SignalGeneratorSimulatorDevice	extends
 	}
 
 	@Override
-	public boolean playScore(CompiledScore pCompiledScore)
+	public boolean playScore(ScoreInterface pScore)
 	{
-		final int lNumberOfMovements = pCompiledScore.getNumberOfMovements();
+		final int lNumberOfMovements = pScore.getNumberOfMovements();
 
-		
-		
 		try
 		{
 			Thread.sleep(lNumberOfMovements / 2);
@@ -76,6 +74,7 @@ public class SignalGeneratorSimulatorDevice	extends
 	{
 		return mTriggerVariable;
 	}
+
 
 
 

@@ -1,7 +1,10 @@
 package rtlib.core.math.kdtree;
 
 /**
+ * Min Heap
  *
+ * @param <T>
+ *          type stored in Heap
  */
 public interface MinHeap<T>
 {

@@ -1,14 +1,15 @@
 package rtlib.symphony.devices.nirio.demo;
 
 import static org.junit.Assert.assertTrue;
-import nirioj.direttore.Direttore;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 import rtlib.symphony.movement.Movement;
-import rtlib.symphony.score.CompiledScore;
 import rtlib.symphony.score.Score;
+import rtlib.symphony.score.ScoreInterface;
 import rtlib.symphony.staves.SinusStave;
 
 public class NIRIOSignalGeneratorDemo
@@ -17,12 +18,12 @@ public class NIRIOSignalGeneratorDemo
 	@Test
 	public void demo() throws InterruptedException
 	{
-		NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
+		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
 
 		assertTrue(lNIRIOSignalGenerator.open());
 		assertTrue(lNIRIOSignalGenerator.start());
 
-		CompiledScore lCompiledScore = buildScore();
+		final ScoreInterface lCompiledScore = buildScore();
 
 		for (int i = 0; i < 10000; i++)
 		{
@@ -35,18 +36,24 @@ public class NIRIOSignalGeneratorDemo
 
 	}
 
-	private CompiledScore buildScore()
+	private final ScoreInterface buildScore()
 	{
-		Score lScore = new Score("Test Score");
+		final Score lScore = new Score("Test Score");
 
-		Movement lMovement = new Movement("Test Movement");
+		final Movement lMovement = new Movement("Test Movement");
 
-		SinusStave lSinusStave1 = new SinusStave("sinus1", 1, 0, 0.5);
-		SinusStave lSinusStave2 = new SinusStave("sinus2", 0.25, 0, 0.25);
-		SinusStave lSinusStave3 = new SinusStave(	"sinus3",
-																							0.125,
-																							0,
-																							0.125);
+		final SinusStave lSinusStave1 = new SinusStave(	"sinus1",
+																										1f,
+																										0f,
+																										0.5f);
+		final SinusStave lSinusStave2 = new SinusStave(	"sinus2",
+																										0.25f,
+																										0f,
+																										0.25f);
+		final SinusStave lSinusStave3 = new SinusStave(	"sinus3",
+																										0.125f,
+																										0f,
+																										0.125f);
 
 		for (int i = 0; i < 2; i++)
 			lMovement.setStave(i, lSinusStave1);
@@ -57,16 +64,8 @@ public class NIRIOSignalGeneratorDemo
 
 		lScore.addMovementMultipleTimes(lMovement, 100);
 
-		lMovement.setTotalDurationAndGranularityInMicroseconds(	10000,
-																														3,
-																														2048);
+		lMovement.setDuration(10000, TimeUnit.MICROSECONDS);
 
-		System.out.println(lScore.getScoreBuffer());
-
-		CompiledScore lCompiledScore = new CompiledScore(	lScore,
-																											Direttore.cNanosecondsPerTicks);
-
-		return lCompiledScore;
+		return lScore;
 	}
-
 }

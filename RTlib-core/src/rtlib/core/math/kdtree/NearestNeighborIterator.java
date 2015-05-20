@@ -4,16 +4,19 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
+ * Nearest Neighbor Iterator
  *
+ * @param <T>
+ *          type returned by iterator
  */
 public class NearestNeighborIterator<T> implements
 																				Iterator<T>,
 																				Iterable<T>
 {
-	private DistanceFunction distanceFunction;
-	private double[] searchPoint;
-	private MinHeap<KdNode<T>> pendingPaths;
-	private IntervalHeap<T> evaluatedPoints;
+	private final DistanceFunction distanceFunction;
+	private final double[] searchPoint;
+	private final MinHeap<KdNode<T>> pendingPaths;
+	private final IntervalHeap<T> evaluatedPoints;
 	private int pointsRemaining;
 	private double lastDistanceReturned;
 
@@ -59,7 +62,7 @@ public class NearestNeighborIterator<T> implements
 		// Return the smallest distance point
 		pointsRemaining--;
 		lastDistanceReturned = evaluatedPoints.getMinKey();
-		T value = evaluatedPoints.getMin();
+		final T value = evaluatedPoints.getMin();
 		evaluatedPoints.removeMin();
 		return value;
 	}

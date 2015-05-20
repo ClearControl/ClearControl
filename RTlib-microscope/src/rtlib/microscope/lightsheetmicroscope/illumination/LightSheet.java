@@ -3,35 +3,44 @@ package rtlib.microscope.lightsheetmicroscope.illumination;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.UpdatableDevice;
+import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.regression.linear.UnivariateAffineFunction;
+import rtlib.core.variable.VariableListenerAdapter;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
+import rtlib.symphony.staves.BinaryPatternSteppingStave;
 import rtlib.symphony.staves.ConstantStave;
-import rtlib.symphony.staves.GalvoScannerStave;
-import rtlib.symphony.staves.LaserTriggerBinaryPattern2Stave;
+import rtlib.symphony.staves.RampSteppingStave;
 
-public class LightSheet extends UpdatableDevice	implements
+public class LightSheet extends NamedVirtualDevice implements
 																									LightSheetInterface,
 																									AsynchronousExecutorServiceAccess
 {
 
 	private static final double cMicronsToNormGalvoUnits = -0.003026;
 
-	private final UnivariateFunction mLightSheetXConversion = new UnivariateAffineFunction();
-	private final UnivariateFunction mLightSheetYConversion = new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
-																																													0);
-	private final UnivariateFunction mLightSheetZConversion = new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
-																																													0);
-	private final UnivariateFunction mLightSheetBetaConversion = new UnivariateAffineFunction(1,
-																																														0);
-	private final UnivariateFunction mLightSheetIrisDiameterConversion = new UnivariateAffineFunction(	1,
-																																															0);
+	private final ObjectVariable<UnivariateFunction> mLightSheetXFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetXFunction",
+																																																									new UnivariateAffineFunction());
+	private final ObjectVariable<UnivariateFunction> mLightSheetYFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetYFunction",
+																																																									new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
+																																																																								0));
+	private final ObjectVariable<UnivariateFunction> mLightSheetZFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetZFunction",
+																																																									new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
+																																																																								0));
+	private final ObjectVariable<UnivariateFunction> mLightSheetBetaFunction = new ObjectVariable<UnivariateFunction>("LightSheetBetaFunction",
+																																																										new UnivariateAffineFunction(	1,
+																																																																									0));
+	private final ObjectVariable<UnivariateFunction> mLightSheetIrisDiameterFunction = new ObjectVariable<UnivariateFunction>("LightSheetIrisDiameterFunction",
+																																																														new UnivariateAffineFunction(	1,
+																																																																													0));
 
 	private final DoubleVariable mEffectiveExposureInMicroseconds = new DoubleVariable(	"EffectiveExposureInMicroseconds",
 																																											5000);
@@ -79,7 +88,7 @@ public class LightSheet extends UpdatableDevice	implements
 	private final DoubleVariable mNumberOfPhasesPerPlane = new DoubleVariable("NumberOfPhases",
 																																						2);
 
-	private final GalvoScannerStave mLightSheetStaveBeforeExposureZ,
+	private final RampSteppingStave mLightSheetStaveBeforeExposureZ,
 			mLightSheetStaveBeforeExposureY, mLightSheetStaveExposureZ,
 			mLightSheetStaveExposureY;
 	private final ConstantStave mLightSheetStaveBeforeExposureX,
@@ -90,14 +99,9 @@ public class LightSheet extends UpdatableDevice	implements
 			mLightSheetStaveExposureT;
 	private final ConstantStave mLightSheetStaveBeforeExposureLA,
 			mLightSheetStaveExposureLA;
-	private final LaserTriggerBinaryPattern2Stave[] mLightSheetStaveLaserLD;
+	private final BinaryPatternSteppingStave[] mLightSheetStaveLaserLD;
 
 	private final int mNumberOfLaserDigitalControls;
-
-
-
-
-
 
 	public LightSheet(String pName,
 										final double pReadoutTimeInMicrosecondsPerLine,
@@ -108,32 +112,41 @@ public class LightSheet extends UpdatableDevice	implements
 
 		mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
 
-		final DoubleVariable lDoubleUpdateListener = new DoubleVariable("UpdateListener",
-																																		0)
+		final VariableListenerAdapter<Double> lDoubleVariableListener = new VariableListenerAdapter<Double>()
 		{
+
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public void setEvent(Double pCurrentValue, Double pNewValue)
 			{
-				setUpToDate(false);
-				return super.setEventHook(pOldValue, pNewValue);
+				update();
+			}
+		};
+
+		final VariableListenerAdapter<UnivariateFunction> lFunctionListener = new VariableListenerAdapter<UnivariateFunction>()
+		{
+
+			@Override
+			public void setEvent(	UnivariateFunction pCurrentValue,
+														UnivariateFunction pNewValue)
+			{
+				update();
 			}
 		};
 
 		mLaserOnOffArray = new BooleanVariable[mNumberOfLaserDigitalControls];
 
-		mLightSheetStaveLaserLD = new LaserTriggerBinaryPattern2Stave[mNumberOfLaserDigitalControls];
+		mLightSheetStaveLaserLD = new BinaryPatternSteppingStave[mNumberOfLaserDigitalControls];
 
 		mReadoutTimeInMicrosecondsPerLine.setValue(pReadoutTimeInMicrosecondsPerLine);
 		mImageHeight.setValue(pNumberOfLines);
 
-		mLightSheetStaveBeforeExposureLA = new ConstantStave("laser.beforeexp.am",
-																												0);
-		mLightSheetStaveExposureLA = new ConstantStave("laser.exposure.am",
-																									0);
+		mLightSheetStaveBeforeExposureLA = new ConstantStave(	"laser.beforeexp.am",
+																													0);
+		mLightSheetStaveExposureLA = new ConstantStave(	"laser.exposure.am",
+																										0);
 
-		mLightSheetStaveBeforeExposureZ = new GalvoScannerStave("lightsheet.z.be");
-		mLightSheetStaveBeforeExposureY = new GalvoScannerStave("lightsheet.y.be");
+		mLightSheetStaveBeforeExposureZ = new RampSteppingStave("lightsheet.z.be");
+		mLightSheetStaveBeforeExposureY = new RampSteppingStave("lightsheet.y.be");
 		mLightSheetStaveBeforeExposureX = new ConstantStave("lightsheet.x.be",
 																												0);
 		mLightSheetStaveBeforeExposureB = new ConstantStave("lightsheet.b.be",
@@ -143,8 +156,8 @@ public class LightSheet extends UpdatableDevice	implements
 		mLightSheetStaveBeforeExposureT = new ConstantStave("trigger.out.be",
 																												1);
 
-		mLightSheetStaveExposureZ = new GalvoScannerStave("lightsheet.z.e");
-		mLightSheetStaveExposureY = new GalvoScannerStave("lightsheet.y.e");
+		mLightSheetStaveExposureZ = new RampSteppingStave("lightsheet.z.e");
+		mLightSheetStaveExposureY = new RampSteppingStave("lightsheet.y.e");
 		mLightSheetStaveExposureX = new ConstantStave("lightsheet.x.e", 0);
 		mLightSheetStaveExposureB = new ConstantStave("lightsheet.b.e", 0);
 		mLightSheetStaveExposureR = new ConstantStave("lightsheet.r.e", 0);
@@ -153,29 +166,28 @@ public class LightSheet extends UpdatableDevice	implements
 		for (int i = 0; i < mLaserOnOffArray.length; i++)
 		{
 			final String lLaserName = "Laser" + i + ".exposure.trig";
-			mLightSheetStaveLaserLD[i] = new LaserTriggerBinaryPattern2Stave(lLaserName);
+			mLightSheetStaveLaserLD[i] = new BinaryPatternSteppingStave(lLaserName);
 
 			mLaserOnOffArray[i] = new BooleanVariable(lLaserName, false);
-			mLaserOnOffArray[i].sendUpdatesTo(lDoubleUpdateListener);
+			mLaserOnOffArray[i].addListener(lDoubleVariableListener);
 		}
 
-		mReadoutTimeInMicrosecondsPerLine.sendUpdatesTo(lDoubleUpdateListener);
-		mMarginTimeInMicroseconds.sendUpdatesTo(lDoubleUpdateListener);
-		mEffectiveExposureInMicroseconds.sendUpdatesTo(lDoubleUpdateListener);
-		mImageHeight.sendUpdatesTo(lDoubleUpdateListener);
+		mReadoutTimeInMicrosecondsPerLine.addListener(lDoubleVariableListener);
+		mMarginTimeInMicroseconds.addListener(lDoubleVariableListener);
+		mEffectiveExposureInMicroseconds.addListener(lDoubleVariableListener);
+		mImageHeight.addListener(lDoubleVariableListener);
 
-		mLightSheetXInMicrons.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetYInMicrons.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetZInMicrons.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetBetaInDegrees.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetAlphaInDegrees.sendUpdatesTo(lDoubleUpdateListener);
-		mLightSheetLengthInMicrons.sendUpdatesTo(lDoubleUpdateListener);
+		mLightSheetXInMicrons.addListener(lDoubleVariableListener);
+		mLightSheetYInMicrons.addListener(lDoubleVariableListener);
+		mLightSheetZInMicrons.addListener(lDoubleVariableListener);
+		mLightSheetBetaInDegrees.addListener(lDoubleVariableListener);
+		mLightSheetAlphaInDegrees.addListener(lDoubleVariableListener);
+		mLightSheetLengthInMicrons.addListener(lDoubleVariableListener);
 
-		mPatternOnOff.sendUpdatesTo(lDoubleUpdateListener);
-		mPatternPeriod.sendUpdatesTo(lDoubleUpdateListener);
-		mPatternPhaseIndex.sendUpdatesTo(lDoubleUpdateListener);
-		mPatternOnLength.sendUpdatesTo(lDoubleUpdateListener);
-
+		mPatternOnOff.addListener(lDoubleVariableListener);
+		mPatternPeriod.addListener(lDoubleVariableListener);
+		mPatternPhaseIndex.addListener(lDoubleVariableListener);
+		mPatternOnLength.addListener(lDoubleVariableListener);
 
 	}
 
@@ -183,39 +195,38 @@ public class LightSheet extends UpdatableDevice	implements
 	{
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
-
 		// Analog outputs before exposure:
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.x",
 																																											1),
 																			mLightSheetStaveBeforeExposureX);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.y",
 																																											2),
 																			mLightSheetStaveBeforeExposureY);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.y",
 																																											3),
 																			mLightSheetStaveBeforeExposureZ);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.b",
 																																											4),
 																			mLightSheetStaveBeforeExposureB);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.r",
 																																											5),
 																			mLightSheetStaveBeforeExposureR);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.la",
 																																											6),
 																			mLightSheetStaveBeforeExposureLA);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.t",
 																																											8 + 7),
 																			mLightSheetStaveBeforeExposureT);
@@ -226,47 +237,46 @@ public class LightSheet extends UpdatableDevice	implements
 	{
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
-
 		// Analog outputs at exposure:
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.x",
 																																								1),
-																mLightSheetStaveBeforeExposureX);
+																mLightSheetStaveExposureX);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.y",
 																																								2),
-																mLightSheetStaveBeforeExposureY);
+																mLightSheetStaveExposureY);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.y",
 																																								3),
-																mLightSheetStaveBeforeExposureZ);
+																mLightSheetStaveExposureZ);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.b",
 																																								4),
-																mLightSheetStaveBeforeExposureB);
+																mLightSheetStaveExposureB);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.r",
 																																								5),
-																mLightSheetStaveBeforeExposureR);
+																mLightSheetStaveExposureR);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.la",
 																																								6),
-																mLightSheetStaveBeforeExposureLA);
+																mLightSheetStaveExposureLA);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getDeviceName().toLowerCase()
+		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.t",
 																																								8 + 7),
-																mLightSheetStaveBeforeExposureT);
+																mLightSheetStaveExposureT);
 
 		for (int i = 0; i < mLaserOnOffArray.length; i++)
 		{
-			final int lLaserDigitalLineIndex = lCurrentMachineConfiguration.getIntegerProperty(	"device.lsm.lightsheet." + getDeviceName().toLowerCase()
+			final int lLaserDigitalLineIndex = lCurrentMachineConfiguration.getIntegerProperty(	"device.lsm.lightsheet." + getName().toLowerCase()
 																																															+ ".index.ld"
 																																															+ i,
 																																													8 + i);
@@ -276,151 +286,137 @@ public class LightSheet extends UpdatableDevice	implements
 
 	}
 
-
-	@Override
-	public void ensureIsUpToDate()
+	public void update()
 	{
-		if (!isUpToDate())
+		synchronized (this)
 		{
-			synchronized (this)
+
+			mNumberOfPhasesPerPlane.setValue(getNumberOfPhases());
+
+
+			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
+			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
+
+			final double lLineExposureTimeInMicroseconds = lReadoutTimeInMicroseconds + lExposureMovementTimeInMicroseconds;
+			mLineExposureInMicroseconds.setValue(lLineExposureTimeInMicroseconds);
+
+			final double lMarginTimeInMicroseconds = mMarginTimeInMicroseconds.getValue();
+
+			final double lLightSheetlength = mLightSheetLengthInMicrons.getValue();
+
+			final double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
+
+			final double lGalvoYOffsetBeforeRotation = mLightSheetYInMicrons.getValue();
+			final double lGalvoYOffsetToY = galvoRotateY(lGalvoYOffsetBeforeRotation);
+			final double lGalvoYOffsetToZ = galvoRotateZ(lGalvoYOffsetBeforeRotation);
+
+			final double lGalvoZOffsetBeforeRotation = lLightSheetZInMicrons;
+			final double lGalvoZOffsetToY = galvoRotateY(lGalvoZOffsetBeforeRotation);
+			final double lGalvoZOffsetToZ = galvoRotateZ(lGalvoZOffsetBeforeRotation);
+
+			final double lGalvoYOffset = lGalvoYOffsetToY + lGalvoZOffsetToY;
+			final double lGalvoZOffset = lGalvoYOffsetToZ + lGalvoZOffsetToZ;
+
+			final double lGalvoAmplitudeY = galvoRotateY(lLightSheetlength);
+			final double lGalvoAmplitudeZ = galvoRotateZ(lLightSheetlength);
+
+			final double lGalvoYLowValue = getLightSheetYConversion().get()
+																																.value(lGalvoYOffset - lGalvoAmplitudeY);
+			final double lGalvoYHighValue = getLightSheetYConversion().get()
+																																.value(lGalvoYOffset + lGalvoAmplitudeY);
+
+			final double lGalvoZLowValue = getLightSheetZConversion().get()
+																																.value(lGalvoZOffset - lGalvoAmplitudeZ);
+			final double lGalvoZHighValue = getLightSheetZConversion().get()
+																																.value(lGalvoZOffset + lGalvoAmplitudeZ);
+
+			mLightSheetStaveBeforeExposureY.setSyncStart(0);
+			mLightSheetStaveBeforeExposureY.setSyncStop(1);
+			mLightSheetStaveBeforeExposureY.setStartValue((float) lGalvoYHighValue);
+			mLightSheetStaveBeforeExposureY.setStopValue((float) lGalvoYLowValue);
+
+			mLightSheetStaveBeforeExposureZ.setSyncStart(0);
+			mLightSheetStaveBeforeExposureZ.setSyncStop(1);
+			mLightSheetStaveBeforeExposureZ.setStartValue((float) lGalvoZHighValue);
+			mLightSheetStaveBeforeExposureZ.setStopValue((float) lGalvoZLowValue);
+
+			mLightSheetStaveExposureY.setSyncStart(0);
+			mLightSheetStaveExposureY.setSyncStop(1);
+			mLightSheetStaveExposureY.setStartValue((float) lGalvoYLowValue);
+			mLightSheetStaveExposureY.setStopValue((float) lGalvoYHighValue);
+			mLightSheetStaveExposureY.setOutsideValue((float) lGalvoYHighValue);
+			mLightSheetStaveExposureY.setNoJump(true);
+
+			mLightSheetStaveExposureZ.setSyncStart(0);
+			mLightSheetStaveExposureZ.setSyncStop(1);
+			mLightSheetStaveExposureZ.setStartValue((float) lGalvoZLowValue);
+			mLightSheetStaveExposureZ.setStopValue((float) lGalvoZHighValue);
+			mLightSheetStaveExposureZ.setOutsideValue((float) lGalvoZHighValue);
+			mLightSheetStaveExposureZ.setNoJump(true);
+
+			mLightSheetStaveBeforeExposureX.setValue((float) getLightSheetXFunction().get()
+																																								.value(mLightSheetXInMicrons.getValue()));
+			mLightSheetStaveExposureX.setValue((float) getLightSheetXFunction().get()
+																																					.value(mLightSheetXInMicrons.getValue()));
+
+			mLightSheetStaveBeforeExposureB.setValue((float) getLightSheetBetaConversion().get()
+																																										.value(mLightSheetBetaInDegrees.getValue()));
+			mLightSheetStaveExposureB.setValue((float) getLightSheetBetaConversion().get()
+																																							.value(mLightSheetBetaInDegrees.getValue()));
+
+			final double lFocalLength = mFocalLengthInMicronsVariable.get();
+			final double lLambdaInMicrons = mLambdaInMicronsVariable.get();
+			final double lLightSheetRangeInMicrons = mLightSheetRangeInMicrons.getValue();
+
+			final double lIrisDiameterInMm = GaussianBeamGeometry.getBeamIrisDiameter(lFocalLength,
+																																								lLambdaInMicrons,
+																																								lLightSheetRangeInMicrons);
+
+			mLightSheetStaveBeforeExposureR.setValue((float) getLightSheetIrisDiameterConversion().get()
+																																														.value(lIrisDiameterInMm));
+			mLightSheetStaveExposureR.setValue(mLightSheetStaveBeforeExposureR.getConstantValue());
+
+			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
+																																			lMarginTimeInMicroseconds);
+
+			mLightSheetStaveBeforeExposureY.setStepping(mPatternOnOff.getBooleanValue());
+			mLightSheetStaveExposureY.setStepping(mPatternOnOff.getBooleanValue());
+
+			mLightSheetStaveBeforeExposureZ.setStepping(mPatternOnOff.getBooleanValue());
+			mLightSheetStaveExposureZ.setStepping(mPatternOnOff.getBooleanValue());
+
+			for (int i = 0; i < mLaserOnOffArray.length; i++)
 			{
+				final BinaryPatternSteppingStave lLaserTriggerStave = mLightSheetStaveLaserLD[i];
+				final BooleanVariable lLaserBooleanVariable = mLaserOnOffArray[i];
 
-				mNumberOfPhasesPerPlane.setValue(getNumberOfPhases());
-
-				final int lEffectiveExposureInMicroseconds = (int) mEffectiveExposureInMicroseconds.getValue();
-
-				final double lReadoutTimeInMicroseconds = mReadoutTimeInMicrosecondsPerLine.getValue() * mImageHeight.getValue()
-																									/ 2;
-
-				final double lExposureMovementTimeInMicroseconds = lEffectiveExposureInMicroseconds;
-
-				final double lLineExposureTimeInMicroseconds = lReadoutTimeInMicroseconds + lEffectiveExposureInMicroseconds;
-				mLineExposureInMicroseconds.setValue(lLineExposureTimeInMicroseconds);
-
-				final double lMarginTimeInMicroseconds = mMarginTimeInMicroseconds.getValue();
-
-				final double lLightSheetlength = mLightSheetLengthInMicrons.getValue();
-
-				final double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
-
-				final double lGalvoYOffsetBeforeRotation = mLightSheetYInMicrons.getValue();
-				final double lGalvoYOffsetToY = galvoRotateY(lGalvoYOffsetBeforeRotation);
-				final double lGalvoYOffsetToZ = galvoRotateZ(lGalvoYOffsetBeforeRotation);
-
-				final double lGalvoZOffsetBeforeRotation = lLightSheetZInMicrons;
-				final double lGalvoZOffsetToY = galvoRotateY(lGalvoZOffsetBeforeRotation);
-				final double lGalvoZOffsetToZ = galvoRotateZ(lGalvoZOffsetBeforeRotation);
-
-				final double lGalvoYOffset = lGalvoYOffsetToY + lGalvoZOffsetToY;
-				final double lGalvoZOffset = lGalvoYOffsetToZ + lGalvoZOffsetToZ;
-
-				final double lGalvoAmplitudeY = galvoRotateY(lLightSheetlength);
-				final double lGalvoAmplitudeZ = galvoRotateZ(lLightSheetlength);
-
-				final double lGalvoYLowValue = mLightSheetYConversion.value(lGalvoYOffset - lGalvoAmplitudeY);
-				final double lGalvoYHighValue = mLightSheetYConversion.value(lGalvoYOffset + lGalvoAmplitudeY);
-
-				final double lGalvoZLowValue = mLightSheetZConversion.value(lGalvoZOffset - lGalvoAmplitudeZ);
-				final double lGalvoZHighValue = mLightSheetZConversion.value(lGalvoZOffset + lGalvoAmplitudeZ);
-
-				mLightSheetStaveBeforeExposureY.mSyncStart = 0;
-				mLightSheetStaveBeforeExposureY.mSyncStop = 1;
-				mLightSheetStaveBeforeExposureY.mStartValue = lGalvoYHighValue;
-				mLightSheetStaveBeforeExposureY.mStopValue = lGalvoYLowValue;
-
-				mLightSheetStaveBeforeExposureZ.mSyncStart = 0;
-				mLightSheetStaveBeforeExposureZ.mSyncStop = 1;
-				mLightSheetStaveBeforeExposureZ.mStartValue = lGalvoZHighValue;
-				mLightSheetStaveBeforeExposureZ.mStopValue = lGalvoZLowValue;
-
-				mLightSheetStaveExposureY.mSyncStart = 0;
-				mLightSheetStaveExposureY.mSyncStop = 1;
-				mLightSheetStaveExposureY.mStartValue = lGalvoYLowValue;
-				mLightSheetStaveExposureY.mStopValue = lGalvoYHighValue;
-				mLightSheetStaveExposureY.mOutsideValue = lGalvoYHighValue;
-				mLightSheetStaveExposureY.mNoJump = true;
-
-				mLightSheetStaveExposureZ.mSyncStart = 0;
-				mLightSheetStaveExposureZ.mSyncStop = 1;
-				mLightSheetStaveExposureZ.mStartValue = lGalvoZLowValue;
-				mLightSheetStaveExposureZ.mStopValue = lGalvoZHighValue;
-				mLightSheetStaveExposureZ.mOutsideValue = lGalvoZHighValue;
-				mLightSheetStaveExposureZ.mNoJump = true;
-
-				mLightSheetStaveBeforeExposureX.mValue = mLightSheetXConversion.value(mLightSheetXInMicrons.getValue());
-				mLightSheetStaveExposureX.mValue = mLightSheetXConversion.value(mLightSheetXInMicrons.getValue());
-
-				mLightSheetStaveBeforeExposureB.mValue = mLightSheetBetaConversion.value(mLightSheetBetaInDegrees.getValue());
-				mLightSheetStaveExposureB.mValue = mLightSheetBetaConversion.value(mLightSheetBetaInDegrees.getValue());
-
-				
-				final double lFocalLength = mFocalLengthInMicronsVariable.get();
-				final double lLambdaInMicrons = mLambdaInMicronsVariable.get();
-				final double lLightSheetRangeInMicrons = mLightSheetRangeInMicrons.getValue();
-				
-				final double lIrisDiameterInMm = GaussianBeamGeometry.getBeamIrisDiameter(lFocalLength,
-																																							lLambdaInMicrons,
-																																							lLightSheetRangeInMicrons);
-				
-				mLightSheetStaveBeforeExposureR.mValue = mLightSheetIrisDiameterConversion.value(lIrisDiameterInMm);
-				mLightSheetStaveExposureR.mValue = mLightSheetStaveBeforeExposureR.mValue;
-
-				final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
-																																				lMarginTimeInMicroseconds);
-
-				for (int i = 0; i < mLaserOnOffArray.length; i++)
-				{
-					final LaserTriggerBinaryPattern2Stave lLaserTriggerStave = mLightSheetStaveLaserLD[i];
-					final BooleanVariable lLaserBooleanVariable = mLaserOnOffArray[i];
-
-					lLaserTriggerStave.mEnabled = lLaserBooleanVariable.getBooleanValue();
-					lLaserTriggerStave.mSyncStart = clamp01(lMarginTimeRelativeUnits);
-					lLaserTriggerStave.mSyncStop = clamp01(1 - lMarginTimeRelativeUnits);
-					lLaserTriggerStave.mEnablePattern = mPatternOnOff.getBooleanValue();
-					lLaserTriggerStave.mPatternLineLength = mLightSheetLengthInMicrons.getValue();
-					lLaserTriggerStave.mPatternPeriod = mPatternPeriod.getValue();
-					lLaserTriggerStave.mPatternPhaseIndex = mPatternPhaseIndex.getValue();
-					lLaserTriggerStave.mPatternOnLength = mPatternOnLength.getValue();
-					lLaserTriggerStave.mPatternPhaseIncrement = mPatternPhaseIncrement.getValue();
-				}
-
-				mLightSheetStaveExposureLA.mValue = 1;
-				mLightSheetStaveBeforeExposureLA.mValue = 1;
-
-				// System.out.println("mMovement.requestUpdateAllStaves();");
-
-				requestUpdateAllStaves();
-
-				setUpToDate(true);
+				lLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
+				lLaserTriggerStave.setSyncStart((float) clamp01(lMarginTimeRelativeUnits));
+				lLaserTriggerStave.setSyncStop((float) clamp01(1 - lMarginTimeRelativeUnits));
+				lLaserTriggerStave.setEnabled(mPatternOnOff.getBooleanValue());
+				lLaserTriggerStave.setPatternPeriod((int) mPatternPeriod.getValue());
+				lLaserTriggerStave.setPatternPhaseIndex((int) mPatternPhaseIndex.getValue());
+				lLaserTriggerStave.setPatternOnLength((int) mPatternOnLength.getValue());
+				lLaserTriggerStave.setPatternPhaseIncrement((int) mPatternPhaseIncrement.getValue());
 			}
+
+			mLightSheetStaveExposureLA.setValue(1);
+			mLightSheetStaveBeforeExposureLA.setValue(1);
+
+
 		}
 	}
 
-	private void requestUpdateAllStaves()
+	public long getExposureMovementDuration(TimeUnit pTimeUnit)
 	{
-		mLightSheetStaveBeforeExposureX.requestUpdate();
-		mLightSheetStaveExposureX.requestUpdate();
+		return pTimeUnit.convert(	(long) mEffectiveExposureInMicroseconds.getValue(),
+															TimeUnit.MICROSECONDS);
+	}
 
-		mLightSheetStaveBeforeExposureY.requestUpdate();
-		mLightSheetStaveExposureY.requestUpdate();
-
-		mLightSheetStaveBeforeExposureZ.requestUpdate();
-		mLightSheetStaveExposureZ.requestUpdate();
-
-		mLightSheetStaveBeforeExposureB.requestUpdate();
-		mLightSheetStaveExposureB.requestUpdate();
-
-		mLightSheetStaveBeforeExposureT.requestUpdate();
-		mLightSheetStaveExposureT.requestUpdate();
-
-		mLightSheetStaveBeforeExposureLA.requestUpdate();
-		mLightSheetStaveExposureLA.requestUpdate();
-		
-		for (int i = 0; i < mLaserOnOffArray.length; i++)
-		{
-			final LaserTriggerBinaryPattern2Stave lLaserTriggerStave = mLightSheetStaveLaserLD[i];
-			lLaserTriggerStave.requestUpdate();
-		}
+	public long getBeforeExposureMovementDuration(TimeUnit pTimeUnit)
+	{
+		return pTimeUnit.convert(	(long) (mReadoutTimeInMicrosecondsPerLine.getValue() * mImageHeight.getValue() / 2),
+															TimeUnit.MICROSECONDS);
 	}
 
 	private double galvoRotateY(double pY)
@@ -465,11 +461,6 @@ public class LightSheet extends UpdatableDevice	implements
 		final int lNumberOfPhases = (int) (lPatternPeriod / lPatternPhaseIncrement);
 
 		return lNumberOfPhases;
-	}
-
-	public int getEffectiveExposureInMicroseconds()
-	{
-		return (int) mEffectiveExposureInMicroseconds.getValue();
 	}
 
 	public void setEffectiveExposureInMicroseconds(final int pEffectiveExposureInMicroseconds)
@@ -561,12 +552,37 @@ public class LightSheet extends UpdatableDevice	implements
 		return mLaserOnOffArray[pLaserIndex];
 	}
 
-	public GalvoScannerStave getGalvoScannerStaveBeforeExposureZ()
+	public ObjectVariable<UnivariateFunction> getLightSheetXFunction()
+	{
+		return mLightSheetXFunction;
+	}
+
+	public ObjectVariable<UnivariateFunction> getLightSheetYConversion()
+	{
+		return mLightSheetYFunction;
+	}
+
+	public ObjectVariable<UnivariateFunction> getLightSheetZConversion()
+	{
+		return mLightSheetZFunction;
+	}
+
+	public ObjectVariable<UnivariateFunction> getLightSheetBetaConversion()
+	{
+		return mLightSheetBetaFunction;
+	}
+
+	public ObjectVariable<UnivariateFunction> getLightSheetIrisDiameterConversion()
+	{
+		return mLightSheetIrisDiameterFunction;
+	}
+
+	public RampSteppingStave getGalvoScannerStaveBeforeExposureZ()
 	{
 		return mLightSheetStaveBeforeExposureZ;
 	}
 
-	public GalvoScannerStave getGalvoScannerStaveBeforeExposureY()
+	public RampSteppingStave getGalvoScannerStaveBeforeExposureY()
 	{
 		return mLightSheetStaveBeforeExposureY;
 	}
@@ -576,12 +592,12 @@ public class LightSheet extends UpdatableDevice	implements
 		return mLightSheetStaveBeforeExposureX;
 	}
 
-	public GalvoScannerStave getGalvoScannerStaveExposureZ()
+	public RampSteppingStave getGalvoScannerStaveExposureZ()
 	{
 		return mLightSheetStaveExposureZ;
 	}
 
-	public GalvoScannerStave getGalvoScannerStaveExposureY()
+	public RampSteppingStave getGalvoScannerStaveExposureY()
 	{
 		return mLightSheetStaveExposureY;
 	}

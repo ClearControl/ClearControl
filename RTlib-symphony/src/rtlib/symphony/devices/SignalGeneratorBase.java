@@ -9,7 +9,6 @@ import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.symphony.movement.MovementInterface;
-import rtlib.symphony.score.CompiledScore;
 import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;
 
@@ -19,7 +18,7 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 {
 
 	protected final ScoreInterface mStagingScore;
-	protected final CompiledScore mCompiledScore;
+	protected final ScoreInterface mQueuedScore;
 
 	protected volatile int mEnqueuedStateCounter = 0;
 	protected QueueProvider<?> mQueueProvider;
@@ -31,7 +30,7 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	public SignalGeneratorBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		mCompiledScore = new CompiledScore(pDeviceName + ".compiledscore");
+		mQueuedScore = new Score(pDeviceName + ".queuedscore");
 		mStagingScore = new Score(pDeviceName + ".stagingscore");
 	}
 
@@ -48,16 +47,22 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	}
 
 	@Override
+	public ScoreInterface getQueuedScore()
+	{
+		return mQueuedScore;
+	}
+
+	@Override
 	public void clearQueue()
 	{
 		mEnqueuedStateCounter = 0;
-		mCompiledScore.clear();
+		mQueuedScore.clear();
 	}
 
 	@Override
 	public void addCurrentStateToQueueNotCounting()
 	{
-		mCompiledScore.addScore(mStagingScore);
+		mQueuedScore.addScoreCopy(mStagingScore);
 	}
 
 	@Override
@@ -76,10 +81,13 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void ensureQueueIsUpToDate()
+	public void buildQueueFromProvider()
 	{
-		mCompiledScore.clear();
-		((QueueProvider<SignalGeneratorBase>) mQueueProvider).buildQueue(this);
+		if (mQueueProvider != null)
+		{
+			mQueuedScore.clear();
+			((QueueProvider<SignalGeneratorBase>) mQueueProvider).buildQueue(this);
+		}
 	}
 
 	@Override
@@ -87,6 +95,8 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	{
 		return mEnqueuedStateCounter;
 	}
+
+
 
 	@Override
 	public Future<Boolean> playQueue()
@@ -97,8 +107,7 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 			final int lCurrentThreadPriority = lCurrentThread.getPriority();
 			lCurrentThread.setPriority(Thread.MAX_PRIORITY);
 			mIsPlaying = true;
-			final boolean lPlayed = playScore(mCompiledScore);
-			;
+			final boolean lPlayed = playScore(getQueuedScore());
 			mIsPlaying = false;
 			lCurrentThread.setPriority(lCurrentThreadPriority);
 			return lPlayed;
@@ -110,14 +119,13 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	@Override
 	public long estimatePlayTime(TimeUnit pTimeUnit)
 	{
-		long lDurationInMilliseconds = 0;
-		for (final MovementInterface lMovement : mCompiledScore.getMovements())
+		long lDuration = 0;
+		for (final MovementInterface lMovement : mQueuedScore.getMovements())
 		{
-			lDurationInMilliseconds += lMovement.getDurationInMilliseconds();
+			lDuration += lMovement.getDuration(pTimeUnit);
 		}
-		lDurationInMilliseconds *= mCompiledScore.getNumberOfMovements();
-		return pTimeUnit.convert(	lDurationInMilliseconds,
-															TimeUnit.MILLISECONDS);
+		lDuration *= mQueuedScore.getNumberOfMovements();
+		return lDuration;
 	}
 
 	@Override
@@ -125,6 +133,5 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	{
 		return mIsPlaying;
 	}
-
 
 }

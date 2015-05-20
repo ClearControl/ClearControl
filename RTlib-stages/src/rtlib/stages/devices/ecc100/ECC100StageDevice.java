@@ -158,7 +158,7 @@ public class ECC100StageDevice extends StageDeviceBase implements
 						+ ", getNumberOfDOFs()="
 						+ getNumberOfDOFs()
 						+ ", getDeviceName()="
-						+ getDeviceName()
+						+ getName()
 						+ "]";
 	}
 

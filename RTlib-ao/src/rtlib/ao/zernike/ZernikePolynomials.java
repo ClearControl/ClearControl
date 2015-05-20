@@ -26,11 +26,11 @@ public class ZernikePolynomials
 	 */
 	public static double computeZijxy(int i, int j, double x, double y)
 	{
-		double r2 = (x * x + y * y);
-		double t = atan2(y, x);
+		final double r2 = (x * x + y * y);
+		final double t = atan2(y, x);
 
-		int n = j + i;
-		int m = j - i;
+		final int n = j + i;
+		final int m = j - i;
 
 		return computeZnmr2t(n, m, r2, t);
 	}
@@ -50,8 +50,8 @@ public class ZernikePolynomials
 	 */
 	public static double computeZnmxy(int n, int m, double x, double y)
 	{
-		double r2 = (x * x + y * y);
-		double t = atan2(y, x);
+		final double r2 = (x * x + y * y);
+		final double t = atan2(y, x);
 		return computeZnmr2t(n, m, r2, t);
 	}
 
@@ -71,7 +71,7 @@ public class ZernikePolynomials
 	 */
 	public static double computeZnmrt(int n, int m, double r, double t)
 	{
-		double r2 = r * r;
+		final double r2 = r * r;
 		return computeZnmr2t(n, m, r2, t);
 	}
 
@@ -97,7 +97,7 @@ public class ZernikePolynomials
 		}
 		else/**/
 		{
-			double zr = computeRnmr2(n, m, r2);
+			final double zr = computeRnmr2(n, m, r2);
 
 			if (m >= 0)
 			{
@@ -114,7 +114,9 @@ public class ZernikePolynomials
 	 * ComputesZernike radial polynomial R(n,m) value for modulus r
 	 * 
 	 * @param n
+	 *          parameter n
 	 * @param m
+	 *          parameter m
 	 * @param r
 	 *          modulus r
 	 * @return Zernike radial polynomial R(n,m) value for modulus r
@@ -130,7 +132,9 @@ public class ZernikePolynomials
 	 * ComputesZernike radial polynomial R(n,m) value for square modulus r^2
 	 * 
 	 * @param n
+	 *          paameter n
 	 * @param m
+	 *          parmeter m
 	 * @param r2
 	 *          squared modulus r^2
 	 * @return Zernike radial polynomial R(n,m) value for square modulus r^2
@@ -154,12 +158,12 @@ public class ZernikePolynomials
 		// if (r2 <= 1.0)
 		{
 			double sign = 1;
-			
-			double a=1; // (n-k)!
-			double b=1; // k!
-			double c=1; // [(n+|m|)/2-k]!
-			double d=1; // [(n-|m|)/2-k]!
-			
+
+			double a = 1; // (n-k)!
+			final double b = 1; // k!
+			double c = 1; // [(n+|m|)/2-k]!
+			double d = 1; // [(n-|m|)/2-k]!
+
 			for (i = 2; i <= ln; i++)
 			{
 				a *= i;
@@ -173,7 +177,7 @@ public class ZernikePolynomials
 				d *= i;
 			}
 
-			double f= 1.0 * a / (b * c * d);
+			double f = 1.0 * a / (b * c * d);
 
 			for (k = 0; k <= (ln - lm) / 2; k++)
 			{
@@ -185,8 +189,8 @@ public class ZernikePolynomials
 
 					// For more numerical stability:
 					final double da = ln - k;
-					final double db =  k + 1;
-					final double dc =  (ln + lm) / 2 - k;
+					final double db = k + 1;
+					final double dc = (ln + lm) / 2 - k;
 					final double dd = (ln - lm) / 2 - k;
 					f *= (dc * dd) / (da * db);
 

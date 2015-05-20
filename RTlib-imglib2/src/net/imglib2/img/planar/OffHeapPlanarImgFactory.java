@@ -148,6 +148,17 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 
 	/*********************************************************************************************************/
 
+	/**
+	 * Creates a byte instance given a fragmented buffer, dimensions and a type
+	 * 
+	 * @param pFragmentedMemory
+	 *          fragmnted buffer
+	 * @param dimensions
+	 *          dimensions
+	 * @param type
+	 *          type
+	 * @return native image
+	 */
 	public NativeImg<T, ByteOffHeapAccess> createByteInstance(FragmentedMemoryInterface pFragmentedMemory,
 																														final long[] dimensions,
 																														final T type)

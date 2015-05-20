@@ -12,7 +12,7 @@ public interface StateQueueDeviceInterface
 
 	void setQueueProvider(QueueProvider<?> pQueueProvider);
 
-	void ensureQueueIsUpToDate();
+	void buildQueueFromProvider();
 
 	int getQueueLength();
 

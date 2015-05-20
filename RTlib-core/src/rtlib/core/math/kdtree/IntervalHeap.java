@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 /**
  * An implementation of an implicit binary interval heap.
+ * 
+ * @param <T>
+ *          type stored in interval heap
  */
 public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 {
@@ -179,8 +182,8 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 
 	private int swap(int x, int y)
 	{
-		Object yData = data[y];
-		double yDist = keys[y];
+		final Object yData = data[y];
+		final double yDist = keys[y];
 		data[y] = data[x];
 		keys[y] = keys[x];
 		data[x] = yData;
@@ -214,7 +217,7 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		else if (u % 2 == 1)
 		{
 			// Already paired. Ensure pair is ordered right
-			int p = (u / 2 - 1) | 1; // The larger size of the parent pair
+			final int p = (u / 2 - 1) | 1; // The larger size of the parent pair
 			if (keys[u] < keys[u - 1])
 			{ // If less than it's pair
 				u = swap(u, u - 1); // Swap with it's pair
@@ -238,7 +241,7 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		else
 		{
 			// Inserted in the lower-size slot without a partner
-			int p = (u / 2 - 1) | 1; // The larger size of the parent pair
+			final int p = (u / 2 - 1) | 1; // The larger size of the parent pair
 			if (keys[u] > keys[p])
 			{ // If larger that larger parent pair
 				// Swap into max-heap side
@@ -359,8 +362,8 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 	@Override
 	public String toString()
 	{
-		java.text.DecimalFormat twoPlaces = new java.text.DecimalFormat("0.00");
-		StringBuffer str = new StringBuffer(IntervalHeap.class.getCanonicalName());
+		final java.text.DecimalFormat twoPlaces = new java.text.DecimalFormat("0.00");
+		final StringBuffer str = new StringBuffer(IntervalHeap.class.getCanonicalName());
 		str.append(", size: ")
 				.append(size())
 				.append(" capacity: ")
@@ -393,8 +396,8 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		// Validate within parent interval
 		for (int i = 2; i < size; i++)
 		{
-			double maxParent = keys[(i / 2 - 1) | 1];
-			double minParent = keys[(i / 2 - 1) & ~1];
+			final double maxParent = keys[(i / 2 - 1) | 1];
+			final double minParent = keys[(i / 2 - 1) & ~1];
 			if (keys[i] > maxParent || keys[i] < minParent)
 				return false;
 		}

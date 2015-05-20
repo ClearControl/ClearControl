@@ -14,15 +14,15 @@ import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.microscope.lightsheetmicroscope.illumination.LightSheetInterface;
 import rtlib.symphony.devices.SignalGeneratorInterface;
-import rtlib.symphony.interfaces.MovementInterface;
 import rtlib.symphony.movement.Movement;
+import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.GalvoScannerStave;
 import rtlib.symphony.staves.LaserTriggerBinaryPattern2Stave;
 
 public class CopyOfLightSheet<M extends UnivariateFunction> extends
 																											SignalStartableDevice	implements
-																																						LightSheetInterface<M>,
+																																									LightSheetInterface,
 																																						AsynchronousExecutorServiceAccess
 {
 

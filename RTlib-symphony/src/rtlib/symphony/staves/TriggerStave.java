@@ -1,36 +1,23 @@
 package rtlib.symphony.staves;
 
-import rtlib.symphony.functions.Interval;
-import rtlib.symphony.functions.Set;
-
-public class TriggerStave extends StaveAbstract	implements
+public class TriggerStave extends IntervalStave	implements
 																								StaveInterface
 {
-	public volatile boolean mEnabled = false;
-	public volatile double mSyncStart, mSyncStop;
-	public volatile boolean mReverse = false;
 
-	public TriggerStave(final String pName)
+	public TriggerStave(String pName)
 	{
 		super(pName);
 	}
 
-	@Override
-	public void updateStaveArray()
+	public TriggerStave(String pName,
+											float pSyncStart,
+											float pSyncStop,
+											float pInsideValue,
+											float pOutsideValue)
 	{
-		Set.write(this, 0);
-		if (!mEnabled)
-		{
-			return;
-		}
-
-		if (mReverse)
-		{
-			Interval.add(this, mSyncStart, mSyncStop, 0, 1);
-		}
-		else
-		{
-			Interval.add(this, mSyncStart, mSyncStop, 1, 0);
-		}
+		super(pName, pSyncStart, pSyncStop, pInsideValue, pOutsideValue);
 	}
+
+
+
 }

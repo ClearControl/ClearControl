@@ -1,22 +1,37 @@
 package rtlib.symphony.staves;
 
-import rtlib.symphony.functions.Set;
 
 public class ConstantStave extends StaveAbstract implements
 																								StaveInterface
 {
-	public volatile double mValue;
+	private volatile float mConstantValue;
 
-	public ConstantStave(final String pName, final double pValue)
+	public ConstantStave(final String pName, final float pValue)
 	{
-		super(pName + "(size=" + pValue + ")");
-		mValue = pValue;
+		super(pName);
+		setValue(pValue);
 	}
 
 	@Override
-	public void updateStaveArray()
+	public float getValue(float pNormalizedTime)
 	{
-		Set.write(this, mValue);
+		return mConstantValue;
+	}
+
+	public float getConstantValue()
+	{
+		return mConstantValue;
+	}
+
+	public void setValue(float pValue)
+	{
+		mConstantValue = pValue;
+	}
+
+	@Override
+	public StaveInterface copy()
+	{
+		return new ConstantStave(getName(), getConstantValue());
 	}
 
 }

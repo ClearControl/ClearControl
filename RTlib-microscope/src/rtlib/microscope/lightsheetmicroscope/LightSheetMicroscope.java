@@ -369,14 +369,14 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public void ensureQueueIsUpToDate()
+	public void buildQueueFromProvider()
 	{
 		for (final Object lDevice : mAllDeviceList)
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
 			{
 				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				lStateQueueDeviceInterface.addCurrentStateToQueue();
+				lStateQueueDeviceInterface.buildQueueFromProvider();
 			}
 		}
 	}

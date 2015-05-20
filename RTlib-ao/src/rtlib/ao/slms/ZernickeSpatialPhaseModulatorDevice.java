@@ -18,7 +18,7 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 
 	public ZernickeSpatialPhaseModulatorDevice(SpatialPhaseModulatorDeviceInterface pSpatialPhaseModulatorDeviceInterface)
 	{
-		super("Zernicke" + pSpatialPhaseModulatorDeviceInterface.getDeviceName(),
+		super("Zernicke" + pSpatialPhaseModulatorDeviceInterface.getName(),
 					pSpatialPhaseModulatorDeviceInterface.getMatrixHeight(),
 					pSpatialPhaseModulatorDeviceInterface.getActuatorResolution());
 		mDelegatedSpatialPhaseModulatorDeviceInterface = pSpatialPhaseModulatorDeviceInterface;

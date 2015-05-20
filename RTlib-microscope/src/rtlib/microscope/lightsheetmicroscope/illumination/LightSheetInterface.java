@@ -36,8 +36,6 @@ public interface LightSheetInterface extends VirtualDeviceInterface
 
 	DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex);
 
-	void requestUpdate();
-
 	void setPatterned(boolean pIsPatternOn);
 
 	boolean isPatterned();
