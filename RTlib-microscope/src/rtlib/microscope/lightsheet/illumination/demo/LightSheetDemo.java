@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.symphony.devices.SignalGeneratorInterface;
+import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
 import rtlib.symphony.gui.ScoreVisualizerJFrame;
 import rtlib.symphony.movement.Movement;
@@ -17,7 +18,27 @@ public class LightSheetDemo
 {
 
 	@Test
-	public void demo() throws InterruptedException, ExecutionException
+	public void demoOnSimulator()	throws InterruptedException,
+																ExecutionException
+	{
+
+		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
+
+		runDemoWith(lSignalGeneratorDevice);
+	}
+
+	@Test
+	public void demoOnNIRIO()	throws InterruptedException,
+																ExecutionException
+	{
+
+		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
+
+		runDemoWith(lSignalGeneratorDevice);
+	}
+
+	public void runDemoWith(final SignalGeneratorInterface lSignalGeneratorDevice) throws InterruptedException,
+																																								ExecutionException
 	{
 		final LightSheet lLightSheet = new LightSheet("demo", 9.4, 512, 2);
 		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
@@ -36,7 +57,7 @@ public class LightSheetDemo
 		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 		lLightSheet.addStavesToExposureMovement(lExposureMovement);
 
-		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
+
 
 		final ScoreInterface lStagingScore = lSignalGeneratorDevice.getStagingScore();
 
