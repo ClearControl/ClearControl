@@ -1,5 +1,7 @@
 package rtlib.symphony.devices.sim;
 
+import java.util.concurrent.TimeUnit;
+
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
@@ -48,11 +50,10 @@ public class SignalGeneratorSimulatorDevice	extends
 	@Override
 	public boolean playScore(ScoreInterface pScore)
 	{
-		final int lNumberOfMovements = pScore.getNumberOfMovements();
-
+		final long lDurationInMilliseconds = pScore.getDuration(TimeUnit.MILLISECONDS);
 		try
 		{
-			Thread.sleep(lNumberOfMovements / 2);
+			Thread.sleep(lDurationInMilliseconds);
 		}
 		catch (final InterruptedException e)
 		{

@@ -1,5 +1,7 @@
 package rtlib.microscope.lightsheet.illumination.demo;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -15,10 +17,12 @@ public class LightSheetDemo
 {
 
 	@Test
-	public void demo() throws InterruptedException
+	public void demo() throws InterruptedException, ExecutionException
 	{
 		final LightSheet lLightSheet = new LightSheet("demo", 9.4, 512, 2);
 		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
+		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
+								.setValue(5000);
 
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
@@ -50,13 +54,15 @@ public class LightSheetDemo
 			lSignalGeneratorDevice.addCurrentStateToQueue();
 
 		for (int i = 0; i < 1000000000 && lVisualizer.isVisible(); i++)
-			lSignalGeneratorDevice.playQueue();
+		{
+			final Future<Boolean> lPlayQueue = lSignalGeneratorDevice.playQueue();
+			lPlayQueue.get();
+		}
 
 		lSignalGeneratorDevice.stop();
 		lSignalGeneratorDevice.close();
 
 		lVisualizer.dispose();
-
 	}
 
 }
