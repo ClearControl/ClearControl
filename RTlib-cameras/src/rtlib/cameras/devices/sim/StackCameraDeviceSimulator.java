@@ -4,7 +4,11 @@ import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.max;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
@@ -37,6 +41,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	protected volatile long mCurrentStackIndex = 0;
 	private RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mRecycler;
 	private final T mType;
+
+	private volatile CountDownLatch mLeftInQueue;
 
 	public StackCameraDeviceSimulator(StackSourceInterface<T, A> pStackSource,
 																		T pType,
@@ -110,6 +116,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 					lStack.setNumberOfImagesPerPlane((long) getNumberOfImagesPerPlaneVariable().getValue());
 					mStackReference.set(lStack);
+					mLeftInQueue.countDown();
 
 				}
 			}
@@ -224,6 +231,55 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	}
 
 	@Override
+	public Future<Boolean> playQueue()
+	{
+		mLeftInQueue = new CountDownLatch(getQueueLength());
+
+		mStackDepthVariable.setValue(mStackDepthVariable.getValue() + 1);
+
+		new Future<Boolean>()
+		{
+
+			@Override
+			public boolean cancel(boolean pMayInterruptIfRunning)
+			{
+				return false;
+			}
+
+			@Override
+			public boolean isCancelled()
+			{
+				return false;
+			}
+
+			@Override
+			public boolean isDone()
+			{
+				return false;
+			}
+
+			@Override
+			public Boolean get() throws InterruptedException,
+													ExecutionException
+			{
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Boolean get(long pTimeout, TimeUnit pUnit)	throws InterruptedException,
+																												ExecutionException,
+																												TimeoutException
+			{
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+
+		return null;
+	}
+
+	@Override
 	public boolean stop()
 	{
 		return true;
@@ -240,5 +296,6 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		mHint = pHint;
 	}
+
 
 }

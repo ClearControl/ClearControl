@@ -9,7 +9,6 @@ import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
-import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
@@ -362,24 +361,6 @@ public class LightSheetMicroscope	extends
 		}
 	}
 
-	@Override
-	public void setQueueProvider(QueueProvider<?> pQueueProvider)
-	{
-
-	}
-
-	@Override
-	public void buildQueueFromProvider()
-	{
-		for (final Object lDevice : mAllDeviceList)
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				lStateQueueDeviceInterface.buildQueueFromProvider();
-			}
-		}
-	}
 
 	@Override
 	public int getQueueLength()

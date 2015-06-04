@@ -21,7 +21,4 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 	@Override
 	void trigger();
 
-
-
-
 }

@@ -10,10 +10,6 @@ public interface StateQueueDeviceInterface
 
 	void addCurrentStateToQueue();
 
-	void setQueueProvider(QueueProvider<?> pQueueProvider);
-
-	void buildQueueFromProvider();
-
 	int getQueueLength();
 
 	Future<Boolean> playQueue();
