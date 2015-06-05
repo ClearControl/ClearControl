@@ -1,8 +1,8 @@
 package rtlib.gui;
 
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 
-public interface GuiInterface extends VirtualDeviceInterface
+public interface GuiInterface extends OpenCloseDeviceInterface
 {
 
 }

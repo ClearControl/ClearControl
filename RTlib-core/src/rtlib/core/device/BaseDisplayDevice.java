@@ -1,7 +1,7 @@
 package rtlib.core.device;
 
 public abstract class BaseDisplayDevice extends SignalStartableDevice	implements
-																																			VirtualDeviceInterface,
+																																			OpenCloseDeviceInterface,
 																																			DisplayableInterface
 {
 

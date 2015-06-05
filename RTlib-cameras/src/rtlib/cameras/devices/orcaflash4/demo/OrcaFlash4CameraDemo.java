@@ -3,6 +3,8 @@ package rtlib.cameras.devices.orcaflash4.demo;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
@@ -20,7 +22,8 @@ public class OrcaFlash4CameraDemo
 	AtomicLong mFrameIndex = new AtomicLong(0);
 
 	@Test
-	public void testAcquireSingleFrames() throws InterruptedException
+	public void testAcquireSingleFrames()	throws InterruptedException,
+																				ExecutionException
 	{
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
@@ -33,7 +36,7 @@ public class OrcaFlash4CameraDemo
 														public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(final StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
 																																																			final StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack)
 														{
-															/*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
+															System.out.println("testbody: hashcode=" + pNewStack.hashCode()
 																									+ " index="
 																									+ pNewStack.getIndex());/**/
 															System.out.println(pNewStack);
@@ -49,7 +52,8 @@ public class OrcaFlash4CameraDemo
 		assertTrue(lOrcaFlash4StackCamera.open());
 
 		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(1);
-		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
+		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
+													.setValue(100);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
 		Thread.sleep(1000);
@@ -58,17 +62,18 @@ public class OrcaFlash4CameraDemo
 
 		Thread.sleep(2000);
 
-		lOrcaFlash4StackCamera.stop();
+		assertTrue(lOrcaFlash4StackCamera.stop());
 
-		lOrcaFlash4StackCamera.close();
+		assertTrue(lOrcaFlash4StackCamera.close());
 
 		System.out.println(mFrameIndex.get());
 
-		assertTrue(mFrameIndex.get() >= 199);
+		assertTrue(mFrameIndex.get() >= 190);
 	}
 
 	@Test
-	public void testAcquireStack() throws InterruptedException
+	public void testAcquireStack() throws InterruptedException,
+																ExecutionException
 	{
 		mFrameIndex.set(0);
 		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
@@ -94,23 +99,25 @@ public class OrcaFlash4CameraDemo
 
 		assertTrue(lOrcaFlash4StackCamera.open());
 
+		lOrcaFlash4StackCamera.getStackModeVariable().setValue(true);
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.setValue(500);
 		lOrcaFlash4StackCamera.getStackWidthVariable().setValue(128);
 		lOrcaFlash4StackCamera.getStackHeightVariable().setValue(128);
 		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(128);
-		lOrcaFlash4StackCamera.getStackModeVariable().setValue(true);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(128);
 
-		Thread.sleep(1000);
+		lOrcaFlash4StackCamera.addCurrentStateToQueue();
 
-		assertTrue(lOrcaFlash4StackCamera.start());
+		for (int i = 0; i < 500; i++)
+		{
+			lOrcaFlash4StackCamera.addCurrentStateToQueue();
+		}
 
-		Thread.sleep(2000);
+		Future<Boolean> lPlayQueue = lOrcaFlash4StackCamera.playQueue();
+		lPlayQueue.get();
 
-		lOrcaFlash4StackCamera.stop();
-
-		lOrcaFlash4StackCamera.close();
+		assertTrue(lOrcaFlash4StackCamera.close());
 
 		System.out.println(mFrameIndex.get());
 
@@ -184,7 +191,6 @@ public class OrcaFlash4CameraDemo
 		lOrcaFlash4StackCamera.getStackWidthVariable().setValue(lWidth);
 		lOrcaFlash4StackCamera.getStackHeightVariable().setValue(lHeight);
 		lOrcaFlash4StackCamera.getStackDepthVariable().setValue(1);
-		lOrcaFlash4StackCamera.getStackModeVariable().setValue(false);
 		lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
 		Thread.sleep(1000);
@@ -194,15 +200,18 @@ public class OrcaFlash4CameraDemo
 
 		Thread.sleep(20000);
 
-		lOrcaFlash4StackCamera.stop();
+		assertTrue(lOrcaFlash4StackCamera.stop());
 		lVideoWindow.stop();
 		// Thread.sleep(1000);
 
-		lOrcaFlash4StackCamera.close();
+		assertTrue(lOrcaFlash4StackCamera.close());
 
 		System.out.println(mFrameIndex.get());
 
-		Thread.sleep(2000000000);
+		while (lVideoWindow.isVisible())
+		{
+			Thread.sleep(100);
+		}
 		assertTrue(mFrameIndex.get() >= 1000);
 
 		lVideoWindow.close();

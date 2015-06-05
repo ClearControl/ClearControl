@@ -10,11 +10,9 @@ import rtlib.stack.StackInterface;
 public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																						CameraDeviceInterface
 {
-	BooleanVariable getStackModeVariable();
-
-	BooleanVariable getSingleShotModeVariable();
-
 	DoubleVariable getNumberOfImagesPerPlaneVariable();
+
+	BooleanVariable getStackModeVariable();
 
 	ObjectVariable<StackInterface<T, A>> getStackVariable();
 

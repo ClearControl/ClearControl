@@ -3,13 +3,14 @@ package rtlib.ao.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.core.device.NameableInterface;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 
-
 public interface SpatialPhaseModulatorDeviceInterface	extends
-																											VirtualDeviceInterface,
+																											OpenCloseDeviceInterface,
+																											StartStopDeviceInterface,
 																											NameableInterface
 {
 
@@ -34,7 +35,5 @@ public interface SpatialPhaseModulatorDeviceInterface	extends
 	void setMode(int u, int v, double pValue);
 
 	long getRelaxationTimeInMilliseconds();
-
-
 
 }

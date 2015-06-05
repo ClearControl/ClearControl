@@ -5,7 +5,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableDevice	extends
 																						NamedVirtualDevice implements
-																															VirtualDeviceInterface
+																															OpenCloseDeviceInterface
 {
 
 	protected final BooleanVariable mStartSignal;

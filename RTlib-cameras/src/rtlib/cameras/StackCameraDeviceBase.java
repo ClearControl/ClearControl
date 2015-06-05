@@ -15,40 +15,32 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 																																																										StackCameraDeviceInterface<T, A>,
 																																																										StateQueueDeviceInterface
 {
+	protected BooleanVariable mStackMode = new BooleanVariable(	"StackMode",
+																															true);
 
-	protected BooleanVariable mStackModeVariable = new BooleanVariable(	"StackMode",
-																																			false);
-	protected BooleanVariable mSingleShotModeVariable = new BooleanVariable("SingleShotMode",
-																																					false);
 	protected DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfImagesPerPlane",
 																																								1);
 
 	protected volatile int mQueueLength = 0;
-
 
 	protected ObjectVariable<StackInterface<T, A>> mStackReference;
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
 		super(pDeviceName);
-	}
 
-	@Override
-	public BooleanVariable getStackModeVariable()
-	{
-		return mStackModeVariable;
-	}
-
-	@Override
-	public BooleanVariable getSingleShotModeVariable()
-	{
-		return mSingleShotModeVariable;
 	}
 
 	@Override
 	public DoubleVariable getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
+	}
+
+	@Override
+	public BooleanVariable getStackModeVariable()
+	{
+		return mStackMode;
 	}
 
 	@Override
@@ -83,7 +75,11 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	}
 
 	@Override
-	public abstract Future<Boolean> playQueue();
-
+	public Future<Boolean> playQueue()
+	{
+		mStackDepthVariable.setValue(mQueueLength);
+		// This method should be called by overriding methods of descendants.
+		return null;
+	}
 
 }

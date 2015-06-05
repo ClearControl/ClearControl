@@ -1,9 +1,9 @@
 package rtlib.microscope.lightsheet.illumination;
 
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 
-public interface LightSheetInterface extends VirtualDeviceInterface
+public interface LightSheetInterface extends OpenCloseDeviceInterface
 {
 
 	DoubleVariable getImageHeightVariable();

@@ -11,7 +11,7 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.objectv.SingleUpdateTargetObjectVariable;
@@ -25,7 +25,7 @@ import coremem.recycling.BasicRecycler;
 import dcamj.DcamFrame;
 
 public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
-																																			VirtualDeviceInterface
+																																			OpenCloseDeviceInterface
 {
 
 	private static final long cMinimalNumberOfAvailableStacks = 10;

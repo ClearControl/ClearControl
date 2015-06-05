@@ -1,13 +1,15 @@
 package rtlib.lasers;
 
 import rtlib.core.device.NameableInterface;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public interface LaserDeviceInterface	extends
 																			NameableInterface,
-																			VirtualDeviceInterface
+																			OpenCloseDeviceInterface,
+																			StartStopDeviceInterface
 {
 
 	public int getWavelengthInNanoMeter();

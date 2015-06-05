@@ -13,7 +13,7 @@ import rtlib.core.variable.doublev.DoubleVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
-																																					VirtualDeviceInterface,
+																																					OpenCloseDeviceInterface,
 																																					AsynchronousSchedulerServiceAccess,
 																																					Loggable
 {
@@ -78,7 +78,6 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	public boolean pause()
 	{
-
 		return stop();
 	}
 

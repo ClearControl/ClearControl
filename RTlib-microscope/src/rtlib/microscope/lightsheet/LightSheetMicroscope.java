@@ -8,7 +8,9 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.concurrent.future.FutureBooleanList;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
@@ -201,58 +203,13 @@ public class LightSheetMicroscope	extends
 	public boolean open()
 	{
 		boolean lIsOpen = super.open();
-		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceList)
+		for (Object lDevice : mAllDeviceList)
 		{
-			lIsOpen &= lStageDeviceInterface.open();
-			lIsOpen &= lStageDeviceInterface.start();
-		}
-
-		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lStackCameraDeviceInterface : mStackCameraDeviceList)
-		{
-			lIsOpen &= lStackCameraDeviceInterface.open();
-			lIsOpen &= lStackCameraDeviceInterface.start();
-		}
-
-		for (final SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> lStackPipelineInterface : mStackPipelineList)
-		{
-			lIsOpen &= lStackPipelineInterface.open();
-			lIsOpen &= lStackPipelineInterface.start();
-		}
-
-		for (final SignalGeneratorInterface lSignalGeneratorInterface : mSignalGeneratorList)
-		{
-			lIsOpen &= lSignalGeneratorInterface.open();
-			lIsOpen &= lSignalGeneratorInterface.start();
-		}
-
-		for (final LightSheetInterface lLightSheetInterface : mLightSheetList)
-		{
-			lIsOpen &= lLightSheetInterface.open();
-			lIsOpen &= lLightSheetInterface.start();
-		}
-
-		for (final DetectionPathInterface lDetectionPathInterface : mDetectionPathList)
-		{
-			lIsOpen &= lDetectionPathInterface.open();
-			lIsOpen &= lDetectionPathInterface.start();
-		}
-
-		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mDetectionPhaseModulatorDeviceList)
-		{
-			lIsOpen &= lSpatialPhaseModulatorDeviceInterface.open();
-			lIsOpen &= lSpatialPhaseModulatorDeviceInterface.start();
-		}
-
-		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mIlluminationPhaseModulatorDeviceList)
-		{
-			lIsOpen &= lSpatialPhaseModulatorDeviceInterface.open();
-			lIsOpen &= lSpatialPhaseModulatorDeviceInterface.start();
-		}
-
-		for (final FilterWheelDeviceInterface lFilterWheelDeviceInterface : mFilterWheelList)
-		{
-			lIsOpen &= lFilterWheelDeviceInterface.open();
-			lIsOpen &= lFilterWheelDeviceInterface.start();
+			if(lDevice instanceof OpenCloseDeviceInterface)
+			{
+				OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface)lDevice;
+				lIsOpen &= lOpenCloseDevice.open();
+			}
 		}
 
 		return lIsOpen;
@@ -262,64 +219,50 @@ public class LightSheetMicroscope	extends
 	public boolean close()
 	{
 		boolean lIsClosed = true;
-
-		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceList)
+		for (Object lDevice : mAllDeviceList)
 		{
-			lIsClosed &= lStageDeviceInterface.stop();
-			lIsClosed &= lStageDeviceInterface.close();
-		}
-
-		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lStackCameraDeviceInterface : mStackCameraDeviceList)
-		{
-			lIsClosed &= lStackCameraDeviceInterface.stop();
-			lIsClosed &= lStackCameraDeviceInterface.close();
-		}
-
-		for (final SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> lStackPipelineInterface : mStackPipelineList)
-		{
-			lIsClosed &= lStackPipelineInterface.stop();
-			lIsClosed &= lStackPipelineInterface.close();
-		}
-
-		for (final SignalGeneratorInterface lSignalGeneratorInterface : mSignalGeneratorList)
-		{
-			lIsClosed &= lSignalGeneratorInterface.stop();
-			lIsClosed &= lSignalGeneratorInterface.close();
-		}
-
-		for (final LightSheetInterface lLightSheetInterface : mLightSheetList)
-		{
-			lIsClosed &= lLightSheetInterface.stop();
-			lIsClosed &= lLightSheetInterface.close();
-		}
-
-		for (final DetectionPathInterface lDetectionPathInterface : mDetectionPathList)
-		{
-			lIsClosed &= lDetectionPathInterface.stop();
-			lIsClosed &= lDetectionPathInterface.close();
-		}
-
-		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mDetectionPhaseModulatorDeviceList)
-		{
-			lIsClosed &= lSpatialPhaseModulatorDeviceInterface.stop();
-			lIsClosed &= lSpatialPhaseModulatorDeviceInterface.close();
-		}
-
-		for (final SpatialPhaseModulatorDeviceInterface lSpatialPhaseModulatorDeviceInterface : mIlluminationPhaseModulatorDeviceList)
-		{
-			lIsClosed &= lSpatialPhaseModulatorDeviceInterface.stop();
-			lIsClosed &= lSpatialPhaseModulatorDeviceInterface.close();
-		}
-
-		for (final FilterWheelDeviceInterface lFilterWheelDeviceInterface : mFilterWheelList)
-		{
-			lIsClosed &= lFilterWheelDeviceInterface.stop();
-			lIsClosed &= lFilterWheelDeviceInterface.close();
+			if (lDevice instanceof OpenCloseDeviceInterface)
+			{
+				OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
+				lIsClosed &= lOpenCloseDevice.close();
+			}
 		}
 
 		lIsClosed &= super.close();
 
 		return lIsClosed;
+	}
+
+	@Override
+	public boolean start()
+	{
+		boolean lIsStarted = super.start();
+		for (Object lDevice : mAllDeviceList)
+		{
+			if (lDevice instanceof StartStopDeviceInterface)
+			{
+				StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
+				lIsStarted &= lStartStopDevice.start();
+			}
+		}
+
+		return lIsStarted;
+	}
+
+	@Override
+	public boolean stop()
+	{
+		boolean lIsStopped = super.start();
+		for (Object lDevice : mAllDeviceList)
+		{
+			if (lDevice instanceof StartStopDeviceInterface)
+			{
+				StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
+				lIsStopped &= lStartStopDevice.stop();
+			}
+		}
+
+		return lIsStopped;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import rtlib.core.variable.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
 																								SignalStartableDevice	implements
-																																			VirtualDeviceInterface,
+																																			OpenCloseDeviceInterface,
 																																			AsynchronousExecutorServiceAccess,
 																																			Loggable,
 																																			Runnable

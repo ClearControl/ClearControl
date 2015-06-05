@@ -1,5 +1,7 @@
 package rtlib.microscope.lightsheet.illumination.demo;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -68,8 +70,7 @@ public class LightSheetDemo
 																																							lStagingScore);
 
 		
-		lSignalGeneratorDevice.open();
-		lSignalGeneratorDevice.start();
+		assertTrue(lSignalGeneratorDevice.open());
 		
 		for (int i = 0; i < 100; i++)
 			lSignalGeneratorDevice.addCurrentStateToQueue();
@@ -80,8 +81,7 @@ public class LightSheetDemo
 			lPlayQueue.get();
 		}
 
-		lSignalGeneratorDevice.stop();
-		lSignalGeneratorDevice.close();
+		assertTrue(lSignalGeneratorDevice.close());
 
 		lVisualizer.dispose();
 	}

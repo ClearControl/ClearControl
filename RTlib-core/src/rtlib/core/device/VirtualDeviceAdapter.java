@@ -1,6 +1,8 @@
 package rtlib.core.device;
 
-public class VirtualDeviceAdapter implements VirtualDeviceInterface
+public class VirtualDeviceAdapter	implements
+																	OpenCloseDeviceInterface,
+																	StartStopDeviceInterface
 {
 	@Override
 	public boolean open()

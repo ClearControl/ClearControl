@@ -2,14 +2,16 @@ package rtlib.stack.processor;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclableFactory;
 
 public interface SameTypeStackProcessingPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>> extends
-																																																				VirtualDeviceInterface
+																																																				OpenCloseDeviceInterface,
+																																																				StartStopDeviceInterface
 {
 
 	public void addStackProcessor(final SameTypeStackProcessorInterface<T, A> pStackProcessor,

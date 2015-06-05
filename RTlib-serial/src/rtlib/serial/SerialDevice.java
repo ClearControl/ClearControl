@@ -2,7 +2,7 @@ package rtlib.serial;
 
 import jssc.SerialPortException;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.bundle.VariableBundle;
@@ -11,7 +11,7 @@ import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SerialDevice extends NamedVirtualDevice implements
-																										VirtualDeviceInterface
+																										OpenCloseDeviceInterface
 {
 
 	protected final Serial mSerial;

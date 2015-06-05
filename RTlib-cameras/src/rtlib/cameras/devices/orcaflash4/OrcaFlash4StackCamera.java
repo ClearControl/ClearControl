@@ -8,7 +8,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.units.Magnitudes;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
@@ -21,7 +21,7 @@ import dcamj.DcamProperties;
 
 public class OrcaFlash4StackCamera extends
 																	StackCameraDeviceBase<UnsignedShortType, ShortOffHeapAccess> implements
-																																															VirtualDeviceInterface,
+																																															OpenCloseDeviceInterface,
 																																															AsynchronousExecutorServiceAccess
 {
 	public static final int cStackProcessorQueueSize = 100;
@@ -36,6 +36,7 @@ public class OrcaFlash4StackCamera extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private final Object mLock = new Object();
+
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
 	{
@@ -177,9 +178,6 @@ public class OrcaFlash4StackCamera extends
 
 		};
 
-		mStackModeVariable = new BooleanVariable("StackMode", false);
-		mSingleShotModeVariable = new BooleanVariable("SingleShotMode",
-																									false);
 
 		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	mFrameReference,
 																																					cStackProcessorQueueSize);
@@ -197,7 +195,6 @@ public class OrcaFlash4StackCamera extends
 		return mFrameReference;
 	}
 
-
 	@Override
 	public boolean open()
 	{
@@ -208,6 +205,7 @@ public class OrcaFlash4StackCamera extends
 				final boolean lOpenResult = mDcamAcquisition.open();
 				mDcamAcquisition.setDefectCorrection(false);
 				mDcamJToStackConverterAndProcessing.open();
+				mDcamJToStackConverterAndProcessing.start();
 				return lOpenResult;
 			}
 			catch (final Throwable e)
@@ -268,66 +266,17 @@ public class OrcaFlash4StackCamera extends
 	@Override
 	public Future<Boolean> playQueue()
 	{
+		super.playQueue();
+		
 		final Future<Boolean> lFuture = executeAsynchronously(new Callable<Boolean>()
 		{
 
 			@Override
 			public Boolean call() throws Exception
 			{
-				synchronized (mLock)
-				{
-					if (getIsAcquiringVariable().getBooleanValue())
-					{
-						if (isReOpenDeviceNeeded())
-						{
-							stop();
-						}
-						else
-						{
-							return true;
-						}
-					}
-					try
-					{
-						System.out.println(this.getClass().getSimpleName() + ": start()");
-
-						if (isReOpenDeviceNeeded())
-						{
-							reopen();
-						}
-
-						mDcamJToStackConverterAndProcessing.start();
-
-						final boolean lContinuousAcquisition = !getSingleShotModeVariable().getBooleanValue();
-
-						boolean lSuccess;
-						if (getStackModeVariable().getBooleanValue())
-						{
-							final DcamFrame lInitialVideoFrame = request3DFrame();
-							lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
-																														true,
-																														true,
-																														true,
-																														lInitialVideoFrame);
-						}
-						else
-						{
-							final DcamFrame lInitialVideoFrame = request2DFrames();
-							lSuccess = mDcamAcquisition.startAcquisition(	lContinuousAcquisition,
-																														false,
-																														true,
-																														true,
-																														lInitialVideoFrame);
-						}
-
-						return lSuccess;
-					}
-					catch (final Throwable e)
-					{
-						e.printStackTrace();
-						return false;
-					}
-				}
+				return acquisition(	false,
+														getStackModeVariable().getBooleanValue(),
+														true);
 			}
 		});
 
@@ -341,8 +290,7 @@ public class OrcaFlash4StackCamera extends
 		{
 			try
 			{
-				mDcamJToStackConverterAndProcessing.start();
-				return true;
+				return acquisition(true, false, false);
 			}
 			catch (final Throwable e)
 			{
@@ -350,6 +298,24 @@ public class OrcaFlash4StackCamera extends
 				return false;
 			}
 		}
+	}
+
+	@Override
+	public boolean stop()
+	{
+		synchronized (mLock)
+		{
+			try
+			{
+				mDcamAcquisition.stopAcquisition();
+				return true;
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -380,14 +346,54 @@ public class OrcaFlash4StackCamera extends
 		}
 	}
 
-	@Override
-	public boolean stop()
+	public Boolean acquisition(	boolean pContinuous,
+															boolean pStackMode,
+															boolean pWaitToFinish)
 	{
 		synchronized (mLock)
 		{
+			if (getIsAcquiringVariable().getBooleanValue())
+			{
+				if (isReOpenDeviceNeeded())
+				{
+					stop();
+				}
+				else
+				{
+					return true;
+				}
+			}
 			try
 			{
-				mDcamJToStackConverterAndProcessing.stop();
+				System.out.println(this.getClass().getSimpleName() + ": start()");
+
+				if (isReOpenDeviceNeeded())
+				{
+					reopen();
+				}
+
+				boolean lSuccess = false;
+
+				if (pStackMode)
+				{
+					final DcamFrame lInitialVideoFrame = request3DFrame();
+					lSuccess = mDcamAcquisition.startAcquisition(	pContinuous,
+																												true,
+																												true,
+																												pWaitToFinish,
+																												lInitialVideoFrame);
+				}
+				else
+				{
+					final DcamFrame lInitialVideoFrame = request2DFrames();
+					lSuccess = mDcamAcquisition.startAcquisition(	pContinuous,
+																												false,
+																												true,
+																												pWaitToFinish,
+																												lInitialVideoFrame);
+
+				}
+
 				return true;
 			}
 			catch (final Throwable e)
@@ -398,6 +404,7 @@ public class OrcaFlash4StackCamera extends
 		}
 	}
 
+
 	@Override
 	public boolean close()
 	{
@@ -406,6 +413,7 @@ public class OrcaFlash4StackCamera extends
 			try
 			{
 				mDcamAcquisition.close();
+				mDcamJToStackConverterAndProcessing.stop();
 				mDcamJToStackConverterAndProcessing.close();
 				return true;
 			}

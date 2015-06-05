@@ -2,11 +2,13 @@ package rtlib.core.concurrent.asyncprocs;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
-																												VirtualDeviceInterface
+																												OpenCloseDeviceInterface,
+																												StartStopDeviceInterface
 {
 	private static final long cTimeOutInSeconds = 1;
 

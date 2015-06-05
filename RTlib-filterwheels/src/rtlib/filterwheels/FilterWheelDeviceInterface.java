@@ -1,10 +1,10 @@
 package rtlib.filterwheels;
 
-import rtlib.core.device.VirtualDeviceInterface;
+import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public interface FilterWheelDeviceInterface	extends
-																						VirtualDeviceInterface
+																						OpenCloseDeviceInterface
 {
 
 	DoubleVariable getPositionVariable();

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.queue.QueueProvider;
+import rtlib.core.device.queue.QueueProviderUsingDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.Score;
@@ -14,7 +15,8 @@ import rtlib.symphony.score.ScoreInterface;
 
 public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 																																		SignalGeneratorInterface,
-																																		AsynchronousExecutorServiceAccess
+																																		AsynchronousExecutorServiceAccess,
+																																		QueueProviderUsingDeviceInterface
 {
 
 	protected final ScoreInterface mStagingScore;
