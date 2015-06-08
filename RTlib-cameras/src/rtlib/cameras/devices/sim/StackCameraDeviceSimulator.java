@@ -14,6 +14,8 @@ import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.cameras.StackCameraDeviceBase;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.device.SimulatorDeviceInterface;
 import rtlib.core.log.Loggable;
@@ -33,7 +35,8 @@ import coremem.recycling.RecyclerInterface;
 public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																																																StackCameraDeviceBase<T, A>	implements
 																																																														Loggable,
-																																																														SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>
+																																																														SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>,
+																																																														AsynchronousSchedulerServiceAccess
 {
 	private StackCameraDeviceSimulatorHint mHint;
 	private StackSourceInterface<T, A> mStackSource;
@@ -43,6 +46,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	private final T mType;
 
 	private volatile CountDownLatch mLeftInQueue;
+	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
 	public StackCameraDeviceSimulator(StackSourceInterface<T, A> pStackSource,
 																		T pType,
@@ -176,7 +180,6 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		{
 			final double lInFocusZ = mHint.focusz;
 
-
 			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 			final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 			for (int z = 0; z < lDepth; z++)
@@ -227,6 +230,20 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	@Override
 	public boolean start()
 	{
+		Runnable lRunnable = () -> {
+			trigger();
+		};
+		mTriggerScheduledAtFixedRate = scheduleAtFixedRate(	lRunnable,
+																								(long) getExposureInMicrosecondsVariable().getValue(),
+																								TimeUnit.MICROSECONDS);
+		return true;
+	}
+
+	@Override
+	public boolean stop()
+	{
+		if (mTriggerScheduledAtFixedRate != null)
+			mTriggerScheduledAtFixedRate.cancel(false);
 		return true;
 	}
 
@@ -280,15 +297,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	}
 
 	@Override
-	public boolean stop()
-	{
-		return true;
-	}
-
-	@Override
 	public void trigger()
 	{
-
+		mTriggerVariable.setEdge(true);
 	}
 
 	@Override
@@ -296,6 +307,5 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		mHint = pHint;
 	}
-
 
 }

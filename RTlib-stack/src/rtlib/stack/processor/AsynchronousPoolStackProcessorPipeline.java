@@ -9,6 +9,7 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -17,7 +18,8 @@ import coremem.recycling.RecyclableFactory;
 import coremem.recycling.RecyclerInterface;
 
 public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																																						SameTypeStackProcessingPipeline<T, A>
+																																																						SameTypeStackProcessingPipeline<T, A>,
+																																																						StartStopDeviceInterface
 {
 
 	private final CopyOnWriteArrayList<SameTypeStackProcessorInterface<T, A>> mProcessorList = new CopyOnWriteArrayList<SameTypeStackProcessorInterface<T, A>>();

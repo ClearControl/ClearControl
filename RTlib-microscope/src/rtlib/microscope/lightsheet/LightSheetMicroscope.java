@@ -40,9 +40,9 @@ public class LightSheetMicroscope	extends
 	private final ArrayList<SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess>> mStackPipelineList = new ArrayList<>();
 	private final ArrayList<ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> mStackVariableList = new ArrayList<>();
 
-	public LightSheetMicroscope(String pDeviceName, boolean pOnlyStart)
+	public LightSheetMicroscope(String pDeviceName)
 	{
-		super(pDeviceName, pOnlyStart);
+		super(pDeviceName, false);
 	}
 
 	public int addStackCameraDevice(StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> pCameraDevice,
@@ -114,7 +114,7 @@ public class LightSheetMicroscope	extends
 		return mLightSheetList.get(pIndex);
 	}
 
-	public int addLightSheetDevice(DetectionPathInterface pDetectionPath)
+	public int addDetectionPathDevice(DetectionPathInterface pDetectionPath)
 	{
 		mAllDeviceList.add(pDetectionPath);
 		mDetectionPathList.add(pDetectionPath);
