@@ -18,14 +18,13 @@ public class SMC100DeviceDemo
 																												"COM1");
 
 		assertTrue(lSMC100Device.open());
-		assertTrue(lSMC100Device.start());
 
 		lSMC100Device.enable(0);
 
 		System.out.println("goToPosition(" + 0 + ")");
 		lSMC100Device.goToPosition(0, 0);
 
-		double lCurrentPosition = lSMC100Device.getCurrentPosition(0);
+		final double lCurrentPosition = lSMC100Device.getCurrentPosition(0);
 		System.out.println("lCurrentPosition=" + lCurrentPosition);
 
 		lSMC100Device.setMinimumPosition(0);
@@ -35,7 +34,7 @@ public class SMC100DeviceDemo
 
 		Thread.sleep(250);
 
-		double lValue = 5100;
+		final double lValue = 5100;
 		System.out.println("goToPosition(" + lValue + ")");
 		lSMC100Device.goToPosition(0, lValue);
 
@@ -53,7 +52,6 @@ public class SMC100DeviceDemo
 
 		Thread.sleep(3000);
 
-		assertTrue(lSMC100Device.stop());
 		assertTrue(lSMC100Device.close());
 	}
 

@@ -58,7 +58,8 @@ public class FutureBooleanList implements Future<Boolean>
 	{
 		for (final Future<Boolean> lFuture : mArrayList)
 		{
-			if (!lFuture.get())
+			final Boolean lBoolean = lFuture.get();
+			if (lBoolean == null || !lBoolean)
 				return Boolean.FALSE;
 		}
 		return Boolean.TRUE;

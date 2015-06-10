@@ -50,11 +50,10 @@ public class VideoFrame3DDisplayDemos
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
 																																																																									new UnsignedShortType());
 
-		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackReferenceVariable();
+		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 		lVideoFrame3DDisplay.open();
 
-		lVideoFrame3DDisplay.start();
 
 		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 		{
@@ -76,7 +75,6 @@ public class VideoFrame3DDisplayDemos
 			Thread.sleep(10);
 		}
 
-		lVideoFrame3DDisplay.stop();
 
 		lVideoFrame3DDisplay.close();
 
@@ -115,11 +113,10 @@ public class VideoFrame3DDisplayDemos
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
 																																																																									new UnsignedShortType());
 
-		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackReferenceVariable();
+		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 		lVideoFrame3DDisplay.open();
 
-		lVideoFrame3DDisplay.start();
 
 		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 		{
@@ -141,7 +138,6 @@ public class VideoFrame3DDisplayDemos
 			Thread.sleep(1);
 		}
 
-		lVideoFrame3DDisplay.stop();
 
 		lVideoFrame3DDisplay.close();
 
@@ -171,11 +167,10 @@ public class VideoFrame3DDisplayDemos
 			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
 																																																																										new UnsignedShortType());
 
-			final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackReferenceVariable();
+			final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 			lVideoFrame3DDisplay.open();
 
-			lVideoFrame3DDisplay.start();
 
 			for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 			{
@@ -211,7 +206,6 @@ public class VideoFrame3DDisplayDemos
 				}
 			}
 
-			lVideoFrame3DDisplay.stop();
 
 			lVideoFrame3DDisplay.close();
 

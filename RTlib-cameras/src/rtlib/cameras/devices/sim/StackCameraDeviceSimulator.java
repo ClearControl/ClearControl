@@ -120,7 +120,9 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 					lStack.setNumberOfImagesPerPlane((long) getNumberOfImagesPerPlaneVariable().getValue());
 					mStackReference.set(lStack);
-					mLeftInQueue.countDown();
+
+					if (mLeftInQueue != null)
+						mLeftInQueue.countDown();
 
 				}
 			}
@@ -138,7 +140,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		final int lWidth = (int) max(16, mStackWidthVariable.getValue());
 		final int lHeight = (int) max(16, mStackHeightVariable.getValue());
 		int lDepth = (int) max(16, mStackDepthVariable.getValue());
-		if (mHint.type.startsWith("autofocus.angle"))
+		if (mHint != null && mHint.type.startsWith("autofocus.angle"))
 			lDepth = mHint.nbangles;
 
 		final int lNumberOfImagesPerPlane = (int) getNumberOfImagesPerPlaneVariable().getValue();
@@ -176,7 +178,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 						lContiguousBuffer.writeShort((short) lValueValue);
 					}
 		}
-		else if (mHint.type.startsWith("autofocus"))
+		else if (mHint != null && mHint.type.startsWith("autofocus"))
 		{
 			final double lInFocusZ = mHint.focusz;
 
@@ -230,12 +232,12 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	@Override
 	public boolean start()
 	{
-		Runnable lRunnable = () -> {
+		final Runnable lRunnable = () -> {
 			trigger();
 		};
 		mTriggerScheduledAtFixedRate = scheduleAtFixedRate(	lRunnable,
-																								(long) getExposureInMicrosecondsVariable().getValue(),
-																								TimeUnit.MICROSECONDS);
+																												(long) getExposureInMicrosecondsVariable().getValue(),
+																												TimeUnit.MICROSECONDS);
 		return true;
 	}
 
@@ -254,7 +256,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 		mStackDepthVariable.setValue(mStackDepthVariable.getValue() + 1);
 
-		new Future<Boolean>()
+		final Future<Boolean> lFuture = new Future<Boolean>()
 		{
 
 			@Override
@@ -279,8 +281,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			public Boolean get() throws InterruptedException,
 													ExecutionException
 			{
-				// TODO Auto-generated method stub
-				return null;
+				// mLeftInQueue.await();
+				return true;
 			}
 
 			@Override
@@ -288,18 +290,23 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 																												ExecutionException,
 																												TimeoutException
 			{
-				// TODO Auto-generated method stub
-				return null;
+				// mLeftInQueue.await(pTimeout, pUnit);
+				return true;
 			}
 		};
 
-		return null;
+		return lFuture;
 	}
 
 	@Override
 	public void trigger()
 	{
 		mTriggerVariable.setEdge(true);
+	}
+
+	public BooleanVariable getTriggerVariable()
+	{
+		return mTriggerVariable;
 	}
 
 	@Override

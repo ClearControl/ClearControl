@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.configuration.MachineConfiguration;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.stages.StageDeviceBase;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.devices.ecc100.variables.EnableVariable;
@@ -23,10 +24,11 @@ import ecc100.ECC100Controller;
 
 public class ECC100StageDevice extends StageDeviceBase implements
 																											StageDeviceInterface,
+																											StartStopDeviceInterface,
 																											Waiting
 {
 
-	ECC100Controller mECC100Controller;
+	final ECC100Controller mECC100Controller;
 	private final BiMap<Integer, ECC100Axis> mIndexToAxisMap = HashBiMap.create();
 	private final BiMap<String, ECC100Axis> mNameToAxisMap = HashBiMap.create();
 

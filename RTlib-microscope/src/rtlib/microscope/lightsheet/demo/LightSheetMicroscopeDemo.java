@@ -2,19 +2,19 @@ package rtlib.microscope.lightsheet.demo;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ByteOffHeapAccess;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
+import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.variable.VariableListenerAdapter;
-import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
+import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.StackIdentityPipeline;
@@ -28,35 +28,29 @@ public class LightSheetMicroscopeDemo
 {
 
 	@Test
-	public void demoOnSimulators() throws InterruptedException
+	public void demoOnSimulators() throws InterruptedException,
+																ExecutionException
 	{
-		StackCameraDeviceSimulator<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
-																																																									new UnsignedShortType(),
-																																																									null);
-
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
+		final StackCameraDeviceSimulator<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
+																																																									new UnsignedShortType(),
+																																																												lSignalGeneratorDevice.getTriggerVariable());
+
 
 		demoWith(lCamera, lSignalGeneratorDevice);
 
 	}
 
 	public void demoWith(	StackCameraDeviceSimulator<UnsignedShortType, ShortOffHeapAccess> pCamera,
-												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException
+												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException,
+																																				ExecutionException
 	{
-		final Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> lVideoDisplayDevice = new Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess>(new UnsignedByteType(),
-																																																																						512,
-																																																																						512);
+		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-		lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
-												.setValue(true);
+		lLightSheetMicroscope.getDeviceLists()
+													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
-
-		LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
-
-		lLightSheetMicroscope.Add(lVideoDisplayDevice);
-		lLightSheetMicroscope.addSignalGeneratorDevice(pSignalGeneratorDevice);
-
-		StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
+		final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
 
 		lStackIdentityPipeline.getOutputVariable()
 													.addListener(new VariableListenerAdapter<StackInterface<UnsignedShortType, ShortOffHeapAccess>>()
@@ -71,14 +65,17 @@ public class LightSheetMicroscopeDemo
 
 													});
 
-		lLightSheetMicroscope.addStackCameraDevice(	pCamera,
+		lLightSheetMicroscope.getDeviceLists()
+													.addStackCameraDevice(pCamera,
 																								lStackIdentityPipeline);
+
 
 		final LightSheet lLightSheet = new LightSheet("demolightsheet",
 																									9.4,
 																									512,
 																									2);
-		lLightSheetMicroscope.addLightSheetDevice(lLightSheet);
+		lLightSheetMicroscope.getDeviceLists()
+													.addLightSheetDevice(lLightSheet);
 
 		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
 		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
@@ -103,19 +100,31 @@ public class LightSheetMicroscopeDemo
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
 
+		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
+		
+		
+		assertTrue(lGUI.open());
 		assertTrue(lLightSheetMicroscope.open());
 
-		lLightSheetMicroscope.addCurrentStateToQueue();
-		lLightSheetMicroscope.addCurrentStateToQueue();
-		lLightSheetMicroscope.addCurrentStateToQueue();
+		lGUI.connectGUI();
 
-		for (int i = 0; i < 100; i++)
-			lLightSheetMicroscope.playQueue();
-
-		assertTrue(lLightSheetMicroscope.close());
+		lLightSheetMicroscope.addCurrentStateToQueue();
+		lLightSheetMicroscope.addCurrentStateToQueue();
+		lLightSheetMicroscope.addCurrentStateToQueue();
 
 		while (lVisualizer.isVisible())
+		{
+			System.out.println("playQueue");
+			final FutureBooleanList lPlayQueue = lLightSheetMicroscope.playQueue();
+			final Boolean lBoolean = lPlayQueue.get();
+			System.out.println(lBoolean);
 			Thread.sleep(100);
+		}
+
+		assertTrue(lLightSheetMicroscope.close());
+		assertTrue(lGUI.close());
+
+
 
 	}
 

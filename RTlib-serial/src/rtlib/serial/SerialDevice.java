@@ -273,17 +273,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		}
 	}
 
-	@Override
-	public boolean start()
-	{
-		return true;
-	}
 
-	@Override
-	public boolean stop()
-	{
-		return true;
-	}
 
 	@Override
 	public boolean close()

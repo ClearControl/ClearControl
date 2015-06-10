@@ -1,6 +1,6 @@
 package rtlib.core.device;
 
-public class NamedVirtualDevice extends VirtualDeviceAdapter implements
+public class NamedVirtualDevice extends OpenCloseDeviceAdapter implements
 																														OpenCloseDeviceInterface,
 																														NameableInterface
 {

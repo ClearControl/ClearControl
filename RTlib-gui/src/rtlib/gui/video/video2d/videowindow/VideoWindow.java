@@ -299,6 +299,8 @@ public class VideoWindow<T extends NativeType<T>> implements
 																	1,
 																	true,
 																	cMipMapLevel);
+
+				mTexture.clear();
 			}
 
 			@Override

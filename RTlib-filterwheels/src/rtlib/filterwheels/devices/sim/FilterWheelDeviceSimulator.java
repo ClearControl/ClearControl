@@ -19,18 +19,6 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 	}
 
 	@Override
-	public boolean start()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean stop()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean close()
 	{
 		return true;

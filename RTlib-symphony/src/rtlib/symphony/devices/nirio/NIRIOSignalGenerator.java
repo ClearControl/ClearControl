@@ -42,15 +42,19 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase	implements
 
 		NIRIOScoreCompiler.compile(mNIRIOCompiledScore, pScore);
 
-		lPlayed = mDirettore.play(mNIRIOCompiledScore.getDeltaTimeBuffer().getContiguousMemory()
-																																	.getBridJPointer(Integer.class),
-															mNIRIOCompiledScore.getNumberOfTimePointsBuffer().getContiguousMemory()
-																																						.getBridJPointer(Integer.class),
-															mNIRIOCompiledScore.getSyncBuffer().getContiguousMemory()
-																															.getBridJPointer(Integer.class),
+		lPlayed = mDirettore.play(mNIRIOCompiledScore.getDeltaTimeBuffer()
+																									.getContiguousMemory()
+																									.getBridJPointer(Integer.class),
+															mNIRIOCompiledScore.getNumberOfTimePointsBuffer()
+																									.getContiguousMemory()
+																									.getBridJPointer(Integer.class),
+															mNIRIOCompiledScore.getSyncBuffer()
+																									.getContiguousMemory()
+																									.getBridJPointer(Integer.class),
 															toIntExact(mNIRIOCompiledScore.getNumberOfMovements()),
-															mNIRIOCompiledScore.getScoreBuffer().getContiguousMemory()
-																															.getBridJPointer(Short.class));
+															mNIRIOCompiledScore.getScoreBuffer()
+																									.getContiguousMemory()
+																									.getBridJPointer(Short.class));
 
 		lCurrentThread.setPriority(lCurrentThreadPriority);
 		mTriggerVariable.setValue(false);
@@ -78,23 +82,9 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase	implements
 
 	}
 
-	@Override
-	public boolean start()
-	{
-		System.out.println(this.getClass().getSimpleName() + ": start()");
-		return true;
-	}
-
 	public boolean resume()
 	{
 		System.out.println(this.getClass().getSimpleName() + ": resume()");
-		return true;
-	}
-
-	@Override
-	public boolean stop()
-	{
-		System.out.println(this.getClass().getSimpleName() + ": stop()");
 		return true;
 	}
 

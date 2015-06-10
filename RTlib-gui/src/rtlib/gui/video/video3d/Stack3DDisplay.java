@@ -14,7 +14,6 @@ import rtlib.gui.video.StackDisplayInterface;
 import rtlib.stack.StackInterface;
 import clearvolume.renderer.ClearVolumeRendererInterface;
 import clearvolume.renderer.factory.ClearVolumeRendererFactory;
-import clearvolume.transferf.TransferFunctions;
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
@@ -28,8 +27,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	private ClearVolumeRendererInterface mClearVolumeRenderer;
 
-	private final ObjectVariable<StackInterface<T, A>> mInputObjectVariable;
-	private ObjectVariable<StackInterface<T, A>> mOutputObjectVariable;
+	private final ObjectVariable<StackInterface<T, A>> mInputStackVariable;
+	private ObjectVariable<StackInterface<T, A>> mOutputStackVariable;
 
 	private AsynchronousProcessorBase<StackInterface<T, A>, Object> mAsynchronousDisplayUpdater;
 
@@ -37,11 +36,13 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	public Stack3DDisplay(final String pWindowName, final T pType)
 	{
-		this(pWindowName, pType, 1, cDefaultDisplayQueueLength);
+		this(pWindowName, pType, 512, 512, 1, cDefaultDisplayQueueLength);
 	}
 
 	public Stack3DDisplay(final String pWindowName,
 												final T pType,
+												final int pWindowWidth,
+												final int pWindowHeight,
 												final int pNumberOfLayers,
 												final int pUpdaterQueueLength)
 	{
@@ -62,14 +63,14 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			lNativeTypeEnum = NativeTypeEnum.UnsignedShort;
 
 		mClearVolumeRenderer = ClearVolumeRendererFactory.newBestRenderer(pWindowName,
-																																			768,
-																																			768,
+																																			pWindowWidth,
+																																			pWindowHeight,
 																																			lNativeTypeEnum,
-																																			768,
-																																			768,
+																																			2048,
+																																			2048,
 																																			pNumberOfLayers,
 																																			false);
-		mClearVolumeRenderer.setTransferFunction(TransferFunctions.getGrayLevel());
+
 		mClearVolumeRenderer.setVisible(true);
 		mClearVolumeRenderer.setAdaptiveLODActive(false);
 
@@ -108,8 +109,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	cTimeOutForBufferCopy,
 																														TimeUnit.SECONDS);/**/
 
-				if (mOutputObjectVariable != null)
-					mOutputObjectVariable.set(pStack);
+				if (mOutputStackVariable != null)
+					mOutputStackVariable.set(pStack);
 				else if (!pStack.isReleased())
 					pStack.release();
 
@@ -117,7 +118,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			}
 		};
 
-		mInputObjectVariable = new ObjectVariable<StackInterface<T, A>>("VideoFrame")
+		mInputStackVariable = new ObjectVariable<StackInterface<T, A>>("VideoFrame")
 		{
 
 			@Override
@@ -147,13 +148,13 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public ObjectVariable<StackInterface<T, A>> getOutputStackVariable()
 	{
-		return mOutputObjectVariable;
+		return mOutputStackVariable;
 	}
 
 	@Override
 	public void setOutputStackVariable(ObjectVariable<StackInterface<T, A>> pOutputStackVariable)
 	{
-		mOutputObjectVariable = pOutputStackVariable;
+		mOutputStackVariable = pOutputStackVariable;
 	}
 
 	public BooleanVariable getDisplayOnVariable()
@@ -161,9 +162,9 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<StackInterface<T, A>> getStackReferenceVariable()
+	public ObjectVariable<StackInterface<T, A>> getStackInputVariable()
 	{
-		return mInputObjectVariable;
+		return mInputStackVariable;
 	}
 
 	private void setDisplayOn(final boolean pIsDisplayOn)
@@ -177,20 +178,6 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mClearVolumeRenderer.setVisible(true);
 		mAsynchronousDisplayUpdater.start();
 		return false;
-	}
-
-	@Override
-	public boolean start()
-	{
-
-		return true;
-	}
-
-	@Override
-	public boolean stop()
-	{
-
-		return true;
 	}
 
 	@Override
@@ -222,16 +209,6 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	public void disableClose()
 	{
 		mClearVolumeRenderer.disableClose();
-	}
-
-	public ObjectVariable<StackInterface<T, A>> getOutputObjectVariable()
-	{
-		return mOutputObjectVariable;
-	}
-
-	public void setOutputObjectVariable(ObjectVariable<StackInterface<T, A>> pOutputObjectVariable)
-	{
-		mOutputObjectVariable = pOutputObjectVariable;
 	}
 
 }

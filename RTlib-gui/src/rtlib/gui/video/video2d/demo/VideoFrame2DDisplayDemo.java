@@ -60,7 +60,6 @@ public class VideoFrame2DDisplayDemo
 		lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
 												.setValue(true);
 		lVideoDisplayDevice.open();
-		lVideoDisplayDevice.start();
 
 		final int lSizeX = 256;
 		final int lSizeY = 256;
@@ -73,7 +72,7 @@ public class VideoFrame2DDisplayDemo
 																																																																																		lSizeY,
 																																																																																		lSizeZ);
 
-		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getStackVariable();
+		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
 
 		final Runnable lRunnable = () -> {
 			while (true)
@@ -104,7 +103,6 @@ public class VideoFrame2DDisplayDemo
 			Thread.sleep(100);
 		}
 
-		lVideoDisplayDevice.stop();
 		lVideoDisplayDevice.close();
 	}
 

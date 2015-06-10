@@ -22,12 +22,11 @@ public class NIRIOSignalGeneratorDemo
 		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
 
 		assertTrue(lNIRIOSignalGenerator.open());
-		assertTrue(lNIRIOSignalGenerator.start());
 
 		final ScoreInterface lScore = buildScore();
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualize(	"test",
-																																										lScore);/**/
+																																							lScore);/**/
 
 		for (int i = 0; i < 100000 && lVisualize.isVisible(); i++)
 		{
@@ -37,9 +36,7 @@ public class NIRIOSignalGeneratorDemo
 
 		lVisualize.dispose();
 
-		assertTrue(lNIRIOSignalGenerator.stop());
 		assertTrue(lNIRIOSignalGenerator.close());
-
 
 	}
 
@@ -49,7 +46,6 @@ public class NIRIOSignalGeneratorDemo
 		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
 
 		assertTrue(lNIRIOSignalGenerator.open());
-		assertTrue(lNIRIOSignalGenerator.start());
 
 		final ScoreInterface lScore = new Score("Test Score");
 
@@ -62,9 +58,9 @@ public class NIRIOSignalGeneratorDemo
 																										0.5f);
 
 		final SinusStave lSinusStave2 = new SinusStave(	"sinus2",
-																									1f,
-																									0f,
-																									0.5f);
+																										1f,
+																										0f,
+																										0.5f);
 
 		lMovement.setStave(0, lSinusStave1);
 		lMovement.setStave(1, lSinusStave2);
@@ -84,7 +80,6 @@ public class NIRIOSignalGeneratorDemo
 
 		lVisualize.dispose();
 
-		assertTrue(lNIRIOSignalGenerator.stop());
 		assertTrue(lNIRIOSignalGenerator.close());
 
 	}

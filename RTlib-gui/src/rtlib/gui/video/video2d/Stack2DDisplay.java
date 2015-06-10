@@ -282,7 +282,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<StackInterface<T, A>> getStackVariable()
+	public ObjectVariable<StackInterface<T, A>> getInputStackVariable()
 	{
 		return mInputStackVariable;
 	}
@@ -319,19 +319,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		}
 	}
 
-	@Override
-	public boolean start()
-	{
 
-		return true;
-	}
-
-	@Override
-	public boolean stop()
-	{
-
-		return true;
-	}
 
 	public void disableClose()
 	{

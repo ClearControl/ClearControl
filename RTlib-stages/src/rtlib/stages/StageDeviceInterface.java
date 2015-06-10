@@ -3,13 +3,11 @@ package rtlib.stages;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 
 public interface StageDeviceInterface	extends
-																			OpenCloseDeviceInterface,
-																			StartStopDeviceInterface
+																			OpenCloseDeviceInterface
 {
 	int getNumberOfDOFs();
 

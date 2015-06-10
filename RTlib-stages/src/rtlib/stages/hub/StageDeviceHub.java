@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
+import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.stages.StageDeviceInterface;
@@ -14,7 +15,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 public class StageDeviceHub extends NamedVirtualDevice implements
-																								StageDeviceInterface
+																											StageDeviceInterface,
+																											StartStopDeviceInterface
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
@@ -32,7 +34,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 		mStageDeviceInterfaceList.add(pStageDeviceInterface);
 		final String lDOFName = pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
 		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(pStageDeviceInterface,
-																												pDOFIndex);
+																															pDOFIndex);
 		mDOFList.add(lStageDeviceDOF);
 		mNameToStageDeviceDOFMap.put(lDOFName, lStageDeviceDOF);
 		return lDOFName;
@@ -57,7 +59,11 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	{
 		boolean lStart = true;
 		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
-			lStart &= lStageDeviceInterface.start();
+			if (lStageDeviceInterface instanceof StartStopDeviceInterface)
+			{
+				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lStageDeviceInterface;
+				lStart &= lStartStopDevice.start();
+			}
 		return lStart;
 	}
 
@@ -66,7 +72,11 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	{
 		boolean lStop = true;
 		for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
-			lStop &= lStageDeviceInterface.stop();
+			if (lStageDeviceInterface instanceof StartStopDeviceInterface)
+			{
+				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lStageDeviceInterface;
+				lStop &= lStartStopDevice.stop();
+			}
 		return lStop;
 	}
 
@@ -137,8 +147,7 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 																int pTimeOut,
 																TimeUnit pTimeUnit)
 	{
-		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut,
-																									pTimeUnit);
+		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);
 	}
 
 	@Override
@@ -191,7 +200,5 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 						+ getNumberOfDOFs()
 						+ "]";
 	}
-
-
 
 }

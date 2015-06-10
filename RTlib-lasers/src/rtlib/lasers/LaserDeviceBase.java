@@ -52,7 +52,6 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	{
 		try
 		{
-			final boolean lStartResult = super.start();
 
 			setTargetPowerInPercent(0);
 			setPowerOn(true);
@@ -80,7 +79,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 																																												TimeUnit.MILLISECONDS);
 
 			setLaserOn(true);
-			return lStartResult;
+			return true;
 		}
 		catch (final Throwable e)
 		{
@@ -96,7 +95,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		{
 			setLaserOn(false);
 			mCurrentPowerPollerScheduledFutur.cancel(true);
-			return super.stop();
+			return true;
 		}
 		catch (final Throwable e)
 		{
