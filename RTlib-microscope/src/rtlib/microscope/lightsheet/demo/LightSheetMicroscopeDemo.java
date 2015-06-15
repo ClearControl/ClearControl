@@ -10,6 +10,8 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
+import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.variable.VariableListenerAdapter;
@@ -19,6 +21,7 @@ import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.symphony.devices.SignalGeneratorInterface;
+import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
 import rtlib.symphony.gui.ScoreVisualizerJFrame;
 import rtlib.symphony.movement.Movement;
@@ -32,19 +35,33 @@ public class LightSheetMicroscopeDemo
 																ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
-		final StackCameraDeviceSimulator<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
-																																																									new UnsignedShortType(),
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
+																																																												new UnsignedShortType(),
 																																																												lSignalGeneratorDevice.getTriggerVariable());
-
 
 		demoWith(lCamera, lSignalGeneratorDevice);
 
 	}
 
-	public void demoWith(	StackCameraDeviceSimulator<UnsignedShortType, ShortOffHeapAccess> pCamera,
+	@Test
+	public void demoOnRealHardware() throws InterruptedException,
+																	ExecutionException
+	{
+		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
+
+		demoWith(lCamera, lSignalGeneratorDevice);
+
+	}
+
+	public void demoWith(	StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> pCamera,
 												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException,
 																																				ExecutionException
 	{
+		pCamera.getStackWidthVariable().setValue(128);
+		pCamera.getStackHeightVariable().setValue(128);
+		pCamera.getExposureInMicrosecondsVariable().setValue(5000);
+
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
 		lLightSheetMicroscope.getDeviceLists()
@@ -69,7 +86,6 @@ public class LightSheetMicroscopeDemo
 													.addStackCameraDevice(pCamera,
 																								lStackIdentityPipeline);
 
-
 		final LightSheet lLightSheet = new LightSheet("demolightsheet",
 																									9.4,
 																									512,
@@ -80,6 +96,9 @@ public class LightSheetMicroscopeDemo
 		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
 		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
 								.setValue(5000);
+
+		lLightSheet.getImageHeightVariable()
+								.setValue(pCamera.getStackHeightVariable().getValue());
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
@@ -101,30 +120,34 @@ public class LightSheetMicroscopeDemo
 																																							lStagingScore);
 
 		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
-		
-		
+
 		assertTrue(lGUI.open());
 		assertTrue(lLightSheetMicroscope.open());
+		Thread.sleep(10000);
 
 		lGUI.connectGUI();
 
-		lLightSheetMicroscope.addCurrentStateToQueue();
-		lLightSheetMicroscope.addCurrentStateToQueue();
-		lLightSheetMicroscope.addCurrentStateToQueue();
+		System.out.println("Start building queue");
+
+		for (int i = 0; i < 8; i++)
+			lLightSheetMicroscope.addCurrentStateToQueue();
+		lLightSheetMicroscope.addCurrentStateToQueueNotCounting();
+		System.out.println("finished building queue");
 
 		while (lVisualizer.isVisible())
 		{
-			System.out.println("playQueue");
+			System.out.println("playQueue!");
 			final FutureBooleanList lPlayQueue = lLightSheetMicroscope.playQueue();
+
+			System.out.print("waiting...");
 			final Boolean lBoolean = lPlayQueue.get();
-			System.out.println(lBoolean);
+			System.out.print(" ...done!");
+			// System.out.println(lBoolean);
 			Thread.sleep(100);
 		}
 
 		assertTrue(lLightSheetMicroscope.close());
 		assertTrue(lGUI.close());
-
-
 
 	}
 

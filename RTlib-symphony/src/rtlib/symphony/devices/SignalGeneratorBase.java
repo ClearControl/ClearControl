@@ -103,7 +103,6 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	@Override
 	public Future<Boolean> playQueue()
 	{
-
 		final Callable<Boolean> lCall = () -> {
 			final Thread lCurrentThread = Thread.currentThread();
 			final int lCurrentThreadPriority = lCurrentThread.getPriority();

@@ -270,7 +270,6 @@ public class OrcaFlash4StackCamera extends
 		
 		final Future<Boolean> lFuture = executeAsynchronously(new Callable<Boolean>()
 		{
-
 			@Override
 			public Boolean call() throws Exception
 			{
@@ -279,6 +278,7 @@ public class OrcaFlash4StackCamera extends
 														true);
 			}
 		});
+		mDcamAcquisition.waitAcquisitionStarted();
 
 		return lFuture;
 	}
@@ -352,6 +352,8 @@ public class OrcaFlash4StackCamera extends
 	{
 		synchronized (mLock)
 		{
+			System.out.println(this.getClass().getSimpleName() + ": acquisition()");
+
 			if (getIsAcquiringVariable().getBooleanValue())
 			{
 				if (isReOpenDeviceNeeded())
@@ -365,7 +367,6 @@ public class OrcaFlash4StackCamera extends
 			}
 			try
 			{
-				System.out.println(this.getClass().getSimpleName() + ": start()");
 
 				if (isReOpenDeviceNeeded())
 				{
@@ -394,7 +395,7 @@ public class OrcaFlash4StackCamera extends
 
 				}
 
-				return true;
+				return lSuccess;
 			}
 			catch (final Throwable e)
 			{
