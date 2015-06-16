@@ -268,17 +268,19 @@ public class OrcaFlash4StackCamera extends
 	{
 		super.playQueue();
 		
+		acquisition(false,
+								getStackModeVariable().getBooleanValue(),
+								false);
+
 		final Future<Boolean> lFuture = executeAsynchronously(new Callable<Boolean>()
 		{
 			@Override
 			public Boolean call() throws Exception
 			{
-				return acquisition(	false,
-														getStackModeVariable().getBooleanValue(),
-														true);
+				mDcamAcquisition.waitAcquisitionFinishedAndStop();
+				return true;
 			}
 		});
-		mDcamAcquisition.waitAcquisitionStarted();
 
 		return lFuture;
 	}
@@ -352,7 +354,7 @@ public class OrcaFlash4StackCamera extends
 	{
 		synchronized (mLock)
 		{
-			System.out.println(this.getClass().getSimpleName() + ": acquisition()");
+			System.out.println(this.getClass().getSimpleName() + ": acquisition() begin");
 
 			if (getIsAcquiringVariable().getBooleanValue())
 			{
@@ -394,6 +396,8 @@ public class OrcaFlash4StackCamera extends
 																												lInitialVideoFrame);
 
 				}
+
+				System.out.println(this.getClass().getSimpleName() + ": acquisition() end");
 
 				return lSuccess;
 			}

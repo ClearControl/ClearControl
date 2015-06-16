@@ -147,6 +147,8 @@ public class LightSheetMicroscope	extends
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
 			{
+				System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",
+													lDevice);
 				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
 				final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
 				lFutureBooleanList.addFuture(lPlayQueueFuture);

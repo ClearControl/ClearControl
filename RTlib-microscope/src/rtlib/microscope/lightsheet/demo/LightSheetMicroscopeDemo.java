@@ -64,8 +64,6 @@ public class LightSheetMicroscopeDemo
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-		lLightSheetMicroscope.getDeviceLists()
-													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
 		final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
 
@@ -85,6 +83,9 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addStackCameraDevice(pCamera,
 																								lStackIdentityPipeline);
+
+		lLightSheetMicroscope.getDeviceLists()
+													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
 		final LightSheet lLightSheet = new LightSheet("demolightsheet",
 																									9.4,
@@ -123,13 +124,13 @@ public class LightSheetMicroscopeDemo
 
 		assertTrue(lGUI.open());
 		assertTrue(lLightSheetMicroscope.open());
-		Thread.sleep(10000);
+		Thread.sleep(1000);
 
 		lGUI.connectGUI();
 
 		System.out.println("Start building queue");
 
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < 128; i++)
 			lLightSheetMicroscope.addCurrentStateToQueue();
 		lLightSheetMicroscope.addCurrentStateToQueueNotCounting();
 		System.out.println("finished building queue");
@@ -143,7 +144,7 @@ public class LightSheetMicroscopeDemo
 			final Boolean lBoolean = lPlayQueue.get();
 			System.out.print(" ...done!");
 			// System.out.println(lBoolean);
-			Thread.sleep(100);
+			// Thread.sleep(4000);
 		}
 
 		assertTrue(lLightSheetMicroscope.close());
