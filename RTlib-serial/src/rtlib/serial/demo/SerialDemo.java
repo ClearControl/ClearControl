@@ -1,5 +1,9 @@
 package rtlib.serial.demo;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Scanner;
+
 import jssc.SerialPortException;
 
 import org.junit.Test;
@@ -13,33 +17,42 @@ public class SerialDemo
 {
 
 	@Test
-	public void test() throws InterruptedException,
+	public void serialConsoleDemo()	throws InterruptedException,
 										SerialPortException,
 										SerialException
 	{
 
-		final Serial lSerial = new Serial("Egg3D", 115200);
-		lSerial.setBinaryMode(true);
-		lSerial.setMessageLength(18);
+		
 
+		final Serial lSerial = new Serial(115200);
+		lSerial.setBinaryMode(false);
+		lSerial.setLineTerminationCharacter('\n');
 		lSerial.addListener(new SerialListenerAdapter()
 		{
-
 			@Override
-			public void binaryMessageReceived(final SerialInterface pSerial,
-																				final byte[] pMessage)
+			public void textMessageReceived(SerialInterface pSerial,
+																			String pMessage)
 			{
-				System.out.format("message received length=%d, index=%d \n",
-													pMessage.length,
-													pMessage[0]);// TODO
+				super.textMessageReceived(pSerial, pMessage);
+				System.out.println(pMessage + "\n");
 			}
-
 		});
 
 		System.out.println("Connecting...");
-		lSerial.connect();
+		assertTrue(lSerial.connect("COM1"));
+		System.out.println("Connected!");
+		
+		Scanner lScanner = new Scanner(System.in);
+		
+		String lLine;
+		while (!(lLine = lScanner.nextLine()).equals("exit"))
+		{
+			lSerial.write(lLine + "\n");
+		}
+		lScanner.close();
 
-		Thread.sleep(1000000);
+		Thread.sleep(1000);
 		lSerial.close();
 	}
+
 }

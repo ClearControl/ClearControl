@@ -49,7 +49,7 @@ public class Serial implements SerialInterface
 		mBaudRate = pBaudRate;
 	}
 
-	public static ArrayList<String> getListOfAllSerialCommPorts()
+	public static ArrayList<String> getListOfAllTTYSerialCommPorts()
 	{
 		final ArrayList<String> lListOfFreeCommPorts = new ArrayList<String>();
 		final String[] lPortNameList = SerialPortList.getPortNames(	Pattern.compile("tty\\..+"),
@@ -70,9 +70,20 @@ public class Serial implements SerialInterface
 		return lListOfFreeCommPorts;
 	}
 
+	public static ArrayList<String> getListOfAllSerialCommPorts()
+	{
+		final ArrayList<String> lListOfFreeCommPorts = new ArrayList<String>();
+		final String[] lPortNameList = SerialPortList.getPortNames();
+		for (final String lPortName : lPortNameList)
+		{
+			lListOfFreeCommPorts.add(lPortName);
+		}
+		return lListOfFreeCommPorts;
+	}
+
 	public static ArrayList<String> getListOfAllSerialCommPortsWithNameContaining(final String pNameHint)
 	{
-		final ArrayList<String> lListOfFreeCommPorts = getListOfAllSerialCommPorts();
+		final ArrayList<String> lListOfFreeCommPorts = getListOfAllTTYSerialCommPorts();
 
 		final ArrayList<String> lListOfSelectedCommPorts = new ArrayList<String>();
 		for (final String lPortName : lListOfFreeCommPorts)
