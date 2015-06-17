@@ -141,6 +141,7 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 			setTargetPowerInPercent(0);
 			setLaserOn(false);
 			setPowerOn(false);
+			mSerialDevice.close();
 			return super.close();
 		}
 		catch (final Throwable e)
