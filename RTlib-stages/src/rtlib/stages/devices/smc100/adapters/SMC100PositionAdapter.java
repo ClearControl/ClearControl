@@ -4,10 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.devices.smc100.SMC100StageDevice;
 
-public class SMC100PositionAdapter implements SerialTextDeviceAdapter
+public class SMC100PositionAdapter extends SerialDeviceAdapterAdapter	implements
+																																			SerialTextDeviceAdapter
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 

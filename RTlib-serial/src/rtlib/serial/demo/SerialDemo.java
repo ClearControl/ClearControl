@@ -34,7 +34,11 @@ public class SerialDemo
 																			String pMessage)
 			{
 				super.textMessageReceived(pSerial, pMessage);
-				System.out.println(pMessage + "\n");
+
+				pMessage = pMessage.replace("\r", "\\r");
+				pMessage = pMessage.replace("\n", "\\n");
+
+				System.out.println("->" + pMessage);
 			}
 		});
 

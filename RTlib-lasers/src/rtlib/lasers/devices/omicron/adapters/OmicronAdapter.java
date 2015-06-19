@@ -1,10 +1,12 @@
 package rtlib.lasers.devices.omicron.adapters;
 
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
+import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public abstract class OmicronAdapter implements
-																		SerialTextDeviceAdapter
+public abstract class OmicronAdapter extends
+																		SerialDeviceAdapterAdapter implements
+																															SerialTextDeviceAdapter
 {
 
 	@Override

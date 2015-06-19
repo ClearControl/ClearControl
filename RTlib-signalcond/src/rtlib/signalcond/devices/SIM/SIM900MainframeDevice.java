@@ -35,7 +35,6 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		return mSerialDevice;
 	}
 
-
 	@Override
 	public boolean open()
 	{
@@ -44,6 +43,11 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		{
 			lOpen = super.open();
 			mSerialDevice.open();
+			mSerialDevice.getSerial().write("*RST\n");
+			mSerialDevice.getSerial().write("FLSH\n");
+			mSerialDevice.getSerial().write("SRST\n");
+			mSerialDevice.getSerial().write("RPER 510\n");
+			mSerialDevice.getSerial().write("TERM D,LF\n");
 
 			return lOpen;
 		}
@@ -53,7 +57,6 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 			return false;
 		}
 	}
-
 
 	@Override
 	public boolean close()
@@ -70,10 +73,12 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		}
 	}
 
-	public String wrapCommand(int pPort, String pSetGainCommandString)
+	public String wrapCommand(int pPort, String pCommandString)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		pCommandString = pCommandString.replace("\n", "");
+		return String.format(	ProtocolSIM.cSIM900ForwardCommand,
+													pPort,
+													pCommandString);
 	}
 
 }

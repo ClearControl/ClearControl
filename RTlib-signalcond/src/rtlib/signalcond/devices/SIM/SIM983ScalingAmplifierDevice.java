@@ -1,5 +1,6 @@
 package rtlib.signalcond.devices.SIM;
 
+import rtlib.serial.Serial;
 import rtlib.signalcond.ScalingAmplifierBaseDevice;
 import rtlib.signalcond.ScalingAmplifierDeviceInterface;
 import rtlib.signalcond.devices.SIM.adapters.GainAdapter;
@@ -20,6 +21,7 @@ public class SIM983ScalingAmplifierDevice	extends
 																			int pPort)
 	{
 		super(pSim900MainframeDevice + "." + pPort + "." + cDeviceName);
+		mSim900MainframeDevice = pSim900MainframeDevice;
 		mPort = pPort;
 	}
 
@@ -35,6 +37,12 @@ public class SIM983ScalingAmplifierDevice	extends
 			
 			if (mSim900MainframeDevice.getSerialDevice() == null)
 				return false;
+
+			Serial lSerial = mSim900MainframeDevice.getSerialDevice()
+																							.getSerial();
+
+
+			lSerial.format("SNDT %d, \"TERM 2\"", mPort);
 
 			final GainAdapter lGetDeviceIdAdapter = new GainAdapter(mSim900MainframeDevice,
 																															mPort);
@@ -63,6 +71,7 @@ public class SIM983ScalingAmplifierDevice	extends
 	{
 		try
 		{
+			mSim900MainframeDevice.getSerialDevice().removeAllVariables();
 			return super.close();
 		}
 		catch (final Throwable e)

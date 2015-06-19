@@ -1,8 +1,11 @@
 package rtlib.stages.devices.smc100.adapters;
 
+import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SMC100MinPositionAdapter implements SerialTextDeviceAdapter
+public class SMC100MinPositionAdapter	extends
+																			SerialDeviceAdapterAdapter implements
+																																SerialTextDeviceAdapter
 {
 
 	@Override

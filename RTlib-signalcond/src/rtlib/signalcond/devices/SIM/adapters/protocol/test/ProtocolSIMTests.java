@@ -2,7 +2,7 @@ package rtlib.signalcond.devices.SIM.adapters.protocol.test;
 
 import org.junit.Test;
 
-public class ProtocolXXTests
+public class ProtocolSIMTests
 {
 
 	@Test

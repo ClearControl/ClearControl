@@ -2,9 +2,11 @@ package rtlib.filterwheels.devices.fli.adapters;
 
 import rtlib.filterwheels.devices.fli.FLIFilterWheelDevice;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
+import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 
-public abstract class FilterWheelDeviceAdapter implements
-																							SerialBinaryDeviceAdapter
+public abstract class FilterWheelDeviceAdapter extends
+																							SerialDeviceAdapterAdapter implements
+																																				SerialBinaryDeviceAdapter
 {
 	static final byte cRequestFilterWheelStatusCode = (byte) Integer.parseInt("cc",
 																																						16);

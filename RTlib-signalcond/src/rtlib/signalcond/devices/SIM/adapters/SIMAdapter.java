@@ -1,10 +1,15 @@
 package rtlib.signalcond.devices.SIM.adapters;
 
+import java.util.concurrent.TimeUnit;
+
+import rtlib.core.concurrent.thread.ThreadUtils;
+import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.signalcond.devices.SIM.SIM900MainframeDevice;
 import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolSIM;
 
-public abstract class SIMAdapter implements SerialTextDeviceAdapter
+public abstract class SIMAdapter extends SerialDeviceAdapterAdapter	implements
+																																		SerialTextDeviceAdapter
 {
 
 	private final SIM900MainframeDevice mSim900MainframeDevice;
@@ -23,28 +28,59 @@ public abstract class SIMAdapter implements SerialTextDeviceAdapter
 	@Override
 	public byte[] getGetValueCommandMessage()
 	{
-		return String.format(ProtocolSIM.cGetCommand, mVariableName)
-									.getBytes();
+		String lCommand = String.format(ProtocolSIM.cGetCommand,
+																		mVariableName);
+		String lWrappedCommand = mSim900MainframeDevice.wrapCommand(mPort,
+																																lCommand);
+
+		// System.out.println("GET sending: '" + lWrappedCommand + "'");
+		return lWrappedCommand.getBytes();
 	}
 
 	@Override
 	public Double parseValue(final byte[] pMessage)
 	{
-		final String lAnswer = new String(pMessage);
-		final Double lValue = Double.parseDouble(lAnswer);
+		Double lValue;
+		try
+		{
+			final String lAnswer = new String(pMessage);
+
+			// System.out.println("Received: '" + lAnswer + "'");
+
+			int lLengthlHeaderStart = lAnswer.indexOf(',');
+			String lLengthIntLengthString = lAnswer.substring(lLengthlHeaderStart + 2,
+																												lLengthlHeaderStart + 3);
+			int lNumberOfDigits = Integer.parseInt(lLengthIntLengthString);
+
+			String lValueString = lAnswer.substring(lLengthlHeaderStart + 2
+																							+ lNumberOfDigits
+																							+ 1);
+
+			lValue = Double.parseDouble(lValueString.trim());
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 		return lValue;
 	}
+
 
 	@Override
 	public byte[] getSetValueCommandMessage(double pOldValue,
 																					double pNewValue)
 	{
+
 		final String lSetCommandString = String.format(	ProtocolSIM.cSetCommand,
-																												mVariableName,
-																												pNewValue);
+																										mVariableName,
+																										pNewValue);
 
 		final String lWrappedSetCommandString = mSim900MainframeDevice.wrapCommand(	mPort,
-																																										lSetCommandString);
+																																								lSetCommandString);
+
+		/*System.out.println("SET sending: '" + lWrappedSetCommandString
+												+ "'");/**/
 
 		final byte[] lWrappedSetCommandBytes = lWrappedSetCommandString.getBytes();
 
@@ -84,12 +120,26 @@ public abstract class SIMAdapter implements SerialTextDeviceAdapter
 	@Override
 	public boolean hasResponseForSet()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean hasResponseForGet()
 	{
+		return true;
+	}
+
+	@Override
+	public boolean purgeAfterGet()
+	{
+		ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+		return true;
+	}
+
+	@Override
+	public boolean purgeAfterSet()
+	{
+		ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
 		return true;
 	}
 

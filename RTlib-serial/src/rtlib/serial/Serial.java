@@ -110,7 +110,7 @@ public class Serial implements SerialInterface
 		if (mPortNameHint == null)
 			throw new SerialException("No hint given for port name.");
 		final String lPortName = getOneSerialCommPortWithNameContaining(mPortNameHint);
-		System.out.format("Connecting to '%s'\n", lPortName);
+		// System.out.format("Connecting to '%s'\n", lPortName);
 		return connect(lPortName);
 	}
 
@@ -150,12 +150,13 @@ public class Serial implements SerialInterface
 	@Override
 	public final void write(final String pString) throws SerialPortException
 	{
-		mSerialPort.writeBytes(pString.getBytes());
+		write(pString.getBytes());
 	}
 
 	@Override
 	public final void write(final byte[] pBytes) throws SerialPortException
 	{
+		// System.out.println(new String(pBytes));
 		mSerialPort.writeBytes(pBytes);
 	}
 
@@ -163,6 +164,11 @@ public class Serial implements SerialInterface
 	public final void write(final byte pByte) throws SerialPortException
 	{
 		mSerialPort.writeByte(pByte);
+	}
+
+	public void format(String format, Object... args) throws SerialPortException
+	{
+		write(String.format(format, args));
 	}
 
 	@Override
@@ -402,7 +408,7 @@ public class Serial implements SerialInterface
 				final String lMessage = new String(	mBuffer.toArray(),
 																						0,
 																						mBuffer.size());
-				System.out.print(lMessage);
+				// System.out.print(lMessage);
 			}
 
 			return mBuffer.toArray();
@@ -424,5 +430,6 @@ public class Serial implements SerialInterface
 																				lReadTextMessage.length);
 		return lMessage;
 	}
+
 
 }

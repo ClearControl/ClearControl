@@ -7,4 +7,6 @@ public interface SerialBinaryDeviceAdapter extends
 
 	public int getSetValueReturnMessageLength();
 
+
+
 }

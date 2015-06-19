@@ -199,7 +199,7 @@ public class SMC100StageDevice extends SerialDevice implements
 	@Override
 	public String toString()
 	{
-		return "SMC100StageDevice [mSerial=" + mSerial
+		return "SMC100StageDevice [mSerial=" + getSerial()
 						+ ", getNumberOfDOFs()="
 						+ getNumberOfDOFs()
 						+ ", getDeviceName()="
