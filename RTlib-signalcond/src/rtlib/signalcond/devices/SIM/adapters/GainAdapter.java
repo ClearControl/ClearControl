@@ -1,23 +1,17 @@
 package rtlib.signalcond.devices.SIM.adapters;
 
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
-import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolXX;
+import rtlib.signalcond.devices.SIM.SIM900MainframeDevice;
+import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolSIM;
 
 public class GainAdapter extends SIMAdapter	implements
 																						SerialTextDeviceAdapter
 {
 
-	@Override
-	public byte[] getGetValueCommandMessage()
+	public GainAdapter(	SIM900MainframeDevice pSim900MainframeDevice,
+											int pPort)
 	{
-		return ProtocolXX.cGetGainCommand.getBytes();
-	}
-
-	@Override
-	public Double parseValue(final byte[] pMessage)
-	{
-
-		return 0.0;
+		super(pSim900MainframeDevice, pPort, ProtocolSIM.cGain);
 	}
 
 }

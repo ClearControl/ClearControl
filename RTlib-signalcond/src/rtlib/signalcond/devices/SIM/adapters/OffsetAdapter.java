@@ -1,20 +1,15 @@
 package rtlib.signalcond.devices.SIM.adapters;
 
-import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolXX;
+import rtlib.signalcond.devices.SIM.SIM900MainframeDevice;
+import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolSIM;
 
 public class OffsetAdapter extends SIMAdapter
 {
 
-	@Override
-	public byte[] getGetValueCommandMessage()
+	public OffsetAdapter(	SIM900MainframeDevice pSim900MainframeDevice,
+												int pPort)
 	{
-		return ProtocolXX.cGetOffsetCommand.getBytes();
-	}
-
-	@Override
-	public Double parseValue(final byte[] pMessage)
-	{
-		return 0.0;
+		super(pSim900MainframeDevice, pPort, ProtocolSIM.cGain);
 	}
 
 }

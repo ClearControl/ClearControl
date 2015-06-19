@@ -1,6 +1,5 @@
 package rtlib.signalcond.devices.SIM;
 
-import rtlib.serial.SerialDevice;
 import rtlib.signalcond.ScalingAmplifierBaseDevice;
 import rtlib.signalcond.ScalingAmplifierDeviceInterface;
 import rtlib.signalcond.devices.SIM.adapters.GainAdapter;
@@ -13,25 +12,18 @@ public class SIM983ScalingAmplifierDevice	extends
 {
 
 	private static final String cDeviceName = "ScalingAmplifierBaseDevice";
-	private SerialDevice mSerialDevice;
+	private SIM900MainframeDevice mSim900MainframeDevice;
+	private final int mPort;
 
 
-	public SIM983ScalingAmplifierDevice()
+	public SIM983ScalingAmplifierDevice(SIM900MainframeDevice pSim900MainframeDevice,
+																			int pPort)
 	{
-		super(cDeviceName);
+		super(pSim900MainframeDevice + "." + pPort + "." + cDeviceName);
+		mPort = pPort;
 	}
 
-	public SerialDevice getSerialDevice()
-	{
-		return mSerialDevice;
-	}
 
-	@Override
-	public void setSerialDevice(SerialDevice pSerialDevice)
-	{
-		mSerialDevice = pSerialDevice;
-		setName(cDeviceName + "-" + mSerialDevice.getName());
-	}
 
 	@Override
 	public boolean open()
@@ -41,15 +33,19 @@ public class SIM983ScalingAmplifierDevice	extends
 		{
 			lOpen = super.open();
 			
-			if(mSerialDevice==null)
+			if (mSim900MainframeDevice.getSerialDevice() == null)
 				return false;
 
-			final GainAdapter lGetDeviceIdAdapter = new GainAdapter();
-			mGainVariable = mSerialDevice.addSerialDoubleVariable("Gain",
+			final GainAdapter lGetDeviceIdAdapter = new GainAdapter(mSim900MainframeDevice,
+																															mPort);
+			mGainVariable = mSim900MainframeDevice.getSerialDevice()
+																						.addSerialDoubleVariable(	"Gain",
 																																lGetDeviceIdAdapter);
 
-			final OffsetAdapter lGetWavelengthAdapter = new OffsetAdapter();
-			mOffsetVariable = mSerialDevice.addSerialDoubleVariable("Offset",
+			final OffsetAdapter lGetWavelengthAdapter = new OffsetAdapter(mSim900MainframeDevice,
+																																		mPort);
+			mOffsetVariable = mSim900MainframeDevice.getSerialDevice()
+																							.addSerialDoubleVariable(	"Offset",
 																																	lGetWavelengthAdapter);
 			
 			return lOpen;
@@ -75,6 +71,7 @@ public class SIM983ScalingAmplifierDevice	extends
 			return false;
 		}
 	}
+
 
 
 

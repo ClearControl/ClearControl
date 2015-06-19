@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.serial.SerialDevice;
-import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolXX;
+import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolSIM;
 
 public class SIM900MainframeDevice extends NamedVirtualDevice
 {
@@ -27,13 +27,14 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 
 		mSerialDevice = new SerialDevice(	"SIM900MainframeDevice",
 																			pPortName,
-																			ProtocolXX.cBaudRate);
+																			ProtocolSIM.cBaudRate);
 	}
 
-	public void addModule(int pPort, SIMModuleInterface pModule)
+	public SerialDevice getSerialDevice()
 	{
-		mSIMModuleList.add(pModule);
+		return mSerialDevice;
 	}
+
 
 	@Override
 	public boolean open()
@@ -43,11 +44,6 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		{
 			lOpen = super.open();
 			mSerialDevice.open();
-
-			for (final SIMModuleInterface lSimModuleInterface : mSIMModuleList)
-			{
-				lSimModuleInterface.setSerialDevice(mSerialDevice);
-			}
 
 			return lOpen;
 		}
@@ -65,10 +61,6 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		try
 		{
 			mSerialDevice.close();
-			for (final SIMModuleInterface lSimModuleInterface : mSIMModuleList)
-			{
-				lSimModuleInterface.setSerialDevice(null);
-			}
 			return super.close();
 		}
 		catch (final Throwable e)
@@ -76,6 +68,12 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public String wrapCommand(int pPort, String pSetGainCommandString)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
