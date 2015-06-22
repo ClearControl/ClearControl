@@ -28,8 +28,8 @@ public class JProgressBarDouble extends JProgressBar
 																											pInicialValue)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				final int lProgressBarNewIntegerValue = toInt(65535,
 																											mMin,

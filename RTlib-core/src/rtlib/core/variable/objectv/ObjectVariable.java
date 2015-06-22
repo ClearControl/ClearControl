@@ -1,5 +1,6 @@
 package rtlib.core.variable.objectv;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import rtlib.core.variable.EventPropagator;
@@ -63,7 +64,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
 		{
-			for (final ObjectVariable lObjectVariable : mVariablesToSendUpdatesTo)
+			for (final ObjectVariable<O> lObjectVariable : mVariablesToSendUpdatesTo)
 			{
 				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
 				{
@@ -78,6 +79,33 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		notifyListenersOfSetEvent(lOldReference, lNewValueAfterHook);
 
 		return true;
+	}
+
+	public void sync(final O pNewValue, final boolean pClearEventQueue)
+	{
+		if (pClearEventQueue)
+		{
+			EventPropagator.clear();
+		}
+
+		// We protect ourselves from called code that might clear the Thread
+		// traversal list:
+		final ArrayList<Object> lCopyOfListOfTraversedObjects = EventPropagator.getCopyOfListOfTraversedObjects();
+
+		if (mVariablesToSendUpdatesTo != null)
+		{
+			for (final ObjectVariable<O> lObjectVariable : mVariablesToSendUpdatesTo)
+			{
+				EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
+				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
+				{
+					lObjectVariable.setReferenceInternal(pNewValue);
+				}
+			}
+		}
+		EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
+		EventPropagator.addAllToListOfTraversedObjects(mVariablesToSendUpdatesTo);
+
 	}
 
 	public O setEventHook(final O pOldValue, final O pNewValue)
@@ -185,7 +213,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 							+ ((mReference == null)	? "null"
 																			: mReference.toString());
 		}
-		catch (NullPointerException e)
+		catch (final NullPointerException e)
 		{
 			return getName() + "=null";
 		}

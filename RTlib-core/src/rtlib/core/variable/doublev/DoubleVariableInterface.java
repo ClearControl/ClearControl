@@ -1,8 +1,6 @@
-package rtlib.core.variable;
+package rtlib.core.variable.doublev;
 
-import rtlib.core.variable.doublev.DoubleInputVariableInterface;
-import rtlib.core.variable.doublev.DoubleOutputVariableInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.VariableInterface;
 
 public interface DoubleVariableInterface extends
 																				VariableInterface<Double>,

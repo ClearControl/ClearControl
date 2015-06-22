@@ -96,8 +96,8 @@ public class JSliderDouble extends JPanel
 		mSliderDoubleVariable = new DoubleVariable(pValueName, pValue)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 
 				final int lSliderIntegerValue = toInt(mResolution,

@@ -7,7 +7,7 @@ public class PositionVariable extends DoubleVariable
 {
 
 	private static final double cEpsilon = 5; // nm
-	private ECC100Axis mECC100Axis;
+	private final ECC100Axis mECC100Axis;
 
 	public PositionVariable(String pVariableName, ECC100Axis pECC100Axis)
 	{
@@ -16,17 +16,17 @@ public class PositionVariable extends DoubleVariable
 	}
 
 	@Override
-	public double setEventHook(double pOldValue, double pNewValue)
+	public Double setEventHook(Double pOldValue, Double pNewValue)
 	{
-		double lValue = super.setEventHook(pOldValue, pNewValue);
+		final double lValue = super.setEventHook(pOldValue, pNewValue);
 		mECC100Axis.goToPosition(pNewValue, cEpsilon);
 		return lValue;
 	}
 
 	@Override
-	public double getEventHook(double pCurrentValue)
+	public Double getEventHook(Double pCurrentValue)
 	{
-		double lCurrentPosition = mECC100Axis.getCurrentPosition();
+		final double lCurrentPosition = mECC100Axis.getCurrentPosition();
 		return super.getEventHook(lCurrentPosition);
 	}
 }

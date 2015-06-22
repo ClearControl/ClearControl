@@ -47,8 +47,8 @@ public class JSliderIndexedStrings extends JPanel
 		mSliderVariable = new DoubleVariable(pValueName, 0)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 
 				final int lSliderIntegerValue = getInt(pNewValue);

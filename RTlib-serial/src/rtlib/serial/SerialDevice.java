@@ -53,7 +53,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		{
 
 			@Override
-			public double getEventHook(final double pCurrentValue)
+			public Double getEventHook(final Double pCurrentValue)
 			{
 				try
 				{
@@ -76,7 +76,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 									mSerial.purge();
 								}
 
-								Double lParsedValue = pSerialBinaryDevice.parseValue(lAnswerMessage);
+								final Double lParsedValue = pSerialBinaryDevice.parseValue(lAnswerMessage);
 								if (lParsedValue != null)
 									return super.getEventHook(lParsedValue);
 								else
@@ -95,8 +95,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 			}
 
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	Double pNewValue)
 			{
 				try
 				{
@@ -149,7 +149,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		{
 
 			@Override
-			public double getEventHook(final double pCurrentValue)
+			public Double getEventHook(final Double pCurrentValue)
 			{
 				try
 				{
@@ -172,7 +172,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 									mSerial.purge();
 								}
 
-								Double lParsedValue = pSerialTextDeviceAdapter.parseValue(lAnswerMessage);
+								final Double lParsedValue = pSerialTextDeviceAdapter.parseValue(lAnswerMessage);
 								if(lParsedValue!=null)
 									return super.getEventHook(lParsedValue);
 								else
@@ -191,8 +191,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 			}
 
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	Double pNewValue)
 			{
 				try
 				{
@@ -275,7 +275,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		{
 
 			@Override
-			public double getEventHook(double pCurrentValue)
+			public Double getEventHook(Double pCurrentValue)
 			{
 				return lDoubleVariable.get();
 			}

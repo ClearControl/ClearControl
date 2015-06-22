@@ -233,10 +233,9 @@ public class VariableBundleAsFile extends VariableBundle
 					{
 						final DoubleVariable lDoubleVariable = (DoubleVariable) lVariable;
 
-						lFormatter.format("%s\t=\t%g\t%d\n",
+						lFormatter.format("%s\t=\t%g\n",
 															lVariablePrefixAndName,
-															lDoubleVariable.getValue(),
-															lDoubleVariable.getLongValue());
+															lDoubleVariable.getValue());
 
 					}
 					else if (lVariable instanceof ObjectVariable<?>)

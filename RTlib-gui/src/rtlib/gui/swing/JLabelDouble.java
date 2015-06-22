@@ -31,8 +31,8 @@ public class JLabelDouble extends JLabel
 		mDoubleVariable = new DoubleVariable(pLabelName, pInicialValue)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				if (pNewValue != mNewValue)
 				{

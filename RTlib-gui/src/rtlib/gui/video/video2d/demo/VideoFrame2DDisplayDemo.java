@@ -141,8 +141,8 @@ public class VideoFrame2DDisplayDemo
 																															0)
 					{
 						@Override
-						public double setEventHook(	final double pOldValue,
-																				final double pNewValue)
+						public Double setEventHook(	final Double pOldValue,
+																				final Double pNewValue)
 						{
 							final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 							sDisplay = lBoolean;
@@ -158,8 +158,8 @@ public class VideoFrame2DDisplayDemo
 					{
 
 						@Override
-						public double setEventHook(	final double pOldValue,
-																				final double pNewValue)
+						public Double setEventHook(	final Double pOldValue,
+																				final Double pNewValue)
 						{
 							sValue = pNewValue;
 							System.out.println(pNewValue);

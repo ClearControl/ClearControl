@@ -156,8 +156,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				final boolean lDisplayOn = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setDisplayOn(lDisplayOn);
@@ -169,8 +169,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																									false)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				final boolean lManualMinMax = BooleanVariable.double2boolean(pNewValue);
 				mVideoWindow.setManualMinMax(lManualMinMax);
@@ -181,8 +181,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mMinimumIntensity = new DoubleVariable("MinimumIntensity", 0)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewMinIntensity)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewMinIntensity)
 			{
 				final double lMinIntensity = Math.pow(pNewMinIntensity, 6);
 				mVideoWindow.setMinIntensity(lMinIntensity);
@@ -193,8 +193,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mMaximumIntensity = new DoubleVariable("MaximumIntensity", 1)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewMaxIntensity)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewMaxIntensity)
 			{
 				final double lMaxIntensity = Math.pow(pNewMaxIntensity, 6);
 				mVideoWindow.setMaxIntensity(lMaxIntensity);

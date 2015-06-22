@@ -121,7 +121,7 @@ public class BooleanVariable extends DoubleVariable	implements
 
 	protected void setBooleanValueInternal(final boolean pNewBooleanValue)
 	{
-		setValueInternal(boolean2double(pNewBooleanValue));
+		setReferenceInternal(boolean2double(pNewBooleanValue));
 	}
 
 	@Override

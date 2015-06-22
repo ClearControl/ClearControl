@@ -6,7 +6,7 @@ import ecc100.ECC100Axis;
 public class ResetVariable extends BooleanVariable
 {
 
-	private ECC100Axis mECC100Axis;
+	private final ECC100Axis mECC100Axis;
 
 	public ResetVariable(String pVariableName, ECC100Axis pECC100Axis)
 	{
@@ -15,15 +15,15 @@ public class ResetVariable extends BooleanVariable
 	}
 
 	@Override
-	public double setEventHook(double pOldValue, double pNewValue)
+	public Double setEventHook(Double pOldValue, Double pNewValue)
 	{
-		double lValue = super.setEventHook(pOldValue, pNewValue);
+		final double lValue = super.setEventHook(pOldValue, pNewValue);
 		// TODO: What is this supposed to be?
 		return lValue;
 	}
 
 	@Override
-	public double getEventHook(double pCurrentValue)
+	public Double getEventHook(Double pCurrentValue)
 	{
 		return super.getEventHook(pCurrentValue);
 	}

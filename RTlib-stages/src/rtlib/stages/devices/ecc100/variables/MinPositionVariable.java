@@ -7,7 +7,7 @@ public class MinPositionVariable extends DoubleVariable
 {
 
 	private static final double cEpsilon = 5; // nm
-	private ECC100Axis mECC100Axis;
+	private final ECC100Axis mECC100Axis;
 
 	public MinPositionVariable(String pVariableName, ECC100Axis pECC100Axis)
 	{
@@ -16,14 +16,14 @@ public class MinPositionVariable extends DoubleVariable
 	}
 
 	@Override
-	public double setEventHook(double pOldValue, double pNewValue)
+	public Double setEventHook(Double pOldValue, Double pNewValue)
 	{
-		double lValue = super.setEventHook(pOldValue, pNewValue);
+		final double lValue = super.setEventHook(pOldValue, pNewValue);
 		return lValue;
 	}
 
 	@Override
-	public double getEventHook(double pCurrentValue)
+	public Double getEventHook(Double pCurrentValue)
 	{
 		return super.getEventHook(pCurrentValue);
 	}

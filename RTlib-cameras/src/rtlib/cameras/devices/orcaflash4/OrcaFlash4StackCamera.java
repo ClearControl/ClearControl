@@ -95,13 +95,14 @@ public class OrcaFlash4StackCamera extends
 		mStackWidthVariable = new DoubleVariable("FrameWidth", 2048)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				synchronized (mLock)
 				{
 					requestReOpen();
-					final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
+					final double lNewValue = pNewValue;
+					final double lRoundto4 = DcamProperties.roundto4((int) lNewValue);
 					if (lRoundto4 != pNewValue)
 					{
 						this.setValue(lRoundto4);
@@ -115,13 +116,14 @@ public class OrcaFlash4StackCamera extends
 		mStackHeightVariable = new DoubleVariable("FrameHeight", 2048)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				synchronized (mLock)
 				{
 					requestReOpen();
-					final double lRoundto4 = DcamProperties.roundto4((int) pNewValue);
+					final double lNewValue = pNewValue;
+					final double lRoundto4 = DcamProperties.roundto4((int) lNewValue);
 					if (lRoundto4 != pNewValue)
 					{
 						this.setValue(lRoundto4);
@@ -134,8 +136,8 @@ public class OrcaFlash4StackCamera extends
 		mStackDepthVariable = new DoubleVariable("FrameDepth", 64)
 		{
 			@Override
-			public double setEventHook(	final double pOldValue,
-																	final double pNewValue)
+			public Double setEventHook(	final Double pOldValue,
+																	final Double pNewValue)
 			{
 				return super.setEventHook(pOldValue, pNewValue);
 			}
@@ -148,8 +150,8 @@ public class OrcaFlash4StackCamera extends
 																													5000)
 		{
 			@Override
-			public double setEventHook(	final double pOldExposureInMicroseconds,
-																	final double pExposureInMicroseconds)
+			public Double setEventHook(	final Double pOldExposureInMicroseconds,
+																	final Double pExposureInMicroseconds)
 			{
 				synchronized (mLock)
 				{
@@ -171,7 +173,7 @@ public class OrcaFlash4StackCamera extends
 		{
 
 			@Override
-			public double getEventHook(double pCurrentValue)
+			public Double getEventHook(Double pCurrentValue)
 			{
 				return BooleanVariable.boolean2double(mDcamAcquisition.isAcquiring());
 			}
@@ -312,7 +314,7 @@ public class OrcaFlash4StackCamera extends
 				mDcamAcquisition.stopAcquisition();
 				return true;
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				e.printStackTrace();
 			}
