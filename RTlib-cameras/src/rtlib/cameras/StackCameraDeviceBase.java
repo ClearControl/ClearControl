@@ -5,9 +5,9 @@ import java.util.concurrent.Future;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends

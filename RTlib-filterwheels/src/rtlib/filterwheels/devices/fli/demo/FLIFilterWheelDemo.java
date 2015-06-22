@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.filterwheels.devices.fli.FLIFilterWheelDevice;
 
 public class FLIFilterWheelDemo

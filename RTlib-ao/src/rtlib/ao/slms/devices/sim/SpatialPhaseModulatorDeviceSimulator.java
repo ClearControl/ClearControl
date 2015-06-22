@@ -3,7 +3,7 @@ package rtlib.ao.slms.devices.sim;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceBase;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class SpatialPhaseModulatorDeviceSimulator	extends
 																									SpatialPhaseModulatorDeviceBase

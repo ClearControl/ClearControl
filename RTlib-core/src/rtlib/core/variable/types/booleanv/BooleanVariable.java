@@ -1,11 +1,11 @@
-package rtlib.core.variable.booleanv;
+package rtlib.core.variable.types.booleanv;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.variable.VariableListener;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class BooleanVariable extends DoubleVariable	implements
 																										BooleanInputOutputVariableInterface

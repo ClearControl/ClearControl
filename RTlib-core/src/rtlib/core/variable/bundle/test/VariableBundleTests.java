@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class VariableBundleTests
 {

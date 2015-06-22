@@ -4,9 +4,9 @@ import jssc.SerialPortException;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 

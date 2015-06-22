@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import rtlib.core.variable.VariableListener;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.ScoreInterface;
 import rtlib.symphony.staves.StaveInterface;

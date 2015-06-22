@@ -1,8 +1,8 @@
 package rtlib.lasers.devices.cobolt;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.cobolt.adapters.GetCurrentPowerAdapter;

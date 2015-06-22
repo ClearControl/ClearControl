@@ -2,7 +2,7 @@ package rtlib.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
 import rtlib.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
 import rtlib.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;

@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class JTextFieldDouble extends JPanel
 {

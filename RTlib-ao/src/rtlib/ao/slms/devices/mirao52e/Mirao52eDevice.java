@@ -11,7 +11,7 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class Mirao52eDevice extends DeformableMirrorDevice implements
 																													Loggable

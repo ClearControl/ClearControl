@@ -2,8 +2,8 @@ package rtlib.stages.hub;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stages.StageDeviceInterface;
 
 public class StageDeviceDOF

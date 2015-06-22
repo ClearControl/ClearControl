@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JTextFieldString extends JPanel
 {

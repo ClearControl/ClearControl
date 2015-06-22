@@ -3,7 +3,7 @@ package rtlib.symphony.devices.sim;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.ScoreInterface;

@@ -6,8 +6,8 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.regression.linear.UnivariateAffineFunction;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
 

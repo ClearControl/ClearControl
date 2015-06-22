@@ -1,7 +1,7 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.booleanv.BooleanEventListenerInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public abstract class SignalStartableDevice	extends
 																						NamedVirtualDevice implements

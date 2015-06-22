@@ -7,7 +7,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JOpenFileChooserButton extends JButton
 {

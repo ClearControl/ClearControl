@@ -4,8 +4,8 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ZernickeSpatialPhaseModulatorDevice extends
 																								SpatialPhaseModulatorDeviceBase	implements

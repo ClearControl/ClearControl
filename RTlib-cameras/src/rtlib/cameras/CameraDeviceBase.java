@@ -3,8 +3,8 @@ package rtlib.cameras;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
 																																		CameraDeviceInterface

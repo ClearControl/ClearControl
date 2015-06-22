@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
 																												OpenCloseDeviceInterface,

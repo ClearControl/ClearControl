@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stages.StageDeviceInterface;
 
 import com.google.common.collect.BiMap;

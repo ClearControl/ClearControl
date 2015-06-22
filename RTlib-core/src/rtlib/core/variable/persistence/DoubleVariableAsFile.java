@@ -8,7 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class DoubleVariableAsFile extends DoubleVariable implements
 																												Closeable

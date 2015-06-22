@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public class JCheckBoxBoolean extends JCheckBox
 {

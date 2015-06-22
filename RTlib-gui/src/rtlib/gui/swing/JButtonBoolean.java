@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public class JButtonBoolean extends JButton
 {

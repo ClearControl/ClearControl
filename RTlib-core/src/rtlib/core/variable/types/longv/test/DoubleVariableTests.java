@@ -1,10 +1,10 @@
-package rtlib.core.variable.doublev.test;
+package rtlib.core.variable.types.longv.test;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class DoubleVariableTests
 {

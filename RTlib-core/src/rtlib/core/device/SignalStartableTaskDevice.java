@@ -5,8 +5,8 @@ import java.util.concurrent.Future;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.booleanv.BooleanEventListenerInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
 																								SignalStartableDevice	implements

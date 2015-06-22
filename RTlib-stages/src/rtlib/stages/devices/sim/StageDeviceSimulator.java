@@ -1,7 +1,7 @@
 package rtlib.stages.devices.sim;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stages.StageDeviceBase;
 import rtlib.stages.StageDeviceInterface;
 

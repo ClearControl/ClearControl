@@ -7,7 +7,7 @@ import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements

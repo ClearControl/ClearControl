@@ -5,8 +5,8 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.core.device.NameableInterface;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface SpatialPhaseModulatorDeviceInterface	extends
 																											OpenCloseDeviceInterface,

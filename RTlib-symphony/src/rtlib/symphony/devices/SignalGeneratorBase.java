@@ -8,7 +8,7 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.QueueProviderUsingDeviceInterface;
-import rtlib.core.variable.booleanv.BooleanVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;

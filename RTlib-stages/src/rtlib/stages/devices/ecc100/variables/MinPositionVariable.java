@@ -1,6 +1,6 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import ecc100.ECC100Axis;
 
 public class MinPositionVariable extends DoubleVariable

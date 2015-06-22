@@ -1,7 +1,7 @@
 package rtlib.filterwheels;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class FilterWheelDeviceBase	extends
 																						NamedVirtualDevice implements

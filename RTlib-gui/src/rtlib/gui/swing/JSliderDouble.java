@@ -22,7 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class JSliderDouble extends JPanel
 {

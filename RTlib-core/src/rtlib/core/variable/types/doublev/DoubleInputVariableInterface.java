@@ -1,4 +1,4 @@
-package rtlib.core.variable.doublev;
+package rtlib.core.variable.types.doublev;
 
 public interface DoubleInputVariableInterface
 {

@@ -1,6 +1,6 @@
-package rtlib.core.variable.doublev;
+package rtlib.core.variable.types.doublev;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class DoubleVariable extends ObjectVariable<Double> implements
 																													DoubleVariableInterface

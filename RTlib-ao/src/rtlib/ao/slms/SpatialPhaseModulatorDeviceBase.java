@@ -3,8 +3,8 @@ package rtlib.ao.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
 																											SignalStartableDevice	implements

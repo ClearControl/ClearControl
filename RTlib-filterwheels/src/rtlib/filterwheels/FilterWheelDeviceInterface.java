@@ -1,7 +1,7 @@
 package rtlib.filterwheels;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface FilterWheelDeviceInterface	extends
 																						OpenCloseDeviceInterface

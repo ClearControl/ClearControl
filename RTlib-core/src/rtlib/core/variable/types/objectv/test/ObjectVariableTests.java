@@ -1,10 +1,10 @@
-package rtlib.core.variable.objectv.test;
+package rtlib.core.variable.types.objectv.test;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ObjectVariableTests
 {

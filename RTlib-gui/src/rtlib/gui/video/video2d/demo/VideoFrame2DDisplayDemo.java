@@ -15,9 +15,9 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.Stack2DDisplay;

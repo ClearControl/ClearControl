@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.score.ScoreInterface;
 
 public class ScoreVisualizerJFrame extends JFrame

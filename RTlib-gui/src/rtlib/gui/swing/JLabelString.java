@@ -4,7 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JLabel;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JLabelString extends JLabel
 {

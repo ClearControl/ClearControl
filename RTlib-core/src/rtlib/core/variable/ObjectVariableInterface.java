@@ -1,6 +1,6 @@
 package rtlib.core.variable;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface ObjectVariableInterface<O> extends
 																						VariableInterface<O>

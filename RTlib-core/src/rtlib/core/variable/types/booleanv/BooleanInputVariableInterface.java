@@ -1,4 +1,4 @@
-package rtlib.core.variable.booleanv;
+package rtlib.core.variable.types.booleanv;
 
 public interface BooleanInputVariableInterface
 {

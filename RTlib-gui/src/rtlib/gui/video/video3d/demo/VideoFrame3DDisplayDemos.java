@@ -7,7 +7,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;

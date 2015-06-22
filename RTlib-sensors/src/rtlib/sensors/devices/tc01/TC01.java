@@ -3,7 +3,7 @@ package rtlib.sensors.devices.tc01;
 import org.bridj.Pointer;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.devices.tc01.bridj.TC01libLibrary;
 
@@ -11,8 +11,8 @@ public class TC01 extends TemperatureSensorDeviceBase
 {
 
 	private NIThermoCoupleType mThermoCoupleNIType = NIThermoCoupleType.K;
-	private boolean mIsDevicePresent;
-	private Pointer<Byte> mPhysicalChannelPointer;
+	private final boolean mIsDevicePresent;
+	private final Pointer<Byte> mPhysicalChannelPointer;
 
 	public TC01(String pPhysicalChannel,
 							NIThermoCoupleType pNIThermoCoupleType,
@@ -32,8 +32,8 @@ public class TC01 extends TemperatureSensorDeviceBase
 	{
 		if (!mIsDevicePresent)
 			return false;
-		DoubleVariable lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
-		double lTemperatureInCelcius = TC01libLibrary.tC01lib(mPhysicalChannelPointer,
+		final DoubleVariable lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
+		final double lTemperatureInCelcius = TC01libLibrary.tC01lib(mPhysicalChannelPointer,
 																													mThermoCoupleNIType.getValue());
 		// System.out.println(lTemperatureInCelcius);
 		lTemperatureInCelciusVariable.setValue(lTemperatureInCelcius);

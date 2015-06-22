@@ -1,7 +1,7 @@
 package rtlib.lasers.devices.sim;
 
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 

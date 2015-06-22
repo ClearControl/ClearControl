@@ -15,8 +15,8 @@ import org.junit.Test;
 
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import rtlib.core.variable.NamedVariable;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableBundle extends NamedVariable<VariableBundle>
 {

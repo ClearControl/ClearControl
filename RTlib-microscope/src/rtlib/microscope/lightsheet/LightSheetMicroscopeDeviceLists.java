@@ -6,7 +6,7 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
 import rtlib.microscope.lightsheet.detection.DetectionPathInterface;
 import rtlib.microscope.lightsheet.illumination.LightSheetInterface;

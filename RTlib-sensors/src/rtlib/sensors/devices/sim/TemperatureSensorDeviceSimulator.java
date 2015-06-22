@@ -2,7 +2,7 @@ package rtlib.sensors.devices.sim;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.TemperatureSensorDeviceInterface;
 

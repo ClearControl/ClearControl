@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.lasers.LaserDeviceInterface;
 
 public class LasertHubDevice extends NamedVirtualDevice	implements

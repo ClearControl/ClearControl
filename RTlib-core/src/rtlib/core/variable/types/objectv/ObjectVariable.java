@@ -1,4 +1,4 @@
-package rtlib.core.variable.objectv;
+package rtlib.core.variable.types.objectv;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;

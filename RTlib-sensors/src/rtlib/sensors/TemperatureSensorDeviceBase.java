@@ -3,7 +3,7 @@ package rtlib.sensors;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.SignalStartableLoopTaskDevice;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class TemperatureSensorDeviceBase extends
 																				SignalStartableLoopTaskDevice	implements

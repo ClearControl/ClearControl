@@ -1,7 +1,7 @@
 package rtlib.signalcond;
 
 import rtlib.core.device.NameableInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface ScalingAmplifierDeviceInterface extends
 																								NameableInterface

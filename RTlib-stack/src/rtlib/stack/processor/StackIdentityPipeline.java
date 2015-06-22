@@ -2,7 +2,7 @@ package rtlib.stack.processor;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclableFactory;

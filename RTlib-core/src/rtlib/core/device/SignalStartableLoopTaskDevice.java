@@ -8,8 +8,8 @@ import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements

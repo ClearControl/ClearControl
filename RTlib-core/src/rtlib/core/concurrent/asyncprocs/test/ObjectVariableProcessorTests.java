@@ -8,7 +8,7 @@ import org.junit.Test;
 import rtlib.core.concurrent.asyncprocs.ObjectVariableAsynchronousPooledProcessor;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ObjectVariableProcessorTests
 {

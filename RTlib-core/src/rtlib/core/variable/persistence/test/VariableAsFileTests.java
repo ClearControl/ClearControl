@@ -7,11 +7,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.core.variable.persistence.DoubleVariableAsFile;
 import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
+import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableAsFileTests
 {

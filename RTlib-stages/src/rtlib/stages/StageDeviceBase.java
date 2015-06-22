@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.booleanv.BooleanVariable;
-import rtlib.core.variable.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

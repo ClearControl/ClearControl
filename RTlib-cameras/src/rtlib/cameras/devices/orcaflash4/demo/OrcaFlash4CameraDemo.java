@@ -13,7 +13,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.junit.Test;
 
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.StackInterface;
 

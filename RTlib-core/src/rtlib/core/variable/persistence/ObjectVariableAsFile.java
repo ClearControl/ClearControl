@@ -12,7 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.objectv.ObjectVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 																															Closeable
