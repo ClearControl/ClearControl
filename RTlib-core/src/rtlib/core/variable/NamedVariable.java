@@ -7,7 +7,8 @@ public abstract class NamedVariable<O>
 
 	private String mVariableName;
 
-	private final CopyOnWriteArrayList<VariableListener<O>> mVariableListeners = new CopyOnWriteArrayList<VariableListener<O>>();
+	private final CopyOnWriteArrayList<VariableSetListener<O>> mVariableSetListeners = new CopyOnWriteArrayList<VariableSetListener<O>>();
+	private final CopyOnWriteArrayList<VariableGetListener<O>> mVariableGetListeners = new CopyOnWriteArrayList<VariableGetListener<O>>();
 
 	public NamedVariable(final String pVariableName)
 	{
@@ -15,40 +16,78 @@ public abstract class NamedVariable<O>
 		mVariableName = pVariableName;
 	}
 
-	public void addListener(final VariableListener<O> pDoubleVariableListener)
+	public void addListener(final VariableListener<O> pVariableListener)
 	{
-		mVariableListeners.add(pDoubleVariableListener);
+		mVariableSetListeners.add(pVariableListener);
+		mVariableGetListeners.add(pVariableListener);
 	}
 
-	public void removeListener(final VariableListener<O> pDoubleVariableListener)
+	public void removeListener(final VariableListener<O> pVariableListener)
 	{
-		mVariableListeners.remove(pDoubleVariableListener);
+		mVariableSetListeners.remove(pVariableListener);
+		mVariableGetListeners.remove(pVariableListener);
 	}
 
-	public void removeAllListener()
+	public void addSetListener(final VariableSetListener<O> pVariableSetListener)
 	{
-		mVariableListeners.clear();
+		mVariableSetListeners.add(pVariableSetListener);
 	}
 
-	public CopyOnWriteArrayList<VariableListener<O>> getVariableListeners()
+	public void addGetListener(final VariableGetListener<O> pVariableGetListener)
 	{
-		return mVariableListeners;
+		mVariableGetListeners.add(pVariableGetListener);
+	}
+
+	public void removeSetListener(final VariableSetListener<O> pVariableSetListener)
+	{
+		mVariableSetListeners.remove(pVariableSetListener);
+	}
+
+	public void removeGetListener(final VariableGetListener<O> pVariableGetListener)
+	{
+		mVariableGetListeners.remove(pVariableGetListener);
+	}
+
+	public void removeAllSetListeners()
+	{
+		mVariableSetListeners.clear();
+	}
+
+	public void removeAllGetListeners()
+	{
+		mVariableGetListeners.clear();
+	}
+
+	public void removeAllListeners()
+	{
+		mVariableSetListeners.clear();
+		mVariableGetListeners.clear();
+	}
+
+	public CopyOnWriteArrayList<VariableSetListener<O>> getVariableSetListeners()
+	{
+		return mVariableSetListeners;
+	}
+
+	public CopyOnWriteArrayList<VariableGetListener<O>> getVariableGetListeners()
+	{
+		return mVariableGetListeners;
 	}
 
 	public void notifyListenersOfSetEvent(final O pCurentValue,
 																				final O pNewValue)
 	{
-		for (final VariableListener<O> lDoubleVariableListener : getVariableListeners())
+		for (final VariableSetListener<O> lVariableListener : getVariableSetListeners())
 		{
-			lDoubleVariableListener.setEvent(pCurentValue, pNewValue);
+			lVariableListener.setEvent(pCurentValue, pNewValue);
 		}
 	}
 
 	public void notifyListenersOfGetEvent(final O pCurrentValue)
 	{
-		for (final VariableListener<O> lDoubleVariableListener : getVariableListeners())
+		for (final VariableGetListener<O> lVariableListener : getVariableGetListeners())
 		{
-			lDoubleVariableListener.getEvent(pCurrentValue);
+			lVariableListener.getEvent(pCurrentValue);
 		}
 	}
 

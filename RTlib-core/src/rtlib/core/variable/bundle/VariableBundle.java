@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import rtlib.core.variable.NamedVariable;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.doublev.DoubleVariable;
-import rtlib.core.variable.exceptions.InvalidVariableTypeException;
 import rtlib.core.variable.objectv.ObjectVariable;
 
 public class VariableBundle extends NamedVariable<VariableBundle>
@@ -45,6 +43,7 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 		mVariableNameToVariableMap.clear();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <O> VariableInterface<O> getVariable(final String pVariableName)
 	{
 		return (VariableInterface<O>) mVariableNameToVariableMap.get(pVariableName);
@@ -55,25 +54,11 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	{
 		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
 
-		if (lFromVariable instanceof DoubleVariable && pToVariable instanceof DoubleVariable)
-		{
-			final DoubleVariable lFromDoubleVariable = (DoubleVariable) lFromVariable;
-			final DoubleVariable lToDoubleVariable = (DoubleVariable) pToVariable;
+		final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
+		final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
 
-			lFromDoubleVariable.sendUpdatesTo(lToDoubleVariable);
-		}
-		else if (lFromVariable instanceof ObjectVariable<?> && pToVariable instanceof ObjectVariable<?>)
-		{
-			final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
-			final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
+		lFromDoubleVariable.sendUpdatesTo(lToDoubleVariable);
 
-			lFromDoubleVariable.sendUpdatesTo(lToDoubleVariable);
-		}
-		else
-		{
-			throw new InvalidVariableTypeException(	lFromVariable,
-																							pToVariable);
-		}
 	}
 
 	public <O> void doNotSendUpdatesTo(	final String pVariableName,
@@ -81,25 +66,11 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	{
 		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
 
-		if (lFromVariable instanceof DoubleVariable && pToVariable instanceof DoubleVariable)
-		{
-			final DoubleVariable lFromDoubleVariable = (DoubleVariable) lFromVariable;
-			final DoubleVariable lToDoubleVariable = (DoubleVariable) pToVariable;
+		final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
+		final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
 
-			lFromDoubleVariable.doNotSendUpdatesTo(lToDoubleVariable);
-		}
-		else if (lFromVariable instanceof ObjectVariable<?> && pToVariable instanceof ObjectVariable<?>)
-		{
-			final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
-			final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
+		lFromDoubleVariable.doNotSendUpdatesTo(lToDoubleVariable);
 
-			lFromDoubleVariable.doNotSendUpdatesTo(lToDoubleVariable);
-		}
-		else
-		{
-			throw new InvalidVariableTypeException(	lFromVariable,
-																							pToVariable);
-		}
 	}
 
 	public <O> void getUpdatesFrom(	final String pVariableName,
@@ -107,25 +78,11 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	{
 		final VariableInterface<O> lToVariable = getVariable(pVariableName);
 
-		if (lToVariable instanceof DoubleVariable && pFromVariable instanceof DoubleVariable)
-		{
-			final DoubleVariable lTo_DoubleVariable = (DoubleVariable) lToVariable;
-			final DoubleVariable lFrom_DoubleVariable = (DoubleVariable) pFromVariable;
+		final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
+		final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
 
-			lFrom_DoubleVariable.sendUpdatesTo(lTo_DoubleVariable);
-		}
-		else if (lToVariable instanceof ObjectVariable<?> && pFromVariable instanceof ObjectVariable<?>)
-		{
-			final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
-			final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
+		lFrom_DoubleVariable.sendUpdatesTo(lTo_DoubleVariable);
 
-			lFrom_DoubleVariable.sendUpdatesTo(lTo_DoubleVariable);
-		}
-		else
-		{
-			throw new InvalidVariableTypeException(	lToVariable,
-																							pFromVariable);
-		}
 	}
 
 	public <O> void doNotGetUpdatesFrom(final String pVariableName,
@@ -133,25 +90,11 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	{
 		final VariableInterface<O> lToVariable = getVariable(pVariableName);
 
-		if (lToVariable instanceof DoubleVariable && pFromVariable instanceof DoubleVariable)
-		{
-			final DoubleVariable lTo_DoubleVariable = (DoubleVariable) lToVariable;
-			final DoubleVariable lFrom_DoubleVariable = (DoubleVariable) pFromVariable;
+		final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
+		final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
 
-			lFrom_DoubleVariable.doNotSendUpdatesTo(lTo_DoubleVariable);
-		}
-		else if (lToVariable instanceof ObjectVariable<?> && pFromVariable instanceof ObjectVariable<?>)
-		{
-			final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
-			final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
+		lFrom_DoubleVariable.doNotSendUpdatesTo(lTo_DoubleVariable);
 
-			lFrom_DoubleVariable.doNotSendUpdatesTo(lTo_DoubleVariable);
-		}
-		else
-		{
-			throw new InvalidVariableTypeException(	lToVariable,
-																							pFromVariable);
-		}
 	}
 
 	public <O> void syncWith(	final String pVariableName,

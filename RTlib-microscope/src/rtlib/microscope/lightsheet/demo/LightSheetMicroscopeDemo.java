@@ -14,11 +14,9 @@ import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
-import rtlib.core.variable.VariableListenerAdapter;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
-import rtlib.stack.StackInterface;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
@@ -64,20 +62,11 @@ public class LightSheetMicroscopeDemo
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-
 		final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
 
 		lStackIdentityPipeline.getOutputVariable()
-													.addListener(new VariableListenerAdapter<StackInterface<UnsignedShortType, ShortOffHeapAccess>>()
-													{
-
-														@Override
-														public void setEvent(	StackInterface<UnsignedShortType, ShortOffHeapAccess> pCurrentValue,
-																									StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewValue)
-														{
-															System.out.println(pNewValue);
-														}
-
+													.addSetListener((pCurrentValue, pNewValue) -> {
+														System.out.println(pNewValue);
 													});
 
 		lLightSheetMicroscope.getDeviceLists()

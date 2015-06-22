@@ -42,7 +42,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 
 	public void removeAllVariables()
 	{
-		mVariableBundle.removeAllListener();
+		mVariableBundle.removeAllListeners();
 		mVariableBundle.removeAllVariables();
 	}
 

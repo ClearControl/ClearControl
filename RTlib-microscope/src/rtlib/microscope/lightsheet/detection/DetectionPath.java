@@ -5,7 +5,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.regression.linear.UnivariateAffineFunction;
-import rtlib.core.variable.VariableListenerAdapter;
+import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
@@ -28,32 +28,17 @@ public class DetectionPath extends NamedVirtualDevice	implements
 	{
 		super(pName);
 
-		final VariableListenerAdapter<Double> lVariableListener = new VariableListenerAdapter<Double>()
-		{
-
-			@Override
-			public void setEvent(Double pCurrentValue, Double pNewValue)
-			{
-				update();
-
-			}
-
+		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
+			update();
 		};
 
-		final VariableListenerAdapter<UnivariateFunction> lFunctionListener = new VariableListenerAdapter<UnivariateFunction>()
-		{
-
-			@Override
-			public void setEvent(	UnivariateFunction pCurrentValue,
-														UnivariateFunction pNewValue)
-			{
-				update();
-
-			}
+		final VariableSetListener<UnivariateFunction> lObjectVariableListener = (	u,
+																																										v) -> {
+			update();
 		};
 
-		mDetectionFocusZ.addListener(lVariableListener);
-		mDetectionZFunction.addListener(lFunctionListener);
+		mDetectionFocusZ.addSetListener(lDoubleVariableListener);
+		mDetectionZFunction.addSetListener(lObjectVariableListener);
 
 
 	}

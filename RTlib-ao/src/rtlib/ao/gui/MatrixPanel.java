@@ -15,8 +15,7 @@ import javax.swing.SwingUtilities;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import rtlib.core.variable.VariableListener;
-import rtlib.core.variable.VariableListenerAdapter;
+import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 
@@ -99,7 +98,7 @@ public class MatrixPanel extends JPanel
 		mMinRangeVariable = new DoubleVariable("MinRange", -1);
 		mMaxRangeVariable = new DoubleVariable("MaxRange", 1);
 
-		final VariableListener<Double> lVariableListener = new VariableListenerAdapter<Double>()
+		final VariableSetListener<Double> lVariableListener = new VariableSetListener<Double>()
 		{
 			@Override
 			public void setEvent(Double pCurrentValue, Double pNewValue)
@@ -112,11 +111,10 @@ public class MatrixPanel extends JPanel
 						MatrixPanel.this.repaint();
 					}
 				});
-
 			}
 		};
-		mMinRangeVariable.addListener(lVariableListener);
-		mMaxRangeVariable.addListener(lVariableListener);
+		mMinRangeVariable.addSetListener(lVariableListener);
+		mMaxRangeVariable.addSetListener(lVariableListener);
 	}
 
 	@Override

@@ -11,10 +11,23 @@ public interface VariableInterface<O>
 
 	public O get();
 
-	public void addListener(VariableListener<O> pDoubleVariableListener);
+	public void addListener(VariableListener<O> pVariableListener);
 
-	public void removeListener(VariableListener<O> pDoubleVariableListener);
+	public void removeListener(VariableListener<O> pVariableListener);
 
-	public void removeAllListener();
+	public void addSetListener(VariableSetListener<O> pDoubleVariableListener);
+
+	public void addGetListener(VariableGetListener<O> pDoubleVariableListener);
+
+	public void removeSetListener(VariableSetListener<O> pDoubleVariableListener);
+
+	public void removeGetListener(VariableGetListener<O> pDoubleVariableListener);
+
+	public void removeAllSetListeners();
+
+	public void removeAllGetListeners();
+
+	public void removeAllListeners();
+
 
 }

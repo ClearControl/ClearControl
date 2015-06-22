@@ -15,7 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import rtlib.core.variable.VariableListenerAdapter;
+import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
 import rtlib.gui.swing.JSliderDouble;
@@ -91,7 +91,7 @@ public class MatrixControlPanel extends JPanel
 																												0);
 		lModeSlider.removeLabelAndTextField();
 		lModeSlider.getDoubleVariable()
-								.addListener(new VariableListenerAdapter<Double>()
+								.addSetListener(new VariableSetListener<Double>()
 								{
 
 									@Override

@@ -11,7 +11,7 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.regression.linear.UnivariateAffineFunction;
-import rtlib.core.variable.VariableListenerAdapter;
+import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.booleanv.BooleanVariable;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.core.variable.objectv.ObjectVariable;
@@ -112,26 +112,14 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
 
-		final VariableListenerAdapter<Double> lDoubleVariableListener = new VariableListenerAdapter<Double>()
-		{
-
-			@Override
-			public void setEvent(Double pCurrentValue, Double pNewValue)
-			{
-				update();
-			}
+		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
+			update();
 		};
 
-		final VariableListenerAdapter<UnivariateFunction> lFunctionListener = new VariableListenerAdapter<UnivariateFunction>()
-		{
-
-			@Override
-			public void setEvent(	UnivariateFunction pCurrentValue,
-														UnivariateFunction pNewValue)
-			{
-				update();
-			}
+		final VariableSetListener<Object> lObjectVariableListener = (u, v) -> {
+			update();
 		};
+
 
 		mLaserOnOffArray = new BooleanVariable[mNumberOfLaserDigitalControls];
 
@@ -169,25 +157,25 @@ public class LightSheet extends NamedVirtualDevice implements
 			mLightSheetStaveLaserLD[i] = new BinaryPatternSteppingStave(lLaserName);
 
 			mLaserOnOffArray[i] = new BooleanVariable(lLaserName, false);
-			mLaserOnOffArray[i].addListener(lDoubleVariableListener);
+			mLaserOnOffArray[i].addSetListener(lDoubleVariableListener);
 		}
 
-		mReadoutTimeInMicrosecondsPerLine.addListener(lDoubleVariableListener);
-		mMarginTimeInMicroseconds.addListener(lDoubleVariableListener);
-		mEffectiveExposureInMicroseconds.addListener(lDoubleVariableListener);
-		mImageHeight.addListener(lDoubleVariableListener);
+		mReadoutTimeInMicrosecondsPerLine.addSetListener(lDoubleVariableListener);
+		mMarginTimeInMicroseconds.addSetListener(lDoubleVariableListener);
+		mEffectiveExposureInMicroseconds.addSetListener(lDoubleVariableListener);
+		mImageHeight.addSetListener(lDoubleVariableListener);
 
-		mLightSheetXInMicrons.addListener(lDoubleVariableListener);
-		mLightSheetYInMicrons.addListener(lDoubleVariableListener);
-		mLightSheetZInMicrons.addListener(lDoubleVariableListener);
-		mLightSheetBetaInDegrees.addListener(lDoubleVariableListener);
-		mLightSheetAlphaInDegrees.addListener(lDoubleVariableListener);
-		mLightSheetLengthInMicrons.addListener(lDoubleVariableListener);
+		mLightSheetXInMicrons.addSetListener(lDoubleVariableListener);
+		mLightSheetYInMicrons.addSetListener(lDoubleVariableListener);
+		mLightSheetZInMicrons.addSetListener(lDoubleVariableListener);
+		mLightSheetBetaInDegrees.addSetListener(lDoubleVariableListener);
+		mLightSheetAlphaInDegrees.addSetListener(lDoubleVariableListener);
+		mLightSheetLengthInMicrons.addSetListener(lDoubleVariableListener);
 
-		mPatternOnOff.addListener(lDoubleVariableListener);
-		mPatternPeriod.addListener(lDoubleVariableListener);
-		mPatternPhaseIndex.addListener(lDoubleVariableListener);
-		mPatternOnLength.addListener(lDoubleVariableListener);
+		mPatternOnOff.addSetListener(lDoubleVariableListener);
+		mPatternPeriod.addSetListener(lDoubleVariableListener);
+		mPatternPhaseIndex.addSetListener(lDoubleVariableListener);
+		mPatternOnLength.addSetListener(lDoubleVariableListener);
 
 	}
 
@@ -292,7 +280,6 @@ public class LightSheet extends NamedVirtualDevice implements
 		{
 
 			mNumberOfPhasesPerPlane.setValue(getNumberOfPhases());
-
 
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
@@ -402,7 +389,6 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			mLightSheetStaveExposureLA.setValue(1);
 			mLightSheetStaveBeforeExposureLA.setValue(1);
-
 
 		}
 	}

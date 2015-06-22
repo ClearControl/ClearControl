@@ -1,7 +1,7 @@
 package rtlib.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.VariableListenerAdapter;
+import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.doublev.DoubleVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
 import rtlib.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
@@ -31,7 +31,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 		final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
 		mFilterPositionVariable = addSerialDoubleVariable("FilterWheelPosition",
 																											lFilterWheelPosition);
-		mFilterPositionVariable.addListener(new VariableListenerAdapter<Double>()
+		mFilterPositionVariable.addSetListener(new VariableSetListener<Double>()
 		{
 			@Override
 			public void setEvent(	final Double pCurrentValue,
@@ -50,7 +50,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 		final FilterWheelSpeedDeviceAdapter lFilterWheelSpeed = new FilterWheelSpeedDeviceAdapter(this);
 		mFilterSpeedVariable = addSerialDoubleVariable(	"FilterWheelSpeed",
 																										lFilterWheelSpeed);
-		mFilterSpeedVariable.addListener(new VariableListenerAdapter<Double>()
+		mFilterSpeedVariable.addSetListener(new VariableSetListener<Double>()
 		{
 			@Override
 			public void setEvent(	final Double pCurrentValue,
@@ -67,16 +67,19 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 		});
 	}
 
+	@Override
 	public final DoubleVariable getPositionVariable()
 	{
 		return mFilterPositionVariable;
 	}
 
+	@Override
 	public final DoubleVariable getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
 	}
 
+	@Override
 	public int getPosition()
 	{
 		return (int) mFilterPositionVariable.getValue();
@@ -87,11 +90,13 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 		return mCachedPosition;
 	}
 
+	@Override
 	public void setPosition(final int pPosition)
 	{
 		mFilterPositionVariable.setValue(pPosition);
 	}
 
+	@Override
 	public int getSpeed()
 	{
 		return (int) mFilterSpeedVariable.getValue();
@@ -102,6 +107,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 		return mCachedSpeed;
 	}
 
+	@Override
 	public void setSpeed(final int pSpeed)
 	{
 		mFilterSpeedVariable.setValue(pSpeed);
@@ -110,7 +116,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	@Override
 	public boolean open()
 	{
-		boolean lIsOpened = super.open();
+		final boolean lIsOpened = super.open();
 		setSpeed(1);
 		setPosition(0);
 		return lIsOpened;
