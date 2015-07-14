@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 
 public class ThreadUtilsTests
 {
@@ -34,11 +34,11 @@ public class ThreadUtilsTests
 
 			long lStart = System.nanoTime();
 			ThreadUtils.sleep(lSleepTimeNanos, TimeUnit.NANOSECONDS);
-			// Thread.sleep((long) Magnitudes.nano2milli(lSleepTimeNanos));
+			// Thread.sleep((long) Magnitude.nano2milli(lSleepTimeNanos));
 			long lStop = System.nanoTime();
 			long lElapsedTimeNanos = lStop - lStart;
 
-			double lRelativeError = Magnitudes.nano2milli((1.0 * lSleepTimeNanos - lElapsedTimeNanos) / lSleepTimeNanos);
+			double lRelativeError = Magnitude.nano2milli((1.0 * lSleepTimeNanos - lElapsedTimeNanos) / lSleepTimeNanos);
 			// System.out.println("rel error=" + lRelativeError);
 
 			assertTrue(Math.abs(lRelativeError) < 1E-3);

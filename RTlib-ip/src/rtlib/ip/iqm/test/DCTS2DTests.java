@@ -18,7 +18,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 import rtlib.ip.iqm.DCTS2D;
 import coremem.ContiguousMemoryInterface;
 
@@ -78,7 +78,7 @@ public class DCTS2DTests
 			lComputeDCTS = lDCTS2D.computeImageQualityMetric(lImage);
 		final long lStopTimeInNs = System.nanoTime();
 
-		final double lElapsedTimeInMs = Magnitudes.nano2milli((lStopTimeInNs - lStartTimeInNs) / repeats);
+		final double lElapsedTimeInMs = Magnitude.nano2milli((lStopTimeInNs - lStartTimeInNs) / repeats);
 		System.out.println("time per slicewise-dcts computation on a stack: " + lElapsedTimeInMs
 												+ " ms");
 

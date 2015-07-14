@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 import rtlib.core.variable.VariableInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -76,7 +76,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			{
 				mFirstTimePointAbsoluteNanoSeconds = pStack.getTimeStampInNanoseconds();
 			}
-			final double lTimeStampInSeconds = Magnitudes.nano2unit(pStack.getTimeStampInNanoseconds() - mFirstTimePointAbsoluteNanoSeconds);
+			final double lTimeStampInSeconds = Magnitude.nano2unit(pStack.getTimeStampInNanoseconds() - mFirstTimePointAbsoluteNanoSeconds);
 
 			mStackIndexToTimeStampInSecondsMap.put(	mNextFreeStackIndex,
 																							lTimeStampInSeconds);

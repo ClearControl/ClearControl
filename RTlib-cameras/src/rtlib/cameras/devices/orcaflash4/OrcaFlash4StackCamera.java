@@ -9,7 +9,7 @@ import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
@@ -155,8 +155,8 @@ public class OrcaFlash4StackCamera extends
 			{
 				synchronized (mLock)
 				{
-					final double lEffectiveExposureInSeconds = mDcamAcquisition.setExposureInSeconds(Magnitudes.micro2unit(pExposureInMicroseconds));
-					final double lEffectiveExposureInMicroSeconds = Magnitudes.unit2micro(lEffectiveExposureInSeconds);
+					final double lEffectiveExposureInSeconds = mDcamAcquisition.setExposureInSeconds(Magnitude.micro2unit(pExposureInMicroseconds));
+					final double lEffectiveExposureInMicroSeconds = Magnitude.unit2micro(lEffectiveExposureInSeconds);
 					return super.setEventHook(pOldExposureInMicroseconds,
 																		lEffectiveExposureInMicroSeconds);
 				}
@@ -165,7 +165,7 @@ public class OrcaFlash4StackCamera extends
 			@Override
 			public double getValue()
 			{
-				return Magnitudes.unit2micro(mDcamAcquisition.getExposureInSeconds());
+				return Magnitude.unit2micro(mDcamAcquisition.getExposureInSeconds());
 			}
 		};
 

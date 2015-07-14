@@ -1,5 +1,7 @@
 package rtlib.core.variable.types.doublev;
 
+import rtlib.core.units.Magnitude;
+import rtlib.core.units.SIUnit;
 import rtlib.core.variable.VariableInterface;
 
 public interface DoubleVariableInterface extends
@@ -7,6 +9,10 @@ public interface DoubleVariableInterface extends
 																				DoubleInputVariableInterface,
 																				DoubleOutputVariableInterface
 {
+
+	public SIUnit getUnit();
+
+	public Magnitude getMagnitude();
 
 	public void sendUpdatesTo(DoubleVariable pVariable);
 
@@ -17,5 +23,7 @@ public interface DoubleVariableInterface extends
 	public void syncWith(DoubleVariable pVariable);
 
 	public void doNotSyncWith(DoubleVariable pVariable);
+
+
 
 }

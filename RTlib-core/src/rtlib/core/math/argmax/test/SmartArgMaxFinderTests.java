@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import rtlib.core.math.argmax.SmartArgMaxFinder;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 
 public class SmartArgMaxFinderTests
 {
@@ -131,7 +131,7 @@ public class SmartArgMaxFinderTests
 				lFittedY = lSmartArgMaxFinder.fit(lX, lY);
 			}
 			final long lStop = System.nanoTime();
-			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
+			final double lElapsed = Magnitude.nano2milli((1.0 * lStop - lStart) / lNumberOfIterations);
 
 			System.out.format("%g ms per estimation. \n", lElapsed);
 

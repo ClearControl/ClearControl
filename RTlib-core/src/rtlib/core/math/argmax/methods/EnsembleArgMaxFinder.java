@@ -57,7 +57,7 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 			final long lStartTimeInNs = System.nanoTime();
 			final Double lArgMax = mArgMaxFinder1DInterface.argmax(mX, mY);
 			final long lStopTimeInNs = System.nanoTime();
-			/*double lElapsedtimeInSeconds = Magnitudes.nano2unit(lStopTimeInNs - lStartTimeInNs);
+			/*double lElapsedtimeInSeconds = Magnitude.nano2unit(lStopTimeInNs - lStartTimeInNs);
 			System.out.format("elapsed time: %g for %s \n",
 													lElapsedtimeInSeconds,
 													mArgMaxFinder1DInterface.toString());/**/

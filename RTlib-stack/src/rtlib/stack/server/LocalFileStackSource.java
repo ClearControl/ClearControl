@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
@@ -87,7 +87,7 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 			lBinarylFileChannel.close();
 
 			final double lTimeStampInSeconds = mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
-			lStack.setTimeStampInNanoseconds((long) Magnitudes.unit2nano(lTimeStampInSeconds));
+			lStack.setTimeStampInNanoseconds((long) Magnitude.unit2nano(lTimeStampInSeconds));
 			lStack.setIndex(pStackIndex);
 
 			return lStack;

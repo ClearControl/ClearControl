@@ -5,6 +5,8 @@ import rtlib.core.variable.VariableInterface;
 public class InvalidVariableTypeException extends RuntimeException
 {
 
+	private static final long serialVersionUID = 1L;
+
 	public InvalidVariableTypeException(final VariableInterface<?> pFromVariable,
 																			final VariableInterface<?> pToVariable)
 	{

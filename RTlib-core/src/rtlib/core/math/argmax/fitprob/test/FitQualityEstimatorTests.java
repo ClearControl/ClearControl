@@ -11,7 +11,7 @@ import org.junit.Test;
 import rtlib.core.math.argmax.fitprob.FitQualityEstimator;
 import rtlib.core.math.argmax.fitprob.RandomizedDataGaussianFitter;
 import rtlib.core.math.argmax.test.ArgMaxTester;
-import rtlib.core.units.Magnitudes;
+import rtlib.core.units.Magnitude;
 
 public class FitQualityEstimatorTests
 {
@@ -60,7 +60,7 @@ public class FitQualityEstimatorTests
 			final long lStart = System.nanoTime();
 			final Double lPvalue = lFitQualityEstimator.probability(lX, lY);
 			final long lStop = System.nanoTime();
-			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - lStart) / 1);
+			final double lElapsed = Magnitude.nano2milli((1.0 * lStop - lStart) / 1);
 
 			System.out.format("%g ms elpased to find: p=%g \n",
 												lElapsed,
@@ -80,7 +80,7 @@ public class FitQualityEstimatorTests
 			for (int i = 0; i < lNumberOfIterations; i++)
 				lPvalue = lFitQualityEstimator.probability(lX, lY);
 			final long lStop = System.nanoTime();
-			final double lElapsed = Magnitudes.nano2milli((1.0 * lStop - 1.0 * lStart) / lNumberOfIterations);
+			final double lElapsed = Magnitude.nano2milli((1.0 * lStop - 1.0 * lStart) / lNumberOfIterations);
 
 			System.out.format("%g ms per estimation. \n", lElapsed);
 
