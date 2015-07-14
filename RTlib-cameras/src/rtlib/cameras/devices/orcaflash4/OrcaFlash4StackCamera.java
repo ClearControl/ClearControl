@@ -59,7 +59,7 @@ public class OrcaFlash4StackCamera extends
 	private OrcaFlash4StackCamera(final int pCameraDeviceIndex,
 																final TriggerType pTriggerType)
 	{
-		super("OrcaFlash4Camera");
+		super("OrcaFlash4Camera" + pCameraDeviceIndex);
 
 		mCameraDeviceIndex = pCameraDeviceIndex;
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);

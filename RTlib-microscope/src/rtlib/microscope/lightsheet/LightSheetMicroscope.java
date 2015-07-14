@@ -36,7 +36,13 @@ public class LightSheetMicroscope	extends
 			if (lDevice instanceof OpenCloseDeviceInterface)
 			{
 				final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
-				lIsOpen &= lOpenCloseDevice.open();
+				boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
+				if (!lIsThisDeviceOpen)
+				{
+					System.out.println("Could not open device: " + lDevice);
+				}
+
+				lIsOpen &= lIsThisDeviceOpen;
 			}
 		}
 

@@ -30,6 +30,8 @@ import rtlib.symphony.score.ScoreInterface;
 public class LightSheetMicroscopeDemo
 {
 
+	private static final double cImageResolution = 512;
+
 	@Test
 	public void demoOnSimulators() throws InterruptedException,
 																ExecutionException
@@ -74,17 +76,21 @@ public class LightSheetMicroscopeDemo
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-		final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
 
-		lStackIdentityPipeline.getOutputVariable()
-													.addSetListener((pCurrentValue, pNewValue) -> {
-														System.out.println(pNewValue);
-													});
 
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
-			lCamera.getStackWidthVariable().setValue(128);
-			lCamera.getStackHeightVariable().setValue(128);
+			final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
+
+			lStackIdentityPipeline.getOutputVariable()
+														.addSetListener((pCurrentValue, pNewValue) -> {
+															System.out.println("StackIdentityPipeline" + lCamera.getName()
+																									+ "->"
+																									+ pNewValue);
+														});
+
+			lCamera.getStackWidthVariable().setValue(cImageResolution);
+			lCamera.getStackHeightVariable().setValue(cImageResolution);
 			lCamera.getExposureInMicrosecondsVariable().setValue(5000);
 
 			lLightSheetMicroscope.getDeviceLists()
@@ -130,13 +136,16 @@ public class LightSheetMicroscopeDemo
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
 
-		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
+		final LightSheetMicroscopeGUI lGUI = null; // new
+																								// LightSheetMicroscopeGUI(lLightSheetMicroscope);
 
-		assertTrue(lGUI.open());
+		if (lGUI != null)
+			assertTrue(lGUI.open());
 		assertTrue(lLightSheetMicroscope.open());
 		Thread.sleep(1000);
 
-		lGUI.connectGUI();
+		if (lGUI != null)
+			lGUI.connectGUI();
 
 		System.out.println("Start building queue");
 
@@ -158,7 +167,8 @@ public class LightSheetMicroscopeDemo
 		}
 
 		assertTrue(lLightSheetMicroscope.close());
-		assertTrue(lGUI.close());
+		if (lGUI != null)
+			assertTrue(lGUI.close());
 
 	}
 
