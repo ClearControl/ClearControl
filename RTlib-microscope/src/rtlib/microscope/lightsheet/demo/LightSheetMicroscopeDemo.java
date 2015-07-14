@@ -2,6 +2,7 @@ package rtlib.microscope.lightsheet.demo;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -9,6 +10,7 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
+import org.python.google.common.collect.Lists;
 
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
@@ -37,28 +39,38 @@ public class LightSheetMicroscopeDemo
 																																																												new UnsignedShortType(),
 																																																												lSignalGeneratorDevice.getTriggerVariable());
 
-		demoWith(lCamera, lSignalGeneratorDevice);
+		demoWith(Lists.newArrayList(lCamera), lSignalGeneratorDevice);
 
 	}
 
 	@Test
-	public void demoOnRealHardware() throws InterruptedException,
-																	ExecutionException
+	public void demoOnRealHardwareSingleCamera() throws InterruptedException,
+																							ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
 
-		demoWith(lCamera, lSignalGeneratorDevice);
+		demoWith(Lists.newArrayList(lCamera), lSignalGeneratorDevice);
 
 	}
 
-	public void demoWith(	StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> pCamera,
+	@Test
+	public void demoOnRealHardwareTwoCameras() throws InterruptedException,
+																	ExecutionException
+	{
+		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
+
+		demoWith(	Lists.newArrayList(lCamera1, lCamera2),
+							lSignalGeneratorDevice);
+
+	}
+
+	public void demoWith(	ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
 												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException,
 																																				ExecutionException
 	{
-		pCamera.getStackWidthVariable().setValue(128);
-		pCamera.getStackHeightVariable().setValue(128);
-		pCamera.getExposureInMicrosecondsVariable().setValue(5000);
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
@@ -69,9 +81,16 @@ public class LightSheetMicroscopeDemo
 														System.out.println(pNewValue);
 													});
 
-		lLightSheetMicroscope.getDeviceLists()
-													.addStackCameraDevice(pCamera,
-																								lStackIdentityPipeline);
+		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
+		{
+			lCamera.getStackWidthVariable().setValue(128);
+			lCamera.getStackHeightVariable().setValue(128);
+			lCamera.getExposureInMicrosecondsVariable().setValue(5000);
+
+			lLightSheetMicroscope.getDeviceLists()
+														.addStackCameraDevice(lCamera,
+																									lStackIdentityPipeline);
+		}
 
 		lLightSheetMicroscope.getDeviceLists()
 													.addSignalGeneratorDevice(pSignalGeneratorDevice);
@@ -88,7 +107,9 @@ public class LightSheetMicroscopeDemo
 								.setValue(5000);
 
 		lLightSheet.getImageHeightVariable()
-								.setValue(pCamera.getStackHeightVariable().getValue());
+								.setValue(pCameras.get(0)
+																	.getStackHeightVariable()
+																	.getValue());
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
