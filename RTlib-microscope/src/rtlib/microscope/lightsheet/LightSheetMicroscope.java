@@ -1,5 +1,6 @@
 package rtlib.microscope.lightsheet;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import rtlib.core.concurrent.future.FutureBooleanList;
@@ -164,6 +165,13 @@ public class LightSheetMicroscope	extends
 		return lFutureBooleanList;
 	}
 
+	public Boolean playQueueAndWait()	throws InterruptedException,
+																		ExecutionException
+	{
+		FutureBooleanList lPlayQueue = playQueue();
+		return lPlayQueue.get();
+	}
+
 	@Override
 	protected boolean loop()
 	{
@@ -275,6 +283,7 @@ public class LightSheetMicroscope	extends
 										.getLightSheetLengthInMicronsVariable()
 										.set(pValue);
 	}
+
 
 
 }

@@ -186,32 +186,32 @@ public class LightSheet extends NamedVirtualDevice implements
 		// Analog outputs before exposure:
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.x",
-																																											1),
+																																											2),
 																			mLightSheetStaveBeforeExposureX);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.y",
-																																											2),
+																																											3),
 																			mLightSheetStaveBeforeExposureY);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.y",
-																																											3),
+																																											4),
 																			mLightSheetStaveBeforeExposureZ);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.b",
-																																											4),
+																																											5),
 																			mLightSheetStaveBeforeExposureB);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.r",
-																																											5),
+																																											6),
 																			mLightSheetStaveBeforeExposureR);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																													+ ".index.la",
-																																											6),
+																																											7),
 																			mLightSheetStaveBeforeExposureLA);
 
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
@@ -229,32 +229,32 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.x",
-																																								1),
+																																								2),
 																mLightSheetStaveExposureX);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.y",
-																																								2),
+																																								3),
 																mLightSheetStaveExposureY);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.y",
-																																								3),
+																																								4),
 																mLightSheetStaveExposureZ);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.b",
-																																								4),
+																																								5),
 																mLightSheetStaveExposureB);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.r",
-																																								5),
+																																								6),
 																mLightSheetStaveExposureR);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.la",
-																																								6),
+																																								7),
 																mLightSheetStaveExposureLA);
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()

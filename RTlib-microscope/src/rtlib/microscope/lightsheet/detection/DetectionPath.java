@@ -55,7 +55,7 @@ public class DetectionPath extends NamedVirtualDevice	implements
 		// Analog outputs before exposure:
 		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.detection." + getName().toLowerCase()
 																																													+ ".index.z",
-																																											1),
+																																											0),
 																			mDetectionPathStaveZ);
 
 	}
@@ -68,7 +68,7 @@ public class DetectionPath extends NamedVirtualDevice	implements
 
 		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.detection." + getName().toLowerCase()
 																																										+ ".index.z",
-																																								1),
+																																								0),
 																mDetectionPathStaveZ);
 
 	}

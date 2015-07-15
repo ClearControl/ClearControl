@@ -16,7 +16,9 @@ import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
+import rtlib.microscope.lightsheet.detection.DetectionPath;
 import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.stack.processor.StackIdentityPipeline;
@@ -41,7 +43,9 @@ public class LightSheetMicroscopeDemo
 																																																												new UnsignedShortType(),
 																																																												lSignalGeneratorDevice.getTriggerVariable());
 
-		demoWith(Lists.newArrayList(lCamera), lSignalGeneratorDevice);
+		demoWith(	true,
+							Lists.newArrayList(lCamera),
+							lSignalGeneratorDevice);
 
 	}
 
@@ -52,7 +56,9 @@ public class LightSheetMicroscopeDemo
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
 
-		demoWith(Lists.newArrayList(lCamera), lSignalGeneratorDevice);
+		demoWith(	true,
+							Lists.newArrayList(lCamera),
+							lSignalGeneratorDevice);
 
 	}
 
@@ -64,12 +70,28 @@ public class LightSheetMicroscopeDemo
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
 
-		demoWith(	Lists.newArrayList(lCamera1, lCamera2),
+		demoWith(	true,
+							Lists.newArrayList(lCamera1, lCamera2),
 							lSignalGeneratorDevice);
 
 	}
 
-	public void demoWith(	ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
+	@Test
+	public void demoScriptingOnRealHardwareTwoCameras()	throws InterruptedException,
+																											ExecutionException
+	{
+		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
+
+		demoWith(	false,
+							Lists.newArrayList(lCamera1, lCamera2),
+							lSignalGeneratorDevice);
+
+	}
+
+	public void demoWith(	boolean pAutoStart,
+												ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
 												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException,
 																																				ExecutionException
 	{
@@ -100,6 +122,11 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
+		DetectionPath lDetectionPath = new DetectionPath("demodetpath");
+
+		lLightSheetMicroscope.getDeviceLists()
+													.addDetectionPathDevice(lDetectionPath);
+
 		final LightSheet lLightSheet = new LightSheet("demolightsheet",
 																									9.4,
 																									512,
@@ -116,6 +143,8 @@ public class LightSheetMicroscopeDemo
 																	.getStackHeightVariable()
 																	.getValue());
 
+		// Setting up staging movements:
+
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
 
@@ -126,14 +155,20 @@ public class LightSheetMicroscopeDemo
 
 		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 		lLightSheet.addStavesToExposureMovement(lExposureMovement);
+		lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
+		lDetectionPath.addStavesToExposureMovement(lExposureMovement);
 
 		final ScoreInterface lStagingScore = pSignalGeneratorDevice.getStagingScore();
 
 		lStagingScore.addMovement(lBeforeExposureMovement);
 		lStagingScore.addMovement(lExposureMovement);
 
+		// setting up staging score visualization:
+
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
+
+		// setting up scope GUI:
 
 		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
 
@@ -148,23 +183,33 @@ public class LightSheetMicroscopeDemo
 		if (lGUI != null)
 			lGUI.connectGUI();
 
-		System.out.println("Start building queue");
-
-		for (int i = 0; i < 128; i++)
-			lLightSheetMicroscope.addCurrentStateToQueue();
-		lLightSheetMicroscope.addCurrentStateToQueueNotCounting();
-		System.out.println("finished building queue");
-
-		while (lVisualizer.isVisible())
+		if (pAutoStart)
 		{
-			System.out.println("playQueue!");
-			final FutureBooleanList lPlayQueue = lLightSheetMicroscope.playQueue();
+			System.out.println("Start building queue");
 
-			System.out.print("waiting...");
-			final Boolean lBoolean = lPlayQueue.get();
-			System.out.print(" ...done!");
-			// System.out.println(lBoolean);
-			// Thread.sleep(4000);
+			for (int i = 0; i < 128; i++)
+				lLightSheetMicroscope.addCurrentStateToQueue();
+			lLightSheetMicroscope.addCurrentStateToQueueNotCounting();
+			System.out.println("finished building queue");
+
+			while (lVisualizer.isVisible())
+			{
+				System.out.println("playQueue!");
+				final FutureBooleanList lPlayQueue = lLightSheetMicroscope.playQueue();
+
+				System.out.print("waiting...");
+				final Boolean lBoolean = lPlayQueue.get();
+				System.out.print(" ...done!");
+				// System.out.println(lBoolean);
+				// Thread.sleep(4000);
+			}
+		}
+		else
+		{
+			while (lVisualizer.isVisible())
+			{
+				ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+			}
 		}
 
 		assertTrue(lLightSheetMicroscope.close());
