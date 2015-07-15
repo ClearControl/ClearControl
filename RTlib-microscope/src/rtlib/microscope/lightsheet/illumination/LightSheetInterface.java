@@ -22,6 +22,10 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	DoubleVariable getLightSheetAlphaInDegreesVariable();
 
+	DoubleVariable getLightSheetBetaInDegreesVariable();
+
+	DoubleVariable getLightSheetRangeInMicronsVariable();
+
 	DoubleVariable getLightSheetLengthInMicronsVariable();
 
 	DoubleVariable getPatternOnOffVariable();
@@ -41,5 +45,7 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 	boolean isPatterned();
 
 	int getNumberOfPhases();
+
+
 
 }

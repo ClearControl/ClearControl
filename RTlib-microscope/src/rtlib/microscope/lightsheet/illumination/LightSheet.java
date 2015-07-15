@@ -497,6 +497,18 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
+	public DoubleVariable getLightSheetBetaInDegreesVariable()
+	{
+		return mLightSheetBetaInDegrees;
+	}
+
+	@Override
+	public DoubleVariable getLightSheetRangeInMicronsVariable()
+	{
+		return mLightSheetRangeInMicrons;
+	}
+
+	@Override
 	public DoubleVariable getLightSheetLengthInMicronsVariable()
 	{
 		return mLightSheetLengthInMicrons;

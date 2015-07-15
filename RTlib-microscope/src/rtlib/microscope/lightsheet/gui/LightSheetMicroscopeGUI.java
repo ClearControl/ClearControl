@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
+import rtlib.scripting.engine.ScriptingEngine;
+import rtlib.scripting.gui.ScriptingWindow;
+import rtlib.scripting.lang.groovy.GroovyScripting;
 
 public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 {
@@ -20,11 +24,14 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 
 	private final ArrayList<Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack2DVideoDeviceList = new ArrayList<>();
 	private final ArrayList<Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack3DVideoDeviceList = new ArrayList<>();
+	private ScriptingWindow mScriptingWindow;
 
 	public LightSheetMicroscopeGUI(LightSheetMicroscope pLightSheetMicroscope)
 	{
 		super(pLightSheetMicroscope.getName() + "GUI");
 		mLightSheetMicroscope = pLightSheetMicroscope;
+
+		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
 		final int lNumberOfCameras = mLightSheetMicroscope.getDeviceLists()
 																											.getNumberOfStackCameraDevices();
@@ -46,6 +53,20 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 																																																																							1,
 																																																																							10);
 			mStack3DVideoDeviceList.add(lStack3DDisplay);
+
+			final GroovyScripting lGroovyScripting = new GroovyScripting();
+
+			final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
+																																		null);
+
+			lScriptingEngine.set("lsm", pLightSheetMicroscope);
+
+			mScriptingWindow = new ScriptingWindow(	pLightSheetMicroscope.getName() + " scripting window",
+																							lScriptingEngine,
+																							lCurrentMachineConfiguration.getIntegerProperty("scripting.nbrows",
+																																															60),
+																							lCurrentMachineConfiguration.getIntegerProperty("scripting.nbcols",
+																																															80));
 		}
 
 	}
@@ -63,6 +84,8 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 			lStack3dDisplay.open();
 		}
 
+		mScriptingWindow.setVisible(true);
+
 		return super.open();
 	}
 
@@ -78,6 +101,8 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 		{
 			lStack2dDisplay.close();
 		}
+
+		mScriptingWindow.setVisible(false);
 
 		return super.close();
 	}

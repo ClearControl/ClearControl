@@ -27,8 +27,8 @@ public class ScriptingWindow extends JFrame
 																															pNumberOfRows,
 																															pNumberOfCols);
 		add(lScriptingPanel);
-
 		pack();
+		setSize(512, 512);
 
 	}
 

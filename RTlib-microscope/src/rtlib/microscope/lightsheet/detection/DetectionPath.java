@@ -43,7 +43,7 @@ public class DetectionPath extends NamedVirtualDevice	implements
 
 	}
 
-	public DoubleVariable getDetectionFocusZ()
+	public DoubleVariable getDetectionFocusZInMicronsVariable()
 	{
 		return mDetectionFocusZ;
 	}
