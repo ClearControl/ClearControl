@@ -26,7 +26,6 @@ public class LightSheetMicroscope	extends
 		return mLSMDeviceLists;
 	}
 
-
 	@Override
 	public boolean open()
 	{
@@ -169,6 +168,18 @@ public class LightSheetMicroscope	extends
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void sendStacksToNull()
+	{
+		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
+		{
+			getDeviceLists().getStackVariable(i)
+											.addSetListener((pCurrentValue, pNewValue) -> {
+												pNewValue.release();
+											});
+
+		}
 	}
 
 }

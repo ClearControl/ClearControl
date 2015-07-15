@@ -58,7 +58,7 @@ public class LightSheetMicroscopeDemo
 
 	@Test
 	public void demoOnRealHardwareTwoCameras() throws InterruptedException,
-																	ExecutionException
+																						ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
@@ -76,8 +76,6 @@ public class LightSheetMicroscopeDemo
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-
-
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
 			final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
@@ -87,6 +85,7 @@ public class LightSheetMicroscopeDemo
 															System.out.println("StackIdentityPipeline" + lCamera.getName()
 																									+ "->"
 																									+ pNewValue);
+
 														});
 
 			lCamera.getStackWidthVariable().setValue(cImageResolution);
@@ -136,11 +135,13 @@ public class LightSheetMicroscopeDemo
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
 
-		final LightSheetMicroscopeGUI lGUI = null; // new
-																								// LightSheetMicroscopeGUI(lLightSheetMicroscope);
+		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
 
 		if (lGUI != null)
 			assertTrue(lGUI.open());
+		else
+			lLightSheetMicroscope.sendStacksToNull();
+
 		assertTrue(lLightSheetMicroscope.open());
 		Thread.sleep(1000);
 
