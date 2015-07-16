@@ -1,50 +1,39 @@
 package rtlib.microscope.lightsheet.illumination;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface
 {
 
-	DoubleVariable getImageHeightVariable();
+	public DoubleVariable getImageHeightVariable();
 
-	DoubleVariable getEffectiveExposureInMicrosecondsVariable();
+	public DoubleVariable getEffectiveExposureInMicrosecondsVariable();
 
-	DoubleVariable getLineExposureInMicrosecondsVariable();
+	public DoubleVariable getLineExposureInMicrosecondsVariable();
 
-	DoubleVariable getMarginTimeInMicrosecondsVariable();
+	public DoubleVariable getMarginTimeInMicrosecondsVariable();
 
-	DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
+	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
 
-	DoubleVariable getLightSheetYInMicronsVariable();
+	public DoubleVariable getLightSheetYInMicronsVariable();
 
-	DoubleVariable getLightSheetZInMicronsVariable();
+	public DoubleVariable getLightSheetZInMicronsVariable();
 
-	DoubleVariable getLightSheetAlphaInDegreesVariable();
+	public DoubleVariable getLightSheetAlphaInDegreesVariable();
 
-	DoubleVariable getLightSheetBetaInDegreesVariable();
+	public DoubleVariable getLightSheetBetaInDegreesVariable();
 
-	DoubleVariable getLightSheetRangeInMicronsVariable();
+	public DoubleVariable getLightSheetRangeInMicronsVariable();
 
-	DoubleVariable getLightSheetLengthInMicronsVariable();
+	public DoubleVariable getLightSheetLengthInMicronsVariable();
 
-	DoubleVariable getPatternOnOffVariable();
+	public DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex);
 
-	DoubleVariable getPatternPeriodVariable();
+	public BooleanVariable getSIPatternOnOffVariable();
 
-	DoubleVariable getPatternPhaseIndexVariable();
-
-	DoubleVariable getPatternOnLengthVariable();
-
-	DoubleVariable getPatternPhaseIncrementVariable();
-
-	DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex);
-
-	void setPatterned(boolean pIsPatternOn);
-
-	boolean isPatterned();
-
-	int getNumberOfPhases();
+	public int getNumberOfPhases();
 
 
 

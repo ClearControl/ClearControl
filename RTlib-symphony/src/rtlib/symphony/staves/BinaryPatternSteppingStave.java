@@ -1,18 +1,14 @@
 package rtlib.symphony.staves;
 
-import static java.lang.Math.floor;
 
-public class BinaryPatternSteppingStave extends StaveAbstract	implements
-																														StaveInterface
+public class BinaryPatternSteppingStave extends PatternSteppingStave implements
+																																		StaveInterface
 {
 
 	private volatile int mPatternPeriod = 9;
 	private volatile int mPatternPhaseIndex = 0;
 	private volatile int mPatternOnLength = 1;
 	private volatile int mPatternPhaseIncrement = 1;
-	private volatile float mSyncStart = 0;
-	private volatile float mSyncStop = 1;
-	private volatile int mNumberOfSteps = 1024;
 
 	public BinaryPatternSteppingStave(final String pName)
 	{
@@ -20,47 +16,30 @@ public class BinaryPatternSteppingStave extends StaveAbstract	implements
 	}
 
 	public BinaryPatternSteppingStave(final String pName,
-																		float pSyncStart,
-																		float pSyncStop,
-																		int pNumberOfSteps,
-																		int pPeriod,
-																		int pPhaseIndex,
-																		int pOnLength,
-																		int pPhaseIncrement)
+																					float pSyncStart,
+																					float pSyncStop,
+																					int pNumberOfSteps,
+																					int pPeriod,
+																					int pPhaseIndex,
+																					int pOnLength,
+																					int pPhaseIncrement)
 	{
 		super(pName);
 		setNumberOfSteps(pNumberOfSteps);
 		setSyncStart(pSyncStart);
 		setSyncStop(pSyncStop);
+		mPatternPeriod = pPeriod;
+		mPatternPhaseIndex = pPhaseIndex;
+		mPatternOnLength = pOnLength;
+		mPatternPhaseIncrement = pPhaseIncrement;
 	}
 
 	@Override
-	public float getValue(float pNormalizedTime)
+	public float function(int pIndex)
 	{
-		if (!isEnabled())
-			return 1;
-
-		if (pNormalizedTime < getSyncStart() || pNormalizedTime > getSyncStop())
-			return 0;
-
-		if (getPatternPeriod() == 0)
-			return 0;
-
-		final float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
-
-		final int lNormalizedSteppingRampTime = (int) floor(getNumberOfSteps() * lNormalizedRampTime);
-
-		final int modulo = (lNormalizedSteppingRampTime + getPatternPhaseIndex()) % getPatternPeriod();
-		if (modulo < getPatternOnLength())
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
+		final int modulo = (pIndex + getPatternPhaseIndex()) % getPatternPeriod();
+		return modulo < getPatternOnLength()?1:0;
 	}
-
 
 	public int getPatternPeriod()
 	{
@@ -102,47 +81,20 @@ public class BinaryPatternSteppingStave extends StaveAbstract	implements
 		mPatternPhaseIncrement = pPatternPhaseIncrement;
 	}
 
-	public float getSyncStart()
-	{
-		return mSyncStart;
-	}
-
-	public void setSyncStart(float pSyncStart)
-	{
-		mSyncStart = pSyncStart;
-	}
-
-	public float getSyncStop()
-	{
-		return mSyncStop;
-	}
-
-	public void setSyncStop(float pSyncStop)
-	{
-		mSyncStop = pSyncStop;
-	}
-
-	public int getNumberOfSteps()
-	{
-		return mNumberOfSteps;
-	}
-
-	public void setNumberOfSteps(int pNumberOfSteps)
-	{
-		mNumberOfSteps = pNumberOfSteps;
-	}
 
 	@Override
 	public StaveInterface copy()
 	{
 		return new BinaryPatternSteppingStave(getName(),
-																					getSyncStart(),
-																					getSyncStop(),
-																					getNumberOfSteps(),
-																					getPatternPeriod(),
-																					getPatternPhaseIndex(),
-																					getPatternOnLength(),
-																					getPatternPhaseIncrement());
+																								getSyncStart(),
+																								getSyncStop(),
+																								getNumberOfSteps(),
+																								getPatternPeriod(),
+																								getPatternPhaseIndex(),
+																								getPatternOnLength(),
+																								getPatternPhaseIncrement());
 	}
+
+
 
 }

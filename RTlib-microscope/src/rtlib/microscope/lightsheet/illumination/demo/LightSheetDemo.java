@@ -56,8 +56,8 @@ public class LightSheetDemo
 		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
 																	TimeUnit.NANOSECONDS);
 
-		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
-		lLightSheet.addStavesToExposureMovement(lExposureMovement);
+		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
+		lLightSheet.setExposureMovement(lExposureMovement);
 
 
 

@@ -122,7 +122,7 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
-		DetectionPath lDetectionPath = new DetectionPath("demodetpath");
+		final DetectionPath lDetectionPath = new DetectionPath("demodetpath");
 
 		lLightSheetMicroscope.getDeviceLists()
 													.addDetectionPathDevice(lDetectionPath);
@@ -153,8 +153,8 @@ public class LightSheetMicroscopeDemo
 		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
 																	TimeUnit.NANOSECONDS);
 
-		lLightSheet.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
-		lLightSheet.addStavesToExposureMovement(lExposureMovement);
+		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
+		lLightSheet.setExposureMovement(lExposureMovement);
 		lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 		lDetectionPath.addStavesToExposureMovement(lExposureMovement);
 
