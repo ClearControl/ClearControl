@@ -15,10 +15,12 @@ import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.microscope.lightsheet.illumination.si.BinaryStructuredIlluminationPattern;
+import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminatioPatternInterface;
 import rtlib.symphony.movement.Movement;
-import rtlib.symphony.staves.BinaryPatternSteppingStave;
 import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.RampSteppingStave;
+import rtlib.symphony.staves.StaveInterface;
 
 public class LightSheet extends NamedVirtualDevice implements
 																									LightSheetInterface,
@@ -74,19 +76,16 @@ public class LightSheet extends NamedVirtualDevice implements
 																																								10);
 
 	private final BooleanVariable[] mLaserOnOffArray;
-	private final BooleanVariable mPatternOnOff = new BooleanVariable("PatternOnOff",
-																																		false);
-	private final DoubleVariable mPatternPeriod = new DoubleVariable(	"PatternPeriod",
-																																		2);
-	private final DoubleVariable mPatternPhaseIndex = new DoubleVariable(	"PatternPhaseIndex",
-																																				0);
-	private final DoubleVariable mPatternOnLength = new DoubleVariable(	"PatternOnLength",
-																																			1);
-	private final DoubleVariable mPatternPhaseIncrement = new DoubleVariable(	"PatternPhaseIncrement",
-																																						1);
+
+	private final BooleanVariable mSIPatternOnOff = new BooleanVariable("SIPatternOnOff",
+																																			false);
 
 	private final DoubleVariable mNumberOfPhasesPerPlane = new DoubleVariable("NumberOfPhases",
-																																						2);
+																																						1);
+
+	private final ObjectVariable<StructuredIlluminatioPatternInterface>[] mStructuredIlluminationPatternVariableArray;
+
+	private Movement mBeforeExposureMovement, mExposureMovement;
 
 	private final RampSteppingStave mLightSheetStaveBeforeExposureZ,
 			mLightSheetStaveBeforeExposureY, mLightSheetStaveExposureZ,
@@ -94,15 +93,13 @@ public class LightSheet extends NamedVirtualDevice implements
 	private final ConstantStave mLightSheetStaveBeforeExposureX,
 			mLightSheetStaveExposureX, mLightSheetStaveBeforeExposureB,
 			mLightSheetStaveExposureB, mLightSheetStaveBeforeExposureR,
-			mLightSheetStaveExposureR;
-	private final ConstantStave mLightSheetStaveBeforeExposureT,
-			mLightSheetStaveExposureT;
-	private final ConstantStave mLightSheetStaveBeforeExposureLA,
-			mLightSheetStaveExposureLA;
-	private final BinaryPatternSteppingStave[] mLightSheetStaveLaserLD;
+			mLightSheetStaveExposureR, mLightSheetStaveBeforeExposureT,
+			mLightSheetStaveExposureT, mLightSheetStaveBeforeExposureLA,
+			mLightSheetStaveExposureLA, mNonSIIluminationLaserTrigger;
 
 	private final int mNumberOfLaserDigitalControls;
 
+	@SuppressWarnings("unchecked")
 	public LightSheet(String pName,
 										final double pReadoutTimeInMicrosecondsPerLine,
 										final int pNumberOfLines,
@@ -116,13 +113,9 @@ public class LightSheet extends NamedVirtualDevice implements
 			update();
 		};
 
-		final VariableSetListener<Object> lObjectVariableListener = (u, v) -> {
-			update();
-		};
-
 		mLaserOnOffArray = new BooleanVariable[mNumberOfLaserDigitalControls];
 
-		mLightSheetStaveLaserLD = new BinaryPatternSteppingStave[mNumberOfLaserDigitalControls];
+		mStructuredIlluminationPatternVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
 		mReadoutTimeInMicrosecondsPerLine.setValue(pReadoutTimeInMicrosecondsPerLine);
 		mImageHeight.setValue(pNumberOfLines);
@@ -150,10 +143,15 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetStaveExposureR = new ConstantStave("lightsheet.r.e", 0);
 		mLightSheetStaveExposureT = new ConstantStave("trigger.out.e", 0);
 
+		mNonSIIluminationLaserTrigger = new ConstantStave("trigger.out.e",
+																											1);
+
 		for (int i = 0; i < mLaserOnOffArray.length; i++)
 		{
 			final String lLaserName = "Laser" + i + ".exposure.trig";
-			mLightSheetStaveLaserLD[i] = new BinaryPatternSteppingStave(lLaserName);
+
+			mStructuredIlluminationPatternVariableArray[i] = new ObjectVariable("StructuredIlluminationPattern",
+																																					new BinaryStructuredIlluminationPattern());
 
 			mLaserOnOffArray[i] = new BooleanVariable(lLaserName, false);
 			mLaserOnOffArray[i].addSetListener(lDoubleVariableListener);
@@ -171,14 +169,30 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetAlphaInDegrees.addSetListener(lDoubleVariableListener);
 		mLightSheetLengthInMicrons.addSetListener(lDoubleVariableListener);
 
-		mPatternOnOff.addSetListener(lDoubleVariableListener);
-		mPatternPeriod.addSetListener(lDoubleVariableListener);
-		mPatternPhaseIndex.addSetListener(lDoubleVariableListener);
-		mPatternOnLength.addSetListener(lDoubleVariableListener);
+		for (int i = 0; i < mLaserOnOffArray.length; i++)
+		{
+			mStructuredIlluminationPatternVariableArray[i].addSetListener((	u,
+																																			v) -> {
+				update();
+			});
+
+		}
 
 	}
 
-	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
+	public void setBeforeExposureMovement(Movement pBeforeExposureMovement)
+	{
+		mBeforeExposureMovement = pBeforeExposureMovement;
+		ensureStavesAddedToBeforeExposureMovement(mBeforeExposureMovement);
+	}
+
+	public void setExposureMovement(Movement pExposureMovement)
+	{
+		mExposureMovement = pExposureMovement;
+		ensureStavesAddedToExposureMovement(mExposureMovement);
+	}
+
+	private void ensureStavesAddedToBeforeExposureMovement(Movement pBeforeExposureMovement)
 	{
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
@@ -220,7 +234,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 	}
 
-	public void addStavesToExposureMovement(Movement pExposureMovement)
+	private void ensureStavesAddedToExposureMovement(Movement pExposureMovement)
 	{
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
@@ -262,15 +276,22 @@ public class LightSheet extends NamedVirtualDevice implements
 																mLightSheetStaveExposureT);
 
 		for (int i = 0; i < mLaserOnOffArray.length; i++)
-		{
-			final int lLaserDigitalLineIndex = lCurrentMachineConfiguration.getIntegerProperty(	"device.lsm.lightsheet." + getName().toLowerCase()
-																																															+ ".index.ld"
-																																															+ i,
-																																													8 + i);
-			pExposureMovement.setStave(	lLaserDigitalLineIndex,
-																	mLightSheetStaveLaserLD[i]);
-		}
+			setLaserDigitalTriggerStave(pExposureMovement,
+																	i,
+																	mNonSIIluminationLaserTrigger);
 
+	}
+
+	private void setLaserDigitalTriggerStave(	Movement pExposureMovement,
+																						int i,
+																						StaveInterface pStave)
+	{
+		final int lLaserDigitalLineIndex = MachineConfiguration.getCurrentMachineConfiguration()
+																														.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																										+ ".index.ld"
+																																										+ i,
+																																								8 + i);
+		mExposureMovement.setStave(lLaserDigitalLineIndex, pStave);
 	}
 
 	public void update()
@@ -365,25 +386,29 @@ public class LightSheet extends NamedVirtualDevice implements
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
 																																			lMarginTimeInMicroseconds);
 
-			mLightSheetStaveBeforeExposureY.setStepping(mPatternOnOff.getBooleanValue());
-			mLightSheetStaveExposureY.setStepping(mPatternOnOff.getBooleanValue());
+			mLightSheetStaveBeforeExposureY.setStepping(mSIPatternOnOff.getBooleanValue());
+			mLightSheetStaveExposureY.setStepping(mSIPatternOnOff.getBooleanValue());
 
-			mLightSheetStaveBeforeExposureZ.setStepping(mPatternOnOff.getBooleanValue());
-			mLightSheetStaveExposureZ.setStepping(mPatternOnOff.getBooleanValue());
+			mLightSheetStaveBeforeExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
+			mLightSheetStaveExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
 
 			for (int i = 0; i < mLaserOnOffArray.length; i++)
 			{
-				final BinaryPatternSteppingStave lLaserTriggerStave = mLightSheetStaveLaserLD[i];
 				final BooleanVariable lLaserBooleanVariable = mLaserOnOffArray[i];
-
+				final StructuredIlluminatioPatternInterface lStructuredIlluminatioPatternInterface = mStructuredIlluminationPatternVariableArray[i].get();
+				final StaveInterface lLaserTriggerStave = lStructuredIlluminatioPatternInterface.getStave(lMarginTimeRelativeUnits);
 				lLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
-				lLaserTriggerStave.setSyncStart((float) clamp01(lMarginTimeRelativeUnits));
-				lLaserTriggerStave.setSyncStop((float) clamp01(1 - lMarginTimeRelativeUnits));
-				lLaserTriggerStave.setEnabled(mPatternOnOff.getBooleanValue());
-				lLaserTriggerStave.setPatternPeriod((int) mPatternPeriod.getValue());
-				lLaserTriggerStave.setPatternPhaseIndex((int) mPatternPhaseIndex.getValue());
-				lLaserTriggerStave.setPatternOnLength((int) mPatternOnLength.getValue());
-				lLaserTriggerStave.setPatternPhaseIncrement((int) mPatternPhaseIncrement.getValue());
+
+				if (mSIPatternOnOff.getBooleanValue())
+					setLaserDigitalTriggerStave(mExposureMovement,
+																			i,
+																			lLaserTriggerStave);
+
+				else
+					setLaserDigitalTriggerStave(mExposureMovement,
+																			i,
+																			mNonSIIluminationLaserTrigger);
+
 			}
 
 			mLightSheetStaveExposureLA.setValue(1);
@@ -417,18 +442,6 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public void setPatterned(final boolean pIsPatternOn)
-	{
-		mPatternOnOff.setValue(pIsPatternOn);
-	}
-
-	@Override
-	public boolean isPatterned()
-	{
-		return mPatternOnOff.getBooleanValue();
-	}
-
-	@Override
 	public DoubleVariable getImageHeightVariable()
 	{
 		return mImageHeight;
@@ -437,15 +450,8 @@ public class LightSheet extends NamedVirtualDevice implements
 	@Override
 	public int getNumberOfPhases()
 	{
-		final boolean lIsPatterned = isPatterned();
-		final double lPatternPeriod = lIsPatterned ? mPatternPeriod.getValue()
-																							: 1;
-		final double lPatternPhaseIncrement = lIsPatterned ? mPatternPhaseIncrement.getValue()
-																											: 1;
-
-		final int lNumberOfPhases = (int) (lPatternPeriod / lPatternPhaseIncrement);
-
-		return lNumberOfPhases;
+		return mStructuredIlluminationPatternVariableArray[0].get()
+																													.getNumberOfPhases();
 	}
 
 	public void setEffectiveExposureInMicroseconds(final int pEffectiveExposureInMicroseconds)
@@ -514,33 +520,9 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public DoubleVariable getPatternOnOffVariable()
+	public BooleanVariable getSIPatternOnOffVariable()
 	{
-		return mPatternOnOff;
-	}
-
-	@Override
-	public DoubleVariable getPatternPeriodVariable()
-	{
-		return mPatternPeriod;
-	}
-
-	@Override
-	public DoubleVariable getPatternPhaseIndexVariable()
-	{
-		return mPatternPhaseIndex;
-	}
-
-	@Override
-	public DoubleVariable getPatternOnLengthVariable()
-	{
-		return mPatternOnOff;
-	}
-
-	@Override
-	public DoubleVariable getPatternPhaseIncrementVariable()
-	{
-		return mPatternPhaseIncrement;
+		return mSIPatternOnOff;
 	}
 
 	@Override
@@ -624,10 +606,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLightSheetStaveExposureLA;
 	}
 
-	private static final double clamp01(final double x)
-	{
-		return Math.max(0, Math.min(1, x));
-	}
+
 
 	private static double microsecondsToRelative(	final double pTotalTime,
 																								final double pSubTime)
