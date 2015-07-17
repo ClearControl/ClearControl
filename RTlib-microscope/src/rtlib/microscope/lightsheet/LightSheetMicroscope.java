@@ -284,6 +284,12 @@ public class LightSheetMicroscope	extends
 										.set(pValue);
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format(	"LightSheetMicroscope: \n%s\n",
+													mLSMDeviceLists.toString());
+	}
 
 
 }

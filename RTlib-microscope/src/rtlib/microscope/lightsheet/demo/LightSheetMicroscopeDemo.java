@@ -45,7 +45,8 @@ public class LightSheetMicroscopeDemo
 
 		demoWith(	true,
 							Lists.newArrayList(lCamera),
-							lSignalGeneratorDevice);
+							lSignalGeneratorDevice,
+							1);
 
 	}
 
@@ -58,13 +59,14 @@ public class LightSheetMicroscopeDemo
 
 		demoWith(	true,
 							Lists.newArrayList(lCamera),
-							lSignalGeneratorDevice);
+							lSignalGeneratorDevice,
+							1);
 
 	}
 
 	@Test
-	public void demoOnRealHardwareTwoCameras() throws InterruptedException,
-																						ExecutionException
+	public void demoOnRealHardwareTwoCamerasFourLightSheets()	throws InterruptedException,
+																														ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
@@ -72,7 +74,8 @@ public class LightSheetMicroscopeDemo
 
 		demoWith(	true,
 							Lists.newArrayList(lCamera1, lCamera2),
-							lSignalGeneratorDevice);
+							lSignalGeneratorDevice,
+							1);
 
 	}
 
@@ -86,19 +89,19 @@ public class LightSheetMicroscopeDemo
 
 		demoWith(	false,
 							Lists.newArrayList(lCamera1, lCamera2),
-							lSignalGeneratorDevice);
+							lSignalGeneratorDevice,
+							4);
 
 	}
 
 	public void demoWith(	boolean pAutoStart,
 												ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
-												SignalGeneratorInterface pSignalGeneratorDevice) throws InterruptedException,
-																																				ExecutionException
+												SignalGeneratorInterface pSignalGeneratorDevice,
+												int pNumberOfLightSheets)	throws InterruptedException,
+																									ExecutionException
 	{
 
-
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
-
 
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
@@ -129,9 +132,6 @@ public class LightSheetMicroscopeDemo
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
 
-
-
-
 		final ScoreInterface lStagingScore = pSignalGeneratorDevice.getStagingScore();
 
 		lStagingScore.addMovement(lBeforeExposureMovement);
@@ -144,45 +144,52 @@ public class LightSheetMicroscopeDemo
 
 		// Setting up detection path:
 
-		final DetectionPath lDetectionPath = new DetectionPath("demodetpath");
+		for (int i = 0; i < pCameras.size(); i++)
+		{
+			final DetectionPath lDetectionPath = new DetectionPath(	"demodetpath",
+																															i);
 
-		lLightSheetMicroscope.getDeviceLists()
-													.addDetectionPathDevice(lDetectionPath);
+			lLightSheetMicroscope.getDeviceLists()
+														.addDetectionPathDevice(lDetectionPath);
 
-		lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
-		lDetectionPath.addStavesToExposureMovement(lExposureMovement);
+			lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
+			lDetectionPath.addStavesToExposureMovement(lExposureMovement);
+		}
 
-		// Setting up lightsheet:
+		// Setting up lightsheets:
 
-		final LightSheet lLightSheet = new LightSheet("demolightsheet",
-																									9.4,
-																									512,
-																									2);
-		lLightSheetMicroscope.getDeviceLists()
-													.addLightSheetDevice(lLightSheet);
+		for (int i = 0; i < pNumberOfLightSheets; i++)
+		{
+			final LightSheet lLightSheet = new LightSheet("demolightsheet",
+																										9.4,
+																										512,
+																										2);
+			lLightSheetMicroscope.getDeviceLists()
+														.addLightSheetDevice(lLightSheet);
 
-		lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
-																				TimeUnit.NANOSECONDS);
-		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
-																	TimeUnit.NANOSECONDS);
+			lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
+																					TimeUnit.NANOSECONDS);
+			lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
+																		TimeUnit.NANOSECONDS);
 
-		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
-		lLightSheet.setExposureMovement(lExposureMovement);
+			lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
+			lLightSheet.setExposureMovement(lExposureMovement);
 
-		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
-		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-								.setValue(5000);
+			lLightSheet.getLightSheetLengthInMicronsVariable()
+									.setValue(100);
+			lLightSheet.getEffectiveExposureInMicrosecondsVariable()
+									.setValue(5000);
 
-		lLightSheet.getImageHeightVariable()
-								.setValue(pCameras.get(0)
-																	.getStackHeightVariable()
-																	.getValue());
-
-
+			lLightSheet.getImageHeightVariable()
+									.setValue(pCameras.get(0)
+																		.getStackHeightVariable()
+																		.getValue());
+		}
 
 		// setting up scope GUI:
 
-		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(lLightSheetMicroscope);
+		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																																			false);
 
 		if (lGUI != null)
 			assertTrue(lGUI.open());

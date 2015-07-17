@@ -205,4 +205,21 @@ public class LightSheetMicroscopeDeviceLists
 		return mAllDeviceList;
 	}
 
+	/**
+	 * Interface method implementation
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder lBuilder = new StringBuilder();
+		for (Object lDevice : mAllDeviceList)
+		{
+			lBuilder.append(lDevice.toString());
+			lBuilder.append("\n");
+		}
+		return lBuilder.toString();
+	}
+
 }

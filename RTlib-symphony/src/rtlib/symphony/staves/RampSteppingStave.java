@@ -24,12 +24,13 @@ public class RampSteppingStave extends RampContinuousStave implements
 														float pStepHeight)
 	{
 		super(pName);
-		setStepHeight(pStepHeight);
 		setSyncStart(pSyncStart);
 		setSyncStop(pSyncStop);
 		setStartValue(pStartValue);
 		setStopValue(pStopValue);
 		setOutsideValue(pOutsideValue);
+		// important next line must be after all others!
+		setStepHeight(pStepHeight);
 	}
 
 	@Override
@@ -50,7 +51,6 @@ public class RampSteppingStave extends RampContinuousStave implements
 
 		return lValue;
 	}
-
 
 	public float getStepHeight()
 	{
@@ -82,15 +82,15 @@ public class RampSteppingStave extends RampContinuousStave implements
 	public StaveInterface copy()
 	{
 		final RampSteppingStave lRampSteppingStave = new RampSteppingStave(	getName(),
-														getSyncStart(),
-														getSyncStop(),
-														getStartValue(),
-														getStopValue(),
-														getOutsideValue(),
-														mStepHeight);
-		
+																																				getSyncStart(),
+																																				getSyncStop(),
+																																				getStartValue(),
+																																				getStopValue(),
+																																				getOutsideValue(),
+																																				getStepHeight());
+
 		lRampSteppingStave.setStepping(isStepping());
-		
+
 		return lRampSteppingStave;
 	}
 

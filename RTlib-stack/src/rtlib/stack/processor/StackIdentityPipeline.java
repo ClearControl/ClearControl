@@ -55,4 +55,19 @@ public class StackIdentityPipeline<T extends NativeType<T>, A extends ArrayDataA
 
 	}
 
+	/**
+	 * Interface method implementation
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder lBuilder = new StringBuilder();
+		lBuilder.append("StackIdentityPipeline [mStackVariable=");
+		lBuilder.append(mStackVariable);
+		lBuilder.append("]");
+		return lBuilder.toString();
+	}
+
 }

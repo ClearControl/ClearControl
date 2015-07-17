@@ -1,6 +1,7 @@
 package rtlib.microscope.lightsheet.gui;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -11,6 +12,7 @@ import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.scripting.engine.ScriptingEngine;
+import rtlib.scripting.engine.ScriptingEngineListener;
 import rtlib.scripting.gui.ScriptingWindow;
 import rtlib.scripting.lang.groovy.GroovyScripting;
 
@@ -25,11 +27,14 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 	private final ArrayList<Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack2DVideoDeviceList = new ArrayList<>();
 	private final ArrayList<Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack3DVideoDeviceList = new ArrayList<>();
 	private ScriptingWindow mScriptingWindow;
+	private boolean m3dView;
 
-	public LightSheetMicroscopeGUI(LightSheetMicroscope pLightSheetMicroscope)
+	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
+																	boolean p3DView)
 	{
 		super(pLightSheetMicroscope.getName() + "GUI");
 		mLightSheetMicroscope = pLightSheetMicroscope;
+		m3dView = p3DView;
 
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
@@ -46,18 +51,60 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 																																																																							cDefaultWindowHeight);
 			mStack2DVideoDeviceList.add(lStack2DDisplay);
 
-			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 3D - " + lStackCameraDevice.getName(),
-																																																																							new UnsignedShortType(),
-																																																																							cDefaultWindowWidth,
-																																																																							cDefaultWindowHeight,
-																																																																							1,
-																																																																							10);
-			mStack3DVideoDeviceList.add(lStack3DDisplay);
+			if (m3dView)
+			{
+				final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 3D - " + lStackCameraDevice.getName(),
+																																																																								new UnsignedShortType(),
+																																																																								cDefaultWindowWidth,
+																																																																								cDefaultWindowHeight,
+																																																																								1,
+																																																																								10);
+				mStack3DVideoDeviceList.add(lStack3DDisplay);
+			}
 
 			final GroovyScripting lGroovyScripting = new GroovyScripting();
 
 			final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
 																																		null);
+
+			lScriptingEngine.addListener(new ScriptingEngineListener()
+			{
+
+				@Override
+				public void updatedScript(ScriptingEngine pScriptingEngine,
+																	String pScript)
+				{
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
+																					String pScriptString)
+				{
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void asynchronousResult(	ScriptingEngine pScriptingEngine,
+																				String pScriptString,
+																				Map<String, Object> pBinding,
+																				Throwable pThrowable,
+																				String pErrorMessage)
+				{
+					if (pThrowable != null)
+						pThrowable.printStackTrace();
+				}
+
+				@Override
+				public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
+																					String pScriptString)
+				{
+					// TODO Auto-generated method stub
+
+				}
+			});
 
 			lScriptingEngine.set("lsm", pLightSheetMicroscope);
 
@@ -79,10 +126,11 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 			lStack2dDisplay.open();
 		}
 
-		for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
-		{
-			lStack3dDisplay.open();
-		}
+		if (m3dView)
+			for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
+			{
+				lStack3dDisplay.open();
+			}
 
 		mScriptingWindow.setVisible(true);
 
@@ -92,10 +140,11 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 	@Override
 	public boolean close()
 	{
-		for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
-		{
-			lStack3dDisplay.close();
-		}
+		if (m3dView)
+			for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
+			{
+				lStack3dDisplay.close();
+			}
 
 		for (final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2dDisplay : mStack2DVideoDeviceList)
 		{
@@ -121,9 +170,12 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 														.getStackVariable(i)
 														.sendUpdatesTo(lStack2DDisplay.getInputStackVariable());
 
-			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = mStack3DVideoDeviceList.get(i);
+			if (m3dView)
+			{
+				final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = mStack3DVideoDeviceList.get(i);
 
-			lStack2DDisplay.setOutputStackVariable(lStack3DDisplay.getStackInputVariable());
+				lStack2DDisplay.setOutputStackVariable(lStack3DDisplay.getStackInputVariable());
+			}
 		}
 
 	}
@@ -141,8 +193,8 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 			mLightSheetMicroscope.getDeviceLists()
 														.getStackVariable(i)
 														.doNotSendUpdatesTo(lStack2DDisplay.getInputStackVariable());
-
-			lStack2DDisplay.setOutputStackVariable(null);
+			if (m3dView)
+				lStack2DDisplay.setOutputStackVariable(null);
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.symphony.gui.ScoreVisualizerJFrame;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.Score;
@@ -43,12 +44,19 @@ public class ScoreTests
 
 		lMovement.setDuration(1, TimeUnit.SECONDS);
 
-		lScore.addMovementMultipleTimes(lMovement, 10);
+		for (int i = 0; i < 10; i++)
+		{
+			lGalvoScannerStave.setSyncStop((float) (0.5 + 0.03 * i));
+			lScore.addMovement(lMovement.copy());
+		}
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
 																																							lScore);/**/
 
-
+		while(lVisualize.isVisible())
+		{
+			ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
+		}
 	}
 
 }

@@ -24,22 +24,35 @@ public class DetectionPath extends NamedVirtualDevice	implements
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z.be",
 																																				0);
 
+	private int mStaveIndex;
+
 	public DetectionPath(String pName)
 	{
-		super(pName);
+		this(	pName,
+					MachineConfiguration.getCurrentMachineConfiguration()
+															.getIntegerProperty("device.lsm.detection." + pName
+		        																										+ ".index.z",
+		        																										0));
+
+	}
+
+	public DetectionPath(String pName, int pStaveIndex)
+	{
+		super(pName + pStaveIndex);
 
 		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
 			update();
 		};
 
 		final VariableSetListener<UnivariateFunction> lObjectVariableListener = (	u,
-																																										v) -> {
+																																							v) -> {
 			update();
 		};
 
 		mDetectionFocusZ.addSetListener(lDoubleVariableListener);
 		mDetectionZFunction.addSetListener(lObjectVariableListener);
 
+		mStaveIndex = pStaveIndex;
 
 	}
 
@@ -50,27 +63,16 @@ public class DetectionPath extends NamedVirtualDevice	implements
 
 	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
 	{
-		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
-
 		// Analog outputs before exposure:
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.detection." + getName().toLowerCase()
-																																													+ ".index.z",
-																																											0),
+		pBeforeExposureMovement.setStave(	mStaveIndex,
 																			mDetectionPathStaveZ);
-
 	}
 
 	public void addStavesToExposureMovement(Movement pExposureMovement)
 	{
-		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
-
 		// Analog outputs at exposure:
-
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.detection." + getName().toLowerCase()
-																																										+ ".index.z",
-																																								0),
+		pExposureMovement.setStave(mStaveIndex,
 																mDetectionPathStaveZ);
-
 	}
 
 	public void update()

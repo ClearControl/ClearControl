@@ -131,7 +131,7 @@ public class Movement extends NameableAbstract implements
 		for (int i = 0; i < mStaveListArray.length; i++)
 		{
 			final StaveInterface lStaveInterface = mStaveListArray[i];
-			lMovementCopy.setStave(i, lStaveInterface);
+			lMovementCopy.setStave(i, lStaveInterface.copy());
 		}
 
 		return lMovementCopy;
