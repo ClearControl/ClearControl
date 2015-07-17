@@ -32,7 +32,7 @@ import rtlib.symphony.score.ScoreInterface;
 public class LightSheetMicroscopeDemo
 {
 
-	private static final double cImageResolution = 512;
+	private static final double cImageResolution = 1024;
 
 	@Test
 	public void demoOnSimulators() throws InterruptedException,
@@ -96,7 +96,9 @@ public class LightSheetMicroscopeDemo
 																																				ExecutionException
 	{
 
+
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
+
 
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
@@ -122,41 +124,13 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
-		final DetectionPath lDetectionPath = new DetectionPath("demodetpath");
-
-		lLightSheetMicroscope.getDeviceLists()
-													.addDetectionPathDevice(lDetectionPath);
-
-		final LightSheet lLightSheet = new LightSheet("demolightsheet",
-																									9.4,
-																									512,
-																									2);
-		lLightSheetMicroscope.getDeviceLists()
-													.addLightSheetDevice(lLightSheet);
-
-		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
-		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-								.setValue(5000);
-
-		lLightSheet.getImageHeightVariable()
-								.setValue(pCameras.get(0)
-																	.getStackHeightVariable()
-																	.getValue());
-
 		// Setting up staging movements:
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
 
-		lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
-																				TimeUnit.NANOSECONDS);
-		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
-																	TimeUnit.NANOSECONDS);
 
-		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
-		lLightSheet.setExposureMovement(lExposureMovement);
-		lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
-		lDetectionPath.addStavesToExposureMovement(lExposureMovement);
+
 
 		final ScoreInterface lStagingScore = pSignalGeneratorDevice.getStagingScore();
 
@@ -167,6 +141,44 @@ public class LightSheetMicroscopeDemo
 
 		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
 																																							lStagingScore);
+
+		// Setting up detection path:
+
+		final DetectionPath lDetectionPath = new DetectionPath("demodetpath");
+
+		lLightSheetMicroscope.getDeviceLists()
+													.addDetectionPathDevice(lDetectionPath);
+
+		lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
+		lDetectionPath.addStavesToExposureMovement(lExposureMovement);
+
+		// Setting up lightsheet:
+
+		final LightSheet lLightSheet = new LightSheet("demolightsheet",
+																									9.4,
+																									512,
+																									2);
+		lLightSheetMicroscope.getDeviceLists()
+													.addLightSheetDevice(lLightSheet);
+
+		lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
+																				TimeUnit.NANOSECONDS);
+		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
+																	TimeUnit.NANOSECONDS);
+
+		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
+		lLightSheet.setExposureMovement(lExposureMovement);
+
+		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
+		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
+								.setValue(5000);
+
+		lLightSheet.getImageHeightVariable()
+								.setValue(pCameras.get(0)
+																	.getStackHeightVariable()
+																	.getValue());
+
+
 
 		// setting up scope GUI:
 
