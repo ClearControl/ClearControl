@@ -88,10 +88,10 @@ public class LightSheet extends NamedVirtualDevice implements
 	private Movement mBeforeExposureMovement, mExposureMovement;
 
 	private final RampSteppingStave mLightSheetStaveBeforeExposureZ,
-			mLightSheetStaveBeforeExposureY, mLightSheetStaveExposureZ,
-			mLightSheetStaveExposureY;
-	private final ConstantStave mLightSheetStaveBeforeExposureX,
-			mLightSheetStaveExposureX, mLightSheetStaveBeforeExposureB,
+			mLightSheetStaveBeforeExposureX, mLightSheetStaveExposureX,
+			mLightSheetStaveExposureZ;
+	private final ConstantStave mLightSheetStaveBeforeExposureY,
+			mLightSheetStaveExposureY, mLightSheetStaveBeforeExposureB,
 			mLightSheetStaveExposureB, mLightSheetStaveBeforeExposureR,
 			mLightSheetStaveExposureR, mLightSheetStaveBeforeExposureT,
 			mLightSheetStaveExposureT, mLightSheetStaveBeforeExposureLA,
@@ -126,9 +126,9 @@ public class LightSheet extends NamedVirtualDevice implements
 																										0);
 
 		mLightSheetStaveBeforeExposureZ = new RampSteppingStave("lightsheet.z.be");
-		mLightSheetStaveBeforeExposureY = new RampSteppingStave("lightsheet.y.be");
-		mLightSheetStaveBeforeExposureX = new ConstantStave("lightsheet.x.be",
+		mLightSheetStaveBeforeExposureY = new ConstantStave("lightsheet.x.be",
 																												0);
+		mLightSheetStaveBeforeExposureX = new RampSteppingStave("lightsheet.y.be");
 		mLightSheetStaveBeforeExposureB = new ConstantStave("lightsheet.b.be",
 																												0);
 		mLightSheetStaveBeforeExposureR = new ConstantStave("lightsheet.r.be",
@@ -137,8 +137,8 @@ public class LightSheet extends NamedVirtualDevice implements
 																												1);
 
 		mLightSheetStaveExposureZ = new RampSteppingStave("lightsheet.z.e");
-		mLightSheetStaveExposureY = new RampSteppingStave("lightsheet.y.e");
-		mLightSheetStaveExposureX = new ConstantStave("lightsheet.x.e", 0);
+		mLightSheetStaveExposureY = new ConstantStave("lightsheet.x.e", 0);
+		mLightSheetStaveExposureX = new RampSteppingStave("lightsheet.y.e");
 		mLightSheetStaveExposureB = new ConstantStave("lightsheet.b.e", 0);
 		mLightSheetStaveExposureR = new ConstantStave("lightsheet.r.e", 0);
 		mLightSheetStaveExposureT = new ConstantStave("trigger.out.e", 0);
@@ -307,52 +307,46 @@ public class LightSheet extends NamedVirtualDevice implements
 			final double lLineExposureTimeInMicroseconds = lReadoutTimeInMicroseconds + lExposureMovementTimeInMicroseconds;
 			mLineExposureInMicroseconds.setValue(lLineExposureTimeInMicroseconds);
 
-			final double lMarginTimeInMicroseconds = mMarginTimeInMicroseconds.getValue();
+			final double lGalvoXOffsetBeforeRotation = mLightSheetYInMicrons.getValue();
+			final double lGalvoZOffsetBeforeRotation = mLightSheetZInMicrons.getValue();
+
+			final double lGalvoXOffset = galvoRotateX(lGalvoXOffsetBeforeRotation,
+																								lGalvoZOffsetBeforeRotation);
+			final double lGalvoZOffset = galvoRotateZ(lGalvoXOffsetBeforeRotation,
+																								lGalvoZOffsetBeforeRotation);
 
 			final double lLightSheetlength = mLightSheetLengthInMicrons.getValue();
-
-			final double lLightSheetZInMicrons = mLightSheetZInMicrons.getValue();
-
-			final double lGalvoYOffsetBeforeRotation = mLightSheetYInMicrons.getValue();
-			final double lGalvoYOffsetToY = galvoRotateY(lGalvoYOffsetBeforeRotation);
-			final double lGalvoYOffsetToZ = galvoRotateZ(lGalvoYOffsetBeforeRotation);
-
-			final double lGalvoZOffsetBeforeRotation = lLightSheetZInMicrons;
-			final double lGalvoZOffsetToY = galvoRotateY(lGalvoZOffsetBeforeRotation);
-			final double lGalvoZOffsetToZ = galvoRotateZ(lGalvoZOffsetBeforeRotation);
-
-			final double lGalvoYOffset = lGalvoYOffsetToY + lGalvoZOffsetToY;
-			final double lGalvoZOffset = lGalvoYOffsetToZ + lGalvoZOffsetToZ;
-
-			final double lGalvoAmplitudeY = galvoRotateY(lLightSheetlength);
-			final double lGalvoAmplitudeZ = galvoRotateZ(lLightSheetlength);
+			final double lGalvoAmplitudeX = galvoRotateX(	lLightSheetlength,
+																										0);
+			final double lGalvoAmplitudeZ = galvoRotateZ(	lLightSheetlength,
+																										0);
 
 			final double lGalvoYLowValue = getLightSheetYConversion().get()
-																																.value(lGalvoYOffset - lGalvoAmplitudeY);
+																																.value(lGalvoXOffset - lGalvoAmplitudeX);
 			final double lGalvoYHighValue = getLightSheetYConversion().get()
-																																.value(lGalvoYOffset + lGalvoAmplitudeY);
+																																.value(lGalvoXOffset + lGalvoAmplitudeX);
 
 			final double lGalvoZLowValue = getLightSheetZConversion().get()
 																																.value(lGalvoZOffset - lGalvoAmplitudeZ);
 			final double lGalvoZHighValue = getLightSheetZConversion().get()
 																																.value(lGalvoZOffset + lGalvoAmplitudeZ);
 
-			mLightSheetStaveBeforeExposureY.setSyncStart(0);
-			mLightSheetStaveBeforeExposureY.setSyncStop(1);
-			mLightSheetStaveBeforeExposureY.setStartValue((float) lGalvoYHighValue);
-			mLightSheetStaveBeforeExposureY.setStopValue((float) lGalvoYLowValue);
+			mLightSheetStaveBeforeExposureX.setSyncStart(0);
+			mLightSheetStaveBeforeExposureX.setSyncStop(1);
+			mLightSheetStaveBeforeExposureX.setStartValue((float) lGalvoYHighValue);
+			mLightSheetStaveBeforeExposureX.setStopValue((float) lGalvoYLowValue);
 
 			mLightSheetStaveBeforeExposureZ.setSyncStart(0);
 			mLightSheetStaveBeforeExposureZ.setSyncStop(1);
 			mLightSheetStaveBeforeExposureZ.setStartValue((float) lGalvoZHighValue);
 			mLightSheetStaveBeforeExposureZ.setStopValue((float) lGalvoZLowValue);
 
-			mLightSheetStaveExposureY.setSyncStart(0);
-			mLightSheetStaveExposureY.setSyncStop(1);
-			mLightSheetStaveExposureY.setStartValue((float) lGalvoYLowValue);
-			mLightSheetStaveExposureY.setStopValue((float) lGalvoYHighValue);
-			mLightSheetStaveExposureY.setOutsideValue((float) lGalvoYHighValue);
-			mLightSheetStaveExposureY.setNoJump(true);
+			mLightSheetStaveExposureX.setSyncStart(0);
+			mLightSheetStaveExposureX.setSyncStop(1);
+			mLightSheetStaveExposureX.setStartValue((float) lGalvoYLowValue);
+			mLightSheetStaveExposureX.setStopValue((float) lGalvoYHighValue);
+			mLightSheetStaveExposureX.setOutsideValue((float) lGalvoYHighValue);
+			mLightSheetStaveExposureX.setNoJump(true);
 
 			mLightSheetStaveExposureZ.setSyncStart(0);
 			mLightSheetStaveExposureZ.setSyncStop(1);
@@ -361,9 +355,9 @@ public class LightSheet extends NamedVirtualDevice implements
 			mLightSheetStaveExposureZ.setOutsideValue((float) lGalvoZHighValue);
 			mLightSheetStaveExposureZ.setNoJump(true);
 
-			mLightSheetStaveBeforeExposureX.setValue((float) getLightSheetXFunction().get()
+			mLightSheetStaveBeforeExposureY.setValue((float) getLightSheetXFunction().get()
 																																								.value(mLightSheetXInMicrons.getValue()));
-			mLightSheetStaveExposureX.setValue((float) getLightSheetXFunction().get()
+			mLightSheetStaveExposureY.setValue((float) getLightSheetXFunction().get()
 																																					.value(mLightSheetXInMicrons.getValue()));
 
 			mLightSheetStaveBeforeExposureB.setValue((float) getLightSheetBetaConversion().get()
@@ -383,11 +377,12 @@ public class LightSheet extends NamedVirtualDevice implements
 																																														.value(lIrisDiameterInMm));
 			mLightSheetStaveExposureR.setValue(mLightSheetStaveBeforeExposureR.getConstantValue());
 
+			final double lMarginTimeInMicroseconds = mMarginTimeInMicroseconds.getValue();
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
 																																			lMarginTimeInMicroseconds);
 
-			mLightSheetStaveBeforeExposureY.setStepping(mSIPatternOnOff.getBooleanValue());
-			mLightSheetStaveExposureY.setStepping(mSIPatternOnOff.getBooleanValue());
+			mLightSheetStaveBeforeExposureX.setStepping(mSIPatternOnOff.getBooleanValue());
+			mLightSheetStaveExposureX.setStepping(mSIPatternOnOff.getBooleanValue());
 
 			mLightSheetStaveBeforeExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
 			mLightSheetStaveExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
@@ -429,16 +424,16 @@ public class LightSheet extends NamedVirtualDevice implements
 															TimeUnit.MICROSECONDS);
 	}
 
-	private double galvoRotateY(double pY)
+	private double galvoRotateX(double pY, double pZ)
 	{
 		final double lAlpha = Math.toRadians(mLightSheetAlphaInDegrees.getValue());
-		return pY * cos(lAlpha);
+		return pY * cos(lAlpha) - pZ * sin(lAlpha);
 	}
 
-	private double galvoRotateZ(double pZ)
+	private double galvoRotateZ(double pY, double pZ)
 	{
 		final double lAlpha = Math.toRadians(mLightSheetAlphaInDegrees.getValue());
-		return -pZ * sin(lAlpha);
+		return pY * sin(lAlpha) + pZ * cos(lAlpha);
 	}
 
 	@Override
@@ -561,12 +556,12 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLightSheetStaveBeforeExposureZ;
 	}
 
-	public RampSteppingStave getGalvoScannerStaveBeforeExposureY()
+	public ConstantStave getGalvoScannerStaveBeforeExposureY()
 	{
 		return mLightSheetStaveBeforeExposureY;
 	}
 
-	public ConstantStave getIllumPifocStaveBeforeExposureX()
+	public RampSteppingStave getIllumPifocStaveBeforeExposureX()
 	{
 		return mLightSheetStaveBeforeExposureX;
 	}
@@ -576,12 +571,12 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLightSheetStaveExposureZ;
 	}
 
-	public RampSteppingStave getGalvoScannerStaveExposureY()
+	public ConstantStave getGalvoScannerStaveExposureY()
 	{
 		return mLightSheetStaveExposureY;
 	}
 
-	public ConstantStave getIllumPifocStaveExposureX()
+	public RampSteppingStave getIllumPifocStaveExposureX()
 	{
 		return mLightSheetStaveExposureX;
 	}
@@ -605,8 +600,6 @@ public class LightSheet extends NamedVirtualDevice implements
 	{
 		return mLightSheetStaveExposureLA;
 	}
-
-
 
 	private static double microsecondsToRelative(	final double pTotalTime,
 																								final double pSubTime)
