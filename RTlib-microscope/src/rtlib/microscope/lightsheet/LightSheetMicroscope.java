@@ -2,6 +2,8 @@ package rtlib.microscope.lightsheet;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.device.OpenCloseDeviceInterface;
@@ -165,11 +167,12 @@ public class LightSheetMicroscope	extends
 		return lFutureBooleanList;
 	}
 
-	public Boolean playQueueAndWait()	throws InterruptedException,
-																		ExecutionException
+	public Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit) throws InterruptedException,
+																																		ExecutionException,
+																																		TimeoutException
 	{
 		FutureBooleanList lPlayQueue = playQueue();
-		return lPlayQueue.get();
+		return lPlayQueue.get(pTimeOut, pTimeUnit);
 	}
 
 	@Override
