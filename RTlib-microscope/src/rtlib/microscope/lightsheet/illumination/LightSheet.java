@@ -27,7 +27,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																									AsynchronousExecutorServiceAccess
 {
 
-	private static final double cMicronsToNormGalvoUnits = -0.003026;
+	private static final double cMicronsToNormGalvoUnits = 1;
 
 	private final ObjectVariable<UnivariateFunction> mLightSheetXFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetXFunction",
 																																																									new UnivariateAffineFunction());
@@ -125,10 +125,10 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetStaveExposureLA = new ConstantStave(	"laser.exposure.am",
 																										0);
 
-		mLightSheetStaveBeforeExposureZ = new RampSteppingStave("lightsheet.z.be");
-		mLightSheetStaveBeforeExposureY = new ConstantStave("lightsheet.x.be",
+		mLightSheetStaveBeforeExposureX = new RampSteppingStave("lightsheet.x.be");
+		mLightSheetStaveBeforeExposureY = new ConstantStave("lightsheet.y.be",
 																												0);
-		mLightSheetStaveBeforeExposureX = new RampSteppingStave("lightsheet.y.be");
+		mLightSheetStaveBeforeExposureZ = new RampSteppingStave("lightsheet.z.be");
 		mLightSheetStaveBeforeExposureB = new ConstantStave("lightsheet.b.be",
 																												0);
 		mLightSheetStaveBeforeExposureR = new ConstantStave("lightsheet.r.be",
@@ -136,9 +136,9 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetStaveBeforeExposureT = new ConstantStave("trigger.out.be",
 																												1);
 
+		mLightSheetStaveExposureX = new RampSteppingStave("lightsheet.x.e");
+		mLightSheetStaveExposureY = new ConstantStave("lightsheet.y.e", 0);
 		mLightSheetStaveExposureZ = new RampSteppingStave("lightsheet.z.e");
-		mLightSheetStaveExposureY = new ConstantStave("lightsheet.x.e", 0);
-		mLightSheetStaveExposureX = new RampSteppingStave("lightsheet.y.e");
 		mLightSheetStaveExposureB = new ConstantStave("lightsheet.b.e", 0);
 		mLightSheetStaveExposureR = new ConstantStave("lightsheet.r.e", 0);
 		mLightSheetStaveExposureT = new ConstantStave("trigger.out.e", 0);

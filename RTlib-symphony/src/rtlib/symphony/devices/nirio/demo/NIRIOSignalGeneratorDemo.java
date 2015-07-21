@@ -101,13 +101,13 @@ public class NIRIOSignalGeneratorDemo
 		final SinusStave lSinusStave3 = new SinusStave(	"sinus3",
 																										0.125f,
 																										0f,
-																										0.125f);
+																										1f);
 
-		for (int i = 0; i < 1; i++)
+		/*for (int i = 0; i < 1; i++)
 			lMovement.setStave(i, lSinusStave1);
 		for (int i = 1; i < 2; i++)
-			lMovement.setStave(i, lSinusStave2);
-		for (int i = 2; i < 8; i++)
+			lMovement.setStave(i, lSinusStave2);/**/
+		for (int i = 1; i < 8; i++)
 			lMovement.setStave(i, lSinusStave3);/**/
 
 		lScore.addMovementMultipleTimes(lMovement, 10);

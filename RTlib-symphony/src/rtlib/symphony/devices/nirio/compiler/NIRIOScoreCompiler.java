@@ -227,7 +227,7 @@ public class NIRIOScoreCompiler	implements
 
 	private static short getShortForFloat(final float lFloatValue)
 	{
-		return (short) round(lFloatValue * (Short.MAX_VALUE / 2));
+		return (short) round(lFloatValue * Short.MAX_VALUE);
 	}
 
 	private static short twoBytesToShort(	final byte pHigh,
