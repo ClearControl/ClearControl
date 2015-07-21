@@ -14,6 +14,8 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
+import rtlib.scripting.autoimport.AutoImport;
+
 public class GroovyUtils
 {
 
@@ -43,22 +45,19 @@ public class GroovyUtils
 		cImportCustomizer.addStaticStars(pClassNames);
 	}
 
-	public static void runScript(	final InputStream pPreambleInputStream,
-																final String pScriptName,
-																final InputStream pScriptInputStream,
-																final Binding pBinding)	throws IOException,
-																												CompilationFailedException
+	public static Object runScript(	final String pPreambleString,
+																	final String pScriptName,
+																	final String pScriptString,
+																	final Map<String, Object> pMap,
+																	final OutputStream pOutputStream,
+																	final boolean pDebugMode) throws IOException
 	{
-
-		final GroovyShell lGroovyShell = new GroovyShell(	GroovyUtils.class.getClassLoader(),
-																											pBinding,
-																											cCompilerConfiguration);
-
-		final String preamble = IOUtils.toString(pPreambleInputStream);
-		final String script = IOUtils.toString(pScriptInputStream);
-		final String combined = preamble + "\n" + script;
-		lGroovyShell.evaluate(combined, pScriptName);
-
+		return runScript(	pPreambleString,
+											pScriptName,
+											pScriptString,
+											new Binding(pMap),
+											pOutputStream,
+											pDebugMode);
 	}
 
 	public static Object runScript(	final String pScriptName,
@@ -90,6 +89,25 @@ public class GroovyUtils
 
 	public static Object runScript(	final InputStream pPreambleInputStream,
 																	final String pScriptName,
+																	final InputStream pScriptInputStream,
+																	final Binding pBinding,
+																	final OutputStream pOutputStream,
+																	final boolean pDebugMode)	throws IOException,
+																														CompilationFailedException
+	{
+		final String lPreambleString = IOUtils.toString(pPreambleInputStream);
+		final String lScriptString = IOUtils.toString(pScriptInputStream);
+
+		return runScript(	lPreambleString,
+											pScriptName,
+											lScriptString,
+											pBinding,
+											pOutputStream,
+											pDebugMode);
+	}
+
+	public static Object runScript(	final String pPreambleString,
+																	final String pScriptName,
 																	final String pScriptString,
 																	Binding pBinding,
 																	final OutputStream pOutputStream,
@@ -108,12 +126,24 @@ public class GroovyUtils
 																											pBinding,
 																											cCompilerConfiguration);
 
-		final String preamble = pPreambleInputStream != null ? IOUtils.toString(pPreambleInputStream)
-																												: "";
+		final String lPreamble = pPreambleString != null ? pPreambleString
+																										: "";
 
-		final String combined = preamble + "\n" + pScriptString;
+		final String lPreambleAndScriptCombined = "////Preamble begin\n" + lPreamble
+																							+ "////Preamble end\n\n"
+																							+ "////Script begin\n"
+																							+ pScriptString
+																							+ "\n////Script end\n\n";
 
-		final Object lObject = lGroovyShell.evaluate(	combined,
+		final String lImportsStatements = AutoImport.generateImportStatements(lPreambleAndScriptCombined);
+
+		final String lPreambleAndScriptCombinedWithImports = "////AutoImports begin\n" + lImportsStatements
+																													+ "////AutoImports end\n\n"
+																													+ lPreambleAndScriptCombined;
+
+		System.out.println(lPreambleAndScriptCombinedWithImports);
+
+		final Object lObject = lGroovyShell.evaluate(	lPreambleAndScriptCombinedWithImports,
 																									pScriptName);
 		return lObject;
 

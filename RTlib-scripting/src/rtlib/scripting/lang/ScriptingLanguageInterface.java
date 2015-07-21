@@ -6,13 +6,19 @@ import java.util.Map;
 
 public interface ScriptingLanguageInterface
 {
+	String getPostamble();
 
-	void runScript(	String pScriptName,
+	String getPreamble();
+
+	void runScript(	String pPreambleString,
+									String pScriptName,
 									String pScriptString,
 									Map<String, Object> pMap,
 									OutputStream pOutputStream,
 									boolean pDebugMode) throws IOException;
 
 	String getErrorMessage(Throwable pThrowable);
+
+
 
 }

@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Formatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -33,13 +34,13 @@ public class ScriptingEngine implements
 	protected Map<String, Object> mVariableMap = new ConcurrentHashMap<String, Object>();
 	private final File mLastExecutedScriptFile;
 
-	private volatile Future<?> mScriptExecutionFuture;
+	private volatile FutureTask<?> mScriptExecutionFuture;
 
-	private volatile String mScriptName = "default";
-	private volatile String mPreambleString = "";
-	private volatile String mPostambleString = "";
-	private volatile String mRawScriptString;
-	private volatile String mScriptString;
+	private String mScriptName = "default";
+	private String mPreambleFileName = null;
+	private String mPostambleFileName = null;
+	private String mRawScriptString;
+	private String mScriptString;
 
 	private OutputStream mOutputStream;
 
@@ -52,9 +53,6 @@ public class ScriptingEngine implements
 		mPathForFindingScripts = pPathForFindingScripts;
 		mLastExecutedScriptFile = new File(	System.getProperty("user.home"),
 																				".script.last.groovy");
-
-		appendToPreamble(mScriptingLanguageInterface.getPreamble());
-		appendToPostamble(mScriptingLanguageInterface.getPostamble());
 	}
 
 	public ScriptingLanguageInterface getScriptingLanguageInterface()
@@ -69,18 +67,16 @@ public class ScriptingEngine implements
 
 	}
 
-	public final Future<?> executeScriptAsynchronously()
+	public final void executeScriptAsynchronously()
 	{
 		if (mScriptExecutionFuture != null && !mScriptExecutionFuture.isDone())
 		{
 			System.err.println("Script is already running...");
-			return null;
 		}
 		else
 		{
-			return mScriptExecutionFuture = executeAsynchronously(() -> execute());
+			executeAsynchronously(() -> execute());
 		}
-
 	}
 
 	public final void stopAsynchronousExecution()
@@ -91,11 +87,11 @@ public class ScriptingEngine implements
 			{
 				mScriptExecutionFuture.cancel(true);
 
+				final String lPostamble = getPostamble();
 				final String lPreprocessedPostamble = ScriptingPreprocessor.process(mClassForFindingScripts,
 																																						mPathForFindingScripts,
-																																						mPostambleString);
-				mScriptingLanguageInterface.runScript("",
-																							"Postamble",
+																																						lPostamble);
+				mScriptingLanguageInterface.runScript("Postamble",
 																							lPreprocessedPostamble,
 																							mVariableMap,
 																							mOutputStream,
@@ -110,22 +106,7 @@ public class ScriptingEngine implements
 			{
 				System.err.println(e.getLocalizedMessage());
 			}
-			finally
-			{
-				mScriptExecutionFuture = null;
-			}
 		}
-	}
-
-	public boolean isReady()
-	{
-		return mScriptExecutionFuture == null || mScriptExecutionFuture.isDone()
-						|| mScriptExecutionFuture.isCancelled();
-	}
-
-	public boolean isCancelRequested()
-	{
-		return mScriptExecutionFuture.isCancelled();
 	}
 
 	public final void setScriptName(String pScriptName)
@@ -148,24 +129,12 @@ public class ScriptingEngine implements
 		return mRawScriptString;
 	}
 
-	public void appendToPreamble(String pString)
-	{
-		mPreambleString += pString;
-	}
-
-	public void appendToPostamble(String pString)
-	{
-		mPostambleString += pString;
-	}
-
 	public final void execute()
 	{
 		try
 		{
 			saveScript(mLastExecutedScriptFile);
 
-			// TODO: might have to call preProcess() if we implement import
-			// resolution..
 			ensureScriptStringNotNull();
 
 			for (final ScriptingEngineListener lScriptListener : mScriptListenerList)
@@ -177,10 +146,8 @@ public class ScriptingEngine implements
 			try
 			{
 				mVariableMap.put("scriptengine", this);
-				mScriptingLanguageInterface.runScript(mPreambleString,
-																							mScriptName,
-																							mScriptString + "\n"
-																									+ mPostambleString,
+				mScriptingLanguageInterface.runScript(mScriptName,
+																							mScriptString,
 																							mVariableMap,
 																							mOutputStream,
 																							mDebugMode);
@@ -194,28 +161,17 @@ public class ScriptingEngine implements
 
 			for (final ScriptingEngineListener lScriptListener : mScriptListenerList)
 			{
-				try
-				{
-					lScriptListener.afterScriptExecution(this, mRawScriptString);
-					lScriptListener.asynchronousResult(	this,
-																							mScriptString,
-																							mVariableMap,
-																							lThrowable,
-																							lErrorMessage);
-				}
-				catch (final Throwable e)
-				{
-					e.printStackTrace();
-				}
+				lScriptListener.afterScriptExecution(this, mRawScriptString);
+				lScriptListener.asynchronousResult(	this,
+																						mScriptString,
+																						mVariableMap,
+																						lThrowable,
+																						lErrorMessage);
 			}
 		}
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			mScriptExecutionFuture = null;
 		}
 
 	}
@@ -282,6 +238,62 @@ public class ScriptingEngine implements
 	public Object get(final String pVariableName)
 	{
 		return mVariableMap.get(pVariableName);
+	}
+
+	public void setPreambleFileName(String pPreambleFileName)
+	{
+		mPreambleFileName = pPreambleFileName;
+	}
+
+	public void setPostambleFileName(String pPostambleFileName)
+	{
+		mPostambleFileName = pPostambleFileName;
+	}
+
+	public String addPreamble()
+	{
+		ensureScriptStringNotNull();
+		mScriptString = getPreamble() + "\n" + mScriptString;
+		return mScriptString;
+	}
+
+	private String getPreamble()
+	{
+		final InputStream lPreambleAsStream = mClassForFindingScripts.getResourceAsStream(mPathForFindingScripts + mPreambleFileName);
+		String lPreambleString;
+		try
+		{
+			lPreambleString = IOUtils.toString(lPreambleAsStream);
+		}
+		catch (final IOException e)
+		{
+			lPreambleString = "";
+			e.printStackTrace();
+		}
+		return lPreambleString;
+	}
+
+	public String addPostamble()
+	{
+		ensureScriptStringNotNull();
+		mScriptString = mScriptString + "\n" + getPostamble();
+		return mScriptString;
+	}
+
+	private String getPostamble()
+	{
+		final InputStream lPostambleAsStream = mClassForFindingScripts.getResourceAsStream(mPathForFindingScripts + mPostambleFileName);
+		String lPostambleString;
+		try
+		{
+			lPostambleString = IOUtils.toString(lPostambleAsStream);
+		}
+		catch (final IOException e)
+		{
+			lPostambleString = "";
+			e.printStackTrace();
+		}
+		return lPostambleString;
 	}
 
 	public String preProcess()

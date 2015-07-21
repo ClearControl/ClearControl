@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
 import org.python.core.Options;
 import org.python.core.PyInteger;
@@ -17,7 +16,6 @@ import org.python.util.PythonInterpreter;
 
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.scripting.engine.ScriptingEngineListener;
-import rtlib.scripting.lang.groovy.GroovyUtils;
 import rtlib.scripting.lang.jython.JythonScripting;
 import rtlib.scripting.lang.jython.JythonUtils;
 
@@ -101,7 +99,6 @@ public class TestJythonScripting
 																			String pErrorMessage)
 			{
 				System.out.println(pBinding);
-
 			}
 		});
 
@@ -112,37 +109,5 @@ public class TestJythonScripting
 
 	}
 
-	@Test
-	public void testPerformance() throws IOException
-	{
-		for (int i = 0; i < 100; i++)
-			runTest();
-	}
 
-	private void runTest() throws IOException
-	{
-		final StopWatch lStopWatch = new StopWatch();
-		lStopWatch.start();
-		GroovyUtils.runScript("TestIndy",
-													"double[] array = new double[1000]; for(int i=0; i<" + cNumberIterations
-															+ "; i++) array[i%1000]+=1+array[(i+1)%1000] ",
-													(Map<String, Object>) null,
-													null,
-													false);
-		lStopWatch.stop();
-		System.out.println("script:" + lStopWatch.getTime());
-
-		lStopWatch.reset();
-		lStopWatch.start();
-		final double[] array = new double[1000];
-		testMethod(array);
-		lStopWatch.stop();
-		System.out.println("native:" + lStopWatch.getTime());
-	}
-
-	private void testMethod(final double[] array)
-	{
-		for (int i = 0; i < cNumberIterations; i++)
-			array[i % 1000] += 1 + array[(i + 1) % 1000];
-	}
 }

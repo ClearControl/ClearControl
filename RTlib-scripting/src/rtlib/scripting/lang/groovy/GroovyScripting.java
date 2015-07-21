@@ -10,14 +10,28 @@ public class GroovyScripting implements ScriptingLanguageInterface
 {
 
 	@Override
-	public void runScript(String pScriptName,
-												String pPreprocessedPostamble,
+	public String getPostamble()
+	{
+		return "";
+	}
+
+	@Override
+	public String getPreamble()
+	{
+		return "def isCanceled = { return scriptengine.isCancelRequested() }\n";
+	}
+
+	@Override
+	public void runScript(String pPreambleString,
+												String pScriptName,
+												String pScriptString,
 												Map<String, Object> pMap,
 												OutputStream pOutputStream,
 												boolean pDebugMode) throws IOException
 	{
-		GroovyUtils.runScript(pScriptName,
-													pPreprocessedPostamble,
+		GroovyUtils.runScript(pPreambleString,
+													pScriptName,
+													pScriptString,
 													pMap,
 													pOutputStream,
 													pDebugMode);
@@ -28,7 +42,10 @@ public class GroovyScripting implements ScriptingLanguageInterface
 	{
 		if (pThrowable == null)
 			return null;
-		return pThrowable.getMessage();
+		return pThrowable.getClass().getSimpleName() + "->"
+						+ pThrowable.getMessage();
 	}
+
+
 
 }

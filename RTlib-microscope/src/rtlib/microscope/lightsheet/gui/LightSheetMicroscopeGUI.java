@@ -27,7 +27,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 	private final ArrayList<Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack2DVideoDeviceList = new ArrayList<>();
 	private final ArrayList<Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack3DVideoDeviceList = new ArrayList<>();
 	private ScriptingWindow mScriptingWindow;
-	private boolean m3dView;
+	private final boolean m3dView;
 
 	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
 																	boolean p3DView)
@@ -66,6 +66,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 
 			final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
 																																		null);
+			lScriptingEngine.loadLastExecutedScript();
 
 			lScriptingEngine.addListener(new ScriptingEngineListener()
 			{

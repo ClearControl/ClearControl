@@ -9,11 +9,26 @@ import org.python.util.PythonInterpreter;
 public class JythonUtils
 {
 
-	public static void runScript(	final String pScriptName,
-																final String pScriptString,
-																Map<String, Object> pMap,
-																OutputStream pOutputStream,
-																boolean pB)
+	public static Object runScript(	final String pScriptName,
+																	final String pScriptString,
+																	Map<String, Object> pMap,
+																	OutputStream pOutputStream,
+																	boolean pDebug)
+	{
+		return runScript(	"",
+											pScriptName,
+											pScriptString,
+											pMap,
+											pOutputStream,
+											pDebug);
+	}
+
+	public static Object runScript(	final String pPreambleString,
+																	final String pScriptName,
+																	final String pScriptString,
+																	Map<String, Object> pMap,
+																	OutputStream pOutputStream,
+																	boolean pDebug)
 	{
 		Options.importSite = false;
 		final PythonInterpreter lPythonInterpreter = new PythonInterpreter();
@@ -31,7 +46,8 @@ public class JythonUtils
 			lPythonInterpreter.setErr(pOutputStream);
 		}
 
-		lPythonInterpreter.exec(pScriptString);
+		lPythonInterpreter.exec(pPreambleString + "\n"
+																										+ pScriptString);
 
 		for (final Map.Entry<String, Object> lEntry : pMap.entrySet())
 		{
@@ -41,6 +57,8 @@ public class JythonUtils
 		}
 
 		lPythonInterpreter.close();
+
+		return null;
 
 	}
 

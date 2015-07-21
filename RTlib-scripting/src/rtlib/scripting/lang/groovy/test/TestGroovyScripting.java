@@ -2,8 +2,10 @@ package rtlib.scripting.lang.groovy.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -39,20 +41,38 @@ public class TestGroovyScripting
 	}
 
 	@Test
+	public void testAutoImports() throws IOException
+	{
+
+		try
+		{
+			GroovyUtils.runScript("TestAutoImports",
+														"String lString = new String(\"test\");  ",
+														(Map<String, Object>) null,
+														null,
+														false);
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	@Test
 	public void testGroovyScriptingWithScriptEngine()	throws IOException,
 																										ExecutionException
 	{
-		final Double x = new Double(1);
-		final Double y = new Double(2);
+		final HashSet<Double> s = new HashSet<>();
+		s.add((double) 1);
 
 		final GroovyScripting lGroovyScripting = new GroovyScripting();
 
-		final ScriptingEngine lScriptingEngine = new ScriptingEngine(lGroovyScripting,
-																												null);
+		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
+																																	null);
 
-		lScriptingEngine.set("x", x);
-		lScriptingEngine.set("y", y);
-		lScriptingEngine.setScript("x=y");
+		lScriptingEngine.set("s", s);
+		lScriptingEngine.setScript("s.add(2.0); println \"script:\"+s");
 
 		lScriptingEngine.addListener(new ScriptingEngineListener()
 		{
@@ -85,14 +105,19 @@ public class TestGroovyScripting
 																			String pErrorMessage)
 			{
 				System.out.println(pErrorMessage);
+				if (pThrowable != null)
+					pThrowable.printStackTrace();
 			}
 		});
 
 		lScriptingEngine.executeScriptAsynchronously();
 
-		assertTrue(lScriptingEngine.waitForCompletion(1, TimeUnit.SECONDS));
+		assertTrue(lScriptingEngine.waitForCompletion(1000,
+																									TimeUnit.SECONDS));
 
-		assertEquals(lScriptingEngine.get("x"), lScriptingEngine.get("y"));
+		System.out.println("code:" + s);
+		assertTrue(s.contains(1.0));
+		assertTrue(s.size() == 2);
 
 	}
 

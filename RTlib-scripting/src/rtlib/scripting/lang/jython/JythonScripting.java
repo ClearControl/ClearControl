@@ -10,13 +10,27 @@ public class JythonScripting implements ScriptingLanguageInterface
 {
 
 	@Override
-	public void runScript(String pScriptName,
+	public String getPostamble()
+	{
+		return "";
+	}
+
+	@Override
+	public String getPreamble()
+	{
+		return "";
+	}
+
+	@Override
+	public void runScript(String pPreambleString,
+												String pScriptName,
 												String pScriptString,
 												Map<String, Object> pMap,
 												OutputStream pOutputStream,
 												boolean pDebugMode) throws IOException
 	{
-		JythonUtils.runScript(pScriptName,
+		JythonUtils.runScript(pPreambleString,
+													pScriptName,
 													pScriptString,
 													pMap,
 													pOutputStream,
@@ -35,5 +49,6 @@ public class JythonScripting implements ScriptingLanguageInterface
 		}/**/
 		return pThrowable.toString();
 	}
+
 
 }
