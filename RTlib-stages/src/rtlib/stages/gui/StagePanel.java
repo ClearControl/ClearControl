@@ -10,7 +10,7 @@ public class StagePanel extends JPanel
 {
 	// TODO: HK please make it beautifull...
 
-
+ /*
 	public final JSliderDouble mPiezoStage;
 	private final JSliderDouble mStageXSliderDouble, mStageYSliderDouble,
 			mStageZSliderDouble, mStageRSliderDouble;
@@ -104,5 +104,7 @@ public class StagePanel extends JPanel
 		mStageZSliderDouble.getDoubleVariable().setCurrent();
 		mStageRSliderDouble.getDoubleVariable().setCurrent();
 	}
+	
+	/**/
 
 }
