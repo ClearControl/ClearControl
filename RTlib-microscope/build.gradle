@@ -15,7 +15,7 @@ dependencies {
 	compile project(':RTlib-ao')
 	compile project(':RTlib-cameras')
 	compile project(':RTlib-compression')
-	compile project(':RTlib-filterwheels')
+	compile project(':RTlib-optomech')
 	compile project(':RTlib-gui')
 	compile project(':RTlib-imglib2')
 	compile project(':RTlib-ip')
