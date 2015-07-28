@@ -11,34 +11,36 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
 
-public class DetectionPath extends NamedVirtualDevice	implements
-																											DetectionPathInterface
+public class DetectionArm extends NamedVirtualDevice implements
+																										DetectionArmInterface
 {
 
 	private final DoubleVariable mDetectionFocusZ = new DoubleVariable(	"FocusZ",
 																																			0);
-	
+
 	private final ObjectVariable<UnivariateFunction> mDetectionZFunction = new ObjectVariable<UnivariateFunction>("DetectionZFunction",
-																																																									new UnivariateAffineFunction());
+																																																								new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z.be",
 																																				0);
 
-	private int mStaveIndex;
+	private final int mStaveIndex;
 
-	public DetectionPath(String pName)
-	{
-		this(	pName,
-					MachineConfiguration.getCurrentMachineConfiguration()
-															.getIntegerProperty("device.lsm.detection." + pName
-		        																										+ ".index.z",
-		        																										0));
-
-	}
-
-	public DetectionPath(String pName, int pStaveIndex)
+	public DetectionArm(String pName, int pStaveIndex)
 	{
 		super(pName + pStaveIndex);
+
+		final double lA = MachineConfiguration.getCurrentMachineConfiguration()
+																					.getDoubleProperty(	"device.lsm.detection." + pName
+																																	+ ".sa",
+																															1);
+
+		final double lB = MachineConfiguration.getCurrentMachineConfiguration()
+																					.getDoubleProperty(	"device.lsm.detection." + pName
+																																	+ ".sb",
+																															0);
+
+		mDetectionZFunction.set(new UnivariateAffineFunction(lA, lB));
 
 		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
 			update();
@@ -56,9 +58,26 @@ public class DetectionPath extends NamedVirtualDevice	implements
 
 	}
 
+	public DetectionArm(String pName)
+	{
+		this(	pName,
+					MachineConfiguration.getCurrentMachineConfiguration()
+															.getIntegerProperty("device.lsm.detection." + pName
+																											+ ".index.z",
+																									0));
+
+	}
+
+	@Override
 	public DoubleVariable getDetectionFocusZInMicronsVariable()
 	{
 		return mDetectionFocusZ;
+	}
+
+	@Override
+	public ObjectVariable<UnivariateFunction> getDetectionFocusZFunction()
+	{
+		return mDetectionZFunction;
 	}
 
 	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
@@ -71,8 +90,7 @@ public class DetectionPath extends NamedVirtualDevice	implements
 	public void addStavesToExposureMovement(Movement pExposureMovement)
 	{
 		// Analog outputs at exposure:
-		pExposureMovement.setStave(mStaveIndex,
-																mDetectionPathStaveZ);
+		pExposureMovement.setStave(mStaveIndex, mDetectionPathStaveZ);
 	}
 
 	public void update()

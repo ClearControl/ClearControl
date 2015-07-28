@@ -13,7 +13,7 @@ import org.junit.Test;
 import rtlib.core.variable.VariableListener;
 import rtlib.gui.swing.JTextFieldDouble;
 
-public class VideoFrame2DDisplayDemo
+public class TextFieldDoubleDemo
 {
 
 	@Test

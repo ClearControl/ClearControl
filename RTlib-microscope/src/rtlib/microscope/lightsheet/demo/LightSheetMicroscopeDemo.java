@@ -18,7 +18,7 @@ import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
-import rtlib.microscope.lightsheet.detection.DetectionPath;
+import rtlib.microscope.lightsheet.detection.DetectionArm;
 import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
 import rtlib.stack.processor.StackIdentityPipeline;
@@ -146,14 +146,14 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pCameras.size(); i++)
 		{
-			final DetectionPath lDetectionPath = new DetectionPath(	"demodetpath",
+			final DetectionArm lDetectionArm = new DetectionArm(	"demodetpath",
 																															i);
 
 			lLightSheetMicroscope.getDeviceLists()
-														.addDetectionPathDevice(lDetectionPath);
+														.addDetectionArmDevice(lDetectionArm);
 
-			lDetectionPath.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
-			lDetectionPath.addStavesToExposureMovement(lExposureMovement);
+			lDetectionArm.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
+			lDetectionArm.addStavesToExposureMovement(lExposureMovement);
 		}
 
 		// Setting up lightsheets:

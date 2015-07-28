@@ -19,10 +19,19 @@ public class TC01libLibrary {
 	static {
 		BridJ.register();
 	}
+	
 	/**
 	 * TC01lib<br>
 	 * Original signature : <code>double TC01lib(char[], int32_t)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace2\RTlib\RTlib-sensors\src\rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:9</i>
+	 * <i>native declaration :
+	 * C:\Users\myerslab\workspace2\RTlib\RTlib-sensors\src
+	 * \rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:9</i>
+	 * 
+	 * @param physicalChannel
+	 *          channel
+	 * @param thermocoupleType
+	 *          type
+	 * @return temperature in Celcius
 	 */
 	@Name("TC01lib") 
 	public static double tC01lib(Pointer<Byte > physicalChannel, int thermocoupleType) {
@@ -30,9 +39,20 @@ public class TC01libLibrary {
 	}
 	@Name("TC01lib") 
 	protected native static double tC01lib(@Ptr long physicalChannel, int thermocoupleType);
+	
 	/**
 	 * Original signature : <code>long LVDLLStatus(char*, int, void*)</code><br>
-	 * <i>native declaration : C:\Users\myerslab\workspace2\RTlib\RTlib-sensors\src\rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:11</i>
+	 * <i>native declaration :
+	 * C:\Users\myerslab\workspace2\RTlib\RTlib-sensors\src
+	 * \rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:11</i>
+	 * 
+	 * @param errStr
+	 *          error string
+	 * @param errStrLen
+	 *          error str length
+	 * @param module
+	 *          module
+	 * @return code
 	 */
 	@Name("LVDLLStatus") 
 	@CLong 

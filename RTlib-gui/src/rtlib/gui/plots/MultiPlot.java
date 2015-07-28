@@ -73,4 +73,9 @@ public class MultiPlot
 		mFrame.setVisible(pIsVisible);
 	}
 
+	public boolean isVisible()
+	{
+		return mFrame.isVisible();
+	}
+
 }

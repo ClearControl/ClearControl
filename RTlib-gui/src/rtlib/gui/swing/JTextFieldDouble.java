@@ -90,6 +90,7 @@ public class JTextFieldDouble extends JPanel
 			}
 		};
 
+
 		setLayout(new BorderLayout(0, 0));
 
 		mNameLabel = new JLabel(pValueName);

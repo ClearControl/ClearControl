@@ -8,7 +8,8 @@ import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.filterwheels.FilterWheelDeviceInterface;
-import rtlib.microscope.lightsheet.detection.DetectionPathInterface;
+import rtlib.lasers.LaserDeviceInterface;
+import rtlib.microscope.lightsheet.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.illumination.LightSheetInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
@@ -21,9 +22,10 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<Object> mAllDeviceList = new ArrayList<>();
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceList = new ArrayList<>();
+	private final ArrayList<LaserDeviceInterface> mLaserDeviceList = new ArrayList<>();
 	private final ArrayList<SignalGeneratorInterface> mSignalGeneratorList = new ArrayList<>();
 	private final ArrayList<LightSheetInterface> mLightSheetList = new ArrayList<>();
-	private final ArrayList<DetectionPathInterface> mDetectionPathList = new ArrayList<>();
+	private final ArrayList<DetectionArmInterface> mDetectionArmList = new ArrayList<>();
 	private final ArrayList<FilterWheelDeviceInterface> mFilterWheelList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mDetectionPhaseModulatorDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mIlluminationPhaseModulatorDeviceList = new ArrayList<>();
@@ -113,21 +115,21 @@ public class LightSheetMicroscopeDeviceLists
 		return mLightSheetList.get(pIndex);
 	}
 
-	public int addDetectionPathDevice(DetectionPathInterface pDetectionPath)
+	public int addDetectionArmDevice(DetectionArmInterface pDetectionArm)
 	{
-		mAllDeviceList.add(pDetectionPath);
-		mDetectionPathList.add(pDetectionPath);
-		return mDetectionPathList.size() - 1;
+		mAllDeviceList.add(pDetectionArm);
+		mDetectionArmList.add(pDetectionArm);
+		return mDetectionArmList.size() - 1;
 	}
 
-	public int getNumberOfDetectionPathDevices()
+	public int getNumberOfDetectionArmDevices()
 	{
-		return mDetectionPathList.size();
+		return mDetectionArmList.size();
 	}
 
-	public DetectionPathInterface getDetectionPathDevice(int pIndex)
+	public DetectionArmInterface getDetectionArmDevice(int pIndex)
 	{
-		return mDetectionPathList.get(pIndex);
+		return mDetectionArmList.get(pIndex);
 	}
 
 	public int addFilterWheelDevice(FilterWheelDeviceInterface pFilterWheelDeviceInterface)
@@ -199,6 +201,22 @@ public class LightSheetMicroscopeDeviceLists
 	}
 
 
+	public int addLaserDevice(LaserDeviceInterface pLaserDeviceInterface)
+	{
+		mAllDeviceList.add(pLaserDeviceInterface);
+		mLaserDeviceList.add(pLaserDeviceInterface);
+		return mLaserDeviceList.size() - 1;
+	}
+
+	public int getNumberOfLaserDevices()
+	{
+		return mLaserDeviceList.size();
+	}
+
+	public LaserDeviceInterface getLaserDevice(int pIndex)
+	{
+		return mLaserDeviceList.get(pIndex);
+	}
 
 	public ArrayList<Object> getAllDeviceList()
 	{
@@ -213,13 +231,14 @@ public class LightSheetMicroscopeDeviceLists
 	@Override
 	public String toString()
 	{
-		StringBuilder lBuilder = new StringBuilder();
-		for (Object lDevice : mAllDeviceList)
+		final StringBuilder lBuilder = new StringBuilder();
+		for (final Object lDevice : mAllDeviceList)
 		{
 			lBuilder.append(lDevice.toString());
 			lBuilder.append("\n");
 		}
 		return lBuilder.toString();
 	}
+
 
 }

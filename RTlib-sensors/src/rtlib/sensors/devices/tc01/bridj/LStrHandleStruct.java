@@ -16,20 +16,35 @@ public class LStrHandleStruct extends StructObject {
 	static {
 		BridJ.register();
 	}
-	/** number of bytes that follow */
+
+	/**
+	 * number of bytes that follow
+	 * 
+	 * @return number of bytes that follow
+	 */
 	@Field(0) 
 	public int cnt() {
 		return this.io.getIntField(this, 0);
 	}
-	/** number of bytes that follow */
+
+	/**
+	 * number of bytes that follow
+	 * 
+	 * @param cnt
+	 *          number of bytes that follow
+	 * @return number of bytes that follow
+	 */
 	@Field(0) 
 	public LStrHandleStruct cnt(int cnt) {
 		this.io.setIntField(this, 0, cnt);
 		return this;
 	}
+	
 	/**
 	 * cnt bytes<br>
 	 * C type : char[1]
+	 * 
+	 * @return number of bytes that follow
 	 */
 	@Array({1}) 
 	@Field(1) 

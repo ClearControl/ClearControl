@@ -110,7 +110,7 @@ public class VideoFrame2DDisplayDemo
 																																																InvocationTargetException
 	{
 
-		final JFrame lJFrame = new JFrame("VideoFrame2DDisplayDemo");
+		final JFrame lJFrame = new JFrame("TextFieldDoubleDemo");
 
 		SwingUtilities.invokeAndWait(new Runnable()
 		{

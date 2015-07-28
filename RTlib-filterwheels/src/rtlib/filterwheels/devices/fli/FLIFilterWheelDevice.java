@@ -8,118 +8,118 @@ import rtlib.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
 import rtlib.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;
 import rtlib.serial.SerialDevice;
 
-public class FLIFilterWheelDevice extends SerialDevice implements
-																											FilterWheelDeviceInterface
+public class FLIFilterWheelDevice	extends
+									SerialDevice implements FilterWheelDeviceInterface
 {
 
 	private final DoubleVariable mFilterPositionVariable,
-			mFilterSpeedVariable;
+		mFilterSpeedVariable;
 	private volatile int mCachedPosition, mCachedSpeed;
 
 	public FLIFilterWheelDevice(final int pDeviceIndex)
 	{
-		this(MachineConfiguration.getCurrentMachineConfiguration()
-															.getSerialDevicePort(	"filterwheel.fli",
-																										pDeviceIndex,
-																										"NULL"));
+	this(MachineConfiguration	.getCurrentMachineConfiguration()
+								.getSerialDevicePort(	"filterwheel.fli",
+														pDeviceIndex,
+														"NULL"));
 	}
 
 	public FLIFilterWheelDevice(final String pPortName)
 	{
-		super("FLIFilterWheel", pPortName, 9600);
+	super("FLIFilterWheel", pPortName, 9600);
 
-		final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
-		mFilterPositionVariable = addSerialDoubleVariable("FilterWheelPosition",
-																											lFilterWheelPosition);
-		mFilterPositionVariable.addSetListener(new VariableSetListener<Double>()
+	final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
+	mFilterPositionVariable = addSerialDoubleVariable(	"FilterWheelPosition",
+														lFilterWheelPosition);
+	mFilterPositionVariable.addSetListener(new VariableSetListener<Double>()
+	{
+		@Override
+		public void setEvent(	final Double pCurrentValue,
+								final Double pNewValue)
 		{
-			@Override
-			public void setEvent(	final Double pCurrentValue,
-														final Double pNewValue)
-			{
-				updateCache(pNewValue);
-			}
+		updateCache(pNewValue);
+		}
 
-			private void updateCache(final Double pNewValue)
-			{
-				mCachedPosition = (int) (pNewValue == null ? 0
-																									: pNewValue.doubleValue());
-			}
-		});
-
-		final FilterWheelSpeedDeviceAdapter lFilterWheelSpeed = new FilterWheelSpeedDeviceAdapter(this);
-		mFilterSpeedVariable = addSerialDoubleVariable(	"FilterWheelSpeed",
-																										lFilterWheelSpeed);
-		mFilterSpeedVariable.addSetListener(new VariableSetListener<Double>()
+		private void updateCache(final Double pNewValue)
 		{
-			@Override
-			public void setEvent(	final Double pCurrentValue,
-														final Double pNewValue)
-			{
-				updateCache(pNewValue);
-			}
+		mCachedPosition = (int) (pNewValue == null	? 0
+													: pNewValue.doubleValue());
+		}
+	});
 
-			private void updateCache(final Double pNewValue)
-			{
-				mCachedSpeed = (int) (pNewValue == null	? 0
-																								: pNewValue.doubleValue());
-			}
-		});
+	final FilterWheelSpeedDeviceAdapter lFilterWheelSpeed = new FilterWheelSpeedDeviceAdapter(this);
+	mFilterSpeedVariable = addSerialDoubleVariable(	"FilterWheelSpeed",
+													lFilterWheelSpeed);
+	mFilterSpeedVariable.addSetListener(new VariableSetListener<Double>()
+	{
+		@Override
+		public void setEvent(	final Double pCurrentValue,
+								final Double pNewValue)
+		{
+		updateCache(pNewValue);
+		}
+
+		private void updateCache(final Double pNewValue)
+		{
+		mCachedSpeed = (int) (pNewValue == null	? 0
+												: pNewValue.doubleValue());
+		}
+	});
 	}
 
 	@Override
 	public final DoubleVariable getPositionVariable()
 	{
-		return mFilterPositionVariable;
+	return mFilterPositionVariable;
 	}
 
 	@Override
 	public final DoubleVariable getSpeedVariable()
 	{
-		return mFilterSpeedVariable;
+	return mFilterSpeedVariable;
 	}
 
 	@Override
 	public int getPosition()
 	{
-		return (int) mFilterPositionVariable.getValue();
+	return (int) mFilterPositionVariable.getValue();
 	}
 
 	public int getCachedPosition()
 	{
-		return mCachedPosition;
+	return mCachedPosition;
 	}
 
 	@Override
 	public void setPosition(final int pPosition)
 	{
-		mFilterPositionVariable.setValue(pPosition);
+	mFilterPositionVariable.setValue(pPosition);
 	}
 
 	@Override
 	public int getSpeed()
 	{
-		return (int) mFilterSpeedVariable.getValue();
+	return (int) mFilterSpeedVariable.getValue();
 	}
 
 	public int getCachedSpeed()
 	{
-		return mCachedSpeed;
+	return mCachedSpeed;
 	}
 
 	@Override
 	public void setSpeed(final int pSpeed)
 	{
-		mFilterSpeedVariable.setValue(pSpeed);
+	mFilterSpeedVariable.setValue(pSpeed);
 	}
 
 	@Override
 	public boolean open()
 	{
-		final boolean lIsOpened = super.open();
-		setSpeed(1);
-		setPosition(0);
-		return lIsOpened;
+	final boolean lIsOpened = super.open();
+	setSpeed(1);
+	setPosition(0);
+	return lIsOpened;
 	}
 
 }

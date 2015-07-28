@@ -15,17 +15,20 @@ public class PlotTab
 	private static final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 	private static final Object mLock = new Object();
 
-	private final TDoubleArrayList mX = new TDoubleArrayList();
-	private final HashMap<String, TDoubleArrayList> mCorrectionVariables;
+	private final HashMap<String, TDoubleArrayList> mX;
+	private final HashMap<String, TDoubleArrayList> mY;
+	private final HashMap<String, Boolean> mIsLinePlot;
 	private final Plot2DPanel mPlot;
 	private boolean mUpToDate = false;
 
-	private boolean mIsLinePlot = false;
+
 
 	public PlotTab(final String pName) throws HeadlessException
 	{
 		mPlot = new Plot2DPanel();
-		mCorrectionVariables = new HashMap<String, TDoubleArrayList>();
+		mX = new HashMap<String, TDoubleArrayList>();
+		mY = new HashMap<String, TDoubleArrayList>();
+		mIsLinePlot = new HashMap<String, Boolean>();
 	}
 
 	public void addPoint(final String pVariableName, final double pY)
@@ -41,19 +44,24 @@ public class PlotTab
 		{
 			try
 			{
-				TDoubleArrayList lY = mCorrectionVariables.get(pVariableName);
+				TDoubleArrayList lX = mX.get(pVariableName);
+				if (lX == null)
+				{
+					lX = new TDoubleArrayList();
+					mX.put(pVariableName, lX);
+				}
+
+				lX.add(pX);
+
+				TDoubleArrayList lY = mY.get(pVariableName);
 
 				if (lY == null)
 				{
 					lY = new TDoubleArrayList();
-					mCorrectionVariables.put(pVariableName, lY);
+					mY.put(pVariableName, lY);
 				}
 
 				lY.add(pY);
-				if (mX.size() < lY.size())
-				{
-					mX.add(pX);
-				}
 
 				mUpToDate = false;
 			}
@@ -81,31 +89,27 @@ public class PlotTab
 							{
 								mPlot.removeAllPlots();
 							}
-							catch (Throwable e)
+							catch (final Throwable e)
 							{
 								System.err.println(e.getLocalizedMessage());
 							}
 
-							for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
+							for (final Entry<String, TDoubleArrayList> lEntry : mY.entrySet())
 							{
-								final String lCorrectionVariableName = lEntry.getKey();
+								final String lVariableName = lEntry.getKey();
+								final TDoubleArrayList lX = mX.get(lVariableName);
 								final TDoubleArrayList lY = lEntry.getValue();
 
-								if (!isDataComplete(lY))
+								if (mIsLinePlot.get(lVariableName))
 								{
-									continue;
-								}
-
-								if (mIsLinePlot && mX.size() >= 3)
-								{
-									mPlot.addLinePlot(lCorrectionVariableName,
-																		mX.toArray(),
+									mPlot.addLinePlot(lVariableName,
+																		lX.toArray(),
 																		lY.toArray());
 								}
 								else
 								{
-									mPlot.addScatterPlot(	lCorrectionVariableName,
-																				mX.toArray(),
+									mPlot.addScatterPlot(	lVariableName,
+																				lX.toArray(),
 																				lY.toArray());
 								}
 
@@ -130,29 +134,6 @@ public class PlotTab
 		execute(lEnsureUpToDateRunnable);
 	}
 
-	protected boolean isDataComplete()
-	{
-
-		for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
-		{
-
-			final TDoubleArrayList lY = lEntry.getValue();
-			final boolean lIsDataComplete = isDataComplete(lY);
-			if (lIsDataComplete)
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	protected boolean isDataComplete(final TDoubleArrayList pY)
-	{
-
-		return pY.size() == mX.size();
-	}
-
 	public Plot2DPanel getPlot()
 	{
 		return mPlot;
@@ -163,12 +144,12 @@ public class PlotTab
 		synchronized (mLock)
 		{
 			mX.clear();
-			for (final Entry<String, TDoubleArrayList> lEntry : mCorrectionVariables.entrySet())
+			for (final Entry<String, TDoubleArrayList> lEntry : mY.entrySet())
 			{
 				final TDoubleArrayList lY = lEntry.getValue();
 				lY.clear();
 			}
-			mCorrectionVariables.clear();
+			mY.clear();
 		}
 	}
 
@@ -177,19 +158,19 @@ public class PlotTab
 		java.awt.EventQueue.invokeLater(pRunnable);
 	}
 
-	public boolean isIsLinePlot()
+	public boolean isIsLinePlot(String pVariableName)
 	{
-		return mIsLinePlot;
+		return mIsLinePlot.get(pVariableName);
 	}
 
-	public void setLinePlot()
+	public void setLinePlot(String pVariableName)
 	{
-		mIsLinePlot = true;
+		mIsLinePlot.put(pVariableName, true);
 	}
 
-	public void setScatterPlot()
+	public void setScatterPlot(String pVariableName)
 	{
-		mIsLinePlot = false;
+		mIsLinePlot.put(pVariableName, false);
 	}
 
 }

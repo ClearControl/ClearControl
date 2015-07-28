@@ -123,6 +123,7 @@ public class JSliderDouble extends JPanel
 			}
 		};
 
+
 		setMaximumSize(new Dimension(1024, 90));
 		setMinimumSize(new Dimension(128, 90));
 		setLayout(new MigLayout("fill,insets 0",

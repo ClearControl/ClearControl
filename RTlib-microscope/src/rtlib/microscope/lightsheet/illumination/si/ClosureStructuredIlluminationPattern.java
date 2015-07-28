@@ -1,13 +1,14 @@
 package rtlib.microscope.lightsheet.illumination.si;
 
 import rtlib.symphony.staves.ClosurePatternSteppingStave;
+import rtlib.symphony.staves.SteppingFunction;
 
 public class ClosureStructuredIlluminationPattern	extends
 																									GenericStructuredIlluminationPattern<ClosurePatternSteppingStave>	implements
 																																																										StructuredIlluminatioPatternInterface
 {
 
-	public ClosureStructuredIlluminationPattern(ClosurePatternSteppingStave.SteppingFunction pSteppingFunction,
+	public ClosureStructuredIlluminationPattern(SteppingFunction pSteppingFunction,
 																							int pNumberOfPhases)
 	{
 		super(new ClosurePatternSteppingStave("trigger.out.e",
@@ -15,7 +16,7 @@ public class ClosureStructuredIlluminationPattern	extends
 					pNumberOfPhases);
 	}
 
-	public void setSteppingFunction(ClosurePatternSteppingStave.SteppingFunction pSteppingFunction)
+	public void setSteppingFunction(SteppingFunction pSteppingFunction)
 	{
 		setStave(new ClosurePatternSteppingStave(	"trigger.out.e",
 																							pSteppingFunction));

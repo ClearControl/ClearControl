@@ -44,6 +44,10 @@ public class LightSheet extends NamedVirtualDevice implements
 																																																														new UnivariateAffineFunction(	1,
 																																																																													0));
 
+	private final ObjectVariable<UnivariateFunction> mLightSheetPowerFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetIrisDiameterFunction",
+																																																											new UnivariateAffineFunction(	0.01,
+																																																																										0));
+
 	private final DoubleVariable mEffectiveExposureInMicroseconds = new DoubleVariable(	"EffectiveExposureInMicroseconds",
 																																											5000);
 	private final DoubleVariable mImageHeight = new DoubleVariable(	"ImageHeight",
@@ -71,17 +75,15 @@ public class LightSheet extends NamedVirtualDevice implements
 																																							0);
 	private final DoubleVariable mLightSheetLengthInMicrons = new DoubleVariable(	"LightSheetLengthInMicrons",
 																																								100);
+	private final DoubleVariable mLightSheetPowerInmW = new DoubleVariable(	"LightSheetLengthPowerInmW ",
+																																					100);
 
 	private final DoubleVariable mLineExposureInMicroseconds = new DoubleVariable("LineExposureInMicroseconds",
 																																								10);
 
 	private final BooleanVariable[] mLaserOnOffArray;
 
-	private final BooleanVariable mSIPatternOnOff = new BooleanVariable("SIPatternOnOff",
-																																			false);
-
-	private final DoubleVariable mNumberOfPhasesPerPlane = new DoubleVariable("NumberOfPhases",
-																																						1);
+	private final BooleanVariable[] mSIPatternOnOff;
 
 	private final ObjectVariable<StructuredIlluminatioPatternInterface>[] mStructuredIlluminationPatternVariableArray;
 
@@ -114,6 +116,8 @@ public class LightSheet extends NamedVirtualDevice implements
 		};
 
 		mLaserOnOffArray = new BooleanVariable[mNumberOfLaserDigitalControls];
+
+		mSIPatternOnOff = new BooleanVariable[mNumberOfLaserDigitalControls];
 
 		mStructuredIlluminationPatternVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
@@ -155,6 +159,10 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			mLaserOnOffArray[i] = new BooleanVariable(lLaserName, false);
 			mLaserOnOffArray[i].addSetListener(lDoubleVariableListener);
+
+			mSIPatternOnOff[i] = new BooleanVariable(	lLaserName + "SIPatternOnOff",
+																								false);
+			mSIPatternOnOff[i].addSetListener(lDoubleVariableListener);
 		}
 
 		mReadoutTimeInMicrosecondsPerLine.addSetListener(lDoubleVariableListener);
@@ -175,8 +183,61 @@ public class LightSheet extends NamedVirtualDevice implements
 																																			v) -> {
 				update();
 			});
-
 		}
+
+		mLightSheetXFunction.set(new UnivariateAffineFunction(MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".x.sa",
+																																																	1),
+																													MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".x.sb",
+																																																	0)));
+
+		mLightSheetYFunction.set(new UnivariateAffineFunction(MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".y.sa",
+																																																	1),
+																													MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".y.sb",
+																																																	0)));
+
+		mLightSheetZFunction.set(new UnivariateAffineFunction(MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".z.sa",
+																																																	1),
+																													MachineConfiguration.getCurrentMachineConfiguration()
+																																							.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																			+ ".z.sb",
+																																																	0)));
+
+		mLightSheetBetaFunction.set(new UnivariateAffineFunction(	MachineConfiguration.getCurrentMachineConfiguration()
+																																									.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																					+ ".beta.sa",
+																																																			1),
+																															MachineConfiguration.getCurrentMachineConfiguration()
+																																									.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																					+ ".beta.sb",
+																																																			0)));
+
+		mLightSheetIrisDiameterFunction.set(new UnivariateAffineFunction(	MachineConfiguration.getCurrentMachineConfiguration()
+																																													.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																									+ ".irisd.sa",
+																																																							1),
+																																			MachineConfiguration.getCurrentMachineConfiguration()
+																																													.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																									+ ".irisd.sb",
+																																																							0)));
+
+		mLightSheetPowerFunction.set(new UnivariateAffineFunction(MachineConfiguration.getCurrentMachineConfiguration()
+																																									.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																					+ ".p.sa",
+																																																			1),
+																															MachineConfiguration.getCurrentMachineConfiguration()
+																																									.getDoubleProperty(	"device.lsm.lighsheet." + pName
+																																																					+ ".p.sb",
+																																																			0)));
 
 	}
 
@@ -299,8 +360,6 @@ public class LightSheet extends NamedVirtualDevice implements
 		synchronized (this)
 		{
 
-			mNumberOfPhasesPerPlane.setValue(getNumberOfPhases());
-
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
@@ -321,14 +380,14 @@ public class LightSheet extends NamedVirtualDevice implements
 			final double lGalvoAmplitudeZ = galvoRotateZ(	lLightSheetlength,
 																										0);
 
-			final double lGalvoYLowValue = getLightSheetYConversion().get()
+			final double lGalvoYLowValue = getLightSheetYFunction().get()
 																																.value(lGalvoXOffset - lGalvoAmplitudeX);
-			final double lGalvoYHighValue = getLightSheetYConversion().get()
+			final double lGalvoYHighValue = getLightSheetYFunction().get()
 																																.value(lGalvoXOffset + lGalvoAmplitudeX);
 
-			final double lGalvoZLowValue = getLightSheetZConversion().get()
+			final double lGalvoZLowValue = getLightSheetZFunction().get()
 																																.value(lGalvoZOffset - lGalvoAmplitudeZ);
-			final double lGalvoZHighValue = getLightSheetZConversion().get()
+			final double lGalvoZHighValue = getLightSheetZFunction().get()
 																																.value(lGalvoZOffset + lGalvoAmplitudeZ);
 
 			mLightSheetStaveBeforeExposureX.setSyncStart(0);
@@ -360,9 +419,9 @@ public class LightSheet extends NamedVirtualDevice implements
 			mLightSheetStaveExposureY.setValue((float) getLightSheetXFunction().get()
 																																					.value(mLightSheetXInMicrons.getValue()));
 
-			mLightSheetStaveBeforeExposureB.setValue((float) getLightSheetBetaConversion().get()
+			mLightSheetStaveBeforeExposureB.setValue((float) getLightSheetBetaFunction().get()
 																																										.value(mLightSheetBetaInDegrees.getValue()));
-			mLightSheetStaveExposureB.setValue((float) getLightSheetBetaConversion().get()
+			mLightSheetStaveExposureB.setValue((float) getLightSheetBetaFunction().get()
 																																							.value(mLightSheetBetaInDegrees.getValue()));
 
 			final double lFocalLength = mFocalLengthInMicronsVariable.get();
@@ -373,7 +432,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																																								lLambdaInMicrons,
 																																								lLightSheetRangeInMicrons);
 
-			mLightSheetStaveBeforeExposureR.setValue((float) getLightSheetIrisDiameterConversion().get()
+			mLightSheetStaveBeforeExposureR.setValue((float) getLightSheetIrisDiameterFunction().get()
 																																														.value(lIrisDiameterInMm));
 			mLightSheetStaveExposureR.setValue(mLightSheetStaveBeforeExposureR.getConstantValue());
 
@@ -381,20 +440,24 @@ public class LightSheet extends NamedVirtualDevice implements
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
 																																			lMarginTimeInMicroseconds);
 
-			mLightSheetStaveBeforeExposureX.setStepping(mSIPatternOnOff.getBooleanValue());
-			mLightSheetStaveExposureX.setStepping(mSIPatternOnOff.getBooleanValue());
+			boolean lIsStepping = true;
+			for (int i = 0; i < mLaserOnOffArray.length; i++)
+				lIsStepping &= mSIPatternOnOff[i].getBooleanValue();
 
-			mLightSheetStaveBeforeExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
-			mLightSheetStaveExposureZ.setStepping(mSIPatternOnOff.getBooleanValue());
+			mLightSheetStaveBeforeExposureX.setStepping(lIsStepping);
+			mLightSheetStaveExposureX.setStepping(lIsStepping);
+			mLightSheetStaveBeforeExposureZ.setStepping(lIsStepping);
+			mLightSheetStaveExposureZ.setStepping(lIsStepping);
 
 			for (int i = 0; i < mLaserOnOffArray.length; i++)
 			{
+
 				final BooleanVariable lLaserBooleanVariable = mLaserOnOffArray[i];
 				final StructuredIlluminatioPatternInterface lStructuredIlluminatioPatternInterface = mStructuredIlluminationPatternVariableArray[i].get();
 				final StaveInterface lLaserTriggerStave = lStructuredIlluminatioPatternInterface.getStave(lMarginTimeRelativeUnits);
 				lLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
 
-				if (mSIPatternOnOff.getBooleanValue())
+				if (mSIPatternOnOff[i].getBooleanValue())
 					setLaserDigitalTriggerStave(mExposureMovement,
 																			i,
 																			lLaserTriggerStave);
@@ -406,8 +469,10 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			}
 
-			mLightSheetStaveExposureLA.setValue(1);
-			mLightSheetStaveBeforeExposureLA.setValue(1);
+			mLightSheetStaveExposureLA.setValue((float) mLightSheetPowerFunction.get()
+																																					.value(mLightSheetPowerInmW.getValue()));
+			mLightSheetStaveBeforeExposureLA.setValue((float) mLightSheetPowerFunction.get()
+																																								.value(mLightSheetPowerInmW.getValue()));
 
 		}
 	}
@@ -440,13 +505,6 @@ public class LightSheet extends NamedVirtualDevice implements
 	public DoubleVariable getImageHeightVariable()
 	{
 		return mImageHeight;
-	}
-
-	@Override
-	public int getNumberOfPhases()
-	{
-		return mStructuredIlluminationPatternVariableArray[0].get()
-																													.getNumberOfPhases();
 	}
 
 	public void setEffectiveExposureInMicroseconds(final int pEffectiveExposureInMicroseconds)
@@ -515,9 +573,28 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public BooleanVariable getSIPatternOnOffVariable()
+	public DoubleVariable getLightSheetPoweInmWVariable()
 	{
-		return mSIPatternOnOff;
+		return mLightSheetPowerInmW;
+	}
+
+	@Override
+	public ObjectVariable<StructuredIlluminatioPatternInterface> getSIPatternVariable(int pLaserIndex)
+	{
+		return mStructuredIlluminationPatternVariableArray[pLaserIndex];
+	}
+
+	@Override
+	public int getNumberOfPhases(int pLaserIndex)
+	{
+		return mStructuredIlluminationPatternVariableArray[pLaserIndex].get()
+																																		.getNumberOfPhases();
+	}
+
+	@Override
+	public BooleanVariable getSIPatternOnOffVariable(int pLaserIndex)
+	{
+		return mSIPatternOnOff[pLaserIndex];
 	}
 
 	@Override
@@ -531,24 +608,29 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLightSheetXFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetYConversion()
+	public ObjectVariable<UnivariateFunction> getLightSheetYFunction()
 	{
 		return mLightSheetYFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetZConversion()
+	public ObjectVariable<UnivariateFunction> getLightSheetZFunction()
 	{
 		return mLightSheetZFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetBetaConversion()
+	public ObjectVariable<UnivariateFunction> getLightSheetBetaFunction()
 	{
 		return mLightSheetBetaFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetIrisDiameterConversion()
+	public ObjectVariable<UnivariateFunction> getLightSheetIrisDiameterFunction()
 	{
 		return mLightSheetIrisDiameterFunction;
+	}
+
+	public ObjectVariable<UnivariateFunction> getLightSheetLaserPowerFunction()
+	{
+		return mLightSheetPowerFunction;
 	}
 
 	public RampSteppingStave getGalvoScannerStaveBeforeExposureZ()
