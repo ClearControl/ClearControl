@@ -115,14 +115,15 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 	public O getEventHook(final O pCurrentReference)
 	{
-		notifyListenersOfGetEvent(pCurrentReference);
 		return pCurrentReference;
 	}
 
 	@Override
 	public O getReference()
 	{
-		return getEventHook(mReference);
+		final O lNewReferenceAfterHook = getEventHook(mReference);
+		notifyListenersOfGetEvent(lNewReferenceAfterHook);
+		return lNewReferenceAfterHook;
 	}
 
 	@Override
