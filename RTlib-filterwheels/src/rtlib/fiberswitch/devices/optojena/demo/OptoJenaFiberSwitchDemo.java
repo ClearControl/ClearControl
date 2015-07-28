@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
-import rtlib.filterwheels.devices.fli.FLIFilterWheelDevice;
 
 public class OptoJenaFiberSwitchDemo
 {
@@ -14,7 +13,7 @@ public class OptoJenaFiberSwitchDemo
 	@Test
 	public void test() throws InterruptedException
 	{
-		final OptoJenaFiberSwitchDevice lOptoJenaFiberSwitchDevice = new OptoJenaFiberSwitchDevice("COM25");
+		final OptoJenaFiberSwitchDevice lOptoJenaFiberSwitchDevice = new OptoJenaFiberSwitchDevice("COM10");
 
 		assertTrue(lOptoJenaFiberSwitchDevice.open());
 
