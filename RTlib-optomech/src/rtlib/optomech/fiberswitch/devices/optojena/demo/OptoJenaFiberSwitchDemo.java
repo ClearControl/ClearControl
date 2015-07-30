@@ -1,11 +1,11 @@
-package rtlib.fiberswitch.devices.optojena.demo;
+package rtlib.optomech.fiberswitch.devices.optojena.demo;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 
 public class OptoJenaFiberSwitchDemo
 {
@@ -19,7 +19,7 @@ public class OptoJenaFiberSwitchDemo
 
 		final DoubleVariable lPositionVariable = lOptoJenaFiberSwitchDevice.getPositionVariable();
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 500; i++)
 		{
 			int lTargetPosition = 1+i % 4;
 			lPositionVariable.set((double) lTargetPosition);

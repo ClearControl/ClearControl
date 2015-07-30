@@ -1,11 +1,11 @@
-package rtlib.filterwheels.devices.fli;
+package rtlib.optomech.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.filterwheels.FilterWheelDeviceInterface;
-import rtlib.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
-import rtlib.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;
+import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
+import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
+import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;
 import rtlib.serial.SerialDevice;
 
 public class FLIFilterWheelDevice	extends

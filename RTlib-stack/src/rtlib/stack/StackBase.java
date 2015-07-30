@@ -22,6 +22,7 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	protected volatile long mTimeStampInNanoseconds;
 	protected double[] mVoxelSizeInRealUnits;
 	protected volatile long mNumberOfImagesPerPlane = 1;
+	protected volatile int mChannel = 0;
 
 	public StackBase()
 	{
@@ -97,6 +98,29 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
+	public void setChannel(int pChannel)
+	{
+		mChannel = pChannel;
+	}
+
+	@Override
+	public int getChannel()
+	{
+		return mChannel;
+	}
+
+	@Override
+	public T getType()
+	{
+		return mType;
+	}
+
+	public void setType(final T pType)
+	{
+		mType = pType;
+	}
+
+	@Override
 	public void copyMetaDataFrom(final StackInterface<T, A> pStack)
 	{
 		mVoxelSizeInRealUnits = getVoxelSizeInRealUnits();
@@ -153,16 +177,7 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 		return pRecycler.getOrWait(pWaitTime, pTimeUnit, lStackRequest);
 	}
 
-	@Override
-	public T getType()
-	{
-		return mType;
-	}
 
-	public void setType(final T pType)
-	{
-		mType = pType;
-	}
 
 	@Override
 	public String toString()

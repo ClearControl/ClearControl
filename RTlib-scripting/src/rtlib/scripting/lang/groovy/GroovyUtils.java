@@ -45,16 +45,18 @@ public class GroovyUtils
 		cImportCustomizer.addStaticStars(pClassNames);
 	}
 
-	public static Object runScript(	final String pPreambleString,
-																	final String pScriptName,
+	public static Object runScript(	final String pScriptName,
+																	final String pPreambleString,
 																	final String pScriptString,
+																	final String pPostambleString,
 																	final Map<String, Object> pMap,
 																	final OutputStream pOutputStream,
 																	final boolean pDebugMode) throws IOException
 	{
-		return runScript(	pPreambleString,
-											pScriptName,
+		return runScript(	pScriptName,
+											pPreambleString,
 											pScriptString,
+											pPostambleString,
 											new Binding(pMap),
 											pOutputStream,
 											pDebugMode);
@@ -79,17 +81,19 @@ public class GroovyUtils
 																	final OutputStream pOutputStream,
 																	final boolean pDebugMode) throws IOException
 	{
-		return runScript(	null,
-											pScriptName,
+		return runScript(	pScriptName,
+											null,
 											pScriptString,
+											null,
 											pBinding,
 											pOutputStream,
 											pDebugMode);
 	}
 
-	public static Object runScript(	final InputStream pPreambleInputStream,
-																	final String pScriptName,
+	public static Object runScript(	final String pScriptName,
+																	final InputStream pPreambleInputStream,
 																	final InputStream pScriptInputStream,
+																	final InputStream pPostambleInputStream,
 																	final Binding pBinding,
 																	final OutputStream pOutputStream,
 																	final boolean pDebugMode)	throws IOException,
@@ -97,18 +101,21 @@ public class GroovyUtils
 	{
 		final String lPreambleString = IOUtils.toString(pPreambleInputStream);
 		final String lScriptString = IOUtils.toString(pScriptInputStream);
+		final String lPostambleString = IOUtils.toString(pPostambleInputStream);
 
-		return runScript(	lPreambleString,
-											pScriptName,
+		return runScript(	pScriptName,
+		                 	lPreambleString,
 											lScriptString,
+											lPostambleString,
 											pBinding,
 											pOutputStream,
 											pDebugMode);
 	}
 
-	public static Object runScript(	final String pPreambleString,
-																	final String pScriptName,
+	public static Object runScript(	final String pScriptName,
+																	final String pPreambleString,
 																	final String pScriptString,
+																	final String pPostambleString,
 																	Binding pBinding,
 																	final OutputStream pOutputStream,
 																	final boolean pDebugMode) throws IOException
@@ -129,11 +136,17 @@ public class GroovyUtils
 		final String lPreamble = pPreambleString != null ? pPreambleString
 																										: "";
 
+		final String lPostamble = pPostambleString != null ? pPostambleString
+																											: "";
+
 		final String lPreambleAndScriptCombined = "////Preamble begin\n" + lPreamble
 																							+ "////Preamble end\n\n"
 																							+ "////Script begin\n"
 																							+ pScriptString
-																							+ "\n////Script end\n\n";
+																							+ "\n////Script end\n\n"
+																							+ "////Postamble begin\n"
+																							+ lPostamble
+																							+ "\n////Postamble end\n\n";
 
 		final String lImportsStatements = AutoImport.generateImportStatements(lPreambleAndScriptCombined);
 

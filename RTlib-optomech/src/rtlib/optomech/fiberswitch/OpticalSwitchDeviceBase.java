@@ -1,16 +1,16 @@
-package rtlib.fiberswitch;
+package rtlib.optomech.fiberswitch;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.longv.LongVariable;
 
-public abstract class FiberSwitchDeviceBase extends NamedVirtualDevice
+public abstract class OpticalSwitchDeviceBase extends NamedVirtualDevice
 											implements
-											FiberSwitchDeviceInterface
+											OpticalSwitchDeviceInterface
 {
 	protected DoubleVariable mSwitchPositionVariable = null;
 
-	public FiberSwitchDeviceBase(String pDeviceName)
+	public OpticalSwitchDeviceBase(String pDeviceName)
 	{
 	super(pDeviceName);
 	mSwitchPositionVariable = new DoubleVariable(	"FilterWheelPosition",
@@ -30,7 +30,7 @@ public abstract class FiberSwitchDeviceBase extends NamedVirtualDevice
 	}
 
 	@Override
-	public void setSwitchPosition(final int pPosition)
+	public void setPosition(final int pPosition)
 	{
 	mSwitchPositionVariable.setValue(pPosition);
 	}

@@ -15,17 +15,19 @@ public class JythonUtils
 																	OutputStream pOutputStream,
 																	boolean pDebug)
 	{
-		return runScript(	"",
-											pScriptName,
+		return runScript(	pScriptName,
+											"",
 											pScriptString,
+											"",
 											pMap,
 											pOutputStream,
 											pDebug);
 	}
 
-	public static Object runScript(	final String pPreambleString,
-																	final String pScriptName,
+	public static Object runScript(	final String pScriptName,
+																	final String pPreambleString,
 																	final String pScriptString,
+																	final String pPostambleString,
 																	Map<String, Object> pMap,
 																	OutputStream pOutputStream,
 																	boolean pDebug)

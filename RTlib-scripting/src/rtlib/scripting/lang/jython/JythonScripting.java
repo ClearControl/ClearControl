@@ -22,16 +22,18 @@ public class JythonScripting implements ScriptingLanguageInterface
 	}
 
 	@Override
-	public void runScript(String pPreambleString,
-												String pScriptName,
+	public void runScript(String pScriptName,
+												String pPreambleString,
 												String pScriptString,
+												String pPostambleString,
 												Map<String, Object> pMap,
 												OutputStream pOutputStream,
 												boolean pDebugMode) throws IOException
 	{
-		JythonUtils.runScript(pPreambleString,
-													pScriptName,
+		JythonUtils.runScript(pScriptName,
+													pPreambleString,
 													pScriptString,
+													pPostambleString,
 													pMap,
 													pOutputStream,
 													pDebugMode);

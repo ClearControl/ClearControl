@@ -25,7 +25,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
 	private final ArrayList<Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack2DVideoDeviceList = new ArrayList<>();
-	private final ArrayList<Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack3DVideoDeviceList = new ArrayList<>();
+	private final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> mStack3DVideoDevice;
 	private ScriptingWindow mScriptingWindow;
 	private final boolean m3dView;
 
@@ -51,71 +51,76 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 																																																																							cDefaultWindowHeight);
 			mStack2DVideoDeviceList.add(lStack2DDisplay);
 
-			if (m3dView)
+		}
+
+		if (m3dView)
+		{
+			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 3D",
+																																																																							new UnsignedShortType(),
+																																																																							cDefaultWindowWidth,
+																																																																							cDefaultWindowHeight,
+																																																																							lNumberOfCameras,
+																																																																							10);
+			mStack3DVideoDevice = lStack3DDisplay;
+		}
+		else
+			mStack3DVideoDevice = null;
+
+		final GroovyScripting lGroovyScripting = new GroovyScripting();
+
+		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
+																																	null);
+
+
+		lScriptingEngine.addListener(new ScriptingEngineListener()
+		{
+
+			@Override
+			public void updatedScript(ScriptingEngine pScriptingEngine,
+																String pScript)
 			{
-				final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 3D - " + lStackCameraDevice.getName(),
-																																																																								new UnsignedShortType(),
-																																																																								cDefaultWindowWidth,
-																																																																								cDefaultWindowHeight,
-																																																																								1,
-																																																																								10);
-				mStack3DVideoDeviceList.add(lStack3DDisplay);
+				// TODO Auto-generated method stub
+
 			}
 
-			final GroovyScripting lGroovyScripting = new GroovyScripting();
-
-			final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																																		null);
-			lScriptingEngine.loadLastExecutedScript();
-
-			lScriptingEngine.addListener(new ScriptingEngineListener()
+			@Override
+			public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
+																				String pScriptString)
 			{
+				// TODO Auto-generated method stub
 
-				@Override
-				public void updatedScript(ScriptingEngine pScriptingEngine,
-																	String pScript)
-				{
-					// TODO Auto-generated method stub
+			}
 
-				}
+			@Override
+			public void asynchronousResult(	ScriptingEngine pScriptingEngine,
+																			String pScriptString,
+																			Map<String, Object> pBinding,
+																			Throwable pThrowable,
+																			String pErrorMessage)
+			{
+				if (pThrowable != null)
+					pThrowable.printStackTrace();
+			}
 
-				@Override
-				public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
-																					String pScriptString)
-				{
-					// TODO Auto-generated method stub
+			@Override
+			public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
+																				String pScriptString)
+			{
+				// TODO Auto-generated method stub
 
-				}
+			}
+		});
 
-				@Override
-				public void asynchronousResult(	ScriptingEngine pScriptingEngine,
-																				String pScriptString,
-																				Map<String, Object> pBinding,
-																				Throwable pThrowable,
-																				String pErrorMessage)
-				{
-					if (pThrowable != null)
-						pThrowable.printStackTrace();
-				}
+		lScriptingEngine.set("lsm", pLightSheetMicroscope);
 
-				@Override
-				public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
-																					String pScriptString)
-				{
-					// TODO Auto-generated method stub
+		mScriptingWindow = new ScriptingWindow(	pLightSheetMicroscope.getName() + " scripting window",
+																						lScriptingEngine,
+																						lCurrentMachineConfiguration.getIntegerProperty("scripting.nbrows",
+																																														60),
+																						lCurrentMachineConfiguration.getIntegerProperty("scripting.nbcols",
+																																														80));
 
-				}
-			});
-
-			lScriptingEngine.set("lsm", pLightSheetMicroscope);
-
-			mScriptingWindow = new ScriptingWindow(	pLightSheetMicroscope.getName() + " scripting window",
-																							lScriptingEngine,
-																							lCurrentMachineConfiguration.getIntegerProperty("scripting.nbrows",
-																																															60),
-																							lCurrentMachineConfiguration.getIntegerProperty("scripting.nbcols",
-																																															80));
-		}
+		lScriptingEngine.loadLastExecutedScript();
 
 	}
 
@@ -128,10 +133,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 		}
 
 		if (m3dView)
-			for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
-			{
-				lStack3dDisplay.open();
-			}
+			mStack3DVideoDevice.open();
 
 		mScriptingWindow.setVisible(true);
 
@@ -142,10 +144,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 	public boolean close()
 	{
 		if (m3dView)
-			for (final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3dDisplay : mStack3DVideoDeviceList)
-			{
-				lStack3dDisplay.close();
-			}
+			mStack3DVideoDevice.close();
 
 		for (final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2dDisplay : mStack2DVideoDeviceList)
 		{
@@ -159,12 +158,12 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 
 	public void connectGUI()
 	{
+
 		final int lNumberOfCameras = mLightSheetMicroscope.getDeviceLists()
 																											.getNumberOfStackCameraDevices();
 
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
-
 			final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2DDisplay = mStack2DVideoDeviceList.get(i);
 
 			mLightSheetMicroscope.getDeviceLists()
@@ -172,11 +171,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 														.sendUpdatesTo(lStack2DDisplay.getInputStackVariable());
 
 			if (m3dView)
-			{
-				final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack3DDisplay = mStack3DVideoDeviceList.get(i);
-
-				lStack2DDisplay.setOutputStackVariable(lStack3DDisplay.getStackInputVariable());
-			}
+				lStack2DDisplay.setOutputStackVariable(mStack3DVideoDevice.getStackInputVariable());
 		}
 
 	}

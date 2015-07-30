@@ -10,8 +10,8 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessor;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
-import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.core.variable.types.objectv.SingleUpdateTargetObjectVariable;
@@ -32,6 +32,8 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 	private static final int cMaximalNumberOfAvailableStacks = 20;
 	private static final int cMaximalNumberOfLiveStacks = 20;
 	private static final long cWaitForReycledStackTimeInMicroSeconds = 1;
+
+	private int mCameraId;
 
 	private final ObjectVariable<DcamFrame> mDcamFrameReference;
 
@@ -60,10 +62,13 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private final ArrayList<StackProcessorInterface<UnsignedShortType, ShortOffHeapAccess, ?, ?>> mStackProcessorList = new ArrayList<StackProcessorInterface<UnsignedShortType, ShortOffHeapAccess, ?, ?>>();
 
-	public DcamJToVideoFrameConverter(final ObjectVariable<DcamFrame> pDcamFrameReference,
+
+	public DcamJToVideoFrameConverter(final int pCameraId,
+																		final ObjectVariable<DcamFrame> pDcamFrameReference,
 																		final int pMaxQueueSize)
 	{
 		super("DcamJToVideoFrameConverter");
+		mCameraId = pCameraId;
 
 		mDcamFrameReference = pDcamFrameReference;
 
@@ -174,6 +179,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 				return null;
 			}
 
+			lOffHeapPlanarStack.setChannel(mCameraId);
 			lOffHeapPlanarStack.setIndex(pDcamFrame.getIndex());
 			lOffHeapPlanarStack.setTimeStampInNanoseconds(pDcamFrame.getFrameTimeStampInNs());
 			lOffHeapPlanarStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);

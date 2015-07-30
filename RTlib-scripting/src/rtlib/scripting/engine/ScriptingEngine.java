@@ -78,7 +78,10 @@ public class ScriptingEngine implements
 		}
 		else
 		{
-			return mScriptExecutionFuture = executeAsynchronously(() -> execute());
+			return mScriptExecutionFuture = executeAsynchronously(() -> {
+				execute();
+				mScriptExecutionFuture = null;
+			});
 		}
 
 	}
@@ -89,14 +92,15 @@ public class ScriptingEngine implements
 		{
 			try
 			{
-				mScriptExecutionFuture.cancel(true);
+				mScriptExecutionFuture.cancel(false);
 
 				final String lPreprocessedPostamble = ScriptingPreprocessor.process(mClassForFindingScripts,
 																																						mPathForFindingScripts,
 																																						mPostambleString);
-				mScriptingLanguageInterface.runScript("",
-																							"Postamble",
+				mScriptingLanguageInterface.runScript("Postamble",
 																							lPreprocessedPostamble,
+																							"",
+																							"",
 																							mVariableMap,
 																							mOutputStream,
 																							mDebugMode);
@@ -110,10 +114,6 @@ public class ScriptingEngine implements
 			{
 				System.err.println(e.getLocalizedMessage());
 			}
-			finally
-			{
-				mScriptExecutionFuture = null;
-			}
 		}
 	}
 
@@ -125,6 +125,8 @@ public class ScriptingEngine implements
 
 	public boolean isCancelRequested()
 	{
+		if (mScriptExecutionFuture == null)
+			return true;
 		return mScriptExecutionFuture.isCancelled();
 	}
 
@@ -177,10 +179,10 @@ public class ScriptingEngine implements
 			try
 			{
 				mVariableMap.put("scriptengine", this);
-				mScriptingLanguageInterface.runScript(mPreambleString,
-																							mScriptName,
-																							mScriptString + "\n"
-																									+ mPostambleString,
+				mScriptingLanguageInterface.runScript(mScriptName,
+																							mPreambleString,
+																							mScriptString,
+																							mPostambleString,
 																							mVariableMap,
 																							mOutputStream,
 																							mDebugMode);

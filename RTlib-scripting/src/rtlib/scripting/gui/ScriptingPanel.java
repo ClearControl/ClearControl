@@ -111,8 +111,14 @@ public class ScriptingPanel extends JPanel implements
 				public void updatedScript(ScriptingEngine pScriptingEngine,
 																	String pScript)
 				{
-					// TODO Auto-generated method stub
-
+					try
+					{
+						loadText(pScript);
+					}
+					catch (InvocationTargetException e)
+					{
+						e.printStackTrace();
+					}
 				}
 
 				@Override
@@ -221,7 +227,11 @@ public class ScriptingPanel extends JPanel implements
 				{
 					saveToFile(	mRSyntaxTextArea.getText(),
 											mCurrentFileTextField.getText());
-					mScriptingEngine.setScript(mRSyntaxTextArea.getText());
+
+					if (mScriptingEngine.getScript() == null || !mScriptingEngine.getScript()
+																.equals(mRSyntaxTextArea.getText()))
+						mScriptingEngine.setScript(mRSyntaxTextArea.getText());
+
 					mScriptingEngine.executeScriptAsynchronously();
 				}
 				catch (final Throwable e)
@@ -309,7 +319,9 @@ public class ScriptingPanel extends JPanel implements
 	public void loadText(String pText) throws InvocationTargetException
 	{
 		SwingUtilities.invokeLater(() -> {
-			mRSyntaxTextArea.setText(pText);
+			if (mRSyntaxTextArea.getText() == null || !mRSyntaxTextArea.getText()
+																																	.equals(pText))
+				mRSyntaxTextArea.setText(pText);
 		});
 	}
 
@@ -446,7 +458,6 @@ public class ScriptingPanel extends JPanel implements
 	public void keyTyped(KeyEvent pE)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -454,7 +465,6 @@ public class ScriptingPanel extends JPanel implements
 	{
 		try
 		{
-
 			if (pE.isControlDown() && pE.getKeyCode() == KeyEvent.VK_S)
 				saveToFile(	mRSyntaxTextArea.getText(),
 										mCurrentFileTextField.getText());
@@ -470,7 +480,6 @@ public class ScriptingPanel extends JPanel implements
 	public void keyReleased(KeyEvent pE)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 }

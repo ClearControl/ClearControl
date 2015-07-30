@@ -7,10 +7,11 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.filterwheels.FilterWheelDeviceInterface;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lightsheet.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.illumination.LightSheetInterface;
+import rtlib.optomech.fiberswitch.OpticalSwitchDeviceInterface;
+import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
 import rtlib.stages.StageDeviceInterface;
@@ -27,6 +28,7 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<LightSheetInterface> mLightSheetList = new ArrayList<>();
 	private final ArrayList<DetectionArmInterface> mDetectionArmList = new ArrayList<>();
 	private final ArrayList<FilterWheelDeviceInterface> mFilterWheelList = new ArrayList<>();
+	private final ArrayList<OpticalSwitchDeviceInterface> mOpticalSwitchList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mDetectionPhaseModulatorDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mIlluminationPhaseModulatorDeviceList = new ArrayList<>();
 
@@ -144,9 +146,26 @@ public class LightSheetMicroscopeDeviceLists
 		return mFilterWheelList.size();
 	}
 
-	public FilterWheelDeviceInterface getFilterWheelDeviceDevice(int pIndex)
+	public FilterWheelDeviceInterface getFilterWheelDevice(int pIndex)
 	{
 		return mFilterWheelList.get(pIndex);
+	}
+
+	public int addOpticalSwitchDevice(OpticalSwitchDeviceInterface pOpticalSwitchDeviceInterface)
+	{
+		mAllDeviceList.add(pOpticalSwitchDeviceInterface);
+		mOpticalSwitchList.add(pOpticalSwitchDeviceInterface);
+		return mOpticalSwitchList.size() - 1;
+	}
+
+	public int getNumberOfOpticalSwitchDevices()
+	{
+		return mOpticalSwitchList.size();
+	}
+
+	public OpticalSwitchDeviceInterface getOpticalSwitchDevice(int pIndex)
+	{
+		return mOpticalSwitchList.get(pIndex);
 	}
 
 	public int addDetectionPhaseModulatorDevice(SpatialPhaseModulatorDeviceInterface pSpatialPhaseModulatorDeviceInterface)

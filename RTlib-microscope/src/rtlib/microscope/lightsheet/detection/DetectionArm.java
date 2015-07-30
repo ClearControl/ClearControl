@@ -21,7 +21,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 	private final ObjectVariable<UnivariateFunction> mDetectionZFunction = new ObjectVariable<UnivariateFunction>("DetectionZFunction",
 																																																								new UnivariateAffineFunction());
 
-	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z.be",
+	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
 
 	private final int mStaveIndex;

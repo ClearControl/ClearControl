@@ -1,6 +1,6 @@
-package rtlib.filterwheels.devices.fli.adapters;
+package rtlib.optomech.filterwheels.devices.fli.adapters;
 
-import rtlib.filterwheels.devices.fli.FLIFilterWheelDevice;
+import rtlib.optomech.filterwheels.devices.fli.FLIFilterWheelDevice;
 
 public class FilterWheelPositionDeviceAdapter	extends
 																							FilterWheelDeviceAdapter

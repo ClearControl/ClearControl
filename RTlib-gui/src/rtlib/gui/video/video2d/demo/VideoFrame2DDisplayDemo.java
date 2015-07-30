@@ -61,8 +61,8 @@ public class VideoFrame2DDisplayDemo
 												.setValue(true);
 		lVideoDisplayDevice.open();
 
-		final int lSizeX = 256;
-		final int lSizeY = 256;
+		final int lSizeX = 2048;
+		final int lSizeY = lSizeX;
 		final int lSizeZ = 16;
 
 		@SuppressWarnings("unchecked")

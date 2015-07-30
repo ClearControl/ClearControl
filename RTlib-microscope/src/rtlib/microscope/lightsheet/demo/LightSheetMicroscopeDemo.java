@@ -21,6 +21,7 @@ import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.detection.DetectionArm;
 import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
+import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
@@ -32,7 +33,7 @@ import rtlib.symphony.score.ScoreInterface;
 public class LightSheetMicroscopeDemo
 {
 
-	private static final double cImageResolution = 1024;
+	private static final double cImageResolution = 2048;
 
 	@Test
 	public void demoOnSimulators() throws InterruptedException,
@@ -44,6 +45,8 @@ public class LightSheetMicroscopeDemo
 																																																												lSignalGeneratorDevice.getTriggerVariable());
 
 		demoWith(	true,
+							false,
+							true,
 							Lists.newArrayList(lCamera),
 							lSignalGeneratorDevice,
 							1);
@@ -57,7 +60,9 @@ public class LightSheetMicroscopeDemo
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
 
-		demoWith(	true,
+		demoWith(	false,
+							false,
+							true,
 							Lists.newArrayList(lCamera),
 							lSignalGeneratorDevice,
 							1);
@@ -73,28 +78,34 @@ public class LightSheetMicroscopeDemo
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
 
 		demoWith(	true,
-							Lists.newArrayList(lCamera1, lCamera2),
-							lSignalGeneratorDevice,
-							1);
-
-	}
-
-	@Test
-	public void demoScriptingOnRealHardwareTwoCameras()	throws InterruptedException,
-																											ExecutionException
-	{
-		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
-
-		demoWith(	false,
+							false,
+							true,
 							Lists.newArrayList(lCamera1, lCamera2),
 							lSignalGeneratorDevice,
 							4);
 
 	}
 
-	public void demoWith(	boolean pAutoStart,
+	@Test
+	public void demoScriptingOnRealHardwareTwoCamerasFourLightSheets() throws InterruptedException,
+																																		ExecutionException
+	{
+		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
+
+		demoWith(	true,
+							true,
+							false,
+							Lists.newArrayList(lCamera1, lCamera2),
+							lSignalGeneratorDevice,
+							4);
+
+	}
+
+	public void demoWith(	boolean pWithGUI,
+												boolean pWith3D,
+												boolean pAutoStart,
 												ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
 												SignalGeneratorInterface pSignalGeneratorDevice,
 												int pNumberOfLightSheets)	throws InterruptedException,
@@ -102,6 +113,11 @@ public class LightSheetMicroscopeDemo
 	{
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
+
+		OptoJenaFiberSwitchDevice lOptoJenaFiberSwitchDevice = new OptoJenaFiberSwitchDevice("COM10");
+		lOptoJenaFiberSwitchDevice.setPosition(2);
+		lLightSheetMicroscope.getDeviceLists()
+													.addOpticalSwitchDevice(lOptoJenaFiberSwitchDevice);
 
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
@@ -146,8 +162,8 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pCameras.size(); i++)
 		{
-			final DetectionArm lDetectionArm = new DetectionArm(	"demodetpath",
-																															i);
+			final DetectionArm lDetectionArm = new DetectionArm("demodetpath",
+																													i);
 
 			lLightSheetMicroscope.getDeviceLists()
 														.addDetectionArmDevice(lDetectionArm);
@@ -188,8 +204,11 @@ public class LightSheetMicroscopeDemo
 
 		// setting up scope GUI:
 
-		final LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
-																																			false);
+		LightSheetMicroscopeGUI lGUI = null;
+
+		if (pWithGUI)
+			lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																					pWith3D);
 
 		if (lGUI != null)
 			assertTrue(lGUI.open());

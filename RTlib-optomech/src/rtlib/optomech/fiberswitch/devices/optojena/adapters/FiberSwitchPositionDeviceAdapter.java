@@ -1,7 +1,6 @@
-package rtlib.fiberswitch.devices.optojena.adapters;
+package rtlib.optomech.fiberswitch.devices.optojena.adapters;
 
-import rtlib.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
-import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
+import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
@@ -19,7 +18,7 @@ public class FiberSwitchPositionDeviceAdapter extends SerialDeviceAdapterAdapter
 		double pOldValue,
 		double pNewValue)
 	{
-		String lMessage = String.format("ch%d\\r\\l", (int) pNewValue);
+		String lMessage = String.format("ch%d\r\n", (int) pNewValue);
 		return lMessage.getBytes();
 	}
 

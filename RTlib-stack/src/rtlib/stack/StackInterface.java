@@ -54,6 +54,9 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 
 	double[] getVoxelSizeInRealUnits();
 
+	void setChannel(int pChannel);
+
+	int getChannel();
 
 	Pointer<Byte> getPointer(int pPlaneIndex);
 
@@ -67,6 +70,7 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 	void copyMetaDataFrom(StackInterface<T, A> pStack);
 
 	StackInterface<T, A> duplicate();
+
 
 
 

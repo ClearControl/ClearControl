@@ -22,16 +22,18 @@ public class GroovyScripting implements ScriptingLanguageInterface
 	}
 
 	@Override
-	public void runScript(String pPreambleString,
-												String pScriptName,
+	public void runScript(String pScriptName,
+												String pPreambleString,
 												String pScriptString,
+												String pPostambleString,
 												Map<String, Object> pMap,
 												OutputStream pOutputStream,
 												boolean pDebugMode) throws IOException
 	{
-		GroovyUtils.runScript(pPreambleString,
-													pScriptName,
+		GroovyUtils.runScript(pScriptName,
+													pPreambleString,
 													pScriptString,
+													pPostambleString,
 													pMap,
 													pOutputStream,
 													pDebugMode);
@@ -43,9 +45,32 @@ public class GroovyScripting implements ScriptingLanguageInterface
 		if (pThrowable == null)
 			return null;
 		return pThrowable.getClass().getSimpleName() + "->"
-						+ pThrowable.getMessage();
+						+ pThrowable.getMessage()
+						+ "\n"
+						+ getStackTrace(pThrowable);
 	}
 
+	private String getStackTrace(Throwable pThrowable)
+	{
+		if (pThrowable == null)
+			return "";
+		StringBuilder lStringBuilder = new StringBuilder();
 
+		StackTraceElement[] lStackTrace = pThrowable.getStackTrace();
+		for (StackTraceElement lStackTraceElement : lStackTrace)
+			if (!lStackTraceElement.getClassName().contains("sun.") && !lStackTraceElement.getClassName()
+																																										.contains("org.codehaus.groovy.")
+					&& !lStackTraceElement.getClassName()
+																.contains("java.lang.reflect.")
+					&& !lStackTraceElement.getClassName()
+																.contains("groovy.lang."))
+
+			{
+				lStringBuilder.append("\t" + lStackTraceElement.toString());
+				lStringBuilder.append("\n");
+			}
+
+		return lStringBuilder.toString();
+	}
 
 }

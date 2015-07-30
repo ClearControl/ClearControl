@@ -65,6 +65,7 @@ public class OrcaFlash4StackCamera extends
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);
 		mDcamAcquisition.setTriggerType(pTriggerType);
 
+
 		mDcamAcquisition.addListener(new DcamAcquisitionListener()
 		{
 
@@ -75,8 +76,8 @@ public class OrcaFlash4StackCamera extends
 																final long pFrameIndexInBufferList,
 																final DcamFrame pDcamFrame)
 			{
-				final long lDepth = pDcamFrame.getDepth();
-				/*	System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+				/*final long lDepth = pDcamFrame.getDepth();
+				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
 															+ " index="
 															+ pDcamFrame.getIndex()
 															+ " pFrameIndexInBufferList="
@@ -181,7 +182,8 @@ public class OrcaFlash4StackCamera extends
 		};
 
 
-		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	mFrameReference,
+		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	pCameraDeviceIndex,
+																																					mFrameReference,
 																																					cStackProcessorQueueSize);
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
@@ -206,6 +208,7 @@ public class OrcaFlash4StackCamera extends
 			{
 				final boolean lOpenResult = mDcamAcquisition.open();
 				mDcamAcquisition.setDefectCorrection(false);
+				mDcamAcquisition.getProperties().setOutputTriggerToExposure();
 				mDcamJToStackConverterAndProcessing.open();
 				mDcamJToStackConverterAndProcessing.start();
 				return lOpenResult;
@@ -398,6 +401,7 @@ public class OrcaFlash4StackCamera extends
 																												lInitialVideoFrame);
 
 				}
+
 
 				System.out.println(this.getClass().getSimpleName() + ": acquisition() end");
 

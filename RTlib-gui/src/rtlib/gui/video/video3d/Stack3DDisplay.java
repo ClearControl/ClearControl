@@ -88,6 +88,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				final long lDepth = pStack.getDepth();
 				final NativeTypeEnum lNativeTypeEnum = mClearVolumeRenderer.getNativeType();
 				final int lBytesPerVoxel = Size.of(lNativeTypeEnum);
+				final int lChannel = pStack.getChannel();
 
 				if (lWidth * lHeight * lDepth * lBytesPerVoxel != lSizeInBytes)
 				{
@@ -97,7 +98,13 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 				final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory();
 
-				mClearVolumeRenderer.setVolumeDataBuffer(	0,
+				if (lContiguousMemory.isFree())
+				{
+					System.err.println(Stack3DDisplay.class.getSimpleName() + ": buffer released!");
+					return null;
+				}
+
+				mClearVolumeRenderer.setVolumeDataBuffer(	lChannel,
 																									lContiguousMemory,
 																									lWidth,
 																									lHeight,
@@ -106,8 +113,9 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																									pStack.getVoxelSizeInRealUnits(1),
 																									pStack.getVoxelSizeInRealUnits(2));
 
-				mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	cTimeOutForBufferCopy,
-																														TimeUnit.SECONDS);/**/
+				mClearVolumeRenderer.waitToFinishDataBufferCopy(lChannel,
+																												cTimeOutForBufferCopy,
+																												TimeUnit.SECONDS);/**/
 
 				if (mOutputStackVariable != null)
 					mOutputStackVariable.set(pStack);
