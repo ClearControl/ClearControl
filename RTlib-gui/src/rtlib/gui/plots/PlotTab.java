@@ -100,7 +100,7 @@ public class PlotTab
 								final TDoubleArrayList lX = mX.get(lVariableName);
 								final TDoubleArrayList lY = lEntry.getValue();
 
-								if (mIsLinePlot.get(lVariableName))
+								if (mIsLinePlot.get(lVariableName) != null && mIsLinePlot.get(lVariableName))
 								{
 									mPlot.addLinePlot(lVariableName,
 																		lX.toArray(),

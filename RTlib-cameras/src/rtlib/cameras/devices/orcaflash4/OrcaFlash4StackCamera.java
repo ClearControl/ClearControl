@@ -188,8 +188,6 @@ public class OrcaFlash4StackCamera extends
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
-		mStackDepthVariable.sendUpdatesTo(mDcamJToStackConverterAndProcessing.getStackDepthVariable());
-
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}

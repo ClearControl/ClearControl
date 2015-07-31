@@ -54,8 +54,6 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private final SingleUpdateTargetObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> mStackReference = new SingleUpdateTargetObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("OffHeapPlanarStack");
 
-	private final DoubleVariable mStackDepthVariable = new DoubleVariable("StackDepth",
-																																				1);
 
 	private final DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfPhases",
 																																										1);
@@ -136,15 +134,15 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			// final boolean lCopySucceeded = false;
 
 			final long lNumberOfImagesPerPlane = (long) mNumberOfImagesPerPlaneVariable.getValue();
-			final long lStackDepth = (long) mStackDepthVariable.getValue();
+			// final long lStackDepth = (long) mStackDepthVariable.getValue();
 
 			final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	new UnsignedShortType(),
 																																								pDcamFrame.getWidth(),
 																																								pDcamFrame.getHeight(),
-																																								lStackDepth);
+																																								pDcamFrame.getDepth());
 
 			StackInterface<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStack = null;
-			if (lStackDepth == 1)
+			if (pDcamFrame.getDepth() == 1)
 			{
 				if (m2DStackBasicRecycler.getNumberOfAvailableObjects() < cMinimalNumberOfAvailableStacks)
 					m2DStackBasicRecycler.ensurePreallocated(	cMinimalNumberOfAvailableStacks,
@@ -233,11 +231,6 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 	public SingleUpdateTargetObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> getStackReferenceVariable()
 	{
 		return mStackReference;
-	}
-
-	public DoubleVariable getStackDepthVariable()
-	{
-		return mStackDepthVariable;
 	}
 
 	public DoubleVariable getNumberOfImagesPerPlaneVariable()

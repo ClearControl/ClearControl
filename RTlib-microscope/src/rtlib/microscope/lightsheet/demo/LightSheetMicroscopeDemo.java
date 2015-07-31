@@ -95,7 +95,7 @@ public class LightSheetMicroscopeDemo
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
 
 		demoWith(	true,
-							true,
+							false,
 							false,
 							Lists.newArrayList(lCamera1, lCamera2),
 							lSignalGeneratorDevice,

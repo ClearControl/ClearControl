@@ -25,7 +25,7 @@ public class LightSheetCalibration
 	private final LightSheetMicroscope mLightSheetMicroscope;
 	private final DCTS2D mDCTS2D;
 	private final SmartArgMaxFinder mSmartArgMaxFinder;
-	private MultiPlot mMultiPlot;
+	private MultiPlot mMultiPlotFocusCurves, mMultiPlotModels;
 	private UnivariateAffineFunction[] mModelDn;
 
 	@SuppressWarnings("unchecked")
@@ -36,8 +36,11 @@ public class LightSheetCalibration
 
 		mDCTS2D = new DCTS2D();
 
-		mMultiPlot = MultiPlot.getMultiPlot(this.getClass()
-																						.getSimpleName());
+		mMultiPlotFocusCurves = MultiPlot.getMultiPlot(this.getClass()
+																												.getSimpleName() + " focus curves");
+
+		mMultiPlotModels = MultiPlot.getMultiPlot(this.getClass()
+																									.getSimpleName() + " models");
 
 		mSmartArgMaxFinder = new SmartArgMaxFinder();
 
@@ -55,7 +58,11 @@ public class LightSheetCalibration
 												double pMaxIZ,
 												double pStepIZ)
 	{
-		mMultiPlot.clear();
+		mMultiPlotFocusCurves.clear();
+		mMultiPlotFocusCurves.setVisible(true);
+
+		mMultiPlotModels.clear();
+		mMultiPlotModels.setVisible(true);
 
 		final int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																																	.getNumberOfDetectionArmDevices();
@@ -69,9 +76,17 @@ public class LightSheetCalibration
 		}
 
 		final TheilSenEstimator[] lTheilSenEstimators = new TheilSenEstimator[lNumberOfDetectionArmDevices];
+		final PlotTab[] lPlots = new PlotTab[lNumberOfDetectionArmDevices];
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 		{
 			lTheilSenEstimators[i] = new TheilSenEstimator();
+
+			lPlots[i] = mMultiPlotModels.getPlot(String.format(	"D=%d, I=%d",
+																													i,
+																													pLightSheetIndex));
+
+			lPlots[i].setScatterPlot("D" + i);
+			lPlots[i].setLinePlot("fit D" + i);
 		}
 
 		for (double iz = pMinIZ; iz < pMaxIZ; iz += pStepIZ)
@@ -82,9 +97,11 @@ public class LightSheetCalibration
 																pStepDZ,
 																iz);
 			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-			{
-				lTheilSenEstimators[i].enter(dz[i], iz);
-			}
+				if (!Double.isNaN(dz[i]))
+				{
+					lTheilSenEstimators[i].enter(dz[i], iz);
+					lPlots[i].addPoint("D" + i, dz[i], iz);
+				}
 		}
 
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
@@ -94,6 +111,13 @@ public class LightSheetCalibration
 			System.out.println(lModel);
 
 			mModelDn[i] = lTheilSenEstimators[i].getModel();
+
+			for (double z = pMinDZ; z <= pMaxDZ; z += 0.01)
+			{
+				lPlots[i].addPoint("fit D" + i, z, mModelDn[i].value(z));
+			}
+
+			lPlots[i].ensureUpToDate();
 		}
 
 	}
@@ -127,6 +151,12 @@ public class LightSheetCalibration
 				mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
 				mLightSheetMicroscope.setIZ(pLightSheetIndex, pIZ);
 
+				// TODO: remove, this is for debug purposes:
+				mLightSheetMicroscope.setIZ(0, pIZ);
+				mLightSheetMicroscope.setIZ(1, pIZ);
+				mLightSheetMicroscope.setIZ(2, pIZ);
+				mLightSheetMicroscope.setIZ(3, pIZ);
+
 				mLightSheetMicroscope.addCurrentStateToQueue();
 			}
 			mLightSheetMicroscope.addCurrentStateToQueueNotCounting();
@@ -149,11 +179,10 @@ public class LightSheetCalibration
 
 					final double[] lDCTSArray = mDCTS2D.computeImageQualityMetric(lImage);
 
-					mMultiPlot.setVisible(true);
-					PlotTab lPlot = mMultiPlot.getPlot(String.format(	"D=%d, I=%d, Iz=%g",
-																														i,
-																														pLightSheetIndex,
-																														pIZ));
+					PlotTab lPlot = mMultiPlotFocusCurves.getPlot(String.format("D=%d, I=%d, Iz=%g",
+																																			i,
+																																			pLightSheetIndex,
+																																			pIZ));
 					lPlot.setScatterPlot("samples");
 
 					System.out.format("dcts array: \n");
@@ -173,24 +202,26 @@ public class LightSheetCalibration
 
 					if (lArgMax != null)
 					{
-						System.out.format("argmax=%s fitprob=%g \n",
+						Double lLastFitProbability = mSmartArgMaxFinder.getLastFitProbability();
+
+						System.out.format("argmax=%s fitprob=%s \n",
 															lArgMax.toString(),
-															mSmartArgMaxFinder.getLastFitProbability());
+															lLastFitProbability);
 
 						lPlot.setScatterPlot("argmax");
 						lPlot.addPoint("argmax", lArgMax, 0);
 
-						dz[i] = lArgMax;
+						if (lLastFitProbability != null && lLastFitProbability > 0.9)
+							dz[i] = lArgMax;
+						else
+							dz[i] = Double.NaN;
 					}
 					else
 					{
+						dz[i] = Double.NaN;
 						System.out.println("Argmax is NULL!");
 					}
 				}
-			else
-			{
-
-			}
 
 			return dz;
 
