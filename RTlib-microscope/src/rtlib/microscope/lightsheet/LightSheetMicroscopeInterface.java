@@ -28,6 +28,7 @@ public interface LightSheetMicroscopeInterface
 	 */
 	public void setExposure(long pValue, TimeUnit pTimeUnit);
 
+
 	/**
 	 * Sets a detection objective to a given position.
 	 * 
@@ -139,7 +140,5 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 																int pLaserIndex,
 																boolean pOnOff);
-
-
 
 }

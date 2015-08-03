@@ -42,6 +42,20 @@ public class Movement extends NameableAbstract implements
 		mStaveListArray[pStaveIndex] = pNewStave;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <O extends StaveInterface> O ensureSetStave(	int pStaveIndex,
+																											O pNewStave)
+	{
+		if (mStaveListArray[pStaveIndex] != null && !(mStaveListArray[pStaveIndex] instanceof ZeroStave))
+			return (O) mStaveListArray[pStaveIndex];
+		else
+		{
+			setStave(pStaveIndex, pNewStave);
+			return pNewStave;
+		}
+	}
+
 	@Override
 	public StaveInterface getStave(final int pStaveIndex)
 	{
@@ -136,6 +150,7 @@ public class Movement extends NameableAbstract implements
 
 		return lMovementCopy;
 	}
+
 
 
 }

@@ -21,7 +21,7 @@ public class OptoJenaFiberSwitchDemo
 		
 		for (int i = 0; i < 500; i++)
 		{
-			int lTargetPosition = 1+i % 4;
+			int lTargetPosition = i % 4;
 			lPositionVariable.set((double) lTargetPosition);
 			Thread.sleep(10);
 			System.out.format("i=%d, tp=%d\n",

@@ -162,7 +162,7 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pCameras.size(); i++)
 		{
-			final DetectionArm lDetectionArm = new DetectionArm("demodetpath",
+			final DetectionArm lDetectionArm = new DetectionArm("demodetpath" + i,
 																													i);
 
 			lLightSheetMicroscope.getDeviceLists()
@@ -176,7 +176,7 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pNumberOfLightSheets; i++)
 		{
-			final LightSheet lLightSheet = new LightSheet("demolightsheet",
+			final LightSheet lLightSheet = new LightSheet("demolightsheet" + i,
 																										9.4,
 																										512,
 																										2);

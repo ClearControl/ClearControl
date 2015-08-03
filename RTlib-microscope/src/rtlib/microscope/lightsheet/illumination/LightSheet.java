@@ -92,17 +92,17 @@ public class LightSheet extends NamedVirtualDevice implements
 
 	private Movement mBeforeExposureMovement, mExposureMovement;
 
-	private final RampSteppingStave mLightSheetStaveBeforeExposureZ,
+	private RampSteppingStave mLightSheetStaveBeforeExposureZ,
 			mLightSheetStaveBeforeExposureX, mLightSheetStaveExposureX,
 			mLightSheetStaveExposureZ;
-	private final ConstantStave mLightSheetStaveBeforeExposureY,
+	private ConstantStave mLightSheetStaveBeforeExposureY,
 			mLightSheetStaveExposureY, mLightSheetStaveBeforeExposureB,
 			mLightSheetStaveExposureB, mLightSheetStaveBeforeExposureR,
-			mLightSheetStaveExposureR,
-			mLightSheetStaveExposureT, mLightSheetStaveBeforeExposureLA,
-			mLightSheetStaveExposureLA, mNonSIIluminationLaserTrigger;
+			mLightSheetStaveExposureR, mLightSheetStaveExposureT,
+			mLightSheetStaveBeforeExposureLA, mLightSheetStaveExposureLA,
+			mNonSIIluminationLaserTrigger;
 
-	private final EdgeStave mLightSheetStaveBeforeExposureT;
+	private EdgeStave mLightSheetStaveBeforeExposureT;
 
 	private final int mNumberOfLaserDigitalControls;
 
@@ -265,40 +265,40 @@ public class LightSheet extends NamedVirtualDevice implements
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
 		// Analog outputs before exposure:
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.x",
-																																											2),
-																			mLightSheetStaveBeforeExposureX);
+		mLightSheetStaveBeforeExposureX = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.x",
+																																																															2),
+																																							mLightSheetStaveBeforeExposureX);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.y",
-																																											3),
-																			mLightSheetStaveBeforeExposureY);
+		mLightSheetStaveBeforeExposureY = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.y",
+																																																															3),
+																																							mLightSheetStaveBeforeExposureY);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.y",
-																																											4),
-																			mLightSheetStaveBeforeExposureZ);
+		mLightSheetStaveBeforeExposureZ = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.y",
+																																																															4),
+																																							mLightSheetStaveBeforeExposureZ);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.b",
-																																											5),
-																			mLightSheetStaveBeforeExposureB);
+		mLightSheetStaveBeforeExposureB = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.b",
+																																																															5),
+																																							mLightSheetStaveBeforeExposureB);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.r",
-																																											6),
-																			mLightSheetStaveBeforeExposureR);
+		mLightSheetStaveBeforeExposureR = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.r",
+																																																															6),
+																																							mLightSheetStaveBeforeExposureR);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.la",
-																																											7),
-																			mLightSheetStaveBeforeExposureLA);
+		mLightSheetStaveBeforeExposureLA = pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.la",
+																																																															7),
+																																							mLightSheetStaveBeforeExposureLA);
 
-		pBeforeExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																													+ ".index.t",
-																																											8 + 7),
-																			mLightSheetStaveBeforeExposureT);
+		mLightSheetStaveBeforeExposureT = pBeforeExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																																	+ ".index.t",
+																																																															8 + 7),
+																																							mLightSheetStaveBeforeExposureT);
 
 	}
 
@@ -308,58 +308,59 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		// Analog outputs at exposure:
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.x",
-																																								2),
-																mLightSheetStaveExposureX);
+		mLightSheetStaveExposureX = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.x",
+																																																									2),
+																																	mLightSheetStaveExposureX);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.y",
-																																								3),
-																mLightSheetStaveExposureY);
+		mLightSheetStaveExposureY = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.y",
+																																																									3),
+																																	mLightSheetStaveExposureY);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.y",
-																																								4),
-																mLightSheetStaveExposureZ);
+		mLightSheetStaveExposureZ = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.y",
+																																																									4),
+																																	mLightSheetStaveExposureZ);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.b",
-																																								5),
-																mLightSheetStaveExposureB);
+		mLightSheetStaveExposureB = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.b",
+																																																									5),
+																																	mLightSheetStaveExposureB);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.r",
-																																								6),
-																mLightSheetStaveExposureR);
+		mLightSheetStaveExposureR = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.r",
+																																																									6),
+																																	mLightSheetStaveExposureR);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.la",
-																																								7),
-																mLightSheetStaveExposureLA);
+		mLightSheetStaveExposureLA = pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.la",
+																																																									7),
+																																	mLightSheetStaveExposureLA);
 
-		pExposureMovement.setStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
-																																										+ ".index.t",
-																																								8 + 7),
-																mLightSheetStaveExposureT);
+		mLightSheetStaveExposureT = pExposureMovement.ensureSetStave(	lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
+																																																											+ ".index.t",
+																																																									8 + 7),
+																																	mLightSheetStaveExposureT);
 
 		for (int i = 0; i < mLaserOnOffArray.length; i++)
-			setLaserDigitalTriggerStave(pExposureMovement,
-																	i,
-																	mNonSIIluminationLaserTrigger);
+			mNonSIIluminationLaserTrigger = setLaserDigitalTriggerStave(pExposureMovement,
+																																	i,
+																																	mNonSIIluminationLaserTrigger);
 
 	}
 
-	private void setLaserDigitalTriggerStave(	Movement pExposureMovement,
-																						int i,
-																						StaveInterface pStave)
+	private <O extends StaveInterface> O setLaserDigitalTriggerStave(	Movement pExposureMovement,
+																																		int i,
+																																		O pStave)
 	{
 		final int lLaserDigitalLineIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																														.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".index.ld"
 																																										+ i,
 																																								8 + i);
-		mExposureMovement.setStave(lLaserDigitalLineIndex, pStave);
+		return mExposureMovement.ensureSetStave(lLaserDigitalLineIndex,
+																						pStave);
 	}
 
 	public void update()
@@ -367,6 +368,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		synchronized (this)
 		{
 
+			System.out.println("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 

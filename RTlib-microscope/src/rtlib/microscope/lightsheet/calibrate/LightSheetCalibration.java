@@ -152,10 +152,10 @@ public class LightSheetCalibration
 				mLightSheetMicroscope.setIZ(pLightSheetIndex, pIZ);
 
 				// TODO: remove, this is for debug purposes:
-				mLightSheetMicroscope.setIZ(0, pIZ);
-				mLightSheetMicroscope.setIZ(1, pIZ);
-				mLightSheetMicroscope.setIZ(2, pIZ);
-				mLightSheetMicroscope.setIZ(3, pIZ);
+				// mLightSheetMicroscope.setIZ(0, pIZ);
+				// mLightSheetMicroscope.setIZ(1, pIZ);
+				// mLightSheetMicroscope.setIZ(2, pIZ);
+				// mLightSheetMicroscope.setIZ(3, pIZ);
 
 				mLightSheetMicroscope.addCurrentStateToQueue();
 			}

@@ -24,6 +24,20 @@ public interface MovementInterface extends NameableInterface
 	 */
 	void setStave(int pStaveIndex, StaveInterface pStave);
 
+	
+	/**
+	 * Sets stave at index if not already set. Returns the set or already set
+	 * stave.
+	 * 
+	 * @param pStaveIndex
+	 *          stave index
+	 * @param pNewStave
+	 *          new stave
+	 * @return currently set stave
+	 */
+	public <O extends StaveInterface> O ensureSetStave(	int pStaveIndex,
+																											O pNewStave);
+	
 	/**
 	 * Returns the stave for a given index
 	 * 
@@ -111,5 +125,7 @@ public interface MovementInterface extends NameableInterface
 	 * @return field_for_field copy
 	 */
 	MovementInterface copy();
+
+
 
 }

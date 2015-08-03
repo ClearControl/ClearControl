@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.future.FutureBooleanList;
+import rtlib.core.device.ActivableDeviceInterface;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
 import rtlib.core.device.StartStopDeviceInterface;
@@ -131,8 +132,17 @@ public class LightSheetMicroscope	extends
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
 			{
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				lStateQueueDeviceInterface.addCurrentStateToQueueNotCounting();
+				boolean lIsActive = true;
+				if (lDevice instanceof ActivableDeviceInterface)
+				{
+					ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
+					lIsActive = lActivableDeviceInterface.isActive();
+				}
+				if (lIsActive)
+				{
+					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+					lStateQueueDeviceInterface.addCurrentStateToQueueNotCounting();
+				}
 			}
 		}
 	}
@@ -144,8 +154,18 @@ public class LightSheetMicroscope	extends
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
 			{
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				lStateQueueDeviceInterface.addCurrentStateToQueue();
+				// TODO: avoid code duplication
+				boolean lIsActive = true;
+				if (lDevice instanceof ActivableDeviceInterface)
+				{
+					ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
+					lIsActive = lActivableDeviceInterface.isActive();
+				}
+				if (lIsActive)
+				{
+					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+					lStateQueueDeviceInterface.addCurrentStateToQueue();
+				}
 			}
 		}
 		mNumberOfEnqueuedStates++;
