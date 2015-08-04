@@ -5,8 +5,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.math.regression.linear.TheilSenEstimator;
-import rtlib.core.math.regression.linear.UnivariateAffineFunction;
 
 public class TheilSenEstimatorTest
 {

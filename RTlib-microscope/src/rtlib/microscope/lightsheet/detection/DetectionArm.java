@@ -1,10 +1,9 @@
 package rtlib.microscope.lightsheet.detection;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.math.regression.linear.UnivariateAffineFunction;
+import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
@@ -18,8 +17,8 @@ public class DetectionArm extends NamedVirtualDevice implements
 	private final DoubleVariable mDetectionFocusZ = new DoubleVariable(	"FocusZ",
 																																			0);
 
-	private final ObjectVariable<UnivariateFunction> mDetectionZFunction = new ObjectVariable<UnivariateFunction>("DetectionZFunction",
-																																																								new UnivariateAffineFunction());
+	private final ObjectVariable<UnivariateAffineComposableFunction> mDetectionZFunction = new ObjectVariable<>("DetectionZFunction",
+																																																						new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
@@ -46,7 +45,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 			update();
 		};
 
-		final VariableSetListener<UnivariateFunction> lObjectVariableListener = (	u,
+		final VariableSetListener<UnivariateAffineComposableFunction> lObjectVariableListener = (	u,
 																																							v) -> {
 			update();
 		};
@@ -75,7 +74,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<UnivariateFunction> getDetectionFocusZFunction()
+	public ObjectVariable<UnivariateAffineComposableFunction> getDetectionFocusZFunction()
 	{
 		return mDetectionZFunction;
 	}

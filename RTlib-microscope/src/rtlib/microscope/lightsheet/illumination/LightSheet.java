@@ -6,12 +6,11 @@ import static java.lang.Math.sin;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.math.regression.linear.UnivariateAffineFunction;
+import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -29,25 +28,24 @@ public class LightSheet extends NamedVirtualDevice implements
 																									AsynchronousExecutorServiceAccess
 {
 
-	private static final double cMicronsToNormGalvoUnits = 1;
 
-	private final ObjectVariable<UnivariateFunction> mLightSheetXFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetXFunction",
-																																																									new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetXFunction = new ObjectVariable<>(	"LightSheetXFunction",
+																																																									new UnivariateAffineFunction(	1,
 																																																																								0));
-	private final ObjectVariable<UnivariateFunction> mLightSheetYFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetYFunction",
-																																																									new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetYFunction = new ObjectVariable<>("LightSheetYFunction",
+																																																									new UnivariateAffineFunction(	1,
 																																																																								0));
-	private final ObjectVariable<UnivariateFunction> mLightSheetZFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetZFunction",
-																																																									new UnivariateAffineFunction(	cMicronsToNormGalvoUnits,
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetZFunction = new ObjectVariable<>("LightSheetZFunction",
+																																																									new UnivariateAffineFunction(	1,
 																																																																								0));
-	private final ObjectVariable<UnivariateFunction> mLightSheetBetaFunction = new ObjectVariable<UnivariateFunction>("LightSheetBetaFunction",
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetBetaFunction = new ObjectVariable<>(	"LightSheetBetaFunction",
 																																																										new UnivariateAffineFunction(	1,
 																																																																									0));
-	private final ObjectVariable<UnivariateFunction> mLightSheetIrisDiameterFunction = new ObjectVariable<UnivariateFunction>("LightSheetIrisDiameterFunction",
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetIrisDiameterFunction = new ObjectVariable<>(	"LightSheetIrisDiameterFunction",
 																																																														new UnivariateAffineFunction(	1,
 																																																																													0));
 
-	private final ObjectVariable<UnivariateFunction> mLightSheetPowerFunction = new ObjectVariable<UnivariateFunction>(	"LightSheetIrisDiameterFunction",
+	private final ObjectVariable<UnivariateAffineComposableFunction> mLightSheetPowerFunction = new ObjectVariable<>("LightSheetIrisDiameterFunction",
 																																																											new UnivariateAffineFunction(	0.01,
 																																																																										0));
 
@@ -617,32 +615,38 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLaserOnOffArray[pLaserIndex];
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetXFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetXFunction()
 	{
 		return mLightSheetXFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetYFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetYFunction()
 	{
 		return mLightSheetYFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetZFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetZFunction()
 	{
 		return mLightSheetZFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetBetaFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetBetaFunction()
 	{
 		return mLightSheetBetaFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetIrisDiameterFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetIrisDiameterFunction()
 	{
 		return mLightSheetIrisDiameterFunction;
 	}
 
-	public ObjectVariable<UnivariateFunction> getLightSheetLaserPowerFunction()
+	@Override
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetLaserPowerFunction()
 	{
 		return mLightSheetPowerFunction;
 	}

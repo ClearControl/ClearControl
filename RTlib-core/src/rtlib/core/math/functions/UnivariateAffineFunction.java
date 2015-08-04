@@ -1,13 +1,12 @@
-package rtlib.core.math.regression.linear;
+package rtlib.core.math.functions;
 
 import java.io.Serializable;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
 public class UnivariateAffineFunction	implements
-																			UnivariateFunction,
+																			UnivariateAffineComposableFunction,
 																			Serializable
 {
 
@@ -50,6 +49,13 @@ public class UnivariateAffineFunction	implements
 	}
 
 	@Override
+	public void composeWith(UnivariateAffineFunction pFunction)
+	{
+		mA = mA * pFunction.getSlope();
+		mB = mA * pFunction.getConstant() + mB;
+	}
+
+	@Override
 	public double value(double pX)
 	{
 		return mA * pX + mB;
@@ -63,5 +69,8 @@ public class UnivariateAffineFunction	implements
 						+ mB
 						+ "]";
 	}
+
+
+
 
 }

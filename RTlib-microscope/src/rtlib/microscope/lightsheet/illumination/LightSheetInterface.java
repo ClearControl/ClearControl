@@ -1,6 +1,7 @@
 package rtlib.microscope.lightsheet.illumination;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
@@ -39,8 +40,19 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public ObjectVariable<StructuredIlluminatioPatternInterface> getSIPatternVariable(int pLaserIndex);
 
-	public int getNumberOfPhases(int pLaserIndex);
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetXFunction();
 
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetYFunction();
+
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetZFunction();
+
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetBetaFunction();
+
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetIrisDiameterFunction();
+
+	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetLaserPowerFunction();
+
+	public int getNumberOfPhases(int pLaserIndex);
 
 
 
