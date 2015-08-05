@@ -308,11 +308,11 @@ public class LightSheetCalibration
 			lDetectionArmDevice1.getDetectionFocusZFunction()
 													.get()
 													.composeWith(new UnivariateAffineFunction(1,
-																																		lFocalPlanesHalfOffset));
+																														lFocalPlanesHalfOffset));
 			lDetectionArmDevice2.getDetectionFocusZFunction()
 													.get()
 													.composeWith(new UnivariateAffineFunction(1,
-																																		-lFocalPlanesHalfOffset));
+																														-lFocalPlanesHalfOffset));
 
 			System.out.println("lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getDetectionFocusZFunction());
 			System.out.println("lDetectionArmDevice2.getDetectionFocusZFunction()=" + lDetectionArmDevice2.getDetectionFocusZFunction());
