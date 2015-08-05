@@ -62,16 +62,16 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public void addCurrentStateToQueueNotCounting()
+	public void addCurrentStateToQueue()
 	{
 		mQueuedScore.addScoreCopy(mStagingScore);
+		mEnqueuedStateCounter++;
 	}
 
 	@Override
-	public void addCurrentStateToQueue()
+	public void finalizeQueue()
 	{
-		addCurrentStateToQueueNotCounting();
-		mEnqueuedStateCounter++;
+
 	}
 
 	@SuppressWarnings("unchecked")

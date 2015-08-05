@@ -167,7 +167,7 @@ public class LightSheetCalibration
 
 				mLightSheetMicroscope.addCurrentStateToQueue();
 			}
-			mLightSheetMicroscope.addCurrentStateToQueueNotCounting();
+			mLightSheetMicroscope.finalizeQueue();
 
 			/*ScoreVisualizerJFrame.visualize("queuedscore",
 																			mLightSheetMicroscope.getDeviceLists()

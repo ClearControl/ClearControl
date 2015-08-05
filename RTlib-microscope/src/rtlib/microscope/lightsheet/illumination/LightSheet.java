@@ -16,7 +16,7 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lightsheet.illumination.si.BinaryStructuredIlluminationPattern;
-import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminatioPatternInterface;
+import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminationPatternInterface;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.EdgeStave;
@@ -86,7 +86,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 	private final BooleanVariable[] mSIPatternOnOff;
 
-	private final ObjectVariable<StructuredIlluminatioPatternInterface>[] mStructuredIlluminationPatternVariableArray;
+	private final ObjectVariable<StructuredIlluminationPatternInterface>[] mStructuredIlluminationPatternVariableArray;
 
 	private Movement mBeforeExposureMovement, mExposureMovement;
 
@@ -96,11 +96,12 @@ public class LightSheet extends NamedVirtualDevice implements
 	private ConstantStave mLightSheetStaveBeforeExposureY,
 			mLightSheetStaveExposureY, mLightSheetStaveBeforeExposureB,
 			mLightSheetStaveExposureB, mLightSheetStaveBeforeExposureR,
-			mLightSheetStaveExposureR, mLightSheetStaveExposureT,
+			mLightSheetStaveExposureR,
 			mLightSheetStaveBeforeExposureLA, mLightSheetStaveExposureLA,
 			mNonSIIluminationLaserTrigger;
 
-	private EdgeStave mLightSheetStaveBeforeExposureT;
+	private EdgeStave mLightSheetStaveBeforeExposureT,
+			mLightSheetStaveExposureT;
 
 	private final int mNumberOfLaserDigitalControls;
 
@@ -141,7 +142,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetStaveBeforeExposureR = new ConstantStave("lightsheet.r.be",
 																												0);
 		mLightSheetStaveBeforeExposureT = new EdgeStave("trigger.out.be",
-																										1f,
+																										1,
 																										1,
 																										0);
 
@@ -150,7 +151,10 @@ public class LightSheet extends NamedVirtualDevice implements
 		mLightSheetStaveExposureZ = new RampSteppingStave("lightsheet.z.e");
 		mLightSheetStaveExposureB = new ConstantStave("lightsheet.b.e", 0);
 		mLightSheetStaveExposureR = new ConstantStave("lightsheet.r.e", 0);
-		mLightSheetStaveExposureT = new ConstantStave("trigger.out.e", 0);
+		mLightSheetStaveExposureT = new EdgeStave("trigger.out.e",
+																							1,
+																							0,
+																							0);
 
 		mNonSIIluminationLaserTrigger = new ConstantStave("trigger.out.e",
 																											1);
@@ -365,8 +369,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	{
 		synchronized (this)
 		{
-
-			System.out.println("Updating: " + getName());
+			// System.out.println("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
@@ -465,7 +468,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			{
 
 				final BooleanVariable lLaserBooleanVariable = mLaserOnOffArray[i];
-				final StructuredIlluminatioPatternInterface lStructuredIlluminatioPatternInterface = mStructuredIlluminationPatternVariableArray[i].get();
+				final StructuredIlluminationPatternInterface lStructuredIlluminatioPatternInterface = mStructuredIlluminationPatternVariableArray[i].get();
 				final StaveInterface lLaserTriggerStave = lStructuredIlluminatioPatternInterface.getStave(lMarginTimeRelativeUnits);
 				lLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
 
@@ -591,7 +594,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<StructuredIlluminatioPatternInterface> getSIPatternVariable(int pLaserIndex)
+	public ObjectVariable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex)
 	{
 		return mStructuredIlluminationPatternVariableArray[pLaserIndex];
 	}
@@ -686,7 +689,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		return mLightSheetStaveBeforeExposureT;
 	}
 
-	public ConstantStave getTriggerOutStaveExposure()
+	public EdgeStave getTriggerOutStaveExposure()
 	{
 		return mLightSheetStaveExposureT;
 	}

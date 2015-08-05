@@ -16,9 +16,13 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 
 	BooleanVariable getStackModeVariable();
 
+	BooleanVariable getKeepPlaneVariable();
+
 	ObjectVariable<StackInterface<T, A>> getStackVariable();
 
 	@Override
 	void trigger();
+
+
 
 }

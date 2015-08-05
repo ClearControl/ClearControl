@@ -5,8 +5,8 @@ public class IntervalStave extends StaveAbstract	implements
 																								StaveInterface
 {
 
-	private volatile float mSyncStart = 0;
-	private volatile float mSyncStop = 1;
+	private volatile float mStart = 0;
+	private volatile float mStop = 1;
 	private volatile float mInsideValue = 1;
 	private volatile float mOutsideValue = 0;
 
@@ -22,8 +22,8 @@ public class IntervalStave extends StaveAbstract	implements
 												float pOutsideValue)
 	{
 		super(pName);
-		setSyncStart(pSyncStart);
-		setSyncStop(pSyncStop);
+		setStart(pSyncStart);
+		setStop(pSyncStop);
 		setInsideValue(pInsideValue);
 		setOutsideValue(pOutsideValue);
 	}
@@ -31,31 +31,31 @@ public class IntervalStave extends StaveAbstract	implements
 	@Override
 	public float getValue(float pNormalizedTime)
 	{
-		if ((pNormalizedTime < getSyncStart()) || (pNormalizedTime > getSyncStop()))
+		if ((pNormalizedTime < getStart()) || (pNormalizedTime > getStop()))
 			return getOutsideValue();
 		else
 			return getInsideValue();
 	}
 
 
-	public float getSyncStart()
+	public float getStart()
 	{
-		return mSyncStart;
+		return mStart;
 	}
 
-	public void setSyncStart(float pSyncStart)
+	public void setStart(float pStart)
 	{
-		mSyncStart = pSyncStart;
+		mStart = pStart;
 	}
 
-	public float getSyncStop()
+	public float getStop()
 	{
-		return mSyncStop;
+		return mStop;
 	}
 
-	public void setSyncStop(float pSyncStop)
+	public void setStop(float pStop)
 	{
-		mSyncStop = pSyncStop;
+		mStop = pStop;
 	}
 
 	public float getInsideValue()
@@ -82,8 +82,8 @@ public class IntervalStave extends StaveAbstract	implements
 	public StaveInterface copy()
 	{
 		return new IntervalStave(	getName(),
-															getSyncStart(),
-															getSyncStop(),
+															getStart(),
+															getStop(),
 															getInsideValue(),
 															getOutsideValue());
 	}

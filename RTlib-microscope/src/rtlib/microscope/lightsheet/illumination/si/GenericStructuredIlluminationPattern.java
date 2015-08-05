@@ -3,8 +3,8 @@ package rtlib.microscope.lightsheet.illumination.si;
 import rtlib.symphony.staves.StaveInterface;
 
 public class GenericStructuredIlluminationPattern<S extends StaveInterface> extends
-																																						StructuredIlluminatioPatternBase implements
-																																																						StructuredIlluminatioPatternInterface
+																																						StructuredIlluminationPatternBase implements
+																																																						StructuredIlluminationPatternInterface
 {
 
 	private volatile S mStave;

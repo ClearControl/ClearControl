@@ -227,7 +227,7 @@ public class LightSheetMicroscopeDemo
 
 			for (int i = 0; i < 128; i++)
 				lLightSheetMicroscope.addCurrentStateToQueue();
-			lLightSheetMicroscope.addCurrentStateToQueueNotCounting();
+			lLightSheetMicroscope.finalizeQueue();
 			System.out.println("finished building queue");
 
 			while (lVisualizer.isVisible())

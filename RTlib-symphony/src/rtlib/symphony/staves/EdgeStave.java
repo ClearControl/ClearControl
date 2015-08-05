@@ -1,13 +1,9 @@
 package rtlib.symphony.staves;
 
 
-public class EdgeStave extends StaveAbstract	implements
+public class EdgeStave extends IntervalStave implements
 																								StaveInterface
 {
-
-	private volatile float mEdgePosition = 0.5f;
-	private volatile float mValueBefore;
-	private volatile float mValueAfter;
 
 	public EdgeStave(	final String pName,
 										float pEdgePosition,
@@ -31,32 +27,32 @@ public class EdgeStave extends StaveAbstract	implements
 
 	public float getEdgePosition()
 	{
-		return mEdgePosition;
+		return getStart();
 	}
 
 	public void setEdgePosition(float pEdgePosition)
 	{
-		mEdgePosition = pEdgePosition;
+		setStart(pEdgePosition);
 	}
 
 	public float getValueBefore()
 	{
-		return mValueBefore;
+		return getOutsideValue();
 	}
 
 	public void setValueBefore(float pValueBefore)
 	{
-		mValueBefore = pValueBefore;
+		setOutsideValue(pValueBefore);
 	}
 
 	public float getValueAfter()
 	{
-		return mValueAfter;
+		return getInsideValue();
 	}
 
 	public void setValueAfter(float pValueAfter)
 	{
-		mValueAfter = pValueAfter;
+		setInsideValue(pValueAfter);
 	}
 
 	@Override

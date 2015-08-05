@@ -1,5 +1,7 @@
 package rtlib.cameras;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.util.concurrent.Future;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
@@ -18,12 +20,17 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	protected BooleanVariable mStackMode = new BooleanVariable(	"StackMode",
 																															true);
 
+	protected BooleanVariable mKeepPlane = new BooleanVariable(	"KeepPlane",
+																															true);
+
 	protected DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfImagesPerPlane",
 																																								1);
 
 	protected volatile int mQueueLength = 0;
 
 	protected ObjectVariable<StackInterface<T, A>> mStackReference;
+
+	protected TByteArrayList mKeepAcquiredImageArray = new TByteArrayList();
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
@@ -44,6 +51,12 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	}
 
 	@Override
+	public BooleanVariable getKeepPlaneVariable()
+	{
+		return mKeepPlane;
+	}
+
+	@Override
 	public ObjectVariable<StackInterface<T, A>> getStackVariable()
 	{
 		return mStackReference;
@@ -54,18 +67,20 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	{
 		mQueueLength = 0;
 		mStackDepthVariable.setValue(0);
-	}
-
-	@Override
-	public void addCurrentStateToQueueNotCounting()
-	{
-
+		mKeepAcquiredImageArray.clear();
 	}
 
 	@Override
 	public void addCurrentStateToQueue()
 	{
 		mQueueLength++;
+		mKeepAcquiredImageArray.add((byte) (mKeepPlane.getBooleanValue() ? 1
+																																		: 0));
+	}
+
+	@Override
+	public void finalizeQueue()
+	{
 	}
 
 	@Override

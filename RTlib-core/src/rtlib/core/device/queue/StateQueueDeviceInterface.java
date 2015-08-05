@@ -6,9 +6,9 @@ public interface StateQueueDeviceInterface
 {
 	void clearQueue();
 
-	void addCurrentStateToQueueNotCounting();
-
 	void addCurrentStateToQueue();
+
+	void finalizeQueue();
 
 	int getQueueLength();
 

@@ -4,8 +4,8 @@ import rtlib.symphony.staves.BinaryPatternSteppingStave;
 import rtlib.symphony.staves.StaveInterface;
 
 public class BinaryStructuredIlluminationPattern extends
-																								StructuredIlluminatioPatternBase implements
-																																								StructuredIlluminatioPatternInterface
+																								StructuredIlluminationPatternBase implements
+																																								StructuredIlluminationPatternInterface
 {
 
 	private final double mPatternPeriod = 2;

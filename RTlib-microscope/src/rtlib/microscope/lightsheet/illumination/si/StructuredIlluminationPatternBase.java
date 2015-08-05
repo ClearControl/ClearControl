@@ -1,6 +1,6 @@
 package rtlib.microscope.lightsheet.illumination.si;
 
-public abstract class StructuredIlluminatioPatternBase
+public abstract class StructuredIlluminationPatternBase
 {
 
 	protected static final double clamp01(final double x)

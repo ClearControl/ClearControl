@@ -24,8 +24,8 @@ public class ScoreTests
 		final Movement lMovement = new Movement("Test Movement");
 
 		final TriggerStave lCameraTriggerStave = new TriggerStave("camera trigger");
-		lCameraTriggerStave.setSyncStart(0.2f);
-		lCameraTriggerStave.setSyncStop(0.6f);
+		lCameraTriggerStave.setStart(0.2f);
+		lCameraTriggerStave.setStop(0.6f);
 
 		final RampSteppingStave lGalvoScannerStave = new RampSteppingStave("galvo");
 		lGalvoScannerStave.setSyncStart(0.1f);
@@ -35,8 +35,8 @@ public class ScoreTests
 		lGalvoScannerStave.setStepHeight(0.02f);
 
 		final TriggerStave lLaserTriggerStave = new TriggerStave("laser trigger");
-		lLaserTriggerStave.setSyncStart(0.3f);
-		lLaserTriggerStave.setSyncStop(0.5f);
+		lLaserTriggerStave.setStart(0.3f);
+		lLaserTriggerStave.setStop(0.5f);
 
 		lMovement.setStave(0, lCameraTriggerStave);
 		lMovement.setStave(1, lGalvoScannerStave);

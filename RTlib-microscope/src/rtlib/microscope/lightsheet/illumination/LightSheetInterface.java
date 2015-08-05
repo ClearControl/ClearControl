@@ -5,7 +5,7 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminatioPatternInterface;
+import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface
 {
@@ -38,7 +38,7 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public BooleanVariable getSIPatternOnOffVariable(int pLaserIndex);
 
-	public ObjectVariable<StructuredIlluminatioPatternInterface> getSIPatternVariable(int pLaserIndex);
+	public ObjectVariable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
 
 	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetXFunction();
 

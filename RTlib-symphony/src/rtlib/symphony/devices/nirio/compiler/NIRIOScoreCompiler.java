@@ -114,8 +114,7 @@ public class NIRIOScoreCompiler	implements
 
 		pScoreBuffer.pushPosition();
 		long lNumberOfShortsInMovement = lNumberOfTimePoints * lNumberOfStaves;
-		pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement,
-														(byte) 0);
+		pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement, (byte) 0);
 		pScoreBuffer.popPosition();
 
 		pScoreBuffer.pushPosition();
@@ -128,7 +127,7 @@ public class NIRIOScoreCompiler	implements
 			if (lStave instanceof ZeroStave)
 			{
 				addZeroStaveToBuffer(	pScoreBuffer,
-																	lNumberOfTimePoints,
+															lNumberOfTimePoints,
 															lNumberOfStaves);
 			}
 			else if (lStave instanceof ConstantStave)
@@ -169,8 +168,8 @@ public class NIRIOScoreCompiler	implements
 																								int pNumberOfStaves,
 																								IntervalStave pIntervalStave)
 	{
-		final float lSyncStart = pIntervalStave.getSyncStart();
-		final float lSyncStop = pIntervalStave.getSyncStop();
+		final float lSyncStart = pIntervalStave.getStart();
+		final float lSyncStop = pIntervalStave.getStop();
 		final short lInsideValue = getShortForFloat(pIntervalStave.getInsideValue());
 		final short lOutsideValue = getShortForFloat(pIntervalStave.getOutsideValue());
 
@@ -179,15 +178,22 @@ public class NIRIOScoreCompiler	implements
 		{
 			final float lNormalizedTime = t * lInvNumberOfTimepoints;
 
-			if (lNormalizedTime < lSyncStart || lNormalizedTime > lSyncStop)
-				pScoreBuffer.writeShort(lOutsideValue);
-			else
+			if (t == pNumberOfTimePoints - 1)
+			{
 				pScoreBuffer.writeShort(lInsideValue);
+			}
+			else
+			{
+				if (lNormalizedTime < lSyncStart || lNormalizedTime > lSyncStop)
+					pScoreBuffer.writeShort(lOutsideValue);
+				else
+					pScoreBuffer.writeShort(lInsideValue);
+			}
 
 			pScoreBuffer.skipShorts(pNumberOfStaves - 1);
 		}
-	}
 
+	}
 
 	private static void addConstantStaveToBuffer(	ContiguousBuffer pScoreBuffer,
 																								final long pNumberOfTimePoints,

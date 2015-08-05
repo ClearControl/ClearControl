@@ -2,7 +2,7 @@ package rtlib.microscope.lightsheet;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminatioPatternInterface;
+import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetMicroscopeInterface
 {
@@ -28,6 +28,17 @@ public interface LightSheetMicroscopeInterface
 	 */
 	public void setExposure(long pValue, TimeUnit pTimeUnit);
 
+
+	/**
+	 * Sets a flag that determines whether the camera should acquire (or keep) an
+	 * image.
+	 * 
+	 * @param pCameraIndex
+	 *          index of the stack camera device
+	 * @param pKeepImage
+	 *          true if image should be acquired (or kept), false otherwise
+	 */
+	void setC(int pCameraIndex, boolean pKeepImage);
 
 	/**
 	 * Sets a detection objective to a given position.
@@ -124,7 +135,7 @@ public interface LightSheetMicroscopeInterface
 	 */
 	void setIPattern(	int pLightSheetIndex,
 										int pLaserIndex,
-										StructuredIlluminatioPatternInterface pPattern);
+										StructuredIlluminationPatternInterface pPattern);
 
 	/**
 	 * Sets whether the structured illumination pattern for a given lightsheet and
@@ -140,5 +151,7 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 																int pLaserIndex,
 																boolean pOnOff);
+
+
 
 }

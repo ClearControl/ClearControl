@@ -16,7 +16,7 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminatioPatternInterface;
+import rtlib.microscope.lightsheet.illumination.si.StructuredIlluminationPatternInterface;
 import rtlib.stack.StackInterface;
 
 public class LightSheetMicroscope	extends
@@ -117,34 +117,13 @@ public class LightSheetMicroscope	extends
 		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				lStateQueueDeviceInterface.clearQueue();
-			}
-		}
-		mNumberOfEnqueuedStates = 0;
-	}
-
-	@Override
-	public void addCurrentStateToQueueNotCounting()
-	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				boolean lIsActive = true;
-				if (lDevice instanceof ActivableDeviceInterface)
-				{
-					ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
-					lIsActive = lActivableDeviceInterface.isActive();
-				}
-				if (lIsActive)
+				if (isActiveDevice(lDevice))
 				{
 					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.addCurrentStateToQueueNotCounting();
+					lStateQueueDeviceInterface.clearQueue();
 				}
-			}
 		}
+		mNumberOfEnqueuedStates = 0;
 	}
 
 	@Override
@@ -153,22 +132,44 @@ public class LightSheetMicroscope	extends
 		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 		{
 			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				// TODO: avoid code duplication
-				boolean lIsActive = true;
-				if (lDevice instanceof ActivableDeviceInterface)
-				{
-					ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
-					lIsActive = lActivableDeviceInterface.isActive();
-				}
-				if (lIsActive)
+				if (isActiveDevice(lDevice))
 				{
 					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
 					lStateQueueDeviceInterface.addCurrentStateToQueue();
 				}
-			}
+
 		}
 		mNumberOfEnqueuedStates++;
+	}
+
+	@Override
+	public void finalizeQueue()
+	{
+		// TODO: this should be put in a subclass specific to the way that we
+		// trigger cameras...
+		mLSMDeviceLists.getSignalGeneratorDevice(0)
+										.addCurrentStateToQueue();
+		
+		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		{
+			if (lDevice instanceof StateQueueDeviceInterface)
+				if (isActiveDevice(lDevice))
+				{
+					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+					lStateQueueDeviceInterface.finalizeQueue();
+				}
+		}
+	}
+
+	private boolean isActiveDevice(final Object lDevice)
+	{
+		boolean lIsActive = true;
+		if (lDevice instanceof ActivableDeviceInterface)
+		{
+			ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
+			lIsActive = lActivableDeviceInterface.isActive();
+		}
+		return lIsActive;
 	}
 
 	@Override
@@ -311,6 +312,9 @@ public class LightSheetMicroscope	extends
 
 	public void zero()
 	{
+		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
+			setC(i, true);
+
 		for (int i = 0; i < getDeviceLists().getNumberOfDetectionArmDevices(); i++)
 			setDZ(i, 0);
 
@@ -330,6 +334,14 @@ public class LightSheetMicroscope	extends
 		}
 
 	}
+
+	@Override
+	public void setC(int pCameraIndex, boolean pKeepImage)
+	{
+		getDeviceLists().getStackCameraDevice(pCameraIndex)
+										.getKeepPlaneVariable()
+										.setValue(pKeepImage);
+	};
 
 	@Override
 	public void setDZ(int pIndex, double pValue)
@@ -408,7 +420,7 @@ public class LightSheetMicroscope	extends
 	@Override
 	public void setIPattern(int pLightSheetIndex,
 													int pLaserIndex,
-													StructuredIlluminatioPatternInterface pPattern)
+													StructuredIlluminationPatternInterface pPattern)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 										.getSIPatternVariable(pLaserIndex)

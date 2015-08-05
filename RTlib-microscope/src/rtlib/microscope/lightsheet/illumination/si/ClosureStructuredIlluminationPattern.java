@@ -5,7 +5,7 @@ import rtlib.symphony.staves.SteppingFunction;
 
 public class ClosureStructuredIlluminationPattern	extends
 																									GenericStructuredIlluminationPattern<ClosurePatternSteppingStave>	implements
-																																																										StructuredIlluminatioPatternInterface
+																																																										StructuredIlluminationPatternInterface
 {
 
 	public ClosureStructuredIlluminationPattern(SteppingFunction pSteppingFunction,
