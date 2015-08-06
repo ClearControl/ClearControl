@@ -20,6 +20,13 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 
 	private ObjectVariable<StackInterface<T, A>> mFinishedProcessingStackVariable;
 
+	public static <ST extends NativeType<ST>, SA extends ArrayDataAccess<SA>> AsynchronousStackSinkAdapter<ST, SA> wrap(StackSinkInterface<ST, SA> pStackSink,
+																																																											final int pMaxQueueSize)
+	{
+		return new AsynchronousStackSinkAdapter<ST, SA>(pStackSink,
+																										pMaxQueueSize);
+	}
+
 	public AsynchronousStackSinkAdapter(final StackSinkInterface<T, A> pStackSink,
 																			final int pMaxQueueSize)
 	{
@@ -27,7 +34,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 		mStackSink = pStackSink;
 
 		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>(	"AsynchronousStackSinkAdapter",
-																																										pMaxQueueSize)
+																																																									pMaxQueueSize)
 		{
 			@Override
 			public StackInterface<T, A> process(final StackInterface<T, A> pStack)
@@ -67,6 +74,12 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 	public int getQueueLength()
 	{
 		return mAsynchronousConversionProcessor.getInputQueueLength();
+	}
+
+	@Override
+	public void addMetaData(final String pPrefix, final double pValue)
+	{
+		mStackSink.addMetaData(pPrefix, pValue);
 	}
 
 	@Override

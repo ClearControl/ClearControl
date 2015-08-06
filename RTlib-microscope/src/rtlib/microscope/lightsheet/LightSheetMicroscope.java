@@ -344,11 +344,35 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public void setLO(int pLaserIndex, boolean pLaserOnOff)
+	{
+		getDeviceLists().getLaserDevice(pLaserIndex)
+										.getLaserOnVariable()
+										.setValue(pLaserOnOff);
+	};
+
+	@Override
+	public void setLP(int pLaserIndex, double pLaserPowerInmW)
+	{
+		getDeviceLists().getLaserDevice(pLaserIndex)
+										.getTargetPowerInMilliWattVariable()
+										.set(pLaserPowerInmW);
+	};
+
+	@Override
 	public void setDZ(int pIndex, double pValue)
 	{
 		getDeviceLists().getDetectionArmDevice(pIndex)
 										.getDetectionFocusZInMicronsVariable()
 										.setValue(pValue);
+	};
+
+	@Override
+	public void selectI(int pLightSheetIndex)
+	{
+		getDeviceLists().getLightSheetSelectorDevice()
+										.getPositionVariable()
+										.setValue(pLightSheetIndex);
 	};
 
 	@Override

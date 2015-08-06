@@ -1,18 +1,13 @@
 package rtlib.optomech.fiberswitch;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.device.PositionDeviceInterface;
 
 public interface OpticalSwitchDeviceInterface	extends
-											OpenCloseDeviceInterface
+																							OpenCloseDeviceInterface,
+																							PositionDeviceInterface
 {
 
-	DoubleVariable getPositionVariable();
 
-	int getPosition();
-
-	void setPosition(int pPosition);
-
-	int[] getValidPositions();
 
 }

@@ -9,6 +9,7 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
@@ -70,6 +71,13 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	{
 		mStackTimePointList.add(pStack.getTimeStampInNanoseconds());
 		return mStackList.add(pStack);
+	}
+	
+	@Override
+	public void addMetaData(final String pPrefix, final double pValue)
+	{
+		mMetaDataVariableBundle.addVariable(new DoubleVariable(	pPrefix,
+																																	pValue));
 	}
 
 	@Override

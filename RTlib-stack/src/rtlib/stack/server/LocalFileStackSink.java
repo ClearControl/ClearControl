@@ -11,6 +11,7 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
 import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 
@@ -115,6 +116,14 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 																	final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
+	}
+
+	@Override
+	public void addMetaData(final String pPrefix, final double pValue)
+	{
+		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
+																							new DoubleVariable(	pPrefix,
+																																	pValue));
 	}
 
 	@Override

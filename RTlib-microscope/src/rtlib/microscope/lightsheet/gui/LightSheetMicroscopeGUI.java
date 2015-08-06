@@ -194,4 +194,9 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 		}
 	}
 
+	public boolean isVisible()
+	{
+		return mScriptingWindow != null && mScriptingWindow.isVisible();
+	}
+
 }

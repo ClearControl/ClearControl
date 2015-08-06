@@ -6,6 +6,7 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.core.device.PositionDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lightsheet.detection.DetectionArmInterface;
@@ -36,6 +37,7 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess>> mStackPipelineList = new ArrayList<>();
 	private final ArrayList<ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> mStackVariableList = new ArrayList<>();
 
+	private PositionDeviceInterface mLightSheetSelector;
 
 
 	public LightSheetMicroscopeDeviceLists()
@@ -237,6 +239,16 @@ public class LightSheetMicroscopeDeviceLists
 		return mLaserDeviceList.get(pIndex);
 	}
 
+	public PositionDeviceInterface getLightSheetSelectorDevice()
+	{
+		return mLightSheetSelector;
+	}
+
+	public void setLightSheetSelectorDevice(PositionDeviceInterface pPositionDeviceInterface)
+	{
+		mLightSheetSelector = pPositionDeviceInterface;
+	}
+
 	public ArrayList<Object> getAllDeviceList()
 	{
 		return mAllDeviceList;
@@ -258,6 +270,7 @@ public class LightSheetMicroscopeDeviceLists
 		}
 		return lBuilder.toString();
 	}
+
 
 
 }

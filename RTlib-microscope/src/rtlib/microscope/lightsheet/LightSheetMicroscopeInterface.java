@@ -18,7 +18,7 @@ public interface LightSheetMicroscopeInterface
 	public void setWidthHeight(int pWidth, int pHeight);
 
 	/**
-	 * Sets image aquisition exposure in
+	 * Sets image acquisition exposure in
 	 * 
 	 * @param pValue
 	 *          time
@@ -28,6 +28,34 @@ public interface LightSheetMicroscopeInterface
 	 */
 	public void setExposure(long pValue, TimeUnit pTimeUnit);
 
+	/**
+	 * Selects light sheet to direct light to:
+	 * 
+	 * @param pLightSheetIndex
+	 *          light sheet index
+	 * 
+	 */
+	public void selectI(int pLightSheetIndex);
+
+	/**
+	 * Switches on/off a given laser.
+	 * 
+	 * @param pLaserIndex
+	 *          index of the laser device
+	 * @param pLaserOnOff
+	 *          true for on, false otherwise
+	 */
+	public void setLO(int pLaserIndex, boolean pLaserOnOff);
+
+	/**
+	 * Sets a the laser power (mW) for a given laser.
+	 * 
+	 * @param pLaserIndex
+	 *          index of the laser device
+	 * @param pLaserPowerInmW
+	 *          laser power in mW
+	 */
+	public void setLP(int pLaserIndex, double pLaserPowerInmW);
 
 	/**
 	 * Sets a flag that determines whether the camera should acquire (or keep) an
@@ -38,7 +66,7 @@ public interface LightSheetMicroscopeInterface
 	 * @param pKeepImage
 	 *          true if image should be acquired (or kept), false otherwise
 	 */
-	void setC(int pCameraIndex, boolean pKeepImage);
+	public void setC(int pCameraIndex, boolean pKeepImage);
 
 	/**
 	 * Sets a detection objective to a given position.
@@ -133,7 +161,7 @@ public interface LightSheetMicroscopeInterface
 	 * @param pPattern
 	 *          pattern
 	 */
-	void setIPattern(	int pLightSheetIndex,
+	public void setIPattern(int pLightSheetIndex,
 										int pLaserIndex,
 										StructuredIlluminationPatternInterface pPattern);
 
@@ -151,6 +179,7 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 																int pLaserIndex,
 																boolean pOnOff);
+
 
 
 

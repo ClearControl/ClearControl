@@ -24,4 +24,11 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 		return true;
 	}
 
+	@Override
+	public int[] getValidPositions()
+	{
+		return new int[]
+		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	}
+
 }

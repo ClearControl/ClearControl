@@ -5,7 +5,7 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class FilterWheelDeviceBase	extends
 																						NamedVirtualDevice implements
-																	FilterWheelDeviceInterface
+																															FilterWheelDeviceInterface
 {
 	protected DoubleVariable mFilterPositionVariable = null,
 			mFilterSpeedVariable = null;
@@ -15,8 +15,7 @@ public abstract class FilterWheelDeviceBase	extends
 		super(pDeviceName);
 		mFilterPositionVariable = new DoubleVariable(	"FilterWheelPosition",
 																									0);
-		mFilterSpeedVariable = new DoubleVariable("FilterWheelSpeed",
-																									0);
+		mFilterSpeedVariable = new DoubleVariable("FilterWheelSpeed", 0);
 	}
 
 	@Override
