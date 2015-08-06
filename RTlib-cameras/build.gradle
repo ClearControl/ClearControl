@@ -20,7 +20,7 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-gui')
 
-	compile group: "net.rtlib", name: "DcamJ", version: "1.0", transitive: true, changing: true
+	compile group: "net.rtlib", name: "DcamJ", version: "(,1.5]", transitive: true, changing: true
 
 	compile 'com.github.sarxos:webcam-capture:0.3.9'
 

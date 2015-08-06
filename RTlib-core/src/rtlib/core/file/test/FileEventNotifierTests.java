@@ -16,7 +16,7 @@ import rtlib.core.file.FileEventNotifierListener;
 public class FileEventNotifierTests
 {
 
-	protected int lEventCounter;
+	protected volatile int lEventCounter;
 
 	@Test
 	public void test() throws Exception
@@ -25,6 +25,9 @@ public class FileEventNotifierTests
 																								"test");
 		final File lOtherFile = File.createTempFile("FileEventNotifierTests",
 																								"other");
+		
+		lTestFile.delete();
+		lOtherFile.delete();
 
 		final FileEventNotifier lFileEventNotifier = new FileEventNotifier(lTestFile);
 
@@ -53,7 +56,7 @@ public class FileEventNotifierTests
 
 		lTestFileFormatter.format("test1\n");
 		lTestFileFormatter.flush();
-		ThreadUtils.sleep(2, TimeUnit.SECONDS);
+		ThreadUtils.sleep(3, TimeUnit.SECONDS);
 		assertEquals(1, lEventCounter);
 
 		lTestFileFormatter.format("test2\n");

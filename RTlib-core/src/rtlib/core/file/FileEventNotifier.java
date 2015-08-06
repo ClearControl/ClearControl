@@ -19,7 +19,7 @@ public class FileEventNotifier implements AutoCloseable
 
 	private final CopyOnWriteArrayList<FileEventNotifierListener> mListenerList = new CopyOnWriteArrayList<FileEventNotifierListener>();
 	private final FileAlterationMonitor mFileAlterationMonitor;
-	private volatile boolean mIgnore = true;
+	private volatile boolean mIgnore = false;
 
 	public enum FileEventKind
 	{
@@ -92,7 +92,7 @@ public class FileEventNotifier implements AutoCloseable
 			}
 		});
 
-		mFileAlterationMonitor = new FileAlterationMonitor(pTimeUnit.toMillis(pPeriod));
+		mFileAlterationMonitor = new FileAlterationMonitor(TimeUnit.MILLISECONDS.convert(pPeriod,pTimeUnit));
 		mFileAlterationMonitor.addObserver(mFileAlterationObserver);
 	}
 
@@ -153,9 +153,8 @@ public class FileEventNotifier implements AutoCloseable
 			mFileAlterationObserver.destroy();
 			mFileAlterationMonitor.stop();
 		}
-		catch (final Exception e)
+		catch (final Throwable e)
 		{
-			throw new IOException(e);
 		}
 	}
 

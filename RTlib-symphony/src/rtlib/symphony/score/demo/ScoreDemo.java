@@ -1,4 +1,4 @@
-package rtlib.symphony.test;
+package rtlib.symphony.score.demo;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -12,11 +12,11 @@ import rtlib.symphony.score.Score;
 import rtlib.symphony.staves.RampSteppingStave;
 import rtlib.symphony.staves.TriggerStave;
 
-public class ScoreTests
+public class ScoreDemo
 {
 
 	@Test
-	public void test() throws IOException, InterruptedException
+	public void Demo() throws IOException, InterruptedException
 	{
 
 		final Score lScore = new Score("Test Score");

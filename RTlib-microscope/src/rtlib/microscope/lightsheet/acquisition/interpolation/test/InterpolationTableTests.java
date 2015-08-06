@@ -39,10 +39,10 @@ public class InterpolationTableTests
 
 		final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
 
-		while (lDisplayTable.isVisible())
+		/*while (lDisplayTable.isVisible())
 		{
 			ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
-		}
+		}/**/
 
 		assertEquals(	1.0,
 									lInterpolationTable.getNearestValue(0, 1.2),
