@@ -20,8 +20,8 @@ dependencies {
 	//compile 'org.devzendo:LibQuaqua:7.3.4'
 	compile 'org.devzendo:Quaqua:7.3.4'
 
-	compile group: "net.clearvolume", name: "clearvolume", version: "(,1.0]", changing: true, transitive: true
-	compile group: "net.clearvolume", name: "cleargl", version: "(,1.0]", changing: true, transitive: true
+	compile group: "net.clearvolume", name: "clearvolume", version: "(,1.1]", changing: true, transitive: true
+	compile group: "net.clearvolume", name: "cleargl", version: "(,1.1]", changing: true, transitive: true
 }
 
 repositories {
