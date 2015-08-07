@@ -3,12 +3,12 @@ package rtlib.core.concurrent.asyncprocs;
 import java.util.concurrent.TimeUnit;
 
 public class AsynchronousProcessorNull<I, O>	extends
-																							AsynchronousProcessorBase<I, O>	implements
-																																							AsynchronousProcessorInterface<I, O>
+												AsynchronousProcessorBase<I, O>	implements
+																				AsynchronousProcessorInterface<I, O>
 {
 
 	public AsynchronousProcessorNull(	final String pName,
-																		final int pMaxQueueSize)
+										final int pMaxQueueSize)
 	{
 		super(pName, pMaxQueueSize);
 	}

@@ -2,8 +2,8 @@ package rtlib.symphony.staves;
 
 import static java.lang.Math.floor;
 
-public class RampSteppingStave extends RampContinuousStave implements
-																													StaveInterface
+public class RampSteppingStave extends RampContinuousStave	implements
+															StaveInterface
 {
 
 	private volatile boolean mStepping = true;
@@ -16,12 +16,12 @@ public class RampSteppingStave extends RampContinuousStave implements
 	}
 
 	public RampSteppingStave(	final String pName,
-														float pSyncStart,
-														float pSyncStop,
-														float pStartValue,
-														float pStopValue,
-														float pOutsideValue,
-														float pStepHeight)
+								float pSyncStart,
+								float pSyncStop,
+								float pStartValue,
+								float pStopValue,
+								float pOutsideValue,
+								float pStepHeight)
 	{
 		super(pName);
 		setSyncStart(pSyncStart);
@@ -47,7 +47,7 @@ public class RampSteppingStave extends RampContinuousStave implements
 		final float lNormalizedSteppingRampTime = (float) (floor(getNumberOfSteps() * lNormalizedRampTime) / getNumberOfSteps());
 
 		final float lValue = getStartValue() + (getStopValue() - getStartValue())
-													* lNormalizedSteppingRampTime;
+								* lNormalizedSteppingRampTime;
 
 		return lValue;
 	}
@@ -82,12 +82,12 @@ public class RampSteppingStave extends RampContinuousStave implements
 	public StaveInterface copy()
 	{
 		final RampSteppingStave lRampSteppingStave = new RampSteppingStave(	getName(),
-																																				getSyncStart(),
-																																				getSyncStop(),
-																																				getStartValue(),
-																																				getStopValue(),
-																																				getOutsideValue(),
-																																				getStepHeight());
+																			getSyncStart(),
+																			getSyncStop(),
+																			getStartValue(),
+																			getStopValue(),
+																			getOutsideValue(),
+																			getStepHeight());
 
 		lRampSteppingStave.setStepping(isStepping());
 

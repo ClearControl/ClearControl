@@ -29,22 +29,22 @@ public class MatrixPanel extends JPanel
 	DoubleVariable mMinRangeVariable, mMaxRangeVariable;
 	private float mSaturation = 0.5f, mBrightness = 0.95f;
 
-	public static MatrixPanel getMatrixForMatrixEntry(int pDisplayTileSize,
-																										int pMatrixWidth,
-																										int pMatrixHeight,
-																										DenseMatrix64F pTransformMatrix,
-																										int x,
-																										int y)
+	public static MatrixPanel getMatrixForMatrixEntry(	int pDisplayTileSize,
+														int pMatrixWidth,
+														int pMatrixHeight,
+														DenseMatrix64F pTransformMatrix,
+														int x,
+														int y)
 	{
 		final MatrixPanel lMatrixPanel = new MatrixPanel(	pDisplayTileSize,
-																											pMatrixWidth,
-																											pMatrixHeight);
+															pMatrixWidth,
+															pMatrixHeight);
 
 		final DenseMatrix64F lInputVector = new DenseMatrix64F(	pTransformMatrix.numRows,
-																														1);
+																1);
 
 		final DenseMatrix64F lShapeVector = new DenseMatrix64F(	pTransformMatrix.numRows,
-																														1);
+																1);
 
 		lInputVector.set(x + pMatrixWidth * y, 1);
 
@@ -67,8 +67,8 @@ public class MatrixPanel extends JPanel
 	}
 
 	public MatrixPanel(	int pDisplayTileSize,
-											int pMatrixWidth,
-											int pMatrixHeight)
+						int pMatrixWidth,
+						int pMatrixHeight)
 	{
 		super(true);
 		mDisplayTileSize = pDisplayTileSize;
@@ -80,7 +80,7 @@ public class MatrixPanel extends JPanel
 
 			@Override
 			public DenseMatrix64F setEventHook(	DenseMatrix64F pOldValue,
-																					DenseMatrix64F pNewValue)
+												DenseMatrix64F pNewValue)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -101,7 +101,8 @@ public class MatrixPanel extends JPanel
 		final VariableSetListener<Double> lVariableListener = new VariableSetListener<Double>()
 		{
 			@Override
-			public void setEvent(Double pCurrentValue, Double pNewValue)
+			public void setEvent(	Double pCurrentValue,
+									Double pNewValue)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -127,7 +128,7 @@ public class MatrixPanel extends JPanel
 	public Dimension getMinimumSize()
 	{
 		return new Dimension(	mMatrixWidth * mDisplayTileSize,
-													mMatrixHeight * mDisplayTileSize);
+								mMatrixHeight * mDisplayTileSize);
 	}
 
 	@Override
@@ -138,18 +139,20 @@ public class MatrixPanel extends JPanel
 		final int lWidth = getWidth();
 		final int lHeight = getHeight();
 
-		final int lTileWidth = (int) round(1.0 * lWidth / mMatrixWidth);
-		final int lTileHeight = (int) round(1.0 * lHeight / mMatrixHeight);
+		final int lTileWidth = (int) round(1.0 * lWidth
+											/ mMatrixWidth);
+		final int lTileHeight = (int) round(1.0 * lHeight
+											/ mMatrixHeight);
 
 		final DenseMatrix64F lDenseMatrix64F = mMatrixVariable.get();
 		if (lDenseMatrix64F == null)
 			return;
 
-		final double lMax = mAutoNormalize ? CommonOps.elementMax(lDenseMatrix64F)
-																			: mMaxRangeVariable.getValue();
-		final double lMin = mAutoNormalize ? CommonOps.elementMin(lDenseMatrix64F)
-																			: (mSymetricRange	? -lMax
-																												: mMinRangeVariable.getValue());
+		final double lMax = mAutoNormalize	? CommonOps.elementMax(lDenseMatrix64F)
+											: mMaxRangeVariable.getValue();
+		final double lMin = mAutoNormalize	? CommonOps.elementMin(lDenseMatrix64F)
+											: (mSymetricRange	? -lMax
+																: mMinRangeVariable.getValue());
 
 		for (int y = 0; y < mMatrixHeight; y++)
 			for (int x = 0; x < mMatrixWidth; x++)
@@ -157,35 +160,41 @@ public class MatrixPanel extends JPanel
 				final int lTileX = x * lTileWidth;
 				final int lTileY = y * lTileHeight;
 
-				final double lValue = lDenseMatrix64F.get(y * mMatrixWidth
-																									+ x);
-				final Color lColor = getRBColorForValue(lMin, lMax, lValue);
+				final double lValue = lDenseMatrix64F.get(y	* mMatrixWidth
+															+ x);
+				final Color lColor = getRBColorForValue(lMin,
+														lMax,
+														lValue);
 
 				lGraphics2D.setColor(lColor);
-				lGraphics2D.fillRect(lTileX, lTileY, lTileWidth, lTileHeight);
+				lGraphics2D.fillRect(	lTileX,
+										lTileY,
+										lTileWidth,
+										lTileHeight);
 			}
 
 	}
 
 	private Color getBWColorForValue(	double lMin,
-																		double lMax,
-																		double pValue)
+										double lMax,
+										double pValue)
 	{
 		final float lNormalizedValue = (float) ((pValue - lMin) / (lMax - lMin));
 		return new Color(	clamp(lNormalizedValue, 0, 1),
-											clamp(lNormalizedValue, 0, 1),
-											clamp(lNormalizedValue, 0, 1));
+							clamp(lNormalizedValue, 0, 1),
+							clamp(lNormalizedValue, 0, 1));
 	}
 
 	private Color getRBColorForValue(	double lMin,
-																		double lMax,
-																		double pValue)
+										double lMax,
+										double pValue)
 	{
 
 		final float u = (float) ((pValue - lMin) / (lMax - lMin));
 
-
-		return Color.getHSBColor(u * (4.f / 6), mSaturation, mBrightness);
+		return Color.getHSBColor(	u * (4.f / 6),
+									mSaturation,
+									mBrightness);
 	}
 
 	private float clamp(float pValue, int pMin, int pMax)

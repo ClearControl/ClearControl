@@ -1,14 +1,14 @@
 package rtlib.stack.processor;
 
+import coremem.recycling.RecyclableFactory;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclableFactory;
 
 public class StackIdentityPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																													SameTypeStackProcessingPipeline<T, A>
+																							SameTypeStackProcessingPipeline<T, A>
 {
 
 	private ObjectVariable<StackInterface<T, A>> mStackVariable = new ObjectVariable<StackInterface<T, A>>("StackVariable");
@@ -25,7 +25,6 @@ public class StackIdentityPipeline<T extends NativeType<T>, A extends ArrayDataA
 		return true;
 	}
 
-
 	@Override
 	public ObjectVariable<StackInterface<T, A>> getInputVariable()
 	{
@@ -38,11 +37,10 @@ public class StackIdentityPipeline<T extends NativeType<T>, A extends ArrayDataA
 		return mStackVariable;
 	}
 
-
 	@Override
-	public void addStackProcessor(SameTypeStackProcessorInterface<T, A> pStackProcessor,
-																RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
-																int pMaximumNumberOfObjects)
+	public void addStackProcessor(	SameTypeStackProcessorInterface<T, A> pStackProcessor,
+									RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
+									int pMaximumNumberOfObjects)
 	{
 		// TODO Auto-generated method stub
 

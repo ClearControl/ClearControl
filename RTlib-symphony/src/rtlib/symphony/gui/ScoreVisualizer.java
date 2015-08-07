@@ -25,7 +25,7 @@ import rtlib.symphony.staves.StaveInterface;
 import rtlib.symphony.staves.ZeroStave;
 
 public class ScoreVisualizer extends JPanel	implements
-																						MouseMotionListener
+											MouseMotionListener
 {
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,8 @@ public class ScoreVisualizer extends JPanel	implements
 		{
 
 			@Override
-			public void setEvent(Object pCurrentValue, Object pNewValue)
+			public void setEvent(	Object pCurrentValue,
+									Object pNewValue)
 			{
 				SwingUtilities.invokeLater(() -> {
 					repaint();
@@ -129,29 +130,33 @@ public class ScoreVisualizer extends JPanel	implements
 						final float lFloatValue = lStave.getValue(lNormalizedTime);
 
 						final float lBrightness = absclampplus(	lScaling * lFloatValue,
-																										0.2f);
-						final float lHue = 0.25f + (lFloatValue > 0f ? 0.5f : 0f);
+																0.2f);
+						final float lHue = 0.25f + (lFloatValue > 0f ? 0.5f
+																	: 0f);
 
-						final float red = lBrightness * (lFloatValue <= 0f ? 1
-																															: 0);
+						final float red = lBrightness * (lFloatValue <= 0f	? 1
+																			: 0);
 						final float green = lBrightness * 0.1f;
 						final float blue = lBrightness * (lFloatValue >= 0f	? 1
-																																: 0);
+																			: 0);
 
 						lGraphics2D.setColor(Color.getHSBColor(	lHue,
-																										0.5f,
-																										lBrightness));/**/
+																0.5f,
+																lBrightness));/**/
 						lGraphics2D.fillRect(	round(lMovementPixelOffset + i),
-																	round(lPixelsPerStave * s),
-																	roundmin1(1),
-																	roundmin1(lPixelsPerStave));/**/
+												round(lPixelsPerStave * s),
+												roundmin1(1),
+												roundmin1(lPixelsPerStave));/**/
 
 						final int lNewX = round(lMovementPixelOffset + i);
 						final int lNewY = round(lPixelsPerStave * (s + 1)
-																		- (clamp((1 + lScaling * lFloatValue) * 0.5f) * lPixelsPerStave));
+												- (clamp((1 + lScaling * lFloatValue) * 0.5f) * lPixelsPerStave));
 
 						lGraphics2D.setColor(Color.white);
-						lGraphics2D.drawLine(lLastX, lLastY, lNewX, lNewY);
+						lGraphics2D.drawLine(	lLastX,
+												lLastY,
+												lNewX,
+												lNewY);
 
 						lLastX = lNewX;
 						lLastY = lNewY;
@@ -159,25 +164,23 @@ public class ScoreVisualizer extends JPanel	implements
 					}
 					lGraphics2D.setColor(Color.white);
 					lGraphics2D.drawString(	lStave.getName(),
-																	round(lMovementPixelOffset + 2),
-																	12 + round(lPixelsPerStave * (s)));
+											round(lMovementPixelOffset + 2),
+											12 + round(lPixelsPerStave * (s)));
 				}
-
-
 
 				lGraphics2D.setColor(Color.gray.darker());
 				lGraphics2D.fillRect(	round(lMovementPixelOffset),
-															round(lPixelsPerStave * s),
-															round(lMovementWidthInPixels),
-															1);
+										round(lPixelsPerStave * s),
+										round(lMovementWidthInPixels),
+										1);
 
 			}
 
 			lGraphics2D.setColor(Color.white);
 			lGraphics2D.drawLine(	round(lMovementPixelOffset),
-														0,
-														round(lMovementPixelOffset),
-														lHeight);
+									0,
+									round(lMovementPixelOffset),
+									lHeight);
 
 			lMovementPixelOffset += lMovementWidthInPixels;
 		}

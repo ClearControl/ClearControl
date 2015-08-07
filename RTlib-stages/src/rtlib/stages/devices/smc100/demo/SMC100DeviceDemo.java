@@ -14,8 +14,8 @@ public class SMC100DeviceDemo
 	@Test
 	public void demo() throws InterruptedException
 	{
-		final SMC100StageDevice lSMC100Device = new SMC100StageDevice("LightStage",
-																												"COM1");
+		final SMC100StageDevice lSMC100Device = new SMC100StageDevice(	"LightStage",
+																		"COM1");
 
 		assertTrue(lSMC100Device.open());
 

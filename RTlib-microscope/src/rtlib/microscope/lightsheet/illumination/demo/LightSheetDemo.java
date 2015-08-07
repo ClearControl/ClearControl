@@ -21,7 +21,7 @@ public class LightSheetDemo
 
 	@Test
 	public void demoOnSimulator()	throws InterruptedException,
-																ExecutionException
+									ExecutionException
 	{
 
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
@@ -31,7 +31,7 @@ public class LightSheetDemo
 
 	@Test
 	public void demoOnNIRIO()	throws InterruptedException,
-																ExecutionException
+								ExecutionException
 	{
 
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
@@ -39,39 +39,39 @@ public class LightSheetDemo
 		runDemoWith(lSignalGeneratorDevice);
 	}
 
-	public void runDemoWith(final SignalGeneratorInterface lSignalGeneratorDevice) throws InterruptedException,
-																																								ExecutionException
+	public void runDemoWith(final SignalGeneratorInterface lSignalGeneratorDevice)	throws InterruptedException,
+																					ExecutionException
 	{
-		final LightSheet lLightSheet = new LightSheet("demo", 9.4, 512, 2);
-		lLightSheet.getLightSheetLengthInMicronsVariable().setValue(100);
+		final LightSheet lLightSheet = new LightSheet(	"demo",
+														9.4,
+														512,
+														2);
+		lLightSheet.getLightSheetLengthInMicronsVariable()
+					.setValue(100);
 		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-								.setValue(5000);
-
+					.setValue(5000);
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
 
 		lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
-																				TimeUnit.NANOSECONDS);
-		lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
-																	TimeUnit.NANOSECONDS);
+											TimeUnit.NANOSECONDS);
+		lExposureMovement.setDuration(	lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
+										TimeUnit.NANOSECONDS);
 
 		lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
 		lLightSheet.setExposureMovement(lExposureMovement);
-
-
 
 		final ScoreInterface lStagingScore = lSignalGeneratorDevice.getStagingScore();
 
 		lStagingScore.addMovement(lBeforeExposureMovement);
 		lStagingScore.addMovement(lExposureMovement);
 
-		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
-																																							lStagingScore);
+		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize(	"LightSheetDemo",
+																					lStagingScore);
 
-		
 		assertTrue(lSignalGeneratorDevice.open());
-		
+
 		for (int i = 0; i < 100; i++)
 			lSignalGeneratorDevice.addCurrentStateToQueue();
 

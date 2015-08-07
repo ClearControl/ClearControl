@@ -1,19 +1,19 @@
 package net.imglib2.img.basictypeaccess.offheap;
 
-import net.imglib2.img.basictypeaccess.FloatAccess;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
+import net.imglib2.img.basictypeaccess.FloatAccess;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class FloatOffHeapAccess extends AbstractOffHeapAccess	implements
-																													FloatAccess,
-																													ArrayDataAccess<FloatOffHeapAccess>
+																FloatAccess,
+																ArrayDataAccess<FloatOffHeapAccess>
 {
 
 	public FloatOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateFloats(	"FloatOffHeapAccess",
-																											numEntities);
+															numEntities);
 	}
 
 	public FloatOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

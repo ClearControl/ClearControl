@@ -8,8 +8,8 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.symphony.score.ScoreInterface;
 
 public interface SignalGeneratorInterface	extends
-																					OpenCloseDeviceInterface,
-																					StateQueueDeviceInterface
+											OpenCloseDeviceInterface,
+											StateQueueDeviceInterface
 {
 
 	public double getTemporalGranularityInMicroseconds();

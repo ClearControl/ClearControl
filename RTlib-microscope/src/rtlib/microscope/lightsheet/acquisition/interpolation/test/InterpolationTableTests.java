@@ -2,11 +2,8 @@ package rtlib.microscope.lightsheet.acquisition.interpolation.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 
-import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.microscope.lightsheet.acquisition.interpolation.InterpolationTable;
 import rtlib.microscope.lightsheet.acquisition.interpolation.InterpolationTable.Row;
@@ -32,10 +29,10 @@ public class InterpolationTableTests
 		lAddRow3.setY(1, 0.5);
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(0,
-																																1.2));
+																	1.2));
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(1,
-																																1.2));
+																	1.2));
 
 		final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
 
@@ -45,13 +42,13 @@ public class InterpolationTableTests
 		}/**/
 
 		assertEquals(	1.0,
-									lInterpolationTable.getNearestValue(0, 1.2),
-									0.01);
+						lInterpolationTable.getNearestValue(0, 1.2),
+						0.01);
 
 		assertEquals(	1.2,
-									lInterpolationTable.getInterpolatedValue(0, 1.2),
-									0.01);
-
+						lInterpolationTable.getInterpolatedValue(	0,
+																	1.2),
+						0.01);
 
 	}
 }

@@ -10,14 +10,15 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class LaserDeviceBase extends NamedVirtualDevice	implements
-																									LaserDeviceInterface
+														LaserDeviceInterface
 {
 
 	private final ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(1);
 
 	protected DoubleVariable mDeviceIdVariable, mWavelengthVariable,
-			mSpecInMilliWattPowerVariable, mMaxPowerInMilliWattVariable,
-			mWorkingHoursVariable, mSetOperatingModeVariable,
+			mSpecInMilliWattPowerVariable,
+			mMaxPowerInMilliWattVariable, mWorkingHoursVariable,
+			mSetOperatingModeVariable,
 			mTargetPowerInMilliWattVariable,
 			mCurrentPowerInMilliWattVariable;
 	protected BooleanVariable mPowerOnVariable, mLaserOnVariable;
@@ -64,8 +65,8 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 					try
 					{
 						final double lNewPowerValue = mCurrentPowerInMilliWattVariable.getValue();
-						mCurrentPowerInMilliWattVariable.sync(lNewPowerValue,
-																									true);
+						mCurrentPowerInMilliWattVariable.sync(	lNewPowerValue,
+																true);
 					}
 					catch (final Throwable e)
 					{
@@ -73,10 +74,10 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 					}
 				}
 			};
-			mCurrentPowerPollerScheduledFutur = mScheduledExecutorService.scheduleAtFixedRate(mCurrentPowerPoller,
-																																												1,
-																																												300,
-																																												TimeUnit.MILLISECONDS);
+			mCurrentPowerPollerScheduledFutur = mScheduledExecutorService.scheduleAtFixedRate(	mCurrentPowerPoller,
+																								1,
+																								300,
+																								TimeUnit.MILLISECONDS);
 
 			setLaserOn(true);
 			return true;
@@ -256,9 +257,9 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	public String toString()
 	{
 		return String.format(	"LaserDeviceBase [mDeviceIdVariable=%d, mWavelengthVariable=%d, mMaxPowerVariable=%g]",
-													(int) mDeviceIdVariable.getValue(),
-													(int) mWavelengthVariable.getValue(),
-													mMaxPowerInMilliWattVariable.getValue());
+								(int) mDeviceIdVariable.getValue(),
+								(int) mWavelengthVariable.getValue(),
+								mMaxPowerInMilliWattVariable.getValue());
 	}
 
 }

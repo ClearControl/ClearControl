@@ -1,7 +1,7 @@
 package rtlib.serial.adapters;
 
 public class SerialDeviceAdapterAdapter	implements
-																				SerialDeviceAdapter
+										SerialDeviceAdapter
 {
 
 	@Override
@@ -42,7 +42,7 @@ public class SerialDeviceAdapterAdapter	implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue)
+											double pNewValue)
 	{
 		return null;
 	}
@@ -70,6 +70,5 @@ public class SerialDeviceAdapterAdapter	implements
 	{
 		return false;
 	}
-
 
 }

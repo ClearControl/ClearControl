@@ -17,10 +17,10 @@ public class StageHubDemo
 	{
 		ECC100StageDevice lECC100StageDevice = new ECC100StageDevice();
 		SMC100StageDevice lSMC100StageDevice = new SMC100StageDevice(	"SMC100",
-																																	"COM1");
+																		"COM1");
 
 		StageDeviceHub lStageHub = new StageDeviceHub("Hub");
-		
+
 		lStageHub.addDOF(lECC100StageDevice, 1);
 		lStageHub.addDOF(lSMC100StageDevice, 0);
 
@@ -36,7 +36,7 @@ public class StageHubDemo
 		assertTrue(lStageHub.stop());
 
 		lStageHub.close();
-		
+
 	}
 
 }

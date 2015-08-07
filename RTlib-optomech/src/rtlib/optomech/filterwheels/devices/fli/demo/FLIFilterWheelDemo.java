@@ -27,10 +27,10 @@ public class FLIFilterWheelDemo
 			lSpeedVariable.set((double) (i / 30));
 			Thread.sleep(30);
 			int lCurrentPosition = (int) lPositionVariable.getValue();
-			System.out.format("i=%d, tp=%d, cp=%d\n",
-												i,
-												lTargetPosition,
-												lCurrentPosition);
+			System.out.format(	"i=%d, tp=%d, cp=%d\n",
+								i,
+								lTargetPosition,
+								lCurrentPosition);
 		}
 
 		assertTrue(lFLIFilterWheelDevice.close());

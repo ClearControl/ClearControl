@@ -1,14 +1,13 @@
 package rtlib.symphony.staves;
 
-
 public class EdgeStave extends IntervalStave implements
-																								StaveInterface
+											StaveInterface
 {
 
 	public EdgeStave(	final String pName,
-										float pEdgePosition,
-										float mValueBefore,
-										float mValueAfter)
+						float pEdgePosition,
+						float mValueBefore,
+						float mValueAfter)
 	{
 		super(pName);
 		setEdgePosition(pEdgePosition);
@@ -59,9 +58,9 @@ public class EdgeStave extends IntervalStave implements
 	public StaveInterface copy()
 	{
 		return new EdgeStave(	getName(),
-													getEdgePosition(),
-													getValueBefore(),
-													getValueAfter());
+								getEdgePosition(),
+								getValueBefore(),
+								getValueAfter());
 	}
 
 }

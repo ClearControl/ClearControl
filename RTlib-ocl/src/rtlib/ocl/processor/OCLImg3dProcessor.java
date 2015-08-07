@@ -49,28 +49,28 @@ public class OCLImg3dProcessor extends OCLProcessor
 	}
 
 	public void allocateCLInputImage(	final int pNx,
-																		final int pNy,
-																		final int pNz)
+										final int pNy,
+										final int pNz)
 	{
 		mInputNx = pNx;
 		mInputNy = pNy;
 		mInputNz = pNz;
 
 		final CLImageFormat lCLImageFormat = new CLImageFormat(	CLImageFormat.ChannelOrder.R,
-																														CLImageFormat.ChannelDataType.SignedInt16);
+																CLImageFormat.ChannelDataType.SignedInt16);
 
 		if (mInputImage3D != null)
 			mInputImage3D.release();
 		mInputImage3D = mCLContext.createImage3D(	Usage.Input,
-																							lCLImageFormat,
-																							pNx,
-																							pNy,
-																							pNz);
+													lCLImageFormat,
+													pNx,
+													pNy,
+													pNz);
 	}
 
-	public void allocateCLOutputImage(final int pNx,
-																		final int pNy,
-																		final int pNz)
+	public void allocateCLOutputImage(	final int pNx,
+										final int pNy,
+										final int pNz)
 	{
 		mOutputNx = pNx;
 		mOutputNy = pNy;
@@ -79,9 +79,9 @@ public class OCLImg3dProcessor extends OCLProcessor
 		if (mOutputImageCLBuffer != null)
 			mOutputImageCLBuffer.release();
 		mOutputImageCLBuffer = mCLContext.createShortBuffer(Usage.Output,
-																												pNx	* pNy
-																														* pNz
-																														* 2);
+															pNx		* pNy
+																	* pNz
+																	* 2);
 
 	}
 
@@ -89,37 +89,37 @@ public class OCLImg3dProcessor extends OCLProcessor
 	{
 
 		return mInputImage3D.write(	mCLQueue,
-																0,
-																0,
-																0,
-																mInputNx,
-																mInputNy,
-																mInputNz,
-																0,
-																0,
-																pBuffer,
-																true);
+									0,
+									0,
+									0,
+									mInputNx,
+									mInputNy,
+									mInputNz,
+									0,
+									0,
+									pBuffer,
+									true);
 
 	}
 
 	public CLEvent readOutputImage2D(final ShortBuffer pShortBuffer)
 	{
 		return mOutputImageCLBuffer.read(	mCLQueue,
-																			0,
-																			mOutputNx * mOutputNy
-																					* mOutputNz,
-																			pShortBuffer,
-																			true);
+											0,
+											mOutputNx * mOutputNy
+													* mOutputNz,
+											pShortBuffer,
+											true);
 	}
 
 	public CLEvent readOutputImage3D(final ShortBuffer pShortBuffer)
 	{
 		return mOutputImageCLBuffer.read(	mCLQueue,
-																			0,
-																			mOutputNx * mOutputNy
-																					* mOutputNz,
-																			pShortBuffer,
-																			true);
+											0,
+											mOutputNx * mOutputNy
+													* mOutputNz,
+											pShortBuffer,
+											true);
 	}
 
 	public CLImage3D getInputImage3D()
@@ -137,10 +137,10 @@ public class OCLImg3dProcessor extends OCLProcessor
 		mCLKernel.setArgs(pArgs);
 
 		final CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
-																												new int[]
-																												{ mInputNx,
-																													mInputNy,
-																													mInputNz });
+																	new int[]
+																	{	mInputNx,
+																		mInputNy,
+																		mInputNz });
 		lEnqueueNDRange.waitFor();
 		return lEnqueueNDRange;
 	}
@@ -150,9 +150,9 @@ public class OCLImg3dProcessor extends OCLProcessor
 		mCLKernel.setArgs(pArgs);
 
 		final CLEvent lEnqueueNDRange = mCLKernel.enqueueNDRange(	mCLQueue,
-																												new int[]
-																												{ mInputNx,
-																													mInputNy, });
+																	new int[]
+																	{	mInputNx,
+																		mInputNy, });
 		lEnqueueNDRange.waitFor();
 		return lEnqueueNDRange;
 	}

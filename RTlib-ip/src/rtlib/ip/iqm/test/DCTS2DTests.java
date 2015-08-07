@@ -1,46 +1,46 @@
 package rtlib.ip.iqm.test;
 
 import static org.junit.Assert.assertFalse;
-import io.scif.FormatException;
-import io.scif.Plane;
-import io.scif.Reader;
-import io.scif.SCIFIO;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
+import coremem.ContiguousMemoryInterface;
+import io.scif.FormatException;
+import io.scif.Plane;
+import io.scif.Reader;
+import io.scif.SCIFIO;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.img.planar.OffHeapPlanarImgFactory;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-
 import rtlib.core.units.Magnitude;
 import rtlib.ip.iqm.DCTS2D;
-import coremem.ContiguousMemoryInterface;
 
 public class DCTS2DTests
 {
 
 	@Test
-	public void test() throws IOException,
-										FormatException,
-										InterruptedException
+	public void test()	throws IOException,
+						FormatException,
+						InterruptedException
 	{
 		final File lTempFile = File.createTempFile(	DCTS2DTests.class.getSimpleName(),
-																								"test.tif");
+													"test.tif");
 		FileUtils.copyInputStreamToFile(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
-																		lTempFile);
+										lTempFile);
 
 		final SCIFIO lSCIFIO = new SCIFIO();
 		final Reader lReader = lSCIFIO.initializer()
-																	.initializeReader(lTempFile.getAbsolutePath());
+										.initializeReader(lTempFile.getAbsolutePath());
 
 		final int lWidth = (int) lReader.openPlane(0, 0).getLengths()[0];
-		final int lHeight = (int) lReader.openPlane(0, 0).getLengths()[1];
+		final int lHeight = (int) lReader.openPlane(0, 0)
+											.getLengths()[1];
 		final int lDepth = (int) lReader.getPlaneCount(0);
 
 		final int lPlaneLengthInElements = lWidth * lHeight;
@@ -55,7 +55,7 @@ public class DCTS2DTests
 		{ lWidth, lHeight, lDepth };
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lOffHeapPlanarImgFactory.create(	lDim,
-																																																																																			new UnsignedShortType());
+																																											new UnsignedShortType());
 
 		for (int z = 0; z < lDepth; z++)
 		{
@@ -80,7 +80,7 @@ public class DCTS2DTests
 
 		final double lElapsedTimeInMs = Magnitude.nano2milli((lStopTimeInNs - lStartTimeInNs) / repeats);
 		System.out.println("time per slicewise-dcts computation on a stack: " + lElapsedTimeInMs
-												+ " ms");
+							+ " ms");
 
 		System.out.println(Arrays.toString(lComputeDCTS));
 

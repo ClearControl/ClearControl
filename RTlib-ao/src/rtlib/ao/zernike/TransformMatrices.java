@@ -11,7 +11,7 @@ public class TransformMatrices
 	{
 		int lZernikeVector = pSquareImageWidthHeight * pSquareImageWidthHeight;
 		DenseMatrix64F lDenseMatrix64F = new DenseMatrix64F(lZernikeVector,
-																												lZernikeVector);
+															lZernikeVector);
 
 		for (int j = 0; j < pSquareImageWidthHeight; j++)
 			for (int i = 0; i < pSquareImageWidthHeight; i++)
@@ -22,9 +22,9 @@ public class TransformMatrices
 						final double y = (2.0 / pSquareImageWidthHeight) * (v - (pSquareImageWidthHeight - 1.0) / 2);
 
 						double lZernikeValue = ZernikePolynomials.computeZijxy(	i,
-																																		j,
-																																		x,
-																																		y);
+																				j,
+																				x,
+																				y);
 
 						// normalization:
 						/*lZernikeValue /= sqrt(((j - i) == 0 ? 2 : 1) * PI
@@ -34,12 +34,12 @@ public class TransformMatrices
 						// lZernikeValue = 1.0 / pSquareImageWidthHeight;
 
 						setMatrixToMatrixLinearMap(	lDenseMatrix64F,
-																				pSquareImageWidthHeight,
-																				i,
-																				j,
-																				u,
-																				v,
-																				lZernikeValue);
+													pSquareImageWidthHeight,
+													i,
+													j,
+													u,
+													v,
+													lZernikeValue);
 					}
 
 		return lDenseMatrix64F;
@@ -49,7 +49,7 @@ public class TransformMatrices
 	{
 		int lZernikeVector = pSquareImageWidthHeight * pSquareImageWidthHeight;
 		DenseMatrix64F lDenseMatrix64F = new DenseMatrix64F(lZernikeVector,
-																												lZernikeVector);
+															lZernikeVector);
 
 		double lPiFactor = Math.PI / pSquareImageWidthHeight;
 
@@ -58,8 +58,9 @@ public class TransformMatrices
 				for (int v = 0; v < pSquareImageWidthHeight; v++)
 					for (int u = 0; u < pSquareImageWidthHeight; u++)
 					{
-						double lCosineValue = cos(lPiFactor * (u + 0.5) * i) * cos(lPiFactor * (v + 0.5)
-																																				* j);
+						double lCosineValue = cos(lPiFactor * (u + 0.5)
+													* i) * cos(lPiFactor * (v + 0.5)
+																* j);
 						if (i == 0)
 							lCosineValue *= 1 / sqrt(2.0);
 
@@ -69,12 +70,12 @@ public class TransformMatrices
 						lCosineValue *= 2.0 / pSquareImageWidthHeight;
 
 						setMatrixToMatrixLinearMap(	lDenseMatrix64F,
-																				pSquareImageWidthHeight,
-																				i,
-																				j,
-																				u,
-																				v,
-																				lCosineValue);
+													pSquareImageWidthHeight,
+													i,
+													j,
+													u,
+													v,
+													lCosineValue);
 					}
 
 		return normalize(lDenseMatrix64F);
@@ -105,12 +106,12 @@ public class TransformMatrices
 	}
 
 	private static void setMatrixToMatrixLinearMap(	DenseMatrix64F pDenseMatrix64F,
-																									int pSquareImageWidthHeight,
-																									int i,
-																									int j,
-																									int u,
-																									int v,
-																									double pZernikeValue)
+													int pSquareImageWidthHeight,
+													int i,
+													int j,
+													int u,
+													int v,
+													double pZernikeValue)
 	{
 		final int lColumnOffset = j * pSquareImageWidthHeight + i;
 		final int lRowOffset = v * pSquareImageWidthHeight + u;

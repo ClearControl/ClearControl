@@ -10,8 +10,8 @@ import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
 public class LoessFitArgMaxFinder extends Fitting1DBase	implements
-																		ArgMaxFinder1DInterface,
-																		Fitting1D
+														ArgMaxFinder1DInterface,
+														Fitting1D
 {
 	private static final int cNumberOfSamples = 1024;
 
@@ -24,22 +24,22 @@ public class LoessFitArgMaxFinder extends Fitting1DBase	implements
 			fit(pX, pY);
 
 		double lArgMax = UnivariateFunctionArgMax.argmax(	pX,
-																											mPolynomialSplineFunction,
-																											cNumberOfSamples);
+															mPolynomialSplineFunction,
+															cNumberOfSamples);
 
 		mPolynomialSplineFunction = null;
 		return lArgMax;
 	}
-
 
 	@Override
 	public double[] fit(double[] pX, double[] pY)
 	{
 
 		LoessInterpolator lLoessInterpolator = new LoessInterpolator(	2.0 / pX.length + 0.1,
-																																	LoessInterpolator.DEFAULT_ROBUSTNESS_ITERS);
+																		LoessInterpolator.DEFAULT_ROBUSTNESS_ITERS);
 
-		mPolynomialSplineFunction = lLoessInterpolator.interpolate(pX, pY);
+		mPolynomialSplineFunction = lLoessInterpolator.interpolate(	pX,
+																	pY);
 
 		double[] lFittedY = new double[pY.length];
 
@@ -55,7 +55,7 @@ public class LoessFitArgMaxFinder extends Fitting1DBase	implements
 	public String toString()
 	{
 		return String.format(	"LoessFitArgMaxFinder [mPolynomialSplineFunction=%s]",
-													mPolynomialSplineFunction);
+								mPolynomialSplineFunction);
 	}
 
 }

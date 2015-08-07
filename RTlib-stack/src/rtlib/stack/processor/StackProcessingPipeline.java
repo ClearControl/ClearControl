@@ -7,7 +7,7 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public interface StackProcessingPipeline<TI extends NativeType<TI>, AI extends ArrayDataAccess<AI>, TO extends NativeType<TO>, AO extends ArrayDataAccess<AO>>	extends
-																																																																																OpenCloseDeviceInterface
+																																								OpenCloseDeviceInterface
 {
 
 	public void addStackProcessor(final StackProcessorInterface<TI, AI, TO, AO> pStackProcessor);

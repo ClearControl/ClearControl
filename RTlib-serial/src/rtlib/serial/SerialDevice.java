@@ -11,7 +11,7 @@ import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SerialDevice extends NamedVirtualDevice implements
-																										OpenCloseDeviceInterface
+													OpenCloseDeviceInterface
 {
 
 	private final Serial mSerial;
@@ -21,8 +21,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 	private final Object mDeviceLock = new Object();
 
 	public SerialDevice(final String pDeviceName,
-											final String pPortName,
-											final int pBaudRate)
+						final String pPortName,
+						final int pBaudRate)
 	{
 		super(pDeviceName);
 		mPortName = pPortName;
@@ -30,8 +30,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 		getSerial().setNotifyEvents(false);
 
 		mVariableBundle = new VariableBundle(String.format(	"$s($s)",
-																												pDeviceName,
-																												pPortName));
+															pDeviceName,
+															pPortName));
 
 	}
 
@@ -46,8 +46,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 		mVariableBundle.removeAllVariables();
 	}
 
-	public DoubleVariable addSerialDoubleVariable(final String pVariableName,
-																								final SerialBinaryDeviceAdapter pSerialBinaryDevice)
+	public DoubleVariable addSerialDoubleVariable(	final String pVariableName,
+													final SerialBinaryDeviceAdapter pSerialBinaryDevice)
 	{
 		final DoubleVariable lDoubleVariable = new DoubleVariable(pVariableName)
 		{
@@ -96,14 +96,14 @@ public class SerialDevice extends NamedVirtualDevice implements
 
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	Double pNewValue)
+										Double pNewValue)
 			{
 				try
 				{
 					pNewValue = pSerialBinaryDevice.clampSetValue(pNewValue);
 
 					final byte[] lSetValueCommandMessage = pSerialBinaryDevice.getSetValueCommandMessage(	pOldValue,
-																																																pNewValue);
+																											pNewValue);
 					if (lSetValueCommandMessage != null)
 					{
 						synchronized (mDeviceLock)
@@ -142,8 +142,8 @@ public class SerialDevice extends NamedVirtualDevice implements
 		return lDoubleVariable;
 	}
 
-	public DoubleVariable addSerialDoubleVariable(final String pVariableName,
-																								final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
+	public DoubleVariable addSerialDoubleVariable(	final String pVariableName,
+													final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
 	{
 		final DoubleVariable lDoubleVariable = new DoubleVariable(pVariableName)
 		{
@@ -173,7 +173,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 								}
 
 								final Double lParsedValue = pSerialTextDeviceAdapter.parseValue(lAnswerMessage);
-								if(lParsedValue!=null)
+								if (lParsedValue != null)
 									return super.getEventHook(lParsedValue);
 								else
 									return super.getEventHook(pCurrentValue);
@@ -192,14 +192,14 @@ public class SerialDevice extends NamedVirtualDevice implements
 
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	Double pNewValue)
+										Double pNewValue)
 			{
 				try
 				{
 					pNewValue = pSerialTextDeviceAdapter.clampSetValue(pNewValue);
 
-					final byte[] lSetValueCommandMessage = pSerialTextDeviceAdapter.getSetValueCommandMessage(pOldValue,
-																																																		pNewValue);
+					final byte[] lSetValueCommandMessage = pSerialTextDeviceAdapter.getSetValueCommandMessage(	pOldValue,
+																												pNewValue);
 					if (lSetValueCommandMessage != null && getSerial().isConnected())
 					{
 						synchronized (mDeviceLock)
@@ -252,26 +252,26 @@ public class SerialDevice extends NamedVirtualDevice implements
 	}
 
 	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
-																									final SerialBinaryDeviceAdapter pSerialBinaryDevice)
+													final SerialBinaryDeviceAdapter pSerialBinaryDevice)
 	{
 		final DoubleVariable lDoubleVariable = addSerialDoubleVariable(	pVariableName,
-																																		pSerialBinaryDevice);
+																		pSerialBinaryDevice);
 
-		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,
-																																			false);
+		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(	pVariableName,
+																			false);
 		lProxyBooleanVariable.syncWith(lDoubleVariable);
 
 		return lProxyBooleanVariable;
 	}
 
 	public BooleanVariable addSerialBooleanVariable(final String pVariableName,
-																									final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
+													final SerialTextDeviceAdapter pSerialTextDeviceAdapter)
 	{
 		final DoubleVariable lDoubleVariable = addSerialDoubleVariable(	pVariableName,
-																																		pSerialTextDeviceAdapter);
+																		pSerialTextDeviceAdapter);
 
-		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(pVariableName,
-																																			false)
+		final BooleanVariable lProxyBooleanVariable = new BooleanVariable(	pVariableName,
+																			false)
 		{
 
 			@Override

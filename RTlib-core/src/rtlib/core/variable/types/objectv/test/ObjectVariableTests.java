@@ -13,9 +13,9 @@ public class ObjectVariableTests
 	public void DoubleVariableTest()
 	{
 		final ObjectVariable<Double> x = new ObjectVariable<Double>("x",
-																																0.0);
+																	0.0);
 		final ObjectVariable<Double> y = new ObjectVariable<Double>("y",
-																																0.0);
+																	0.0);
 
 		x.syncWith(y);
 		assertEquals(new Double(0.0), x.getReference());

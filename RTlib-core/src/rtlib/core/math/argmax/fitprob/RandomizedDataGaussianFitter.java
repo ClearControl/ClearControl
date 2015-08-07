@@ -23,7 +23,6 @@ public class RandomizedDataGaussianFitter
 	private double[] mY;
 	private UnivariateDifferentiableFunction mUnivariateDifferentiableFunction;
 
-
 	public RandomizedDataGaussianFitter()
 	{
 	}
@@ -37,7 +36,7 @@ public class RandomizedDataGaussianFitter
 	public Double computeRMSDForRandomData(double[] pX)
 	{
 		double[] lRandomY = generateRandomVector(	mRandom,
-																							new double[pX.length]);
+													new double[pX.length]);
 		return computeRMSD(pX, lRandomY);
 	}
 
@@ -66,7 +65,7 @@ public class RandomizedDataGaussianFitter
 			double lRMSD = mParabolaFitArgMaxFinder.getRMSD();
 
 			double[] lCoefficients = mParabolaFitArgMaxFinder.getFunction()
-																												.getCoefficients();
+																.getCoefficients();
 
 			if (lCoefficients.length == 1)
 				return null;
@@ -116,8 +115,8 @@ public class RandomizedDataGaussianFitter
 	}
 
 	public static double[] shuffle(	boolean pShuffle,
-																	Random pRandom,
-																	double[] pArray)
+									Random pRandom,
+									double[] pArray)
 	{
 		double[] lNewArray = Arrays.copyOf(pArray, pArray.length);
 		if (pShuffle)
@@ -133,7 +132,7 @@ public class RandomizedDataGaussianFitter
 	}
 
 	public static double[] generateRandomVector(Random pRandom,
-																							double[] pArray)
+												double[] pArray)
 	{
 		for (int i = pArray.length - 1; i > 0; i--)
 		{

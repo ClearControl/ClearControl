@@ -3,8 +3,8 @@ package rtlib.stages.devices.smc100.adapters;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SMC100ResetAdapter extends SerialDeviceAdapterAdapter implements
-																																	SerialTextDeviceAdapter
+public class SMC100ResetAdapter extends SerialDeviceAdapterAdapter	implements
+																	SerialTextDeviceAdapter
 {
 
 	@Override
@@ -27,7 +27,7 @@ public class SMC100ResetAdapter extends SerialDeviceAdapterAdapter implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue)
+											double pNewValue)
 	{
 		if (pOldValue == 0 && pNewValue > 0)
 			return SMC100Protocol.cResetCommand.getBytes();

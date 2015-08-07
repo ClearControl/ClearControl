@@ -12,10 +12,10 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
-																										SignalStartableDevice	implements
-																																					OpenCloseDeviceInterface,
-																																					AsynchronousSchedulerServiceAccess,
-																																					Loggable
+													SignalStartableDevice	implements
+																			OpenCloseDeviceInterface,
+																			AsynchronousSchedulerServiceAccess,
+																			Loggable
 {
 
 	private final SignalStartableLoopTaskDevice lThis;
@@ -25,24 +25,24 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
-																				final boolean pOnlyStart)
+											final boolean pOnlyStart)
 	{
 		this(pDeviceName, pOnlyStart, TimeUnit.MILLISECONDS);
 	}
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
-																				final boolean pOnlyStart,
-																				TimeUnit pTimeUnit)
+											final boolean pOnlyStart,
+											TimeUnit pTimeUnit)
 	{
 		super(pDeviceName, pOnlyStart);
 		mTimeUnit = pTimeUnit;
 
 		mLoopPeriodVariable = new DoubleVariable(	pDeviceName + "LoopPeriodIn"
-																									+ pTimeUnit.name(),
-																							0);
+															+ pTimeUnit.name(),
+													0);
 
 		mIsRunningVariable = new BooleanVariable(	pDeviceName + "IsRunning",
-																							false);
+													false);
 
 		lThis = this;
 	}
@@ -58,16 +58,16 @@ public abstract class SignalStartableLoopTaskDevice	extends
 			final long lStopTime = System.nanoTime();
 
 			final long lElapsedTimeInNanoseconds = lStopTime - lStartTime;
-			final long lExtraWaitTimeInNanoseconds = TimeUnit.NANOSECONDS.convert((long) mLoopPeriodVariable.getValue(),
-																																						mTimeUnit) - lElapsedTimeInNanoseconds;
+			final long lExtraWaitTimeInNanoseconds = TimeUnit.NANOSECONDS.convert(	(long) mLoopPeriodVariable.getValue(),
+																					mTimeUnit) - lElapsedTimeInNanoseconds;
 			if (lExtraWaitTimeInNanoseconds > 0)
-				ThreadUtils.sleep(lExtraWaitTimeInNanoseconds,
-													TimeUnit.NANOSECONDS);
+				ThreadUtils.sleep(	lExtraWaitTimeInNanoseconds,
+									TimeUnit.NANOSECONDS);
 
 		};
 		mScheduledFuture = scheduleAtFixedRate(	lRunnable,
-																						1,
-																						TimeUnit.NANOSECONDS);
+												1,
+												TimeUnit.NANOSECONDS);
 
 		final boolean lStarted = mScheduledFuture != null;
 
@@ -91,10 +91,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	{
 		try
 		{
-			if(mScheduledFuture!=null)
+			if (mScheduledFuture != null)
 			{
 				mScheduledFuture.cancel(false);
-				mScheduledFuture.waitForCompletion(10, TimeUnit.SECONDS);
+				mScheduledFuture.waitForCompletion(	10,
+													TimeUnit.SECONDS);
 			}
 			mIsRunningVariable.setValue(false);
 			return true;

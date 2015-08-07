@@ -19,16 +19,18 @@ public class ScriptingPanelDemo
 
 	@Test
 	public void testPython() throws InvocationTargetException,
-										InterruptedException
+							InterruptedException
 	{
 		final JFrame lJFrame = new JFrame();
 
 		final JythonScripting lJythonScripting = new JythonScripting();
 
 		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lJythonScripting,
-																																	null);
+																		null);
 
-		final ScriptingPanel lScriptingPanel = new ScriptingPanel(lScriptingEngine);
+		final ScriptingPanel lScriptingPanel = new ScriptingPanel(	"testPython",
+																	lScriptingEngine);
+		lScriptingPanel.loadLastLoadedScriptFile();
 		lJFrame.add(lScriptingPanel);
 
 		SwingUtilities.invokeAndWait(new Runnable()
@@ -49,16 +51,18 @@ public class ScriptingPanelDemo
 
 	@Test
 	public void testGroovy() throws InvocationTargetException,
-													InterruptedException
+							InterruptedException
 	{
 		final JFrame lJFrame = new JFrame();
 
 		final GroovyScripting lGroovyScripting = new GroovyScripting();
 
 		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																																	null);
+																		null);
 
-		final ScriptingPanel lScriptingPanel = new ScriptingPanel(lScriptingEngine);
+		final ScriptingPanel lScriptingPanel = new ScriptingPanel(	"testGroovy",
+																	lScriptingEngine);
+		lScriptingPanel.loadLastLoadedScriptFile();
 		lJFrame.add(lScriptingPanel);
 
 		SwingUtilities.invokeAndWait(new Runnable()

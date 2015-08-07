@@ -20,29 +20,29 @@ public class MatrixPanelDemo
 {
 
 	@Test
-	public void test() throws InvocationTargetException,
-										InterruptedException
+	public void test()	throws InvocationTargetException,
+						InterruptedException
 	{
 
 		final MatrixPanel lMatrixPanel = new MatrixPanel(32, 8, 8);
 
 		final JSliderDouble lMinRangeSlider = new JSliderDouble("Min range",
-																														-1,
-																														1,
-																														-1);
+																-1,
+																1,
+																-1);
 
 		lMinRangeSlider.removeLabelAndTextField();
 		final JSliderDouble lMaxRangeSlider = new JSliderDouble("Max range",
-																														-1,
-																														1,
-																														1);
+																-1,
+																1,
+																1);
 
 		lMaxRangeSlider.removeLabelAndTextField();
 
 		lMatrixPanel.getMinRangeVariable()
-								.syncWith(lMinRangeSlider.getDoubleVariable());
+					.syncWith(lMinRangeSlider.getDoubleVariable());
 		lMatrixPanel.getMaxRangeVariable()
-								.syncWith(lMaxRangeSlider.getDoubleVariable());
+					.syncWith(lMaxRangeSlider.getDoubleVariable());
 
 		SwingUtilities.invokeAndWait(new Runnable()
 		{
@@ -71,10 +71,11 @@ public class MatrixPanelDemo
 			lInputVector.set(9, lValue);
 
 			CommonOps.mult(	lZernickeTransformMatrix,
-											lInputVector,
-											lShapeVector);/**/
+							lInputVector,
+							lShapeVector);/**/
 
-			lMatrixPanel.getMatrixVariable().setReference(lShapeVector);
+			lMatrixPanel.getMatrixVariable()
+						.setReference(lShapeVector);
 			Thread.sleep(100);
 		}
 

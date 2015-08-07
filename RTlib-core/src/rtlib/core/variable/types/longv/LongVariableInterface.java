@@ -2,10 +2,10 @@ package rtlib.core.variable.types.longv;
 
 import rtlib.core.variable.VariableInterface;
 
-public interface LongVariableInterface extends
-																			VariableInterface<Long>,
-																			LongInputVariableInterface,
-																			LongOutputVariableInterface
+public interface LongVariableInterface	extends
+										VariableInterface<Long>,
+										LongInputVariableInterface,
+										LongOutputVariableInterface
 {
 
 	public void sendUpdatesTo(LongVariable pVariable);

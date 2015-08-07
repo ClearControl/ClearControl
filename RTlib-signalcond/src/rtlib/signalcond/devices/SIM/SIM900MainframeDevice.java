@@ -16,9 +16,9 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 	public SIM900MainframeDevice(final int pDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
-															.getSerialDevicePort(	"stanford.SIM900",
-																										pDeviceIndex,
-																										"NULL"));
+									.getSerialDevicePort(	"stanford.SIM900",
+															pDeviceIndex,
+															"NULL"));
 	}
 
 	public SIM900MainframeDevice(final String pPortName)
@@ -26,8 +26,8 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 		super("SIM900MainframeDevice" + pPortName);
 
 		mSerialDevice = new SerialDevice(	"SIM900MainframeDevice",
-																			pPortName,
-																			ProtocolSIM.cBaudRate);
+											pPortName,
+											ProtocolSIM.cBaudRate);
 	}
 
 	public SerialDevice getSerialDevice()
@@ -77,8 +77,8 @@ public class SIM900MainframeDevice extends NamedVirtualDevice
 	{
 		pCommandString = pCommandString.replace("\n", "");
 		return String.format(	ProtocolSIM.cSIM900ForwardCommand,
-													pPort,
-													pCommandString);
+								pPort,
+								pCommandString);
 	}
 
 }

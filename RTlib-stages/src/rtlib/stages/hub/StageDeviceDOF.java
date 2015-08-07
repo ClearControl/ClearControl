@@ -11,8 +11,8 @@ public class StageDeviceDOF
 	private StageDeviceInterface mStageDeviceInterface;
 	private int mDOFIndex;
 
-	public StageDeviceDOF(StageDeviceInterface pStageDeviceInterface,
-												int pDOFIndex)
+	public StageDeviceDOF(	StageDeviceInterface pStageDeviceInterface,
+							int pDOFIndex)
 	{
 		super();
 		setStageDeviceInterface(pStageDeviceInterface);
@@ -72,8 +72,8 @@ public class StageDeviceDOF
 	public Boolean waitToBeReady(int pTimeOut, TimeUnit pTimeUnit)
 	{
 		return mStageDeviceInterface.waitToBeReady(	mDOFIndex,
-																								pTimeOut,
-																								pTimeUnit);
+													pTimeOut,
+													pTimeUnit);
 	}
 
 	public DoubleVariable getMinPositionVariable()
@@ -115,11 +115,9 @@ public class StageDeviceDOF
 	public String toString()
 	{
 		return "StageDeviceDOF [mStageDeviceInterface=" + mStageDeviceInterface
-						+ ", mDOFIndex="
-						+ mDOFIndex
-						+ "]";
+				+ ", mDOFIndex="
+				+ mDOFIndex
+				+ "]";
 	}
-
-
 
 }

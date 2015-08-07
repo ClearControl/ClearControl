@@ -2,6 +2,7 @@ package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class ClampingArgMaxFinder implements ArgMaxFinder1DInterface
@@ -32,8 +33,8 @@ public class ClampingArgMaxFinder implements ArgMaxFinder1DInterface
 	@Override
 	public String toString()
 	{
-		return String.format("ClampingArgMaxFinder [%s]",
-													mArgMaxFinder1DInterface);
+		return String.format(	"ClampingArgMaxFinder [%s]",
+								mArgMaxFinder1DInterface);
 	}
 
 }

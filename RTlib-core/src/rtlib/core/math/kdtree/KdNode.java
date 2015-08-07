@@ -86,7 +86,8 @@ class KdNode<T>
 			// If the node is getting too large
 			if (calculateSplit())
 			{
-				// If the node successfully had it's split size calculated, split node
+				// If the node successfully had it's split size calculated,
+				// split node
 				splitLeafNode();
 			}
 			else

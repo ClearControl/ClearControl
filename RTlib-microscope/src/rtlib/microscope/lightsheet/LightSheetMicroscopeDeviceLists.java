@@ -39,14 +39,13 @@ public class LightSheetMicroscopeDeviceLists
 
 	private PositionDeviceInterface mLightSheetSelector;
 
-
 	public LightSheetMicroscopeDeviceLists()
 	{
 
 	}
 
 	public int addStackCameraDevice(StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> pCameraDevice,
-																	SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> pStackPipeline)
+									SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> pStackPipeline)
 	{
 		mStackCameraDeviceList.add(pCameraDevice);
 		mAllDeviceList.add(pCameraDevice);
@@ -55,7 +54,7 @@ public class LightSheetMicroscopeDeviceLists
 			mAllDeviceList.add(pStackPipeline);
 			mStackPipelineList.add(pStackPipeline);
 			pCameraDevice.getStackVariable()
-										.sendUpdatesTo(pStackPipeline.getInputVariable());
+							.sendUpdatesTo(pStackPipeline.getInputVariable());
 			mStackVariableList.add(pStackPipeline.getOutputVariable());
 		}
 		else
@@ -221,7 +220,6 @@ public class LightSheetMicroscopeDeviceLists
 		return mStageDeviceList.get(pIndex);
 	}
 
-
 	public int addLaserDevice(LaserDeviceInterface pLaserDeviceInterface)
 	{
 		mAllDeviceList.add(pLaserDeviceInterface);
@@ -270,7 +268,5 @@ public class LightSheetMicroscopeDeviceLists
 		}
 		return lBuilder.toString();
 	}
-
-
 
 }

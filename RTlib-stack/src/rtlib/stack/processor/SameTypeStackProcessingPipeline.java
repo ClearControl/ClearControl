@@ -1,20 +1,20 @@
 package rtlib.stack.processor;
 
+import coremem.recycling.RecyclableFactory;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclableFactory;
 
 public interface SameTypeStackProcessingPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>> extends
-																																																				OpenCloseDeviceInterface
+																										OpenCloseDeviceInterface
 {
 
-	public void addStackProcessor(final SameTypeStackProcessorInterface<T, A> pStackProcessor,
-																RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
-																int pMaximumNumberOfObjects);
+	public void addStackProcessor(	final SameTypeStackProcessorInterface<T, A> pStackProcessor,
+									RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
+									int pMaximumNumberOfObjects);
 
 	public void removeStackProcessor(final SameTypeStackProcessorInterface<T, A> pStackProcessor);
 

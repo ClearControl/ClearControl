@@ -1,19 +1,19 @@
 package net.imglib2.img.basictypeaccess.offheap;
 
-import net.imglib2.img.basictypeaccess.ShortAccess;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
+import net.imglib2.img.basictypeaccess.ShortAccess;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class ShortOffHeapAccess extends AbstractOffHeapAccess	implements
-																													ShortAccess,
-																													ArrayDataAccess<ShortOffHeapAccess>
+																ShortAccess,
+																ArrayDataAccess<ShortOffHeapAccess>
 {
 
 	public ShortOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateShorts(	"ShortOffHeapAccess",
-																											numEntities);
+															numEntities);
 	}
 
 	public ShortOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

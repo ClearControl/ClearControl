@@ -1,7 +1,5 @@
 package rtlib.gui.plots;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 import java.awt.HeadlessException;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -9,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.math.plot.Plot2DPanel;
+
+import gnu.trove.list.array.TDoubleArrayList;
 
 public class PlotTab
 {
@@ -20,8 +20,6 @@ public class PlotTab
 	private final HashMap<String, Boolean> mIsLinePlot;
 	private final Plot2DPanel mPlot;
 	private boolean mUpToDate = false;
-
-
 
 	public PlotTab(final String pName) throws HeadlessException
 	{
@@ -37,8 +35,8 @@ public class PlotTab
 	}
 
 	public void addPoint(	final String pVariableName,
-												final double pX,
-												final double pY)
+							final double pX,
+							final double pY)
 	{
 		synchronized (mLock)
 		{
@@ -102,15 +100,15 @@ public class PlotTab
 
 								if (mIsLinePlot.get(lVariableName) != null && mIsLinePlot.get(lVariableName))
 								{
-									mPlot.addLinePlot(lVariableName,
-																		lX.toArray(),
-																		lY.toArray());
+									mPlot.addLinePlot(	lVariableName,
+														lX.toArray(),
+														lY.toArray());
 								}
 								else
 								{
 									mPlot.addScatterPlot(	lVariableName,
-																				lX.toArray(),
-																				lY.toArray());
+															lX.toArray(),
+															lY.toArray());
 								}
 
 							}
@@ -125,7 +123,7 @@ public class PlotTab
 					{
 						e.printStackTrace();
 						System.err.println(PlotTab.class.getSimpleName() + ": "
-																+ e.getLocalizedMessage());
+											+ e.getLocalizedMessage());
 					}
 				}
 			}

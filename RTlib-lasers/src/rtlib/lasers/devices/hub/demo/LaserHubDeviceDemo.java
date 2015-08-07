@@ -28,8 +28,8 @@ public class LaserHubDeviceDemo
 		lLaserHubDevice.addLaser(lLaser3);
 
 		final CoboltLaserDevice lLaser4 = new CoboltLaserDevice("Jive",
-																														100,
-																														"COM7");
+																100,
+																"COM7");
 		lLaserHubDevice.addLaser(lLaser4);
 
 		assertTrue(lLaserHubDevice.open());
@@ -43,11 +43,11 @@ public class LaserHubDeviceDemo
 			for (int i = 0; i < 100; i++)
 			{
 				final int lTargetPower = i;
-				System.out.format("setting target power to: \t%d mW \n",
-													lTargetPower);
+				System.out.format(	"setting target power to: \t%d mW \n",
+									lTargetPower);
 				lLaserHubDevice.setTargetPowerInMilliWatt(lTargetPower);
-				System.out.format("       current power at: \t%s mW \n",
-													Arrays.toString(lLaserHubDevice.getCurrentPowersInMilliWatt()));
+				System.out.format(	"       current power at: \t%s mW \n",
+									Arrays.toString(lLaserHubDevice.getCurrentPowersInMilliWatt()));
 				// Thread.sleep(1);
 			}
 		}

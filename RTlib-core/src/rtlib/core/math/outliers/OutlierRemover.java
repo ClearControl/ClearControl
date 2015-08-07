@@ -1,7 +1,6 @@
 package rtlib.core.math.outliers;
 
 import static java.lang.Math.abs;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,31 +8,33 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.StatUtils;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 public class OutlierRemover
 {
 
-	static public TDoubleArrayList removeOutliers(double[] pDataPoints,
-																								double pSigmas)
+	static public TDoubleArrayList removeOutliers(	double[] pDataPoints,
+													double pSigmas)
 	{
 		final int length = pDataPoints.length;
-		
+
 		final double lMedian = StatUtils.percentile(pDataPoints, 50);
-		
-		final double[] lAbsoluteDeviations =  new double[length];
-		
-		for(int i=0; i<length; i++)
+
+		final double[] lAbsoluteDeviations = new double[length];
+
+		for (int i = 0; i < length; i++)
 			lAbsoluteDeviations[i] = abs(pDataPoints[i] - lMedian);
-		
+
 		final double lMedianAbsoluteDeviation = StatUtils.percentile(	lAbsoluteDeviations,
-																																	50);
-		
+																		50);
+
 		final double lLowerBound = lMedian - pSigmas
-																* lMedianAbsoluteDeviation;
+									* lMedianAbsoluteDeviation;
 		final double lUpperBound = lMedian + pSigmas
-																* lMedianAbsoluteDeviation;
+									* lMedianAbsoluteDeviation;
 
 		final TDoubleArrayList lResultArray = new TDoubleArrayList(length);
-		
+
 		for (int i = 0; i < length; i++)
 			if (pDataPoints[i] > lLowerBound && pDataPoints[i] < lUpperBound)
 				lResultArray.add(pDataPoints[i]);
@@ -41,9 +42,8 @@ public class OutlierRemover
 		return lResultArray;
 	}
 
-
 	static public <O> ArrayList<Pair<O, Double>> removeOutliers(List<Pair<O, Double>> pDataPoints,
-																										double pSigmas)
+																double pSigmas)
 	{
 		final int length = pDataPoints.size();
 
@@ -53,7 +53,7 @@ public class OutlierRemover
 			lDataPoints.add(lValuedObject.getValue());
 
 		final double lMedian = StatUtils.percentile(lDataPoints.toArray(),
-																								50);
+													50);
 
 		final double[] lAbsoluteDeviations = new double[length];
 
@@ -61,12 +61,12 @@ public class OutlierRemover
 			lAbsoluteDeviations[i] = abs(lDataPoints.getQuick(i) - lMedian);
 
 		final double lMedianAbsoluteDeviation = StatUtils.percentile(	lAbsoluteDeviations,
-																																	50);
+																		50);
 
 		final double lLowerBound = lMedian - pSigmas
-																* lMedianAbsoluteDeviation;
+									* lMedianAbsoluteDeviation;
 		final double lUpperBound = lMedian + pSigmas
-																* lMedianAbsoluteDeviation;
+									* lMedianAbsoluteDeviation;
 
 		final ArrayList<Pair<O, Double>> lResultList = new ArrayList<>(length);
 

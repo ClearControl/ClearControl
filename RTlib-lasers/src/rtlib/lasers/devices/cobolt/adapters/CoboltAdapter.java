@@ -5,8 +5,8 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public abstract class CoboltAdapter	extends
-																		SerialDeviceAdapterAdapter implements
-																															SerialTextDeviceAdapter
+									SerialDeviceAdapterAdapter	implements
+																SerialTextDeviceAdapter
 {
 
 	@Override
@@ -23,7 +23,7 @@ public abstract class CoboltAdapter	extends
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldValue,
-																					final double pNewValue)
+											final double pNewValue)
 	{
 		return null;
 	}

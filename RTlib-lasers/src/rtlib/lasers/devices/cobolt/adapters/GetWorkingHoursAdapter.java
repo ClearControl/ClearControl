@@ -4,7 +4,7 @@ import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class GetWorkingHoursAdapter extends CoboltAdapter	implements
-																													SerialTextDeviceAdapter
+															SerialTextDeviceAdapter
 {
 
 	@Override

@@ -8,7 +8,7 @@ import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class BooleanVariable extends DoubleVariable	implements
-																										BooleanInputOutputVariableInterface
+													BooleanInputOutputVariableInterface
 
 {
 
@@ -17,7 +17,7 @@ public class BooleanVariable extends DoubleVariable	implements
 	private CopyOnWriteArrayList<BooleanEventListenerInterface> mHighToLowEdgeListenerList;
 
 	public BooleanVariable(	final String pVariableName,
-													final boolean pInitialState)
+							final boolean pInitialState)
 	{
 		super(pVariableName, boolean2double(pInitialState));
 
@@ -35,7 +35,7 @@ public class BooleanVariable extends DoubleVariable	implements
 
 			@Override
 			public void setEvent(	final Double pCurrentValue,
-														final Double pNewValue)
+									final Double pNewValue)
 			{
 				final boolean lOldBooleanValue = double2boolean(pCurrentValue);
 				final boolean lNewBooleanValue = double2boolean(pNewValue);
@@ -152,10 +152,10 @@ public class BooleanVariable extends DoubleVariable	implements
 		waitForStateAndToggle(false, 1, 20000, TimeUnit.MILLISECONDS);
 	}
 
-	public void waitForStateAndToggle(final boolean pState,
-																		final long pMaxPollingPeriod,
-																		final long pTimeOut,
-																		final TimeUnit pTimeUnit)
+	public void waitForStateAndToggle(	final boolean pState,
+										final long pMaxPollingPeriod,
+										final long pTimeOut,
+										final TimeUnit pTimeUnit)
 	{
 		System.out.println("waitForStateAndToggle");
 		final CountDownLatch lIsTrueSignal = new CountDownLatch(1);
@@ -207,7 +207,5 @@ public class BooleanVariable extends DoubleVariable	implements
 
 		setValue(!pState);
 	}
-
-
 
 }

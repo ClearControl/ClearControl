@@ -1,6 +1,7 @@
 package rtlib.core.device;
 
-public abstract class UpdatableDevice extends NamedVirtualDevice implements UpdatableInterface
+public abstract class UpdatableDevice extends NamedVirtualDevice implements
+																UpdatableInterface
 {
 
 	private volatile boolean mIsUpToDate = false;

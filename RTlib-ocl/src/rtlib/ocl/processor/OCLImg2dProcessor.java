@@ -31,17 +31,28 @@ public class OCLImg2dProcessor extends OCLProcessor
 		mNy = Ny0;
 
 		final CLImageFormat fmt = new CLImageFormat(CLImageFormat.ChannelOrder.R,
-																								CLImageFormat.ChannelDataType.SignedInt16);
+													CLImageFormat.ChannelDataType.SignedInt16);
 
-		mInputImage = mCLContext.createImage2D(Usage.Input, fmt, mNx, mNy);
+		mInputImage = mCLContext.createImage2D(	Usage.Input,
+												fmt,
+												mNx,
+												mNy);
 		mOutputImageCLBuffer = mCLContext.createShortBuffer(Usage.Output,
-																												mNx * mNy * 2);
+															mNx		* mNy
+																	* 2);
 
 	}
 
 	public CLEvent writeInputImage(final ShortBuffer buf)
 	{
-		return mInputImage.write(mCLQueue, 0, 0, mNx, mNy, 0, buf, true);
+		return mInputImage.write(	mCLQueue,
+									0,
+									0,
+									mNx,
+									mNy,
+									0,
+									buf,
+									true);
 
 	}
 
@@ -53,8 +64,9 @@ public class OCLImg2dProcessor extends OCLProcessor
 	public void run()
 	{
 		mCLKernel.setArgs(mInputImage, mOutputImageCLBuffer, mNx, mNy);
-		final CLEvent evt = mCLKernel.enqueueNDRange(mCLQueue, new int[]
-		{ mNx, mNy });
+		final CLEvent evt = mCLKernel.enqueueNDRange(	mCLQueue,
+														new int[]
+														{ mNx, mNy });
 		evt.waitFor();
 	}
 

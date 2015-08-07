@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
-public abstract class TemperatureSensorDeviceBase extends
-																				SignalStartableLoopTaskDevice	implements
-																																			TemperatureSensorDeviceInterface
+public abstract class TemperatureSensorDeviceBase	extends
+													SignalStartableLoopTaskDevice	implements
+																					TemperatureSensorDeviceInterface
 {
 
 	DoubleVariable mTemperatureVariable;

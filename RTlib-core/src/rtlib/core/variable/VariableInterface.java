@@ -29,5 +29,4 @@ public interface VariableInterface<O>
 
 	public void removeAllListeners();
 
-
 }

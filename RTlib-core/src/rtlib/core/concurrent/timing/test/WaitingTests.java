@@ -29,7 +29,9 @@ public class WaitingTests
 		public void switchOff()
 		{
 			final Runnable lRunnable = () -> {
-				if (waitFor(1, TimeUnit.NANOSECONDS, () -> mWaitFlag.get()))
+				if (waitFor(1,
+							TimeUnit.NANOSECONDS,
+							() -> mWaitFlag.get()))
 					mDoneFlag.set(true);
 			};
 			new Thread(lRunnable).start();

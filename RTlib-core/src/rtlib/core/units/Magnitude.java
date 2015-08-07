@@ -36,13 +36,13 @@ public enum Magnitude
 	{
 		return mMagnitude;
 	}
-	
+
 	public double convertFrom(double pValue, Magnitude pMagnitude)
 	{
 		final double lConvertedValue = pValue * (pMagnitude.getMagnitude() / getMagnitude());
 		return lConvertedValue;
 	}
-	
+
 	public static double unit2giga(final double x)
 	{
 		return Giga.convertFrom(x, Unit);
@@ -117,7 +117,5 @@ public enum Magnitude
 	{
 		return Milli.convertFrom(x, Unit);
 	}
-
-
 
 }

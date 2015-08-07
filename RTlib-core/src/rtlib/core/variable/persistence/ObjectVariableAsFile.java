@@ -14,8 +14,8 @@ import java.io.ObjectOutputStream;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
-																															Closeable
+public class ObjectVariableAsFile<O> extends ObjectVariable<O>	implements
+																Closeable
 
 {
 	private volatile long mCachedReferenceFileSignature = Long.MIN_VALUE;
@@ -28,14 +28,14 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 	{
 
 		this(	pVariableName,
-					MachineConfiguration.getCurrentMachineConfiguration()
-															.getPersistentVariableFile(pVariableName),
-					null);
+				MachineConfiguration.getCurrentMachineConfiguration()
+									.getPersistentVariableFile(pVariableName),
+				null);
 	}
 
 	public ObjectVariableAsFile(final String pVariableName,
-															final File pFile,
-															final O pReference)
+								final File pFile,
+								final O pReference)
 	{
 		super(pVariableName, pReference);
 		mFile = pFile;
@@ -46,8 +46,8 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 	public O getReference()
 	{
 		if (mReference != null && mFile != null
-				&& mFile.exists()
-				&& mFile.lastModified() < mCachedReferenceFileSignature)
+			&& mFile.exists()
+			&& mFile.lastModified() < mCachedReferenceFileSignature)
 		{
 			return mReference;
 		}
@@ -72,8 +72,8 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O> implements
 	}
 
 	private O readFromFile() throws FileNotFoundException,
-													IOException,
-													ClassNotFoundException
+							IOException,
+							ClassNotFoundException
 	{
 		O lReference = null;
 		synchronized (mLock)

@@ -17,7 +17,7 @@ import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.SerialDevice;
 
 public class OmicronLaserDevice extends LaserDeviceBase	implements
-																												LaserDeviceInterface
+														LaserDeviceInterface
 {
 	private final SerialDevice mSerialDevice;
 
@@ -26,9 +26,9 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 	public OmicronLaserDevice(final int pDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
-															.getSerialDevicePort(	"laser.omicron",
-																										pDeviceIndex,
-																										"NULL"));
+									.getSerialDevicePort(	"laser.omicron",
+															pDeviceIndex,
+															"NULL"));
 	}
 
 	public OmicronLaserDevice(final String pPortName)
@@ -36,48 +36,48 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 		super("OmicronLaserDevice" + pPortName);
 
 		mSerialDevice = new SerialDevice(	"OmicronLaserDevice",
-																			pPortName,
-																			ProtocolXX.cBaudRate);
+											pPortName,
+											ProtocolXX.cBaudRate);
 
 		final GetDeviceIdAdapter lGetDeviceIdAdapter = new GetDeviceIdAdapter();
-		mDeviceIdVariable = mSerialDevice.addSerialDoubleVariable("DeviceId",
-																								lGetDeviceIdAdapter);
+		mDeviceIdVariable = mSerialDevice.addSerialDoubleVariable(	"DeviceId",
+																	lGetDeviceIdAdapter);
 
 		final GetWavelengthAdapter lGetWavelengthAdapter = new GetWavelengthAdapter();
 		mWavelengthVariable = mSerialDevice.addSerialDoubleVariable("WavelengthInNanoMeter",
-																									lGetWavelengthAdapter);
+																	lGetWavelengthAdapter);
 
 		final GetSpecPowerAdapter lGetSpecPowerAdapter = new GetSpecPowerAdapter();
-		mSpecInMilliWattPowerVariable = mSerialDevice.addSerialDoubleVariable("SpecPowerInMilliWatt",
-																														lGetSpecPowerAdapter);
+		mSpecInMilliWattPowerVariable = mSerialDevice.addSerialDoubleVariable(	"SpecPowerInMilliWatt",
+																				lGetSpecPowerAdapter);
 
 		final GetMaxPowerAdapter lGetMaxPowerAdapter = new GetMaxPowerAdapter();
 		mMaxPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"MaxPowerInMilliWatt",
-																														lGetMaxPowerAdapter);
+																				lGetMaxPowerAdapter);
 
 		final SetOperatingModeAdapter lSetOperatingModeAdapter = new SetOperatingModeAdapter();
-		mSetOperatingModeVariable = mSerialDevice.addSerialDoubleVariable("OperatingMode",
-																												lSetOperatingModeAdapter);
+		mSetOperatingModeVariable = mSerialDevice.addSerialDoubleVariable(	"OperatingMode",
+																			lSetOperatingModeAdapter);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
-		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable("PowerOn",
-																								lSetPowerOnOffAdapter);
+		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable(	"PowerOn",
+																	lSetPowerOnOffAdapter);
 
 		final SetLaserOnOffAdapter lSetLaserOnOffAdapter = new SetLaserOnOffAdapter();
-		mLaserOnVariable = mSerialDevice.addSerialBooleanVariable("LaserOn",
-																								lSetLaserOnOffAdapter);
+		mLaserOnVariable = mSerialDevice.addSerialBooleanVariable(	"LaserOn",
+																	lSetLaserOnOffAdapter);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
-		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable("WorkingHours",
-																										lGetWorkingHoursAdapter);
+		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable(	"WorkingHours",
+																		lGetWorkingHoursAdapter);
 
 		mGetSetTargetPowerAdapter = new GetSetTargetPowerAdapter();
 		mTargetPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable("TargetPowerInMilliWatt",
-																															mGetSetTargetPowerAdapter);
+																				mGetSetTargetPowerAdapter);
 
 		final GetCurrentPowerAdapter lGetCurrentPowerAdapter = new GetCurrentPowerAdapter();
 		mCurrentPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
-																																lGetCurrentPowerAdapter);
+																					lGetCurrentPowerAdapter);
 	}
 
 	@Override

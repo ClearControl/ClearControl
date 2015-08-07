@@ -9,8 +9,8 @@ import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.ScoreInterface;
 
 public class SignalGeneratorSimulatorDevice	extends
-																						SignalGeneratorBase	implements
-																																SignalGeneratorInterface
+											SignalGeneratorBase	implements
+																SignalGeneratorInterface
 {
 
 	private final BooleanVariable mTriggerVariable;
@@ -20,8 +20,8 @@ public class SignalGeneratorSimulatorDevice	extends
 		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
 
 		mTriggerVariable = new BooleanVariable(	getName() + "Trigger",
-																						false);
-		
+												false);
+
 	}
 
 	@Override
@@ -29,7 +29,6 @@ public class SignalGeneratorSimulatorDevice	extends
 	{
 		return true;
 	}
-
 
 	@Override
 	public boolean close()
@@ -70,8 +69,5 @@ public class SignalGeneratorSimulatorDevice	extends
 	{
 		return mTriggerVariable;
 	}
-
-
-
 
 }

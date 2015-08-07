@@ -25,15 +25,15 @@ public class PointCloud
 	public void getPoint(int pPointIndex, double[] pPoint)
 	{
 		mPointCloudData.toArray(pPoint,
-														pPointIndex * (mInputDimension + mOutputDimension),
-														mInputDimension);
+								pPointIndex * (mInputDimension + mOutputDimension),
+								mInputDimension);
 	}
 
 	public double getValue(int pPointIndex, int pValueIndex)
 	{
 		return mPointCloudData.get(pPointIndex * (mInputDimension + mOutputDimension)
-																+ mInputDimension
-																+ pValueIndex);
+									+ mInputDimension
+									+ pValueIndex);
 	}
 
 	public void getKClosestPoints(final int pK, int[] pPointIndices)

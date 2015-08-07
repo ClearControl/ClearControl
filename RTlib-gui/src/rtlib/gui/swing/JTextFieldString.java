@@ -22,16 +22,16 @@ public class JTextFieldString extends JPanel
 	private final ObjectVariable<String> mObjectVariable;
 
 	public JTextFieldString(final String pValueName,
-													final String pInicialValue)
+							final String pInicialValue)
 	{
 		super();
 
 		mObjectVariable = new ObjectVariable<String>(	pValueName,
-																									pInicialValue)
+														pInicialValue)
 		{
 			@Override
 			public String setEventHook(	final String pOldValue,
-																	final String pNewValue)
+										final String pNewValue)
 			{
 
 				if (!pNewValue.equals(mValueTextField.getText()))
@@ -63,46 +63,46 @@ public class JTextFieldString extends JPanel
 		mThis = this;
 
 		mValueTextField.getDocument()
-										.addDocumentListener(new DocumentListener()
-										{
-											@Override
-											public void changedUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+						.addDocumentListener(new DocumentListener()
+						{
+							@Override
+							public void changedUpdate(final DocumentEvent e)
+							{
+								parseDoubleAndNotify();
+							}
 
-											@Override
-											public void removeUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+							@Override
+							public void removeUpdate(final DocumentEvent e)
+							{
+								parseDoubleAndNotify();
+							}
 
-											@Override
-											public void insertUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+							@Override
+							public void insertUpdate(final DocumentEvent e)
+							{
+								parseDoubleAndNotify();
+							}
 
-											public void parseDoubleAndNotify()
-											{
-												final String lTextString = mValueTextField.getText()
-																																	.trim();
+							public void parseDoubleAndNotify()
+							{
+								final String lTextString = mValueTextField.getText()
+																			.trim();
 
-												try
-												{
-													mObjectVariable.setReference(lTextString);
+								try
+								{
+									mObjectVariable.setReference(lTextString);
 
-												}
-												catch (final NumberFormatException e)
-												{
-													JOptionPane.showMessageDialog(null,
-																												"String cannot be parsed as double!",
-																												"Error Message",
-																												JOptionPane.ERROR_MESSAGE);
-													return;
-												}
-											}
-										});
+								}
+								catch (final NumberFormatException e)
+								{
+									JOptionPane.showMessageDialog(	null,
+																	"String cannot be parsed as double!",
+																	"Error Message",
+																	JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+							}
+						});
 
 	}
 

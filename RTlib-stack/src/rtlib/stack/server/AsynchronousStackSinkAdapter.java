@@ -11,7 +11,7 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																																	StackSinkInterface<T, A>
+																									StackSinkInterface<T, A>
 {
 
 	private StackSinkInterface<T, A> mStackSink;
@@ -21,20 +21,20 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 	private ObjectVariable<StackInterface<T, A>> mFinishedProcessingStackVariable;
 
 	public static <ST extends NativeType<ST>, SA extends ArrayDataAccess<SA>> AsynchronousStackSinkAdapter<ST, SA> wrap(StackSinkInterface<ST, SA> pStackSink,
-																																																											final int pMaxQueueSize)
+																														final int pMaxQueueSize)
 	{
 		return new AsynchronousStackSinkAdapter<ST, SA>(pStackSink,
-																										pMaxQueueSize);
+														pMaxQueueSize);
 	}
 
 	public AsynchronousStackSinkAdapter(final StackSinkInterface<T, A> pStackSink,
-																			final int pMaxQueueSize)
+										final int pMaxQueueSize)
 	{
 		super();
 		mStackSink = pStackSink;
 
 		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>(	"AsynchronousStackSinkAdapter",
-																																																									pMaxQueueSize)
+																														pMaxQueueSize)
 		{
 			@Override
 			public StackInterface<T, A> process(final StackInterface<T, A> pStack)
@@ -60,10 +60,11 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
 
-	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
+	public boolean waitToFinish(final long pTimeOut,
+								TimeUnit pTimeUnit)
 	{
 		return mAsynchronousConversionProcessor.waitToFinish(	pTimeOut,
-																													pTimeUnit);
+																pTimeUnit);
 	}
 
 	public boolean stop()
@@ -84,7 +85,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+									final VariableInterface<?> pVariable)
 	{
 		mStackSink.addMetaDataVariable(pPrefix, pVariable);
 	}

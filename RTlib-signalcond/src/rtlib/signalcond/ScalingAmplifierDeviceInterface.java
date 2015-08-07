@@ -4,7 +4,7 @@ import rtlib.core.device.NameableInterface;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface ScalingAmplifierDeviceInterface extends
-																								NameableInterface
+												NameableInterface
 {
 
 	public void setGain(double pGain);

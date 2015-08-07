@@ -49,7 +49,7 @@ public class JSliderDouble extends JPanel
 	 * Constructor
 	 * 
 	 * @param pValueName
-	 *          value name
+	 *            value name
 	 * @wbp.parser.constructor
 	 */
 	public JSliderDouble(final String pValueName)
@@ -59,35 +59,41 @@ public class JSliderDouble extends JPanel
 	}
 
 	public JSliderDouble(	final String pValueName,
-												final double pMin,
-												final double pMax,
-												final double pValue)
-	{
-		this(pValueName, "%.1f", Integer.MAX_VALUE, pMin, pMax, pValue, 1);
-	}
-
-	public JSliderDouble(	final String pValueName,
-												final double pMin,
-												final double pMax,
-												final double pStep,
-												final double pValue)
+							final double pMin,
+							final double pMax,
+							final double pValue)
 	{
 		this(	pValueName,
-					"%.1f",
-					Integer.MAX_VALUE,
-					pMin,
-					pMax,
-					pValue,
-					pStep);
+				"%.1f",
+				Integer.MAX_VALUE,
+				pMin,
+				pMax,
+				pValue,
+				1);
 	}
 
 	public JSliderDouble(	final String pValueName,
-												final String pLabelsFormatString,
-												final int pResolution,
-												final double pMin,
-												final double pMax,
-												final double pValue,
-												final double pStep)
+							final double pMin,
+							final double pMax,
+							final double pStep,
+							final double pValue)
+	{
+		this(	pValueName,
+				"%.1f",
+				Integer.MAX_VALUE,
+				pMin,
+				pMax,
+				pValue,
+				pStep);
+	}
+
+	public JSliderDouble(	final String pValueName,
+							final String pLabelsFormatString,
+							final int pResolution,
+							final double pMin,
+							final double pMax,
+							final double pValue,
+							final double pStep)
 	{
 		super();
 
@@ -97,13 +103,13 @@ public class JSliderDouble extends JPanel
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+										final Double pNewValue)
 			{
 
-				final int lSliderIntegerValue = toInt(mResolution,
-																							mMin,
-																							mMax,
-																							constraintIfNescessary(pNewValue));
+				final int lSliderIntegerValue = toInt(	mResolution,
+														mMin,
+														mMax,
+														constraintIfNescessary(pNewValue));
 
 				if (mSlider.getValue() != lSliderIntegerValue)
 				{
@@ -123,12 +129,11 @@ public class JSliderDouble extends JPanel
 			}
 		};
 
-
 		setMaximumSize(new Dimension(1024, 90));
 		setMinimumSize(new Dimension(128, 90));
 		setLayout(new MigLayout("fill,insets 0",
-														"[center][18.63%,grow,center][50%,grow,center][center]",
-														"[::25px,grow,center][]"));
+								"[center][18.63%,grow,center][50%,grow,center][center]",
+								"[::25px,grow,center][]"));
 
 		mNameLabel = new JLabel(pValueName);
 		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -144,7 +149,7 @@ public class JSliderDouble extends JPanel
 			final double lStep = max(mStep, mQuanta);
 			final int lModifiers = e.getModifiers();
 			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
-																																															: 10;
+																									: 10;
 			double lNewValue = getDoubleVariable().getValue();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
 				lNewValue += -lStep / lFactor;
@@ -158,9 +163,9 @@ public class JSliderDouble extends JPanel
 		});
 
 		mSlider = new JSlider(0, mResolution - 1, toInt(mResolution,
-																										pMin,
-																										pMax,
-																										pValue));
+														pMin,
+														pMax,
+														pValue));
 		add(mSlider, "cell 1 1 2 1,growx,aligny top");
 
 		mValueTextField = new JTextField("" + pValue);
@@ -181,15 +186,16 @@ public class JSliderDouble extends JPanel
 			{
 
 				final double lNewValue = constraintIfNescessary(toDouble(	mResolution,
-																																	mMin,
-																																	mMax,
-																																	mSlider.getValue()));
+																			mMin,
+																			mMax,
+																			mSlider.getValue()));
 
 				if (mSliderDoubleVariable.getValue() != lNewValue)
 				{
 					try
 					{
-						if (Double.parseDouble(mValueTextField.getText().trim()) != lNewValue)
+						if (Double.parseDouble(mValueTextField.getText()
+																.trim()) != lNewValue)
 						{
 							writeValueIntoTextField(lNewValue);
 							mValueTextField.setBackground(Color.white);
@@ -207,32 +213,33 @@ public class JSliderDouble extends JPanel
 
 					mSliderDoubleVariable.setValue(lNewValue);
 				}
-				// System.out.println("change received from slider:" + lNewValue);
+				// System.out.println("change received from slider:" +
+				// lNewValue);
 			}
 
 		});
 
 		mValueTextField.getDocument()
-										.addDocumentListener(new DocumentListener()
-										{
+						.addDocumentListener(new DocumentListener()
+						{
 
-											@Override
-											public void removeUpdate(final DocumentEvent pE)
-											{
-												mValueTextField.setBackground(Color.red);
-											}
+							@Override
+							public void removeUpdate(final DocumentEvent pE)
+							{
+								mValueTextField.setBackground(Color.red);
+							}
 
-											@Override
-											public void insertUpdate(final DocumentEvent pE)
-											{
-												mValueTextField.setBackground(Color.red);
-											}
+							@Override
+							public void insertUpdate(final DocumentEvent pE)
+							{
+								mValueTextField.setBackground(Color.red);
+							}
 
-											@Override
-											public void changedUpdate(final DocumentEvent pE)
-											{
-											}
-										});
+							@Override
+							public void changedUpdate(final DocumentEvent pE)
+							{
+							}
+						});
 
 		mValueTextField.addActionListener(new ActionListener()
 		{
@@ -241,7 +248,8 @@ public class JSliderDouble extends JPanel
 			public void actionPerformed(final ActionEvent pE)
 			{
 
-				final String lTextString = mValueTextField.getText().trim();
+				final String lTextString = mValueTextField.getText()
+															.trim();
 				if (lTextString.isEmpty())
 				{
 					return;
@@ -260,10 +268,10 @@ public class JSliderDouble extends JPanel
 
 					mSliderDoubleVariable.setValue(lNewValue);
 
-					final int lSliderIntegerValue = toInt(mResolution,
-																								mMin,
-																								mMax,
-																								lNewValue);
+					final int lSliderIntegerValue = toInt(	mResolution,
+															mMin,
+															mMax,
+															lNewValue);
 
 					try
 					{
@@ -304,7 +312,7 @@ public class JSliderDouble extends JPanel
 			final double lStep = max(mStep, mQuanta);
 			final int lModifiers = e.getModifiers();
 			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
-																																															: 10;
+																									: 10;
 			double lNewValue = getDoubleVariable().getValue();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
 				lNewValue += lStep / lFactor;
@@ -320,13 +328,14 @@ public class JSliderDouble extends JPanel
 		final Hashtable lLabelTable = new Hashtable();
 		for (int i = 0; i <= mNumberOfLabels; i++)
 		{
-			final int lInteger = i * (pResolution - 1) / mNumberOfLabels;
+			final int lInteger = i	* (pResolution - 1)
+									/ mNumberOfLabels;
 			final double lDouble = toDouble(mResolution,
-																			mMin,
-																			mMax,
-																			lInteger);
+											mMin,
+											mMax,
+											lInteger);
 			final String lDoubleString = String.format(	mLabelsFormatString,
-																									lDouble);
+														lDouble);
 			lLabelTable.put(lInteger, new JLabel(lDoubleString));
 		}
 		mSlider.setLabelTable(lLabelTable);/**/
@@ -349,12 +358,13 @@ public class JSliderDouble extends JPanel
 	{
 		if (mQuanta == 1)
 		{
-			mValueTextField.setText(String.format(getFormat(),
-																						(long) lNewValue));
+			mValueTextField.setText(String.format(	getFormat(),
+													(long) lNewValue));
 		}
 		else
 		{
-			mValueTextField.setText(String.format(getFormat(), lNewValue));
+			mValueTextField.setText(String.format(	getFormat(),
+													lNewValue));
 		}
 	}
 
@@ -384,29 +394,29 @@ public class JSliderDouble extends JPanel
 	}
 
 	private static double toDouble(	final int pResolution,
-																	final double pMin,
-																	final double pMax,
-																	final int pIntValue)
+									final double pMin,
+									final double pMax,
+									final int pIntValue)
 	{
 		return pMin + (double) pIntValue
-						/ (pResolution - 1)
-						* (pMax - pMin);
+				/ (pResolution - 1)
+				* (pMax - pMin);
 	}
 
 	private static int toInt(	final int pResolution,
-														final double pMin,
-														final double pMax,
-														final double pValue)
+								final double pMin,
+								final double pMax,
+								final double pValue)
 	{
 		return (int) Math.round((pResolution - 1) * (clamp(	pMin,
-																												pMax,
-																												pValue) - pMin)
-														/ (pMax - pMin));
+															pMax,
+															pValue) - pMin)
+								/ (pMax - pMin));
 	}
 
 	private static double clamp(final double pMin,
-															final double pMax,
-															final double pValue)
+								final double pMax,
+								final double pValue)
 	{
 		return Math.min(pMax, Math.max(pMin, pValue));
 	}

@@ -3,7 +3,7 @@ package rtlib.optomech.filterwheels.devices.fli.adapters;
 import rtlib.optomech.filterwheels.devices.fli.FLIFilterWheelDevice;
 
 public class FilterWheelPositionDeviceAdapter	extends
-																							FilterWheelDeviceAdapter
+												FilterWheelDeviceAdapter
 {
 
 	public FilterWheelPositionDeviceAdapter(final FLIFilterWheelDevice pFLIFilterWheelDevice)
@@ -19,10 +19,10 @@ public class FilterWheelPositionDeviceAdapter	extends
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldPosition,
-																					final double pNewPosition)
+											final double pNewPosition)
 	{
 		return getSetPositionAndSpeedCommandMessage((int) pNewPosition,
-																								mFLIFilterWheelDevice.getCachedSpeed());
+													mFLIFilterWheelDevice.getCachedSpeed());
 	}
 
 	@Override
@@ -30,6 +30,5 @@ public class FilterWheelPositionDeviceAdapter	extends
 	{
 		return checkAcknowledgement(pMessage);
 	}
-
 
 }

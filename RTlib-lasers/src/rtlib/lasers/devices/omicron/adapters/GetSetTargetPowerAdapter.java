@@ -4,7 +4,7 @@ import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class GetSetTargetPowerAdapter extends OmicronAdapter implements
-																														SerialTextDeviceAdapter
+															SerialTextDeviceAdapter
 {
 
 	private double mMaxPowerInMilliWatt;
@@ -26,11 +26,11 @@ public class GetSetTargetPowerAdapter extends OmicronAdapter implements
 	public Double parseValue(final byte[] pMessage)
 	{
 		// System.out.println("GET: received: "+new String(pMessage));
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetPowerLevelReplyPrefix,
-																															pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(	ProtocolXX.cGetPowerLevelReplyPrefix,
+																	pMessage);
 		final String lSpecPowerString = lSplittedMessage[0];
 		final int lCurrentPowerInBinaryUnits = Integer.parseInt(lSpecPowerString,
-																														16);
+																16);
 		final double lTargetPowerInPercent = (double) lCurrentPowerInBinaryUnits / (4096 - 1);
 
 		return lTargetPowerInPercent * mMaxPowerInMilliWatt;
@@ -38,17 +38,17 @@ public class GetSetTargetPowerAdapter extends OmicronAdapter implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldPowerInMilliWatt,
-																					final double pNewPowerInMilliWatt)
+											final double pNewPowerInMilliWatt)
 	{
 		final double lPowerInPercent = pNewPowerInMilliWatt / mMaxPowerInMilliWatt;
 		// System.out.format("SET: power %g (percent) \n",lPowerInPercent);
 		final int lPower = (int) Math.round(lPowerInPercent * (4096 - 1));
 		// System.out.format("SET: power %d (percent*(4096-1)) \n",lPower);
-		final String lHexPowerString = ProtocolXX.toHexadecimalString(lPower,
-																																	3);
+		final String lHexPowerString = ProtocolXX.toHexadecimalString(	lPower,
+																		3);
 		// System.out.format("SET: power %s (percent*(4096-1) HEX) \n",lHexPowerString);
-		final String lSetTargetPowerCommandString = String.format(ProtocolXX.cSetPowerLevelCommand,
-																															lHexPowerString);
+		final String lSetTargetPowerCommandString = String.format(	ProtocolXX.cSetPowerLevelCommand,
+																	lHexPowerString);
 
 		final byte[] lSetTargetPowerCommandBytes = lSetTargetPowerCommandString.getBytes();
 		// System.out.println("SET: sent: "+new

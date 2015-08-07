@@ -5,18 +5,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stages.StageDeviceInterface;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-public class StageDeviceHub extends NamedVirtualDevice implements
-																											StageDeviceInterface,
-																											StartStopDeviceInterface
+public class StageDeviceHub extends NamedVirtualDevice	implements
+														StageDeviceInterface,
+														StartStopDeviceInterface
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
@@ -29,12 +29,12 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	}
 
 	public String addDOF(	StageDeviceInterface pStageDeviceInterface,
-												int pDOFIndex)
+							int pDOFIndex)
 	{
 		mStageDeviceInterfaceList.add(pStageDeviceInterface);
 		final String lDOFName = pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
-		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(pStageDeviceInterface,
-																															pDOFIndex);
+		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(	pStageDeviceInterface,
+																	pDOFIndex);
 		mDOFList.add(lStageDeviceDOF);
 		mNameToStageDeviceDOFMap.put(lDOFName, lStageDeviceDOF);
 		return lDOFName;
@@ -144,10 +144,11 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 
 	@Override
 	public Boolean waitToBeReady(	int pDOFIndex,
-																int pTimeOut,
-																TimeUnit pTimeUnit)
+									int pTimeOut,
+									TimeUnit pTimeUnit)
 	{
-		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);
+		return mDOFList.get(pDOFIndex).waitToBeReady(	pTimeOut,
+														pTimeUnit);
 	}
 
 	@Override
@@ -196,9 +197,9 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	public String toString()
 	{
 		return "StageHub [mDOFList=" + mDOFList
-						+ ", getNumberOfDOFs()="
-						+ getNumberOfDOFs()
-						+ "]";
+				+ ", getNumberOfDOFs()="
+				+ getNumberOfDOFs()
+				+ "]";
 	}
 
 }

@@ -16,9 +16,9 @@ public class JButtonBoolean extends JButton
 
 	private boolean mButtonIsOnOffSwitch = true;
 
-	public JButtonBoolean(final boolean pInitialState,
-												final String pOnLabel,
-												final String pOffLabel)
+	public JButtonBoolean(	final boolean pInitialState,
+							final String pOnLabel,
+							final String pOffLabel)
 	{
 		this(pInitialState, pOnLabel, pOffLabel, true);
 	}
@@ -28,25 +28,25 @@ public class JButtonBoolean extends JButton
 		this(false, pLabel, pLabel, false);
 	}
 
-	public JButtonBoolean(final String pRestLabel,
-												final String pPressingLabel)
+	public JButtonBoolean(	final String pRestLabel,
+							final String pPressingLabel)
 	{
 		this(false, pPressingLabel, pRestLabel, false);
 	}
 
-	public JButtonBoolean(final boolean pInitialState,
-												final String pOnLabel,
-												final String pOffLabel,
-												final boolean pButtonIsOnOffSwitch)
+	public JButtonBoolean(	final boolean pInitialState,
+							final String pOnLabel,
+							final String pOffLabel,
+							final boolean pButtonIsOnOffSwitch)
 	{
 		mThis = this;
 		mBooleanVariable = new BooleanVariable(	pOnLabel + "/"
-																								+ pOffLabel,
-																						pInitialState)
+														+ pOffLabel,
+												pInitialState)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+										final Double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
 				// if (pDoubleEventSource != mThis)

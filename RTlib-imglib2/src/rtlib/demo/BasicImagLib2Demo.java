@@ -1,6 +1,11 @@
 package rtlib.demo;
 
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import coremem.fragmented.FragmentedMemory;
+import coremem.offheap.OffHeapMemory;
 import ij.ImagePlus;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessible;
@@ -15,11 +20,6 @@ import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
-
-import org.junit.Test;
-
-import coremem.fragmented.FragmentedMemory;
-import coremem.offheap.OffHeapMemory;
 
 public class BasicImagLib2Demo
 {
@@ -41,8 +41,8 @@ public class BasicImagLib2Demo
 		final OffHeapPlanarImgFactory<ByteType> lFactory = new OffHeapPlanarImgFactory<ByteType>();
 
 		final NativeImg<ByteType, ByteOffHeapAccess> lOffHeapPlanarImg = lFactory.createByteInstance(	lFragmentedMemory,
-																																																	lDim,
-																																																	new ByteType());
+																										lDim,
+																										new ByteType());
 
 		final Cursor<ByteType> lCursor = lOffHeapPlanarImg.cursor();
 
@@ -53,8 +53,8 @@ public class BasicImagLib2Demo
 		}/**/
 
 		final IntervalView<ByteType> lHyperSlice = Views.hyperSlice(lOffHeapPlanarImg,
-																																1,
-																																100);
+																	1,
+																	100);
 
 		final double lSum = 0;
 		final Cursor<ByteType> lCursor2 = lHyperSlice.cursor();
@@ -81,15 +81,15 @@ public class BasicImagLib2Demo
 		for (int z = 0; z < 128; z++)
 		{
 			final OffHeapMemory lAllocate = OffHeapMemory.allocateShorts(lDim[0] * lDim[1]
-																															* 2);
+																			* 2);
 			lFragmentedMemory.add(lAllocate);
 		}
 
 		final OffHeapPlanarImgFactory<UnsignedShortType> lFactory = new OffHeapPlanarImgFactory<UnsignedShortType>();
 
 		final NativeImg<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarImg = lFactory.createShortInstance(lFragmentedMemory,
-																																													lDim,
-																																													new UnsignedShortType());
+																												lDim,
+																												new UnsignedShortType());
 
 		final Cursor<UnsignedShortType> lCursor = lOffHeapPlanarImg.cursor();
 
@@ -102,8 +102,8 @@ public class BasicImagLib2Demo
 		}/**/
 
 		final IntervalView<UnsignedShortType> lHyperSlice = Views.hyperSlice(	lOffHeapPlanarImg,
-																																					1,
-																																					lDim[2] / 2);
+																				1,
+																				lDim[2] / 2);
 
 		final double lSum = 0;
 		final Cursor<UnsignedShortType> lCursor2 = lHyperSlice.cursor();
@@ -121,8 +121,8 @@ public class BasicImagLib2Demo
 			lShow.setDisplayRange(-100, 100);
 			// Thread.sleep(6000);
 
-			final RandomAccessible<UnsignedShortType> infiniteImg = Views.extendValue(lOffHeapPlanarImg,
-																																								new UnsignedShortType());
+			final RandomAccessible<UnsignedShortType> infiniteImg = Views.extendValue(	lOffHeapPlanarImg,
+																						new UnsignedShortType());
 
 			Gauss3.gauss(3, infiniteImg, lOffHeapPlanarImg);
 

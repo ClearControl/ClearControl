@@ -3,7 +3,7 @@ package rtlib.core.variable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface ObjectVariableInterface<O> extends
-																						VariableInterface<O>
+											VariableInterface<O>
 {
 
 	public void sendUpdatesTo(ObjectVariable<O> pVariable);

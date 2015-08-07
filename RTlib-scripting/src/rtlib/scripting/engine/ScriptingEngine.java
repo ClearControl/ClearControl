@@ -20,7 +20,7 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.scripting.lang.ScriptingLanguageInterface;
 
 public class ScriptingEngine implements
-														AsynchronousExecutorServiceAccess
+							AsynchronousExecutorServiceAccess
 {
 
 	private final ScriptingLanguageInterface mScriptingLanguageInterface;
@@ -36,6 +36,7 @@ public class ScriptingEngine implements
 	private volatile Future<?> mScriptExecutionFuture;
 
 	private volatile String mScriptName = "default";
+
 	private volatile String mPreambleString = "";
 	private volatile String mPostambleString = "";
 	private volatile String mRawScriptString;
@@ -44,26 +45,21 @@ public class ScriptingEngine implements
 	private OutputStream mOutputStream;
 
 	public ScriptingEngine(	ScriptingLanguageInterface pScriptingLanguageInterface,
-													Class<?> pClassForFindingScripts,
-													String pPathForFindingScripts)
+							Class<?> pClassForFindingScripts,
+							String pPathForFindingScripts)
 	{
 		mScriptingLanguageInterface = pScriptingLanguageInterface;
 		mClassForFindingScripts = pClassForFindingScripts;
 		mPathForFindingScripts = pPathForFindingScripts;
 		mLastExecutedScriptFile = new File(	System.getProperty("user.home"),
-																				".script.last.groovy");
+											".script.last.groovy");
 
 		appendToPreamble(mScriptingLanguageInterface.getPreamble());
 		appendToPostamble(mScriptingLanguageInterface.getPostamble());
 	}
 
-	public ScriptingLanguageInterface getScriptingLanguageInterface()
-	{
-		return mScriptingLanguageInterface;
-	}
-
 	public ScriptingEngine(	ScriptingLanguageInterface pScriptingLanguageInterface,
-													Class<?> pClassForFindingScripts)
+							Class<?> pClassForFindingScripts)
 	{
 		this(pScriptingLanguageInterface, pClassForFindingScripts, "");
 
@@ -73,7 +69,10 @@ public class ScriptingEngine implements
 	{
 		if (mScriptExecutionFuture != null && !mScriptExecutionFuture.isDone())
 		{
-			System.err.println("Script is already running...");
+			for (final ScriptingEngineListener lScriptListener : mScriptListenerList)
+			{
+				lScriptListener.scriptAlreadyExecuting(this);
+			}
 			return null;
 		}
 		else
@@ -95,15 +94,15 @@ public class ScriptingEngine implements
 				mScriptExecutionFuture.cancel(false);
 
 				final String lPreprocessedPostamble = ScriptingPreprocessor.process(mClassForFindingScripts,
-																																						mPathForFindingScripts,
-																																						mPostambleString);
-				mScriptingLanguageInterface.runScript("Postamble",
-																							lPreprocessedPostamble,
-																							"",
-																							"",
-																							mVariableMap,
-																							mOutputStream,
-																							mDebugMode);
+																					mPathForFindingScripts,
+																					mPostambleString);
+				mScriptingLanguageInterface.runScript(	"Postamble",
+														lPreprocessedPostamble,
+														"",
+														"",
+														mVariableMap,
+														mOutputStream,
+														mDebugMode);
 
 			}
 			catch (final java.lang.ThreadDeath e)
@@ -120,7 +119,7 @@ public class ScriptingEngine implements
 	public boolean isReady()
 	{
 		return mScriptExecutionFuture == null || mScriptExecutionFuture.isDone()
-						|| mScriptExecutionFuture.isCancelled();
+				|| mScriptExecutionFuture.isCancelled();
 	}
 
 	public boolean isCancelRequested()
@@ -130,9 +129,19 @@ public class ScriptingEngine implements
 		return mScriptExecutionFuture.isCancelled();
 	}
 
+	public ScriptingLanguageInterface getScriptingLanguageInterface()
+	{
+		return mScriptingLanguageInterface;
+	}
+
 	public final void setScriptName(String pScriptName)
 	{
 		mScriptName = pScriptName;
+	}
+
+	public String getScriptName()
+	{
+		return mScriptName;
 	}
 
 	public final void setScript(String pScriptString)
@@ -172,20 +181,21 @@ public class ScriptingEngine implements
 
 			for (final ScriptingEngineListener lScriptListener : mScriptListenerList)
 			{
-				lScriptListener.beforeScriptExecution(this, mRawScriptString);
+				lScriptListener.beforeScriptExecution(	this,
+														mRawScriptString);
 			}
 			Throwable lThrowable = null;
 
 			try
 			{
 				mVariableMap.put("scriptengine", this);
-				mScriptingLanguageInterface.runScript(mScriptName,
-																							mPreambleString,
-																							mScriptString,
-																							mPostambleString,
-																							mVariableMap,
-																							mOutputStream,
-																							mDebugMode);
+				mScriptingLanguageInterface.runScript(	mScriptName,
+														mPreambleString,
+														mScriptString,
+														mPostambleString,
+														mVariableMap,
+														mOutputStream,
+														mDebugMode);
 			}
 			catch (final Throwable e)
 			{
@@ -198,12 +208,13 @@ public class ScriptingEngine implements
 			{
 				try
 				{
-					lScriptListener.afterScriptExecution(this, mRawScriptString);
+					lScriptListener.afterScriptExecution(	this,
+															mRawScriptString);
 					lScriptListener.asynchronousResult(	this,
-																							mScriptString,
-																							mVariableMap,
-																							lThrowable,
-																							lErrorMessage);
+														mScriptString,
+														mVariableMap,
+														lThrowable,
+														lErrorMessage);
 				}
 				catch (final Throwable e)
 				{
@@ -264,8 +275,8 @@ public class ScriptingEngine implements
 		}
 		catch (final IOException e)
 		{
-			System.err.format("Could not read script: %s",
-												pScriptFile.getAbsolutePath());
+			System.err.format(	"Could not read script: %s",
+								pScriptFile.getAbsolutePath());
 			return false;
 		}
 	}
@@ -289,14 +300,14 @@ public class ScriptingEngine implements
 	public String preProcess()
 	{
 		ensureScriptStringNotNull();
-		mScriptString = ScriptingPreprocessor.process(mClassForFindingScripts,
-																									mPathForFindingScripts,
-																									mScriptString);
+		mScriptString = ScriptingPreprocessor.process(	mClassForFindingScripts,
+														mPathForFindingScripts,
+														mScriptString);
 		return mScriptString;
 	}
 
-	public boolean waitForScriptExecutionToFinish(long pTimeout,
-																								TimeUnit pTimeUnit) throws ExecutionException
+	public boolean waitForScriptExecutionToFinish(	long pTimeout,
+													TimeUnit pTimeUnit) throws ExecutionException
 	{
 		try
 		{

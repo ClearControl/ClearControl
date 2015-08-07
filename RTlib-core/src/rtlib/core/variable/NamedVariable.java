@@ -74,8 +74,8 @@ public abstract class NamedVariable<O>
 		return mVariableGetListeners;
 	}
 
-	public void notifyListenersOfSetEvent(final O pCurentValue,
-																				final O pNewValue)
+	public void notifyListenersOfSetEvent(	final O pCurentValue,
+											final O pNewValue)
 	{
 		for (final VariableSetListener<O> lVariableListener : getVariableSetListeners())
 		{
@@ -102,6 +102,5 @@ public abstract class NamedVariable<O>
 	}
 
 	public abstract O get();
-
 
 }

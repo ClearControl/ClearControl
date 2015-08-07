@@ -19,8 +19,8 @@ public class ClassPathResolver
 		return getFullyQualifiedNames("rtlib", pSimpleName);
 	}
 
-	public static List<String> getFullyQualifiedNames(String pBasePackage,
-																										String pSimpleName)
+	public static List<String> getFullyQualifiedNames(	String pBasePackage,
+														String pSimpleName)
 	{
 		if (sPackages == null)
 		{
@@ -32,7 +32,7 @@ public class ClassPathResolver
 		for (final String aPackage : sPackages)
 		{
 			final String lCandidateFullyQualifiedName = aPackage + "."
-																									+ pSimpleName;
+														+ pSimpleName;
 			try
 			{
 				Class.forName(lCandidateFullyQualifiedName);
@@ -60,7 +60,7 @@ public class ClassPathResolver
 	public static HashSet<String> getPackagesFromClassPath(String pBasePackage)
 	{
 		final Reflections lReflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(pBasePackage))
-																																								.setScanners(new SubTypesScanner(false)));
+																					.setScanners(new SubTypesScanner(false)));
 
 		final HashSet<String> lPackages = new HashSet<String>();
 		for (final String lType : lReflections.getAllTypes())

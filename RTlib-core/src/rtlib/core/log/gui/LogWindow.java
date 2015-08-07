@@ -24,5 +24,3 @@ class LogWindow extends JFrame
 		mLogPanel.append(pMessage);
 	}
 }
-
-

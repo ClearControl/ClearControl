@@ -1,11 +1,11 @@
 package rtlib.core.math.outliers.test;
 
 import static org.junit.Assert.assertTrue;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.Test;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.outliers.OutlierRemover;
 
 public class OutlierRemoverTests
@@ -34,7 +34,7 @@ public class OutlierRemoverTests
 		assertTrue(lSamples.max() >= 10);
 
 		final TDoubleArrayList lOutliersRemoved = OutlierRemover.removeOutliers(lSamples.toArray(),
-																																						6);
+																				6);
 
 		System.out.println(lOutliersRemoved.min());
 		System.out.println(lOutliersRemoved.max());

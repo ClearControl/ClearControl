@@ -6,20 +6,18 @@ import rtlib.optomech.fiberswitch.OpticalSwitchDeviceInterface;
 import rtlib.optomech.fiberswitch.devices.optojena.adapters.FiberSwitchPositionDeviceAdapter;
 import rtlib.serial.SerialDevice;
 
-public class OptoJenaFiberSwitchDevice extends
-	SerialDevice implements OpticalSwitchDeviceInterface
+public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
+															OpticalSwitchDeviceInterface
 {
 
-	private final DoubleVariable	mPositionVariable;
+	private final DoubleVariable mPositionVariable;
 
 	public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
 	{
-		this(MachineConfiguration
-			.getCurrentMachineConfiguration()
-			.getSerialDevicePort(
-				"fiberswitch.optojena",
-				pDeviceIndex,
-				"NULL"));
+		this(MachineConfiguration.getCurrentMachineConfiguration()
+									.getSerialDevicePort(	"fiberswitch.optojena",
+															pDeviceIndex,
+															"NULL"));
 	}
 
 	public OptoJenaFiberSwitchDevice(final String pPortName)
@@ -28,9 +26,8 @@ public class OptoJenaFiberSwitchDevice extends
 
 		final FiberSwitchPositionDeviceAdapter lFiberSwitchPosition = new FiberSwitchPositionDeviceAdapter(this);
 
-		mPositionVariable = addSerialDoubleVariable(
-			"FiberSwitchPosition",
-			lFiberSwitchPosition);
+		mPositionVariable = addSerialDoubleVariable("FiberSwitchPosition",
+													lFiberSwitchPosition);
 
 	}
 
@@ -39,7 +36,7 @@ public class OptoJenaFiberSwitchDevice extends
 	{
 		final boolean lIsOpened = super.open();
 		setPosition(0);
-		
+
 		return lIsOpened;
 	}
 
@@ -58,7 +55,7 @@ public class OptoJenaFiberSwitchDevice extends
 	@Override
 	public void setPosition(int pPosition)
 	{
-			mPositionVariable.set((double) pPosition);
+		mPositionVariable.set((double) pPosition);
 	}
 
 	@Override

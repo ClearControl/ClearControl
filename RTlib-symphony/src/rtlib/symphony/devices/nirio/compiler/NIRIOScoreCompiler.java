@@ -1,5 +1,6 @@
 package rtlib.symphony.devices.nirio.compiler;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
@@ -7,6 +8,7 @@ import static java.lang.Math.toIntExact;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import coremem.buffers.ContiguousBuffer;
 import nirioj.direttore.Direttore;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.symphony.movement.Movement;
@@ -16,14 +18,13 @@ import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.IntervalStave;
 import rtlib.symphony.staves.StaveInterface;
 import rtlib.symphony.staves.ZeroStave;
-import coremem.buffers.ContiguousBuffer;
 
 public class NIRIOScoreCompiler	implements
-																AsynchronousExecutorServiceAccess
+								AsynchronousExecutorServiceAccess
 {
 
 	public static void compile(	NIRIOCompiledScore pNIRIOCompiledScore,
-															ScoreInterface pScore)
+								ScoreInterface pScore)
 	{
 
 		ensureBuffersAreLargeEnough(pNIRIOCompiledScore, pScore);
@@ -38,7 +39,7 @@ public class NIRIOScoreCompiler	implements
 	}
 
 	private static void ensureBuffersAreLargeEnough(NIRIOCompiledScore pNIRIOCompiledScore,
-																									ScoreInterface pScore)
+													ScoreInterface pScore)
 	{
 		final int lNumberOfMovements = pScore.getMovements().size();
 
@@ -47,7 +48,7 @@ public class NIRIOScoreCompiler	implements
 		final int lDeltaTimeBufferLengthInBytes = 4 * lNumberOfMovements;
 
 		if (pNIRIOCompiledScore.getDeltaTimeBuffer() == null || pNIRIOCompiledScore.getDeltaTimeBuffer()
-																																								.getSizeInBytes() < lDeltaTimeBufferLengthInBytes)
+																					.getSizeInBytes() < lDeltaTimeBufferLengthInBytes)
 		{
 			pNIRIOCompiledScore.setDeltaTimeBuffer(ContiguousBuffer.allocate(lDeltaTimeBufferLengthInBytes));
 		}
@@ -56,7 +57,7 @@ public class NIRIOScoreCompiler	implements
 		final int lSyncBufferLengthInBytes = 4 * lNumberOfMovements;
 
 		if (pNIRIOCompiledScore.getSyncBuffer() == null || pNIRIOCompiledScore.getSyncBuffer()
-																																					.getSizeInBytes() < lSyncBufferLengthInBytes)
+																				.getSizeInBytes() < lSyncBufferLengthInBytes)
 		{
 			pNIRIOCompiledScore.setSyncBuffer(ContiguousBuffer.allocate(lSyncBufferLengthInBytes));
 		}
@@ -65,18 +66,18 @@ public class NIRIOScoreCompiler	implements
 		final int lNumberOfTimePointsBufferLengthInBytes = 4 * lNumberOfMovements;
 
 		if (pNIRIOCompiledScore.getNumberOfTimePointsBuffer() == null || pNIRIOCompiledScore.getNumberOfTimePointsBuffer()
-																																												.getSizeInBytes() < lNumberOfTimePointsBufferLengthInBytes)
+																							.getSizeInBytes() < lNumberOfTimePointsBufferLengthInBytes)
 		{
 			pNIRIOCompiledScore.setNumberOfTimePointsBuffer(ContiguousBuffer.allocate(lNumberOfTimePointsBufferLengthInBytes));
 		}
 		pNIRIOCompiledScore.getNumberOfTimePointsBuffer().rewind();
 
 		final long lMatricesBufferLengthInBytes = Movement.cDefaultNumberOfStavesPerMovement * lNumberOfMovements
-																							* 2048
-																							* 2;
+													* 2048
+													* 2;
 
 		if (pNIRIOCompiledScore.getScoreBuffer() == null || pNIRIOCompiledScore.getScoreBuffer()
-																																						.getSizeInBytes() < lMatricesBufferLengthInBytes)
+																				.getSizeInBytes() < lMatricesBufferLengthInBytes)
 		{
 			pNIRIOCompiledScore.setScoreBuffer(ContiguousBuffer.allocate(lMatricesBufferLengthInBytes));
 		}
@@ -85,11 +86,11 @@ public class NIRIOScoreCompiler	implements
 	}
 
 	private static void compileMovement(NIRIOCompiledScore pNIRIOCompiledScore,
-																			MovementInterface pMovement)
+										MovementInterface pMovement)
 	{
 		final int pDeltaTimeInTicks = round(getDeltaTimeInNs(pMovement) / Direttore.cNanosecondsPerTicks);
 		pNIRIOCompiledScore.getDeltaTimeBuffer()
-												.writeInt(pDeltaTimeInTicks);
+							.writeInt(pDeltaTimeInTicks);
 
 		final byte lSyncMode = getSyncMode(pMovement);
 		final byte lSyncChannel = (byte) pMovement.getSyncChannel();
@@ -98,23 +99,24 @@ public class NIRIOScoreCompiler	implements
 
 		final long lNumberOfTimePoints = getNumberOfTimePoints(pMovement);
 		pNIRIOCompiledScore.getNumberOfTimePointsBuffer()
-												.writeInt(toIntExact(lNumberOfTimePoints));
+							.writeInt(toIntExact(lNumberOfTimePoints));
 
 		addMovementToBuffer(pNIRIOCompiledScore.getScoreBuffer(),
-												pMovement);
+							pMovement);
 
 		pNIRIOCompiledScore.setNumberOfMovements(pNIRIOCompiledScore.getNumberOfMovements() + 1);
 	}
 
 	private static void addMovementToBuffer(ContiguousBuffer pScoreBuffer,
-																					MovementInterface pMovement)
+											MovementInterface pMovement)
 	{
 		final long lNumberOfTimePoints = getNumberOfTimePoints(pMovement);
 		final int lNumberOfStaves = pMovement.getNumberOfStaves();
 
 		pScoreBuffer.pushPosition();
 		long lNumberOfShortsInMovement = lNumberOfTimePoints * lNumberOfStaves;
-		pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement, (byte) 0);
+		pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement,
+								(byte) 0);
 		pScoreBuffer.popPosition();
 
 		pScoreBuffer.pushPosition();
@@ -127,31 +129,31 @@ public class NIRIOScoreCompiler	implements
 			if (lStave instanceof ZeroStave)
 			{
 				addZeroStaveToBuffer(	pScoreBuffer,
-															lNumberOfTimePoints,
-															lNumberOfStaves);
+										lNumberOfTimePoints,
+										lNumberOfStaves);
 			}
 			else if (lStave instanceof ConstantStave)
 			{
 				final ConstantStave lConstantStave = (ConstantStave) lStave;
 				addConstantStaveToBuffer(	pScoreBuffer,
-																	lNumberOfTimePoints,
-																	lNumberOfStaves,
-																	lConstantStave.getConstantValue());
+											lNumberOfTimePoints,
+											lNumberOfStaves,
+											lConstantStave.getConstantValue());
 			}
 			else if (lStave instanceof IntervalStave)
 			{
 				final IntervalStave lIntervalStave = (IntervalStave) lStave;
 				addIntervalStaveToBuffer(	pScoreBuffer,
-																	lNumberOfTimePoints,
-																	lNumberOfStaves,
-																	lIntervalStave);
+											lNumberOfTimePoints,
+											lNumberOfStaves,
+											lIntervalStave);
 			}
 			else
 			{
 				addStaveToBuffer(	pScoreBuffer,
-													lNumberOfTimePoints,
-													lNumberOfStaves,
-													lStave);
+									lNumberOfTimePoints,
+									lNumberOfStaves,
+									lStave);
 			}
 
 			pScoreBuffer.popPosition();
@@ -164,9 +166,9 @@ public class NIRIOScoreCompiler	implements
 	}
 
 	private static void addIntervalStaveToBuffer(	ContiguousBuffer pScoreBuffer,
-																								long pNumberOfTimePoints,
-																								int pNumberOfStaves,
-																								IntervalStave pIntervalStave)
+													long pNumberOfTimePoints,
+													int pNumberOfStaves,
+													IntervalStave pIntervalStave)
 	{
 		final float lSyncStart = pIntervalStave.getStart();
 		final float lSyncStop = pIntervalStave.getStop();
@@ -196,9 +198,9 @@ public class NIRIOScoreCompiler	implements
 	}
 
 	private static void addConstantStaveToBuffer(	ContiguousBuffer pScoreBuffer,
-																								final long pNumberOfTimePoints,
-																								final int pNumberOfStaves,
-																								final float pFloatConstant)
+													final long pNumberOfTimePoints,
+													final int pNumberOfStaves,
+													final float pFloatConstant)
 	{
 		final short lShortValue = getShortForFloat(pFloatConstant);
 		for (int t = 0; t < pNumberOfTimePoints; t++)
@@ -209,16 +211,16 @@ public class NIRIOScoreCompiler	implements
 	}
 
 	private static void addZeroStaveToBuffer(	ContiguousBuffer pScoreBuffer,
-																						final long pNumberOfTimePoints,
-																						final int pNumberOfStaves)
+												final long pNumberOfTimePoints,
+												final int pNumberOfStaves)
 	{
 		// do nothing - already 0
 	}
 
 	private static void addStaveToBuffer(	ContiguousBuffer pScoreBuffer,
-																				final long pNumberOfTimePoints,
-																				final int pNumberOfStaves,
-																				final StaveInterface pStave)
+											final long pNumberOfTimePoints,
+											final int pNumberOfStaves,
+											final StaveInterface pStave)
 	{
 		final float lInvNumberOfTimepoints = 1f / pNumberOfTimePoints;
 		for (int t = 0; t < pNumberOfTimePoints; t++)
@@ -233,11 +235,16 @@ public class NIRIOScoreCompiler	implements
 
 	private static short getShortForFloat(final float lFloatValue)
 	{
-		return (short) round(lFloatValue * Short.MAX_VALUE);
+		return (short) round(clamp(lFloatValue) * Short.MAX_VALUE);
+	}
+
+	private static float clamp(float pFloatValue)
+	{
+		return min(max(pFloatValue, -1), 1);
 	}
 
 	private static short twoBytesToShort(	final byte pHigh,
-																				final byte pLow)
+											final byte pLow)
 	{
 		final short lShort = (short) (pHigh << 8 | pLow & 0xFF);
 		return lShort;
@@ -246,8 +253,8 @@ public class NIRIOScoreCompiler	implements
 	private static byte getSyncMode(MovementInterface pMovement)
 	{
 		return (byte) (pMovement.isSync()	? 0
-																			: pMovement.isSyncOnRisingEdge() ? 1
-																																			: 2);
+											: pMovement.isSyncOnRisingEdge() ? 1
+																			: 2);
 	}
 
 	private static double getNumberOfTimePointsDouble(MovementInterface pMovementInterface)
@@ -257,7 +264,7 @@ public class NIRIOScoreCompiler	implements
 		final long lDuration = pMovementInterface.getDuration(TimeUnit.NANOSECONDS);
 
 		final double lNumberOfTimePoints = min(	lMaxNumberOfTimePointsPerMovement,
-																						((double) lDuration) / lMinDeltaTime);
+												((double) lDuration) / lMinDeltaTime);
 
 		return lNumberOfTimePoints;
 	}

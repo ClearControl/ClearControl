@@ -8,8 +8,8 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ZernickeSpatialPhaseModulatorDevice extends
-																								SpatialPhaseModulatorDeviceBase	implements
-																																								SpatialPhaseModulatorDeviceInterface
+												SpatialPhaseModulatorDeviceBase	implements
+																				SpatialPhaseModulatorDeviceInterface
 {
 
 	final DenseMatrix64F mZernickeTransformMatrix;
@@ -18,9 +18,9 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 
 	public ZernickeSpatialPhaseModulatorDevice(SpatialPhaseModulatorDeviceInterface pSpatialPhaseModulatorDeviceInterface)
 	{
-		super("Zernicke" + pSpatialPhaseModulatorDeviceInterface.getName(),
-					pSpatialPhaseModulatorDeviceInterface.getMatrixHeight(),
-					pSpatialPhaseModulatorDeviceInterface.getActuatorResolution());
+		super(	"Zernicke" + pSpatialPhaseModulatorDeviceInterface.getName(),
+				pSpatialPhaseModulatorDeviceInterface.getMatrixHeight(),
+				pSpatialPhaseModulatorDeviceInterface.getActuatorResolution());
 		mDelegatedSpatialPhaseModulatorDeviceInterface = pSpatialPhaseModulatorDeviceInterface;
 
 		final int lMatrixWidth = mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixWidth();
@@ -29,25 +29,25 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 		mZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lMatrixHeight);
 
 		mMatrixVariable = new ObjectVariable<DenseMatrix64F>(	"Matrix",
-																													new DenseMatrix64F(	lMatrixHeight * lMatrixWidth,
-																																							1))
+																new DenseMatrix64F(	lMatrixHeight * lMatrixWidth,
+																					1))
 		{
 
 			@Override
 			public DenseMatrix64F setEventHook(	DenseMatrix64F pOldValue,
-																					DenseMatrix64F pNewValue)
+												DenseMatrix64F pNewValue)
 			{
 				final int lMatrixWidth = mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixWidth();
 				final int lMatrixHeight = mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixHeight();
 				final DenseMatrix64F lTransformedVector = new DenseMatrix64F(	lMatrixWidth * lMatrixHeight,
-																																			1);
+																				1);
 
 				CommonOps.mult(	mZernickeTransformMatrix,
-												pNewValue,
-												lTransformedVector);
+								pNewValue,
+								lTransformedVector);
 
 				mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixReference()
-																											.set(lTransformedVector);
+																.set(lTransformedVector);
 
 				// System.out.println(lTransformedVector);
 
@@ -104,7 +104,6 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getRelaxationTimeInMilliseconds();
 	}
-
 
 	@Override
 	public boolean start()

@@ -5,8 +5,8 @@ import rtlib.core.device.PositionDeviceInterface;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface FilterWheelDeviceInterface	extends
-																						OpenCloseDeviceInterface,
-																						PositionDeviceInterface
+											OpenCloseDeviceInterface,
+											PositionDeviceInterface
 {
 
 	DoubleVariable getSpeedVariable();

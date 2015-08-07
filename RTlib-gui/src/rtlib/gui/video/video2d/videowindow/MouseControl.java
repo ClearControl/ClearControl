@@ -40,7 +40,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 	public void handleGammaMinMax(final MouseEvent pMouseEvent)
 	{
 		if (!pMouseEvent.isShiftDown() && pMouseEvent.isControlDown()
-				&& pMouseEvent.isButtonDown(1))
+			&& pMouseEvent.isButtonDown(1))
 		{
 
 			final double nx = getNormalizedX(pMouseEvent);
@@ -55,7 +55,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 		}
 
 		if (pMouseEvent.isShiftDown() && !pMouseEvent.isControlDown()
-				&& pMouseEvent.isButtonDown(1))
+			&& pMouseEvent.isButtonDown(1))
 		{
 			final double nx = getNormalizedX(pMouseEvent);
 
@@ -68,7 +68,8 @@ class MouseControl extends MouseAdapter implements MouseListener
 	{
 		final double lWindowWidth = mVideoWindow.getEffectiveWindowWidth();
 		final double lMouseX = max(	0,
-																min(lWindowWidth, pMouseEvent.getX()));
+									min(lWindowWidth,
+										pMouseEvent.getX()));
 		final double nx = lMouseX / lWindowWidth;
 		return nx;
 	}
@@ -77,7 +78,8 @@ class MouseControl extends MouseAdapter implements MouseListener
 	{
 		final double lWindowHeight = mVideoWindow.getEffectiveWindowHeight();
 		final double lMouseY = max(	0,
-																min(lWindowHeight, pMouseEvent.getY()));
+									min(lWindowHeight,
+										pMouseEvent.getY()));
 		final double ny = lMouseY / lWindowHeight;
 		return ny;
 	}

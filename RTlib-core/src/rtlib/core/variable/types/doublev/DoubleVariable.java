@@ -5,8 +5,8 @@ import rtlib.core.units.SIUnit;
 import rtlib.core.variable.exceptions.InvalidMagnitudeException;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class DoubleVariable extends ObjectVariable<Double> implements
-																													DoubleVariableInterface
+public class DoubleVariable extends ObjectVariable<Double>	implements
+															DoubleVariableInterface
 
 {
 	private final SIUnit mSIUnit;
@@ -17,30 +17,33 @@ public class DoubleVariable extends ObjectVariable<Double> implements
 		this(pVariableName, 0);
 	}
 
-	public DoubleVariable(final String pVariableName,
-												final double pDoubleValue)
+	public DoubleVariable(	final String pVariableName,
+							final double pDoubleValue)
 	{
 		this(pVariableName, SIUnit.ArbitraryUnit, pDoubleValue);
 	}
 
-	public DoubleVariable(final String pVariableName,
-												final SIUnit pSIUnit,
-												final double pDoubleValue)
+	public DoubleVariable(	final String pVariableName,
+							final SIUnit pSIUnit,
+							final double pDoubleValue)
 	{
-		this(pVariableName, pSIUnit, pSIUnit.getMagnitude(), pDoubleValue);
+		this(	pVariableName,
+				pSIUnit,
+				pSIUnit.getMagnitude(),
+				pDoubleValue);
 	}
 
-	public DoubleVariable(final String pVariableName,
-												final SIUnit pSIUnit,
-												final Magnitude pMagnitude)
+	public DoubleVariable(	final String pVariableName,
+							final SIUnit pSIUnit,
+							final Magnitude pMagnitude)
 	{
 		this(pVariableName, pSIUnit, pMagnitude, 0);
 	}
 
-	public DoubleVariable(final String pVariableName,
-												final SIUnit pSIUnit,
-												final Magnitude pMagnitude,
-												final double pDoubleValue)
+	public DoubleVariable(	final String pVariableName,
+							final SIUnit pSIUnit,
+							final Magnitude pMagnitude,
+							final double pDoubleValue)
 	{
 		super(pVariableName, pDoubleValue);
 		if (!pSIUnit.isBaseUnit() && pMagnitude != pSIUnit.getMagnitude())
@@ -115,12 +118,15 @@ public class DoubleVariable extends ObjectVariable<Double> implements
 
 	private void preventMismatchedMagnitudes(DoubleVariable pVariable)
 	{
-		// NOTE: Right now we prevent syncing of variables of different magnitudes,
+		// NOTE: Right now we prevent syncing of variables of different
+		// magnitudes,
 		// although in principle we could accommodate for that.
-		// however, this complicates things and may be confusing. It forces the user
+		// however, this complicates things and may be confusing. It forces the
+		// user
 		// to decide on a base unit and use that throughout.
 		// This acts as a kind of type checking that will prevent bugs and
-		// complexity from getting too high (synced variables that have all sorts
+		// complexity from getting too high (synced variables that have all
+		// sorts
 		// of magnitudes...)
 		if (getMagnitude() != pVariable.getMagnitude())
 			throw new InvalidMagnitudeException(this, pVariable);

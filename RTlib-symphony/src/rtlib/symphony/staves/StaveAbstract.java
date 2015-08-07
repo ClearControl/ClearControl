@@ -3,7 +3,7 @@ package rtlib.symphony.staves;
 import rtlib.core.device.NameableAbstract;
 
 public abstract class StaveAbstract extends NameableAbstract implements
-																														StaveInterface
+															StaveInterface
 
 {
 	private volatile boolean mEnabled = false;
@@ -13,7 +13,7 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	 * Constructor
 	 * 
 	 * @param pName
-	 *          stave name
+	 *            stave name
 	 */
 	public StaveAbstract(final String pName)
 	{
@@ -36,9 +36,9 @@ public abstract class StaveAbstract extends NameableAbstract implements
 	public String toString()
 	{
 		return String.format(	"Stave [getName()=%s, mEnabled=%s, mDurationInNanoseconds=%s, ]",
-													getName(),
-													mEnabled,
-													mDurationInNanoseconds);
+								getName(),
+								mEnabled,
+								mDurationInNanoseconds);
 	}
 
 }

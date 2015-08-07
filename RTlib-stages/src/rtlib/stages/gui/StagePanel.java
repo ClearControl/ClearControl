@@ -2,15 +2,11 @@ package rtlib.stages.gui;
 
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.VariableListener;
-import rtlib.stages.StageDeviceInterface;
-
 public class StagePanel extends JPanel
 {
 	// TODO: HK please make it beautifull...
 
- /*
+	/*
 	public final JSliderDouble mPiezoStage;
 	private final JSliderDouble mStageXSliderDouble, mStageYSliderDouble,
 			mStageZSliderDouble, mStageRSliderDouble;

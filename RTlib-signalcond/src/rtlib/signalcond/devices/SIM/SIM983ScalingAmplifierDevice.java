@@ -7,25 +7,25 @@ import rtlib.signalcond.devices.SIM.adapters.GainAdapter;
 import rtlib.signalcond.devices.SIM.adapters.OffsetAdapter;
 
 public class SIM983ScalingAmplifierDevice	extends
-																					ScalingAmplifierBaseDevice implements
-																					ScalingAmplifierDeviceInterface,
-																					SIMModuleInterface
+											ScalingAmplifierBaseDevice	implements
+																		ScalingAmplifierDeviceInterface,
+																		SIMModuleInterface
 {
 
 	private static final String cDeviceName = "ScalingAmplifierBaseDevice";
 	private SIM900MainframeDevice mSim900MainframeDevice;
 	private final int mPort;
 
-
 	public SIM983ScalingAmplifierDevice(SIM900MainframeDevice pSim900MainframeDevice,
-																			int pPort)
+										int pPort)
 	{
-		super(pSim900MainframeDevice + "." + pPort + "." + cDeviceName);
+		super(pSim900MainframeDevice + "."
+				+ pPort
+				+ "."
+				+ cDeviceName);
 		mSim900MainframeDevice = pSim900MainframeDevice;
 		mPort = pPort;
 	}
-
-
 
 	@Override
 	public boolean open()
@@ -34,28 +34,27 @@ public class SIM983ScalingAmplifierDevice	extends
 		try
 		{
 			lOpen = super.open();
-			
+
 			if (mSim900MainframeDevice.getSerialDevice() == null)
 				return false;
 
 			Serial lSerial = mSim900MainframeDevice.getSerialDevice()
-																							.getSerial();
-
+													.getSerial();
 
 			lSerial.format("SNDT %d, \"TERM 2\"", mPort);
 
 			final GainAdapter lGetDeviceIdAdapter = new GainAdapter(mSim900MainframeDevice,
-																															mPort);
+																	mPort);
 			mGainVariable = mSim900MainframeDevice.getSerialDevice()
-																						.addSerialDoubleVariable(	"Gain",
-																																lGetDeviceIdAdapter);
+													.addSerialDoubleVariable(	"Gain",
+																				lGetDeviceIdAdapter);
 
-			final OffsetAdapter lGetWavelengthAdapter = new OffsetAdapter(mSim900MainframeDevice,
-																																		mPort);
+			final OffsetAdapter lGetWavelengthAdapter = new OffsetAdapter(	mSim900MainframeDevice,
+																			mPort);
 			mOffsetVariable = mSim900MainframeDevice.getSerialDevice()
-																							.addSerialDoubleVariable(	"Offset",
-																																	lGetWavelengthAdapter);
-			
+													.addSerialDoubleVariable(	"Offset",
+																				lGetWavelengthAdapter);
+
 			return lOpen;
 		}
 		catch (final Throwable e)
@@ -65,13 +64,13 @@ public class SIM983ScalingAmplifierDevice	extends
 		}
 	}
 
-
 	@Override
 	public boolean close()
 	{
 		try
 		{
-			mSim900MainframeDevice.getSerialDevice().removeAllVariables();
+			mSim900MainframeDevice.getSerialDevice()
+									.removeAllVariables();
 			return super.close();
 		}
 		catch (final Throwable e)
@@ -81,8 +80,4 @@ public class SIM983ScalingAmplifierDevice	extends
 		}
 	}
 
-
-
-
-	
 }

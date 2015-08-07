@@ -1,7 +1,7 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
 import ecc100.ECC100Axis;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public class HomingVariable extends BooleanVariable
 {

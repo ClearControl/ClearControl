@@ -2,8 +2,8 @@ package rtlib.core.variable.types.longv;
 
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class LongVariable extends ObjectVariable<Long> implements
-																													LongVariableInterface
+public class LongVariable extends ObjectVariable<Long>	implements
+														LongVariableInterface
 
 {
 
@@ -13,7 +13,7 @@ public class LongVariable extends ObjectVariable<Long> implements
 	}
 
 	public LongVariable(final String pVariableName,
- final long pIntValue)
+						final long pIntValue)
 	{
 		super(pVariableName, pIntValue);
 	}

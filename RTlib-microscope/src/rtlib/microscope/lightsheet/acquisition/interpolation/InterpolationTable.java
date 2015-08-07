@@ -1,7 +1,6 @@
 package rtlib.microscope.lightsheet.acquisition.interpolation;
 
 import static java.lang.Math.abs;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -10,6 +9,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 
@@ -187,15 +187,16 @@ public class InterpolationTable
 					y.insert(0, y.get(0));
 					y.add(y.get(y.size() - 1));
 
-					y.set(0, y.get(1) - lRangeWidth
-										* ((y.get(1) - y.get(2)) / (x.get(1) - x.get(2))));
-					y.set(y.size() - 1,
-								y.get(y.size() - 2) + lRangeWidth
-										* ((y.get(y.size() - 2) - y.get(y.size() - 3)) / (x.get(y.size() - 2) - x.get(y.size() - 3))));
+					y.set(	0,
+							y.get(1) - lRangeWidth
+									* ((y.get(1) - y.get(2)) / (x.get(1) - x.get(2))));
+					y.set(	y.size() - 1,
+							y.get(y.size() - 2) + lRangeWidth
+									* ((y.get(y.size() - 2) - y.get(y.size() - 3)) / (x.get(y.size() - 2) - x.get(y.size() - 3))));
 				}
 
 				final UnivariateFunction lUnivariateFunction = lUnivariateInterpolator.interpolate(	x.toArray(),
-																																														y.toArray());
+																									y.toArray());
 				mInterpolatingFunctionsList.add(lUnivariateFunction);
 
 			}
@@ -261,7 +262,7 @@ public class InterpolationTable
 			final double lStep = (lMaxX - lMinX) / 1024;
 
 			for (double x = lMinX - 0.1 * lRangeWidth; x <= lMaxX + 0.1
-																											* lRangeWidth; x += lStep)
+															* lRangeWidth; x += lStep)
 			{
 				final double y = getInterpolatedValue(i, x);
 				lPlot.addPoint("interpolated", x, y);

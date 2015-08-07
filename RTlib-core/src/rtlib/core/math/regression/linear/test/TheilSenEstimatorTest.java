@@ -26,15 +26,12 @@ public class TheilSenEstimatorTest
 		{
 			for (int j = 0; j < 100; j++)
 			{
-				final double x = 0 + i
-													+ noise
-													* rnd.nextGaussian();
-				final double y = b + a
-													* i
-													+ noise
-													* rnd.nextGaussian();
-				lTheilSenEstimator.enter(	x,
-																	y);
+				final double x = 0 + i + noise * rnd.nextGaussian();
+				final double y = b	+ a
+									* i
+									+ noise
+									* rnd.nextGaussian();
+				lTheilSenEstimator.enter(x, y);
 			}
 		}
 
@@ -43,8 +40,7 @@ public class TheilSenEstimatorTest
 		final double stderror = lTheilSenEstimator.computeError(lModel);
 
 		System.out.println(lModel);
-		System.out.format("Error: %f \n",
-											stderror);
+		System.out.format("Error: %f \n", stderror);
 
 	}
 

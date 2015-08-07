@@ -13,8 +13,8 @@ public class CoboltLaserDeviceDemo
 	public void test() throws InterruptedException
 	{
 		final CoboltLaserDevice lCoboltLaserDevice = new CoboltLaserDevice(	"Jive",
-																																				100,
-																																				"COM22");
+																			100,
+																			"COM22");
 
 		assertTrue(lCoboltLaserDevice.open());
 
@@ -29,8 +29,8 @@ public class CoboltLaserDeviceDemo
 
 		for (int i = 0; i < 200; i++)
 		{
-			System.out.format("       current power at: \t%g mW \n",
-												lCoboltLaserDevice.getCurrentPowerInMilliWatt());
+			System.out.format(	"       current power at: \t%g mW \n",
+								lCoboltLaserDevice.getCurrentPowerInMilliWatt());
 			Thread.sleep(100);
 		}
 
@@ -62,11 +62,11 @@ public class CoboltLaserDeviceDemo
 			for (int i = 0; i < 100; i++)
 			{
 				final int lTargetPower = i;
-				System.out.format("setting target power to: \t%d mW \n",
-													lTargetPower);
+				System.out.format(	"setting target power to: \t%d mW \n",
+									lTargetPower);
 				lCoboltLaserDevice.setTargetPowerInMilliWatt(lTargetPower);
-				System.out.format("       current power at: \t%g mW \n",
-													lCoboltLaserDevice.getCurrentPowerInMilliWatt());
+				System.out.format(	"       current power at: \t%g mW \n",
+									lCoboltLaserDevice.getCurrentPowerInMilliWatt());
 				Thread.sleep(10);
 			}
 		}

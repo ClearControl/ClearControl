@@ -51,11 +51,11 @@ public class OmicronLaserDeviceDemo
 			for (int i = 0; i < 100; i++)
 			{
 				final int lTargetPower = i;
-				System.out.format("setting target power to: \t%d mW \n",
-													lTargetPower);
+				System.out.format(	"setting target power to: \t%d mW \n",
+									lTargetPower);
 				lOmicronLaserDevice.setTargetPowerInMilliWatt(lTargetPower);
-				System.out.format("       current power at: \t%g mW \n",
-													lOmicronLaserDevice.getCurrentPowerInMilliWatt());
+				System.out.format(	"       current power at: \t%g mW \n",
+									lOmicronLaserDevice.getCurrentPowerInMilliWatt());
 				// Thread.sleep(1);
 			}
 		}

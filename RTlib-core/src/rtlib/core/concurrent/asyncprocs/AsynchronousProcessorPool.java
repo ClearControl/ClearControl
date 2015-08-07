@@ -12,39 +12,39 @@ import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.log.Loggable;
 
 public class AsynchronousProcessorPool<I, O>	extends
-																							AsynchronousProcessorBase<I, O>	implements
-																																							AsynchronousProcessorInterface<I, O>,
-																																							AsynchronousExecutorServiceAccess,
-																																							AsynchronousSchedulerServiceAccess,
-																																							Loggable
+												AsynchronousProcessorBase<I, O>	implements
+																				AsynchronousProcessorInterface<I, O>,
+																				AsynchronousExecutorServiceAccess,
+																				AsynchronousSchedulerServiceAccess,
+																				Loggable
 {
 
 	private final ProcessorInterface<I, O> mProcessor;
 	private CompletingThreadPoolExecutor mThreadPoolExecutor;
 
 	public AsynchronousProcessorPool(	final String pName,
-																		final int pMaxQueueSize,
-																		final int pThreadPoolSize,
-																		final ProcessorInterface<I, O> pProcessor)
+										final int pMaxQueueSize,
+										final int pThreadPoolSize,
+										final ProcessorInterface<I, O> pProcessor)
 	{
 		super(pName, pMaxQueueSize);
 		mThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
-																																				Thread.NORM_PRIORITY,
-																																				pThreadPoolSize,
-																																				pThreadPoolSize,
-																																				pMaxQueueSize);
+																			Thread.NORM_PRIORITY,
+																			pThreadPoolSize,
+																			pThreadPoolSize,
+																			pMaxQueueSize);
 
 		mProcessor = pProcessor;
 	}
 
 	public AsynchronousProcessorPool(	final String pName,
-																		final int pMaxQueueSize,
-																		final ProcessorInterface<I, O> pProcessor)
+										final int pMaxQueueSize,
+										final ProcessorInterface<I, O> pProcessor)
 	{
 		this(	pName,
-					pMaxQueueSize,
-					Runtime.getRuntime().availableProcessors(),
-					pProcessor);
+				pMaxQueueSize,
+				Runtime.getRuntime().availableProcessors(),
+				pProcessor);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 				// System.out.print("(");
 				@SuppressWarnings("unchecked")
 				final Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
-																																						TimeUnit.NANOSECONDS);
+																					TimeUnit.NANOSECONDS);
 				if (lFuture != null)
 				{
 					final O lResult = lFuture.get();
@@ -86,9 +86,11 @@ public class AsynchronousProcessorPool<I, O>	extends
 	}
 
 	@Override
-	public boolean waitToFinish(final long pTimeOut, TimeUnit pTimeUnit)
+	public boolean waitToFinish(final long pTimeOut,
+								TimeUnit pTimeUnit)
 	{
-		final boolean lNoTimeOut = super.waitToFinish(pTimeOut, pTimeUnit);
+		final boolean lNoTimeOut = super.waitToFinish(	pTimeOut,
+														pTimeUnit);
 		if (!lNoTimeOut)
 			return false;
 		try

@@ -7,8 +7,8 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
-																											SignalStartableDevice	implements
-																																						SpatialPhaseModulatorDeviceInterface
+														SignalStartableDevice	implements
+																				SpatialPhaseModulatorDeviceInterface
 {
 
 	protected DoubleVariable mMatrixWidthVariable;
@@ -19,17 +19,17 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	protected ObjectVariable<DenseMatrix64F> mMatrixVariable;
 
 	public SpatialPhaseModulatorDeviceBase(	String pDeviceName,
-																					int pFullMatrixWidthHeight,
-																					int pActuatorResolution)
+											int pFullMatrixWidthHeight,
+											int pActuatorResolution)
 	{
 		super(pDeviceName);
 
-		mMatrixWidthVariable = new DoubleVariable("MatrixWidth",
-																							pFullMatrixWidthHeight);
+		mMatrixWidthVariable = new DoubleVariable(	"MatrixWidth",
+													pFullMatrixWidthHeight);
 		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-																								pFullMatrixWidthHeight);
+													pFullMatrixWidthHeight);
 		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-																											pActuatorResolution);
+															pActuatorResolution);
 
 	}
 
@@ -84,7 +84,9 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	@Override
 	public void setMode(int pU, int pV, double pValue)
 	{
-		mMatrixVariable.get().set(pU + getMatrixWidth() * pV, 0, pValue);
+		mMatrixVariable.get().set(	pU + getMatrixWidth() * pV,
+									0,
+									pValue);
 		mMatrixVariable.setCurrent();
 	}
 

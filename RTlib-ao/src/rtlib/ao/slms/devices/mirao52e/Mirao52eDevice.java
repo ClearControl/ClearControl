@@ -4,17 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import mirao52e.Mirao52eDeformableMirror;
-
 import org.ejml.data.DenseMatrix64F;
 
+import mirao52e.Mirao52eDeformableMirror;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class Mirao52eDevice extends DeformableMirrorDevice implements
-																													Loggable
+public class Mirao52eDevice extends DeformableMirrorDevice	implements
+															Loggable
 {
 	private static final int cFullMatrixWidthHeight = 8;
 	private static final int cActuatorResolution = 2 << 14;
@@ -25,16 +24,16 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 
 	public Mirao52eDevice(int pDeviceIndex)
 	{
-		super("MIRAO52e_" + pDeviceIndex,
-					cFullMatrixWidthHeight,
-					cActuatorResolution);
+		super(	"MIRAO52e_" + pDeviceIndex,
+				cFullMatrixWidthHeight,
+				cActuatorResolution);
 
 		mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 		File lFlatCalibrationFile = lCurrentMachineConfiguration.getFileProperty(	"device.ao.mirao." + pDeviceIndex
-																																									+ ".flat",
-																																							null);
+																							+ ".flat",
+																					null);
 		if (lFlatCalibrationFile != null && lFlatCalibrationFile.exists())
 			try
 			{
@@ -50,7 +49,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
-																					final DenseMatrix64F pNewValue)
+												final DenseMatrix64F pNewValue)
 			{
 				if (mMirao52eDeformableMirror.isOpen())
 					mMirao52eDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.data);

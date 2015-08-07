@@ -18,11 +18,10 @@ public class SIM900MainFrameDeviceDemo
 
 		assertTrue(lSIM900MainframeDevice.open());
 
-		final SIM983ScalingAmplifierDevice lScalingAmp = new SIM983ScalingAmplifierDevice(lSIM900MainframeDevice,
-																																											4);
+		final SIM983ScalingAmplifierDevice lScalingAmp = new SIM983ScalingAmplifierDevice(	lSIM900MainframeDevice,
+																							4);
 
 		assertTrue(lScalingAmp.open());
-
 
 		lScalingAmp.setGain(1);
 		// assertEquals(1, lScalingAmp.getGain(), 0.01);
@@ -34,7 +33,7 @@ public class SIM900MainFrameDeviceDemo
 		lScalingAmp.setOffset(0);
 		assertEquals(0, lScalingAmp.getOffset(), 0.01);
 		lScalingAmp.setOffset(2.3);
-		
+
 		assertEquals(2.3, lScalingAmp.getOffset(), 0.01);
 		assertEquals(2.3, lScalingAmp.getOffset(), 0.01);
 

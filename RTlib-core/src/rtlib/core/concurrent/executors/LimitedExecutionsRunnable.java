@@ -13,7 +13,7 @@ public class LimitedExecutionsRunnable implements Runnable
 	private final long mMaximumNumberOfExecutions;
 
 	public LimitedExecutionsRunnable(	Runnable pDelegateRunnable,
-																		long pMaximumNumberOfExecutions)
+										long pMaximumNumberOfExecutions)
 	{
 		this.mDelegatedRunnable = pDelegateRunnable;
 		this.mMaximumNumberOfExecutions = pMaximumNumberOfExecutions;
@@ -24,7 +24,7 @@ public class LimitedExecutionsRunnable implements Runnable
 	{
 		if (mScheduledFuture == null)
 			throw new UnsupportedOperationException("Scheduling and execution of " + LimitedExecutionsRunnable.class.getSimpleName()
-																							+ " instances should be done using this class methods only. ");
+													+ " instances should be done using this class methods only. ");
 
 		mDelegatedRunnable.run();
 		if (mExecutionCounter.incrementAndGet() == mMaximumNumberOfExecutions)
@@ -34,36 +34,40 @@ public class LimitedExecutionsRunnable implements Runnable
 	}
 
 	public ScheduledFuture<?> runNTimes(ScheduledExecutorService pScheduledExecutorService,
-																			long pPeriod,
-																			TimeUnit pTimeUnit)
+										long pPeriod,
+										TimeUnit pTimeUnit)
 	{
-		return runNTimes(pScheduledExecutorService, pPeriod, pTimeUnit);
+		return runNTimes(	pScheduledExecutorService,
+							pPeriod,
+							pTimeUnit);
 	}
 
 	public ScheduledFuture<?> runNTimes(ScheduledExecutorService pScheduledExecutorService,
-																			long pInitialDelay,
-																			long pPeriod,
-																			TimeUnit pTimeUnit)
+										long pInitialDelay,
+										long pPeriod,
+										TimeUnit pTimeUnit)
 	{
 		mScheduledFuture = pScheduledExecutorService.scheduleAtFixedRate(	this,
-																																			pInitialDelay,
-																																			pPeriod,
-																																			pTimeUnit);
+																			pInitialDelay,
+																			pPeriod,
+																			pTimeUnit);
 		return mScheduledFuture;
 	}
 
 	public ScheduledFuture<?> runNTimes(AsynchronousSchedulerServiceAccess pThis,
-																			long pPeriod,
-																			TimeUnit pUnit)
+										long pPeriod,
+										TimeUnit pUnit)
 	{
-		mScheduledFuture = pThis.scheduleAtFixedRate(this, pPeriod, pUnit);
+		mScheduledFuture = pThis.scheduleAtFixedRate(	this,
+														pPeriod,
+														pUnit);
 		return mScheduledFuture;
 	}
 
 	public static LimitedExecutionsRunnable wrap(	Runnable pDelegateRunnable,
-																								long pMaximumNumberOfExecutions)
+													long pMaximumNumberOfExecutions)
 	{
 		return new LimitedExecutionsRunnable(	pDelegateRunnable,
-																					pMaximumNumberOfExecutions);
+												pMaximumNumberOfExecutions);
 	}
 }

@@ -27,7 +27,7 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 	public void keyPressed(final KeyEvent pE)
 	{
 		final boolean lIsShiftPressed = pE.isShiftDown();
-		
+
 		switch (pE.getKeyCode())
 		{
 		case KeyEvent.VK_G:

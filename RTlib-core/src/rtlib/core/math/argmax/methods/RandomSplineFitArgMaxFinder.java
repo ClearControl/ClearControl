@@ -1,7 +1,6 @@
 package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.max;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,15 +9,16 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
-public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
-																															ArgMaxFinder1DInterface,
-																															Fitting1D
+public class RandomSplineFitArgMaxFinder extends Fitting1DBase	implements
+																ArgMaxFinder1DInterface,
+																Fitting1D
 {
 
 	private static final int cNumberOfSamples = 1024;
@@ -34,8 +34,8 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 			fit(pX, pY);
 
 		double lArgMax = UnivariateFunctionArgMax.argmaxmean(	pX,
-																													mPolynomialSplineFunctions,
-																													cNumberOfSamples);
+																mPolynomialSplineFunctions,
+																cNumberOfSamples);
 
 		mPolynomialSplineFunctions = null;
 		return lArgMax;
@@ -80,7 +80,7 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 
 			if (lMaxAttempts > 0)
 				mPolynomialSplineFunctions[i] = mSplineInterpolator.interpolate(lXList.toArray(),
-																																				lYList.toArray());
+																				lYList.toArray());
 		}
 
 		double[] lFittedY = new double[pY.length];
@@ -112,7 +112,7 @@ public class RandomSplineFitArgMaxFinder extends Fitting1DBase implements
 	public String toString()
 	{
 		return String.format(	"RandomSplineFitArgMaxFinder [mPolynomialSplineFunctions=%s]",
-													Arrays.toString(mPolynomialSplineFunctions));
+								Arrays.toString(mPolynomialSplineFunctions));
 	}
 
 }

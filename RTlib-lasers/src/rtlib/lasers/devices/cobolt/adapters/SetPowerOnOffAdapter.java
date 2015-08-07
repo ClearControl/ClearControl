@@ -4,7 +4,7 @@ import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SetPowerOnOffAdapter extends CoboltAdapter	implements
-																												SerialTextDeviceAdapter
+														SerialTextDeviceAdapter
 {
 
 	@Override
@@ -21,10 +21,10 @@ public class SetPowerOnOffAdapter extends CoboltAdapter	implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldValue,
-																					final double pNewValue)
+											final double pNewValue)
 	{
 		return pNewValue > 0 ? ProtocolCobolt.cSetLaserOnCommand.getBytes()
-											: ProtocolCobolt.cSetLaserOffCommand.getBytes();
+							: ProtocolCobolt.cSetLaserOffCommand.getBytes();
 	}
 
 }

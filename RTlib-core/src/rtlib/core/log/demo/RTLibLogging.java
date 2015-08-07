@@ -11,12 +11,12 @@ public class RTLibLogging implements Loggable
 	@Test
 	public void demo() throws InterruptedException
 	{
-		for(int i=0; i<100; i++)
+		for (int i = 0; i < 100; i++)
 			info("test", "bla");
 
 		final LogWindowHandler lLogWindowHandler = LogWindowHandler.getInstance("test",
-																																						768,
-																																						320);
+																				768,
+																				320);
 
 		getLogger("test").addHandler(lLogWindowHandler);
 

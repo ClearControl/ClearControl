@@ -15,7 +15,6 @@ public class ClassPathDatabaseTests
 	public void test() throws ClassNotFoundException
 	{
 
-
 		List<String> lListOfFoundClasses = ClassPathResolver.getFullyQualifiedNames("String");
 		assertEquals(1, lListOfFoundClasses.size());
 		System.out.println(lListOfFoundClasses);

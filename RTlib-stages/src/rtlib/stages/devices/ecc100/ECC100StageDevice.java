@@ -2,6 +2,11 @@ package rtlib.stages.devices.ecc100;
 
 import java.util.Collection;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import ecc100.ECC100Axis;
+import ecc100.ECC100Controller;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.StartStopDeviceInterface;
@@ -16,16 +21,10 @@ import rtlib.stages.devices.ecc100.variables.ReadyVariable;
 import rtlib.stages.devices.ecc100.variables.ResetVariable;
 import rtlib.stages.devices.ecc100.variables.StopVariable;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import ecc100.ECC100Axis;
-import ecc100.ECC100Controller;
-
-public class ECC100StageDevice extends StageDeviceBase implements
-																											StageDeviceInterface,
-																											StartStopDeviceInterface,
-																											Waiting
+public class ECC100StageDevice extends StageDeviceBase	implements
+														StageDeviceInterface,
+														StartStopDeviceInterface,
+														Waiting
 {
 
 	final ECC100Controller mECC100Controller;
@@ -63,20 +62,21 @@ public class ECC100StageDevice extends StageDeviceBase implements
 					for (int axis = 0; axis < 3; axis++)
 					{
 						final ECC100Axis lAxis = mECC100Controller.getAxis(	lDeviceId,
-																																axis);
+																			axis);
 
 						final String lDeviceConfigString = "device.stage.ecc100." + lDeviceId
-																								+ "."
-																								+ axis;
+															+ "."
+															+ axis;
 						System.out.println("Found device: " + lDeviceConfigString);
-						final String lDeviceName = lCurrentMachineConfiguration.getStringProperty(lDeviceConfigString,
-																																											"");
+						final String lDeviceName = lCurrentMachineConfiguration.getStringProperty(	lDeviceConfigString,
+																									"");
 						if (!lDeviceName.isEmpty())
 						{
 							System.out.println(lDOFIndex);
 							mIndexToAxisMap.put(lDOFIndex, lAxis);
 							mNameToAxisMap.put(lDeviceName, lAxis);
-							mIndexToNameMap.put(lDOFIndex, lDeviceName);
+							mIndexToNameMap.put(lDOFIndex,
+												lDeviceName);
 							lDOFIndex++;
 
 						}
@@ -91,28 +91,28 @@ public class ECC100StageDevice extends StageDeviceBase implements
 					final ECC100Axis lEcc100Axis = mIndexToAxisMap.get(dof);
 
 					mEnableVariables.add(new EnableVariable("Enable" + mIndexToNameMap.get(dof),
-																									lEcc100Axis));
+															lEcc100Axis));
 
-					mReadyVariables.add(new ReadyVariable("Ready" + mIndexToNameMap.get(dof),
-																								lEcc100Axis));
+					mReadyVariables.add(new ReadyVariable(	"Ready"	+ mIndexToNameMap.get(dof),
+															lEcc100Axis));
 
 					mHomingVariables.add(new HomingVariable("Homing" + mIndexToNameMap.get(dof),
-																									lEcc100Axis));
+															lEcc100Axis));
 
-					mStopVariables.add(new StopVariable("Stop" + mIndexToNameMap.get(dof),
-																							lEcc100Axis));
+					mStopVariables.add(new StopVariable("Stop"	+ mIndexToNameMap.get(dof),
+														lEcc100Axis));
 
-					mResetVariables.add(new ResetVariable("Reset" + mIndexToNameMap.get(dof),
-																								lEcc100Axis));
+					mResetVariables.add(new ResetVariable(	"Reset"	+ mIndexToNameMap.get(dof),
+															lEcc100Axis));
 
 					mPositionVariables.add(new PositionVariable("Position" + mIndexToNameMap.get(dof),
-																											lEcc100Axis));
+																lEcc100Axis));
 
-					mMinPositionVariables.add(new MinPositionVariable("MinPosition" + mIndexToNameMap.get(dof),
-																														lEcc100Axis));
+					mMinPositionVariables.add(new MinPositionVariable(	"MinPosition" + mIndexToNameMap.get(dof),
+																		lEcc100Axis));
 
-					mMinPositionVariables.add(new MaxPositionVariable("MaxPosition" + mIndexToNameMap.get(dof),
-																														lEcc100Axis));
+					mMinPositionVariables.add(new MaxPositionVariable(	"MaxPosition" + mIndexToNameMap.get(dof),
+																		lEcc100Axis));
 				}
 
 				return true;
@@ -157,11 +157,11 @@ public class ECC100StageDevice extends StageDeviceBase implements
 	public String toString()
 	{
 		return "ECC100StageDevice [mECC100Controller=" + mECC100Controller
-						+ ", getNumberOfDOFs()="
-						+ getNumberOfDOFs()
-						+ ", getDeviceName()="
-						+ getName()
-						+ "]";
+				+ ", getNumberOfDOFs()="
+				+ getNumberOfDOFs()
+				+ ", getDeviceName()="
+				+ getName()
+				+ "]";
 	}
 
 }

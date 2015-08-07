@@ -8,8 +8,8 @@ import rtlib.core.variable.NamedVariable;
 import rtlib.core.variable.ObjectVariableInterface;
 
 public class ObjectVariable<O> extends NamedVariable<O>	implements
-																												ObjectVariableInterface<O>,
-																												ObjectInputOutputVariableInterface<O>
+														ObjectVariableInterface<O>,
+														ObjectInputOutputVariableInterface<O>
 {
 	protected volatile O mReference;
 	protected final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
@@ -20,7 +20,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		mReference = null;
 	}
 
-	public ObjectVariable(final String pVariableName, final O pReference)
+	public ObjectVariable(	final String pVariableName,
+							final O pReference)
 	{
 		super(pVariableName);
 		mReference = pReference;
@@ -58,8 +59,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 			return false;
 		}
 
-		final O lNewValueAfterHook = setEventHook(mReference,
-																							pNewReference);
+		final O lNewValueAfterHook = setEventHook(	mReference,
+													pNewReference);
 
 		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
@@ -211,8 +212,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		try
 		{
 			return getName() + "="
-							+ ((mReference == null)	? "null"
-																			: mReference.toString());
+					+ ((mReference == null)	? "null"
+											: mReference.toString());
 		}
 		catch (final NullPointerException e)
 		{

@@ -2,17 +2,8 @@ package rtlib.gui.video.video3d.demo;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.gui.video.video3d.Stack3DDisplay;
-import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
-import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
 import clearcuda.CudaContext;
 import clearcuda.CudaDevice;
 import clearcuda.CudaHostPointer;
@@ -22,6 +13,14 @@ import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.gui.video.video3d.Stack3DDisplay;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
+import rtlib.stack.OffHeapPlanarStack;
+import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 
 public class VideoFrame3DDisplayDemos
 {
@@ -36,24 +35,23 @@ public class VideoFrame3DDisplayDemos
 		final long lResolutionZ = lResolutionX / 2;
 
 		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(lResolutionX * lResolutionY
-																																											* lResolutionZ);
+																							* lResolutionZ);
 
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(lContiguousMemory,
-																																																																																				new UnsignedShortType(),
-																																																																																				lResolutionX,
-																																																																																				lResolutionY,
-																																																																																				lResolutionZ);
+																																											new UnsignedShortType(),
+																																											lResolutionX,
+																																											lResolutionY,
+																																											lResolutionZ);
 
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																									new UnsignedShortType());
+																																						new UnsignedShortType());
 
 		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 		lVideoFrame3DDisplay.open();
-
 
 		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 		{
@@ -75,7 +73,6 @@ public class VideoFrame3DDisplayDemos
 			Thread.sleep(10);
 		}
 
-
 		lVideoFrame3DDisplay.close();
 
 		// Thread.sleep(1000);
@@ -88,35 +85,34 @@ public class VideoFrame3DDisplayDemos
 
 		final CudaDevice lCudaDevice = new CudaDevice(0);
 		final CudaContext lCudaContext = new CudaContext(	lCudaDevice,
-																											false);
+															false);
 
 		final long lResolutionX = 320;
 		final long lResolutionY = lResolutionX + 1;
 		final long lResolutionZ = lResolutionX / 2;
 
-		final CudaHostPointer lCudaHostPointer = CudaHostPointer.mallocPinned(2		* lResolutionX
-																																							* lResolutionY
-																																							* lResolutionZ,
-																																					false,
-																																					false);
+		final CudaHostPointer lCudaHostPointer = CudaHostPointer.mallocPinned(	2		* lResolutionX
+																						* lResolutionY
+																						* lResolutionZ,
+																				false,
+																				false);
 		final ContiguousMemoryInterface lContiguousMemory = new CudaMemory(lCudaHostPointer);
 
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(lContiguousMemory,
-																																																																																				new UnsignedShortType(),
-																																																																																				lResolutionX,
-																																																																																				lResolutionY,
-																																																																																				lResolutionZ);
+																																											new UnsignedShortType(),
+																																											lResolutionX,
+																																											lResolutionY,
+																																											lResolutionZ);
 
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																									new UnsignedShortType());
+																																						new UnsignedShortType());
 
 		final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 		lVideoFrame3DDisplay.open();
-
 
 		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 		{
@@ -137,7 +133,6 @@ public class VideoFrame3DDisplayDemos
 			lFrameReferenceVariable.setReference(lStack);
 			Thread.sleep(1);
 		}
-
 
 		lVideoFrame3DDisplay.close();
 
@@ -161,27 +156,26 @@ public class VideoFrame3DDisplayDemos
 
 			final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
-			final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
-																																																																																																																						cMaximumNumberOfObjects);
+			final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
+																																																													cMaximumNumberOfObjects);
 
 			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																										new UnsignedShortType());
+																																							new UnsignedShortType());
 
 			final ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 			lVideoFrame3DDisplay.open();
 
-
 			for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
 			{
 
-				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = OffHeapPlanarStack.getOrWaitWithRecycler(lRecycler,
-																																																											10,
-																																																											TimeUnit.MILLISECONDS,
-																																																											new UnsignedShortType(),
-																																																											lResolutionX,
-																																																											lResolutionY,
-																																																											lResolutionZ);
+				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = OffHeapPlanarStack.getOrWaitWithRecycler(	lRecycler,
+																																10,
+																																TimeUnit.MILLISECONDS,
+																																new UnsignedShortType(),
+																																lResolutionX,
+																																lResolutionY,
+																																lResolutionZ);
 				final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lStack.getContiguousMemory());
 				lContiguousBuffer.rewind();
 				for (int z = 0; z < lResolutionZ; z++)
@@ -205,7 +199,6 @@ public class VideoFrame3DDisplayDemos
 					System.out.println("lRecycler.getNumberOfLiveObjects()=" + lRecycler.getNumberOfLiveObjects());
 				}
 			}
-
 
 			lVideoFrame3DDisplay.close();
 

@@ -15,27 +15,27 @@ public class Ecc100StageDeviceDemo
 	public void test() throws InterruptedException
 	{
 		ECC100StageDevice lECC100StageDevice = new ECC100StageDevice();
-		
+
 		assertTrue(lECC100StageDevice.open());
-		
+
 		assertTrue(lECC100StageDevice.start());
-		
+
 		int lNumberOfDOFs = lECC100StageDevice.getNumberOfDOFs();
 		assertTrue(lNumberOfDOFs > 0);
-		
+
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
 			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);
 			System.out.println("lCurrentPosition" + dof
-													+ "="
-													+ lCurrentPosition);
+								+ "="
+								+ lCurrentPosition);
 		}
-		
+
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
 			lECC100StageDevice.goToPosition(dof, 1000);
 		}
-		
+
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
 		{
 			lECC100StageDevice.waitToBeReady(dof, 1, TimeUnit.MINUTES);
@@ -45,12 +45,12 @@ public class Ecc100StageDeviceDemo
 		{
 			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);
 			System.out.println("lCurrentPosition" + dof
-													+ "="
-													+ lCurrentPosition);
+								+ "="
+								+ lCurrentPosition);
 		}
 
 		assertTrue(lECC100StageDevice.stop());
-		
+
 		lECC100StageDevice.close();
 	}
 

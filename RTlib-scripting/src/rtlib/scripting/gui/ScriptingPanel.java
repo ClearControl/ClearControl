@@ -14,12 +14,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -32,14 +35,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import net.miginfocom.swing.MigLayout;
 import rtlib.core.file.FileEventNotifier;
 import rtlib.core.file.FileEventNotifier.FileEventKind;
 import rtlib.core.file.FileEventNotifierListener;
@@ -49,52 +51,68 @@ import rtlib.scripting.engine.ScriptingEngineListener;
 import rtlib.scripting.lang.groovy.GroovyScripting;
 import rtlib.scripting.lang.jython.JythonScripting;
 
-public class ScriptingPanel extends JPanel implements
-																					DropTargetListener,
-																					FileEventNotifierListener,
-																					DocumentListener,
-																					KeyListener
+public class ScriptingPanel extends JPanel	implements
+											DropTargetListener,
+											FileEventNotifierListener,
+											DocumentListener,
+											KeyListener
 {
 
 	private static final long serialVersionUID = 1L;
 
+	private File mLastLoadedScriptFile;
+
 	private static final int cMaxNumberOfLines = 500_000;
 	private final ScriptingEngine mScriptingEngine;
 	private final JTextField mCurrentFileTextField;
-
 	private final RSyntaxTextArea mRSyntaxTextArea;
-
 	private FileEventNotifier mFileEventNotifier;
+	private JTextArea mConsoleTextArea;
 
-	public ScriptingPanel()
+	public ScriptingPanel(String pName)
 	{
-		this(null);
+		this(pName, null);
 	}
 
-	public ScriptingPanel(ScriptingEngine pScriptingEngine)
+	public ScriptingPanel(	String pName,
+							ScriptingEngine pScriptingEngine)
 	{
-		this(pScriptingEngine, null, 60, 80);
+		this(pName, pScriptingEngine, null, 60, 80);
 	}
 
-	public ScriptingPanel(ScriptingEngine pScriptingEngine,
-												int pNumberOfRows,
-												int pNumberOfCols)
+	public ScriptingPanel(	String pName,
+							ScriptingEngine pScriptingEngine,
+							int pNumberOfRows,
+							int pNumberOfCols)
 	{
-		this(pScriptingEngine, null, pNumberOfRows, pNumberOfCols);
+		this(	pName,
+				pScriptingEngine,
+				null,
+				pNumberOfRows,
+				pNumberOfCols);
 	}
 
-	public ScriptingPanel(ScriptingEngine pScriptingEngine,
-												File pDefaultFile,
-												int pNumberOfRows,
-												int pNumberOfCols)
+	public ScriptingPanel(	String pName,
+							ScriptingEngine pScriptingEngine,
+							File pDefaultFile,
+							int pNumberOfRows,
+							int pNumberOfCols)
 	{
 		super();
 		mScriptingEngine = pScriptingEngine;
 
+		String lFileName = String.format(	"/.rtlib/%s.scriptname.txt",
+											pName)
+									.replaceAll("[^\\.\\/\\w]+", "_");
+		mLastLoadedScriptFile = new File(	System.getProperty("user.home"),
+											lFileName);
+		mLastLoadedScriptFile.getParentFile().mkdirs();
+
 		new DropTarget(this, this);
 
 		mRSyntaxTextArea = new RSyntaxTextArea(	pNumberOfRows,
-																						pNumberOfCols);
+												pNumberOfCols);
+
 		new DropTarget(mRSyntaxTextArea, this);
 
 		if (pScriptingEngine != null)
@@ -108,8 +126,8 @@ public class ScriptingPanel extends JPanel implements
 			{
 
 				@Override
-				public void updatedScript(ScriptingEngine pScriptingEngine,
-																	String pScript)
+				public void updatedScript(	ScriptingEngine pScriptingEngine,
+											String pScript)
 				{
 					try
 					{
@@ -122,8 +140,8 @@ public class ScriptingPanel extends JPanel implements
 				}
 
 				@Override
-				public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
-																					String pScriptString)
+				public void beforeScriptExecution(	ScriptingEngine pScriptingEngine,
+													String pScriptString)
 				{
 					// TODO Auto-generated method stub
 
@@ -131,10 +149,10 @@ public class ScriptingPanel extends JPanel implements
 
 				@Override
 				public void asynchronousResult(	ScriptingEngine pScriptingEngine,
-																				String pScriptString,
-																				Map<String, Object> pBinding,
-																				Throwable pThrowable,
-																				String pErrorMessage)
+												String pScriptString,
+												Map<String, Object> pBinding,
+												Throwable pThrowable,
+												String pErrorMessage)
 				{
 					if (pErrorMessage != null)
 					{
@@ -145,10 +163,16 @@ public class ScriptingPanel extends JPanel implements
 
 				@Override
 				public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
-																					String pScriptString)
+													String pScriptString)
 				{
 					// TODO Auto-generated method stub
 
+				}
+
+				@Override
+				public void scriptAlreadyExecuting(ScriptingEngine pScriptingEngine)
+				{
+					mConsoleTextArea.append("!! Script is already running, try to cancel first !!");
 				}
 			});
 		}
@@ -165,8 +189,8 @@ public class ScriptingPanel extends JPanel implements
 		final RTextScrollPane lRTextScrollPane = new RTextScrollPane(mRSyntaxTextArea);
 
 		setLayout(new MigLayout("insets 0",
-														"[84.00px,grow][49px,grow]",
-														"[][][grow]"));
+								"[84.00px,grow][49px,grow]",
+								"[][][grow]"));
 
 		if (pDefaultFile != null)
 			mCurrentFileTextField = new JTextField(pDefaultFile.getAbsolutePath());
@@ -179,6 +203,8 @@ public class ScriptingPanel extends JPanel implements
 		mCurrentFileTextField.addActionListener((event) -> {
 			try
 			{
+				File lFile = new File(mCurrentFileTextField.getText());
+				mScriptingEngine.setScriptName(lFile.getName());
 				loadFromFile(mCurrentFileTextField.getText());
 			}
 			catch (final Throwable e)
@@ -195,41 +221,42 @@ public class ScriptingPanel extends JPanel implements
 		final JPanel lExecuteButtonAndConsolePanel = new JPanel();
 		lSplitPane.setLeftComponent(lRTextScrollPane);
 		lSplitPane.setRightComponent(lExecuteButtonAndConsolePanel);
-		lExecuteButtonAndConsolePanel.setLayout(new MigLayout("insets 0",
-																													"[606px,grow,fill][606px,grow,fill][606px,grow,fill]",
-																													"[29px][201px,grow,fill]"));
+		lExecuteButtonAndConsolePanel.setLayout(new MigLayout(	"insets 0",
+																"[606px,grow,fill][606px,grow,fill][606px,grow,fill]",
+																"[29px][201px,grow,fill]"));
 
 		final JButton lExecuteButton = new JButton("execute");
-		lExecuteButtonAndConsolePanel.add(lExecuteButton,
-																			"cell 0 0,alignx left,aligny center");
+		lExecuteButtonAndConsolePanel.add(	lExecuteButton,
+											"cell 0 0,alignx left,aligny center");
 
 		final JButton lCancelButton = new JButton("cancel");
 		lExecuteButtonAndConsolePanel.add(lCancelButton, "cell 1 0");
 
 		final JButton lConsoleClearButton = new JButton("clear");
-		lExecuteButtonAndConsolePanel.add(lConsoleClearButton, "cell 2 0");
+		lExecuteButtonAndConsolePanel.add(	lConsoleClearButton,
+											"cell 2 0");
 
-		final JTextArea lConsoleTextArea = new JTextArea();
-		((AbstractDocument) lConsoleTextArea.getDocument()).setDocumentFilter(new LineLimitedDocumentFilter(lConsoleTextArea,
-																																																				cMaxNumberOfLines));
+		mConsoleTextArea = new JTextArea();
+		((AbstractDocument) mConsoleTextArea.getDocument()).setDocumentFilter(new LineLimitedDocumentFilter(mConsoleTextArea,
+																											cMaxNumberOfLines));
 
-		final JScrollPane lConsoleTextAreaScrollPane = new JScrollPane(lConsoleTextArea);
-		lExecuteButtonAndConsolePanel.add(lConsoleTextAreaScrollPane,
-																			"cell 0 1 3 1,alignx center,aligny center");
+		final JScrollPane lConsoleTextAreaScrollPane = new JScrollPane(mConsoleTextArea);
+		lExecuteButtonAndConsolePanel.add(	lConsoleTextAreaScrollPane,
+											"cell 0 1 3 1,alignx center,aligny center");
 
 		if (mScriptingEngine != null)
 		{
-			final OutputStreamToJTextArea lOutputStreamToJTextArea = new OutputStreamToJTextArea(lConsoleTextArea);
+			final OutputStreamToJTextArea lOutputStreamToJTextArea = new OutputStreamToJTextArea(mConsoleTextArea);
 			mScriptingEngine.setOutputStream(lOutputStreamToJTextArea);
 
 			lExecuteButton.addActionListener((event) -> {
 				try
 				{
 					saveToFile(	mRSyntaxTextArea.getText(),
-											mCurrentFileTextField.getText());
+								mCurrentFileTextField.getText());
 
 					if (mScriptingEngine.getScript() == null || !mScriptingEngine.getScript()
-																.equals(mRSyntaxTextArea.getText()))
+																					.equals(mRSyntaxTextArea.getText()))
 						mScriptingEngine.setScript(mRSyntaxTextArea.getText());
 
 					mScriptingEngine.executeScriptAsynchronously();
@@ -243,10 +270,10 @@ public class ScriptingPanel extends JPanel implements
 			lConsoleClearButton.addActionListener((e) -> {
 				try
 				{
-					lConsoleTextArea.getDocument()
-													.remove(0,
-																	lConsoleTextArea.getDocument()
-																									.getLength());
+					mConsoleTextArea.getDocument()
+									.remove(0,
+											mConsoleTextArea.getDocument()
+															.getLength());
 				}
 				catch (final Exception e1)
 				{
@@ -283,8 +310,25 @@ public class ScriptingPanel extends JPanel implements
 		}
 	}
 
-	public void loadFromFile(String pFileName) throws IOException,
-																						InvocationTargetException
+	public void loadLastLoadedScriptFile()
+	{
+		try
+		{
+			Scanner lScanner = new Scanner(mLastLoadedScriptFile);
+			String lFileName = lScanner.nextLine();
+			SwingUtilities.invokeAndWait(() -> mCurrentFileTextField.setText(lFileName));
+			loadFromFile(lFileName);
+			SwingUtilities.invokeAndWait(() -> mRSyntaxTextArea.requestFocusInWindow());
+			lScanner.close();
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void loadFromFile(String pFileName)	throws IOException,
+												InvocationTargetException
 	{
 		if (pFileName == null || pFileName.isEmpty())
 			return;
@@ -293,7 +337,7 @@ public class ScriptingPanel extends JPanel implements
 	}
 
 	public void loadFromFile(File pFile) throws IOException,
-																			InvocationTargetException
+										InvocationTargetException
 	{
 		if (pFile == null || !pFile.exists())
 			return;
@@ -309,6 +353,8 @@ public class ScriptingPanel extends JPanel implements
 			mFileEventNotifier = new FileEventNotifier(pFile);
 			mFileEventNotifier.addFileEventListener(this);
 			mFileEventNotifier.startMonitoring();
+
+			writeLastLoadedScriptFile(pFile);
 		}
 		catch (final Throwable e)
 		{
@@ -316,11 +362,26 @@ public class ScriptingPanel extends JPanel implements
 		}
 	}
 
+	private void writeLastLoadedScriptFile(File pFile)
+	{
+		try
+		{
+			Formatter lFormatter = new Formatter(mLastLoadedScriptFile);
+			lFormatter.format("%s\n", pFile.getAbsolutePath());
+			lFormatter.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 	public void loadText(String pText) throws InvocationTargetException
 	{
 		SwingUtilities.invokeLater(() -> {
 			if (mRSyntaxTextArea.getText() == null || !mRSyntaxTextArea.getText()
-																																	.equals(pText))
+																		.equals(pText))
 				mRSyntaxTextArea.setText(pText);
 		});
 	}
@@ -406,9 +467,9 @@ public class ScriptingPanel extends JPanel implements
 	}
 
 	@Override
-	public void fileEvent(FileEventNotifier pThis,
-												File pFile,
-												FileEventKind pEventKind)
+	public void fileEvent(	FileEventNotifier pThis,
+							File pFile,
+							FileEventKind pEventKind)
 	{
 		try
 		{
@@ -432,7 +493,7 @@ public class ScriptingPanel extends JPanel implements
 			if (!SystemUtils.IS_OS_WINDOWS)
 			{
 				saveToFile(	mRSyntaxTextArea.getText(),
-										mCurrentFileTextField.getText());
+							mCurrentFileTextField.getText());
 			}
 		}
 		catch (final Throwable e)
@@ -467,7 +528,7 @@ public class ScriptingPanel extends JPanel implements
 		{
 			if (pE.isControlDown() && pE.getKeyCode() == KeyEvent.VK_S)
 				saveToFile(	mRSyntaxTextArea.getText(),
-										mCurrentFileTextField.getText());
+							mCurrentFileTextField.getText());
 		}
 		catch (Throwable e)
 		{

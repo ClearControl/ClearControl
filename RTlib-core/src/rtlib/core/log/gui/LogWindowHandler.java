@@ -12,7 +12,6 @@ public class LogWindowHandler extends Handler
 
 	private LogWindow mWindow = null;
 
-
 	/**
 	 * private constructor, preventing initialization
 	 */
@@ -41,8 +40,8 @@ public class LogWindowHandler extends Handler
 	}
 
 	public static synchronized LogWindowHandler getInstance(String pTitle,
-																													int pWidth,
-																													int pHeight)
+															int pWidth,
+															int pHeight)
 	{
 		if (sHandler == null)
 		{
@@ -51,7 +50,6 @@ public class LogWindowHandler extends Handler
 		}
 		return sHandler;
 	}
-
 
 	@Override
 	public synchronized void publish(LogRecord record)

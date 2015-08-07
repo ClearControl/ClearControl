@@ -11,12 +11,11 @@ public class EnsembleLinearRegressors implements MultivariateFunction
 	private ArrayList<DenseMatrix64F> mA = new ArrayList<>();
 	private ArrayList<DenseMatrix64F> mB = new ArrayList<>();
 
-
 	public EnsembleLinearRegressors(int pDimension)
 	{
 		mDimension = pDimension;
 	}
-	
+
 	@Override
 	public double value(double[] pPoint)
 	{

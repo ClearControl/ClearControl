@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public class DoubleVariableAsFile extends DoubleVariable implements
-																												Closeable
+														Closeable
 
 {
 	private final ExecutorService mSingleThreadExecutor = Executors.newSingleThreadExecutor();
@@ -24,8 +24,8 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 	private final Object mLock = new Object();
 
 	public DoubleVariableAsFile(final File pFile,
-															final String pVariableName,
-															final double pDoubleValue)
+								final String pVariableName,
+								final double pDoubleValue)
 	{
 		super(pVariableName, pDoubleValue);
 		mFile = pFile;

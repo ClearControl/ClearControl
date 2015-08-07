@@ -4,8 +4,8 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100MaxPositionAdapter	extends
-																			SerialDeviceAdapterAdapter implements
-																																SerialTextDeviceAdapter
+										SerialDeviceAdapterAdapter	implements
+																	SerialTextDeviceAdapter
 {
 
 	@Override
@@ -18,7 +18,7 @@ public class SMC100MaxPositionAdapter	extends
 	public Double parseValue(byte[] pMessage)
 	{
 		return 1000 * SMC100Protocol.parseFloat(SMC100Protocol.cGetMaxPosCommand,
-																			pMessage);
+												pMessage);
 	}
 
 	@Override
@@ -29,10 +29,10 @@ public class SMC100MaxPositionAdapter	extends
 
 	@Override
 	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue)
+											double pNewValue)
 	{
 		String lSetMaxPositionMessage = String.format(	SMC100Protocol.cSetMaxPosCommand,
-																								pNewValue * 0.001);
+														pNewValue * 0.001);
 		return lSetMaxPositionMessage.getBytes();
 	}
 

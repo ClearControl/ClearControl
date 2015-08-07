@@ -1,8 +1,7 @@
 package rtlib.symphony.staves;
 
-
-public class IntervalStave extends StaveAbstract	implements
-																								StaveInterface
+public class IntervalStave extends StaveAbstract implements
+												StaveInterface
 {
 
 	private volatile float mStart = 0;
@@ -16,10 +15,10 @@ public class IntervalStave extends StaveAbstract	implements
 	}
 
 	public IntervalStave(	final String pName,
-												float pSyncStart,
-												float pSyncStop,
-												float pInsideValue,
-												float pOutsideValue)
+							float pSyncStart,
+							float pSyncStop,
+							float pInsideValue,
+							float pOutsideValue)
 	{
 		super(pName);
 		setStart(pSyncStart);
@@ -36,7 +35,6 @@ public class IntervalStave extends StaveAbstract	implements
 		else
 			return getInsideValue();
 	}
-
 
 	public float getStart()
 	{
@@ -82,10 +80,10 @@ public class IntervalStave extends StaveAbstract	implements
 	public StaveInterface copy()
 	{
 		return new IntervalStave(	getName(),
-															getStart(),
-															getStop(),
-															getInsideValue(),
-															getOutsideValue());
+									getStart(),
+									getStop(),
+									getInsideValue(),
+									getOutsideValue());
 	}
 
 }

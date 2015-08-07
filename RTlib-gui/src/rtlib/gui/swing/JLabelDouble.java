@@ -17,22 +17,23 @@ public class JLabelDouble extends JLabel
 	private boolean mIntegerConstraint = false;
 
 	public JLabelDouble(final String pLabelName,
-											final boolean pIntegerConstraint,
-											final String pFormatString,
-											final double pInicialValue)
+						final boolean pIntegerConstraint,
+						final String pFormatString,
+						final double pInicialValue)
 	{
 		super(getTextFromValue(	pIntegerConstraint,
-														pFormatString,
-														pInicialValue));
+								pFormatString,
+								pInicialValue));
 		mFormatString = pFormatString;
 		mIntegerConstraint = pIntegerConstraint;
 		mThis = this;
 
-		mDoubleVariable = new DoubleVariable(pLabelName, pInicialValue)
+		mDoubleVariable = new DoubleVariable(	pLabelName,
+												pInicialValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+										final Double pNewValue)
 			{
 				if (pNewValue != mNewValue)
 				{
@@ -42,8 +43,8 @@ public class JLabelDouble extends JLabel
 						public void run()
 						{
 							mThis.setText(getTextFromValue(	mIntegerConstraint,
-																							pFormatString,
-																							pNewValue));
+															pFormatString,
+															pNewValue));
 							mNewValue = pNewValue;
 						}
 
@@ -59,8 +60,8 @@ public class JLabelDouble extends JLabel
 			public void run()
 			{
 				setText(getTextFromValue(	mIntegerConstraint,
-																	pFormatString,
-																	pInicialValue));
+											pFormatString,
+											pInicialValue));
 			}
 		});
 
@@ -72,8 +73,8 @@ public class JLabelDouble extends JLabel
 	}
 
 	private static String getTextFromValue(	final boolean pIntegerConstraint,
-																					final String pFormatString,
-																					final double pNewValue)
+											final String pFormatString,
+											final double pNewValue)
 	{
 		if (pIntegerConstraint)
 		{

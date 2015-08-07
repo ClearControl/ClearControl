@@ -1,4 +1,4 @@
-package rtlib.scripting.gui.demo;
+package rtlib.scripting.gui.demo.other;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -74,8 +74,8 @@ public class DragDemo
 	// Make a Label draggable; You can use the example to make any component
 	// draggable
 	public static class DraggableLabel extends Label implements
-																									DragGestureListener,
-																									DragSourceListener
+													DragGestureListener,
+													DragSourceListener
 	{
 		DragSource dragSource;
 
@@ -86,9 +86,9 @@ public class DragDemo
 
 			dragSource = new DragSource();
 
-			dragSource.createDefaultDragGestureRecognizer(this,
-																										DnDConstants.ACTION_COPY_OR_MOVE,
-																										this);
+			dragSource.createDefaultDragGestureRecognizer(	this,
+															DnDConstants.ACTION_COPY_OR_MOVE,
+															this);
 		}
 
 		@Override
@@ -98,16 +98,17 @@ public class DragDemo
 			final Transferable transferable = new StringSelection(getText());
 
 			dragSource.startDrag(	evt,
-														DragSource.DefaultCopyDrop,
-														transferable,
-														this);
+									DragSource.DefaultCopyDrop,
+									transferable,
+									this);
 		}
 
 		@Override
 		public void dragEnter(DragSourceDragEvent evt)
 		{
 
-			// Called when the user is dragging this drag source and enters the drop
+			// Called when the user is dragging this drag source and enters the
+			// drop
 			// target
 
 			System.out.println("Drag enter");
@@ -117,7 +118,8 @@ public class DragDemo
 		public void dragOver(DragSourceDragEvent evt)
 		{
 
-			// Called when the user is dragging this drag source and moves over the
+			// Called when the user is dragging this drag source and moves over
+			// the
 			// drop target
 
 			System.out.println("Drag over");
@@ -127,7 +129,8 @@ public class DragDemo
 		public void dragExit(DragSourceEvent evt)
 		{
 
-			// Called when the user is dragging this drag source and leaves the drop
+			// Called when the user is dragging this drag source and leaves the
+			// drop
 			// target
 
 			System.out.println("Drag exit");
@@ -156,7 +159,7 @@ public class DragDemo
 	// Make a TextArea a drop target; You can use the example to make any
 	// component a drop target
 	public static class DropTargetTextArea extends TextArea	implements
-																													DropTargetListener
+															DropTargetListener
 	{
 
 		public DropTargetTextArea()

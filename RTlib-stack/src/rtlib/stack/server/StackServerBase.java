@@ -1,18 +1,17 @@
 package rtlib.stack.server;
 
-import gnu.trove.map.hash.TLongDoubleHashMap;
-import gnu.trove.map.hash.TLongLongHashMap;
-
 import java.io.IOException;
 import java.util.HashMap;
 
+import gnu.trove.map.hash.TLongDoubleHashMap;
+import gnu.trove.map.hash.TLongLongHashMap;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.StackRequest;
 
 public abstract class StackServerBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																															AutoCloseable
+																								AutoCloseable
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();

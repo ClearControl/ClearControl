@@ -1,10 +1,5 @@
 package net.imglib2.img.planar;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.img.basictypeaccess.offheap.AbstractOffHeapAccess;
-import net.imglib2.type.NativeType;
-import net.imglib2.util.Fraction;
-
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
@@ -13,11 +8,15 @@ import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreedException;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.img.basictypeaccess.offheap.AbstractOffHeapAccess;
+import net.imglib2.type.NativeType;
+import net.imglib2.util.Fraction;
 
 public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																											PlanarImg<T, A>	implements
-																																																			Freeable,
-																																																			SizedInBytes
+																						PlanarImg<T, A>	implements
+																										Freeable,
+																										SizedInBytes
 {
 
 	private ContiguousMemoryInterface mContiguousMemory;
@@ -28,8 +27,8 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
 	}
 
 	public OffHeapPlanarImg(A pCreator,
-													long[] pDim,
-													Fraction pEntitiesPerPixel)
+							long[] pDim,
+							Fraction pEntitiesPerPixel)
 	{
 		super(pCreator, pDim, pEntitiesPerPixel);
 	}

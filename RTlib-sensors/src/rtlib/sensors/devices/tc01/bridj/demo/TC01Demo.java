@@ -18,8 +18,8 @@ public class TC01Demo
 
 		for (int i = 0; i < 100; i++)
 		{
-			double lTemp = TC01libLibrary.tC01lib(lPhysicalChannelPointer,
-																						NIThermoCoupleType.J.getValue());
+			double lTemp = TC01libLibrary.tC01lib(	lPhysicalChannelPointer,
+													NIThermoCoupleType.J.getValue());
 			System.out.format("Temp = %g deg C \n", lTemp);
 		}
 

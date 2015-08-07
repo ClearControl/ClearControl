@@ -34,8 +34,8 @@ public class ProtocolXX
 	public static final String[] splitMessage(final byte[] pMessage)
 	{
 		final String lMessageString = new String(	pMessage,
-																							4,
-																							pMessage.length - 4);
+													4,
+													pMessage.length - 4);
 		final String[] lSplittedMessageString = lMessageString.split(cParagraphCode);
 
 		return lSplittedMessageString;
@@ -44,8 +44,8 @@ public class ProtocolXX
 	public static String toHexadecimalString(final int n, final int k)
 	{
 		return String.format("%" + k + "s", Integer.toHexString(n))
-									.replace(' ', '0')
-									.toUpperCase();
+						.replace(' ', '0')
+						.toUpperCase();
 	}
 
 	public static final boolean setNoAdHocMode(final Serial pSerial)
@@ -60,14 +60,14 @@ public class ProtocolXX
 			final String lOperatingModeAsHexString = lSplitMessage[0];
 
 			int lOperatingModeAsInteger = Integer.parseInt(	lOperatingModeAsHexString,
-																											16);
+															16);
 
 			lOperatingModeAsInteger = lOperatingModeAsInteger & ~cAdGocModeMask;
 
 			final String lNewOperatingModeAsHexString = toHexadecimalString(lOperatingModeAsInteger,
-																																			4);
-			final String lNewOperatingModeCommand = String.format(cSetOperatingModeCommand,
-																														lNewOperatingModeAsHexString);
+																			4);
+			final String lNewOperatingModeCommand = String.format(	cSetOperatingModeCommand,
+																	lNewOperatingModeAsHexString);
 
 			pSerial.write(lNewOperatingModeCommand.getBytes());
 			final byte[] lReadTextMessage2 = pSerial.readTextMessage();

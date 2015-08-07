@@ -3,7 +3,6 @@ package rtlib.gui.swing.util;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
 public interface MousePressedListener extends MouseListener
 {
 	@Override

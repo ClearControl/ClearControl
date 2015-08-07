@@ -4,7 +4,7 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100EnableAdapter extends SerialDeviceAdapterAdapter	implements
-																																		SerialTextDeviceAdapter
+																	SerialTextDeviceAdapter
 {
 
 	@Override
@@ -27,7 +27,7 @@ public class SMC100EnableAdapter extends SerialDeviceAdapterAdapter	implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue)
+											double pNewValue)
 	{
 		if (pOldValue == 0 && pNewValue > 0)
 			return SMC100Protocol.cEnableCommand.getBytes();

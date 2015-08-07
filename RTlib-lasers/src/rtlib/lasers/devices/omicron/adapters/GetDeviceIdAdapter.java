@@ -17,8 +17,8 @@ public class GetDeviceIdAdapter extends OmicronAdapter
 		/*System.out.println(GetDeviceIdAdapter.class.getSimpleName() + ": message received: "
 												+ new String(pMessage));/**/
 
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetFirmwareReplyPrefix,
-																															pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(	ProtocolXX.cGetFirmwareReplyPrefix,
+																	pMessage);
 		final String lDeviceIdString = lSplittedMessage[1];
 		final int lDeviceId = Integer.parseInt(lDeviceIdString);
 		return (double) lDeviceId;

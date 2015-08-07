@@ -30,7 +30,7 @@ public class TestImage
 			final FileInputStream lFileInputStream = new FileInputStream(myFile);
 			final FileChannel lChannel = lFileInputStream.getChannel();
 			final ByteBuffer lByteBuffer = ByteBuffer.allocateDirect((int) lChannel.size())
-																								.order(ByteOrder.nativeOrder());
+														.order(ByteOrder.nativeOrder());
 			lChannel.read(lByteBuffer);
 			lFileInputStream.close();
 			lByteBuffer.rewind();

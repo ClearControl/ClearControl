@@ -10,6 +10,7 @@ public class ScriptingWindow extends JFrame
 {
 
 	private static final long serialVersionUID = 1L;
+	private ScriptingPanel mScriptingPanel;
 
 	public ScriptingWindow() throws HeadlessException
 	{
@@ -17,21 +18,25 @@ public class ScriptingWindow extends JFrame
 	}
 
 	public ScriptingWindow(	String pTitle,
-													ScriptingEngine pScriptingEngine,
-													int pNumberOfRows,
-													int pNumberOfCols) throws HeadlessException
+							ScriptingEngine pScriptingEngine,
+							int pNumberOfRows,
+							int pNumberOfCols) throws HeadlessException
 	{
 		super(pTitle);
 
-		final ScriptingPanel lScriptingPanel = new ScriptingPanel(pScriptingEngine,
-																															pNumberOfRows,
-																															pNumberOfCols);
-		add(lScriptingPanel);
+		mScriptingPanel = new ScriptingPanel(	pTitle,
+												pScriptingEngine,
+												pNumberOfRows,
+												pNumberOfCols);
+		add(mScriptingPanel);
 		pack();
 		setSize(512, 512);
 
 	}
 
-
+	public void loadLastLoadedScriptFile()
+	{
+		mScriptingPanel.loadLastLoadedScriptFile();
+	}
 
 }

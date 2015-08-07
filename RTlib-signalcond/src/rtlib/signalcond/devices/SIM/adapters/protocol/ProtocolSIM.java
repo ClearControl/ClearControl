@@ -1,6 +1,5 @@
 package rtlib.signalcond.devices.SIM.adapters.protocol;
 
-
 public class ProtocolSIM
 {
 	public static final int cBaudRate = 115200;
@@ -8,7 +7,7 @@ public class ProtocolSIM
 	public static final char cMessageTerminationCharacter = '\n';
 
 	public static long cWaitTimeInMilliSeconds = 1;
-	
+
 	public static final String cSIM900ForwardCommand = "SNDT %d,\"%s\"\n";
 
 	public static final String cOffset = "OFST";

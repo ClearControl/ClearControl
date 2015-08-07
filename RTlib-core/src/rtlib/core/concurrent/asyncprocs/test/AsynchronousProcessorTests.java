@@ -22,7 +22,7 @@ public class AsynchronousProcessorTests
 	public void testSimple2ProcessorPipeline()
 	{
 		final AsynchronousProcessorInterface<String, String> lProcessorA = new AsynchronousProcessorBase<String, String>(	"A",
-																																																											10)
+																															10)
 		{
 			@Override
 			public String process(final String pInput)
@@ -33,7 +33,7 @@ public class AsynchronousProcessorTests
 		};
 
 		final AsynchronousProcessorInterface<String, String> lProcessorB = new AsynchronousProcessorBase<String, String>(	"B",
-																																																											10)
+																															10)
 		{
 			@Override
 			public String process(final String pInput)
@@ -93,14 +93,13 @@ public class AsynchronousProcessorTests
 		assertEquals(0, lProcessorA.getInputQueueLength());
 		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
 
-
 	}
 
 	@Test
 	public void testLongQueue()
 	{
 		final AsynchronousProcessorInterface<String, String> lProcessorA = new AsynchronousProcessorBase<String, String>(	"A",
-																																																											1000)
+																															1000)
 		{
 			@Override
 			public String process(final String pInput)
@@ -111,7 +110,7 @@ public class AsynchronousProcessorTests
 		};
 
 		final AsynchronousProcessorInterface<String, String> lProcessorB = new AsynchronousProcessorBase<String, String>(	"B",
-																																																											1000)
+																															1000)
 		{
 			@Override
 			public String process(final String pInput)
@@ -135,12 +134,9 @@ public class AsynchronousProcessorTests
 		assertEquals(0, lProcessorA.getInputQueueLength());
 		assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
 
-
 		assertTrue(lProcessorB.waitToFinish(2, TimeUnit.SECONDS));
 		assertEquals(0, lProcessorB.getInputQueueLength());
 		assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
-
-
 
 	}
 
@@ -148,13 +144,13 @@ public class AsynchronousProcessorTests
 	public void testSimple2ProcessorPipelineWithPooledProcessor() throws InterruptedException
 	{
 		final AsynchronousProcessorInterface<Integer, Integer> lProcessorA = new AsynchronousProcessorBase<Integer, Integer>(	"A",
-																																																													10)
+																																10)
 		{
 			@Override
 			public Integer process(final Integer pInput)
 			{
-				ThreadUtils.sleep((long) (Math.random() * 1000000),
-													TimeUnit.NANOSECONDS);
+				ThreadUtils.sleep(	(long) (Math.random() * 1000000),
+									TimeUnit.NANOSECONDS);
 				return pInput;
 			}
 		};
@@ -166,8 +162,8 @@ public class AsynchronousProcessorTests
 			public Integer process(final Integer pInput)
 			{
 				// System.out.println("Processor B received:"+pInput);
-				ThreadUtils.sleep((long) (Math.random() * 1000000),
-													TimeUnit.NANOSECONDS);
+				ThreadUtils.sleep(	(long) (Math.random() * 1000000),
+									TimeUnit.NANOSECONDS);
 				return pInput;
 			}
 
@@ -179,20 +175,20 @@ public class AsynchronousProcessorTests
 		};
 
 		final AsynchronousProcessorPool<Integer, Integer> lProcessorB = new AsynchronousProcessorPool<>("B",
-																																																		10,
-																																																		2,
-																																																		lProcessor);
+																										10,
+																										2,
+																										lProcessor);
 
 		final ConcurrentLinkedQueue<Integer> lIntList = new ConcurrentLinkedQueue<>();
 
 		final AsynchronousProcessorInterface<Integer, Integer> lProcessorC = new AsynchronousProcessorBase<Integer, Integer>(	"C",
-																																																													10)
+																																10)
 		{
 			@Override
 			public Integer process(final Integer pInput)
 			{
-				ThreadUtils.sleep((long) (Math.random() * 1000000),
-													TimeUnit.NANOSECONDS);
+				ThreadUtils.sleep(	(long) (Math.random() * 1000000),
+									TimeUnit.NANOSECONDS);
 				if (pInput > 0)
 					lIntList.add(pInput);
 				return pInput;
@@ -205,7 +201,6 @@ public class AsynchronousProcessorTests
 		assertTrue(lProcessorA.start());
 		assertTrue(lProcessorB.start());
 		assertTrue(lProcessorC.start());
-
 
 		for (int i = 1; i <= 1000; i++)
 		{

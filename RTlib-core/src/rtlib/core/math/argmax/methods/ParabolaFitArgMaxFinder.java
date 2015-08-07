@@ -9,9 +9,9 @@ import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 
-public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
-																													ArgMaxFinder1DInterface,
-																													Fitting1D
+public class ParabolaFitArgMaxFinder extends Fitting1DBase	implements
+															ArgMaxFinder1DInterface,
+															Fitting1D
 {
 
 	private PolynomialCurveFitter mPolynomialCurveFitter;
@@ -25,7 +25,7 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 	public ParabolaFitArgMaxFinder(int pMaxIterations)
 	{
 		mPolynomialCurveFitter = PolynomialCurveFitter.create(2)
-																									.withMaxIterations(pMaxIterations);
+														.withMaxIterations(pMaxIterations);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
 	public String toString()
 	{
 		return String.format(	"ParabolaFitArgMaxFinder [mPolynomialFunction=%s]",
-													mPolynomialFunction);
+								mPolynomialFunction);
 	}
 
 }

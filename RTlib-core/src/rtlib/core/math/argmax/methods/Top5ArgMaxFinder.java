@@ -56,11 +56,12 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1DInterface
 				lLeftToAdd--;
 			}
 		}
-		
+
 		double[] lTop5XArray = lTop5X.toArray();
-		double[] lTop5YArray =lTop5Y.toArray();
-		
-		Double lArgmax = mArgMaxFinder1DInterface.argmax(lTop5XArray, lTop5YArray);
+		double[] lTop5YArray = lTop5Y.toArray();
+
+		Double lArgmax = mArgMaxFinder1DInterface.argmax(	lTop5XArray,
+															lTop5YArray);
 
 		return lArgmax;
 	}
@@ -69,7 +70,7 @@ public class Top5ArgMaxFinder implements ArgMaxFinder1DInterface
 	public String toString()
 	{
 		return String.format(	"Top5ArgMaxFinder [mArgMaxFinder1DInterface=%s]",
-													mArgMaxFinder1DInterface);
+								mArgMaxFinder1DInterface);
 	}
 
 }

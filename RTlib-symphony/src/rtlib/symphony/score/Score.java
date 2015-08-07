@@ -13,8 +13,6 @@ public class Score extends NameableAbstract implements ScoreInterface
 
 	private final ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();
 
-
-
 	public Score(final String pName)
 	{
 		super(pName);
@@ -28,7 +26,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 
 	@Override
 	public void addMovementMultipleTimes(	final MovementInterface pMovement,
-																				final int pNumberOfTimes)
+											final int pNumberOfTimes)
 	{
 		for (int i = 0; i < pNumberOfTimes; i++)
 		{
@@ -56,7 +54,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 
 	@Override
 	public void insertMovementAt(	final int pIndex,
-																final MovementInterface pMovement)
+									final MovementInterface pMovement)
 	{
 		mMovementList.add(pIndex, pMovement);
 	}
@@ -98,7 +96,7 @@ public class Score extends NameableAbstract implements ScoreInterface
 
 		for (final MovementInterface lMovement : mMovementList)
 			lMaxNumberOfStaves = max(	lMaxNumberOfStaves,
-																lMovement.getNumberOfStaves());
+										lMovement.getNumberOfStaves());
 
 		return lMaxNumberOfStaves;
 	}
@@ -119,9 +117,5 @@ public class Score extends NameableAbstract implements ScoreInterface
 	{
 		return String.format("Score-%s", getName());
 	}
-
-
-
-
 
 }

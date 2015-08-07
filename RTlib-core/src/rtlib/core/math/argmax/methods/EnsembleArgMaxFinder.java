@@ -1,7 +1,5 @@
 package rtlib.core.math.argmax.methods;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
@@ -42,9 +41,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 		private final double[] mY;
 		private final ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-		public ArgMaxCallable(ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
-													double[] pX,
-													double[] pY)
+		public ArgMaxCallable(	ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
+								double[] pX,
+								double[] pY)
 		{
 			mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
 			mX = pX;
@@ -55,7 +54,8 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 		public Double call() throws Exception
 		{
 			final long lStartTimeInNs = System.nanoTime();
-			final Double lArgMax = mArgMaxFinder1DInterface.argmax(mX, mY);
+			final Double lArgMax = mArgMaxFinder1DInterface.argmax(	mX,
+																	mY);
 			final long lStopTimeInNs = System.nanoTime();
 			/*double lElapsedtimeInSeconds = Magnitude.nano2unit(lStopTimeInNs - lStartTimeInNs);
 			System.out.format("elapsed time: %g for %s \n",
@@ -86,9 +86,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 
 		for (final ArgMaxFinder1DInterface lArgMaxFinder1DInterface : mArgMaxFinder1DInterfaceList)
 		{
-			final ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(lArgMaxFinder1DInterface,
-																													pX,
-																													pY);
+			final ArgMaxCallable lArgMaxCallable = new ArgMaxCallable(	lArgMaxFinder1DInterface,
+																		pX,
+																		pY);
 			final FutureTask<Double> lArgMaxFutureTask = new FutureTask<Double>(lArgMaxCallable);
 			sExecutor.execute(lArgMaxFutureTask);
 			lTaskList.add(lArgMaxFutureTask);
@@ -101,13 +101,13 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 			try
 			{
 				final Double lArgMax = lArgMaxFutureTask.get(	cTimeOutInSeconds,
-																								TimeUnit.SECONDS);
+																TimeUnit.SECONDS);
 				if (lArgMax != null)
 				{
 					if (mDebug)
 						System.out.println("class: " + lTaskToCallableMap.get(lArgMaxFutureTask)
-																+ "\n\t\targmax="
-																+ lArgMax);
+											+ "\n\t\targmax="
+											+ lArgMax);
 					lArgMaxList.add(lArgMax);
 				}
 			}
@@ -135,7 +135,7 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 	public String toString()
 	{
 		return String.format(	"EnsembleArgMaxFinder [mArgMaxFinder1DInterfaceList=%s]",
-													mArgMaxFinder1DInterfaceList);
+								mArgMaxFinder1DInterfaceList);
 	}
 
 	private void println(String pString)

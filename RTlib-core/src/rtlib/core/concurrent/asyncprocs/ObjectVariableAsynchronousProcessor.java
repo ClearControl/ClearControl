@@ -7,8 +7,8 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
-																												OpenCloseDeviceInterface,
-																												StartStopDeviceInterface
+														OpenCloseDeviceInterface,
+														StartStopDeviceInterface
 {
 	private static final long cTimeOutInSeconds = 1;
 
@@ -20,9 +20,9 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 	private Object mObjectEventSource;
 
 	public ObjectVariableAsynchronousProcessor(	final String pName,
-																							final int pMaxQueueSize,
-																							final ProcessorInterface<I, O> pProcessor,
-																							final boolean pDropIfQueueFull)
+												final int pMaxQueueSize,
+												final ProcessorInterface<I, O> pProcessor,
+												final boolean pDropIfQueueFull)
 	{
 		super();
 
@@ -45,7 +45,7 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 		};
 
 		mAsynchronousProcessorBase = new AsynchronousProcessorBase<I, O>(	pName,
-																																			pMaxQueueSize)
+																			pMaxQueueSize)
 		{
 			@Override
 			public O process(final I pInput)
@@ -101,7 +101,7 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 	public boolean stop()
 	{
 		return mAsynchronousProcessorBase.stop(	cTimeOutInSeconds,
-																						TimeUnit.SECONDS);
+												TimeUnit.SECONDS);
 	}
 
 	@Override

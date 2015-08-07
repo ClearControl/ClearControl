@@ -51,9 +51,9 @@ public class ScoreDemo
 		}
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
-																																							lScore);/**/
+																						lScore);/**/
 
-		while(lVisualize.isVisible())
+		while (lVisualize.isVisible())
 		{
 			ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
 		}

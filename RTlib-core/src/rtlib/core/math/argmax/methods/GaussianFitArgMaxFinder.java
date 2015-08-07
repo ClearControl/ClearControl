@@ -9,9 +9,9 @@ import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.Fitting1DBase;
 
-public class GaussianFitArgMaxFinder extends Fitting1DBase implements
-																													ArgMaxFinder1DInterface,
-																													Fitting1D
+public class GaussianFitArgMaxFinder extends Fitting1DBase	implements
+															ArgMaxFinder1DInterface,
+															Fitting1D
 {
 
 	private double mLastMean;
@@ -27,7 +27,7 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 	{
 		super();
 		mGaussianCurveFitter = GaussianCurveFitter.create()
-																							.withMaxIterations(pMaxIterations);
+													.withMaxIterations(pMaxIterations);
 	}
 
 	@Override
@@ -45,7 +45,6 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 	public double[] fit(double[] pX, double[] pY)
 	{
 		WeightedObservedPoints lObservedPoints = new WeightedObservedPoints();
-
 
 		for (int i = 0; i < pX.length; i++)
 			lObservedPoints.add(pX[i], pY[i]);
@@ -90,9 +89,8 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 	public String toString()
 	{
 		return String.format(	"GaussianFitArgMaxFinder [mLastMean=%s, mGaussian=%s]",
-													mLastMean,
-													mGaussian);
+								mLastMean,
+								mGaussian);
 	}
-
 
 }

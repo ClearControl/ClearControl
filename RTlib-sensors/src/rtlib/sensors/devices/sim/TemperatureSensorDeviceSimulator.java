@@ -7,8 +7,8 @@ import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.TemperatureSensorDeviceInterface;
 
 public class TemperatureSensorDeviceSimulator	extends
-																							TemperatureSensorDeviceBase	implements
-																																					TemperatureSensorDeviceInterface
+												TemperatureSensorDeviceBase	implements
+																			TemperatureSensorDeviceInterface
 {
 
 	public TemperatureSensorDeviceSimulator(String pDeviceName)

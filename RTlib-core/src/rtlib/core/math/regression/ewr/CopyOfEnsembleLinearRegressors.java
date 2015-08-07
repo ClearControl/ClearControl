@@ -4,7 +4,8 @@ import org.apache.commons.math3.analysis.MultivariateFunction;
 
 import rtlib.core.math.kdtree.KdTree;
 
-public class CopyOfEnsembleLinearRegressors implements MultivariateFunction
+public class CopyOfEnsembleLinearRegressors	implements
+											MultivariateFunction
 {
 	private static final int cBucketCapacity = 10;
 
@@ -24,13 +25,12 @@ public class CopyOfEnsembleLinearRegressors implements MultivariateFunction
 		lKDTree.addPoint(pPoint, pValue);
 		mIsUpToDate = false;
 	}
-	
+
 	public void update()
 	{
 		mIsUpToDate = true;
 	}
-	
-	
+
 	@Override
 	public double value(double[] pPoint)
 	{

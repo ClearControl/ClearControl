@@ -16,16 +16,16 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 
 public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																												LocalFileStackBase<T, A> implements
-																																																								StackSinkInterface<T, A>,
-																																																								AutoCloseable
+																						LocalFileStackBase<T, A> implements
+																												StackSinkInterface<T, A>,
+																												AutoCloseable
 {
 
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 
-	public LocalFileStackSink(T pType,
-														final File pRootFolder,
-														final String pName) throws IOException
+	public LocalFileStackSink(	T pType,
+								final File pRootFolder,
+								final String pName) throws IOException
 	{
 		super(pType, pRootFolder, pName, false);
 
@@ -43,18 +43,18 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			}
 
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
-																							mNextFreeTypePosition);
+													mNextFreeTypePosition);
 
 			final StackRequest<T> lStackRequest = StackRequest.buildFrom(pStack);
 
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
-																				lStackRequest);
+												lStackRequest);
 
 			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false,
-																																					true);
+																				true);
 			final long lNewNextFreeTypePosition = pStack.getFragmentedMemory()
-																									.writeBytesToFileChannel(	lBinnaryFileChannel,
-																																						mNextFreeTypePosition);
+														.writeBytesToFileChannel(	lBinnaryFileChannel,
+																					mNextFreeTypePosition);
 
 			lBinnaryFileChannel.force(false);
 			lBinnaryFileChannel.close();
@@ -63,15 +63,16 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 
 			final String lDimensionsString = Arrays.toString(lDimensions);
 
-			// the '2, ' part is to be compatible with the old format, that means 2
+			// the '2, ' part is to be compatible with the old format, that
+			// means 2
 			// bytes per voxel:
-			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(1,
-																																						lDimensionsString.length() - 1);
+			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(	1,
+																							lDimensionsString.length() - 1);
 
 			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),
-																															StandardOpenOption.APPEND,
-																															StandardOpenOption.WRITE,
-																															StandardOpenOption.CREATE);
+																	StandardOpenOption.APPEND,
+																	StandardOpenOption.WRITE,
+																	StandardOpenOption.CREATE);
 
 			if (mNextFreeStackIndex == 0)
 			{
@@ -80,13 +81,13 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			final double lTimeStampInSeconds = Magnitude.nano2unit(pStack.getTimeStampInNanoseconds() - mFirstTimePointAbsoluteNanoSeconds);
 
 			mStackIndexToTimeStampInSecondsMap.put(	mNextFreeStackIndex,
-																							lTimeStampInSeconds);
+													lTimeStampInSeconds);
 
-			final String lIndexLineString = String.format("%d\t%.4f\t%s\t%d\n",
-																										mNextFreeStackIndex,
-																										lTimeStampInSeconds,
-																										lTruncatedDimensionsString,
-																										mNextFreeTypePosition);
+			final String lIndexLineString = String.format(	"%d\t%.4f\t%s\t%d\n",
+															mNextFreeStackIndex,
+															lTimeStampInSeconds,
+															lTruncatedDimensionsString,
+															mNextFreeTypePosition);
 			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
 			final ByteBuffer lIndexLineStringByteBuffer = ByteBuffer.wrap(lIndexLineStringBytes);
 			lIndexFileChannel.write(lIndexLineStringByteBuffer);
@@ -113,7 +114,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+									final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
 	}
@@ -121,9 +122,9 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	@Override
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
-		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
-																							new DoubleVariable(	pPrefix,
-																																	pValue));
+		mMetaDataVariableBundleAsFile.addVariable(	pPrefix,
+													new DoubleVariable(	pPrefix,
+																		pValue));
 	}
 
 	@Override

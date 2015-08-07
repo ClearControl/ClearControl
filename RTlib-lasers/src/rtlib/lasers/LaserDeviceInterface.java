@@ -7,9 +7,9 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface LaserDeviceInterface	extends
-																			NameableInterface,
-																			OpenCloseDeviceInterface,
-																			StartStopDeviceInterface
+										NameableInterface,
+										OpenCloseDeviceInterface,
+										StartStopDeviceInterface
 {
 
 	public int getWavelengthInNanoMeter();

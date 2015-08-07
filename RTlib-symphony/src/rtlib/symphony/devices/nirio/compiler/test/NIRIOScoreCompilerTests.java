@@ -54,30 +54,31 @@ public class NIRIOScoreCompilerTests
 		for (int i = 0; i < repeats; i++)
 		{
 			lScore.clear();
-			lScore.addMovementMultipleTimes(lMovement, lNumberOfMovements);
+			lScore.addMovementMultipleTimes(lMovement,
+											lNumberOfMovements);
 			NIRIOScoreCompiler.compile(lNIRIOCompiledScore, lScore);
 		}
 		final long lStoptTimeNs = System.nanoTime();
 		final long lElapsedTimeNs = (lStoptTimeNs - lStartTimeNs) / repeats;
 		final double lElapsedTimeMs = lElapsedTimeNs * 1e-6;
-		System.out.format("elapsed time: total= %g ms, per-movement= %g ms\n",
-											lElapsedTimeMs,
-											lElapsedTimeMs / lNumberOfMovements);
+		System.out.format(	"elapsed time: total= %g ms, per-movement= %g ms\n",
+							lElapsedTimeMs,
+							lElapsedTimeMs / lNumberOfMovements);
 
 		System.out.println(lNIRIOCompiledScore.toString());
 
 		assertEquals(	4 * lNumberOfMovements,
-									lNIRIOCompiledScore.getDeltaTimeBuffer()
-																			.getSizeInBytes());
+						lNIRIOCompiledScore.getDeltaTimeBuffer()
+											.getSizeInBytes());
 		assertEquals(	4 * lNumberOfMovements,
-									lNIRIOCompiledScore.getSyncBuffer()
-																			.getSizeInBytes());
+						lNIRIOCompiledScore.getSyncBuffer()
+											.getSizeInBytes());
 		assertEquals(	4 * lNumberOfMovements,
-									lNIRIOCompiledScore.getNumberOfTimePointsBuffer()
-																			.getSizeInBytes());
+						lNIRIOCompiledScore.getNumberOfTimePointsBuffer()
+											.getSizeInBytes());
 		assertEquals(	2 * 2048 * 16 * lNumberOfMovements,
-									lNIRIOCompiledScore.getScoreBuffer()
-																			.getSizeInBytes());
+						lNIRIOCompiledScore.getScoreBuffer()
+											.getSizeInBytes());
 
 		/*final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test",
 																																										lScore);/**/
@@ -108,18 +109,19 @@ public class NIRIOScoreCompilerTests
 		System.out.println("nbtp=" + NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
 
 		assertEquals(	488281,
-									NIRIOScoreCompiler.getDeltaTimeInNs(lMovement));
+						NIRIOScoreCompiler.getDeltaTimeInNs(lMovement));
 		assertEquals(	2048,
-									NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
+						NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
 
 		lMovement.setDuration(100, TimeUnit.MICROSECONDS);
 
 		System.out.println("delta=" + NIRIOScoreCompiler.getDeltaTimeInNs(lMovement));
 		System.out.println("nbtp=" + NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
 
-		assertEquals(3000, NIRIOScoreCompiler.getDeltaTimeInNs(lMovement));
+		assertEquals(	3000,
+						NIRIOScoreCompiler.getDeltaTimeInNs(lMovement));
 		assertEquals(	33,
-									NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
+						NIRIOScoreCompiler.getNumberOfTimePoints(lMovement));
 
 		/*
 		ScoreVisualizerJFrame.visualizeAndWait("test", lScore);/**/

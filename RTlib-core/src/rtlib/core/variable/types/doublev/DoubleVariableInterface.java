@@ -5,9 +5,9 @@ import rtlib.core.units.SIUnit;
 import rtlib.core.variable.VariableInterface;
 
 public interface DoubleVariableInterface extends
-																				VariableInterface<Double>,
-																				DoubleInputVariableInterface,
-																				DoubleOutputVariableInterface
+										VariableInterface<Double>,
+										DoubleInputVariableInterface,
+										DoubleOutputVariableInterface
 {
 
 	public SIUnit getUnit();
@@ -23,7 +23,5 @@ public interface DoubleVariableInterface extends
 	public void syncWith(DoubleVariable pVariable);
 
 	public void doNotSyncWith(DoubleVariable pVariable);
-
-
 
 }

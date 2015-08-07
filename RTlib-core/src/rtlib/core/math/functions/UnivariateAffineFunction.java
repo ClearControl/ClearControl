@@ -6,8 +6,8 @@ import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
 public class UnivariateAffineFunction	implements
-																			UnivariateAffineComposableFunction,
-																			Serializable
+										UnivariateAffineComposableFunction,
+										Serializable
 {
 
 	private static final long serialVersionUID = 1L;
@@ -16,13 +16,13 @@ public class UnivariateAffineFunction	implements
 	private volatile double mB;
 
 	public UnivariateAffineFunction()	throws NullArgumentException,
-																		NoDataException
+										NoDataException
 	{
 		this(1, 0);
 	}
 
 	public UnivariateAffineFunction(double pA, double pB)	throws NullArgumentException,
-																												NoDataException
+															NoDataException
 	{
 		mA = pA;
 		mB = pB;
@@ -65,12 +65,9 @@ public class UnivariateAffineFunction	implements
 	public String toString()
 	{
 		return "UnivariateAffineFunction [Y = " + mA
-						+ " * X + "
-						+ mB
-						+ "]";
+				+ " * X + "
+				+ mB
+				+ "]";
 	}
-
-
-
 
 }

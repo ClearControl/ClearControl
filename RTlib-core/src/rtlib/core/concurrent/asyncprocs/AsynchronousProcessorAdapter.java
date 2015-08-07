@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class AsynchronousProcessorAdapter<I, O> implements
-																								AsynchronousProcessorInterface<I, O>
+												AsynchronousProcessorInterface<I, O>
 {
 
 	@Override
@@ -48,9 +48,9 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	}
 
 	@Override
-	public boolean passOrWait(final I pObject,
-														final long pTimeOut,
-														TimeUnit pTimeUnit)
+	public boolean passOrWait(	final I pObject,
+								final long pTimeOut,
+								TimeUnit pTimeUnit)
 	{
 		return true;
 	}
@@ -78,7 +78,5 @@ public class AsynchronousProcessorAdapter<I, O> implements
 	{
 		return 0;
 	}
-
-
 
 }

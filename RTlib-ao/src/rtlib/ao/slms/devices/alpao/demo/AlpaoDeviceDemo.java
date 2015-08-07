@@ -14,7 +14,8 @@ import rtlib.ao.zernike.TransformMatrices;
 public class AlpaoDeviceDemo
 {
 	@Test
-	public void demoZernicke() throws IOException, InterruptedException
+	public void demoZernicke()	throws IOException,
+								InterruptedException
 	{
 		final AlpaoDMDevice lAlpaoDMDevice = new AlpaoDMDevice(1);
 		final DenseMatrix64F lZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lAlpaoDMDevice.getMatrixWidth());
@@ -22,7 +23,7 @@ public class AlpaoDeviceDemo
 		assertTrue(lAlpaoDMDevice.open());
 
 		DeformableMirrorDeviceDemoHelper.sweepModes(lAlpaoDMDevice,
-																								lZernickeTransformMatrix);
+													lZernickeTransformMatrix);
 
 		assertTrue(lAlpaoDMDevice.close());
 	}
@@ -36,7 +37,7 @@ public class AlpaoDeviceDemo
 		assertTrue(lAlpaoDMDevice.open());
 
 		DeformableMirrorDeviceDemoHelper.sweepModes(lAlpaoDMDevice,
-																								lCosineTransformMatrix);
+													lCosineTransformMatrix);
 
 		assertTrue(lAlpaoDMDevice.close());
 	}
@@ -49,9 +50,9 @@ public class AlpaoDeviceDemo
 
 		assertTrue(lAlpaoDMDevice.open());
 
-		DeformableMirrorDeviceDemoHelper.playRandomShapes(lAlpaoDMDevice,
-																											lCosineTransformMatrix,
-																											10000);
+		DeformableMirrorDeviceDemoHelper.playRandomShapes(	lAlpaoDMDevice,
+															lCosineTransformMatrix,
+															10000);
 
 		assertTrue(lAlpaoDMDevice.close());
 	}

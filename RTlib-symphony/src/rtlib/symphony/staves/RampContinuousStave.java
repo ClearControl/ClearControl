@@ -2,8 +2,8 @@ package rtlib.symphony.staves;
 
 import static java.lang.Math.abs;
 
-public class RampContinuousStave extends StaveAbstract implements
-																											StaveInterface
+public class RampContinuousStave extends StaveAbstract	implements
+														StaveInterface
 {
 	private volatile float mSyncStart;
 	private volatile float mSyncStop;
@@ -18,11 +18,11 @@ public class RampContinuousStave extends StaveAbstract implements
 	}
 
 	public RampContinuousStave(	final String pName,
-															float pSyncStart,
-															float pSyncStop,
-															float pStartValue,
-															float pStopValue,
-															float pOutsideValue)
+								float pSyncStart,
+								float pSyncStop,
+								float pStartValue,
+								float pStopValue,
+								float pOutsideValue)
 	{
 		super(pName);
 		setSyncStart(pSyncStart);
@@ -41,7 +41,7 @@ public class RampContinuousStave extends StaveAbstract implements
 		final float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
 
 		final float lValue = getStartValue() + (getStopValue() - getStartValue())
-													* lNormalizedRampTime;
+								* lNormalizedRampTime;
 
 		return lValue;
 	}
@@ -115,11 +115,11 @@ public class RampContinuousStave extends StaveAbstract implements
 	public StaveInterface copy()
 	{
 		return new RampContinuousStave(	getName(),
-																		getSyncStart(),
-																		getSyncStop(),
-																		getStartValue(),
-																		getStopValue(),
-																		getOutsideValue());
+										getSyncStart(),
+										getSyncStop(),
+										getStartValue(),
+										getStopValue(),
+										getOutsideValue());
 	}
 
 }

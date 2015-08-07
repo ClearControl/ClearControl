@@ -7,8 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class WaitingScheduledFuture<V>	implements
-																						ScheduledFuture<V>
+public class WaitingScheduledFuture<V> implements ScheduledFuture<V>
 {
 
 	private final ScheduledFuture<V> mDelegatedScheduledFuture;
@@ -63,8 +62,8 @@ public class WaitingScheduledFuture<V>	implements
 
 	@Override
 	public V get(long pTimeout, TimeUnit pUnit)	throws InterruptedException,
-																							ExecutionException,
-																							TimeoutException
+												ExecutionException,
+												TimeoutException
 	{
 		try
 		{

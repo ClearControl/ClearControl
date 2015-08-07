@@ -4,7 +4,7 @@ import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class GetCurrentPowerAdapter extends CoboltAdapter	implements
-																													SerialTextDeviceAdapter
+															SerialTextDeviceAdapter
 {
 
 	@Override
@@ -18,7 +18,5 @@ public class GetCurrentPowerAdapter extends CoboltAdapter	implements
 	{
 		return 1000 * ProtocolCobolt.parseFloat(pMessage);
 	}
-
-
 
 }

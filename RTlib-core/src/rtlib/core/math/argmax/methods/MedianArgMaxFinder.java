@@ -1,6 +1,7 @@
 package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.round;
+
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class MedianArgMaxFinder implements ArgMaxFinder1DInterface
@@ -17,24 +18,26 @@ public class MedianArgMaxFinder implements ArgMaxFinder1DInterface
 			final double lY = pY[i];
 			lHalfSum += lY;
 		}
-		
-		lHalfSum = 0.5*lHalfSum;
+
+		lHalfSum = 0.5 * lHalfSum;
 
 		double lRunningSum = 0;
-		for (int i = 0; i < lLength-1; i++)
+		for (int i = 0; i < lLength - 1; i++)
 		{
 			final double lY = pY[i];
-			
-			if(lRunningSum<=lHalfSum &&  lRunningSum+lY>=lHalfSum)
+
+			if (lRunningSum <= lHalfSum && lRunningSum + lY >= lHalfSum)
 			{
 				final double xa = pX[i];
-				final double xb = pX[i+1];
-				
-				double lArgmax = xa*((lHalfSum-lRunningSum)/lY)+xb*((lRunningSum+lY-lHalfSum)/lY);
-				
+				final double xb = pX[i + 1];
+
+				double lArgmax = xa	* ((lHalfSum - lRunningSum) / lY)
+									+ xb
+									* ((lRunningSum + lY - lHalfSum) / lY);
+
 				return lArgmax;
 			}
-				
+
 			lRunningSum += lY;
 		}
 

@@ -3,6 +3,9 @@ package rtlib.stack.processor;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
@@ -13,13 +16,10 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclableFactory;
-import coremem.recycling.RecyclerInterface;
 
 public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																																						SameTypeStackProcessingPipeline<T, A>,
-																																																						StartStopDeviceInterface
+																											SameTypeStackProcessingPipeline<T, A>,
+																											StartStopDeviceInterface
 {
 
 	private final CopyOnWriteArrayList<SameTypeStackProcessorInterface<T, A>> mProcessorList = new CopyOnWriteArrayList<SameTypeStackProcessorInterface<T, A>>();
@@ -30,9 +30,9 @@ public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A e
 	private ObjectVariable<StackInterface<T, A>> mOutputVariable;
 	private AsynchronousProcessorInterface<StackInterface<T, A>, StackInterface<T, A>> mReceiver;
 
-	public AsynchronousPoolStackProcessorPipeline(String pName,
-																								final int pMaxQueueSize,
-																								final int pThreadPoolSize)
+	public AsynchronousPoolStackProcessorPipeline(	String pName,
+													final int pMaxQueueSize,
+													final int pThreadPoolSize)
 	{
 		super();
 
@@ -41,7 +41,7 @@ public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A e
 
 			@Override
 			public StackInterface<T, A> setEventHook(	StackInterface<T, A> pOldValue,
-																								StackInterface<T, A> pNewValue)
+														StackInterface<T, A> pNewValue)
 			{
 				mAsynchronousProcessorPool.passOrWait(pNewValue);
 				return super.setEventHook(pOldValue, pNewValue);
@@ -81,12 +81,12 @@ public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A e
 		};
 
 		mAsynchronousProcessorPool = new AsynchronousProcessorPool<>(	pName,
-																																	pMaxQueueSize,
-																																	pThreadPoolSize,
-																																	lProcessor);
+																		pMaxQueueSize,
+																		pThreadPoolSize,
+																		lProcessor);
 
-		mReceiver = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>("Receiver",
-																																													10)
+		mReceiver = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>(	"Receiver",
+																								10)
 		{
 			@Override
 			public StackInterface<T, A> process(final StackInterface<T, A> pInput)
@@ -101,12 +101,12 @@ public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A e
 	}
 
 	@Override
-	public void addStackProcessor(SameTypeStackProcessorInterface<T, A> pStackProcessor,
-																RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
-																int pMaximumNumberOfObjects)
+	public void addStackProcessor(	SameTypeStackProcessorInterface<T, A> pStackProcessor,
+									RecyclableFactory<StackInterface<T, A>, StackRequest<T>> pStackFactory,
+									int pMaximumNumberOfObjects)
 	{
 		final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> lStackRecycler = new BasicRecycler<StackInterface<T, A>, StackRequest<T>>(	pStackFactory,
-																																																																							pMaximumNumberOfObjects);
+																																					pMaximumNumberOfObjects);
 		mRecyclerList.add(lStackRecycler);
 		mProcessorList.add(pStackProcessor);
 	}

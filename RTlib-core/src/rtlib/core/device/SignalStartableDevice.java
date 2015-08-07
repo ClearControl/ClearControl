@@ -4,9 +4,9 @@ import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public abstract class SignalStartableDevice	extends
-																						NamedVirtualDevice implements
-																															OpenCloseDeviceInterface,
-																															StartStopDeviceInterface
+											NamedVirtualDevice	implements
+																OpenCloseDeviceInterface,
+																StartStopDeviceInterface
 {
 
 	protected final BooleanVariable mStartSignal;
@@ -19,11 +19,12 @@ public abstract class SignalStartableDevice	extends
 	}
 
 	public SignalStartableDevice(	final String pDeviceName,
-																final boolean pOnlyStart)
+									final boolean pOnlyStart)
 	{
 		super(pDeviceName);
 
-		mStartSignal = new BooleanVariable(pDeviceName + "Start", false);
+		mStartSignal = new BooleanVariable(	pDeviceName + "Start",
+											false);
 
 		mStopSignal = new BooleanVariable(pDeviceName + "Stop", false);
 

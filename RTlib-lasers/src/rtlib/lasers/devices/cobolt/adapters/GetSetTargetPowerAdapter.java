@@ -4,7 +4,7 @@ import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class GetSetTargetPowerAdapter extends CoboltAdapter	implements
-																														SerialTextDeviceAdapter
+															SerialTextDeviceAdapter
 {
 
 	@Override
@@ -22,11 +22,11 @@ public class GetSetTargetPowerAdapter extends CoboltAdapter	implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldPowerInMilliWatt,
-																					final double pNewPowerInMilliWatt)
+											final double pNewPowerInMilliWatt)
 	{
 		final double lPowerInWatt = pNewPowerInMilliWatt * 0.001;
-		final String lSetTargetPowerCommandString = String.format(ProtocolCobolt.cSetOutputPowerCommand,
-																															lPowerInWatt);
+		final String lSetTargetPowerCommandString = String.format(	ProtocolCobolt.cSetOutputPowerCommand,
+																	lPowerInWatt);
 		final byte[] lSetTargetPowerCommandBytes = lSetTargetPowerCommandString.getBytes();
 		return lSetTargetPowerCommandBytes;
 	}

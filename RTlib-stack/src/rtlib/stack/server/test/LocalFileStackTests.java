@@ -6,13 +6,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Test;
+
+import coremem.recycling.BasicRecycler;
 import net.imglib2.Cursor;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.PlanarCursor;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import org.junit.Test;
-
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -23,7 +23,6 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.server.LocalFileStackSink;
 import rtlib.stack.server.LocalFileStackSource;
-import coremem.recycling.BasicRecycler;
 
 public class LocalFileStackTests
 {
@@ -39,45 +38,45 @@ public class LocalFileStackTests
 	public void testSinkAndSource() throws IOException
 	{
 
-		final File lRootFolder = new File(File.createTempFile("test",
-																													"test")
-																					.getParentFile(),
-																			"LocalFileStackTests" + Math.random());
+		final File lRootFolder = new File(	File.createTempFile("test",
+																"test")
+												.getParentFile(),
+											"LocalFileStackTests" + Math.random());
 		lRootFolder.mkdirs();
 		System.out.println(lRootFolder);
 
 		{
 			final LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSink = new LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
-																																																																													lRootFolder,
-																																																																													"testSink");
+																																								lRootFolder,
+																																								"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
-																											312));
+															312));
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
-																															"123"));
-
+																	"123"));
 
 			@SuppressWarnings("unchecked")
 			final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedShortType(),
-																																																																																					cSizeX,
-																																																																																					cSizeY,
-																																																																																					cSizeZ);
+																																												cSizeX,
+																																												cSizeY,
+																																												cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
-										lStack.getNumberOfVoxels());
-			// System.out.println(lStack.mNDimensionalArray.getLengthInElements() *
+							lStack.getNumberOfVoxels());
+			// System.out.println(lStack.mNDimensionalArray.getLengthInElements()
+			// *
 			// 2);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ * cBytesPerVoxel,
-										lStack.getSizeInBytes());
+							lStack.getSizeInBytes());
 
 			for (int i = 0; i < cNumberOfStacks; i++)
 			{
 
 				final PlanarCursor<UnsignedShortType> lCursor = lStack.getPlanarImage()
-																															.cursor();
+																		.cursor();
 
 				while (lCursor.hasNext())
 				{
@@ -97,7 +96,7 @@ public class LocalFileStackTests
 			}
 
 			assertEquals(	cNumberOfStacks,
-										lLocalFileStackSink.getNumberOfStacks());
+							lLocalFileStackSink.getNumberOfStacks());
 
 			lLocalFileStackSink.close();
 		}
@@ -106,18 +105,18 @@ public class LocalFileStackTests
 			final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
 
 			final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																																																																																							cMaximalNumberOfAvailableStacks);
+																																																													cMaximalNumberOfAvailableStacks);
 
-			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
-																																																																																lStackRecycler,
-																																																																																lRootFolder,
-																																																																																"testSink");
+			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(	new UnsignedShortType(),
+																																										lStackRecycler,
+																																										lRootFolder,
+																																										"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
 			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
-																											312));
+															312));
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
-																															"123"));
+																	"123"));
 			final VariableInterface<Double> lVariable1 = lVariableBundle.getVariable("doublevar1");
 			// System.out.println(lVariable1.get());
 			assertEquals(312, lVariable1.get(), 0.5);
@@ -131,13 +130,13 @@ public class LocalFileStackTests
 			lLocalFileStackSource.update();
 
 			assertEquals(	cNumberOfStacks,
-										lLocalFileStackSource.getNumberOfStacks());
+							lLocalFileStackSource.getNumberOfStacks());
 
 			for (int i = 0; i < cNumberOfStacks; i++)
 			{
 				lStack = lLocalFileStackSource.getStack(i);
 				final Cursor<UnsignedShortType> lCursor = lStack.getImage()
-																												.cursor();
+																.cursor();
 
 				while (lCursor.hasNext())
 				{

@@ -3,15 +3,15 @@ package rtlib.stack;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 
 public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																												FreeableBase implements
-																																																		StackInterface<T, A>
+																						FreeableBase implements
+																									StackInterface<T, A>
 {
 
 	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
@@ -38,13 +38,13 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 
 	@Override
 	public void setVoxelSizeInRealUnits(final int pIndex,
-																			final double pVoxelSizeInRealUnits)
+										final double pVoxelSizeInRealUnits)
 	{
 		if (mVoxelSizeInRealUnits == null)
 			mVoxelSizeInRealUnits = new double[pIndex + 1];
 		if (mVoxelSizeInRealUnits.length <= pIndex)
-			mVoxelSizeInRealUnits = Arrays.copyOf(mVoxelSizeInRealUnits,
-																						pIndex + 1);
+			mVoxelSizeInRealUnits = Arrays.copyOf(	mVoxelSizeInRealUnits,
+													pIndex + 1);
 		for (int i = 0; i < mVoxelSizeInRealUnits.length; i++)
 			if (mVoxelSizeInRealUnits[i] == 0)
 				mVoxelSizeInRealUnits[i] = 1;
@@ -58,7 +58,7 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 		if (mVoxelSizeInRealUnits == null)
 			return null;
 		return Arrays.copyOf(	mVoxelSizeInRealUnits,
-													mVoxelSizeInRealUnits.length);
+								mVoxelSizeInRealUnits.length);
 	}
 
 	@Override
@@ -162,34 +162,34 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	public static <T extends NativeType<T>, A extends ArrayDataAccess<A>> StackInterface<T, A> requestOrWaitWithRecycler(	final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pRecycler,
-																																																												final long pWaitTime,
-																																																												final TimeUnit pTimeUnit,
-																																																												final T pType,
-																																																												final long pWidth,
-																																																												final long pHeight,
-																																																												final long pDepth)
+																															final long pWaitTime,
+																															final TimeUnit pTimeUnit,
+																															final T pType,
+																															final long pWidth,
+																															final long pHeight,
+																															final long pDepth)
 	{
-		final StackRequest<T> lStackRequest = new StackRequest<T>(pType,
-																															pWidth,
-																															pHeight,
-																															pDepth);
+		final StackRequest<T> lStackRequest = new StackRequest<T>(	pType,
+																	pWidth,
+																	pHeight,
+																	pDepth);
 
-		return pRecycler.getOrWait(pWaitTime, pTimeUnit, lStackRequest);
+		return pRecycler.getOrWait(	pWaitTime,
+									pTimeUnit,
+									lStackRequest);
 	}
-
-
 
 	@Override
 	public String toString()
 	{
 		return String.format(	"StackBase [mStackIndex=%s, mTimeStampInNanoseconds=%s, mType=%s, mVoxelSizeInRealUnits=%s, mNumberOfImagesPerPlane=%s, mIsReleased=%s, mStackBasicRecycler=%s]",
-													mStackIndex,
-													mTimeStampInNanoseconds,
-													mType,
-													Arrays.toString(mVoxelSizeInRealUnits),
-													mNumberOfImagesPerPlane,
-													mIsReleased,
-													mStackBasicRecycler);
+								mStackIndex,
+								mTimeStampInNanoseconds,
+								mType,
+								Arrays.toString(mVoxelSizeInRealUnits),
+								mNumberOfImagesPerPlane,
+								mIsReleased,
+								mStackBasicRecycler);
 	}
 
 }

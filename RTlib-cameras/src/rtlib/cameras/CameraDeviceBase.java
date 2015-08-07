@@ -7,12 +7,12 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
-																																		CameraDeviceInterface
+																	CameraDeviceInterface
 {
 
 	protected DoubleVariable mStackBytesPerPixelVariable,
-			mStackWidthVariable, mStackHeightVariable, mStackDepthVariable,
-			mExposureInMicrosecondsVariable,
+			mStackWidthVariable, mStackHeightVariable,
+			mStackDepthVariable, mExposureInMicrosecondsVariable,
 			mPixelSizeinNanometersVariable,
 			mLineReadOutTimeInMicrosecondsVariable;
 
@@ -76,7 +76,6 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	{
 		return mIsAcquiring;
 	}
-
 
 	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
 	{

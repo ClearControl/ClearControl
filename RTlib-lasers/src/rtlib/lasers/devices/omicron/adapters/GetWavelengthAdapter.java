@@ -4,7 +4,7 @@ import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class GetWavelengthAdapter extends OmicronAdapter implements
-																												SerialTextDeviceAdapter
+														SerialTextDeviceAdapter
 {
 
 	@Override
@@ -16,8 +16,8 @@ public class GetWavelengthAdapter extends OmicronAdapter implements
 	@Override
 	public Double parseValue(final byte[] pMessage)
 	{
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetSpecInfoReplyPrefix,
-																															pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(	ProtocolXX.cGetSpecInfoReplyPrefix,
+																	pMessage);
 		final String lWavelengthString = lSplittedMessage[0];
 		final int lWavelengthInNanometer = Integer.parseInt(lWavelengthString);
 		return (double) lWavelengthInNanometer;

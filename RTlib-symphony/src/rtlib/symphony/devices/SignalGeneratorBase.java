@@ -14,9 +14,9 @@ import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;
 
 public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
-																																		SignalGeneratorInterface,
-																																		AsynchronousExecutorServiceAccess,
-																																		QueueProviderUsingDeviceInterface
+																	SignalGeneratorInterface,
+																	AsynchronousExecutorServiceAccess,
+																	QueueProviderUsingDeviceInterface
 {
 
 	protected final ScoreInterface mStagingScore;
@@ -26,7 +26,7 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	protected QueueProvider<?> mQueueProvider;
 
 	protected final BooleanVariable mTriggerVariable = new BooleanVariable(	"Trigger",
-																																					false);
+																			false);
 	protected volatile boolean mIsPlaying;
 
 	public SignalGeneratorBase(String pDeviceName)
@@ -97,8 +97,6 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	{
 		return mEnqueuedStateCounter;
 	}
-
-
 
 	@Override
 	public Future<Boolean> playQueue()

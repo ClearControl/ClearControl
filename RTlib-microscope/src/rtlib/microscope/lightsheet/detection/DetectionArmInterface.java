@@ -6,7 +6,7 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface DetectionArmInterface	extends
-																				OpenCloseDeviceInterface
+										OpenCloseDeviceInterface
 {
 	public DoubleVariable getDetectionFocusZInMicronsVariable();
 

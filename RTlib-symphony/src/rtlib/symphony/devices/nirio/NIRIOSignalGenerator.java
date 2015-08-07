@@ -1,6 +1,7 @@
 package rtlib.symphony.devices.nirio;
 
 import static java.lang.Math.toIntExact;
+
 import nirioj.direttore.Direttore;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
@@ -9,7 +10,7 @@ import rtlib.symphony.devices.nirio.compiler.NIRIOScoreCompiler;
 import rtlib.symphony.score.ScoreInterface;
 
 public class NIRIOSignalGenerator extends SignalGeneratorBase	implements
-																															SignalGeneratorInterface
+																SignalGeneratorInterface
 
 {
 
@@ -42,19 +43,19 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase	implements
 
 		NIRIOScoreCompiler.compile(mNIRIOCompiledScore, pScore);
 
-		lPlayed = mDirettore.play(mNIRIOCompiledScore.getDeltaTimeBuffer()
-																									.getContiguousMemory()
-																									.getBridJPointer(Integer.class),
-															mNIRIOCompiledScore.getNumberOfTimePointsBuffer()
-																									.getContiguousMemory()
-																									.getBridJPointer(Integer.class),
-															mNIRIOCompiledScore.getSyncBuffer()
-																									.getContiguousMemory()
-																									.getBridJPointer(Integer.class),
-															toIntExact(mNIRIOCompiledScore.getNumberOfMovements()),
-															mNIRIOCompiledScore.getScoreBuffer()
-																									.getContiguousMemory()
-																									.getBridJPointer(Short.class));
+		lPlayed = mDirettore.play(	mNIRIOCompiledScore.getDeltaTimeBuffer()
+														.getContiguousMemory()
+														.getBridJPointer(Integer.class),
+									mNIRIOCompiledScore.getNumberOfTimePointsBuffer()
+														.getContiguousMemory()
+														.getBridJPointer(Integer.class),
+									mNIRIOCompiledScore.getSyncBuffer()
+														.getContiguousMemory()
+														.getBridJPointer(Integer.class),
+									toIntExact(mNIRIOCompiledScore.getNumberOfMovements()),
+									mNIRIOCompiledScore.getScoreBuffer()
+														.getContiguousMemory()
+														.getBridJPointer(Short.class));
 
 		lCurrentThread.setPriority(lCurrentThreadPriority);
 		mTriggerVariable.setValue(false);

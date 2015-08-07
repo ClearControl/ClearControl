@@ -4,12 +4,12 @@ import rtlib.optomech.filterwheels.devices.fli.FLIFilterWheelDevice;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 
-public abstract class FilterWheelDeviceAdapter extends
-																							SerialDeviceAdapterAdapter implements
-																																				SerialBinaryDeviceAdapter
+public abstract class FilterWheelDeviceAdapter	extends
+												SerialDeviceAdapterAdapter	implements
+																			SerialBinaryDeviceAdapter
 {
-	static final byte cRequestFilterWheelStatusCode = (byte) Integer.parseInt("cc",
-																																						16);
+	static final byte cRequestFilterWheelStatusCode = (byte) Integer.parseInt(	"cc",
+																				16);
 	static final byte[] cRequestFilterWheelStatusMessage = new byte[]
 	{ cRequestFilterWheelStatusCode };
 
@@ -17,7 +17,7 @@ public abstract class FilterWheelDeviceAdapter extends
 	{ 0 };
 
 	static final byte cAcknowledgementCode = (byte) Integer.parseInt(	"0D",
-																																		16);
+																		16);
 
 	protected final FLIFilterWheelDevice mFLIFilterWheelDevice;
 
@@ -46,7 +46,7 @@ public abstract class FilterWheelDeviceAdapter extends
 	}
 
 	public Double parsePositionOrSpeedValue(final byte[] pMessage,
-																					final boolean pReturnPosition)
+											final boolean pReturnPosition)
 	{
 		if (pMessage == null)
 		{
@@ -61,7 +61,7 @@ public abstract class FilterWheelDeviceAdapter extends
 		// return (double) (pReturnPosition ? lPosition : lSpeed);
 
 		return (double) (pReturnPosition ? mFLIFilterWheelDevice.getCachedPosition()
-																		: mFLIFilterWheelDevice.getCachedSpeed());
+										: mFLIFilterWheelDevice.getCachedSpeed());
 	}
 
 	public static String binarify(byte pByte)
@@ -74,7 +74,7 @@ public abstract class FilterWheelDeviceAdapter extends
 	}
 
 	public byte[] getSetPositionAndSpeedCommandMessage(	final int pPosition,
-																											final int pSpeed)
+														final int pSpeed)
 	{
 		final int lPositionByte = (pPosition % 10) & (1 + 2 + 4 + 8);
 		final int lSpeedByte = (pSpeed % 8) << 5 & (16 + 32 + 64);

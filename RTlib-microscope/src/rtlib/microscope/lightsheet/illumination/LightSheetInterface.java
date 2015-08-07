@@ -54,6 +54,4 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public int getNumberOfPhases(int pLaserIndex);
 
-
-
 }

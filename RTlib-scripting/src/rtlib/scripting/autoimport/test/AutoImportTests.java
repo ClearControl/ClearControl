@@ -14,10 +14,10 @@ public class AutoImportTests
 	public void test() throws IOException
 	{
 		final String lScriptText = IOUtils.toString(this.getClass()
-																										.getResourceAsStream("script.txt"),
-        "UTF-8");
-		final String lGeneratedImportStatements = AutoImport.generateImportStatements("rtlib",
-																																									lScriptText);
+														.getResourceAsStream("script.txt"),
+													"UTF-8");
+		final String lGeneratedImportStatements = AutoImport.generateImportStatements(	"rtlib",
+																						lScriptText);
 
 		System.out.println(lGeneratedImportStatements);
 	}

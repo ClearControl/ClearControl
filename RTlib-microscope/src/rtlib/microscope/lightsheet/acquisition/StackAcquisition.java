@@ -1,6 +1,7 @@
 package rtlib.microscope.lightsheet.acquisition;
 
 import static java.lang.Math.floor;
+
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.acquisition.interpolation.InterpolationTable;
@@ -10,12 +11,13 @@ public class StackAcquisition
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private final DoubleVariable mLowZ = new DoubleVariable("LowZ", 25);
+	private final DoubleVariable mLowZ = new DoubleVariable("LowZ",
+															25);
 	private final DoubleVariable mHighZ = new DoubleVariable(	"HighZ",
-																														75);
+																75);
 
 	private final DoubleVariable mZStep = new DoubleVariable(	"ZStep",
-																														0.5);
+																0.5);
 
 	private final InterpolationTable mInterpolationTableDZ;
 	private final InterpolationTable mInterpolationTableIZ;
@@ -31,21 +33,21 @@ public class StackAcquisition
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
 		mInterpolationTableDZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfDetectionArmDevices());
+																			.getNumberOfDetectionArmDevices());
 		mInterpolationTableIZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIY = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIA = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIB = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIR = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIL = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 		mInterpolationTableIP = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+																			.getNumberOfLightSheetDevices());
 	}
 
 	public void addControlPlane(double pZ)
@@ -73,7 +75,7 @@ public class StackAcquisition
 	public void setPlane(int pPlaneIndex)
 	{
 		final int lNumberOfDetectionPathDevices = mLightSheetMicroscope.getDeviceLists()
-																																		.getNumberOfDetectionArmDevices();
+																		.getNumberOfDetectionArmDevices();
 
 		for (int i = 0; i < lNumberOfDetectionPathDevices; i++)
 		{
@@ -81,7 +83,7 @@ public class StackAcquisition
 		}
 
 		final int lNumberOfLightsheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfLightSheetDevices();
+																	.getNumberOfLightSheetDevices();
 
 		for (int i = 0; i < lNumberOfLightsheetDevices; i++)
 		{
@@ -95,7 +97,7 @@ public class StackAcquisition
 		}
 
 		final int lNumberOfLaserDevices = mLightSheetMicroscope.getDeviceLists()
-																														.getNumberOfLaserDevices();
+																.getNumberOfLaserDevices();
 
 		for (int i = 0; i < lNumberOfLaserDevices; i++)
 		{
@@ -111,7 +113,7 @@ public class StackAcquisition
 		final double lZstart = mLowZ.getValue();
 		final double lZstop = mHighZ.getValue();
 		final double lZ = mLowZ.getValue() + lNormalizedZ
-											* (lZstop - lZstart);
+							* (lZstop - lZstart);
 
 		return lZ;
 	}
@@ -120,7 +122,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableDZ.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
@@ -128,7 +130,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIZ.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
@@ -136,7 +138,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIY.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 		return lInterpolatedValue;
 	}
 
@@ -144,7 +146,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIA.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -153,7 +155,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIB.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -162,7 +164,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIR.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -171,7 +173,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIL.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -180,7 +182,7 @@ public class StackAcquisition
 	{
 		final double lRamp = getRamp(pPlaneIndex);
 		final double lInterpolatedValue = mInterpolationTableIP.getInterpolatedValue(	pDeviceIndex,
-																																									lRamp);
+																						lRamp);
 
 		return lInterpolatedValue;
 	}

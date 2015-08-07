@@ -7,13 +7,13 @@ public abstract class AbstractOffHeapAccess
 {
 	protected ContiguousMemoryInterface mContiguousMemory;
 
-	public AbstractOffHeapAccess(Object pParent,
-															long pAddress,
-															long pLengthInBytes)
+	public AbstractOffHeapAccess(	Object pParent,
+									long pAddress,
+									long pLengthInBytes)
 	{
-		mContiguousMemory = OffHeapMemory.wrapPointer(pParent,
-																									pAddress,
-																									pLengthInBytes);
+		mContiguousMemory = OffHeapMemory.wrapPointer(	pParent,
+														pAddress,
+														pLengthInBytes);
 	}
 
 	public AbstractOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)
@@ -29,7 +29,5 @@ public abstract class AbstractOffHeapAccess
 	{
 		return mContiguousMemory;
 	}
-
-
 
 }

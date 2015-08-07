@@ -1,14 +1,14 @@
 package rtlib.stack;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclableFactory;
 import coremem.util.Size;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 
 public class ContiguousOffHeapPlanarStackFactory<T extends NativeType<T>, A extends ArrayDataAccess<A>> implements
-																																																				RecyclableFactory<StackInterface<T, A>, StackRequest<T>>
+																										RecyclableFactory<StackInterface<T, A>, StackRequest<T>>
 {
 
 	@SuppressWarnings("unchecked")
@@ -16,17 +16,17 @@ public class ContiguousOffHeapPlanarStackFactory<T extends NativeType<T>, A exte
 	public OffHeapPlanarStack<T, A> create(StackRequest<T> pParameters)
 	{
 		final int lBytesPerVoxel = Size.of(pParameters.getType()
-																									.getClass()
-																									.getName());
+														.getClass()
+														.getName());
 		final long lVolume = pParameters.getWidth() * pParameters.getHeight()
-													* pParameters.getDepth();
+								* pParameters.getDepth();
 		final long lBufferSizeInBytes = lVolume * lBytesPerVoxel;
 		final ContiguousMemoryInterface lContiguousMemoryInterface = new OffHeapMemory(	"OffHeapPlanarStack" + pParameters,
-																																										lBufferSizeInBytes);
+																						lBufferSizeInBytes);
 		return (OffHeapPlanarStack<T, A>) OffHeapPlanarStack.createStack(	lContiguousMemoryInterface,
-																																			pParameters.getType(),
-																																			pParameters.getWidth(),
-																																			pParameters.getHeight(),
-																																			pParameters.getDepth());
+																			pParameters.getType(),
+																			pParameters.getWidth(),
+																			pParameters.getHeight(),
+																			pParameters.getDepth());
 	}
 }

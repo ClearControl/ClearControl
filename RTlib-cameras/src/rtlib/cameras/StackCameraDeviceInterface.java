@@ -9,8 +9,8 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																																		CameraDeviceInterface,
-																																																		NameableInterface
+																									CameraDeviceInterface,
+																									NameableInterface
 {
 	DoubleVariable getNumberOfImagesPerPlaneVariable();
 
@@ -22,7 +22,5 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 
 	@Override
 	void trigger();
-
-
 
 }

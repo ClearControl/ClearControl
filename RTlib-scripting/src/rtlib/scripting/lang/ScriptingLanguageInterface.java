@@ -11,15 +11,13 @@ public interface ScriptingLanguageInterface
 	String getPreamble();
 
 	void runScript(	String pScriptName,
-	               	String pPreambleString,
-									String pScriptString,
-									String pPostambleString,
-									Map<String, Object> pMap,
-									OutputStream pOutputStream,
-									boolean pDebugMode) throws IOException;
+					String pPreambleString,
+					String pScriptString,
+					String pPostambleString,
+					Map<String, Object> pMap,
+					OutputStream pOutputStream,
+					boolean pDebugMode) throws IOException;
 
 	String getErrorMessage(Throwable pThrowable);
-
-
 
 }

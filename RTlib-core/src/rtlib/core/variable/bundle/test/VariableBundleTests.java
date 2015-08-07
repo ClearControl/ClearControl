@@ -18,7 +18,7 @@ public class VariableBundleTests
 
 			@Override
 			public void setEvent(	VariableBundle pCurrentValue,
-														VariableBundle pNewValue)
+									VariableBundle pNewValue)
 			{
 				// TODO Auto-generated method stub
 

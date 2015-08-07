@@ -3,8 +3,8 @@ package rtlib.signalcond;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
-public class ScalingAmplifierBaseDevice extends NamedVirtualDevice implements
-																																	ScalingAmplifierDeviceInterface
+public class ScalingAmplifierBaseDevice extends NamedVirtualDevice	implements
+																	ScalingAmplifierDeviceInterface
 {
 
 	protected DoubleVariable mGainVariable, mOffsetVariable;

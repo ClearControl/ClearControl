@@ -7,27 +7,29 @@ import java.nio.FloatBuffer;
 import net.imglib2.img.basictypeaccess.FloatAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
-public class FloatBufferAccess implements
-															FloatAccess,
-															ArrayDataAccess<FloatBufferAccess>
+public class FloatBufferAccess	implements
+								FloatAccess,
+								ArrayDataAccess<FloatBufferAccess>
 {
 	protected FloatBuffer data;
 
-	public FloatBufferAccess( final int numEntities )
+	public FloatBufferAccess(final int numEntities)
 	{
-		this.data = ByteBuffer.allocateDirect( numEntities * 4 ).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		this.data = ByteBuffer.allocateDirect(numEntities * 4)
+								.order(ByteOrder.nativeOrder())
+								.asFloatBuffer();
 	}
 
 	@Override
-	public float getValue( final int index )
+	public float getValue(final int index)
 	{
-		return data.get( index );
+		return data.get(index);
 	}
 
 	@Override
-	public void setValue( final int index, final float value )
+	public void setValue(final int index, final float value)
 	{
-		data.put( index, value );
+		data.put(index, value);
 	}
 
 	@Override
@@ -37,8 +39,8 @@ public class FloatBufferAccess implements
 	}
 
 	@Override
-	public FloatBufferAccess createArray( final int numEntities )
+	public FloatBufferAccess createArray(final int numEntities)
 	{
-		return new FloatBufferAccess( numEntities );
+		return new FloatBufferAccess(numEntities);
 	}
 }

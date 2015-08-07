@@ -3,8 +3,8 @@ package rtlib.gui.swing;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import rtlib.core.configuration.MachineConfiguration;
 import ch.randelshofer.quaqua.QuaquaManager;
+import rtlib.core.configuration.MachineConfiguration;
 
 public class GuiLookAndFeel
 {
@@ -22,7 +22,8 @@ public class GuiLookAndFeel
 			UIManager.setLookAndFeel(pLookAndFeel);
 		}
 		catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e)
+				| IllegalAccessException
+				| UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
 		}
@@ -33,7 +34,7 @@ public class GuiLookAndFeel
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
 		String lLookAndFeelName = lCurrentMachineConfiguration.getStringProperty(	"lookandfeel",
-																																							"system");
+																					"system");
 
 		if (lLookAndFeelName.equalsIgnoreCase("system"))
 			setSystemLookAndFeel();

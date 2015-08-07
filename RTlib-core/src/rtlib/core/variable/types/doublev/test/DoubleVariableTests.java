@@ -40,9 +40,12 @@ public class DoubleVariableTests
 	@Test
 	public void testUnits()
 	{
-		final DoubleVariable x = new DoubleVariable("x", MicroMeter, 0);
-		final DoubleVariable y = new DoubleVariable("y", MicroMeter, 0);
-
+		final DoubleVariable x = new DoubleVariable("x",
+													MicroMeter,
+													0);
+		final DoubleVariable y = new DoubleVariable("y",
+													MicroMeter,
+													0);
 
 		x.syncWith(y);
 		assertEquals(0, x.getValue(), 0.01);

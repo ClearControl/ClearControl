@@ -1,7 +1,7 @@
 package rtlib.core.variable.types.objectv;
 
 public class SingleUpdateTargetObjectVariable<O>	extends
-																									ObjectVariable<O>
+													ObjectVariable<O>
 {
 
 	public SingleUpdateTargetObjectVariable(final String pVariableName)
@@ -10,7 +10,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 	}
 
 	public SingleUpdateTargetObjectVariable(final String pVariableName,
-																					final O pReference)
+											final O pReference)
 	{
 		super(pVariableName, pReference);
 	}
@@ -21,7 +21,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 		if (mVariablesToSendUpdatesTo.size() != 0)
 		{
 			throw new IllegalArgumentException(this.getClass()
-																							.getSimpleName() + ": cannot send updates to more  than one peer! (sending to one peer registered already)");
+													.getSimpleName() + ": cannot send updates to more  than one peer! (sending to one peer registered already)");
 		}
 
 		mVariablesToSendUpdatesTo.add(pObjectVariable);
@@ -32,7 +32,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 		if (mVariablesToSendUpdatesTo.size() >= 2)
 		{
 			throw new IllegalArgumentException(this.getClass()
-																							.getSimpleName() + ": cannot send updates to more than one peer! (more than 1 peer is registered already)");
+													.getSimpleName() + ": cannot send updates to more than one peer! (more than 1 peer is registered already)");
 		}
 
 		mVariablesToSendUpdatesTo.clear();

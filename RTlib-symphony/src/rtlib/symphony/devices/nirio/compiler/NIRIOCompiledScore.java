@@ -8,7 +8,6 @@ public class NIRIOCompiledScore
 
 {
 
-
 	private volatile long mNumberOfMovements;
 	private ContiguousBuffer mDeltaTimeBuffer;
 	private ContiguousBuffer mSyncBuffer;
@@ -25,14 +24,12 @@ public class NIRIOCompiledScore
 	public String toString()
 	{
 		return String.format(	"NIRIOCompiledScore:\n mNumberOfMovements=%s\n mDeltaTimeBuffer=%s\n mSyncBuffer=%s\n mNumberOfTimePointsBuffer=%s\n mScoreBuffer=%s\n\n",
-													getNumberOfMovements(),
-													getDeltaTimeBuffer(),
-													getSyncBuffer(),
-													getNumberOfTimePointsBuffer(),
-													getScoreBuffer());
+								getNumberOfMovements(),
+								getDeltaTimeBuffer(),
+								getSyncBuffer(),
+								getNumberOfTimePointsBuffer(),
+								getScoreBuffer());
 	}
-
-
 
 	public ContiguousBuffer getDeltaTimeBuffer()
 	{

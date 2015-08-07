@@ -9,11 +9,11 @@ import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 
 public abstract class SignalStartableTaskDevice	extends
-																								SignalStartableDevice	implements
-																																			OpenCloseDeviceInterface,
-																																			AsynchronousExecutorServiceAccess,
-																																			Loggable,
-																																			Runnable
+												SignalStartableDevice	implements
+																		OpenCloseDeviceInterface,
+																		AsynchronousExecutorServiceAccess,
+																		Loggable,
+																		Runnable
 {
 
 	private final SignalStartableTaskDevice lThis;
@@ -28,7 +28,7 @@ public abstract class SignalStartableTaskDevice	extends
 		lThis = this;
 
 		mCancelBooleanVariable = new BooleanVariable(	pDeviceName + "Cancel",
-																									false);
+														false);
 
 		mCancelBooleanVariable.addEdgeListener(new BooleanEventListenerInterface()
 		{

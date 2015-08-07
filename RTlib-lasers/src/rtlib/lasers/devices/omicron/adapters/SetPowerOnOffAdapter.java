@@ -4,7 +4,7 @@ import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SetPowerOnOffAdapter extends OmicronAdapter implements
-																												SerialTextDeviceAdapter
+														SerialTextDeviceAdapter
 {
 
 	@Override
@@ -21,10 +21,10 @@ public class SetPowerOnOffAdapter extends OmicronAdapter implements
 
 	@Override
 	public byte[] getSetValueCommandMessage(final double pOldValue,
-																					final double pNewValue)
+											final double pNewValue)
 	{
 		return pNewValue > 0 ? ProtocolXX.cSetPowerOnCommand.getBytes()
-											: ProtocolXX.cSetPowerOffCommand.getBytes();
+							: ProtocolXX.cSetPowerOffCommand.getBytes();
 	}
 
 	@Override

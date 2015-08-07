@@ -20,7 +20,7 @@ public class JCheckBoxBoolean extends JCheckBox
 	}
 
 	public JCheckBoxBoolean(final String pLabel,
-													final boolean pInitialState)
+							final boolean pInitialState)
 	{
 		super(pLabel);
 		mThis = this;
@@ -29,7 +29,7 @@ public class JCheckBoxBoolean extends JCheckBox
 
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+										final Double pNewValue)
 			{
 				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
 				// if (pDoubleEventSource != mThis)

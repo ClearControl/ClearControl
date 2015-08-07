@@ -6,7 +6,7 @@ import rtlib.stages.StageDeviceBase;
 import rtlib.stages.StageDeviceInterface;
 
 public class StageDeviceSimulator extends StageDeviceBase	implements
-																													StageDeviceInterface
+															StageDeviceInterface
 {
 
 	public StageDeviceSimulator(String pDeviceName)
@@ -21,20 +21,22 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 		mIndexToNameMap.put(lDOFIndex, pDOFName);
 
 		mEnableVariables.add(new BooleanVariable(	"Enable" + pDOFName,
-																							false));
-		mReadyVariables.add(new BooleanVariable("Ready" + pDOFName, false));
+													false));
+		mReadyVariables.add(new BooleanVariable("Ready" + pDOFName,
+												false));
 		mHomingVariables.add(new BooleanVariable(	"Homing" + pDOFName,
-																							false));
-		mStopVariables.add(new BooleanVariable("Stop" + pDOFName, false));
-		mResetVariables.add(new BooleanVariable("Reset" + pDOFName, false));
-		mPositionVariables.add(new DoubleVariable("Position" + pDOFName,
-																							0));
+													false));
+		mStopVariables.add(new BooleanVariable(	"Stop" + pDOFName,
+												false));
+		mResetVariables.add(new BooleanVariable("Reset" + pDOFName,
+												false));
+		mPositionVariables.add(new DoubleVariable(	"Position" + pDOFName,
+													0));
 		mMinPositionVariables.add(new DoubleVariable(	"MinPosition" + pDOFName,
-																									pMin));
+														pMin));
 		mMinPositionVariables.add(new DoubleVariable(	"MaxPosition" + pDOFName,
-																									pMax));
+														pMax));
 
 	}
-
 
 }

@@ -21,8 +21,8 @@ public class CopyDoubleButton extends JButton
 	}
 
 	public CopyDoubleButton(final String pLabel,
-													final DoubleOutputVariableInterface pSource,
-													final DoubleInputVariableInterface pDestination)
+							final DoubleOutputVariableInterface pSource,
+							final DoubleInputVariableInterface pDestination)
 	{
 		mSource = pSource;
 		mDestination = pDestination;

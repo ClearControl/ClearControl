@@ -6,10 +6,10 @@ import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
-public interface CameraDeviceInterface extends
-																			OpenCloseDeviceInterface,
-																			StartStopDeviceInterface,
-																			StateQueueDeviceInterface
+public interface CameraDeviceInterface	extends
+										OpenCloseDeviceInterface,
+										StartStopDeviceInterface,
+										StateQueueDeviceInterface
 {
 
 	DoubleVariable getLineReadOutTimeInMicrosecondsVariable();

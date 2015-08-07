@@ -8,26 +8,28 @@ import net.imglib2.img.basictypeaccess.IntAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class IntBufferAccess implements
-														IntAccess,
-														ArrayDataAccess<IntBufferAccess>
+							IntAccess,
+							ArrayDataAccess<IntBufferAccess>
 {
 	protected IntBuffer data;
 
-	public IntBufferAccess( final int numEntities )
+	public IntBufferAccess(final int numEntities)
 	{
-		this.data = ByteBuffer.allocateDirect( numEntities * 4 ).order(ByteOrder.nativeOrder()).asIntBuffer();
+		this.data = ByteBuffer.allocateDirect(numEntities * 4)
+								.order(ByteOrder.nativeOrder())
+								.asIntBuffer();
 	}
 
 	@Override
-	public int getValue( final int index )
+	public int getValue(final int index)
 	{
-		return data.get( index );
+		return data.get(index);
 	}
 
 	@Override
-	public void setValue( final int index, final int value )
+	public void setValue(final int index, final int value)
 	{
-		data.put( index, value );
+		data.put(index, value);
 	}
 
 	@Override
@@ -37,8 +39,8 @@ public class IntBufferAccess implements
 	}
 
 	@Override
-	public IntBufferAccess createArray( final int numEntities )
+	public IntBufferAccess createArray(final int numEntities)
 	{
-		return new IntBufferAccess( numEntities );
+		return new IntBufferAccess(numEntities);
 	}
 }

@@ -7,7 +7,7 @@ import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 
 public interface StageDeviceInterface	extends
-																			OpenCloseDeviceInterface
+										OpenCloseDeviceInterface
 {
 	int getNumberOfDOFs();
 
@@ -24,9 +24,10 @@ public interface StageDeviceInterface	extends
 	double getCurrentPosition(int pDOFIndex);
 
 	void goToPosition(int pDOFIndex, double pValue);
-	
 
-	Boolean waitToBeReady(int pDOFIndex, int pTimeOut, TimeUnit pTimeUnit);
+	Boolean waitToBeReady(	int pDOFIndex,
+							int pTimeOut,
+							TimeUnit pTimeUnit);
 
 	DoubleVariable getMinPositionVariable(int pDOFIndex);
 
@@ -41,7 +42,5 @@ public interface StageDeviceInterface	extends
 	DoubleVariable getHomingVariable(int pDOFIndex);
 
 	BooleanVariable getStopVariable(int pDOFIndex);
-
-
 
 }

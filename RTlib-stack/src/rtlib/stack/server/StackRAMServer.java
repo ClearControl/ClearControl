@@ -1,10 +1,10 @@
 package rtlib.stack.server;
 
-import gnu.trove.list.array.TLongArrayList;
-
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import coremem.recycling.BasicRecycler;
+import gnu.trove.list.array.TLongArrayList;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.VariableInterface;
@@ -12,11 +12,10 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
 
 public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																										StackSinkInterface<T, A>,
-																																										StackSourceInterface<T, A>
+																					StackSinkInterface<T, A>,
+																					StackSourceInterface<T, A>
 {
 
 	ArrayList<StackInterface<T, A>> mStackList = new ArrayList<StackInterface<T, A>>();
@@ -48,8 +47,8 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	@Override
 	public StackInterface<T, A> getStack(	final long pStackIndex,
-																				long pTime,
-																				TimeUnit pTimeUnit)
+											long pTime,
+											TimeUnit pTimeUnit)
 	{
 		return getStack(pStackIndex);
 	}
@@ -72,17 +71,17 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mStackTimePointList.add(pStack.getTimeStampInNanoseconds());
 		return mStackList.add(pStack);
 	}
-	
+
 	@Override
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
 		mMetaDataVariableBundle.addVariable(new DoubleVariable(	pPrefix,
-																																	pValue));
+																pValue));
 	}
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+									final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundle.addVariable(pVariable);
 	}
@@ -99,6 +98,5 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mMetaDataVariableBundle.removeVariable(pVariable);
 
 	}
-
 
 }

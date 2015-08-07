@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetCurrentPowerAdapter extends OmicronAdapter implements
-																													SerialTextDeviceAdapter
+public class GetCurrentPowerAdapter extends OmicronAdapter	implements
+															SerialTextDeviceAdapter
 {
 	private static final double cCurrentPowerFilteringAlpha = 0.1;
 
@@ -21,22 +21,23 @@ public class GetCurrentPowerAdapter extends OmicronAdapter implements
 	{
 		try
 		{
-			// final String[] lSplittedMessage = ProtocolXX.splitMessage(pMessage);
+			// final String[] lSplittedMessage =
+			// ProtocolXX.splitMessage(pMessage);
 			// final String lCurrentPowerString = lSplittedMessage[0];
 			final String lCurrentPowerString = new String(pMessage);
 			final double lCurrentPowerInMilliwatts = ProtocolXX.parseDouble(ProtocolXX.cMeasureDiodePowerReplyPrefix,
-																																			lCurrentPowerString);
+																			lCurrentPowerString);
 
 			mCurrentPowerInMilliwatts = (1 - cCurrentPowerFilteringAlpha) * mCurrentPowerInMilliwatts
-																	+ cCurrentPowerFilteringAlpha
-																	* lCurrentPowerInMilliwatts;
+										+ cCurrentPowerFilteringAlpha
+										* lCurrentPowerInMilliwatts;
 		}
 		catch (Throwable e)
 		{
-			System.err.printf("%s-%s: Problem while parsing current power level (received:'%s') \n",
-												GetCurrentPowerAdapter.class.getSimpleName(),
-												this.toString(),
-												new String(pMessage));
+			System.err.printf(	"%s-%s: Problem while parsing current power level (received:'%s') \n",
+								GetCurrentPowerAdapter.class.getSimpleName(),
+								this.toString(),
+								new String(pMessage));
 		}
 
 		return mCurrentPowerInMilliwatts;

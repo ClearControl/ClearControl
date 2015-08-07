@@ -15,14 +15,14 @@ public class TC01 extends TemperatureSensorDeviceBase
 	private final Pointer<Byte> mPhysicalChannelPointer;
 
 	public TC01(String pPhysicalChannel,
-							NIThermoCoupleType pNIThermoCoupleType,
-							final int pDeviceIndex)
+				NIThermoCoupleType pNIThermoCoupleType,
+				final int pDeviceIndex)
 	{
 		super("TC01");
 		mThermoCoupleNIType = pNIThermoCoupleType;
 		mIsDevicePresent = MachineConfiguration.getCurrentMachineConfiguration()
-																						.getIsDevicePresent("ni.tc01",
-																																pDeviceIndex);
+												.getIsDevicePresent("ni.tc01",
+																	pDeviceIndex);
 
 		mPhysicalChannelPointer = Pointer.pointerToCString(pPhysicalChannel);
 	}
@@ -34,7 +34,7 @@ public class TC01 extends TemperatureSensorDeviceBase
 			return false;
 		final DoubleVariable lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
 		final double lTemperatureInCelcius = TC01libLibrary.tC01lib(mPhysicalChannelPointer,
-																													mThermoCoupleNIType.getValue());
+																	mThermoCoupleNIType.getValue());
 		// System.out.println(lTemperatureInCelcius);
 		lTemperatureInCelciusVariable.setValue(lTemperatureInCelcius);
 		return true;

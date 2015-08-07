@@ -35,10 +35,10 @@ public class ObjectVariableProcessorTests
 		};
 
 		final ObjectVariableAsynchronousPooledProcessor<String, String> lObjectVariableProcessor = new ObjectVariableAsynchronousPooledProcessor<String, String>(	"test",
-																																																																															10,
-																																																																															2,
-																																																																															lProcessor,
-																																																																															false);
+																																									10,
+																																									2,
+																																									lProcessor,
+																																									false);
 
 		lObjectVariableProcessor.open();
 		lObjectVariableProcessor.start();
@@ -46,18 +46,18 @@ public class ObjectVariableProcessorTests
 		ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
 
 		lObjectVariableProcessor.getOutputObjectVariable()
-														.syncWith(new ObjectVariable<String>("Notifier")
-														{
+								.syncWith(new ObjectVariable<String>("Notifier")
+								{
 
-															@Override
-															public void setReference(final String pNewReference)
-															{
-																System.out.println("Received on the output variable: " + pNewReference);
-															}
-														});
+									@Override
+									public void setReference(final String pNewReference)
+									{
+										System.out.println("Received on the output variable: " + pNewReference);
+									}
+								});
 
 		lObjectVariableProcessor.getInputObjectVariable()
-														.setReference("1");
+								.setReference("1");
 
 	}
 

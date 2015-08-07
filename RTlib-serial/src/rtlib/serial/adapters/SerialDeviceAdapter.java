@@ -15,14 +15,12 @@ public interface SerialDeviceAdapter
 
 	public boolean purgeAfterGet();
 
-	
-	
 	// SET RELATED:
-	
+
 	public double clampSetValue(double pNewValue);
-	
+
 	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue);
+											double pNewValue);
 
 	public long getSetValueReturnWaitTimeInMilliseconds();
 
