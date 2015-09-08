@@ -1,10 +1,10 @@
-package rtlib.microscope.lightsheet.gui;
+package rtlib.microscope.lightsheet.demo;
 
 import model.javafx.FxHalcyonNode;
-import model.node.HalcyonNode;
 import model.node.HalcyonNodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
+import rtlib.microscope.lightsheet.gui.LaserGauge;
 import view.HalcyonFrame;
 import window.console.StdOutputCaptureConsole;
 import window.demo.DemoToolbarWindow;
@@ -17,11 +17,11 @@ import java.util.ArrayList;
 /**
  * Halcyon Manager class for microscopy
  */
-public class HalcyonManager
+public class HalcyonManagerDemo
 {
 	final HalcyonFrame lHalcyonFrame = new HalcyonFrame( HalcyonFrame.GUIBackend.JavaFX );
 
-	public HalcyonManager(ArrayList<Object> deviceLists)
+	public HalcyonManagerDemo( ArrayList<Object> deviceLists )
 	{
 		for(Object device : deviceLists)
 		{
@@ -76,7 +76,7 @@ public class HalcyonManager
 		mAllDeviceList.add(laser);
 		mLaserDeviceList.add( laser );
 
-		HalcyonManager manager = new HalcyonManager( mAllDeviceList );
+		HalcyonManagerDemo manager = new HalcyonManagerDemo( mAllDeviceList );
 
 	}
 }

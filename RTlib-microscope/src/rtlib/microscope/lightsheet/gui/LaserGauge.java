@@ -1,14 +1,14 @@
 package rtlib.microscope.lightsheet.gui;
 
+import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.gauge.RadialBargraph;
 import eu.hansolo.enzo.gauge.RadialBargraphBuilder;
+import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -30,17 +30,32 @@ import java.util.Random;
 public class LaserGauge extends Application
 {
 	private static final Random RND       = new Random();
-	private static int          noOfNodes = 0;
+	private IconSwitch powerSwitch;
+	private IconSwitch laserSwitch;
 	private RadialBargraph mwControl;
 	private RadialBargraph percentControl;
 
 	private VBox properties;
+	private VBox pane;
 
 	private long                lastTimerCall;
 	private AnimationTimer timer;
 
 
 	@Override public void init() {
+
+		powerSwitch = new IconSwitch();
+		powerSwitch.setSymbolType( SymbolType.POWER );
+		powerSwitch.setSymbolColor( Color.web("#ffffff") );
+		powerSwitch.setSwitchColor( Color.web("#34495e") );
+		powerSwitch.setThumbColor( Color.web("#ff495e") );
+
+		laserSwitch = new IconSwitch();
+		laserSwitch.setSymbolType( SymbolType.BRIGHTNESS );
+		laserSwitch.setSymbolColor( Color.web("#ffffff") );
+		laserSwitch.setSwitchColor( Color.web("#34495e") );
+		laserSwitch.setThumbColor( Color.web("#ff495e") );
+
 		Marker mwMarker = new Marker(0, "Target Power");
 		Marker percentMarker = new Marker(0, "Target Power");
 
@@ -80,6 +95,7 @@ public class LaserGauge extends Application
 				percentMarker.setValue( newValue.doubleValue() * 2.0 );
 				Rotate rotate = mwControl.getMarkers().get( mwMarker );
 				percentControl.getMarkers().get( percentMarker ).setAngle( rotate.getAngle() );
+				percentControl.setValue( newValue.doubleValue() * 2.0 );
 			}
 		} );
 
@@ -90,6 +106,7 @@ public class LaserGauge extends Application
 				mwMarker.setValue( newValue.doubleValue() / 2.0 );
 				Rotate rotate = percentControl.getMarkers().get( percentMarker );
 				mwControl.getMarkers().get( mwMarker ).setAngle( rotate.getAngle() );
+				mwControl.setValue( newValue.doubleValue() / 2.0 );
 			}
 		} );
 
@@ -112,15 +129,26 @@ public class LaserGauge extends Application
 			}
 		});
 
-		properties.getChildren().add(text);
+		properties.getChildren().add( text );
+
+		pane = new VBox();
+		pane.setPadding( new Insets(10, 10, 10, 10) );
+		pane.setMinWidth( 100 );
+//		pane.setBackground(new Background(new BackgroundFill(Color.web("#34495e"), CornerRadii.EMPTY, Insets.EMPTY)));
+		pane.setSpacing( 20 );
+		pane.setAlignment( Pos.CENTER );
+		pane.getChildren().addAll( powerSwitch, laserSwitch );
 
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
 				if (now > lastTimerCall + 5_000_000_000l) {
-					final double v = RND.nextDouble();
-					mwControl.setValue(v * 50);
-					percentControl.setValue(v * 100);
+
+					double v = RND.nextDouble();
+					v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
+
+					mwControl.setValue(mwMarker.getValue() * v);
+					percentControl.setValue(percentMarker.getValue() * v);
 					lastTimerCall = now;
 				}
 			}
@@ -129,15 +157,15 @@ public class LaserGauge extends Application
 
 	public HBox getPanel()
 	{
-		HBox pane = new HBox();
-		pane.setBackground(null);
-		pane.setPadding(new Insets(15, 15, 15, 15));
-		pane.setSpacing(10);
-		pane.getChildren().addAll(mwControl, percentControl, properties);
+		HBox hBox = new HBox();
+		hBox.setBackground( null );
+		hBox.setPadding( new Insets( 15, 15, 15, 15 ) );
+		hBox.setSpacing( 10 );
+		hBox.getChildren().addAll( pane, mwControl, percentControl, properties );
 
 		timer.start();
 
-		return pane;
+		return hBox;
 	}
 
 	@Override public void start(Stage stage) throws Exception {
@@ -152,9 +180,6 @@ public class LaserGauge extends Application
 		stage.show();
 
 		timer.start();
-
-		calcNoOfNodes(scene.getRoot());
-		System.out.println(noOfNodes + " Nodes in SceneGraph");
 	}
 
 	@Override public void stop() {
@@ -163,20 +188,5 @@ public class LaserGauge extends Application
 
 	public static void main(final String[] args) {
 		Application.launch(args);
-	}
-
-
-	// ******************** Misc **********************************************
-	private static void calcNoOfNodes(Node node) {
-		if (node instanceof Parent) {
-			if (((Parent) node).getChildrenUnmodifiable().size() != 0) {
-				ObservableList<Node> tempChildren = ((Parent) node).getChildrenUnmodifiable();
-				noOfNodes += tempChildren.size();
-				for (Node n : tempChildren) {
-					calcNoOfNodes(n);
-					//System.out.println(n.getStyleClass().toString());
-				}
-			}
-		}
 	}
 }
