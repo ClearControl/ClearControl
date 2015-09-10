@@ -4,7 +4,7 @@ import model.javafx.FxHalcyonNode;
 import model.node.HalcyonNodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
-import rtlib.microscope.lightsheet.gui.LaserGauge;
+import rtlib.lasers.gui.LaserGauge;
 import view.HalcyonFrame;
 import window.console.StdOutputCaptureConsole;
 import window.demo.DemoToolbarWindow;

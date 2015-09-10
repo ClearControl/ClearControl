@@ -123,7 +123,18 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 																								80));
 
 		mScriptingWindow.loadLastLoadedScriptFile();
+		
+		
+		openHalcyonWindow(mLightSheetMicroscope);
+		
+		
 
+	}
+
+	private void openHalcyonWindow(LightSheetMicroscope pLightSheetMicroscope)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
