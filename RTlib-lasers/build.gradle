@@ -22,7 +22,9 @@ sourceSets
 dependencies 
 {
     compile project(':RTlib-core')
+    compile project(':RTlib-gui')
     compile project(':RTlib-serial')
+    compile 'eu.hansolo.enzo:Enzo:0.3.0'
 }
 
 //***********************************************************************************
