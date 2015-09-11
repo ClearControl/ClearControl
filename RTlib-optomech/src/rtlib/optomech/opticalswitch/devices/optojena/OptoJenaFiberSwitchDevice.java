@@ -1,9 +1,9 @@
-package rtlib.optomech.fiberswitch.devices.optojena;
+package rtlib.optomech.opticalswitch.devices.optojena;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.optomech.fiberswitch.OpticalSwitchDeviceInterface;
-import rtlib.optomech.fiberswitch.devices.optojena.adapters.FiberSwitchPositionDeviceAdapter;
+import rtlib.optomech.OpticalSwitchDeviceInterface;
+import rtlib.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
 
 public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
@@ -24,9 +24,9 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	{
 		super("OptoJenaFiberSwitch", pPortName, 76800);
 
-		final FiberSwitchPositionDeviceAdapter lFiberSwitchPosition = new FiberSwitchPositionDeviceAdapter(this);
+		final FiberSwitchPositionAdapter lFiberSwitchPosition = new FiberSwitchPositionAdapter(this);
 
-		mPositionVariable = addSerialDoubleVariable("FiberSwitchPosition",
+		mPositionVariable = addSerialDoubleVariable("OpticalSwitchPosition",
 													lFiberSwitchPosition);
 
 	}

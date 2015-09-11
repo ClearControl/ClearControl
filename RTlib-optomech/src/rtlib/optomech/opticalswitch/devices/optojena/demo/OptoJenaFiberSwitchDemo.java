@@ -1,11 +1,11 @@
-package rtlib.optomech.fiberswitch.devices.optojena.demo;
+package rtlib.optomech.opticalswitch.devices.optojena.demo;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 
 public class OptoJenaFiberSwitchDemo
 {

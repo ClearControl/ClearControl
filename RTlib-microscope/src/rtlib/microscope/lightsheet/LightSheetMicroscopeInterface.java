@@ -78,15 +78,16 @@ public interface LightSheetMicroscopeInterface
 	 */
 	public void setDZ(int pDetectionIndex, double pPositionZ);
 
+
 	/**
-	 * Sets the lightsheet's Z position.
+	 * Sets the lightsheet's X position.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
-	 * @param pPositionZ
-	 *            Z position of lightsheet
+	 *          lightsheet index
+	 * @param pPositionX
+	 *          lightsheet's X position
 	 */
-	public void setIZ(int pLightSheetIndex, double pPositionZ);
+	public void setIX(int pLightSheetIndex, double pPositionX);
 
 	/**
 	 * Sets the lightsheet's Y position.
@@ -97,6 +98,16 @@ public interface LightSheetMicroscopeInterface
 	 *            lightsheet's Y position
 	 */
 	public void setIY(int pLightSheetIndex, double pPositionY);
+
+	/**
+	 * Sets the lightsheet's Z position.
+	 * 
+	 * @param pLightSheetIndex
+	 *          lightsheet index
+	 * @param pPositionZ
+	 *          Z position of lightsheet
+	 */
+	public void setIZ(int pLightSheetIndex, double pPositionZ);
 
 	/**
 	 * Sets the lightsheet's angle alpha.
@@ -141,12 +152,12 @@ public interface LightSheetMicroscopeInterface
 	public void setIH(int pLightSheetIndex, double pLength);
 
 	/**
-	 * Sets the lightsheet's analog laser power level.
+	 * Sets the lightsheet's analog laser modulation level.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pValue
-	 *            lightsheet's analog modulation level
+	 *          lightsheet's analog modulation level
 	 */
 	public void setIP(int pLightSheetIndex, double pValue);
 

@@ -304,7 +304,6 @@ public class LightSheetMicroscope	extends
 							.setValue(lExposureTimeInMicroseconds);
 
 		for (int i = 0; i < getDeviceLists().getNumberOfLightSheetDevices(); i++)
-
 			getDeviceLists().getLightSheetDevice(i)
 							.getEffectiveExposureInMicrosecondsVariable()
 							.setValue(lExposureTimeInMicroseconds);
@@ -376,10 +375,10 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
-	public void setIZ(int pIndex, double pValue)
+	public void setIX(int pLightSheetIndex, double pValue)
 	{
-		getDeviceLists().getLightSheetDevice(pIndex)
-						.getLightSheetZInMicronsVariable()
+		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+										.getLightSheetXInMicronsVariable()
 						.set(pValue);
 	};
 
@@ -389,6 +388,14 @@ public class LightSheetMicroscope	extends
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getLightSheetYInMicronsVariable()
 						.set(pValue);
+	};
+
+	@Override
+	public void setIZ(int pIndex, double pValue)
+	{
+		getDeviceLists().getLightSheetDevice(pIndex)
+										.getLightSheetZInMicronsVariable()
+										.set(pValue);
 	};
 
 	@Override

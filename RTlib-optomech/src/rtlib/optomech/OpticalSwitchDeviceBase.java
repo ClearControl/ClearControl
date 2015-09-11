@@ -1,4 +1,4 @@
-package rtlib.optomech.fiberswitch;
+package rtlib.optomech;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;

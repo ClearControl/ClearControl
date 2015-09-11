@@ -20,7 +20,7 @@ import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.detection.DetectionArm;
 import rtlib.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lightsheet.illumination.LightSheet;
-import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;

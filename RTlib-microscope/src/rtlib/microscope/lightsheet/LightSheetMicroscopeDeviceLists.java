@@ -11,7 +11,7 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lightsheet.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.illumination.LightSheetInterface;
-import rtlib.optomech.fiberswitch.OpticalSwitchDeviceInterface;
+import rtlib.optomech.OpticalSwitchDeviceInterface;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
