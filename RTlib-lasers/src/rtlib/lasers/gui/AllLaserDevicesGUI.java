@@ -3,6 +3,7 @@ package rtlib.lasers.gui;
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +23,7 @@ import rtlib.gui.swing.JSliderIndexedStrings;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.hub.LasertHubDevice;
 
-public class LaserDeviceGUI extends Application
+public class AllLaserDevicesGUI extends Application
 {
 
 	//	public final JSliderDouble mLaser405TargetPower,
@@ -42,32 +43,24 @@ public class LaserDeviceGUI extends Application
 	//	private final JLabel mLaserCurrentPowerLabel;
 	//	private final JLabel mDetectionFilterWheelLabel;
 
-  //TODO: You only neeed one...
 	public final LaserGauge mLaser405, mLaser488, mLaser515, mLaser561, mLaser594;
+	
+	//TODO: Use this instead:
+	public final ArrayList<LaserGauge> mLaserGauges = new ArrayList<LaserGauge>();
 
-	public LaserDeviceGUI()
-	{
-		
-	  //TODO: You only neeed one...
-		mLaser405 = new LaserGauge( "405" );
-		mLaser488 = new LaserGauge( "488" );
-		mLaser515 = new LaserGauge( "515" );
-		mLaser561 = new LaserGauge( "561" );
-		mLaser594 = new LaserGauge( "594" );
-	}
 
-	public LaserDeviceGUI(LaserDeviceInterface pLaserDeviceInterface)
+	public AllLaserDevicesGUI(List<LaserDeviceInterface> pLaserDeviceList)
 	{
 		super();
 
 		//TODO: should be:
-		// mLaser = new LaserGauge( ""+pLaserDeviceInterface.getWavelengthInNanoMeter() );
-		// LaserDeviceGui is for only one laser device ( which means only one laser wavelength)
+		// for each laser you can get the wavelength and have a corresponding GUI element
+
 	
-		
-		
 		//		pLaserDeviceInterface.getCurrentPowerInMilliWattVariable().
 
+		
+		//TODO: You need a list aof gaugues instead...
 		mLaser405 = new LaserGauge( "405" );
 		mLaser488 = new LaserGauge( "488" );
 		mLaser515 = new LaserGauge( "515" );
