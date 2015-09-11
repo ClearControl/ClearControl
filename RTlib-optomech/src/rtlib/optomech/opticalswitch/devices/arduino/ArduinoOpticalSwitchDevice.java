@@ -1,18 +1,21 @@
-package rtlib.optomech.opticalswitch.devices.optojena;
+package rtlib.optomech.opticalswitch.devices.arduino;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.optomech.OpticalSwitchDeviceInterface;
-import rtlib.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
+import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
 
-public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
+public class ArduinoOpticalSwitchDevice extends SerialDevice	implements
 															OpticalSwitchDeviceInterface
 {
 
 	private final DoubleVariable mPositionVariable;
 
-	public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
+	private static final int cAllClosed = 100;
+	private static final int cAllOpened = 200;
+
+	public ArduinoOpticalSwitchDevice(final int pDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
 									.getSerialDevicePort(	"fiberswitch.optojena",
@@ -20,11 +23,11 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 															"NULL"));
 	}
 
-	public OptoJenaFiberSwitchDevice(final String pPortName)
+	public ArduinoOpticalSwitchDevice(final String pPortName)
 	{
-		super("OptoJenaFiberSwitch", pPortName, 76800);
+		super("ArduinoOpticalSwitch", pPortName, 250000);
 
-		final FiberSwitchPositionAdapter lFiberSwitchPosition = new FiberSwitchPositionAdapter(this);
+		final ArduinoOpticalSwitchPositionAdapter lFiberSwitchPosition = new ArduinoOpticalSwitchPositionAdapter(this);
 
 		mPositionVariable = addSerialDoubleVariable("OpticalSwitchPosition",
 													lFiberSwitchPosition);
@@ -35,9 +38,18 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	public boolean open()
 	{
 		final boolean lIsOpened = super.open();
-		setPosition(0);
+		setPosition(cAllClosed);
 
 		return lIsOpened;
+	}
+
+	@Override
+	public boolean close()
+	{
+		final boolean lIsClosed = super.close();
+		setPosition(cAllClosed);
+
+		return lIsClosed;
 	}
 
 	@Override
@@ -62,7 +74,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	public int[] getValidPositions()
 	{
 		return new int[]
-		{ 1, 2, 3, 4, 5, 6 };
+		{ 0, 1, 2, 3, cAllClosed, cAllOpened };
 	}
 
 }

@@ -15,6 +15,11 @@ public class UnivariateAffineFunction	implements
 	private volatile double mA;
 	private volatile double mB;
 
+	public static UnivariateAffineFunction identity()
+	{
+		return new UnivariateAffineFunction(1, 0);
+	}
+
 	public UnivariateAffineFunction()	throws NullArgumentException,
 										NoDataException
 	{

@@ -1,15 +1,15 @@
-package rtlib.optomech.fiberswitch.devices.optojena.adapters;
+package rtlib.optomech.opticalswitch.devices.optojena.adapters;
 
-import rtlib.optomech.fiberswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class FiberSwitchPositionDeviceAdapter	extends
+public class FiberSwitchPositionAdapter	extends
 												SerialDeviceAdapterAdapter	implements
 																			SerialTextDeviceAdapter
 {
 
-	public FiberSwitchPositionDeviceAdapter(final OptoJenaFiberSwitchDevice pOptoJenaFiberSwitchDevice)
+	public FiberSwitchPositionAdapter(final OptoJenaFiberSwitchDevice pOptoJenaFiberSwitchDevice)
 	{
 
 	}

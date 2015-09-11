@@ -20,6 +20,8 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
 
+	public DoubleVariable getLightSheetXInMicronsVariable();
+
 	public DoubleVariable getLightSheetYInMicronsVariable();
 
 	public DoubleVariable getLightSheetZInMicronsVariable();
@@ -53,5 +55,9 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetLaserPowerFunction();
 
 	public int getNumberOfPhases(int pLaserIndex);
+
+	public void reset();
+
+
 
 }

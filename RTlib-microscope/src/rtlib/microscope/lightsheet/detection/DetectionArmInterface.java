@@ -12,4 +12,6 @@ public interface DetectionArmInterface	extends
 
 	@SuppressWarnings("rawtypes")
 	public ObjectVariable<UnivariateAffineComposableFunction> getDetectionFocusZFunction();
+
+	public void reset();
 }

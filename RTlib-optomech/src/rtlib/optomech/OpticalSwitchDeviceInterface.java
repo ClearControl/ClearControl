@@ -1,4 +1,4 @@
-package rtlib.optomech.fiberswitch;
+package rtlib.optomech;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.PositionDeviceInterface;
