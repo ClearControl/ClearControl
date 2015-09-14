@@ -24,7 +24,14 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-gui')
     compile project(':RTlib-serial')
-    compile 'eu.hansolo.enzo:Enzo:0.3.0'
+    compile 'net.halcyon:Halcyon:0.1.0'
+    compile 'eu.hansolo.enzo:Enzo:0.3.1'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url "http://mvnrepository.com/artifact" }
 }
 
 //***********************************************************************************

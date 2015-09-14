@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +18,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.miginfocom.swing.MigLayout;
 import rtlib.core.configuration.MachineConfiguration;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.gui.swing.JCheckBoxBoolean;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.swing.JSliderIndexedStrings;
@@ -43,30 +46,30 @@ public class AllLaserDevicesGUI extends Application
 	//	private final JLabel mLaserCurrentPowerLabel;
 	//	private final JLabel mDetectionFilterWheelLabel;
 
-	public final LaserGauge mLaser405, mLaser488, mLaser515, mLaser561, mLaser594;
-	
-	//TODO: Use this instead:
 	public final ArrayList<LaserGauge> mLaserGauges = new ArrayList<LaserGauge>();
 
-
-	public AllLaserDevicesGUI(List<LaserDeviceInterface> pLaserDeviceList)
+	public AllLaserDevicesGUI()
 	{
-		super();
+		ArrayList<LaserDeviceInterface> list = new ArrayList<>();
 
-		//TODO: should be:
-		// for each laser you can get the wavelength and have a corresponding GUI element
+		list.add( new DemoLaser( 405 ) );
+		list.add( new DemoLaser( 488 ) );
+		list.add( new DemoLaser( 515 ) );
+		list.add( new DemoLaser( 561 ) );
+		list.add( new DemoLaser( 594 ) );
 
-	
-		//		pLaserDeviceInterface.getCurrentPowerInMilliWattVariable().
+		for( LaserDeviceInterface laser : list )
+		{
+			mLaserGauges.add( new LaserGauge( "" + laser.getWavelengthInNanoMeter() ) );
+		}
+	}
 
-		
-		//TODO: You need a list aof gaugues instead...
-		mLaser405 = new LaserGauge( "405" );
-		mLaser488 = new LaserGauge( "488" );
-		mLaser515 = new LaserGauge( "515" );
-		mLaser561 = new LaserGauge( "561" );
-		mLaser594 = new LaserGauge( "594" );
-
+	public AllLaserDevicesGUI( List<LaserDeviceInterface> pLaserDeviceList )
+	{
+		for( LaserDeviceInterface laser : pLaserDeviceList )
+		{
+			mLaserGauges.add( new LaserGauge( "" + laser.getWavelengthInNanoMeter() ) );
+		}
 
 		///**********************
 
@@ -263,17 +266,14 @@ public class AllLaserDevicesGUI extends Application
 
 	@Override public void init()
 	{
-		mLaser405.init();
-		mLaser488.init();
-		mLaser515.init();
-		mLaser561.init();
-		mLaser594.init();
+		for( LaserGauge gauge : mLaserGauges )
+			gauge.init();
 	}
 
 	@Override public void start(Stage stage) throws Exception {
 		VBox pane = new VBox();
 
-		pane.getChildren().addAll( mLaser405.getPanel(), mLaser488.getPanel(), mLaser515.getPanel(), mLaser561.getPanel(), mLaser594.getPanel() );
+		pane.getChildren().addAll( mLaserGauges.stream().map(LaserGauge::getPanel).collect( Collectors.toList() ) );
 
 		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
 
@@ -289,5 +289,95 @@ public class AllLaserDevicesGUI extends Application
 	public static void main(String[] args)
 	{
 		Application.launch(args);
+	}
+
+	class DemoLaser implements LaserDeviceInterface
+	{
+		final int waveLength;
+
+		public DemoLaser(int waveLength)
+		{
+			this.waveLength = waveLength;
+		}
+
+		@Override public int getWavelengthInNanoMeter()
+		{
+			return waveLength;
+		}
+
+		@Override public void setTargetPowerInMilliWatt( double pTargetPowerinMilliWatt )
+		{
+
+		}
+
+		@Override public void setTargetPowerInPercent( double pTargetPowerInPercent )
+		{
+
+		}
+
+		@Override public double getTargetPowerInMilliWatt()
+		{
+			return 0;
+		}
+
+		@Override public double getMaxPowerInMilliWatt()
+		{
+			return 0;
+		}
+
+		@Override public double getCurrentPowerInMilliWatt()
+		{
+			return 0;
+		}
+
+		@Override public BooleanVariable getLaserOnVariable()
+		{
+			return null;
+		}
+
+		@Override public DoubleVariable getTargetPowerInMilliWattVariable()
+		{
+			return null;
+		}
+
+		@Override public DoubleVariable getCurrentPowerInMilliWattVariable()
+		{
+			return null;
+		}
+
+		@Override public DoubleVariable getWavelengthInNanoMeterVariable()
+		{
+			return null;
+		}
+
+		@Override public String getName()
+		{
+			return null;
+		}
+
+		@Override public void setName( String name )
+		{
+
+		}
+
+		@Override public boolean open()
+		{
+			return false;
+		}
+
+		@Override public boolean close()
+		{
+			return false;
+		}
+
+		@Override public boolean start()
+		{
+			return false;
+		}
+
+		@Override public boolean stop()
+		{
+			return false;
+		}
 	}
 }

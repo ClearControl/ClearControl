@@ -27,8 +27,8 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-symphony')
 	compile project(':RTlib-stages')
-    compile 'net.halcyon:Halcyon:1.0-SNAPSHOT'
-    compile 'eu.hansolo.enzo:Enzo:0.3.0'
+    compile 'net.halcyon:Halcyon:0.1.0'
+    compile 'eu.hansolo.enzo:Enzo:0.3.1'
 }
 
 repositories {

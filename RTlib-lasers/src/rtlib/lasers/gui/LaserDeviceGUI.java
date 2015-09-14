@@ -24,62 +24,18 @@ import rtlib.lasers.devices.hub.LasertHubDevice;
 
 public class LaserDeviceGUI extends Application
 {
-
-	//	public final JSliderDouble mLaser405TargetPower,
-	//			mLaser488TargetPower, mLaser515TargetPower,
-	//			mLaser561TargetPower, mLaser594TargetPower;
-	//
-	//	public final JSliderDouble mLaser405CurrentPower,
-	//			mLaser488CurrentPower, mLaser515CurrentPower,
-	//			mLaser561CurrentPower, mLaser594CurrentPower;
-
-	//	public final JSliderIndexedStrings mFilterWheelPosition;
-	//	public final JSliderDouble mFilterWheelSpeed;
-
-	//	public final JCheckBoxBoolean m405OnOffSwitch, m488OnOffSwitch,
-	//			m515OnOffSwitch, m561OnOffSwitch, m594OnOffSwitch;
-	//	private final JLabel mLaserSetPowerLabel;
-	//	private final JLabel mLaserCurrentPowerLabel;
-	//	private final JLabel mDetectionFilterWheelLabel;
-
-  //TODO: You only neeed one...
-	public final LaserGauge mLaser405, mLaser488, mLaser515, mLaser561, mLaser594;
+	public final LaserGauge mLaser;
 
 	public LaserDeviceGUI()
 	{
-		
-	  //TODO: You only neeed one...
-		mLaser405 = new LaserGauge( "405" );
-		mLaser488 = new LaserGauge( "488" );
-		mLaser515 = new LaserGauge( "515" );
-		mLaser561 = new LaserGauge( "561" );
-		mLaser594 = new LaserGauge( "594" );
+		mLaser = new LaserGauge( "488" );
 	}
 
-	public LaserDeviceGUI(LaserDeviceInterface pLaserDeviceInterface)
+	public LaserDeviceGUI( LaserDeviceInterface pLaserDeviceInterface )
 	{
-		super();
-
-		//TODO: should be:
-		// mLaser = new LaserGauge( ""+pLaserDeviceInterface.getWavelengthInNanoMeter() );
-		// LaserDeviceGui is for only one laser device ( which means only one laser wavelength)
-	
-		
-		
-		//		pLaserDeviceInterface.getCurrentPowerInMilliWattVariable().
-
-		mLaser405 = new LaserGauge( "405" );
-		mLaser488 = new LaserGauge( "488" );
-		mLaser515 = new LaserGauge( "515" );
-		mLaser561 = new LaserGauge( "561" );
-		mLaser594 = new LaserGauge( "594" );
-
-
-		///**********************
+		mLaser = new LaserGauge( "" + pLaserDeviceInterface.getWavelengthInNanoMeter() );
 
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
-
-
 
 		//		setLayout(new MigLayout("",
 		//														"[][grow][grow]",
@@ -270,21 +226,17 @@ public class LaserDeviceGUI extends Application
 
 	@Override public void init()
 	{
-		mLaser405.init();
-		mLaser488.init();
-		mLaser515.init();
-		mLaser561.init();
-		mLaser594.init();
+		mLaser.init();
 	}
 
 	@Override public void start(Stage stage) throws Exception {
 		VBox pane = new VBox();
 
-		pane.getChildren().addAll( mLaser405.getPanel(), mLaser488.getPanel(), mLaser515.getPanel(), mLaser561.getPanel(), mLaser594.getPanel() );
+		pane.getChildren().addAll( mLaser.getPanel() );
 
 		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
 
-		stage.setTitle("Lasers");
+		stage.setTitle("Laser");
 		stage.setScene(scene);
 		stage.show();
 	}
