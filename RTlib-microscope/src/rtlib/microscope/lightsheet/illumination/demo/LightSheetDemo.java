@@ -46,7 +46,7 @@ public class LightSheetDemo
 														9.4,
 														512,
 														2);
-		lLightSheet.getLightSheetLengthInMicronsVariable()
+		lLightSheet.getHeightVariable()
 					.setValue(100);
 		lLightSheet.getEffectiveExposureInMicrosecondsVariable()
 					.setValue(5000);

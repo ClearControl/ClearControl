@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import dcamj.DcamFrame;
 import gnu.trove.list.array.TByteArrayList;
@@ -61,15 +63,18 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 																						1);
 
 	private final ArrayList<StackProcessorInterface<UnsignedShortType, ShortOffHeapAccess, ?, ?>> mStackProcessorList = new ArrayList<StackProcessorInterface<UnsignedShortType, ShortOffHeapAccess, ?, ?>>();
+	private boolean mFlipX;
 
 	public DcamJToVideoFrameConverter(	final int pCameraId,
 										final ObjectVariable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
-										final int pMaxQueueSize)
+										final int pMaxQueueSize,
+										final boolean pFlipX)
 	{
 		super("DcamJToVideoFrameConverter");
 		mCameraId = pCameraId;
 
 		mDcamFrameReference = pDcamFrameReference;
+		mFlipX = pFlipX;
 
 		mDcamFrameReference.sendUpdatesTo(new ObjectVariable<Pair<TByteArrayList, DcamFrame>>("DcamFrame")
 		{
@@ -202,11 +207,30 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			for (int i = 0, j = 0; i < lNumberOfImages; i++)
 				if (pDcamFrame.getLeft().get(i) > 0)
 				{
-					final ContiguousMemoryInterface lContiguousMemory = lOffHeapPlanarStack.getContiguousMemory(j++);
-					pDcamFrame.getRight()
-								.getPointerForSinglePlane(i)
-								.copyTo(lContiguousMemory.getBridJPointer(Short.class),
-										lContiguousMemory.getSizeInBytes());
+					final OffHeapMemory lTargetBuffer = (OffHeapMemory) lOffHeapPlanarStack.getContiguousMemory(j++);
+
+					if (mFlipX)
+					{
+						Pointer<Byte> lPointerForSinglePlane = pDcamFrame.getRight()
+																			.getPointerForSinglePlane(i);
+
+						long lWidth = lOffHeapPlanarStack.getWidth();
+						long lHeight = lOffHeapPlanarStack.getHeight();
+
+						OffHeapMemory lSourceBuffer = OffHeapMemory.wrapPointer(lPointerForSinglePlane);
+
+						copyAndFlipAlongX(	lTargetBuffer,
+											lWidth,
+											lHeight,
+											lSourceBuffer);
+					}
+					else
+					{
+						pDcamFrame.getRight()
+									.getPointerForSinglePlane(i)
+									.copyTo(lTargetBuffer.getBridJPointer(Short.class),
+											lTargetBuffer.getSizeInBytes());
+					}
 				}
 
 			pDcamFrame.getRight().release();
@@ -218,6 +242,24 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		{
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	private void copyAndFlipAlongX(	final OffHeapMemory lTargetBuffer,
+									long lWidth,
+									long lHeight,
+									OffHeapMemory lSourceBuffer)
+	{
+		for (int y = 0; y < lHeight; y++)
+		{
+			long lIndexY = lWidth * y;
+			for (int x = 0; x < lWidth; x++)
+			{
+				long lIndexSourceXY = lIndexY + x;
+				long lIndexTargetXY = lIndexY + lWidth - 1 - x;
+				lTargetBuffer.setByte(	lIndexTargetXY,
+										lSourceBuffer.getByte(lIndexSourceXY));
+			}
 		}
 	}
 

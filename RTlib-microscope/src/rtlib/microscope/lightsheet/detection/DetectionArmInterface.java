@@ -11,7 +11,7 @@ public interface DetectionArmInterface	extends
 	public DoubleVariable getDetectionFocusZInMicronsVariable();
 
 	@SuppressWarnings("rawtypes")
-	public ObjectVariable<UnivariateAffineComposableFunction> getDetectionFocusZFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction();
 
 	public void reset();
 }

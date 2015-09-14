@@ -3,6 +3,7 @@ package rtlib.microscope.lightsheet.acquisition.interpolation;
 import static java.lang.Math.abs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -73,9 +74,23 @@ public class InterpolationTable
 			return 0;
 		}
 
+		@Override
+		public String toString()
+		{
+			return "Row [x=" + x
+					+ ", y="
+					+ y
+					+ ", mIsUpToDate="
+					+ mIsUpToDate
+					+ "]";
+		}
+		
+		
+
 	}
 
 	private final TreeSet<Row> mTable = new TreeSet<>();
+	
 	private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList = new ArrayList<>();
 	private final int mNumberOfColumns;
 	private volatile boolean mIsUpToDate = false;
@@ -84,6 +99,17 @@ public class InterpolationTable
 	{
 		super();
 		mNumberOfColumns = pNumberOfColumns;
+	}
+	
+	
+	public Row getRow(int pRowIndex)
+	{
+		Iterator<Row> lIterator = mTable.iterator();
+		
+		for(int i=0; i<pRowIndex && lIterator.hasNext(); i++)
+			lIterator.next();
+		
+		return lIterator.next();
 	}
 
 	public Row getNearestRow(double pX)
@@ -219,20 +245,6 @@ public class InterpolationTable
 	{
 		ensureIsUpToDate();
 
-		/*if(pX<minX())
-		{
-			final double xa = getInterpolatedValue(pColumnIndex, minX());
-			final double xb = getInterpolatedValue(pColumnIndex,
-																						getCeilRow(minX() + Double.MIN_VALUE).getX());
-			
-			final double value = 
-			
-		}
-		else if(pX>maxX())
-		{}
-		
-		/*/
-
 		final UnivariateFunction lUnivariateFunction = mInterpolatingFunctionsList.get(pColumnIndex);
 		final double lValue = lUnivariateFunction.value(pX);
 		return lValue;
@@ -274,5 +286,7 @@ public class InterpolationTable
 
 		return lMultiPlot;
 	}
+
+
 
 }

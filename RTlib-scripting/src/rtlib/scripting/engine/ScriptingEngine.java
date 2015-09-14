@@ -22,7 +22,8 @@ import rtlib.scripting.lang.ScriptingLanguageInterface;
 public class ScriptingEngine implements
 							AsynchronousExecutorServiceAccess
 {
-
+	private static ThreadLocal<Boolean> mCancelThreadLocal = new ThreadLocal<>();
+	
 	private final ScriptingLanguageInterface mScriptingLanguageInterface;
 
 	private final Class<?> mClassForFindingScripts;
@@ -35,6 +36,7 @@ public class ScriptingEngine implements
 
 	private volatile Future<?> mScriptExecutionFuture;
 
+
 	private volatile String mScriptName = "default";
 
 	private volatile String mPreambleString = "";
@@ -43,6 +45,8 @@ public class ScriptingEngine implements
 	private volatile String mScriptString;
 
 	private OutputStream mOutputStream;
+
+
 
 	public ScriptingEngine(	ScriptingLanguageInterface pScriptingLanguageInterface,
 							Class<?> pClassForFindingScripts,
@@ -91,6 +95,8 @@ public class ScriptingEngine implements
 		{
 			try
 			{
+				mCancelThreadLocal.set(true);
+				
 				mScriptExecutionFuture.cancel(false);
 
 				final String lPreprocessedPostamble = ScriptingPreprocessor.process(mClassForFindingScripts,
@@ -127,6 +133,11 @@ public class ScriptingEngine implements
 		if (mScriptExecutionFuture == null)
 			return true;
 		return mScriptExecutionFuture.isCancelled();
+	}
+	
+	public static boolean isCancelRequestedStatic()
+	{
+		return mCancelThreadLocal.get();
 	}
 
 	public ScriptingLanguageInterface getScriptingLanguageInterface()
@@ -173,6 +184,7 @@ public class ScriptingEngine implements
 	{
 		try
 		{
+			mCancelThreadLocal.set(false);
 			saveScript(mLastExecutedScriptFile);
 
 			// TODO: might have to call preProcess() if we implement import

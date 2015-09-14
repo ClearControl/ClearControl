@@ -1,6 +1,6 @@
 package rtlib.microscope.lightsheet.acquisition.interpolation.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -19,6 +19,12 @@ public class InterpolationTableTests
 		final Row lAddRow3 = lInterpolationTable.addRow(3.0);
 		final Row lAddRow1 = lInterpolationTable.addRow(1.0);
 		final Row lAddRow2 = lInterpolationTable.addRow(2.0);
+		
+		
+		Row lRow = lInterpolationTable.getRow(1);
+		System.out.println(lRow);
+		assertTrue(lRow.getX()==2.0);
+		
 
 		lAddRow1.setY(0, 1);
 		lAddRow2.setY(0, 2);

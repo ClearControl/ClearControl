@@ -25,7 +25,7 @@ public class OrcaFlash4CameraDemo
 											ExecutionException
 	{
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
@@ -75,7 +75,7 @@ public class OrcaFlash4CameraDemo
 									ExecutionException
 	{
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
@@ -138,7 +138,7 @@ public class OrcaFlash4CameraDemo
 		lVideoWindow.setVisible(true);
 
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")

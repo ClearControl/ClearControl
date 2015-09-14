@@ -57,7 +57,7 @@ public class LightSheetMicroscopeDemo
 												ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
 
 		demoWith(	false,
 					false,
@@ -73,8 +73,8 @@ public class LightSheetMicroscopeDemo
 																ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,false);
 
 		demoWith(	true,
 					false,
@@ -90,8 +90,8 @@ public class LightSheetMicroscopeDemo
 																		ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,false);
 
 		demoWith(	true,
 					false,
@@ -194,7 +194,7 @@ public class LightSheetMicroscopeDemo
 			lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
 			lLightSheet.setExposureMovement(lExposureMovement);
 
-			lLightSheet.getLightSheetLengthInMicronsVariable()
+			lLightSheet.getHeightVariable()
 						.setValue(100);
 			lLightSheet.getEffectiveExposureInMicrosecondsVariable()
 						.setValue(5000);

@@ -15,7 +15,7 @@ public interface LightSheetMicroscopeInterface
 	 * @param pHeight
 	 *            height
 	 */
-	public void setWidthHeight(int pWidth, int pHeight);
+	public void setCameraWidthHeight(int pWidth, int pHeight);
 
 	/**
 	 * Sets image acquisition exposure in

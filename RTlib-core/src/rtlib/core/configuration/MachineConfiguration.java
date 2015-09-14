@@ -6,12 +6,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 
 public class MachineConfiguration
 {
 	private static final String cComments = "RTlib machine configuration file";
 	private static final MachineConfiguration sConfiguration = new MachineConfiguration();
+	private static ObjectMapper sObjectMapper = new ObjectMapper();
 
 	public static MachineConfiguration getCurrentMachineConfiguration()
 	{
@@ -33,8 +43,7 @@ public class MachineConfiguration
 			final File lUserHomeFolder = new File(lUserHome);
 			mRTLibFolder = new File(lUserHomeFolder, "RTlib/");
 			mRTLibFolder.mkdirs();
-			mPersistentVariablesFolder = new File(	mRTLibFolder,
-													"PersistentVariables");
+			mPersistentVariablesFolder = getFolder("PersistentVariables");
 
 			final File lConfigurationFile = new File(	mRTLibFolder,
 														"configuration.txt");
@@ -186,6 +195,13 @@ public class MachineConfiguration
 		return lList;
 	}
 
+	public File getFolder(String pFolderName)
+	{
+		File lFolder = new File(mRTLibFolder, pFolderName);
+		lFolder.mkdirs();
+		return lFolder;
+	}
+
 	public File getPersistencyFolder()
 	{
 		return mPersistentVariablesFolder;
@@ -194,6 +210,39 @@ public class MachineConfiguration
 	public File getPersistentVariableFile(String pVariableName)
 	{
 		return new File(getPersistencyFolder(), pVariableName);
+	}
+
+	public UnivariateAffineComposableFunction getUnivariateAffineFunction(String pFunctionName)
+	{
+		String lAffineFunctionString = getStringProperty(	pFunctionName,
+															null);
+
+		if (lAffineFunctionString == null)
+			return null;
+
+		TypeReference<HashMap<String, Double>> lTypeReference = new TypeReference<HashMap<String, Double>>()
+		{
+		};
+
+		try
+		{
+			HashMap<String, Double> lMap = sObjectMapper.readValue(	lAffineFunctionString,
+																	lTypeReference);
+			
+			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(lMap.get("a"),lMap.get("b"));
+			lUnivariateAffineFunction.setMin(lMap.get("minx"));
+			lUnivariateAffineFunction.setMax(lMap.get("maxx"));
+			
+			
+			return lUnivariateAffineFunction;
+			
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 }

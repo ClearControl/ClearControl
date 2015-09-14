@@ -317,4 +317,6 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		mHint = pHint;
 	}
 
+
+
 }

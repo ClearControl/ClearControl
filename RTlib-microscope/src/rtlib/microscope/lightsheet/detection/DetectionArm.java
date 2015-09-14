@@ -11,23 +11,21 @@ import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
 
 public class DetectionArm extends NamedVirtualDevice implements
-																										DetectionArmInterface
+													DetectionArmInterface
 {
 
 	private String mName;
 
 	private final DoubleVariable mDetectionFocusZ = new DoubleVariable(	"FocusZ",
-																																			0);
+																		0);
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mDetectionZFunction = new ObjectVariable<>("DetectionZFunction",
-																																																							new UnivariateAffineFunction());
+	private final ObjectVariable<UnivariateAffineComposableFunction> mZFunction = new ObjectVariable<>(	"DetectionZFunction",
+																										new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
-																																				0);
+																			0);
 
 	private final int mStaveIndex;
-
-
 
 	public DetectionArm(String pName, int pStaveIndex)
 	{
@@ -36,17 +34,18 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 		reset();
 
-		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
+		final VariableSetListener<Double> lDoubleVariableListener = (	u,
+																		v) -> {
 			update();
 		};
 
 		final VariableSetListener<UnivariateAffineComposableFunction> lObjectVariableListener = (	u,
-																																															v) -> {
+																									v) -> {
 			update();
 		};
 
 		mDetectionFocusZ.addSetListener(lDoubleVariableListener);
-		mDetectionZFunction.addSetListener(lObjectVariableListener);
+		mZFunction.addSetListener(lObjectVariableListener);
 
 		mStaveIndex = pStaveIndex;
 
@@ -54,26 +53,18 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	public void reset()
 	{
-		final double lA = MachineConfiguration.getCurrentMachineConfiguration()
-																					.getDoubleProperty(	"device.lsm.detection." + mName
-																																	+ ".sa",
-																															0.5);
-
-		final double lB = MachineConfiguration.getCurrentMachineConfiguration()
-																					.getDoubleProperty(	"device.lsm.detection." + mName
-																																	+ ".sb",
-																															0.5);
-
-		mDetectionZFunction.set(new UnivariateAffineFunction(lA, lB));
+		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+										.getUnivariateAffineFunction("device.lsm.detection." + mName
+																									+ ".z"));
 	}
 
 	public DetectionArm(String pName)
 	{
 		this(	pName,
-					MachineConfiguration.getCurrentMachineConfiguration()
-															.getIntegerProperty("device.lsm.detection." + pName
-																											+ ".index.z",
-																									0));
+				MachineConfiguration.getCurrentMachineConfiguration()
+									.getIntegerProperty("device.lsm.detection." + pName
+																+ ".index.z",
+														0));
 
 	}
 
@@ -84,16 +75,16 @@ public class DetectionArm extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getDetectionFocusZFunction()
+	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction()
 	{
-		return mDetectionZFunction;
+		return mZFunction;
 	}
 
 	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
 	{
 		// Analog outputs before exposure:
 		pBeforeExposureMovement.setStave(	mStaveIndex,
-																			mDetectionPathStaveZ);
+											mDetectionPathStaveZ);
 	}
 
 	public void addStavesToExposureMovement(Movement pExposureMovement)
@@ -106,8 +97,8 @@ public class DetectionArm extends NamedVirtualDevice implements
 	{
 		synchronized (this)
 		{
-			mDetectionPathStaveZ.setValue((float) mDetectionZFunction.get()
-																																.value(mDetectionFocusZ.getValue()));
+			mDetectionPathStaveZ.setValue((float) mZFunction.get()
+															.value(mDetectionFocusZ.getValue()));
 		}
 	}
 }

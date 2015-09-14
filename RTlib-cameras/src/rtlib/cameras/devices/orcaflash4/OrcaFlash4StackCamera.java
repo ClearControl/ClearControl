@@ -31,6 +31,8 @@ public class OrcaFlash4StackCamera	extends
 	public static final int cDcamJNumberOfBuffers = 1024;
 
 	private final int mCameraDeviceIndex;
+	
+	private final boolean mFlipX;
 
 	private final DcamAcquisition mDcamAcquisition;
 
@@ -39,31 +41,38 @@ public class OrcaFlash4StackCamera	extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private final Object mLock = new Object();
+	
 
-	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex)
+
+	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex, boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.ExternalFastEdge);
+											TriggerType.ExternalFastEdge,
+											pFlipX);
 	}
 
-	public static final OrcaFlash4StackCamera buildWithInternalTriggering(final int pCameraDeviceIndex)
+	public static final OrcaFlash4StackCamera buildWithInternalTriggering(final int pCameraDeviceIndex, boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.Internal);
+											TriggerType.Internal,
+											pFlipX);
 	}
 
-	public static final OrcaFlash4StackCamera buildWithSoftwareTriggering(final int pCameraDeviceIndex)
+	public static final OrcaFlash4StackCamera buildWithSoftwareTriggering(final int pCameraDeviceIndex, boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.Software);
+											TriggerType.Software,
+											pFlipX);
 	}
 
 	private OrcaFlash4StackCamera(	final int pCameraDeviceIndex,
-									final TriggerType pTriggerType)
+									final TriggerType pTriggerType,
+									boolean pFlipX)
 	{
 		super("OrcaFlash4Camera" + pCameraDeviceIndex);
 
 		mCameraDeviceIndex = pCameraDeviceIndex;
+		mFlipX = pFlipX;
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);
 		mDcamAcquisition.setTriggerType(pTriggerType);
 
@@ -185,13 +194,20 @@ public class OrcaFlash4StackCamera	extends
 
 		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	pCameraDeviceIndex,
 																				mFrameReference,
-																				cStackProcessorQueueSize);
+																				cStackProcessorQueueSize,
+																				mFlipX);
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}
+
+	public boolean isFlipX()
+	{
+		return mFlipX;
+	}
+
 
 	protected ObjectVariable<Pair<TByteArrayList, DcamFrame>> getInternalFrameReferenceVariable()
 	{
@@ -445,5 +461,7 @@ public class OrcaFlash4StackCamera	extends
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
 	}
+
+
 
 }

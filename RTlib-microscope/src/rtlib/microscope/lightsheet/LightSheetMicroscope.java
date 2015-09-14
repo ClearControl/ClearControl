@@ -272,7 +272,7 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public void setWidthHeight(int pWidth, int pHeight)
+	public void setCameraWidthHeight(int pWidth, int pHeight)
 	{
 		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
 		{
@@ -378,7 +378,7 @@ public class LightSheetMicroscope	extends
 	public void setIX(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-										.getLightSheetXInMicronsVariable()
+										.getXVariable()
 						.set(pValue);
 	};
 
@@ -386,7 +386,7 @@ public class LightSheetMicroscope	extends
 	public void setIY(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetYInMicronsVariable()
+						.getYVariable()
 						.set(pValue);
 	};
 
@@ -394,7 +394,7 @@ public class LightSheetMicroscope	extends
 	public void setIZ(int pIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pIndex)
-										.getLightSheetZInMicronsVariable()
+										.getZVariable()
 										.set(pValue);
 	};
 
@@ -402,7 +402,7 @@ public class LightSheetMicroscope	extends
 	public void setIA(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetAlphaInDegreesVariable()
+						.getAlphaInDegreesVariable()
 						.set(pValue);
 	};
 
@@ -410,7 +410,7 @@ public class LightSheetMicroscope	extends
 	public void setIB(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetBetaInDegreesVariable()
+						.getBetaInDegreesVariable()
 						.set(pValue);
 	};
 
@@ -418,7 +418,7 @@ public class LightSheetMicroscope	extends
 	public void setIW(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetRangeInMicronsVariable()
+						.getWidthVariable()
 						.set(pValue);
 	};
 
@@ -426,7 +426,7 @@ public class LightSheetMicroscope	extends
 	public void setIH(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetLengthInMicronsVariable()
+						.getHeightVariable()
 						.set(pValue);
 	}
 
@@ -434,7 +434,7 @@ public class LightSheetMicroscope	extends
 	public void setIP(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
-						.getLightSheetPoweInmWVariable()
+						.getPowerVariable()
 						.set(pValue);
 	}
 

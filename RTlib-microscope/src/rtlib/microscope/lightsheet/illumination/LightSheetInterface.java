@@ -20,21 +20,21 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
 
-	public DoubleVariable getLightSheetXInMicronsVariable();
+	public DoubleVariable getXVariable();
 
-	public DoubleVariable getLightSheetYInMicronsVariable();
+	public DoubleVariable getYVariable();
 
-	public DoubleVariable getLightSheetZInMicronsVariable();
+	public DoubleVariable getZVariable();
 
-	public DoubleVariable getLightSheetAlphaInDegreesVariable();
+	public DoubleVariable getAlphaInDegreesVariable();
 
-	public DoubleVariable getLightSheetBetaInDegreesVariable();
+	public DoubleVariable getBetaInDegreesVariable();
 
-	public DoubleVariable getLightSheetRangeInMicronsVariable();
+	public DoubleVariable getWidthVariable();
 
-	public DoubleVariable getLightSheetLengthInMicronsVariable();
+	public DoubleVariable getHeightVariable();
 
-	public DoubleVariable getLightSheetPoweInmWVariable();
+	public DoubleVariable getPowerVariable();
 
 	public DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex);
 
@@ -42,21 +42,27 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public ObjectVariable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetXFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getXFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetYFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getYFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetZFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction();
+	
+	public ObjectVariable<UnivariateAffineComposableFunction> getWidthFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetBetaFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getHeightFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetIrisDiameterFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getAlphaFunction();
+	
+	public ObjectVariable<UnivariateAffineComposableFunction> getBetaFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getLightSheetLaserPowerFunction();
+	public ObjectVariable<UnivariateAffineComposableFunction> getPowerFunction();
 
 	public int getNumberOfPhases(int pLaserIndex);
 
-	public void reset();
+	public void resetFunctions();
+
+
 
 
 
