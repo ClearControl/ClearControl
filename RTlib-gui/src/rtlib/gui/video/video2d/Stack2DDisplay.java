@@ -28,7 +28,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	private final ObjectVariable<StackInterface<T, A>> mInputStackVariable;
 	private ObjectVariable<StackInterface<T, A>> mOutputStackVariable;
 
-	private volatile StackInterface<T, A> mLastReceivedStackCopy;
+	private volatile StackInterface<T, A> mReceivedStackCopy;
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
@@ -85,7 +85,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				{
 					final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
 					mStackSliceNormalizedIndex.setValue(nx);
-					mAsynchronousDisplayUpdater.passOrFail(mLastReceivedStackCopy);
+					mAsynchronousDisplayUpdater.passOrFail(mReceivedStackCopy);
 				}
 
 				super.mouseDragged(pMouseEvent);
@@ -102,37 +102,40 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			{
 				try
 				{
-					if (pStack != mLastReceivedStackCopy)
+					if (pStack != mReceivedStackCopy)
 					{
 
-						if (mLastReceivedStackCopy == null || mLastReceivedStackCopy.getWidth() != pStack.getWidth()
-								|| mLastReceivedStackCopy.getHeight() != pStack.getHeight()
-								|| mLastReceivedStackCopy.getDepth() != pStack.getDepth()
-								|| mLastReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
+						if (mReceivedStackCopy == null || mReceivedStackCopy.getWidth() != pStack.getWidth()
+								|| mReceivedStackCopy.getHeight() != pStack.getHeight()
+								|| mReceivedStackCopy.getDepth() != pStack.getDepth()
+								|| mReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
 						{
-							if (mLastReceivedStackCopy != null)
+							if (mReceivedStackCopy != null)
 							{
-								final StackInterface<T, A> lStackToFree = mLastReceivedStackCopy;
-								mLastReceivedStackCopy = pStack.duplicate();
+								final StackInterface<T, A> lStackToFree = mReceivedStackCopy;
+								mReceivedStackCopy = pStack.duplicate();
 								lStackToFree.free();
 							}
 							else
-								mLastReceivedStackCopy = pStack.duplicate();
+								mReceivedStackCopy = pStack.duplicate();
 						}
-
-						if (!mLastReceivedStackCopy.isFree())
+						else if (!mReceivedStackCopy.isFree())
 						{
-							mLastReceivedStackCopy.getContiguousMemory()
-																		.copyFrom(pStack.getContiguousMemory());
+							mReceivedStackCopy.getContiguousMemory()
+																.copyFrom(pStack.getContiguousMemory());
 
 						}
 
-						displayStack(pStack, true);
+					}
+
+					displayStack(mReceivedStackCopy);
+
+					if (mOutputStackVariable != null)
+					{
+						mOutputStackVariable.setReference(pStack);
 					}
 					else
-					{
-						displayStack(mLastReceivedStackCopy, false);
-					}
+						pStack.release();
 
 				}
 				catch (coremem.rgc.FreedException e)
@@ -215,8 +218,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																										Double.NaN);
 	}
 
-	private void displayStack(final StackInterface<T, A> pStack,
-														boolean pPassOrReleaseStack)
+	private void displayStack(final StackInterface<T, A> pStack)
 	{
 
 		final int lStackWidth = (int) pStack.getWidth();
@@ -250,13 +252,6 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mVideoWindow.setWidth(lStackWidth);
 		mVideoWindow.setHeight(lStackHeight);
 
-		if (pPassOrReleaseStack)
-			if (mOutputStackVariable != null)
-			{
-				mOutputStackVariable.setReference(pStack);
-			}
-			else
-				pStack.release();
 	}
 
 	@Override

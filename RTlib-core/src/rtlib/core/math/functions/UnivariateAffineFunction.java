@@ -5,6 +5,10 @@ import java.io.Serializable;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder(
+{ "slope", "constant", "min", "max" })
 public class UnivariateAffineFunction	implements
 										UnivariateAffineComposableFunction,
 										FunctionDomain,

@@ -1,18 +1,15 @@
 package rtlib.cameras.devices.orcaflash4;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import dcamj.DcamAcquisition;
-import dcamj.DcamAcquisition.TriggerType;
-import dcamj.DcamAcquisitionListener;
-import dcamj.DcamFrame;
-import dcamj.DcamProperties;
-import gnu.trove.list.array.TByteArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
@@ -21,18 +18,21 @@ import rtlib.core.units.Magnitude;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
+import dcamj.DcamAcquisition;
+import dcamj.DcamAcquisition.TriggerType;
+import dcamj.DcamAcquisitionListener;
+import dcamj.DcamFrame;
+import dcamj.DcamProperties;
 
-public class OrcaFlash4StackCamera	extends
-									StackCameraDeviceBase<UnsignedShortType, ShortOffHeapAccess> implements
-																								OpenCloseDeviceInterface,
-																								AsynchronousExecutorServiceAccess
+public class OrcaFlash4StackCamera extends
+																	StackCameraDeviceBase<UnsignedShortType, ShortOffHeapAccess> implements
+																																															OpenCloseDeviceInterface,
+																																															AsynchronousExecutorServiceAccess
 {
 	public static final int cStackProcessorQueueSize = 100;
 	public static final int cDcamJNumberOfBuffers = 1024;
 
 	private final int mCameraDeviceIndex;
-	
-	private final boolean mFlipX;
 
 	private final DcamAcquisition mDcamAcquisition;
 
@@ -41,38 +41,38 @@ public class OrcaFlash4StackCamera	extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private final Object mLock = new Object();
-	
 
-
-	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex, boolean pFlipX)
+	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
+																																				boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.ExternalFastEdge,
-											pFlipX);
+																			TriggerType.ExternalFastEdge,
+																			pFlipX);
 	}
 
-	public static final OrcaFlash4StackCamera buildWithInternalTriggering(final int pCameraDeviceIndex, boolean pFlipX)
+	public static final OrcaFlash4StackCamera buildWithInternalTriggering(final int pCameraDeviceIndex,
+																																				boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.Internal,
-											pFlipX);
+																			TriggerType.Internal,
+																			pFlipX);
 	}
 
-	public static final OrcaFlash4StackCamera buildWithSoftwareTriggering(final int pCameraDeviceIndex, boolean pFlipX)
+	public static final OrcaFlash4StackCamera buildWithSoftwareTriggering(final int pCameraDeviceIndex,
+																																				boolean pFlipX)
 	{
 		return new OrcaFlash4StackCamera(	pCameraDeviceIndex,
-											TriggerType.Software,
-											pFlipX);
+																			TriggerType.Software,
+																			pFlipX);
 	}
 
-	private OrcaFlash4StackCamera(	final int pCameraDeviceIndex,
-									final TriggerType pTriggerType,
-									boolean pFlipX)
+	private OrcaFlash4StackCamera(final int pCameraDeviceIndex,
+																final TriggerType pTriggerType,
+																boolean pFlipX)
 	{
 		super("OrcaFlash4Camera" + pCameraDeviceIndex);
 
 		mCameraDeviceIndex = pCameraDeviceIndex;
-		mFlipX = pFlipX;
 		mDcamAcquisition = new DcamAcquisition(mCameraDeviceIndex);
 		mDcamAcquisition.setTriggerType(pTriggerType);
 
@@ -81,10 +81,10 @@ public class OrcaFlash4StackCamera	extends
 
 			@Override
 			public void frameArrived(	final DcamAcquisition pDcamAquisition,
-										final long pAbsoluteFrameIndex,
-										final long pArrivalTimeStamp,
-										final long pFrameIndexInBufferList,
-										final DcamFrame pDcamFrame)
+																final long pAbsoluteFrameIndex,
+																final long pArrivalTimeStamp,
+																final long pFrameIndexInBufferList,
+																final DcamFrame pDcamFrame)
 			{
 				/*final long lDepth = pDcamFrame.getDepth();
 				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
@@ -92,23 +92,32 @@ public class OrcaFlash4StackCamera	extends
 															+ pDcamFrame.getIndex()
 															+ " pFrameIndexInBufferList="
 															+ pFrameIndexInBufferList);/**/
-				mFrameReference.setReference(Pair.of(	new TByteArrayList(mKeepAcquiredImageArray),
-														pDcamFrame));
+
+				TByteArrayList lKeepAcquiredImageArray;
+				do
+				{
+					lKeepAcquiredImageArray = mKeepAcquiredImageArrayQueue.remove();
+					System.out.println("lKeepAcquiredImageArray=" + lKeepAcquiredImageArray);
+				}
+				while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
+
+				mFrameReference.setReference(Pair.of(	lKeepAcquiredImageArray,
+																							pDcamFrame));
 			}
 
 		});
 
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
-																	9.74);
+																																9.74);
 
 		mStackBytesPerPixelVariable = new DoubleVariable(	"BytesPerPixel",
-															mDcamAcquisition.getFrameBytesPerPixel());
+																											mDcamAcquisition.getFrameBytesPerPixel());
 
 		mStackWidthVariable = new DoubleVariable("FrameWidth", 2048)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+																	final Double pNewValue)
 			{
 				synchronized (mLock)
 				{
@@ -129,7 +138,7 @@ public class OrcaFlash4StackCamera	extends
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+																	final Double pNewValue)
 			{
 				synchronized (mLock)
 				{
@@ -149,28 +158,28 @@ public class OrcaFlash4StackCamera	extends
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+																	final Double pNewValue)
 			{
 				return super.setEventHook(pOldValue, pNewValue);
 			}
 		};
 
 		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeInNanometers",
-															160);
+																												160);
 
 		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
-																5000)
+																													5000)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldExposureInMicroseconds,
-										final Double pExposureInMicroseconds)
+																	final Double pExposureInMicroseconds)
 			{
 				synchronized (mLock)
 				{
 					final double lEffectiveExposureInSeconds = mDcamAcquisition.setExposureInSeconds(Magnitude.micro2unit(pExposureInMicroseconds));
 					final double lEffectiveExposureInMicroSeconds = Magnitude.unit2micro(lEffectiveExposureInSeconds);
-					return super.setEventHook(	pOldExposureInMicroseconds,
-												lEffectiveExposureInMicroSeconds);
+					return super.setEventHook(pOldExposureInMicroseconds,
+																		lEffectiveExposureInMicroSeconds);
 				}
 			}
 
@@ -193,21 +202,15 @@ public class OrcaFlash4StackCamera	extends
 		};
 
 		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	pCameraDeviceIndex,
-																				mFrameReference,
-																				cStackProcessorQueueSize,
-																				mFlipX);
+																																					mFrameReference,
+																																					cStackProcessorQueueSize,
+																																					pFlipX);
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}
-
-	public boolean isFlipX()
-	{
-		return mFlipX;
-	}
-
 
 	protected ObjectVariable<Pair<TByteArrayList, DcamFrame>> getInternalFrameReferenceVariable()
 	{
@@ -223,8 +226,7 @@ public class OrcaFlash4StackCamera	extends
 			{
 				final boolean lOpenResult = mDcamAcquisition.open();
 				mDcamAcquisition.setDefectCorrection(false);
-				mDcamAcquisition.getProperties()
-								.setOutputTriggerToExposure();
+				mDcamAcquisition.getProperties().setOutputTriggerToExposure();
 				mDcamJToStackConverterAndProcessing.open();
 				mDcamJToStackConverterAndProcessing.start();
 				return lOpenResult;
@@ -243,10 +245,10 @@ public class OrcaFlash4StackCamera	extends
 		synchronized (mLock)
 		{
 			DcamFrame.preallocateFrames(pNumberOf2DFramesNeeded,
-										(long) getStackBytesPerPixelVariable().getValue(),
-										(long) getStackWidthVariable().getValue(),
-										(long) getStackHeightVariable().getValue(),
-										1);
+																	(long) getStackBytesPerPixelVariable().getValue(),
+																	(long) getStackWidthVariable().getValue(),
+																	(long) getStackHeightVariable().getValue(),
+																	1);
 		}
 	}
 
@@ -255,10 +257,10 @@ public class OrcaFlash4StackCamera	extends
 		synchronized (mLock)
 		{
 			DcamFrame.preallocateFrames(pNumberOf3DFramesNeeded,
-										(long) getStackBytesPerPixelVariable().getValue(),
-										(long) getStackWidthVariable().getValue(),
-										(long) getStackHeightVariable().getValue(),
-										(long) getStackDepthVariable().getValue());
+																	(long) getStackBytesPerPixelVariable().getValue(),
+																	(long) getStackWidthVariable().getValue(),
+																	(long) getStackHeightVariable().getValue(),
+																	(long) getStackDepthVariable().getValue());
 		}
 	}
 
@@ -266,10 +268,10 @@ public class OrcaFlash4StackCamera	extends
 	{
 		synchronized (mLock)
 		{
-			return DcamFrame.requestFrame(	(long) getStackBytesPerPixelVariable().getValue(),
-											(long) getStackWidthVariable().getValue(),
-											(long) getStackHeightVariable().getValue(),
-											cDcamJNumberOfBuffers);
+			return DcamFrame.requestFrame((long) getStackBytesPerPixelVariable().getValue(),
+																		(long) getStackWidthVariable().getValue(),
+																		(long) getStackHeightVariable().getValue(),
+																		cDcamJNumberOfBuffers);
 		}
 	}
 
@@ -277,10 +279,10 @@ public class OrcaFlash4StackCamera	extends
 	{
 		synchronized (mLock)
 		{
-			return DcamFrame.requestFrame(	(long) getStackBytesPerPixelVariable().getValue(),
-											(long) getStackWidthVariable().getValue(),
-											(long) getStackHeightVariable().getValue(),
-											(long) getStackDepthVariable().getValue());
+			return DcamFrame.requestFrame((long) getStackBytesPerPixelVariable().getValue(),
+																		(long) getStackWidthVariable().getValue(),
+																		(long) getStackHeightVariable().getValue(),
+																		(long) getStackDepthVariable().getValue());
 		}
 	}
 
@@ -290,8 +292,8 @@ public class OrcaFlash4StackCamera	extends
 		super.playQueue();
 
 		acquisition(false,
-					getStackModeVariable().getBooleanValue(),
-					false);
+								getStackModeVariable().getBooleanValue(),
+								false);
 
 		final Future<Boolean> lFuture = executeAsynchronously(new Callable<Boolean>()
 		{
@@ -370,12 +372,13 @@ public class OrcaFlash4StackCamera	extends
 	}
 
 	public Boolean acquisition(	boolean pContinuous,
-								boolean pStackMode,
-								boolean pWaitToFinish)
+															boolean pStackMode,
+															boolean pWaitToFinish)
 	{
 		synchronized (mLock)
 		{
-			System.out.println(this.getClass().getSimpleName() + ": acquisition() begin");
+			// System.out.println(this.getClass().getSimpleName() +
+			// ": acquisition() begin");
 
 			if (getIsAcquiringVariable().getBooleanValue())
 			{
@@ -402,23 +405,24 @@ public class OrcaFlash4StackCamera	extends
 				{
 					final DcamFrame lInitialVideoFrame = request3DFrame();
 					lSuccess = mDcamAcquisition.startAcquisition(	pContinuous,
-																	true,
-																	true,
-																	pWaitToFinish,
-																	lInitialVideoFrame);
+																												true,
+																												true,
+																												pWaitToFinish,
+																												lInitialVideoFrame);
 				}
 				else
 				{
 					final DcamFrame lInitialVideoFrame = request2DFrames();
 					lSuccess = mDcamAcquisition.startAcquisition(	pContinuous,
-																	false,
-																	true,
-																	pWaitToFinish,
-																	lInitialVideoFrame);
+																												false,
+																												true,
+																												pWaitToFinish,
+																												lInitialVideoFrame);
 
 				}
 
-				System.out.println(this.getClass().getSimpleName() + ": acquisition() end");
+				// System.out.println(this.getClass().getSimpleName() +
+				// ": acquisition() end");
 
 				return lSuccess;
 			}
@@ -461,7 +465,5 @@ public class OrcaFlash4StackCamera	extends
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
 	}
-
-
 
 }

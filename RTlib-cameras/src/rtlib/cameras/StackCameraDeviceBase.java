@@ -1,8 +1,10 @@
 package rtlib.cameras;
 
+import gnu.trove.list.array.TByteArrayList;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import gnu.trove.list.array.TByteArrayList;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
@@ -29,7 +31,8 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 
 	protected ObjectVariable<StackInterface<T, A>> mStackReference;
 
-	protected TByteArrayList mKeepAcquiredImageArray = new TByteArrayList();
+	private TByteArrayList mStagingKeepAcquiredImageArray;
+	protected ConcurrentLinkedQueue<TByteArrayList> mKeepAcquiredImageArrayQueue = new ConcurrentLinkedQueue<TByteArrayList>();
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
@@ -66,14 +69,14 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	{
 		mQueueLength = 0;
 		mStackDepthVariable.setValue(0);
-		mKeepAcquiredImageArray.clear();
+		mStagingKeepAcquiredImageArray = new TByteArrayList();
 	}
 
 	@Override
 	public void addCurrentStateToQueue()
 	{
 		mQueueLength++;
-		mKeepAcquiredImageArray.add((byte) (mKeepPlane.getBooleanValue() ? 1
+		mStagingKeepAcquiredImageArray.add((byte) (mKeepPlane.getBooleanValue()	? 1
 																		: 0));
 	}
 
@@ -92,6 +95,7 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	public Future<Boolean> playQueue()
 	{
 		mStackDepthVariable.setValue(mQueueLength);
+		mKeepAcquiredImageArrayQueue.add(new TByteArrayList(mStagingKeepAcquiredImageArray));
 		// This method should be called by overriding methods of descendants.
 		return null;
 	}

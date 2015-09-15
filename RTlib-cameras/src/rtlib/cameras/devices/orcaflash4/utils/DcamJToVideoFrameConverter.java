@@ -1,19 +1,17 @@
 package rtlib.cameras.devices.orcaflash4.utils;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.bridj.Pointer;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.offheap.OffHeapMemory;
-import coremem.recycling.BasicRecycler;
-import dcamj.DcamFrame;
-import gnu.trove.list.array.TByteArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessor;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
@@ -28,6 +26,9 @@ import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorInterface;
+import coremem.offheap.OffHeapMemory;
+import coremem.recycling.BasicRecycler;
+import dcamj.DcamFrame;
 
 public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 																		OpenCloseDeviceInterface
@@ -257,8 +258,8 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			{
 				long lIndexSourceXY = lIndexY + x;
 				long lIndexTargetXY = lIndexY + lWidth - 1 - x;
-				lTargetBuffer.setByte(	lIndexTargetXY,
-										lSourceBuffer.getByte(lIndexSourceXY));
+				lTargetBuffer.setShortAligned(lIndexTargetXY,
+																			lSourceBuffer.getShortAligned(lIndexSourceXY));
 			}
 		}
 	}
