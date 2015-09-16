@@ -311,16 +311,17 @@ public class LightSheetMicroscope	extends
 
 	public void zero()
 	{
-		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
-			setC(i, true);
-
-		for (int i = 0; i < getDeviceLists().getNumberOfDetectionArmDevices(); i++)
+			for (int i = 0; i < getDeviceLists().getNumberOfDetectionArmDevices(); i++)
+		{
 			setDZ(i, 0);
+			setC(i, true);
+		}
 
 		for (int i = 0; i < getDeviceLists().getNumberOfLightSheetDevices(); i++)
 		{
-			setIZ(i, 0);
+			setIX(i, 0);
 			setIY(i, 0);
+			setIZ(i, 0);
 			setIA(i, 0);
 			setIB(i, 0);
 			setIW(i, 0);
@@ -341,6 +342,16 @@ public class LightSheetMicroscope	extends
 						.getKeepPlaneVariable()
 						.setValue(pKeepImage);
 	};
+	
+	@Override
+	public void setC(boolean pKeepImage)
+	{
+		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
+		
+		for(int c=0;c<lNumberOfStackCameraDevices; c++)
+			getDeviceLists().getStackCameraDevice(c).getKeepPlaneVariable().setValue(pKeepImage);
+		
+	}
 
 	@Override
 	public void setLO(int pLaserIndex, boolean pLaserOnOff)
@@ -472,5 +483,7 @@ public class LightSheetMicroscope	extends
 		return String.format(	"LightSheetMicroscope: \n%s\n",
 								mLSMDeviceLists.toString());
 	}
+
+	
 
 }

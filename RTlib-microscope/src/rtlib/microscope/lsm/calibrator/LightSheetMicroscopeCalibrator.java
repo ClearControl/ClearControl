@@ -8,8 +8,10 @@ import java.io.IOException;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationA;
+import rtlib.microscope.lsm.calibrator.modules.CalibrationHP;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationP;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationW;
+import rtlib.microscope.lsm.calibrator.modules.CalibrationWP;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationXY;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationZ;
 import rtlib.microscope.lsm.detection.DetectionArmInterface;
@@ -30,7 +32,7 @@ public class LightSheetMicroscopeCalibrator
 	private ObjectMapper mObjectMapper;
 
 	private File mCalibrationFolder = MachineConfiguration.getCurrentMachineConfiguration()
-																												.getFolder("Calibration");
+															.getFolder("Calibration");
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 	private CalibrationZ mCalibrationZ;
@@ -38,9 +40,10 @@ public class LightSheetMicroscopeCalibrator
 	private CalibrationXY mCalibrationXY;
 	private CalibrationP mCalibrationP;
 	private CalibrationW mCalibrationW;
+	private CalibrationHP mCalibrationHP;
+	private CalibrationWP mCalibrationWP;
 
 	private int mNumberOfDetectionArmDevices;
-
 	private int mNumberOfLightSheetDevices;
 
 	public LightSheetMicroscopeCalibrator(LightSheetMicroscope pLightSheetMicroscope)
@@ -51,12 +54,14 @@ public class LightSheetMicroscopeCalibrator
 		mCalibrationXY = new CalibrationXY(pLightSheetMicroscope);
 		mCalibrationP = new CalibrationP(pLightSheetMicroscope);
 		mCalibrationW = new CalibrationW(pLightSheetMicroscope);
+		mCalibrationWP = new CalibrationWP(pLightSheetMicroscope);
+		mCalibrationHP = new CalibrationHP(pLightSheetMicroscope);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+															.getNumberOfDetectionArmDevices();
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+															.getNumberOfLightSheetDevices();
 
 		mObjectMapper = new ObjectMapper();
 		mObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -163,7 +168,7 @@ public class LightSheetMicroscopeCalibrator
 				return false;
 		}
 		while (lError >= 0.04 && lIteration++ < cMaxIterations);
-		
+
 		return true;
 	}
 
@@ -176,12 +181,13 @@ public class LightSheetMicroscopeCalibrator
 	// /***************************************************************/ //
 
 	public double calibrateZ(	int pLightSheetIndex,
-														int pNumberOfSamples,
-														boolean pAdjustDetectionZ)
+								int pNumberOfSamples,
+								boolean pAdjustDetectionZ)
 	{
 		mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 7);
 
-		return mCalibrationZ.apply(pLightSheetIndex, pAdjustDetectionZ);
+		return mCalibrationZ.apply(	pLightSheetIndex,
+									pAdjustDetectionZ);
 	}
 
 	public double calibrateA(int pLightSheetIndex, int pNumberOfAngles)
@@ -191,23 +197,49 @@ public class LightSheetMicroscopeCalibrator
 		return mCalibrationA.apply(pLightSheetIndex);
 	}
 
-	public double calibrateXY(int pLightSheetIndex,
-														int pDetectionArmIndex,
-														int pNumberOfPoints)
+	public double calibrateXY(	int pLightSheetIndex,
+								int pDetectionArmIndex,
+								int pNumberOfPoints)
 	{
 		mCalibrationXY.calibrate(	pLightSheetIndex,
-															pDetectionArmIndex,
-															pNumberOfPoints);
+									pDetectionArmIndex,
+									pNumberOfPoints);
 
-		return mCalibrationXY.apply(pLightSheetIndex, pDetectionArmIndex);
+		return mCalibrationXY.apply(pLightSheetIndex,
+									pDetectionArmIndex);
 	}
 
 	public double calibrateW(	int pDetectionArmIndex,
-														int pNumberOfSamples)
+								int pNumberOfSamples)
 	{
 		mCalibrationW.calibrate(pDetectionArmIndex, pNumberOfSamples);
 
 		return mCalibrationW.apply();
+	}
+
+	public double calibrateWP(	int pLightSheetIndex,
+								int pDetectionArmIndex,
+								int pNumberOfSamplesW,
+								int pNumberOfSamplesP)
+	{
+		mCalibrationWP.calibrate(	pLightSheetIndex,
+									pDetectionArmIndex,
+									pNumberOfSamplesW,
+									pNumberOfSamplesP);
+
+		return mCalibrationWP.apply(pLightSheetIndex,
+									pDetectionArmIndex);
+	}
+
+	public double calibrateHP(	int pLightSheetIndex,
+								int pDetectionArmIndex,
+								int pNumberOfSamplesH,
+								int pNumberOfSamplesP)
+	{
+		mCalibrationHP.calibrate(pLightSheetIndex,pDetectionArmIndex, pNumberOfSamplesH,pNumberOfSamplesP);
+
+		return mCalibrationHP.apply(pLightSheetIndex,
+		          									pDetectionArmIndex);
 	}
 
 	public void reset()
@@ -219,23 +251,23 @@ public class LightSheetMicroscopeCalibrator
 		mCalibrationW.reset();
 
 		final int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																																	.getNumberOfDetectionArmDevices();
+																		.getNumberOfDetectionArmDevices();
 
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 		{
 			final DetectionArmInterface lDetectionArmDevice = mLightSheetMicroscope.getDeviceLists()
-																																							.getDetectionArmDevice(i);
+																					.getDetectionArmDevice(i);
 			lDetectionArmDevice.reset();
 
 		}
 
 		final int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfDetectionArmDevices();
+																	.getNumberOfDetectionArmDevices();
 
 		for (int i = 0; i < lNumberOfLightSheetDevices; i++)
 		{
 			final LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																					.getLightSheetDevice(i);
+																				.getLightSheetDevice(i);
 
 			lLightSheetDevice.resetFunctions();
 
@@ -243,22 +275,22 @@ public class LightSheetMicroscopeCalibrator
 	}
 
 	public LightSheetPositioner getLightSheetPositioner(int pLightSheetIndex,
-																											int pDetectionArmIndex)
+														int pDetectionArmIndex)
 	{
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																	.getLightSheetDevice(pLightSheetIndex);
+																		.getLightSheetDevice(pLightSheetIndex);
 		Matrix lTransformMatrix = mCalibrationXY.getTransformMatrix(pLightSheetIndex,
-																																pDetectionArmIndex);
+																	pDetectionArmIndex);
 
-		LightSheetPositioner lLightSheetPositioner = new LightSheetPositioner(lLightSheetDevice,
-																																					lTransformMatrix);
+		LightSheetPositioner lLightSheetPositioner = new LightSheetPositioner(	lLightSheetDevice,
+																				lTransformMatrix);
 
 		return lLightSheetPositioner;
 	}
 
-	public void save(String pName) throws JsonGenerationException,
-																JsonMappingException,
-																IOException
+	public void save(String pName)	throws JsonGenerationException,
+									JsonMappingException,
+									IOException
 	{
 		CalibrationData lCalibrationData = new CalibrationData(mLightSheetMicroscope);
 
@@ -268,8 +300,8 @@ public class LightSheetMicroscopeCalibrator
 	}
 
 	public boolean load(String pName)	throws JsonParseException,
-																		JsonMappingException,
-																		IOException
+										JsonMappingException,
+										IOException
 	{
 		File lFile = getFile(pName);
 
@@ -277,7 +309,7 @@ public class LightSheetMicroscopeCalibrator
 			return false;
 
 		CalibrationData lCalibrationData = mObjectMapper.readValue(	lFile,
-																																CalibrationData.class);
+																	CalibrationData.class);
 
 		lCalibrationData.applyTo(mLightSheetMicroscope);
 

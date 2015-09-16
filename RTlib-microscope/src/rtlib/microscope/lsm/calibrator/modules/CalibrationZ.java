@@ -240,7 +240,7 @@ public class CalibrationZ
 
 					// final double[] lDCTSArray =
 					// mDCTS2D.computeImageQualityMetric(lImage);
-					final double[] lMetricArray = ImageAnalysisUtils.computeSumPowerIntensityPerPlane(lImage);
+					final double[] lMetricArray = ImageAnalysisUtils.computeAveragePowerIntensityPerPlane(lImage);
 
 					PlotTab lPlot = mMultiPlotZFocusCurves.getPlot(String.format(	"D=%d, I=%d, Iz=%g",
 																					i,

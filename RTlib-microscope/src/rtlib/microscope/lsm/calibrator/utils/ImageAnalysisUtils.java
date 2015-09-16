@@ -5,6 +5,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import rtlib.ip.iqm.DCTS2D;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
@@ -16,6 +17,8 @@ import coremem.fragmented.FragmentedMemoryInterface;
 public class ImageAnalysisUtils
 {
 
+	
+	
 	public static double[] computeImageAverageIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
 	{
 		int lNumberOfPlanes = pImage.numSlices();
@@ -40,7 +43,7 @@ public class ImageAnalysisUtils
 		return lIntensityArray;
 	}
 
-	public static double[] computeSumPowerIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+	public static double[] computeAveragePowerIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
 	{
 		int lNumberOfPlanes = pImage.numSlices();
 		FragmentedMemoryInterface lFragmentedMemory = pImage.getFragmentedMemory();

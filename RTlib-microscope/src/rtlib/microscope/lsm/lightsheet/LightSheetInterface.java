@@ -1,5 +1,7 @@
 package rtlib.microscope.lsm.lightsheet;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
@@ -57,10 +59,18 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 	public ObjectVariable<UnivariateAffineComposableFunction> getBetaFunction();
 
 	public ObjectVariable<UnivariateAffineComposableFunction> getPowerFunction();
+	
+	public ObjectVariable<UnivariateFunction> getWidthPowerFunction();
+	
+	public ObjectVariable<UnivariateAffineComposableFunction> getHeightPowerFunction();
 
 	public int getNumberOfPhases(int pLaserIndex);
 
 	public void resetFunctions();
+
+
+
+
 
 
 

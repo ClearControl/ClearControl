@@ -67,6 +67,15 @@ public interface LightSheetMicroscopeInterface
 	 *            true if image should be acquired (or kept), false otherwise
 	 */
 	public void setC(int pCameraIndex, boolean pKeepImage);
+	
+	/**
+	 * Sets a flag that determines whether all cameras should acquire (or keep)
+	 * an image.
+	 * 
+	 * @param pKeepImage
+	 *            true if image should be acquired (or kept), false otherwise
+	 */
+	public void setC(boolean pKeepImage);
 
 	/**
 	 * Sets a detection objective to a given position.
@@ -190,5 +199,7 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 									int pLaserIndex,
 									boolean pOnOff);
+
+
 
 }

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import rtlib.gui.plots.MultiPlot;
 import rtlib.microscope.lsm.acquisition.interpolation.InterpolationTable;
-import rtlib.microscope.lsm.acquisition.interpolation.InterpolationTable.Row;
+import rtlib.microscope.lsm.acquisition.interpolation.Row;
 
 public class InterpolationTableTests
 {

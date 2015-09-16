@@ -16,99 +16,39 @@ import rtlib.gui.plots.PlotTab;
 
 public class InterpolationTable
 {
-	public class Row implements Comparable<Row>
-	{
-		private final double x;
-		private final TDoubleArrayList y;
-		private volatile boolean mIsUpToDate = false;
-
-		public Row(int pNumberOfColumns, double pX)
-		{
-			x = pX;
-
-			if (pNumberOfColumns > 0)
-			{
-				y = new TDoubleArrayList();
-				for (int i = 0; i < pNumberOfColumns; i++)
-					y.add(0);
-			}
-			else
-				y = null;
-
-			System.out.println(y);
-		}
-
-		public double getX()
-		{
-			return x;
-		}
-
-		public double getY(int pColumnIndex)
-		{
-			return y.get(pColumnIndex);
-		}
-
-		public void setY(int pColumnIndex, double pValue)
-		{
-			y.set(pColumnIndex, pValue);
-			mIsUpToDate = false;
-		}
-
-		public boolean isUpToDate()
-		{
-			return mIsUpToDate;
-		}
-
-		public void setUpToDate(boolean pIsUpToDate)
-		{
-			mIsUpToDate = pIsUpToDate;
-		}
-
-		@Override
-		public int compareTo(Row pRow)
-		{
-			if (getX() > pRow.getX())
-				return 1;
-			else if (getX() < pRow.getX())
-				return -1;
-			return 0;
-		}
-
-		@Override
-		public String toString()
-		{
-			return "Row [x=" + x
-					+ ", y="
-					+ y
-					+ ", mIsUpToDate="
-					+ mIsUpToDate
-					+ "]";
-		}
-		
-		
-
-	}
-
-	private final TreeSet<Row> mTable = new TreeSet<>();
-	
-	private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList = new ArrayList<>();
+	private final TreeSet<Row> mTable;
+	private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
 	private final int mNumberOfColumns;
 	private volatile boolean mIsUpToDate = false;
 
 	public InterpolationTable(int pNumberOfColumns)
 	{
 		super();
+		mTable = new TreeSet<>();
+		mInterpolatingFunctionsList = new ArrayList<>();
 		mNumberOfColumns = pNumberOfColumns;
 	}
-	
-	
+
+	public InterpolationTable(InterpolationTable pInterpolationTable)
+	{
+		mTable = new TreeSet<>(pInterpolationTable.mTable);
+		mInterpolatingFunctionsList = new ArrayList<>(pInterpolationTable.mInterpolatingFunctionsList);
+		mNumberOfColumns = pInterpolationTable.mNumberOfColumns;
+		mIsUpToDate = pInterpolationTable.mIsUpToDate;
+	}
+
+	public int getNumberOfRows()
+	{
+		return mTable.size();
+	}
+
 	public Row getRow(int pRowIndex)
 	{
 		Iterator<Row> lIterator = mTable.iterator();
-		
-		for(int i=0; i<pRowIndex && lIterator.hasNext(); i++)
+
+		for (int i = 0; i < pRowIndex && lIterator.hasNext(); i++)
 			lIterator.next();
-		
+
 		return lIterator.next();
 	}
 
@@ -286,7 +226,5 @@ public class InterpolationTable
 
 		return lMultiPlot;
 	}
-
-
 
 }

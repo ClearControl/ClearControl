@@ -31,7 +31,7 @@ public class CalibrationA
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 	private ArgMaxFinder1DInterface mArgMaxFinder;
-	private MultiPlot mMultiPlotZFocusCurves;
+	private MultiPlot mMultiPlotAFocusCurves;
 	private HashMap<Integer, UnivariateAffineFunction> mModels;
 	private int mNumberOfDetectionArmDevices;
 	private int mNumberOfLightSheetDevices;
@@ -41,7 +41,7 @@ public class CalibrationA
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
-		mMultiPlotZFocusCurves = MultiPlot.getMultiPlot(this.getClass()
+		mMultiPlotAFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
@@ -57,8 +57,8 @@ public class CalibrationA
 	{
 		mArgMaxFinder = new SmartArgMaxFinder();
 
-		mMultiPlotZFocusCurves.clear();
-		mMultiPlotZFocusCurves.setVisible(true);
+		mMultiPlotAFocusCurves.clear();
+		mMultiPlotAFocusCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
 																														.getLightSheetDevice(pLightSheetIndex);
@@ -157,6 +157,7 @@ public class CalibrationA
 			final TDoubleArrayList lAList = new TDoubleArrayList();
 			double[] angles = new double[mNumberOfDetectionArmDevices];
 
+			mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIY(pLightSheetIndex, pY);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIW(pLightSheetIndex, 0);
@@ -204,20 +205,20 @@ public class CalibrationA
 
 					// final double[] lDCTSArray =
 					// mDCTS2D.computeImageQualityMetric(lImage);
-					final double[] lMetricArray = ImageAnalysisUtils.computeSumPowerIntensityPerPlane(lImage);
+					final double[] lAvgIntensityArray = ImageAnalysisUtils.computeAveragePowerIntensityPerPlane(lImage);
 
-					smooth(lMetricArray, 10);
+					smooth(lAvgIntensityArray, 10);
 
-					PlotTab lPlot = mMultiPlotZFocusCurves.getPlot(String.format(	"D=%d, I=%d, IY=%g",
+					PlotTab lPlot = mMultiPlotAFocusCurves.getPlot(String.format(	"D=%d, I=%d, IY=%g",
 																																				i,
 																																				pLightSheetIndex,
 																																				pY));
 					lPlot.setScatterPlot("samples");
 
 					// System.out.format("metric array: \n");
-					for (int j = 0; j < lMetricArray.length; j++)
+					for (int j = 0; j < lAvgIntensityArray.length; j++)
 					{
-						lPlot.addPoint("samples", lAList.get(j), lMetricArray[j]);
+						lPlot.addPoint("samples", lAList.get(j), lAvgIntensityArray[j]);
 						/*System.out.format("%d,%d\t%g\t%g\n",
 															i,
 															j,
@@ -227,13 +228,13 @@ public class CalibrationA
 					lPlot.ensureUpToDate();
 
 					final Double lArgMax = mArgMaxFinder.argmax(lAList.toArray(),
-																											lMetricArray);
+																											lAvgIntensityArray);
 
 					if (lArgMax != null)
 					{
-						TDoubleArrayList lDCTSList = new TDoubleArrayList(lMetricArray);
+						TDoubleArrayList lAvgIntensityList = new TDoubleArrayList(lAvgIntensityArray);
 
-						double lAmplitudeRatio = (lDCTSList.max() - lDCTSList.min()) / lDCTSList.max();
+						double lAmplitudeRatio = (lAvgIntensityList.max() - lAvgIntensityList.min()) / lAvgIntensityList.max();
 
 						System.out.format("argmax=%s amplratio=%s \n",
 															lArgMax.toString(),
@@ -336,8 +337,8 @@ public class CalibrationA
 
 	public void reset()
 	{
-		mMultiPlotZFocusCurves.clear();
-		mMultiPlotZFocusCurves.setVisible(false);
+		mMultiPlotAFocusCurves.clear();
+		mMultiPlotAFocusCurves.setVisible(false);
 		mModels.clear();
 	}
 
