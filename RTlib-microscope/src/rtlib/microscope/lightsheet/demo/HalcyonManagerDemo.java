@@ -4,6 +4,7 @@ import model.javafx.FxHalcyonNode;
 import model.node.HalcyonNodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
+import rtlib.lasers.gui.LaserDeviceGUI;
 import rtlib.lasers.gui.LaserGauge;
 import view.HalcyonFrame;
 import window.console.StdOutputCaptureConsole;
@@ -28,11 +29,10 @@ public class HalcyonManagerDemo
 			if(device instanceof LaserDeviceInterface)
 			{
 				// null should be replaced by JPanel
-				LaserGauge panel = new LaserGauge();
-				panel.init();
+				LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI( (LaserDeviceInterface)device );
+				laserDeviceGUI.init();
 
-				FxHalcyonNode node = new FxHalcyonNode( "Laser-" + ((LaserDeviceInterface) device).getName(), HalcyonNodeType.Laser, panel.getPanel() );
-//				final HalcyonNode lLaser = HalcyonNode.wrap( , null );
+				FxHalcyonNode node = new FxHalcyonNode( "Laser-" + ((LaserDeviceInterface) device).getName(), HalcyonNodeType.Laser, laserDeviceGUI.getPanel() );
 				lHalcyonFrame.addNode( node );
 			}
 		}
@@ -72,11 +72,29 @@ public class HalcyonManagerDemo
 		ArrayList<Object> mAllDeviceList = new ArrayList<>();
 		ArrayList<LaserDeviceInterface> mLaserDeviceList = new ArrayList<>();
 
-		LaserDeviceSimulator laser = new LaserDeviceSimulator( "1", 1, 523, 60 );
+		LaserDeviceSimulator laser = new LaserDeviceSimulator( "1", 1, 405, 60 );
+		mAllDeviceList.add(laser);
+		mLaserDeviceList.add( laser );
+
+		laser = new LaserDeviceSimulator( "2", 1, 488, 60 );
+		mAllDeviceList.add(laser);
+		mLaserDeviceList.add( laser );
+
+
+		laser = new LaserDeviceSimulator( "3", 1, 515, 60 );
+		mAllDeviceList.add(laser);
+		mLaserDeviceList.add( laser );
+
+
+		laser = new LaserDeviceSimulator( "4", 1, 561, 60 );
+		mAllDeviceList.add(laser);
+		mLaserDeviceList.add( laser );
+
+
+		laser = new LaserDeviceSimulator( "5", 1, 594, 60 );
 		mAllDeviceList.add(laser);
 		mLaserDeviceList.add( laser );
 
 		HalcyonManagerDemo manager = new HalcyonManagerDemo( mAllDeviceList );
-
 	}
 }

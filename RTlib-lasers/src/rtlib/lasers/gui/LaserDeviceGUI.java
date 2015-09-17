@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -243,6 +244,11 @@ public class LaserDeviceGUI extends Application
 
 	@Override public void stop()
 	{
+	}
+
+	public HBox getPanel()
+	{
+		return mLaser.getPanel();
 	}
 
 	public static void main(String[] args)
