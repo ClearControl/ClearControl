@@ -29,13 +29,23 @@ public interface LightSheetMicroscopeInterface
 	public void setExposure(long pValue, TimeUnit pTimeUnit);
 
 	/**
-	 * Selects light sheet to direct light to:
+	 * Selects _one_ light sheet to direct light to:
 	 * 
 	 * @param pLightSheetIndex
-	 *            light sheet index
+	 *          light sheet index
 	 * 
 	 */
 	public void selectI(int pLightSheetIndex);
+
+	/**
+	 * Directs light to one or several light sheets:
+	 * 
+	 * @param pLightSheetIndex
+	 *          light sheet index
+	 * @param pOnOff
+	 *          true is on, false is off
+	 */
+	public void switchI(int pLightSheetIndex, boolean pOnOff);
 
 	/**
 	 * Switches on/off a given laser.
@@ -199,6 +209,7 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 									int pLaserIndex,
 									boolean pOnOff);
+
 
 
 

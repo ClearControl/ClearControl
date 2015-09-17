@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.junit.Test;
 import org.python.google.common.collect.Lists;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
@@ -35,80 +36,85 @@ public class LightSheetMicroscopeDemo
 	private static final double cImageResolution = 2048;
 
 	@Test
-	public void demoOnSimulators()	throws InterruptedException,
-									ExecutionException
+	public void demoOnSimulators() throws InterruptedException,
+																ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
-																															new UnsignedShortType(),
-																															lSignalGeneratorDevice.getTriggerVariable());
+																																																												new UnsignedShortType(),
+																																																												lSignalGeneratorDevice.getTriggerVariable());
 
 		demoWith(	true,
-					false,
-					true,
-					Lists.newArrayList(lCamera),
-					lSignalGeneratorDevice,
-					1);
+							false,
+							true,
+							Lists.newArrayList(lCamera),
+							lSignalGeneratorDevice,
+							1);
 
 	}
 
 	@Test
 	public void demoOnRealHardwareSingleCamera() throws InterruptedException,
-												ExecutionException
+																							ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
+																																																																				false);
 
 		demoWith(	false,
-					false,
-					true,
-					Lists.newArrayList(lCamera),
-					lSignalGeneratorDevice,
-					1);
+							false,
+							true,
+							Lists.newArrayList(lCamera),
+							lSignalGeneratorDevice,
+							1);
 
 	}
 
 	@Test
 	public void demoOnRealHardwareTwoCamerasFourLightSheets()	throws InterruptedException,
-																ExecutionException
+																														ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
+																																																																					false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(	1,
+																																																																					false);
 
 		demoWith(	true,
-					false,
-					true,
-					Lists.newArrayList(lCamera1, lCamera2),
-					lSignalGeneratorDevice,
-					4);
+							false,
+							true,
+							Lists.newArrayList(lCamera1, lCamera2),
+							lSignalGeneratorDevice,
+							4);
 
 	}
 
 	@Test
-	public void demoScriptingOnRealHardwareTwoCamerasFourLightSheets()	throws InterruptedException,
-																		ExecutionException
+	public void demoScriptingOnRealHardwareTwoCamerasFourLightSheets() throws InterruptedException,
+																																		ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,false);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
+																																																																					false);
+		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(	1,
+																																																																					false);
 
 		demoWith(	true,
-					false,
-					false,
-					Lists.newArrayList(lCamera1, lCamera2),
-					lSignalGeneratorDevice,
-					4);
+							false,
+							false,
+							Lists.newArrayList(lCamera1, lCamera2),
+							lSignalGeneratorDevice,
+							4);
 
 	}
 
 	public void demoWith(	boolean pWithGUI,
-							boolean pWith3D,
-							boolean pAutoStart,
-							ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
-							SignalGeneratorInterface pSignalGeneratorDevice,
-							int pNumberOfLightSheets)	throws InterruptedException,
-														ExecutionException
+												boolean pWith3D,
+												boolean pAutoStart,
+												ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
+												SignalGeneratorInterface pSignalGeneratorDevice,
+												int pNumberOfLightSheets)	throws InterruptedException,
+																									ExecutionException
 	{
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
@@ -116,35 +122,31 @@ public class LightSheetMicroscopeDemo
 		OptoJenaFiberSwitchDevice lOptoJenaFiberSwitchDevice = new OptoJenaFiberSwitchDevice("COM10");
 		lOptoJenaFiberSwitchDevice.setPosition(2);
 		lLightSheetMicroscope.getDeviceLists()
-								.addOpticalSwitchDevice(lOptoJenaFiberSwitchDevice);
+													.addOptoMechanicalDevice(lOptoJenaFiberSwitchDevice);
 
 		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
 		{
 			final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
 
 			lStackIdentityPipeline.getOutputVariable()
-									.addSetListener((	pCurrentValue,
-														pNewValue) -> {
-										System.out.println("StackIdentityPipeline" + lCamera.getName()
-															+ "->"
-															+ pNewValue);
+														.addSetListener((pCurrentValue, pNewValue) -> {
+															System.out.println("StackIdentityPipeline" + lCamera.getName()
+																									+ "->"
+																									+ pNewValue);
 
-									});
+														});
 
-			lCamera.getStackWidthVariable()
-					.setValue(cImageResolution);
-			lCamera.getStackHeightVariable()
-					.setValue(cImageResolution);
-			lCamera.getExposureInMicrosecondsVariable()
-					.setValue(5000);
+			lCamera.getStackWidthVariable().setValue(cImageResolution);
+			lCamera.getStackHeightVariable().setValue(cImageResolution);
+			lCamera.getExposureInMicrosecondsVariable().setValue(5000);
 
 			lLightSheetMicroscope.getDeviceLists()
-									.addStackCameraDevice(	lCamera,
-															lStackIdentityPipeline);
+														.addStackCameraDevice(lCamera,
+																									lStackIdentityPipeline);
 		}
 
 		lLightSheetMicroscope.getDeviceLists()
-								.addSignalGeneratorDevice(pSignalGeneratorDevice);
+													.addSignalGeneratorDevice(pSignalGeneratorDevice);
 
 		// Setting up staging movements:
 
@@ -158,8 +160,8 @@ public class LightSheetMicroscopeDemo
 
 		// setting up staging score visualization:
 
-		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize(	"LightSheetDemo",
-																					lStagingScore);
+		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
+																																							lStagingScore);
 
 		// Setting up detection path:
 
@@ -168,7 +170,7 @@ public class LightSheetMicroscopeDemo
 			final DetectionArm lDetectionArm = new DetectionArm("D" + i);
 
 			lLightSheetMicroscope.getDeviceLists()
-									.addDetectionArmDevice(lDetectionArm);
+														.addDetectionArmDevice(lDetectionArm);
 
 			lDetectionArm.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 			lDetectionArm.addStavesToExposureMovement(lExposureMovement);
@@ -178,30 +180,29 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pNumberOfLightSheets; i++)
 		{
-			final LightSheet lLightSheet = new LightSheet(	"demolightsheet" + i,
-															9.4,
-															512,
-															2);
+			final LightSheet lLightSheet = new LightSheet("demolightsheet" + i,
+																										9.4,
+																										512,
+																										2);
 			lLightSheetMicroscope.getDeviceLists()
-									.addLightSheetDevice(lLightSheet);
+														.addLightSheetDevice(lLightSheet);
 
 			lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
-												TimeUnit.NANOSECONDS);
-			lExposureMovement.setDuration(	lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
-											TimeUnit.NANOSECONDS);
+																					TimeUnit.NANOSECONDS);
+			lExposureMovement.setDuration(lLightSheet.getExposureMovementDuration(TimeUnit.NANOSECONDS),
+																		TimeUnit.NANOSECONDS);
 
 			lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
 			lLightSheet.setExposureMovement(lExposureMovement);
 
-			lLightSheet.getHeightVariable()
-						.setValue(100);
+			lLightSheet.getHeightVariable().setValue(100);
 			lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-						.setValue(5000);
+									.setValue(5000);
 
 			lLightSheet.getImageHeightVariable()
-						.setValue(pCameras.get(0)
-											.getStackHeightVariable()
-											.getValue());
+									.setValue(pCameras.get(0)
+																		.getStackHeightVariable()
+																		.getValue());
 		}
 
 		// setting up scope GUI:
@@ -210,7 +211,7 @@ public class LightSheetMicroscopeDemo
 
 		if (pWithGUI)
 			lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
-												pWith3D);
+																					pWith3D);
 
 		if (lGUI != null)
 			assertTrue(lGUI.open());

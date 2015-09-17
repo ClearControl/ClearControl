@@ -6,12 +6,12 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
-import rtlib.core.device.PositionDeviceInterface;
+import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
-import rtlib.optomech.OpticalSwitchDeviceInterface;
+import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.SameTypeStackProcessingPipeline;
@@ -29,7 +29,7 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<LightSheetInterface> mLightSheetList = new ArrayList<>();
 	private final ArrayList<DetectionArmInterface> mDetectionArmList = new ArrayList<>();
 	private final ArrayList<FilterWheelDeviceInterface> mFilterWheelList = new ArrayList<>();
-	private final ArrayList<OpticalSwitchDeviceInterface> mOpticalSwitchList = new ArrayList<>();
+	private final ArrayList<OptoMechDeviceInterface> mOptoMechDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mDetectionPhaseModulatorDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mIlluminationPhaseModulatorDeviceList = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess>> mStackPipelineList = new ArrayList<>();
 	private final ArrayList<ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> mStackVariableList = new ArrayList<>();
 
-	private PositionDeviceInterface mLightSheetSelector;
+	private SwitchingDeviceInterface mLightSheetSwitch;
 
 	public LightSheetMicroscopeDeviceLists()
 	{
@@ -152,21 +152,21 @@ public class LightSheetMicroscopeDeviceLists
 		return mFilterWheelList.get(pIndex);
 	}
 
-	public int addOpticalSwitchDevice(OpticalSwitchDeviceInterface pOpticalSwitchDeviceInterface)
+	public int addOptoMechanicalDevice(OptoMechDeviceInterface pOpticalSwitchDeviceInterface)
 	{
 		mAllDeviceList.add(pOpticalSwitchDeviceInterface);
-		mOpticalSwitchList.add(pOpticalSwitchDeviceInterface);
-		return mOpticalSwitchList.size() - 1;
+		mOptoMechDeviceList.add(pOpticalSwitchDeviceInterface);
+		return mOptoMechDeviceList.size() - 1;
 	}
 
 	public int getNumberOfOpticalSwitchDevices()
 	{
-		return mOpticalSwitchList.size();
+		return mOptoMechDeviceList.size();
 	}
 
-	public OpticalSwitchDeviceInterface getOpticalSwitchDevice(int pIndex)
+	public OptoMechDeviceInterface getOpticalSwitchDevice(int pIndex)
 	{
-		return mOpticalSwitchList.get(pIndex);
+		return mOptoMechDeviceList.get(pIndex);
 	}
 
 	public int addDetectionPhaseModulatorDevice(SpatialPhaseModulatorDeviceInterface pSpatialPhaseModulatorDeviceInterface)
@@ -237,14 +237,14 @@ public class LightSheetMicroscopeDeviceLists
 		return mLaserDeviceList.get(pIndex);
 	}
 
-	public PositionDeviceInterface getLightSheetSelectorDevice()
+	public SwitchingDeviceInterface getLightSheetSwitchingDevice()
 	{
-		return mLightSheetSelector;
+		return mLightSheetSwitch;
 	}
 
-	public void setLightSheetSelectorDevice(PositionDeviceInterface pPositionDeviceInterface)
+	public void setLightSheetSelectorDevice(SwitchingDeviceInterface pDeviceSwitchingInterface)
 	{
-		mLightSheetSelector = pPositionDeviceInterface;
+		mLightSheetSwitch = pDeviceSwitchingInterface;
 	}
 
 	public ArrayList<Object> getAllDeviceList()
