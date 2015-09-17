@@ -16,7 +16,7 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.microscope.lsm.lightsheet.si.StructuredIlluminationPatternInterface;
+import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import rtlib.stack.StackInterface;
 
 public class LightSheetMicroscope	extends
@@ -324,7 +324,7 @@ public class LightSheetMicroscope	extends
 			setIZ(i, 0);
 			setIA(i, 0);
 			setIB(i, 0);
-			setIW(i, 0);
+			setIZ(i, 0);
 			setIH(i, 0);
 
 			for (int j = 0; j < getDeviceLists().getNumberOfLaserDevices(); j++)

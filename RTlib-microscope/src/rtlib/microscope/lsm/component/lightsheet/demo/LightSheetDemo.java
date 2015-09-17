@@ -1,4 +1,4 @@
-package rtlib.microscope.lsm.lightsheet.demo;
+package rtlib.microscope.lsm.component.lightsheet.demo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import rtlib.microscope.lsm.lightsheet.LightSheet;
+import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;

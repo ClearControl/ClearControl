@@ -2,8 +2,8 @@ package rtlib.microscope.lsm.calibrator;
 
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.microscope.lsm.LightSheetMicroscope;
-import rtlib.microscope.lsm.detection.DetectionArmInterface;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class CalibrationData
 {

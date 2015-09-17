@@ -1,4 +1,4 @@
-package rtlib.microscope.lsm.detection;
+package rtlib.microscope.lsm.component.detection;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
@@ -14,7 +14,6 @@ public class DetectionArm extends NamedVirtualDevice implements
 																										DetectionArmInterface
 {
 
-	private String mName;
 	private int mDeviceIndex;
 
 	private final DoubleVariable mDetectionFocusZ = new DoubleVariable(	"FocusZ",
@@ -28,11 +27,9 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	private final int mStaveIndex;
 
-	public DetectionArm(String pName, int pDeviceIndex)
+	public DetectionArm(String pName)
 	{
-		super(pName + pDeviceIndex);
-		mName = pName;
-		mDeviceIndex = pDeviceIndex;
+		super(pName);
 
 		reset();
 
@@ -50,7 +47,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																					.getIntegerProperty("device.lsm.detection." + getName()
-																																	+ ".index.z",
+																																	+ ".z.index",
 																															-1);
 
 		mStaveIndex = lStaveIndex;
@@ -61,7 +58,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 	{
 		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
 																				.getUnivariateAffineFunction("device.lsm.detection." + getName()
-																																			+ ".z"));
+																																			+ ".z.f"));
 	}
 
 	@Override

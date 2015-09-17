@@ -1,7 +1,7 @@
 package rtlib.microscope.lsm.calibrator;
 
 import jama.Matrix;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class LightSheetPositioner
 {

@@ -22,7 +22,7 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
 
@@ -102,14 +102,14 @@ public class CalibrationW
 			mLightSheetMicroscope.setDZ(pDetectionArmIndex, 0);
 			mLightSheetMicroscope.setC(pDetectionArmIndex, false);
 
-			mLightSheetMicroscope.setIW(pLightSheetIndex, lMinW);
+			mLightSheetMicroscope.setIZ(pLightSheetIndex, lMinW);
 			mLightSheetMicroscope.addCurrentStateToQueue();
 
 			mWList.clear();
 			for (double w = lMinW; w <= lMaxW; w += lStep)
 			{
 				mWList.add(w);
-				mLightSheetMicroscope.setIW(pLightSheetIndex, w);
+				mLightSheetMicroscope.setIZ(pLightSheetIndex, w);
 
 				mLightSheetMicroscope.setC(pDetectionArmIndex, false);
 				for (int i = 0; i < 10; i++)

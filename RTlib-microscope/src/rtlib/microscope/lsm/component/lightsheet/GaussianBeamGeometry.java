@@ -1,4 +1,4 @@
-package rtlib.microscope.lsm.lightsheet;
+package rtlib.microscope.lsm.component.lightsheet;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.tan;

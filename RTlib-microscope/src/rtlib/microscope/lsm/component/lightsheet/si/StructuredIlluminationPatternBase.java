@@ -1,4 +1,4 @@
-package rtlib.microscope.lsm.lightsheet.si;
+package rtlib.microscope.lsm.component.lightsheet.si;
 
 public abstract class StructuredIlluminationPatternBase
 {

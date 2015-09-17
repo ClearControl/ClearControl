@@ -1,4 +1,4 @@
-package rtlib.microscope.lsm.lightsheet;
+package rtlib.microscope.lsm.component.lightsheet;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -7,7 +7,7 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.microscope.lsm.lightsheet.si.StructuredIlluminationPatternInterface;
+import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface
 {

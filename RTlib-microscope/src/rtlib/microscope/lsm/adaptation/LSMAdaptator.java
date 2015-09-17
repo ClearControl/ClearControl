@@ -53,29 +53,30 @@ public class LSMAdaptator
 
 	public boolean step()
 	{
-		boolean lModulesReady = checkIfAllModulesAreReady();
+		boolean lModulesReady = isReady();
 
 		if (lModulesReady)
 		{
-			clearModulesAreReady();
 			getStackAcquisition().setCurrentAcquisitionState(getNewAcquisitionState());
 			setNewAcquisitionState(new AcquisitionState(getStackAcquisition().getCurrentAcquisitionState()));
+			reset();
+			return false;
+		}
+		else
+		{
+			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get(mCurrentAdaptationModule);
+			int lPriority = lAdaptationModule.getPriority();
+
+			for (int i = 0; i < lPriority && lAdaptationModule.step(); i++)
+			;//do not remove this semi-colon!
+
+			mCurrentAdaptationModule = (mCurrentAdaptationModule + 1) % mAdaptationModuleList.size();
 
 			return true;
 		}
-
-		AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get(mCurrentAdaptationModule);
-		int lPriority = lAdaptationModule.getPriority();
-
-		for (int i = 0; i < lPriority; i++)
-			lAdaptationModule.step();
-
-		mCurrentAdaptationModule = (mCurrentAdaptationModule + 1) % mAdaptationModuleList.size();
-
-		return false;
 	}
 
-	private boolean checkIfAllModulesAreReady()
+	private boolean isReady()
 	{
 		boolean lAllReady = true;
 		for (AdaptationModuleInterface lAdaptationModule : mAdaptationModuleList)
@@ -84,10 +85,11 @@ public class LSMAdaptator
 		return lAllReady;
 	}
 
-	private void clearModulesAreReady()
+	private void reset()
 	{
+		mCurrentAdaptationModule = 0;
 		for (AdaptationModuleInterface lAdaptationModule : mAdaptationModuleList)
-			lAdaptationModule.isReady();
+			lAdaptationModule.reset();
 	}
 
 }

@@ -17,9 +17,9 @@ import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lsm.LightSheetMicroscope;
-import rtlib.microscope.lsm.detection.DetectionArm;
+import rtlib.microscope.lsm.component.detection.DetectionArm;
+import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
-import rtlib.microscope.lsm.lightsheet.LightSheet;
 import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.symphony.devices.SignalGeneratorInterface;
@@ -165,8 +165,7 @@ public class LightSheetMicroscopeDemo
 
 		for (int i = 0; i < pCameras.size(); i++)
 		{
-			final DetectionArm lDetectionArm = new DetectionArm("demodetpath" + i,
-																i);
+			final DetectionArm lDetectionArm = new DetectionArm("D" + i);
 
 			lLightSheetMicroscope.getDeviceLists()
 									.addDetectionArmDevice(lDetectionArm);

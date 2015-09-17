@@ -2,7 +2,7 @@ package rtlib.microscope.lsm;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.microscope.lsm.lightsheet.si.StructuredIlluminationPatternInterface;
+import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetMicroscopeInterface
 {

@@ -147,7 +147,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 			mLightSheetMicroscope.setIA(l, getIA(pPlaneIndex, l));
 			mLightSheetMicroscope.setIB(l, getIB(pPlaneIndex, l));
-			mLightSheetMicroscope.setIW(l, getIW(pPlaneIndex, l));
+			mLightSheetMicroscope.setIZ(l, getIW(pPlaneIndex, l));
 			mLightSheetMicroscope.setIH(l, getIH(pPlaneIndex, l));
 			mLightSheetMicroscope.setIP(l, getIP(pPlaneIndex, l));
 		}
@@ -199,7 +199,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 			mLightSheetMicroscope.setIB(l,
 										mCurrentAcquisitionState.getAtControlPlaneIB(	pControlPlaneIndex,
 																						l));
-			mLightSheetMicroscope.setIW(l,
+			mLightSheetMicroscope.setIZ(l,
 										mCurrentAcquisitionState.getAtControlPlaneIW(	pControlPlaneIndex,
 																						l));
 			mLightSheetMicroscope.setIH(l,

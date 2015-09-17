@@ -14,8 +14,8 @@ import rtlib.microscope.lsm.calibrator.modules.CalibrationW;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationWP;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationXY;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationZ;
-import rtlib.microscope.lsm.detection.DetectionArmInterface;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 
 import com.fasterxml.jackson.core.JsonGenerationException;

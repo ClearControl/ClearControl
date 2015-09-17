@@ -32,7 +32,7 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
 public class CalibrationWP
@@ -160,7 +160,7 @@ public class CalibrationWP
 			mLightSheetMicroscope.zero();
 
 			mLightSheetMicroscope.selectI(pLightSheetIndex);
-			mLightSheetMicroscope.setIW(pLightSheetIndex, pW);
+			mLightSheetMicroscope.setIZ(pLightSheetIndex, pW);
 
 			final TDoubleArrayList lPList = new TDoubleArrayList();
 

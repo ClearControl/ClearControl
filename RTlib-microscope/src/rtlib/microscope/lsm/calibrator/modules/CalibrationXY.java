@@ -22,7 +22,7 @@ import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
 public class CalibrationXY
@@ -225,7 +225,7 @@ public class CalibrationXY
 		mLightSheetMicroscope.selectI(pLightSheetIndex);
 		mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 		mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
-		mLightSheetMicroscope.setIW(pLightSheetIndex, 0);
+		mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 
 		for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 			mLightSheetMicroscope.setDZ(i, 0);

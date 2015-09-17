@@ -1,62 +1,25 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.argmax.SmartArgMaxFinder;
-import rtlib.ip.iqm.DCTS2D;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
-import rtlib.stack.StackInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
-public class AdaptationX extends AdaptationModuleBase	implements
-														AdaptationModuleInterface
+public class AdaptationX extends NDIteratorAdaptationModule	implements
+															AdaptationModuleInterface
 {
-
-	private MultiKeyMap<Integer, Double> mBestXFound = new MultiKeyMap<>();
-	private int mNumberOfSamples;
-	private double mProbabilityThreshold;
 
 	public AdaptationX(	int pNumberOfSamples,
 						double pProbabilityThreshold)
 	{
-		super();
-		mNumberOfSamples = pNumberOfSamples;
-		mProbabilityThreshold = pProbabilityThreshold;
+		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
-	@Override
-	public boolean step()
-	{
-		LightSheetMicroscope lLightSheetMicroscope = getAdaptator().getLightSheetMicroscope();
-		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
-
-		int lNumberOfControlPlanes = lStackAcquisition.getCurrentAcquisitionState()
-														.getNumberOfControlPlanes();
-
-		int lNumberOfLighSheets = lLightSheetMicroscope.getDeviceLists()
-														.getNumberOfLightSheetDevices();
-
-		// TODO:
-		Future<?> lFuture = null; // atomicStep(pi, lsi, mNumberOfSamples);
-
-		mListOfFuturTasks.add(lFuture);
-
-		return false;
-	}
-
-	private Future<?> atomicStep(	int pControlPlaneIndex,
-									int pLightSheetIndex,
-									int pNumberOfSamples)
+	public Future<?> atomicStep(int pControlPlaneIndex,
+								int pLightSheetIndex,
+								int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
@@ -81,68 +44,31 @@ public class AdaptationX extends AdaptationModuleBase	implements
 		lLSM.setIX(pLightSheetIndex, lMinX);
 		lLSM.addCurrentStateToQueue();
 
+		lLSM.setC(true);
 		for (double x = lMinX; x <= lMaxX; x += lStepX)
 		{
-			lLSM.setC(false);
-
 			lIXList.add(x);
 			lLSM.setIX(pLightSheetIndex, x);
-
 			lLSM.addCurrentStateToQueue();
 		}
 
 		lLSM.finalizeQueue();
 
-		try
-		{
-			final Boolean lPlayQueueAndWait = lLSM.playQueueAndWaitForStacks(	lLSM.getQueueLength(),
-																				TimeUnit.SECONDS);
+		return findBestDOFValue(pControlPlaneIndex,
+								pLightSheetIndex,
+								lLSM,
+								lStackAcquisition,
+								lIXList);
+	}
 
-			if (lPlayQueueAndWait)
-			{
-				Runnable lRunnable = () -> {
-					DCTS2D lDCTS2D = new DCTS2D();
-
-					int lBestDetectionArmSeletion = lStackAcquisition.getBestDetectioArm(pControlPlaneIndex);
-
-					final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = lLSM.getStackVariable(lBestDetectionArmSeletion)
-																										.get();
-
-					OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
-
-					final double[] lMetricArray = lDCTS2D.computeImageQualityMetric(lImage);
-
-					SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-
-					Double lArgmaxX = lSmartArgMaxFinder.argmax(lIXList.toArray(),
-																lMetricArray);
-
-					if (lArgmaxX != null && !Double.isNaN(lArgmaxX))
-					{
-						double lFitProbability = lSmartArgMaxFinder.getLastFitProbability();
-
-						if (lFitProbability > mProbabilityThreshold)
-						{
-							getAdaptator().getNewAcquisitionState()
-											.setAtControlPlaneIX(	pControlPlaneIndex,
-																	pLightSheetIndex,
-																	lArgmaxX);
-						}
-					}
-
-				};
-
-				Future<?> lFuture = executeAsynchronously(lRunnable);
-
-				return lFuture;
-			}
-		}
-		catch (InterruptedException | ExecutionException
-				| TimeoutException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+	public void updateNewState(	int pControlPlaneIndex,
+								int pLightSheetIndex,
+								Double lArgmax)
+	{
+		getAdaptator().getNewAcquisitionState()
+						.setAtControlPlaneIX(	pControlPlaneIndex,
+												pLightSheetIndex,
+												lArgmax);
 	}
 
 }

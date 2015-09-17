@@ -1,17 +1,83 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
-public class AdaptationW extends AdaptationModuleBase implements AdaptationModuleInterface
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import gnu.trove.list.array.TDoubleArrayList;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import rtlib.core.math.argmax.SmartArgMaxFinder;
+import rtlib.ip.iqm.DCTS2D;
+import rtlib.microscope.lsm.LightSheetMicroscope;
+import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
+import rtlib.stack.StackInterface;
+
+public class AdaptationW extends NDIteratorAdaptationModule	implements
+															AdaptationModuleInterface
 {
 
-
-
-	@Override
-	public boolean step()
+	public AdaptationW(	int pNumberOfSamples,
+						double pProbabilityThreshold)
 	{
-		return false;
-		// TODO Auto-generated method stub
-		
+		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
+	public Future<?> atomicStep(int pControlPlaneIndex,
+								int pLightSheetIndex,
+								int pNumberOfSamples)
+	{
+		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
+		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
+
+		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
+													.getLightSheetDevice(pLightSheetIndex);
+		double lMinW = lLightSheetDevice.getWidthFunction()
+										.get()
+										.getMin();
+		double lMaxW = lLightSheetDevice.getWidthFunction()
+										.get()
+										.getMax();
+		double lStepW = (lMaxW - lMinW) / pNumberOfSamples;
+
+		lLSM.clearQueue();
+
+		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
+
+		final TDoubleArrayList lIWList = new TDoubleArrayList();
+
+		lLSM.setC(false);
+		lLSM.setIW(pLightSheetIndex, lMinW);
+		lLSM.addCurrentStateToQueue();
+
+		lLSM.setC(true);
+		for (double w = lMinW; w <= lMaxW; w += lStepW)
+		{
+			lIWList.add(w);
+			lLSM.setIW(pLightSheetIndex, w);
+			lLSM.addCurrentStateToQueue();
+		}
+
+		lLSM.finalizeQueue();
+
+		return findBestDOFValue(pControlPlaneIndex,
+								pLightSheetIndex,
+								lLSM,
+								lStackAcquisition,
+								lIWList);
+	}
+
+	public void updateNewState(	int pControlPlaneIndex,
+								int pLightSheetIndex,
+								Double lArgmax)
+	{
+		getAdaptator().getNewAcquisitionState()
+						.setAtControlPlaneIW(	pControlPlaneIndex,
+												pLightSheetIndex,
+												lArgmax);
+	}
 
 }

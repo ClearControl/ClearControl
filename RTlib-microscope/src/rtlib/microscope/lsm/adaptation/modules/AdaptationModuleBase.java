@@ -56,11 +56,13 @@ public abstract class AdaptationModuleBase	implements
 		return lAllDone;
 	}
 	
+	
 	@Override
-	public void clearReady()
+	public void reset()
 	{
 		mListOfFuturTasks.clear();
-	}
+	};
+
 	
 	
 

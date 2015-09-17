@@ -26,8 +26,8 @@ import rtlib.ip.iqm.DCTS2D;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.GeometryUtils;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.detection.DetectionArmInterface;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
@@ -90,7 +90,7 @@ public class LightSheetCalibrationY
 			mLightSheetMicroscope.selectI(pLightSheetIndex);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
-			mLightSheetMicroscope.setIW(pLightSheetIndex, 1);
+			mLightSheetMicroscope.setIZ(pLightSheetIndex, 1);
 
 			for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				mLightSheetMicroscope.setDZ(i, 0);

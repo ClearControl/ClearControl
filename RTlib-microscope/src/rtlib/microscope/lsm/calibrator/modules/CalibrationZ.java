@@ -25,8 +25,8 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.detection.DetectionArmInterface;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
 
@@ -183,7 +183,7 @@ public class CalibrationZ
 			mLightSheetMicroscope.selectI(pLightSheetIndex);
 			mLightSheetMicroscope.setIX(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
-			mLightSheetMicroscope.setIW(pLightSheetIndex, 0);
+			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 
 			final double[] dz = new double[mNumberOfDetectionArmDevices];
 

@@ -23,7 +23,7 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
-import rtlib.microscope.lsm.lightsheet.LightSheetInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
 public class CalibrationA
@@ -160,7 +160,7 @@ public class CalibrationA
 			mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIY(pLightSheetIndex, pY);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
-			mLightSheetMicroscope.setIW(pLightSheetIndex, 0);
+			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIA(pLightSheetIndex, pMinA);
 			for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
