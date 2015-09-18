@@ -4,10 +4,10 @@ sourceSets {
 		java { srcDir 'src' }
 		resources { srcDir 'src' }
 	}
-	test {
-		java { srcDir 'src' }
-		resources { srcDir 'src' }
-	}
+//	test {
+//		java { srcDir 'src' }
+//		resources { srcDir 'src' }
+//	}
 }
 
 dependencies {

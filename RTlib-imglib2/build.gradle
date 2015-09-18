@@ -18,18 +18,18 @@ sourceSets
       srcDir 'src'
     }
   }
-  test
-  {
-    java 
-    {
-      srcDir 'src'
-      //include "**/*Tests.java"
-    }
-    resources 
-    { 
-      srcDir 'src'
-    }
-  }
+//  test
+//  {
+//    java
+//    {
+//      srcDir 'src'
+//      //include "**/*Tests.java"
+//    }
+//    resources
+//    {
+//      srcDir 'src'
+//    }
+//  }
 }
 
 dependencies 
