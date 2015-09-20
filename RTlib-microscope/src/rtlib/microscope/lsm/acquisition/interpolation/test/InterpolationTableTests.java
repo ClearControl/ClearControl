@@ -2,8 +2,11 @@ package rtlib.microscope.lsm.acquisition.interpolation.test;
 
 import static org.junit.Assert.*;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.microscope.lsm.acquisition.interpolation.InterpolationTable;
 import rtlib.microscope.lsm.acquisition.interpolation.Row;
@@ -19,6 +22,7 @@ public class InterpolationTableTests
 		final Row lAddRow3 = lInterpolationTable.addRow(3.0);
 		final Row lAddRow1 = lInterpolationTable.addRow(1.0);
 		final Row lAddRow2 = lInterpolationTable.addRow(2.0);
+		final Row lAddRow4 = lInterpolationTable.addRow(3.2);
 		
 		
 		Row lRow = lInterpolationTable.getRow(1);
@@ -32,7 +36,8 @@ public class InterpolationTableTests
 
 		lAddRow1.setY(1, 0);
 		lAddRow2.setY(1, 1);
-		lAddRow3.setY(1, 0.5);
+		lAddRow3.setY(1, 1.1);
+		lAddRow4.setY(1, 0.5);
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(0,
 																	1.2));
@@ -42,7 +47,7 @@ public class InterpolationTableTests
 
 		final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
 
-		/*while (lDisplayTable.isVisible())
+		while (lDisplayTable.isVisible())
 		{
 			ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
 		}/**/

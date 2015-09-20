@@ -18,6 +18,7 @@ public class AcquisitionState implements AcquisitionStateInterface
 	private final InterpolationTable mInterpolationTableIW;
 	private final InterpolationTable mInterpolationTableIH;
 	private final InterpolationTable mInterpolationTableIP;
+	
 
 	public AcquisitionState(LightSheetMicroscope pLightSheetMicroscope)
 	{

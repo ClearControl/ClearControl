@@ -200,7 +200,14 @@ public interface LightSheetMicroscopeInterface
 	 */
 	void setIPA(int pLightSheetIndex, boolean pAdapt);
 
-
+	/**
+	 * Sets the state (on/off) of all laser lines of all lightsheets.
+	 * 
+	 * @param pOn
+	 *          state (true= on, false= off)
+	 */
+	void setILO(boolean pOn);
+	
 	/**
 	 * Sets the state (on/off) of all laser lines of a given lightsheet.
 	 * 
@@ -253,6 +260,8 @@ public interface LightSheetMicroscopeInterface
 	public void setIPatternOnOff(	int pLightSheetIndex,
 																int pLaserIndex,
 																boolean pOnOff);
+
+
 
 
 }
