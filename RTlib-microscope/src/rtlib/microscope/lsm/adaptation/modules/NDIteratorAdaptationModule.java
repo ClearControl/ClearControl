@@ -149,8 +149,13 @@ public abstract class NDIteratorAdaptationModule extends
 							updateNewState(	pControlPlaneIndex,
 											pLightSheetIndex,
 											lArgmax);
+							return;
 						}
 					}
+
+					updateNewState(	pControlPlaneIndex,
+													pLightSheetIndex,
+													Double.NaN);
 
 				};
 
@@ -166,6 +171,7 @@ public abstract class NDIteratorAdaptationModule extends
 		}
 		return null;
 	}
+
 
 	public abstract void updateNewState(int pControlPlaneIndex,
 										int pLightSheetIndex,

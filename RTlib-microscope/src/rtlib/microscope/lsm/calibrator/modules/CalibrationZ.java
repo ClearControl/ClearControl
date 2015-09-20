@@ -100,7 +100,7 @@ public class CalibrationZ
 											.get()
 											.getMax();
 
-		double lStepIZ = (lMaxIZ - lMinIZ) / pNumberOfISamples;
+		double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples-1);
 
 		for (double iz = lMinIZ; iz <= lMaxIZ; iz += lStepIZ)
 		{
@@ -178,7 +178,7 @@ public class CalibrationZ
 								lDetectionFocusZFunction.getMax());
 			}
 
-			double lStep = (lMaxDZ - lMinDZ) / pNumberOfDSamples;
+			double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples-1);
 
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();

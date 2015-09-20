@@ -125,27 +125,29 @@ public class InterpolationTable
 			final TDoubleArrayList x = new TDoubleArrayList();
 			final TDoubleArrayList y = new TDoubleArrayList();
 
-			for (final Row lRow : mTable)
-			{
-				x.add(lRow.getX());
-			}
-
-			final double lMinX = minX();
-			final double lMaxX = maxX();
-			final double lRangeWidth = abs(lMaxX - lMinX);
-
-			if (x.size() >= 2)
-			{
-				x.insert(0, x.get(0) - lRangeWidth);
-				x.add(x.get(x.size() - 1) + lRangeWidth);
-			}
-
 			for (int i = 0; i < mNumberOfColumns; i++)
 			{
+				x.clear();
 				y.clear();
 				for (final Row lRow : mTable)
 				{
-					y.add(lRow.getY(i));
+					double lValueY = lRow.getY(i);
+
+					if (!Double.isNaN(lValueY))
+					{
+						y.add(lValueY);
+						x.add(lRow.getX());
+					}
+				}
+
+				final double lMinX = minX();
+				final double lMaxX = maxX();
+				final double lRangeWidth = abs(lMaxX - lMinX);
+
+				if (x.size() >= 2)
+				{
+					x.insert(0, x.get(0) - lRangeWidth);
+					x.add(x.get(x.size() - 1) + lRangeWidth);
 				}
 
 				if (x.size() >= 2)

@@ -26,8 +26,23 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
-		
+
 		mCurrentAcquisitionState = new AcquisitionState(mLightSheetMicroscope);
+	}
+
+	public void setup(	double pMinZ,
+						double pMiddleZ,
+						double pMaxZ,
+						double pStepZ,
+						double pControlPlaneStep)
+	{
+		setLowZ(pMinZ);
+		setLowZ(pMaxZ);
+		setStepZ(pStepZ);
+		getCurrentState().setTransitionPlane(pMiddleZ);
+
+		for (double z = pMinZ; z <= pMaxZ; z += pControlPlaneStep)
+			mCurrentAcquisitionState.addControlPlane(z);
 	}
 
 	@Override
@@ -35,7 +50,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		mCurrentAcquisitionState = pNewAcquisitionState;
 	}
-	
+
 	@Override
 	public AcquisitionState getCurrentState()
 	{
@@ -305,31 +320,16 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public int getBestDetectioArm(int pControlPlaneIndex)
 	{
-		int lNumberOfControlPlanes = mCurrentAcquisitionState.getNumberOfControlPlanes();
 
-		int lFirstTransitionPlane = 0;
-		int lLastTransitionPlane = 0;
+		double lTransitionPlane = mCurrentAcquisitionState.getTransitionPlane();
 
-		for (int i = 0; i < lNumberOfControlPlanes; i++)
-			if (mCurrentAcquisitionState.isTransitionCtrlPlane(pControlPlaneIndex))
-				lFirstTransitionPlane = i;
-
-		for (int i = lNumberOfControlPlanes - 1; i >= 0; i--)
-			if (mCurrentAcquisitionState.isTransitionCtrlPlane(pControlPlaneIndex))
-				lLastTransitionPlane = i;
-
-		double lMiddleTransitionPlane = (lFirstTransitionPlane + lLastTransitionPlane) / 2;
-
-		if (pControlPlaneIndex <= lMiddleTransitionPlane)
+		if (getZRamp(pControlPlaneIndex) <= lTransitionPlane)
 			return 0;
-
-		if (pControlPlaneIndex >= lMiddleTransitionPlane)
+		else if (getZRamp(pControlPlaneIndex) >= lTransitionPlane)
 			return 1;
 
 		return -1;
 
 	}
-
-
 
 }

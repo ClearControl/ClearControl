@@ -49,6 +49,8 @@ public class Calibrator
 	private int mNumberOfDetectionArmDevices;
 	private int mNumberOfLightSheetDevices;
 
+	private double mPixelSizeInMicrons;
+
 	public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
 	{
 		mLightSheetMicroscope = pLightSheetMicroscope;
@@ -67,6 +69,7 @@ public class Calibrator
 															.getNumberOfLightSheetDevices();
 
 	}
+
 
 	public boolean calibrate()
 	{
@@ -375,5 +378,7 @@ public class Calibrator
 	{
 		return new File(mCalibrationFolder, pName + ".json");
 	}
+
+
 
 }

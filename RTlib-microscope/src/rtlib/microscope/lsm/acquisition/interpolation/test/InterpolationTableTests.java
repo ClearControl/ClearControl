@@ -23,6 +23,7 @@ public class InterpolationTableTests
 		final Row lAddRow1 = lInterpolationTable.addRow(1.0);
 		final Row lAddRow2 = lInterpolationTable.addRow(2.0);
 		final Row lAddRow4 = lInterpolationTable.addRow(3.2);
+		final Row lAddRow5 = lInterpolationTable.addRow(4);
 		
 		
 		Row lRow = lInterpolationTable.getRow(1);
@@ -32,12 +33,15 @@ public class InterpolationTableTests
 
 		lAddRow1.setY(0, 1);
 		lAddRow2.setY(0, 2);
-		lAddRow3.setY(0, 3);
+		lAddRow3.setY(0, Double.NaN);
+		lAddRow4.setY(0, 4);
+		lAddRow5.setY(0, Double.NaN);
 
 		lAddRow1.setY(1, 0);
 		lAddRow2.setY(1, 1);
 		lAddRow3.setY(1, 1.1);
 		lAddRow4.setY(1, 0.5);
+		lAddRow5.setY(1, Double.NaN);
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(0,
 																	1.2));

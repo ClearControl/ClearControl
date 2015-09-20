@@ -104,7 +104,7 @@ public class CalibrationXY
 			TDoubleArrayList lUnitVectorYList = new TDoubleArrayList();
 
 			double lMaxAbsY = min(abs(lMin), abs(lMax));
-			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / pNumberOfPoints))
+			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / (pNumberOfPoints-1)))
 			{
 				Vector2D lCenterP, lCenter0, lCenterN;
 
@@ -286,11 +286,17 @@ public class CalibrationXY
 
 		lPoint = lPoint.subtract(new Vector2D(	0.5 * lWidth,
 												0.5 * lHeight));
-
+		
 		System.out.format(	"image: lightsheet center at: %s \n",
-							lPoint);
+		      							lPoint);
+		
+		Vector2D lNormalizedPoint = new Vector2D(2*lPoint.getX()/lWidth,2*lPoint.getY()/lHeight);
 
-		return lPoint;
+
+		System.out.format(	"image: lightsheet center at normalized coord: %s \n",
+		                  	lNormalizedPoint);
+
+		return lNormalizedPoint;
 	}
 
 	public double apply(int pLightSheetIndex, int pDetectionArmIndex)
