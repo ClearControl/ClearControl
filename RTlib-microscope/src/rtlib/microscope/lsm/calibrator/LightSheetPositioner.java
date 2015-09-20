@@ -6,7 +6,7 @@ import static java.lang.Math.min;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.simple.SimpleMatrix;
 
-import jama.Matrix;
+import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class LightSheetPositioner
@@ -23,6 +23,17 @@ public class LightSheetPositioner
 		mTransformMatrix = pTransformMatrix.getMatrix();
 		mInverseTransformMatrix = pTransformMatrix.invert()
 													.getMatrix();
+	}
+
+	public void setAt(LightSheetMicroscope pLightSheetMicroscope,
+										int pLightSheetIndex,
+										double pPixelX,
+										double pPixelY)
+	{
+		LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
+																																	.getLightSheetDevice(pLightSheetIndex);
+
+		setAt(lLightSheetDevice, pPixelX, pPixelY);
 	}
 
 	public void setAt(	LightSheetInterface pLightSheetDevice,

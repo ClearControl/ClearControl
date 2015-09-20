@@ -71,7 +71,7 @@ public abstract class NDIteratorAdaptationModule extends
 		LightSheetMicroscope lLightSheetMicroscope = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
-		int lNumberOfControlPlanes = lStackAcquisition.getCurrentAcquisitionState()
+		int lNumberOfControlPlanes = lStackAcquisition.getCurrentState()
 														.getNumberOfControlPlanes();
 
 		int lNumberOfLighSheets = lLightSheetMicroscope.getDeviceLists()

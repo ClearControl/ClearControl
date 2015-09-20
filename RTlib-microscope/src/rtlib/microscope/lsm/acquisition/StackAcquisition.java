@@ -31,13 +31,13 @@ public class StackAcquisition implements StackAcquisitionInterface
 	}
 
 	@Override
-	public void setCurrentAcquisitionState(AcquisitionState pNewAcquisitionState)
+	public void setCurrentState(AcquisitionState pNewAcquisitionState)
 	{
 		mCurrentAcquisitionState = pNewAcquisitionState;
 	}
 	
 	@Override
-	public AcquisitionState getCurrentAcquisitionState()
+	public AcquisitionState getCurrentState()
 	{
 		return mCurrentAcquisitionState;
 	}

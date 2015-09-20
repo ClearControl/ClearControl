@@ -57,8 +57,8 @@ public class LSMAdaptator
 
 		if (lModulesReady)
 		{
-			getStackAcquisition().setCurrentAcquisitionState(getNewAcquisitionState());
-			setNewAcquisitionState(new AcquisitionState(getStackAcquisition().getCurrentAcquisitionState()));
+			getStackAcquisition().setCurrentState(getNewAcquisitionState());
+			setNewAcquisitionState(new AcquisitionState(getStackAcquisition().getCurrentState()));
 			reset();
 			return false;
 		}

@@ -21,9 +21,9 @@ public interface StackAcquisitionInterface extends Iterable<Integer>
 
 	double getStackDepthInMicrons();
 
-	void setCurrentAcquisitionState(AcquisitionState pNewAcquisitionState);
+	void setCurrentState(AcquisitionState pNewAcquisitionState);
 
-	AcquisitionState getCurrentAcquisitionState();
+	AcquisitionState getCurrentState();
 
 	void setToStackPlane(int pPlaneIndex);
 
