@@ -108,6 +108,9 @@ public class CalibrationZ
 										pNumberOfDSamples,
 										iz);
 
+			if (dz == null)
+				return false;
+
 			for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				if (!Double.isNaN(dz[i]))
 				{

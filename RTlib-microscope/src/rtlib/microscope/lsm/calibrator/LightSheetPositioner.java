@@ -17,7 +17,7 @@ public class LightSheetPositioner
 		mInverseTransformMatrix = mTransformMatrix.inverse();
 	}
 
-	public void setLightSheetAt(double pPixelX, double pPixelY)
+	public void setAt(double pPixelX, double pPixelY)
 	{
 		Matrix lControlVector = mInverseTransformMatrix.timesColumnVector(new double[]{pPixelX, pPixelY});
 		double lLightSheetX = lControlVector.get(0,0);

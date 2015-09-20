@@ -1,6 +1,6 @@
 package rtlib.microscope.lsm.component.lightsheet;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
@@ -18,7 +18,7 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public DoubleVariable getLineExposureInMicrosecondsVariable();
 
-	public DoubleVariable getMarginTimeInMicrosecondsVariable();
+	public DoubleVariable getOverScanVariable();
 
 	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
 
@@ -38,7 +38,9 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public DoubleVariable getPowerVariable();
 
-	public DoubleVariable getLaserOnOffArrayVariable(int pLaserIndex);
+	public BooleanVariable getAdaptPowerToWidthHeightVariable();
+
+	public BooleanVariable getLaserOnOffArrayVariable(int pLaserIndex);
 
 	public BooleanVariable getSIPatternOnOffVariable(int pLaserIndex);
 
@@ -60,18 +62,17 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public ObjectVariable<UnivariateAffineComposableFunction> getPowerFunction();
 	
-	public ObjectVariable<UnivariateFunction> getWidthPowerFunction();
+	public ObjectVariable<PolynomialFunction> getWidthPowerFunction();
 	
-	public ObjectVariable<UnivariateAffineComposableFunction> getHeightPowerFunction();
+	public ObjectVariable<PolynomialFunction> getHeightPowerFunction();
 
 	public int getNumberOfPhases(int pLaserIndex);
 
+	public int getNumberOfLaserDigitalControls();
+
 	public void resetFunctions();
 
-
-
-
-
+	void update();
 
 
 

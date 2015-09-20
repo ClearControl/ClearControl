@@ -11,9 +11,9 @@ public interface LightSheetMicroscopeInterface
 	 * Sets with and height of camera image
 	 * 
 	 * @param pWidth
-	 *            width
+	 *          width
 	 * @param pHeight
-	 *            height
+	 *          height
 	 */
 	public void setCameraWidthHeight(int pWidth, int pHeight);
 
@@ -21,9 +21,9 @@ public interface LightSheetMicroscopeInterface
 	 * Sets image acquisition exposure in
 	 * 
 	 * @param pValue
-	 *            time
+	 *          time
 	 * @param pTimeUnit
-	 *            time unit
+	 *          time unit
 	 * 
 	 */
 	public void setExposure(long pValue, TimeUnit pTimeUnit);
@@ -51,9 +51,9 @@ public interface LightSheetMicroscopeInterface
 	 * Switches on/off a given laser.
 	 * 
 	 * @param pLaserIndex
-	 *            index of the laser device
+	 *          index of the laser device
 	 * @param pLaserOnOff
-	 *            true for on, false otherwise
+	 *          true for on, false otherwise
 	 */
 	public void setLO(int pLaserIndex, boolean pLaserOnOff);
 
@@ -61,29 +61,29 @@ public interface LightSheetMicroscopeInterface
 	 * Sets a the laser power (mW) for a given laser.
 	 * 
 	 * @param pLaserIndex
-	 *            index of the laser device
+	 *          index of the laser device
 	 * @param pLaserPowerInmW
-	 *            laser power in mW
+	 *          laser power in mW
 	 */
 	public void setLP(int pLaserIndex, double pLaserPowerInmW);
 
 	/**
-	 * Sets a flag that determines whether the camera should acquire (or keep)
-	 * an image.
+	 * Sets a flag that determines whether the camera should acquire (or keep) an
+	 * image.
 	 * 
 	 * @param pCameraIndex
-	 *            index of the stack camera device
+	 *          index of the stack camera device
 	 * @param pKeepImage
-	 *            true if image should be acquired (or kept), false otherwise
+	 *          true if image should be acquired (or kept), false otherwise
 	 */
 	public void setC(int pCameraIndex, boolean pKeepImage);
-	
+
 	/**
-	 * Sets a flag that determines whether all cameras should acquire (or keep)
-	 * an image.
+	 * Sets a flag that determines whether all cameras should acquire (or keep) an
+	 * image.
 	 * 
 	 * @param pKeepImage
-	 *            true if image should be acquired (or kept), false otherwise
+	 *          true if image should be acquired (or kept), false otherwise
 	 */
 	public void setC(boolean pKeepImage);
 
@@ -91,12 +91,11 @@ public interface LightSheetMicroscopeInterface
 	 * Sets a detection objective to a given position.
 	 * 
 	 * @param pDetectionIndex
-	 *            index of detection objective
+	 *          index of detection objective
 	 * @param pPositionZ
-	 *            position to set objective
+	 *          position to set objective
 	 */
 	public void setDZ(int pDetectionIndex, double pPositionZ);
-
 
 	/**
 	 * Sets the lightsheet's X position.
@@ -112,9 +111,9 @@ public interface LightSheetMicroscopeInterface
 	 * Sets the lightsheet's Y position.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pPositionY
-	 *            lightsheet's Y position
+	 *          lightsheet's Y position
 	 */
 	public void setIY(int pLightSheetIndex, double pPositionY);
 
@@ -132,9 +131,9 @@ public interface LightSheetMicroscopeInterface
 	 * Sets the lightsheet's angle alpha.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pAngleAlpha
-	 *            lightsheet's alpha angle
+	 *          lightsheet's alpha angle
 	 */
 	public void setIA(int pLightSheetIndex, double pAngleAlpha);
 
@@ -142,9 +141,9 @@ public interface LightSheetMicroscopeInterface
 	 * Sets the lightsheet's angle beta.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pAngleBeta
-	 *            lightsheet's beta angle
+	 *          lightsheet's beta angle
 	 */
 	public void setIB(int pLightSheetIndex, double pAngleBeta);
 
@@ -153,9 +152,9 @@ public interface LightSheetMicroscopeInterface
 	 * axis.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pRange
-	 *            lightsheet's range
+	 *          lightsheet's range
 	 */
 	public void setIW(int pLightSheetIndex, double pRange);
 
@@ -164,9 +163,9 @@ public interface LightSheetMicroscopeInterface
 	 * direction.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pLength
-	 *            lightsheet's length
+	 *          lightsheet's length
 	 */
 	public void setIH(int pLightSheetIndex, double pLength);
 
@@ -181,36 +180,79 @@ public interface LightSheetMicroscopeInterface
 	public void setIP(int pLightSheetIndex, double pValue);
 
 	/**
+	 * Sets a flag that determines whether the laser power should be adapted to
+	 * the height and with of the lightsheets.
+	 * 
+	 * @param pAdapt
+	 *          true if power should be adapted
+	 */
+	public void setIPA(boolean pAdapt);
+
+	/**
+	 * Sets a flag that determines whether the laser power should be adapted to
+	 * the height and with of a given lightsheet.
+	 * 
+	 * @param pLightSheetIndex
+	 *          lightshet index
+	 * 
+	 * @param pAdapt
+	 *          true if power should be adapted
+	 */
+	void setIPA(int pLightSheetIndex, boolean pAdapt);
+
+
+	/**
+	 * Sets the state (on/off) of all laser lines of a given lightsheet.
+	 * 
+	 * @param pLightSheetIndex
+	 *          lightsheet index
+	 * @param pOn
+	 *          state (true= on, false= off)
+	 */
+	void setILO(int pLightSheetIndex, boolean pOn);
+
+	/**
+	 * Sets the state (on/off) of a specific digital trigger of laser line for a
+	 * given lightsheet.
+	 * 
+	 * @param pLightSheetIndex
+	 *          lightsheet index
+	 * @param pLaserIndex
+	 *          laser line index
+	 * @param pOn
+	 *          state (true= on, false= off)
+	 */
+	void setILO(int pLightSheetIndex, int pLaserIndex, boolean pOn);
+
+	/**
 	 * Sets the structured illumination pattern for a given lightsheet and laser
 	 * line.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pLaserIndex
-	 *            laser index
+	 *          laser index
 	 * @param pPattern
-	 *            pattern
+	 *          pattern
 	 */
 	public void setIPattern(int pLightSheetIndex,
-							int pLaserIndex,
-							StructuredIlluminationPatternInterface pPattern);
+													int pLaserIndex,
+													StructuredIlluminationPatternInterface pPattern);
 
 	/**
-	 * Sets whether the structured illumination pattern for a given lightsheet
-	 * and laser line should be active or not.
+	 * Sets whether the structured illumination pattern for a given lightsheet and
+	 * laser line should be active or not.
 	 * 
 	 * @param pLightSheetIndex
-	 *            lightsheet index
+	 *          lightsheet index
 	 * @param pLaserIndex
-	 *            laser index
+	 *          laser index
 	 * @param pOnOff
-	 *            true for on, false for off.
+	 *          true for on, false for off.
 	 */
 	public void setIPatternOnOff(	int pLightSheetIndex,
-									int pLaserIndex,
-									boolean pOnOff);
-
-
+																int pLaserIndex,
+																boolean pOnOff);
 
 
 }

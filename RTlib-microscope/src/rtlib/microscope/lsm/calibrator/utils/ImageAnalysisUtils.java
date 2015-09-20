@@ -5,10 +5,10 @@ import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.ip.iqm.DCTS2D;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
@@ -17,8 +17,30 @@ import coremem.fragmented.FragmentedMemoryInterface;
 public class ImageAnalysisUtils
 {
 
-	
-	
+	public static double[] computePercentileIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage,
+																														int pPercentile)
+	{
+		int lNumberOfPlanes = pImage.numSlices();
+		FragmentedMemoryInterface lFragmentedMemory = pImage.getFragmentedMemory();
+		DescriptiveStatistics lDescriptiveStatistics = new DescriptiveStatistics();
+		double[] lPercentileArray = new double[lNumberOfPlanes];
+		for (int p = 0; p < lNumberOfPlanes; p++)
+		{
+			ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(p);
+			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemoryInterface);
+
+			lDescriptiveStatistics.clear();
+			while (lBuffer.hasRemaining())
+			{
+				double lValue = lBuffer.readChar();
+				lDescriptiveStatistics.addValue(lValue);
+			}
+			lPercentileArray[p] = lDescriptiveStatistics.getPercentile(pPercentile);
+		}
+
+		return lPercentileArray;
+	}
+
 	public static double[] computeImageAverageIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
 	{
 		int lNumberOfPlanes = pImage.numSlices();
@@ -100,7 +122,6 @@ public class ImageAnalysisUtils
 
 		long lWidth = pImage.dimension(0);
 		long lHeight = pImage.dimension(1);
-
 
 		for (int p = 0; p < lNumberOfPlanes; p++)
 		{

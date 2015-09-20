@@ -103,7 +103,7 @@ public class CalibrationXY
 			TDoubleArrayList lUnitVectorYList = new TDoubleArrayList();
 
 			double lMaxAbsY = min(abs(lMin), abs(lMax));
-			for (double f = 0.9 * lMaxAbsY; f <= lMaxAbsY; f += (0.1 * lMaxAbsY / pNumberOfPoints))
+			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / pNumberOfPoints))
 			{
 				Vector2D lCenterP, lCenterN;
 

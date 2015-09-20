@@ -16,6 +16,7 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import rtlib.stack.StackInterface;
 
@@ -386,6 +387,8 @@ public class LightSheetMicroscope	extends
 																											.getNumberOfSwitches();
 		for (int i = 0; i < lNumberOfSwitchableDevices; i++)
 			switchI(i, i == pLightSheetIndex);
+
+		getDeviceLists().getLightSheetDevice(pLightSheetIndex).update();
 	};
 
 	@Override
@@ -453,11 +456,50 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
+	public void setILO(int pLightSheetIndex, boolean pOn)
+	{
+		LightSheetInterface lLightSheetDevice = getDeviceLists().getLightSheetDevice(pLightSheetIndex);
+		for (int i = 0; i < lLightSheetDevice.getNumberOfLaserDigitalControls(); i++)
+			lLightSheetDevice.getLaserOnOffArrayVariable(i).setValue(pOn);
+	};
+
+	@Override
+	public void setILO(	int pLightSheetIndex,
+											int pLaserIndex,
+											boolean pOn)
+	{
+		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+										.getLaserOnOffArrayVariable(pLaserIndex)
+										.setValue(pOn);
+	};
+
+	@Override
 	public void setIP(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 										.getPowerVariable()
 										.set(pValue);
+	}
+
+	@Override
+	public void setIPA(boolean pAdapt)
+	{
+		int lNumberOfLightSheets = getDeviceLists().getNumberOfLightSheetDevices();
+
+		for (int i = 0; i < lNumberOfLightSheets; i++)
+			getDeviceLists().getLightSheetDevice(i)
+											.getAdaptPowerToWidthHeightVariable()
+											.setValue(pAdapt);
+
+	}
+
+	@Override
+	public void setIPA(int pLightSheetIndex, boolean pAdapt)
+	{
+		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+										.getAdaptPowerToWidthHeightVariable()
+										.setValue(pAdapt);
+
 	}
 
 	@Override

@@ -1,32 +1,25 @@
 package rtlib.microscope.lsm.calibrator.modules;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import gnu.trove.list.array.TDoubleArrayList;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
-import rtlib.core.math.argmax.Fitting1D;
-import rtlib.core.math.argmax.SmartArgMaxFinder;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
@@ -41,7 +34,7 @@ public class CalibrationWP
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
 	private MultiPlot mMultiPlotAdjustPCurves, mMultiPlotHPPCurves;
-	private MultiKeyMap<Integer, UnivariateFunction> mWPFunctions;
+	private MultiKeyMap<Integer, PolynomialFunction> mWPFunctions;
 	private int mNumberOfDetectionArmDevices;
 
 	public CalibrationWP(LightSheetMicroscope pLightSheetMicroscope)
@@ -313,10 +306,10 @@ public class CalibrationWP
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
 																		.getLightSheetDevice(pLightSheetIndex);
 
-		UnivariateFunction lNewWidthPowerFunction = mWPFunctions.get(	pLightSheetIndex,
+		PolynomialFunction lNewWidthPowerFunction = mWPFunctions.get(	pLightSheetIndex,
 																		pDetectionArmIndex);
 
-		ObjectVariable<UnivariateFunction> lFunctionVariable = lLightSheetDevice.getWidthPowerFunction();
+		ObjectVariable<PolynomialFunction> lFunctionVariable = lLightSheetDevice.getWidthPowerFunction();
 
 		System.out.format(	"Current WidthPower function: %s \n",
 							lFunctionVariable.get());

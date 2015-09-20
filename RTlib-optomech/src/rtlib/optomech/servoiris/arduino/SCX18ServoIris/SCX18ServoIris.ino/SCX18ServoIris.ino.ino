@@ -32,22 +32,8 @@ void setup()
   configureDefault(10,true);
   configureDefault(11,true);
 
-  closeAllShutter();
 
-  /*
-  for(int i=0; i<30; i++)
-  {
-    openShutter(i%4);
-    trigger();
-    delay(100);
-    closeShutter((i+3)%4);
-    trigger();
-    delay(100);
-  }
-  openAllShutter();
-  trigger();
-
-  for(int i=0; i<20; i++)
+   for(int i=0; i<20; i++)
     ramp(0.01,50);
   /**/
 
@@ -61,7 +47,6 @@ void loop()
 {
   do
   {
-   serialEvent(); 
    int sensorValue = analogRead(A1)-analogRead(A0);
    filteredValue = (filteredValue*7+sensorValue)>>3;
   }
@@ -77,113 +62,7 @@ void loop()
   setPositionInt(3,currentValue,1024);
   setPositionInt(4,currentValue,1024);
   trigger();
-
-  
-  //ramp(0.01,1000);
-
-  //int laserID = digitalRead(D)
- 
 }
-
-void serialEvent() 
-{
-  //Serial.println("serialEvent\n");
-  if (Serial.available()) 
-  {
-    int value = Serial.parseInt();
-    byte separator = Serial.read();
-    //if(separator=='\n')
-    {
-      Serial.println(value,DEC);
-  
-      if(value==0)
-        closeAllShutter();
-      else if (value == 100)
-        openAllShutter();
-      else if (value == 200)
-      {
-        for(int i=0; i<10000; i++)
-         {
-          Serial.println(i,DEC);
-          setShutterExclusive(i%4);
-          trigger();
-          delay(100);
-         }
-      }
-      else if (value > 100)
-        setShutterExclusive(abs(value)-1-100);
-      
-      else
-        setShutter(abs(value)-1,value>0);
-
-      trigger();
-    }
-    
-  }
-}
-
-
-
-
-inline void setShutterBinary(byte pValue)
-{
-  byte b1 = bitRead(pValue,0);
-  byte b2 = bitRead(pValue,1);
-  byte b3 = bitRead(pValue,2);
-  byte b4 = bitRead(pValue,3);
-  
-  setShutter(0,b1);
-  setShutter(0,b2);
-  setShutter(0,b3);
-  setShutter(0,b4);
-}
-
-
-inline void setShutterExclusive(int pIndex)
-{
-  closeAllShutter();
-  openShutter(pIndex);
-}
-
-inline void setShutter(int pIndex, byte pState)
-{
-  if(pState>0)
-   openShutter(pIndex);
-  else
-   closeShutter(pIndex);
-}
-
-inline void openAllShutter()
-{
-    openShutter(0);
-    openShutter(1);
-    openShutter(2);
-    openShutter(3);
-}
-
-inline void closeAllShutter()
-{
-    closeShutter(0);
-    closeShutter(1);
-    closeShutter(2);
-    closeShutter(3);
-}
-
-inline void openShutter(int pIndex)
-{
-  //Serial.print("open pIndex+8=");
-  //Serial.println(8+pIndex,DEC);
-  setPosition(8+pIndex,128+20-10);
-}
-
-inline void closeShutter(int pIndex)
-{
-  //Serial.print("close pIndex+8=");
-  //Serial.println(8+pIndex, DEC);
-  setPosition(8+pIndex,128+20);
-}
-
-
 
 
 void configureDefault(byte pIndex, bool pOn) 

@@ -74,7 +74,7 @@ public class CalibrationA
 		double[] angles = new double[mNumberOfDetectionArmDevices];
 		int lCount = 0;
 
-		double y = 0.8 * min(abs(lMinY), abs(lMaxY));
+		double y = 0.5 * min(abs(lMinY), abs(lMaxY));
 
 		{
 			System.out.format("Searching for optimal alpha angles for lighsheet at y=+/-%g \n",
@@ -117,6 +117,9 @@ public class CalibrationA
 			else
 				System.out.format("Angle are not valid, we continue with next set of y values... \n");
 		}
+
+		if (lCount == 0)
+			return;
 
 		for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 			angles[i] = angles[i] / lCount;
@@ -316,6 +319,12 @@ public class CalibrationA
 																																	.getLightSheetDevice(pLightSheetIndex);
 
 		UnivariateAffineFunction lUnivariateAffineFunction = mModels.get(pLightSheetIndex);
+
+		if (lUnivariateAffineFunction == null)
+		{
+			System.out.format("No model available! \n");
+			return Double.POSITIVE_INFINITY;
+		}
 
 		ObjectVariable<UnivariateAffineComposableFunction> lFunctionVariable = lLightSheetDevice.getAlphaFunction();
 

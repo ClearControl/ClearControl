@@ -14,8 +14,8 @@ int pinPwmB = 11;//Variable used to select the speed Motor2
 unsigned long pulseTime = 10;
 unsigned long relaxTime = 300;
 
-int IO1 = A1; //digital input 1
-int IO2 = A2; //digital input 2
+int IO1 = A2; //digital input 1
+int IO2 = A3; //digital input 2
 
 byte minCurrent = 40; //This is the min current 
 byte maxCurrent = 255; //This is the max current

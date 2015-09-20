@@ -1,8 +1,11 @@
 package rtlib.scripting.autoimport;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -12,36 +15,52 @@ import org.reflections.util.ConfigurationBuilder;
 public class ClassPathResolver
 {
 
-	static HashSet<String> sPackages;
+	static Set<String> sPackages;
+	static ConcurrentHashMap<String, HashSet<String>> sClassNameToFullyQualifiedNames = new ConcurrentHashMap<>();
 
 	public static List<String> getFullyQualifiedNames(String pSimpleName)
 	{
 		return getFullyQualifiedNames("rtlib", pSimpleName);
 	}
 
-	public static List<String> getFullyQualifiedNames(	String pBasePackage,
-														String pSimpleName)
+	public static List<String> getFullyQualifiedNames(String pBasePackage,
+																										String pSimpleName)
 	{
+		final List<String> lFullyQualifiedNames = new ArrayList<String>();
+
 		if (sPackages == null)
 		{
 			sPackages = getPackagesFromClassPath(pBasePackage);
 			sPackages.addAll(getPackagesFromCurrentClassLoader());
 		}
 
-		final List<String> lFullyQualifiedNames = new ArrayList<String>();
+		HashSet<String> lKnownFullyQualifiedNames = sClassNameToFullyQualifiedNames.get(pSimpleName);
+
+		if (lKnownFullyQualifiedNames != null)
+		{
+			lFullyQualifiedNames.addAll(lKnownFullyQualifiedNames);
+			return lFullyQualifiedNames;
+		}
+
+		if (lKnownFullyQualifiedNames == null)
+			lKnownFullyQualifiedNames = new HashSet<String>();
+
 		for (final String aPackage : sPackages)
 		{
 			final String lCandidateFullyQualifiedName = aPackage + "."
-														+ pSimpleName;
+																									+ pSimpleName;
+
 			try
 			{
 				Class.forName(lCandidateFullyQualifiedName);
 				lFullyQualifiedNames.add(lCandidateFullyQualifiedName);
+				lKnownFullyQualifiedNames.add(lCandidateFullyQualifiedName);
 			}
 			catch (final Exception e)
 			{
 				/*System.out.format("package '%s' does not exist. \n",
 													lCandidateFullyQualifiedName);/**/
+
 			}
 		}
 		return lFullyQualifiedNames;
@@ -57,12 +76,12 @@ public class ClassPathResolver
 		return lPackages;
 	}
 
-	public static HashSet<String> getPackagesFromClassPath(String pBasePackage)
+	public static Set<String> getPackagesFromClassPath(String pBasePackage)
 	{
 		final Reflections lReflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(pBasePackage))
-																					.setScanners(new SubTypesScanner(false)));
+																																								.setScanners(new SubTypesScanner(false)));
 
-		final HashSet<String> lPackages = new HashSet<String>();
+		final Set<String> lPackages = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 		for (final String lType : lReflections.getAllTypes())
 		{
 			try

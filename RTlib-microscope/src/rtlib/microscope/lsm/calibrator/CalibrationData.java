@@ -1,5 +1,8 @@
 package rtlib.microscope.lsm.calibrator;
 
+import java.util.HashMap;
+
+import rtlib.core.math.functions.PolynomialFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
@@ -9,29 +12,31 @@ public class CalibrationData
 {
 
 	public UnivariateAffineFunction[] mLightSheetXFunctions,
-			mLightSheetYFunctions,
-			mLightSheetZFunctions,
-			mLightSheetWidthFunctions,
-			mLightSheetHeightFunctions,
-			mLightSheetAlphaFunctions,
-			mLightSheetBetaFunctions,
+			mLightSheetYFunctions, mLightSheetZFunctions,
+			mLightSheetWidthFunctions, mLightSheetHeightFunctions,
+			mLightSheetAlphaFunctions, mLightSheetBetaFunctions,
 			mLightSheetPowerFunctions, mDetectionArmZFunctions;
+
+	public PolynomialFunction[] mLightSheetWidthPowerFunctions,
+			mLightSheetHeightPowerFunctions;
+
+	public HashMap<String, LightSheetPositioner> mPositionerMap = new HashMap<>();
 
 	public CalibrationData()
 	{
 
 	}
 
-	public CalibrationData(	LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationData(LightSheetMicroscope pLightSheetMicroscope)
 	{
 		super();
-		
+
 		int lNumberOfLightSheets = pLightSheetMicroscope.getDeviceLists()
-				.getNumberOfLightSheetDevices();
-		
+																										.getNumberOfLightSheetDevices();
+
 		int lNumberOfDetectioArms = pLightSheetMicroscope.getDeviceLists()
-				.getNumberOfDetectionArmDevices();
-		
+																											.getNumberOfDetectionArmDevices();
+
 		mLightSheetXFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
 		mLightSheetYFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
 		mLightSheetZFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
@@ -40,45 +45,49 @@ public class CalibrationData
 		mLightSheetAlphaFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
 		mLightSheetBetaFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
 		mLightSheetPowerFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
-		
+		mLightSheetWidthPowerFunctions = new PolynomialFunction[lNumberOfLightSheets];
+		mLightSheetHeightPowerFunctions = new PolynomialFunction[lNumberOfLightSheets];
+
 		mDetectionArmZFunctions = new UnivariateAffineFunction[lNumberOfDetectioArms];
 	}
 
-
 	public void applyTo(LightSheetMicroscope pLightSheetMicroscope)
 	{
-		
+
 		for (int l = 0; l < mLightSheetXFunctions.length; l++)
 		{
 			LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
-																			.getLightSheetDevice(l);
+																																		.getLightSheetDevice(l);
 
 			lLightSheetDevice.getXFunction()
-								.set(new UnivariateAffineFunction(mLightSheetXFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetXFunctions[l]));
 			lLightSheetDevice.getYFunction()
-								.set(new UnivariateAffineFunction(mLightSheetYFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetYFunctions[l]));
 			lLightSheetDevice.getZFunction()
-								.set(new UnivariateAffineFunction(mLightSheetZFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetZFunctions[l]));
 			lLightSheetDevice.getWidthFunction()
-								.set(new UnivariateAffineFunction(mLightSheetWidthFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetWidthFunctions[l]));
 			lLightSheetDevice.getHeightFunction()
-								.set(new UnivariateAffineFunction(mLightSheetHeightFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetHeightFunctions[l]));
 			lLightSheetDevice.getAlphaFunction()
-								.set(new UnivariateAffineFunction(mLightSheetAlphaFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetAlphaFunctions[l]));
 			lLightSheetDevice.getBetaFunction()
-								.set(new UnivariateAffineFunction(mLightSheetBetaFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetBetaFunctions[l]));
 			lLightSheetDevice.getPowerFunction()
-								.set(new UnivariateAffineFunction(mLightSheetPowerFunctions[l]));
+												.set(new UnivariateAffineFunction(mLightSheetPowerFunctions[l]));
+			lLightSheetDevice.getWidthPowerFunction()
+												.set(new PolynomialFunction(mLightSheetWidthPowerFunctions[l].getCoefficients()));
+			lLightSheetDevice.getHeightPowerFunction()
+												.set(new PolynomialFunction(mLightSheetHeightPowerFunctions[l].getCoefficients()));
 		}
 
-		
 		for (int d = 0; d < mDetectionArmZFunctions.length; d++)
 		{
 			DetectionArmInterface lDetectionArmDevice = pLightSheetMicroscope.getDeviceLists()
-																				.getDetectionArmDevice(d);
+																																				.getDetectionArmDevice(d);
 
 			lDetectionArmDevice.getZFunction()
-								.set(new UnivariateAffineFunction(mDetectionArmZFunctions[d]));
+													.set(new UnivariateAffineFunction(mDetectionArmZFunctions[d]));
 		}
 
 	}
@@ -89,35 +98,52 @@ public class CalibrationData
 		for (int l = 0; l < mLightSheetXFunctions.length; l++)
 		{
 			LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
-																			.getLightSheetDevice(l);
+																																		.getLightSheetDevice(l);
 
 			mLightSheetXFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getXFunction()
-																						.get());
+																																								.get());
 			mLightSheetYFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getYFunction()
-																						.get());
+																																								.get());
 			mLightSheetZFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getZFunction()
-																						.get());
+																																								.get());
 			mLightSheetWidthFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getWidthFunction()
-																							.get());
+																																										.get());
 			mLightSheetHeightFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getHeightFunction()
-																							.get());
+																																										.get());
 			mLightSheetAlphaFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getAlphaFunction()
-																							.get());
+																																										.get());
 			mLightSheetBetaFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getBetaFunction()
-																						.get());
+																																									.get());
 			mLightSheetPowerFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getPowerFunction()
-																							.get());
+																																										.get());
+			mLightSheetWidthPowerFunctions[l] = new PolynomialFunction(lLightSheetDevice.getWidthPowerFunction()
+																																									.get()
+																																									.getCoefficients());
+			mLightSheetHeightPowerFunctions[l] = new PolynomialFunction(lLightSheetDevice.getHeightPowerFunction()
+																																										.get()
+																																										.getCoefficients());
 		}
 
-		
 		for (int d = 0; d < mDetectionArmZFunctions.length; d++)
 		{
 			DetectionArmInterface lDetectionArmDevice = pLightSheetMicroscope.getDeviceLists()
-																				.getDetectionArmDevice(d);
+																																				.getDetectionArmDevice(d);
 
 			mDetectionArmZFunctions[d] = new UnivariateAffineFunction(lDetectionArmDevice.getZFunction()
-																							.get());
+																																										.get());
 		}
+	}
+
+	public void copyFrom(HashMap<String, LightSheetPositioner> pPositionerMap)
+	{
+		mPositionerMap.clear();
+		mPositionerMap.putAll(pPositionerMap);
+	}
+
+	public void applyTo(HashMap<String, LightSheetPositioner> pPositionersMap)
+	{
+		pPositionersMap.clear();
+		pPositionersMap.putAll(mPositionerMap);
 	}
 
 }

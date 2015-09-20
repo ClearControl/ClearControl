@@ -2,8 +2,8 @@ package rtlib.symphony.staves;
 
 import static java.lang.Math.floor;
 
-public class RampSteppingStave extends RampContinuousStave	implements
-															StaveInterface
+public class RampSteppingStave extends RampContinuousStave implements
+																													StaveInterface
 {
 
 	private volatile boolean mStepping = true;
@@ -16,19 +16,39 @@ public class RampSteppingStave extends RampContinuousStave	implements
 	}
 
 	public RampSteppingStave(	final String pName,
-								float pSyncStart,
-								float pSyncStop,
-								float pStartValue,
-								float pStopValue,
-								float pOutsideValue,
-								float pStepHeight)
+														float pSyncStart,
+														float pSyncStop,
+														float pStartValue,
+														float pStopValue,
+														float pOutsideValue,
+														float pStepHeight)
 	{
-		super(pName);
-		setSyncStart(pSyncStart);
-		setSyncStop(pSyncStop);
-		setStartValue(pStartValue);
-		setStopValue(pStopValue);
-		setOutsideValue(pOutsideValue);
+		super(pName,
+					pSyncStart,
+					pSyncStop,
+					pStartValue,
+					pStopValue,
+					pOutsideValue,
+					1);
+		setStepHeight(pStepHeight);
+	}
+
+	public RampSteppingStave(	final String pName,
+														float pSyncStart,
+														float pSyncStop,
+														float pStartValue,
+														float pStopValue,
+														float pOutsideValue,
+														float pExponent,
+														float pStepHeight)
+	{
+		super(pName,
+					pSyncStart,
+					pSyncStop,
+					pStartValue,
+					pStopValue,
+					pOutsideValue,
+					pExponent);
 		// important next line must be after all others!
 		setStepHeight(pStepHeight);
 	}
@@ -42,14 +62,19 @@ public class RampSteppingStave extends RampContinuousStave	implements
 		if (pNormalizedTime < getSyncStart() || pNormalizedTime > getSyncStop())
 			return getOutsideValue();
 
-		final float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
+		float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
+
+		if (getExponent() != 1)
+		{
+			lNormalizedRampTime = abspow(lNormalizedRampTime, getExponent());
+		}
 
 		final float lNormalizedSteppingRampTime = (float) (floor(getNumberOfSteps() * lNormalizedRampTime) / getNumberOfSteps());
 
 		final float lValue = getStartValue() + (getStopValue() - getStartValue())
-								* lNormalizedSteppingRampTime;
-
+													* lNormalizedSteppingRampTime;
 		return lValue;
+
 	}
 
 	public float getStepHeight()
@@ -82,14 +107,15 @@ public class RampSteppingStave extends RampContinuousStave	implements
 	public StaveInterface copy()
 	{
 		final RampSteppingStave lRampSteppingStave = new RampSteppingStave(	getName(),
-																			getSyncStart(),
-																			getSyncStop(),
-																			getStartValue(),
-																			getStopValue(),
-																			getOutsideValue(),
-																			getStepHeight());
+																																				getSyncStart(),
+																																				getSyncStop(),
+																																				getStartValue(),
+																																				getStopValue(),
+																																				getOutsideValue(),
+																																				getStepHeight());
 
 		lRampSteppingStave.setStepping(isStepping());
+		lRampSteppingStave.setExponent(getExponent());
 
 		return lRampSteppingStave;
 	}

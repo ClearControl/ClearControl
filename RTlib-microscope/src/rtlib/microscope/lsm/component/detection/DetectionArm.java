@@ -31,7 +31,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 	{
 		super(pName);
 
-		reset();
+		resetFunctions();
 
 		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
 			update();
@@ -54,7 +54,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	}
 
-	public void reset()
+	public void resetFunctions()
 	{
 		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
 																				.getUnivariateAffineFunction("device.lsm.detection." + getName()

@@ -154,6 +154,9 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 				if (pDcamFrame.getLeft().get(i) > 0)
 					lNumberOfImagesKept++;
 
+			if (lNumberOfImagesKept == 0)
+				return null;
+
 			final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	new UnsignedShortType(),
 																						pDcamFrame.getRight()
 																									.getWidth(),
