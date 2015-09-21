@@ -1,74 +1,103 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
+import static java.lang.Math.max;
+import gnu.trove.list.array.TDoubleArrayList;
+
 import java.util.concurrent.Future;
 
-import gnu.trove.list.array.TDoubleArrayList;
+import rtlib.gui.plots.MultiPlot;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
-public class AdaptationZ extends NDIteratorAdaptationModule	implements
-														AdaptationModuleInterface
+public class AdaptationZ extends NDIteratorAdaptationModule implements
+																														AdaptationModuleInterface
 {
 
+	private MultiPlot mMultiPlotZFocusCurves;
+
 	public AdaptationZ(	int pNumberOfSamples,
-						double pProbabilityThreshold)
+											double pProbabilityThreshold)
 	{
-		super(pNumberOfSamples,pProbabilityThreshold);
+		super(pNumberOfSamples, pProbabilityThreshold);
+
 	}
 
-	public Future<?> atomicStep(	int pControlPlaneIndex,
-									int pLightSheetIndex,
-									int pNumberOfSamples)
+	public Future<?> atomicStep(int pControlPlaneIndex,
+															int pLightSheetIndex,
+															int pNumberOfSamples)
 	{
+		int lHalfNumberOfSamples = pNumberOfSamples / 2;
+
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-													.getLightSheetDevice(pLightSheetIndex);
-		double lMinIZ = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMin();
-		double lMaxIZ = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMax();
-		double lStepIZ = (lMaxIZ - lMinIZ) / pNumberOfSamples;
+																								.getLightSheetDevice(pLightSheetIndex);
+
+		double lControlPlaneZ = lStackAcquisition.getControlPlaneZ(pControlPlaneIndex);
+		int lControlPlaneIndexInStack = lStackAcquisition.getPlaneIndexForZRamp(lControlPlaneZ);
+
+		int lBestDetectioArm = lStackAcquisition.getBestDetectioArm(pControlPlaneIndex);
+
+		final TDoubleArrayList lList = new TDoubleArrayList();
 
 		lLSM.clearQueue();
 
-		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
+		lStackAcquisition.addStackMargin(	max(0,
+																					lControlPlaneIndexInStack - 2
+																							* lHalfNumberOfSamples),
+																			3);
 
-		final TDoubleArrayList lIZList = new TDoubleArrayList();
-
-		lLSM.setC(false);
-		lLSM.setIZ(pLightSheetIndex, lMinIZ);
-		lLSM.addCurrentStateToQueue();
-
-		lLSM.setC(true);
-		for (double z = lMinIZ; z <= lMaxIZ; z += lStepIZ)
+		for (int zi : lStackAcquisition)
 		{
-			lLSM.setIZ(pLightSheetIndex, z);
-			lLSM.addCurrentStateToQueue();
+			double z = lStackAcquisition.getZRamp(zi);
+
+			if (lControlPlaneIndexInStack - lHalfNumberOfSamples <= zi && zi <= lControlPlaneIndexInStack + lHalfNumberOfSamples)
+			{
+				lLSM.setC(true);
+				lLSM.setILO(true);
+
+				double lDeltaZ = (z - lControlPlaneZ);
+				lList.add(lDeltaZ);
+			}
+			else
+			{
+				lLSM.setC(false);
+				lLSM.setILO(false);
+			}
+
+			double lIZ = lStackAcquisition.getIZ(	lControlPlaneIndexInStack,
+																						pLightSheetIndex);
+			lLSM.setIZ(pLightSheetIndex, lIZ);
+
+			lLSM.selectI(pLightSheetIndex);
+
+			if (lControlPlaneIndexInStack - 2 * lHalfNumberOfSamples <= zi && zi <= lControlPlaneIndexInStack + 2
+																																							* lHalfNumberOfSamples)
+				lLSM.addCurrentStateToQueue();
 		}
+
+		lStackAcquisition.addStackMargin(3);
 
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-								pLightSheetIndex,
-								lLSM,
-								lStackAcquisition,
-								lIZList);
+														pLightSheetIndex,
+														lLSM,
+														lStackAcquisition,
+														lList);
+
 	}
 
-	public void updateNewState(int pControlPlaneIndex,
-								int pLightSheetIndex,
-								Double lArgmax)
+	public void updateNewState(	int pControlPlaneIndex,
+															int pLightSheetIndex,
+															Double lArgmax)
 	{
 		getAdaptator().getNewAcquisitionState()
-						.setAtControlPlaneIZ(	pControlPlaneIndex,
-												pLightSheetIndex,
-												lArgmax);
+									.addAtControlPlaneIZ(	pControlPlaneIndex,
+																				pLightSheetIndex,
+																				-lArgmax);
 	}
-
 
 }

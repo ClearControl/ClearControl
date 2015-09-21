@@ -31,4 +31,32 @@ public interface StackAcquisitionInterface extends Iterable<Integer>
 
 	int getBestDetectioArm(int pControlPlaneIndex);
 
+	double getControlPlaneZ(int pControlPlaneIndex);
+
+	double getZRamp(int pPlaneIndex);
+
+	int getPlaneIndexForZRamp(double pZRampValue);
+
+	double getDZ(int pPlaneIndex, int pDeviceIndex);
+
+	double getIX(int pPlaneIndex, int pDeviceIndex);
+
+	double getIY(int pPlaneIndex, int pDeviceIndex);
+
+	double getIZ(int pPlaneIndex, int pDeviceIndex);
+
+	double getIA(int pPlaneIndex, int pDeviceIndex);
+
+	double getIB(int pPlaneIndex, int pDeviceIndex);
+
+	double getIW(int pPlaneIndex, int pDeviceIndex);
+
+	double getIH(int pPlaneIndex, int pDeviceIndex);
+
+	double getIP(int pPlaneIndex, int pDeviceIndex);
+
+	void addStackMargin(int pZPlaneIndex, int pNumber);
+
+	void addStackMargin(int pNumber);
+
 }

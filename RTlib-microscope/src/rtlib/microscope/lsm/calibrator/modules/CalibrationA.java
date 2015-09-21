@@ -1,7 +1,6 @@
 package rtlib.microscope.lsm.calibrator.modules;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
@@ -43,6 +42,7 @@ public class CalibrationA
 
 		mMultiPlotAFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");
+		mMultiPlotAFocusCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDetectionArmDevices();
@@ -65,8 +65,8 @@ public class CalibrationA
 
 		System.out.println("Current Alpha function: " + lLightSheet.getAlphaFunction());
 
-		double lMinA = -25;
-		double lMaxA = 25;
+		double lMinA = -50;
+		double lMaxA = 50;
 
 		double lMinY = lLightSheet.getYFunction().get().getMin();
 		double lMaxY = lLightSheet.getYFunction().get().getMax();
@@ -74,7 +74,7 @@ public class CalibrationA
 		double[] angles = new double[mNumberOfDetectionArmDevices];
 		int lCount = 0;
 
-		double y = 0.5 * min(abs(lMinY), abs(lMaxY));
+		double y = 0.3 * (abs(lMinY) + abs(lMaxY));
 
 		{
 			System.out.format("Searching for optimal alpha angles for lighsheet at y=+/-%g \n",

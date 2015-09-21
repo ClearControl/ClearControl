@@ -49,23 +49,24 @@ public class CalibrationZ
 
 		mMultiPlotZFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");
+		mMultiPlotZFocusCurves.setVisible(false);
 
 		mMultiPlotZModels = MultiPlot.getMultiPlot(this.getClass()
 																										.getSimpleName() + " calibration: models");
+		mMultiPlotZModels.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfDetectionArmDevices();
+																												.getNumberOfDetectionArmDevices();
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfLightSheetDevices();
+																											.getNumberOfLightSheetDevices();
 
 		mModels = new MultiKeyMap<>();
 	}
 
-	
 	public boolean calibrate(	int pLightSheetIndex,
-							int pNumberOfDSamples,
-							int pNumberOfISamples)
+														int pNumberOfDSamples,
+														int pNumberOfISamples)
 	{
 		mArgMaxFinder = new ModeArgMaxFinder();
 
@@ -82,31 +83,27 @@ public class CalibrationZ
 			lTheilSenEstimators[i] = new TheilSenEstimator();
 
 			lPlots[i] = mMultiPlotZModels.getPlot(String.format("iter=%d, D=%d, I=%d",
-																mIteration,
-																i,
-																pLightSheetIndex));
+																													mIteration,
+																													i,
+																													pLightSheetIndex));
 
 			lPlots[i].setScatterPlot("D" + i);
 			lPlots[i].setLinePlot("fit D" + i);
 		}
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																		.getLightSheetDevice(pLightSheetIndex);
+																																	.getLightSheetDevice(pLightSheetIndex);
 
-		double lMinIZ = lLightSheetDevice.getZFunction()
-											.get()
-											.getMin();
-		double lMaxIZ = lLightSheetDevice.getZFunction()
-											.get()
-											.getMax();
+		double lMinIZ = lLightSheetDevice.getZFunction().get().getMin();
+		double lMaxIZ = lLightSheetDevice.getZFunction().get().getMax();
 
-		double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples-1);
+		double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
 		for (double iz = lMinIZ; iz <= lMaxIZ; iz += lStepIZ)
 		{
 			final double[] dz = focusZ(	pLightSheetIndex,
-										pNumberOfDSamples,
-										iz);
+																	pNumberOfDSamples,
+																	iz);
 
 			if (dz == null)
 				return false;
@@ -129,13 +126,13 @@ public class CalibrationZ
 			System.out.println(lModel);
 
 			mModels.put(pLightSheetIndex,
-						d,
-						lTheilSenEstimators[d].getModel());
+									d,
+									lTheilSenEstimators[d].getModel());
 
 			UnivariateAffineComposableFunction lDetectionFocusZFunction = mLightSheetMicroscope.getDeviceLists()
-																								.getDetectionArmDevice(d)
-																								.getZFunction()
-																								.get();
+																																													.getDetectionArmDevice(d)
+																																													.getZFunction()
+																																													.get();
 
 			double lMinDZ = lDetectionFocusZFunction.getMin();
 			double lMaxDZ = lDetectionFocusZFunction.getMax();
@@ -144,9 +141,8 @@ public class CalibrationZ
 			for (double z = lMinDZ; z <= lMaxDZ; z += lStepDZ)
 			{
 				lPlots[d].addPoint(	"fit D" + d,
-									z,
-									mModels.get(pLightSheetIndex, d)
-											.value(z));
+														z,
+														mModels.get(pLightSheetIndex, d).value(z));
 			}
 
 			lPlots[d].ensureUpToDate();
@@ -156,8 +152,8 @@ public class CalibrationZ
 	}
 
 	private double[] focusZ(int pLightSheetIndex,
-							int pNumberOfDSamples,
-							double pIZ)
+													int pNumberOfDSamples,
+													double pIZ)
 	{
 		try
 		{
@@ -168,17 +164,15 @@ public class CalibrationZ
 			for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
 			{
 				UnivariateAffineComposableFunction lDetectionFocusZFunction = mLightSheetMicroscope.getDeviceLists()
-																									.getDetectionArmDevice(d)
-																									.getZFunction()
-																									.get();
+																																														.getDetectionArmDevice(d)
+																																														.getZFunction()
+																																														.get();
 
-				lMinDZ = max(	lMinDZ,
-								lDetectionFocusZFunction.getMin());
-				lMaxDZ = min(	lMaxDZ,
-								lDetectionFocusZFunction.getMax());
+				lMinDZ = max(lMinDZ, lDetectionFocusZFunction.getMin());
+				lMaxDZ = min(lMaxDZ, lDetectionFocusZFunction.getMax());
 			}
 
-			double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples-1);
+			double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();
@@ -230,14 +224,14 @@ public class CalibrationZ
 																														.getSignalGeneratorDevice(0)
 																														.getQueuedScore());/**/
 
-			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
-																								TimeUnit.SECONDS);
+			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+																																												TimeUnit.SECONDS);
 
 			if (lPlayQueueAndWait)
 				for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				{
 					final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = mLightSheetMicroscope.getStackVariable(i)
-																														.get();
+																																																							.get();
 
 					OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 
@@ -246,17 +240,15 @@ public class CalibrationZ
 					final double[] lMetricArray = ImageAnalysisUtils.computeAveragePowerIntensityPerPlane(lImage);
 
 					PlotTab lPlot = mMultiPlotZFocusCurves.getPlot(String.format(	"D=%d, I=%d, Iz=%g",
-																					i,
-																					pLightSheetIndex,
-																					pIZ));
+																																				i,
+																																				pLightSheetIndex,
+																																				pIZ));
 					lPlot.setScatterPlot("samples");
 
 					// System.out.format("metric array: \n");
 					for (int j = 0; j < lMetricArray.length; j++)
 					{
-						lPlot.addPoint(	"samples",
-										lDZList.get(j),
-										lMetricArray[j]);
+						lPlot.addPoint("samples", lDZList.get(j), lMetricArray[j]);
 						/*System.out.format(	"%d,%d\t%g\t%g\n",
 											i,
 											j,
@@ -266,7 +258,7 @@ public class CalibrationZ
 					lPlot.ensureUpToDate();
 
 					final Double lArgMax = mArgMaxFinder.argmax(lDZList.toArray(),
-																lMetricArray);
+																											lMetricArray);
 
 					if (lArgMax != null)
 					{
@@ -274,9 +266,9 @@ public class CalibrationZ
 
 						double lAmplitudeRatio = (lDCTSList.max() - lDCTSList.min()) / lDCTSList.max();
 
-						System.out.format(	"argmax=%s amplratio=%s \n",
-											lArgMax.toString(),
-											lAmplitudeRatio);
+						System.out.format("argmax=%s amplratio=%s \n",
+															lArgMax.toString(),
+															lAmplitudeRatio);
 
 						lPlot.setScatterPlot("argmax");
 						lPlot.addPoint("argmax", lArgMax, 0);
@@ -291,14 +283,12 @@ public class CalibrationZ
 							Fitting1D lFitting1D = (Fitting1D) mArgMaxFinder;
 
 							double[] lFit = lFitting1D.fit(	lDZList.toArray(),
-															new double[lDZList.size()]);
+																							new double[lDZList.size()]);
 
 							for (int j = 0; j < lDZList.size(); j++)
 							{
 								lPlot.setScatterPlot("fit");
-								lPlot.addPoint(	"fit",
-												lDZList.get(j),
-												lFit[j]);
+								lPlot.addPoint("fit", lDZList.get(j), lFit[j]);
 							}
 						}
 
@@ -345,11 +335,8 @@ public class CalibrationZ
 
 	}
 
-	
-
 	@SuppressWarnings("unchecked")
-	public double apply(int pLightSheetIndex,
-						boolean pAdjustDetectionZ)
+	public double apply(int pLightSheetIndex, boolean pAdjustDetectionZ)
 	{
 
 		if (mNumberOfDetectionArmDevices == 2)
@@ -357,31 +344,50 @@ public class CalibrationZ
 			System.out.println("LightSheet index: " + pLightSheetIndex);
 
 			final double b0 = mModels.get(pLightSheetIndex, 0)
-										.getConstant();
-			final double a0 = mModels.get(pLightSheetIndex, 0)
-										.getSlope();
+																.getConstant();
+			final double a0 = mModels.get(pLightSheetIndex, 0).getSlope();
 
 			final double b1 = mModels.get(pLightSheetIndex, 1)
-										.getConstant();
-			final double a1 = mModels.get(pLightSheetIndex, 1)
-										.getSlope();
+																.getConstant();
+			final double a1 = mModels.get(pLightSheetIndex, 1).getSlope();
 
 			final LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																				.getLightSheetDevice(pLightSheetIndex);
+																																					.getLightSheetDevice(pLightSheetIndex);
 
 			double lSlope = 0.5 * (a0 + a1);
 			double lOffset = 0.5 * (b0 + b1);
 
-			if (abs(lSlope) > 0.01)
+			System.out.println("before: getZFunction()=" + lLightSheetDevice.getZFunction());
+
+			if (abs(lSlope) > 0.00001)
 			{
 				lLightSheetDevice.getZFunction()
-									.get()
-									.composeWith(new UnivariateAffineFunction(	lSlope,
-																				lOffset));
+													.get()
+													.composeWith(new UnivariateAffineFunction(lSlope,
+																																		lOffset));
 				lLightSheetDevice.getZFunction().setCurrent();
 			}
+			else
+				System.out.println("slope too low: " + abs(lSlope));
+			System.out.println("after: getZFunction()=" + lLightSheetDevice.getZFunction());
 
-			System.out.println("lLightSheetDevice.getLightSheetZFunction()=" + lLightSheetDevice.getZFunction());
+			System.out.println("before: getYFunction()=" + lLightSheetDevice.getYFunction());
+			lLightSheetDevice.getYFunction()
+												.set(UnivariateAffineFunction.axplusb(lLightSheetDevice.getZFunction()
+																																								.get()
+																																								.getSlope(),
+																																			0));
+			lLightSheetDevice.getYFunction()
+												.get()
+												.setMin(lLightSheetDevice.getZFunction()
+																									.get()
+																									.getMin());
+			lLightSheetDevice.getYFunction()
+												.get()
+												.setMax(lLightSheetDevice.getZFunction()
+																									.get()
+																									.getMax());
+			System.out.println("after: getYFunction()=" + lLightSheetDevice.getYFunction());
 
 			if (pAdjustDetectionZ)
 			{
@@ -391,36 +397,34 @@ public class CalibrationZ
 				System.out.println("lFocalPlanesHalfOffset=" + lFocalPlanesHalfOffset);
 
 				final DetectionArmInterface lDetectionArmDevice1 = mLightSheetMicroscope.getDeviceLists()
-																						.getDetectionArmDevice(0);
+																																								.getDetectionArmDevice(0);
 				final DetectionArmInterface lDetectionArmDevice2 = mLightSheetMicroscope.getDeviceLists()
-																						.getDetectionArmDevice(1);
+																																								.getDetectionArmDevice(1);
 
 				lDetectionArmDevice1.getZFunction()
-									.get()
-									.composeWith(new UnivariateAffineFunction(	1,
-																				-lFocalPlanesHalfOffset));
+														.get()
+														.composeWith(new UnivariateAffineFunction(1,
+																																			-lFocalPlanesHalfOffset));
 				lDetectionArmDevice2.getZFunction()
-									.get()
-									.composeWith(new UnivariateAffineFunction(	1,
-																				lFocalPlanesHalfOffset));
+														.get()
+														.composeWith(new UnivariateAffineFunction(1,
+																																			lFocalPlanesHalfOffset));
 
-				lDetectionArmDevice1.getZFunction()
-									.setCurrent();
-				lDetectionArmDevice2.getZFunction()
-									.setCurrent();
+				lDetectionArmDevice1.getZFunction().setCurrent();
+				lDetectionArmDevice2.getZFunction().setCurrent();
 
 				System.out.println("lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getZFunction());
 				System.out.println("lDetectionArmDevice2.getDetectionFocusZFunction()=" + lDetectionArmDevice2.getZFunction());
 			}
 
-			double lError = abs(1 - lSlope) + abs(lOffset);
+			double lError = (abs(1 - lSlope) + abs(lOffset));
 
 			return lError;
 		}
 		return Double.NaN;
 
 	}
-	
+
 	public void reset()
 	{
 		mMultiPlotZFocusCurves.clear();

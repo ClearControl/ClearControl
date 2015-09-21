@@ -29,7 +29,6 @@ public class OrcaFlash4StackCamera extends
 																																															OpenCloseDeviceInterface,
 																																															AsynchronousExecutorServiceAccess
 {
-	public static final int cStackProcessorQueueSize = 100;
 	public static final int cDcamJNumberOfBuffers = 1024;
 
 	private final int mCameraDeviceIndex;
@@ -41,6 +40,16 @@ public class OrcaFlash4StackCamera extends
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
 	private final Object mLock = new Object();
+
+	private int mStackProcessorQueueSize = 3;
+
+	private int mMinimalNumberOfAvailableStacks = 3;
+
+	private int mMaximalNumberOfAvailableStacks = 3;
+
+	private int mMaximalNumberOfLiveStacks = 6;
+
+	private long mWaitForRecycledStackTimeInMicroSeconds = 1000 * 1000 * 1000;
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
@@ -201,9 +210,23 @@ public class OrcaFlash4StackCamera extends
 
 		};
 
+		/*
+		 * DcamJToVideoFrameConverter(final int pCameraId,
+																		final ObjectVariable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
+																		final int pMaxQueueSize,
+																		final int pMinimalNumberOfAvailableStacks,
+																		final int pMaximalNumberOfAvailableStacks,
+																		final int pMaximalNumberOfLiveStacks,
+																		long pWaitForReycledStackTimeInMicroSeconds,
+																		final boolean pFlipX)
+		 */
 		mDcamJToStackConverterAndProcessing = new DcamJToVideoFrameConverter(	pCameraDeviceIndex,
 																																					mFrameReference,
-																																					cStackProcessorQueueSize,
+																																					getStackProcessorQueueSize(),
+																																					getMinimalNumberOfAvailableStacks(),
+																																					getMaximalNumberOfAvailableStacks(),
+																																					getMaximalNumberOfLiveStacks(),
+																																					getWaitForRecycledStackTimeInMicroSeconds(),
 																																					pFlipX);
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
@@ -464,6 +487,56 @@ public class OrcaFlash4StackCamera extends
 	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
+	}
+
+	public int getStackProcessorQueueSize()
+	{
+		return mStackProcessorQueueSize;
+	}
+
+	public void setStackProcessorQueueSize(int pStackProcessorQueueSize)
+	{
+		mStackProcessorQueueSize = pStackProcessorQueueSize;
+	}
+
+	public int getMinimalNumberOfAvailableStacks()
+	{
+		return mMinimalNumberOfAvailableStacks;
+	}
+
+	public void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks)
+	{
+		mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
+	}
+
+	public int getMaximalNumberOfAvailableStacks()
+	{
+		return mMaximalNumberOfAvailableStacks;
+	}
+
+	public void setMaximalNumberOfAvailableStacks(int pMaximalNumberOfAvailableStacks)
+	{
+		mMaximalNumberOfAvailableStacks = pMaximalNumberOfAvailableStacks;
+	}
+
+	public int getMaximalNumberOfLiveStacks()
+	{
+		return mMaximalNumberOfLiveStacks;
+	}
+
+	public void setMaximalNumberOfLiveStacks(int pMaximalNumberOfLiveStacks)
+	{
+		mMaximalNumberOfLiveStacks = pMaximalNumberOfLiveStacks;
+	}
+
+	public long getWaitForRecycledStackTimeInMicroSeconds()
+	{
+		return mWaitForRecycledStackTimeInMicroSeconds;
+	}
+
+	public void setWaitForReycledStackTimeInMicroSeconds(long pWaitForReycledStackTimeInMicroSeconds)
+	{
+		mWaitForRecycledStackTimeInMicroSeconds = pWaitForReycledStackTimeInMicroSeconds;
 	}
 
 }

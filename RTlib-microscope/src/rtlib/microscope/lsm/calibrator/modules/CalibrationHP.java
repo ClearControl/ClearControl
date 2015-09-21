@@ -42,9 +42,11 @@ public class CalibrationHP
 
 		mMultiPlotAdjustPCurves = MultiPlot.getMultiPlot(this.getClass()
 																													.getSimpleName() + " calibration: adjust power curves");
+		mMultiPlotAdjustPCurves.setVisible(false);
 
 		mMultiPlotHPPCurves = MultiPlot.getMultiPlot(this.getClass()
 																											.getSimpleName() + " calibration: power versus height curves");
+		mMultiPlotHPPCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDetectionArmDevices();

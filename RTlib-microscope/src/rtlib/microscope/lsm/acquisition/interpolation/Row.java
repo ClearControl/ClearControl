@@ -24,6 +24,11 @@ public class Row implements Comparable<Row>
 		System.out.println(y);
 	}
 
+	public int getNumberOfColumns()
+	{
+		return y.size();
+	}
+
 	public double getX()
 	{
 		return x;
@@ -37,6 +42,12 @@ public class Row implements Comparable<Row>
 	public void setY(int pColumnIndex, double pValue)
 	{
 		y.set(pColumnIndex, pValue);
+		mIsUpToDate = false;
+	}
+
+	public void addY(int pColumnIndex, double pDelta)
+	{
+		y.set(pColumnIndex, y.get(pColumnIndex) + pDelta);
 		mIsUpToDate = false;
 	}
 
@@ -70,6 +81,8 @@ public class Row implements Comparable<Row>
 				+ mIsUpToDate
 				+ "]";
 	}
+
+
 	
 	
 

@@ -2,11 +2,6 @@ package rtlib.gui.video.video3d;
 
 import java.util.concurrent.TimeUnit;
 
-import clearvolume.renderer.ClearVolumeRendererInterface;
-import clearvolume.renderer.factory.ClearVolumeRendererFactory;
-import coremem.ContiguousMemoryInterface;
-import coremem.types.NativeTypeEnum;
-import coremem.util.Size;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
@@ -16,7 +11,13 @@ import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
+import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
+import clearvolume.renderer.ClearVolumeRendererInterface;
+import clearvolume.renderer.factory.ClearVolumeRendererFactory;
+import coremem.ContiguousMemoryInterface;
+import coremem.types.NativeTypeEnum;
+import coremem.util.Size;
 
 public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																					NamedVirtualDevice	implements
@@ -86,6 +87,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			@Override
 			public Object process(final StackInterface<T, A> pStack)
 			{
+				if (pStack instanceof EmptyStack)
+					return null;
 				// System.out.println(pStack);
 
 				final long lSizeInBytes = pStack.getSizeInBytes();

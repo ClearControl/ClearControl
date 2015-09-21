@@ -1,6 +1,5 @@
 package rtlib.microscope.lsm.acquisition;
 
-import gnu.trove.list.array.TIntArrayList;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.interpolation.InterpolationTable;
 
@@ -24,25 +23,25 @@ public class AcquisitionState implements AcquisitionStateInterface
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
 		mInterpolationTableDZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfDetectionArmDevices());
+																																				.getNumberOfDetectionArmDevices());
 
 		mInterpolationTableIX = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIY = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 
 		mInterpolationTableIA = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIB = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIW = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIH = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 		mInterpolationTableIP = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																			.getNumberOfLightSheetDevices());
+																																				.getNumberOfLightSheetDevices());
 	}
 
 	public AcquisitionState(AcquisitionState pCurrentAcquisitionState)
@@ -81,193 +80,383 @@ public class AcquisitionState implements AcquisitionStateInterface
 		return mInterpolationTableDZ.getNumberOfRows();
 	}
 
+	public InterpolationTable getDZTable()
+	{
+		return mInterpolationTableDZ;
+	}
+
+	public InterpolationTable getIXTable()
+	{
+		return mInterpolationTableIX;
+	}
+
+	public InterpolationTable getIYTable()
+	{
+		return mInterpolationTableIY;
+	}
+
+	public InterpolationTable getIZTable()
+	{
+		return mInterpolationTableIZ;
+	}
+
+	public InterpolationTable getIATable()
+	{
+		return mInterpolationTableIA;
+	}
+
+	public InterpolationTable getIBTable()
+	{
+		return mInterpolationTableIB;
+	}
+
+	public InterpolationTable getIWTable()
+	{
+		return mInterpolationTableIW;
+	}
+
+	public InterpolationTable getIHTable()
+	{
+		return mInterpolationTableIH;
+	}
+
+	public InterpolationTable getIPTable()
+	{
+		return mInterpolationTableIP;
+	}
+
+	public int getNumberOfDevicesDZ()
+	{
+		return mInterpolationTableDZ.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIX()
+	{
+		return mInterpolationTableIX.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIY()
+	{
+		return mInterpolationTableIY.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIZ()
+	{
+		return mInterpolationTableIZ.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIA()
+	{
+		return mInterpolationTableIA.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIB()
+	{
+		return mInterpolationTableIB.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIW()
+	{
+		return mInterpolationTableIW.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIH()
+	{
+		return mInterpolationTableIH.getNumberOfColumns();
+	}
+
+	public int getNumberOfDevicesIP()
+	{
+		return mInterpolationTableIP.getNumberOfColumns();
+	}
+
+	public double getZ(int pControlPlaneIndex)
+	{
+		// we are interested in getting the Z position (X in table) _not_ the DZ
+		// value!
+		double lZ = mInterpolationTableDZ.getRow(pControlPlaneIndex)
+																			.getX();
+		return lZ;
+	}
+
+	public double getMinZ()
+	{
+		return mInterpolationTableDZ.getMinX();
+	}
+
+	public double getMaxZ()
+	{
+		return mInterpolationTableDZ.getMaxX();
+	}
+
+	/******************************************************/
 	public void setAtControlPlaneDZ(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableDZ.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneDZ(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneDZ(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableDZ.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneDZ(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableDZ.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIX(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIX.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIX(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIX(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIX.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIX(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIX.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIY(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIY.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIY(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIY(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIY.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIY(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIY.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIZ(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIZ.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIZ(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIZ(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIZ.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIZ(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIZ.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIA(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIA.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIA(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIA(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIA.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIA(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIA.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIB(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIB.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIB(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIB(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIB.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIB(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIB.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIW(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIW.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIW(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIW(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIW.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIW(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIW.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIH(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIH.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIH(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIH(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIH.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIH(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIH.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
+	/******************************************************/
 	public void setAtControlPlaneIP(int pControlPlaneIndex,
-									int pDeviceIndex,
-									double pValue)
+																	int pDeviceIndex,
+																	double pValue)
 	{
 		mInterpolationTableIP.getRow(pControlPlaneIndex)
-								.setY(pDeviceIndex, pValue);
+													.setY(pDeviceIndex, pValue);
 	}
 
-	public double getAtControlPlaneIP(	int pControlPlaneIndex,
-										int pDeviceIndex)
+	public void addAtControlPlaneIP(int pControlPlaneIndex,
+																	int pDeviceIndex,
+																	double pDelta)
+	{
+		mInterpolationTableIP.getRow(pControlPlaneIndex)
+													.addY(pDeviceIndex, pDelta);
+	}
+
+	public double getAtControlPlaneIP(int pControlPlaneIndex,
+																		int pDeviceIndex)
 	{
 		return mInterpolationTableIP.getRow(pControlPlaneIndex)
-									.getY(pDeviceIndex);
+																.getY(pDeviceIndex);
 	}
 
 	public double getInterpolatedDZ(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableDZ.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableDZ.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIX(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIX.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIX.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIY(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIY.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIY.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIZ(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIZ.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIZ.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIA(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIA.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIA.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIB(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIB.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIB.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIW(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIW.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIW.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIH(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIH.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIH.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public double getInterpolatedIP(int pDeviceIndex, double pX)
 	{
-		return mInterpolationTableIP.getInterpolatedValue(	pDeviceIndex,
-															pX);
+		return mInterpolationTableIP.getInterpolatedValue(pDeviceIndex,
+																											pX);
 	}
 
 	public void setTransitionPlane(double pZ)
@@ -279,5 +468,6 @@ public class AcquisitionState implements AcquisitionStateInterface
 	{
 		return mTransitionPlaneZ;
 	}
+
 
 }

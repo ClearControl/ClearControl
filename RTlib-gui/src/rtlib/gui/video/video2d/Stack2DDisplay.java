@@ -12,6 +12,7 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
+import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 
 import com.jogamp.newt.event.MouseAdapter;
@@ -100,6 +101,9 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			@Override
 			public Object process(final StackInterface<T, A> pStack)
 			{
+				if (pStack instanceof EmptyStack)
+					return null;
+
 				try
 				{
 					if (pStack != mReceivedStackCopy)
@@ -113,13 +117,14 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 							if (mReceivedStackCopy != null)
 							{
 								final StackInterface<T, A> lStackToFree = mReceivedStackCopy;
-								mReceivedStackCopy = pStack.duplicate();
+								mReceivedStackCopy = pStack.allocateSameSize();
 								lStackToFree.free();
 							}
 							else
-								mReceivedStackCopy = pStack.duplicate();
+								mReceivedStackCopy = pStack.allocateSameSize();
 						}
-						else if (!mReceivedStackCopy.isFree())
+
+						if (!mReceivedStackCopy.isFree())
 						{
 							mReceivedStackCopy.getContiguousMemory()
 																.copyFrom(pStack.getContiguousMemory());

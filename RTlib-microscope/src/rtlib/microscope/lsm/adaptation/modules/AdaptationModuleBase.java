@@ -2,11 +2,9 @@ package rtlib.microscope.lsm.adaptation.modules;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
-import rtlib.microscope.lsm.adaptation.LSMAdaptator;
+import rtlib.microscope.lsm.adaptation.Adaptator;
 
 public abstract class AdaptationModuleBase	implements
 									AdaptationModuleInterface, AsynchronousExecutorServiceAccess
@@ -15,16 +13,16 @@ public abstract class AdaptationModuleBase	implements
 
 	protected ArrayList<Future<?>> mListOfFuturTasks = new ArrayList<>();
 
-	private LSMAdaptator mLSMAdaptator;
+	private Adaptator mLSMAdaptator;
 
 	@Override
-	public void setAdaptator(LSMAdaptator pLSMAdaptator)
+	public void setAdaptator(Adaptator pLSMAdaptator)
 	{
 		mLSMAdaptator = pLSMAdaptator;
 	}
 	
 	@Override
-	public LSMAdaptator getAdaptator()
+	public Adaptator getAdaptator()
 	{
 		return mLSMAdaptator;
 	}
@@ -61,6 +59,27 @@ public abstract class AdaptationModuleBase	implements
 	public void reset()
 	{
 		mListOfFuturTasks.clear();
+	}
+
+	/**
+	 * Interface method implementation
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder lBuilder = new StringBuilder();
+		lBuilder.append("AdaptationModuleBase [mPriority=");
+		lBuilder.append(mPriority);
+		lBuilder.append(", mListOfFuturTasks=");
+		lBuilder.append(mListOfFuturTasks);
+		lBuilder.append(", mLSMAdaptator=");
+		lBuilder.append(mLSMAdaptator);
+		lBuilder.append(", isReady()=");
+		lBuilder.append(isReady());
+		lBuilder.append("]");
+		return lBuilder.toString();
 	};
 
 	

@@ -1,13 +1,13 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
-import rtlib.microscope.lsm.adaptation.LSMAdaptator;
+import rtlib.microscope.lsm.adaptation.Adaptator;
 
 public interface AdaptationModuleInterface
 {
 
-	void setAdaptator(LSMAdaptator pLSMAdaptator);
+	void setAdaptator(Adaptator pLSMAdaptator);
 
-	LSMAdaptator getAdaptator();
+	Adaptator getAdaptator();
 
 	void setPriority(int pPriority);
 

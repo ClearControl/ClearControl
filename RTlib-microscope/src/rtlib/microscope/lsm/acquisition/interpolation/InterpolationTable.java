@@ -1,6 +1,7 @@
 package rtlib.microscope.lsm.acquisition.interpolation;
 
 import static java.lang.Math.abs;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +11,6 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 
@@ -40,6 +40,11 @@ public class InterpolationTable
 	public int getNumberOfRows()
 	{
 		return mTable.size();
+	}
+
+	public int getNumberOfColumns()
+	{
+		return mTable.first().getNumberOfColumns();
 	}
 
 	public Row getRow(int pRowIndex)
@@ -83,12 +88,12 @@ public class InterpolationTable
 		return lRow;
 	}
 
-	public double maxX()
+	public double getMaxX()
 	{
 		return mTable.last().x;
 	}
 
-	public double minX()
+	public double getMinX()
 	{
 		return mTable.first().x;
 	}
@@ -140,8 +145,8 @@ public class InterpolationTable
 					}
 				}
 
-				final double lMinX = minX();
-				final double lMaxX = maxX();
+				final double lMinX = getMinX();
+				final double lMaxX = getMaxX();
 				final double lRangeWidth = abs(lMaxX - lMinX);
 
 				if (x.size() >= 2)
@@ -210,8 +215,8 @@ public class InterpolationTable
 				lPlot.addPoint("samples", x, y);
 			}
 
-			final double lMinX = minX();
-			final double lMaxX = maxX();
+			final double lMinX = getMinX();
+			final double lMaxX = getMaxX();
 			final double lRangeWidth = lMaxX - lMinX;
 			final double lStep = (lMaxX - lMinX) / 1024;
 
@@ -228,5 +233,6 @@ public class InterpolationTable
 
 		return lMultiPlot;
 	}
+
 
 }

@@ -44,6 +44,7 @@ public class CalibrationWP
 
 		mMultiPlotAdjustPCurves = MultiPlot.getMultiPlot(this.getClass()
 																.getSimpleName() + " calibration: adjust power curves");
+		mMultiPlotAdjustPCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 															.getNumberOfDetectionArmDevices();

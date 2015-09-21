@@ -1,37 +1,34 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import java.util.concurrent.Future;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
-public class AdaptationX extends NDIteratorAdaptationModule	implements
-															AdaptationModuleInterface
+public class AdaptationX extends NDIteratorAdaptationModule implements
+																														AdaptationModuleInterface
 {
 
 	public AdaptationX(	int pNumberOfSamples,
-						double pProbabilityThreshold)
+											double pProbabilityThreshold)
 	{
 		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
 	public Future<?> atomicStep(int pControlPlaneIndex,
-								int pLightSheetIndex,
-								int pNumberOfSamples)
+															int pLightSheetIndex,
+															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-													.getLightSheetDevice(pLightSheetIndex);
-		double lMinX = lLightSheetDevice.getXFunction()
-										.get()
-										.getMin();
-		double lMaxX = lLightSheetDevice.getXFunction()
-										.get()
-										.getMax();
+																								.getLightSheetDevice(pLightSheetIndex);
+		double lMinX = lLightSheetDevice.getXFunction().get().getMin();
+		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
 		double lStepX = (lMaxX - lMinX) / pNumberOfSamples;
 
 		lLSM.clearQueue();
@@ -55,20 +52,21 @@ public class AdaptationX extends NDIteratorAdaptationModule	implements
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-								pLightSheetIndex,
-								lLSM,
-								lStackAcquisition,
-								lIXList);
+																pLightSheetIndex,
+																lLSM,
+																lStackAcquisition,
+																lIXList);
+
 	}
 
 	public void updateNewState(	int pControlPlaneIndex,
-								int pLightSheetIndex,
-								Double lArgmax)
+															int pLightSheetIndex,
+															Double lArgmax)
 	{
 		getAdaptator().getNewAcquisitionState()
-						.setAtControlPlaneIX(	pControlPlaneIndex,
-												pLightSheetIndex,
-												lArgmax);
+									.setAtControlPlaneIX(	pControlPlaneIndex,
+																				pLightSheetIndex,
+																				lArgmax);
 	}
 
 }

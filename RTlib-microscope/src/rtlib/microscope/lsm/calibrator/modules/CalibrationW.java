@@ -48,6 +48,7 @@ public class CalibrationW
 
 		mAverageIntensityCurves = MultiPlot.getMultiPlot(this.getClass()
 																.getSimpleName() + "W-calibration: average intensity curves");
+		mAverageIntensityCurves.setVisible(false);
 
 	}
 

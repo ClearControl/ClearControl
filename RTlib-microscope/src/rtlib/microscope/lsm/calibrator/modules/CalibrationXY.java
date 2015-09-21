@@ -3,7 +3,6 @@ package rtlib.microscope.lsm.calibrator.modules;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import gnu.trove.list.array.TDoubleArrayList;
-import jama.Matrix;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -157,10 +156,8 @@ public class CalibrationXY
 				if (lCenterP == null && lCenterN == null)
 					continue;
 
-				lOriginXList.add((1.0 / 4) * (lCenterP.getX() + 2
-												* lCenter0.getX() + lCenterN.getX()));
-				lOriginYList.add((1.0 / 4) * (lCenterP.getY() + 2
-												* lCenter0.getY() + lCenterN.getY()));
+				lOriginXList.add(lCenter0.getX());
+				lOriginYList.add(lCenter0.getY());
 
 				if (f != 0)
 				{
@@ -407,6 +404,7 @@ public class CalibrationXY
 
 		System.out.format(	"Updated-> lHeightFunctionVariable: %s \n",
 							lHeightFunctionVariable);
+
 
 		double lError = abs(lXOffset) + abs(lYOffset);
 
