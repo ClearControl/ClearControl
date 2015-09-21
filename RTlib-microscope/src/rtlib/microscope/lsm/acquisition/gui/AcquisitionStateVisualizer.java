@@ -31,7 +31,6 @@ public class AcquisitionStateVisualizer
 			mMultiPlotState.setVisible(true);
 		}
 
-
 		plotTable(pAcquisitionState,
 							"DZ",
 							pAcquisitionState.getDZTable(),
@@ -83,14 +82,17 @@ public class AcquisitionStateVisualizer
 		for (int d = 0; d < lNumberOfDevices; d++)
 		{
 			PlotTab lPlot = mMultiPlotState.getPlot(String.format(lName + " index=%d",
-																															d));
+																														d));
 			lPlot.clearPoints();
 
-			lPlot.setScatterPlot("interpolated " + lName);
-			for (double z = pAcquisitionState.getMinZ(); z <= pAcquisitionState.getMaxZ(); z += 0.04)
+			lPlot.setLinePlot("interpolated " + lName);
+			double lStepZ = 0.005 * (pAcquisitionState.getMaxZ() - pAcquisitionState.getMinZ());
+
+			for (double z = pAcquisitionState.getMinZ(); z <= pAcquisitionState.getMaxZ(); z += lStepZ)
 			{
 				double lValue = lTable.getInterpolatedValue(d, z);
-				lPlot.addPoint("interpolated " + lName, z, lValue);
+				if (Double.isFinite(lValue))
+					lPlot.addPoint("interpolated " + lName, z, lValue);
 			}
 
 			lPlot.setScatterPlot("control points " + lName);
@@ -100,7 +102,8 @@ public class AcquisitionStateVisualizer
 			{
 				double lValue = lTable.getRow(czi).getY(d);
 				double z = pAcquisitionState.getZ(czi);
-				lPlot.addPoint("control points " + lName, z, lValue);
+				if (Double.isFinite(lValue))
+					lPlot.addPoint("control points " + lName, z, lValue);
 			}
 
 			lPlot.ensureUpToDate();
