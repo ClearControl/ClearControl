@@ -9,9 +9,9 @@ public interface StackAcquisitionInterface extends Iterable<Integer>
 
 	void setHighZ(double pValue);
 
-	double getLowZ();
+	double getMinZ();
 
-	double getHighZ();
+	double getMaxZ();
 
 	void setStepZ(double pValue);
 

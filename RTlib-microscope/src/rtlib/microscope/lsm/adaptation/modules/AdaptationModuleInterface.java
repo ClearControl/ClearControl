@@ -1,8 +1,10 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
+import java.util.function.Function;
+
 import rtlib.microscope.lsm.adaptation.Adaptator;
 
-public interface AdaptationModuleInterface
+public interface AdaptationModuleInterface extends Function<Void,Boolean>
 {
 
 	void setAdaptator(Adaptator pLSMAdaptator);
@@ -13,7 +15,7 @@ public interface AdaptationModuleInterface
 
 	int getPriority();
 
-	boolean step();
+	Boolean apply(Void pVoid);
 
 	boolean isReady();
 

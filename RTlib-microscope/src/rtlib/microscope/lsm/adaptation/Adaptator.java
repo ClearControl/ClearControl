@@ -1,23 +1,28 @@
 package rtlib.microscope.lsm.adaptation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.AcquisitionState;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.adaptation.modules.AdaptationModuleInterface;
 
-public class Adaptator
+public class Adaptator implements Function<Void, Boolean>
 {
 	private final LightSheetMicroscope mLightSheetMicroscope;
 	private final StackAcquisitionInterface mStackAcquisition;
 
 	private ArrayList<AdaptationModuleInterface> mAdaptationModuleList = new ArrayList<>();
-	private volatile int mCurrentAdaptationModule = 0;
+	private volatile double mCurrentAdaptationModule = 0;
 
 	private volatile AcquisitionState mNewAcquisitionState;
 
-	public Adaptator(LightSheetMicroscope pLightSheetMicroscope,
+	private HashMap<Function<Void, Boolean>, Long> mTimmingMap = new HashMap<>();
+
+	public Adaptator(	LightSheetMicroscope pLightSheetMicroscope,
 						StackAcquisitionInterface pStackAcquisition)
 	{
 		super();
@@ -52,7 +57,35 @@ public class Adaptator
 		pAdaptationModule.setAdaptator(this);
 	}
 
-	public boolean step()
+	public long estimateStep(TimeUnit pTimeUnit)
+	{
+		boolean lModulesReady = isReady();
+		if (lModulesReady)
+			return 0;
+		else
+		{
+			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get((int) mCurrentAdaptationModule);
+			int lPriority = lAdaptationModule.getPriority();
+
+			Long lMethodTimming = getTimming(lAdaptationModule::apply);
+
+			if (lMethodTimming == null)
+				return 0;
+
+			long lEstimatedTimeInNanoseconds = lPriority * lMethodTimming;
+
+			return lEstimatedTimeInNanoseconds;
+		}
+	}
+
+	public void applyInitialRounds(int pNumberOfRounds)
+	{
+		for (int i = 0; i < pNumberOfRounds; i++)
+			while (apply(null))
+				;
+	}
+
+	public Boolean apply(Void pVoid)
 	{
 		System.out.format("Adaptator: step \n");
 
@@ -70,19 +103,42 @@ public class Adaptator
 		}
 		else
 		{
-			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get(mCurrentAdaptationModule);
+			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get((int) mCurrentAdaptationModule);
 
-			System.out.format("lAdaptationModule: %s \n", lAdaptationModule);
+			System.out.format(	"lAdaptationModule: %s \n",
+								lAdaptationModule);
 
-			int lPriority = lAdaptationModule.getPriority();
+			double lStepSize = 1.0 / lAdaptationModule.getPriority();
 
-			for (int i = 0; i < lPriority && lAdaptationModule.step(); i++)
-			;//do not remove this semi-colon!
+			time(lAdaptationModule::apply);
 
-			mCurrentAdaptationModule = (mCurrentAdaptationModule + 1) % mAdaptationModuleList.size();
+			mCurrentAdaptationModule = (mCurrentAdaptationModule + lStepSize);
+
+			if (mCurrentAdaptationModule >= mAdaptationModuleList.size())
+				mCurrentAdaptationModule = mCurrentAdaptationModule - mAdaptationModuleList.size();
 
 			return true;
 		}
+	}
+
+	private boolean time(Function<Void, Boolean> pMethod)
+	{
+		long lStartTimeNS = System.nanoTime();
+		Boolean lResult = pMethod.apply(null);
+		long lStopTimeNS = System.nanoTime();
+
+		long lElapsedTimeInNS = lStopTimeNS - lStartTimeNS;
+		double lElpasedTimeInMilliseconds = (double) TimeUnit.MILLISECONDS.convert(	lElapsedTimeInNS,
+																					TimeUnit.NANOSECONDS);
+
+		mTimmingMap.put(pMethod, lElapsedTimeInNS);
+
+		return lResult;
+	}
+
+	private Long getTimming(Function<Void, Boolean> pMethod)
+	{
+		return mTimmingMap.get(pMethod);
 	}
 
 	private boolean isReady()

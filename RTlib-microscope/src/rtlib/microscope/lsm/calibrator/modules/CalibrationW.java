@@ -94,7 +94,7 @@ public class CalibrationW
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();
 
-			mLightSheetMicroscope.selectI(pLightSheetIndex);
+			mLightSheetMicroscope.setI(pLightSheetIndex);
 			mLightSheetMicroscope.setIX(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);

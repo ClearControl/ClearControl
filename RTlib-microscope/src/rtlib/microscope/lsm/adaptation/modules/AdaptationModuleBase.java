@@ -42,7 +42,7 @@ public abstract class AdaptationModuleBase	implements
 
 
 	@Override
-	public abstract boolean step();
+	public abstract Boolean apply(Void pVoid);
 	
 	@Override
 	public boolean isReady()

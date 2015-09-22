@@ -156,7 +156,7 @@ public class CalibrationHP
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();
 
-			mLightSheetMicroscope.selectI(pLightSheetIndex);
+			mLightSheetMicroscope.setI(pLightSheetIndex);
 			mLightSheetMicroscope.setIH(pLightSheetIndex, pH);
 
 			final TDoubleArrayList lPList = new TDoubleArrayList();

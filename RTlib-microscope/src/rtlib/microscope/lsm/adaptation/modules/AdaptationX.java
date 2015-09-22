@@ -2,6 +2,7 @@ package rtlib.microscope.lsm.adaptation.modules;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -29,7 +30,7 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 																								.getLightSheetDevice(pLightSheetIndex);
 		double lMinX = lLightSheetDevice.getXFunction().get().getMin();
 		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
-		double lStepX = (lMaxX - lMinX) / pNumberOfSamples;
+		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples-1);
 
 		lLSM.clearQueue();
 
@@ -37,8 +38,11 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 
 		final TDoubleArrayList lIXList = new TDoubleArrayList();
 
+		double lCurrentX = lLSM.getIX(pLightSheetIndex);
+		
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lMinX);
+		lLSM.addCurrentStateToQueue();
 		lLSM.addCurrentStateToQueue();
 
 		lLSM.setC(true);
@@ -48,7 +52,11 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 			lLSM.setIX(pLightSheetIndex, x);
 			lLSM.addCurrentStateToQueue();
 		}
-
+		
+		lLSM.setC(false);
+		lLSM.setIX(pLightSheetIndex, lCurrentX);
+		lLSM.addCurrentStateToQueue();
+		
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
@@ -61,12 +69,14 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 
 	public void updateNewState(	int pControlPlaneIndex,
 															int pLightSheetIndex,
-															Double lArgmax)
+															ArrayList<Double> pArgMaxList)
 	{
+		int lBestDetectioArm = getAdaptator().getStackAcquisition().getBestDetectioArm(pControlPlaneIndex);
+		
 		getAdaptator().getNewAcquisitionState()
 									.setAtControlPlaneIX(	pControlPlaneIndex,
 																				pLightSheetIndex,
-																				lArgmax);
+																				pArgMaxList.get(lBestDetectioArm));
 	}
 
 }

@@ -78,7 +78,7 @@ public class CalibrationP
 	{
 		try
 		{
-			mLightSheetMicroscope.selectI(pLightSheetIndex);
+			mLightSheetMicroscope.setI(pLightSheetIndex);
 			ThreadUtils.sleep(200, TimeUnit.MILLISECONDS);
 
 			// Building queue start:

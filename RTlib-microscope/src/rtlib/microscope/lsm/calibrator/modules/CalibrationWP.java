@@ -153,7 +153,7 @@ public class CalibrationWP
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();
 
-			mLightSheetMicroscope.selectI(pLightSheetIndex);
+			mLightSheetMicroscope.setI(pLightSheetIndex);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, pW);
 
 			final TDoubleArrayList lPList = new TDoubleArrayList();

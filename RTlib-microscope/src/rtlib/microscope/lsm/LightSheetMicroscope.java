@@ -1,5 +1,7 @@
 package rtlib.microscope.lsm;
 
+import static java.lang.Math.toIntExact;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -35,6 +37,7 @@ public class LightSheetMicroscope	extends
 		mLSMDeviceLists = new LightSheetMicroscopeDeviceLists();
 	}
 
+	@Override
 	public LightSheetMicroscopeDeviceLists getDeviceLists()
 	{
 		return mLSMDeviceLists;
@@ -200,6 +203,7 @@ public class LightSheetMicroscope	extends
 		return lFutureBooleanList;
 	}
 
+	@Override
 	public Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit)	throws InterruptedException,
 																		ExecutionException,
 																		TimeoutException
@@ -208,6 +212,8 @@ public class LightSheetMicroscope	extends
 		return lPlayQueue.get(pTimeOut, pTimeUnit);
 	}
 
+	
+	@Override
 	public Boolean playQueueAndWaitForStacks(	long pTimeOut,
 												TimeUnit pTimeUnit)	throws InterruptedException,
 																	ExecutionException,
@@ -248,6 +254,7 @@ public class LightSheetMicroscope	extends
 		return lBoolean;
 	}
 
+	@Override
 	public ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> getStackVariable(int pIndex)
 	{
 		return getDeviceLists().getStackVariable(pIndex);
@@ -294,6 +301,22 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public int getCameraWidth(int pCameraDeviceIndex)
+	{
+		return (int) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+										.getStackWidthVariable()
+										.getValue();
+	};
+
+	@Override
+	public int getCameraHeight(int pCameraDeviceIndex)
+	{
+		return (int) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+										.getStackHeightVariable()
+										.getValue();
+	};
+
+	@Override
 	public void setExposure(long pValue, TimeUnit pTimeUnit)
 	{
 		final double lExposureTimeInMicroseconds = TimeUnit.MICROSECONDS.convert(	pValue,
@@ -308,6 +331,20 @@ public class LightSheetMicroscope	extends
 			getDeviceLists().getLightSheetDevice(i)
 							.getEffectiveExposureInMicrosecondsVariable()
 							.setValue(lExposureTimeInMicroseconds);
+	};
+
+	@Override
+	public long getExposure(int pCameraDeviceIndex, TimeUnit pTimeUnit)
+	{
+
+		long lExposureInMicroseconds = (long) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+																.getExposureInMicrosecondsVariable()
+																.getValue();
+
+		long lExposureInProvidedUnit = pTimeUnit.convert(	lExposureInMicroseconds,
+															TimeUnit.MICROSECONDS);
+
+		return toIntExact(lExposureInProvidedUnit);
 	};
 
 	public void zero()
@@ -345,6 +382,14 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public boolean getC(int pCameraIndex)
+	{
+		return getDeviceLists().getStackCameraDevice(pCameraIndex)
+								.getKeepPlaneVariable()
+								.getBooleanValue();
+	}
+
+	@Override
 	public void setC(boolean pKeepImage)
 	{
 		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
@@ -365,6 +410,14 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public boolean getLO(int pLaserIndex)
+	{
+		return getDeviceLists().getLaserDevice(pLaserIndex)
+								.getLaserOnVariable()
+								.getBooleanValue();
+	}
+
+	@Override
 	public void setLP(int pLaserIndex, double pLaserPowerInmW)
 	{
 		getDeviceLists().getLaserDevice(pLaserIndex)
@@ -373,32 +426,56 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
-	public void setDZ(int pIndex, double pValue)
+	public double getLP(int pLaserIndex)
 	{
-		getDeviceLists().getDetectionArmDevice(pIndex)
+		return getDeviceLists().getLaserDevice(pLaserIndex)
+								.getTargetPowerInMilliWattVariable()
+								.getValue();
+	}
+
+	@Override
+	public void setDZ(int pDetectionArmIndex, double pValue)
+	{
+		getDeviceLists().getDetectionArmDevice(pDetectionArmIndex)
 						.getZVariable()
 						.setValue(pValue);
 	};
 
 	@Override
-	public void selectI(int pLightSheetIndex)
+	public double getDZ(int pDetectionArmIndex)
+	{
+		return getDeviceLists().getDetectionArmDevice(pDetectionArmIndex)
+								.getZVariable()
+								.getValue();
+	}
+
+	@Override
+	public void setI(int pLightSheetIndex)
 	{
 		int lNumberOfSwitchableDevices = getDeviceLists().getLightSheetSwitchingDevice()
 															.getNumberOfSwitches();
 		for (int i = 0; i < lNumberOfSwitchableDevices; i++)
-			switchI(i, i == pLightSheetIndex);
+			setI(i, i == pLightSheetIndex);
 
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.update();
 	};
 
 	@Override
-	public void switchI(int pLightSheetIndex, boolean pOnOff)
+	public void setI(int pLightSheetIndex, boolean pOnOff)
 	{
 		getDeviceLists().getLightSheetSwitchingDevice()
 						.getSwitchingVariable(pLightSheetIndex)
 						.setValue(pOnOff);
 	};
+
+	@Override
+	public boolean getI(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetSwitchingDevice()
+								.getSwitchingVariable(pLightSheetIndex)
+								.getBooleanValue();
+	}
 
 	@Override
 	public void setIX(int pLightSheetIndex, double pValue)
@@ -409,12 +486,28 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public double getIX(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getXVariable()
+								.getValue();
+	}
+
+	@Override
 	public void setIY(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getYVariable()
 						.set(pValue);
 	};
+
+	@Override
+	public double getIY(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getYVariable()
+								.getValue();
+	}
 
 	@Override
 	public void setIZ(int pIndex, double pValue)
@@ -425,12 +518,28 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public double getIZ(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getZVariable()
+								.getValue();
+	}
+
+	@Override
 	public void setIA(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getAlphaInDegreesVariable()
 						.set(pValue);
 	};
+
+	@Override
+	public double getIA(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getAlphaInDegreesVariable()
+								.getValue();
+	}
 
 	@Override
 	public void setIB(int pLightSheetIndex, double pValue)
@@ -441,6 +550,14 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public double getIB(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getBetaInDegreesVariable()
+								.getValue();
+	}
+
+	@Override
 	public void setIW(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
@@ -449,11 +566,27 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public double getIW(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getWidthVariable()
+								.getValue();
+	}
+
+	@Override
 	public void setIH(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getHeightVariable()
 						.set(pValue);
+	}
+
+	@Override
+	public double getIH(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getHeightVariable()
+								.getValue();
 	}
 
 	@Override
@@ -490,11 +623,27 @@ public class LightSheetMicroscope	extends
 	};
 
 	@Override
+	public boolean getILO(int pLightSheetIndex, int pLaserIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getLaserOnOffArrayVariable(pLaserIndex)
+								.getBooleanValue();
+	}
+
+	@Override
 	public void setIP(int pLightSheetIndex, double pValue)
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getPowerVariable()
 						.set(pValue);
+	}
+
+	@Override
+	public double getIP(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getPowerVariable()
+								.getValue();
 	}
 
 	@Override
@@ -519,6 +668,14 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
+	public boolean getIPA(int pLightSheetIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getAdaptPowerToWidthHeightVariable()
+								.getBooleanValue();
+	}
+
+	@Override
 	public void setIPatternOnOff(	int pLightSheetIndex,
 									int pLaserIndex,
 									boolean pOnOff)
@@ -529,6 +686,15 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
+	public boolean getIPatternOnOff(int pLightSheetIndex,
+									int pLaserIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getSIPatternOnOffVariable(pLaserIndex)
+								.getBooleanValue();
+	}
+
+	@Override
 	public void setIPattern(int pLightSheetIndex,
 							int pLaserIndex,
 							StructuredIlluminationPatternInterface pPattern)
@@ -536,6 +702,15 @@ public class LightSheetMicroscope	extends
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 						.getSIPatternVariable(pLaserIndex)
 						.setReference(pPattern);
+	}
+
+	@Override
+	public StructuredIlluminationPatternInterface getIPattern(	int pLightSheetIndex,
+																int pLaserIndex)
+	{
+		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
+								.getSIPatternVariable(pLaserIndex)
+								.get();
 	}
 
 	public int getNumberOfDOF()
@@ -552,6 +727,5 @@ public class LightSheetMicroscope	extends
 		return String.format(	"LightSheetMicroscope: \n%s\n",
 								mLSMDeviceLists.toString());
 	}
-
 
 }
