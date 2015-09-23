@@ -6,28 +6,27 @@ import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
-import rtlib.gui.plots.MultiPlot;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.AcquisitionState;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
-import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class AdaptationZ extends NDIteratorAdaptationModule	implements
-															AdaptationModuleInterface
+																														AdaptationModuleInterface
 {
 
-	private static final float cOverScan = 1.5f;
+	private static final float cOverScan = 2f;
 	private static final float cOverlappRatio = 0.3f;
+	private static final double cDZDampening = 0.5;
 
 	public AdaptationZ(	int pNumberOfSamples,
-						double pProbabilityThreshold)
+											double pProbabilityThreshold)
 	{
 		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
 	public Future<?> atomicStep(int pControlPlaneIndex,
-								int pLightSheetIndex,
-								int pNumberOfSamples)
+															int pLightSheetIndex,
+															int pNumberOfSamples)
 	{
 		int lHalfNumberOfSamples = pNumberOfSamples / 2;
 
@@ -44,9 +43,9 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 		lLSM.clearQueue();
 
 		lStackAcquisition.addStackMargin(	max(0,
-												lControlPlaneIndexInStack - 2
-														* lHalfNumberOfSamples),
-											3);
+																					lControlPlaneIndexInStack - 2
+																							* lHalfNumberOfSamples),
+																			6);
 
 		for (int zi : lStackAcquisition)
 		{
@@ -67,7 +66,7 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 			}
 
 			double lIZ = lStackAcquisition.getIZ(	lControlPlaneIndexInStack,
-													pLightSheetIndex);
+																						pLightSheetIndex);
 			lLSM.setIZ(pLightSheetIndex, lIZ);
 
 			lLSM.setI(pLightSheetIndex);
@@ -87,28 +86,35 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-								pLightSheetIndex,
-								lLSM,
-								lStackAcquisition,
-								lList);
+														pLightSheetIndex,
+														lLSM,
+														lStackAcquisition,
+														lList);
 
 	}
 
 	public void updateNewState(	int pControlPlaneIndex,
-								int pLightSheetIndex,
-								ArrayList<Double> lArgMaxList)
+															int pLightSheetIndex,
+															ArrayList<Double> lArgMaxList)
 	{
 
 		final int lNumberOfDetectionArmDevices = getAdaptator().getLightSheetMicroscope()
-																.getDeviceLists()
-																.getNumberOfDetectionArmDevices();
+																														.getDeviceLists()
+																														.getNumberOfDetectionArmDevices();
+
+		final int lNumberOfLightSheetDevices = getAdaptator().getLightSheetMicroscope()
+																													.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
 
 		boolean lIsOverlappingControlPlane = isOverlappingControlPlane(pControlPlaneIndex);
+
+		AcquisitionState lCurrentAcquisitionState = getAdaptator().getStackAcquisition()
+																															.getCurrentState();
 
 		AcquisitionState lNewAcquisitionState = getAdaptator().getNewAcquisitionState();
 
 		int lBestDetectioArm = getAdaptator().getStackAcquisition()
-												.getBestDetectioArm(pControlPlaneIndex);
+																					.getBestDetectioArm(pControlPlaneIndex);
 
 		boolean lMissingInfo = true;
 		double lAverageCorrection = 0;
@@ -116,9 +122,8 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 
 		for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 		{
-			if (!lIsOverlappingControlPlane)
-				if (d != lBestDetectioArm)
-					continue;
+			if (!isRelevantDetectionArm(pControlPlaneIndex, d))
+				continue;
 
 			Double lArgMax = lArgMaxList.get(d);
 			if (lArgMax != null && Double.isFinite(lArgMax))
@@ -132,40 +137,68 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 		if (lMissingInfo)
 		{
 			lNewAcquisitionState.setAtControlPlaneIZ(	pControlPlaneIndex,
-														pLightSheetIndex,
-														Double.NaN);
+																								pLightSheetIndex,
+																								Double.NaN);
 			return;
 		}
 
 		lAverageCorrection = lAverageCorrection / lCount;
 
-		if (Double.isNaN(lNewAcquisitionState.getAtControlPlaneIZ(	pControlPlaneIndex,
-																	pLightSheetIndex)))
+		if (Double.isNaN(lNewAcquisitionState.getAtControlPlaneIZ(pControlPlaneIndex,
+																															pLightSheetIndex)))
 			lNewAcquisitionState.setInterpolatedAtControlPlaneIZ(	pControlPlaneIndex,
-																	pLightSheetIndex);
+																														pLightSheetIndex);
+
+		System.out.format("Correcting IZ(cp=%d,ls=%d) by %g \n",
+											pControlPlaneIndex,
+											pLightSheetIndex,
+											lAverageCorrection);
 
 		lNewAcquisitionState.addAtControlPlaneIZ(	pControlPlaneIndex,
-													pLightSheetIndex,
-													lAverageCorrection);
+																							pLightSheetIndex,
+																							lAverageCorrection);
 
 		int lNumberOfOverlappingControlPlanes = getNumberOfOverlappingControlPlanes();
 
 		if (lNumberOfOverlappingControlPlanes <= 0)
 		{
-			System.err.println("No overlapping conrol planes!");
+			System.err.println("No overlapping control planes!");
 			return;
 		}
 
 		if (lIsOverlappingControlPlane)
 			for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 			{
-				double lDeltaDZ = -(lArgMaxList.get(d) - lAverageCorrection) / lNumberOfOverlappingControlPlanes;
+				double lDeltaDZ = cDZDampening * (d == 0 ? -1 : 1)
+													* (lArgMaxList.get(d) - lAverageCorrection)
+													/ (lNumberOfOverlappingControlPlanes * lNumberOfLightSheetDevices);
 
-				lNewAcquisitionState.addAtControlPlaneDZ(	pControlPlaneIndex,
-															d,
-															lDeltaDZ);
+				System.out.format("lArgMaxList.get(d): %g \n",
+													lArgMaxList.get(d));
+				System.out.format("lAverageCorrection: %g \n",
+													lAverageCorrection);
+				System.out.format("Correcting DZ by: %g \n", lDeltaDZ);
+
+				int lNumberOfControlPlanes = getAdaptator().getNewAcquisitionState()
+																										.getNumberOfControlPlanes();
+
+				for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
+					lNewAcquisitionState.addAtControlPlaneDZ(czi, d, lDeltaDZ);
 			}
 
+		/**/
+
+	}
+
+	@Override
+	public boolean isRelevantDetectionArm(int pControlPlaneIndex,
+																				int pDetectionArmIndex)
+	{
+		if (isOverlappingControlPlane(pControlPlaneIndex))
+			return true;
+		else
+			return super.isRelevantDetectionArm(pControlPlaneIndex,
+																					pDetectionArmIndex);
 	}
 
 	private boolean isOverlappingControlPlane(int pControlPlaneIndex)
@@ -173,17 +206,17 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 		double lMinZ = getAdaptator().getStackAcquisition().getMinZ();
 		double lMaxZ = getAdaptator().getStackAcquisition().getMaxZ();
 		double z = getAdaptator().getStackAcquisition()
-									.getControlPlaneZ(pControlPlaneIndex);
+															.getControlPlaneZ(pControlPlaneIndex);
 
 		double nz = (z - lMinZ) / (lMaxZ - lMinZ);
-		boolean lIsOverlapping = (0.5 - (0.5 * cOverlappRatio) < nz && nz <= 0.5 - (0.5 * cOverlappRatio));
+		boolean lIsOverlapping = (0.5 - (0.5 * cOverlappRatio) <= nz && nz <= 0.5 + (0.5 * cOverlappRatio));
 		return lIsOverlapping;
 	}
 
 	private int getNumberOfOverlappingControlPlanes()
 	{
 		int lNumberOfControlPlanes = getAdaptator().getNewAcquisitionState()
-													.getNumberOfControlPlanes();
+																								.getNumberOfControlPlanes();
 
 		int lCount = 0;
 
@@ -193,4 +226,5 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 
 		return lCount;
 	}
+
 }

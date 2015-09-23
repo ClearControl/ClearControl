@@ -11,6 +11,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 
@@ -31,10 +32,10 @@ public class InterpolationTable
 
 	public InterpolationTable(InterpolationTable pInterpolationTable)
 	{
-		mTable = new TreeSet<>(pInterpolationTable.mTable);
-		mInterpolatingFunctionsList = new ArrayList<>(pInterpolationTable.mInterpolatingFunctionsList);
-		mNumberOfColumns = pInterpolationTable.mNumberOfColumns;
-		mIsUpToDate = pInterpolationTable.mIsUpToDate;
+		this(pInterpolationTable.mNumberOfColumns);
+		for (Row lRow : pInterpolationTable.mTable)
+			mTable.add(new Row(lRow));
+		mIsUpToDate = false;
 	}
 
 	public int getNumberOfRows()
@@ -168,8 +169,23 @@ public class InterpolationTable
 									* ((y.get(y.size() - 2) - y.get(y.size() - 3)) / (x.get(y.size() - 2) - x.get(y.size() - 3))));
 				}
 
-				final UnivariateFunction lUnivariateFunction = lUnivariateInterpolator.interpolate(	x.toArray(),
+				final UnivariateFunction lUnivariateFunction;
+
+				if (x.size() == 0)
+				{
+					lUnivariateFunction = new UnivariateAffineFunction(0, 0);
+				}
+				else if (x.size() <= 1)
+				{
+					lUnivariateFunction = new UnivariateAffineFunction(	0,
+																															x.get(0));
+				}
+				else
+				{
+
+				lUnivariateFunction = lUnivariateInterpolator.interpolate(x.toArray(),
 																									y.toArray());
+				}
 				mInterpolatingFunctionsList.add(lUnivariateFunction);
 
 			}

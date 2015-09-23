@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
@@ -14,7 +16,11 @@ import rtlib.gui.video.StackDisplayInterface;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
+import rtlib.stack.imglib2.ImageJStackDisplay;
 
+import com.jogamp.newt.event.KeyAdapter;
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseAdapter;
 import com.jogamp.newt.event.MouseEvent;
 
@@ -41,6 +47,8 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	private AsynchronousProcessorBase<StackInterface<T, A>, Object> mAsynchronousDisplayUpdater;
 
 	private final Object mReleaseLock = new Object();
+
+	private boolean mDisplayStackInImageJ = false;
 
 	public Stack2DDisplay(T pType)
 	{
@@ -95,9 +103,32 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 		mVideoWindow.getGLWindow().addMouseListener(lMouseAdapter);
 
+		KeyListener lKeyAdapter = new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent pE)
+			{
+				switch (pE.getKeyCode())
+				{
+				case KeyEvent.VK_I:
+					mDisplayStackInImageJ = true;
+					break;
+				}
+
+			}
+		};
+
+		mVideoWindow.getGLWindow().addKeyListener(lKeyAdapter);
+
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, A>, Object>("AsynchronousDisplayUpdater",
 																																															pUpdaterQueueLength)
 		{
+
+			/**
+			 * Interface method implementation
+			 * 
+			 * @see rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase#process(java.lang.Object)
+			 */
 			@Override
 			public Object process(final StackInterface<T, A> pStack)
 			{
@@ -134,6 +165,19 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 					}
 
 					displayStack(mReceivedStackCopy);
+
+					if (mDisplayStackInImageJ)
+					{
+						try
+						{
+							ImageJStackDisplay.show((StackInterface<UnsignedShortType, ShortOffHeapAccess>) mReceivedStackCopy);
+							mDisplayStackInImageJ = false;
+						}
+						catch (Throwable e)
+						{
+							e.printStackTrace();
+						}
+					}
 
 					if (mOutputStackVariable != null)
 					{

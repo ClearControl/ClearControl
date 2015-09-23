@@ -1,6 +1,7 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import ij.ImageJ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,34 +13,47 @@ import java.util.concurrent.TimeoutException;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.argmax.SmartArgMaxFinder;
+import rtlib.core.concurrent.executors.RTlibExecutors;
+import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
+import rtlib.core.math.argmax.FitProbabilityInterface;
+import rtlib.core.math.argmax.methods.ModeArgMaxFinder;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.ip.iqm.DCTS2D;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.adaptation.utils.NDIterator;
+import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 
 public abstract class NDIteratorAdaptationModule extends
-												AdaptationModuleBase
+																								AdaptationModuleBase
 {
 
 	private int mNumberOfSamples;
 	private double mProbabilityThreshold;
 	private NDIterator mNDIterator;
 	private MultiPlot mMultiPlotZFocusCurves;
+	private ImageJ mImageJ;
 
-	public NDIteratorAdaptationModule(	int pNumberOfSamples,
-										double pProbabilityThreshold)
+	public NDIteratorAdaptationModule(int pNumberOfSamples,
+																		double pProbabilityThreshold)
 	{
 		super();
 		setNumberOfSamples(pNumberOfSamples);
 		setProbabilityThreshold(pProbabilityThreshold);
 
 		mMultiPlotZFocusCurves = MultiPlot.getMultiPlot(this.getClass()
-															.getSimpleName() + " calibration: focus curves");
+																												.getSimpleName() + " calibration: focus curves");
 		mMultiPlotZFocusCurves.setVisible(true);
+
+		RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
+																									Thread.NORM_PRIORITY - 2,
+																									Runtime.getRuntime()
+																													.availableProcessors(),
+																									Runtime.getRuntime()
+																													.availableProcessors(),
+																									Integer.MAX_VALUE);
 
 	}
 
@@ -82,13 +96,13 @@ public abstract class NDIteratorAdaptationModule extends
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		int lNumberOfControlPlanes = lStackAcquisition.getCurrentState()
-														.getNumberOfControlPlanes();
+																									.getNumberOfControlPlanes();
 
 		int lNumberOfLighSheets = lLightSheetMicroscope.getDeviceLists()
-														.getNumberOfLightSheetDevices();
+																										.getNumberOfLightSheetDevices();
 
 		setNDIterator(new NDIterator(	lNumberOfControlPlanes,
-										lNumberOfLighSheets));
+																	lNumberOfLighSheets));
 
 	}
 
@@ -116,13 +130,13 @@ public abstract class NDIteratorAdaptationModule extends
 			int lControlPlaneIndex = lNext[0];
 			int lLightSheetIndex = lNext[1];
 
-			System.out.format(	"controlplane: %d, lighsheetindex: %d \n",
-								lControlPlaneIndex,
-								lLightSheetIndex);
+			System.out.format("controlplane: %d, lighsheetindex: %d \n",
+												lControlPlaneIndex,
+												lLightSheetIndex);
 
 			Future<?> lFuture = atomicStep(	lControlPlaneIndex,
-											lLightSheetIndex,
-											getNumberOfSamples());
+																			lLightSheetIndex,
+																			getNumberOfSamples());
 
 			mListOfFuturTasks.add(lFuture);
 
@@ -132,74 +146,115 @@ public abstract class NDIteratorAdaptationModule extends
 	}
 
 	public abstract Future<?> atomicStep(	int pControlPlaneIndex,
-											int pLightSheetIndex,
-											int pNumberOfSamples);
+																				int pLightSheetIndex,
+																				int pNumberOfSamples);
 
 	protected Future<?> findBestDOFValue(	int pControlPlaneIndex,
-											int pLightSheetIndex,
-											LightSheetMicroscope pLSM,
-											StackAcquisitionInterface lStackAcquisition,
-											final TDoubleArrayList lDOFValueList)
+																				int pLightSheetIndex,
+																				LightSheetMicroscope pLSM,
+																				StackAcquisitionInterface lStackAcquisition,
+																				final TDoubleArrayList lDOFValueList)
 	{
 
 		try
 		{
-			final Boolean lPlayQueueAndWait = pLSM.playQueueAndWaitForStacks(	pLSM.getQueueLength(),
-																				TimeUnit.SECONDS);
+			final Boolean lPlayQueueAndWait = pLSM.playQueueAndWaitForStacks(	10 + pLSM.getQueueLength(),
+																																				TimeUnit.SECONDS);
 
 			if (!lPlayQueueAndWait)
 				return null;
 
 			final int lNumberOfDetectionArmDevices = pLSM.getDeviceLists()
-															.getNumberOfDetectionArmDevices();
+																										.getNumberOfDetectionArmDevices();
 
 			@SuppressWarnings("unchecked")
 			ArrayList<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lStacks = new ArrayList<>();
 			for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
-			{
-				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = pLSM.getStackVariable(d)
-																									.get();
-				lStacks.add(lStackInterface.duplicate());
-			}
+				if (isRelevantDetectionArm(pControlPlaneIndex, d))
+				{
+					final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = pLSM.getStackVariable(d)
+																																														.get();
+					lStacks.add(lStackInterface.duplicate());
+
+
+				}
+				else
+					lStacks.add(new EmptyStack());
 
 			Runnable lRunnable = () -> {
 
-				SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-
-				ArrayList<Double> lArgMaxList = new ArrayList<Double>();
-
-				for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
+				try
 				{
+					ArgMaxFinder1DInterface lSmartArgMaxFinder = new ModeArgMaxFinder();
 
-					final double[] lMetricArray = computeMetric(pControlPlaneIndex,
-																pLightSheetIndex,
-																lDOFValueList,
-																lStacks.get(d));
+					ArrayList<Double> lArgMaxList = new ArrayList<Double>();
 
-					Double lArgmax = lSmartArgMaxFinder.argmax(	lDOFValueList.toArray(),
-																lMetricArray);
+					for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 
-					if (lArgmax != null && !Double.isNaN(lArgmax))
 					{
-						double lFitProbability = lSmartArgMaxFinder.getLastFitProbability();
+						if (!isRelevantDetectionArm(pControlPlaneIndex, d))
+						{
+							lArgMaxList.add(Double.NaN);
+							continue;
+						}
 
-						if (lFitProbability > getProbabilityThreshold())
-							lArgMaxList.add(lArgmax);
+						final double[] lMetricArray = computeMetric(pControlPlaneIndex,
+																												pLightSheetIndex,
+																												d,
+																												lDOFValueList,
+																												lStacks.get(d));
+
+
+						Double lArgmax = lSmartArgMaxFinder.argmax(	lDOFValueList.toArray(),
+																												lMetricArray);
+
+						if (lArgmax != null && !Double.isNaN(lArgmax))
+						{
+							if (lSmartArgMaxFinder instanceof FitProbabilityInterface)
+							{
+								double lFitProbability = ((FitProbabilityInterface) lSmartArgMaxFinder).getLastFitProbability();
+
+								if (lFitProbability > getProbabilityThreshold())
+									lArgMaxList.add(lArgmax);
+								else
+									lArgMaxList.add(Double.NaN);
+							}
+							else
+							{
+								lArgMaxList.add(lArgmax);
+							}
+
+						}
 						else
 							lArgMaxList.add(Double.NaN);
+
 					}
-					else
-						lArgMaxList.add(Double.NaN);
 
+					for (StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack : lStacks)
+						lStack.free();
+
+					updateNewState(	pControlPlaneIndex,
+													pLightSheetIndex,
+													lArgMaxList);
 				}
-
-				updateNewState(	pControlPlaneIndex,
-								pLightSheetIndex,
-								lArgMaxList);
+				catch (Throwable e)
+				{
+					e.printStackTrace();
+				}
 
 			};
 
 			Future<?> lFuture = executeAsynchronously(lRunnable);
+
+			// FORCE SYNC:
+			try
+			{
+				lFuture.get();
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}/**/
 
 			return lFuture;
 		}
@@ -211,10 +266,19 @@ public abstract class NDIteratorAdaptationModule extends
 		return null;
 	}
 
+	public boolean isRelevantDetectionArm(int pControlPlaneIndex,
+																				int pDetectionArmIndex)
+	{
+		int lBestDetectionArm = getAdaptator().getStackAcquisition()
+																					.getBestDetectioArm(pControlPlaneIndex);
+		return (lBestDetectionArm == pDetectionArmIndex);
+	};
+
 	private double[] computeMetric(	int pControlPlaneIndex,
-									int pLightSheetIndex,
-									final TDoubleArrayList lDOFValueList,
-									StackInterface<UnsignedShortType, ShortOffHeapAccess> lDuplicatedStack)
+																	int pLightSheetIndex,
+																	int pDetectionArmIndex,
+																	final TDoubleArrayList lDOFValueList,
+																	StackInterface<UnsignedShortType, ShortOffHeapAccess> lDuplicatedStack)
 	{
 		DCTS2D lDCTS2D = new DCTS2D();
 
@@ -230,26 +294,25 @@ public abstract class NDIteratorAdaptationModule extends
 		final double[] lMetricArray = lDCTS2D.computeImageQualityMetric(lImage);
 		lDuplicatedStack.free();
 
-		PlotTab lPlot = mMultiPlotZFocusCurves.getPlot(String.format(	"LS=%d, CPI=%d",
-																		pLightSheetIndex,
-																		pControlPlaneIndex));
+		PlotTab lPlot = mMultiPlotZFocusCurves.getPlot(String.format(	"LS=%d, D=%d CPI=%d",
+																																	pLightSheetIndex,
+																																	pDetectionArmIndex,
+																																	pControlPlaneIndex));
 		lPlot.clearPoints();
 		lPlot.setScatterPlot("samples");
 
 		for (int i = 0; i < lMetricArray.length; i++)
 		{
 			System.out.format("%g \n", lMetricArray[i]);
-			lPlot.addPoint(	"samples",
-							lDOFValueList.get(i),
-							lMetricArray[i]);
+			lPlot.addPoint("samples", lDOFValueList.get(i), lMetricArray[i]);
 		}
 		lPlot.ensureUpToDate();
 		return lMetricArray;
 	}
 
 	public abstract void updateNewState(int pControlPlaneIndex,
-										int pLightSheetIndex,
-										ArrayList<Double> pArgMaxList);
+																			int pLightSheetIndex,
+																			ArrayList<Double> pArgMaxList);
 
 	@Override
 	public boolean isReady()

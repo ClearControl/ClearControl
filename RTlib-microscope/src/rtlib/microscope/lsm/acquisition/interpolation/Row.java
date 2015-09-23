@@ -8,6 +8,13 @@ public class Row implements Comparable<Row>
 	private final TDoubleArrayList y;
 	private volatile boolean mIsUpToDate = false;
 
+	public Row(Row pRow)
+	{
+		x = pRow.x;
+		y = new TDoubleArrayList(pRow.y);
+		mIsUpToDate = false;
+	}
+
 	public Row(int pNumberOfColumns, double pX)
 	{
 		x = pX;
@@ -75,15 +82,11 @@ public class Row implements Comparable<Row>
 	public String toString()
 	{
 		return "Row [x=" + x
-				+ ", y="
-				+ y
-				+ ", mIsUpToDate="
-				+ mIsUpToDate
-				+ "]";
+						+ ", y="
+						+ y
+						+ ", mIsUpToDate="
+						+ mIsUpToDate
+						+ "]";
 	}
-
-
-	
-	
 
 }

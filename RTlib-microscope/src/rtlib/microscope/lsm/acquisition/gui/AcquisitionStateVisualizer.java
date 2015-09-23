@@ -15,11 +15,6 @@ public class AcquisitionStateVisualizer
 		super();
 	}
 
-	public void clear()
-	{
-		if (mMultiPlotState != null)
-			mMultiPlotState.clear();
-	}
 
 	public void setState(AcquisitionState pAcquisitionState)
 	{
@@ -28,7 +23,7 @@ public class AcquisitionStateVisualizer
 		{
 			mMultiPlotState = MultiPlot.getMultiPlot(this.getClass()
 															.getSimpleName() + "State");
-
+			mMultiPlotState.clear();
 			mMultiPlotState.setVisible(true);
 		}
 

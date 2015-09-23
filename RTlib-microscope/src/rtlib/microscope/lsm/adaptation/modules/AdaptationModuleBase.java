@@ -6,10 +6,11 @@ import java.util.concurrent.Future;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.microscope.lsm.adaptation.Adaptator;
 
-public abstract class AdaptationModuleBase	implements
-									AdaptationModuleInterface, AsynchronousExecutorServiceAccess
+public abstract class AdaptationModuleBase implements
+																					AdaptationModuleInterface,
+																					AsynchronousExecutorServiceAccess
 {
-	private int mPriority=1;
+	private int mPriority = 1;
 
 	protected ArrayList<Future<?>> mListOfFuturTasks = new ArrayList<>();
 
@@ -20,13 +21,13 @@ public abstract class AdaptationModuleBase	implements
 	{
 		mLSMAdaptator = pLSMAdaptator;
 	}
-	
+
 	@Override
 	public Adaptator getAdaptator()
 	{
 		return mLSMAdaptator;
 	}
-	
+
 	@Override
 	public void setPriority(int pPriority)
 	{
@@ -38,23 +39,21 @@ public abstract class AdaptationModuleBase	implements
 	{
 		return mPriority;
 	}
-	
-
 
 	@Override
 	public abstract Boolean apply(Void pVoid);
-	
+
 	@Override
 	public boolean isReady()
 	{
 		boolean lAllDone = true;
 		for (Future<?> lTask : mListOfFuturTasks)
-			lAllDone &= lTask.isDone();
+			if (lTask != null)
+				lAllDone &= lTask.isDone();
 
 		return lAllDone;
 	}
-	
-	
+
 	@Override
 	public void reset()
 	{
@@ -81,11 +80,5 @@ public abstract class AdaptationModuleBase	implements
 		lBuilder.append("]");
 		return lBuilder.toString();
 	};
-
-	
-	
-
-
-
 
 }

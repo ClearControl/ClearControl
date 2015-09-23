@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.AcquisitionState;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
@@ -82,7 +83,12 @@ public class Adaptator implements Function<Void, Boolean>
 	{
 		for (int i = 0; i < pNumberOfRounds; i++)
 			while (apply(null))
-				;
+				ThreadUtils.sleep(500, TimeUnit.MILLISECONDS);
+	}
+
+	public Boolean step()
+	{
+		return apply(null);
 	}
 
 	public Boolean apply(Void pVoid)

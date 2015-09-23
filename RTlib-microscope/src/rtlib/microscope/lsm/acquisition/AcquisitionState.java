@@ -46,6 +46,8 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public AcquisitionState(AcquisitionState pCurrentAcquisitionState)
 	{
+		mTransitionPlaneZ = pCurrentAcquisitionState.mTransitionPlaneZ;
+
 		mLightSheetMicroscope = pCurrentAcquisitionState.mLightSheetMicroscope;
 		mInterpolationTableDZ = new InterpolationTable(pCurrentAcquisitionState.mInterpolationTableDZ);
 		mInterpolationTableIX = new InterpolationTable(pCurrentAcquisitionState.mInterpolationTableIX);

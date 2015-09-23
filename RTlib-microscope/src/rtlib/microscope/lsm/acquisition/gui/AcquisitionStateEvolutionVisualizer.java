@@ -17,11 +17,6 @@ public class AcquisitionStateEvolutionVisualizer
 
 	}
 
-	public void clear()
-	{
-		if (mMultiPlotStateEvolution != null)
-			mMultiPlotStateEvolution.clear();
-	}
 
 	public void addState(AcquisitionState pAcquisitionState)
 	{
@@ -31,7 +26,7 @@ public class AcquisitionStateEvolutionVisualizer
 		{
 			mMultiPlotStateEvolution = MultiPlot.getMultiPlot(this.getClass()
 																	.getSimpleName() + "State evolution");
-
+			mMultiPlotStateEvolution.clear();
 			mMultiPlotStateEvolution.setVisible(true);
 		}
 
@@ -56,7 +51,7 @@ public class AcquisitionStateEvolutionVisualizer
 
 		for (int i = 0; i < pAcquisitionState.getNumberOfDevicesIX(); i++)
 		{
-			PlotTab lPlotIX = mMultiPlotStateEvolution.getPlot(String.format(	"IX I=%d",
+			PlotTab lPlotIX = mMultiPlotStateEvolution.getPlot(String.format(	"IX LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -69,7 +64,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIX.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIY = mMultiPlotStateEvolution.getPlot(String.format(	"IY I=%d",
+			PlotTab lPlotIY = mMultiPlotStateEvolution.getPlot(String.format(	"IY LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -82,7 +77,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIY.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIZ = mMultiPlotStateEvolution.getPlot(String.format(	"IZ I=%d",
+			PlotTab lPlotIZ = mMultiPlotStateEvolution.getPlot(String.format(	"IZ LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -95,7 +90,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIZ.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIA = mMultiPlotStateEvolution.getPlot(String.format(	"IA I=%d",
+			PlotTab lPlotIA = mMultiPlotStateEvolution.getPlot(String.format(	"IA LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -108,7 +103,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIA.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIB = mMultiPlotStateEvolution.getPlot(String.format(	"IB I=%d",
+			PlotTab lPlotIB = mMultiPlotStateEvolution.getPlot(String.format(	"IB LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -121,7 +116,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIB.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIW = mMultiPlotStateEvolution.getPlot(String.format(	"IW I=%d",
+			PlotTab lPlotIW = mMultiPlotStateEvolution.getPlot(String.format(	"IW LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -134,7 +129,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIW.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIH = mMultiPlotStateEvolution.getPlot(String.format(	"IH I=%d",
+			PlotTab lPlotIH = mMultiPlotStateEvolution.getPlot(String.format(	"IH LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
@@ -147,7 +142,7 @@ public class AcquisitionStateEvolutionVisualizer
 					lPlotIH.addPoint(lCurveName, mTimePoint, lValue);
 			}
 
-			PlotTab lPlotIP = mMultiPlotStateEvolution.getPlot(String.format(	"IP I=%d",
+			PlotTab lPlotIP = mMultiPlotStateEvolution.getPlot(String.format(	"IP LS=%d",
 																				i));
 
 			for (int czi = 0; czi < lNumberOfControlPlanes; czi++)

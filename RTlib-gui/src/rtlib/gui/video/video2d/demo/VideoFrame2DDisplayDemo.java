@@ -9,12 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.junit.Test;
-
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
 import net.imglib2.img.basictypeaccess.offheap.ByteOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+
+import org.junit.Test;
+
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -24,6 +23,8 @@ import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
+import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
 
 public class VideoFrame2DDisplayDemo
 {
@@ -60,7 +61,7 @@ public class VideoFrame2DDisplayDemo
 							.setValue(true);
 		lVideoDisplayDevice.open();
 
-		final int lSizeX = 2048;
+		final int lSizeX = 128;
 		final int lSizeY = lSizeX;
 		final int lSizeZ = 16;
 
