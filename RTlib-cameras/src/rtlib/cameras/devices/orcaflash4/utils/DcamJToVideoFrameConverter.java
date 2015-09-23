@@ -41,7 +41,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 	private int mCameraId;
 
 	private boolean mFlipX;
-	private long mWaitForReycledStackTimeInMicroSeconds;
+	private long mWaitForRecycledStackTimeInMicroSeconds;
 	private int mMinimalNumberOfAvailableStacks;
 
 	private final ObjectVariable<Pair<TByteArrayList, DcamFrame>> mDcamFrameReference;
@@ -75,7 +75,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		mCameraId = pCameraId;
 		mDcamFrameReference = pDcamFrameReference;
 		mFlipX = pFlipX;
-		mWaitForReycledStackTimeInMicroSeconds = pWaitForReycledStackTimeInMicroSeconds;
+		mWaitForRecycledStackTimeInMicroSeconds = pWaitForReycledStackTimeInMicroSeconds;
 		mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
 
 		m2DStackBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
@@ -186,7 +186,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 					m2DStackBasicRecycler.ensurePreallocated(	mMinimalNumberOfAvailableStacks,
 																										lStackRequest);
 
-				lOffHeapPlanarStack = m2DStackBasicRecycler.getOrWait(mWaitForReycledStackTimeInMicroSeconds,
+				lOffHeapPlanarStack = m2DStackBasicRecycler.getOrWait(mWaitForRecycledStackTimeInMicroSeconds,
 																															TimeUnit.MICROSECONDS,
 																															lStackRequest);
 			}
@@ -196,7 +196,10 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 					m3DStackBasicRecycler.ensurePreallocated(	mMinimalNumberOfAvailableStacks,
 																										lStackRequest);
 
-				lOffHeapPlanarStack = m3DStackBasicRecycler.getOrWait(mWaitForReycledStackTimeInMicroSeconds,
+				System.out.println("m3DStackBasicRecycler.getNumberOfLiveObjects()=" + m3DStackBasicRecycler.getNumberOfLiveObjects());
+				System.out.println("m3DStackBasicRecycler.getNumberOfAvailableObjects()=" + m3DStackBasicRecycler.getNumberOfAvailableObjects());
+
+				lOffHeapPlanarStack = m3DStackBasicRecycler.getOrWait(mWaitForRecycledStackTimeInMicroSeconds,
 																															TimeUnit.MICROSECONDS,
 																															lStackRequest);
 			}

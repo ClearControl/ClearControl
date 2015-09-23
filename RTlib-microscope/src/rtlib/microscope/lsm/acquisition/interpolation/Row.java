@@ -28,7 +28,6 @@ public class Row implements Comparable<Row>
 		else
 			y = null;
 
-		System.out.println(y);
 	}
 
 	public int getNumberOfColumns()

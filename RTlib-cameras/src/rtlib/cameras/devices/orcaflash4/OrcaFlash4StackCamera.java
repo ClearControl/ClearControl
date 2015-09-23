@@ -41,15 +41,15 @@ public class OrcaFlash4StackCamera extends
 
 	private final Object mLock = new Object();
 
-	private int mStackProcessorQueueSize = 3;
+	private int mStackProcessorQueueSize = 6;
 
-	private int mMinimalNumberOfAvailableStacks = 3;
+	private int mMinimalNumberOfAvailableStacks = 6;
 
-	private int mMaximalNumberOfAvailableStacks = 3;
+	private int mMaximalNumberOfAvailableStacks = 6;
 
 	private int mMaximalNumberOfLiveStacks = 6;
 
-	private long mWaitForRecycledStackTimeInMicroSeconds = 1000 * 1000 * 1000;
+	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000;
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
@@ -323,6 +323,7 @@ public class OrcaFlash4StackCamera extends
 			@Override
 			public Boolean call() throws Exception
 			{
+				System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
 				mDcamAcquisition.waitAcquisitionFinishedAndStop();
 				return true;
 			}

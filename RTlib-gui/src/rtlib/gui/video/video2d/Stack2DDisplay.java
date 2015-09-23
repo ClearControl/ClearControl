@@ -2,6 +2,7 @@ package rtlib.gui.video.video2d;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
@@ -46,7 +47,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	private AsynchronousProcessorBase<StackInterface<T, A>, Object> mAsynchronousDisplayUpdater;
 
-	private final Object mReleaseLock = new Object();
+	private final ReentrantLock mDisplayLock = new ReentrantLock();
 
 	private boolean mDisplayStackInImageJ = false;
 
@@ -94,7 +95,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				{
 					final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
 					mStackSliceNormalizedIndex.setValue(nx);
-					mAsynchronousDisplayUpdater.passOrFail(mReceivedStackCopy);
+					displayStack(mReceivedStackCopy, true);
 				}
 
 				super.mouseDragged(pMouseEvent);
@@ -137,34 +138,35 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 				try
 				{
-					if (pStack != mReceivedStackCopy)
+
+					if (mReceivedStackCopy == null || mReceivedStackCopy.getWidth() != pStack.getWidth()
+							|| mReceivedStackCopy.getHeight() != pStack.getHeight()
+							|| mReceivedStackCopy.getDepth() != pStack.getDepth()
+							|| mReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
 					{
-
-						if (mReceivedStackCopy == null || mReceivedStackCopy.getWidth() != pStack.getWidth()
-								|| mReceivedStackCopy.getHeight() != pStack.getHeight()
-								|| mReceivedStackCopy.getDepth() != pStack.getDepth()
-								|| mReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
+						if (mReceivedStackCopy != null)
 						{
-							if (mReceivedStackCopy != null)
-							{
-								final StackInterface<T, A> lStackToFree = mReceivedStackCopy;
-								mReceivedStackCopy = pStack.allocateSameSize();
-								lStackToFree.free();
-							}
-							else
-								mReceivedStackCopy = pStack.allocateSameSize();
-						}
-
-						if (!mReceivedStackCopy.isFree())
-						{
-							mReceivedStackCopy.getContiguousMemory()
-																.copyFrom(pStack.getContiguousMemory());
+							mDisplayLock.lock();
+							final StackInterface<T, A> lStackToFree = mReceivedStackCopy;
+							mReceivedStackCopy = pStack.allocateSameSize();
+							lStackToFree.free();
+							mDisplayLock.unlock();
 
 						}
+						else
+							mReceivedStackCopy = pStack.allocateSameSize();
+					}
+
+					if (!mReceivedStackCopy.isFree())
+					{
+						mDisplayLock.lock();
+						mReceivedStackCopy.getContiguousMemory()
+															.copyFrom(pStack.getContiguousMemory());
+						mDisplayLock.unlock();
 
 					}
 
-					displayStack(mReceivedStackCopy);
+					displayStack(mReceivedStackCopy, false);
 
 					if (mDisplayStackInImageJ)
 					{
@@ -267,39 +269,63 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 																										Double.NaN);
 	}
 
-	private void displayStack(final StackInterface<T, A> pStack)
+	private void displayStack(final StackInterface<T, A> pStack,
+														boolean pNonBlockingLock)
 	{
-
-		final int lStackWidth = (int) pStack.getWidth();
-		final int lStackHeight = (int) pStack.getHeight();
-		final int lStackDepth = (int) pStack.getDepth();
-		if (lStackDepth > 1)
-		{
-
-			int lStackZIndex = (int) (mStackSliceNormalizedIndex.getValue() * lStackDepth);
-			if (lStackZIndex < 0)
-				lStackZIndex = 0;
-			else if (lStackZIndex >= lStackDepth)
-				lStackZIndex = lStackDepth - 1;
-			else if (Double.isNaN(lStackZIndex))
-				lStackZIndex = (int) Math.round(lStackDepth / 2.0);
-
-			final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory(lStackZIndex);
-			mVideoWindow.sendBuffer(lContiguousMemory,
-															lStackWidth,
-															lStackHeight);
-			mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
-		}
+		boolean lTryLock = false;
+		if (pNonBlockingLock)
+			try
+			{
+				lTryLock = mDisplayLock.tryLock(0, TimeUnit.MILLISECONDS);
+			}
+			catch (InterruptedException e)
+			{
+			}
 		else
 		{
-			final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory(0);
-			mVideoWindow.sendBuffer(lContiguousMemory,
-															lStackWidth,
-															lStackHeight);
-			mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
+			mDisplayLock.lock();
+			lTryLock = true;
 		}
-		mVideoWindow.setWidth(lStackWidth);
-		mVideoWindow.setHeight(lStackHeight);
+
+		if (lTryLock)
+		{
+			if (pStack != null)
+			{
+
+				final int lStackWidth = (int) pStack.getWidth();
+				final int lStackHeight = (int) pStack.getHeight();
+				final int lStackDepth = (int) pStack.getDepth();
+				if (lStackDepth > 1)
+				{
+
+					int lStackZIndex = (int) (mStackSliceNormalizedIndex.getValue() * lStackDepth);
+					if (lStackZIndex < 0)
+						lStackZIndex = 0;
+					else if (lStackZIndex >= lStackDepth)
+						lStackZIndex = lStackDepth - 1;
+					else if (Double.isNaN(lStackZIndex))
+						lStackZIndex = (int) Math.round(lStackDepth / 2.0);
+
+					final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory(lStackZIndex);
+					mVideoWindow.sendBuffer(lContiguousMemory,
+																	lStackWidth,
+																	lStackHeight);
+					mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
+				}
+				else
+				{
+					final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory(0);
+					mVideoWindow.sendBuffer(lContiguousMemory,
+																	lStackWidth,
+																	lStackHeight);
+					mVideoWindow.waitForBufferCopy(1, TimeUnit.SECONDS);
+				}
+				mVideoWindow.setWidth(lStackWidth);
+				mVideoWindow.setHeight(lStackHeight);
+			}
+
+			mDisplayLock.unlock();
+		}
 
 	}
 

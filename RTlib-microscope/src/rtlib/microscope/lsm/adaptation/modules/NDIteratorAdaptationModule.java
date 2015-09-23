@@ -247,7 +247,7 @@ public abstract class NDIteratorAdaptationModule extends
 			Future<?> lFuture = executeAsynchronously(lRunnable);
 
 			// FORCE SYNC:
-			try
+			/*try
 			{
 				lFuture.get();
 			}

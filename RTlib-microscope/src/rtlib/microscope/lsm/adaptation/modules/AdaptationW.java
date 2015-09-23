@@ -45,6 +45,7 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		double lCurrentW = lLSM.getIW(pLightSheetIndex);
 
 		lLSM.setC(false);
+		lLSM.setILO(false);
 		lLSM.setIW(pLightSheetIndex, lMinW);
 		lLSM.addCurrentStateToQueue();
 		lLSM.addCurrentStateToQueue();
@@ -55,10 +56,19 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		{
 			lIWList.add(w);
 			lLSM.setIW(pLightSheetIndex, w);
+
+			lLSM.setILO(false);
+			lLSM.setC(false);
+			for (int r = 0; r < 10; r++)
+				lLSM.addCurrentStateToQueue();
+
+			lLSM.setILO(true);
+			lLSM.setC(true);
 			lLSM.addCurrentStateToQueue();
 		}
 
 		lLSM.setC(false);
+		lLSM.setILO(false);
 		lLSM.setIW(pLightSheetIndex, lCurrentW);
 		lLSM.addCurrentStateToQueue();
 
