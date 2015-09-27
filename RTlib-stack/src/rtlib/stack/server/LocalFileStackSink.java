@@ -7,8 +7,6 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.fragmented.FragmentedMemoryInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
@@ -16,6 +14,8 @@ import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
 
 public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																						LocalFileStackBase<T, A> implements
@@ -23,7 +23,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 																												AutoCloseable
 {
 
-	private static final long cSingleWriteLimit = 64_000_000;
+	private static final long cSingleWriteLimit = 64_000_000L;
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 	private FileChannel mBinnaryFileChannel;
 
@@ -71,11 +71,13 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 				long lPosition = mNextFreeTypePosition;
 				for (int i = 0; i < lNumberOfFragments; i++)
 				{
+					// System.out.format("chunk: %d \n", i);
 					ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(i);
 					
 					lContiguousMemoryInterface
 										.writeBytesToFileChannel(	mBinnaryFileChannel,
 																	lPosition);
+					mBinnaryFileChannel.force(false);
 
 					lPosition += lContiguousMemoryInterface
 													.getSizeInBytes();
