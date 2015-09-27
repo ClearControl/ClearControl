@@ -7,6 +7,8 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
@@ -21,7 +23,9 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 																												AutoCloseable
 {
 
+	private static final long cSingleWriteLimit = 64_000_000;
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
+	private FileChannel mBinnaryFileChannel;
 
 	public LocalFileStackSink(	T pType,
 								final File pRootFolder,
@@ -50,14 +54,46 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
 												lStackRequest);
 
-			final FileChannel lBinnaryFileChannel = getFileChannelForBinaryFile(false,
-																				true);
-			final long lNewNextFreeTypePosition = pStack.getFragmentedMemory()
-														.writeBytesToFileChannel(	lBinnaryFileChannel,
-																					mNextFreeTypePosition);
+			if (mBinnaryFileChannel == null)
+				mBinnaryFileChannel = getFileChannelForBinaryFile(	false,
+																	true);
 
-			lBinnaryFileChannel.force(false);
-			lBinnaryFileChannel.close();
+			long lSizeInBytes = pStack.getSizeInBytes();
+
+			FragmentedMemoryInterface lFragmentedMemory = pStack.getFragmentedMemory();
+
+			final long lNewNextFreeTypePosition;
+
+			if (lSizeInBytes > cSingleWriteLimit)
+			{
+				int lNumberOfFragments = lFragmentedMemory.getNumberOfFragments();
+
+				long lPosition = mNextFreeTypePosition;
+				for (int i = 0; i < lNumberOfFragments; i++)
+				{
+					ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(i);
+					
+					lContiguousMemoryInterface
+										.writeBytesToFileChannel(	mBinnaryFileChannel,
+																	lPosition);
+
+					lPosition += lContiguousMemoryInterface
+													.getSizeInBytes();
+				}
+
+				lNewNextFreeTypePosition = lPosition;
+				
+				
+				mBinnaryFileChannel.force(false);
+			}
+			else
+			{
+				lNewNextFreeTypePosition = lFragmentedMemory.writeBytesToFileChannel(	mBinnaryFileChannel,
+																						mNextFreeTypePosition);
+				mBinnaryFileChannel.force(false);
+			}
+
+		
 
 			long[] lDimensions = lStackRequest.getDimensions();
 
@@ -109,6 +145,8 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	@Override
 	public void close() throws IOException
 	{
+		if (mBinnaryFileChannel != null)
+			mBinnaryFileChannel.close();
 		super.close();
 	}
 

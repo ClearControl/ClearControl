@@ -7,6 +7,8 @@ import java.nio.channels.FileChannel;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.recycling.BasicRecycler;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
@@ -20,7 +22,9 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 																													AutoCloseable
 {
 
+	private static final long cSingleReadLimit = 64_000_000;
 	private BasicRecycler<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
+	private FileChannel mBinarylFileChannel;
 
 	public LocalFileStackSource(T pType,
 								final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler,
@@ -71,20 +75,42 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 																				pTimeUnit,
 																				lStackRequest);
 
-			final FileChannel lBinarylFileChannel = getFileChannelForBinaryFile(true,
-																				true);
+			mBinarylFileChannel = getFileChannelForBinaryFile(	true,
+																true);
 
 			if (lStack.getContiguousMemory() != null)
 				lStack.getContiguousMemory()
-						.readBytesFromFileChannel(	lBinarylFileChannel,
+						.readBytesFromFileChannel(	mBinarylFileChannel,
 													lPositionInFileInBytes,
 													lStack.getSizeInBytes());
 			else
-				lStack.getFragmentedMemory()
-						.readBytesFromFileChannel(	lBinarylFileChannel,
-													lPositionInFileInBytes,
-													lStack.getSizeInBytes());
-			lBinarylFileChannel.close();
+			{
+				FragmentedMemoryInterface lFragmentedMemory = lStack.getFragmentedMemory();
+				if (lStack.getSizeInBytes() > cSingleReadLimit)
+				{
+					int lNumberOfFragments = lFragmentedMemory.getNumberOfFragments();
+
+					long lPosition = lPositionInFileInBytes;
+
+					for (int i = 0; i < lNumberOfFragments; i++)
+					{
+						ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(i);
+
+						long lSizeInBytes = lContiguousMemoryInterface.getSizeInBytes();
+						lContiguousMemoryInterface.readBytesFromFileChannel(mBinarylFileChannel,
+																			lPosition,
+																			lSizeInBytes);
+
+						lPosition += lSizeInBytes;
+					}
+
+				}
+				else
+					lFragmentedMemory.readBytesFromFileChannel(	mBinarylFileChannel,
+																lPositionInFileInBytes,
+																lStack.getSizeInBytes());
+
+			}
 
 			final double lTimeStampInSeconds = mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
 			lStack.setTimeStampInNanoseconds((long) Magnitude.unit2nano(lTimeStampInSeconds));

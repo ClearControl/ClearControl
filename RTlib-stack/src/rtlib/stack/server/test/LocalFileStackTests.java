@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import coremem.recycling.BasicRecycler;
@@ -28,11 +29,80 @@ public class LocalFileStackTests
 {
 
 	private static final int cBytesPerVoxel = 2;
-	private static final int cSizeZ = 2;
-	private static final int cSizeY = 2;
-	private static final int cSizeX = 2;
-	private static final int cNumberOfStacks = 10;
+	private static final long cSizeZ = 2048;
+	private static final long cSizeY = 2048;
+	private static final long cSizeX = 400;
+	private static final int cNumberOfStacks = 2;
 	private static final int cMaximalNumberOfAvailableStacks = 20;
+
+	@Test
+	public void testWriteSpeed() throws IOException
+	{
+
+		final File lRootFolder = new File(	File.createTempFile("test",
+																"test")
+												.getParentFile(),
+											"LocalFileStackTests" + Math.random());/**/
+
+		// final File lRootFolder = new File("/Volumes/External/Temp");
+
+		lRootFolder.mkdirs();
+		System.out.println(lRootFolder);
+
+		final LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSink = new LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
+																																							lRootFolder,
+																																							"testSink");
+
+		@SuppressWarnings("unchecked")
+		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedShortType(),
+																																											cSizeX,
+																																											cSizeY,
+																																											cSizeZ);
+
+		assertEquals(	cSizeX * cSizeY * cSizeZ,
+						lStack.getNumberOfVoxels());
+
+		assertEquals(	cSizeX * cSizeY * cSizeZ * cBytesPerVoxel,
+						lStack.getSizeInBytes());
+
+		for (int i = 0; i < cNumberOfStacks; i++)
+		{
+
+			final PlanarCursor<UnsignedShortType> lCursor = lStack.getPlanarImage()
+																	.cursor();
+
+			while (lCursor.hasNext())
+			{
+				final UnsignedShortType lUnsignedShortType = lCursor.next();
+				lUnsignedShortType.set(i);
+			}
+
+			lCursor.reset();
+
+			while (lCursor.hasNext())
+			{
+				final UnsignedShortType lUnsignedShortType = lCursor.next();
+				assertEquals(i & 0xFFFF, lUnsignedShortType.get());
+			}
+
+		}
+
+		long lStart = System.nanoTime();
+		assertTrue(lLocalFileStackSink.appendStack(lStack));
+		long lStop = System.nanoTime();
+
+		double lElapsedTimeInSeconds = (lStop - lStart) * 1e-9;
+
+		double lSpeed = (lStack.getSizeInBytes() * 1e-6) / lElapsedTimeInSeconds;
+
+		System.out.format("speed: %g \n",lSpeed);
+
+		lLocalFileStackSink.close();
+		
+		
+		FileUtils.deleteDirectory(lRootFolder);
+
+	}
 
 	@Test
 	public void testSinkAndSource() throws IOException
@@ -41,7 +111,10 @@ public class LocalFileStackTests
 		final File lRootFolder = new File(	File.createTempFile("test",
 																"test")
 												.getParentFile(),
-											"LocalFileStackTests" + Math.random());
+											"LocalFileStackTests" + Math.random());/**/
+
+		// final File lRootFolder = new File("/Volumes/External/Temp");
+
 		lRootFolder.mkdirs();
 		System.out.println(lRootFolder);
 
@@ -149,5 +222,7 @@ public class LocalFileStackTests
 			lLocalFileStackSource.close();
 		}
 
+		FileUtils.deleteDirectory(lRootFolder);
+		
 	}
 }
