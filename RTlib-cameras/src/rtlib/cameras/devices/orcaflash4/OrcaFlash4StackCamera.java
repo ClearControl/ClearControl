@@ -97,18 +97,21 @@ public class OrcaFlash4StackCamera extends
 			{
 				final long lDepth = pDcamFrame.getDepth();
 				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
-															+ " index="
-															+ pDcamFrame.getIndex()
-															+ " pFrameIndexInBufferList="
-															+ pFrameIndexInBufferList);/**/
+														+ " index="
+														+ pDcamFrame.getIndex()
+														+ " pFrameIndexInBufferList="
+														+ pFrameIndexInBufferList);/**/
 
-				TByteArrayList lKeepAcquiredImageArray;
-				do
+				TByteArrayList lKeepAcquiredImageArray = null;
+				// if (mStackMode.getBooleanValue())
 				{
-					lKeepAcquiredImageArray = mKeepAcquiredImageArrayQueue.remove();
-					System.out.println("lKeepAcquiredImageArray=" + lKeepAcquiredImageArray);
+					do
+					{
+						lKeepAcquiredImageArray = mKeepAcquiredImageArrayQueue.remove();
+						System.out.println("lKeepAcquiredImageArray=" + lKeepAcquiredImageArray);
+					}
+					while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
 				}
-				while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
 
 				mFrameReference.setReference(Pair.of(	lKeepAcquiredImageArray,
 																							pDcamFrame));
@@ -233,6 +236,11 @@ public class OrcaFlash4StackCamera extends
 
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
+	}
+
+	public void setBinning(int pBinSize)
+	{
+		mDcamAcquisition.getProperties().setBinning(pBinSize);
 	}
 
 	protected ObjectVariable<Pair<TByteArrayList, DcamFrame>> getInternalFrameReferenceVariable()

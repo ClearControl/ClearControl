@@ -59,7 +59,8 @@ public class CalibrationWP
 	{
 
 		mMultiPlotAdjustPCurves.clear();
-		mMultiPlotAdjustPCurves.setVisible(true);
+		if (!mMultiPlotAdjustPCurves.isVisible())
+			mMultiPlotAdjustPCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
 																.getLightSheetDevice(pLightSheetIndex);

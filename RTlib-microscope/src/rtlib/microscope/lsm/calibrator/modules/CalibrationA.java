@@ -58,7 +58,8 @@ public class CalibrationA
 		mArgMaxFinder = new SmartArgMaxFinder();
 
 		mMultiPlotAFocusCurves.clear();
-		mMultiPlotAFocusCurves.setVisible(true);
+		if (!mMultiPlotAFocusCurves.isVisible())
+			mMultiPlotAFocusCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
 																														.getLightSheetDevice(pLightSheetIndex);

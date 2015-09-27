@@ -61,10 +61,12 @@ public class CalibrationHP
 	{
 
 		mMultiPlotAdjustPCurves.clear();
-		mMultiPlotAdjustPCurves.setVisible(true);
+		if (!mMultiPlotAdjustPCurves.isVisible())
+			mMultiPlotAdjustPCurves.setVisible(true);
 
 		mMultiPlotHPPCurves.clear();
-		mMultiPlotHPPCurves.setVisible(true);
+		if (!mMultiPlotHPPCurves.isVisible())
+			mMultiPlotHPPCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
 																														.getLightSheetDevice(pLightSheetIndex);

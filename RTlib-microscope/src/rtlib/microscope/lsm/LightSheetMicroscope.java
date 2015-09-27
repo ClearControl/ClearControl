@@ -31,6 +31,7 @@ public class LightSheetMicroscope	extends
 
 	private final LightSheetMicroscopeDeviceLists mLSMDeviceLists;
 	private volatile int mNumberOfEnqueuedStates;
+	private volatile long mAverageTimeInNS;
 
 	public LightSheetMicroscope(String pDeviceName)
 	{
@@ -222,6 +223,8 @@ public class LightSheetMicroscope	extends
 		int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDetectionArmDevices();
 		CountDownLatch[] lStacksReceivedLatches = new CountDownLatch[lNumberOfDetectionArmDevices];
 
+		mAverageTimeInNS = 0;
+
 		ArrayList<VariableSetListener<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> lListenerList = new ArrayList<>();
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 		{
@@ -237,6 +240,7 @@ public class LightSheetMicroscope	extends
 															StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewValue)
 				{
 					lStacksReceivedLatches[fi].countDown();
+					mAverageTimeInNS += pNewValue.getTimeStampInNanoseconds() / lNumberOfDetectionArmDevices;
 				}
 			};
 
@@ -245,6 +249,7 @@ public class LightSheetMicroscope	extends
 			getStackVariable(i).addSetListener(lVariableSetListener);
 		}
 
+		System.out.println("Playing queue of length: " + getQueueLength());
 		final FutureBooleanList lPlayQueue = playQueue();
 
 		Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);
@@ -264,6 +269,12 @@ public class LightSheetMicroscope	extends
 			}
 
 		return lBoolean;
+	}
+
+	@Override
+	public long lastAcquiredStacksTimeStampInNS()
+	{
+		return mAverageTimeInNS;
 	}
 
 	@Override

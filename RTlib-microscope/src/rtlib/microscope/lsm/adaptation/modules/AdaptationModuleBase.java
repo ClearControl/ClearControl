@@ -3,12 +3,10 @@ package rtlib.microscope.lsm.adaptation.modules;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
-import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.microscope.lsm.adaptation.Adaptator;
 
 public abstract class AdaptationModuleBase implements
-																					AdaptationModuleInterface,
-																					AsynchronousExecutorServiceAccess
+																					AdaptationModuleInterface
 {
 	private int mPriority = 1;
 

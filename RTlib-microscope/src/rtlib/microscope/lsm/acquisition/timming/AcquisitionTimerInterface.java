@@ -7,11 +7,13 @@ public interface AcquisitionTimerInterface
 
 	public long timeLeftBeforeNextTimePoint(TimeUnit pTimeUnit);
 
-	public boolean enoughTimeFor(long pTimeNeeded, TimeUnit pTimeUnit);
+	public boolean enoughTimeFor(	long pTimeNeeded,
+																long pReservedTime,
+																TimeUnit pTimeUnit);
 
 	public void waitToAcquire();
 
-	public void notifyAcquisition();
+	public void notifyAcquisition(long pTimeStamp);
 
 	public long getLastAcquisitionTime(TimeUnit pTimeUnit);
 

@@ -36,9 +36,9 @@ public class CoboltLaserDevice extends LaserDeviceBase	implements
 								final int pMaxPowerInMilliWatt,
 								final String pPortName)
 	{
-		super("Cobol" + pCoboltModelName);
+		super("Cobolt" + pCoboltModelName);
 
-		mSerialDevice = new SerialDevice(	"Cobol"	+ pCoboltModelName,
+		mSerialDevice = new SerialDevice(	"Cobolt" + pCoboltModelName,
 											pPortName,
 											115200);
 
@@ -64,7 +64,7 @@ public class CoboltLaserDevice extends LaserDeviceBase	implements
 		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable(	"PowerOn",
 																	lSetPowerOnOffAdapter);
 
-		mLaserOnVariable = new BooleanVariable("LaserOn", true);
+		mLaserOnVariable = new BooleanVariable("LaserOn", false);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
 		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable(	"WorkingHours",
@@ -88,14 +88,14 @@ public class CoboltLaserDevice extends LaserDeviceBase	implements
 	@Override
 	public boolean start()
 	{
-		mPowerOnVariable.setValue(true);
+		// mPowerOnVariable.setValue(true);
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		mPowerOnVariable.setValue(false);
+		// mPowerOnVariable.setValue(false);
 		return true;
 	}
 

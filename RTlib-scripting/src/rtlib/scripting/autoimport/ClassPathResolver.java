@@ -43,7 +43,11 @@ public class ClassPathResolver
 		}
 
 		if (lKnownFullyQualifiedNames == null)
+		{
 			lKnownFullyQualifiedNames = new HashSet<String>();
+			sClassNameToFullyQualifiedNames.put(pSimpleName,
+																					lKnownFullyQualifiedNames);
+		}
 
 		for (final String aPackage : sPackages)
 		{
@@ -63,6 +67,7 @@ public class ClassPathResolver
 
 			}
 		}
+
 		return lFullyQualifiedNames;
 	}
 

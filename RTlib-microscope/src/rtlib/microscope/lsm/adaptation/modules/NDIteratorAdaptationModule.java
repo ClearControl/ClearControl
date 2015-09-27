@@ -13,7 +13,6 @@ import java.util.concurrent.TimeoutException;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.FitProbabilityInterface;
 import rtlib.core.math.argmax.methods.ModeArgMaxFinder;
@@ -46,14 +45,6 @@ public abstract class NDIteratorAdaptationModule extends
 		mMultiPlotZFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");
 		mMultiPlotZFocusCurves.setVisible(true);
-
-		RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
-																									Thread.NORM_PRIORITY - 2,
-																									Runtime.getRuntime()
-																													.availableProcessors(),
-																									Runtime.getRuntime()
-																													.availableProcessors(),
-																									Integer.MAX_VALUE);
 
 	}
 
@@ -110,12 +101,6 @@ public abstract class NDIteratorAdaptationModule extends
 	public Boolean apply(Void pVoid)
 	{
 		System.out.format("NDIteratorAdaptationModule step \n");
-
-		if (getNDIterator() == null)
-		{
-			reset();
-			System.out.format("NDIteratorAdaptationModule reset \n");
-		}
 
 		boolean lHasNext = getNDIterator().hasNext();
 
@@ -176,7 +161,6 @@ public abstract class NDIteratorAdaptationModule extends
 																																														.get();
 					lStacks.add(lStackInterface.duplicate());
 
-
 				}
 				else
 					lStacks.add(new EmptyStack());
@@ -203,7 +187,6 @@ public abstract class NDIteratorAdaptationModule extends
 																												d,
 																												lDOFValueList,
 																												lStacks.get(d));
-
 
 						Double lArgmax = lSmartArgMaxFinder.argmax(	lDOFValueList.toArray(),
 																												lMetricArray);
@@ -244,7 +227,7 @@ public abstract class NDIteratorAdaptationModule extends
 
 			};
 
-			Future<?> lFuture = executeAsynchronously(lRunnable);
+			Future<?> lFuture = getAdaptator().executeAsynchronously(lRunnable);
 
 			// FORCE SYNC:
 			/*try

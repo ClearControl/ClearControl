@@ -1,17 +1,23 @@
 package rtlib.microscope.lsm.adaptation;
 
+import static java.lang.Math.max;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.AcquisitionState;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.adaptation.modules.AdaptationModuleInterface;
 
-public class Adaptator implements Function<Void, Boolean>
+public class Adaptator implements
+											Function<Integer, Boolean>,
+											AsynchronousExecutorServiceAccess
 {
 	private final LightSheetMicroscope mLightSheetMicroscope;
 	private final StackAcquisitionInterface mStackAcquisition;
@@ -24,12 +30,24 @@ public class Adaptator implements Function<Void, Boolean>
 	private HashMap<Function<Void, Boolean>, Long> mTimmingMap = new HashMap<>();
 
 	public Adaptator(	LightSheetMicroscope pLightSheetMicroscope,
-						StackAcquisitionInterface pStackAcquisition)
+										StackAcquisitionInterface pStackAcquisition,
+										double pCPULoadRatio,
+										int pMaxQueueLengthPerWorker)
 	{
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
 		mStackAcquisition = pStackAcquisition;
 		mNewAcquisitionState = new AcquisitionState(mStackAcquisition.getCurrentState());
+
+		int lNumberOfWorkers = (int) max(	1,
+																			(pCPULoadRatio * Runtime.getRuntime()
+																															.availableProcessors()));
+
+		RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
+																									Thread.MIN_PRIORITY,
+																									lNumberOfWorkers,
+																									lNumberOfWorkers,
+																									pMaxQueueLengthPerWorker * lNumberOfWorkers);
 	}
 
 	public LightSheetMicroscope getLightSheetMicroscope()
@@ -56,6 +74,7 @@ public class Adaptator implements Function<Void, Boolean>
 	{
 		mAdaptationModuleList.add(pAdaptationModule);
 		pAdaptationModule.setAdaptator(this);
+		pAdaptationModule.reset();
 	}
 
 	public long estimateStep(TimeUnit pTimeUnit)
@@ -88,11 +107,14 @@ public class Adaptator implements Function<Void, Boolean>
 
 	public Boolean step()
 	{
-		return apply(null);
+		return apply(1);
 	}
 
-	public Boolean apply(Void pVoid)
+	public Boolean apply(Integer pTimes)
 	{
+		if (pTimes <= 0 || mAdaptationModuleList.size() == 0)
+			return false;
+
 		System.out.format("Adaptator: step \n");
 
 		boolean lModulesReady = isReady();
@@ -111,19 +133,18 @@ public class Adaptator implements Function<Void, Boolean>
 		{
 			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get((int) mCurrentAdaptationModule);
 
-			System.out.format(	"lAdaptationModule: %s \n",
-								lAdaptationModule);
+			System.out.format("lAdaptationModule: %s \n", lAdaptationModule);
 
 			double lStepSize = 1.0 / lAdaptationModule.getPriority();
 
-			time(lAdaptationModule::apply);
+			Boolean lHasNext = time(lAdaptationModule::apply);
 
 			mCurrentAdaptationModule = (mCurrentAdaptationModule + lStepSize);
 
 			if (mCurrentAdaptationModule >= mAdaptationModuleList.size())
 				mCurrentAdaptationModule = mCurrentAdaptationModule - mAdaptationModuleList.size();
 
-			return true;
+			return lHasNext || apply(pTimes - 1);
 		}
 	}
 
@@ -135,7 +156,7 @@ public class Adaptator implements Function<Void, Boolean>
 
 		long lElapsedTimeInNS = lStopTimeNS - lStartTimeNS;
 		double lElpasedTimeInMilliseconds = (double) TimeUnit.MILLISECONDS.convert(	lElapsedTimeInNS,
-																					TimeUnit.NANOSECONDS);
+																																								TimeUnit.NANOSECONDS);
 
 		mTimmingMap.put(pMethod, lElapsedTimeInNS);
 

@@ -123,6 +123,9 @@ public class ImageAnalysisUtils
 		long lWidth = pImage.dimension(0);
 		long lHeight = pImage.dimension(1);
 
+		TDoubleArrayList lXList = new TDoubleArrayList();
+		TDoubleArrayList lYList = new TDoubleArrayList();
+
 		for (int p = 0; p < lNumberOfPlanes; p++)
 		{
 			ContiguousMemoryInterface lContiguousMemory = lFragmentedMemory.get(p);
@@ -134,8 +137,8 @@ public class ImageAnalysisUtils
 				lMaxValue = max(lMaxValue, lBuffer.readChar());
 			}
 
-			TDoubleArrayList lXList = new TDoubleArrayList();
-			TDoubleArrayList lYList = new TDoubleArrayList();
+			lXList.clear();
+			lYList.clear();
 
 			for (int y = 0; y < lHeight; y++)
 			{

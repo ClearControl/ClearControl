@@ -1,18 +1,17 @@
 package rtlib.microscope.lsm.acquisition.timming.adaptive;
 
-import static java.lang.Math.max;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.math3.analysis.function.Gaussian;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.microscope.lsm.acquisition.StackAcquisition;
 import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerBase;
@@ -67,9 +66,9 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 	}
 
 	@Override
-	public void notifyAcquisition()
+	public void notifyAcquisition(long pTimeStamp)
 	{
-		super.notifyAcquisition();
+		super.notifyAcquisition(pTimeStamp);
 		mAcquireNow = false;
 		if (mMonitoringStackAtLastAcquisition != null && !mMonitoringStackAtLastAcquisition.isFree())
 			mMonitoringStackAtLastAcquisition.free();

@@ -77,7 +77,8 @@ public class CalibrationW
 								int pDetectionArmIndex,
 								int pNumberOfSamples)
 	{
-		mAverageIntensityCurves.setVisible(true);
+		if (!mAverageIntensityCurves.isVisible())
+			mAverageIntensityCurves.setVisible(true);
 
 		try
 		{

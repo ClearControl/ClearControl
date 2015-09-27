@@ -74,7 +74,8 @@ public class CalibrationZ
 		mMultiPlotZFocusCurves.setVisible(true);
 
 		mIteration++;
-		mMultiPlotZModels.setVisible(true);
+		if (!mMultiPlotZModels.isVisible())
+			mMultiPlotZModels.setVisible(true);
 
 		final TheilSenEstimator[] lTheilSenEstimators = new TheilSenEstimator[mNumberOfDetectionArmDevices];
 		final PlotTab[] lPlots = new PlotTab[mNumberOfDetectionArmDevices];
