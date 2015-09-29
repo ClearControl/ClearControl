@@ -14,14 +14,6 @@ public interface CameraDeviceInterface	extends
 
 	DoubleVariable getLineReadOutTimeInMicrosecondsVariable();
 
-	DoubleVariable getStackBytesPerPixelVariable();
-
-	DoubleVariable getStackWidthVariable();
-
-	DoubleVariable getStackHeightVariable();
-
-	DoubleVariable getStackDepthVariable();
-
 	DoubleVariable getExposureInMicrosecondsVariable();
 
 	DoubleVariable getPixelSizeInNanometersVariable();

@@ -12,10 +12,13 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
+import coremem.recycling.BasicRecycler;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 
 public class OrcaFlash4CameraDemo
 {
@@ -26,9 +29,17 @@ public class OrcaFlash4CameraDemo
 											ExecutionException
 	{
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(	0,
+																												false);
 
+		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<>();
 
+		BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<>(	lOffHeapPlanarStackFactory,
+																																					6,
+																																					6,
+																																					true);
+		
+		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
@@ -78,9 +89,17 @@ public class OrcaFlash4CameraDemo
 									ExecutionException
 	{
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(	0,
+																												false);
+		
+		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<>();
 
-
+		BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<>(	lOffHeapPlanarStackFactory,
+																																					6,
+																																					6,
+																																					true);
+		
+		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
@@ -133,8 +152,8 @@ public class OrcaFlash4CameraDemo
 
 	@Test
 	public void testDisplayVideo()	throws InterruptedException,
-																IOException,
-																ExecutionException
+									IOException,
+									ExecutionException
 	{
 		final int lWidth = 256;
 		final int lHeight = 256;
@@ -148,7 +167,17 @@ public class OrcaFlash4CameraDemo
 		lVideoWindow.setVisible(true);
 
 		mFrameIndex.set(0);
-		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(0,false);
+		final OrcaFlash4StackCamera lOrcaFlash4StackCamera = OrcaFlash4StackCamera.buildWithInternalTriggering(	0,
+																												false);
+		
+		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<>();
+
+		BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<>(	lOffHeapPlanarStackFactory,
+																																					6,
+																																					6,
+																																					true);
+		
+		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
 								.sendUpdatesTo(new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>("Receiver")
@@ -166,8 +195,8 @@ public class OrcaFlash4CameraDemo
 											System.out.println("mCounter=" + mFrameIndex.get());
 											System.out.println(pNewStack);
 
-																// assertTrue(mFrameIndex.get() ==
-																// pNewStack.getIndex());
+											// assertTrue(mFrameIndex.get() ==
+											// pNewStack.getIndex());
 
 											lVideoWindow.sendBuffer(pNewStack.getContiguousMemory(0),
 																	lWidth,
@@ -223,8 +252,6 @@ public class OrcaFlash4CameraDemo
 			lPlayQueue.get();
 			Thread.sleep(100);
 		}
-
-
 
 		/*
 		lVideoWindow.start();

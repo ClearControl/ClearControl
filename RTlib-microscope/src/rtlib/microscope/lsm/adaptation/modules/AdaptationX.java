@@ -32,13 +32,16 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
 		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples-1);
 
+		
+		double lCurrentX = lLSM.getIX(pLightSheetIndex);
+		
 		lLSM.clearQueue();
-
+		
 		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
 
 		final TDoubleArrayList lIXList = new TDoubleArrayList();
 
-		double lCurrentX = lLSM.getIX(pLightSheetIndex);
+		
 		
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lMinX);

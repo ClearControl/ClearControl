@@ -9,14 +9,18 @@ import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
-public class AdaptationW extends NDIteratorAdaptationModule	implements
+public class AdaptationZ2 extends NDIteratorAdaptationModule implements
 															AdaptationModuleInterface
 {
 
-	public AdaptationW(	int pNumberOfSamples,
+	private double mDeltaZ;
+
+	public AdaptationZ2(double pDeltaZ,
+						int pNumberOfSamples,
 						double pProbabilityThreshold)
 	{
 		super(pNumberOfSamples, pProbabilityThreshold);
+		mDeltaZ = pDeltaZ;
 	}
 
 	public Future<?> atomicStep(int pControlPlaneIndex,
@@ -25,53 +29,34 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
+		double lCurrentIZ = lLSM.getIZ(pLightSheetIndex);
+		double lCurrentDZ = lLSM.getDZ(pLightSheetIndex);
 
-		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-													.getLightSheetDevice(pLightSheetIndex);
-		double lMinW = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMin();
-		double lMaxW = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMax();
-		double lStepW = (lMaxW - lMinW) / (pNumberOfSamples - 1);
-
-		double lCurrentW = lLSM.getIW(pLightSheetIndex);
+		int lHalfSamples = (pNumberOfSamples-1)/2;
+		double lMinZ = lCurrentIZ+mDeltaZ*lHalfSamples;
+		double lMaxZ = mDeltaZ*lHalfSamples;
+		
+		final TDoubleArrayList lIZList = new TDoubleArrayList();
 		
 		lLSM.clearQueue();
 
 		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
 
-		final TDoubleArrayList lIWList = new TDoubleArrayList();
-
-		
-
 		lLSM.setC(false);
-		lLSM.setILO(false);
-		lLSM.setIW(pLightSheetIndex, lMinW);
-		lLSM.addCurrentStateToQueue();
+		lLSM.setDZ(pLightSheetIndex, lMinZ);
 		lLSM.addCurrentStateToQueue();
 		lLSM.addCurrentStateToQueue();
 
 		lLSM.setC(true);
-		for (double w = lMinW; w <= lMaxW; w += lStepW)
+		for (double z = lMinZ; z <= lMaxZ; z += mDeltaZ)
 		{
-			lIWList.add(w);
-			lLSM.setIW(pLightSheetIndex, w);
-
-			lLSM.setILO(false);
-			lLSM.setC(false);
-			for (int r = 0; r < 10; r++)
-				lLSM.addCurrentStateToQueue();
-
-			lLSM.setILO(true);
-			lLSM.setC(true);
+			lIZList.add(z);
+			lLSM.setDZ(pLightSheetIndex, z);
 			lLSM.addCurrentStateToQueue();
 		}
 
 		lLSM.setC(false);
-		lLSM.setILO(false);
-		lLSM.setIW(pLightSheetIndex, lCurrentW);
+		lLSM.setDZ(pLightSheetIndex, lCurrentDZ);
 		lLSM.addCurrentStateToQueue();
 
 		lLSM.finalizeQueue();
@@ -80,7 +65,7 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 								pLightSheetIndex,
 								lLSM,
 								lStackAcquisition,
-								lIWList);
+								lIZList);
 
 	}
 
@@ -88,14 +73,13 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 								int pLightSheetIndex,
 								ArrayList<Double> pArgMaxList)
 	{
-
 		int lBestDetectioArm = getAdaptator().getStackAcquisition()
 												.getBestDetectioArm(pControlPlaneIndex);
 
 		getAdaptator().getNewAcquisitionState()
-						.setAtControlPlaneIW(	pControlPlaneIndex,
+						.addAtControlPlaneIZ(	pControlPlaneIndex,
 												pLightSheetIndex,
-												pArgMaxList.get(lBestDetectioArm));
+												-pArgMaxList.get(lBestDetectioArm));
 	}
 
 }
