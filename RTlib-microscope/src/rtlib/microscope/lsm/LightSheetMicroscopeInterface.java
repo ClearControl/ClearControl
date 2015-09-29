@@ -26,7 +26,9 @@ public interface LightSheetMicroscopeInterface	extends
 	LightSheetMicroscopeDeviceLists getDeviceLists();
 
 	/**
-	 * Sets the recycler that should be used by the stack camera device of given id.
+	 * Sets the recycler that should be used by the stack camera device of given
+	 * id.
+	 * 
 	 * @param pStackCameraDeviceIndex
 	 */
 	void setRecycler(	int pStackCameraDeviceIndex,
@@ -34,16 +36,47 @@ public interface LightSheetMicroscopeInterface	extends
 
 	/**
 	 * Sets the recycler that should be used by _all_ stack camera devices.
+	 * 
 	 * @param pRecycler
 	 */
 	void setRecycler(RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pRecycler);
 
 	/**
 	 * Returns the recycler currently b the stack camera device of given id.
-	 * @param pStackCameraDeviceIndex stack camera index id.
+	 * 
+	 * @param pStackCameraDeviceIndex
+	 *            stack camera index id.
 	 * @return recycler.
 	 */
 	RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> getRecycler(int pStackCameraDeviceIndex);
+
+	/**
+	 * Uses a recycler with given parameters. This recycler will be used for all
+	 * subsequent plays. if teh recycler does not exist yet, it is created.
+	 * 
+	 * @param pName
+	 *            recycler name
+	 * @param pMaximumNumberOfAvailableStacks
+	 *            maximum number of available stacks
+	 * @param pMaximumNumberOfLiveStacks
+	 *            maximum number of live stacks
+	 */
+	void useRecycler(	String pName,
+						int pMinimumNumberOfAvailableStacks,
+						int pMaximumNumberOfAvailableStacks,
+						int pMaximumNumberOfLiveStacks);
+
+	/**
+	 * Clears a given recycler.
+	 * 
+	 * @param pName
+	 */
+	void clearRecycler(String pName);
+
+	/**
+	 * Clears all recyclers.
+	 */
+	void clearAllRecycler();
 
 	/**
 	 * Plays queue for all devices, and waits for playback to finish.
@@ -538,7 +571,5 @@ public interface LightSheetMicroscopeInterface	extends
 	 */
 	public boolean getIPatternOnOff(int pLightSheetIndex,
 									int pLaserIndex);
-
-
 
 }

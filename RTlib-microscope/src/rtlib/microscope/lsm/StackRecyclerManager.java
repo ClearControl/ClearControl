@@ -10,21 +10,16 @@ import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 
-public class StackRecyclerManager implements AutoCloseable
+public class StackRecyclerManager
 {
 
 	final private ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> mOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<>();
 
 	final private ConcurrentHashMap<String, RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>> mRecyclerMap = new ConcurrentHashMap<>();
 
-	public void close()
-	{
-		mRecyclerMap.clear();
-	}
-
 	public RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> getRecycler(	String pName,
-																																int pMaximumNumberOfAvailableObjects,
-																																int pMaximumNumberOfLiveObjects)
+																																	int pMaximumNumberOfAvailableObjects,
+																																	int pMaximumNumberOfLiveObjects)
 	{
 
 		RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = mRecyclerMap.get(pName);
@@ -41,6 +36,16 @@ public class StackRecyclerManager implements AutoCloseable
 
 		return lRecycler;
 
+	}
+
+	public void clear(String pName)
+	{
+		mRecyclerMap.remove(pName);
+	}
+
+	public void clearAll()
+	{
+		mRecyclerMap.clear();
 	}
 
 }

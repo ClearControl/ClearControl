@@ -29,6 +29,10 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 	DoubleVariable getStackDepthVariable();
 
 	void setStackRecycler(RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pRecycler);
+	
+	int getMinimalNumberOfAvailableStacks();
+
+	void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks);
 
 	RecyclerInterface<StackInterface<T, A>, StackRequest<T>> getStackRecycler();
 
@@ -36,5 +40,7 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 
 	@Override
 	void trigger();
+
+
 
 }

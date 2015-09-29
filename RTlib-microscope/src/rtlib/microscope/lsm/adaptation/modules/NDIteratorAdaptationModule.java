@@ -143,6 +143,7 @@ public abstract class NDIteratorAdaptationModule extends
 
 		try
 		{
+			pLSM.useRecycler("adaptation",1, 1, 1);
 			final Boolean lPlayQueueAndWait = pLSM.playQueueAndWaitForStacks(	10 + pLSM.getQueueLength(),
 																																				TimeUnit.SECONDS);
 

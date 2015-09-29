@@ -199,6 +199,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 		try
 		{
+			lLSM.useRecycler("adaptive_timing",1, 1, 1);
 			Boolean lSuccess = lLSM.playQueueAndWaitForStacks(	lLSM.getQueueLength(),
 																TimeUnit.SECONDS);
 

@@ -88,7 +88,7 @@ public class LightSheetMicroscope	extends
 
 		lIsClosed &= super.close();
 
-		mStackRecyclerManager.close();
+		mStackRecyclerManager.clearAll();
 
 		return lIsClosed;
 	}
@@ -209,15 +209,35 @@ public class LightSheetMicroscope	extends
 								.getStackRecycler();
 	}
 
+	@Override
 	public void useRecycler(final String pName,
+							final int pMinimumNumberOfAvailableStacks,
 							final int pMaximumNumberOfAvailableObjects,
 							final int pMaximumNumberOfLiveObjects)
 	{
+		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
 		RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = mStackRecyclerManager.getRecycler(pName,
-																																								pMaximumNumberOfAvailableObjects,
-																																								pMaximumNumberOfLiveObjects);
+																																								lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
+																																								lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
+
+		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
+			getDeviceLists().getStackCameraDevice(i)
+							.setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
 
 		setRecycler(lRecycler);
+	}
+	
+	@Override
+	public void clearRecycler(String pName)
+	{
+		mStackRecyclerManager.clear(pName);
+	}
+
+	@Override
+	public void clearAllRecycler()
+	{
+		mStackRecyclerManager.clearAll();
+		
 	}
 
 	@Override
@@ -792,5 +812,7 @@ public class LightSheetMicroscope	extends
 		return String.format(	"LightSheetMicroscope: \n%s\n",
 								mLSMDeviceLists.toString());
 	}
+
+
 
 }

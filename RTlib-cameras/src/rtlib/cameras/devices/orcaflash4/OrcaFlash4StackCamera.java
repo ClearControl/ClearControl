@@ -46,7 +46,7 @@ public class OrcaFlash4StackCamera	extends
 
 	private int mStackProcessorQueueSize = 6;
 
-	private int mMinimalNumberOfAvailableStacks = 6;
+
 
 	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000;
 
@@ -506,16 +506,6 @@ public class OrcaFlash4StackCamera	extends
 	public void setStackProcessorQueueSize(int pStackProcessorQueueSize)
 	{
 		mStackProcessorQueueSize = pStackProcessorQueueSize;
-	}
-
-	public int getMinimalNumberOfAvailableStacks()
-	{
-		return mMinimalNumberOfAvailableStacks;
-	}
-
-	public void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks)
-	{
-		mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
 	}
 
 	public long getWaitForRecycledStackTimeInMicroSeconds()

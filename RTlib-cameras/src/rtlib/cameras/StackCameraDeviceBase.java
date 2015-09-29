@@ -38,12 +38,27 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mRecycler;
 
 	protected ObjectVariable<StackInterface<T, A>> mStackReference;
+	
+	private int mMinimalNumberOfAvailableStacks = 6;
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
 		super(pDeviceName);
-
 	}
+	
+
+	@Override
+	public int getMinimalNumberOfAvailableStacks()
+	{
+		return mMinimalNumberOfAvailableStacks;
+	}
+
+	@Override
+	public void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks)
+	{
+		mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
+	}
+
 
 	@Override
 	public DoubleVariable getNumberOfImagesPerPlaneVariable()
