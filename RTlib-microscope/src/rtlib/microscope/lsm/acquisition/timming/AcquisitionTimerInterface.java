@@ -11,7 +11,7 @@ public interface AcquisitionTimerInterface
 																long pReservedTime,
 																TimeUnit pTimeUnit);
 
-	public void waitToAcquire();
+	public void waitToAcquire(long pTimeStamp, TimeUnit pTimeUnit);
 
 	public void notifyAcquisition(long pTimeStamp);
 

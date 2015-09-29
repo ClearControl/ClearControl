@@ -69,9 +69,12 @@ public class AcquisitionTimerBase	implements
 	}
 
 	@Override
-	public void waitToAcquire()
+	public void waitToAcquire(long pTimeOut, TimeUnit pTimeUnit)
 	{
-		waitFor(() -> timeLeftBeforeNextTimePoint(TimeUnit.NANOSECONDS) <= 0);
+		long lNow = System.nanoTime();
+		long lTimeOut = lNow + TimeUnit.NANOSECONDS.convert(pTimeOut,
+																												pTimeUnit);
+		waitFor(() -> timeLeftBeforeNextTimePoint(TimeUnit.NANOSECONDS) <= 0 || lTimeOut > System.nanoTime());
 	}
 
 	@Override

@@ -101,7 +101,7 @@ public class Adaptator implements
 	public void applyInitialRounds(int pNumberOfRounds)
 	{
 		for (int i = 0; i < pNumberOfRounds; i++)
-			while (apply(null))
+			while (apply(1))
 				ThreadUtils.sleep(500, TimeUnit.MILLISECONDS);
 	}
 

@@ -192,6 +192,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setDZ(double pValue)
+	{
+		int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
+																														.getNumberOfDetectionArmDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfDetectionArmDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableDZ.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneDZ(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -199,13 +212,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableDZ.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneDZ(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedDZ(pControlPlaneIndex, lZ);
-		setAtControlPlaneDZ(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneDZ(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneDZ(int pControlPlaneIndex,
@@ -224,6 +237,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIX(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIX.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIX(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -231,13 +257,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIX.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIX(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIX(pControlPlaneIndex, lZ);
-		setAtControlPlaneIX(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIX(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIX(int pControlPlaneIndex,
@@ -256,6 +282,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIY(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIY.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIY(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -263,13 +302,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIY.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIY(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIY(pControlPlaneIndex, lZ);
-		setAtControlPlaneIY(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIY(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIY(int pControlPlaneIndex,
@@ -286,10 +325,21 @@ public class AcquisitionState implements AcquisitionStateInterface
 		return mInterpolationTableIY.getRow(pControlPlaneIndex)
 																.getY(pDeviceIndex);
 	}
-	
-
 
 	/******************************************************/
+
+	public void setIZ(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIZ.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIZ(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -297,13 +347,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIZ.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIZ(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIZ(pControlPlaneIndex, lZ);
-		setAtControlPlaneIZ(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIZ(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIZ(int pControlPlaneIndex,
@@ -320,10 +370,21 @@ public class AcquisitionState implements AcquisitionStateInterface
 		return mInterpolationTableIZ.getRow(pControlPlaneIndex)
 																.getY(pDeviceIndex);
 	}
-	
-
 
 	/******************************************************/
+
+	public void setIA(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIA.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIA(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -331,13 +392,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIA.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIA(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIA(pControlPlaneIndex, lZ);
-		setAtControlPlaneIA(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIA(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIA(int pControlPlaneIndex,
@@ -356,6 +417,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIB(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIB.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIB(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -363,13 +437,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIB.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIB(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIB(pControlPlaneIndex, lZ);
-		setAtControlPlaneIB(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIB(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIB(int pControlPlaneIndex,
@@ -388,6 +462,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIW(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIW.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIW(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -395,13 +482,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIW.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIW(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIW(pControlPlaneIndex, lZ);
-		setAtControlPlaneIW(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIW(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIW(int pControlPlaneIndex,
@@ -420,6 +507,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIH(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIH.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIH(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -427,13 +527,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIH.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIH(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIH(pControlPlaneIndex, lZ);
-		setAtControlPlaneIH(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIH(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIH(int pControlPlaneIndex,
@@ -452,6 +552,19 @@ public class AcquisitionState implements AcquisitionStateInterface
 	}
 
 	/******************************************************/
+
+	public void setIP(double pValue)
+	{
+		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfLightSheetDevices();
+
+		int lNumberOfControlPlanes = getNumberOfControlPlanes();
+
+		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+			for (int c = 0; c < lNumberOfControlPlanes; c++)
+				mInterpolationTableIP.getRow(c).setY(l, pValue);
+	}
+
 	public void setAtControlPlaneIP(int pControlPlaneIndex,
 																	int pDeviceIndex,
 																	double pValue)
@@ -459,13 +572,13 @@ public class AcquisitionState implements AcquisitionStateInterface
 		mInterpolationTableIP.getRow(pControlPlaneIndex)
 													.setY(pDeviceIndex, pValue);
 	}
-	
+
 	public void setInterpolatedAtControlPlaneIP(int pControlPlaneIndex,
-	        																		int pDeviceIndex)
+																							int pDeviceIndex)
 	{
 		double lZ = getZ(pControlPlaneIndex);
 		double lValue = getInterpolatedIP(pControlPlaneIndex, lZ);
-		setAtControlPlaneIP(pControlPlaneIndex,pDeviceIndex,lValue);
+		setAtControlPlaneIP(pControlPlaneIndex, pDeviceIndex, lValue);
 	}
 
 	public void addAtControlPlaneIP(int pControlPlaneIndex,
@@ -546,8 +659,5 @@ public class AcquisitionState implements AcquisitionStateInterface
 	{
 		return mTransitionPlaneZ;
 	}
-
-	
-
 
 }
