@@ -30,7 +30,7 @@ public class VideoWindow<T extends NativeType<T>>	implements
 													AutoCloseable
 {
 
-	static final double cEpsilon = 0.05;
+	static final double cEpsilon = 0.01;
 
 	static final float cPercentageOfPixelsToSample = 0.01f;
 
