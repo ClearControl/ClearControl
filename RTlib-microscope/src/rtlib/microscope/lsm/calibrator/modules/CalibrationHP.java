@@ -184,6 +184,7 @@ public class CalibrationHP
 
 			mLightSheetMicroscope.finalizeQueue();
 
+			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
 			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
 																																												TimeUnit.SECONDS);
 

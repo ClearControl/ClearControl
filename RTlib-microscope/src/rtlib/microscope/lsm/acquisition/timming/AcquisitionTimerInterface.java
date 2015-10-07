@@ -13,8 +13,8 @@ public interface AcquisitionTimerInterface
 
 	public void waitToAcquire(long pTimeStamp, TimeUnit pTimeUnit);
 
-	public void notifyAcquisition(long pTimeStamp);
-
 	public long getLastAcquisitionTime(TimeUnit pTimeUnit);
+
+	void notifyAcquisition();
 
 }

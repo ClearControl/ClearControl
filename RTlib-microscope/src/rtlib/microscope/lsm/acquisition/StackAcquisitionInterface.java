@@ -29,7 +29,7 @@ public interface StackAcquisitionInterface extends Iterable<Integer>
 
 	void setToControlPlane(int pControlPlaneIndex);
 
-	int getBestDetectioArm(int pControlPlaneIndex);
+	int getBestDetectionArm(int pControlPlaneIndex);
 
 	double getControlPlaneZ(int pControlPlaneIndex);
 

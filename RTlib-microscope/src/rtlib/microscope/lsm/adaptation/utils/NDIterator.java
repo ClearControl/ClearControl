@@ -66,7 +66,7 @@ public class NDIterator implements Iterator<int[]>
 		return mCursor[pIndex];
 	}
 
-	public Object getNumberOfIterations()
+	public int getNumberOfIterations()
 	{
 		int lSize = 1;
 

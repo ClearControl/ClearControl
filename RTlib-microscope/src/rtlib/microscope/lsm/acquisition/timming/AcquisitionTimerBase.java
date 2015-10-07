@@ -9,8 +9,8 @@ public class AcquisitionTimerBase	implements
 																	Waiting
 {
 
-	private volatile long mLastAcquisitionTimeInNS;
-	private long mAcquisitionIntervalInNS;
+	private volatile long mLastAcquisitionTimeInNS = System.nanoTime();
+	private volatile long mAcquisitionIntervalInNS;
 
 	@Override
 	public long getLastAcquisitionTime(TimeUnit pTimeUnit)
@@ -78,9 +78,9 @@ public class AcquisitionTimerBase	implements
 	}
 
 	@Override
-	public void notifyAcquisition(long pTimeStamp)
+	public void notifyAcquisition()
 	{
-		setLastAcquisitionTime(pTimeStamp, TimeUnit.NANOSECONDS);
+		setLastAcquisitionTime(System.nanoTime(), TimeUnit.NANOSECONDS);
 	}
 
 }

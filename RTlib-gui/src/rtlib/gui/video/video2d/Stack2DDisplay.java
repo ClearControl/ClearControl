@@ -49,8 +49,6 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	private final ReentrantLock mDisplayLock = new ReentrantLock();
 
-	private boolean mDisplayStackInImageJ = false;
-
 	public Stack2DDisplay(T pType)
 	{
 		this("2D Video Display", pType, 512, 512, 1);
@@ -112,7 +110,17 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				switch (pE.getKeyCode())
 				{
 				case KeyEvent.VK_I:
-					mDisplayStackInImageJ = true;
+					try
+					{
+						mDisplayLock.lock();
+						ImageJStackDisplay.show((StackInterface<UnsignedShortType, ShortOffHeapAccess>) mReceivedStackCopy);
+						mDisplayLock.unlock();
+					}
+					catch (Throwable e)
+					{
+						e.printStackTrace();
+					}
+
 					break;
 				}
 
@@ -167,19 +175,6 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 					}
 
 					displayStack(mReceivedStackCopy, false);
-
-					if (mDisplayStackInImageJ)
-					{
-						try
-						{
-							ImageJStackDisplay.show((StackInterface<UnsignedShortType, ShortOffHeapAccess>) mReceivedStackCopy);
-							mDisplayStackInImageJ = false;
-						}
-						catch (Throwable e)
-						{
-							e.printStackTrace();
-						}
-					}
 
 					if (mOutputStackVariable != null)
 					{

@@ -66,9 +66,9 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 	}
 
 	@Override
-	public void notifyAcquisition(long pTimeStamp)
+	public void notifyAcquisition()
 	{
-		super.notifyAcquisition(pTimeStamp);
+		super.notifyAcquisition();
 		mAcquireNow = false;
 		if (mMonitoringStackAtLastAcquisition != null && !mMonitoringStackAtLastAcquisition.isFree())
 			mMonitoringStackAtLastAcquisition.free();

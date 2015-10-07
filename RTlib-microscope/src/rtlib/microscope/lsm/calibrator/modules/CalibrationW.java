@@ -123,6 +123,7 @@ public class CalibrationW
 			mLightSheetMicroscope.finalizeQueue();
 			// Building queue end.
 
+			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
 			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
 																								TimeUnit.SECONDS);
 

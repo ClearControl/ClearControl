@@ -124,7 +124,7 @@ public class CalibrationZ
 		{
 			final UnivariateAffineFunction lModel = lTheilSenEstimators[d].getModel();
 
-			System.out.println(lModel);
+			System.out.println("lModel=" + lModel);
 
 			mModels.put(pLightSheetIndex,
 									d,
@@ -156,6 +156,7 @@ public class CalibrationZ
 													int pNumberOfDSamples,
 													double pIZ)
 	{
+
 		try
 		{
 
@@ -172,6 +173,12 @@ public class CalibrationZ
 				lMinDZ = max(lMinDZ, lDetectionFocusZFunction.getMin());
 				lMaxDZ = min(lMaxDZ, lDetectionFocusZFunction.getMax());
 			}
+
+			System.out.format("Focus: LightSheet=%d, Iz=%g, minDZ=%g, maxDZ=%g \n",
+												pLightSheetIndex,
+												pIZ,
+												lMinDZ,
+												lMaxDZ);
 
 			double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
@@ -225,6 +232,7 @@ public class CalibrationZ
 																														.getSignalGeneratorDevice(0)
 																														.getQueuedScore());/**/
 
+			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
 			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
 																																												TimeUnit.SECONDS);
 
@@ -235,6 +243,9 @@ public class CalibrationZ
 																																																							.get();
 
 					OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
+
+					if (lImage == null)
+						continue;
 
 					// final double[] lDCTSArray =
 					// mDCTS2D.computeImageQualityMetric(lImage);
@@ -377,7 +388,7 @@ public class CalibrationZ
 												.set(UnivariateAffineFunction.axplusb(lLightSheetDevice.getZFunction()
 																																								.get()
 																																								.getSlope(),
-																																			0));
+																															0));
 			lLightSheetDevice.getYFunction()
 												.get()
 												.setMin(lLightSheetDevice.getZFunction()
@@ -393,32 +404,50 @@ public class CalibrationZ
 			if (pAdjustDetectionZ)
 			{
 
-				final double lFocalPlanesHalfOffset = 0.5 * ((-b0 / a0) - (-b1 / a1));
+				double lDZIntercept0 = -b0 / a0;
+				double lDZIntercept1 = -b1 / a1;
 
-				System.out.println("lFocalPlanesHalfOffset=" + lFocalPlanesHalfOffset);
+				System.out.println("lDZIntercept0=" + lDZIntercept0);
+				System.out.println("lDZIntercept1=" + lDZIntercept1);
 
-				final DetectionArmInterface lDetectionArmDevice1 = mLightSheetMicroscope.getDeviceLists()
+				double lDesiredIntercept = 0.5 * (lDZIntercept0 + lDZIntercept1);
+
+				System.out.println("lDesiredIntercept=" + lDesiredIntercept);
+
+				double lInterceptCorrection0 = -(lDesiredIntercept - lDZIntercept0);
+				double lInterceptCorrection1 = -(lDesiredIntercept - lDZIntercept1);
+
+				System.out.println("lInterceptCorrection0=" + lInterceptCorrection0);
+				System.out.println("lInterceptCorrection1=" + lInterceptCorrection1);
+
+				final DetectionArmInterface lDetectionArmDevice0 = mLightSheetMicroscope.getDeviceLists()
 																																								.getDetectionArmDevice(0);
-				final DetectionArmInterface lDetectionArmDevice2 = mLightSheetMicroscope.getDeviceLists()
+				final DetectionArmInterface lDetectionArmDevice1 = mLightSheetMicroscope.getDeviceLists()
 																																								.getDetectionArmDevice(1);
 
-				lDetectionArmDevice1.getZFunction()
-														.get()
-														.composeWith(new UnivariateAffineFunction(1,
-																																			-lFocalPlanesHalfOffset));
-				lDetectionArmDevice2.getZFunction()
-														.get()
-														.composeWith(new UnivariateAffineFunction(1,
-																																			lFocalPlanesHalfOffset));
+				System.out.println("Before: lDetectionArmDevice0.getDetectionFocusZFunction()=" + lDetectionArmDevice0.getZFunction());
+				System.out.println("Before: lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getZFunction());
 
+				UnivariateAffineComposableFunction lFunction0 = lDetectionArmDevice0.getZFunction()
+																																						.get();
+				UnivariateAffineComposableFunction lFunction1 = lDetectionArmDevice1.getZFunction()
+																																						.get();
+
+				lFunction0.composeWith(UnivariateAffineFunction.axplusb(1,
+																																lInterceptCorrection0));
+				lFunction1.composeWith(UnivariateAffineFunction.axplusb(1,
+																																lInterceptCorrection1));
+
+				lDetectionArmDevice0.getZFunction().setCurrent();
 				lDetectionArmDevice1.getZFunction().setCurrent();
-				lDetectionArmDevice2.getZFunction().setCurrent();
 
-				System.out.println("lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getZFunction());
-				System.out.println("lDetectionArmDevice2.getDetectionFocusZFunction()=" + lDetectionArmDevice2.getZFunction());
+				System.out.println("After: lDetectionArmDevice0.getDetectionFocusZFunction()=" + lDetectionArmDevice0.getZFunction());
+				System.out.println("After: lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getZFunction());
 			}
 
 			double lError = (abs(1 - lSlope) + abs(lOffset));
+
+			System.out.println("lError=" + lError);
 
 			return lError;
 		}

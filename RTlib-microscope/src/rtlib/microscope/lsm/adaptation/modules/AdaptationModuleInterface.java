@@ -19,6 +19,8 @@ public interface AdaptationModuleInterface extends Function<Void,Boolean>
 
 	boolean isReady();
 
+	int getNumberOfSteps();
+
 	void reset();
 
 }

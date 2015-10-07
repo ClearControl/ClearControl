@@ -6,12 +6,15 @@ public interface UnivariateAffineComposableFunction	extends
 													UnivariateFunction, FunctionDomain
 {
 	
+	void setConstant(double pConstant);
 	double getConstant();
 
+	void setSlope(double pSlope);
 	double getSlope();
 	
 	public void composeWith(UnivariateAffineFunction pFunction);
 
 	public void setIdentity();
+
 
 }

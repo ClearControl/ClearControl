@@ -15,13 +15,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private final DoubleVariable mLowZ = new DoubleVariable("LowZ",
-															25);
+	private final DoubleVariable mLowZ = new DoubleVariable("LowZ", 25);
 	private final DoubleVariable mHighZ = new DoubleVariable(	"HighZ",
-																75);
+																														75);
 
 	private final DoubleVariable mZStep = new DoubleVariable(	"ZStep",
-																0.5);
+																														0.5);
 
 	private volatile AcquisitionState mCurrentAcquisitionState;
 
@@ -43,12 +42,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 		return mLightSheetMicroscope;
 	}
 
-	public void setup(	double pMinZ,
-						double pMiddleZ,
-						double pMaxZ,
-						double pStepZ,
-						double pControlPlaneStepZ,
-						double pMarginZ)
+	public void setup(double pMinZ,
+										double pMiddleZ,
+										double pMaxZ,
+										double pStepZ,
+										double pControlPlaneStepZ,
+										double pMarginZ)
 	{
 		setLowZ(pMinZ);
 		setHighZ(pMaxZ);
@@ -165,7 +164,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	public void setToStackPlane(int pPlaneIndex)
 	{
 		final int lNumberOfDetectionPathDevices = mLightSheetMicroscope.getDeviceLists()
-																		.getNumberOfDetectionArmDevices();
+																																		.getNumberOfDetectionArmDevices();
 
 		for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
 		{
@@ -173,7 +172,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 		}
 
 		final int lNumberOfLightsheetDevices = mLightSheetMicroscope.getDeviceLists()
-																	.getNumberOfLightSheetDevices();
+																																.getNumberOfLightSheetDevices();
 
 		for (int l = 0; l < lNumberOfLightsheetDevices; l++)
 		{
@@ -189,7 +188,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 		}
 
 		final int lNumberOfLaserDevices = mLightSheetMicroscope.getDeviceLists()
-																.getNumberOfLaserDevices();
+																														.getNumberOfLaserDevices();
 
 		for (int i = 0; i < lNumberOfLaserDevices; i++)
 		{
@@ -202,55 +201,55 @@ public class StackAcquisition implements StackAcquisitionInterface
 	public void setToControlPlane(int pControlPlaneIndex)
 	{
 		final int lNumberOfDetectionPathDevices = mLightSheetMicroscope.getDeviceLists()
-																		.getNumberOfDetectionArmDevices();
+																																		.getNumberOfDetectionArmDevices();
 
 		final int lNumberOfLightsheetDevices = mLightSheetMicroscope.getDeviceLists()
-																	.getNumberOfLightSheetDevices();
+																																.getNumberOfLightSheetDevices();
 
 		final int lNumberOfLaserDevices = mLightSheetMicroscope.getDeviceLists()
-																.getNumberOfLaserDevices();
+																														.getNumberOfLaserDevices();
 
 		for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
 		{
 			mLightSheetMicroscope.setDZ(d,
-										mCurrentAcquisitionState.getAtControlPlaneDZ(	pControlPlaneIndex,
-																						d));
+																	mCurrentAcquisitionState.getAtControlPlaneDZ(	pControlPlaneIndex,
+																																								d));
 		}
 
 		for (int l = 0; l < lNumberOfLightsheetDevices; l++)
 		{
 			mLightSheetMicroscope.setIX(l,
-										mCurrentAcquisitionState.getAtControlPlaneIX(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIX(	pControlPlaneIndex,
+																																								l));
 			mLightSheetMicroscope.setIY(l,
-										mCurrentAcquisitionState.getAtControlPlaneIY(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIY(	pControlPlaneIndex,
+																																								l));
 			mLightSheetMicroscope.setIZ(l,
-										mCurrentAcquisitionState.getAtControlPlaneIZ(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIZ(	pControlPlaneIndex,
+																																								l));
 
 			mLightSheetMicroscope.setIA(l,
-										mCurrentAcquisitionState.getAtControlPlaneIA(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIA(	pControlPlaneIndex,
+																																								l));
 			mLightSheetMicroscope.setIB(l,
-										mCurrentAcquisitionState.getAtControlPlaneIB(	pControlPlaneIndex,
-																						l));
-			mLightSheetMicroscope.setIZ(l,
-										mCurrentAcquisitionState.getAtControlPlaneIW(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIB(	pControlPlaneIndex,
+																																								l));
+			mLightSheetMicroscope.setIW(l,
+																	mCurrentAcquisitionState.getAtControlPlaneIW(	pControlPlaneIndex,
+																																								l));
 			mLightSheetMicroscope.setIH(l,
-										mCurrentAcquisitionState.getAtControlPlaneIH(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIH(	pControlPlaneIndex,
+																																								l));
 			mLightSheetMicroscope.setIP(l,
-										mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
-																						l));
+																	mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
+																																								l));
 		}
 
 		for (int i = 0; i < lNumberOfLaserDevices; i++)
 		{
 			mLightSheetMicroscope.setIP(i,
-										mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
-																						i));
+																	mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
+																																								i));
 		}
 
 	}
@@ -263,7 +262,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 	@Override
 	public void addStackMargin(	int pStackPlaneIndex,
-								int pNumberOfMarginPlanesToAdd)
+															int pNumberOfMarginPlanesToAdd)
 	{
 		this.setToStackPlane(pStackPlaneIndex);
 		mLightSheetMicroscope.setC(false);
@@ -297,7 +296,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedDZ(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
@@ -306,7 +305,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIX(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 		return lInterpolatedValue;
 	}
 
@@ -315,7 +314,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIY(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 		return lInterpolatedValue;
 	}
 
@@ -324,7 +323,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIZ(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
@@ -333,7 +332,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIA(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -343,7 +342,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIB(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -353,7 +352,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIW(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -363,7 +362,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIH(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -373,13 +372,13 @@ public class StackAcquisition implements StackAcquisitionInterface
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
 		final double lInterpolatedValue = mCurrentAcquisitionState.getInterpolatedIP(	pDeviceIndex,
-																						lRamp);
+																																									lRamp);
 
 		return lInterpolatedValue;
 	}
 
 	@Override
-	public int getBestDetectioArm(int pControlPlaneIndex)
+	public int getBestDetectionArm(int pControlPlaneIndex)
 	{
 
 		double lTransitionPlane = mCurrentAcquisitionState.getTransitionPlane();

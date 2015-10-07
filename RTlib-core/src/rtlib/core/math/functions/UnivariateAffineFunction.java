@@ -1,5 +1,8 @@
 package rtlib.core.math.functions;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.io.Serializable;
 
 import org.apache.commons.math3.exception.NoDataException;
@@ -112,8 +115,8 @@ public class UnivariateAffineFunction	implements
 		}
 		else
 		{
-			mMin = lInverse.value(mMin);
-			mMax = lInverse.value(mMax);
+			mMin = min(lInverse.value(mMin), lInverse.value(mMax));
+			mMax = max(lInverse.value(mMin), lInverse.value(mMax));
 		}
 	}
 

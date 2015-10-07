@@ -42,22 +42,27 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 		final TDoubleArrayList lIXList = new TDoubleArrayList();
 
 		
-		
+		lLSM.setILO(false);
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lMinX);
+		lLSM.setI(pLightSheetIndex);
 		lLSM.addCurrentStateToQueue();
 		lLSM.addCurrentStateToQueue();
 
+		lLSM.setILO(true);
 		lLSM.setC(true);
 		for (double x = lMinX; x <= lMaxX; x += lStepX)
 		{
 			lIXList.add(x);
 			lLSM.setIX(pLightSheetIndex, x);
+			lLSM.setI(pLightSheetIndex);
 			lLSM.addCurrentStateToQueue();
 		}
 		
+		lLSM.setILO(false);
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lCurrentX);
+		lLSM.setI(pLightSheetIndex);
 		lLSM.addCurrentStateToQueue();
 		
 		lLSM.finalizeQueue();
@@ -74,7 +79,7 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 															int pLightSheetIndex,
 															ArrayList<Double> pArgMaxList)
 	{
-		int lBestDetectioArm = getAdaptator().getStackAcquisition().getBestDetectioArm(pControlPlaneIndex);
+		int lBestDetectioArm = getAdaptator().getStackAcquisition().getBestDetectionArm(pControlPlaneIndex);
 		
 		getAdaptator().getNewAcquisitionState()
 									.setAtControlPlaneIX(	pControlPlaneIndex,

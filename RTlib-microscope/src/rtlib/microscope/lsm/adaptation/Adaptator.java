@@ -27,6 +27,8 @@ public class Adaptator implements
 
 	private volatile AcquisitionState mNewAcquisitionState;
 
+	private volatile boolean mConcurrentExecution = false;
+
 	private HashMap<Function<Void, Boolean>, Long> mTimmingMap = new HashMap<>();
 
 	public Adaptator(	LightSheetMicroscope pLightSheetMicroscope,
@@ -70,11 +72,22 @@ public class Adaptator implements
 		mNewAcquisitionState = pNewAcquisitionState;
 	}
 
+	public void set(AdaptationModuleInterface pAdaptationModule)
+	{
+		mAdaptationModuleList.clear();
+		add(pAdaptationModule);
+	}
+
 	public void add(AdaptationModuleInterface pAdaptationModule)
 	{
 		mAdaptationModuleList.add(pAdaptationModule);
 		pAdaptationModule.setAdaptator(this);
 		pAdaptationModule.reset();
+	}
+
+	public void remove(AdaptationModuleInterface pAdaptationModule)
+	{
+		mAdaptationModuleList.remove(pAdaptationModule);
 	}
 
 	public long estimateStep(TimeUnit pTimeUnit)
@@ -101,8 +114,11 @@ public class Adaptator implements
 	public void applyInitialRounds(int pNumberOfRounds)
 	{
 		for (int i = 0; i < pNumberOfRounds; i++)
+		{
+			System.out.format("Round: %d \n", i);
 			while (apply(1))
-				ThreadUtils.sleep(500, TimeUnit.MILLISECONDS);
+				ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+		}
 	}
 
 	public Boolean step()
@@ -117,6 +133,19 @@ public class Adaptator implements
 
 		System.out.format("Adaptator: step \n");
 
+		AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get((int) mCurrentAdaptationModule);
+
+		System.out.format("lAdaptationModule: %s \n", lAdaptationModule);
+
+		double lStepSize = 1.0 / lAdaptationModule.getPriority();
+
+		Boolean lHasNext = time(lAdaptationModule::apply);
+
+		mCurrentAdaptationModule = (mCurrentAdaptationModule + lStepSize);
+
+		if (mCurrentAdaptationModule >= mAdaptationModuleList.size())
+			mCurrentAdaptationModule = mCurrentAdaptationModule - mAdaptationModuleList.size();
+
 		boolean lModulesReady = isReady();
 
 		System.out.format("lModulesReady: %s \n", lModulesReady);
@@ -129,23 +158,14 @@ public class Adaptator implements
 			reset();
 			return false;
 		}
-		else
+		else if (pTimes - 1 >= 1)
 		{
-			AdaptationModuleInterface lAdaptationModule = mAdaptationModuleList.get((int) mCurrentAdaptationModule);
-
-			System.out.format("lAdaptationModule: %s \n", lAdaptationModule);
-
-			double lStepSize = 1.0 / lAdaptationModule.getPriority();
-
-			Boolean lHasNext = time(lAdaptationModule::apply);
-
-			mCurrentAdaptationModule = (mCurrentAdaptationModule + lStepSize);
-
-			if (mCurrentAdaptationModule >= mAdaptationModuleList.size())
-				mCurrentAdaptationModule = mCurrentAdaptationModule - mAdaptationModuleList.size();
-
-			return lHasNext || apply(pTimes - 1);
+			System.out.format("Modules are not yet ready, applying %d more time \n",
+												(pTimes - 1));
+			return apply(pTimes - 1);
 		}
+		else
+			return lHasNext;
 	}
 
 	private boolean time(Function<Void, Boolean> pMethod)
@@ -182,6 +202,16 @@ public class Adaptator implements
 		mCurrentAdaptationModule = 0;
 		for (AdaptationModuleInterface lAdaptationModule : mAdaptationModuleList)
 			lAdaptationModule.reset();
+	}
+
+	public boolean isConcurrentExecution()
+	{
+		return mConcurrentExecution;
+	}
+
+	public void setConcurrentExecution(boolean pConcurrentExecution)
+	{
+		mConcurrentExecution = pConcurrentExecution;
 	}
 
 }

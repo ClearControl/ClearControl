@@ -13,6 +13,8 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 															AdaptationModuleInterface
 {
 
+	private static final int cRepeats = 2;
+
 	public AdaptationW(	int pNumberOfSamples,
 						double pProbabilityThreshold)
 	{
@@ -49,11 +51,11 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		lLSM.setC(false);
 		lLSM.setILO(false);
 		lLSM.setIW(pLightSheetIndex, lMinW);
-		lLSM.addCurrentStateToQueue();
-		lLSM.addCurrentStateToQueue();
-		lLSM.addCurrentStateToQueue();
+		lLSM.setI(pLightSheetIndex);
+		for (int r = 0; r < cRepeats; r++)
+			lLSM.addCurrentStateToQueue();
 
-		lLSM.setC(true);
+
 		for (double w = lMinW; w <= lMaxW; w += lStepW)
 		{
 			lIWList.add(w);
@@ -61,18 +63,22 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 
 			lLSM.setILO(false);
 			lLSM.setC(false);
-			for (int r = 0; r < 10; r++)
+			lLSM.setI(pLightSheetIndex);
+			for (int r = 0; r < cRepeats; r++)
 				lLSM.addCurrentStateToQueue();
 
 			lLSM.setILO(true);
 			lLSM.setC(true);
+			lLSM.setI(pLightSheetIndex);
 			lLSM.addCurrentStateToQueue();
 		}
 
 		lLSM.setC(false);
 		lLSM.setILO(false);
 		lLSM.setIW(pLightSheetIndex, lCurrentW);
-		lLSM.addCurrentStateToQueue();
+		lLSM.setI(pLightSheetIndex);
+		for (int r = 0; r < cRepeats; r++)
+			lLSM.addCurrentStateToQueue();
 
 		lLSM.finalizeQueue();
 
@@ -90,7 +96,7 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 	{
 
 		int lBestDetectioArm = getAdaptator().getStackAcquisition()
-												.getBestDetectioArm(pControlPlaneIndex);
+												.getBestDetectionArm(pControlPlaneIndex);
 
 		getAdaptator().getNewAcquisitionState()
 						.setAtControlPlaneIW(	pControlPlaneIndex,

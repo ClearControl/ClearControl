@@ -191,6 +191,7 @@ public class CalibrationWP
 
 			mLightSheetMicroscope.finalizeQueue();
 
+			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
 			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
 																								TimeUnit.SECONDS);
 

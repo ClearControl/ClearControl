@@ -59,7 +59,19 @@ public class MultiPlot
 		{
 			lPlotTab = new PlotTab(pName);
 			mNameToPlotMap.put(pName, lPlotTab);
-			mTabbedPane.addTab(pName, lPlotTab.getPlot());
+
+			final PlotTab lFinalPlotTab = lPlotTab;
+			try
+			{
+				SwingUtilities.invokeAndWait(() -> {
+
+					mTabbedPane.addTab(pName, lFinalPlotTab.getPlot());
+				});
+			}
+			catch (InvocationTargetException | InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return lPlotTab;

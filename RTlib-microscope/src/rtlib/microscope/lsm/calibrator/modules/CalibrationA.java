@@ -84,13 +84,13 @@ public class CalibrationA
 			final double[] anglesM = focusA(pLightSheetIndex,
 																			lMinA,
 																			lMaxA,
-																			(lMaxA - lMinA) / (pNumberOfAngles-1),
+																			(lMaxA - lMinA) / (pNumberOfAngles - 1),
 																			-y);
 
 			final double[] anglesP = focusA(pLightSheetIndex,
 																			lMinA,
 																			lMaxA,
-																			(lMaxA - lMinA) / (pNumberOfAngles-1),
+																			(lMaxA - lMinA) / (pNumberOfAngles - 1),
 																			+y);
 
 			System.out.format("Optimal alpha angles for lighsheet at y=%g: %s \n",
@@ -110,7 +110,7 @@ public class CalibrationA
 				System.out.format("Angle values are valid, we proceed... \n");
 				for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				{
-					angles[i] += 0.5 * anglesM[i] + 0.5 * anglesP[i];
+					angles[i] += 0.5 * (anglesM[i] + anglesP[i]);
 				}
 
 				lCount++;
@@ -196,6 +196,7 @@ public class CalibrationA
 
 			mLightSheetMicroscope.finalizeQueue();
 
+			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
 			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
 																																												TimeUnit.SECONDS);
 
@@ -222,7 +223,9 @@ public class CalibrationA
 					// System.out.format("metric array: \n");
 					for (int j = 0; j < lAvgIntensityArray.length; j++)
 					{
-						lPlot.addPoint("samples", lAList.get(j), lAvgIntensityArray[j]);
+						lPlot.addPoint(	"samples",
+														lAList.get(j),
+														lAvgIntensityArray[j]);
 						/*System.out.format("%d,%d\t%g\t%g\n",
 															i,
 															j,
