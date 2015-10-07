@@ -11,92 +11,81 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLException;
-
-import cleargl.ClearGLDefaultEventListener;
-import cleargl.ClearGLWindow;
-import cleargl.GLAttribute;
-import cleargl.GLFloatArray;
-import cleargl.GLProgram;
-import cleargl.GLTexture;
-import cleargl.GLUniform;
-import cleargl.GLVertexArray;
-import cleargl.GLVertexAttributeArray;
-import coremem.ContiguousMemoryInterface;
-import coremem.offheap.OffHeapMemory;
-import coremem.types.NativeTypeEnum;
-import coremem.util.Size;
 import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.integer.ByteType;
-import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.integer.ShortType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
+import cleargl.ClearGLDefaultEventListener;
+import cleargl.ClearGLWindow;
+
+import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
+import com.jogamp.opengl.GLException;
+
+import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 
 public class VideoWindow<T extends NativeType<T>>	implements
 													AutoCloseable
 {
 
-	private static final double cEpsilon = 0.05;
+	static final double cEpsilon = 0.05;
 
-	private static final float cPercentageOfPixelsToSample = 0.01f;
+	static final float cPercentageOfPixelsToSample = 0.01f;
 
-	private static final int cMipMapLevel = 3;
+	static final int cMipMapLevel = 3;
 
-	private T mType;
-	private ClearGLWindow mClearGLWindow;
-	private volatile int mEffectiveWindowWidth,
-			mEffectiveWindowHeight;
+	T mType;
+	ClearGLWindow mClearGLWindow;
+	volatile int mEffectiveWindowWidth;
 
-	private volatile int mVideoWidth, mVideoHeight;
+	volatile int mEffectiveWindowHeight;
 
-	private volatile ContiguousMemoryInterface mSourceBuffer;
-	private volatile CountDownLatch mNotifyBufferCopy;
-	private volatile int mSourceBufferWidth, mSourceBufferHeight;
+	volatile int mVideoWidth;
 
-	private volatile ContiguousMemoryInterface mConversionBuffer;
+	volatile int mVideoHeight;
 
-	private volatile boolean mDisplayFrameRate = true,
-			mDisplayOn = true, mManualMinMax = false,
-			mMinMaxFixed = false, mIsDisplayLines = false;
+	volatile ContiguousMemoryInterface mSourceBuffer;
+	volatile CountDownLatch mNotifyBufferCopy;
+	volatile int mSourceBufferWidth;
 
-	private volatile double mMinIntensity = 0, mMaxIntensity = 1,
-			mGamma = 1;
+	volatile int mSourceBufferHeight;
 
-	private final ReentrantLock mSendBufferLock = new ReentrantLock();
+	volatile ContiguousMemoryInterface mConversionBuffer;
 
-	private GLProgram mGLProgramVideoRender;
-	private GLAttribute mPositionAttribute, mTexCoordAttribute;
-	private GLUniform mTexUnit, mMinimumUniform, mMaximumUniform,
-			mGammaUniform;
-	private GLVertexArray mQuadVertexArray;
-	private GLVertexAttributeArray mPositionAttributeArray,
-			mTexCoordAttributeArray;
-	private GLTexture mTexture;
+	private volatile boolean mDisplayFrameRate = true;
 
-	private GLProgram mGLProgramGuides;
-	private GLAttribute mGuidesPositionAttribute;
-	private GLVertexAttributeArray mXLinesPositionAttributeArray;
-	private GLVertexAttributeArray mGridPositionAttributeArray;
-	private GLVertexArray mXLinesGuidesVertexArray;
-	private GLVertexArray mGridGuidesVertexArray;
+	volatile boolean mDisplayOn = true;
 
-	private double mSampledMinIntensity, mSampledMaxIntensity;
+	volatile boolean mManualMinMax = false;
+
+	volatile boolean mMinMaxFixed = false;
+
+	private volatile boolean mIsDisplayLines = false;
+
+	volatile double mMinIntensity = 0;
+
+	volatile double mMaxIntensity = 1;
+
+	volatile double mGamma = 1;
+
+	final ReentrantLock mSendBufferLock = new ReentrantLock();
+
+
+
+	double mSampledMinIntensity;
+
+	double mSampledMaxIntensity;
 
 	private ClearGLDefaultEventListener mClearGLDebugEventListener;
 
 	// private GLPixelBufferObject mPixelBufferObject;
 
 	public VideoWindow(	final String pWindowName,
-						final T pType,
-						final int pWindowWidth,
-						final int pWindowHeight) throws GLException
+											final T pType,
+											final int pWindowWidth,
+											final int pWindowHeight) throws GLException
 	{
 		mType = pType;
 		mVideoWidth = pWindowWidth;
@@ -106,446 +95,20 @@ public class VideoWindow<T extends NativeType<T>>	implements
 		mEffectiveWindowWidth = pWindowWidth;
 		mEffectiveWindowHeight = pWindowHeight;
 
-		mClearGLDebugEventListener = new ClearGLDefaultEventListener()
-		{
-
-			@Override
-			public void init(final GLAutoDrawable pGLAutoDrawable)
-			{
-				super.init(pGLAutoDrawable);
-				try
-				{
-					final GL lGL = pGLAutoDrawable.getGL();
-					lGL.setSwapInterval(1);
-					lGL.glDisable(GL.GL_DEPTH_TEST);
-					lGL.glDisable(GL.GL_STENCIL_TEST);
-					lGL.glEnable(GL.GL_TEXTURE_2D);
-
-					lGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-					lGL.glClear(GL.GL_COLOR_BUFFER_BIT);
-
-					/*getClearGLWindow().setOrthoProjectionMatrix(0,
-																											pGLAutoDrawable.getSurfaceWidth(),
-																											0,
-																											pGLAutoDrawable.getSurfaceHeight(),
-																											0,
-																											1);/**/
-
-					final int lWidth = pGLAutoDrawable.getSurfaceWidth();
-					final int lHeight = pGLAutoDrawable.getSurfaceHeight();
-
-					setOrthoProjectionMatrixWithAspectRatio(lWidth,
-															lHeight);
-
-					mGLProgramVideoRender = GLProgram.buildProgram(	lGL,
-																	VideoWindow.class,
-																	"shaders/video.vertex.glsl",
-																	"shaders/video.fragment.glsl");
-
-					mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
-					mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
-					mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
-					mTexUnit.setInt(0);
-
-					mMinimumUniform = mGLProgramVideoRender.getUniform("minimum");
-					mMaximumUniform = mGLProgramVideoRender.getUniform("maximum");
-					mGammaUniform = mGLProgramVideoRender.getUniform("gamma");
-
-					mQuadVertexArray = new GLVertexArray(mGLProgramVideoRender);
-					mQuadVertexArray.bind();
-					mPositionAttributeArray = new GLVertexAttributeArray(	mPositionAttribute,
-																			4);
-
-					final GLFloatArray lQuadVerticesFloatArray = new GLFloatArray(	6,
-																					4);
-					lQuadVerticesFloatArray.add(-1, -1, 0, 1);
-					lQuadVerticesFloatArray.add(1, -1, 0, 1);
-					lQuadVerticesFloatArray.add(1, 1, 0, 1);
-					lQuadVerticesFloatArray.add(-1, -1, 0, 1);
-					lQuadVerticesFloatArray.add(1, 1, 0, 1);
-					lQuadVerticesFloatArray.add(-1, 1, 0, 1);
-
-					mQuadVertexArray.addVertexAttributeArray(	mPositionAttributeArray,
-																lQuadVerticesFloatArray.getFloatBuffer());
-
-					mTexCoordAttributeArray = new GLVertexAttributeArray(	mTexCoordAttribute,
-																			2);
-
-					final GLFloatArray lTexCoordFloatArray = new GLFloatArray(	6,
-																				2);
-					lTexCoordFloatArray.add(0, 0);
-					lTexCoordFloatArray.add(1, 0);
-					lTexCoordFloatArray.add(1, 1);
-					lTexCoordFloatArray.add(0, 0);
-					lTexCoordFloatArray.add(1, 1);
-					lTexCoordFloatArray.add(0, 1);
-
-					initializeTexture(mVideoWidth, mVideoHeight);
-
-					mQuadVertexArray.addVertexAttributeArray(	mTexCoordAttributeArray,
-																lTexCoordFloatArray.getFloatBuffer());
-
-					mGLProgramGuides = GLProgram.buildProgram(	lGL,
-																VideoWindow.class,
-																"shaders/guides.vertex.glsl",
-																"shaders/guides.fragment.glsl");
-
-					mGuidesPositionAttribute = mGLProgramGuides.getAtribute("position");
-
-					mXLinesPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
-																				4);
-					mXLinesGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
-					mXLinesGuidesVertexArray.bind();
-
-					final GLFloatArray lXlinesGuidesVerticesFloatArray = new GLFloatArray(	4,
-																							4);
-					lXlinesGuidesVerticesFloatArray.add(-1, -1, 0, 1);
-					lXlinesGuidesVerticesFloatArray.add(+1, +1, 0, 1);
-					lXlinesGuidesVerticesFloatArray.add(-1, +1, 0, 1);
-					lXlinesGuidesVerticesFloatArray.add(+1, -1, 0, 1);
-
-					mXLinesGuidesVertexArray.addVertexAttributeArray(	mXLinesPositionAttributeArray,
-																		lXlinesGuidesVerticesFloatArray.getFloatBuffer());
-
-					mGridPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
-																				4);
-					mGridGuidesVertexArray = new GLVertexArray(mGLProgramGuides);
-					mGridGuidesVertexArray.bind();
-
-					final GLFloatArray lGridGuidesVerticesFloatArray = new GLFloatArray(12,
-																						4);
-					final float lRatio = 0.5f;
-
-					lGridGuidesVerticesFloatArray.add(	-1.0f,
-														0,
-														0,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	+1.0f,
-														0,
-														0,
-														1.0f);
-
-					lGridGuidesVerticesFloatArray.add(	0,
-														-1.0f,
-														0,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	0,
-														+1.0f,
-														0,
-														1.0f);
-
-					lGridGuidesVerticesFloatArray.add(	-1.0f,
-														-lRatio,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	+1.0f,
-														-lRatio,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	-1.0f,
-														+lRatio,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	+1.0f,
-														+lRatio,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	-lRatio,
-														-1.0f,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	-lRatio,
-														+1.0f,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	+lRatio,
-														-1.0f,
-														0.0f,
-														1.0f);
-					lGridGuidesVerticesFloatArray.add(	+lRatio,
-														+1.0f,
-														0.0f,
-														1.0f);
-
-					mGridGuidesVertexArray.addVertexAttributeArray(	mGridPositionAttributeArray,
-																	lGridGuidesVerticesFloatArray.getFloatBuffer());
-
-				}
-				catch (final IOException e)
-				{
-					e.printStackTrace();
-				}
-
-			}
-
-			private void initializeTexture(	int pTextureWidth,
-											int pTextureHeight)
-			{
-				if (mTexture != null)
-					mTexture.close();
-
-				NativeTypeEnum lGLType = null;
-
-				if (mType instanceof ByteType)
-					lGLType = NativeTypeEnum.Byte;
-				else if (mType instanceof UnsignedByteType)
-					lGLType = NativeTypeEnum.UnsignedByte;
-				else if (mType instanceof ShortType)
-					lGLType = NativeTypeEnum.Short;
-				else if (mType instanceof UnsignedShortType)
-					lGLType = NativeTypeEnum.UnsignedShort;
-				else if (mType instanceof IntType)
-					lGLType = NativeTypeEnum.Int;
-				else if (mType instanceof UnsignedIntType)
-					lGLType = NativeTypeEnum.UnsignedInt;
-				else if (mType instanceof FloatType)
-					lGLType = NativeTypeEnum.Float;
-				else if (mType instanceof DoubleType)
-					lGLType = NativeTypeEnum.Float;
-
-				mTexture = new GLTexture(	mGLProgramVideoRender,
-											lGLType,
-											1,
-											pTextureWidth,
-											pTextureHeight,
-											1,
-											true,
-											cMipMapLevel);
-
-				mTexture.clear();
-			}
-
-			@Override
-			public void reshape(final GLAutoDrawable pGLAutoDrawable,
-								final int x,
-								final int y,
-								final int pWindowWidth,
-								final int pWindowHeight)
-			{
-				super.reshape(	pGLAutoDrawable,
-								x,
-								y,
-								pWindowWidth,
-								pWindowHeight);
-				mEffectiveWindowWidth = pWindowWidth;
-				mEffectiveWindowHeight = pWindowHeight;
-
-				final int lWidth = pWindowWidth;
-				final int lHeight = pWindowHeight;
-
-				setOrthoProjectionMatrixWithAspectRatio(lWidth,
-														lHeight);
-
-			}
-
-			private void setOrthoProjectionMatrixWithAspectRatio(	final int lWidth,
-																	final int lHeight)
-			{
-				final float lAspectRatio = (1.0f * lWidth) / lHeight;
-
-				if (lAspectRatio >= 1)
-					getClearGLWindow().setOrthoProjectionMatrix(-1,
-																1,
-																-1		/ lAspectRatio,
-																1 / lAspectRatio,
-																0,
-																1);
-				else
-					getClearGLWindow().setOrthoProjectionMatrix(-lAspectRatio,
-																lAspectRatio,
-																-1,
-																1,
-																0,
-																1);/**/
-			}
-
-			@Override
-			public void display(final GLAutoDrawable pGLAutoDrawable)
-			{
-				super.display(pGLAutoDrawable);
-				final GL lGL = pGLAutoDrawable.getGL().getGL();
-
-				// System.out.println("DISPLAY");
-				if (!mDisplayOn)
-					return;
-
-				if (mSourceBuffer != null)
-				{
-					mSendBufferLock.lock();
-					{
-						final int lBufferWidth = mSourceBufferWidth;
-						final int lBufferHeight = mSourceBufferHeight;
-						final ContiguousMemoryInterface lSourceBuffer = mSourceBuffer;
-						mSourceBuffer = null;
-
-						if (mVideoWidth != lBufferWidth || mVideoHeight != lBufferHeight
-							|| mTexture.getWidth() != lBufferWidth
-							|| mTexture.getHeight() != lBufferHeight)
-						{
-							mVideoWidth = lBufferWidth;
-							mVideoHeight = lBufferHeight;
-							initializeTexture(	mVideoWidth,
-												mVideoHeight);
-						}
-
-						if (!mMinMaxFixed)
-							fastMinMaxSampling(lSourceBuffer);
-						final ContiguousMemoryInterface lConvertedBuffer = convertBuffer(	lSourceBuffer,
-																							lBufferWidth,
-																							lBufferHeight);
-
-						mTexture.copyFrom(lConvertedBuffer);
-						mNotifyBufferCopy.countDown();
-
-					}
-					mSendBufferLock.unlock();
-				}
-
-				{
-					if (mManualMinMax)
-					{
-						mMinimumUniform.setFloat((float) mMinIntensity);
-						mMaximumUniform.setFloat((float) mMaxIntensity);
-					}
-					else
-					{
-						mMinimumUniform.setFloat((float) mSampledMinIntensity);
-						mMaximumUniform.setFloat((float) mSampledMaxIntensity);
-					}
-					mGammaUniform.setFloat((float) mGamma);
-
-					mGLProgramVideoRender.use(lGL);
-					mTexture.bind(mGLProgramVideoRender);
-					// System.out.println("DRAW");
-					mQuadVertexArray.draw(GL.GL_TRIANGLES);
-
-					if (isDisplayLines())
-					{
-						mGLProgramGuides.bind();
-						// mXLinesGuidesVertexArray.draw(GL.GL_LINES);
-						mGridGuidesVertexArray.draw(GL.GL_LINES);
-					}
-
-				}
-
-			}
-
-			private ContiguousMemoryInterface convertBuffer(ContiguousMemoryInterface pSourceBuffer,
-															int pBufferWidth,
-															int pBufferHeight)
-			{
-
-				if (mType instanceof DoubleType)
-				{
-					final int lLengthInFloats = pBufferWidth * pBufferHeight;
-					if (mConversionBuffer == null || mConversionBuffer.getSizeInBytes() != lLengthInFloats * Size.FLOAT)
-					{
-						if (mConversionBuffer != null)
-							mConversionBuffer.free();
-
-						mConversionBuffer = OffHeapMemory.allocateFloats(lLengthInFloats);
-					}
-
-					for (int i = 0; i < lLengthInFloats; i++)
-					{
-						final double lValue = pSourceBuffer.getDoubleAligned(i);
-						mConversionBuffer.setFloatAligned(	i,
-															(float) lValue);
-					}
-
-					return mConversionBuffer;
-				}
-
-				return pSourceBuffer;
-			}
-
-			private void fastMinMaxSampling(final ContiguousMemoryInterface pSourceBuffer)
-			{
-				final long lLength = mSourceBufferWidth * mSourceBufferHeight;
-				final int lStep = 1 + round(cPercentageOfPixelsToSample * lLength);
-				final int lStartPixel = (int) round(random() * lStep);
-
-				double lMin = Double.POSITIVE_INFINITY;
-				double lMax = Double.NEGATIVE_INFINITY;
-
-				if (mType instanceof UnsignedByteType)
-					for (int i = lStartPixel; i < lLength; i += lStep)
-					{
-						final double lValue = (0xFF & pSourceBuffer.getByteAligned(i)) / 255d;
-						lMin = min(lMin, lValue);
-						lMax = max(lMax, lValue);
-					}
-				else if (mType instanceof UnsignedShortType)
-					for (int i = lStartPixel; i < lLength; i += lStep)
-					{
-						final double lValue = (0xFFFF & pSourceBuffer.getCharAligned(i)) / 65535d;
-						lMin = min(lMin, lValue);
-						lMax = max(lMax, lValue);
-					}
-				else if (mType instanceof UnsignedIntType)
-					for (int i = lStartPixel; i < lLength; i += lStep)
-					{
-						final double lValue = (0xFFFFFFFF & pSourceBuffer.getIntAligned(i)) / 4294967296d;
-						lMin = min(lMin, lValue);
-						lMax = max(lMax, lValue);
-					}
-				else if (mType instanceof FloatType)
-					for (int i = lStartPixel; i < lLength; i += lStep)
-					{
-						final float lFloatAligned = pSourceBuffer.getFloatAligned(i);
-						lMin = min(lMin, lFloatAligned);
-						lMax = max(lMax, lFloatAligned);
-					}
-				else if (mType instanceof DoubleType)
-					for (int i = lStartPixel; i < lLength; i += lStep)
-					{
-						final double lDoubleAligned = pSourceBuffer.getDoubleAligned(i);
-						lMin = min(lMin, lDoubleAligned);
-						lMax = max(lMax, lDoubleAligned);
-					}
-
-				mSampledMinIntensity = (1 - cEpsilon) * mSampledMinIntensity
-										+ cEpsilon
-										* lMin;
-				mSampledMaxIntensity = (1 - cEpsilon) * mSampledMaxIntensity
-										+ cEpsilon
-										* lMax;
-
-				// System.out.println("mSampledMinIntensity=" +
-				// mSampledMinIntensity);
-				// System.out.println("mSampledMaxIntensity=" +
-				// mSampledMaxIntensity);
-			}
-
-			@Override
-			public void dispose(final GLAutoDrawable pGLAutoDrawable)
-			{
-				super.dispose(pGLAutoDrawable);
-			}
-
-			@Override
-			public void setClearGLWindow(ClearGLWindow pClearGLWindow)
-			{
-				mClearGLWindow = pClearGLWindow;
-			}
-
-			@Override
-			public ClearGLWindow getClearGLWindow()
-			{
-				return mClearGLWindow;
-			}
-		};
+		mClearGLDebugEventListener = new ClearGLDebugEventListenerForVideoWindow<T>(this);
 
 		mClearGLWindow = new ClearGLWindow(	pWindowName,
-											pWindowWidth,
-											pWindowHeight,
-											mClearGLDebugEventListener);
+																				pWindowWidth,
+																				pWindowHeight,
+																				mClearGLDebugEventListener);
 		mClearGLDebugEventListener.setClearGLWindow(mClearGLWindow);
 
 		final MouseControl lMouseControl = new MouseControl(this);
 		mClearGLWindow.addMouseListener(lMouseControl);
 		final KeyboardControl lKeyboardControl = new KeyboardControl(this);
 		mClearGLWindow.addKeyListener(lKeyboardControl);
+
+
 	}
 
 	public void setWindowSize(int pWindowWidth, int pWindowHeigth)
@@ -746,6 +309,64 @@ public class VideoWindow<T extends NativeType<T>>	implements
 	public int getEffectiveWindowHeight()
 	{
 		return mEffectiveWindowHeight;
+	}
+
+	public void fastMinMaxSampling(final ContiguousMemoryInterface pSourceBuffer)
+	{
+		final long lLength = this.mSourceBufferWidth * this.mSourceBufferHeight;
+		final int lStep = 1 + round(VideoWindow.cPercentageOfPixelsToSample * lLength);
+		final int lStartPixel = (int) round(random() * lStep);
+
+		double lMin = Double.POSITIVE_INFINITY;
+		double lMax = Double.NEGATIVE_INFINITY;
+
+		if (this.mType instanceof UnsignedByteType)
+			for (int i = lStartPixel; i < lLength; i += lStep)
+			{
+				final double lValue = (0xFF & pSourceBuffer.getByteAligned(i)) / 255d;
+				lMin = min(lMin, lValue);
+				lMax = max(lMax, lValue);
+			}
+		else if (this.mType instanceof UnsignedShortType)
+			for (int i = lStartPixel; i < lLength; i += lStep)
+			{
+				final double lValue = (0xFFFF & pSourceBuffer.getCharAligned(i)) / 65535d;
+				lMin = min(lMin, lValue);
+				lMax = max(lMax, lValue);
+			}
+		else if (this.mType instanceof UnsignedIntType)
+			for (int i = lStartPixel; i < lLength; i += lStep)
+			{
+				final double lValue = (0xFFFFFFFF & pSourceBuffer.getIntAligned(i)) / 4294967296d;
+				lMin = min(lMin, lValue);
+				lMax = max(lMax, lValue);
+			}
+		else if (this.mType instanceof FloatType)
+			for (int i = lStartPixel; i < lLength; i += lStep)
+			{
+				final float lFloatAligned = pSourceBuffer.getFloatAligned(i);
+				lMin = min(lMin, lFloatAligned);
+				lMax = max(lMax, lFloatAligned);
+			}
+		else if (this.mType instanceof DoubleType)
+			for (int i = lStartPixel; i < lLength; i += lStep)
+			{
+				final double lDoubleAligned = pSourceBuffer.getDoubleAligned(i);
+				lMin = min(lMin, lDoubleAligned);
+				lMax = max(lMax, lDoubleAligned);
+			}
+
+		this.mSampledMinIntensity = (1 - VideoWindow.cEpsilon) * this.mSampledMinIntensity
+																+ VideoWindow.cEpsilon
+																* lMin;
+		this.mSampledMaxIntensity = (1 - VideoWindow.cEpsilon) * this.mSampledMaxIntensity
+																	+ VideoWindow.cEpsilon
+																	* lMax;
+
+		// System.out.println("mSampledMinIntensity=" +
+		// mSampledMinIntensity);
+		// System.out.println("mSampledMaxIntensity=" +
+		// mSampledMaxIntensity);
 	}
 
 }

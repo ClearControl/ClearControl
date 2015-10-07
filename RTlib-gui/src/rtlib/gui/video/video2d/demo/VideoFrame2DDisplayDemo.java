@@ -61,7 +61,7 @@ public class VideoFrame2DDisplayDemo
 							.setValue(true);
 		lVideoDisplayDevice.open();
 
-		final int lSizeX = 128;
+		final int lSizeX = 2048;
 		final int lSizeY = lSizeX;
 		final int lSizeZ = 16;
 
@@ -86,7 +86,7 @@ public class VideoFrame2DDisplayDemo
 					lStackVariable.setReference(lStack);
 					// System.out.println(lStack);
 				}
-				ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+				ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
 			}
 		};
 

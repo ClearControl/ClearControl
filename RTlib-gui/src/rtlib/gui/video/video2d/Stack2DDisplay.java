@@ -9,6 +9,7 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -29,7 +30,8 @@ import coremem.ContiguousMemoryInterface;
 
 public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																																										NamedVirtualDevice implements
-																																																			StackDisplayInterface<T, A>
+																																																			StackDisplayInterface<T, A>,
+																																																			AsynchronousSchedulerServiceAccess
 {
 	private final VideoWindow<T> mVideoWindow;
 
@@ -262,6 +264,39 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 		mStackSliceNormalizedIndex = new DoubleVariable("StackSliceNormalizedIndex",
 																										Double.NaN);
+
+		Runnable lAutoRescaleRunnable = () -> {
+			boolean lTryLock = false;
+			try
+			{
+				lTryLock = mDisplayLock.tryLock(1, TimeUnit.MILLISECONDS);
+				if (lTryLock && mReceivedStackCopy != null)
+				{
+					int lStackZIndex = getCurrentStackPlaneIndex(mReceivedStackCopy);
+					ContiguousMemoryInterface lContiguousMemory = mReceivedStackCopy.getContiguousMemory(lStackZIndex);
+
+					if (mVideoWindow != null)
+						mVideoWindow.fastMinMaxSampling(lContiguousMemory);
+
+				}
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				if (lTryLock)
+					mDisplayLock.unlock();
+			}
+
+		};
+
+		scheduleAtFixedRate(lAutoRescaleRunnable,
+												10,
+												TimeUnit.MILLISECONDS);
+		/**/
+
 	}
 
 	private void displayStack(final StackInterface<T, A> pStack,
@@ -293,13 +328,7 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 				if (lStackDepth > 1)
 				{
 
-					int lStackZIndex = (int) (mStackSliceNormalizedIndex.getValue() * lStackDepth);
-					if (lStackZIndex < 0)
-						lStackZIndex = 0;
-					else if (lStackZIndex >= lStackDepth)
-						lStackZIndex = lStackDepth - 1;
-					else if (Double.isNaN(lStackZIndex))
-						lStackZIndex = (int) Math.round(lStackDepth / 2.0);
+					int lStackZIndex = getCurrentStackPlaneIndex(pStack);
 
 					final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory(lStackZIndex);
 					mVideoWindow.sendBuffer(lContiguousMemory,
@@ -322,6 +351,20 @@ public class Stack2DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			mDisplayLock.unlock();
 		}
 
+	}
+
+	public int getCurrentStackPlaneIndex(StackInterface<T, A> pStack)
+	{
+		long lStackDepth = pStack.getDepth();
+
+		int lStackZIndex = (int) (mStackSliceNormalizedIndex.getValue() * lStackDepth);
+		if (lStackZIndex < 0)
+			lStackZIndex = 0;
+		else if (lStackZIndex >= lStackDepth)
+			lStackZIndex = (int) (lStackDepth - 1);
+		else if (Double.isNaN(lStackZIndex))
+			lStackZIndex = (int) Math.round(lStackDepth / 2.0);
+		return lStackZIndex;
 	}
 
 	@Override
