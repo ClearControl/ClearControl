@@ -26,8 +26,8 @@ import com.jogamp.opengl.GLException;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
-public class VideoWindow<T extends NativeType<T>>	implements
-													AutoCloseable
+public class VideoWindow<T extends NativeType<T>> implements
+																									AutoCloseable
 {
 
 	static final double cEpsilon = 0.01;
@@ -72,8 +72,6 @@ public class VideoWindow<T extends NativeType<T>>	implements
 
 	final ReentrantLock mSendBufferLock = new ReentrantLock();
 
-
-
 	double mSampledMinIntensity;
 
 	double mSampledMaxIntensity;
@@ -108,7 +106,6 @@ public class VideoWindow<T extends NativeType<T>>	implements
 		final KeyboardControl lKeyboardControl = new KeyboardControl(this);
 		mClearGLWindow.addKeyListener(lKeyboardControl);
 
-
 	}
 
 	public void setWindowSize(int pWindowWidth, int pWindowHeigth)
@@ -137,8 +134,8 @@ public class VideoWindow<T extends NativeType<T>>	implements
 	}
 
 	public void sendBuffer(	ContiguousMemoryInterface pSourceDataObject,
-							int pWidth,
-							int pHeight)
+													int pWidth,
+													int pHeight)
 	{
 		mSendBufferLock.lock();
 		{
@@ -356,12 +353,18 @@ public class VideoWindow<T extends NativeType<T>>	implements
 				lMax = max(lMax, lDoubleAligned);
 			}
 
+		if (!Double.isFinite(this.mSampledMinIntensity))
+			this.mSampledMinIntensity = 0;
+
+		if (!Double.isFinite(this.mSampledMaxIntensity))
+			this.mSampledMaxIntensity = 1;
+
 		this.mSampledMinIntensity = (1 - VideoWindow.cEpsilon) * this.mSampledMinIntensity
 																+ VideoWindow.cEpsilon
 																* lMin;
 		this.mSampledMaxIntensity = (1 - VideoWindow.cEpsilon) * this.mSampledMaxIntensity
-																	+ VideoWindow.cEpsilon
-																	* lMax;
+																+ VideoWindow.cEpsilon
+																* lMax;
 
 		// System.out.println("mSampledMinIntensity=" +
 		// mSampledMinIntensity);

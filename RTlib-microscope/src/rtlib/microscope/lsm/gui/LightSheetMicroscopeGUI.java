@@ -82,6 +82,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 
 			final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lStackCameraDevice = mLightSheetMicroscope.getDeviceLists()
 																																																												.getStackCameraDevice(i);
+
 			final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2DDisplay = new Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 2D - " + lStackCameraDevice.getName(),
 																																																																							new UnsignedShortType(),
 																																																																							cDefaultWindowWidth,
@@ -96,7 +97,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice
 																																																																							new UnsignedShortType(),
 																																																																							cDefaultWindowWidth,
 																																																																							cDefaultWindowHeight,
-																																																																							lNumberOfCameras,
+																																																																							1, // FIX
 																																																																							10);
 			mStack3DVideoDevice = lStack3DDisplay;
 		}

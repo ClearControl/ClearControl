@@ -200,58 +200,9 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public void setToControlPlane(int pControlPlaneIndex)
 	{
-		final int lNumberOfDetectionPathDevices = mLightSheetMicroscope.getDeviceLists()
-																																		.getNumberOfDetectionArmDevices();
-
-		final int lNumberOfLightsheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfLightSheetDevices();
-
-		final int lNumberOfLaserDevices = mLightSheetMicroscope.getDeviceLists()
-																														.getNumberOfLaserDevices();
-
-		for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
-		{
-			mLightSheetMicroscope.setDZ(d,
-																	mCurrentAcquisitionState.getAtControlPlaneDZ(	pControlPlaneIndex,
-																																								d));
-		}
-
-		for (int l = 0; l < lNumberOfLightsheetDevices; l++)
-		{
-			mLightSheetMicroscope.setIX(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIX(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIY(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIY(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIZ(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIZ(	pControlPlaneIndex,
-																																								l));
-
-			mLightSheetMicroscope.setIA(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIA(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIB(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIB(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIW(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIW(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIH(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIH(	pControlPlaneIndex,
-																																								l));
-			mLightSheetMicroscope.setIP(l,
-																	mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
-																																								l));
-		}
-
-		for (int i = 0; i < lNumberOfLaserDevices; i++)
-		{
-			mLightSheetMicroscope.setIP(i,
-																	mCurrentAcquisitionState.getAtControlPlaneIP(	pControlPlaneIndex,
-																																								i));
-		}
-
+		double lControlPlaneZ = getControlPlaneZ(pControlPlaneIndex);
+		int lStackPlaneIndex = getPlaneIndexForZRamp(lControlPlaneZ);
+		setToStackPlane(lStackPlaneIndex);
 	}
 
 	@Override
