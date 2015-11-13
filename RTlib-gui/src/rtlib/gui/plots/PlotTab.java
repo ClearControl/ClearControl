@@ -1,5 +1,7 @@
 package rtlib.gui.plots;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import java.awt.HeadlessException;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -7,8 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.math.plot.Plot2DPanel;
-
-import gnu.trove.list.array.TDoubleArrayList;
 
 public class PlotTab
 {

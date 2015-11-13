@@ -106,9 +106,9 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 			final int lCurrentThreadPriority = lCurrentThread.getPriority();
 			lCurrentThread.setPriority(Thread.MAX_PRIORITY);
 			mIsPlaying = true;
-			System.out.println("Symphony: playQueue() begin");
+			// System.out.println("Symphony: playQueue() begin");
 			final boolean lPlayed = playScore(getQueuedScore());
-			System.out.println("Symphony: playQueue() end");
+			// System.out.println("Symphony: playQueue() end");
 			mIsPlaying = false;
 			lCurrentThread.setPriority(lCurrentThreadPriority);
 			return lPlayed;

@@ -1,13 +1,16 @@
 package rtlib.lasers.gui;
 
-import eu.hansolo.enzo.common.SymbolType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.gauge.RadialBargraph;
 import eu.hansolo.enzo.gauge.RadialBargraphBuilder;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,15 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
-
 import javafx.stage.Stage;
-import eu.hansolo.enzo.common.Marker;
-
 import window.util.WavelengthColors;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Laser Gauge Controls

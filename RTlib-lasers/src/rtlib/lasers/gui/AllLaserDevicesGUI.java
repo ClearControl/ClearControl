@@ -1,30 +1,17 @@
 package rtlib.lasers.gui;
 
-import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.miginfocom.swing.MigLayout;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.gui.swing.JCheckBoxBoolean;
-import rtlib.gui.swing.JSliderDouble;
-import rtlib.gui.swing.JSliderIndexedStrings;
 import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.devices.hub.LasertHubDevice;
 
 public class AllLaserDevicesGUI extends Application
 {

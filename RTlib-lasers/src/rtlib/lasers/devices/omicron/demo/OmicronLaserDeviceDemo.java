@@ -12,10 +12,12 @@ import rtlib.lasers.devices.omicron.OmicronLaserDevice;
 public class OmicronLaserDeviceDemo
 {
 
+	private static final String cCOMPORT = "COM8";
+
 	@Test
 	public void testOn() throws InterruptedException
 	{
-		final OmicronLaserDevice lOmicronLaserDevice = new OmicronLaserDevice("COM4");
+		final OmicronLaserDevice lOmicronLaserDevice = new OmicronLaserDevice(cCOMPORT);
 
 		assertTrue(lOmicronLaserDevice.open());
 
@@ -47,7 +49,7 @@ public class OmicronLaserDeviceDemo
 	@Test
 	public void testRamp() throws InterruptedException
 	{
-		final OmicronLaserDevice lOmicronLaserDevice = new OmicronLaserDevice("COM4");
+		final OmicronLaserDevice lOmicronLaserDevice = new OmicronLaserDevice(cCOMPORT);
 
 		assertTrue(lOmicronLaserDevice.open());
 

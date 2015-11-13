@@ -36,6 +36,12 @@ public class AutoImport
 									lClassName,
 									lFullyQualifiedNames);
 			}
+			else if (lFullyQualifiedNames.size() == 1)
+			{
+				System.err.format("Could not resolve %s !\n",
+													lClassName,
+													lFullyQualifiedNames);
+			}
 		}
 
 		return lImportStatements.toString();

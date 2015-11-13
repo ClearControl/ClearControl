@@ -1,5 +1,9 @@
 package rtlib.stack;
 
+import net.imglib2.img.NativeImg;
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
+
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
@@ -8,9 +12,6 @@ import coremem.interfaces.SizedInBytes;
 import coremem.interfaces.Typed;
 import coremem.recycling.RecyclableInterface;
 import coremem.rgc.Freeable;
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 
 public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																						RecyclableInterface<StackInterface<T, A>, StackRequest<T>>,
@@ -66,6 +67,8 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 	FragmentedMemoryInterface getFragmentedMemory();
 
 	void copyMetaDataFrom(StackInterface<T, A> pStack);
+
+	StackInterface<T, A> allocateSameSize();
 
 	StackInterface<T, A> duplicate();
 

@@ -1,26 +1,32 @@
 package rtlib.optomech.opticalswitch.devices.arduino;
 
 import rtlib.core.configuration.MachineConfiguration;
+import rtlib.core.device.SwitchingDeviceInterface;
+import rtlib.core.variable.VariableSetListener;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.optomech.OpticalSwitchDeviceInterface;
+import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
 
-public class ArduinoOpticalSwitchDevice extends SerialDevice	implements
-															OpticalSwitchDeviceInterface
+public class ArduinoOpticalSwitchDevice extends SerialDevice implements
+																														SwitchingDeviceInterface,
+																														OptoMechDeviceInterface
 {
 
-	private final DoubleVariable mPositionVariable;
+	private final DoubleVariable mCommandVariable;
 
-	private static final int cAllClosed = 100;
-	private static final int cAllOpened = 200;
+	private final BooleanVariable[] mLightSheetOnOff;
+
+	private static final int cAllClosed = 0;
+	private static final int cAllOpened = 100;
 
 	public ArduinoOpticalSwitchDevice(final int pDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
-									.getSerialDevicePort(	"fiberswitch.optojena",
-															pDeviceIndex,
-															"NULL"));
+															.getSerialDevicePort(	"fiberswitch.optojena",
+																										pDeviceIndex,
+																										"NULL"));
 	}
 
 	public ArduinoOpticalSwitchDevice(final String pPortName)
@@ -29,8 +35,42 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice	implements
 
 		final ArduinoOpticalSwitchPositionAdapter lFiberSwitchPosition = new ArduinoOpticalSwitchPositionAdapter(this);
 
-		mPositionVariable = addSerialDoubleVariable("OpticalSwitchPosition",
-													lFiberSwitchPosition);
+		mCommandVariable = addSerialDoubleVariable(	"OpticalSwitchPosition",
+																								lFiberSwitchPosition);
+
+		mLightSheetOnOff = new BooleanVariable[4];
+
+		final VariableSetListener<Double> lBooleanVariableListener = (u,
+																																	v) -> {
+
+			int lCount = 0;
+			for (int i = 0; i < mLightSheetOnOff.length; i++)
+				if (mLightSheetOnOff[i].getBooleanValue())
+					lCount++;
+
+			if (lCount == 1)
+			{
+				for (int i = 0; i < mLightSheetOnOff.length; i++)
+					if (mLightSheetOnOff[i].getBooleanValue())
+						mCommandVariable.setValue(101 + i);
+			}
+			else
+				for (int i = 0; i < mLightSheetOnOff.length; i++)
+				{
+					boolean lOn = mLightSheetOnOff[i].getBooleanValue();
+					mCommandVariable.setValue((i + 1) * (lOn ? 1 : -1));
+				}
+		};
+
+		for (int i = 0; i < mLightSheetOnOff.length; i++)
+		{
+
+			mLightSheetOnOff[i] = new BooleanVariable(String.format("LightSheet%dOnOff",
+																															i),
+																								false);
+			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
+
+		}
 
 	}
 
@@ -38,7 +78,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice	implements
 	public boolean open()
 	{
 		final boolean lIsOpened = super.open();
-		setPosition(cAllClosed);
+		mCommandVariable.setValue(cAllClosed);
 
 		return lIsOpened;
 	}
@@ -47,34 +87,21 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice	implements
 	public boolean close()
 	{
 		final boolean lIsClosed = super.close();
-		setPosition(cAllClosed);
+		mCommandVariable.setValue(cAllClosed);
 
 		return lIsClosed;
 	}
 
 	@Override
-	public DoubleVariable getPositionVariable()
+	public int getNumberOfSwitches()
 	{
-		return mPositionVariable;
+		return 4;
 	}
 
 	@Override
-	public int getPosition()
+	public BooleanVariable getSwitchingVariable(int pSwitchIndex)
 	{
-		return (int) mPositionVariable.getValue();
-	}
-
-	@Override
-	public void setPosition(int pPosition)
-	{
-		mPositionVariable.set((double) pPosition);
-	}
-
-	@Override
-	public int[] getValidPositions()
-	{
-		return new int[]
-		{ 0, 1, 2, 3, cAllClosed, cAllOpened };
+		return mLightSheetOnOff[pSwitchIndex];
 	}
 
 }

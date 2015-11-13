@@ -24,8 +24,6 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-gui')
     compile project(':RTlib-serial')
-    compile 'net.halcyon:Halcyon:0.1.0'
-    compile 'eu.hansolo.enzo:Enzo:0.3.1'
 }
 
 repositories {
