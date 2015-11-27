@@ -1,4 +1,4 @@
-package rtlib.microscope.lightsheet.demo;
+package rtlib.microscope.lsm.gui.halcyon.demo;
 
 import model.javafx.FxHalcyonNode;
 import model.node.HalcyonNodeType;
