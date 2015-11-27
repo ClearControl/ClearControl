@@ -6,7 +6,6 @@ import org.python.google.common.collect.Lists;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
-import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.StackRecyclerManager;
@@ -29,30 +28,26 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by moon on 11/25/15.
  */
-public class Microscope
+public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 {
 	// For the simulation microscope
 	// 1. Laser
 	// 2. LightSheet
 	// 3. StackCamera
 	// 4. Stage
-	private final LightSheetMicroscopeDeviceLists mLSMDeviceLists;
-	private final StackRecyclerManager mStackRecyclerManager;
-	private volatile int mNumberOfEnqueuedStates;
-	private volatile long mAverageTimeInNS;
 
 	private static final double cImageResolution = 2048;
 
-	public Microscope()
+	public LightSheetMicroscopeSimulator()
 	{
-		mLSMDeviceLists = new LightSheetMicroscopeDeviceLists();
-		mStackRecyclerManager = new StackRecyclerManager();
+		super("Simulator");
+	}
 
+	public void init()
+	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera =
 				new StackCameraDeviceSimulator<>(	null, new UnsignedShortType(), lSignalGeneratorDevice.getTriggerVariable());
-
-		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
 		ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras =
 				Lists.newArrayList( lCamera );
@@ -77,12 +72,12 @@ public class Microscope
 			camera.getExposureInMicrosecondsVariable()
 					.setValue(5000);
 
-			lLightSheetMicroscope.getDeviceLists()
+			this.getDeviceLists()
 					.addStackCameraDevice(	camera, lStackIdentityPipeline );
 		}
 
 
-		lLightSheetMicroscope.getDeviceLists().addSignalGeneratorDevice( lSignalGeneratorDevice );
+		this.getDeviceLists().addSignalGeneratorDevice( lSignalGeneratorDevice );
 
 		// Setting up staging movements:
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
@@ -100,7 +95,7 @@ public class Microscope
 		{
 			final DetectionArm lDetectionArm = new DetectionArm("demodetpath" + i);
 
-			lLightSheetMicroscope.getDeviceLists().addDetectionArmDevice( lDetectionArm );
+			this.getDeviceLists().addDetectionArmDevice( lDetectionArm );
 
 //			lDetectionArm.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 //			lDetectionArm.addStavesToExposureMovement(lExposureMovement);
@@ -115,7 +110,7 @@ public class Microscope
 					9.4,
 					512,
 					2);
-			lLightSheetMicroscope.getDeviceLists()
+			this.getDeviceLists()
 					.addLightSheetDevice(lLightSheet);
 
 			lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration( TimeUnit.NANOSECONDS),
@@ -137,12 +132,12 @@ public class Microscope
 		}
 
 		// setting up scope GUI:
-		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope, false );
+		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	this, false );
 
 		lGUI.open();
 
 
-		lLightSheetMicroscope.open();
+		this.open();
 
 		if (lGUI != null)
 			lGUI.connectGUI();
@@ -158,7 +153,7 @@ public class Microscope
 		while (lVisualizer.isVisible())
 		{
 			System.out.println("playQueue!");
-			final FutureBooleanList lPlayQueue = lLightSheetMicroscope.playQueue();
+			final FutureBooleanList lPlayQueue = this.playQueue();
 
 			System.out.print("waiting...");
 			final Boolean lBoolean;
@@ -181,13 +176,14 @@ public class Microscope
 		}
 
 
-		lLightSheetMicroscope.close();
+		this.close();
 		if (lGUI != null)
 			lGUI.close();
 	}
 
 	public static void main(String[] args)
 	{
-		new Microscope();
+		LightSheetMicroscopeSimulator sim = new LightSheetMicroscopeSimulator();
+		sim.init();
 	}
 }
