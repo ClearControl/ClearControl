@@ -22,11 +22,22 @@ sourceSets
 dependencies
         {
             compile project(':RTlib-core')
+            compile project(':RTlib-ao')
+            compile project(':RTlib-microscope')
+            compile project(':RTlib-cameras')
+            compile project(':RTlib-compression')
+            compile project(':RTlib-optomech')
             compile project(':RTlib-gui')
-            compile project(':RTlib-serial')
+            compile project(':RTlib-imglib2')
+            compile project(':RTlib-ip')
             compile project(':RTlib-lasers')
-            compile 'net.halcyon:Halcyon:0.1.1'
-            compile 'eu.hansolo.enzo:Enzo:0.3.1'
+            compile project(':RTlib-ocl')
+            compile project(':RTlib-scripting')
+            compile project(':RTlib-sensors')
+            compile project(':RTlib-serial')
+            compile project(':RTlib-stack')
+            compile project(':RTlib-symphony')
+            compile project(':RTlib-stages')
         }
 
 repositories {
