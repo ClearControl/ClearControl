@@ -6,13 +6,16 @@ import org.python.google.common.collect.Lists;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
+import rtlib.lasers.devices.sim.LaserDeviceSimulator;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.StackRecyclerManager;
 import rtlib.microscope.lsm.component.detection.DetectionArm;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
+import rtlib.microscope.lsm.gui.halcyon.HalcyonMicroscopeGUI;
 import rtlib.stack.processor.StackIdentityPipeline;
+import rtlib.stages.devices.sim.StageDeviceSimulator;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
 import rtlib.symphony.gui.ScoreVisualizerJFrame;
@@ -35,7 +38,6 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 	// 2. LightSheet
 	// 3. StackCamera
 	// 4. Stage
-
 	private static final double cImageResolution = 2048;
 
 	public LightSheetMicroscopeSimulator()
@@ -131,54 +133,62 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 //							.getValue());
 		}
 
+		LaserDeviceSimulator laser = new LaserDeviceSimulator( "1", 1, 405, 60 );
+		this.getDeviceLists().addLaserDevice( laser );
+
+		StageDeviceSimulator stage = new StageDeviceSimulator( "1" );
+		this.getDeviceLists().addStageDevice( stage );
+
+		HalcyonMicroscopeGUI manager = new HalcyonMicroscopeGUI( this );
+
 		// setting up scope GUI:
-		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	this, false );
-
-		lGUI.open();
-
-
-		this.open();
-
-		if (lGUI != null)
-			lGUI.connectGUI();
-
-
-//		System.out.println("Start building queue");
+//		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	this, false );
 //
-//		for (int i = 0; i < 128; i++)
-//			lLightSheetMicroscope.addCurrentStateToQueue();
-//		lLightSheetMicroscope.finalizeQueue();
-//		System.out.println("finished building queue");
-
-		while (lVisualizer.isVisible())
-		{
-			System.out.println("playQueue!");
-			final FutureBooleanList lPlayQueue = this.playQueue();
-
-			System.out.print("waiting...");
-			final Boolean lBoolean;
-			try
-			{
-				lBoolean = lPlayQueue.get();
-				System.out.print(" ...done!");
-				System.out.println(lBoolean);
-				Thread.sleep(4000);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-			catch (ExecutionException e)
-			{
-				e.printStackTrace();
-			}
-
-		}
-
-
-		this.close();
-		if (lGUI != null)
-			lGUI.close();
+//		lGUI.open();
+//
+//
+//		this.open();
+//
+//		if (lGUI != null)
+//			lGUI.connectGUI();
+//
+//
+////		System.out.println("Start building queue");
+////
+////		for (int i = 0; i < 128; i++)
+////			lLightSheetMicroscope.addCurrentStateToQueue();
+////		lLightSheetMicroscope.finalizeQueue();
+////		System.out.println("finished building queue");
+//
+//		while (lVisualizer.isVisible())
+//		{
+//			System.out.println("playQueue!");
+//			final FutureBooleanList lPlayQueue = this.playQueue();
+//
+//			System.out.print("waiting...");
+//			final Boolean lBoolean;
+//			try
+//			{
+//				lBoolean = lPlayQueue.get();
+//				System.out.print(" ...done!");
+//				System.out.println(lBoolean);
+//				Thread.sleep(4000);
+//			}
+//			catch (InterruptedException e)
+//			{
+//				e.printStackTrace();
+//			}
+//			catch (ExecutionException e)
+//			{
+//				e.printStackTrace();
+//			}
+//
+//		}
+//
+//
+//		this.close();
+//		if (lGUI != null)
+//			lGUI.close();
 	}
 
 	public static void main(String[] args)
