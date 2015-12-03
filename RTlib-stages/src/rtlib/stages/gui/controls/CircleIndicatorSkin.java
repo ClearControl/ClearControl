@@ -10,7 +10,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -20,7 +19,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -47,7 +45,7 @@ import javafx.css.Styleable;
 /**
  * Created by moon on 12/2/15.
  */
-public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, BehaviorBase<RadianIndicator>>
+public class CircleIndicatorSkin extends BehaviorSkinBase<CircleIndicator, BehaviorBase<CircleIndicator>>
 {
 	/***************************************************************************
 	 *                                                                         *
@@ -70,58 +68,58 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 	 *                                                                         *
 	 **************************************************************************/
 
-	private static final CssMetaData<RadianIndicator, Paint> PROGRESS_COLOR =
-			new CssMetaData<RadianIndicator, Paint>( "-fx-progress-color",
+	private static final CssMetaData<CircleIndicator, Paint> PROGRESS_COLOR =
+			new CssMetaData<CircleIndicator, Paint>( "-fx-progress-color",
 					PaintConverter.getInstance(), null )
 			{
 
 				@Override
-				public boolean isSettable( RadianIndicator n )
+				public boolean isSettable( CircleIndicator n )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) n.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
 					return skin.progressColor == null ||
 							!skin.progressColor.isBound();
 				}
 
 				@Override
-				public StyleableProperty<Paint> getStyleableProperty( RadianIndicator n )
+				public StyleableProperty<Paint> getStyleableProperty( CircleIndicator n )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) n.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
 					return (StyleableProperty<Paint>) (WritableValue<Paint>) skin.progressColor;
 				}
 			};
-	private static final CssMetaData<RadianIndicator, Number> INDETERMINATE_SEGMENT_COUNT =
-			new CssMetaData<RadianIndicator, Number>( "-fx-indeterminate-segment-count",
+	private static final CssMetaData<CircleIndicator, Number> INDETERMINATE_SEGMENT_COUNT =
+			new CssMetaData<CircleIndicator, Number>( "-fx-indeterminate-segment-count",
 					SizeConverter.getInstance(), 8 )
 			{
 
-				@Override public boolean isSettable( RadianIndicator n )
+				@Override public boolean isSettable( CircleIndicator n )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) n.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
 					return skin.indeterminateSegmentCount == null ||
 							!skin.indeterminateSegmentCount.isBound();
 				}
 
-				@Override public StyleableProperty<Number> getStyleableProperty( RadianIndicator n )
+				@Override public StyleableProperty<Number> getStyleableProperty( CircleIndicator n )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) n.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
 					return (StyleableProperty<Number>) (WritableValue<Number>) skin.indeterminateSegmentCount;
 				}
 			};
-	private static final CssMetaData<RadianIndicator, Boolean> SPIN_ENABLED =
-			new CssMetaData<RadianIndicator, Boolean>( "-fx-spin-enabled", BooleanConverter.getInstance(),
+	private static final CssMetaData<CircleIndicator, Boolean> SPIN_ENABLED =
+			new CssMetaData<CircleIndicator, Boolean>( "-fx-spin-enabled", BooleanConverter.getInstance(),
 					Boolean.FALSE )
 			{
 
-				@Override public boolean isSettable( RadianIndicator node )
+				@Override public boolean isSettable( CircleIndicator node )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) node.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) node.getSkin();
 					return skin.spinEnabled == null || !skin.spinEnabled.isBound();
 				}
 
-				@Override public StyleableProperty<Boolean> getStyleableProperty( RadianIndicator node )
+				@Override public StyleableProperty<Boolean> getStyleableProperty( CircleIndicator node )
 				{
-					final RadianIndicatorSkin skin = (RadianIndicatorSkin) node.getSkin();
+					final CircleIndicatorSkin skin = (CircleIndicatorSkin) node.getSkin();
 					return (StyleableProperty<Boolean>) (WritableValue<Boolean>) skin.spinEnabled;
 				}
 			};
@@ -167,7 +165,7 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 
 		@Override public Object getBean()
 		{
-			return RadianIndicatorSkin.this;
+			return CircleIndicatorSkin.this;
 		}
 
 		@Override public String getName()
@@ -175,7 +173,7 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 			return "indeterminateSegmentCount";
 		}
 
-		@Override public CssMetaData<RadianIndicator, Number> getCssMetaData()
+		@Override public CssMetaData<CircleIndicator, Number> getCssMetaData()
 		{
 			return INDETERMINATE_SEGMENT_COUNT;
 		}
@@ -191,14 +189,14 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 				spinner.setSpinEnabled( get() );
 		}
 
-		@Override public CssMetaData<RadianIndicator, Boolean> getCssMetaData()
+		@Override public CssMetaData<CircleIndicator, Boolean> getCssMetaData()
 		{
 			return SPIN_ENABLED;
 		}
 
 		@Override public Object getBean()
 		{
-			return RadianIndicatorSkin.this;
+			return CircleIndicatorSkin.this;
 		}
 
 		@Override public String getName()
@@ -232,7 +230,7 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 
 		@Override public Object getBean()
 		{
-			return RadianIndicatorSkin.this;
+			return CircleIndicatorSkin.this;
 		}
 
 		@Override public String getName()
@@ -240,12 +238,12 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 			return "progressColorProperty";
 		}
 
-		@Override public CssMetaData<RadianIndicator, Paint> getCssMetaData()
+		@Override public CssMetaData<CircleIndicator, Paint> getCssMetaData()
 		{
 			return PROGRESS_COLOR;
 		}
 	};
-	private RadianIndicator control;
+	private CircleIndicator control;
 
 	/***************************************************************************
 	 *                                                                         *
@@ -253,9 +251,9 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 	 *                                                                         *
 	 **************************************************************************/
 
-	public RadianIndicatorSkin( RadianIndicator control )
+	public CircleIndicatorSkin( CircleIndicator control )
 	{
-		super( control, new BehaviorBase<RadianIndicator>( control, Collections.emptyList() ) );
+		super( control, new BehaviorBase<CircleIndicator>( control, Collections.emptyList() ) );
 
 		this.control = control;
 
@@ -407,7 +405,7 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 
 	protected void updateAnimation()
 	{
-		RadianIndicator control = getSkinnable();
+		CircleIndicator control = getSkinnable();
 		final boolean isTreeVisible = control.isVisible() &&
 				control.getParent() != null &&
 				control.getScene() != null;
@@ -471,7 +469,7 @@ public class RadianIndicatorSkin extends BehaviorSkinBase<RadianIndicator, Behav
 		private Arc arcShape;
 		private Circle indicatorCircle;
 
-		public DeterminateIndicator( RadianIndicator control, RadianIndicatorSkin s, Paint fillOverride )
+		public DeterminateIndicator( CircleIndicator control, CircleIndicatorSkin s, Paint fillOverride )
 		{
 
 			getStyleClass().add( "determinate-indicator" );

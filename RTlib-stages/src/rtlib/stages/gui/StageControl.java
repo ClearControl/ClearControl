@@ -19,7 +19,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
-import rtlib.stages.gui.controls.RadianIndicator;
+import rtlib.stages.gui.controls.CircleIndicator;
 
 /**
  * Created by moon on 12/1/15.
@@ -54,7 +54,7 @@ public class StageControl extends Application
 		slider.setShowTickMarks( true );
 		slider.setShowTickLabels( true );
 
-		final RadianIndicator pi = new RadianIndicator( 0 );
+		final CircleIndicator pi = new CircleIndicator( 0 );
 
 		slider.valueProperty().addListener(
 				( ObservableValue<? extends Number> ov, Number old_val, Number new_val ) ->

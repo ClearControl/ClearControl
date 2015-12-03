@@ -2,8 +2,6 @@ package rtlib.stages.gui.controls;
 
 import javafx.css.PseudoClass;
 
-import com.sun.javafx.scene.control.skin.ProgressIndicatorSkin;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -18,7 +16,7 @@ import javafx.scene.control.Skin;
 /**
  * Created by moon on 12/2/15.
  */
-public class RadianIndicator extends Control
+public class CircleIndicator extends Control
 {
 
 	/**
@@ -75,7 +73,7 @@ public class RadianIndicator extends Control
 	/**
 	 * Creates a new indeterminate ProgressIndicator.
 	 */
-	public RadianIndicator()
+	public CircleIndicator()
 	{
 		this( INDETERMINATE_PROGRESS );
 	}
@@ -83,7 +81,7 @@ public class RadianIndicator extends Control
 	/**
 	 * Creates a new ProgressIndicator with the given progress value.
 	 */
-	public RadianIndicator( double progress )
+	public CircleIndicator( double progress )
 	{
 		// focusTraversable is styleable through css. Calling setFocusTraversable
 		// makes it look to css like the user set the value and css will not
@@ -132,7 +130,7 @@ public class RadianIndicator extends Control
 				@Override
 				public Object getBean()
 				{
-					return RadianIndicator.this;
+					return CircleIndicator.this;
 				}
 
 				@Override
@@ -181,7 +179,7 @@ public class RadianIndicator extends Control
 				@Override
 				public Object getBean()
 				{
-					return RadianIndicator.this;
+					return CircleIndicator.this;
 				}
 
 				@Override
@@ -197,7 +195,7 @@ public class RadianIndicator extends Control
 	/** {@inheritDoc} */
 	@Override protected Skin<?> createDefaultSkin()
 	{
-		return new RadianIndicatorSkin( this );
+		return new CircleIndicatorSkin( this );
 	}
 
 	/**
