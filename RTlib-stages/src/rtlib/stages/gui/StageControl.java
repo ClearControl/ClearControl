@@ -3,30 +3,64 @@ package rtlib.stages.gui;
 import javafx.application.Application;
 
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.DepthTest;
 import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeType;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Shear;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import rtlib.stages.gui.controls.CircleIndicator;
 
 /**
- * Created by moon on 12/1/15.
+ * StageControl
  */
 public class StageControl extends Application
 {
-	private GridPane grid;
+	private VBox panel;
+
+	// 3D perspective view properties
+	final Cam camOffset = new Cam();
+	final Cam cam = new Cam();
+
+	final Shear shear = new Shear();
+	final Group rectangleGroup = new Group();
+
+	// Properties
+
+	class Cam extends Group
+	{
+		Translate t  = new Translate();
+		Translate p  = new Translate();
+		Translate ip = new Translate();
+		Rotate rx = new Rotate();
+		{ rx.setAxis(Rotate.X_AXIS); }
+		Rotate ry = new Rotate();
+		{ ry.setAxis(Rotate.Y_AXIS); }
+		Rotate rz = new Rotate();
+		{ rz.setAxis(Rotate.Z_AXIS); }
+		Scale s = new Scale();
+		public Cam() { super(); getTransforms().addAll(t, p, rx, rz, ry, s, ip); }
+	}
+
 	public static void main( String[] args )
 	{
 		launch( args );
@@ -34,18 +68,10 @@ public class StageControl extends Application
 
 	@Override public void init()
 	{
-		grid = new GridPane();
-		grid.setPadding( new Insets( 10, 10, 10, 10 ) );
-		grid.setVgap( 10 );
-		grid.setHgap( 70 );
-
-		// never size the gridpane larger than its preferred size:
-		grid.setMaxSize( Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE );
+		panel = new VBox( 20 );
 
 		// R-Stage
 		final Label caption = new Label( "Sample Stage R (micro-degree)" );
-		GridPane.setConstraints(caption, 0, 0);
-		grid.getChildren().add( caption );
 
 		final Slider slider = new Slider();
 		slider.setMin( 0 );
@@ -60,129 +86,154 @@ public class StageControl extends Application
 				( ObservableValue<? extends Number> ov, Number old_val, Number new_val ) ->
 						pi.setProgress( new_val.doubleValue() ) );
 
-		GridPane.setConstraints( slider, 1, 0 );
-		grid.getChildren().add( slider );
-
-		GridPane.setConstraints( pi, 2, 0 );
-		grid.getChildren().add( pi );
-
+		final HBox rStage = new HBox( 5 );
+		rStage.getChildren().addAll( caption, slider, pi );
+		HBox.setHgrow(rStage, Priority.ALWAYS);
 
 		// X-Stage
 		final Label xStageLabel = new Label("Sample Stage X (microns)");
-		GridPane.setConstraints( xStageLabel, 0, 1 );
-		grid.getChildren().add( xStageLabel );
+		final Slider xStageSlider = createSlider(100, "X-axis stage control");
+		final Label xStageValue = new Label( Double.toString( xStageSlider.getValue() ) );
 
-		final Slider xStageSlider = createSlider(10000, "X-axis stage control");
-		GridPane.setConstraints( xStageSlider, 1, 1 );
-		grid.getChildren().add( xStageSlider );
+		xStageSlider.valueProperty().addListener( ( observable, oldValue, newValue ) -> {
+			xStageValue.setText(String.format("%d", newValue.intValue()));
+			rectangleGroup.setTranslateX( newValue.doubleValue() );
+		} );
 
-		final Label xStageValue = new Label( "-10000" );
-		GridPane.setConstraints( xStageValue, 2, 1 );
-		grid.getChildren().add( xStageValue );
+		final HBox xStage = new HBox( 5 );
+		xStage.getChildren().addAll( xStageLabel, xStageSlider, xStageValue );
+		HBox.setHgrow(xStage, Priority.ALWAYS);
 
-		xStageSlider.valueProperty().addListener(
-				( ov, old_val, new_val ) -> xStageValue.setText(String.format("%d", new_val.intValue())) );
-		xStageValue.setText( Double.toString( xStageSlider.getValue() ) );
 
 		// Y-Stage
 		final Label yStageLabel = new Label("Sample Stage Y (microns)");
-		GridPane.setConstraints( yStageLabel, 0, 2 );
-		grid.getChildren().add( yStageLabel );
-
-		final Slider yStageSlider = createSlider(10000, "Y-axis stage control");
-		GridPane.setConstraints( yStageSlider, 1, 2 );
-		grid.getChildren().add( yStageSlider );
-
+		final Slider yStageSlider = createSlider(100, "Y-axis stage control");
 		final Label yStageValue = new Label( Double.toString( yStageSlider.getValue() ) );
-		GridPane.setConstraints( yStageValue, 2, 2 );
-		grid.getChildren().add( yStageValue );
 
-		yStageSlider.valueProperty().addListener(
-				( ov, old_val, new_val ) -> yStageValue.setText(String.format("%d", new_val.intValue())) );
+		yStageSlider.valueProperty().addListener( ( ov, oldValue, newValue ) -> {
+			yStageValue.setText( String.format( "%d", newValue.intValue() ) );
+			rectangleGroup.setTranslateZ( newValue.doubleValue() );
+		} );
+
+		final HBox yStage = new HBox( 5 );
+		yStage.getChildren().addAll( yStageLabel, yStageSlider, yStageValue );
+		HBox.setHgrow(yStage, Priority.ALWAYS);
 
 		// Z-Stage
 		final Label zStageLabel = new Label("Sample Stage Z (microns)");
-		GridPane.setConstraints( zStageLabel, 0, 3 );
-		grid.getChildren().add( zStageLabel );
-
-		final Slider zStageSlider = createSlider(10000, "Z-axis stage control");
-		GridPane.setConstraints( zStageSlider, 1, 3 );
-		grid.getChildren().add( zStageSlider );
-
+		final Slider zStageSlider = createSlider(100, "Z-axis stage control");
 		final Label zStageValue = new Label( Double.toString( zStageSlider.getValue() ) );
-		zStageValue.setMaxWidth( 500 );
-		GridPane.setConstraints( zStageValue, 2, 3 );
-		grid.getChildren().add( zStageValue );
 
 		zStageSlider.valueProperty().addListener(
-				( ov, old_val, new_val ) -> zStageValue.setText(String.format("%d", new_val.intValue())) );
+				( ov, oldValue, newValue ) -> {
+					zStageValue.setText(String.format("%d", newValue.intValue()));
+					rectangleGroup.setTranslateY( newValue.doubleValue() );
+				} );
 
-		// display a crosshair to mark the current pivot point.
-		final Line verticalLine   = new Line(0, -10, 0, 10); verticalLine.setStroke(Color.FIREBRICK);   verticalLine.setStrokeWidth(3);   verticalLine.setStrokeLineCap(StrokeLineCap.ROUND);
-		final Line horizontalLine = new Line(-10, 0, 10, 0); horizontalLine.setStroke(Color.FIREBRICK); horizontalLine.setStrokeWidth(3); verticalLine.setStrokeLineCap(StrokeLineCap.ROUND);
-		Group pivotMarker = new Group(verticalLine, horizontalLine);
-		pivotMarker.translateXProperty().bind(xStageSlider.valueProperty().divide( 500 ));
-		pivotMarker.translateYProperty().bind(yStageSlider.valueProperty().divide( 500 ) );
+		final HBox zStage = new HBox( 5 );
+		zStage.getChildren().addAll( zStageLabel, zStageSlider, zStageValue );
+		HBox.setHgrow(zStage, Priority.ALWAYS);
 
-		// display a dashed square border outline to mark the original location of the square.
-		final Rectangle squareOutline = new Rectangle(100, 100);
-		squareOutline.setFill(Color.TRANSPARENT);
-		squareOutline.setOpacity(0.7);
-		squareOutline.setMouseTransparent(true);
-		squareOutline.setStrokeType( StrokeType.INSIDE);
-		squareOutline.setStrokeWidth(1);
-		squareOutline.setStrokeLineCap( StrokeLineCap.BUTT);
-		squareOutline.setStroke(Color.DARKGRAY);
-		squareOutline.setStrokeDashOffset(5);
-		squareOutline.getStrokeDashArray().add(10.0);
+		final StackPane stackPane = new StackPane();
+		stackPane.getChildren().addAll(
+				VBoxBuilder.create().spacing(10).alignment( Pos.TOP_CENTER).children(
+						rStage, xStage, yStage, zStage).build() );
 
-		final StackPane displayPane = new StackPane();
-		displayPane.prefHeight( 600 );
-		displayPane.getChildren().addAll(pivotMarker, squareOutline);
-		//		displayPane.setTranslateY( 50 );
-		displayPane.setMouseTransparent(true);
-		GridPane.setConstraints( displayPane, 0, 4 );
-		GridPane.setColumnSpan( displayPane, 2 );
-		grid.getChildren().add( displayPane );
+		VBox.setMargin(stackPane, new Insets(30,8,8,8));
+		panel.getChildren().add( stackPane );
+
+		//////////////////////////////////////////////
+		// 3D perspective view
+		Pane pane = new Pane();
+		pane.setPrefSize( 200, 400 );
+		camOffset.getChildren().add( cam );
+		pane.getChildren().add( camOffset );
+		VBox.setMargin(pane, new Insets(30,8,8,8));
+		panel.getChildren().add( pane );
+		resetCam();
+
+		rectangleGroup.setDepthTest( DepthTest.ENABLE );
+
+		double xPos = 350;
+		double yPos = 180;
+		double zPos = 250;
+
+		double barWidth = 10.0;
+		double barHeight = 10.0;
+		double barDepth = 10.0;
+
+		final PhongMaterial redMaterial = new PhongMaterial();
+		redMaterial.setSpecularColor(Color.YELLOW);
+		redMaterial.setDiffuseColor(Color.RED);
+		final Box red = new Box(barWidth, barHeight, barDepth);
+		red.setTranslateX( xPos );
+		red.setTranslateY( yPos );
+		red.setTranslateZ( zPos );
+		red.setMaterial(redMaterial);
+
+		rectangleGroup.getChildren().add( red );
+
+		rectangleGroup.setScaleX( 2 );
+		rectangleGroup.setScaleY( 2 );
+		rectangleGroup.setScaleZ( 2 );
+		cam.getChildren().add(rectangleGroup);
+
+		double halfSceneWidth = 500;
+		double halfSceneHeight = 500;
+		cam.p.setX(halfSceneWidth);
+		cam.ip.setX(-halfSceneWidth);
+		cam.p.setY(halfSceneHeight);
+		cam.ip.setY(-halfSceneHeight);
+	}
+
+	public void resetCam() {
+		cam.t.setX(0.0);
+		cam.t.setY(0.0);
+		cam.t.setZ(0.0);
+		cam.rx.setAngle(30.0);
+		cam.ry.setAngle(-30.0);
+		cam.rz.setAngle(0.0);
+		cam.s.setX(1.25);
+		cam.s.setY(1.25);
+		cam.s.setZ(1.25);
 
 
-		final Line verticalLineZ   = new Line(0, -10, 0, 10); verticalLineZ.setStroke(Color.FIREBRICK);   verticalLineZ.setStrokeWidth(3);   verticalLineZ.setStrokeLineCap(StrokeLineCap.ROUND);
-		final Line horizontalLineZ = new Line(-10, 0, 10, 0); horizontalLineZ.setStroke(Color.FIREBRICK); horizontalLineZ.setStrokeWidth(3); horizontalLineZ.setStrokeLineCap(StrokeLineCap.ROUND);
-		// display a crosshair to mark the current pivot point.
-		Group pivotMarkerZ = new Group(verticalLineZ, horizontalLineZ);
-		pivotMarkerZ.translateYProperty().bind(zStageSlider.valueProperty().divide( 500 ) );
+		cam.p.setX(0.0);
+		cam.p.setY(0.0);
+		cam.p.setZ(0.0);
 
-		final Rectangle squareOutlineZ = new Rectangle(60, 100);
-		squareOutlineZ.setFill(Color.TRANSPARENT);
-		squareOutlineZ.setOpacity(0.7);
-		squareOutlineZ.setMouseTransparent(true);
-		squareOutlineZ.setStrokeType( StrokeType.INSIDE);
-		squareOutlineZ.setStrokeWidth(1);
-		squareOutlineZ.setStrokeLineCap( StrokeLineCap.BUTT);
-		squareOutlineZ.setStroke(Color.DARKGRAY);
-		squareOutlineZ.setStrokeDashOffset(5);
-		squareOutlineZ.getStrokeDashArray().add(10.0);
+		cam.ip.setX(0.0);
+		cam.ip.setY(0.0);
+		cam.ip.setZ(0.0);
 
-		final StackPane displayPaneZ = new StackPane();
-		displayPaneZ.prefHeight( 600 );
-		displayPaneZ.getChildren().addAll(pivotMarkerZ, squareOutlineZ);
-		displayPaneZ.setMouseTransparent(true);
-		GridPane.setConstraints( displayPaneZ, 2, 4 );
-		grid.getChildren().add( displayPaneZ );
+		final Bounds bounds = cam.getBoundsInLocal();
+		final double pivotX = bounds.getMinX() + bounds.getWidth() / 2;
+		final double pivotY = bounds.getMinY() + bounds.getHeight() / 2;
+		final double pivotZ = bounds.getMinZ() + bounds.getDepth() / 2;
+
+		cam.p.setX(pivotX);
+		cam.p.setY(pivotY);
+		cam.p.setZ(pivotZ);
+
+		cam.ip.setX(-pivotX);
+		cam.ip.setY(-pivotY);
+		cam.ip.setZ(-pivotZ);
 	}
 
 	@Override
 	public void start( Stage stage )
 	{
-		Scene scene = new Scene( grid );
-		stage.setScene( scene );
+		Scene scene = new Scene( panel );
+		scene.setCamera(new PerspectiveCamera());
+
 		stage.setTitle( "Stage Control" );
+		stage.setScene( scene );
 		stage.show();
 	}
 
 	private Slider createSlider(final double value, final String helpText) {
-		final Slider slider = new Slider(value * -1, value, 0);
-		slider.setMajorTickUnit(2000);
+		final Slider slider = new Slider(0, value, 0);
+		slider.setMajorTickUnit(20);
 		slider.setMinorTickCount(0);
 		slider.setShowTickMarks(true);
 		slider.setShowTickLabels(true);
@@ -191,8 +242,8 @@ public class StageControl extends Application
 		return slider;
 	}
 
-	public GridPane getPanel()
+	public VBox getPanel()
 	{
-		return grid;
+		return panel;
 	}
 }

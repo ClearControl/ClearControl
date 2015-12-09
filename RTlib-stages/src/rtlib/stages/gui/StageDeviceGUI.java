@@ -1,7 +1,9 @@
 package rtlib.stages.gui;
 
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,7 +43,7 @@ public class StageDeviceGUI extends Application
 	{
 	}
 
-	public GridPane getPanel()
+	public VBox getPanel()
 	{
 		return mStage.getPanel();
 	}
