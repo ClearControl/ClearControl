@@ -12,6 +12,7 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -149,13 +150,20 @@ public class StageControl extends Application
 		camOffset.getChildren().add( cam );
 		pane.getChildren().add( camOffset );
 		VBox.setMargin(pane, new Insets(30,8,8,8));
-		panel.getChildren().add( pane );
+
+
+		TitledPane tp = new TitledPane();
+		tp.setText( "Stage View" );
+		tp.setContent( pane );
+		tp.setCollapsible( false );
+
+		panel.getChildren().add( tp );
 		resetCam();
 
 		rectangleGroup.setDepthTest( DepthTest.ENABLE );
 
 		double xPos = 350;
-		double yPos = 180;
+		double yPos = 250;
 		double zPos = 250;
 
 		double barWidth = 10.0;
