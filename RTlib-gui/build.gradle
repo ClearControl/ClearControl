@@ -17,7 +17,7 @@ dependencies {
 	compile project(':RTlib-imglib2')
 
 	compile 'net.halcyon:Halcyon:0.1.2'
-    compile 'eu.hansolo.enzo:Enzo:0.3.5'
+    compile 'eu.hansolo.enzo:Enzo:0.3.6'
 
 	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
 	compile 'com.jgoodies:looks:2.2.2'
