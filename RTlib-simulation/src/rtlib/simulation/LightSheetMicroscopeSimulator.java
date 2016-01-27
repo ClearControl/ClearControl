@@ -1,5 +1,6 @@
 package rtlib.simulation;
 
+import javafx.stage.Stage;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.python.google.common.collect.Lists;
@@ -45,7 +46,7 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 		super("Simulator");
 	}
 
-	public void init()
+	public void init(Stage primaryStage) throws Exception
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera =
@@ -90,7 +91,7 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 		lStagingScore.addMovement(lBeforeExposureMovement);
 		lStagingScore.addMovement(lExposureMovement);
 
-		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize( "LightSheetDemo", lStagingScore );
+//		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize( "LightSheetDemo", lStagingScore );
 
 		// Setting up detection path:
 		for (int i = 0; i < pCameras.size(); i++)
@@ -139,7 +140,7 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 		StageDeviceSimulator stage = new StageDeviceSimulator( "1" );
 		this.getDeviceLists().addStageDevice( stage );
 
-		HalcyonMicroscopeGUI manager = new HalcyonMicroscopeGUI( this );
+		HalcyonMicroscopeGUI manager = new HalcyonMicroscopeGUI( primaryStage, this );
 
 		// setting up scope GUI:
 //		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	this, false );
@@ -189,11 +190,5 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 //		this.close();
 //		if (lGUI != null)
 //			lGUI.close();
-	}
-
-	public static void main(String[] args)
-	{
-		LightSheetMicroscopeSimulator sim = new LightSheetMicroscopeSimulator();
-		sim.init();
 	}
 }

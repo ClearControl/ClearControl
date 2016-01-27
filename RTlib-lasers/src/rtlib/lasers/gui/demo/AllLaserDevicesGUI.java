@@ -1,4 +1,4 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.demo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,14 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.component.RunnableFX;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.lasers.LaserDeviceInterface;
+import utils.RunFX;
 
-public class AllLaserDevicesGUI extends Application
+public class AllLaserDevicesGUI implements RunnableFX
 {
 
 	//	public final JSliderDouble mLaser405TargetPower,
@@ -33,7 +35,7 @@ public class AllLaserDevicesGUI extends Application
 	//	private final JLabel mLaserCurrentPowerLabel;
 	//	private final JLabel mDetectionFilterWheelLabel;
 
-	public final ArrayList<LaserGauge> mLaserGauges = new ArrayList<LaserGauge>();
+	public final ArrayList<LaserGauge > mLaserGauges = new ArrayList<LaserGauge>();
 
 	public AllLaserDevicesGUI()
 	{
@@ -257,7 +259,7 @@ public class AllLaserDevicesGUI extends Application
 			gauge.init();
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		VBox pane = new VBox();
 
 		pane.getChildren().addAll( mLaserGauges.stream().map(LaserGauge::getPanel).collect( Collectors.toList() ) );
@@ -275,7 +277,7 @@ public class AllLaserDevicesGUI extends Application
 
 	public static void main(String[] args)
 	{
-		Application.launch(args);
+		RunFX.start( new AllLaserDevicesGUI() );
 	}
 
 	class DemoLaser implements LaserDeviceInterface

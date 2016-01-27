@@ -1,4 +1,4 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.demo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import eu.hansolo.enzo.gauge.RadialBargraph;
 import eu.hansolo.enzo.gauge.RadialBargraphBuilder;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -24,12 +23,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import model.component.RunnableFX;
+import utils.RunFX;
 import window.util.WavelengthColors;
 
 /**
  * Laser Gauge Controls
  */
-public class LaserGauge extends Application
+public class LaserGauge implements RunnableFX
 {
 	private static final Random RND = new Random();
 	private IconSwitch powerSwitch;
@@ -158,7 +159,7 @@ public class LaserGauge extends Application
 		return hBox;
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		HBox pane = getPanel();
 
 		Scene scene = new Scene(pane, Color.WHITE);
@@ -177,6 +178,6 @@ public class LaserGauge extends Application
 	}
 
 	public static void main(final String[] args) {
-		Application.launch(args);
+		RunFX.start( new LaserGauge() );
 	}
 }

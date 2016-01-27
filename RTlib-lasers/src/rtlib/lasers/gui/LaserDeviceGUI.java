@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.lasers.LaserDeviceInterface;
+import rtlib.lasers.gui.demo.LaserGauge;
 
 public class LaserDeviceGUI extends Application
 {
