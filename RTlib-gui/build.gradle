@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 sourceSets {
 	main {
 		java { srcDir 'src' }
+        resources {  srcDir 'resources'}
 	}
 	test {
 		java { srcDir 'src' }
@@ -16,7 +17,7 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-imglib2')
 
-	compile 'net.halcyon:Halcyon:0.1.3'
+	compile 'net.halcyon:Halcyon:0.1.4'
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
 
 	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
