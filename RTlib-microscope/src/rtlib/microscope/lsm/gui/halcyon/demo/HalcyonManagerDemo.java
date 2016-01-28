@@ -1,9 +1,11 @@
 package rtlib.microscope.lsm.gui.halcyon.demo;
 
+import demo.ConfigWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.node.HalcyonNode;
 import model.node.HalcyonNodeType;
+import rtlib.gui.window.RTlibNodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
 import rtlib.lasers.gui.LaserDeviceGUI;
@@ -22,7 +24,7 @@ public class HalcyonManagerDemo extends Application
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
-		final FxFrame lHalcyonFrame = new FxFrame();
+		final FxFrame lHalcyonFrame = new FxFrame( new ConfigWindow() );
 		lHalcyonFrame.start( primaryStage );
 		primaryStage.setOnCloseRequest( event -> System.exit( 0 ) );
 
@@ -60,12 +62,12 @@ public class HalcyonManagerDemo extends Application
 				LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI( (LaserDeviceInterface)device );
 				laserDeviceGUI.init();
 
-				HalcyonNode node = new HalcyonNode( "Laser-" + ((LaserDeviceInterface) device).getName(), HalcyonNodeType.Laser, laserDeviceGUI.getPanel() );
+				HalcyonNode node = new HalcyonNode( "Laser-" + ((LaserDeviceInterface) device).getName(), RTlibNodeType.Laser, laserDeviceGUI.getPanel() );
 				lHalcyonFrame.addNode( node );
 			}
 		}
 
-		lHalcyonFrame.addToolbar( new DemoToolbarWindow( lHalcyonFrame.getViewManager() ) );
+//		lHalcyonFrame.addToolbar( new DemoToolbarWindow( lHalcyonFrame.getViewManager() ) );
 		lHalcyonFrame.addToolbar( new MicroscopeStartStopToolbar() );
 		lHalcyonFrame.addConsole( new StdOutputCaptureConsole() );
 	}

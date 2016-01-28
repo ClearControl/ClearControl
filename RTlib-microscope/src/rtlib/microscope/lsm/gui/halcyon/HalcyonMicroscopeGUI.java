@@ -3,6 +3,8 @@ package rtlib.microscope.lsm.gui.halcyon;
 import javafx.stage.Stage;
 import model.node.HalcyonNode;
 import model.node.HalcyonNodeType;
+import rtlib.gui.window.ConfigWindow;
+import rtlib.gui.window.RTlibNodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.gui.LaserDeviceGUI;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
@@ -10,16 +12,15 @@ import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.gui.StageDeviceGUI;
 import view.FxFrame;
-import window.console.StdOutputCaptureConsole;
 import window.demo.DemoToolbarWindow;
-import window.toolbar.MicroscopeStartStopToolbar;
 
 public class HalcyonMicroscopeGUI
 {
 	public HalcyonMicroscopeGUI( Stage primaryStage, LightSheetMicroscopeInterface lightSheetMicroscopeInterface )
 			throws Exception
 	{
-		final FxFrame lHalcyonFrame = new FxFrame();
+		final FxFrame lHalcyonFrame = new FxFrame( new ConfigWindow() );
+
 		lHalcyonFrame.start( primaryStage );
 
 		LightSheetMicroscopeDeviceLists deviceLists = lightSheetMicroscopeInterface.getDeviceLists();
@@ -32,7 +33,7 @@ public class HalcyonMicroscopeGUI
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI( laserDevice );
 			laserDeviceGUI.init();
 
-			HalcyonNode node = new HalcyonNode( "Laser-" + i, HalcyonNodeType.Laser, laserDeviceGUI.getPanel() );
+			HalcyonNode node = new HalcyonNode( "Laser-" + i, RTlibNodeType.Laser, laserDeviceGUI.getPanel() );
 			lHalcyonFrame.addNode( node );
 		}
 
@@ -45,11 +46,11 @@ public class HalcyonMicroscopeGUI
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI( stageDevice );
 			stageDeviceGUI.init();
 
-			HalcyonNode node = new HalcyonNode( "Stage-" + i, HalcyonNodeType.Stage, stageDeviceGUI.getPanel() );
+			HalcyonNode node = new HalcyonNode( "Stage-" + i, RTlibNodeType.Stage, stageDeviceGUI.getPanel() );
 			lHalcyonFrame.addNode( node );
 		}
 
 		// Utility interfaces are added
-		lHalcyonFrame.addToolbar( new DemoToolbarWindow( lHalcyonFrame.getViewManager() ) );
+//		lHalcyonFrame.addToolbar( new DemoToolbarWindow( lHalcyonFrame.getViewManager() ) );
 	}
 }
