@@ -6,8 +6,6 @@ import java.util.Random;
 
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.gauge.RadialBargraph;
-import eu.hansolo.enzo.gauge.RadialBargraphBuilder;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
@@ -24,6 +22,8 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.component.RunnableFX;
+import rtlib.lasers.gui.RadialBargraph;
+import rtlib.lasers.gui.RadialBargraphBuilder;
 import utils.RunFX;
 import window.util.WavelengthColors;
 
@@ -90,6 +90,11 @@ public class LaserGauge implements RunnableFX
 				.build();
 		targetGauge.setBarGradientEnabled( true );
 		targetGauge.setBarGradient( stops );
+		targetGauge.setAnimated( false );
+		targetGauge.setInteractive( true );
+
+		// As soon as user changes the target value, it updates gauge value
+		targetGauge.valueProperty().bind( mwMarker.valueProperty() );
 
 		// Actual gauge build
 		actualGauge = RadialBargraphBuilder.create()
@@ -97,6 +102,7 @@ public class LaserGauge implements RunnableFX
 				.unit( "mW" )
 				.maxValue( 50 )
 				.build();
+		actualGauge.setAnimated( false );
 		actualGauge.setBarGradientEnabled( true );
 		actualGauge.setBarGradient( stops );
 		actualGauge.setDisable( true );
@@ -120,23 +126,15 @@ public class LaserGauge implements RunnableFX
 		pane.setAlignment( Pos.CENTER );
 		pane.getChildren().addAll( properties, powerSwitch, laserSwitch );
 
-		// As soon as user changes the target value, it updates gauge value
-		targetGauge.interactiveProperty().addListener( ( observable, oldValue, newValue ) -> {
-			if(!newValue.booleanValue())
-			{
-				targetGauge.setValue( mwMarker.getValue() );
-			}
-		} );
-
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
-				if (now > lastTimerCall + 5_000_000_000l) {
+				if (now > lastTimerCall + 100_000_000l) {
 
-					double v = RND.nextDouble();
-					v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
+					double v = 0.1*(2*RND.nextDouble()-1);
+					//v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
 
-					actualGauge.setValue( mwMarker.getValue() * v );
+					actualGauge.setValue( mwMarker.getValue() + v );
 					lastTimerCall = now;
 				}
 			}
