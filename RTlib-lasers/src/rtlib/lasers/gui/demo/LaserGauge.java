@@ -129,9 +129,9 @@ public class LaserGauge implements RunnableFX
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
-				if (now > lastTimerCall + 100_000_000l) {
+				if (now > lastTimerCall + 500_000_000l) {
 
-					double v = 0.1*(2*RND.nextDouble()-1);
+					double v = (2*RND.nextDouble()-1);
 					//v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
 
 					actualGauge.setValue( mwMarker.getValue() + v );
