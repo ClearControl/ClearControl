@@ -1,19 +1,16 @@
 package rtlib.stages.gui;
 
-import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.component.RunnableFX;
 import rtlib.stages.StageDeviceInterface;
+import utils.RunFX;
 
 /**
- * Created by moon on 12/1/15.
+ * StageDeviceGUI for Halcyon
  */
-public class StageDeviceGUI extends Application
+public class StageDeviceGUI implements RunnableFX
 {
 	public final StageControl mStage;
 
@@ -27,7 +24,7 @@ public class StageDeviceGUI extends Application
 		mStage.init();
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		VBox pane = new VBox();
 
 		pane.getChildren().addAll( mStage.getPanel() );
@@ -50,6 +47,6 @@ public class StageDeviceGUI extends Application
 
 	public static void main(String[] args)
 	{
-		Application.launch(args);
+		RunFX.start( new StageDeviceGUI( null ) );
 	}
 }
