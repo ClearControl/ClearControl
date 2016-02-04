@@ -2,7 +2,8 @@ package rtlib.microscope.lsm.gui.halcyon;
 
 import javafx.stage.Stage;
 import model.node.HalcyonNode;
-import model.node.HalcyonNodeType;
+import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.cameras.gui.CameraDeviceGUI;
 import rtlib.gui.window.ConfigWindow;
 import rtlib.gui.window.RTlibNodeType;
 import rtlib.lasers.LaserDeviceInterface;
@@ -12,7 +13,6 @@ import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.gui.StageDeviceGUI;
 import view.FxFrame;
-import window.demo.DemoToolbarWindow;
 
 public class HalcyonMicroscopeGUI
 {
@@ -47,6 +47,18 @@ public class HalcyonMicroscopeGUI
 			stageDeviceGUI.init();
 
 			HalcyonNode node = new HalcyonNode( "Stage-" + i, RTlibNodeType.Stage, stageDeviceGUI.getPanel() );
+			lHalcyonFrame.addNode( node );
+		}
+
+		// Stack Camera List
+		for(int i =0; i < deviceLists.getNumberOfStackCameraDevices(); i++)
+		{
+			StackCameraDeviceInterface cameraDevice = deviceLists.getStackCameraDevice( i );
+
+			CameraDeviceGUI cameraDeviceGUI = new CameraDeviceGUI( cameraDevice );
+			cameraDeviceGUI.init();
+
+			HalcyonNode node = new HalcyonNode( "Camera-" + i, RTlibNodeType.Camera, cameraDeviceGUI.getPanel() );
 			lHalcyonFrame.addNode( node );
 		}
 
