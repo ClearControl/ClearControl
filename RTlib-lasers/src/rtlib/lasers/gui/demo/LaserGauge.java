@@ -18,7 +18,9 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.component.RunnableFX;
@@ -39,7 +41,7 @@ public class LaserGauge implements RunnableFX
 	private RadialBargraph actualGauge;
 
 	private VBox properties;
-	private VBox pane;
+	private HBox pane;
 
 	private long lastTimerCall;
 	private AnimationTimer timer;
@@ -118,13 +120,22 @@ public class LaserGauge implements RunnableFX
 
 		properties.getChildren().add( laserLabel );
 
-		pane = new VBox();
-		pane.setPadding( new Insets( 10, 10, 10, 10 ) );
+		pane = new HBox();
 
-		pane.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
-		pane.setSpacing( 8 );
-		pane.setAlignment( Pos.CENTER );
-		pane.getChildren().addAll( properties, powerSwitch, laserSwitch );
+		VBox rec = new VBox();
+		rec.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
+		Rectangle rectangle = new Rectangle( 60, 80, Color.TRANSPARENT );
+		rec.getChildren().add( rectangle );
+
+		VBox vBox = new VBox();
+		vBox.setPadding( new Insets( 10, 10, 10, 10 ) );
+
+//		vBox.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
+		vBox.setSpacing( 8 );
+		vBox.setAlignment( Pos.CENTER );
+		vBox.getChildren().addAll( properties, powerSwitch, laserSwitch );
+
+		pane.getChildren().addAll( rec, vBox );
 
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
 		timer = new AnimationTimer() {
