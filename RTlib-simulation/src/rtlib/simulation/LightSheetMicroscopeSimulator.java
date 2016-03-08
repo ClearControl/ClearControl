@@ -137,6 +137,9 @@ public class LightSheetMicroscopeSimulator extends LightSheetMicroscope
 		LaserDeviceSimulator laser = new LaserDeviceSimulator( "1", 1, 405, 60 );
 		this.getDeviceLists().addLaserDevice( laser );
 
+		laser = new LaserDeviceSimulator( "2", 2, 350, 60 );
+		this.getDeviceLists().addLaserDevice( laser );
+
 		StageDeviceSimulator stage = new StageDeviceSimulator( "1" );
 		this.getDeviceLists().addStageDevice( stage );
 
