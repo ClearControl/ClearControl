@@ -1,9 +1,17 @@
 package rtlib.gui.window;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ContextMenuBuilder;
+import javafx.scene.control.MenuItemBuilder;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
@@ -29,6 +37,7 @@ public class ConfigWindow extends ControlWindowBase
 	final private HashMap<String, TreeItem<TreeNode>> subNodes = new HashMap<>();
 	final TreeView<TreeNode> tree;
 	JFXPanel fxPanel;
+	ContextMenu rootContextMenu;
 
 	private final Node rootIcon = new ImageView(
 			new Image( getClass().getResourceAsStream( Resources.getString( "root.icon" ) ) )
@@ -54,6 +63,7 @@ public class ConfigWindow extends ControlWindowBase
 		}
 
 		tree = new TreeView<>( rootItem );
+		tree.getSelectionModel().setSelectionMode( SelectionMode.MULTIPLE );
 
 		setContents( tree );
 	}
@@ -95,6 +105,36 @@ public class ConfigWindow extends ControlWindowBase
 				}
 			}
 		} );
+
+		rootContextMenu = ContextMenuBuilder.create()
+				.items(
+						MenuItemBuilder.create()
+								.text( "Create a Panel" )
+								.onAction(
+										new EventHandler< ActionEvent >()
+										{
+											@Override
+											public void handle( ActionEvent arg0 )
+											{
+												ObservableList< TreeItem< TreeNode > > list = tree.getSelectionModel().getSelectedItems();
+												VBox vBox = new VBox();
+
+												for ( TreeItem< TreeNode > n : list )
+												{
+													System.out.println( n.getValue().getName() + " is selected.");
+													vBox.getChildren().add(n.getValue().getNode().getPanel());
+												}
+
+												HalcyonNode node = new HalcyonNode( "User panel", RTlibNodeType.Laser, vBox );
+												manager.open( node );
+											}
+										}
+								)
+								.build()
+				)
+				.build();
+
+		tree.setContextMenu( rootContextMenu );
 	}
 
 	public void start( TreeView<TreeNode> tree )
