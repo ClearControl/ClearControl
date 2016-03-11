@@ -66,7 +66,7 @@ import java.util.stream.IntStream;
 
 /**
  * Created by hansolo
- * Modified by
+ * Modified by hkmoon
  * User: HongKee
  * Date: 29.01.15
  * Time: 15:35
@@ -337,7 +337,8 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 		threshold.setOnTouchMoved(touchEventHandler);
 		threshold.setOnTouchReleased(touchEventHandler);
 
-		clickRegion.setOnMouseClicked( mouseEventHandler );
+		clickRegion.setOnMousePressed( mouseEventHandler );
+		clickRegion.setOnTouchPressed( touchEventHandler );
 
 		for (Marker marker : getSkinnable().getMarkers().keySet()) {
 			marker.setOnMousePressed(mouseEventHandler);
@@ -518,15 +519,11 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 			} else if (MouseEvent.MOUSE_RELEASED == TYPE) {
 //				fadeBackToInteractive();
 			}
-		} else if (MouseEvent.MOUSE_CLICKED == TYPE &&  SRC.equals(clickRegion))
+		} else if (MouseEvent.MOUSE_PRESSED == TYPE && SRC.equals(clickRegion))
 		{
-			Point2D point = getSkinnable().sceneToLocal(MOUSE_EVENT.getSceneX(), MOUSE_EVENT.getSceneY());
-
-			if(clickRegion.contains( point ))
-			{
-				touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
-				lastMarker.setValue(Double.parseDouble(value.getText()));
-			}
+			Point2D point = getSkinnable().sceneToLocal( MOUSE_EVENT.getSceneX(), MOUSE_EVENT.getSceneY() );
+			touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
+			lastMarker.setValue(Double.parseDouble(value.getText()));
 		}
 	}
 
@@ -573,15 +570,11 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 			} else if (TouchEvent.TOUCH_RELEASED == TYPE) {
 //				fadeBackToInteractive();
 			}
-		} else if (MouseEvent.MOUSE_CLICKED == TYPE &&  SRC.equals(clickRegion))
+		} else if (TouchEvent.TOUCH_PRESSED == TYPE &&  SRC.equals(clickRegion))
 		{
 			Point2D point = getSkinnable().sceneToLocal(TOUCH_EVENT.getTouchPoint().getSceneX(), TOUCH_EVENT.getTouchPoint().getSceneY());
-
-			if(clickRegion.contains( point ))
-			{
-				touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
-				lastMarker.setValue(Double.parseDouble(value.getText()));
-			}
+			touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
+			lastMarker.setValue(Double.parseDouble(value.getText()));
 		}
 	}
 
