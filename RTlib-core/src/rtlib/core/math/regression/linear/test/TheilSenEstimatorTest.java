@@ -1,5 +1,7 @@
 package rtlib.core.math.regression.linear.test;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.util.Random;
 
@@ -41,6 +43,8 @@ public class TheilSenEstimatorTest
 
 		System.out.println(lModel);
 		System.out.format("Error: %f \n", stderror);
+		
+		assertTrue(stderror<0.1);
 
 	}
 
