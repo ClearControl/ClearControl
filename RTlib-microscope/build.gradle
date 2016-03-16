@@ -29,7 +29,6 @@ dependencies {
 	compile project(':RTlib-stages')
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
     compile 'net.halcyon:Halcyon:(,1.1]'
-    compile 'org.dockfx:DockFX:0.1.2'
 }
 
 repositories {
