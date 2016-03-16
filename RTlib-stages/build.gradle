@@ -1,22 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-sourceSets 
+sourceSets
 {
-  main 
-  {
-    java 
+    main
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
+        resources.srcDirs = ['resources']
     }
-  }
-  test
-  {
-    java 
+    test
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
     }
-  }
 }
 
 
@@ -25,7 +20,7 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
 
-    compile 'net.halcyon:Halcyon:0.1.4'
+    compile 'net.halcyon:Halcyon:0.1.5'
     compile group: "net.rtlib", name: "ECC100J", version: "1.0", changing: true, transitive: true
 }
 
