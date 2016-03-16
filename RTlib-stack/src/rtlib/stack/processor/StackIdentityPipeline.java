@@ -1,11 +1,11 @@
 package rtlib.stack.processor;
 
-import coremem.recycling.RecyclableFactory;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.RecyclableFactory;
 
 public class StackIdentityPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
 																							SameTypeStackProcessingPipeline<T, A>

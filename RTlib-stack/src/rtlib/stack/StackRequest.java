@@ -2,8 +2,8 @@ package rtlib.stack;
 
 import java.util.Arrays;
 
-import coremem.recycling.RecyclerRequest;
 import net.imglib2.type.NativeType;
+import coremem.recycling.RecyclerRequest;
 
 public class StackRequest<T extends NativeType<T>>	implements
 													RecyclerRequest

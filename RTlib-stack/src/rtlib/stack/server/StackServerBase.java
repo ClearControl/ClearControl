@@ -1,10 +1,11 @@
 package rtlib.stack.server;
 
+import gnu.trove.map.hash.TLongDoubleHashMap;
+import gnu.trove.map.hash.TLongLongHashMap;
+
 import java.io.IOException;
 import java.util.HashMap;
 
-import gnu.trove.map.hash.TLongDoubleHashMap;
-import gnu.trove.map.hash.TLongLongHashMap;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;

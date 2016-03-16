@@ -10,10 +10,11 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import net.miginfocom.swing.MigLayout;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;

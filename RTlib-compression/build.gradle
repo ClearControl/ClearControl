@@ -3,20 +3,16 @@ apply plugin: 'eclipse'
 
 sourceSets 
 {
-  main 
-  {
-    java 
+    main
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
-  }
-  test
-  {
-    java 
+    test
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
-  }
 }
 
 dependencies 

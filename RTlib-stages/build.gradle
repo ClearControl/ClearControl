@@ -6,11 +6,12 @@ sourceSets
     main
     {
         java.srcDirs = ['src']
-        resources.srcDirs = ['resources']
+        resources.srcDirs = ['src']
     }
     test
     {
         java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
 }
 
@@ -19,8 +20,7 @@ dependencies
 {
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
-
-    compile 'net.halcyon:Halcyon:(,1.1]'
+    compile project(':RTlib-gui')
     compile group: "net.rtlib", name: "ECC100J", version: "1.0", changing: true, transitive: true
 }
 

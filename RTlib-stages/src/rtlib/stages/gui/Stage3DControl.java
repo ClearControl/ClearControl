@@ -1,17 +1,13 @@
 package rtlib.stages.gui;
 
 import javafx.animation.AnimationTimer;
-
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
-
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.CheckBox;
@@ -28,10 +24,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import model.component.RunnableFX;
 import rtlib.stages.gui.controls.CircleIndicator;
 import utils.RunFX;

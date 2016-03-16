@@ -6,11 +6,12 @@ sourceSets
     main
     {
         java.srcDirs = ['src']
-        resources.srcDirs = ['resources']
+        resources.srcDirs = ['src']
     }
     test
     {
         java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
 }
 
@@ -19,8 +20,6 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-gui')
     compile project(':RTlib-serial')
-    compile 'eu.hansolo.enzo:Enzo:0.3.6'
-    compile 'net.halcyon:Halcyon:(,1.1]'
 }
 
 repositories {

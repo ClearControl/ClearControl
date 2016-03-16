@@ -1,33 +1,27 @@
 package rtlib.microscope.lsm.simulator;
 
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import javafx.stage.Stage;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.python.google.common.collect.Lists;
+
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
-import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
 import rtlib.microscope.lsm.LightSheetMicroscope;
-import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
-import rtlib.microscope.lsm.StackRecyclerManager;
 import rtlib.microscope.lsm.component.detection.DetectionArm;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
-import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
 import rtlib.microscope.lsm.gui.halcyon.HalcyonMicroscopeGUI;
 import rtlib.stack.processor.StackIdentityPipeline;
 import rtlib.stages.devices.sim.StageDeviceSimulator;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
-import rtlib.symphony.gui.ScoreVisualizerJFrame;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.ScoreInterface;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by moon on 11/25/15.

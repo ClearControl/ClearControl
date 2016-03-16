@@ -10,10 +10,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
@@ -31,6 +27,10 @@ import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.server.StackSourceInterface;
+import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																								StackCameraDeviceBase<T, A>	implements

@@ -2,12 +2,12 @@ package rtlib.ao.slms.devices.alpao;
 
 import org.ejml.data.DenseMatrix64F;
 
-import asdk.AlpaoDeformableMirror;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
+import asdk.AlpaoDeformableMirror;
 
 public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 															Loggable

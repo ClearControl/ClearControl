@@ -1,8 +1,9 @@
 package rtlib.core.math.regression.linear;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 
 /**

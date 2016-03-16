@@ -1,9 +1,5 @@
 package net.imglib2.img.planar;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.SafeMemory;
-import coremem.fragmented.FragmentedMemory;
-import coremem.fragmented.FragmentedMemoryInterface;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.NativeImg;
@@ -17,6 +13,10 @@ import net.imglib2.img.basictypeaccess.offheap.LongOffHeapAccess;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.util.Fraction;
+import coremem.ContiguousMemoryInterface;
+import coremem.SafeMemory;
+import coremem.fragmented.FragmentedMemory;
+import coremem.fragmented.FragmentedMemoryInterface;
 
 public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 																NativeImgFactory<T>

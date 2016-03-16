@@ -4,9 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Scanner;
 
+import jssc.SerialPortException;
+
 import org.junit.Test;
 
-import jssc.SerialPortException;
 import rtlib.serial.Serial;
 import rtlib.serial.SerialException;
 import rtlib.serial.SerialInterface;

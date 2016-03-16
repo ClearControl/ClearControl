@@ -1,7 +1,6 @@
 package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.round;
-
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class MedianArgMaxFinder implements ArgMaxFinder1DInterface

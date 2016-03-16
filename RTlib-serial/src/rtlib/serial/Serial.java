@@ -1,11 +1,12 @@
 package rtlib.serial;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
-import gnu.trove.list.array.TByteArrayList;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;

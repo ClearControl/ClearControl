@@ -1,11 +1,11 @@
 package rtlib.stack;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclableFactory;
 import coremem.util.Size;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 
 public class ContiguousOffHeapPlanarStackFactory<T extends NativeType<T>, A extends ArrayDataAccess<A>> implements
 																										RecyclableFactory<StackInterface<T, A>, StackRequest<T>>

@@ -1,10 +1,11 @@
 package rtlib.core.math.argmax.methods;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1DBase;
 

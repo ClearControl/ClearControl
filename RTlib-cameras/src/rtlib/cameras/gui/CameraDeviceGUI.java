@@ -1,5 +1,7 @@
 package rtlib.cameras.gui;
 
+import java.util.Arrays;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,8 +30,6 @@ import javafx.util.StringConverter;
 import model.component.RunnableFX;
 import rtlib.cameras.StackCameraDeviceInterface;
 import utils.RunFX;
-
-import java.util.Arrays;
 
 /**
  * CameraDeviceGUI

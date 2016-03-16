@@ -2,8 +2,17 @@ package rtlib.gui.video.video3d.demo;
 
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.junit.Test;
 
+import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.gui.video.video3d.Stack3DDisplay;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
+import rtlib.stack.OffHeapPlanarStack;
+import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 import clearcuda.CudaContext;
 import clearcuda.CudaDevice;
 import clearcuda.CudaHostPointer;
@@ -13,14 +22,6 @@ import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.gui.video.video3d.Stack3DDisplay;
-import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
-import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
 
 public class VideoFrame3DDisplayDemos
 {

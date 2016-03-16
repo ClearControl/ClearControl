@@ -7,21 +7,22 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+
 import org.junit.Test;
 
+import rtlib.core.concurrent.executors.RTlibExecutors;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
+import rtlib.stack.OffHeapPlanarStack;
+import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import coremem.util.Size;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.concurrent.executors.RTlibExecutors;
-import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
-import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
 
 public class StackTests
 {

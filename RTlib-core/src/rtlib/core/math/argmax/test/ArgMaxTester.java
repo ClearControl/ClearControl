@@ -2,6 +2,7 @@ package rtlib.core.math.argmax.test;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,10 +10,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.google.common.io.Resources;
-
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
+
+import com.google.common.io.Resources;
 
 public class ArgMaxTester
 {

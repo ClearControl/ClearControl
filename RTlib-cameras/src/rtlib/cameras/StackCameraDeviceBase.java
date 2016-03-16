@@ -5,17 +5,15 @@ import gnu.trove.list.array.TByteArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 
 public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																									CameraDeviceBase implements

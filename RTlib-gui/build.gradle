@@ -6,11 +6,12 @@ sourceSets
     main
     {
         java.srcDirs = ['src']
-        resources.srcDirs = ['resources']
+        resources.srcDirs = ['src']
     }
     test
     {
         java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
 }
 
@@ -20,7 +21,7 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-imglib2')
 
-	compile 'net.halcyon:Halcyon:(,1.1]'
+	compile 'net.halcyon:Halcyon:[0.2.2,)'
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
 
 	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'

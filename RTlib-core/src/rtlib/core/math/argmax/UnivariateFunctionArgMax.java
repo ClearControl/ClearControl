@@ -1,11 +1,12 @@
 package rtlib.core.math.argmax;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.methods.ModeArgMaxFinder;
 
 public class UnivariateFunctionArgMax

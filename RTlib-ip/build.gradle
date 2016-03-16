@@ -6,30 +6,16 @@ apply plugin: 'eclipse'
 
 sourceSets 
 {
-  main 
-  {
-    java 
+    main
     {
-      srcDir 'src'
-      //exclude "**/*Tests.java"
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
-    resources 
-    { 
-      srcDir 'src'
+    test
+    {
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
     }
-  }
-//  test
-//  {
-//    java
-//    {
-//      srcDir 'src'
-//      //include "**/*Tests.java"
-//    }
-//    resources
-//    {
-//      srcDir 'src'
-//    }
-//  }
 }
 
 dependencies 

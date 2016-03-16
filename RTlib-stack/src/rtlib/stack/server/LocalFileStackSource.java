@@ -7,14 +7,14 @@ import java.nio.channels.FileChannel;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.fragmented.FragmentedMemoryInterface;
-import coremem.recycling.BasicRecycler;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
+import coremem.recycling.BasicRecycler;
 
 public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																							LocalFileStackBase<T, A> implements

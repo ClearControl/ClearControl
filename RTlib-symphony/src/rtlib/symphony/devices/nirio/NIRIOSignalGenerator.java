@@ -1,7 +1,6 @@
 package rtlib.symphony.devices.nirio;
 
 import static java.lang.Math.toIntExact;
-
 import nirioj.direttore.Direttore;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;

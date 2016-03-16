@@ -5,18 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+
+import org.junit.Test;
+
 import rtlib.core.variable.VariableListener;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.AsynchronousPoolStackProcessorPipeline;
 import rtlib.stack.processor.SameTypeStackProcessorInterface;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public class AsynchronousPoolStackProcessorPipelineTests
 {

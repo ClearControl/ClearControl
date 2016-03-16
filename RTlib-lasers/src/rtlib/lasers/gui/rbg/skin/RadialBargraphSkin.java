@@ -1,11 +1,12 @@
 package rtlib.lasers.gui.rbg.skin;
 
-import eu.hansolo.enzo.common.ConicalGradient;
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.Section;
-import eu.hansolo.enzo.common.ValueEvent;
-import eu.hansolo.enzo.fonts.Fonts;
-import eu.hansolo.enzo.gauge.RadialBargraph;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.IntStream;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -55,13 +56,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.IntStream;
+import eu.hansolo.enzo.common.ConicalGradient;
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.Section;
+import eu.hansolo.enzo.common.ValueEvent;
+import eu.hansolo.enzo.fonts.Fonts;
+import eu.hansolo.enzo.gauge.RadialBargraph;
 
 
 /**

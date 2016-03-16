@@ -1,6 +1,7 @@
 package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.max;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,7 +10,6 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.ComputeFitError;
 import rtlib.core.math.argmax.Fitting1D;

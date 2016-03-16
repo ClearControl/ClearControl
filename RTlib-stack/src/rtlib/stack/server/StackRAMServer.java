@@ -1,10 +1,10 @@
 package rtlib.stack.server;
 
+import gnu.trove.list.array.TLongArrayList;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import coremem.recycling.BasicRecycler;
-import gnu.trove.list.array.TLongArrayList;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.VariableInterface;
@@ -12,6 +12,7 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.BasicRecycler;
 
 public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
 																					StackSinkInterface<T, A>,

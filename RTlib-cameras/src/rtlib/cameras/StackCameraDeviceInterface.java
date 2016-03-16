@@ -1,6 +1,5 @@
 package rtlib.cameras;
 
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.device.NameableInterface;
@@ -9,6 +8,7 @@ import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 
 public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																									CameraDeviceInterface,

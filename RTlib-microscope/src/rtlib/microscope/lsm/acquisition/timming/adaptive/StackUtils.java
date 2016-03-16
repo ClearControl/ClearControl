@@ -3,13 +3,11 @@ package rtlib.microscope.lsm.acquisition.timming.adaptive;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
-
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stack.StackInterface;
+import coremem.buffers.ContiguousBuffer;
 
 public class StackUtils
 {

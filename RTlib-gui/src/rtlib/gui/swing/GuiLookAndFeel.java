@@ -3,8 +3,8 @@ package rtlib.gui.swing;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import ch.randelshofer.quaqua.QuaquaManager;
 import rtlib.core.configuration.MachineConfiguration;
+import ch.randelshofer.quaqua.QuaquaManager;
 
 public class GuiLookAndFeel
 {

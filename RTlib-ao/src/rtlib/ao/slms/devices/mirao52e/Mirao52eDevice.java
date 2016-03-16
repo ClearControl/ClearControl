@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import mirao52e.Mirao52eDeformableMirror;
+
 import org.ejml.data.DenseMatrix64F;
 
-import mirao52e.Mirao52eDeformableMirror;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;

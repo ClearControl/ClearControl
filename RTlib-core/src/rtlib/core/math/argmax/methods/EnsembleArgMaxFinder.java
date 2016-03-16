@@ -1,5 +1,7 @@
 package rtlib.core.math.argmax.methods;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface

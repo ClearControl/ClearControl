@@ -1,7 +1,9 @@
 package rtlib.gui.halcyon;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Properties;
 
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -25,38 +27,54 @@ import model.node.HalcyonNode;
 import model.node.HalcyonNodeInterface;
 import view.ViewManager;
 import window.control.ControlWindowBase;
-import window.util.Resources;
 
 /**
  * Device Config Window
  */
 public class ConfigWindow extends ControlWindowBase
 {
+	private Properties mProperties;
+
 	final private HashMap<String, TreeItem<TreeNode>> subNodes = new HashMap<>();
 	final TreeView<TreeNode> tree;
 	JFXPanel fxPanel;
 	ContextMenu rootContextMenu;
 
-	private final Node rootIcon = new ImageView(
-new Image(getClass().getResourceAsStream(Resources.getString("root.icon")))
-	);
 
 	public ConfigWindow()
 	{
 		super( new VBox());
+
+
+		try
+		{
+			mProperties = new Properties();
+			InputStream lResourceAsStream = ConfigWindow.class.getResourceAsStream("./icons/IconMap.properties");
+			mProperties.load(lResourceAsStream);
+			lResourceAsStream.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
 		setTitle( "Config" );
+
+		String lRootIconFileName = mProperties.getProperty("root.icon");
+		Node rootIcon = new ImageView(new Image(getClass().getResourceAsStream("./icons/" + lRootIconFileName)));
 
 		TreeItem<TreeNode> rootItem = new TreeItem<>( new TreeNode( "Microscopy" ), rootIcon );
 		rootItem.setExpanded( true );
 
 		for (NodeType type : NodeType.values())
 		{
-			String iconName = Resources.getString( type.name().toLowerCase() + ".icon" );
-			String lRessourceName = "images/" + iconName;
-			Class lClassToFindRessources = getClass();
-			InputStream lResourceAsStream = lClassToFindRessources.getResourceAsStream(lRessourceName);
+			String iconName = mProperties.getProperty(type.name()
+																											.toLowerCase() + ".icon");
+			String lRessourceName = "./icons/" + iconName;
+			Class<? extends ConfigWindow> lClassToFindRessources = getClass();
+			InputStream lIconResourceAsStream = lClassToFindRessources.getResourceAsStream(lRessourceName);
 
-			Node icon = new ImageView(new Image(lResourceAsStream));
+			Node icon = new ImageView(new Image(lIconResourceAsStream));
 
 			TreeItem<TreeNode> node = new TreeItem<>( new TreeNode( type.name() ), icon );
 			node.setExpanded( true );

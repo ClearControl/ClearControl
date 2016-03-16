@@ -2,11 +2,11 @@ package rtlib.stack.server;
 
 import java.util.concurrent.TimeUnit;
 
-import coremem.recycling.BasicRecycler;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.BasicRecycler;
 
 public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {

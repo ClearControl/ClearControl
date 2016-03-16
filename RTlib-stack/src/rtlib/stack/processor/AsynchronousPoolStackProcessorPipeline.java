@@ -3,9 +3,6 @@ package rtlib.stack.processor;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclableFactory;
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
@@ -16,6 +13,9 @@ import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclerInterface;
 
 public class AsynchronousPoolStackProcessorPipeline<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
 																											SameTypeStackProcessingPipeline<T, A>,

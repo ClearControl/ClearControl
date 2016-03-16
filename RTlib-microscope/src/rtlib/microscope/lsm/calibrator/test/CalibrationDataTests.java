@@ -10,11 +10,11 @@ import java.io.IOException;
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import rtlib.microscope.lsm.calibrator.CalibrationData;
 import rtlib.microscope.lsm.calibrator.LightSheetPositioner;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class CalibrationDataTests
 {

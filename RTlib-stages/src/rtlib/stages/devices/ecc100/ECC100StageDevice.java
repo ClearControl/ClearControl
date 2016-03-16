@@ -2,11 +2,6 @@ package rtlib.stages.devices.ecc100;
 
 import java.util.Collection;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
-import ecc100.ECC100Axis;
-import ecc100.ECC100Controller;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.StartStopDeviceInterface;
@@ -20,6 +15,12 @@ import rtlib.stages.devices.ecc100.variables.PositionVariable;
 import rtlib.stages.devices.ecc100.variables.ReadyVariable;
 import rtlib.stages.devices.ecc100.variables.ResetVariable;
 import rtlib.stages.devices.ecc100.variables.StopVariable;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import ecc100.ECC100Axis;
+import ecc100.ECC100Controller;
 
 public class ECC100StageDevice extends StageDeviceBase	implements
 														StageDeviceInterface,

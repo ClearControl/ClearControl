@@ -1,7 +1,6 @@
 package rtlib.stages.gui;
 
 import javafx.geometry.Rectangle2D;
-
 import javafx.scene.Group;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.ImageView;

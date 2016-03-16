@@ -1,12 +1,13 @@
 package rtlib.core.math.argmax.fitprob.test;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Random;
 
 import org.junit.Test;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.fitprob.FitQualityEstimator;
 import rtlib.core.math.argmax.fitprob.RandomizedDataGaussianFitter;
 import rtlib.core.math.argmax.test.ArgMaxTester;

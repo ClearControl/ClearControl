@@ -8,9 +8,10 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.junit.Test;
 
-import net.miginfocom.swing.MigLayout;
 import rtlib.symphony.gui.ScoreVisualizer;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.score.Score;

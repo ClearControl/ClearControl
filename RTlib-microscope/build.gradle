@@ -2,12 +2,16 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 sourceSets {
-	main {
-		java { srcDir 'src' }
-	}
-	test {
-		java { srcDir 'src' }
-	}
+    main
+    {
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
+    }
+    test
+    {
+        java.srcDirs = ['src']
+        resources.srcDirs = ['src']
+    }
 }
 
 dependencies {
@@ -27,8 +31,6 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-symphony')
 	compile project(':RTlib-stages')
-    compile 'eu.hansolo.enzo:Enzo:0.3.6'
-    compile 'net.halcyon:Halcyon:(,1.1]'
 }
 
 repositories {

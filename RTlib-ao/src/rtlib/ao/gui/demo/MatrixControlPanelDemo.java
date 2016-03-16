@@ -5,10 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.ejml.data.DenseMatrix64F;
 import org.junit.Test;
 
-import net.miginfocom.swing.MigLayout;
 import rtlib.ao.gui.MatrixControlPanel;
 import rtlib.ao.zernike.TransformMatrices;
 

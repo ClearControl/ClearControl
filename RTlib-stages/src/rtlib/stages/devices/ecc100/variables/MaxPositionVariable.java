@@ -1,7 +1,7 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import ecc100.ECC100Axis;
 import rtlib.core.variable.types.doublev.DoubleVariable;
+import ecc100.ECC100Axis;
 
 public class MaxPositionVariable extends DoubleVariable
 {

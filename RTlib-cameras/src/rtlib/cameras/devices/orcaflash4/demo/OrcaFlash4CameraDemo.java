@@ -12,13 +12,13 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
-import coremem.recycling.BasicRecycler;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.BasicRecycler;
 
 public class OrcaFlash4CameraDemo
 {

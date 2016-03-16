@@ -1,9 +1,11 @@
 package rtlib.lasers.gui;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
@@ -24,7 +26,6 @@ import model.component.RunnableFX;
 import rtlib.lasers.gui.rbg.RadialBargraph;
 import rtlib.lasers.gui.rbg.RadialBargraphBuilder;
 import utils.RunFX;
-import window.util.Resources;
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
@@ -35,6 +36,9 @@ import eu.hansolo.enzo.onoffswitch.IconSwitch;
 public class LaserGauge implements RunnableFX
 {
 	private static final Random RND = new Random();
+
+	private Properties mProperties;
+
 	private IconSwitch powerSwitch;
 	private IconSwitch laserSwitch;
 	private RadialBargraph targetGauge;
@@ -49,28 +53,43 @@ public class LaserGauge implements RunnableFX
 
 	public LaserGauge()
 	{
-		this.waveLength = "488";
+		this("488");
 	}
 
-	public LaserGauge( final String waveLength )
+	public LaserGauge(final String waveLength)
 	{
 		this.waveLength = waveLength;
+
+		try
+		{
+			mProperties = new Properties();
+			InputStream lResourceAsStream = LaserGauge.class.getResourceAsStream("./WavelengthColors.properties");
+			mProperties.load(lResourceAsStream);
+			lResourceAsStream.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
-	@Override public void init() {
+	@Override
+	public void init()
+	{
 		// Power on/off
 		powerSwitch = new IconSwitch();
-		powerSwitch.setSymbolType( SymbolType.POWER );
-		powerSwitch.setSymbolColor( Color.web("#ffffff") );
-		powerSwitch.setSwitchColor( Color.web("#34495e") );
-		powerSwitch.setThumbColor( Color.web("#ff495e") );
+		powerSwitch.setSymbolType(SymbolType.POWER);
+		powerSwitch.setSymbolColor(Color.web("#ffffff"));
+		powerSwitch.setSwitchColor(Color.web("#34495e"));
+		powerSwitch.setThumbColor(Color.web("#ff495e"));
 
 		// Laser on/off
 		laserSwitch = new IconSwitch();
-		laserSwitch.setSymbolType( SymbolType.BRIGHTNESS );
-		laserSwitch.setSymbolColor( Color.web("#ffffff") );
-		laserSwitch.setSwitchColor( Color.web("#34495e") );
-		laserSwitch.setThumbColor( Color.web("#ff495e") );
+		laserSwitch.setSymbolType(SymbolType.BRIGHTNESS);
+		laserSwitch.setSymbolColor(Color.web("#ffffff"));
+		laserSwitch.setSwitchColor(Color.web("#34495e"));
+		laserSwitch.setThumbColor(Color.web("#ff495e"));
 
 		// Gauge bar gradient
 		List<Stop> stops = new ArrayList<>();
@@ -78,47 +97,47 @@ public class LaserGauge implements RunnableFX
 		stops.add(new Stop(0.31, Color.CYAN));
 		stops.add(new Stop(0.5, Color.LIME));
 		stops.add(new Stop(0.69, Color.YELLOW));
-		stops.add( new Stop( 1.0, Color.RED ) );
+		stops.add(new Stop(1.0, Color.RED));
 
 		// Target gauge build
 
 		// Marker for user input
 		Marker mwMarker = new Marker(0, "mW");
 		targetGauge = RadialBargraphBuilder.create()
-				.title("Target")
-				.unit("mW")
-				.markers(mwMarker)
-				.maxValue( 50 )
-				.build();
-		targetGauge.setBarGradientEnabled( true );
-		targetGauge.setBarGradient( stops );
-		targetGauge.setAnimated( false );
-		targetGauge.setInteractive( true );
+																				.title("Target")
+																				.unit("mW")
+																				.markers(mwMarker)
+																				.maxValue(50)
+																				.build();
+		targetGauge.setBarGradientEnabled(true);
+		targetGauge.setBarGradient(stops);
+		targetGauge.setAnimated(false);
+		targetGauge.setInteractive(true);
 
 		// As soon as user changes the target value, it updates gauge value
-		targetGauge.valueProperty().bind( mwMarker.valueProperty() );
+		targetGauge.valueProperty().bind(mwMarker.valueProperty());
 
 		// Actual gauge build
 		actualGauge = RadialBargraphBuilder.create()
-				.title( "Actual" )
-				.unit( "mW" )
-				.maxValue( 50 )
-				.build();
-		actualGauge.setAnimated( false );
-		actualGauge.setBarGradientEnabled( true );
-		actualGauge.setBarGradient( stops );
-		actualGauge.setDisable( true );
+																				.title("Actual")
+																				.unit("mW")
+																				.maxValue(50)
+																				.build();
+		actualGauge.setAnimated(false);
+		actualGauge.setBarGradientEnabled(true);
+		actualGauge.setBarGradient(stops);
+		actualGauge.setDisable(true);
 
 		// Laser name with Wavelength
 		properties = new VBox();
-		properties.setPadding( new Insets( 10 ) );
-		properties.setSpacing( 3 );
+		properties.setPadding(new Insets(10));
+		properties.setSpacing(3);
 
 		Label laserLabel = new Label();
-		laserLabel.setText( waveLength + " nm" );
-		laserLabel.setFont( new Font( "Arial Black", 22 ) );
+		laserLabel.setText(waveLength + " nm");
+		laserLabel.setFont(new Font("Arial Black", 22));
 
-		properties.getChildren().add( laserLabel );
+		properties.getChildren().add(laserLabel);
 
 		pane = new HBox();
 
@@ -126,28 +145,34 @@ public class LaserGauge implements RunnableFX
 		rec.setBackground(new Background(new BackgroundFill(Color.web(getWebColorString(waveLength)),
 																												CornerRadii.EMPTY,
 																												Insets.EMPTY)));
-		Rectangle rectangle = new Rectangle( 60, 80, Color.TRANSPARENT );
-		rec.getChildren().add( rectangle );
+		Rectangle rectangle = new Rectangle(60, 80, Color.TRANSPARENT);
+		rec.getChildren().add(rectangle);
 
 		VBox vBox = new VBox();
-		vBox.setPadding( new Insets( 10, 10, 10, 10 ) );
+		vBox.setPadding(new Insets(10, 10, 10, 10));
 
-//		vBox.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
-		vBox.setSpacing( 8 );
-		vBox.setAlignment( Pos.CENTER );
-		vBox.getChildren().addAll( properties, powerSwitch, laserSwitch );
+		// vBox.setBackground(new Background(new BackgroundFill( Color.web(
+		// WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY,
+		// Insets.EMPTY)));
+		vBox.setSpacing(8);
+		vBox.setAlignment(Pos.CENTER);
+		vBox.getChildren().addAll(properties, powerSwitch, laserSwitch);
 
-		pane.getChildren().addAll( rec, vBox );
+		pane.getChildren().addAll(rec, vBox);
 
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
-		timer = new AnimationTimer() {
-			@Override public void handle(long now) {
-				if (now > lastTimerCall + 500_000_000l) {
+		timer = new AnimationTimer()
+		{
+			@Override
+			public void handle(long now)
+			{
+				if (now > lastTimerCall + 500_000_000l)
+				{
 
-					double v = (2*RND.nextDouble()-1);
-					//v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
+					double v = (2 * RND.nextDouble() - 1);
+					// v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
 
-					actualGauge.setValue( mwMarker.getValue() + v );
+					actualGauge.setValue(mwMarker.getValue() + v);
 					lastTimerCall = now;
 				}
 			}
@@ -157,25 +182,26 @@ public class LaserGauge implements RunnableFX
 	public HBox getPanel()
 	{
 		HBox hBox = new HBox();
-		hBox.setBackground( null );
-		hBox.setPadding( new Insets( 15, 15, 15, 15 ) );
-		hBox.setSpacing( 10 );
-		hBox.getChildren().addAll( pane, targetGauge, actualGauge );
-		hBox.setStyle( "-fx-border-style: solid;"
-				+ "-fx-border-width: 1;"
-				+ "-fx-border-color: black" );
+		hBox.setBackground(null);
+		hBox.setPadding(new Insets(15, 15, 15, 15));
+		hBox.setSpacing(10);
+		hBox.getChildren().addAll(pane, targetGauge, actualGauge);
+		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
+									+ "-fx-border-color: black");
 
 		timer.start();
 
 		return hBox;
 	}
 
-	@Override public void start(Stage stage) {
+	@Override
+	public void start(Stage stage)
+	{
 		HBox pane = getPanel();
 
 		Scene scene = new Scene(pane, Color.WHITE);
 
-		//scene.setFullScreen(true);
+		// scene.setFullScreen(true);
 
 		stage.setTitle("Laser-1");
 		stage.setScene(scene);
@@ -184,22 +210,24 @@ public class LaserGauge implements RunnableFX
 		timer.start();
 	}
 
-	@Override public void stop() {
-
-	}
-
-	public static void main(final String[] args) {
-		RunFX.start( new LaserGauge() );
-	}
-
-	public static String getWebColorString(String wavelength)
+	@Override
+	public void stop()
 	{
-		return Resources.getString(wavelength);
+
 	}
 
-	public static java.awt.Color getWavelengthColor(String wavelength)
+	public static void main(final String[] args)
 	{
-		ResourceBundle lResourceBundle = ResourceBundle.getBundle("WavelengthColors");
-		return java.awt.Color.decode(lResourceBundle.getString(wavelength));
+		RunFX.start(new LaserGauge());
+	}
+
+	public String getWebColorString(String wavelength)
+	{
+		return mProperties.getProperty(wavelength);
+	}
+
+	public java.awt.Color getWavelengthColor(String wavelength)
+	{
+		return java.awt.Color.decode(mProperties.getProperty(wavelength));
 	}
 }

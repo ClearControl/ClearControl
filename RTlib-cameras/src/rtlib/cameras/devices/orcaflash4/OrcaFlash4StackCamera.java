@@ -10,7 +10,6 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import coremem.recycling.RecyclerInterface;
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
@@ -19,8 +18,6 @@ import rtlib.core.units.Magnitude;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;

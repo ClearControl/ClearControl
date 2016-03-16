@@ -25,13 +25,11 @@ import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.core.variable.types.objectv.SingleUpdateTargetObjectVariable;
-import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorInterface;
 import coremem.offheap.OffHeapMemory;
-import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
 

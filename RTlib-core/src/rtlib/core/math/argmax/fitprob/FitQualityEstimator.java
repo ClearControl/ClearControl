@@ -3,6 +3,7 @@ package rtlib.core.math.argmax.fitprob;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -24,8 +25,6 @@ import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiabl
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
-
-import gnu.trove.list.array.TDoubleArrayList;
 
 public class FitQualityEstimator
 {

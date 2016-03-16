@@ -1,10 +1,10 @@
 package rtlib.stack.processor;
 
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 
 public interface StackProcessorInterface<TI extends NativeType<TI>, AI extends ArrayDataAccess<AI>, TO extends NativeType<TO>, AO extends ArrayDataAccess<AO>>
 {

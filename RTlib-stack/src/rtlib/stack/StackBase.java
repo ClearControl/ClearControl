@@ -3,11 +3,11 @@ package rtlib.stack;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.type.NativeType;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 
 public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																						FreeableBase implements

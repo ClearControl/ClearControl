@@ -2,13 +2,13 @@ package rtlib.microscope.lsm;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public class StackRecyclerManager
 {
