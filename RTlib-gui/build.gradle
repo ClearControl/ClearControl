@@ -1,13 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-sourceSets {
-	main {
-		java { srcDir 'src' }
-	}
-	test {
-		java { srcDir 'src' }
-	}
+sourceSets
+{
+    main
+    {
+        java.srcDirs = ['src']
+        resources.srcDirs = ['resources']
+    }
+    test
+    {
+        java.srcDirs = ['src']
+    }
 }
 
 
@@ -15,6 +19,9 @@ dependencies {
 	compile project(':RTlib-core')
 	compile project(':RTlib-stack')
 	compile project(':RTlib-imglib2')
+
+	compile 'net.halcyon:Halcyon:0.1.5'
+    compile 'eu.hansolo.enzo:Enzo:0.3.6'
 
 	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
 	compile 'com.jgoodies:looks:2.2.2'
@@ -26,6 +33,7 @@ dependencies {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 

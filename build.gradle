@@ -132,6 +132,7 @@ subprojects
         maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
         maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
         maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
+        maven { url  "http://dl.bintray.com/rtlib/Halcyon"  }
 
         maven { url  "http://maven.imagej.net/content/repositories/releases" }
         maven { url  "http://maven.imagej.net/content/repositories/snapshots" }

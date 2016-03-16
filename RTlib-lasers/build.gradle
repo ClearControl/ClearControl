@@ -1,36 +1,30 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-sourceSets 
+sourceSets
 {
-  main 
-  {
-    java 
+    main
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
+        resources.srcDirs = ['resources']
     }
-  }
-  test
-  {
-    java 
+    test
     {
-      srcDir 'src'
+        java.srcDirs = ['src']
     }
-  }
 }
 
-dependencies 
+dependencies
 {
     compile project(':RTlib-core')
     compile project(':RTlib-gui')
     compile project(':RTlib-serial')
-    compile 'net.halcyon:Halcyon:0.1.0'
-    compile 'eu.hansolo.enzo:Enzo:0.3.1'
+    compile 'eu.hansolo.enzo:Enzo:0.3.6'
+    compile 'net.halcyon:Halcyon:0.1.5'
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven { url "http://mvnrepository.com/artifact" }
 }
 

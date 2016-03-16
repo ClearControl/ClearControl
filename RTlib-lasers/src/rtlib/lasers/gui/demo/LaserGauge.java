@@ -1,13 +1,13 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.demo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
-
-import eu.hansolo.enzo.gauge.RadialBargraph;
-import eu.hansolo.enzo.gauge.RadialBargraphBuilder;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,22 +18,21 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-
 import javafx.stage.Stage;
-import eu.hansolo.enzo.common.Marker;
-
+import model.component.RunnableFX;
+import rtlib.lasers.gui.RadialBargraph;
+import rtlib.lasers.gui.RadialBargraphBuilder;
+import utils.RunFX;
 import window.util.WavelengthColors;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Laser Gauge Controls
  */
-public class LaserGauge extends Application
+public class LaserGauge implements RunnableFX
 {
 	private static final Random RND = new Random();
 	private IconSwitch powerSwitch;
@@ -42,7 +41,7 @@ public class LaserGauge extends Application
 	private RadialBargraph actualGauge;
 
 	private VBox properties;
-	private VBox pane;
+	private HBox pane;
 
 	private long lastTimerCall;
 	private AnimationTimer timer;
@@ -93,6 +92,11 @@ public class LaserGauge extends Application
 				.build();
 		targetGauge.setBarGradientEnabled( true );
 		targetGauge.setBarGradient( stops );
+		targetGauge.setAnimated( false );
+		targetGauge.setInteractive( true );
+
+		// As soon as user changes the target value, it updates gauge value
+		targetGauge.valueProperty().bind( mwMarker.valueProperty() );
 
 		// Actual gauge build
 		actualGauge = RadialBargraphBuilder.create()
@@ -100,6 +104,7 @@ public class LaserGauge extends Application
 				.unit( "mW" )
 				.maxValue( 50 )
 				.build();
+		actualGauge.setAnimated( false );
 		actualGauge.setBarGradientEnabled( true );
 		actualGauge.setBarGradient( stops );
 		actualGauge.setDisable( true );
@@ -115,31 +120,32 @@ public class LaserGauge extends Application
 
 		properties.getChildren().add( laserLabel );
 
-		pane = new VBox();
-		pane.setPadding( new Insets( 10, 10, 10, 10 ) );
+		pane = new HBox();
 
-		pane.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
-		pane.setSpacing( 8 );
-		pane.setAlignment( Pos.CENTER );
-		pane.getChildren().addAll( properties, powerSwitch, laserSwitch );
+		VBox rec = new VBox();
+		rec.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
+		Rectangle rectangle = new Rectangle( 60, 80, Color.TRANSPARENT );
+		rec.getChildren().add( rectangle );
 
-		// As soon as user changes the target value, it updates gauge value
-		targetGauge.interactiveProperty().addListener( ( observable, oldValue, newValue ) -> {
-			if(!newValue.booleanValue())
-			{
-				targetGauge.setValue( mwMarker.getValue() );
-			}
-		} );
+		VBox vBox = new VBox();
+		vBox.setPadding( new Insets( 10, 10, 10, 10 ) );
+
+//		vBox.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
+		vBox.setSpacing( 8 );
+		vBox.setAlignment( Pos.CENTER );
+		vBox.getChildren().addAll( properties, powerSwitch, laserSwitch );
+
+		pane.getChildren().addAll( rec, vBox );
 
 		lastTimerCall = System.nanoTime() + 2_000_000_000l;
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
-				if (now > lastTimerCall + 5_000_000_000l) {
+				if (now > lastTimerCall + 500_000_000l) {
 
-					double v = RND.nextDouble();
-					v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
+					double v = (2*RND.nextDouble()-1);
+					//v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
 
-					actualGauge.setValue( mwMarker.getValue() * v );
+					actualGauge.setValue( mwMarker.getValue() + v );
 					lastTimerCall = now;
 				}
 			}
@@ -162,7 +168,7 @@ public class LaserGauge extends Application
 		return hBox;
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		HBox pane = getPanel();
 
 		Scene scene = new Scene(pane, Color.WHITE);
@@ -181,6 +187,6 @@ public class LaserGauge extends Application
 	}
 
 	public static void main(final String[] args) {
-		Application.launch(args);
+		RunFX.start( new LaserGauge() );
 	}
 }

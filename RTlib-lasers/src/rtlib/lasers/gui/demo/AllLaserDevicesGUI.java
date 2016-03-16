@@ -1,32 +1,21 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.demo;
 
-import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.miginfocom.swing.MigLayout;
+import model.component.RunnableFX;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
-import rtlib.gui.swing.JCheckBoxBoolean;
-import rtlib.gui.swing.JSliderDouble;
-import rtlib.gui.swing.JSliderIndexedStrings;
 import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.devices.hub.LasertHubDevice;
+import utils.RunFX;
 
-public class AllLaserDevicesGUI extends Application
+public class AllLaserDevicesGUI implements RunnableFX
 {
 
 	//	public final JSliderDouble mLaser405TargetPower,
@@ -46,7 +35,7 @@ public class AllLaserDevicesGUI extends Application
 	//	private final JLabel mLaserCurrentPowerLabel;
 	//	private final JLabel mDetectionFilterWheelLabel;
 
-	public final ArrayList<LaserGauge> mLaserGauges = new ArrayList<LaserGauge>();
+	public final ArrayList<LaserGauge > mLaserGauges = new ArrayList<LaserGauge>();
 
 	public AllLaserDevicesGUI()
 	{
@@ -270,7 +259,7 @@ public class AllLaserDevicesGUI extends Application
 			gauge.init();
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		VBox pane = new VBox();
 
 		pane.getChildren().addAll( mLaserGauges.stream().map(LaserGauge::getPanel).collect( Collectors.toList() ) );
@@ -288,7 +277,7 @@ public class AllLaserDevicesGUI extends Application
 
 	public static void main(String[] args)
 	{
-		Application.launch(args);
+		RunFX.start( new AllLaserDevicesGUI() );
 	}
 
 	class DemoLaser implements LaserDeviceInterface

@@ -1,29 +1,20 @@
 package rtlib.lasers.gui;
 
-import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.miginfocom.swing.MigLayout;
+import model.component.RunnableFX;
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.gui.swing.JCheckBoxBoolean;
-import rtlib.gui.swing.JSliderDouble;
-import rtlib.gui.swing.JSliderIndexedStrings;
 import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.devices.hub.LasertHubDevice;
+import rtlib.lasers.gui.demo.LaserGauge;
+import utils.RunFX;
 
-public class LaserDeviceGUI extends Application
+/**
+ * LaserDeviceGUI handles the collection of lasers to creates multiple instances of LaserGauge
+ */
+public class LaserDeviceGUI implements RunnableFX
 {
 	public final LaserGauge mLaser;
 
@@ -230,7 +221,7 @@ public class LaserDeviceGUI extends Application
 		mLaser.init();
 	}
 
-	@Override public void start(Stage stage) throws Exception {
+	@Override public void start(Stage stage) {
 		VBox pane = new VBox();
 
 		pane.getChildren().addAll( mLaser.getPanel() );
@@ -253,6 +244,6 @@ public class LaserDeviceGUI extends Application
 
 	public static void main(String[] args)
 	{
-		Application.launch(args);
+		RunFX.start( new LaserDeviceGUI() );
 	}
 }
