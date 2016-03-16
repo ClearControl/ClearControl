@@ -18,14 +18,7 @@ public class ArduinoOpticalSwitchPositionAdapter extends
 	public byte[] getSetValueCommandMessage(double pOldValue,
 																					double pNewValue)
 	{
-		int lPositionInt = (int) (101 + pNewValue);
-		
-		if (pNewValue == 100)
-			lPositionInt = 0;
-		else if (pNewValue == 200)
-			lPositionInt = 100;
-		
-		String lMessage = String.format("%d\n", lPositionInt);
+		String lMessage = String.format("%d\n", (int) pNewValue);
 		return lMessage.getBytes();
 	}
 

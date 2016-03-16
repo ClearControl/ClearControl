@@ -8,7 +8,6 @@ import static java.lang.Math.toIntExact;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import coremem.buffers.ContiguousBuffer;
 import nirioj.direttore.Direttore;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.symphony.movement.Movement;
@@ -18,6 +17,7 @@ import rtlib.symphony.staves.ConstantStave;
 import rtlib.symphony.staves.IntervalStave;
 import rtlib.symphony.staves.StaveInterface;
 import rtlib.symphony.staves.ZeroStave;
+import coremem.buffers.ContiguousBuffer;
 
 public class NIRIOScoreCompiler	implements
 								AsynchronousExecutorServiceAccess
@@ -180,7 +180,7 @@ public class NIRIOScoreCompiler	implements
 		{
 			final float lNormalizedTime = t * lInvNumberOfTimepoints;
 
-			if (t == pNumberOfTimePoints - 1)
+			if (t == pNumberOfTimePoints - 1 && lSyncStart == 0)
 			{
 				pScoreBuffer.writeShort(lInsideValue);
 			}

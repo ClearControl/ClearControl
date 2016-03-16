@@ -92,6 +92,7 @@ subprojects
         compile 'net.openhft:affinity:2.0.6'
         compile 'net.openhft:collections:3.0.2' 
         compile 'net.openhft:chronicle:3.0.1'
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
 
         compile 'org.jscience:jscience:4.3.1'
             

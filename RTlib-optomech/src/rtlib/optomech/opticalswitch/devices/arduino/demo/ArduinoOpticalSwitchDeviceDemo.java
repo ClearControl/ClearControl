@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.optomech.opticalswitch.devices.arduino.ArduinoOpticalSwitchDevice;
 
 public class ArduinoOpticalSwitchDeviceDemo
@@ -17,16 +17,18 @@ public class ArduinoOpticalSwitchDeviceDemo
 
 		assertTrue(lArduinoOpticalSwitchDevice.open());
 
-		int[] lValidPositions = lArduinoOpticalSwitchDevice.getValidPositions();
-
-		final DoubleVariable lPositionVariable = lArduinoOpticalSwitchDevice.getPositionVariable();
+		int lNumberOfSwitches = lArduinoOpticalSwitchDevice.getNumberOfSwitches();
 
 		for (int i = 0; i < 500; i++)
 		{
-			int lTargetPosition = lValidPositions[i % lValidPositions.length];
-			lPositionVariable.set((double) lTargetPosition);
-			Thread.sleep(1000);
-			System.out.format("i=%d, tp=%d\n", i, lTargetPosition);
+			for (int j = 0; j < lNumberOfSwitches; j++)
+			{
+				final BooleanVariable lSwitchVariable = lArduinoOpticalSwitchDevice.getSwitchingVariable(j);
+
+				lSwitchVariable.setValue(i % 2 == 0);
+				Thread.sleep(300);
+				System.out.format("i=%d, j=%d\n", i, j);
+			}
 		}
 
 		assertTrue(lArduinoOpticalSwitchDevice.close());

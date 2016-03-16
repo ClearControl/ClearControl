@@ -1,12 +1,15 @@
 package rtlib.gui.plots;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class MultiPlot
 {
@@ -56,7 +59,19 @@ public class MultiPlot
 		{
 			lPlotTab = new PlotTab(pName);
 			mNameToPlotMap.put(pName, lPlotTab);
-			mTabbedPane.addTab(pName, lPlotTab.getPlot());
+
+			final PlotTab lFinalPlotTab = lPlotTab;
+			try
+			{
+				SwingUtilities.invokeAndWait(() -> {
+
+					mTabbedPane.addTab(pName, lFinalPlotTab.getPlot());
+				});
+			}
+			catch (InvocationTargetException | InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return lPlotTab;
@@ -64,13 +79,29 @@ public class MultiPlot
 
 	public void clear()
 	{
-		mTabbedPane.removeAll();
-		mNameToPlotMap.clear();
+		try
+		{
+			SwingUtilities.invokeAndWait(() -> {
+				mTabbedPane.removeAll();
+				for (Map.Entry<String, PlotTab> lEntry : mNameToPlotMap.entrySet())
+				{
+					lEntry.getValue().clearPoints();
+					lEntry.getValue().ensureUpToDate();
+				}
+				mNameToPlotMap.clear();
+			});
+		}
+		catch (InvocationTargetException | InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void setVisible(final boolean pIsVisible)
 	{
-		mFrame.setVisible(pIsVisible);
+		SwingUtilities.invokeLater(() -> {
+			mFrame.setVisible(pIsVisible);
+		});
 	}
 
 	public boolean isVisible()

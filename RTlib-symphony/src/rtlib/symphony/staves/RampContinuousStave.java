@@ -1,9 +1,11 @@
 package rtlib.symphony.staves;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.signum;
 
-public class RampContinuousStave extends StaveAbstract	implements
-														StaveInterface
+public class RampContinuousStave extends StaveAbstract implements
+																											StaveInterface
 {
 	private volatile float mSyncStart;
 	private volatile float mSyncStop;
@@ -11,6 +13,7 @@ public class RampContinuousStave extends StaveAbstract	implements
 	private volatile float mStopValue;
 	private volatile float mOutsideValue;
 	private volatile boolean mNoJump = false;
+	private volatile float mExponent = 1;
 
 	public RampContinuousStave(final String pName)
 	{
@@ -18,11 +21,28 @@ public class RampContinuousStave extends StaveAbstract	implements
 	}
 
 	public RampContinuousStave(	final String pName,
-								float pSyncStart,
-								float pSyncStop,
-								float pStartValue,
-								float pStopValue,
-								float pOutsideValue)
+															float pSyncStart,
+															float pSyncStop,
+															float pStartValue,
+															float pStopValue,
+															float pOutsideValue)
+	{
+		this(	pName,
+					pSyncStart,
+					pSyncStop,
+					pStartValue,
+					pStopValue,
+					pOutsideValue,
+					1);
+	};
+
+	public RampContinuousStave(	final String pName,
+															float pSyncStart,
+															float pSyncStop,
+															float pStartValue,
+															float pStopValue,
+															float pOutsideValue,
+															float pExponent)
 	{
 		super(pName);
 		setSyncStart(pSyncStart);
@@ -30,6 +50,7 @@ public class RampContinuousStave extends StaveAbstract	implements
 		setStartValue(pStartValue);
 		setStopValue(pStopValue);
 		setOutsideValue(pOutsideValue);
+		setExponent(pExponent);
 	}
 
 	@Override
@@ -40,10 +61,24 @@ public class RampContinuousStave extends StaveAbstract	implements
 
 		final float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
 
-		final float lValue = getStartValue() + (getStopValue() - getStartValue())
-								* lNormalizedRampTime;
+		if (mExponent == 1)
+		{
+			final float lValue = getStartValue() + (getStopValue() - getStartValue())
+														* lNormalizedRampTime;
+			return lValue;
+		}
+		else
+		{
+			final float lExponentiatedValue = (float) (getStartValue() + (getStopValue() - getStartValue()) * abspow(	lNormalizedRampTime,
+																																																						mExponent));
 
-		return lValue;
+			return lExponentiatedValue;
+		}
+	}
+
+	public float abspow(float pValue, float pExponent)
+	{
+		return (float) (signum(pValue) * pow(abs(pValue), pExponent));
 	}
 
 	public float getSyncStart()
@@ -111,15 +146,29 @@ public class RampContinuousStave extends StaveAbstract	implements
 		mNoJump = pNoJump;
 	}
 
+	public float getExponent()
+	{
+		return mExponent;
+	}
+
+	public void setExponent(float pExponent)
+	{
+		mExponent = pExponent;
+	}
+
 	@Override
 	public StaveInterface copy()
 	{
-		return new RampContinuousStave(	getName(),
-										getSyncStart(),
-										getSyncStop(),
-										getStartValue(),
-										getStopValue(),
-										getOutsideValue());
+		RampContinuousStave lRampContinuousStave = new RampContinuousStave(	getName(),
+																																				getSyncStart(),
+																																				getSyncStop(),
+																																				getStartValue(),
+																																				getStopValue(),
+																																				getOutsideValue(),
+																																				getExponent());
+
+		return lRampContinuousStave;
+
 	}
 
 }
