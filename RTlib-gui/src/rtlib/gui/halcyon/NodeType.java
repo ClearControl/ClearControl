@@ -1,11 +1,11 @@
-package rtlib.gui.window;
+package rtlib.gui.halcyon;
 
 import model.node.HalcyonNodeType;
 
 /**
  * HalcyonNode Type enumeration
  */
-public enum RTlibNodeType implements HalcyonNodeType
+public enum NodeType implements HalcyonNodeType
 {
 	Camera, Laser, LightSheet, Stage, FilterWheel, AdaptiveOptics, Other
 }

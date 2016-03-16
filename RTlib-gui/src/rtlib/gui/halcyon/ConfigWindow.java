@@ -1,11 +1,12 @@
-package rtlib.gui.window;
+package rtlib.gui.halcyon;
 
-import javafx.application.Platform;
+import java.io.InputStream;
+import java.util.HashMap;
+
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -18,16 +19,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import model.node.HalcyonNode;
-import model.node.HalcyonNodeInterface;
 import model.list.HalcyonNodeRepository;
 import model.list.HalcyonNodeRepositoryListener;
-
+import model.node.HalcyonNode;
+import model.node.HalcyonNodeInterface;
 import view.ViewManager;
 import window.control.ControlWindowBase;
 import window.util.Resources;
-
-import java.util.HashMap;
 
 /**
  * Device Config Window
@@ -40,7 +38,7 @@ public class ConfigWindow extends ControlWindowBase
 	ContextMenu rootContextMenu;
 
 	private final Node rootIcon = new ImageView(
-			new Image( getClass().getResourceAsStream( Resources.getString( "root.icon" ) ) )
+new Image(getClass().getResourceAsStream(Resources.getString("root.icon")))
 	);
 
 	public ConfigWindow()
@@ -51,10 +49,14 @@ public class ConfigWindow extends ControlWindowBase
 		TreeItem<TreeNode> rootItem = new TreeItem<>( new TreeNode( "Microscopy" ), rootIcon );
 		rootItem.setExpanded( true );
 
-		for (RTlibNodeType type : RTlibNodeType.values())
+		for (NodeType type : NodeType.values())
 		{
 			String iconName = Resources.getString( type.name().toLowerCase() + ".icon" );
-			Node icon = new ImageView( new Image( getClass().getResourceAsStream( iconName )));
+			String lRessourceName = "images/" + iconName;
+			Class lClassToFindRessources = getClass();
+			InputStream lResourceAsStream = lClassToFindRessources.getResourceAsStream(lRessourceName);
+
+			Node icon = new ImageView(new Image(lResourceAsStream));
 
 			TreeItem<TreeNode> node = new TreeItem<>( new TreeNode( type.name() ), icon );
 			node.setExpanded( true );
@@ -125,7 +127,7 @@ public class ConfigWindow extends ControlWindowBase
 													vBox.getChildren().add(n.getValue().getNode().getPanel());
 												}
 
-												HalcyonNode node = new HalcyonNode( "User panel", RTlibNodeType.Laser, vBox );
+												HalcyonNode node = new HalcyonNode( "User panel", NodeType.Laser, vBox );
 												manager.open( node );
 											}
 										}

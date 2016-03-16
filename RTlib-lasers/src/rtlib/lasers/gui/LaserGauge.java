@@ -1,12 +1,10 @@
-package rtlib.lasers.gui.demo;
+package rtlib.lasers.gui;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.ResourceBundle;
 
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,16 +16,18 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.component.RunnableFX;
-import rtlib.lasers.gui.RadialBargraph;
-import rtlib.lasers.gui.RadialBargraphBuilder;
+import rtlib.lasers.gui.rbg.RadialBargraph;
+import rtlib.lasers.gui.rbg.RadialBargraphBuilder;
 import utils.RunFX;
-import window.util.WavelengthColors;
+import window.util.Resources;
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.onoffswitch.IconSwitch;
 
 /**
  * Laser Gauge Controls
@@ -123,7 +123,9 @@ public class LaserGauge implements RunnableFX
 		pane = new HBox();
 
 		VBox rec = new VBox();
-		rec.setBackground(new Background(new BackgroundFill( Color.web( WavelengthColors.getWebColorString( waveLength ) ), CornerRadii.EMPTY, Insets.EMPTY)));
+		rec.setBackground(new Background(new BackgroundFill(Color.web(getWebColorString(waveLength)),
+																												CornerRadii.EMPTY,
+																												Insets.EMPTY)));
 		Rectangle rectangle = new Rectangle( 60, 80, Color.TRANSPARENT );
 		rec.getChildren().add( rectangle );
 
@@ -188,5 +190,16 @@ public class LaserGauge implements RunnableFX
 
 	public static void main(final String[] args) {
 		RunFX.start( new LaserGauge() );
+	}
+
+	public static String getWebColorString(String wavelength)
+	{
+		return Resources.getString(wavelength);
+	}
+
+	public static java.awt.Color getWavelengthColor(String wavelength)
+	{
+		ResourceBundle lResourceBundle = ResourceBundle.getBundle("WavelengthColors");
+		return java.awt.Color.decode(lResourceBundle.getString(wavelength));
 	}
 }

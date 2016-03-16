@@ -13,6 +13,7 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.lasers.LaserDeviceInterface;
+import rtlib.lasers.gui.LaserGauge;
 import utils.RunFX;
 
 public class AllLaserDevicesGUI implements RunnableFX

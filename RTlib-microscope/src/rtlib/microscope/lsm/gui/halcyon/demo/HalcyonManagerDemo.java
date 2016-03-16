@@ -1,20 +1,19 @@
 package rtlib.microscope.lsm.gui.halcyon.demo;
 
-import demo.ConfigWindow;
+
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.node.HalcyonNode;
-import model.node.HalcyonNodeType;
-import rtlib.gui.window.RTlibNodeType;
+import rtlib.gui.halcyon.ConfigWindow;
+import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.sim.LaserDeviceSimulator;
 import rtlib.lasers.gui.LaserDeviceGUI;
 import view.FxFrame;
 import window.console.StdOutputCaptureConsole;
-import window.demo.DemoToolbarWindow;
 import window.toolbar.MicroscopeStartStopToolbar;
-
-import java.util.ArrayList;
 
 /**
  * Halcyon Manager class for microscopy
@@ -62,7 +61,9 @@ public class HalcyonManagerDemo extends Application
 				LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI( (LaserDeviceInterface)device );
 				laserDeviceGUI.init();
 
-				HalcyonNode node = new HalcyonNode( "Laser-" + ((LaserDeviceInterface) device).getName(), RTlibNodeType.Laser, laserDeviceGUI.getPanel() );
+				HalcyonNode node = new HalcyonNode(	"Laser-" + ((LaserDeviceInterface) device).getName(),
+																						NodeType.Laser,
+																						laserDeviceGUI.getPanel());
 				lHalcyonFrame.addNode( node );
 			}
 		}

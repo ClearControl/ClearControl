@@ -1,4 +1,4 @@
-package rtlib.lasers.gui.skin;
+package rtlib.lasers.gui.rbg.skin;
 
 import eu.hansolo.enzo.common.ConicalGradient;
 import eu.hansolo.enzo.common.Marker;

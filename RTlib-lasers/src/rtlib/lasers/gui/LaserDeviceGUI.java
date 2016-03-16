@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import model.component.RunnableFX;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.gui.demo.LaserGauge;
 import utils.RunFX;
 
 /**

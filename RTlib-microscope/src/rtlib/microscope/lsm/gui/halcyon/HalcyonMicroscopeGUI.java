@@ -4,8 +4,8 @@ import javafx.stage.Stage;
 import model.node.HalcyonNode;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.gui.CameraDeviceGUI;
-import rtlib.gui.window.ConfigWindow;
-import rtlib.gui.window.RTlibNodeType;
+import rtlib.gui.halcyon.ConfigWindow;
+import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.gui.LaserDeviceGUI;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
@@ -33,7 +33,9 @@ public class HalcyonMicroscopeGUI
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI( laserDevice );
 			laserDeviceGUI.init();
 
-			HalcyonNode node = new HalcyonNode( "Laser-" + i, RTlibNodeType.Laser, laserDeviceGUI.getPanel() );
+			HalcyonNode node = new HalcyonNode(	"Laser-" + i,
+																					NodeType.Laser,
+																					laserDeviceGUI.getPanel());
 			lHalcyonFrame.addNode( node );
 		}
 
@@ -46,7 +48,9 @@ public class HalcyonMicroscopeGUI
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI( stageDevice );
 			stageDeviceGUI.init();
 
-			HalcyonNode node = new HalcyonNode( "Stage-" + i, RTlibNodeType.Stage, stageDeviceGUI.getPanel() );
+			HalcyonNode node = new HalcyonNode(	"Stage-" + i,
+																					NodeType.Stage,
+																					stageDeviceGUI.getPanel());
 			lHalcyonFrame.addNode( node );
 		}
 
@@ -58,7 +62,9 @@ public class HalcyonMicroscopeGUI
 			CameraDeviceGUI cameraDeviceGUI = new CameraDeviceGUI( cameraDevice );
 			cameraDeviceGUI.init();
 
-			HalcyonNode node = new HalcyonNode( "Camera-" + i, RTlibNodeType.Camera, cameraDeviceGUI.getPanel() );
+			HalcyonNode node = new HalcyonNode(	"Camera-" + i,
+																					NodeType.Camera,
+																					cameraDeviceGUI.getPanel());
 			lHalcyonFrame.addNode( node );
 		}
 

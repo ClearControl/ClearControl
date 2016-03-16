@@ -1,4 +1,4 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.rbg;
 
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.Section;

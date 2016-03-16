@@ -1,7 +1,7 @@
-package rtlib.lasers.gui;
+package rtlib.lasers.gui.rbg;
 
 import javafx.scene.control.Skin;
-import rtlib.lasers.gui.skin.RadialBargraphSkin;
+import rtlib.lasers.gui.rbg.skin.RadialBargraphSkin;
 
 /**
  * Created by moon on 1/29/16.
@@ -14,6 +14,7 @@ public class RadialBargraph extends eu.hansolo.enzo.gauge.RadialBargraph
 	}
 
 	@Override public String getUserAgentStylesheet() {
-		return getClass().getResource("radial-bargraph.css").toExternalForm();
+		return getClass().getResource("css/radial-bargraph.css")
+											.toExternalForm();
 	}
 }

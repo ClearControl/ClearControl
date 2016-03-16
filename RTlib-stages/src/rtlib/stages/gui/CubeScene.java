@@ -4,9 +4,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-
 import javafx.geometry.BoundingBox;
-
 import javafx.scene.Group;
 import javafx.scene.PointLight;
 import javafx.scene.SceneAntialiasing;
@@ -15,9 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
-
 import javafx.util.Duration;
-
 import rtlib.stages.gui.object.Axes;
 import rtlib.stages.gui.object.Cube;
 
@@ -28,14 +24,20 @@ public class CubeScene extends View3D
 {
 	public static final int VIEWPORT_SIZE = 800;
 
-	private static final String xPlus = CubeScene.class.getResource( "Xplus.png" ).toString();
-	private static final String xMinus = CubeScene.class.getResource( "XMinus.png" ).toString();
+	private static final String xPlus = CubeScene.class.getResource("images/Xplus.png")
+																											.toString();
+	private static final String xMinus = CubeScene.class.getResource("images/XMinus.png")
+																											.toString();
 
-	private static final String yPlus = CubeScene.class.getResource( "Yplus.png" ).toString();
-	private static final String yMinus = CubeScene.class.getResource( "YMinus.png" ).toString();
+	private static final String yPlus = CubeScene.class.getResource("images/Yplus.png")
+																											.toString();
+	private static final String yMinus = CubeScene.class.getResource("images/YMinus.png")
+																											.toString();
 
-	private static final String zPlus = CubeScene.class.getResource( "Zplus.png" ).toString();
-	private static final String zMinus = CubeScene.class.getResource( "ZMinus.png" ).toString();
+	private static final String zPlus = CubeScene.class.getResource("images/Zplus.png")
+																											.toString();
+	private static final String zMinus = CubeScene.class.getResource("images/ZMinus.png")
+																											.toString();
 
 	private SubScene subScene = null;
 	private Group viewingGroup = null;

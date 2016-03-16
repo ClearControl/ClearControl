@@ -20,7 +20,7 @@ dependencies
     compile project(':RTlib-core')
     compile project(':RTlib-serial')
 
-    compile 'net.halcyon:Halcyon:0.1.5'
+    compile 'net.halcyon:Halcyon:(,1.1]'
     compile group: "net.rtlib", name: "ECC100J", version: "1.0", changing: true, transitive: true
 }
 
