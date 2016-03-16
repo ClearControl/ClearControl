@@ -1,4 +1,4 @@
-package rtlib.simulation;
+package rtlib.microscope.lsm.simulator;
 
 import javafx.stage.Stage;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
