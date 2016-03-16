@@ -1,7 +1,6 @@
 package rtlib.stages.gui;
 
-import javafx.application.Application;
-
+import javafx.animation.AnimationTimer;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -24,27 +23,33 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Shear;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import model.component.RunnableFX;
 import rtlib.stages.gui.controls.CircleIndicator;
+import utils.RunFX;
 
 /**
  * StageControl
  */
-public class StageControl extends Application
+public class StageControl implements RunnableFX
 {
 	private VBox panel;
 
 	// 3D perspective view properties
+	PerspectiveCamera camera = new PerspectiveCamera();
+
 	final Cam camOffset = new Cam();
 	final Cam cam = new Cam();
 
-	final Shear shear = new Shear();
 	final Group rectangleGroup = new Group();
-
+	final Xform axisGroup = new Xform();
+	private AnimationTimer timer;
 	// Properties
 
 	class Cam extends Group
@@ -64,7 +69,32 @@ public class StageControl extends Application
 
 	public static void main( String[] args )
 	{
-		launch( args );
+		RunFX.start( new StageControl() );
+	}
+
+	private void buildAxes() {
+		System.out.println("buildAxes()");
+		final PhongMaterial redMaterial = new PhongMaterial();
+		redMaterial.setDiffuseColor(Color.DARKRED);
+		redMaterial.setSpecularColor(Color.RED);
+
+		final PhongMaterial greenMaterial = new PhongMaterial();
+		greenMaterial.setDiffuseColor(Color.DARKGREEN);
+		greenMaterial.setSpecularColor(Color.GREEN);
+
+		final PhongMaterial blueMaterial = new PhongMaterial();
+		blueMaterial.setDiffuseColor(Color.DARKBLUE);
+		blueMaterial.setSpecularColor(Color.BLUE);
+
+		final Box xAxis = new Box(240.0, 1, 1);
+		final Box yAxis = new Box(1, 240.0, 1);
+		final Box zAxis = new Box(1, 1, 240.0);
+
+		xAxis.setMaterial(redMaterial);
+		yAxis.setMaterial(greenMaterial);
+		zAxis.setMaterial(blueMaterial);
+
+		axisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
 	}
 
 	@Override public void init()
@@ -147,6 +177,7 @@ public class StageControl extends Application
 		// 3D perspective view
 		Pane pane = new Pane();
 		pane.setPrefSize( 200, 400 );
+//		cam.getChildren().add(camera);
 		camOffset.getChildren().add( cam );
 		pane.getChildren().add( camOffset );
 		VBox.setMargin(pane, new Insets(30,8,8,8));
@@ -166,6 +197,11 @@ public class StageControl extends Application
 		double yPos = 250;
 		double zPos = 250;
 
+		buildAxes();
+		axisGroup.setTranslateX( xPos );
+		axisGroup.setTranslateY( yPos );
+		axisGroup.setTranslateZ( zPos );
+
 		double barWidth = 10.0;
 		double barHeight = 10.0;
 		double barDepth = 10.0;
@@ -173,6 +209,7 @@ public class StageControl extends Application
 		final PhongMaterial redMaterial = new PhongMaterial();
 		redMaterial.setSpecularColor(Color.YELLOW);
 		redMaterial.setDiffuseColor(Color.RED);
+
 		final Box red = new Box(barWidth, barHeight, barDepth);
 		red.setTranslateX( xPos );
 		red.setTranslateY( yPos );
@@ -184,7 +221,7 @@ public class StageControl extends Application
 		rectangleGroup.setScaleX( 2 );
 		rectangleGroup.setScaleY( 2 );
 		rectangleGroup.setScaleZ( 2 );
-		cam.getChildren().add(rectangleGroup);
+		cam.getChildren().addAll( axisGroup, rectangleGroup );
 
 		double halfSceneWidth = 500;
 		double halfSceneHeight = 500;
@@ -192,6 +229,11 @@ public class StageControl extends Application
 		cam.ip.setX(-halfSceneWidth);
 		cam.p.setY(halfSceneHeight);
 		cam.ip.setY(-halfSceneHeight);
+
+		timer = new AnimationTimer() {
+			@Override public void handle(long now) {
+			}
+		};
 	}
 
 	public void resetCam() {
@@ -232,11 +274,13 @@ public class StageControl extends Application
 	public void start( Stage stage )
 	{
 		Scene scene = new Scene( panel );
-		scene.setCamera(new PerspectiveCamera());
+		scene.setCamera(camera);
 
 		stage.setTitle( "Stage Control" );
 		stage.setScene( scene );
 		stage.show();
+
+		timer.start();
 	}
 
 	private Slider createSlider(final double value, final String helpText) {
@@ -248,6 +292,9 @@ public class StageControl extends Application
 		slider.setStyle("-fx-text-fill: white");
 		slider.setTooltip(new Tooltip(helpText));
 		return slider;
+	}
+
+	@Override public void stop() {
 	}
 
 	public VBox getPanel()

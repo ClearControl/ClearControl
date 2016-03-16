@@ -28,8 +28,8 @@ dependencies {
 	compile project(':RTlib-symphony')
 	compile project(':RTlib-stages')
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
-    compile 'net.halcyon:Halcyon:0.1.4'
-    compile 'org.dockfx:DockFX:0.1.1'
+    compile 'net.halcyon:Halcyon:0.1.5'
+    compile 'org.dockfx:DockFX:0.1.2'
 }
 
 repositories {

@@ -1,6 +1,7 @@
 package rtlib.stages.gui;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.component.RunnableFX;
@@ -12,11 +13,11 @@ import utils.RunFX;
  */
 public class StageDeviceGUI implements RunnableFX
 {
-	public final StageControl mStage;
+	public final Stage3DControl mStage;
 
 	public StageDeviceGUI( StageDeviceInterface stageDeviceInterface )
 	{
-		mStage = new StageControl();
+		mStage = new Stage3DControl();
 	}
 
 	@Override public void init()
@@ -25,22 +26,16 @@ public class StageDeviceGUI implements RunnableFX
 	}
 
 	@Override public void start(Stage stage) {
-		VBox pane = new VBox();
 
-		pane.getChildren().addAll( mStage.getPanel() );
-
-		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
-
-		stage.setTitle("Stage");
-		stage.setScene(scene);
-		stage.show();
+		mStage.start( stage );
 	}
 
 	@Override public void stop()
 	{
+		mStage.stop();
 	}
 
-	public VBox getPanel()
+	public Pane getPanel()
 	{
 		return mStage.getPanel();
 	}

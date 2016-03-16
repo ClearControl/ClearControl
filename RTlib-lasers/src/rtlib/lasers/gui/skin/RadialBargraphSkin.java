@@ -20,6 +20,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
@@ -36,6 +37,9 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -61,7 +65,8 @@ import java.util.stream.IntStream;
 
 
 /**
- * Created by
+ * Created by hansolo
+ * Modified by hkmoon
  * User: HongKee
  * Date: 29.01.15
  * Time: 15:35
@@ -108,6 +113,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 	private Instant                  lastCall;
 	private boolean                  withinSpeedLimit;
 	private Marker					 lastMarker;
+	private Region					 clickRegion;
 
 
 	// ******************** Constructors **************************************
@@ -260,6 +266,9 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 		value.setTranslateX((size - value.getLayoutBounds().getWidth()) * 0.5);
 		bar.setLength(-currentValue * angleStep);
 
+		clickRegion = new Region();
+		clickRegion.setBackground( new Background(new BackgroundFill( Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)) );
+
 		// Add all nodes
 		pane = new Pane();
 		pane.getChildren().setAll(background,
@@ -271,7 +280,8 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				knob,
 				title,
 				unit,
-				value);
+				value,
+				clickRegion);
 
 		pane.getChildren().addAll(getSkinnable().getMarkers().keySet());
 
@@ -327,7 +337,8 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 		threshold.setOnTouchMoved(touchEventHandler);
 		threshold.setOnTouchReleased(touchEventHandler);
 
-		ticksAndSectionsCanvas.setOnMouseClicked( mouseEventHandler );
+		clickRegion.setOnMousePressed( mouseEventHandler );
+		clickRegion.setOnTouchPressed( touchEventHandler );
 
 		for (Marker marker : getSkinnable().getMarkers().keySet()) {
 			marker.setOnMousePressed(mouseEventHandler);
@@ -478,7 +489,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				touchRotate(point.getX(), point.getY(), thresholdRotate);
 			} else if (MouseEvent.MOUSE_RELEASED == TYPE) {
 				getSkinnable().setThreshold(Double.parseDouble(value.getText()));
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
 		} else if (getSkinnable().isInteractive() && SRC instanceof Marker) {
 			if (MouseEvent.MOUSE_PRESSED == TYPE) {
@@ -498,7 +509,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				value.setText(String.format(Locale.US, "%." + getSkinnable().getDecimals() + "f", getSkinnable().getMinMeasuredValue()));
 				resizeText();
 			} else if (MouseEvent.MOUSE_RELEASED == TYPE) {
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
 		} else if (getSkinnable().isInteractive() && SRC.equals(maxMeasuredValue)) {
 			if (MouseEvent.MOUSE_PRESSED == TYPE) {
@@ -506,17 +517,13 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				value.setText(String.format(Locale.US, "%." + getSkinnable().getDecimals() + "f", getSkinnable().getMaxMeasuredValue()));
 				resizeText();
 			} else if (MouseEvent.MOUSE_RELEASED == TYPE) {
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
-		} else if (MouseEvent.MOUSE_CLICKED == TYPE &&  SRC.equals(ticksAndSectionsCanvas))
+		} else if (MouseEvent.MOUSE_PRESSED == TYPE && SRC.equals(clickRegion))
 		{
-			Point2D point = getSkinnable().sceneToLocal(MOUSE_EVENT.getSceneX(), MOUSE_EVENT.getSceneY());
-
-			if(ticksAndSectionsCanvas.contains( point ))
-			{
-				touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
-				lastMarker.setValue(Double.parseDouble(value.getText()));
-			}
+			Point2D point = getSkinnable().sceneToLocal( MOUSE_EVENT.getSceneX(), MOUSE_EVENT.getSceneY() );
+			touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
+			lastMarker.setValue(Double.parseDouble(value.getText()));
 		}
 	}
 
@@ -533,7 +540,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				touchRotate(point.getX(), point.getY(), thresholdRotate);
 			} else if (TouchEvent.TOUCH_RELEASED == TYPE) {
 				getSkinnable().setThreshold(Double.parseDouble(value.getText()));
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
 		} else if (SRC instanceof Marker) {
 			if (TouchEvent.TOUCH_PRESSED == TYPE) {
@@ -553,7 +560,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				value.setText(String.format(Locale.US, "%." + getSkinnable().getDecimals() + "f", getSkinnable().getMinMeasuredValue()));
 				resizeText();
 			} else if (TouchEvent.TOUCH_RELEASED == TYPE) {
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
 		} else if (SRC.equals(maxMeasuredValue)) {
 			if (TouchEvent.TOUCH_PRESSED == TYPE) {
@@ -561,17 +568,13 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 				value.setText(String.format(Locale.US, "%." + getSkinnable().getDecimals() + "f", getSkinnable().getMaxMeasuredValue()));
 				resizeText();
 			} else if (TouchEvent.TOUCH_RELEASED == TYPE) {
-				fadeBackToInteractive();
+//				fadeBackToInteractive();
 			}
-		} else if (MouseEvent.MOUSE_CLICKED == TYPE &&  SRC.equals(ticksAndSectionsCanvas))
+		} else if (TouchEvent.TOUCH_PRESSED == TYPE &&  SRC.equals(clickRegion))
 		{
 			Point2D point = getSkinnable().sceneToLocal(TOUCH_EVENT.getTouchPoint().getSceneX(), TOUCH_EVENT.getTouchPoint().getSceneY());
-
-			if(ticksAndSectionsCanvas.contains( point ))
-			{
-				touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
-				lastMarker.setValue(Double.parseDouble(value.getText()));
-			}
+			touchRotate( point.getX(), point.getY(), getSkinnable().getMarkers().get(lastMarker) );
+			lastMarker.setValue(Double.parseDouble(value.getText()));
 		}
 	}
 
@@ -779,6 +782,8 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 
 	private void resize() {
 		size = getSkinnable().getWidth() < getSkinnable().getHeight() ? getSkinnable().getWidth() : getSkinnable().getHeight();
+		size -= 20;
+
 		centerX = size * 0.5;
 		centerY = size * 0.5;
 
@@ -797,6 +802,9 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements Skin
 			dropShadow.setOffsetY(0.015 * size);
 
 			background.setPrefSize(size, size);
+			clickRegion.setPrefSize( size + 20, size + 20 );
+			clickRegion.setTranslateX( -10 );
+			clickRegion.setTranslateY( -10 );
 
 			ticksAndSectionsCanvas.setWidth(size);
 			ticksAndSectionsCanvas.setHeight(size);
