@@ -21,21 +21,24 @@ dependencies {
 	compile project(':RTlib-stack')
 	compile project(':RTlib-imglib2')
 
-	compile 'net.halcyon:Halcyon:[0.2.2,)'
-    compile 'eu.hansolo.enzo:Enzo:0.3.6'
-
 	compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
 	compile 'com.jgoodies:looks:2.2.2'
 	//compile 'org.devzendo:LibQuaqua:7.3.4'
 	compile 'org.devzendo:Quaqua:7.3.4'
 
+	compile 'eu.hansolo.enzo:Enzo:0.3.6'
+
+	compile group: "net.halcyon", name:"Halcyon", version: "0.2.3", changing: true, transitive: true
+	compile group: "org.dockfx", name: "DockFX", version:"0.1.2", changing: true, transitive: true
+    
 	compile group: "net.clearvolume", name: "clearvolume", version: "(,1.1]", changing: true, transitive: true
 	compile group: "net.clearvolume", name: "cleargl", version: "(,1.1]", changing: true, transitive: true
 }
 
 repositories {
-	mavenLocal()
 	mavenCentral()
+	maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
+	maven { url  "http://dl.bintray.com/rtlib/Halcyon" }
 }
 
 //***********************************************************************************
