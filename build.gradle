@@ -7,6 +7,31 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.bintray"
+
+
+sourceSets {
+    main
+    {
+        java
+        { srcDir 'src' }
+        resources
+        { srcDir 'src' }
+    }
+    test
+    {
+        java
+        { srcDir 'src' }
+        resources
+        { srcDir 'src' }
+    }
+}
+
 /*
  * Gets the version name from the latest Git tag
  */
@@ -21,130 +46,233 @@ def getVersionName = {
 }
 
 
-subprojects 
+sourceCompatibility = 1.8
+
+group = 'net.rtlib'
+version = getVersionName()
+
+/*
+compileJava 
 {
-    buildscript {
-        repositories {
-            jcenter()
-        }
-        dependencies {
-            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        }
-    }   
+    options.compilerArgs << '-XDignore.symbol.file'
+    options.fork = true // may not needed on 1.8
+    options.forkOptions.executable = 'javac' // may not needed on 1.8
+}/**/
 
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: "com.jfrog.bintray"
-
-    sourceCompatibility = 1.8
-
-    group = 'net.rtlib'
-    version = getVersionName()
-
-    /*
-    compileJava 
+test 
+{
+    testLogging.showStandardStreams = true 
+    testLogging 
     {
-        options.compilerArgs << '-XDignore.symbol.file'
-        options.fork = true // may not needed on 1.8
-        options.forkOptions.executable = 'javac' // may not needed on 1.8
-    }/**/
-
-    test 
-    {
-        testLogging.showStandardStreams = true 
-        testLogging 
-        {
-            events "passed", "skipped", "failed"
-        }
-
-        exclude '**/demo/**'
-
-        maxHeapSize = "16G"
+        events "passed", "skipped", "failed"
     }
 
-    dependencies 
-    {
-        compile 'org.apache.commons:commons-collections4:4.0'
-        compile 'commons-io:commons-io:2.4'
-        compile 'org.apache.commons:commons-lang3:3.4'
-        compile 'org.apache.commons:commons-math3:3.5'
-        compile 'org.apache.logging.log4j:log4j-api:2.1'
-        compile 'org.apache.logging.log4j:log4j-core:2.1'
+    exclude '**/demo/**'
 
-        compile 'com.google.guava:guava:18.0'
-        compile 'com.nativelibs4java:bridj:0.7.0'
-        compile 'com.nativelibs4java:javacl:1.0.0-RC4'
-        compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
-        //compile 'com.github.rwl:jtransforms:2.4.0'
-        compile 'org.codehaus.groovy:groovy-all:2.4.3:indy'
-        compile 'javax.mail:mail:1.4.7'
-        compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
-        compile 'net.sf.trove4j:trove4j:3.0.3'
-        compile 'java3d:vecmath:1.3.1'
-        compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
-        compile 'com.miglayout:miglayout:3.7.4'
+    maxHeapSize = "16G"
+}
 
-        compile 'net.openhft:compiler:2.1'
-        compile 'net.openhft:lang:6.3.5'
-        compile 'net.openhft:affinity:2.0.6'
-        compile 'net.openhft:collections:3.0.2' 
-        compile 'net.openhft:chronicle:3.0.1'
-        compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
-        compile 'org.jscience:jscience:4.3.1'
-            
-        compile group: 'junit', name: 'junit', version: '4.11'
-        testCompile group: 'junit', name: 'junit', version: '4.11'
+dependencies 
+{
+    // JUnit:
+    compile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
 
-        compile fileTree(dir: '../Libs/jmathplot', include: '*.jar')
-    }
+    // Commons:
+    compile 'org.apache.commons:commons-collections4:4.0'
+    compile 'commons-io:commons-io:2.4'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-math3:3.5'
+    compile 'org.apache.logging.log4j:log4j-api:2.1'
+    compile 'org.apache.logging.log4j:log4j-core:2.1'
+
+    // guava:
+    compile 'com.google.guava:guava:18.0'
+
+    // Trove:
+    compile 'net.sf.trove4j:trove4j:3.0.3'
+
+    // Jakson for JSON:
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
+
+
+    // JScience:
+    compile 'org.jscience:jscience:4.3.1'
+
+    // Matrix libs:
+    compile group: 'de.mukis', name: 'de.mukis.jama', version: '2.0.0.M1'
+    compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
+
+    // JTransforms:
+    compile fileTree(dir: '../Libs/jtransforms', include: '*.jar')
+
+    // VecMath:
+    compile 'java3d:vecmath:1.3.1'
+
+    // openHFT
+    compile 'net.openhft:compiler:2.1'
+    compile 'net.openhft:lang:6.3.5'
+    compile 'net.openhft:affinity:2.0.6'
+    compile 'net.openhft:collections:3.0.2' 
+    compile 'net.openhft:chronicle:3.0.1'
     
-    task sourcesJar(type: Jar, dependsOn:classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn:javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    if (JavaVersion.current().isJava8Compatible()) {
-        allprojects {
-          tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-          }
-        }
-      }
-
+    // Scripting (groovy, jpython...):
+    compile 'org.python:jython:2.7-rc2'
+    compile 'com.fifesoft:rsyntaxtextarea:2.5.6'
+    compile 'org.reflections:reflections:0.9.10'
+    compile 'org.codehaus.groovy:groovy-all:2.4.3:indy'
+    
+    // Mail:
+    compile 'javax.mail:mail:1.4.7'
 
     
+    // Look and feels:
+    compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
+    compile 'com.jgoodies:looks:2.2.2'
+    compile 'org.devzendo:Quaqua:7.3.4'
 
-    repositories 
-    {
-        mavenCentral()
-        maven { url "http://oss.sonatype.org/content/groups/public"} 
+    // JavaFX:
+    compile 'eu.hansolo.enzo:Enzo:0.3.6'
+    compile group: "org.dockfx", name: "DockFX", version:"0.1.2", changing: true, transitive: true
 
-        maven { url  "http://dl.bintray.com/rtlib/RTlib"}
-        maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
-        maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
-        maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
-        maven { url  "http://dl.bintray.com/rtlib/Halcyon"  }
+    // Halcyon:
+    compile group: "net.halcyon", name:"Halcyon", version: "0.2.3", changing: true, transitive: true
 
-        maven { url  "http://maven.imagej.net/content/repositories/releases" }
-        maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
-        maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+    // MigLayout:
+    compile 'com.miglayout:miglayout:3.7.4'
 
-    }
+    // JMathPlot:
+    compile fileTree(dir: './libs/jmathplot', include: '*.jar')
 
+    // JTransforms:
+    compile fileTree(dir: './libs/jtransforms', include: '*.jar')
+
+
+    // imglib2:
+    compile ('net.imglib2:imglib2:2.2.0'){transitive = true}
+    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28'){transitive = true}
+    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30'){transitive = true}
+    compile ('net.imglib2:imglib2-algorithm:0.2.1'){transitive = true}
     
+    // scifio:
+    compile ('io.scif:pom-scifio:5.8.0'){transitive = true}
+    compile ('io.scif:scifio:0.21.0'){transitive = true}
 
- 
+    // Bridj and co:
+    compile 'com.nativelibs4java:bridj:0.7.0'
+    compile 'com.nativelibs4java:javacl:1.0.0-RC4'
+
+    // JSSC (serial):
+    compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+
+    // CoreMem:
+    compile group: "net.coremem", name: "CoreMem", version: "(,1.0.0]", changing: true, transitive:true
+
+    // ClearVolume:
+    compile group: "net.clearvolume", name: "clearvolume", version: "(,1.1]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "cleargl", version: "(,1.1]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "clearcl", version: "(,1.1]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "clearaudio", version: "(,1.1]", changing: true, transitive: true
+
+    // AO:
+    compile group: "net.rtlib", name: "Mirao52J", version: "(,2.0.0]", transitive:true, changing: true
+    compile group: "net.rtlib", name: "ASDKJ", version: "(,2.0.0]", transitive:true, changing: true
+
+    // Cameras:
+    compile group: "net.rtlib", name: "DcamJ", version: "(,1.5]", transitive: true, changing: true
+    compile 'com.github.sarxos:webcam-capture:0.3.9'
+
+    // Stages:
+    compile group: "net.rtlib", name: "ECC100J", version: "1.0", changing: true, transitive: true
+
+    // Symphony:
+    compile group: "net.rtlib", name: "NIRIOJ", version: "(,1.1]", changing: true
+
+
+    // Other:
+    //compile 'com.github.rwl:jtransforms:2.4.0'
+    //compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
 
 }
+
+
+repositories 
+{
+    // main repos:
+    mavenCentral()
+    maven { url "http://oss.sonatype.org/content/groups/public"} 
+    maven { url "http://mvnrepository.com/artifact" }
+
+    // RTlib:
+    maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
+    maven { url  "http://dl.bintray.com/rtlib/Halcyon" }
+    maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
+
+    // ClearVolume: 
+    maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
+
+
+    //imglib2:
+    maven { url  "http://maven.imagej.net/content/repositories/releases" }
+    maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
+    maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+      tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+  }
+
+
+//***********************************************************************************
+
+// PUBLISHING
+
+
+
+
+artifacts
+{
+    archives sourcesJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar { classifier "sources" }
+        }
+    }
+}
+
+apply from: 'bintrayUpload.gradle'
+
+
+
+
+
+
+
 
 
 
