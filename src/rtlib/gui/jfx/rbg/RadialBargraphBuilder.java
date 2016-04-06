@@ -1,4 +1,4 @@
-package rtlib.lasers.gui.rbg;
+package rtlib.gui.jfx.rbg;
 
 import java.util.HashMap;
 import java.util.List;

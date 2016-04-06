@@ -1,4 +1,4 @@
-package rtlib.stack.server;
+package rtlib.stack.sourcesink;
 
 import rtlib.core.variable.bundle.VariableBundle;
 

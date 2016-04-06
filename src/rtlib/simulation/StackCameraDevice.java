@@ -31,7 +31,7 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import rtlib.stack.server.StackSourceInterface;
+import rtlib.stack.sourcesink.StackSourceInterface;
 
 public class StackCameraDevice<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 		StackCameraDeviceBase<T, A>	implements

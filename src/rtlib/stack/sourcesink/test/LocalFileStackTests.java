@@ -1,4 +1,4 @@
-package rtlib.stack.server.test;
+package rtlib.stack.sourcesink.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,8 +22,8 @@ import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import rtlib.stack.server.LocalFileStackSink;
-import rtlib.stack.server.LocalFileStackSource;
+import rtlib.stack.sourcesink.LocalFileStackSink;
+import rtlib.stack.sourcesink.LocalFileStackSource;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;

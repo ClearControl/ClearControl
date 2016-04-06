@@ -1,4 +1,4 @@
-package rtlib.stack.server;
+package rtlib.stack.sourcesink;
 
 import gnu.trove.list.array.TLongArrayList;
 
@@ -12,7 +12,7 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
 																					StackSinkInterface<T, A>,
@@ -42,7 +42,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public void setStackRecycler(final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
 	{
 	}
 

@@ -45,4 +45,23 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 		mTargetPowerInMilliWattVariable.syncWith(mCurrentPowerInMilliWattVariable);
 	}
 
+	/*
+	 * timer = new AnimationTimer()
+		{
+			@Override
+			public void handle(long now)
+			{
+				if (now > lastTimerCall + 500_000_000l)
+				{
+
+					double v = (2 * RND.nextDouble() - 1);
+					// v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
+
+					actualGauge.setValue(mwMarker.getValue() + v);
+					lastTimerCall = now;
+				}
+			}
+		};
+	 */
+
 }

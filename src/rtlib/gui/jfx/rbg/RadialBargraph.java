@@ -1,7 +1,7 @@
-package rtlib.lasers.gui.rbg;
+package rtlib.gui.jfx.rbg;
 
 import javafx.scene.control.Skin;
-import rtlib.lasers.gui.rbg.skin.RadialBargraphSkin;
+import rtlib.gui.jfx.rbg.skin.RadialBargraphSkin;
 
 /**
  * Created by moon on 1/29/16.

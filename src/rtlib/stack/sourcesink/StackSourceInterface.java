@@ -1,4 +1,4 @@
-package rtlib.stack.server;
+package rtlib.stack.sourcesink;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,7 +6,7 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {
@@ -15,7 +15,7 @@ public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDa
 
 	public long getNumberOfStacks();
 
-	public void setStackRecycler(BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler);
+	public void setStackRecycler(RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler);
 
 	public StackInterface<T, A> getStack(long pStackIndex);
 

@@ -26,17 +26,17 @@ import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import rtlib.stack.server.StackSourceInterface;
+import rtlib.stack.sourcesink.StackSourceInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																								StackCameraDeviceBase<T, A>	implements
-																															Loggable,
-																															SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>,
-																															AsynchronousSchedulerServiceAccess
+																																																StackCameraDeviceBase<T, A>	implements
+																																																														Loggable,
+																																																														SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>,
+																																																														AsynchronousSchedulerServiceAccess
 {
 	private StackCameraDeviceSimulatorHint mHint;
 	private StackSourceInterface<T, A> mStackSource;
@@ -48,9 +48,10 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	private volatile CountDownLatch mLeftInQueue;
 	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
-	public StackCameraDeviceSimulator(	StackSourceInterface<T, A> pStackSource,
-										T pType,
-										BooleanVariable pTriggerVariable)
+
+	public StackCameraDeviceSimulator(StackSourceInterface<T, A> pStackSource,
+																		T pType,
+																		BooleanVariable pTriggerVariable)
 	{
 		super("StackCameraSimulator");
 		mStackSource = pStackSource;
@@ -58,24 +59,24 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		mTriggerVariable = pTriggerVariable;
 
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
-																	1);
+																																1);
 		mStackBytesPerPixelVariable = new DoubleVariable(	"FrameBytesPerPixel",
-															2);
+																											2);
 		mStackWidthVariable = new DoubleVariable("FrameWidth", 320);
 		mStackHeightVariable = new DoubleVariable("FrameHeight", 320);
 		mStackDepthVariable = new DoubleVariable("FrameDepth", 100);
 		mExposureInMicrosecondsVariable = new DoubleVariable(	"ExposureInMicroseconds",
-																1000);
+																													1000);
 		mPixelSizeinNanometersVariable = new DoubleVariable("PixelSizeinNanometers",
-															160);
+																												160);
 
 		mStackReference = new ObjectVariable<>("StackReference");
 
 		if (mTriggerVariable == null)
 		{
 			severe(	"cameras",
-					"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
-							+ " because trigger variable is null!");
+							"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
+									+ " because trigger variable is null!");
 			return;
 		}
 
@@ -88,8 +89,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 				final long lExposuretimeInMicroSeconds = (long) mExposureInMicrosecondsVariable.getValue();
 				final long lDepth = (long) mStackDepthVariable.getValue();
 				final long lWaitTimeMicroseconds = lExposuretimeInMicroSeconds * lDepth;
-				ThreadUtils.sleep(	lWaitTimeMicroseconds,
-									TimeUnit.MICROSECONDS);
+				ThreadUtils.sleep(lWaitTimeMicroseconds,
+													TimeUnit.MICROSECONDS);
 
 				if (pCurrentBooleanValue)
 				{
@@ -131,16 +132,14 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		final ContiguousOffHeapPlanarStackFactory<T, A> lContiguousOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<T, A>();
 
 		mRecycler = new BasicRecycler<StackInterface<T, A>, StackRequest<T>>(	lContiguousOffHeapPlanarStackFactory,
-																				20);
+																																					20);
 
 	}
 
 	protected StackInterface<T, A> generateSyntheticStack() throws IncompatibleTypeException
 	{
-		final int lWidth = (int) max(	16,
-										mStackWidthVariable.getValue());
-		final int lHeight = (int) max(	16,
-										mStackHeightVariable.getValue());
+		final int lWidth = (int) max(16, mStackWidthVariable.getValue());
+		final int lHeight = (int) max(16, mStackHeightVariable.getValue());
 		int lDepth = (int) max(16, mStackDepthVariable.getValue());
 		if (mHint != null && mHint.type.startsWith("autofocus.angle"))
 			lDepth = mHint.nbangles;
@@ -151,13 +150,13 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			return null;
 
 		final StackRequest<T> lStackRequest = StackRequest.build(	mType,
-																	lWidth,
-																	lHeight,
-																	lDepth);
+																															lWidth,
+																															lHeight,
+																															lDepth);
 
 		final StackInterface<T, A> lStack = mRecycler.getOrWait(1,
-																TimeUnit.SECONDS,
-																lStackRequest);
+																														TimeUnit.SECONDS,
+																														lStackRequest);
 
 		// mRecycler.printDebugInfo();
 		// System.out.println(lStackRequest.toString());
@@ -173,8 +172,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 					for (int x = 0; x < lWidth; x++)
 					{
 						int lValueValue = (((byte) (x + time) ^ (byte) (cos(lNumberOfImagesPerPlane * x
-																			+ (z % lNumberOfImagesPerPlane)))
-											^ (byte) z ^ (time)));/**/
+																																+ (z % lNumberOfImagesPerPlane)))
+																^ (byte) z ^ (time)));/**/
 						if (lValueValue < 32)
 							lValueValue = 0;
 						lContiguousBuffer.writeShort((short) lValueValue);
@@ -238,8 +237,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			trigger();
 		};
 		mTriggerScheduledAtFixedRate = scheduleAtFixedRate(	lRunnable,
-															(long) getExposureInMicrosecondsVariable().getValue(),
-															TimeUnit.MICROSECONDS);
+																												(long) getExposureInMicrosecondsVariable().getValue(),
+																												TimeUnit.MICROSECONDS);
 		return true;
 	}
 
@@ -281,7 +280,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 			@Override
 			public Boolean get() throws InterruptedException,
-								ExecutionException
+													ExecutionException
 			{
 				// mLeftInQueue.await();
 				return true;
@@ -289,8 +288,8 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 			@Override
 			public Boolean get(long pTimeout, TimeUnit pUnit)	throws InterruptedException,
-																ExecutionException,
-																TimeoutException
+																												ExecutionException,
+																												TimeoutException
 			{
 				// mLeftInQueue.await(pTimeout, pUnit);
 				return true;
@@ -316,7 +315,5 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 	{
 		mHint = pHint;
 	}
-
-
 
 }

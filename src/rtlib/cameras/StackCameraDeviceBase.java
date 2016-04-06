@@ -16,18 +16,18 @@ import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
 public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																									CameraDeviceBase implements
-																													StackCameraDeviceInterface<T, A>,
-																													StateQueueDeviceInterface
+																																																		CameraDeviceBase implements
+																																																										StackCameraDeviceInterface<T, A>,
+																																																										StateQueueDeviceInterface
 {
 	protected BooleanVariable mStackMode = new BooleanVariable(	"StackMode",
-																true);
+																															true);
 
 	protected BooleanVariable mKeepPlane = new BooleanVariable(	"KeepPlane",
-																true);
+																															true);
 
-	protected DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable(	"NumberOfImagesPerPlane",
-																					1);
+	protected DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfImagesPerPlane",
+																																								1);
 
 	protected volatile int mQueueLength = 0;
 	protected TByteArrayList mStagingKeepAcquiredImageArray;
@@ -36,14 +36,13 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mRecycler;
 
 	protected ObjectVariable<StackInterface<T, A>> mStackReference;
-	
+
 	private int mMinimalNumberOfAvailableStacks = 6;
 
 	public StackCameraDeviceBase(String pDeviceName)
 	{
 		super(pDeviceName);
 	}
-	
 
 	@Override
 	public int getMinimalNumberOfAvailableStacks()
@@ -56,7 +55,6 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	{
 		mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
 	}
-
 
 	@Override
 	public DoubleVariable getNumberOfImagesPerPlaneVariable()
@@ -106,8 +104,10 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	public void addCurrentStateToQueue()
 	{
 		mQueueLength++;
+		if (mStagingKeepAcquiredImageArray == null)
+			mStagingKeepAcquiredImageArray = new TByteArrayList();
 		mStagingKeepAcquiredImageArray.add((byte) (mKeepPlane.getBooleanValue()	? 1
-																				: 0));
+																																						: 0));
 	}
 
 	@Override
@@ -124,12 +124,12 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	@Override
 	public Future<Boolean> playQueue()
 	{
-		if(getStackRecycler()==null)
+		if (getStackRecycler() == null)
 		{
-			System.err.println("No recycler defined for: "+this);
+			System.err.println("No recycler defined for: " + this);
 			return null;
 		}
-			
+
 		mStackDepthVariable.setValue(mQueueLength);
 		mKeepAcquiredImageArrayQueue.add(new TByteArrayList(mStagingKeepAcquiredImageArray));
 		// This method should be called by overriding methods of descendants.

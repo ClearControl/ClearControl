@@ -12,7 +12,7 @@ import rtlib.lasers.devices.omicron.OmicronLaserDevice;
 public class OmicronLaserDeviceDemo
 {
 
-	private static final String cCOMPORT = "COM8";
+	private static final String cCOMPORT = "COM4";
 
 	@Test
 	public void testOn() throws InterruptedException

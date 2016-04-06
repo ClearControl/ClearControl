@@ -1,4 +1,4 @@
-package rtlib.stack.server;
+package rtlib.stack.sourcesink;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +15,7 @@ import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 
 public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																							LocalFileStackBase<T, A> implements
@@ -23,7 +24,7 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 {
 
 	private static final long cSingleReadLimit = 64_000_000;
-	private BasicRecycler<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
+	private RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
 	private FileChannel mBinarylFileChannel;
 
 	public LocalFileStackSource(T pType,
@@ -44,7 +45,7 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 	}
 
 	@Override
-	public void setStackRecycler(final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
 	{
 		mStackBasicRecycler = pStackRecycler;
 

@@ -11,11 +11,11 @@ import javax.swing.SwingUtilities;
 
 import model.node.HalcyonNode;
 import rtlib.cameras.StackCameraDeviceInterface;
-import rtlib.cameras.gui.CameraDeviceGUI;
+import rtlib.cameras.gui.jfx.CameraDevicePanel;
 import rtlib.gui.halcyon.ConfigWindow;
 import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.gui.LaserDeviceGUI;
+import rtlib.lasers.gui.jfx.LaserDeviceGUI;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stages.StageDeviceInterface;
@@ -56,7 +56,7 @@ public class HalcyonGUI extends Application
 			LaserDeviceInterface laserDevice = deviceLists.getLaserDevice(i);
 
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI(laserDevice);
-			laserDeviceGUI.init();
+
 
 			HalcyonNode node = new HalcyonNode(	"Laser-" + i,
 																					NodeType.Laser,
@@ -71,7 +71,7 @@ public class HalcyonGUI extends Application
 
 			// Stage
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI(stageDevice);
-			stageDeviceGUI.init();
+
 
 			HalcyonNode node = new HalcyonNode(	"Stage-" + i,
 																					NodeType.Stage,
@@ -84,8 +84,7 @@ public class HalcyonGUI extends Application
 		{
 			StackCameraDeviceInterface cameraDevice = deviceLists.getStackCameraDevice(i);
 
-			CameraDeviceGUI cameraDeviceGUI = new CameraDeviceGUI(cameraDevice);
-			cameraDeviceGUI.init();
+			CameraDevicePanel cameraDeviceGUI = new CameraDevicePanel(cameraDevice);
 
 			HalcyonNode node = new HalcyonNode(	"Camera-" + i,
 																					NodeType.Camera,

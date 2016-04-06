@@ -1,4 +1,4 @@
-package rtlib.lasers.gui.rbg.skin;
+package rtlib.gui.jfx.rbg.skin;
 
 import java.time.Instant;
 import java.util.ArrayList;
