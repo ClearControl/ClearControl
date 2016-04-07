@@ -5,9 +5,6 @@ old/
 .project
 .settings/
 .gradle/
-gradle/
-gradlew
-gradlew.*
 .idea
 *.iml
 *.ipr

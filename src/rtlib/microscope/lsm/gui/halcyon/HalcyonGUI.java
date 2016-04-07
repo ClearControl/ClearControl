@@ -1,5 +1,8 @@
 package rtlib.microscope.lsm.gui.halcyon;
 
+import halcyon.HalcyonFrame;
+import halcyon.view.TreePanel;
+
 import java.util.concurrent.CountDownLatch;
 
 import javafx.application.Application;
@@ -11,7 +14,6 @@ import javax.swing.SwingUtilities;
 
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.gui.jfx.CameraDevicePanel;
-
 import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.gui.jfx.LaserDeviceGUI;
@@ -20,17 +22,18 @@ import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.gui.StageDeviceGUI;
 
-import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonNode;
-import halcyon.view.TreePanel;
-
 public class HalcyonGUI extends Application
 {
 	private HalcyonFrame mHalcyonFrame;
 
 	public HalcyonGUI()
 	{
-		mHalcyonFrame = new HalcyonFrame(new TreePanel("Config", "Microscopy", this.getClass().getResourceAsStream( "/rtlib/gui/halcyon/icons/folder_16.png") , NodeType.values()));
+		TreePanel lTreePanel = new TreePanel(	"Config",
+																					"Microscopy",
+																					this.getClass()
+																							.getResourceAsStream("/rtlib/gui/halcyon/icons/folder_16.png"),
+																					NodeType.values());
+		mHalcyonFrame = new HalcyonFrame(lTreePanel);
 
 	}
 
@@ -55,7 +58,13 @@ public class HalcyonGUI extends Application
 			e.printStackTrace();
 		}
 
-		mHalcyonFrame = new HalcyonFrame(new TreePanel("Config", "Microscopy", this.getClass().getResourceAsStream( "/rtlib/gui/halcyon/icons/folder_16.png") , NodeType.values()));
+		TreePanel lTreePanel = new TreePanel(	"Config",
+																					"Microscopy",
+																					this.getClass()
+																							.getResourceAsStream("/rtlib/gui/halcyon/icons/folder_16.png"),
+																					NodeType.values());
+
+		mHalcyonFrame = new HalcyonFrame(lTreePanel);
 
 		LightSheetMicroscopeDeviceLists deviceLists = pLightSheetMicroscopeInterface.getDeviceLists();
 
@@ -144,8 +153,8 @@ public class HalcyonGUI extends Application
 		});
 	}
 
-	public static void main( final String[] args )
+	public static void main(final String[] args)
 	{
-		launch( args );
+		launch(args);
 	}
 }
