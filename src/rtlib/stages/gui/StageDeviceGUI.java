@@ -2,14 +2,12 @@ package rtlib.stages.gui;
 
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.component.RunnableFX;
 import rtlib.stages.StageDeviceInterface;
-import utils.RunFX;
 
 /**
  * StageDeviceGUI for Halcyon
  */
-public class StageDeviceGUI implements RunnableFX
+public class StageDeviceGUI
 {
 	public final Stage3DControl mStage;
 
@@ -18,20 +16,16 @@ public class StageDeviceGUI implements RunnableFX
 		mStage = new Stage3DControl();
 	}
 
-	@Override
 	public void init()
 	{
 		mStage.init();
 	}
 
-	@Override
 	public void start(Stage stage)
 	{
-
 		mStage.start(stage);
 	}
 
-	@Override
 	public void stop()
 	{
 		mStage.stop();
@@ -42,8 +36,4 @@ public class StageDeviceGUI implements RunnableFX
 		return mStage.getPanel();
 	}
 
-	public static void main(String[] args)
-	{
-		RunFX.start(new StageDeviceGUI(null));
-	}
 }

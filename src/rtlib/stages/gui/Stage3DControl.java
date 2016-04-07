@@ -26,20 +26,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import model.component.RunnableFX;
 import rtlib.stages.gui.controls.CircleIndicator;
-import utils.RunFX;
 
 /**
  * Stage 3D Control
  */
-public class Stage3DControl implements RunnableFX
+public class Stage3DControl
 {
-	public static void main(String[] args)
-	{
-		RunFX.start(new Stage3DControl());
-	}
-
 	private BorderPane rootGroup = null;
 
 	private Pane background1Pane = null;
@@ -53,7 +46,11 @@ public class Stage3DControl implements RunnableFX
 	private AnimationTimer viewTimer = null;
 	private Scene scene = null;
 
-	@Override
+	public Stage3DControl()
+	{
+		init();
+	}
+
 	public void init()
 	{
 		rootGroup = new BorderPane();
@@ -166,7 +163,6 @@ public class Stage3DControl implements RunnableFX
 		viewTimer.start();
 	}
 
-	@Override
 	public void start(Stage stage)
 	{
 		stage.setTitle("Stage Control");
@@ -174,7 +170,6 @@ public class Stage3DControl implements RunnableFX
 		stage.show();
 	}
 
-	@Override
 	public void stop()
 	{
 		viewTimer.stop();

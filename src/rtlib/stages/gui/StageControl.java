@@ -26,14 +26,12 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import model.component.RunnableFX;
 import rtlib.stages.gui.controls.CircleIndicator;
-import utils.RunFX;
 
 /**
  * StageControl
  */
-public class StageControl implements RunnableFX
+public class StageControl
 {
 	private VBox panel;
 
@@ -75,9 +73,9 @@ public class StageControl implements RunnableFX
 		}
 	}
 
-	public static void main(String[] args)
+	public StageControl()
 	{
-		RunFX.start(new StageControl());
+		init();
 	}
 
 	private void buildAxes()
@@ -106,7 +104,6 @@ public class StageControl implements RunnableFX
 		axisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
 	}
 
-	@Override
 	public void init()
 	{
 		panel = new VBox(20);
@@ -302,7 +299,6 @@ public class StageControl implements RunnableFX
 		cam.ip.setZ(-pivotZ);
 	}
 
-	@Override
 	public void start(Stage stage)
 	{
 		Scene scene = new Scene(panel);
@@ -328,7 +324,6 @@ public class StageControl implements RunnableFX
 		return slider;
 	}
 
-	@Override
 	public void stop()
 	{
 	}
