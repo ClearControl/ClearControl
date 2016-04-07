@@ -5,10 +5,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import rtlib.core.variable.events.EventPropagator;
 
-public class Variable<O> extends VariableBase<O>	implements
-																									VariableSyncInterface<O>,
-																									VariableSetInterface<O>,
-																									VariableGetInterface<O>
+public class Variable<O> extends VariableBase<O> implements
+																								VariableSyncInterface<O>,
+																								VariableSetInterface<O>,
+																								VariableGetInterface<O>
 
 {
 	protected volatile O mReference;
@@ -89,7 +89,8 @@ public class Variable<O> extends VariableBase<O>	implements
 		mReference = lNewValueAfterHook;
 
 		notifyListenersOfSetEvent(lOldReference, lNewValueAfterHook);
-		if (!lOldReference.equals(lNewValueAfterHook))
+		if (lOldReference != null && lNewValueAfterHook != null
+				&& !lOldReference.equals(lNewValueAfterHook))
 			notifyListenersOfEdgeEvent(lOldReference, lNewValueAfterHook);
 
 		return true;
