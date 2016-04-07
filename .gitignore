@@ -10,6 +10,8 @@ gradlew
 gradlew.*
 .idea
 *.iml
+*.ipr
+*.iws
 *.class
 hs_err_pid*
 .DS_Store
