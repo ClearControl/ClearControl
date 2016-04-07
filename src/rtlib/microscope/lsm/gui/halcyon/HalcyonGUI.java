@@ -9,10 +9,9 @@ import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
 
-import model.node.HalcyonNode;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.gui.jfx.CameraDevicePanel;
-import rtlib.gui.halcyon.ConfigWindow;
+
 import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.gui.jfx.LaserDeviceGUI;
@@ -20,11 +19,20 @@ import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.gui.StageDeviceGUI;
-import view.FxFrame;
+
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNode;
+import halcyon.view.TreePanel;
 
 public class HalcyonGUI extends Application
 {
-	private FxFrame mHalcyonFrame;
+	private HalcyonFrame mHalcyonFrame;
+
+	public HalcyonGUI()
+	{
+		mHalcyonFrame = new HalcyonFrame(new TreePanel("Config", "Microscopy", this.getClass().getResourceAsStream( "/rtlib/gui/halcyon/icons/folder_16.png") , NodeType.values()));
+
+	}
 
 	public HalcyonGUI(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
 	{
@@ -47,7 +55,7 @@ public class HalcyonGUI extends Application
 			e.printStackTrace();
 		}
 
-		mHalcyonFrame = new FxFrame(new ConfigWindow());
+		mHalcyonFrame = new HalcyonFrame(new TreePanel("Config", "Microscopy", this.getClass().getResourceAsStream( "/rtlib/gui/halcyon/icons/folder_16.png") , NodeType.values()));
 
 		LightSheetMicroscopeDeviceLists deviceLists = pLightSheetMicroscopeInterface.getDeviceLists();
 
@@ -99,12 +107,9 @@ public class HalcyonGUI extends Application
 	@Override
 	public void start(Stage pJavaFxStage) throws Exception
 	{
-		mHalcyonFrame.start(pJavaFxStage);
-	}
+		pJavaFxStage.setOnCloseRequest(event -> System.exit(0));
 
-	@Override
-	public void stop() throws Exception
-	{
+		mHalcyonFrame.start(pJavaFxStage);
 	}
 
 	public void externalStart()
@@ -139,4 +144,8 @@ public class HalcyonGUI extends Application
 		});
 	}
 
+	public static void main( final String[] args )
+	{
+		launch( args );
+	}
 }
