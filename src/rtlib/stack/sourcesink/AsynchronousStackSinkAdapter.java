@@ -6,8 +6,7 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 
 public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
@@ -18,7 +17,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 
 	private AsynchronousProcessorInterface<StackInterface, StackInterface> mAsynchronousConversionProcessor;
 
-	private ObjectVariable<StackInterface> mFinishedProcessingStackVariable;
+	private Variable<StackInterface> mFinishedProcessingStackVariable;
 
 	public static <ST extends NativeType<ST>, SA extends ArrayDataAccess<SA>> AsynchronousStackSinkAdapter<ST, SA> wrap(StackSinkInterface<ST, SA> pStackSink,
 																																																											final int pMaxQueueSize)
@@ -84,13 +83,13 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+																	final Variable<?> pVariable)
 	{
 		mStackSink.addMetaDataVariable(pPrefix, pVariable);
 	}
 
 	@Override
-	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final Variable<?> pVariable)
 	{
 		mStackSink.removeMetaDataVariable(pVariable);
 	}
@@ -101,7 +100,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 		mStackSink.removeAllMetaDataVariables();
 	}
 
-	public void setFinishedProcessingStackVariable(final ObjectVariable<StackInterface> pVariable)
+	public void setFinishedProcessingStackVariable(final Variable<StackInterface> pVariable)
 	{
 		mFinishedProcessingStackVariable = pVariable;
 	}

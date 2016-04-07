@@ -3,22 +3,22 @@ package rtlib.cameras;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
 																																		CameraDeviceInterface
 {
 
-	protected ObjectVariable<Double> mExposureInMicrosecondsVariable,
+	protected Variable<Double> mExposureInMicrosecondsVariable,
 			mPixelSizeinNanometersVariable,
 			mLineReadOutTimeInMicrosecondsVariable;
 
-	protected ObjectVariable<Long> mStackBytesPerPixelVariable,
+	protected Variable<Long> mStackBytesPerPixelVariable,
 			mStackWidthVariable, mStackHeightVariable, mStackDepthVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
-	protected ObjectVariable<Boolean> mIsAcquiring;
+	protected Variable<Boolean> mIsAcquiring;
 
 	public CameraDeviceBase(final String pDeviceName)
 	{
@@ -42,46 +42,46 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 
 	public abstract void reopen();
 
-	public ObjectVariable<Long> getStackBytesPerPixelVariable()
+	public Variable<Long> getStackBytesPerPixelVariable()
 	{
 		return mStackBytesPerPixelVariable;
 	}
 
-	public ObjectVariable<Long> getStackWidthVariable()
+	public Variable<Long> getStackWidthVariable()
 	{
 		return mStackWidthVariable;
 	}
 
-	public ObjectVariable<Long> getStackHeightVariable()
+	public Variable<Long> getStackHeightVariable()
 	{
 		return mStackHeightVariable;
 	}
 
-	public ObjectVariable<Long> getStackDepthVariable()
+	public Variable<Long> getStackDepthVariable()
 	{
 		return mStackDepthVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getExposureInMicrosecondsVariable()
+	public Variable<Double> getExposureInMicrosecondsVariable()
 	{
 		return mExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getPixelSizeInNanometersVariable()
+	public Variable<Double> getPixelSizeInNanometersVariable()
 	{
 		return mPixelSizeinNanometersVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getIsAcquiringVariable()
+	public Variable<Boolean> getIsAcquiringVariable()
 	{
 		return mIsAcquiring;
 	}
 
 	@Override
-	public ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable()
+	public Variable<Double> getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
 	}

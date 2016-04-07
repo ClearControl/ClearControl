@@ -15,7 +15,7 @@ import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.SignalStartableLoopTaskDevice;
 import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -336,7 +336,7 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getStackVariable(int pIndex)
+	public Variable<StackInterface> getStackVariable(int pIndex)
 	{
 		return getDeviceLists().getStackVariable(pIndex);
 	}

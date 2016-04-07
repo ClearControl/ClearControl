@@ -3,7 +3,7 @@ package rtlib.sensors.devices.tc01;
 import org.bridj.Pointer;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.devices.tc01.bridj.TC01libLibrary;
 
@@ -32,7 +32,7 @@ public class TC01 extends TemperatureSensorDeviceBase
 	{
 		if (!mIsDevicePresent)
 			return false;
-		final ObjectVariable<Double> lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
+		final Variable<Double> lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
 		final double lTemperatureInCelcius = TC01libLibrary.tC01lib(mPhysicalChannelPointer,
 																																mThermoCoupleNIType.getValue());
 		// System.out.println(lTemperatureInCelcius);

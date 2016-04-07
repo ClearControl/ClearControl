@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 																															OpenCloseDeviceInterface,
@@ -12,8 +12,8 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 {
 	private static final long cTimeOutInSeconds = 1;
 
-	private final ObjectVariable<I> mInputObjectVariable;
-	private final ObjectVariable<O> mOutputObjectVariable;
+	private final Variable<I> mInputObjectVariable;
+	private final Variable<O> mOutputObjectVariable;
 
 	private final AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
 
@@ -30,9 +30,9 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 																																			pThreadPoolSize,
 																																			pProcessor);
 
-		mOutputObjectVariable = new ObjectVariable<O>(pName + "Output");
+		mOutputObjectVariable = new Variable<O>(pName + "Output");
 
-		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
+		mInputObjectVariable = new Variable<I>(pName + "Input")
 		{
 			@Override
 			public void set(final I pNewReference)
@@ -65,12 +65,12 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 
 	}
 
-	public ObjectVariable<I> getInputObjectVariable()
+	public Variable<I> getInputObjectVariable()
 	{
 		return mInputObjectVariable;
 	}
 
-	public ObjectVariable<O> getOutputObjectVariable()
+	public Variable<O> getOutputObjectVariable()
 	{
 		return mOutputObjectVariable;
 	}

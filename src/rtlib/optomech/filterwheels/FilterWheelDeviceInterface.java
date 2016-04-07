@@ -2,14 +2,14 @@ package rtlib.optomech.filterwheels;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.PositionDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface FilterWheelDeviceInterface	extends
 																						OpenCloseDeviceInterface,
 																						PositionDeviceInterface
 {
 
-	ObjectVariable<Integer> getSpeedVariable();
+	Variable<Integer> getSpeedVariable();
 
 	int getSpeed();
 

@@ -5,16 +5,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import rtlib.core.variable.ObjectInputVariableInterface;
-import rtlib.core.variable.ObjectOutputVariableInterface;
+import rtlib.core.variable.VariableSetInterface;
+import rtlib.core.variable.VariableGetInterface;
 
 public class CopyDoubleButton<O> extends JButton
 {
 	private static final long serialVersionUID = 1L;
 	private final CopyDoubleButton<O> mThis;
 	private String mLabel;
-	private ObjectOutputVariableInterface<O> mSource;
-	private ObjectInputVariableInterface<O> mDestination;
+	private VariableGetInterface<O> mSource;
+	private VariableSetInterface<O> mDestination;
 
 	public CopyDoubleButton(final String pLabel)
 	{
@@ -22,8 +22,8 @@ public class CopyDoubleButton<O> extends JButton
 	}
 
 	public CopyDoubleButton(final String pLabel,
-													final ObjectOutputVariableInterface<O> pSource,
-													final ObjectInputVariableInterface<O> pDestination)
+													final VariableGetInterface<O> pSource,
+													final VariableSetInterface<O> pDestination)
 	{
 		mSource = pSource;
 		mDestination = pDestination;
@@ -42,12 +42,12 @@ public class CopyDoubleButton<O> extends JButton
 
 	}
 
-	public void setSource(final ObjectOutputVariableInterface<O> pVariable)
+	public void setSource(final VariableGetInterface<O> pVariable)
 	{
 		mSource = pVariable;
 	}
 
-	public void setDestination(final ObjectInputVariableInterface<O> pVariable)
+	public void setDestination(final VariableSetInterface<O> pVariable)
 	{
 		mDestination = pVariable;
 	}

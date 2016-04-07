@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableEdgeListener;
 
 public abstract class SignalStartableTaskDevice	extends
@@ -18,7 +18,7 @@ public abstract class SignalStartableTaskDevice	extends
 
 	private final SignalStartableTaskDevice lThis;
 
-	protected final ObjectVariable<Boolean> mCancelBooleanVariable;
+	protected final Variable<Boolean> mCancelBooleanVariable;
 
 	protected volatile boolean mCanceledSignal = false;
 
@@ -27,7 +27,7 @@ public abstract class SignalStartableTaskDevice	extends
 		super(pDeviceName, true);
 		lThis = this;
 
-		mCancelBooleanVariable = new ObjectVariable<Boolean>(	pDeviceName + "Cancel",
+		mCancelBooleanVariable = new Variable<Boolean>(	pDeviceName + "Cancel",
 																													false);
 
 		mCancelBooleanVariable.addEdgeListener(new VariableEdgeListener<Boolean>()
@@ -82,7 +82,7 @@ public abstract class SignalStartableTaskDevice	extends
 		}
 	}
 
-	public ObjectVariable<Boolean> getIsCanceledBooleanVariable()
+	public Variable<Boolean> getIsCanceledBooleanVariable()
 	{
 		return mCancelBooleanVariable;
 	}

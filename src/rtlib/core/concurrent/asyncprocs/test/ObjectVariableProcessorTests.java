@@ -8,7 +8,7 @@ import org.junit.Test;
 import rtlib.core.concurrent.asyncprocs.ObjectVariableAsynchronousPooledProcessor;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class ObjectVariableProcessorTests
 {
@@ -46,7 +46,7 @@ public class ObjectVariableProcessorTests
 		ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
 
 		lObjectVariableProcessor.getOutputObjectVariable()
-														.syncWith(new ObjectVariable<String>("Notifier")
+														.syncWith(new Variable<String>("Notifier")
 														{
 
 															@Override

@@ -10,8 +10,7 @@ import java.util.Arrays;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
@@ -148,7 +147,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+																	final Variable<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
 	}
@@ -157,7 +156,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
-																							new ObjectVariable<Double>(	pPrefix,
+																							new Variable<Double>(	pPrefix,
 																																					pValue));
 	}
 
@@ -168,7 +167,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final Variable<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.removeVariable(pVariable);
 	}

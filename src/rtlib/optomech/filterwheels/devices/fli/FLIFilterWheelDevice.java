@@ -1,7 +1,7 @@
 package rtlib.optomech.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
@@ -12,7 +12,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 																											FilterWheelDeviceInterface
 {
 
-	private final ObjectVariable<Integer> mFilterPositionVariable,
+	private final Variable<Integer> mFilterPositionVariable,
 			mFilterSpeedVariable;
 	private volatile int mCachedPosition, mCachedSpeed;
 
@@ -68,13 +68,13 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	}
 
 	@Override
-	public final ObjectVariable<Integer> getPositionVariable()
+	public final Variable<Integer> getPositionVariable()
 	{
 		return mFilterPositionVariable;
 	}
 
 	@Override
-	public final ObjectVariable<Integer> getSpeedVariable()
+	public final Variable<Integer> getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
 	}

@@ -18,7 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JSliderIndexedStrings extends JPanel
 {
@@ -33,7 +33,7 @@ public class JSliderIndexedStrings extends JPanel
 
 	private boolean mWaitForMouseRelease = false;
 
-	private final ObjectVariable<Double> mSliderVariable;
+	private final Variable<Double> mSliderVariable;
 
 	private List<String> mItemsList;
 
@@ -44,7 +44,7 @@ public class JSliderIndexedStrings extends JPanel
 		super();
 		mItemsList = pItemsList;
 
-		mSliderVariable = new ObjectVariable<Double>(pValueName, 0.0)
+		mSliderVariable = new Variable<Double>(pValueName, 0.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -173,7 +173,7 @@ public class JSliderIndexedStrings extends JPanel
 
 	}
 
-	public ObjectVariable<Double> getDoubleVariable()
+	public Variable<Double> getDoubleVariable()
 	{
 		return mSliderVariable;
 	}

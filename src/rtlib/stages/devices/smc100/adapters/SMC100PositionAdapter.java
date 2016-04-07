@@ -2,7 +2,7 @@ package rtlib.stages.devices.smc100.adapters;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.devices.smc100.SMC100StageDevice;
@@ -13,10 +13,10 @@ public class SMC100PositionAdapter extends
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 
-	private ObjectVariable<Boolean> mReadyVariable;
-	private ObjectVariable<Boolean> mStopVariable;
-	private ObjectVariable<Double> mMinPositionVariable;
-	private ObjectVariable<Double> mMaxPositionVariable;
+	private Variable<Boolean> mReadyVariable;
+	private Variable<Boolean> mStopVariable;
+	private Variable<Double> mMinPositionVariable;
+	private Variable<Double> mMaxPositionVariable;
 
 	private SMC100StageDevice mSmc100StageDevice;
 

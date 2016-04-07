@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JTextFieldString extends JPanel
 {
@@ -19,14 +19,14 @@ public class JTextFieldString extends JPanel
 	private JTextField mValueTextField;
 
 	private final JTextFieldString mThis;
-	private final ObjectVariable<String> mObjectVariable;
+	private final Variable<String> mObjectVariable;
 
 	public JTextFieldString(final String pValueName,
 													final String pInicialValue)
 	{
 		super();
 
-		mObjectVariable = new ObjectVariable<String>(	pValueName,
+		mObjectVariable = new Variable<String>(	pValueName,
 																									pInicialValue)
 		{
 			@Override
@@ -106,7 +106,7 @@ public class JTextFieldString extends JPanel
 
 	}
 
-	public ObjectVariable<String> getStringVariable()
+	public Variable<String> getStringVariable()
 	{
 		return mObjectVariable;
 	}

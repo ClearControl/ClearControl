@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.lasers.LaserDeviceInterface;
 
 public class LasertHubDevice extends NamedVirtualDevice	implements
@@ -37,7 +37,7 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 		return mWavelengthToOpenedLaserDeviceMap.get(pWavelengthInNanometer);
 	}
 
-	public ObjectVariable<Boolean> getOnVariableByWavelength(final int pWaveLengthInNanometer)
+	public Variable<Boolean> getOnVariableByWavelength(final int pWaveLengthInNanometer)
 	{
 		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWaveLengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
@@ -45,7 +45,7 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 		return lLaserDeviceByWavelength.getLaserOnVariable();
 	}
 
-	public ObjectVariable<Number> getTargetPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
+	public Variable<Number> getTargetPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
 		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
@@ -53,7 +53,7 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 		return lLaserDeviceByWavelength.getTargetPowerInMilliWattVariable();
 	}
 
-	public ObjectVariable<Number> getCurrentPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
+	public Variable<Number> getCurrentPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
 		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)

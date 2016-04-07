@@ -1,13 +1,13 @@
 package rtlib.sensors;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface TemperatureSensorDeviceInterface	extends
 																									OpenCloseDeviceInterface
 {
 
-	ObjectVariable<Double> getTemperatureInCelciusVariable();
+	Variable<Double> getTemperatureInCelciusVariable();
 
 	double getTemperatureInCelcius();
 

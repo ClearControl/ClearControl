@@ -4,11 +4,11 @@ import java.awt.EventQueue;
 
 import javax.swing.JLabel;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JLabelDouble extends JLabel
 {
-	private final ObjectVariable<Double> mDoubleVariable;
+	private final Variable<Double> mDoubleVariable;
 	private JLabelDouble mThis;
 	private final String mFormatString;
 
@@ -28,7 +28,7 @@ public class JLabelDouble extends JLabel
 		mIntegerConstraint = pIntegerConstraint;
 		mThis = this;
 
-		mDoubleVariable = new ObjectVariable<Double>(	pLabelName,
+		mDoubleVariable = new Variable<Double>(	pLabelName,
 																									pInicialValue)
 		{
 			@Override
@@ -67,7 +67,7 @@ public class JLabelDouble extends JLabel
 
 	}
 
-	public ObjectVariable<Double> getDoubleVariable()
+	public Variable<Double> getDoubleVariable()
 	{
 		return mDoubleVariable;
 	}

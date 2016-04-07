@@ -20,7 +20,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -310,7 +310,7 @@ public class CalibrationWP
 		PolynomialFunction lNewWidthPowerFunction = mWPFunctions.get(	pLightSheetIndex,
 																																	pDetectionArmIndex);
 
-		ObjectVariable<PolynomialFunction> lFunctionVariable = lLightSheetDevice.getWidthPowerFunction();
+		Variable<PolynomialFunction> lFunctionVariable = lLightSheetDevice.getWidthPowerFunction();
 
 		System.out.format("Current WidthPower function: %s \n",
 											lFunctionVariable.get());

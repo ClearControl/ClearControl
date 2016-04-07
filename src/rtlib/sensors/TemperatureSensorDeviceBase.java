@@ -3,24 +3,24 @@ package rtlib.sensors;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.SignalStartableLoopTaskDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public abstract class TemperatureSensorDeviceBase	extends
 																									SignalStartableLoopTaskDevice	implements
 																																								TemperatureSensorDeviceInterface
 {
 
-	ObjectVariable<Double> mTemperatureVariable;
+	Variable<Double> mTemperatureVariable;
 
 	public TemperatureSensorDeviceBase(final String pDeviceName)
 	{
 		super(pDeviceName, false, TimeUnit.MILLISECONDS);
-		mTemperatureVariable = new ObjectVariable<Double>(pDeviceName + "TemperatureInCelcius");
+		mTemperatureVariable = new Variable<Double>(pDeviceName + "TemperatureInCelcius");
 		getLoopPeriodVariable().set(500L);
 	}
 
 	@Override
-	public ObjectVariable<Double> getTemperatureInCelciusVariable()
+	public Variable<Double> getTemperatureInCelciusVariable()
 	{
 		return mTemperatureVariable;
 	}

@@ -5,7 +5,7 @@ import static java.lang.Math.round;
 
 import java.util.Iterator;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateEvolutionVisualizer;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateVisualizer;
@@ -15,12 +15,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private final ObjectVariable<Double> mLowZ = new ObjectVariable<Double>("LowZ",
+	private final Variable<Double> mLowZ = new Variable<Double>("LowZ",
 																																					25.0);
-	private final ObjectVariable<Double> mHighZ = new ObjectVariable<Double>(	"HighZ",
+	private final Variable<Double> mHighZ = new Variable<Double>(	"HighZ",
 																																						75.0);
 
-	private final ObjectVariable<Double> mZStep = new ObjectVariable<Double>(	"ZStep",
+	private final Variable<Double> mZStep = new Variable<Double>(	"ZStep",
 																																						0.5);
 
 	private volatile AcquisitionState mCurrentAcquisitionState;

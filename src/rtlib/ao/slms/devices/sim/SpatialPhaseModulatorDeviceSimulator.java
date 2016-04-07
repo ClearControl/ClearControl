@@ -3,7 +3,7 @@ package rtlib.ao.slms.devices.sim;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceBase;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class SpatialPhaseModulatorDeviceSimulator	extends
 																									SpatialPhaseModulatorDeviceBase
@@ -14,7 +14,7 @@ public class SpatialPhaseModulatorDeviceSimulator	extends
 																							int pActuatorResolution)
 	{
 		super(pDeviceName, pFullMatrixWidthHeight, pActuatorResolution);
-		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
+		mMatrixVariable = new Variable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,

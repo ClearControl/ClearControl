@@ -3,8 +3,7 @@ package rtlib.serial;
 import jssc.SerialPortException;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
@@ -45,10 +44,10 @@ public class SerialDevice extends NamedVirtualDevice implements
 		mVariableBundle.removeAllVariables();
 	}
 
-	public <O> ObjectVariable<O> addSerialVariable(	final String pVariableName,
+	public <O> Variable<O> addSerialVariable(	final String pVariableName,
 																									final SerialBinaryDeviceAdapter<O> pSerialBinaryDevice)
 	{
-		final ObjectVariable<O> lObjectVariable = new ObjectVariable<O>(pVariableName)
+		final Variable<O> lObjectVariable = new Variable<O>(pVariableName)
 		{
 
 			@Override
@@ -140,10 +139,10 @@ public class SerialDevice extends NamedVirtualDevice implements
 		return lObjectVariable;
 	}
 
-	public <O> ObjectVariable<O> addSerialVariable(	final String pVariableName,
+	public <O> Variable<O> addSerialVariable(	final String pVariableName,
 																									final SerialTextDeviceAdapter<O> pSerialTextDeviceAdapter)
 	{
-		final ObjectVariable<O> lObjectVariable = new ObjectVariable<O>(pVariableName)
+		final Variable<O> lObjectVariable = new Variable<O>(pVariableName)
 		{
 
 			@Override
@@ -253,7 +252,7 @@ public class SerialDevice extends NamedVirtualDevice implements
 		return mVariableBundle;
 	}
 
-	public final VariableInterface<Double> getDoubleVariableByName(final String pVariableName)
+	public final Variable<Double> getDoubleVariableByName(final String pVariableName)
 	{
 		return mVariableBundle.getVariable(pVariableName);
 	}

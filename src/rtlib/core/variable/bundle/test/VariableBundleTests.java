@@ -2,7 +2,7 @@ package rtlib.core.variable.bundle.test;
 
 import org.junit.Test;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
 
@@ -32,7 +32,7 @@ public class VariableBundleTests
 			}
 		});
 
-		final ObjectVariable<Double> lTestVariable = new ObjectVariable<Double>("var1");
+		final Variable<Double> lTestVariable = new Variable<Double>("var1");
 		lVariableBundle.addVariable(lTestVariable);
 
 	}

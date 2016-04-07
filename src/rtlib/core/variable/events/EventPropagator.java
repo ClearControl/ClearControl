@@ -1,4 +1,4 @@
-package rtlib.core.variable;
+package rtlib.core.variable.events;
 
 import java.util.ArrayList;
 import java.util.Collection;

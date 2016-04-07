@@ -7,12 +7,12 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JOpenFileChooserButton extends JButton
 {
 	private static final File cDefaultFolder = new File(System.getProperty("user.home"));
-	private final ObjectVariable<File> mFileVariable = new ObjectVariable<File>("FileVariable");
+	private final Variable<File> mFileVariable = new Variable<File>("FileVariable");
 	private final boolean mOnlyFolders;
 
 	public JOpenFileChooserButton(final String pLabel,
@@ -65,7 +65,7 @@ public class JOpenFileChooserButton extends JButton
 		}
 	}
 
-	public ObjectVariable<File> getSelectedFileVariable()
+	public Variable<File> getSelectedFileVariable()
 	{
 		return mFileVariable;
 	}

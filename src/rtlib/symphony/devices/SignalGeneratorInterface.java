@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.symphony.score.ScoreInterface;
 
 public interface SignalGeneratorInterface	extends
@@ -20,7 +20,7 @@ public interface SignalGeneratorInterface	extends
 
 	public ScoreInterface getQueuedScore();
 
-	public ObjectVariable<Boolean> getTriggerVariable();
+	public Variable<Boolean> getTriggerVariable();
 
 	public boolean isPlaying();
 

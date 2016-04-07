@@ -11,7 +11,7 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class Mirao52eDevice extends DeformableMirrorDevice implements
 																													Loggable
@@ -46,7 +46,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 				e.printStackTrace();
 			}
 
-		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
+		mMatrixVariable = new Variable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,

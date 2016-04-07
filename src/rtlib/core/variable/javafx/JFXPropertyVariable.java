@@ -2,9 +2,9 @@ package rtlib.core.variable.javafx;
 
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
-public class JFXPropertyVariable<O> extends ObjectVariable<O>
+public class JFXPropertyVariable<O> extends Variable<O>
 {
 	private Property<O> mProperty;
 

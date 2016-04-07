@@ -8,7 +8,7 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
@@ -27,13 +27,13 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	private ClearVolumeRendererInterface mClearVolumeRenderer;
 
-	private final ObjectVariable<StackInterface> mInputStackVariable;
-	private ObjectVariable<StackInterface> mOutputStackVariable;
+	private final Variable<StackInterface> mInputStackVariable;
+	private Variable<StackInterface> mOutputStackVariable;
 
 	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
-	private volatile ObjectVariable<Boolean> mDisplayOn;
-	private volatile ObjectVariable<Boolean> mWaitForLastChannel;
+	private volatile Variable<Boolean> mDisplayOn;
+	private volatile Variable<Boolean> mWaitForLastChannel;
 
 	public Stack3DDisplay(final String pWindowName, final T pType)
 	{
@@ -141,7 +141,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			}
 		};
 
-		mInputStackVariable = new ObjectVariable<StackInterface>("VideoFrame")
+		mInputStackVariable = new Variable<StackInterface>("VideoFrame")
 		{
 
 			@Override
@@ -156,7 +156,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 		};
 
-		mDisplayOn = new ObjectVariable<Boolean>("DisplayOn", true)
+		mDisplayOn = new Variable<Boolean>("DisplayOn", true)
 		{
 			@Override
 			public void set(final Boolean pBoolean)
@@ -166,29 +166,29 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			}
 		};
 
-		mWaitForLastChannel = new ObjectVariable<Boolean>("WaitForLastChannel",
+		mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
 																											false);
 
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getOutputStackVariable()
+	public Variable<StackInterface> getOutputStackVariable()
 	{
 		return mOutputStackVariable;
 	}
 
 	@Override
-	public void setOutputStackVariable(ObjectVariable<StackInterface> pOutputStackVariable)
+	public void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable)
 	{
 		mOutputStackVariable = pOutputStackVariable;
 	}
 
-	public ObjectVariable<Boolean> getDisplayOnVariable()
+	public Variable<Boolean> getDisplayOnVariable()
 	{
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<StackInterface> getStackInputVariable()
+	public Variable<StackInterface> getStackInputVariable()
 	{
 		return mInputStackVariable;
 	}
@@ -237,12 +237,12 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mClearVolumeRenderer.disableClose();
 	}
 
-	public ObjectVariable<Boolean> getWaitForLastChannel()
+	public Variable<Boolean> getWaitForLastChannel()
 	{
 		return mWaitForLastChannel;
 	}
 
-	public void setWaitForLastChannel(ObjectVariable<Boolean> pWaitForLastChannel)
+	public void setWaitForLastChannel(Variable<Boolean> pWaitForLastChannel)
 	{
 		mWaitForLastChannel = pWaitForLastChannel;
 	}

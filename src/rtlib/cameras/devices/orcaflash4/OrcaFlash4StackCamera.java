@@ -12,7 +12,7 @@ import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.units.Magnitude;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
@@ -29,7 +29,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 	private final DcamAcquisition mDcamAcquisition;
 
-	private final ObjectVariable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new ObjectVariable<>("DCamJVideoFrame");
+	private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new Variable<>("DCamJVideoFrame");
 
 	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
 
@@ -107,13 +107,13 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 		});
 
-		mLineReadOutTimeInMicrosecondsVariable = new ObjectVariable<Double>("LineReadOutTimeInMicroseconds",
+		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																				9.74);
 
-		mStackBytesPerPixelVariable = new ObjectVariable<Long>(	"BytesPerPixel",
+		mStackBytesPerPixelVariable = new Variable<Long>(	"BytesPerPixel",
 																														mDcamAcquisition.getFrameBytesPerPixel());
 
-		mStackWidthVariable = new ObjectVariable<Long>(	"FrameWidth",
+		mStackWidthVariable = new Variable<Long>(	"FrameWidth",
 																										2048L)
 		{
 			@Override
@@ -135,7 +135,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 		};
 
-		mStackHeightVariable = new ObjectVariable<Long>("FrameHeight",
+		mStackHeightVariable = new Variable<Long>("FrameHeight",
 																										2048L)
 		{
 			@Override
@@ -156,7 +156,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 		};
 
-		mStackDepthVariable = new ObjectVariable<Long>("FrameDepth", 64L)
+		mStackDepthVariable = new Variable<Long>("FrameDepth", 64L)
 		{
 			@Override
 			public Long setEventHook(	final Long pOldValue,
@@ -166,10 +166,10 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 		};
 
-		mPixelSizeinNanometersVariable = new ObjectVariable<Double>("PixelSizeInNanometers",
+		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeInNanometers",
 																																160.0);
 
-		mExposureInMicrosecondsVariable = new ObjectVariable<Double>(	"ExposureInMicroseconds",
+		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
 																																	5000.0)
 		{
 			@Override
@@ -192,7 +192,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 		};
 
-		mIsAcquiring = new ObjectVariable<Boolean>("IsAcquiring", false)
+		mIsAcquiring = new Variable<Boolean>("IsAcquiring", false)
 		{
 
 			@Override
@@ -228,7 +228,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 		mDcamAcquisition.getProperties().setBinning(pBinSize);
 	}
 
-	protected ObjectVariable<Pair<TByteArrayList, DcamFrame>> getInternalFrameReferenceVariable()
+	protected Variable<Pair<TByteArrayList, DcamFrame>> getInternalFrameReferenceVariable()
 	{
 		return mFrameReference;
 	}
@@ -481,7 +481,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable()
+	public Variable<Double> getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
 	}

@@ -1,7 +1,7 @@
 package rtlib.lasers.devices.cobolt;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.cobolt.adapters.GetCurrentPowerAdapter;
@@ -44,26 +44,26 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 		mCoboltModel = CoboltDeviceEnum.valueOf(pCoboltModelName);
 		mMaxPowerInMilliWatt = pMaxPowerInMilliWatt;
 
-		mDeviceIdVariable = new ObjectVariable<Integer>("DeviceId",
+		mDeviceIdVariable = new Variable<Integer>("DeviceId",
 																										mCoboltModel.ordinal());
 
-		mWavelengthVariable = new ObjectVariable<Integer>("WavelengthInNanoMeter",
+		mWavelengthVariable = new Variable<Integer>("WavelengthInNanoMeter",
 																											CoboltDeviceEnum.getWavelengthInNanoMeter(mCoboltModel));
 
-		mSpecInMilliWattPowerVariable = new ObjectVariable<Number>(	"SpecPowerInMilliWatt",
+		mSpecInMilliWattPowerVariable = new Variable<Number>(	"SpecPowerInMilliWatt",
 																																mMaxPowerInMilliWatt);
 
-		mMaxPowerInMilliWattVariable = new ObjectVariable<Number>("MaxPowerInMilliWatt",
+		mMaxPowerInMilliWattVariable = new Variable<Number>("MaxPowerInMilliWatt",
 																															mMaxPowerInMilliWatt);
 
-		mSetOperatingModeVariable = new ObjectVariable<Integer>("OperatingMode",
+		mSetOperatingModeVariable = new Variable<Integer>("OperatingMode",
 																														0);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
 		mPowerOnVariable = mSerialDevice.addSerialVariable(	"PowerOn",
 																												lSetPowerOnOffAdapter);
 
-		mLaserOnVariable = new ObjectVariable<Boolean>("LaserOn", false);
+		mLaserOnVariable = new Variable<Boolean>("LaserOn", false);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
 		mWorkingHoursVariable = mSerialDevice.addSerialVariable("WorkingHours",

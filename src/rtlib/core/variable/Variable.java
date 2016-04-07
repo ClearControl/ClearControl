@@ -3,26 +3,29 @@ package rtlib.core.variable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ObjectVariable<O> extends NamedVariable<O>	implements
-																												ObjectVariableInterface<O>,
-																												ObjectInputOutputVariableInterface<O>
+import rtlib.core.variable.events.EventPropagator;
+
+public class Variable<O> extends VariableBase<O>	implements
+																									VariableSyncInterface<O>,
+																									VariableSetInterface<O>,
+																									VariableGetInterface<O>
+
 {
 	protected volatile O mReference;
-	protected final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
+	protected final CopyOnWriteArrayList<Variable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<Variable<O>>();
 
-	public ObjectVariable(final String pVariableName)
+	public Variable(final String pVariableName)
 	{
 		super(pVariableName);
 		mReference = null;
 	}
 
-	public ObjectVariable(final String pVariableName, final O pReference)
+	public Variable(final String pVariableName, final O pReference)
 	{
 		super(pVariableName);
 		mReference = pReference;
 	}
 
-	@Override
 	public void setCurrent()
 	{
 		EventPropagator.clear();
@@ -73,7 +76,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
 		{
-			for (final ObjectVariable<O> lObjectVariable : mVariablesToSendUpdatesTo)
+			for (final Variable<O> lObjectVariable : mVariablesToSendUpdatesTo)
 			{
 				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
 				{
@@ -105,7 +108,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 
 		if (mVariablesToSendUpdatesTo != null)
 		{
-			for (final ObjectVariable<O> lObjectVariable : mVariablesToSendUpdatesTo)
+			for (final Variable<O> lObjectVariable : mVariablesToSendUpdatesTo)
 			{
 				EventPropagator.setListOfTraversedObjects(lCopyOfListOfTraversedObjects);
 				if (EventPropagator.hasNotBeenTraversed(lObjectVariable))
@@ -138,14 +141,14 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	}
 
 	@Override
-	public void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
+	public void sendUpdatesTo(final Variable<O> pObjectVariable)
 	{
 		if (!mVariablesToSendUpdatesTo.contains(pObjectVariable))
 			mVariablesToSendUpdatesTo.add(pObjectVariable);
 	}
 
 	@Override
-	public void doNotSendUpdatesTo(final ObjectVariable<O> pObjectVariable)
+	public void doNotSendUpdatesTo(final Variable<O> pObjectVariable)
 	{
 		mVariablesToSendUpdatesTo.remove(pObjectVariable);
 	}
@@ -156,10 +159,10 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		mVariablesToSendUpdatesTo.clear();
 	}
 
-	public ObjectVariable<O> sendUpdatesToInstead(ObjectVariable<O> pObjectVariable)
+	public Variable<O> sendUpdatesToInstead(Variable<O> pObjectVariable)
 	{
 
-		ObjectVariable<O> lObjectVariable = null;
+		Variable<O> lObjectVariable = null;
 		if (mVariablesToSendUpdatesTo.size() == 0)
 		{
 			if (pObjectVariable == null)
@@ -187,14 +190,14 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	}
 
 	@Override
-	public void syncWith(final ObjectVariable<O> pObjectVariable)
+	public void syncWith(final Variable<O> pObjectVariable)
 	{
 		this.sendUpdatesTo(pObjectVariable);
 		pObjectVariable.sendUpdatesTo(this);
 	}
 
 	@Override
-	public void doNotSyncWith(final ObjectVariable<O> pObjectVariable)
+	public void doNotSyncWith(final Variable<O> pObjectVariable)
 	{
 		this.doNotSendUpdatesTo(pObjectVariable);
 		pObjectVariable.doNotSendUpdatesTo(this);

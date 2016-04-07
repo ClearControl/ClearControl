@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -15,13 +15,13 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 																																		StackCameraDeviceInterface,
 																																		StateQueueDeviceInterface
 {
-	protected ObjectVariable<Boolean> mStackMode = new ObjectVariable<Boolean>(	"StackMode",
+	protected Variable<Boolean> mStackMode = new Variable<Boolean>(	"StackMode",
 																																							true);
 
-	protected ObjectVariable<Boolean> mKeepPlane = new ObjectVariable<Boolean>(	"KeepPlane",
+	protected Variable<Boolean> mKeepPlane = new Variable<Boolean>(	"KeepPlane",
 																																							true);
 
-	protected ObjectVariable<Long> mNumberOfImagesPerPlaneVariable = new ObjectVariable<Long>("NumberOfImagesPerPlane",
+	protected Variable<Long> mNumberOfImagesPerPlaneVariable = new Variable<Long>("NumberOfImagesPerPlane",
 																																														1L);
 
 	protected volatile int mQueueLength = 0;
@@ -30,7 +30,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 
 	protected RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
-	protected ObjectVariable<StackInterface> mStackReference;
+	protected Variable<StackInterface> mStackReference;
 
 	private int mMinimalNumberOfAvailableStacks = 6;
 
@@ -52,7 +52,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	}
 
 	@Override
-	public ObjectVariable<Long> getNumberOfImagesPerPlaneVariable()
+	public Variable<Long> getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
 	}
@@ -70,19 +70,19 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getStackModeVariable()
+	public Variable<Boolean> getStackModeVariable()
 	{
 		return mStackMode;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getKeepPlaneVariable()
+	public Variable<Boolean> getKeepPlaneVariable()
 	{
 		return mKeepPlane;
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getStackVariable()
+	public Variable<StackInterface> getStackVariable()
 	{
 		return mStackReference;
 	}

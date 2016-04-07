@@ -2,7 +2,7 @@ package rtlib.optomech.opticalswitch.devices.arduino;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.SwitchingDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
@@ -13,9 +13,9 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 																														OptoMechDeviceInterface
 {
 
-	private final ObjectVariable<Long> mCommandVariable;
+	private final Variable<Long> mCommandVariable;
 
-	private final ObjectVariable<Boolean>[] mLightSheetOnOff;
+	private final Variable<Boolean>[] mLightSheetOnOff;
 
 	private static final long cAllClosed = 0;
 	private static final long cAllOpened = 100;
@@ -37,7 +37,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 		mCommandVariable = addSerialVariable(	"OpticalSwitchPosition",
 																					lFiberSwitchPosition);
 
-		mLightSheetOnOff = new ObjectVariable[4];
+		mLightSheetOnOff = new Variable[4];
 
 		final VariableSetListener<Boolean> lBooleanVariableListener = (	u,
 																																		v) -> {
@@ -64,7 +64,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 		for (int i = 0; i < mLightSheetOnOff.length; i++)
 		{
 
-			mLightSheetOnOff[i] = new ObjectVariable<Boolean>(String.format("LightSheet%dOnOff",
+			mLightSheetOnOff[i] = new Variable<Boolean>(String.format("LightSheet%dOnOff",
 																																			i),
 																												false);
 			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
@@ -98,7 +98,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getSwitchingVariable(int pSwitchIndex)
+	public Variable<Boolean> getSwitchingVariable(int pSwitchIndex)
 	{
 		return mLightSheetOnOff[pSwitchIndex];
 	}

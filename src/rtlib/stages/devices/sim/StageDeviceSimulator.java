@@ -1,6 +1,6 @@
 package rtlib.stages.devices.sim;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stages.StageDeviceBase;
 import rtlib.stages.StageDeviceInterface;
 
@@ -19,21 +19,21 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mIndexToNameMap.put(lDOFIndex, pDOFName);
 
-		mEnableVariables.add(new ObjectVariable<Boolean>(	"Enable" + pDOFName,
+		mEnableVariables.add(new Variable<Boolean>(	"Enable" + pDOFName,
 																											false));
-		mReadyVariables.add(new ObjectVariable<Boolean>("Ready" + pDOFName,
+		mReadyVariables.add(new Variable<Boolean>("Ready" + pDOFName,
 																										false));
-		mHomingVariables.add(new ObjectVariable<Boolean>(	"Homing" + pDOFName,
+		mHomingVariables.add(new Variable<Boolean>(	"Homing" + pDOFName,
 																											false));
-		mStopVariables.add(new ObjectVariable<Boolean>(	"Stop" + pDOFName,
+		mStopVariables.add(new Variable<Boolean>(	"Stop" + pDOFName,
 																										false));
-		mResetVariables.add(new ObjectVariable<Boolean>("Reset" + pDOFName,
+		mResetVariables.add(new Variable<Boolean>("Reset" + pDOFName,
 																										false));
-		mPositionVariables.add(new ObjectVariable<Double>("Position" + pDOFName,
+		mPositionVariables.add(new Variable<Double>("Position" + pDOFName,
 																											0.0));
-		mMinPositionVariables.add(new ObjectVariable<Double>(	"MinPosition" + pDOFName,
+		mMinPositionVariables.add(new Variable<Double>(	"MinPosition" + pDOFName,
 																													pMin));
-		mMinPositionVariables.add(new ObjectVariable<Double>(	"MaxPosition" + pDOFName,
+		mMinPositionVariables.add(new Variable<Double>(	"MaxPosition" + pDOFName,
 																													pMax));
 
 	}

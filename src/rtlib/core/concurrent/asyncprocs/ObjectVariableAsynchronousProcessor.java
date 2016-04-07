@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
 																												OpenCloseDeviceInterface,
@@ -12,8 +12,8 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 {
 	private static final long cTimeOutInSeconds = 1;
 
-	ObjectVariable<I> mInputObjectVariable;
-	ObjectVariable<O> mOutputObjectVariable;
+	Variable<I> mInputObjectVariable;
+	Variable<O> mOutputObjectVariable;
 
 	AsynchronousProcessorBase<I, O> mAsynchronousProcessorBase;
 
@@ -26,8 +26,8 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 	{
 		super();
 
-		mOutputObjectVariable = new ObjectVariable<O>(pName + "Output");
-		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
+		mOutputObjectVariable = new Variable<O>(pName + "Output");
+		mInputObjectVariable = new Variable<I>(pName + "Input")
 		{
 			@Override
 			public void set(final I pNewReference)
@@ -75,12 +75,12 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 
 	}
 
-	public ObjectVariable<I> getInputObjectVariable()
+	public Variable<I> getInputObjectVariable()
 	{
 		return mInputObjectVariable;
 	}
 
-	public ObjectVariable<O> getOutputObjectVariable()
+	public Variable<O> getOutputObjectVariable()
 	{
 		return mOutputObjectVariable;
 	}

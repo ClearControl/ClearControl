@@ -12,7 +12,7 @@ import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -34,7 +34,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 
 	private ArrayList<Stack2DDisplay> mStack2DVideoDeviceList = new ArrayList<>();
 	private Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> mStack3DVideoDevice;
-	private ObjectVariable<StackInterface>[] mCleanupStackVariable;
+	private Variable<StackInterface>[] mCleanupStackVariable;
 	private ScriptingWindow mScriptingWindow;
 	private final boolean m3dView;
 	private HalcyonGUI mHalcyonMicroscopeGUI;
@@ -63,12 +63,12 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		final int lNumberOfCameras = mLightSheetMicroscope.getDeviceLists()
 																											.getNumberOfStackCameraDevices();
 
-		mCleanupStackVariable = new ObjectVariable[lNumberOfCameras];
+		mCleanupStackVariable = new Variable[lNumberOfCameras];
 
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
 
-			mCleanupStackVariable[i] = new ObjectVariable<StackInterface>("CleanupStackVariable",
+			mCleanupStackVariable[i] = new Variable<StackInterface>("CleanupStackVariable",
 																																		null)
 			{
 				ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue = new ConcurrentLinkedQueue<>();

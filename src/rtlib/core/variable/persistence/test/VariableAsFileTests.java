@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.persistence.DoubleVariableAsFile;
 import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
@@ -84,9 +84,9 @@ public class VariableAsFileTests
 																								"testVariableBundleAsFile");
 		System.out.println(lTempFile);
 
-		final ObjectVariable<Double> x1 = new ObjectVariable<Double>(	"x",
+		final Variable<Double> x1 = new Variable<Double>(	"x",
 																																	1.0);
-		final ObjectVariable<String> y1 = new ObjectVariable<String>(	"y",
+		final Variable<String> y1 = new Variable<String>(	"y",
 																																	"1");
 
 		final VariableBundleAsFile lVariableBundleAsFile1 = new VariableBundleAsFile(	"bundle",
@@ -103,9 +103,9 @@ public class VariableAsFileTests
 
 		// Thread.sleep(10000000);
 
-		final ObjectVariable<Double> x2 = new ObjectVariable<Double>(	"x",
+		final Variable<Double> x2 = new Variable<Double>(	"x",
 																																	1.0);
-		final ObjectVariable<String> y2 = new ObjectVariable<String>(	"y",
+		final Variable<String> y2 = new Variable<String>(	"y",
 																																	"1");
 
 		final VariableBundleAsFile lVariableBundleAsFile2 = new VariableBundleAsFile(	"bundle",

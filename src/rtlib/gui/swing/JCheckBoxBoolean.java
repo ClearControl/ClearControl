@@ -6,13 +6,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JCheckBoxBoolean extends JCheckBox
 {
 
 	private final JCheckBoxBoolean mThis;
-	private final ObjectVariable<Boolean> mBooleanVariable;
+	private final Variable<Boolean> mBooleanVariable;
 
 	public JCheckBoxBoolean(final String pLabel)
 	{
@@ -24,7 +24,7 @@ public class JCheckBoxBoolean extends JCheckBox
 	{
 		super(pLabel);
 		mThis = this;
-		mBooleanVariable = new ObjectVariable<Boolean>(	pLabel,
+		mBooleanVariable = new Variable<Boolean>(	pLabel,
 																										pInitialState)
 		{
 
@@ -89,7 +89,7 @@ public class JCheckBoxBoolean extends JCheckBox
 
 	}
 
-	public ObjectVariable<Boolean> getBooleanVariable()
+	public Variable<Boolean> getBooleanVariable()
 	{
 		return mBooleanVariable;
 	}

@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.symphony.score.ScoreInterface;
 
 public class ScoreVisualizerJFrame extends JFrame
@@ -26,7 +26,7 @@ public class ScoreVisualizerJFrame extends JFrame
 		validate();
 	}
 
-	public ObjectVariable<ScoreInterface> getScoreVariable()
+	public Variable<ScoreInterface> getScoreVariable()
 	{
 		return mScoreVisualizer.getScoreVariable();
 	}

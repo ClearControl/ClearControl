@@ -1,6 +1,6 @@
 package rtlib.core.variable;
 
-public interface ObjectInputVariableInterface<O>
+public interface VariableSetInterface<O>
 {
 	void set(O pNewReference);
 }

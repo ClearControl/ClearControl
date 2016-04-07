@@ -10,8 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
 
@@ -19,7 +18,7 @@ public class VariableBundleAsFile extends VariableBundle
 {
 	private final ExecutorService cSingleThreadExecutor = Executors.newSingleThreadExecutor();
 
-	private final ConcurrentSkipListMap<String, VariableInterface<?>> mPrefixWithNameToVariableMap = new ConcurrentSkipListMap<String, VariableInterface<?>>();
+	private final ConcurrentSkipListMap<String, Variable<?>> mPrefixWithNameToVariableMap = new ConcurrentSkipListMap<String, Variable<?>>();
 
 	private final VariableListener mVariableListener;
 
@@ -64,13 +63,13 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	@Override
-	public <O> void addVariable(final VariableInterface<O> pVariable)
+	public <O> void addVariable(final Variable<O> pVariable)
 	{
 		this.addVariable("", pVariable);
 	}
 
 	public <O> void addVariable(final String pPrefix,
-															final VariableInterface<O> pVariable)
+															final Variable<O> pVariable)
 	{
 		super.addVariable(pVariable);
 		final String lKey = pPrefix + (pPrefix.isEmpty() ? "" : ".")
@@ -80,7 +79,7 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	@Override
-	public <O> void removeVariable(final VariableInterface<O> pVariable)
+	public <O> void removeVariable(final Variable<O> pVariable)
 	{
 		unregisterListener(pVariable);
 		super.removeVariable(pVariable);
@@ -94,26 +93,26 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	@Override
-	public VariableInterface<?> getVariable(final String pPrefixAndName)
+	public Variable<?> getVariable(final String pPrefixAndName)
 	{
 		return mPrefixWithNameToVariableMap.get(pPrefixAndName);
 	}
 
-	private void registerListener(final VariableInterface<?> pVariable)
+	private void registerListener(final Variable<?> pVariable)
 	{
-		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) pVariable;
+		final Variable<?> lObjectVariable = pVariable;
 		lObjectVariable.addListener(mVariableListener);
 	}
 
-	private void unregisterListener(final VariableInterface<?> pVariable)
+	private void unregisterListener(final Variable<?> pVariable)
 	{
 		pVariable.removeListener(mVariableListener);
 	}
 
 	private void unregisterListenerForAllVariables()
 	{
-		final Collection<VariableInterface<?>> lAllVariables = getAllVariables();
-		for (final VariableInterface<?> lVariable : lAllVariables)
+		final Collection<Variable<?>> lAllVariables = getAllVariables();
+		for (final Variable<?> lVariable : lAllVariables)
 		{
 			lVariable.removeListener(mVariableListener);
 		}
@@ -141,7 +140,7 @@ public class VariableBundleAsFile extends VariableBundle
 							final String lKey = lEqualsSplitStringArray[0].trim();
 							final String lValue = lEqualsSplitStringArray[1].trim();
 
-							final VariableInterface<?> lVariable = mPrefixWithNameToVariableMap.get(lKey);
+							final Variable<?> lVariable = mPrefixWithNameToVariableMap.get(lKey);
 
 							if (lVariable != null)
 							{
@@ -149,7 +148,7 @@ public class VariableBundleAsFile extends VariableBundle
 								{
 									readDoubleVariable(lValue, lVariable);
 								}
-								else if (lVariable instanceof ObjectVariable<?>)
+								else if (lVariable instanceof Variable<?>)
 								{
 									readObjectVariable(lValue, lVariable);
 								}
@@ -179,9 +178,9 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	private void readDoubleVariable(final String lValue,
-																	final VariableInterface<?> pVariable)
+																	final Variable<?> pVariable)
 	{
-		final ObjectVariable<Double> lDoubleVariable = (ObjectVariable<Double>) pVariable;
+		final Variable<Double> lDoubleVariable = (Variable<Double>) pVariable;
 
 		final String[] lSplitValueFloatExactStringArray = lValue.split("\t");
 		final String lApproximateFloatValueString = lSplitValueFloatExactStringArray[0];
@@ -200,11 +199,11 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	private void readObjectVariable(final String lValue,
-																	final VariableInterface<?> lVariable)
+																	final Variable<?> lVariable)
 	{
-		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
+		final Variable<?> lObjectVariable = lVariable;
 
-		final ObjectVariable<String> lStringVariable = (ObjectVariable<String>) lObjectVariable;
+		final Variable<String> lStringVariable = (Variable<String>) lObjectVariable;
 		lStringVariable.set(lValue);
 	}
 
@@ -216,25 +215,25 @@ public class VariableBundleAsFile extends VariableBundle
 			try
 			{
 				lFormatter = new Formatter(mFile);
-				for (final Map.Entry<String, VariableInterface<?>> lVariableEntry : mPrefixWithNameToVariableMap.entrySet())
+				for (final Map.Entry<String, Variable<?>> lVariableEntry : mPrefixWithNameToVariableMap.entrySet())
 				{
 					final String lVariablePrefixAndName = lVariableEntry.getKey();
-					final VariableInterface<?> lVariable = lVariableEntry.getValue();
+					final Variable<?> lVariable = lVariableEntry.getValue();
 
 					// System.out.println(lVariable);
 
 					if (lVariable.get() instanceof Number)
 					{
-						final ObjectVariable<Number> lDoubleVariable = (ObjectVariable<Number>) lVariable;
+						final Variable<Number> lDoubleVariable = (Variable<Number>) lVariable;
 
 						lFormatter.format("%s\t=\t%g\n",
 															lVariablePrefixAndName,
 															lDoubleVariable.get().doubleValue());
 
 					}
-					else if (lVariable instanceof ObjectVariable<?>)
+					else if (lVariable instanceof Variable<?>)
 					{
-						final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
+						final Variable<?> lObjectVariable = lVariable;
 
 						lFormatter.format("%s\t=\t%s\n",
 															lVariablePrefixAndName,

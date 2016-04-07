@@ -4,65 +4,65 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface
 {
 
-	public ObjectVariable<Long> getImageHeightVariable();
+	public Variable<Long> getImageHeightVariable();
 
-	public ObjectVariable<Double> getEffectiveExposureInMicrosecondsVariable();
+	public Variable<Double> getEffectiveExposureInMicrosecondsVariable();
 
-	public ObjectVariable<Double> getLineExposureInMicrosecondsVariable();
+	public Variable<Double> getLineExposureInMicrosecondsVariable();
 
-	public ObjectVariable<Double> getOverScanVariable();
+	public Variable<Double> getOverScanVariable();
 
-	public ObjectVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
+	public Variable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
 
-	public ObjectVariable<Double> getXVariable();
+	public Variable<Double> getXVariable();
 
-	public ObjectVariable<Double> getYVariable();
+	public Variable<Double> getYVariable();
 
-	public ObjectVariable<Double> getZVariable();
+	public Variable<Double> getZVariable();
 
-	public ObjectVariable<Double> getAlphaInDegreesVariable();
+	public Variable<Double> getAlphaInDegreesVariable();
 
-	public ObjectVariable<Double> getBetaInDegreesVariable();
+	public Variable<Double> getBetaInDegreesVariable();
 
-	public ObjectVariable<Double> getWidthVariable();
+	public Variable<Double> getWidthVariable();
 
-	public ObjectVariable<Double> getHeightVariable();
+	public Variable<Double> getHeightVariable();
 
-	public ObjectVariable<Double> getPowerVariable();
+	public Variable<Double> getPowerVariable();
 
-	public ObjectVariable<Boolean> getAdaptPowerToWidthHeightVariable();
+	public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
 
-	public ObjectVariable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex);
+	public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex);
 
-	public ObjectVariable<Boolean> getSIPatternOnOffVariable(int pLaserIndex);
+	public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex);
 
-	public ObjectVariable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
+	public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getXFunction();
+	public Variable<UnivariateAffineComposableFunction> getXFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getYFunction();
+	public Variable<UnivariateAffineComposableFunction> getYFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction();
+	public Variable<UnivariateAffineComposableFunction> getZFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getWidthFunction();
+	public Variable<UnivariateAffineComposableFunction> getWidthFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getHeightFunction();
+	public Variable<UnivariateAffineComposableFunction> getHeightFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getAlphaFunction();
+	public Variable<UnivariateAffineComposableFunction> getAlphaFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getBetaFunction();
+	public Variable<UnivariateAffineComposableFunction> getBetaFunction();
 
-	public ObjectVariable<UnivariateAffineComposableFunction> getPowerFunction();
+	public Variable<UnivariateAffineComposableFunction> getPowerFunction();
 
-	public ObjectVariable<PolynomialFunction> getWidthPowerFunction();
+	public Variable<PolynomialFunction> getWidthPowerFunction();
 
-	public ObjectVariable<PolynomialFunction> getHeightPowerFunction();
+	public Variable<PolynomialFunction> getHeightPowerFunction();
 
 	public int getNumberOfPhases(int pLaserIndex);
 

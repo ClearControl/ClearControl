@@ -3,7 +3,7 @@ package rtlib.symphony.devices.sim;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.ScoreInterface;
@@ -13,13 +13,13 @@ public class SignalGeneratorSimulatorDevice	extends
 																																SignalGeneratorInterface
 {
 
-	private final ObjectVariable<Boolean> mTriggerVariable;
+	private final Variable<Boolean> mTriggerVariable;
 
 	public SignalGeneratorSimulatorDevice()
 	{
 		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
 
-		mTriggerVariable = new ObjectVariable<Boolean>(	getName() + "Trigger",
+		mTriggerVariable = new Variable<Boolean>(	getName() + "Trigger",
 																										false);
 
 	}
@@ -65,7 +65,7 @@ public class SignalGeneratorSimulatorDevice	extends
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getTriggerVariable()
+	public Variable<Boolean> getTriggerVariable()
 	{
 		return mTriggerVariable;
 	}

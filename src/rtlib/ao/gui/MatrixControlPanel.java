@@ -15,7 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.gui.swing.JSliderDouble;
 
@@ -31,7 +31,7 @@ public class MatrixControlPanel extends JPanel
 
 	private volatile int mCurrentX, mCurrentY;
 
-	ObjectVariable<DenseMatrix64F> mInputModeVectorVariable,
+	Variable<DenseMatrix64F> mInputModeVectorVariable,
 			mOutputMatrixVariable;
 
 	private final DenseMatrix64F mTransformMatrix;
@@ -55,7 +55,7 @@ public class MatrixControlPanel extends JPanel
 
 		mModeVector = new DenseMatrix64F(mTransformMatrix.numRows, 1);
 
-		mInputModeVectorVariable = new ObjectVariable<DenseMatrix64F>("InputMatrix",
+		mInputModeVectorVariable = new Variable<DenseMatrix64F>("InputMatrix",
 																																	new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
 																																											1))
 		{
@@ -80,7 +80,7 @@ public class MatrixControlPanel extends JPanel
 			}
 		};
 
-		mOutputMatrixVariable = new ObjectVariable<DenseMatrix64F>(	"OutputMatrix",
+		mOutputMatrixVariable = new Variable<DenseMatrix64F>(	"OutputMatrix",
 																																new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
 																																										1));
 
@@ -262,17 +262,17 @@ public class MatrixControlPanel extends JPanel
 		mOutputMatrixVariable.setCurrent();
 	}
 
-	public ObjectVariable<DenseMatrix64F> getOutputMatrixVariable()
+	public Variable<DenseMatrix64F> getOutputMatrixVariable()
 	{
 		return mOutputMatrixVariable;
 	}
 
-	public ObjectVariable<DenseMatrix64F> getInputModeVectorVariable()
+	public Variable<DenseMatrix64F> getInputModeVectorVariable()
 	{
 		return mInputModeVectorVariable;
 	}
 
-	public ObjectVariable<Double> getSymetricRangeVariable()
+	public Variable<Double> getSymetricRangeVariable()
 	{
 		return mSymetricRangeSlider.getDoubleVariable();
 	}

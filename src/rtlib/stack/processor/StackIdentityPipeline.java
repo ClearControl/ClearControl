@@ -1,6 +1,6 @@
 package rtlib.stack.processor;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclableFactory;
@@ -8,7 +8,7 @@ import coremem.recycling.RecyclableFactory;
 public class StackIdentityPipeline implements StackProcessingPipeline
 {
 
-	private ObjectVariable<StackInterface> mStackVariable = new ObjectVariable<StackInterface>("StackVariable");
+	private Variable<StackInterface> mStackVariable = new Variable<StackInterface>("StackVariable");
 
 	@Override
 	public boolean open()
@@ -23,13 +23,13 @@ public class StackIdentityPipeline implements StackProcessingPipeline
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getInputVariable()
+	public Variable<StackInterface> getInputVariable()
 	{
 		return mStackVariable;
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getOutputVariable()
+	public Variable<StackInterface> getOutputVariable()
 	{
 		return mStackVariable;
 	}

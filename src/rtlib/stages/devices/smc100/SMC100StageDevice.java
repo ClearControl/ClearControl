@@ -3,7 +3,7 @@ package rtlib.stages.devices.smc100;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.serial.SerialDevice;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.StageDeviceInterface;
@@ -22,9 +22,9 @@ public class SMC100StageDevice extends SerialDevice	implements
 																										Waiting
 {
 
-	private final ObjectVariable<Boolean> mEnableVariable,
+	private final Variable<Boolean> mEnableVariable,
 			mReadyVariable, mHomingVariable, mStopVariable, mResetVariable;
-	private final ObjectVariable<Double> mPositionVariable,
+	private final Variable<Double> mPositionVariable,
 			mMinPositionVariable, mMaxPositionVariable;
 
 	public SMC100StageDevice(String pDeviceName, String pPortName)
@@ -99,43 +99,43 @@ public class SMC100StageDevice extends SerialDevice	implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getMinPositionVariable(int pIndex)
+	public Variable<Double> getMinPositionVariable(int pIndex)
 	{
 		return mMinPositionVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getMaxPositionVariable(int pIndex)
+	public Variable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getEnableVariable(int pIndex)
+	public Variable<Boolean> getEnableVariable(int pIndex)
 	{
 		return mEnableVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getHomingVariable(int pIndex)
+	public Variable<Boolean> getHomingVariable(int pIndex)
 	{
 		return mHomingVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getPositionVariable(int pIndex)
+	public Variable<Double> getPositionVariable(int pIndex)
 	{
 		return mPositionVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getReadyVariable(int pIndex)
+	public Variable<Boolean> getReadyVariable(int pIndex)
 	{
 		return mReadyVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getStopVariable(int pIndex)
+	public Variable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariable;
 	}

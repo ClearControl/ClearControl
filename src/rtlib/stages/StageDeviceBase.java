@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -14,10 +14,10 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 																																StageDeviceInterface,
 																																Waiting
 {
-	protected ArrayList<ObjectVariable<Boolean>> mEnableVariables,
+	protected ArrayList<Variable<Boolean>> mEnableVariables,
 			mReadyVariables, mHomingVariables, mStopVariables,
 			mResetVariables;
-	protected ArrayList<ObjectVariable<Double>> mPositionVariables,
+	protected ArrayList<Variable<Double>> mPositionVariables,
 			mMinPositionVariables, mMaxPositionVariables;
 
 	protected final BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
@@ -84,43 +84,43 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getPositionVariable(int pIndex)
+	public Variable<Double> getPositionVariable(int pIndex)
 	{
 		return mPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Double> getMinPositionVariable(int pIndex)
+	public Variable<Double> getMinPositionVariable(int pIndex)
 	{
 		return mMinPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Double> getMaxPositionVariable(int pIndex)
+	public Variable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getEnableVariable(int pIndex)
+	public Variable<Boolean> getEnableVariable(int pIndex)
 	{
 		return mEnableVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getReadyVariable(int pIndex)
+	public Variable<Boolean> getReadyVariable(int pIndex)
 	{
 		return mReadyVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getHomingVariable(int pIndex)
+	public Variable<Boolean> getHomingVariable(int pIndex)
 	{
 		return mHomingVariables.get(pIndex);
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getStopVariable(int pIndex)
+	public Variable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariables.get(pIndex);
 	}

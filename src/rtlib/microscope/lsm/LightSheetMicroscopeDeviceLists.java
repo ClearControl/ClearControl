@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.device.SwitchingDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
@@ -33,7 +33,7 @@ public class LightSheetMicroscopeDeviceLists
 
 	private final ArrayList<StackCameraDeviceInterface> mStackCameraDeviceList = new ArrayList<>();
 	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
-	private final ArrayList<ObjectVariable<StackInterface>> mStackVariableList = new ArrayList<>();
+	private final ArrayList<Variable<StackInterface>> mStackVariableList = new ArrayList<>();
 
 	private SwitchingDeviceInterface mLightSheetSwitch;
 
@@ -77,7 +77,7 @@ public class LightSheetMicroscopeDeviceLists
 		return mStackPipelineList.get(pIndex);
 	}
 
-	public ObjectVariable<StackInterface> getStackVariable(int pIndex)
+	public Variable<StackInterface> getStackVariable(int pIndex)
 	{
 		return mStackVariableList.get(pIndex);
 	}

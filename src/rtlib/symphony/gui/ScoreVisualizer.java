@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableListener;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.ScoreInterface;
@@ -29,9 +29,9 @@ public class ScoreVisualizer extends JPanel	implements
 
 	private static final long serialVersionUID = 1L;
 
-	private final ObjectVariable<ScoreInterface> mScoreVariable;
+	private final Variable<ScoreInterface> mScoreVariable;
 
-	private final ObjectVariable<Double> mScalingVariable;
+	private final Variable<Double> mScalingVariable;
 
 	@SuppressWarnings("unchecked")
 	public ScoreVisualizer()
@@ -57,23 +57,23 @@ public class ScoreVisualizer extends JPanel	implements
 			}
 		};
 
-		mScalingVariable = new ObjectVariable<Double>("ScalingVariable",
+		mScalingVariable = new Variable<Double>("ScalingVariable",
 																									1.0);
 		mScalingVariable.addListener((VariableListener<Double>) lVariableListener);
 
-		mScoreVariable = new ObjectVariable<ScoreInterface>("ScoreVariable");
+		mScoreVariable = new Variable<ScoreInterface>("ScoreVariable");
 		mScoreVariable.addListener((VariableListener<ScoreInterface>) lVariableListener);
 
 		addMouseMotionListener(this);
 
 	}
 
-	public ObjectVariable<Double> getScalingVariable()
+	public Variable<Double> getScalingVariable()
 	{
 		return mScalingVariable;
 	}
 
-	public ObjectVariable<ScoreInterface> getScoreVariable()
+	public Variable<ScoreInterface> getScoreVariable()
 	{
 		return mScoreVariable;
 	}

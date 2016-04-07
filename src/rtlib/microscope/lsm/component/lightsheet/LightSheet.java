@@ -13,7 +13,7 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.microscope.lsm.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -29,73 +29,73 @@ public class LightSheet extends NamedVirtualDevice implements
 																									AsynchronousExecutorServiceAccess
 {
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mXFunction = new ObjectVariable<>(	"LightSheetXFunction",
+	private final Variable<UnivariateAffineComposableFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
 																																																			new UnivariateAffineFunction());
-	private final ObjectVariable<UnivariateAffineComposableFunction> mYFunction = new ObjectVariable<>(	"LightSheetYFunction",
+	private final Variable<UnivariateAffineComposableFunction> mYFunction = new Variable<>(	"LightSheetYFunction",
 																																																			new UnivariateAffineFunction());
-	private final ObjectVariable<UnivariateAffineComposableFunction> mZFunction = new ObjectVariable<>(	"LightSheetZFunction",
+	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"LightSheetZFunction",
 																																																			new UnivariateAffineFunction());
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mWidthFunction = new ObjectVariable<>(	"LightSheetWidthFunction",
+	private final Variable<UnivariateAffineComposableFunction> mWidthFunction = new Variable<>(	"LightSheetWidthFunction",
 																																																					new UnivariateAffineFunction());
-	private final ObjectVariable<UnivariateAffineComposableFunction> mHeightFunction = new ObjectVariable<>("LightSheetHeightFunction",
+	private final Variable<UnivariateAffineComposableFunction> mHeightFunction = new Variable<>("LightSheetHeightFunction",
 																																																					new UnivariateAffineFunction());
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mAlphaFunction = new ObjectVariable<>(	"LightSheetAlphaFunction",
+	private final Variable<UnivariateAffineComposableFunction> mAlphaFunction = new Variable<>(	"LightSheetAlphaFunction",
 																																																					new UnivariateAffineFunction());
-	private final ObjectVariable<UnivariateAffineComposableFunction> mBetaFunction = new ObjectVariable<>("LightSheetBetaFunction",
+	private final Variable<UnivariateAffineComposableFunction> mBetaFunction = new Variable<>("LightSheetBetaFunction",
 																																																				new UnivariateAffineFunction());
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mPowerFunction = new ObjectVariable<>(	"LightSheetPowerFunction",
+	private final Variable<UnivariateAffineComposableFunction> mPowerFunction = new Variable<>(	"LightSheetPowerFunction",
 																																																					new UnivariateAffineFunction());
 
-	private final ObjectVariable<PolynomialFunction> mWidthPowerFunction = new ObjectVariable<>("LightSheetWidthPowerFunction",
+	private final Variable<PolynomialFunction> mWidthPowerFunction = new Variable<>("LightSheetWidthPowerFunction",
 																																															new PolynomialFunction(new double[]
 																																															{ 1,
 																																																0 }));
 
-	private final ObjectVariable<PolynomialFunction> mHeightPowerFunction = new ObjectVariable<>(	"LightSheetHeightPowerFunction",
+	private final Variable<PolynomialFunction> mHeightPowerFunction = new Variable<>(	"LightSheetHeightPowerFunction",
 																																																new PolynomialFunction(new double[]
 																																																{ 1,
 																																																	0 }));
 
-	private final ObjectVariable<Double> mEffectiveExposureInMicrosecondsVariable = new ObjectVariable<Double>(	"EffectiveExposureInMicroseconds",
+	private final Variable<Double> mEffectiveExposureInMicrosecondsVariable = new Variable<Double>(	"EffectiveExposureInMicroseconds",
 																																																							5000.0);
-	private final ObjectVariable<Long> mImageHeightVariable = new ObjectVariable<Long>(	"ImageHeight",
+	private final Variable<Long> mImageHeightVariable = new Variable<Long>(	"ImageHeight",
 																																											2 * 1024L);
-	private final ObjectVariable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new ObjectVariable<Double>("ReadoutTimeInMicrosecondsPerLine",
+	private final Variable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new Variable<Double>("ReadoutTimeInMicrosecondsPerLine",
 																																																							9.74);
-	private final ObjectVariable<Double> mOverScanVariable = new ObjectVariable<Double>("OverScan",
+	private final Variable<Double> mOverScanVariable = new Variable<Double>("OverScan",
 																																											1.2);
 
-	private final ObjectVariable<Double> mXVariable = new ObjectVariable<Double>(	"LightSheetX",
+	private final Variable<Double> mXVariable = new Variable<Double>(	"LightSheetX",
 																																								0.0);
-	private final ObjectVariable<Double> mYVariable = new ObjectVariable<Double>(	"LightSheetY",
+	private final Variable<Double> mYVariable = new Variable<Double>(	"LightSheetY",
 																																								0.0);
-	private final ObjectVariable<Double> mZVariable = new ObjectVariable<Double>(	"LightSheetZ",
+	private final Variable<Double> mZVariable = new Variable<Double>(	"LightSheetZ",
 																																								0.0);
 
-	private final ObjectVariable<Double> mAlphaInDegreesVariable = new ObjectVariable<Double>("LightSheetAlphaInDegrees",
+	private final Variable<Double> mAlphaInDegreesVariable = new Variable<Double>("LightSheetAlphaInDegrees",
 																																														0.0);
-	private final ObjectVariable<Double> mBetaInDegreesVariable = new ObjectVariable<Double>(	"LightSheetBetaInDegrees",
+	private final Variable<Double> mBetaInDegreesVariable = new Variable<Double>(	"LightSheetBetaInDegrees",
 																																														0.0);
-	private final ObjectVariable<Double> mWidthVariable = new ObjectVariable<Double>(	"LightSheetRange",
+	private final Variable<Double> mWidthVariable = new Variable<Double>(	"LightSheetRange",
 																																										0.0);
-	private final ObjectVariable<Double> mHeightVariable = new ObjectVariable<Double>("LightSheetLength",
+	private final Variable<Double> mHeightVariable = new Variable<Double>("LightSheetLength",
 																																										0.0);
-	private final ObjectVariable<Double> mPowerVariable = new ObjectVariable<Double>(	"LightSheetLengthPower",
+	private final Variable<Double> mPowerVariable = new Variable<Double>(	"LightSheetLengthPower",
 																																										1.0);
-	private final ObjectVariable<Boolean> mAdaptPowerToWidthHeightVariable = new ObjectVariable<Boolean>(	"AdaptLightSheetPowerToWidthHeight",
+	private final Variable<Boolean> mAdaptPowerToWidthHeightVariable = new Variable<Boolean>(	"AdaptLightSheetPowerToWidthHeight",
 																																																				false);
 
-	private final ObjectVariable<Double> mLineExposureInMicrosecondsVariable = new ObjectVariable<Double>("LineExposureInMicroseconds",
+	private final Variable<Double> mLineExposureInMicrosecondsVariable = new Variable<Double>("LineExposureInMicroseconds",
 																																																				10.0);
 
-	private final ObjectVariable<Boolean>[] mLaserOnOffVariableArray;
+	private final Variable<Boolean>[] mLaserOnOffVariableArray;
 
-	private final ObjectVariable<Boolean>[] mSIPatternOnOffVariableArray;
+	private final Variable<Boolean>[] mSIPatternOnOffVariableArray;
 
-	private final ObjectVariable<StructuredIlluminationPatternInterface>[] mStructuredIlluminationPatternVariableArray;
+	private final Variable<StructuredIlluminationPatternInterface>[] mStructuredIlluminationPatternVariableArray;
 
 	private Movement mBeforeExposureMovement, mExposureMovement;
 
@@ -125,11 +125,11 @@ public class LightSheet extends NamedVirtualDevice implements
 			update();
 		};
 
-		mLaserOnOffVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
+		mLaserOnOffVariableArray = new Variable[mNumberOfLaserDigitalControls];
 
-		mSIPatternOnOffVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
+		mSIPatternOnOffVariableArray = new Variable[mNumberOfLaserDigitalControls];
 
-		mStructuredIlluminationPatternVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
+		mStructuredIlluminationPatternVariableArray = new Variable[mNumberOfLaserDigitalControls];
 
 		mReadoutTimeInMicrosecondsPerLineVariable.set(pReadoutTimeInMicrosecondsPerLine);
 		mImageHeightVariable.set(pNumberOfLines);
@@ -162,14 +162,14 @@ public class LightSheet extends NamedVirtualDevice implements
 		{
 			final String lLaserName = "Laser" + i + ".exposure.trig";
 
-			mStructuredIlluminationPatternVariableArray[i] = new ObjectVariable("StructuredIlluminationPattern",
+			mStructuredIlluminationPatternVariableArray[i] = new Variable("StructuredIlluminationPattern",
 																																					new BinaryStructuredIlluminationPattern());
 
-			mLaserOnOffVariableArray[i] = new ObjectVariable<Boolean>(lLaserName,
+			mLaserOnOffVariableArray[i] = new Variable<Boolean>(lLaserName,
 																																false);
 			mLaserOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
 
-			mSIPatternOnOffVariableArray[i] = new ObjectVariable<Boolean>(lLaserName + "SIPatternOnOff",
+			mSIPatternOnOffVariableArray[i] = new Variable<Boolean>(lLaserName + "SIPatternOnOff",
 																																		false);
 			mSIPatternOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
 		}
@@ -484,7 +484,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 			{
-				final ObjectVariable<Boolean> lLaserBooleanVariable = mLaserOnOffVariableArray[i];
+				final Variable<Boolean> lLaserBooleanVariable = mLaserOnOffVariableArray[i];
 
 				if (mSIPatternOnOffVariableArray[i].get())
 				{
@@ -563,7 +563,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Long> getImageHeightVariable()
+	public Variable<Long> getImageHeightVariable()
 	{
 		return mImageHeightVariable;
 	}
@@ -574,85 +574,85 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getEffectiveExposureInMicrosecondsVariable()
+	public Variable<Double> getEffectiveExposureInMicrosecondsVariable()
 	{
 		return mEffectiveExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getLineExposureInMicrosecondsVariable()
+	public Variable<Double> getLineExposureInMicrosecondsVariable()
 	{
 		return mLineExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getOverScanVariable()
+	public Variable<Double> getOverScanVariable()
 	{
 		return mOverScanVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable()
+	public Variable<Double> getReadoutTimeInMicrosecondsPerLineVariable()
 	{
 		return mReadoutTimeInMicrosecondsPerLineVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getXVariable()
+	public Variable<Double> getXVariable()
 	{
 		return mXVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getYVariable()
+	public Variable<Double> getYVariable()
 	{
 		return mYVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getZVariable()
+	public Variable<Double> getZVariable()
 	{
 		return mZVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getAlphaInDegreesVariable()
+	public Variable<Double> getAlphaInDegreesVariable()
 	{
 		return mAlphaInDegreesVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getBetaInDegreesVariable()
+	public Variable<Double> getBetaInDegreesVariable()
 	{
 		return mBetaInDegreesVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getWidthVariable()
+	public Variable<Double> getWidthVariable()
 	{
 		return mWidthVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getHeightVariable()
+	public Variable<Double> getHeightVariable()
 	{
 		return mHeightVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getPowerVariable()
+	public Variable<Double> getPowerVariable()
 	{
 		return mPowerVariable;
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getAdaptPowerToWidthHeightVariable()
+	public Variable<Boolean> getAdaptPowerToWidthHeightVariable()
 	{
 		return mAdaptPowerToWidthHeightVariable;
 	}
 
 	@Override
-	public ObjectVariable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex)
+	public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex)
 	{
 		return mStructuredIlluminationPatternVariableArray[pLaserIndex];
 	}
@@ -665,73 +665,73 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getSIPatternOnOffVariable(int pLaserIndex)
+	public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex)
 	{
 		return mSIPatternOnOffVariableArray[pLaserIndex];
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex)
+	public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex)
 	{
 		return mLaserOnOffVariableArray[pLaserIndex];
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getXFunction()
+	public Variable<UnivariateAffineComposableFunction> getXFunction()
 	{
 		return mXFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getYFunction()
+	public Variable<UnivariateAffineComposableFunction> getYFunction()
 	{
 		return mYFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction()
+	public Variable<UnivariateAffineComposableFunction> getZFunction()
 	{
 		return mZFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getWidthFunction()
+	public Variable<UnivariateAffineComposableFunction> getWidthFunction()
 	{
 		return mWidthFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getHeightFunction()
+	public Variable<UnivariateAffineComposableFunction> getHeightFunction()
 	{
 		return mHeightFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getAlphaFunction()
+	public Variable<UnivariateAffineComposableFunction> getAlphaFunction()
 	{
 		return mAlphaFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getBetaFunction()
+	public Variable<UnivariateAffineComposableFunction> getBetaFunction()
 	{
 		return mBetaFunction;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getPowerFunction()
+	public Variable<UnivariateAffineComposableFunction> getPowerFunction()
 	{
 		return mPowerFunction;
 	}
 
 	@Override
-	public ObjectVariable<PolynomialFunction> getWidthPowerFunction()
+	public Variable<PolynomialFunction> getWidthPowerFunction()
 	{
 		return mWidthPowerFunction;
 	}
 
 	@Override
-	public ObjectVariable<PolynomialFunction> getHeightPowerFunction()
+	public Variable<PolynomialFunction> getHeightPowerFunction()
 	{
 		return mHeightPowerFunction;
 	}

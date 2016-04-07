@@ -3,19 +3,19 @@ package rtlib.ao.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
 																											SignalStartableDevice	implements
 																																						SpatialPhaseModulatorDeviceInterface
 {
 
-	protected ObjectVariable<Double> mMatrixWidthVariable;
-	protected ObjectVariable<Double> mMatrixHeightVariable;
-	protected ObjectVariable<Double> mActuatorResolutionVariable;
-	protected ObjectVariable<Double> mNumberOfActuatorsVariable;
+	protected Variable<Double> mMatrixWidthVariable;
+	protected Variable<Double> mMatrixHeightVariable;
+	protected Variable<Double> mActuatorResolutionVariable;
+	protected Variable<Double> mNumberOfActuatorsVariable;
 
-	protected ObjectVariable<DenseMatrix64F> mMatrixVariable;
+	protected Variable<DenseMatrix64F> mMatrixVariable;
 
 	public SpatialPhaseModulatorDeviceBase(	String pDeviceName,
 																					int pFullMatrixWidthHeight,
@@ -23,11 +23,11 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	{
 		super(pDeviceName);
 
-		mMatrixWidthVariable = new ObjectVariable<Double>("MatrixWidth",
+		mMatrixWidthVariable = new Variable<Double>("MatrixWidth",
 																											(double) pFullMatrixWidthHeight);
-		mMatrixHeightVariable = new ObjectVariable<Double>(	"MatrixHeight",
+		mMatrixHeightVariable = new Variable<Double>(	"MatrixHeight",
 																												(double) pFullMatrixWidthHeight);
-		mActuatorResolutionVariable = new ObjectVariable<Double>(	"ActuatorResolution",
+		mActuatorResolutionVariable = new Variable<Double>(	"ActuatorResolution",
 																															(double) pActuatorResolution);
 
 	}
@@ -51,31 +51,31 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	}
 
 	@Override
-	public ObjectVariable<Double> getMatrixWidthVariable()
+	public Variable<Double> getMatrixWidthVariable()
 	{
 		return mMatrixWidthVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getMatrixHeightVariable()
+	public Variable<Double> getMatrixHeightVariable()
 	{
 		return mMatrixHeightVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getActuatorResolutionVariable()
+	public Variable<Double> getActuatorResolutionVariable()
 	{
 		return mActuatorResolutionVariable;
 	}
 
 	@Override
-	public ObjectVariable<Double> getNumberOfActuatorVariable()
+	public Variable<Double> getNumberOfActuatorVariable()
 	{
 		return mNumberOfActuatorsVariable;
 	}
 
 	@Override
-	public ObjectVariable<DenseMatrix64F> getMatrixReference()
+	public Variable<DenseMatrix64F> getMatrixReference()
 	{
 		return mMatrixVariable;
 	}

@@ -1,10 +1,10 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface SwitchingDeviceInterface
 {
 	int getNumberOfSwitches();
 
-	ObjectVariable<Boolean> getSwitchingVariable(int pSwitchIndex);
+	Variable<Boolean> getSwitchingVariable(int pSwitchIndex);
 }

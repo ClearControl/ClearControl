@@ -14,8 +14,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
@@ -131,9 +130,9 @@ public class LocalFileStackTests
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
-			lVariableBundle.addVariable(new ObjectVariable<Double>(	"doublevar1",
+			lVariableBundle.addVariable(new Variable<Double>(	"doublevar1",
 																															312.0));
-			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
+			lVariableBundle.addVariable(new Variable<String>(	"stringvar1",
 																															"123"));
 
 			@SuppressWarnings("unchecked")
@@ -191,15 +190,15 @@ public class LocalFileStackTests
 																																																																																"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
-			lVariableBundle.addVariable(new ObjectVariable<Double>(	"doublevar1",
+			lVariableBundle.addVariable(new Variable<Double>(	"doublevar1",
 																															312.0));
-			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
+			lVariableBundle.addVariable(new Variable<String>(	"stringvar1",
 																															"123"));
-			final VariableInterface<Double> lVariable1 = lVariableBundle.getVariable("doublevar1");
+			final Variable<Double> lVariable1 = lVariableBundle.getVariable("doublevar1");
 			// System.out.println(lVariable1.get());
 			assertEquals(312, lVariable1.get(), 0.5);
 
-			final VariableInterface<String> lVariable2 = lVariableBundle.getVariable("stringvar1");
+			final Variable<String> lVariable2 = lVariableBundle.getVariable("stringvar1");
 			// System.out.println(lVariable2.get());
 			assertEquals("123", lVariable2.get());
 

@@ -5,7 +5,7 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.core.device.NameableInterface;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface SpatialPhaseModulatorDeviceInterface	extends
 																											OpenCloseDeviceInterface,
@@ -19,15 +19,15 @@ public interface SpatialPhaseModulatorDeviceInterface	extends
 
 	int getActuatorResolution();
 
-	ObjectVariable<Double> getMatrixWidthVariable();
+	Variable<Double> getMatrixWidthVariable();
 
-	ObjectVariable<Double> getMatrixHeightVariable();
+	Variable<Double> getMatrixHeightVariable();
 
-	ObjectVariable<Double> getActuatorResolutionVariable();
+	Variable<Double> getActuatorResolutionVariable();
 
-	ObjectVariable<Double> getNumberOfActuatorVariable();
+	Variable<Double> getNumberOfActuatorVariable();
 
-	ObjectVariable<DenseMatrix64F> getMatrixReference();
+	Variable<DenseMatrix64F> getMatrixReference();
 
 	void zero();
 

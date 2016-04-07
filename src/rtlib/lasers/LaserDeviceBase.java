@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class LaserDeviceBase extends NamedVirtualDevice	implements
 																												LaserDeviceInterface
@@ -14,13 +14,13 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 
 	private final ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(1);
 
-	protected ObjectVariable<Number> mSpecInMilliWattPowerVariable,
+	protected Variable<Number> mSpecInMilliWattPowerVariable,
 			mMaxPowerInMilliWattVariable, mTargetPowerInMilliWattVariable,
 			mCurrentPowerInMilliWattVariable;
-	protected ObjectVariable<Integer> mWorkingHoursVariable,
+	protected Variable<Integer> mWorkingHoursVariable,
 			mSetOperatingModeVariable, mDeviceIdVariable,
 			mWavelengthVariable;
-	protected ObjectVariable<Boolean> mPowerOnVariable,
+	protected Variable<Boolean> mPowerOnVariable,
 			mLaserOnVariable;
 	private Runnable mCurrentPowerPoller;
 
@@ -123,7 +123,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		}
 	}
 
-	public final ObjectVariable<Integer> getDeviceIdVariable()
+	public final Variable<Integer> getDeviceIdVariable()
 	{
 		return mDeviceIdVariable;
 	}
@@ -134,7 +134,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public final ObjectVariable<Integer> getWavelengthInNanoMeterVariable()
+	public final Variable<Integer> getWavelengthInNanoMeterVariable()
 	{
 		return mWavelengthVariable;
 	}
@@ -145,7 +145,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mWavelengthVariable.get();
 	}
 
-	public final ObjectVariable<Number> getSpecPowerVariable()
+	public final Variable<Number> getSpecPowerVariable()
 	{
 		return mSpecInMilliWattPowerVariable;
 	}
@@ -155,7 +155,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mSpecInMilliWattPowerVariable.get().doubleValue();
 	}
 
-	public final ObjectVariable<Integer> getWorkingHoursVariable()
+	public final Variable<Integer> getWorkingHoursVariable()
 	{
 		return mWorkingHoursVariable;
 	}
@@ -165,7 +165,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mWorkingHoursVariable.get();
 	}
 
-	public final ObjectVariable<Number> getMaxPowerVariable()
+	public final Variable<Number> getMaxPowerVariable()
 	{
 		return mMaxPowerInMilliWattVariable;
 	}
@@ -176,7 +176,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mMaxPowerInMilliWattVariable.get().doubleValue();
 	}
 
-	public final ObjectVariable<Integer> getOperatingModeVariable()
+	public final Variable<Integer> getOperatingModeVariable()
 	{
 		return mSetOperatingModeVariable;
 	}
@@ -186,7 +186,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		mSetOperatingModeVariable.set(pMode);
 	}
 
-	public final ObjectVariable<Boolean> getPowerOnVariable()
+	public final Variable<Boolean> getPowerOnVariable()
 	{
 		return mPowerOnVariable;
 	}
@@ -197,7 +197,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public final ObjectVariable<Boolean> getLaserOnVariable()
+	public final Variable<Boolean> getLaserOnVariable()
 	{
 		return mLaserOnVariable;
 	}
@@ -232,13 +232,13 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public final ObjectVariable<Number> getTargetPowerInMilliWattVariable()
+	public final Variable<Number> getTargetPowerInMilliWattVariable()
 	{
 		return mTargetPowerInMilliWattVariable;
 	}
 
 	@Override
-	public final ObjectVariable<Number> getCurrentPowerInMilliWattVariable()
+	public final Variable<Number> getCurrentPowerInMilliWattVariable()
 	{
 		return mCurrentPowerInMilliWattVariable;
 	}

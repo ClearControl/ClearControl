@@ -3,7 +3,7 @@ package rtlib.stages;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface StageDeviceInterface	extends
 																			OpenCloseDeviceInterface
@@ -28,18 +28,18 @@ public interface StageDeviceInterface	extends
 												int pTimeOut,
 												TimeUnit pTimeUnit);
 
-	ObjectVariable<Double> getMinPositionVariable(int pDOFIndex);
+	Variable<Double> getMinPositionVariable(int pDOFIndex);
 
-	ObjectVariable<Double> getMaxPositionVariable(int pDOFIndex);
+	Variable<Double> getMaxPositionVariable(int pDOFIndex);
 
-	ObjectVariable<Boolean> getEnableVariable(int pDOFIndex);
+	Variable<Boolean> getEnableVariable(int pDOFIndex);
 
-	ObjectVariable<Double> getPositionVariable(int pDOFIndex);
+	Variable<Double> getPositionVariable(int pDOFIndex);
 
-	ObjectVariable<Boolean> getReadyVariable(int pDOFIndex);
+	Variable<Boolean> getReadyVariable(int pDOFIndex);
 
-	ObjectVariable<Boolean> getHomingVariable(int pDOFIndex);
+	Variable<Boolean> getHomingVariable(int pDOFIndex);
 
-	ObjectVariable<Boolean> getStopVariable(int pDOFIndex);
+	Variable<Boolean> getStopVariable(int pDOFIndex);
 
 }

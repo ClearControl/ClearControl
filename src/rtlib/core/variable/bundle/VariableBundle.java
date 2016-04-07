@@ -3,14 +3,13 @@ package rtlib.core.variable.bundle;
 import java.util.Collection;
 import java.util.HashMap;
 
-import rtlib.core.variable.NamedVariable;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.VariableBase;
+import rtlib.core.variable.Variable;
 
-public class VariableBundle extends NamedVariable<VariableBundle>
+public class VariableBundle extends VariableBase<VariableBundle>
 {
 
-	HashMap<String, VariableInterface<?>> mVariableNameToVariableMap = new HashMap<String, VariableInterface<?>>();
+	HashMap<String, Variable<?>> mVariableNameToVariableMap = new HashMap<String, Variable<?>>();
 
 	public VariableBundle(final String pBundleName)
 	{
@@ -23,17 +22,17 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 		return this;
 	}
 
-	protected Collection<VariableInterface<?>> getAllVariables()
+	protected Collection<Variable<?>> getAllVariables()
 	{
 		return mVariableNameToVariableMap.values();
 	}
 
-	public <O> void addVariable(final VariableInterface<O> pVariable)
+	public <O> void addVariable(final Variable<O> pVariable)
 	{
 		mVariableNameToVariableMap.put(pVariable.getName(), pVariable);
 	}
 
-	public <O> void removeVariable(final VariableInterface<O> pVariable)
+	public <O> void removeVariable(final Variable<O> pVariable)
 	{
 		mVariableNameToVariableMap.remove(pVariable);
 	}
@@ -44,68 +43,68 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	}
 
 	@SuppressWarnings("unchecked")
-	public <O> VariableInterface<O> getVariable(final String pVariableName)
+	public <O> Variable<O> getVariable(final String pVariableName)
 	{
-		return (VariableInterface<O>) mVariableNameToVariableMap.get(pVariableName);
+		return (Variable<O>) mVariableNameToVariableMap.get(pVariableName);
 	}
 
 	public <O> void sendUpdatesTo(final String pVariableName,
-																final VariableInterface<O> pToVariable)
+																final Variable<O> pToVariable)
 	{
-		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
+		final Variable<O> lFromVariable = getVariable(pVariableName);
 
-		final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
-		final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
+		final Variable<O> lFromDoubleVariable = lFromVariable;
+		final Variable<O> lToDoubleVariable = pToVariable;
 
 		lFromDoubleVariable.sendUpdatesTo(lToDoubleVariable);
 
 	}
 
 	public <O> void doNotSendUpdatesTo(	final String pVariableName,
-																			final VariableInterface<O> pToVariable)
+																			final Variable<O> pToVariable)
 	{
-		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
+		final Variable<O> lFromVariable = getVariable(pVariableName);
 
-		final ObjectVariable<O> lFromDoubleVariable = (ObjectVariable<O>) lFromVariable;
-		final ObjectVariable<O> lToDoubleVariable = (ObjectVariable<O>) pToVariable;
+		final Variable<O> lFromDoubleVariable = lFromVariable;
+		final Variable<O> lToDoubleVariable = pToVariable;
 
 		lFromDoubleVariable.doNotSendUpdatesTo(lToDoubleVariable);
 
 	}
 
 	public <O> void getUpdatesFrom(	final String pVariableName,
-																	final VariableInterface<O> pFromVariable)
+																	final Variable<O> pFromVariable)
 	{
-		final VariableInterface<O> lToVariable = getVariable(pVariableName);
+		final Variable<O> lToVariable = getVariable(pVariableName);
 
-		final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
-		final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
+		final Variable<O> lTo_DoubleVariable = lToVariable;
+		final Variable<O> lFrom_DoubleVariable = pFromVariable;
 
 		lFrom_DoubleVariable.sendUpdatesTo(lTo_DoubleVariable);
 
 	}
 
 	public <O> void doNotGetUpdatesFrom(final String pVariableName,
-																			final VariableInterface<O> pFromVariable)
+																			final Variable<O> pFromVariable)
 	{
-		final VariableInterface<O> lToVariable = getVariable(pVariableName);
+		final Variable<O> lToVariable = getVariable(pVariableName);
 
-		final ObjectVariable<O> lTo_DoubleVariable = (ObjectVariable<O>) lToVariable;
-		final ObjectVariable<O> lFrom_DoubleVariable = (ObjectVariable<O>) pFromVariable;
+		final Variable<O> lTo_DoubleVariable = lToVariable;
+		final Variable<O> lFrom_DoubleVariable = pFromVariable;
 
 		lFrom_DoubleVariable.doNotSendUpdatesTo(lTo_DoubleVariable);
 
 	}
 
 	public <O> void syncWith(	final String pVariableName,
-														final VariableInterface<O> pVariable)
+														final Variable<O> pVariable)
 	{
 		this.sendUpdatesTo(pVariableName, pVariable);
 		this.getUpdatesFrom(pVariableName, pVariable);
 	}
 
 	public <O> void doNotSyncWith(final String pVariableName,
-																final VariableInterface<O> pVariable)
+																final Variable<O> pVariable)
 	{
 		this.doNotSendUpdatesTo(pVariableName, pVariable);
 		this.doNotGetUpdatesFrom(pVariableName, pVariable);

@@ -19,8 +19,8 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.SingleUpdateTargetObjectVariable;
+import rtlib.core.variable.Variable;
+import rtlib.core.variable.util.SingleUpdateTargetObjectVariable;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -43,7 +43,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 	private int mMinimalNumberOfAvailableStacks;
 	private int mProcessingQueueSize;
 
-	private final ObjectVariable<Pair<TByteArrayList, DcamFrame>> mDcamFrameReference;
+	private final Variable<Pair<TByteArrayList, DcamFrame>> mDcamFrameReference;
 
 	private AsynchronousProcessorInterface<Pair<TByteArrayList, DcamFrame>, StackInterface> mAsynchronousConversionProcessor;
 
@@ -51,13 +51,13 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private final SingleUpdateTargetObjectVariable<StackInterface> mStackReference = new SingleUpdateTargetObjectVariable<StackInterface>("OffHeapPlanarStack");
 
-	private final ObjectVariable<Long> mNumberOfImagesPerPlaneVariable = new ObjectVariable<Long>("NumberOfPhases",
+	private final Variable<Long> mNumberOfImagesPerPlaneVariable = new Variable<Long>("NumberOfPhases",
 																																																1L);
 
 	private final ArrayList<StackProcessorInterface> mStackProcessorList = new ArrayList<StackProcessorInterface>();
 
 	public DcamJToVideoFrameConverter(final OrcaFlash4StackCamera pOrcaFlash4StackCamera,
-																		ObjectVariable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
+																		Variable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
 																		final boolean pFlipX)
 	{
 		super("DcamJToVideoFrameConverter");
@@ -69,7 +69,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		mMinimalNumberOfAvailableStacks = mOrcaFlash4StackCamera.getMinimalNumberOfAvailableStacks();
 		mProcessingQueueSize = mOrcaFlash4StackCamera.getStackProcessorQueueSize();
 
-		mDcamFrameReference.sendUpdatesTo(new ObjectVariable<Pair<TByteArrayList, DcamFrame>>("DcamFrame")
+		mDcamFrameReference.sendUpdatesTo(new Variable<Pair<TByteArrayList, DcamFrame>>("DcamFrame")
 		{
 			@Override
 			public Pair<TByteArrayList, DcamFrame> setEventHook(final Pair<TByteArrayList, DcamFrame> pOldDcamFrame,
@@ -300,7 +300,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		return mStackReference;
 	}
 
-	public ObjectVariable<Long> getNumberOfImagesPerPlaneVariable()
+	public Variable<Long> getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
 	}

@@ -5,7 +5,7 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import asdk.AlpaoDeformableMirror;
 
 public class AlpaoDMDevice extends DeformableMirrorDevice	implements
@@ -32,7 +32,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 
 		mAlpaoDeformableMirror = new AlpaoDeformableMirror(pAlpaoSerialName);
 
-		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixReference")
+		mMatrixVariable = new Variable<DenseMatrix64F>("MatrixReference")
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
@@ -54,7 +54,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		try
 		{
 			final boolean lOpen = mAlpaoDeformableMirror.open();
-			mNumberOfActuatorsVariable = new ObjectVariable<Double>("NumberOfActuators",
+			mNumberOfActuatorsVariable = new Variable<Double>("NumberOfActuators",
 																															(double) mAlpaoDeformableMirror.getNumberOfActuators());
 			return lOpen;
 		}

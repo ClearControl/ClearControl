@@ -1,7 +1,7 @@
 package rtlib.stack.processor;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclableFactory;
@@ -16,8 +16,8 @@ public interface StackProcessingPipeline extends
 
 	public void removeStackProcessor(final StackProcessorInterface pStackProcessor);
 
-	public ObjectVariable<StackInterface> getInputVariable();
+	public Variable<StackInterface> getInputVariable();
 
-	public ObjectVariable<StackInterface> getOutputVariable();
+	public Variable<StackInterface> getOutputVariable();
 
 }

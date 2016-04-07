@@ -1,6 +1,6 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableEdgeListener;
 
 public abstract class SignalStartableDevice	extends
@@ -9,9 +9,9 @@ public abstract class SignalStartableDevice	extends
 																															StartStopDeviceInterface
 {
 
-	protected final ObjectVariable<Boolean> mStartSignal;
+	protected final Variable<Boolean> mStartSignal;
 
-	protected final ObjectVariable<Boolean> mStopSignal;
+	protected final Variable<Boolean> mStopSignal;
 
 	public SignalStartableDevice(final String pDeviceName)
 	{
@@ -23,10 +23,10 @@ public abstract class SignalStartableDevice	extends
 	{
 		super(pDeviceName);
 
-		mStartSignal = new ObjectVariable<Boolean>(	pDeviceName + "Start",
+		mStartSignal = new Variable<Boolean>(	pDeviceName + "Start",
 																								false);
 
-		mStopSignal = new ObjectVariable<Boolean>(pDeviceName + "Stop",
+		mStopSignal = new Variable<Boolean>(pDeviceName + "Stop",
 																							false);
 
 		mStartSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
@@ -57,12 +57,12 @@ public abstract class SignalStartableDevice	extends
 		}
 	}
 
-	public ObjectVariable<Boolean> getStartSignalBooleanVariable()
+	public Variable<Boolean> getStartSignalBooleanVariable()
 	{
 		return mStartSignal;
 	}
 
-	public ObjectVariable<Boolean> getStopSignalBooleanVariable()
+	public Variable<Boolean> getStopSignalBooleanVariable()
 	{
 		return mStopSignal;
 	}

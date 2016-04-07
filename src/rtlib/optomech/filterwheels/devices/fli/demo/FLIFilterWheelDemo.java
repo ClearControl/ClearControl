@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.optomech.filterwheels.devices.fli.FLIFilterWheelDevice;
 
 public class FLIFilterWheelDemo
@@ -17,8 +17,8 @@ public class FLIFilterWheelDemo
 
 		assertTrue(lFLIFilterWheelDevice.open());
 
-		final ObjectVariable<Integer> lPositionVariable = lFLIFilterWheelDevice.getPositionVariable();
-		final ObjectVariable<Integer> lSpeedVariable = lFLIFilterWheelDevice.getSpeedVariable();
+		final Variable<Integer> lPositionVariable = lFLIFilterWheelDevice.getPositionVariable();
+		final Variable<Integer> lSpeedVariable = lFLIFilterWheelDevice.getSpeedVariable();
 
 		for (int i = 0; i < 10; i++)
 		{

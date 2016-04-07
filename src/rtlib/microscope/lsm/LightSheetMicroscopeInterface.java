@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -114,7 +114,7 @@ public interface LightSheetMicroscopeInterface extends
 	 */
 	long lastAcquiredStacksTimeStampInNS();
 
-	ObjectVariable<StackInterface> getStackVariable(int pIndex);
+	Variable<StackInterface> getStackVariable(int pIndex);
 
 	/**
 	 * Sets with and height of camera image

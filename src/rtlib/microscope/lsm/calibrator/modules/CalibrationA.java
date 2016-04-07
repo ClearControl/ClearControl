@@ -18,7 +18,7 @@ import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.SmartArgMaxFinder;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -330,7 +330,7 @@ public class CalibrationA
 			return Double.POSITIVE_INFINITY;
 		}
 
-		ObjectVariable<UnivariateAffineComposableFunction> lFunctionVariable = lLightSheetDevice.getAlphaFunction();
+		Variable<UnivariateAffineComposableFunction> lFunctionVariable = lLightSheetDevice.getAlphaFunction();
 
 		System.out.format("Correction function: %s \n",
 											lUnivariateAffineFunction);

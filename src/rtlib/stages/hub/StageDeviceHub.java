@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stages.StageDeviceInterface;
 
 import com.google.common.collect.BiMap;
@@ -150,43 +150,43 @@ public class StageDeviceHub extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getMinPositionVariable(int pDOFIndex)
+	public Variable<Double> getMinPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getMinPositionVariable();
 	}
 
 	@Override
-	public ObjectVariable<Double> getMaxPositionVariable(int pDOFIndex)
+	public Variable<Double> getMaxPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getMaxPositionVariable();
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getEnableVariable(int pDOFIndex)
+	public Variable<Boolean> getEnableVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getEnableVariable();
 	}
 
 	@Override
-	public ObjectVariable<Double> getPositionVariable(int pDOFIndex)
+	public Variable<Double> getPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getPositionVariable();
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getReadyVariable(int pDOFIndex)
+	public Variable<Boolean> getReadyVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getReadyVariable();
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getHomingVariable(int pDOFIndex)
+	public Variable<Boolean> getHomingVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getHomingVariable();
 	}
 
 	@Override
-	public ObjectVariable<Boolean> getStopVariable(int pDOFIndex)
+	public Variable<Boolean> getStopVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getStopVariable();
 	}

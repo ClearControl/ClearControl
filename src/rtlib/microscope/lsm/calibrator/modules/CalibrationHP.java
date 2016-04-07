@@ -18,7 +18,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -304,7 +304,7 @@ public class CalibrationHP
 		PolynomialFunction lNewWidthPowerFunction = mHPFunctions.get(	pLightSheetIndex,
 																																	pDetectionArmIndex);
 
-		ObjectVariable<PolynomialFunction> lCurrentHeightFunctionVariable = lLightSheetDevice.getHeightPowerFunction();
+		Variable<PolynomialFunction> lCurrentHeightFunctionVariable = lLightSheetDevice.getHeightPowerFunction();
 
 		System.out.format("Current HeightPower function: %s \n",
 											lCurrentHeightFunctionVariable.get());

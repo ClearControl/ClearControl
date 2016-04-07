@@ -1,7 +1,7 @@
 package rtlib.cameras;
 
 import rtlib.core.device.NameableInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -10,19 +10,19 @@ public interface StackCameraDeviceInterface	extends
 																						CameraDeviceInterface,
 																						NameableInterface
 {
-	ObjectVariable<Long> getNumberOfImagesPerPlaneVariable();
+	Variable<Long> getNumberOfImagesPerPlaneVariable();
 
-	ObjectVariable<Boolean> getStackModeVariable();
+	Variable<Boolean> getStackModeVariable();
 
-	ObjectVariable<Boolean> getKeepPlaneVariable();
+	Variable<Boolean> getKeepPlaneVariable();
 
-	ObjectVariable<Long> getStackBytesPerPixelVariable();
+	Variable<Long> getStackBytesPerPixelVariable();
 
-	ObjectVariable<Long> getStackWidthVariable();
+	Variable<Long> getStackWidthVariable();
 
-	ObjectVariable<Long> getStackHeightVariable();
+	Variable<Long> getStackHeightVariable();
 
-	ObjectVariable<Long> getStackDepthVariable();
+	Variable<Long> getStackDepthVariable();
 
 	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
@@ -32,7 +32,7 @@ public interface StackCameraDeviceInterface	extends
 
 	RecyclerInterface<StackInterface, StackRequest> getStackRecycler();
 
-	ObjectVariable<StackInterface> getStackVariable();
+	Variable<StackInterface> getStackVariable();
 
 	@Override
 	void trigger();

@@ -4,7 +4,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class ZernickeSpatialPhaseModulatorDevice extends
 																								SpatialPhaseModulatorDeviceBase	implements
@@ -27,7 +27,7 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 
 		mZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lMatrixHeight);
 
-		mMatrixVariable = new ObjectVariable<DenseMatrix64F>(	"Matrix",
+		mMatrixVariable = new Variable<DenseMatrix64F>(	"Matrix",
 																													new DenseMatrix64F(	lMatrixHeight * lMatrixWidth,
 																																							1))
 		{
@@ -69,25 +69,25 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 	}
 
 	@Override
-	public ObjectVariable<Double> getMatrixWidthVariable()
+	public Variable<Double> getMatrixWidthVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixWidthVariable();
 	}
 
 	@Override
-	public ObjectVariable<Double> getMatrixHeightVariable()
+	public Variable<Double> getMatrixHeightVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixHeightVariable();
 	}
 
 	@Override
-	public ObjectVariable<Double> getActuatorResolutionVariable()
+	public Variable<Double> getActuatorResolutionVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getActuatorResolutionVariable();
 	}
 
 	@Override
-	public ObjectVariable<Double> getNumberOfActuatorVariable()
+	public Variable<Double> getNumberOfActuatorVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getNumberOfActuatorVariable();
 	}

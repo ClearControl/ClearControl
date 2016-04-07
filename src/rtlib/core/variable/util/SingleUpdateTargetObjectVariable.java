@@ -1,7 +1,9 @@
-package rtlib.core.variable;
+package rtlib.core.variable.util;
+
+import rtlib.core.variable.Variable;
 
 public class SingleUpdateTargetObjectVariable<O>	extends
-																									ObjectVariable<O>
+																									Variable<O>
 {
 
 	public SingleUpdateTargetObjectVariable(final String pVariableName)
@@ -16,7 +18,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 	}
 
 	@Override
-	public final void sendUpdatesTo(final ObjectVariable<O> pObjectVariable)
+	public final void sendUpdatesTo(final Variable<O> pObjectVariable)
 	{
 		if (mVariablesToSendUpdatesTo.size() != 0)
 		{
@@ -28,7 +30,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 	}
 
 	@Override
-	public final ObjectVariable<O> sendUpdatesToInstead(final ObjectVariable<O> pObjectVariable)
+	public final Variable<O> sendUpdatesToInstead(final Variable<O> pObjectVariable)
 	{
 		if (mVariablesToSendUpdatesTo.size() >= 2)
 		{
@@ -46,7 +48,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 			}
 			else
 			{
-				final ObjectVariable<O> lPreviousObjectVariable = mVariablesToSendUpdatesTo.get(0);
+				final Variable<O> lPreviousObjectVariable = mVariablesToSendUpdatesTo.get(0);
 				return lPreviousObjectVariable;
 			}
 		}
@@ -58,7 +60,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 		}
 		else
 		{
-			final ObjectVariable<O> lPreviousObjectVariable = mVariablesToSendUpdatesTo.get(0);
+			final Variable<O> lPreviousObjectVariable = mVariablesToSendUpdatesTo.get(0);
 			mVariablesToSendUpdatesTo.add(pObjectVariable);
 			return lPreviousObjectVariable;
 		}

@@ -1,9 +1,9 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import ecc100.ECC100Axis;
 
-public class HomingVariable extends ObjectVariable<Boolean>
+public class HomingVariable extends Variable<Boolean>
 {
 
 	private final ECC100Axis mECC100Axis;

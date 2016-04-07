@@ -1,32 +1,32 @@
 package rtlib.optomech.filterwheels;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public abstract class FilterWheelDeviceBase	extends
 																						NamedVirtualDevice implements
 																															FilterWheelDeviceInterface
 {
-	protected ObjectVariable<Integer> mFilterPositionVariable = null,
+	protected Variable<Integer> mFilterPositionVariable = null,
 			mFilterSpeedVariable = null;
 
 	public FilterWheelDeviceBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		mFilterPositionVariable = new ObjectVariable<Integer>("FilterWheelPosition",
+		mFilterPositionVariable = new Variable<Integer>("FilterWheelPosition",
 																													0);
-		mFilterSpeedVariable = new ObjectVariable<Integer>(	"FilterWheelSpeed",
+		mFilterSpeedVariable = new Variable<Integer>(	"FilterWheelSpeed",
 																												0);
 	}
 
 	@Override
-	public final ObjectVariable<Integer> getPositionVariable()
+	public final Variable<Integer> getPositionVariable()
 	{
 		return mFilterPositionVariable;
 	}
 
 	@Override
-	public final ObjectVariable<Integer> getSpeedVariable()
+	public final Variable<Integer> getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
 	}

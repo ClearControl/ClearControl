@@ -6,12 +6,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JButtonBoolean extends JButton
 {
 	private final JButtonBoolean mThis;
-	private final ObjectVariable<Boolean> mBooleanVariable;
+	private final Variable<Boolean> mBooleanVariable;
 	private final String mOnLabel, mOffLabel;
 
 	private boolean mButtonIsOnOffSwitch = true;
@@ -40,7 +40,7 @@ public class JButtonBoolean extends JButton
 												final boolean pButtonIsOnOffSwitch)
 	{
 		mThis = this;
-		mBooleanVariable = new ObjectVariable<Boolean>(	pOnLabel + "/"
+		mBooleanVariable = new Variable<Boolean>(	pOnLabel + "/"
 																												+ pOffLabel,
 																										pInitialState)
 		{
@@ -114,7 +114,7 @@ public class JButtonBoolean extends JButton
 
 	}
 
-	public ObjectVariable<Boolean> getBooleanVariable()
+	public Variable<Boolean> getBooleanVariable()
 	{
 		return mBooleanVariable;
 	}

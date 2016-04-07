@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
@@ -40,7 +40,7 @@ public class OrcaFlash4CameraDemo
 		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
-													.sendUpdatesTo(new ObjectVariable<StackInterface>("Receiver")
+													.sendUpdatesTo(new Variable<StackInterface>("Receiver")
 													{
 
 														@Override
@@ -100,7 +100,7 @@ public class OrcaFlash4CameraDemo
 		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
-													.sendUpdatesTo(new ObjectVariable<StackInterface>("Receiver")
+													.sendUpdatesTo(new Variable<StackInterface>("Receiver")
 													{
 
 														@Override
@@ -177,7 +177,7 @@ public class OrcaFlash4CameraDemo
 		lOrcaFlash4StackCamera.setStackRecycler(lRecycler);
 
 		lOrcaFlash4StackCamera.getStackVariable()
-													.sendUpdatesTo(new ObjectVariable<StackInterface>("Receiver")
+													.sendUpdatesTo(new Variable<StackInterface>("Receiver")
 													{
 
 														@Override

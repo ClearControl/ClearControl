@@ -22,7 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JSliderDouble extends JPanel
 {
@@ -39,7 +39,7 @@ public class JSliderDouble extends JPanel
 	private int mNumberOfLabels = 3;
 	private boolean mWaitForMouseRelease = false;
 
-	private final ObjectVariable<Double> mSliderDoubleVariable;
+	private final Variable<Double> mSliderDoubleVariable;
 
 	private final JSliderDouble mThis;
 	private JButton mMinusStepButton;
@@ -93,7 +93,7 @@ public class JSliderDouble extends JPanel
 
 		mResolution = min(cMaxResolution, pResolution);
 
-		mSliderDoubleVariable = new ObjectVariable<Double>(	pValueName,
+		mSliderDoubleVariable = new Variable<Double>(	pValueName,
 																												pValue)
 		{
 			@Override
@@ -336,7 +336,7 @@ public class JSliderDouble extends JPanel
 
 	}
 
-	public ObjectVariable<Double> getDoubleVariable()
+	public Variable<Double> getDoubleVariable()
 	{
 		return mSliderDoubleVariable;
 	}

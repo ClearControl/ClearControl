@@ -8,9 +8,9 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
-public class DoubleVariableAsFile extends ObjectVariable<Double> implements
+public class DoubleVariableAsFile extends Variable<Double> implements
 																																Closeable
 
 {

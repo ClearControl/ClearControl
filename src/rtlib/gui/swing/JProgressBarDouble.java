@@ -4,11 +4,11 @@ import java.awt.EventQueue;
 
 import javax.swing.JProgressBar;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class JProgressBarDouble extends JProgressBar
 {
-	private final ObjectVariable<Double> mJProgressBarDoubleVariable;
+	private final Variable<Double> mJProgressBarDoubleVariable;
 
 	private final JProgressBarDouble mThis;
 
@@ -24,7 +24,7 @@ public class JProgressBarDouble extends JProgressBar
 		mMin = pMin;
 		mMax = pMax;
 
-		mJProgressBarDoubleVariable = new ObjectVariable<Double>(	pName,
+		mJProgressBarDoubleVariable = new Variable<Double>(	pName,
 																															pInicialValue)
 		{
 			@Override
@@ -54,7 +54,7 @@ public class JProgressBarDouble extends JProgressBar
 
 	}
 
-	public ObjectVariable<Double> getDoubleVariable()
+	public Variable<Double> getDoubleVariable()
 	{
 		return mJProgressBarDoubleVariable;
 	}

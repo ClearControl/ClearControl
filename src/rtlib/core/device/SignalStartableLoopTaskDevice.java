@@ -8,7 +8,7 @@ import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
@@ -19,8 +19,8 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	private final SignalStartableLoopTaskDevice lThis;
 	private final TimeUnit mTimeUnit;
-	private final ObjectVariable<Long> mLoopPeriodVariable;
-	private final ObjectVariable<Boolean> mIsRunningVariable;
+	private final Variable<Long> mLoopPeriodVariable;
+	private final Variable<Boolean> mIsRunningVariable;
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
@@ -36,11 +36,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		super(pDeviceName, pOnlyStart);
 		mTimeUnit = pTimeUnit;
 
-		mLoopPeriodVariable = new ObjectVariable<Long>(	pDeviceName + "LoopPeriodIn"
+		mLoopPeriodVariable = new Variable<Long>(	pDeviceName + "LoopPeriodIn"
 																												+ pTimeUnit.name(),
 																										0L);
 
-		mIsRunningVariable = new ObjectVariable<Boolean>(	pDeviceName + "IsRunning",
+		mIsRunningVariable = new Variable<Boolean>(	pDeviceName + "IsRunning",
 																											false);
 
 		lThis = this;
@@ -111,12 +111,12 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	}
 
-	public ObjectVariable<Long> getLoopPeriodVariable()
+	public Variable<Long> getLoopPeriodVariable()
 	{
 		return mLoopPeriodVariable;
 	}
 
-	public ObjectVariable<Boolean> getIsRunningVariable()
+	public Variable<Boolean> getIsRunningVariable()
 	{
 		return mIsRunningVariable;
 	}

@@ -2,7 +2,7 @@ package rtlib.optomech.opticalswitch.devices.optojena;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.PositionDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -12,7 +12,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																														OptoMechDeviceInterface
 {
 
-	private ObjectVariable<Integer> mPositionVariable;
+	private Variable<Integer> mPositionVariable;
 
 	public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
 	{
@@ -21,7 +21,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																										pDeviceIndex,
 																										"NULL"));
 
-		mPositionVariable = new ObjectVariable<Integer>("SwitchPosition",
+		mPositionVariable = new Variable<Integer>("SwitchPosition",
 																										0);
 	}
 
@@ -46,7 +46,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	}
 
 	@Override
-	public ObjectVariable<Integer> getPositionVariable()
+	public Variable<Integer> getPositionVariable()
 	{
 		return mPositionVariable;
 	}

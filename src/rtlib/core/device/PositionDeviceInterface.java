@@ -1,10 +1,10 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public interface PositionDeviceInterface
 {
-	ObjectVariable<Integer> getPositionVariable();
+	Variable<Integer> getPositionVariable();
 
 	int getPosition();
 

@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 
 public class MatrixPanel extends JPanel
@@ -24,8 +24,8 @@ public class MatrixPanel extends JPanel
 	private final int mDisplayTileSize;
 	private final int mMatrixWidth, mMatrixHeight;
 	private volatile boolean mAutoNormalize, mSymetricRange;
-	ObjectVariable<DenseMatrix64F> mMatrixVariable;
-	ObjectVariable<Double> mMinRangeVariable, mMaxRangeVariable;
+	Variable<DenseMatrix64F> mMatrixVariable;
+	Variable<Double> mMinRangeVariable, mMaxRangeVariable;
 	private float mSaturation = 0.5f, mBrightness = 0.95f;
 
 	public static MatrixPanel getMatrixForMatrixEntry(int pDisplayTileSize,
@@ -74,7 +74,7 @@ public class MatrixPanel extends JPanel
 		mMatrixWidth = pMatrixWidth;
 		mMatrixHeight = pMatrixHeight;
 
-		mMatrixVariable = new ObjectVariable<DenseMatrix64F>("MatrixVariable")
+		mMatrixVariable = new Variable<DenseMatrix64F>("MatrixVariable")
 		{
 
 			@Override
@@ -94,8 +94,8 @@ public class MatrixPanel extends JPanel
 			}
 		};
 
-		mMinRangeVariable = new ObjectVariable<Double>("MinRange", -1.0);
-		mMaxRangeVariable = new ObjectVariable<Double>("MaxRange", 1.0);
+		mMinRangeVariable = new Variable<Double>("MinRange", -1.0);
+		mMaxRangeVariable = new Variable<Double>("MaxRange", 1.0);
 
 		final VariableSetListener<Double> lVariableListener = new VariableSetListener<Double>()
 		{
@@ -191,17 +191,17 @@ public class MatrixPanel extends JPanel
 		return max(min(pValue, pMax), pMin);
 	}
 
-	public ObjectVariable<DenseMatrix64F> getMatrixVariable()
+	public Variable<DenseMatrix64F> getMatrixVariable()
 	{
 		return mMatrixVariable;
 	}
 
-	public ObjectVariable<Double> getMinRangeVariable()
+	public Variable<Double> getMinRangeVariable()
 	{
 		return mMinRangeVariable;
 	}
 
-	public ObjectVariable<Double> getMaxRangeVariable()
+	public Variable<Double> getMaxRangeVariable()
 	{
 		return mMaxRangeVariable;
 	}

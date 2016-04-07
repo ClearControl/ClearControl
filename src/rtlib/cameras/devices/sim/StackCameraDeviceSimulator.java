@@ -17,7 +17,7 @@ import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.device.SimulatorDeviceInterface;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableEdgeListener;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
@@ -35,7 +35,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 {
 	private StackCameraDeviceSimulatorHint mHint;
 	private StackSourceInterface mStackSource;
-	private ObjectVariable<Boolean> mTriggerVariable;
+	private Variable<Boolean> mTriggerVariable;
 	protected volatile long mCurrentStackIndex = 0;
 	private RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
@@ -43,26 +43,26 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
 	public StackCameraDeviceSimulator(StackSourceInterface pStackSource,
-																		ObjectVariable<Boolean> pTriggerVariable)
+																		Variable<Boolean> pTriggerVariable)
 	{
 		super("StackCameraSimulator");
 		mStackSource = pStackSource;
 		mTriggerVariable = pTriggerVariable;
 
-		mLineReadOutTimeInMicrosecondsVariable = new ObjectVariable<Double>("LineReadOutTimeInMicroseconds",
+		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																				1.0);
-		mStackBytesPerPixelVariable = new ObjectVariable<Long>(	"FrameBytesPerPixel",
+		mStackBytesPerPixelVariable = new Variable<Long>(	"FrameBytesPerPixel",
 																														2L);
-		mStackWidthVariable = new ObjectVariable<Long>("FrameWidth", 320L);
-		mStackHeightVariable = new ObjectVariable<Long>("FrameHeight",
+		mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
+		mStackHeightVariable = new Variable<Long>("FrameHeight",
 																										320L);
-		mStackDepthVariable = new ObjectVariable<Long>("FrameDepth", 100L);
-		mExposureInMicrosecondsVariable = new ObjectVariable<Double>(	"ExposureInMicroseconds",
+		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
+		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
 																																	1000.0);
-		mPixelSizeinNanometersVariable = new ObjectVariable<Double>("PixelSizeinNanometers",
+		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeinNanometers",
 																																160.0);
 
-		mStackReference = new ObjectVariable<>("StackReference");
+		mStackReference = new Variable<>("StackReference");
 
 		if (mTriggerVariable == null)
 		{
@@ -300,7 +300,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		mTriggerVariable.setEdge(false, true);
 	}
 
-	public ObjectVariable<Boolean> getTriggerVariable()
+	public Variable<Boolean> getTriggerVariable()
 	{
 		return mTriggerVariable;
 	}

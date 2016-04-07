@@ -2,7 +2,7 @@ package rtlib.core.variable;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class NamedVariable<O>
+public abstract class VariableBase<O>
 {
 
 	private String mVariableName;
@@ -11,7 +11,7 @@ public abstract class NamedVariable<O>
 	private final CopyOnWriteArrayList<VariableEdgeListener<O>> mVariableEdgeListeners = new CopyOnWriteArrayList<VariableEdgeListener<O>>();
 	private final CopyOnWriteArrayList<VariableGetListener<O>> mVariableGetListeners = new CopyOnWriteArrayList<VariableGetListener<O>>();
 
-	public NamedVariable(final String pVariableName)
+	public VariableBase(final String pVariableName)
 	{
 		super();
 		mVariableName = pVariableName;

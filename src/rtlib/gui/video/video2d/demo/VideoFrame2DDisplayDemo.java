@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.Stack2DDisplay;
@@ -65,7 +65,7 @@ public class VideoFrame2DDisplayDemo
 																																			lSizeY,
 																																			lSizeZ);
 
-		final ObjectVariable<StackInterface> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
+		final Variable<StackInterface> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
 
 		final Runnable lRunnable = () -> {
 			while (true)
@@ -126,9 +126,9 @@ public class VideoFrame2DDisplayDemo
 																																		"No Display");
 					mcontentPane.add(lJButtonBoolean, BorderLayout.NORTH);
 
-					final ObjectVariable<Boolean> lStartStopVariable = lJButtonBoolean.getBooleanVariable();
+					final Variable<Boolean> lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
-					lStartStopVariable.sendUpdatesTo(new ObjectVariable<Boolean>(	"StartStopVariableHook",
+					lStartStopVariable.sendUpdatesTo(new Variable<Boolean>(	"StartStopVariableHook",
 																																				false)
 					{
 						@Override
@@ -142,9 +142,9 @@ public class VideoFrame2DDisplayDemo
 						}
 					});
 
-					final ObjectVariable<Double> lDoubleVariable = lJSliderDouble.getDoubleVariable();
+					final Variable<Double> lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
-					lDoubleVariable.sendUpdatesTo(new ObjectVariable<Double>(	"SliderDoubleEventHook",
+					lDoubleVariable.sendUpdatesTo(new Variable<Double>(	"SliderDoubleEventHook",
 																																		0.0)
 					{
 

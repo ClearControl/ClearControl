@@ -8,7 +8,7 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
@@ -24,8 +24,8 @@ public class AsynchronousPoolStackProcessorPipeline	implements
 	private final CopyOnWriteArrayList<RecyclerInterface<StackInterface, StackRequest>> mRecyclerList = new CopyOnWriteArrayList<RecyclerInterface<StackInterface, StackRequest>>();
 	private AsynchronousProcessorPool<StackInterface, StackInterface> mAsynchronousProcessorPool;
 
-	private ObjectVariable<StackInterface> mInputVariable;
-	private ObjectVariable<StackInterface> mOutputVariable;
+	private Variable<StackInterface> mInputVariable;
+	private Variable<StackInterface> mOutputVariable;
 	private AsynchronousProcessorInterface<StackInterface, StackInterface> mReceiver;
 
 	public AsynchronousPoolStackProcessorPipeline(String pName,
@@ -34,7 +34,7 @@ public class AsynchronousPoolStackProcessorPipeline	implements
 	{
 		super();
 
-		mInputVariable = new ObjectVariable<StackInterface>("InputVariable")
+		mInputVariable = new Variable<StackInterface>("InputVariable")
 		{
 
 			@Override
@@ -47,7 +47,7 @@ public class AsynchronousPoolStackProcessorPipeline	implements
 
 		};
 
-		mOutputVariable = new ObjectVariable<StackInterface>("OutputVariable");
+		mOutputVariable = new Variable<StackInterface>("OutputVariable");
 
 		final ProcessorInterface<StackInterface, StackInterface> lProcessor = new ProcessorInterface<StackInterface, StackInterface>()
 		{
@@ -118,13 +118,13 @@ public class AsynchronousPoolStackProcessorPipeline	implements
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getInputVariable()
+	public Variable<StackInterface> getInputVariable()
 	{
 		return mInputVariable;
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getOutputVariable()
+	public Variable<StackInterface> getOutputVariable()
 	{
 		return mOutputVariable;
 	}

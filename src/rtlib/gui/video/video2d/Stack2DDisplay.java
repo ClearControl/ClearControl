@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.EmptyStack;
@@ -29,17 +29,17 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 {
 	private final VideoWindow mVideoWindow;
 
-	private final ObjectVariable<StackInterface> mInputStackVariable;
-	private ObjectVariable<StackInterface> mOutputStackVariable;
+	private final Variable<StackInterface> mInputStackVariable;
+	private Variable<StackInterface> mOutputStackVariable;
 
 	private volatile StackInterface mReceivedStackCopy;
 
-	private final ObjectVariable<Boolean> mDisplayOn;
-	private final ObjectVariable<Boolean> mManualMinMaxIntensity;
-	private final ObjectVariable<Double> mMinimumIntensity;
-	private final ObjectVariable<Double> mMaximumIntensity;
+	private final Variable<Boolean> mDisplayOn;
+	private final Variable<Boolean> mManualMinMaxIntensity;
+	private final Variable<Double> mMinimumIntensity;
+	private final Variable<Double> mMaximumIntensity;
 
-	private final ObjectVariable<Double> mStackSliceNormalizedIndex;
+	private final Variable<Double> mStackSliceNormalizedIndex;
 
 	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
@@ -187,7 +187,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 		mAsynchronousDisplayUpdater.start();
 
-		mInputStackVariable = new ObjectVariable<StackInterface>(pWindowName + "StackInput")
+		mInputStackVariable = new Variable<StackInterface>(pWindowName + "StackInput")
 		{
 
 			@Override
@@ -203,7 +203,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 		};
 
-		mDisplayOn = new ObjectVariable<Boolean>("DisplayOn", true)
+		mDisplayOn = new Variable<Boolean>("DisplayOn", true)
 		{
 			@Override
 			public Boolean setEventHook(final Boolean pOldValue,
@@ -215,7 +215,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mManualMinMaxIntensity = new ObjectVariable<Boolean>(	"ManualMinMaxIntensity",
+		mManualMinMaxIntensity = new Variable<Boolean>(	"ManualMinMaxIntensity",
 																													false)
 		{
 			@Override
@@ -228,7 +228,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMinimumIntensity = new ObjectVariable<Double>(	"MinimumIntensity",
+		mMinimumIntensity = new Variable<Double>(	"MinimumIntensity",
 																										0.0)
 		{
 			@Override
@@ -241,7 +241,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMaximumIntensity = new ObjectVariable<Double>(	"MaximumIntensity",
+		mMaximumIntensity = new Variable<Double>(	"MaximumIntensity",
 																										1.0)
 		{
 			@Override
@@ -254,7 +254,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mStackSliceNormalizedIndex = new ObjectVariable<Double>("StackSliceNormalizedIndex",
+		mStackSliceNormalizedIndex = new Variable<Double>("StackSliceNormalizedIndex",
 																														Double.NaN);
 
 		Runnable lAutoRescaleRunnable = () -> {
@@ -360,38 +360,38 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<StackInterface> getOutputStackVariable()
+	public Variable<StackInterface> getOutputStackVariable()
 	{
 		return mOutputStackVariable;
 	}
 
 	@Override
-	public void setOutputStackVariable(ObjectVariable<StackInterface> pOutputStackVariable)
+	public void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable)
 	{
 		mOutputStackVariable = pOutputStackVariable;
 	}
 
-	public ObjectVariable<Boolean> getDisplayOnVariable()
+	public Variable<Boolean> getDisplayOnVariable()
 	{
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<Boolean> getManualMinMaxIntensityOnVariable()
+	public Variable<Boolean> getManualMinMaxIntensityOnVariable()
 	{
 		return mManualMinMaxIntensity;
 	}
 
-	public ObjectVariable<Double> getMinimumIntensityVariable()
+	public Variable<Double> getMinimumIntensityVariable()
 	{
 		return mMinimumIntensity;
 	}
 
-	public ObjectVariable<Double> getMaximumIntensityVariable()
+	public Variable<Double> getMaximumIntensityVariable()
 	{
 		return mMaximumIntensity;
 	}
 
-	public ObjectVariable<StackInterface> getInputStackVariable()
+	public Variable<StackInterface> getInputStackVariable()
 	{
 		return mInputStackVariable;
 	}

@@ -4,7 +4,7 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
@@ -15,10 +15,10 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	private int mDeviceIndex;
 
-	private final ObjectVariable<Double> mDetectionFocusZ = new ObjectVariable<Double>(	"FocusZ",
+	private final Variable<Double> mDetectionFocusZ = new Variable<Double>(	"FocusZ",
 																																											0.0);
 
-	private final ObjectVariable<UnivariateAffineComposableFunction> mZFunction = new ObjectVariable<>(	"DetectionZFunction",
+	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"DetectionZFunction",
 																																																			new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
@@ -62,13 +62,13 @@ public class DetectionArm extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public ObjectVariable<Double> getZVariable()
+	public Variable<Double> getZVariable()
 	{
 		return mDetectionFocusZ;
 	}
 
 	@Override
-	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction()
+	public Variable<UnivariateAffineComposableFunction> getZFunction()
 	{
 		return mZFunction;
 	}

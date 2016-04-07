@@ -19,7 +19,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
@@ -83,13 +83,13 @@ public class CalibrationXY
 
 		if (pDoAxisX)
 		{
-			ObjectVariable<UnivariateAffineComposableFunction> lLightSheetXFunction = lLightSheet.getXFunction();
+			Variable<UnivariateAffineComposableFunction> lLightSheetXFunction = lLightSheet.getXFunction();
 			lMin = lLightSheetXFunction.get().getMin();
 			lMax = lLightSheetXFunction.get().getMax();
 		}
 		else
 		{
-			ObjectVariable<UnivariateAffineComposableFunction> lLightSheetYFunction = lLightSheet.getYFunction();
+			Variable<UnivariateAffineComposableFunction> lLightSheetYFunction = lLightSheet.getYFunction();
 			lMin = lLightSheetYFunction.get().getMin();
 			lMax = lLightSheetYFunction.get().getMax();
 		}
@@ -361,8 +361,8 @@ public class CalibrationXY
 
 		System.out.format("lLightSheetDevice: %s \n", lLightSheetDevice);
 
-		ObjectVariable<UnivariateAffineComposableFunction> lFunctionXVariable = lLightSheetDevice.getXFunction();
-		ObjectVariable<UnivariateAffineComposableFunction> lFunctionYVariable = lLightSheetDevice.getYFunction();
+		Variable<UnivariateAffineComposableFunction> lFunctionXVariable = lLightSheetDevice.getXFunction();
+		Variable<UnivariateAffineComposableFunction> lFunctionYVariable = lLightSheetDevice.getYFunction();
 
 		System.out.format("lFunctionXVariable: %s \n", lFunctionXVariable);
 		System.out.format("lFunctionYVariable: %s \n", lFunctionYVariable);
@@ -384,7 +384,7 @@ public class CalibrationXY
 											lFunctionYVariable);
 
 		// TODO: use pixel calibration here...
-		ObjectVariable<UnivariateAffineComposableFunction> lHeightFunctionVariable = lLightSheetDevice.getHeightFunction();
+		Variable<UnivariateAffineComposableFunction> lHeightFunctionVariable = lLightSheetDevice.getHeightFunction();
 		System.out.format("lHeightFunctionVariable: %s \n",
 											lHeightFunctionVariable);
 		UnivariateAffineFunction lHeightFunction = UnivariateAffineFunction.axplusb(1,

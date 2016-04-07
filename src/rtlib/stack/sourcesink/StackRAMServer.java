@@ -7,8 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
-import rtlib.core.variable.ObjectVariable;
-import rtlib.core.variable.VariableInterface;
+import rtlib.core.variable.Variable;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -76,13 +75,13 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
-		mMetaDataVariableBundle.addVariable(new ObjectVariable<Double>(	pPrefix,
+		mMetaDataVariableBundle.addVariable(new Variable<Double>(	pPrefix,
 																																		pValue));
 	}
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-																	final VariableInterface<?> pVariable)
+																	final Variable<?> pVariable)
 	{
 		mMetaDataVariableBundle.addVariable(pVariable);
 	}
@@ -94,7 +93,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public void removeMetaDataVariable(final VariableInterface<?> pVariable)
+	public void removeMetaDataVariable(final Variable<?> pVariable)
 	{
 		mMetaDataVariableBundle.removeVariable(pVariable);
 

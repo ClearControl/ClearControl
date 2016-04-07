@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.Variable;
 
 public class ObjectVariableTests
 {
@@ -12,9 +12,9 @@ public class ObjectVariableTests
 	@Test
 	public void DoubleVariableTest()
 	{
-		final ObjectVariable<Double> x = new ObjectVariable<Double>("x",
+		final Variable<Double> x = new Variable<Double>("x",
 																																0.0);
-		final ObjectVariable<Double> y = new ObjectVariable<Double>("y",
+		final Variable<Double> y = new Variable<Double>("y",
 																																0.0);
 
 		x.syncWith(y);
