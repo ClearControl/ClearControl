@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
@@ -77,7 +76,7 @@ public class VideoFrame2DDisplayDemo
 					for (int i = 0; i < lStack.getDepth(); i++)
 						generateNoiseBuffer(1 + i, lStack.getContiguousMemory(i));
 
-					lStackVariable.setReference(lStack);
+					lStackVariable.set(lStack);
 					// System.out.println(lStack);
 				}
 				ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
@@ -145,10 +144,10 @@ public class VideoFrame2DDisplayDemo
 						}
 					});
 
-					final DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
+					final ObjectVariable<Double> lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
-					lDoubleVariable.sendUpdatesTo(new DoubleVariable(	"SliderDoubleEventHook",
-																														0)
+					lDoubleVariable.sendUpdatesTo(new ObjectVariable<Double>(	"SliderDoubleEventHook",
+																																		0.0)
 					{
 
 						@Override

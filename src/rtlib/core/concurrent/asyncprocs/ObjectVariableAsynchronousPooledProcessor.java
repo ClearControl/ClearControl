@@ -35,7 +35,7 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
 		{
 			@Override
-			public void setReference(final I pNewReference)
+			public void set(final I pNewReference)
 			{
 				if (pDropIfQueueFull)
 				{
@@ -55,7 +55,7 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 			@Override
 			public O process(final O pInput)
 			{
-				mOutputObjectVariable.setReference(pInput);
+				mOutputObjectVariable.set(pInput);
 				return null;
 			}
 		};

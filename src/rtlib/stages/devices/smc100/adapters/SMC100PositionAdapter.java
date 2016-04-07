@@ -2,8 +2,7 @@ package rtlib.stages.devices.smc100.adapters;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.devices.smc100.SMC100StageDevice;
@@ -14,10 +13,10 @@ public class SMC100PositionAdapter extends
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 
-	private BooleanVariable mReadyVariable;
-	private BooleanVariable mStopVariable;
-	private DoubleVariable mMinPositionVariable;
-	private DoubleVariable mMaxPositionVariable;
+	private ObjectVariable<Boolean> mReadyVariable;
+	private ObjectVariable<Boolean> mStopVariable;
+	private ObjectVariable<Double> mMinPositionVariable;
+	private ObjectVariable<Double> mMaxPositionVariable;
 
 	private SMC100StageDevice mSmc100StageDevice;
 
@@ -53,20 +52,21 @@ public class SMC100PositionAdapter extends
 	public byte[] getSetValueCommandMessage(Double pOldValue,
 																					Double pNewValue)
 	{
-		double lMinPosition = mMinPositionVariable.getValue();
-		double lMaxPosition = mMaxPositionVariable.getValue();
+		double lMinPosition = mMinPositionVariable.get();
+		double lMaxPosition = mMaxPositionVariable.get();
 
 		if (pNewValue < lMinPosition)
 			pNewValue = lMinPosition + cEpsilon;
 		else if (pNewValue > lMaxPosition)
 			pNewValue = lMaxPosition - cEpsilon;
 
-		boolean lIsReady = mReadyVariable.getBooleanValue();
+		boolean lIsReady = mReadyVariable.get();
 
 		if (!lIsReady)
 		{
 			// System.out.println("Not ready-> stopping");
-			mStopVariable.setEdge(true);
+			mStopVariable.set(false);
+			mStopVariable.set(true);
 			mSmc100StageDevice.waitToBeReady(0, 5, TimeUnit.SECONDS);
 		}
 

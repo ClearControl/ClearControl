@@ -45,7 +45,7 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 		return lLaserDeviceByWavelength.getLaserOnVariable();
 	}
 
-	public ObjectVariable<Double> getTargetPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
+	public ObjectVariable<Number> getTargetPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
 		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)
@@ -53,7 +53,7 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 		return lLaserDeviceByWavelength.getTargetPowerInMilliWattVariable();
 	}
 
-	public ObjectVariable<Double> getCurrentPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
+	public ObjectVariable<Number> getCurrentPowerInMilliWattVariableByWavelength(final int pWavelengthInNanometer)
 	{
 		final LaserDeviceInterface lLaserDeviceByWavelength = getLaserDeviceByWavelength(pWavelengthInNanometer);
 		if (lLaserDeviceByWavelength == null)

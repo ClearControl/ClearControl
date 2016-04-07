@@ -4,7 +4,7 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.longv.LongVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -14,12 +14,12 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 																														OptoMechDeviceInterface
 {
 
-	private final LongVariable mCommandVariable;
+	private final ObjectVariable<Long> mCommandVariable;
 
 	private final BooleanVariable[] mLightSheetOnOff;
 
-	private static final int cAllClosed = 0;
-	private static final int cAllOpened = 100;
+	private static final long cAllClosed = 0;
+	private static final long cAllOpened = 100;
 
 	public ArduinoOpticalSwitchDevice(final int pDeviceIndex)
 	{
@@ -35,8 +35,8 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 
 		final ArduinoOpticalSwitchPositionAdapter lFiberSwitchPosition = new ArduinoOpticalSwitchPositionAdapter(this);
 
-		mCommandVariable = (LongVariable) addSerialVariable("OpticalSwitchPosition",
-																								lFiberSwitchPosition);
+		mCommandVariable = addSerialVariable("OpticalSwitchPosition",
+																																lFiberSwitchPosition);
 
 		mLightSheetOnOff = new BooleanVariable[4];
 
@@ -52,13 +52,13 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 			{
 				for (int i = 0; i < mLightSheetOnOff.length; i++)
 					if (mLightSheetOnOff[i].getBooleanValue())
-						mCommandVariable.setValue(101 + i);
+						mCommandVariable.set((long) (101 + i));
 			}
 			else
 				for (int i = 0; i < mLightSheetOnOff.length; i++)
 				{
 					boolean lOn = mLightSheetOnOff[i].getBooleanValue();
-					mCommandVariable.setValue((i + 1) * (lOn ? 1 : -1));
+					mCommandVariable.set((long) ((i + 1) * (lOn ? 1 : -1)));
 				}
 		};
 
@@ -78,7 +78,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	public boolean open()
 	{
 		final boolean lIsOpened = super.open();
-		mCommandVariable.setValue(cAllClosed);
+		mCommandVariable.set(cAllClosed);
 
 		return lIsOpened;
 	}
@@ -87,7 +87,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	public boolean close()
 	{
 		final boolean lIsClosed = super.close();
-		mCommandVariable.setValue(cAllClosed);
+		mCommandVariable.set(cAllClosed);
 
 		return lIsClosed;
 	}

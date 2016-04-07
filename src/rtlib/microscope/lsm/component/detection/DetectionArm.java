@@ -5,7 +5,6 @@ import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
@@ -16,8 +15,8 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	private int mDeviceIndex;
 
-	private final DoubleVariable mDetectionFocusZ = new DoubleVariable(	"FocusZ",
-																																			0);
+	private final ObjectVariable<Double> mDetectionFocusZ = new ObjectVariable<Double>(	"FocusZ",
+																																											0.0);
 
 	private final ObjectVariable<UnivariateAffineComposableFunction> mZFunction = new ObjectVariable<>(	"DetectionZFunction",
 																																																			new UnivariateAffineFunction());
@@ -48,7 +47,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																					.getIntegerProperty("device.lsm.detection." + getName()
 																																	+ ".z.index",
-																															-1); 
+																															-1);
 
 		mStaveIndex = lStaveIndex;
 
@@ -63,7 +62,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public DoubleVariable getZVariable()
+	public ObjectVariable<Double> getZVariable()
 	{
 		return mDetectionFocusZ;
 	}
@@ -93,7 +92,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 		synchronized (this)
 		{
 			mDetectionPathStaveZ.setValue((float) mZFunction.get()
-																											.value(mDetectionFocusZ.getValue()));
+																											.value(mDetectionFocusZ.get()));
 		}
 	}
 }

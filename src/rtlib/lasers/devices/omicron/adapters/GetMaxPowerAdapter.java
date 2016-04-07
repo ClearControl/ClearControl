@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetMaxPowerAdapter extends OmicronAdapter<Double> implements
-																															SerialTextDeviceAdapter<Double>
+public class GetMaxPowerAdapter extends OmicronAdapter<Number> implements
+																															SerialTextDeviceAdapter<Number>
 {
 
 	@Override
@@ -14,7 +14,7 @@ public class GetMaxPowerAdapter extends OmicronAdapter<Double> implements
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Number parseValue(final byte[] pMessage)
 	{
 		// System.out.println(new String(pMessage));
 		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetMaxPowerReplyPrefix,

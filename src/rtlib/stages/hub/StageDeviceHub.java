@@ -7,16 +7,15 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stages.StageDeviceInterface;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class StageDeviceHub extends NamedVirtualDevice	implements
-														StageDeviceInterface,
-														StartStopDeviceInterface
+public class StageDeviceHub extends NamedVirtualDevice implements
+																											StageDeviceInterface,
+																											StartStopDeviceInterface
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
@@ -29,12 +28,12 @@ public class StageDeviceHub extends NamedVirtualDevice	implements
 	}
 
 	public String addDOF(	StageDeviceInterface pStageDeviceInterface,
-							int pDOFIndex)
+												int pDOFIndex)
 	{
 		mStageDeviceInterfaceList.add(pStageDeviceInterface);
 		final String lDOFName = pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
-		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(	pStageDeviceInterface,
-																	pDOFIndex);
+		final StageDeviceDOF lStageDeviceDOF = new StageDeviceDOF(pStageDeviceInterface,
+																															pDOFIndex);
 		mDOFList.add(lStageDeviceDOF);
 		mNameToStageDeviceDOFMap.put(lDOFName, lStageDeviceDOF);
 		return lDOFName;
@@ -144,51 +143,50 @@ public class StageDeviceHub extends NamedVirtualDevice	implements
 
 	@Override
 	public Boolean waitToBeReady(	int pDOFIndex,
-									int pTimeOut,
-									TimeUnit pTimeUnit)
+																int pTimeOut,
+																TimeUnit pTimeUnit)
 	{
-		return mDOFList.get(pDOFIndex).waitToBeReady(	pTimeOut,
-														pTimeUnit);
+		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);
 	}
 
 	@Override
-	public DoubleVariable getMinPositionVariable(int pDOFIndex)
+	public ObjectVariable<Double> getMinPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getMinPositionVariable();
 	}
 
 	@Override
-	public DoubleVariable getMaxPositionVariable(int pDOFIndex)
+	public ObjectVariable<Double> getMaxPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getMaxPositionVariable();
 	}
 
 	@Override
-	public BooleanVariable getEnableVariable(int pDOFIndex)
+	public ObjectVariable<Boolean> getEnableVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getEnableVariable();
 	}
 
 	@Override
-	public DoubleVariable getPositionVariable(int pDOFIndex)
+	public ObjectVariable<Double> getPositionVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getPositionVariable();
 	}
 
 	@Override
-	public BooleanVariable getReadyVariable(int pDOFIndex)
+	public ObjectVariable<Boolean> getReadyVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getReadyVariable();
 	}
 
 	@Override
-	public BooleanVariable getHomingVariable(int pDOFIndex)
+	public ObjectVariable<Boolean> getHomingVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getHomingVariable();
 	}
 
 	@Override
-	public BooleanVariable getStopVariable(int pDOFIndex)
+	public ObjectVariable<Boolean> getStopVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getStopVariable();
 	}
@@ -197,9 +195,9 @@ public class StageDeviceHub extends NamedVirtualDevice	implements
 	public String toString()
 	{
 		return "StageHub [mDOFList=" + mDOFList
-				+ ", getNumberOfDOFs()="
-				+ getNumberOfDOFs()
-				+ "]";
+						+ ", getNumberOfDOFs()="
+						+ getNumberOfDOFs()
+						+ "]";
 	}
 
 }

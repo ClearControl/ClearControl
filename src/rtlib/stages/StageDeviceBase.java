@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -18,7 +18,7 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	protected ArrayList<BooleanVariable> mEnableVariables,
 			mReadyVariables, mHomingVariables, mStopVariables,
 			mResetVariables;
-	protected ArrayList<DoubleVariable> mPositionVariables,
+	protected ArrayList<ObjectVariable<Double>> mPositionVariables,
 			mMinPositionVariables, mMaxPositionVariables;
 
 	protected final BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
@@ -40,7 +40,7 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	@Override
 	public double getCurrentPosition(int pIndex)
 	{
-		return mPositionVariables.get(pIndex).getValue();
+		return mPositionVariables.get(pIndex).get();
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	@Override
 	public void goToPosition(int pIndex, double pValue)
 	{
-		mPositionVariables.get(pIndex).setValue(pValue);
+		mPositionVariables.get(pIndex).set(pValue);
 	}
 
 	@Override
@@ -86,19 +86,19 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public DoubleVariable getPositionVariable(int pIndex)
+	public  ObjectVariable<Double> getPositionVariable(int pIndex)
 	{
 		return mPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public DoubleVariable getMinPositionVariable(int pIndex)
+	public  ObjectVariable<Double> getMinPositionVariable(int pIndex)
 	{
 		return mMinPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public DoubleVariable getMaxPositionVariable(int pIndex)
+	public  ObjectVariable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariables.get(pIndex);
 	}

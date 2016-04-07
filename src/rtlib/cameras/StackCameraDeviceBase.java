@@ -7,7 +7,6 @@ import java.util.concurrent.Future;
 
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -23,8 +22,8 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	protected BooleanVariable mKeepPlane = new BooleanVariable(	"KeepPlane",
 																															true);
 
-	protected DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfImagesPerPlane",
-																																								1);
+	protected ObjectVariable<Long> mNumberOfImagesPerPlaneVariable = new ObjectVariable<Long>("NumberOfImagesPerPlane",
+																																														1L);
 
 	protected volatile int mQueueLength = 0;
 	protected TByteArrayList mStagingKeepAcquiredImageArray;
@@ -54,7 +53,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	}
 
 	@Override
-	public DoubleVariable getNumberOfImagesPerPlaneVariable()
+	public ObjectVariable<Long> getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
 	}
@@ -93,7 +92,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	public void clearQueue()
 	{
 		mQueueLength = 0;
-		mStackDepthVariable.setValue(0);
+		mStackDepthVariable.set(0L);
 		mStagingKeepAcquiredImageArray = new TByteArrayList();
 	}
 
@@ -127,7 +126,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 			return null;
 		}
 
-		mStackDepthVariable.setValue(mQueueLength);
+		mStackDepthVariable.set((long) mQueueLength);
 		mKeepAcquiredImageArrayQueue.add(new TByteArrayList(mStagingKeepAcquiredImageArray));
 		// This method should be called by overriding methods of descendants.
 		return null;

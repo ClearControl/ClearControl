@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JTextFieldDouble extends JPanel
 {
@@ -26,7 +26,7 @@ public class JTextFieldDouble extends JPanel
 	private String mLabelsFormatString = "%g";
 
 	// private final JTextFieldDouble mThis;
-	private DoubleVariable mDoubleVariable;
+	private  ObjectVariable<Double> mDoubleVariable;
 
 	private double mMin;
 	private double mMax;
@@ -61,7 +61,7 @@ public class JTextFieldDouble extends JPanel
 		setMin(pMin);
 		setMax(pMax);
 
-		mDoubleVariable = new DoubleVariable(pValueName, pValue)
+		mDoubleVariable =   new ObjectVariable<Double>  (pValueName, pValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -157,7 +157,7 @@ public class JTextFieldDouble extends JPanel
 					if (lNewValue != mNewValue)
 					{
 						mNewValue = lNewValue;
-						mDoubleVariable.setValue(mNewValue);
+						mDoubleVariable.set(mNewValue);
 					}
 
 					mValueTextField.setBackground(Color.white);
@@ -174,7 +174,7 @@ public class JTextFieldDouble extends JPanel
 
 	}
 
-	public DoubleVariable getDoubleVariable()
+	public ObjectVariable<Double> getDoubleVariable()
 	{
 		return mDoubleVariable;
 	}

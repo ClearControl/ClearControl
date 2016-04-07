@@ -3,7 +3,6 @@ package rtlib.ao.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
@@ -11,10 +10,10 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 																				SpatialPhaseModulatorDeviceInterface
 {
 
-	protected DoubleVariable mMatrixWidthVariable;
-	protected DoubleVariable mMatrixHeightVariable;
-	protected DoubleVariable mActuatorResolutionVariable;
-	protected DoubleVariable mNumberOfActuatorsVariable;
+	protected  ObjectVariable<Double> mMatrixWidthVariable;
+	protected  ObjectVariable<Double> mMatrixHeightVariable;
+	protected  ObjectVariable<Double> mActuatorResolutionVariable;
+	protected  ObjectVariable<Double> mNumberOfActuatorsVariable;
 
 	protected ObjectVariable<DenseMatrix64F> mMatrixVariable;
 
@@ -24,53 +23,53 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	{
 		super(pDeviceName);
 
-		mMatrixWidthVariable = new DoubleVariable(	"MatrixWidth",
-													pFullMatrixWidthHeight);
-		mMatrixHeightVariable = new DoubleVariable(	"MatrixHeight",
-													pFullMatrixWidthHeight);
-		mActuatorResolutionVariable = new DoubleVariable(	"ActuatorResolution",
-															pActuatorResolution);
+		mMatrixWidthVariable =   new ObjectVariable<Double>  (	"MatrixWidth",
+																											(double) pFullMatrixWidthHeight);
+		mMatrixHeightVariable =   new ObjectVariable<Double>  (	"MatrixHeight",
+																												(double) pFullMatrixWidthHeight);
+		mActuatorResolutionVariable =   new ObjectVariable<Double>  (	"ActuatorResolution",
+																															(double) pActuatorResolution);
 
 	}
 
 	@Override
 	public int getMatrixWidth()
 	{
-		return (int) mMatrixWidthVariable.getValue();
+		return mMatrixWidthVariable.get().intValue();
 	}
 
 	@Override
 	public int getMatrixHeight()
 	{
-		return (int) mMatrixHeightVariable.getValue();
+		return mMatrixHeightVariable.get().intValue();
 	}
 
 	@Override
 	public int getActuatorResolution()
 	{
-		return (int) mActuatorResolutionVariable.getValue();
+		return mActuatorResolutionVariable.get().intValue();
 	}
 
 	@Override
-	public DoubleVariable getMatrixWidthVariable()
+	public  ObjectVariable<Double> getMatrixWidthVariable()
 	{
 		return mMatrixWidthVariable;
 	}
 
 	@Override
-	public DoubleVariable getMatrixHeightVariable()
+	public  ObjectVariable<Double> getMatrixHeightVariable()
 	{
 		return mMatrixHeightVariable;
 	}
 
 	@Override
-	public DoubleVariable getActuatorResolutionVariable()
+	public  ObjectVariable<Double> getActuatorResolutionVariable()
 	{
 		return mActuatorResolutionVariable;
 	}
 
 	@Override
-	public DoubleVariable getNumberOfActuatorVariable()
+	public  ObjectVariable<Double> getNumberOfActuatorVariable()
 	{
 		return mNumberOfActuatorsVariable;
 	}

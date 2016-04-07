@@ -5,7 +5,7 @@ import static java.lang.Math.round;
 
 import java.util.Iterator;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateEvolutionVisualizer;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateVisualizer;
@@ -15,11 +15,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private final DoubleVariable mLowZ = new DoubleVariable("LowZ", 25);
-	private final DoubleVariable mHighZ = new DoubleVariable(	"HighZ",
-																														75);
+	private final ObjectVariable<Double> mLowZ = new ObjectVariable<Double>("LowZ",
+																																					25.0);
+	private final  ObjectVariable<Double> mHighZ =   new ObjectVariable<Double>  (	"HighZ",
+																																						75.0);
 
-	private final DoubleVariable mZStep = new DoubleVariable(	"ZStep",
+	private final  ObjectVariable<Double> mZStep =   new ObjectVariable<Double>  (	"ZStep",
 																														0.5);
 
 	private volatile AcquisitionState mCurrentAcquisitionState;
@@ -86,7 +87,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getMinZ()
 	{
-		return mLowZ.getValue();
+		return mLowZ.get();
 	}
 
 	@Override
@@ -98,7 +99,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getMaxZ()
 	{
-		return mHighZ.getValue();
+		return mHighZ.get();
 	}
 
 	@Override
@@ -110,13 +111,13 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getStepZ()
 	{
-		return mZStep.getValue();
+		return mZStep.get();
 	}
 
 	@Override
 	public double getStackDepthInMicrons()
 	{
-		return (mHighZ.getValue() - mLowZ.getValue());
+		return (mHighZ.get() - mLowZ.get());
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public int getStackDepth()
 	{
-		return (int) floor(getStackDepthInMicrons() / mZStep.getValue());
+		return (int) floor(getStackDepthInMicrons() / mZStep.get());
 	}
 
 	@Override
@@ -231,14 +232,14 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getZRamp(int pPlaneIndex)
 	{
-		final double lZ = mLowZ.getValue() + pPlaneIndex * getStepZ();
+		final double lZ = mLowZ.get() + pPlaneIndex * getStepZ();
 		return lZ;
 	}
 
 	@Override
 	public int getPlaneIndexForZRamp(double pZRampValue)
 	{
-		final int lIndex = (int) round((pZRampValue - mLowZ.getValue()) / getStepZ());
+		final int lIndex = (int) round((pZRampValue - mLowZ.get()) / getStepZ());
 		return lIndex;
 	}
 

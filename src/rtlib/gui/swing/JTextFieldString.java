@@ -90,7 +90,7 @@ public class JTextFieldString extends JPanel
 
 								try
 								{
-									mObjectVariable.setReference(lTextString);
+									mObjectVariable.set(lTextString);
 
 								}
 								catch (final NumberFormatException e)

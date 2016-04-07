@@ -4,17 +4,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
-																	CameraDeviceInterface
+																																		CameraDeviceInterface
 {
 
-	protected DoubleVariable mStackBytesPerPixelVariable,
-			mStackWidthVariable, mStackHeightVariable,
-			mStackDepthVariable, mExposureInMicrosecondsVariable,
+	protected ObjectVariable<Double> 
+			mExposureInMicrosecondsVariable,
 			mPixelSizeinNanometersVariable,
 			mLineReadOutTimeInMicrosecondsVariable;
+
+	protected ObjectVariable<Long> mStackBytesPerPixelVariable,
+			mStackWidthVariable,
+			mStackHeightVariable, mStackDepthVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
@@ -42,34 +45,34 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 
 	public abstract void reopen();
 
-	public DoubleVariable getStackBytesPerPixelVariable()
+	public ObjectVariable<Long> getStackBytesPerPixelVariable()
 	{
 		return mStackBytesPerPixelVariable;
 	}
 
-	public DoubleVariable getStackWidthVariable()
+	public ObjectVariable<Long> getStackWidthVariable()
 	{
 		return mStackWidthVariable;
 	}
 
-	public DoubleVariable getStackHeightVariable()
+	public ObjectVariable<Long> getStackHeightVariable()
 	{
 		return mStackHeightVariable;
 	}
 
-	public DoubleVariable getStackDepthVariable()
+	public ObjectVariable<Long> getStackDepthVariable()
 	{
 		return mStackDepthVariable;
 	}
 
 	@Override
-	public DoubleVariable getExposureInMicrosecondsVariable()
+	public ObjectVariable<Double> getExposureInMicrosecondsVariable()
 	{
 		return mExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public DoubleVariable getPixelSizeInNanometersVariable()
+	public ObjectVariable<Double> getPixelSizeInNanometersVariable()
 	{
 		return mPixelSizeinNanometersVariable;
 	}
@@ -81,7 +84,7 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	}
 
 	@Override
-	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
+	public ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
 	}

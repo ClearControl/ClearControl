@@ -9,14 +9,14 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
 public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																					StackSinkInterface<T, A>,
-																					StackSourceInterface<T, A>
+																																										StackSinkInterface<T, A>,
+																																										StackSourceInterface<T, A>
 {
 
 	ArrayList<StackInterface> mStackList = new ArrayList<StackInterface>();
@@ -48,8 +48,8 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 	@Override
 	public StackInterface getStack(	final long pStackIndex,
-											long pTime,
-											TimeUnit pTimeUnit)
+																	long pTime,
+																	TimeUnit pTimeUnit)
 	{
 		return getStack(pStackIndex);
 	}
@@ -76,13 +76,13 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
-		mMetaDataVariableBundle.addVariable(new DoubleVariable(	pPrefix,
-																pValue));
+		mMetaDataVariableBundle.addVariable(new ObjectVariable<Double>(	pPrefix,
+																																		pValue));
 	}
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-									final VariableInterface<?> pVariable)
+																	final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundle.addVariable(pVariable);
 	}

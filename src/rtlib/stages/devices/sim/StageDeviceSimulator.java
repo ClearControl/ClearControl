@@ -1,12 +1,12 @@
 package rtlib.stages.devices.sim;
 
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stages.StageDeviceBase;
 import rtlib.stages.StageDeviceInterface;
 
 public class StageDeviceSimulator extends StageDeviceBase	implements
-															StageDeviceInterface
+																													StageDeviceInterface
 {
 
 	public StageDeviceSimulator(String pDeviceName)
@@ -21,21 +21,18 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 		mIndexToNameMap.put(lDOFIndex, pDOFName);
 
 		mEnableVariables.add(new BooleanVariable(	"Enable" + pDOFName,
-													false));
-		mReadyVariables.add(new BooleanVariable("Ready" + pDOFName,
-												false));
+																							false));
+		mReadyVariables.add(new BooleanVariable("Ready" + pDOFName, false));
 		mHomingVariables.add(new BooleanVariable(	"Homing" + pDOFName,
-													false));
-		mStopVariables.add(new BooleanVariable(	"Stop" + pDOFName,
-												false));
-		mResetVariables.add(new BooleanVariable("Reset" + pDOFName,
-												false));
-		mPositionVariables.add(new DoubleVariable(	"Position" + pDOFName,
-													0));
-		mMinPositionVariables.add(new DoubleVariable(	"MinPosition" + pDOFName,
-														pMin));
-		mMinPositionVariables.add(new DoubleVariable(	"MaxPosition" + pDOFName,
-														pMax));
+																							false));
+		mStopVariables.add(new BooleanVariable("Stop" + pDOFName, false));
+		mResetVariables.add(new BooleanVariable("Reset" + pDOFName, false));
+		mPositionVariables.add(new ObjectVariable<Double>("Position" + pDOFName,
+																											0.0));
+		mMinPositionVariables.add(new ObjectVariable<Double>(	"MinPosition" + pDOFName,
+																													pMin));
+		mMinPositionVariables.add(new ObjectVariable<Double>(	"MaxPosition" + pDOFName,
+																													pMax));
 
 	}
 

@@ -31,22 +31,16 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	public void setCurrent()
 	{
 		EventPropagator.clear();
-		setReference(mReference);
+		set(mReference);
 	}
 
 	public void setCurrentInternal()
 	{
-		setReference(mReference);
+		set(mReference);
 	}
 
 	@Override
 	public void set(final O pNewReference)
-	{
-		setReference(pNewReference);
-	}
-
-	@Override
-	public void setReference(final O pNewReference)
 	{
 		EventPropagator.clear();
 		setReferenceInternal(pNewReference);
@@ -120,17 +114,11 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 	}
 
 	@Override
-	public O getReference()
+	public O get()
 	{
 		final O lNewReferenceAfterHook = getEventHook(mReference);
 		notifyListenersOfGetEvent(lNewReferenceAfterHook);
 		return lNewReferenceAfterHook;
-	}
-
-	@Override
-	public O get()
-	{
-		return getReference();
 	}
 
 	@Override

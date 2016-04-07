@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
@@ -62,9 +61,9 @@ public class LocalFileStackTests
 																																																																													"testSink");
 
 			@SuppressWarnings("unchecked")
-			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(cSizeX,
-																																														cSizeY,
-																																														cSizeZ);
+			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	cSizeX,
+																																				cSizeY,
+																																				cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNumberOfVoxels());
@@ -132,15 +131,15 @@ public class LocalFileStackTests
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
-			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
-																											312));
+			lVariableBundle.addVariable(new ObjectVariable<Double>(	"doublevar1",
+																															312.0));
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 
 			@SuppressWarnings("unchecked")
-			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(cSizeX,
-																																														cSizeY,
-																																														cSizeZ);
+			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	cSizeX,
+																																				cSizeY,
+																																				cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNumberOfVoxels());
@@ -192,8 +191,8 @@ public class LocalFileStackTests
 																																																																																"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
-			lVariableBundle.addVariable(new DoubleVariable(	"doublevar1",
-																											312));
+			lVariableBundle.addVariable(new ObjectVariable<Double>(	"doublevar1",
+																															312.0));
 			lVariableBundle.addVariable(new ObjectVariable<String>(	"stringvar1",
 																															"123"));
 			final VariableInterface<Double> lVariable1 = lVariableBundle.getVariable("doublevar1");

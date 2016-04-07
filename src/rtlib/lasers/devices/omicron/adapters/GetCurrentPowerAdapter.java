@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetCurrentPowerAdapter extends OmicronAdapter<Double> implements
-																													SerialTextDeviceAdapter<Double>
+public class GetCurrentPowerAdapter extends OmicronAdapter<Number> implements
+																																	SerialTextDeviceAdapter<Number>
 {
 	private static final double cCurrentPowerFilteringAlpha = 0.1;
 
@@ -17,7 +17,7 @@ public class GetCurrentPowerAdapter extends OmicronAdapter<Double> implements
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Number parseValue(final byte[] pMessage)
 	{
 		try
 		{

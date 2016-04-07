@@ -1,10 +1,9 @@
 package rtlib.lasers.gui.jfx;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.Property;
 import javafx.scene.layout.HBox;
-import rtlib.core.variable.javafx.BooleanPropertyVariable;
-import rtlib.core.variable.javafx.DoublePropertyVariable;
+import rtlib.core.variable.javafx.JFXPropertyVariable;
 import rtlib.lasers.LaserDeviceInterface;
 
 /**
@@ -31,31 +30,31 @@ public class LaserDeviceGUI
 		{
 			BooleanProperty lLaserOnBooleanProperty = mLaser.getLaserOnBooleanProperty();
 
-			BooleanPropertyVariable lBooleanPropertyVariable = new BooleanPropertyVariable(	lLaserOnBooleanProperty,
-																																											"OnOffSwitchBooleanPropertyVariable",
-																																											false);
+			JFXPropertyVariable<Boolean> lBooleanPropertyVariable = new JFXPropertyVariable<Boolean>(	lLaserOnBooleanProperty,
+																																																"OnOffSwitchBooleanPropertyVariable",
+																																																false);
 
 			pLaserDeviceInterface.getLaserOnVariable()
 														.syncWith(lBooleanPropertyVariable);
 		}
 
 		{
-			DoubleProperty lTargetPowerProperty = mLaser.getTargetPowerProperty();
+			Property<Number> lTargetPowerProperty = mLaser.getTargetPowerProperty();
 
-			DoublePropertyVariable lTargetPowerPropertyVariable = new DoublePropertyVariable(	lTargetPowerProperty,
-																																												"TargetPowerPropertyVariable",
-																																												0);
+			JFXPropertyVariable<Number> lTargetPowerPropertyVariable = new JFXPropertyVariable<Number>(	lTargetPowerProperty,
+																																																	"TargetPowerPropertyVariable",
+																																																	0.0);
 
 			pLaserDeviceInterface.getTargetPowerInMilliWattVariable()
 														.syncWith(lTargetPowerPropertyVariable);
 		}
 
 		{
-			DoubleProperty lCurrentPowerProperty = mLaser.getCurrentPowerProperty();
+			Property<Number> lCurrentPowerProperty = mLaser.getCurrentPowerProperty();
 
-			DoublePropertyVariable lCurrentPowerPropertyVariable = new DoublePropertyVariable(lCurrentPowerProperty,
-																																												"CurrentPowerPropertyVariable",
-																																												0);
+			JFXPropertyVariable<Number> lCurrentPowerPropertyVariable = new JFXPropertyVariable<Number>(lCurrentPowerProperty,
+																																																	"CurrentPowerPropertyVariable",
+																																																	0.0);
 
 			pLaserDeviceInterface.getCurrentPowerInMilliWattVariable()
 														.syncWith(lCurrentPowerPropertyVariable);

@@ -2,7 +2,6 @@ package rtlib.lasers.devices.cobolt;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
@@ -19,7 +18,7 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 	private final SerialDevice mSerialDevice;
 
 	private final CoboltDeviceEnum mCoboltModel;
-	private final int mMaxPowerInMilliWatt;
+	private final double mMaxPowerInMilliWatt;
 
 	public CoboltLaserDevice(	final String pCoboltModelName,
 														final int pMaxPowerInMilliWatt,
@@ -52,11 +51,11 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 		mWavelengthVariable = new ObjectVariable<Integer>("WavelengthInNanoMeter",
 																											CoboltDeviceEnum.getWavelengthInNanoMeter(mCoboltModel));
 
-		mSpecInMilliWattPowerVariable = new DoubleVariable(	"SpecPowerInMilliWatt",
-																												mMaxPowerInMilliWatt);
+		mSpecInMilliWattPowerVariable = new ObjectVariable<Number>(	"SpecPowerInMilliWatt",
+																																mMaxPowerInMilliWatt);
 
-		mMaxPowerInMilliWattVariable = new DoubleVariable("MaxPowerInMilliWatt",
-																											mMaxPowerInMilliWatt);
+		mMaxPowerInMilliWattVariable = new ObjectVariable<Number>("MaxPowerInMilliWatt",
+																															mMaxPowerInMilliWatt);
 
 		mSetOperatingModeVariable = new ObjectVariable<Integer>("OperatingMode",
 																														0);

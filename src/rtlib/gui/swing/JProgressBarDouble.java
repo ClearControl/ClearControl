@@ -4,37 +4,37 @@ import java.awt.EventQueue;
 
 import javax.swing.JProgressBar;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JProgressBarDouble extends JProgressBar
 {
-	private final DoubleVariable mJProgressBarDoubleVariable;
+	private final ObjectVariable<Double> mJProgressBarDoubleVariable;
 
 	private final JProgressBarDouble mThis;
 
 	private final double mMin, mMax;
 
-	public JProgressBarDouble(	final String pName,
-								final double pMin,
-								final double pMax,
-								final double pInicialValue)
+	public JProgressBarDouble(final String pName,
+														final double pMin,
+														final double pMax,
+														final double pInicialValue)
 	{
 		super(0, 65535);
 		mThis = this;
 		mMin = pMin;
 		mMax = pMax;
 
-		mJProgressBarDoubleVariable = new DoubleVariable(	pName,
-															pInicialValue)
+		mJProgressBarDoubleVariable = new ObjectVariable<Double>(	pName,
+																															pInicialValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+																	final Double pNewValue)
 			{
-				final int lProgressBarNewIntegerValue = toInt(	65535,
-																mMin,
-																mMax,
-																pNewValue);
+				final int lProgressBarNewIntegerValue = toInt(65535,
+																											mMin,
+																											mMax,
+																											pNewValue);
 
 				if (mThis.getValue() != lProgressBarNewIntegerValue)
 				{
@@ -54,34 +54,34 @@ public class JProgressBarDouble extends JProgressBar
 
 	}
 
-	public DoubleVariable getDoubleVariable()
+	public ObjectVariable<Double> getDoubleVariable()
 	{
 		return mJProgressBarDoubleVariable;
 	}
 
 	private static double toDouble(	final int pResolution,
-									final double pMin,
-									final double pMax,
-									final int pIntValue)
+																	final double pMin,
+																	final double pMax,
+																	final int pIntValue)
 	{
 		return pMin + (double) pIntValue
-				/ (pResolution - 1)
-				* (pMax - pMin);
+						/ (pResolution - 1)
+						* (pMax - pMin);
 	}
 
 	private static int toInt(	final int pResolution,
-								final double pMin,
-								final double pMax,
-								final double pValue)
+														final double pMin,
+														final double pMax,
+														final double pValue)
 	{
 		return (int) (Math.round((pResolution - 1) * (clamp(pMin,
-															pMax,
-															pValue) - pMin)) / (pMax - pMin));
+																												pMax,
+																												pValue) - pMin)) / (pMax - pMin));
 	}
 
 	private static double clamp(final double pMin,
-								final double pMax,
-								final double pValue)
+															final double pMax,
+															final double pValue)
 	{
 		return Math.min(pMax, Math.max(pMin, pValue));
 	}

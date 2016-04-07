@@ -1,19 +1,18 @@
 package rtlib.lasers.devices.sim;
 
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 
 public class LaserDeviceSimulator extends LaserDeviceBase	implements
-															LaserDeviceInterface
+																													LaserDeviceInterface
 {
 
 	public LaserDeviceSimulator(String pDeviceName,
-								int pDeviceId,
-								int pWavelengthInNanoMeter,
-								double pMaxPowerInMilliWatt)
+															int pDeviceId,
+															int pWavelengthInNanoMeter,
+															double pMaxPowerInMilliWatt)
 	{
 		super(pDeviceName);
 
@@ -21,16 +20,16 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 																										pDeviceId);
 
 		mWavelengthVariable = new ObjectVariable<Integer>("WavelengthInNanoMeter",
-													pWavelengthInNanoMeter);
+																											pWavelengthInNanoMeter);
 
-		mSpecInMilliWattPowerVariable = new DoubleVariable(	"SpecPowerInMilliWatt",
-															pMaxPowerInMilliWatt);
+		mSpecInMilliWattPowerVariable = new ObjectVariable<Number>(	"SpecPowerInMilliWatt",
+																																pMaxPowerInMilliWatt);
 
-		mMaxPowerInMilliWattVariable = new DoubleVariable(	"MaxPowerInMilliWatt",
-															pMaxPowerInMilliWatt);
+		mMaxPowerInMilliWattVariable = new ObjectVariable<Number>("MaxPowerInMilliWatt",
+																															pMaxPowerInMilliWatt);
 
 		mSetOperatingModeVariable = new ObjectVariable<Integer>("OperatingMode",
-														0);
+																														0);
 
 		mPowerOnVariable = new BooleanVariable("PowerOn", false);
 
@@ -39,11 +38,11 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 		mWorkingHoursVariable = new ObjectVariable<Integer>("WorkingHours",
 																												0);
 
-		mTargetPowerInMilliWattVariable = new DoubleVariable(	"TargetPowerMilliWatt",
-																0);
+		mTargetPowerInMilliWattVariable = new ObjectVariable<Number>(	"TargetPowerMilliWatt",
+																																	0.0);
 
-		mCurrentPowerInMilliWattVariable = new DoubleVariable(	"CurrentPowerInMilliWatt",
-																0);
+		mCurrentPowerInMilliWattVariable = new ObjectVariable<Number>("CurrentPowerInMilliWatt",
+																																	0.0);
 
 		mTargetPowerInMilliWattVariable.syncWith(mCurrentPowerInMilliWattVariable);
 	}

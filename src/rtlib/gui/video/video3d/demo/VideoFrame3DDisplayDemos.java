@@ -69,7 +69,7 @@ public class VideoFrame3DDisplayDemos
 				}
 			}
 
-			lFrameReferenceVariable.setReference(lStack);
+			lFrameReferenceVariable.set(lStack);
 			Thread.sleep(10);
 		}
 
@@ -129,7 +129,7 @@ public class VideoFrame3DDisplayDemos
 				}
 			}/**/
 
-			lFrameReferenceVariable.setReference(lStack);
+			lFrameReferenceVariable.set(lStack);
 			Thread.sleep(1);
 		}
 
@@ -188,7 +188,7 @@ public class VideoFrame3DDisplayDemos
 					}
 				}
 
-				lFrameReferenceVariable.setReference(lStack);
+				lFrameReferenceVariable.set(lStack);
 				// Thread.sleep(1);
 
 				if (i % 100 == 0)

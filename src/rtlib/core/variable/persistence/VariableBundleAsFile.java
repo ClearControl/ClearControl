@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableBundleAsFile extends VariableBundle
@@ -29,15 +28,15 @@ public class VariableBundleAsFile extends VariableBundle
 	private final Object mLock = new Object();
 
 	public VariableBundleAsFile(final String pBundleName,
-								final File pFile)
+															final File pFile)
 	{
 		this(pBundleName, pFile, false);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public VariableBundleAsFile(final String pBundleName,
-								final File pFile,
-								final boolean pAutoReadOnGet)
+															final File pFile,
+															final boolean pAutoReadOnGet)
 	{
 		super(pBundleName);
 		mFile = pFile;
@@ -56,7 +55,7 @@ public class VariableBundleAsFile extends VariableBundle
 
 			@Override
 			public void setEvent(	final Object pCurrentValue,
-									final Object pNewValue)
+														final Object pNewValue)
 			{
 				writeAsynchronously();
 			}
@@ -71,11 +70,11 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	public <O> void addVariable(final String pPrefix,
-								final VariableInterface<O> pVariable)
+															final VariableInterface<O> pVariable)
 	{
 		super.addVariable(pVariable);
 		final String lKey = pPrefix + (pPrefix.isEmpty() ? "" : ".")
-							+ pVariable.getName();
+												+ pVariable.getName();
 		mPrefixWithNameToVariableMap.put(lKey.trim(), pVariable);
 		registerListener(pVariable);
 	}
@@ -102,16 +101,8 @@ public class VariableBundleAsFile extends VariableBundle
 
 	private void registerListener(final VariableInterface<?> pVariable)
 	{
-		if (pVariable instanceof DoubleVariable)
-		{
-			final DoubleVariable lDoubleVariable = (DoubleVariable) pVariable;
-			lDoubleVariable.addListener(mVariableListener);
-		}
-		else if (pVariable instanceof ObjectVariable<?>)
-		{
-			final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) pVariable;
-			lObjectVariable.addListener(mVariableListener);
-		}
+		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) pVariable;
+		lObjectVariable.addListener(mVariableListener);
 	}
 
 	private void unregisterListener(final VariableInterface<?> pVariable)
@@ -152,7 +143,7 @@ public class VariableBundleAsFile extends VariableBundle
 
 							final VariableInterface<?> lVariable = mPrefixWithNameToVariableMap.get(lKey);
 
-							if (lVariable instanceof DoubleVariable)
+							if (lVariable.get() instanceof Number)
 							{
 								readDoubleVariable(lValue, lVariable);
 							}
@@ -185,9 +176,9 @@ public class VariableBundleAsFile extends VariableBundle
 	}
 
 	private void readDoubleVariable(final String lValue,
-									final VariableInterface<?> lVariable)
+																	final VariableInterface<?> pVariable)
 	{
-		final DoubleVariable lDoubleVariable = (DoubleVariable) lVariable;
+		final ObjectVariable<Double> lDoubleVariable = (ObjectVariable<Double>) pVariable;
 
 		final String[] lSplitValueFloatExactStringArray = lValue.split("\t");
 		final String lApproximateFloatValueString = lSplitValueFloatExactStringArray[0];
@@ -202,16 +193,16 @@ public class VariableBundleAsFile extends VariableBundle
 			lDoubleValue = lExactDoubleValue;
 		}
 
-		lDoubleVariable.setValue(lDoubleValue);
+		lDoubleVariable.set(lDoubleValue);
 	}
 
 	private void readObjectVariable(final String lValue,
-									final VariableInterface<?> lVariable)
+																	final VariableInterface<?> lVariable)
 	{
 		final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
 
 		final ObjectVariable<String> lStringVariable = (ObjectVariable<String>) lObjectVariable;
-		lStringVariable.setReference(lValue);
+		lStringVariable.set(lValue);
 	}
 
 	public boolean write()
@@ -229,22 +220,22 @@ public class VariableBundleAsFile extends VariableBundle
 
 					// System.out.println(lVariable);
 
-					if (lVariable instanceof DoubleVariable)
+					if (lVariable.get() instanceof Number)
 					{
-						final DoubleVariable lDoubleVariable = (DoubleVariable) lVariable;
+						final ObjectVariable<Number> lDoubleVariable = (ObjectVariable<Number>) lVariable;
 
-						lFormatter.format(	"%s\t=\t%g\n",
-											lVariablePrefixAndName,
-											lDoubleVariable.getValue());
+						lFormatter.format("%s\t=\t%g\n",
+															lVariablePrefixAndName,
+															lDoubleVariable.get().doubleValue());
 
 					}
 					else if (lVariable instanceof ObjectVariable<?>)
 					{
 						final ObjectVariable<?> lObjectVariable = (ObjectVariable<?>) lVariable;
 
-						lFormatter.format(	"%s\t=\t%s\n",
-											lVariablePrefixAndName,
-											lObjectVariable.get());
+						lFormatter.format("%s\t=\t%s\n",
+															lVariablePrefixAndName,
+															lObjectVariable.get());
 					}
 				}
 
@@ -286,8 +277,7 @@ public class VariableBundleAsFile extends VariableBundle
 		cSingleThreadExecutor.shutdown();
 		try
 		{
-			cSingleThreadExecutor.awaitTermination(	100,
-													TimeUnit.SECONDS);
+			cSingleThreadExecutor.awaitTermination(100, TimeUnit.SECONDS);
 		}
 		catch (final InterruptedException e)
 		{

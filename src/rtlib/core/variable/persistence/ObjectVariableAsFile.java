@@ -43,7 +43,7 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O>	implements
 	}
 
 	@Override
-	public O getReference()
+	public O get()
 	{
 		if (mReference != null && mFile != null
 			&& mFile.exists()
@@ -55,20 +55,20 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O>	implements
 		try
 		{
 			mReference = readFromFile();
-			return super.getReference();
+			return super.get();
 		}
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-			return super.getReference();
+			return super.get();
 		}
 	}
 
 	@Override
-	public void setReference(final O pNewReference)
+	public void set(final O pNewReference)
 	{
 		saveToFile(pNewReference);
-		super.setReference(pNewReference);
+		super.set(pNewReference);
 	}
 
 	private O readFromFile() throws FileNotFoundException,
@@ -83,7 +83,7 @@ public class ObjectVariableAsFile<O> extends ObjectVariable<O>	implements
 			{
 				if (!(mFile.exists() && mFile.isFile()))
 				{
-					return super.getReference();
+					return super.get();
 				}
 
 				final FileInputStream lFileInputStream = new FileInputStream(mFile);

@@ -8,7 +8,6 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
@@ -38,10 +37,10 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 	private final BooleanVariable mDisplayOn;
 	private final BooleanVariable mManualMinMaxIntensity;
-	private final DoubleVariable mMinimumIntensity;
-	private final DoubleVariable mMaximumIntensity;
+	private final ObjectVariable<Double> mMinimumIntensity;
+	private final ObjectVariable<Double> mMaximumIntensity;
 
-	private final DoubleVariable mStackSliceNormalizedIndex;
+	private final ObjectVariable<Double> mStackSliceNormalizedIndex;
 
 	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
@@ -86,7 +85,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 				if (pMouseEvent.isAltDown() && pMouseEvent.isButtonDown(1))
 				{
 					final double nx = ((double) pMouseEvent.getX()) / mVideoWindow.getWindowWidth();
-					mStackSliceNormalizedIndex.setValue(nx);
+					mStackSliceNormalizedIndex.set(nx);
 					displayStack(mReceivedStackCopy, true);
 				}
 
@@ -172,7 +171,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 					if (mOutputStackVariable != null)
 					{
-						mOutputStackVariable.setReference(pStack);
+						mOutputStackVariable.set(pStack);
 					}
 					else
 						pStack.release();
@@ -230,7 +229,8 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMinimumIntensity = new DoubleVariable("MinimumIntensity", 0)
+		mMinimumIntensity = new ObjectVariable<Double>(	"MinimumIntensity",
+																										0.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -242,7 +242,8 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMaximumIntensity = new DoubleVariable("MaximumIntensity", 1)
+		mMaximumIntensity = new ObjectVariable<Double>(	"MaximumIntensity",
+																										1.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -254,8 +255,8 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mStackSliceNormalizedIndex = new DoubleVariable("StackSliceNormalizedIndex",
-																										Double.NaN);
+		mStackSliceNormalizedIndex = new ObjectVariable<Double>("StackSliceNormalizedIndex",
+																														Double.NaN);
 
 		Runnable lAutoRescaleRunnable = () -> {
 			boolean lTryLock = false;
@@ -349,7 +350,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	{
 		long lStackDepth = pStack.getDepth();
 
-		int lStackZIndex = (int) (mStackSliceNormalizedIndex.getValue() * lStackDepth);
+		int lStackZIndex = (int) (mStackSliceNormalizedIndex.get() * lStackDepth);
 		if (lStackZIndex < 0)
 			lStackZIndex = 0;
 		else if (lStackZIndex >= lStackDepth)
@@ -381,12 +382,12 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		return mManualMinMaxIntensity;
 	}
 
-	public DoubleVariable getMinimumIntensityVariable()
+	public ObjectVariable<Double> getMinimumIntensityVariable()
 	{
 		return mMinimumIntensity;
 	}
 
-	public DoubleVariable getMaximumIntensityVariable()
+	public ObjectVariable<Double> getMaximumIntensityVariable()
 	{
 		return mMaximumIntensity;
 	}

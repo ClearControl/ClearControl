@@ -50,14 +50,14 @@ public class ObjectVariableProcessorTests
 								{
 
 									@Override
-									public void setReference(final String pNewReference)
+									public void set(final String pNewReference)
 									{
 										System.out.println("Received on the output variable: " + pNewReference);
 									}
 								});
 
 		lObjectVariableProcessor.getInputObjectVariable()
-								.setReference("1");
+								.set("1");
 
 	}
 

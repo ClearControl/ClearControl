@@ -30,7 +30,7 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 		mInputObjectVariable = new ObjectVariable<I>(pName + "Input")
 		{
 			@Override
-			public void setReference(final I pNewReference)
+			public void set(final I pNewReference)
 			{
 
 				if (pDropIfQueueFull)
@@ -60,14 +60,14 @@ public class ObjectVariableAsynchronousProcessor<I, O>	implements
 			@Override
 			public boolean passOrWait(final O pObject)
 			{
-				mOutputObjectVariable.setReference(pObject);
+				mOutputObjectVariable.set(pObject);
 				return true;
 			}
 
 			@Override
 			public boolean passOrFail(final O pObject)
 			{
-				mOutputObjectVariable.setReference(pObject);
+				mOutputObjectVariable.set(pObject);
 				return true;
 			}
 

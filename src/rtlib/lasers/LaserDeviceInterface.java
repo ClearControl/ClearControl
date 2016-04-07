@@ -27,8 +27,8 @@ public interface LaserDeviceInterface	extends
 
 	public ObjectVariable<Boolean> getLaserOnVariable();
 
-	public ObjectVariable<Double> getTargetPowerInMilliWattVariable();
+	public ObjectVariable<Number> getTargetPowerInMilliWattVariable();
 
-	public ObjectVariable<Double> getCurrentPowerInMilliWattVariable();
+	public ObjectVariable<Number> getCurrentPowerInMilliWattVariable();
 
 }

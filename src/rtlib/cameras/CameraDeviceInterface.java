@@ -4,7 +4,7 @@ import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface CameraDeviceInterface	extends
 										OpenCloseDeviceInterface,
@@ -12,11 +12,11 @@ public interface CameraDeviceInterface	extends
 										StateQueueDeviceInterface
 {
 
-	DoubleVariable getLineReadOutTimeInMicrosecondsVariable();
+	 ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable();
 
-	DoubleVariable getExposureInMicrosecondsVariable();
+	 ObjectVariable<Double> getExposureInMicrosecondsVariable();
 
-	DoubleVariable getPixelSizeInNanometersVariable();
+	 ObjectVariable<Double> getPixelSizeInNanometersVariable();
 
 	BooleanVariable getIsAcquiringVariable();
 

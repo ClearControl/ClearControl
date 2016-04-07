@@ -26,7 +26,7 @@ public class JOpenFileChooserButton extends JButton
 									final boolean pOnlyFolders)
 	{
 		super(pLabel);
-		mFileVariable.setReference(pCurrentFolder);
+		mFileVariable.set(pCurrentFolder);
 		mOnlyFolders = pOnlyFolders;
 
 		addActionListener(new ActionListener()
@@ -35,7 +35,7 @@ public class JOpenFileChooserButton extends JButton
 			public void actionPerformed(final ActionEvent pE)
 			{
 				final File lSelectedFile = openFileChooser();
-				mFileVariable.setReference(lSelectedFile);
+				mFileVariable.set(lSelectedFile);
 			}
 		});
 
@@ -43,7 +43,7 @@ public class JOpenFileChooserButton extends JButton
 
 	private File openFileChooser()
 	{
-		File lCurrentFolder = mFileVariable.getReference();
+		File lCurrentFolder = mFileVariable.get();
 		if (lCurrentFolder == null)
 		{
 			lCurrentFolder = cDefaultFolder;

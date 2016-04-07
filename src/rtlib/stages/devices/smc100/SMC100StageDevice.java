@@ -3,8 +3,7 @@ package rtlib.stages.devices.smc100;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.serial.SerialDevice;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.StageDeviceInterface;
@@ -19,13 +18,13 @@ import rtlib.stages.devices.smc100.adapters.SMC100ResetAdapter;
 import rtlib.stages.devices.smc100.adapters.SMC100StopAdapter;
 
 public class SMC100StageDevice extends SerialDevice	implements
-													StageDeviceInterface,
-													Waiting
+																										StageDeviceInterface,
+																										Waiting
 {
 
-	private final BooleanVariable mEnableVariable, mReadyVariable,
-			mHomingVariable, mStopVariable, mResetVariable;
-	private final DoubleVariable mPositionVariable,
+	private final ObjectVariable<Boolean> mEnableVariable,
+			mReadyVariable, mHomingVariable, mStopVariable, mResetVariable;
+	private final ObjectVariable<Double> mPositionVariable,
 			mMinPositionVariable, mMaxPositionVariable;
 
 	public SMC100StageDevice(String pDeviceName, String pPortName)
@@ -33,36 +32,36 @@ public class SMC100StageDevice extends SerialDevice	implements
 		super(pDeviceName, pPortName, SMC100Protocol.cBaudRate);
 
 		final SerialTextDeviceAdapter lEnableAdapter = new SMC100EnableAdapter();
-		mEnableVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Enable",
-													lEnableAdapter);
+		mEnableVariable = addSerialVariable(pDeviceName + "Enable",
+																				lEnableAdapter);
 
 		final SerialTextDeviceAdapter lReadyAdapter = new SMC100ReadyAdapter();
-		mReadyVariable = (BooleanVariable) addSerialVariable(	pDeviceName + "Ready",
-													lReadyAdapter);
+		mReadyVariable = addSerialVariable(	pDeviceName + "Ready",
+																				lReadyAdapter);
 
 		final SerialTextDeviceAdapter lHomingAdapter = new SMC100HomingAdapter();
-		mHomingVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Homing",
-													lHomingAdapter);
+		mHomingVariable = addSerialVariable(pDeviceName + "Homing",
+																				lHomingAdapter);
 
 		final SerialTextDeviceAdapter lMinPositionAdapter = new SMC100MinPositionAdapter();
-		mMinPositionVariable = (DoubleVariable) addSerialVariable(pDeviceName + "MinPosition",
-														lMinPositionAdapter);
+		mMinPositionVariable = addSerialVariable(	pDeviceName + "MinPosition",
+																							lMinPositionAdapter);
 
 		final SerialTextDeviceAdapter lMaxPositionAdapter = new SMC100MaxPositionAdapter();
-		mMaxPositionVariable = (DoubleVariable) addSerialVariable(pDeviceName + "MaxPosition",
-														lMaxPositionAdapter);
+		mMaxPositionVariable = addSerialVariable(	pDeviceName + "MaxPosition",
+																							lMaxPositionAdapter);
 
 		final SerialTextDeviceAdapter lStopAdapter = new SMC100StopAdapter();
-		mStopVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Stop",
-													lStopAdapter);
+		mStopVariable = addSerialVariable(pDeviceName + "Stop",
+																			lStopAdapter);
 
 		final SerialTextDeviceAdapter lPositionAdapter = new SMC100PositionAdapter(this);
-		mPositionVariable = (DoubleVariable) addSerialVariable(	pDeviceName + "PositionDirect",
-													lPositionAdapter);
+		mPositionVariable = addSerialVariable(pDeviceName + "PositionDirect",
+																					lPositionAdapter);
 
 		final SerialTextDeviceAdapter lResetAdapter = new SMC100ResetAdapter();
-		mResetVariable = (BooleanVariable) addSerialVariable(	pDeviceName + "Reset",
-													lResetAdapter);
+		mResetVariable = addSerialVariable(	pDeviceName + "Reset",
+																				lResetAdapter);
 
 	}
 
@@ -100,43 +99,43 @@ public class SMC100StageDevice extends SerialDevice	implements
 	}
 
 	@Override
-	public DoubleVariable getMinPositionVariable(int pIndex)
+	public ObjectVariable<Double> getMinPositionVariable(int pIndex)
 	{
 		return mMinPositionVariable;
 	}
 
 	@Override
-	public DoubleVariable getMaxPositionVariable(int pIndex)
+	public ObjectVariable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariable;
 	}
 
 	@Override
-	public BooleanVariable getEnableVariable(int pIndex)
+	public ObjectVariable<Boolean> getEnableVariable(int pIndex)
 	{
 		return mEnableVariable;
 	}
 
 	@Override
-	public BooleanVariable getHomingVariable(int pIndex)
+	public ObjectVariable<Boolean> getHomingVariable(int pIndex)
 	{
 		return mHomingVariable;
 	}
 
 	@Override
-	public DoubleVariable getPositionVariable(int pIndex)
+	public ObjectVariable<Double> getPositionVariable(int pIndex)
 	{
 		return mPositionVariable;
 	}
 
 	@Override
-	public BooleanVariable getReadyVariable(int pIndex)
+	public ObjectVariable<Boolean> getReadyVariable(int pIndex)
 	{
 		return mReadyVariable;
 	}
 
 	@Override
-	public BooleanVariable getStopVariable(int pIndex)
+	public ObjectVariable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariable;
 	}
@@ -144,63 +143,64 @@ public class SMC100StageDevice extends SerialDevice	implements
 	@Override
 	public void reset(int pIndex)
 	{
-		mResetVariable.setEdge(true);
+		mResetVariable.set(false);
+		mResetVariable.set(true);
 	}
 
 	@Override
 	public void home(int pIndex)
 	{
-		mHomingVariable.setEdge(true);
+		mResetVariable.set(false);
+		mResetVariable.set(true);
 	}
 
 	@Override
 	public void enable(int pIndex)
 	{
-		mEnableVariable.setEdge(true);
+		mResetVariable.set(false);
+		mResetVariable.set(true);
 	}
 
-	public void setMinimumPosition(int pMinimumPosition)
+	public void setMinimumPosition(double pMinimumPosition)
 	{
-		mMinPositionVariable.setValue(pMinimumPosition);
+		mMinPositionVariable.set(pMinimumPosition);
 	}
 
-	public void setMaximumPosition(int pMinimumPosition)
+	public void setMaximumPosition(double pMinimumPosition)
 	{
-		mMaxPositionVariable.setValue(pMinimumPosition);
+		mMaxPositionVariable.set(pMinimumPosition);
 	}
 
 	@Override
 	public double getCurrentPosition(int pIndex)
 	{
-		return mPositionVariable.getValue();
+		return mPositionVariable.get();
 	}
 
 	@Override
 	public void goToPosition(int pIndex, double pValue)
 	{
-		mPositionVariable.setValue(pValue);
+		mPositionVariable.set(pValue);
 	}
 
 	@Override
 	public Boolean waitToBeReady(	int pIndex,
-									int pTimeOut,
-									TimeUnit pTimeUnit)
+																int pTimeOut,
+																TimeUnit pTimeUnit)
 	{
 		// System.out.println("waiting...");
-		return waitFor(	pTimeOut,
-						pTimeUnit,
-						() -> mReadyVariable.getBooleanValue());
+		return waitFor(pTimeOut, pTimeUnit, () -> mReadyVariable.get());
 	}
 
 	@Override
 	public String toString()
 	{
 		return "SMC100StageDevice [mSerial=" + getSerial()
-				+ ", getNumberOfDOFs()="
-				+ getNumberOfDOFs()
-				+ ", getDeviceName()="
-				+ getName()
-				+ "]";
+						+ ", getNumberOfDOFs()="
+						+ getNumberOfDOFs()
+						+ ", getDeviceName()="
+						+ getName()
+						+ "]";
 	}
 
 }

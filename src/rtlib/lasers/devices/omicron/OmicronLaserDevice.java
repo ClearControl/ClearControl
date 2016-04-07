@@ -110,7 +110,8 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 			else if (mAnalog)
 				setOperatingMode(4);
 			// setPowerOn(true);
-			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.get());
+			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.get()
+																																										.doubleValue());
 			return lOpen;
 		}
 		catch (final Throwable e)

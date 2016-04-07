@@ -23,8 +23,8 @@ public class ScoreVisualizerDemo
 {
 
 	@Test
-	public void demo()	throws InvocationTargetException,
-						InterruptedException
+	public void demo() throws InvocationTargetException,
+										InterruptedException
 	{
 
 		final ScoreVisualizer lScoreVisualizer = new ScoreVisualizer();
@@ -37,8 +37,8 @@ public class ScoreVisualizerDemo
 			{
 				lTestFrame.setSize(768, 768);
 				lTestFrame.setLayout(new MigLayout(	"insets 0",
-													"[grow,fill]",
-													"[grow,fill]"));
+																						"[grow,fill]",
+																						"[grow,fill]"));
 				lTestFrame.add(lScoreVisualizer, "cell 0 0 ");
 				lTestFrame.validate();
 				lTestFrame.setVisible(true);
@@ -54,8 +54,7 @@ public class ScoreVisualizerDemo
 			lScoreVisualizer.getScoreVariable().set(lScore);
 
 			lOmega += 0.0001;
-			lScoreVisualizer.getScalingVariable()
-							.setValue(1 + 100 * lOmega);
+			lScoreVisualizer.getScalingVariable().set(1 + 100 * lOmega);
 			Thread.sleep(100);
 		}
 
@@ -72,23 +71,23 @@ public class ScoreVisualizerDemo
 
 		for (int i = 0; i < 8; i++)
 		{
-			final RampContinuousStave lRampContinuousStave = new RampContinuousStave(	"i="	+ i,
-																						0f,
-																						(float) min(1,
-																									100 * pOmega),
-																						0f,
-																						0.1f + i / 8f,
-																						0);
+			final RampContinuousStave lRampContinuousStave = new RampContinuousStave(	"i=" + i,
+																																								0f,
+																																								(float) min(1,
+																																														100 * pOmega),
+																																								0f,
+																																								0.1f + i / 8f,
+																																								0);
 
 			lMovement.setStave(i, lRampContinuousStave);
 		}
 
 		for (int i = 8; i < 16; i++)
 		{
-			final SinusStave lSinusStave = new SinusStave(	"i=" + i,
-															(float) (pOmega * (1 + i)),
-															(float) ((1f + i) / 16f * pOmega),
-															0.5f);
+			final SinusStave lSinusStave = new SinusStave("i=" + i,
+																										(float) (pOmega * (1 + i)),
+																										(float) ((1f + i) / 16f * pOmega),
+																										0.5f);
 
 			lMovement.setStave(i, lSinusStave);
 		}/**/

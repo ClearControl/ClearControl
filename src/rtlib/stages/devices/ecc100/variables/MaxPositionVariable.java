@@ -1,9 +1,9 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import ecc100.ECC100Axis;
 
-public class MaxPositionVariable extends DoubleVariable
+public class MaxPositionVariable extends ObjectVariable<Double>
 {
 
 	private static final double cEpsilon = 5; // nm
@@ -12,7 +12,7 @@ public class MaxPositionVariable extends DoubleVariable
 	public MaxPositionVariable(	String pVariableName,
 								ECC100Axis pECC100Axis)
 	{
-		super(pVariableName, 0);
+		super(pVariableName, 0.0);
 		mECC100Axis = pECC100Axis;
 	}
 

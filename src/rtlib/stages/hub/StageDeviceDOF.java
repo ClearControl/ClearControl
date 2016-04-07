@@ -2,8 +2,7 @@ package rtlib.stages.hub;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stages.StageDeviceInterface;
 
 public class StageDeviceDOF
@@ -76,37 +75,37 @@ public class StageDeviceDOF
 																								pTimeUnit);
 	}
 
-	public DoubleVariable getMinPositionVariable()
+	public ObjectVariable<Double> getMinPositionVariable()
 	{
 		return mStageDeviceInterface.getMinPositionVariable(mDOFIndex);
 	}
 
-	public DoubleVariable getMaxPositionVariable()
+	public ObjectVariable<Double> getMaxPositionVariable()
 	{
 		return mStageDeviceInterface.getMaxPositionVariable(mDOFIndex);
 	}
 
-	public BooleanVariable getEnableVariable()
+	public ObjectVariable<Boolean> getEnableVariable()
 	{
 		return mStageDeviceInterface.getEnableVariable(mDOFIndex);
 	}
 
-	public DoubleVariable getPositionVariable()
+	public ObjectVariable<Double> getPositionVariable()
 	{
 		return mStageDeviceInterface.getPositionVariable(mDOFIndex);
 	}
 
-	public BooleanVariable getReadyVariable()
+	public ObjectVariable<Boolean> getReadyVariable()
 	{
 		return mStageDeviceInterface.getReadyVariable(mDOFIndex);
 	}
 
-	public BooleanVariable getHomingVariable()
+	public ObjectVariable<Boolean> getHomingVariable()
 	{
 		return mStageDeviceInterface.getHomingVariable(mDOFIndex);
 	}
 
-	public BooleanVariable getStopVariable()
+	public ObjectVariable<Boolean> getStopVariable()
 	{
 		return mStageDeviceInterface.getStopVariable(mDOFIndex);
 	}

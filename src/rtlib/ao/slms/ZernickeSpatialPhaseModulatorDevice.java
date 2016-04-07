@@ -4,7 +4,6 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import rtlib.ao.zernike.TransformMatrices;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ZernickeSpatialPhaseModulatorDevice extends
@@ -70,25 +69,25 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 	}
 
 	@Override
-	public DoubleVariable getMatrixWidthVariable()
+	public  ObjectVariable<Double> getMatrixWidthVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixWidthVariable();
 	}
 
 	@Override
-	public DoubleVariable getMatrixHeightVariable()
+	public  ObjectVariable<Double> getMatrixHeightVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getMatrixHeightVariable();
 	}
 
 	@Override
-	public DoubleVariable getActuatorResolutionVariable()
+	public  ObjectVariable<Double> getActuatorResolutionVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getActuatorResolutionVariable();
 	}
 
 	@Override
-	public DoubleVariable getNumberOfActuatorVariable()
+	public  ObjectVariable<Double> getNumberOfActuatorVariable()
 	{
 		return mDelegatedSpatialPhaseModulatorDeviceInterface.getNumberOfActuatorVariable();
 	}

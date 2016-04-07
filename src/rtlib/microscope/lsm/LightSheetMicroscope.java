@@ -361,40 +361,42 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public void setCameraWidthHeight(int pWidth, int pHeight)
+	public void setCameraWidthHeight(long pWidth, long pHeight)
 	{
 		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
 		{
 			getDeviceLists().getStackCameraDevice(i)
 											.getStackWidthVariable()
-											.setValue(pWidth);
+											.set(pWidth);
 			getDeviceLists().getStackCameraDevice(i)
 											.getStackHeightVariable()
-											.setValue(pHeight);
+											.set(pHeight);
 		}
 
 		for (int i = 0; i < getDeviceLists().getNumberOfLightSheetDevices(); i++)
 		{
 			getDeviceLists().getLightSheetDevice(i)
 											.getImageHeightVariable()
-											.setValue(pHeight);
+											.set(pHeight);
 		}
 	};
 
 	@Override
 	public int getCameraWidth(int pCameraDeviceIndex)
 	{
-		return (int) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+		return getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
 																	.getStackWidthVariable()
-																	.getValue();
+																	.get()
+																	.intValue();
 	};
 
 	@Override
 	public int getCameraHeight(int pCameraDeviceIndex)
 	{
-		return (int) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+		return getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
 																	.getStackHeightVariable()
-																	.getValue();
+																	.get()
+																	.intValue();
 	};
 
 	@Override
@@ -406,21 +408,22 @@ public class LightSheetMicroscope	extends
 		for (int i = 0; i < getDeviceLists().getNumberOfStackCameraDevices(); i++)
 			getDeviceLists().getStackCameraDevice(i)
 											.getExposureInMicrosecondsVariable()
-											.setValue(lExposureTimeInMicroseconds);
+											.set(lExposureTimeInMicroseconds);
 
 		for (int i = 0; i < getDeviceLists().getNumberOfLightSheetDevices(); i++)
 			getDeviceLists().getLightSheetDevice(i)
 											.getEffectiveExposureInMicrosecondsVariable()
-											.setValue(lExposureTimeInMicroseconds);
+											.set(lExposureTimeInMicroseconds);
 	};
 
 	@Override
 	public long getExposure(int pCameraDeviceIndex, TimeUnit pTimeUnit)
 	{
 
-		long lExposureInMicroseconds = (long) getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
+		long lExposureInMicroseconds = getDeviceLists().getStackCameraDevice(pCameraDeviceIndex)
 																													.getExposureInMicrosecondsVariable()
-																													.getValue();
+																													.get()
+																													.longValue();
 
 		long lExposureInProvidedUnit = pTimeUnit.convert(	lExposureInMicroseconds,
 																											TimeUnit.MICROSECONDS);
@@ -511,7 +514,8 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLaserDevice(pLaserIndex)
 														.getTargetPowerInMilliWattVariable()
-														.get();
+														.get()
+														.doubleValue();
 	}
 
 	@Override
@@ -519,7 +523,7 @@ public class LightSheetMicroscope	extends
 	{
 		getDeviceLists().getDetectionArmDevice(pDetectionArmIndex)
 										.getZVariable()
-										.setValue(pValue);
+										.set(pValue);
 	};
 
 	@Override
@@ -527,7 +531,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getDetectionArmDevice(pDetectionArmIndex)
 														.getZVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -579,7 +583,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getXVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -595,7 +599,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getYVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -611,7 +615,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getZVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -627,7 +631,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getAlphaInDegreesVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -643,7 +647,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getBetaInDegreesVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -659,7 +663,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getWidthVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -675,7 +679,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getHeightVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -730,7 +734,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 														.getPowerVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override
@@ -788,7 +792,7 @@ public class LightSheetMicroscope	extends
 	{
 		getDeviceLists().getLightSheetDevice(pLightSheetIndex)
 										.getSIPatternVariable(pLaserIndex)
-										.setReference(pPattern);
+										.set(pPattern);
 	}
 
 	@Override

@@ -124,7 +124,7 @@ public interface LightSheetMicroscopeInterface extends
 	 * @param pHeight
 	 *          height
 	 */
-	public void setCameraWidthHeight(int pWidth, int pHeight);
+	public void setCameraWidthHeight(long pWidth, long pHeight);
 
 	/**
 	 * Returns the camera image width.

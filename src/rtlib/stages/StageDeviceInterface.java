@@ -3,11 +3,10 @@ package rtlib.stages;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface StageDeviceInterface	extends
-										OpenCloseDeviceInterface
+																			OpenCloseDeviceInterface
 {
 	int getNumberOfDOFs();
 
@@ -25,22 +24,22 @@ public interface StageDeviceInterface	extends
 
 	void goToPosition(int pDOFIndex, double pValue);
 
-	Boolean waitToBeReady(	int pDOFIndex,
-							int pTimeOut,
-							TimeUnit pTimeUnit);
+	Boolean waitToBeReady(int pDOFIndex,
+												int pTimeOut,
+												TimeUnit pTimeUnit);
 
-	DoubleVariable getMinPositionVariable(int pDOFIndex);
+	ObjectVariable<Double> getMinPositionVariable(int pDOFIndex);
 
-	DoubleVariable getMaxPositionVariable(int pDOFIndex);
+	ObjectVariable<Double> getMaxPositionVariable(int pDOFIndex);
 
-	BooleanVariable getEnableVariable(int pDOFIndex);
+	ObjectVariable<Boolean> getEnableVariable(int pDOFIndex);
 
-	DoubleVariable getPositionVariable(int pDOFIndex);
+	ObjectVariable<Double> getPositionVariable(int pDOFIndex);
 
-	BooleanVariable getReadyVariable(int pDOFIndex);
+	ObjectVariable<Boolean> getReadyVariable(int pDOFIndex);
 
-	BooleanVariable getHomingVariable(int pDOFIndex);
+	ObjectVariable<Boolean> getHomingVariable(int pDOFIndex);
 
-	BooleanVariable getStopVariable(int pDOFIndex);
+	ObjectVariable<Boolean> getStopVariable(int pDOFIndex);
 
 }

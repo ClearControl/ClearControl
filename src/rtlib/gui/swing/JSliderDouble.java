@@ -22,7 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class JSliderDouble extends JPanel
 {
@@ -39,7 +39,7 @@ public class JSliderDouble extends JPanel
 	private int mNumberOfLabels = 3;
 	private boolean mWaitForMouseRelease = false;
 
-	private final DoubleVariable mSliderDoubleVariable;
+	private final  ObjectVariable<Double> mSliderDoubleVariable;
 
 	private final JSliderDouble mThis;
 	private JButton mMinusStepButton;
@@ -99,7 +99,8 @@ public class JSliderDouble extends JPanel
 
 		mResolution = min(cMaxResolution, pResolution);
 
-		mSliderDoubleVariable = new DoubleVariable(pValueName, pValue)
+		mSliderDoubleVariable = new ObjectVariable<Double>(	pValueName,
+																												pValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -150,7 +151,7 @@ public class JSliderDouble extends JPanel
 			final int lModifiers = e.getModifiers();
 			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																									: 10;
-			double lNewValue = getDoubleVariable().getValue();
+			double lNewValue = getDoubleVariable().get();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
 				lNewValue += -lStep / lFactor;
 			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
@@ -158,7 +159,7 @@ public class JSliderDouble extends JPanel
 			else
 				lNewValue += -lStep;
 			lNewValue = constraintIfNescessary(lNewValue);
-			getDoubleVariable().setValue(lNewValue);
+			getDoubleVariable().set(lNewValue);
 
 		});
 
@@ -190,7 +191,7 @@ public class JSliderDouble extends JPanel
 																			mMax,
 																			mSlider.getValue()));
 
-				if (mSliderDoubleVariable.getValue() != lNewValue)
+				if (mSliderDoubleVariable.get() != lNewValue)
 				{
 					try
 					{
@@ -211,7 +212,7 @@ public class JSliderDouble extends JPanel
 						return;
 					}
 
-					mSliderDoubleVariable.setValue(lNewValue);
+					mSliderDoubleVariable.set(lNewValue);
 				}
 				// System.out.println("change received from slider:" +
 				// lNewValue);
@@ -266,7 +267,7 @@ public class JSliderDouble extends JPanel
 						writeValueIntoTextField(lNewValue);
 					}
 
-					mSliderDoubleVariable.setValue(lNewValue);
+					mSliderDoubleVariable.set(lNewValue);
 
 					final int lSliderIntegerValue = toInt(	mResolution,
 															mMin,
@@ -313,7 +314,7 @@ public class JSliderDouble extends JPanel
 			final int lModifiers = e.getModifiers();
 			final double lFactor = ((lModifiers & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) ? 100
 																									: 10;
-			double lNewValue = getDoubleVariable().getValue();
+			double lNewValue = getDoubleVariable().get();
 			if ((lModifiers & ActionEvent.ALT_MASK) == ActionEvent.ALT_MASK)
 				lNewValue += lStep / lFactor;
 			else if ((lModifiers & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
@@ -321,7 +322,7 @@ public class JSliderDouble extends JPanel
 			else
 				lNewValue += lStep;
 			lNewValue = constraintIfNescessary(lNewValue);
-			getDoubleVariable().setValue(lNewValue);
+			getDoubleVariable().set(lNewValue);
 		});
 
 		// Create the label table
@@ -344,14 +345,14 @@ public class JSliderDouble extends JPanel
 
 	}
 
-	public DoubleVariable getDoubleVariable()
+	public  ObjectVariable<Double> getDoubleVariable()
 	{
 		return mSliderDoubleVariable;
 	}
 
 	public double getValue()
 	{
-		return mSliderDoubleVariable.getValue();
+		return mSliderDoubleVariable.get();
 	}
 
 	private void writeValueIntoTextField(final double lNewValue)

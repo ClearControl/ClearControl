@@ -5,15 +5,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import rtlib.core.variable.types.doublev.DoubleInputVariableInterface;
-import rtlib.core.variable.types.doublev.DoubleOutputVariableInterface;
+import rtlib.core.variable.types.objectv.ObjectInputVariableInterface;
+import rtlib.core.variable.types.objectv.ObjectOutputVariableInterface;
 
-public class CopyDoubleButton extends JButton
+public class CopyDoubleButton<O> extends JButton
 {
-	private final CopyDoubleButton mThis;
+	private static final long serialVersionUID = 1L;
+	private final CopyDoubleButton<O> mThis;
 	private String mLabel;
-	private DoubleOutputVariableInterface mSource;
-	private DoubleInputVariableInterface mDestination;
+	private ObjectOutputVariableInterface<O> mSource;
+	private ObjectInputVariableInterface<O> mDestination;
 
 	public CopyDoubleButton(final String pLabel)
 	{
@@ -21,8 +22,8 @@ public class CopyDoubleButton extends JButton
 	}
 
 	public CopyDoubleButton(final String pLabel,
-							final DoubleOutputVariableInterface pSource,
-							final DoubleInputVariableInterface pDestination)
+													final ObjectOutputVariableInterface<O> pSource,
+													final ObjectInputVariableInterface<O> pDestination)
 	{
 		mSource = pSource;
 		mDestination = pDestination;
@@ -34,21 +35,21 @@ public class CopyDoubleButton extends JButton
 			@Override
 			public void actionPerformed(final ActionEvent pE)
 			{
-				final double lValue = mSource.getValue();
-				mDestination.setValue(lValue);
+				final O lValue = mSource.get();
+				mDestination.set(lValue);
 			}
 		});
 
 	}
 
-	public void setSource(final DoubleOutputVariableInterface pDoubleVariable)
+	public void setSource(final ObjectOutputVariableInterface<O> pVariable)
 	{
-		mSource = pDoubleVariable;
+		mSource = pVariable;
 	}
 
-	public void setDestination(final DoubleInputVariableInterface pDoubleVariable)
+	public void setDestination(final ObjectInputVariableInterface<O> pVariable)
 	{
-		mDestination = pDoubleVariable;
+		mDestination = pVariable;
 	}
 
 }

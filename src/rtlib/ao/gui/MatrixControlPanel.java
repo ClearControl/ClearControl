@@ -16,7 +16,6 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.swing.JSliderDouble;
 
@@ -164,7 +163,7 @@ public class MatrixControlPanel extends JPanel
 																				+ mCurrentX,
 																		0);
 						lModeSlider.getDoubleVariable()
-									.setValue(lCurrentValue);
+.set(lCurrentValue);
 					}
 				});
 
@@ -281,7 +280,7 @@ public class MatrixControlPanel extends JPanel
 		return mInputModeVectorVariable;
 	}
 
-	public DoubleVariable getSymetricRangeVariable()
+	public  ObjectVariable<Double> getSymetricRangeVariable()
 	{
 		return mSymetricRangeSlider.getDoubleVariable();
 	}

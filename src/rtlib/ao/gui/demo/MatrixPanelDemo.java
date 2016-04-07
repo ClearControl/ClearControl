@@ -75,7 +75,7 @@ public class MatrixPanelDemo
 							lShapeVector);/**/
 
 			lMatrixPanel.getMatrixVariable()
-						.setReference(lShapeVector);
+						.set(lShapeVector);
 			Thread.sleep(100);
 		}
 

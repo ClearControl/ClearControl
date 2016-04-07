@@ -5,7 +5,6 @@ import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
@@ -254,20 +253,11 @@ public class SerialDevice extends NamedVirtualDevice implements
 		return mVariableBundle;
 	}
 
-	public final VariableInterface<Double> getVariableByName(final String pVariableName)
+	public final VariableInterface<Double> getDoubleVariableByName(final String pVariableName)
 	{
 		return mVariableBundle.getVariable(pVariableName);
 	}
 
-	public final DoubleVariable getDoubleVariableByName(final String pVariableName)
-	{
-		final Object lVariable = mVariableBundle.getVariable(pVariableName);
-		if (lVariable instanceof DoubleVariable)
-		{
-			return (DoubleVariable) lVariable;
-		}
-		return null;
-	}
 
 	@Override
 	public boolean open()

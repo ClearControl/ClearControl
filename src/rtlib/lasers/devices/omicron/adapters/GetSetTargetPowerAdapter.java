@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetSetTargetPowerAdapter extends OmicronAdapter<Double> implements
-																																		SerialTextDeviceAdapter<Double>
+public class GetSetTargetPowerAdapter extends OmicronAdapter<Number> implements
+																																		SerialTextDeviceAdapter<Number>
 {
 
 	private double mMaxPowerInMilliWatt;
@@ -37,10 +37,10 @@ public class GetSetTargetPowerAdapter extends OmicronAdapter<Double> implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final Double pOldPowerInMilliWatt,
-																					final Double pNewPowerInMilliWatt)
+	public byte[] getSetValueCommandMessage(final Number pOldPowerInMilliWatt,
+																					final Number pNewPowerInMilliWatt)
 	{
-		final double lPowerInPercent = pNewPowerInMilliWatt / mMaxPowerInMilliWatt;
+		final double lPowerInPercent = pNewPowerInMilliWatt.doubleValue() / mMaxPowerInMilliWatt;
 		// System.out.format("SET: power %g (percent) \n",lPowerInPercent);
 		final int lPower = (int) Math.round(lPowerInPercent * (4096 - 1));
 		// System.out.format("SET: power %d (percent*(4096-1)) \n",lPower);

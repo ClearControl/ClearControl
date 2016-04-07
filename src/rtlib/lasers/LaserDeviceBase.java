@@ -14,7 +14,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 
 	private final ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(1);
 
-	protected ObjectVariable<Double> mSpecInMilliWattPowerVariable,
+	protected ObjectVariable<Number> mSpecInMilliWattPowerVariable,
 			mMaxPowerInMilliWattVariable, mTargetPowerInMilliWattVariable,
 			mCurrentPowerInMilliWattVariable;
 	protected ObjectVariable<Integer> mWorkingHoursVariable,
@@ -64,7 +64,8 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 				{
 					try
 					{
-						final double lNewPowerValue = mCurrentPowerInMilliWattVariable.get();
+						final double lNewPowerValue = mCurrentPowerInMilliWattVariable.get()
+																																					.doubleValue();
 						mCurrentPowerInMilliWattVariable.sync(lNewPowerValue,
 																									true);
 					}
@@ -144,14 +145,14 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mWavelengthVariable.get();
 	}
 
-	public final ObjectVariable<Double> getSpecPowerVariable()
+	public final ObjectVariable<Number> getSpecPowerVariable()
 	{
 		return mSpecInMilliWattPowerVariable;
 	}
 
 	public final double getSpecPowerInMilliWatt()
 	{
-		return mSpecInMilliWattPowerVariable.get();
+		return mSpecInMilliWattPowerVariable.get().doubleValue();
 	}
 
 	public final ObjectVariable<Integer> getWorkingHoursVariable()
@@ -164,7 +165,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 		return mWorkingHoursVariable.get();
 	}
 
-	public final ObjectVariable<Double> getMaxPowerVariable()
+	public final ObjectVariable<Number> getMaxPowerVariable()
 	{
 		return mMaxPowerInMilliWattVariable;
 	}
@@ -172,7 +173,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	@Override
 	public final double getMaxPowerInMilliWatt()
 	{
-		return mMaxPowerInMilliWattVariable.get();
+		return mMaxPowerInMilliWattVariable.get().doubleValue();
 	}
 
 	public final ObjectVariable<Integer> getOperatingModeVariable()
@@ -208,7 +209,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 
 	public final double getTargetPowerInPercent()
 	{
-		return mTargetPowerInMilliWattVariable.get() / getMaxPowerInMilliWatt();
+		return mTargetPowerInMilliWattVariable.get().doubleValue() / getMaxPowerInMilliWatt();
 	}
 
 	@Override
@@ -221,7 +222,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	@Override
 	public final double getTargetPowerInMilliWatt()
 	{
-		return mTargetPowerInMilliWattVariable.get();
+		return mTargetPowerInMilliWattVariable.get().doubleValue();
 	}
 
 	@Override
@@ -231,13 +232,13 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public final ObjectVariable<Double> getTargetPowerInMilliWattVariable()
+	public final ObjectVariable<Number> getTargetPowerInMilliWattVariable()
 	{
 		return mTargetPowerInMilliWattVariable;
 	}
 
 	@Override
-	public final ObjectVariable<Double> getCurrentPowerInMilliWattVariable()
+	public final ObjectVariable<Number> getCurrentPowerInMilliWattVariable()
 	{
 		return mCurrentPowerInMilliWattVariable;
 	}
@@ -245,7 +246,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	@Override
 	public final double getCurrentPowerInMilliWatt()
 	{
-		return mCurrentPowerInMilliWattVariable.get();
+		return mCurrentPowerInMilliWattVariable.get().doubleValue();
 	}
 
 	public final double getCurrentPowerInPercent()

@@ -11,25 +11,25 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import net.imglib2.type.NativeType;
 import rtlib.core.units.Magnitude;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
 public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																						LocalFileStackBase<T, A> implements
-																												StackSinkInterface<T, A>,
-																												AutoCloseable
+																																												LocalFileStackBase<T, A> implements
+																																																								StackSinkInterface<T, A>,
+																																																								AutoCloseable
 {
 
 	private static final long cSingleWriteLimit = 64_000_000L;
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 	private FileChannel mBinnaryFileChannel;
 
-	public LocalFileStackSink(	T pType,
-								final File pRootFolder,
-								final String pName) throws IOException
+	public LocalFileStackSink(T pType,
+														final File pRootFolder,
+														final String pName) throws IOException
 	{
 		super(pType, pRootFolder, pName, false);
 
@@ -47,16 +47,15 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			}
 
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
-													mNextFreeTypePosition);
+																							mNextFreeTypePosition);
 
 			final StackRequest lStackRequest = StackRequest.buildFrom(pStack);
 
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
-												lStackRequest);
+																				lStackRequest);
 
 			if (mBinnaryFileChannel == null)
-				mBinnaryFileChannel = getFileChannelForBinaryFile(	false,
-																	true);
+				mBinnaryFileChannel = getFileChannelForBinaryFile(false, true);
 
 			long lSizeInBytes = pStack.getSizeInBytes();
 
@@ -73,29 +72,24 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 				{
 					// System.out.format("chunk: %d \n", i);
 					ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(i);
-					
-					lContiguousMemoryInterface
-										.writeBytesToFileChannel(	mBinnaryFileChannel,
-																	lPosition);
+
+					lContiguousMemoryInterface.writeBytesToFileChannel(	mBinnaryFileChannel,
+																															lPosition);
 					mBinnaryFileChannel.force(false);
 
-					lPosition += lContiguousMemoryInterface
-													.getSizeInBytes();
+					lPosition += lContiguousMemoryInterface.getSizeInBytes();
 				}
 
 				lNewNextFreeTypePosition = lPosition;
-				
-				
+
 				mBinnaryFileChannel.force(false);
 			}
 			else
 			{
 				lNewNextFreeTypePosition = lFragmentedMemory.writeBytesToFileChannel(	mBinnaryFileChannel,
-																						mNextFreeTypePosition);
+																																							mNextFreeTypePosition);
 				mBinnaryFileChannel.force(false);
 			}
-
-		
 
 			long[] lDimensions = lStackRequest.getDimensions();
 
@@ -104,13 +98,13 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			// the '2, ' part is to be compatible with the old format, that
 			// means 2
 			// bytes per voxel:
-			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(	1,
-																							lDimensionsString.length() - 1);
+			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(1,
+																																										lDimensionsString.length() - 1);
 
 			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),
-																	StandardOpenOption.APPEND,
-																	StandardOpenOption.WRITE,
-																	StandardOpenOption.CREATE);
+																															StandardOpenOption.APPEND,
+																															StandardOpenOption.WRITE,
+																															StandardOpenOption.CREATE);
 
 			if (mNextFreeStackIndex == 0)
 			{
@@ -119,13 +113,13 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			final double lTimeStampInSeconds = Magnitude.nano2unit(pStack.getTimeStampInNanoseconds() - mFirstTimePointAbsoluteNanoSeconds);
 
 			mStackIndexToTimeStampInSecondsMap.put(	mNextFreeStackIndex,
-													lTimeStampInSeconds);
+																							lTimeStampInSeconds);
 
-			final String lIndexLineString = String.format(	"%d\t%.4f\t%s\t%d\n",
-															mNextFreeStackIndex,
-															lTimeStampInSeconds,
-															lTruncatedDimensionsString,
-															mNextFreeTypePosition);
+			final String lIndexLineString = String.format("%d\t%.4f\t%s\t%d\n",
+																										mNextFreeStackIndex,
+																										lTimeStampInSeconds,
+																										lTruncatedDimensionsString,
+																										mNextFreeTypePosition);
 			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
 			final ByteBuffer lIndexLineStringByteBuffer = ByteBuffer.wrap(lIndexLineStringBytes);
 			lIndexFileChannel.write(lIndexLineStringByteBuffer);
@@ -154,7 +148,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 
 	@Override
 	public void addMetaDataVariable(final String pPrefix,
-									final VariableInterface<?> pVariable)
+																	final VariableInterface<?> pVariable)
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
 	}
@@ -162,9 +156,9 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	@Override
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
-		mMetaDataVariableBundleAsFile.addVariable(	pPrefix,
-													new DoubleVariable(	pPrefix,
-																		pValue));
+		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
+																							new ObjectVariable<Double>(	pPrefix,
+																																					pValue));
 	}
 
 	@Override

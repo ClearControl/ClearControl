@@ -19,7 +19,6 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.RTlibExecutors;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.core.variable.types.objectv.SingleUpdateTargetObjectVariable;
 import rtlib.stack.EmptyStack;
@@ -52,8 +51,8 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 
 	private final SingleUpdateTargetObjectVariable<StackInterface> mStackReference = new SingleUpdateTargetObjectVariable<StackInterface>("OffHeapPlanarStack");
 
-	private final DoubleVariable mNumberOfImagesPerPlaneVariable = new DoubleVariable("NumberOfPhases",
-																																										1);
+	private final ObjectVariable<Long> mNumberOfImagesPerPlaneVariable = new ObjectVariable<Long>("NumberOfPhases",
+																																																1L);
 
 	private final ArrayList<StackProcessorInterface> mStackProcessorList = new ArrayList<StackProcessorInterface>();
 
@@ -116,7 +115,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 				/*System.out.println("sendtovar: hashcode=" + pStack.hashCode()
 														+ " index="
 														+ pStack.getIndex());/**/
-				mStackReference.setReference(pStack);
+				mStackReference.set(pStack);
 				return null;
 			}
 		};
@@ -134,7 +133,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		{
 			// final boolean lCopySucceeded = false;
 
-			final long lNumberOfImagesPerPlane = (long) mNumberOfImagesPerPlaneVariable.getValue();
+			final long lNumberOfImagesPerPlane = mNumberOfImagesPerPlaneVariable.get();
 			// final long lStackDepth = (long) mStackDepthVariable.getValue();
 
 			final long lNumberOfImages = pDcamFrame.getRight().getDepth();
@@ -301,7 +300,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 		return mStackReference;
 	}
 
-	public DoubleVariable getNumberOfImagesPerPlaneVariable()
+	public ObjectVariable<Long> getNumberOfImagesPerPlaneVariable()
 	{
 		return mNumberOfImagesPerPlaneVariable;
 	}

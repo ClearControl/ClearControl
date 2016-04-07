@@ -30,7 +30,7 @@ import rtlib.symphony.score.ScoreInterface;
 public class LightSheetMicroscopeDemo
 {
 
-	private static final double cImageResolution = 2048;
+	private static final long cImageResolution = 2048;
 
 	@Test
 	public void demoOnSimulators() throws InterruptedException,
@@ -132,9 +132,9 @@ public class LightSheetMicroscopeDemo
 
 														});
 
-			lCamera.getStackWidthVariable().setValue(cImageResolution);
-			lCamera.getStackHeightVariable().setValue(cImageResolution);
-			lCamera.getExposureInMicrosecondsVariable().setValue(5000);
+			lCamera.getStackWidthVariable().set(cImageResolution);
+			lCamera.getStackHeightVariable().set(cImageResolution);
+			lCamera.getExposureInMicrosecondsVariable().set(5000.0);
 
 			lLightSheetMicroscope.getDeviceLists()
 														.addStackCameraDevice(lCamera,
@@ -191,14 +191,12 @@ public class LightSheetMicroscopeDemo
 			lLightSheet.setBeforeExposureMovement(lBeforeExposureMovement);
 			lLightSheet.setExposureMovement(lExposureMovement);
 
-			lLightSheet.getHeightVariable().setValue(100);
+			lLightSheet.getHeightVariable().set(100.0);
 			lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-									.setValue(5000);
+									.set(5000.0);
 
 			lLightSheet.getImageHeightVariable()
-									.setValue(pCameras.get(0)
-																		.getStackHeightVariable()
-																		.getValue());
+									.set(pCameras.get(0).getStackHeightVariable().get());
 		}
 
 		// setting up scope GUI:

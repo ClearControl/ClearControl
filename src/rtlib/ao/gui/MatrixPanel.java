@@ -16,7 +16,6 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class MatrixPanel extends JPanel
@@ -26,7 +25,7 @@ public class MatrixPanel extends JPanel
 	private final int mMatrixWidth, mMatrixHeight;
 	private volatile boolean mAutoNormalize, mSymetricRange;
 	ObjectVariable<DenseMatrix64F> mMatrixVariable;
-	DoubleVariable mMinRangeVariable, mMaxRangeVariable;
+	 ObjectVariable<Double> mMinRangeVariable, mMaxRangeVariable;
 	private float mSaturation = 0.5f, mBrightness = 0.95f;
 
 	public static MatrixPanel getMatrixForMatrixEntry(	int pDisplayTileSize,
@@ -50,7 +49,7 @@ public class MatrixPanel extends JPanel
 
 		CommonOps.mult(pTransformMatrix, lInputVector, lShapeVector);
 
-		lMatrixPanel.getMatrixVariable().setReference(lShapeVector);
+		lMatrixPanel.getMatrixVariable().set(lShapeVector);
 
 		return lMatrixPanel;
 	}
@@ -95,8 +94,8 @@ public class MatrixPanel extends JPanel
 			}
 		};
 
-		mMinRangeVariable = new DoubleVariable("MinRange", -1);
-		mMaxRangeVariable = new DoubleVariable("MaxRange", 1);
+		mMinRangeVariable = new ObjectVariable<Double>("MinRange", -1.0);
+		mMaxRangeVariable = new ObjectVariable<Double>("MaxRange", 1.0);
 
 		final VariableSetListener<Double> lVariableListener = new VariableSetListener<Double>()
 		{
@@ -149,10 +148,10 @@ public class MatrixPanel extends JPanel
 			return;
 
 		final double lMax = mAutoNormalize	? CommonOps.elementMax(lDenseMatrix64F)
-											: mMaxRangeVariable.getValue();
+																			: mMaxRangeVariable.get();
 		final double lMin = mAutoNormalize	? CommonOps.elementMin(lDenseMatrix64F)
 											: (mSymetricRange	? -lMax
-																: mMinRangeVariable.getValue());
+																												: mMinRangeVariable.get());
 
 		for (int y = 0; y < mMatrixHeight; y++)
 			for (int x = 0; x < mMatrixWidth; x++)
@@ -207,12 +206,12 @@ public class MatrixPanel extends JPanel
 		return mMatrixVariable;
 	}
 
-	public DoubleVariable getMinRangeVariable()
+	public  ObjectVariable<Double> getMinRangeVariable()
 	{
 		return mMinRangeVariable;
 	}
 
-	public DoubleVariable getMaxRangeVariable()
+	public  ObjectVariable<Double> getMaxRangeVariable()
 	{
 		return mMaxRangeVariable;
 	}

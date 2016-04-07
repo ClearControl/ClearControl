@@ -15,7 +15,6 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -61,37 +60,37 @@ public class LightSheet extends NamedVirtualDevice implements
 																																																{ 1,
 																																																	0 }));
 
-	private final DoubleVariable mEffectiveExposureInMicrosecondsVariable = new DoubleVariable(	"EffectiveExposureInMicroseconds",
-																																															5000);
-	private final DoubleVariable mImageHeightVariable = new DoubleVariable(	"ImageHeight",
-																																					2 * 1024);
-	private final DoubleVariable mReadoutTimeInMicrosecondsPerLineVariable = new DoubleVariable("ReadoutTimeInMicrosecondsPerLine",
-																																															9.74);
-	private final DoubleVariable mOverScanVariable = new DoubleVariable("OverScan",
-																																			1.2);
+	private final ObjectVariable<Double> mEffectiveExposureInMicrosecondsVariable = new ObjectVariable<Double>(	"EffectiveExposureInMicroseconds",
+																																																							5000.0);
+	private final ObjectVariable<Long> mImageHeightVariable = new ObjectVariable<Long>(	"ImageHeight",
+																																											2 * 1024L);
+	private final ObjectVariable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new ObjectVariable<Double>("ReadoutTimeInMicrosecondsPerLine",
+																																																							9.74);
+	private final ObjectVariable<Double> mOverScanVariable = new ObjectVariable<Double>("OverScan",
+																																											1.2);
 
-	private final DoubleVariable mXVariable = new DoubleVariable(	"LightSheetX",
-																																0);
-	private final DoubleVariable mYVariable = new DoubleVariable(	"LightSheetY",
-																																0);
-	private final DoubleVariable mZVariable = new DoubleVariable(	"LightSheetZ",
-																																0);
+	private final ObjectVariable<Double> mXVariable = new ObjectVariable<Double>(	"LightSheetX",
+																																								0.0);
+	private final ObjectVariable<Double> mYVariable = new ObjectVariable<Double>(	"LightSheetY",
+																																								0.0);
+	private final ObjectVariable<Double> mZVariable = new ObjectVariable<Double>(	"LightSheetZ",
+																																								0.0);
 
-	private final DoubleVariable mAlphaInDegreesVariable = new DoubleVariable("LightSheetAlphaInDegrees",
-																																						0);
-	private final DoubleVariable mBetaInDegreesVariable = new DoubleVariable(	"LightSheetBetaInDegrees",
-																																						0);
-	private final DoubleVariable mWidthVariable = new DoubleVariable(	"LightSheetRange",
-																																		0);
-	private final DoubleVariable mHeightVariable = new DoubleVariable("LightSheetLength",
-																																		0);
-	private final DoubleVariable mPowerVariable = new DoubleVariable(	"LightSheetLengthPower",
-																																		1);
+	private final ObjectVariable<Double> mAlphaInDegreesVariable = new ObjectVariable<Double>("LightSheetAlphaInDegrees",
+																																														0.0);
+	private final ObjectVariable<Double> mBetaInDegreesVariable = new ObjectVariable<Double>(	"LightSheetBetaInDegrees",
+																																														0.0);
+	private final ObjectVariable<Double> mWidthVariable = new ObjectVariable<Double>(	"LightSheetRange",
+																																										0.0);
+	private final ObjectVariable<Double> mHeightVariable = new ObjectVariable<Double>("LightSheetLength",
+																																										0.0);
+	private final ObjectVariable<Double> mPowerVariable = new ObjectVariable<Double>(	"LightSheetLengthPower",
+																																										1.0);
 	private final BooleanVariable mAdaptPowerToWidthHeightVariable = new BooleanVariable(	"AdaptLightSheetPowerToWidthHeight",
 																																												false);
 
-	private final DoubleVariable mLineExposureInMicrosecondsVariable = new DoubleVariable("LineExposureInMicroseconds",
-																																												10);
+	private final ObjectVariable<Double> mLineExposureInMicrosecondsVariable = new ObjectVariable<Double>("LineExposureInMicroseconds",
+																																																				10.0);
 
 	private final BooleanVariable[] mLaserOnOffVariableArray;
 
@@ -116,7 +115,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	@SuppressWarnings("unchecked")
 	public LightSheet(String pName,
 										final double pReadoutTimeInMicrosecondsPerLine,
-										final int pNumberOfLines,
+										final long pNumberOfLines,
 										final int pNumberOfLaserDigitalControls)
 	{
 		super(pName);
@@ -133,8 +132,8 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		mStructuredIlluminationPatternVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
-		mReadoutTimeInMicrosecondsPerLineVariable.setValue(pReadoutTimeInMicrosecondsPerLine);
-		mImageHeightVariable.setValue(pNumberOfLines);
+		mReadoutTimeInMicrosecondsPerLineVariable.set(pReadoutTimeInMicrosecondsPerLine);
+		mImageHeightVariable.set(pNumberOfLines);
 
 		mBeforeExposureLAStave = new ConstantStave(	"laser.beforeexp.am",
 																								0);
@@ -394,10 +393,10 @@ public class LightSheet extends NamedVirtualDevice implements
 																		TimeUnit.MICROSECONDS);
 
 			final double lLineExposureTimeInMicroseconds = lReadoutTimeInMicroseconds + lExposureMovementTimeInMicroseconds;
-			mLineExposureInMicrosecondsVariable.setValue(lLineExposureTimeInMicroseconds);
+			mLineExposureInMicrosecondsVariable.set(lLineExposureTimeInMicroseconds);
 
-			final double lGalvoYOffsetBeforeRotation = mYVariable.getValue();
-			final double lGalvoZOffsetBeforeRotation = mZVariable.getValue();
+			final double lGalvoYOffsetBeforeRotation = mYVariable.get();
+			final double lGalvoZOffsetBeforeRotation = mZVariable.get();
 
 			final double lGalvoYOffset = galvoRotateY(lGalvoYOffsetBeforeRotation,
 																								lGalvoZOffsetBeforeRotation);
@@ -405,7 +404,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																								lGalvoZOffsetBeforeRotation);
 
 			final double lLightSheetHeight = mHeightFunction.get()
-																											.value(mHeightVariable.getValue()) * mOverScanVariable.getValue();
+																											.value(mHeightVariable.get()) * mOverScanVariable.get();
 			final double lGalvoAmplitudeY = galvoRotateY(	lLightSheetHeight,
 																										0);
 			final double lGalvoAmplitudeZ = galvoRotateZ(	lLightSheetHeight,
@@ -447,14 +446,14 @@ public class LightSheet extends NamedVirtualDevice implements
 			mExposureZStave.setNoJump(true);
 
 			mBeforeExposureXStave.setValue((float) getXFunction().get()
-																														.value(mXVariable.getValue()));
+																														.value(mXVariable.get()));
 			mExposureXStave.setValue((float) getXFunction().get()
-																											.value(mXVariable.getValue()));
+																											.value(mXVariable.get()));
 
 			mBeforeExposureBStave.setValue((float) getBetaFunction().get()
-																															.value(mBetaInDegreesVariable.getValue()));
+																															.value(mBetaInDegreesVariable.get()));
 			mExposureBStave.setValue((float) getBetaFunction().get()
-																												.value(mBetaInDegreesVariable.getValue()));
+																												.value(mBetaInDegreesVariable.get()));
 
 			/*final double lFocalLength = mFocalLengthInMicronsVariable.get();
 			final double lLambdaInMicrons = mLambdaInMicronsVariable.get();
@@ -464,12 +463,12 @@ public class LightSheet extends NamedVirtualDevice implements
 																																								lLambdaInMicrons,
 																																								lLightSheetRangeInMicrons);/**/
 			double lWidthValue = getWidthFunction().get()
-																							.value(mWidthVariable.getValue());
+																							.value(mWidthVariable.get());
 
 			mBeforeExposureWStave.setValue((float) lWidthValue);
 			mExposureWStave.setValue((float) lWidthValue);
 
-			final double lOverscan = mOverScanVariable.getValue();
+			final double lOverscan = mOverScanVariable.get();
 			final double lMarginTimeInMicroseconds = (lOverscan - 1) / (2 * lOverscan)
 																								* lExposureMovementTimeInMicroseconds;
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
@@ -512,7 +511,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			}
 
 			double lPowerValue = mPowerFunction.get()
-																					.value(mPowerVariable.getValue());
+																					.value(mPowerVariable.get());
 
 			if (mAdaptPowerToWidthHeightVariable.getBooleanValue())
 			{
@@ -539,109 +538,110 @@ public class LightSheet extends NamedVirtualDevice implements
 
 	public long getExposureMovementDuration(TimeUnit pTimeUnit)
 	{
-		return pTimeUnit.convert(	(long) mEffectiveExposureInMicrosecondsVariable.getValue(),
+		return pTimeUnit.convert(	mEffectiveExposureInMicrosecondsVariable.get()
+																																							.longValue(),
 															TimeUnit.MICROSECONDS);
 	}
 
 	public long getBeforeExposureMovementDuration(TimeUnit pTimeUnit)
 	{
-		return pTimeUnit.convert(	(long) (mReadoutTimeInMicrosecondsPerLineVariable.getValue() * mImageHeightVariable.getValue() / 2),
+		return pTimeUnit.convert(	(long) (mReadoutTimeInMicrosecondsPerLineVariable.get() * mImageHeightVariable.get() / 2),
 															TimeUnit.MICROSECONDS);
 	}
 
 	private double galvoRotateY(double pY, double pZ)
 	{
 		final double lAlpha = Math.toRadians(mAlphaFunction.get()
-																												.value(mAlphaInDegreesVariable.getValue()));
+																												.value(mAlphaInDegreesVariable.get()));
 		return pY * cos(lAlpha) - pZ * sin(lAlpha);
 	}
 
 	private double galvoRotateZ(double pY, double pZ)
 	{
 		final double lAlpha = Math.toRadians(mAlphaFunction.get()
-																												.value(mAlphaInDegreesVariable.getValue()));
+																												.value(mAlphaInDegreesVariable.get()));
 		return pY * sin(lAlpha) + pZ * cos(lAlpha);
 	}
 
 	@Override
-	public DoubleVariable getImageHeightVariable()
+	public ObjectVariable<Long> getImageHeightVariable()
 	{
 		return mImageHeightVariable;
 	}
 
 	public void setEffectiveExposureInMicroseconds(final int pEffectiveExposureInMicroseconds)
 	{
-		mEffectiveExposureInMicrosecondsVariable.setValue(pEffectiveExposureInMicroseconds);
+		mEffectiveExposureInMicrosecondsVariable.set((double) pEffectiveExposureInMicroseconds);
 	}
 
 	@Override
-	public DoubleVariable getEffectiveExposureInMicrosecondsVariable()
+	public ObjectVariable<Double> getEffectiveExposureInMicrosecondsVariable()
 	{
 		return mEffectiveExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public DoubleVariable getLineExposureInMicrosecondsVariable()
+	public ObjectVariable<Double> getLineExposureInMicrosecondsVariable()
 	{
 		return mLineExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public DoubleVariable getOverScanVariable()
+	public ObjectVariable<Double> getOverScanVariable()
 	{
 		return mOverScanVariable;
 	}
 
 	@Override
-	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable()
+	public ObjectVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable()
 	{
 		return mReadoutTimeInMicrosecondsPerLineVariable;
 	}
 
 	@Override
-	public DoubleVariable getXVariable()
+	public ObjectVariable<Double> getXVariable()
 	{
 		return mXVariable;
 	}
 
 	@Override
-	public DoubleVariable getYVariable()
+	public ObjectVariable<Double> getYVariable()
 	{
 		return mYVariable;
 	}
 
 	@Override
-	public DoubleVariable getZVariable()
+	public ObjectVariable<Double> getZVariable()
 	{
 		return mZVariable;
 	}
 
 	@Override
-	public DoubleVariable getAlphaInDegreesVariable()
+	public ObjectVariable<Double> getAlphaInDegreesVariable()
 	{
 		return mAlphaInDegreesVariable;
 	}
 
 	@Override
-	public DoubleVariable getBetaInDegreesVariable()
+	public ObjectVariable<Double> getBetaInDegreesVariable()
 	{
 		return mBetaInDegreesVariable;
 	}
 
 	@Override
-	public DoubleVariable getWidthVariable()
+	public ObjectVariable<Double> getWidthVariable()
 	{
 		return mWidthVariable;
 	}
 
 	@Override
-	public DoubleVariable getHeightVariable()
+	public ObjectVariable<Double> getHeightVariable()
 	{
 		return mHeightVariable;
 	}
 
 	@Override
-	public DoubleVariable getPowerVariable()
+	public ObjectVariable<Double> getPowerVariable()
 	{
 		return mPowerVariable;
 	}

@@ -10,33 +10,32 @@ import org.junit.Test;
 import rtlib.core.variable.persistence.DoubleVariableAsFile;
 import rtlib.core.variable.persistence.ObjectVariableAsFile;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableAsFileTests
 {
 
 	@Test
-	public void testDoubleVariableAsFile()	throws IOException,
-											InterruptedException
+	public void testDoubleVariableAsFile() throws IOException,
+																				InterruptedException
 	{
 		final File lTempFile = File.createTempFile(	"VariableAsFileTests",
-													"testDoubleVariableAsFile");
+																								"testDoubleVariableAsFile");
 		final DoubleVariableAsFile lDoubleVariable1 = new DoubleVariableAsFile(	lTempFile,
-																				"x",
-																				1);
+																																						"x",
+																																						1);
 
-		lDoubleVariable1.setValue(2);
+		lDoubleVariable1.set(2.0);
 		Thread.sleep(100);
-		final double lValue = lDoubleVariable1.getValue();
+		final double lValue = lDoubleVariable1.get();
 
 		assertEquals(2, lValue, 0.1);
 
 		final DoubleVariableAsFile lDoubleVariable2 = new DoubleVariableAsFile(	lTempFile,
-																				"x",
-																				1);
+																																						"x",
+																																						1);
 
-		final double lValue2 = lDoubleVariable2.getValue();
+		final double lValue2 = lDoubleVariable2.get();
 		assertEquals(lValue, lValue2, 0.1);
 
 		lDoubleVariable1.close();
@@ -45,32 +44,32 @@ public class VariableAsFileTests
 	}
 
 	@Test
-	public void testObjectVariableAsFile()	throws IOException,
-											InterruptedException
+	public void testObjectVariableAsFile() throws IOException,
+																				InterruptedException
 	{
 		final File lTempFile = File.createTempFile(	"VariableAsFileTests",
-													"testObjectVariableAsFile");
+																								"testObjectVariableAsFile");
 		final ObjectVariableAsFile<String> lObjectVariable1 = new ObjectVariableAsFile<String>(	"x",
-																								lTempFile,
-																								"1");
+																																														lTempFile,
+																																														"1");
 
-		lObjectVariable1.setReference("2");
+		lObjectVariable1.set("2");
 		Thread.sleep(100);
 
-		final String lValue = lObjectVariable1.getReference();
+		final String lValue = lObjectVariable1.get();
 
 		assertEquals("2", lValue);
 
 		final ObjectVariableAsFile<String> lObjectVariable2 = new ObjectVariableAsFile<String>(	"y",
-																								lTempFile,
-																								"1");
+																																														lTempFile,
+																																														"1");
 
-		final String lValue2 = lObjectVariable2.getReference();
+		final String lValue2 = lObjectVariable2.get();
 		assertEquals(lValue, lValue2);
 
-		lObjectVariable1.setReference("3");
+		lObjectVariable1.set("3");
 
-		final String lValue3 = lObjectVariable2.getReference();
+		final String lValue3 = lObjectVariable2.get();
 		assertEquals("3", lValue3);
 
 		lObjectVariable1.close();
@@ -78,46 +77,48 @@ public class VariableAsFileTests
 	}
 
 	@Test
-	public void testVariableBundleAsFile()	throws IOException,
-											InterruptedException
+	public void testVariableBundleAsFile() throws IOException,
+																				InterruptedException
 	{
 		final File lTempFile = File.createTempFile(	"VariableAsFileTests",
-													"testVariableBundleAsFile");
+																								"testVariableBundleAsFile");
 		System.out.println(lTempFile);
 
-		final DoubleVariable x1 = new DoubleVariable("x", 1);
+		final ObjectVariable<Double> x1 = new ObjectVariable<Double>(	"x",
+																																	1.0);
 		final ObjectVariable<String> y1 = new ObjectVariable<String>(	"y",
-																		"1");
+																																	"1");
 
 		final VariableBundleAsFile lVariableBundleAsFile1 = new VariableBundleAsFile(	"bundle",
-																						lTempFile);
+																																									lTempFile);
 
 		lVariableBundleAsFile1.addVariable("path1.bla", x1);
 		lVariableBundleAsFile1.addVariable("path2.blu", y1);
 
-		x1.setValue(2);
-		y1.setReference("3");
+		x1.set(2.0);
+		y1.set("3");
 		// Thread.sleep(1000);
 
 		lVariableBundleAsFile1.close();
 
 		// Thread.sleep(10000000);
 
-		final DoubleVariable x2 = new DoubleVariable("x", 1);
+		final ObjectVariable<Double> x2 = new ObjectVariable<Double>(	"x",
+																																	1.0);
 		final ObjectVariable<String> y2 = new ObjectVariable<String>(	"y",
-																		"1");
+																																	"1");
 
 		final VariableBundleAsFile lVariableBundleAsFile2 = new VariableBundleAsFile(	"bundle",
-																						lTempFile);
+																																									lTempFile);
 
 		lVariableBundleAsFile2.addVariable("path1.bla", x2);
 		lVariableBundleAsFile2.addVariable("path2.blu", y2);
 
 		lVariableBundleAsFile2.read();
 
-		assertEquals(x1.getValue(), x2.getValue(), 0.01);
+		assertEquals(x1.get(), x2.get(), 0.01);
 		System.out.println("done");
-		assertEquals(y1.getReference(), y2.getReference());
+		assertEquals(y1.get(), y2.get());
 
 		lVariableBundleAsFile2.close();
 

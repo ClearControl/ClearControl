@@ -18,16 +18,16 @@ public class ObjectVariableTests
 																	0.0);
 
 		x.syncWith(y);
-		assertEquals(new Double(0.0), x.getReference());
-		assertEquals(new Double(0.0), y.getReference());
+		assertEquals(new Double(0.0), x.get());
+		assertEquals(new Double(0.0), y.get());
 
-		x.setReference(1.0);
-		assertEquals(new Double(1.0), x.getReference());
-		assertEquals(new Double(1.0), y.getReference());
+		x.set(1.0);
+		assertEquals(new Double(1.0), x.get());
+		assertEquals(new Double(1.0), y.get());
 
-		y.setReference(2.0);
-		assertEquals(new Double(2.0), x.getReference());
-		assertEquals(new Double(2.0), y.getReference());
+		y.set(2.0);
+		assertEquals(new Double(2.0), x.get());
+		assertEquals(new Double(2.0), y.get());
 
 	}
 

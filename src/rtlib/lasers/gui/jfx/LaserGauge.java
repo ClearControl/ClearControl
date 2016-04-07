@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.Property;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -80,12 +80,12 @@ public class LaserGauge
 		return mLaserOnSwitch.selectedProperty();
 	}
 
-	public DoubleProperty getTargetPowerProperty()
+	public Property<Number> getTargetPowerProperty()
 	{
 		return mwMarker.valueProperty();
 	}
 
-	public DoubleProperty getCurrentPowerProperty()
+	public Property<Number> getCurrentPowerProperty()
 	{
 		return mActualGauge.valueProperty();
 	}

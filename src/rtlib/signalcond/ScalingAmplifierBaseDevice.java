@@ -1,13 +1,13 @@
 package rtlib.signalcond;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class ScalingAmplifierBaseDevice extends NamedVirtualDevice	implements
 																	ScalingAmplifierDeviceInterface
 {
 
-	protected DoubleVariable mGainVariable, mOffsetVariable;
+	protected  ObjectVariable<Double> mGainVariable, mOffsetVariable;
 
 	public ScalingAmplifierBaseDevice(String pDeviceName)
 	{
@@ -17,35 +17,35 @@ public class ScalingAmplifierBaseDevice extends NamedVirtualDevice	implements
 	@Override
 	public void setGain(double pGain)
 	{
-		mGainVariable.setValue(pGain);
+		mGainVariable.set(pGain);
 	}
 
 	@Override
 	public void setOffset(double pOffset)
 	{
-		mOffsetVariable.setValue(pOffset);
+		mOffsetVariable.set(pOffset);
 	}
 
 	@Override
 	public double getGain()
 	{
-		return mGainVariable.getValue();
+		return mGainVariable.get();
 	}
 
 	@Override
 	public double getOffset()
 	{
-		return mOffsetVariable.getValue();
+		return mOffsetVariable.get();
 	}
 
 	@Override
-	public DoubleVariable getGainVariable()
+	public  ObjectVariable<Double> getGainVariable()
 	{
 		return mGainVariable;
 	}
 
 	@Override
-	public DoubleVariable getOffsetVariable()
+	public  ObjectVariable<Double> getOffsetVariable()
 	{
 		return mOffsetVariable;
 	}

@@ -2,7 +2,6 @@ package rtlib.cameras;
 
 import rtlib.core.device.NameableInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -12,19 +11,19 @@ public interface StackCameraDeviceInterface	extends
 																						CameraDeviceInterface,
 																						NameableInterface
 {
-	DoubleVariable getNumberOfImagesPerPlaneVariable();
+	ObjectVariable<Long> getNumberOfImagesPerPlaneVariable();
 
 	BooleanVariable getStackModeVariable();
 
 	BooleanVariable getKeepPlaneVariable();
 
-	DoubleVariable getStackBytesPerPixelVariable();
+	ObjectVariable<Long> getStackBytesPerPixelVariable();
 
-	DoubleVariable getStackWidthVariable();
+	ObjectVariable<Long> getStackWidthVariable();
 
-	DoubleVariable getStackHeightVariable();
+	ObjectVariable<Long> getStackHeightVariable();
 
-	DoubleVariable getStackDepthVariable();
+	ObjectVariable<Long> getStackDepthVariable();
 
 	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 

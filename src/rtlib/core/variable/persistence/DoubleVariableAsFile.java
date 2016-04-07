@@ -8,10 +8,10 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class DoubleVariableAsFile extends DoubleVariable implements
-														Closeable
+public class DoubleVariableAsFile extends ObjectVariable<Double> implements
+																																Closeable
 
 {
 	private final ExecutorService mSingleThreadExecutor = Executors.newSingleThreadExecutor();
@@ -24,8 +24,8 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 	private final Object mLock = new Object();
 
 	public DoubleVariableAsFile(final File pFile,
-								final String pVariableName,
-								final double pDoubleValue)
+															final String pVariableName,
+															final double pDoubleValue)
 	{
 		super(pVariableName, pDoubleValue);
 		mFile = pFile;
@@ -33,7 +33,7 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 	}
 
 	@Override
-	public double getValue()
+	public Double get()
 	{
 		if (mCachedValue != null)
 		{
@@ -46,7 +46,7 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 			{
 				if (!mFile.exists())
 				{
-					mCachedValue = super.getValue();
+					mCachedValue = super.get();
 					return mCachedValue;
 				}
 				final Scanner lScanner = new Scanner(mFile);
@@ -59,14 +59,14 @@ public class DoubleVariableAsFile extends DoubleVariable implements
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-			return super.getValue();
+			return super.get();
 		}
 	}
 
 	@Override
-	public void setValue(final double pNewValue)
+	public void set(final Double pNewValue)
 	{
-		super.setValue(pNewValue);
+		super.set(pNewValue);
 		mCachedValue = pNewValue;
 		mSingleThreadExecutor.execute(mFileSaverRunnable);
 	}

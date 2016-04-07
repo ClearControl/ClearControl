@@ -5,38 +5,37 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface
 {
 
-	public DoubleVariable getImageHeightVariable();
+	public ObjectVariable<Long> getImageHeightVariable();
 
-	public DoubleVariable getEffectiveExposureInMicrosecondsVariable();
+	public  ObjectVariable<Double> getEffectiveExposureInMicrosecondsVariable();
 
-	public DoubleVariable getLineExposureInMicrosecondsVariable();
+	public  ObjectVariable<Double> getLineExposureInMicrosecondsVariable();
 
-	public DoubleVariable getOverScanVariable();
+	public  ObjectVariable<Double> getOverScanVariable();
 
-	public DoubleVariable getReadoutTimeInMicrosecondsPerLineVariable();
+	public  ObjectVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
 
-	public DoubleVariable getXVariable();
+	public  ObjectVariable<Double> getXVariable();
 
-	public DoubleVariable getYVariable();
+	public  ObjectVariable<Double> getYVariable();
 
-	public DoubleVariable getZVariable();
+	public  ObjectVariable<Double> getZVariable();
 
-	public DoubleVariable getAlphaInDegreesVariable();
+	public  ObjectVariable<Double> getAlphaInDegreesVariable();
 
-	public DoubleVariable getBetaInDegreesVariable();
+	public  ObjectVariable<Double> getBetaInDegreesVariable();
 
-	public DoubleVariable getWidthVariable();
+	public  ObjectVariable<Double> getWidthVariable();
 
-	public DoubleVariable getHeightVariable();
+	public  ObjectVariable<Double> getHeightVariable();
 
-	public DoubleVariable getPowerVariable();
+	public  ObjectVariable<Double> getPowerVariable();
 
 	public BooleanVariable getAdaptPowerToWidthHeightVariable();
 
