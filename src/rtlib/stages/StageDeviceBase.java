@@ -104,19 +104,19 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public DoubleVariable getEnableVariable(int pIndex)
+	public BooleanVariable getEnableVariable(int pIndex)
 	{
 		return mEnableVariables.get(pIndex);
 	}
 
 	@Override
-	public DoubleVariable getReadyVariable(int pIndex)
+	public BooleanVariable getReadyVariable(int pIndex)
 	{
 		return mReadyVariables.get(pIndex);
 	}
 
 	@Override
-	public DoubleVariable getHomingVariable(int pIndex)
+	public BooleanVariable getHomingVariable(int pIndex)
 	{
 		return mHomingVariables.get(pIndex);
 	}

@@ -2,6 +2,7 @@ package rtlib.lasers.devices.sim;
 
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 
@@ -16,9 +17,10 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 	{
 		super(pDeviceName);
 
-		mDeviceIdVariable = new DoubleVariable("DeviceId", pDeviceId);
+		mDeviceIdVariable = new ObjectVariable<Integer>("DeviceId",
+																										pDeviceId);
 
-		mWavelengthVariable = new DoubleVariable(	"WavelengthInNanoMeter",
+		mWavelengthVariable = new ObjectVariable<Integer>("WavelengthInNanoMeter",
 													pWavelengthInNanoMeter);
 
 		mSpecInMilliWattPowerVariable = new DoubleVariable(	"SpecPowerInMilliWatt",
@@ -27,14 +29,15 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 		mMaxPowerInMilliWattVariable = new DoubleVariable(	"MaxPowerInMilliWatt",
 															pMaxPowerInMilliWatt);
 
-		mSetOperatingModeVariable = new DoubleVariable(	"OperatingMode",
+		mSetOperatingModeVariable = new ObjectVariable<Integer>("OperatingMode",
 														0);
 
 		mPowerOnVariable = new BooleanVariable("PowerOn", false);
 
 		mLaserOnVariable = new BooleanVariable("LaserOn", false);
 
-		mWorkingHoursVariable = new DoubleVariable("WorkingHours", 0);
+		mWorkingHoursVariable = new ObjectVariable<Integer>("WorkingHours",
+																												0);
 
 		mTargetPowerInMilliWattVariable = new DoubleVariable(	"TargetPowerMilliWatt",
 																0);

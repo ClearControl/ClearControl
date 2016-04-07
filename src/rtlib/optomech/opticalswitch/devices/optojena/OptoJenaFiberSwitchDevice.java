@@ -2,7 +2,7 @@ package rtlib.optomech.opticalswitch.devices.optojena;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.PositionDeviceInterface;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -12,7 +12,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																														OptoMechDeviceInterface
 {
 
-	private DoubleVariable mPositionVariable;
+	private ObjectVariable<Integer> mPositionVariable;
 
 	public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
 	{
@@ -21,7 +21,8 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																										pDeviceIndex,
 																										"NULL"));
 
-		mPositionVariable = new DoubleVariable("SwitchPosition", 0);
+		mPositionVariable = new ObjectVariable<Integer>("SwitchPosition",
+																										0);
 	}
 
 	public OptoJenaFiberSwitchDevice(final String pPortName)
@@ -30,7 +31,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 
 		final FiberSwitchPositionAdapter lFiberSwitchPosition = new FiberSwitchPositionAdapter(this);
 
-		mPositionVariable = addSerialDoubleVariable("OpticalSwitchPosition",
+		mPositionVariable = addSerialVariable("OpticalSwitchPosition",
 																								lFiberSwitchPosition);
 
 	}
@@ -45,7 +46,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	}
 
 	@Override
-	public DoubleVariable getPositionVariable()
+	public ObjectVariable<Integer> getPositionVariable()
 	{
 		return mPositionVariable;
 	}
@@ -53,13 +54,13 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	@Override
 	public int getPosition()
 	{
-		return (int) mPositionVariable.getValue();
+		return mPositionVariable.get();
 	}
 
 	@Override
 	public void setPosition(int pPosition)
 	{
-		mPositionVariable.set((double) pPosition);
+		mPositionVariable.set(pPosition);
 	}
 
 	@Override

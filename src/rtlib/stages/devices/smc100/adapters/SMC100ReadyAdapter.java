@@ -3,8 +3,9 @@ package rtlib.stages.devices.smc100.adapters;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SMC100ReadyAdapter extends SerialDeviceAdapterAdapter	implements
-																	SerialTextDeviceAdapter
+public class SMC100ReadyAdapter	extends
+																SerialDeviceAdapterAdapter<Double> implements
+																																	SerialTextDeviceAdapter<Double>
 {
 
 	@Override
@@ -26,8 +27,8 @@ public class SMC100ReadyAdapter extends SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Double pOldValue,
+																					Double pNewValue)
 	{
 		return null;
 	}

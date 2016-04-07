@@ -164,7 +164,7 @@ public class StageDeviceHub extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public DoubleVariable getEnableVariable(int pDOFIndex)
+	public BooleanVariable getEnableVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getEnableVariable();
 	}
@@ -176,13 +176,13 @@ public class StageDeviceHub extends NamedVirtualDevice	implements
 	}
 
 	@Override
-	public DoubleVariable getReadyVariable(int pDOFIndex)
+	public BooleanVariable getReadyVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getReadyVariable();
 	}
 
 	@Override
-	public DoubleVariable getHomingVariable(int pDOFIndex)
+	public BooleanVariable getHomingVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getHomingVariable();
 	}

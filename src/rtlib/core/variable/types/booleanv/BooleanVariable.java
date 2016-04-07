@@ -5,10 +5,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.variable.VariableListener;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
-public class BooleanVariable extends DoubleVariable	implements
-													BooleanInputOutputVariableInterface
+public class BooleanVariable extends ObjectVariable<Boolean> implements
+																														BooleanInputOutputVariableInterface
 
 {
 
@@ -17,51 +17,48 @@ public class BooleanVariable extends DoubleVariable	implements
 	private CopyOnWriteArrayList<BooleanEventListenerInterface> mHighToLowEdgeListenerList;
 
 	public BooleanVariable(	final String pVariableName,
-							final boolean pInitialState)
+													final boolean pInitialState)
 	{
-		super(pVariableName, boolean2double(pInitialState));
+		super(pVariableName, pInitialState);
 
 		mEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
 		mLowToHighEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
 		mHighToLowEdgeListenerList = new CopyOnWriteArrayList<BooleanEventListenerInterface>();
 
-		addListener(new VariableListener<Double>()
+		addListener(new VariableListener<Boolean>()
 		{
 
 			@Override
-			public void getEvent(final Double pCurrentValue)
+			public void getEvent(final Boolean pCurrentValue)
 			{
 			}
 
 			@Override
-			public void setEvent(	final Double pCurrentValue,
-									final Double pNewValue)
+			public void setEvent(	final Boolean pCurrentValue,
+														final Boolean pNewValue)
 			{
-				final boolean lOldBooleanValue = double2boolean(pCurrentValue);
-				final boolean lNewBooleanValue = double2boolean(pNewValue);
-
-				if (lNewBooleanValue == lOldBooleanValue)
+				if (pNewValue == pCurrentValue)
 				{
 					return;
 				}
 
 				for (final BooleanEventListenerInterface lEdgeListener : mEdgeListenerList)
 				{
-					lEdgeListener.fire(lNewBooleanValue);
+					lEdgeListener.fire(pNewValue);
 				}
 
-				if (lNewBooleanValue)
+				if (pNewValue)
 				{
 					for (final BooleanEventListenerInterface lEdgeListener : mLowToHighEdgeListenerList)
 					{
-						lEdgeListener.fire(lNewBooleanValue);
+						lEdgeListener.fire(pNewValue);
 					}
 				}
-				else if (!lNewBooleanValue)
+				else if (!pNewValue)
 				{
 					for (final BooleanEventListenerInterface lEdgeListener : mHighToLowEdgeListenerList)
 					{
-						lEdgeListener.fire(lNewBooleanValue);
+						lEdgeListener.fire(pNewValue);
 					}
 				}
 			}
@@ -100,15 +97,15 @@ public class BooleanVariable extends DoubleVariable	implements
 	}
 
 	@Override
-	public final void setValue(final boolean pNewBooleanValue)
+	public void setValue(boolean pNewValue)
 	{
-		setValue(boolean2double(pNewBooleanValue));
+		set(pNewValue);
 	}
 
 	public final void toggle()
 	{
-		final double lOldValue = getValue();
-		final double lNewToggledValue = lOldValue > 0 ? 0 : 1;
+		final boolean lOldValue = getBooleanValue();
+		final boolean lNewToggledValue = !lOldValue;
 
 		setValue(lNewToggledValue);
 	}
@@ -121,25 +118,16 @@ public class BooleanVariable extends DoubleVariable	implements
 
 	protected void setBooleanValueInternal(final boolean pNewBooleanValue)
 	{
-		setReferenceInternal(boolean2double(pNewBooleanValue));
+		setReferenceInternal(pNewBooleanValue);
 	}
 
 	@Override
 	public boolean getBooleanValue()
 	{
-		final double lValue = getValue();
-		final boolean lBooleanValue = double2boolean(lValue);
+		final Boolean lBooleanValue = get();
+		if (lBooleanValue == null)
+			return false;
 		return lBooleanValue;
-	}
-
-	public static boolean double2boolean(final double pDoubleValue)
-	{
-		return pDoubleValue > 0;
-	}
-
-	public static double boolean2double(final boolean pBooleanValue)
-	{
-		return pBooleanValue ? 1 : 0;
 	}
 
 	public void waitForTrueAndToggleToFalse()
@@ -152,10 +140,10 @@ public class BooleanVariable extends DoubleVariable	implements
 		waitForStateAndToggle(false, 1, 20000, TimeUnit.MILLISECONDS);
 	}
 
-	public void waitForStateAndToggle(	final boolean pState,
-										final long pMaxPollingPeriod,
-										final long pTimeOut,
-										final TimeUnit pTimeUnit)
+	public void waitForStateAndToggle(final boolean pState,
+																		final long pMaxPollingPeriod,
+																		final long pTimeOut,
+																		final TimeUnit pTimeUnit)
 	{
 		System.out.println("waitForStateAndToggle");
 		final CountDownLatch lIsTrueSignal = new CountDownLatch(1);
@@ -207,5 +195,6 @@ public class BooleanVariable extends DoubleVariable	implements
 
 		setValue(!pState);
 	}
+
 
 }

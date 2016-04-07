@@ -3,8 +3,8 @@ package rtlib.lasers.devices.cobolt.adapters;
 import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SetPowerOnOffAdapter extends CoboltAdapter	implements
-														SerialTextDeviceAdapter
+public class SetPowerOnOffAdapter extends CoboltAdapter<Boolean> implements
+																																SerialTextDeviceAdapter<Boolean>
 {
 
 	@Override
@@ -14,17 +14,17 @@ public class SetPowerOnOffAdapter extends CoboltAdapter	implements
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Boolean parseValue(final byte[] pMessage)
 	{
 		return null;
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pOldValue,
-											final double pNewValue)
+	public byte[] getSetValueCommandMessage(final Boolean pOldValue,
+																					final Boolean pNewValue)
 	{
-		return pNewValue > 0 ? ProtocolCobolt.cSetLaserOnCommand.getBytes()
-							: ProtocolCobolt.cSetLaserOffCommand.getBytes();
+		return pNewValue ? ProtocolCobolt.cSetLaserOnCommand.getBytes()
+										: ProtocolCobolt.cSetLaserOffCommand.getBytes();
 	}
 
 }

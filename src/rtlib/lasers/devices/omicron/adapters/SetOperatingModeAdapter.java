@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SetOperatingModeAdapter extends OmicronAdapter	implements
-															SerialTextDeviceAdapter
+public class SetOperatingModeAdapter extends OmicronAdapter<Integer> implements
+																																		SerialTextDeviceAdapter<Integer>
 {
 
 	@Override
@@ -14,19 +14,19 @@ public class SetOperatingModeAdapter extends OmicronAdapter	implements
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Integer parseValue(final byte[] pMessage)
 	{
 		return null;
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pOldValue,
-											final double pNewValue)
+	public byte[] getSetValueCommandMessage(final Integer pOldValue,
+																					final Integer pNewValue)
 	{
-		final int lPower = (int) Math.round(pNewValue * (4096 - 1));
-		final String lHexOperatingModeString = ProtocolXX.toHexadecimalString(	lPower,
+		final int lOperatingMode = pNewValue;
+		final String lHexOperatingModeString = ProtocolXX.toHexadecimalString(lOperatingMode,
 																				1);
-		final String lSetOperatingModeCommandString = String.format(ProtocolXX.cRecallOperatingModeCommand,
+		final String lSetOperatingModeCommandString = String.format(ProtocolXX.cSetOperatingModeCommand,
 																	lHexOperatingModeString);
 
 		final byte[] lSetOperatingModeCommandBytes = lSetOperatingModeCommandString.getBytes();

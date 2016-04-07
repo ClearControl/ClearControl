@@ -2,7 +2,7 @@ package rtlib.lasers.devices.omicron.adapters;
 
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 
-public class GetDeviceIdAdapter extends OmicronAdapter
+public class GetDeviceIdAdapter extends OmicronAdapter<Integer>
 {
 
 	@Override
@@ -12,7 +12,7 @@ public class GetDeviceIdAdapter extends OmicronAdapter
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Integer parseValue(final byte[] pMessage)
 	{
 		/*System.out.println(GetDeviceIdAdapter.class.getSimpleName() + ": message received: "
 												+ new String(pMessage));/**/
@@ -21,7 +21,7 @@ public class GetDeviceIdAdapter extends OmicronAdapter
 																	pMessage);
 		final String lDeviceIdString = lSplittedMessage[1];
 		final int lDeviceId = Integer.parseInt(lDeviceIdString);
-		return (double) lDeviceId;
+		return lDeviceId;
 	}
 
 }

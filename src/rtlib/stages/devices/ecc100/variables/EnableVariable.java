@@ -15,15 +15,15 @@ public class EnableVariable extends BooleanVariable
 	}
 
 	@Override
-	public Double setEventHook(Double pOldValue, Double pNewValue)
+	public Boolean setEventHook(Boolean pOldValue, Boolean pNewValue)
 	{
-		final double lValue = super.setEventHook(pOldValue, pNewValue);
+		final Boolean lValue = super.setEventHook(pOldValue, pNewValue);
 		mECC100Axis.enable();
 		return lValue;
 	}
 
 	@Override
-	public Double getEventHook(Double pCurrentValue)
+	public Boolean getEventHook(Boolean pCurrentValue)
 	{
 		return super.getEventHook(pCurrentValue);
 	}

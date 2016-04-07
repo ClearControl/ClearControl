@@ -15,15 +15,15 @@ public class ReadyVariable extends BooleanVariable
 	}
 
 	@Override
-	public Double setEventHook(Double pOldValue, Double pNewValue)
+	public Boolean setEventHook(Boolean pOldValue, Boolean pNewValue)
 	{
-		final double lValue = super.setEventHook(pOldValue, pNewValue);
+		final Boolean lValue = super.setEventHook(pOldValue, pNewValue);
 		return lValue;
 	}
 
 	@Override
-	public Double getEventHook(Double pCurrentValue)
+	public Boolean getEventHook(Boolean pCurrentValue)
 	{
-		return BooleanVariable.boolean2double(mECC100Axis.isReady() && mECC100Axis.hasArrived());
+		return mECC100Axis.isReady() && mECC100Axis.hasArrived();
 	}
 }

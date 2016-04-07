@@ -12,16 +12,16 @@ public class FilterWheelPositionDeviceAdapter	extends
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Integer parseValue(final byte[] pMessage)
 	{
 		return parsePositionOrSpeedValue(pMessage, true);
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pOldPosition,
-											final double pNewPosition)
+	public byte[] getSetValueCommandMessage(final Integer pOldPosition,
+																					final Integer pNewPosition)
 	{
-		return getSetPositionAndSpeedCommandMessage((int) pNewPosition,
+		return getSetPositionAndSpeedCommandMessage(pNewPosition,
 													mFLIFilterWheelDevice.getCachedSpeed());
 	}
 

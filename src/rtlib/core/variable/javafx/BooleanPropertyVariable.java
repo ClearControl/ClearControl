@@ -9,7 +9,7 @@ public class BooleanPropertyVariable extends BooleanVariable
 	private BooleanProperty mBooleanProperty;
 
 	public BooleanPropertyVariable(	BooleanProperty pBooleanProperty,
-	                               	String pVariableName,
+																	String pVariableName,
 																	boolean pInitialState)
 	{
 		super(pVariableName, pInitialState);
@@ -22,12 +22,11 @@ public class BooleanPropertyVariable extends BooleanVariable
 			if (pOldValue != pNewValue)
 				this.setValue(pNewValue);
 
-
 		});
-		
-		addSetListener((Double pOldValue, Double pNewValue) -> {
+
+		addSetListener((Boolean pOldValue, Boolean pNewValue) -> {
 			if (pOldValue != pNewValue)
-				mBooleanProperty.setValue(BooleanVariable.double2boolean(pNewValue));
+				mBooleanProperty.setValue(pNewValue);
 		});
 	}
 

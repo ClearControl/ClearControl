@@ -3,8 +3,8 @@ package rtlib.lasers.devices.cobolt.adapters;
 import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetCurrentPowerAdapter extends CoboltAdapter	implements
-															SerialTextDeviceAdapter
+public class GetCurrentPowerAdapter extends CoboltAdapter<Double>	implements
+																																	SerialTextDeviceAdapter<Double>
 {
 
 	@Override

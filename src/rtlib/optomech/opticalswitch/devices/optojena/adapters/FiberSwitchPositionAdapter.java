@@ -5,8 +5,8 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class FiberSwitchPositionAdapter	extends
-												SerialDeviceAdapterAdapter	implements
-																			SerialTextDeviceAdapter
+																				SerialDeviceAdapterAdapter<Integer>	implements
+																																						SerialTextDeviceAdapter<Integer>
 {
 
 	public FiberSwitchPositionAdapter(final OptoJenaFiberSwitchDevice pOptoJenaFiberSwitchDevice)
@@ -15,11 +15,10 @@ public class FiberSwitchPositionAdapter	extends
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Integer pOldValue,
+																					Integer pNewValue)
 	{
-		String lMessage = String.format("ch%d\r\n",
-										(int) pNewValue + 1);
+		String lMessage = String.format("ch%d\r\n", pNewValue + 1);
 		return lMessage.getBytes();
 	}
 

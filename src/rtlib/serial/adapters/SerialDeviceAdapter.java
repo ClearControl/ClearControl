@@ -1,13 +1,13 @@
 package rtlib.serial.adapters;
 
-public interface SerialDeviceAdapter
+public interface SerialDeviceAdapter<O>
 {
 
 	// GET RELATED:
 
 	public byte[] getGetValueCommandMessage();
 
-	public Double parseValue(byte[] pMessage);
+	public O parseValue(byte[] pMessage);
 
 	public long getGetValueReturnWaitTimeInMilliseconds();
 
@@ -17,10 +17,9 @@ public interface SerialDeviceAdapter
 
 	// SET RELATED:
 
-	public double clampSetValue(double pNewValue);
+	public O clampSetValue(O pNewValue);
 
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue);
+	public byte[] getSetValueCommandMessage(O pOldValue, O pNewValue);
 
 	public long getSetValueReturnWaitTimeInMilliseconds();
 

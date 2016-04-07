@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetSpecPowerAdapter extends OmicronAdapter	implements
-														SerialTextDeviceAdapter
+public class GetSpecPowerAdapter extends OmicronAdapter<Double>	implements
+																																SerialTextDeviceAdapter<Double>
 {
 
 	@Override

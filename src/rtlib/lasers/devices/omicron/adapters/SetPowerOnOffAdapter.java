@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SetPowerOnOffAdapter extends OmicronAdapter implements
-														SerialTextDeviceAdapter
+public class SetPowerOnOffAdapter extends OmicronAdapter<Boolean>	implements
+																																	SerialTextDeviceAdapter<Boolean>
 {
 
 	@Override
@@ -14,17 +14,17 @@ public class SetPowerOnOffAdapter extends OmicronAdapter implements
 	}
 
 	@Override
-	public Double parseValue(final byte[] pMessage)
+	public Boolean parseValue(final byte[] pMessage)
 	{
 		return null;
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pOldValue,
-											final double pNewValue)
+	public byte[] getSetValueCommandMessage(final Boolean pOldValue,
+																					final Boolean pNewValue)
 	{
-		return pNewValue > 0 ? ProtocolXX.cSetPowerOnCommand.getBytes()
-							: ProtocolXX.cSetPowerOffCommand.getBytes();
+		return pNewValue ? ProtocolXX.cSetPowerOnCommand.getBytes()
+										: ProtocolXX.cSetPowerOffCommand.getBytes();
 	}
 
 	@Override

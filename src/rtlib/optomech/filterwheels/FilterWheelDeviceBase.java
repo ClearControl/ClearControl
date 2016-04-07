@@ -1,32 +1,32 @@
 package rtlib.optomech.filterwheels;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public abstract class FilterWheelDeviceBase	extends
-											NamedVirtualDevice	implements
-																FilterWheelDeviceInterface
+																						NamedVirtualDevice implements
+																															FilterWheelDeviceInterface
 {
-	protected DoubleVariable mFilterPositionVariable = null,
+	protected ObjectVariable<Integer> mFilterPositionVariable = null,
 			mFilterSpeedVariable = null;
 
 	public FilterWheelDeviceBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		mFilterPositionVariable = new DoubleVariable(	"FilterWheelPosition",
-														0);
-		mFilterSpeedVariable = new DoubleVariable(	"FilterWheelSpeed",
-													0);
+		mFilterPositionVariable = new ObjectVariable<Integer>("FilterWheelPosition",
+																													0);
+		mFilterSpeedVariable = new ObjectVariable<Integer>(	"FilterWheelSpeed",
+																												0);
 	}
 
 	@Override
-	public final DoubleVariable getPositionVariable()
+	public final ObjectVariable<Integer> getPositionVariable()
 	{
 		return mFilterPositionVariable;
 	}
 
 	@Override
-	public final DoubleVariable getSpeedVariable()
+	public final ObjectVariable<Integer> getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
 	}
@@ -34,25 +34,25 @@ public abstract class FilterWheelDeviceBase	extends
 	@Override
 	public int getPosition()
 	{
-		return (int) mFilterPositionVariable.getValue();
+		return mFilterPositionVariable.get();
 	}
 
 	@Override
 	public void setPosition(final int pPosition)
 	{
-		mFilterPositionVariable.setValue(pPosition);
+		mFilterPositionVariable.set(pPosition);
 	}
 
 	@Override
 	public int getSpeed()
 	{
-		return (int) mFilterSpeedVariable.getValue();
+		return mFilterSpeedVariable.get();
 	}
 
 	@Override
 	public void setSpeed(final int pSpeed)
 	{
-		mFilterSpeedVariable.setValue(pSpeed);
+		mFilterSpeedVariable.set(pSpeed);
 	}
 
 }

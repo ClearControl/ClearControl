@@ -33,13 +33,13 @@ public interface StageDeviceInterface	extends
 
 	DoubleVariable getMaxPositionVariable(int pDOFIndex);
 
-	DoubleVariable getEnableVariable(int pDOFIndex);
+	BooleanVariable getEnableVariable(int pDOFIndex);
 
 	DoubleVariable getPositionVariable(int pDOFIndex);
 
-	DoubleVariable getReadyVariable(int pDOFIndex);
+	BooleanVariable getReadyVariable(int pDOFIndex);
 
-	DoubleVariable getHomingVariable(int pDOFIndex);
+	BooleanVariable getHomingVariable(int pDOFIndex);
 
 	BooleanVariable getStopVariable(int pDOFIndex);
 

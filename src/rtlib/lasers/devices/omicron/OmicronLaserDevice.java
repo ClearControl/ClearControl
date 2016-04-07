@@ -53,44 +53,44 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 																			ProtocolXX.cBaudRate);
 
 		final GetDeviceIdAdapter lGetDeviceIdAdapter = new GetDeviceIdAdapter();
-		mDeviceIdVariable = mSerialDevice.addSerialDoubleVariable("DeviceId",
-																															lGetDeviceIdAdapter);
+		mDeviceIdVariable = mSerialDevice.addSerialVariable("DeviceId",
+																												lGetDeviceIdAdapter);
 
 		final GetWavelengthAdapter lGetWavelengthAdapter = new GetWavelengthAdapter();
-		mWavelengthVariable = mSerialDevice.addSerialDoubleVariable("WavelengthInNanoMeter",
-																																lGetWavelengthAdapter);
+		mWavelengthVariable = mSerialDevice.addSerialVariable("WavelengthInNanoMeter",
+																													lGetWavelengthAdapter);
 
 		final GetSpecPowerAdapter lGetSpecPowerAdapter = new GetSpecPowerAdapter();
-		mSpecInMilliWattPowerVariable = mSerialDevice.addSerialDoubleVariable("SpecPowerInMilliWatt",
-																																					lGetSpecPowerAdapter);
+		mSpecInMilliWattPowerVariable = mSerialDevice.addSerialVariable("SpecPowerInMilliWatt",
+																																		lGetSpecPowerAdapter);
 
 		final GetMaxPowerAdapter lGetMaxPowerAdapter = new GetMaxPowerAdapter();
-		mMaxPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"MaxPowerInMilliWatt",
-																																					lGetMaxPowerAdapter);
+		mMaxPowerInMilliWattVariable = mSerialDevice.addSerialVariable(	"MaxPowerInMilliWatt",
+																																		lGetMaxPowerAdapter);
 
 		final SetOperatingModeAdapter lSetOperatingModeAdapter = new SetOperatingModeAdapter();
-		mSetOperatingModeVariable = mSerialDevice.addSerialDoubleVariable("OperatingMode",
-																																			lSetOperatingModeAdapter);
+		mSetOperatingModeVariable = mSerialDevice.addSerialVariable("OperatingMode",
+																																lSetOperatingModeAdapter);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
-		mPowerOnVariable = mSerialDevice.addSerialBooleanVariable("PowerOn",
-																															lSetPowerOnOffAdapter);
+		mPowerOnVariable = mSerialDevice.addSerialVariable(	"PowerOn",
+																												lSetPowerOnOffAdapter);
 
 		final SetLaserOnOffAdapter lSetLaserOnOffAdapter = new SetLaserOnOffAdapter();
-		mLaserOnVariable = mSerialDevice.addSerialBooleanVariable("LaserOn",
-																															lSetLaserOnOffAdapter);
+		mLaserOnVariable = mSerialDevice.addSerialVariable(	"LaserOn",
+																												lSetLaserOnOffAdapter);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
-		mWorkingHoursVariable = mSerialDevice.addSerialDoubleVariable("WorkingHours",
-																																	lGetWorkingHoursAdapter);
+		mWorkingHoursVariable = mSerialDevice.addSerialVariable("WorkingHours",
+																														lGetWorkingHoursAdapter);
 
 		mGetSetTargetPowerAdapter = new GetSetTargetPowerAdapter();
-		mTargetPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable("TargetPowerInMilliWatt",
-																																						mGetSetTargetPowerAdapter);
+		mTargetPowerInMilliWattVariable = mSerialDevice.addSerialVariable("TargetPowerInMilliWatt",
+																																			mGetSetTargetPowerAdapter);
 
 		final GetCurrentPowerAdapter lGetCurrentPowerAdapter = new GetCurrentPowerAdapter();
-		mCurrentPowerInMilliWattVariable = mSerialDevice.addSerialDoubleVariable(	"CurrentPowerInMilliWatt",
-																																							lGetCurrentPowerAdapter);
+		mCurrentPowerInMilliWattVariable = mSerialDevice.addSerialVariable(	"CurrentPowerInMilliWatt",
+																																				lGetCurrentPowerAdapter);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 			else if (mAnalog)
 				setOperatingMode(4);
 			// setPowerOn(true);
-			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.getValue());
+			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.get());
 			return lOpen;
 		}
 		catch (final Throwable e)

@@ -4,9 +4,9 @@ import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public abstract class CoboltAdapter	extends
-									SerialDeviceAdapterAdapter	implements
-																SerialTextDeviceAdapter
+public abstract class CoboltAdapter<O>	extends
+																				SerialDeviceAdapterAdapter<O>	implements
+																																			SerialTextDeviceAdapter<O>
 {
 
 	@Override
@@ -19,13 +19,6 @@ public abstract class CoboltAdapter	extends
 	public long getGetValueReturnWaitTimeInMilliseconds()
 	{
 		return ProtocolCobolt.cWaitTimeInMilliSeconds;
-	}
-
-	@Override
-	public byte[] getSetValueCommandMessage(final double pOldValue,
-											final double pNewValue)
-	{
-		return null;
 	}
 
 	@Override

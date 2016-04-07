@@ -4,8 +4,8 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100MinPositionAdapter	extends
-										SerialDeviceAdapterAdapter	implements
-																	SerialTextDeviceAdapter
+																			SerialDeviceAdapterAdapter<Double> implements
+																																				SerialTextDeviceAdapter<Double>
 {
 
 	@Override
@@ -18,7 +18,7 @@ public class SMC100MinPositionAdapter	extends
 	public Double parseValue(byte[] pMessage)
 	{
 		return 1000 * SMC100Protocol.parseFloat(SMC100Protocol.cGetMinPosCommand,
-												pMessage);
+																						pMessage);
 	}
 
 	@Override
@@ -28,11 +28,11 @@ public class SMC100MinPositionAdapter	extends
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Double pOldValue,
+																					Double pNewValue)
 	{
-		String lSetMinPositionMessage = String.format(	SMC100Protocol.cSetMinPosCommand,
-														pNewValue * 0.001);
+		String lSetMinPositionMessage = String.format(SMC100Protocol.cSetMinPosCommand,
+																									pNewValue * 0.001);
 		return lSetMinPositionMessage.getBytes();
 	}
 

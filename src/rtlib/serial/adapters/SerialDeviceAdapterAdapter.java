@@ -1,7 +1,7 @@
 package rtlib.serial.adapters;
 
-public class SerialDeviceAdapterAdapter	implements
-										SerialDeviceAdapter
+public class SerialDeviceAdapterAdapter<O>	implements
+																						SerialDeviceAdapter<O>
 {
 
 	@Override
@@ -11,7 +11,7 @@ public class SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public Double parseValue(byte[] pMessage)
+	public O parseValue(byte[] pMessage)
 	{
 		return null;
 	}
@@ -35,14 +35,13 @@ public class SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public double clampSetValue(double pValue)
+	public O clampSetValue(O pValue)
 	{
 		return pValue;
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(O pOldValue, O pNewValue)
 	{
 		return null;
 	}

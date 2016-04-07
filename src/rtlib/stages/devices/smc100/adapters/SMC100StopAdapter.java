@@ -3,8 +3,9 @@ package rtlib.stages.devices.smc100.adapters;
 import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class SMC100StopAdapter extends SerialDeviceAdapterAdapter	implements
-																	SerialTextDeviceAdapter
+public class SMC100StopAdapter extends
+															SerialDeviceAdapterAdapter<Boolean>	implements
+																																	SerialTextDeviceAdapter<Boolean>
 {
 
 	@Override
@@ -14,9 +15,9 @@ public class SMC100StopAdapter extends SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public Double parseValue(byte[] pMessage)
+	public Boolean parseValue(byte[] pMessage)
 	{
-		return 0.0;
+		return false;
 	}
 
 	@Override
@@ -26,10 +27,10 @@ public class SMC100StopAdapter extends SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Boolean pOldValue,
+																					Boolean pNewValue)
 	{
-		if (pOldValue == 0 && pNewValue > 0)
+		if (pOldValue == false && pNewValue == true)
 		{
 			// System.out.println("Stopping!");
 			return SMC100Protocol.cStopCommand.getBytes();

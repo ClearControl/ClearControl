@@ -4,7 +4,7 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.longv.LongVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -14,7 +14,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 																														OptoMechDeviceInterface
 {
 
-	private final DoubleVariable mCommandVariable;
+	private final LongVariable mCommandVariable;
 
 	private final BooleanVariable[] mLightSheetOnOff;
 
@@ -35,13 +35,13 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 
 		final ArduinoOpticalSwitchPositionAdapter lFiberSwitchPosition = new ArduinoOpticalSwitchPositionAdapter(this);
 
-		mCommandVariable = addSerialDoubleVariable(	"OpticalSwitchPosition",
+		mCommandVariable = (LongVariable) addSerialVariable("OpticalSwitchPosition",
 																								lFiberSwitchPosition);
 
 		mLightSheetOnOff = new BooleanVariable[4];
 
-		final VariableSetListener<Double> lBooleanVariableListener = (u,
-																																	v) -> {
+		final VariableSetListener<Boolean> lBooleanVariableListener = (	u,
+																																		v) -> {
 
 			int lCount = 0;
 			for (int i = 0; i < mLightSheetOnOff.length; i++)

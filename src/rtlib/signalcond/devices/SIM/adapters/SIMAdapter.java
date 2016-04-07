@@ -8,17 +8,18 @@ import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.signalcond.devices.SIM.SIM900MainframeDevice;
 import rtlib.signalcond.devices.SIM.adapters.protocol.ProtocolSIM;
 
-public abstract class SIMAdapter extends SerialDeviceAdapterAdapter	implements
-																	SerialTextDeviceAdapter
+public abstract class SIMAdapter extends
+																SerialDeviceAdapterAdapter<Double> implements
+																																	SerialTextDeviceAdapter<Double>
 {
 
 	private final SIM900MainframeDevice mSim900MainframeDevice;
 	private final int mPort;
 	private final String mVariableName;
 
-	public SIMAdapter(	SIM900MainframeDevice pSim900MainframeDevice,
-						int pPort,
-						String pVariableName)
+	public SIMAdapter(SIM900MainframeDevice pSim900MainframeDevice,
+										int pPort,
+										String pVariableName)
 	{
 		mSim900MainframeDevice = pSim900MainframeDevice;
 		mPort = pPort;
@@ -29,9 +30,9 @@ public abstract class SIMAdapter extends SerialDeviceAdapterAdapter	implements
 	public byte[] getGetValueCommandMessage()
 	{
 		String lCommand = String.format(ProtocolSIM.cGetCommand,
-										mVariableName);
+																		mVariableName);
 		String lWrappedCommand = mSim900MainframeDevice.wrapCommand(mPort,
-																	lCommand);
+																																lCommand);
 
 		// System.out.println("GET sending: '" + lWrappedCommand + "'");
 		return lWrappedCommand.getBytes();
@@ -48,13 +49,13 @@ public abstract class SIMAdapter extends SerialDeviceAdapterAdapter	implements
 			// System.out.println("Received: '" + lAnswer + "'");
 
 			int lLengthlHeaderStart = lAnswer.indexOf(',');
-			String lLengthIntLengthString = lAnswer.substring(	lLengthlHeaderStart + 2,
-																lLengthlHeaderStart + 3);
+			String lLengthIntLengthString = lAnswer.substring(lLengthlHeaderStart + 2,
+																												lLengthlHeaderStart + 3);
 			int lNumberOfDigits = Integer.parseInt(lLengthIntLengthString);
 
 			String lValueString = lAnswer.substring(lLengthlHeaderStart + 2
-													+ lNumberOfDigits
-													+ 1);
+																							+ lNumberOfDigits
+																							+ 1);
 
 			lValue = Double.parseDouble(lValueString.trim());
 		}
@@ -67,16 +68,16 @@ public abstract class SIMAdapter extends SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Double pOldValue,
+																					Double pNewValue)
 	{
 
 		final String lSetCommandString = String.format(	ProtocolSIM.cSetCommand,
-														mVariableName,
-														pNewValue);
+																										mVariableName,
+																										pNewValue);
 
 		final String lWrappedSetCommandString = mSim900MainframeDevice.wrapCommand(	mPort,
-																					lSetCommandString);
+																																								lSetCommandString);
 
 		/*System.out.println("SET sending: '" + lWrappedSetCommandString
 												+ "'");/**/

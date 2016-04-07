@@ -24,8 +24,8 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 
 		reset();
 
-		final VariableSetListener<Double> lBooleanVariableListener = (u,
-																																	v) -> {
+		final VariableSetListener<Boolean> lBooleanVariableListener = (	u,
+																																		v) -> {
 			update();
 		};
 

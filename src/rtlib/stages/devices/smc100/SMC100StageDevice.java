@@ -33,35 +33,35 @@ public class SMC100StageDevice extends SerialDevice	implements
 		super(pDeviceName, pPortName, SMC100Protocol.cBaudRate);
 
 		final SerialTextDeviceAdapter lEnableAdapter = new SMC100EnableAdapter();
-		mEnableVariable = addSerialBooleanVariable(	pDeviceName + "Enable",
+		mEnableVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Enable",
 													lEnableAdapter);
 
 		final SerialTextDeviceAdapter lReadyAdapter = new SMC100ReadyAdapter();
-		mReadyVariable = addSerialBooleanVariable(	pDeviceName + "Ready",
+		mReadyVariable = (BooleanVariable) addSerialVariable(	pDeviceName + "Ready",
 													lReadyAdapter);
 
 		final SerialTextDeviceAdapter lHomingAdapter = new SMC100HomingAdapter();
-		mHomingVariable = addSerialBooleanVariable(	pDeviceName + "Homing",
+		mHomingVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Homing",
 													lHomingAdapter);
 
 		final SerialTextDeviceAdapter lMinPositionAdapter = new SMC100MinPositionAdapter();
-		mMinPositionVariable = addSerialBooleanVariable(pDeviceName + "MinPosition",
+		mMinPositionVariable = (DoubleVariable) addSerialVariable(pDeviceName + "MinPosition",
 														lMinPositionAdapter);
 
 		final SerialTextDeviceAdapter lMaxPositionAdapter = new SMC100MaxPositionAdapter();
-		mMaxPositionVariable = addSerialBooleanVariable(pDeviceName + "MaxPosition",
+		mMaxPositionVariable = (DoubleVariable) addSerialVariable(pDeviceName + "MaxPosition",
 														lMaxPositionAdapter);
 
 		final SerialTextDeviceAdapter lStopAdapter = new SMC100StopAdapter();
-		mStopVariable = addSerialBooleanVariable(	pDeviceName + "Stop",
+		mStopVariable = (BooleanVariable) addSerialVariable(pDeviceName + "Stop",
 													lStopAdapter);
 
 		final SerialTextDeviceAdapter lPositionAdapter = new SMC100PositionAdapter(this);
-		mPositionVariable = addSerialDoubleVariable(pDeviceName + "PositionDirect",
+		mPositionVariable = (DoubleVariable) addSerialVariable(	pDeviceName + "PositionDirect",
 													lPositionAdapter);
 
 		final SerialTextDeviceAdapter lResetAdapter = new SMC100ResetAdapter();
-		mResetVariable = addSerialBooleanVariable(	pDeviceName + "Reset",
+		mResetVariable = (BooleanVariable) addSerialVariable(	pDeviceName + "Reset",
 													lResetAdapter);
 
 	}
@@ -112,13 +112,13 @@ public class SMC100StageDevice extends SerialDevice	implements
 	}
 
 	@Override
-	public DoubleVariable getEnableVariable(int pIndex)
+	public BooleanVariable getEnableVariable(int pIndex)
 	{
 		return mEnableVariable;
 	}
 
 	@Override
-	public DoubleVariable getHomingVariable(int pIndex)
+	public BooleanVariable getHomingVariable(int pIndex)
 	{
 		return mHomingVariable;
 	}

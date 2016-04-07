@@ -4,7 +4,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.value.WritableValue;
 import javafx.css.PseudoClass;
 import javafx.css.StyleableProperty;
 import javafx.scene.AccessibleAttribute;

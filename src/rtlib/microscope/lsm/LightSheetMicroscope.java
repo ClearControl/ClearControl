@@ -213,8 +213,8 @@ public class LightSheetMicroscope	extends
 	{
 		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
 		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
-																																																																														lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
-																																																																														lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
 
 		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
 			getDeviceLists().getStackCameraDevice(i)
@@ -487,7 +487,7 @@ public class LightSheetMicroscope	extends
 	{
 		getDeviceLists().getLaserDevice(pLaserIndex)
 										.getLaserOnVariable()
-										.setValue(pLaserOnOff);
+										.set(pLaserOnOff);
 	};
 
 	@Override
@@ -495,7 +495,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLaserDevice(pLaserIndex)
 														.getLaserOnVariable()
-														.getBooleanValue();
+														.get();
 	}
 
 	@Override
@@ -511,7 +511,7 @@ public class LightSheetMicroscope	extends
 	{
 		return getDeviceLists().getLaserDevice(pLaserIndex)
 														.getTargetPowerInMilliWattVariable()
-														.getValue();
+														.get();
 	}
 
 	@Override

@@ -9,13 +9,13 @@ public class OffsetAdapter extends SIMAdapter
 {
 
 	public OffsetAdapter(	SIM900MainframeDevice pSim900MainframeDevice,
-							int pPort)
+												int pPort)
 	{
 		super(pSim900MainframeDevice, pPort, ProtocolSIM.cOffset);
 	}
 
 	@Override
-	public double clampSetValue(double pValue)
+	public Double clampSetValue(Double pValue)
 	{
 		return min(max(pValue, -10.00), 10.00);
 	}

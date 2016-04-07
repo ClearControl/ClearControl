@@ -2,26 +2,26 @@ package rtlib.optomech.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
 import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;
 import rtlib.serial.SerialDevice;
 
-public class FLIFilterWheelDevice extends SerialDevice	implements
-														FilterWheelDeviceInterface
+public class FLIFilterWheelDevice extends SerialDevice implements
+																											FilterWheelDeviceInterface
 {
 
-	private final DoubleVariable mFilterPositionVariable,
+	private final ObjectVariable<Integer> mFilterPositionVariable,
 			mFilterSpeedVariable;
 	private volatile int mCachedPosition, mCachedSpeed;
 
 	public FLIFilterWheelDevice(final int pDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
-									.getSerialDevicePort(	"filterwheel.fli",
-															pDeviceIndex,
-															"NULL"));
+															.getSerialDevicePort(	"filterwheel.fli",
+																										pDeviceIndex,
+																										"NULL"));
 	}
 
 	public FLIFilterWheelDevice(final String pPortName)
@@ -29,52 +29,52 @@ public class FLIFilterWheelDevice extends SerialDevice	implements
 		super("FLIFilterWheel", pPortName, 9600);
 
 		final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
-		mFilterPositionVariable = addSerialDoubleVariable(	"FilterWheelPosition",
-															lFilterWheelPosition);
-		mFilterPositionVariable.addSetListener(new VariableSetListener<Double>()
+		mFilterPositionVariable = addSerialVariable("FilterWheelPosition",
+																								lFilterWheelPosition);
+		mFilterPositionVariable.addSetListener(new VariableSetListener<Integer>()
 		{
 			@Override
-			public void setEvent(	final Double pCurrentValue,
-									final Double pNewValue)
+			public void setEvent(	final Integer pCurrentValue,
+														final Integer pNewValue)
 			{
 				updateCache(pNewValue);
 			}
 
-			private void updateCache(final Double pNewValue)
+			private void updateCache(final Integer pNewValue)
 			{
-				mCachedPosition = (int) (pNewValue == null	? 0
-															: pNewValue.doubleValue());
+				mCachedPosition = (int) (pNewValue == null ? 0
+																									: pNewValue.doubleValue());
 			}
 		});
 
 		final FilterWheelSpeedDeviceAdapter lFilterWheelSpeed = new FilterWheelSpeedDeviceAdapter(this);
-		mFilterSpeedVariable = addSerialDoubleVariable(	"FilterWheelSpeed",
-														lFilterWheelSpeed);
-		mFilterSpeedVariable.addSetListener(new VariableSetListener<Double>()
+		mFilterSpeedVariable = addSerialVariable(	"FilterWheelSpeed",
+																							lFilterWheelSpeed);
+		mFilterSpeedVariable.addSetListener(new VariableSetListener<Integer>()
 		{
 			@Override
-			public void setEvent(	final Double pCurrentValue,
-									final Double pNewValue)
+			public void setEvent(	final Integer pCurrentValue,
+														final Integer pNewValue)
 			{
 				updateCache(pNewValue);
 			}
 
-			private void updateCache(final Double pNewValue)
+			private void updateCache(final Integer pNewValue)
 			{
 				mCachedSpeed = (int) (pNewValue == null	? 0
-														: pNewValue.doubleValue());
+																								: pNewValue.doubleValue());
 			}
 		});
 	}
 
 	@Override
-	public final DoubleVariable getPositionVariable()
+	public final ObjectVariable<Integer> getPositionVariable()
 	{
 		return mFilterPositionVariable;
 	}
 
 	@Override
-	public final DoubleVariable getSpeedVariable()
+	public final ObjectVariable<Integer> getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
 	}
@@ -82,7 +82,7 @@ public class FLIFilterWheelDevice extends SerialDevice	implements
 	@Override
 	public int getPosition()
 	{
-		return (int) mFilterPositionVariable.getValue();
+		return mFilterPositionVariable.get();
 	}
 
 	public int getCachedPosition()
@@ -93,13 +93,13 @@ public class FLIFilterWheelDevice extends SerialDevice	implements
 	@Override
 	public void setPosition(final int pPosition)
 	{
-		mFilterPositionVariable.setValue(pPosition);
+		mFilterPositionVariable.set(pPosition);
 	}
 
 	@Override
 	public int getSpeed()
 	{
-		return (int) mFilterSpeedVariable.getValue();
+		return mFilterSpeedVariable.get();
 	}
 
 	public int getCachedSpeed()
@@ -110,7 +110,7 @@ public class FLIFilterWheelDevice extends SerialDevice	implements
 	@Override
 	public void setSpeed(final int pSpeed)
 	{
-		mFilterSpeedVariable.setValue(pSpeed);
+		mFilterSpeedVariable.set(pSpeed);
 	}
 
 	@Override

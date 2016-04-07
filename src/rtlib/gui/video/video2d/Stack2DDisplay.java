@@ -208,10 +208,10 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
 		{
 			@Override
-			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+			public Boolean setEventHook(final Boolean pOldValue,
+																	final Boolean pNewValue)
 			{
-				final boolean lDisplayOn = BooleanVariable.double2boolean(pNewValue);
+				final boolean lDisplayOn = pNewValue;
 				mVideoWindow.setDisplayOn(lDisplayOn);
 				return super.setEventHook(pOldValue, pNewValue);
 			}
@@ -221,10 +221,10 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 																									false)
 		{
 			@Override
-			public Double setEventHook(	final Double pOldValue,
-																	final Double pNewValue)
+			public Boolean setEventHook(final Boolean pOldValue,
+																	final Boolean pNewValue)
 			{
-				final boolean lManualMinMax = BooleanVariable.double2boolean(pNewValue);
+				final boolean lManualMinMax = pNewValue;
 				mVideoWindow.setManualMinMax(lManualMinMax);
 				return super.setEventHook(pOldValue, pNewValue);
 			}

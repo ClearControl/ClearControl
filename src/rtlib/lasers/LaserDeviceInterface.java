@@ -3,8 +3,7 @@ package rtlib.lasers;
 import rtlib.core.device.NameableInterface;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public interface LaserDeviceInterface	extends
 										NameableInterface,
@@ -24,12 +23,12 @@ public interface LaserDeviceInterface	extends
 
 	public double getCurrentPowerInMilliWatt();
 
-	public BooleanVariable getLaserOnVariable();
+	public ObjectVariable<Integer> getWavelengthInNanoMeterVariable();
 
-	public DoubleVariable getTargetPowerInMilliWattVariable();
+	public ObjectVariable<Boolean> getLaserOnVariable();
 
-	public DoubleVariable getCurrentPowerInMilliWattVariable();
+	public ObjectVariable<Double> getTargetPowerInMilliWattVariable();
 
-	public DoubleVariable getWavelengthInNanoMeterVariable();
+	public ObjectVariable<Double> getCurrentPowerInMilliWattVariable();
 
 }

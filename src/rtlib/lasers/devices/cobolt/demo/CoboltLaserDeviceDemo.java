@@ -26,8 +26,8 @@ public class CoboltLaserDeviceDemo
 		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
 		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
 
-		lCoboltLaserDevice.getPowerOnVariable().setValue(true);
-		lCoboltLaserDevice.getLaserOnVariable().setValue(true);
+		lCoboltLaserDevice.getPowerOnVariable().set(true);
+		lCoboltLaserDevice.getLaserOnVariable().set(true);
 
 		assertTrue(lCoboltLaserDevice.start());
 
@@ -87,8 +87,8 @@ public class CoboltLaserDeviceDemo
 		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
 		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
 
-		lCoboltLaserDevice.getPowerOnVariable().setValue(true);
-		lCoboltLaserDevice.getLaserOnVariable().setValue(true);
+		lCoboltLaserDevice.getPowerOnVariable().set(true);
+		lCoboltLaserDevice.getLaserOnVariable().set(true);
 
 		for (int i = 0; i < 20; i++)
 		{

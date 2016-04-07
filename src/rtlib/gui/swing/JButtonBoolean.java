@@ -45,10 +45,10 @@ public class JButtonBoolean extends JButton
 												pInitialState)
 		{
 			@Override
-			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+			public Boolean setEventHook(final Boolean pOldValue,
+																	final Boolean pNewValue)
 			{
-				final boolean lButtonState = BooleanVariable.double2boolean(pNewValue);
+				final boolean lButtonState = pNewValue;
 				// if (pDoubleEventSource != mThis)
 				{
 					EventQueue.invokeLater(new Runnable()

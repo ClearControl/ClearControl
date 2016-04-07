@@ -3,8 +3,8 @@ package rtlib.lasers.devices.omicron.adapters;
 import rtlib.lasers.devices.omicron.adapters.protocol.ProtocolXX;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetCurrentPowerAdapter extends OmicronAdapter	implements
-															SerialTextDeviceAdapter
+public class GetCurrentPowerAdapter extends OmicronAdapter<Double> implements
+																													SerialTextDeviceAdapter<Double>
 {
 	private static final double cCurrentPowerFilteringAlpha = 0.1;
 

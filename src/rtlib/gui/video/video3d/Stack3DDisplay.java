@@ -160,9 +160,9 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mDisplayOn = new BooleanVariable("DisplayOn", true)
 		{
 			@Override
-			public void setValue(final double pBoolean)
+			public void setValue(final boolean pBoolean)
 			{
-				final boolean lDisplayOn = BooleanVariable.double2boolean(pBoolean);
+				final boolean lDisplayOn = pBoolean;
 				setDisplayOn(lDisplayOn);
 			}
 		};

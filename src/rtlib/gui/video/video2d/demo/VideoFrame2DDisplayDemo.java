@@ -62,10 +62,10 @@ public class VideoFrame2DDisplayDemo
 		final int lSizeZ = 16;
 
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(false,
-																																													lSizeX,
-																																													lSizeY,
-																																													lSizeZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	false,
+																																			lSizeX,
+																																			lSizeY,
+																																			lSizeZ);
 
 		final ObjectVariable<StackInterface> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
 
@@ -131,14 +131,14 @@ public class VideoFrame2DDisplayDemo
 
 					final BooleanVariable lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
-					lStartStopVariable.sendUpdatesTo(new DoubleVariable("StartStopVariableHook",
-																															0)
+					lStartStopVariable.sendUpdatesTo(new BooleanVariable(	"StartStopVariableHook",
+																																false)
 					{
 						@Override
-						public Double setEventHook(	final Double pOldValue,
-																				final Double pNewValue)
+						public Boolean setEventHook(final Boolean pOldValue,
+																				final Boolean pNewValue)
 						{
-							final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
+							final boolean lBoolean = pNewValue;
 							sDisplay = lBoolean;
 							System.out.println("sDisplay=" + sDisplay);
 							return super.setEventHook(pOldValue, pNewValue);

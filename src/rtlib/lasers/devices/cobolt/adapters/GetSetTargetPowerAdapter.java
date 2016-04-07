@@ -3,8 +3,8 @@ package rtlib.lasers.devices.cobolt.adapters;
 import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
-public class GetSetTargetPowerAdapter extends CoboltAdapter	implements
-															SerialTextDeviceAdapter
+public class GetSetTargetPowerAdapter extends CoboltAdapter<Double>	implements
+																																		SerialTextDeviceAdapter<Double>
 {
 
 	@Override
@@ -21,8 +21,8 @@ public class GetSetTargetPowerAdapter extends CoboltAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(final double pOldPowerInMilliWatt,
-											final double pNewPowerInMilliWatt)
+	public byte[] getSetValueCommandMessage(final Double pOldPowerInMilliWatt,
+																					final Double pNewPowerInMilliWatt)
 	{
 		final double lPowerInWatt = pNewPowerInMilliWatt * 0.001;
 		final String lSetTargetPowerCommandString = String.format(	ProtocolCobolt.cSetOutputPowerCommand,

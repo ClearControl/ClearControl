@@ -123,7 +123,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
 
-		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
+		final VariableSetListener lDoubleVariableListener = (u, v) -> {
 			update();
 		};
 

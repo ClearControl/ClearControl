@@ -1,6 +1,7 @@
 package rtlib.serial.adapters;
 
-public interface SerialTextDeviceAdapter extends SerialDeviceAdapter
+public interface SerialTextDeviceAdapter<O> extends
+																						SerialDeviceAdapter<O>
 {
 
 	public Character getGetValueReturnMessageTerminationCharacter();

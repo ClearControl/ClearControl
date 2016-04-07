@@ -1,5 +1,6 @@
 package rtlib.signalcond.devices.SIM;
 
+import rtlib.core.variable.types.doublev.DoubleVariable;
 import rtlib.serial.Serial;
 import rtlib.signalcond.ScalingAmplifierBaseDevice;
 import rtlib.signalcond.ScalingAmplifierDeviceInterface;
@@ -45,15 +46,15 @@ public class SIM983ScalingAmplifierDevice	extends
 
 			final GainAdapter lGetDeviceIdAdapter = new GainAdapter(mSim900MainframeDevice,
 																	mPort);
-			mGainVariable = mSim900MainframeDevice.getSerialDevice()
-													.addSerialDoubleVariable(	"Gain",
+			mGainVariable = (DoubleVariable) mSim900MainframeDevice.getSerialDevice()
+																															.addSerialVariable(	"Gain",
 																				lGetDeviceIdAdapter);
 
 			final OffsetAdapter lGetWavelengthAdapter = new OffsetAdapter(	mSim900MainframeDevice,
 																			mPort);
-			mOffsetVariable = mSim900MainframeDevice.getSerialDevice()
-													.addSerialDoubleVariable(	"Offset",
-																				lGetWavelengthAdapter);
+			mOffsetVariable = (DoubleVariable) mSim900MainframeDevice.getSerialDevice()
+																																.addSerialVariable(	"Offset",
+																																										lGetWavelengthAdapter);
 
 			return lOpen;
 		}

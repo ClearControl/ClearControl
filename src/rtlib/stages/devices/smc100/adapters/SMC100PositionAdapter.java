@@ -8,8 +8,9 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.devices.smc100.SMC100StageDevice;
 
-public class SMC100PositionAdapter extends SerialDeviceAdapterAdapter	implements
-																		SerialTextDeviceAdapter
+public class SMC100PositionAdapter extends
+																	SerialDeviceAdapterAdapter<Double> implements
+																																		SerialTextDeviceAdapter<Double>
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 
@@ -39,7 +40,7 @@ public class SMC100PositionAdapter extends SerialDeviceAdapterAdapter	implements
 	public Double parseValue(byte[] pMessage)
 	{
 		return 1000 * SMC100Protocol.parseFloat(SMC100Protocol.cGetAbsPosCommand,
-												pMessage);
+																						pMessage);
 	}
 
 	@Override
@@ -49,8 +50,8 @@ public class SMC100PositionAdapter extends SerialDeviceAdapterAdapter	implements
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-											double pNewValue)
+	public byte[] getSetValueCommandMessage(Double pOldValue,
+																					Double pNewValue)
 	{
 		double lMinPosition = mMinPositionVariable.getValue();
 		double lMaxPosition = mMaxPositionVariable.getValue();
@@ -70,7 +71,7 @@ public class SMC100PositionAdapter extends SerialDeviceAdapterAdapter	implements
 		}
 
 		String lSetPositionMessage = String.format(	SMC100Protocol.cSetAbsPosCommand,
-													pNewValue * 0.001);
+																								pNewValue * 0.001);
 		// System.out.println(lSetPositionMessage);
 		return lSetPositionMessage.getBytes();
 	}

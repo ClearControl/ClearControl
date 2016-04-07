@@ -1,10 +1,11 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.types.doublev.DoubleVariable;
+import rtlib.core.variable.types.objectv.ObjectVariable;
+
 
 public interface PositionDeviceInterface
 {
-	DoubleVariable getPositionVariable();
+	ObjectVariable<Integer> getPositionVariable();
 
 	int getPosition();
 

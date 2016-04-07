@@ -5,8 +5,8 @@ import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class ArduinoOpticalSwitchPositionAdapter extends
-																								SerialDeviceAdapterAdapter implements
-																																					SerialTextDeviceAdapter
+																								SerialDeviceAdapterAdapter<Long> implements
+																																								SerialTextDeviceAdapter<Long>
 {
 
 	public ArduinoOpticalSwitchPositionAdapter(final ArduinoOpticalSwitchDevice pArduinoOpticalSwitchDevice)
@@ -15,10 +15,10 @@ public class ArduinoOpticalSwitchPositionAdapter extends
 	}
 
 	@Override
-	public byte[] getSetValueCommandMessage(double pOldValue,
-																					double pNewValue)
+	public byte[] getSetValueCommandMessage(Long pOldValue,
+																					Long pNewValue)
 	{
-		String lMessage = String.format("%d\n", (int) pNewValue);
+		String lMessage = String.format("%d\n", pNewValue);
 		return lMessage.getBytes();
 	}
 
@@ -45,6 +45,5 @@ public class ArduinoOpticalSwitchPositionAdapter extends
 	{
 		return '\n';
 	}
-
 
 }

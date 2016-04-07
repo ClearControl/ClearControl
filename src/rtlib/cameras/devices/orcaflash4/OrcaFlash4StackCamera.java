@@ -196,9 +196,9 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 		{
 
 			@Override
-			public Double getEventHook(Double pCurrentValue)
+			public Boolean getEventHook(Boolean pCurrentValue)
 			{
-				return BooleanVariable.boolean2double(mDcamAcquisition.isAcquiring());
+				return mDcamAcquisition.isAcquiring();
 			}
 
 		};

@@ -1,7 +1,7 @@
 package rtlib.serial.adapters;
 
-public interface SerialBinaryDeviceAdapter	extends
-											SerialDeviceAdapter
+public interface SerialBinaryDeviceAdapter<O> extends
+																							SerialDeviceAdapter<O>
 {
 	public int getGetValueReturnMessageLength();
 
