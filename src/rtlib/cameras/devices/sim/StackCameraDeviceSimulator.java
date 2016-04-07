@@ -17,9 +17,8 @@ import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.device.SimulatorDeviceInterface;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.VariableEdgeListener;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -36,7 +35,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 {
 	private StackCameraDeviceSimulatorHint mHint;
 	private StackSourceInterface mStackSource;
-	private BooleanVariable mTriggerVariable;
+	private ObjectVariable<Boolean> mTriggerVariable;
 	protected volatile long mCurrentStackIndex = 0;
 	private RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
@@ -44,25 +43,23 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
 	public StackCameraDeviceSimulator(StackSourceInterface pStackSource,
-																		BooleanVariable pTriggerVariable)
+																		ObjectVariable<Boolean> pTriggerVariable)
 	{
 		super("StackCameraSimulator");
 		mStackSource = pStackSource;
 		mTriggerVariable = pTriggerVariable;
 
-		mLineReadOutTimeInMicrosecondsVariable =   new ObjectVariable<Double>  ("LineReadOutTimeInMicroseconds",
+		mLineReadOutTimeInMicrosecondsVariable = new ObjectVariable<Double>("LineReadOutTimeInMicroseconds",
 																																				1.0);
 		mStackBytesPerPixelVariable = new ObjectVariable<Long>(	"FrameBytesPerPixel",
-																															2L);
-		mStackWidthVariable = new ObjectVariable<Long>("FrameWidth",
-																											320L);
+																														2L);
+		mStackWidthVariable = new ObjectVariable<Long>("FrameWidth", 320L);
 		mStackHeightVariable = new ObjectVariable<Long>("FrameHeight",
-																											320L);
-		mStackDepthVariable = new ObjectVariable<Long>("FrameDepth",
-																											100L);
-		mExposureInMicrosecondsVariable =   new ObjectVariable<Double>  (	"ExposureInMicroseconds",
+																										320L);
+		mStackDepthVariable = new ObjectVariable<Long>("FrameDepth", 100L);
+		mExposureInMicrosecondsVariable = new ObjectVariable<Double>(	"ExposureInMicroseconds",
 																																	1000.0);
-		mPixelSizeinNanometersVariable =   new ObjectVariable<Double>  ("PixelSizeinNanometers",
+		mPixelSizeinNanometersVariable = new ObjectVariable<Double>("PixelSizeinNanometers",
 																																160.0);
 
 		mStackReference = new ObjectVariable<>("StackReference");
@@ -75,21 +72,22 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 			return;
 		}
 
-		mTriggerVariable.addEdgeListener(new BooleanEventListenerInterface()
+		mTriggerVariable.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
 
 			@Override
-			public void fire(boolean pCurrentBooleanValue)
+			public void fire(Boolean pAfterEdge)
 			{
-				final long lExposuretimeInMicroSeconds = mExposureInMicrosecondsVariable.get()
-																																								.longValue();
-				final long lDepth = mStackDepthVariable.get();
-				final long lWaitTimeMicroseconds = lExposuretimeInMicroSeconds * lDepth;
-				ThreadUtils.sleep(lWaitTimeMicroseconds,
-													TimeUnit.MICROSECONDS);
-
-				if (pCurrentBooleanValue)
+				if (pAfterEdge)
 				{
+
+					final long lExposuretimeInMicroSeconds = mExposureInMicrosecondsVariable.get()
+																																									.longValue();
+					final long lDepth = mStackDepthVariable.get();
+					final long lWaitTimeMicroseconds = lExposuretimeInMicroSeconds * lDepth;
+					ThreadUtils.sleep(lWaitTimeMicroseconds,
+														TimeUnit.MICROSECONDS);
+
 					StackInterface lStack;
 					if (mStackSource != null)
 					{
@@ -141,7 +139,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 			lDepth = mHint.nbangles;
 
 		final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
-																																									.intValue();
+																																						.intValue();
 
 		if (lWidth * lHeight * lDepth <= 0)
 			return null;
@@ -299,10 +297,10 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	@Override
 	public void trigger()
 	{
-		mTriggerVariable.setEdge(true);
+		mTriggerVariable.setEdge(false, true);
 	}
 
-	public BooleanVariable getTriggerVariable()
+	public ObjectVariable<Boolean> getTriggerVariable()
 	{
 		return mTriggerVariable;
 	}

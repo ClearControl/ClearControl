@@ -20,9 +20,9 @@ public class ContiguousOffHeapPlanarStackFactory implements
 		final long lBufferSizeInBytes = lVolume * lBytesPerVoxel;
 		final ContiguousMemoryInterface lContiguousMemoryInterface = new OffHeapMemory(	"OffHeapPlanarStack" + pParameters,
 																																										lBufferSizeInBytes);
-		return OffHeapPlanarStack.createStack(	lContiguousMemoryInterface,
-																																pParameters.getWidth(),
-																																pParameters.getHeight(),
-																																pParameters.getDepth());
+		return OffHeapPlanarStack.createStack(lContiguousMemoryInterface,
+																					pParameters.getWidth(),
+																					pParameters.getHeight(),
+																					pParameters.getDepth());
 	}
 }

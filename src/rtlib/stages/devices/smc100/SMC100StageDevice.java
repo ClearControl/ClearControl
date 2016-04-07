@@ -3,7 +3,7 @@ package rtlib.stages.devices.smc100;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.serial.SerialDevice;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.stages.StageDeviceInterface;

@@ -1,9 +1,9 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 import ecc100.ECC100Axis;
 
-public class ResetVariable extends BooleanVariable
+public class ResetVariable extends ObjectVariable<Boolean>
 {
 
 	private final ECC100Axis mECC100Axis;

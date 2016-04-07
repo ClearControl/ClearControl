@@ -1,8 +1,8 @@
 package rtlib.core.device;
 
-public class NamedVirtualDevice extends OpenCloseDeviceAdapter	implements
-																OpenCloseDeviceInterface,
-																NameableInterface
+public class NamedVirtualDevice extends OpenCloseDeviceAdapter implements
+																															OpenCloseDeviceInterface,
+																															NameableInterface
 {
 
 	private String mDeviceName;
@@ -28,8 +28,7 @@ public class NamedVirtualDevice extends OpenCloseDeviceAdapter	implements
 	@Override
 	public String toString()
 	{
-		return String.format(	"NamedDevice [mDeviceName=%s]",
-								mDeviceName);
+		return String.format("NamedDevice [mDeviceName=%s]", mDeviceName);
 	}
 
 }

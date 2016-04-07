@@ -1,7 +1,7 @@
 package rtlib.core.variable;
 
 public interface VariableListener<O>	extends
-										VariableSetListener<O>,
-										VariableGetListener<O>
+																			VariableSetListener<O>,
+																			VariableGetListener<O>
 {
 }

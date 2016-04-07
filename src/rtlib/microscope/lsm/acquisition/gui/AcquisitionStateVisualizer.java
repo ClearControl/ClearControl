@@ -15,70 +15,69 @@ public class AcquisitionStateVisualizer
 		super();
 	}
 
-
 	public void setState(AcquisitionState pAcquisitionState)
 	{
 
 		if (mMultiPlotState == null)
 		{
 			mMultiPlotState = MultiPlot.getMultiPlot(this.getClass()
-															.getSimpleName() + "State");
+																										.getSimpleName() + "State");
 			mMultiPlotState.clear();
 			mMultiPlotState.setVisible(true);
 		}
 
-		plotTable(	pAcquisitionState,
-					"DZ",
-					pAcquisitionState.getDZTable(),
-					pAcquisitionState.getNumberOfDevicesDZ());
+		plotTable(pAcquisitionState,
+							"DZ",
+							pAcquisitionState.getDZTable(),
+							pAcquisitionState.getNumberOfDevicesDZ());
 
-		plotTable(	pAcquisitionState,
-					"IX",
-					pAcquisitionState.getIXTable(),
-					pAcquisitionState.getNumberOfDevicesIX());
-		plotTable(	pAcquisitionState,
-					"IY",
-					pAcquisitionState.getIYTable(),
-					pAcquisitionState.getNumberOfDevicesIY());
-		plotTable(	pAcquisitionState,
-					"IZ",
-					pAcquisitionState.getIZTable(),
-					pAcquisitionState.getNumberOfDevicesIZ());
+		plotTable(pAcquisitionState,
+							"IX",
+							pAcquisitionState.getIXTable(),
+							pAcquisitionState.getNumberOfDevicesIX());
+		plotTable(pAcquisitionState,
+							"IY",
+							pAcquisitionState.getIYTable(),
+							pAcquisitionState.getNumberOfDevicesIY());
+		plotTable(pAcquisitionState,
+							"IZ",
+							pAcquisitionState.getIZTable(),
+							pAcquisitionState.getNumberOfDevicesIZ());
 
-		plotTable(	pAcquisitionState,
-					"IA",
-					pAcquisitionState.getIATable(),
-					pAcquisitionState.getNumberOfDevicesIA());
-		plotTable(	pAcquisitionState,
-					"IB",
-					pAcquisitionState.getIBTable(),
-					pAcquisitionState.getNumberOfDevicesIB());
+		plotTable(pAcquisitionState,
+							"IA",
+							pAcquisitionState.getIATable(),
+							pAcquisitionState.getNumberOfDevicesIA());
+		plotTable(pAcquisitionState,
+							"IB",
+							pAcquisitionState.getIBTable(),
+							pAcquisitionState.getNumberOfDevicesIB());
 
-		plotTable(	pAcquisitionState,
-					"IW",
-					pAcquisitionState.getIWTable(),
-					pAcquisitionState.getNumberOfDevicesIW());
-		plotTable(	pAcquisitionState,
-					"IH",
-					pAcquisitionState.getIHTable(),
-					pAcquisitionState.getNumberOfDevicesIH());
+		plotTable(pAcquisitionState,
+							"IW",
+							pAcquisitionState.getIWTable(),
+							pAcquisitionState.getNumberOfDevicesIW());
+		plotTable(pAcquisitionState,
+							"IH",
+							pAcquisitionState.getIHTable(),
+							pAcquisitionState.getNumberOfDevicesIH());
 
-		plotTable(	pAcquisitionState,
-					"IP",
-					pAcquisitionState.getIPTable(),
-					pAcquisitionState.getNumberOfDevicesIP());
+		plotTable(pAcquisitionState,
+							"IP",
+							pAcquisitionState.getIPTable(),
+							pAcquisitionState.getNumberOfDevicesIP());
 
 	}
 
-	public void plotTable(	AcquisitionState pAcquisitionState,
-							String lName,
-							InterpolationTable lTable,
-							int lNumberOfDevices)
+	public void plotTable(AcquisitionState pAcquisitionState,
+												String lName,
+												InterpolationTable lTable,
+												int lNumberOfDevices)
 	{
 		for (int d = 0; d < lNumberOfDevices; d++)
 		{
-			PlotTab lPlot = mMultiPlotState.getPlot(String.format(	lName	+ " index=%d",
-																	d));
+			PlotTab lPlot = mMultiPlotState.getPlot(String.format(lName + " index=%d",
+																														d));
 			lPlot.clearPoints();
 
 			lPlot.setLinePlot("interpolated " + lName);
@@ -99,9 +98,7 @@ public class AcquisitionStateVisualizer
 				double lValue = lTable.getRow(czi).getY(d);
 				double z = pAcquisitionState.getZ(czi);
 				if (Double.isFinite(lValue))
-					lPlot.addPoint(	"control points " + lName,
-									z,
-									lValue);
+					lPlot.addPoint("control points " + lName, z, lValue);
 			}
 
 			lPlot.ensureUpToDate();

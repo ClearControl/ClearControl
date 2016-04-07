@@ -40,8 +40,8 @@ public class LogWindowHandler extends Handler
 	}
 
 	public static synchronized LogWindowHandler getInstance(String pTitle,
-															int pWidth,
-															int pHeight)
+																													int pWidth,
+																													int pHeight)
 	{
 		if (sHandler == null)
 		{

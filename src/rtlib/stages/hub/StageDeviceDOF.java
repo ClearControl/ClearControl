@@ -2,7 +2,7 @@ package rtlib.stages.hub;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stages.StageDeviceInterface;
 
 public class StageDeviceDOF

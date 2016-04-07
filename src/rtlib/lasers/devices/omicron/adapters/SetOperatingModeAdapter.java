@@ -25,9 +25,9 @@ public class SetOperatingModeAdapter extends OmicronAdapter<Integer> implements
 	{
 		final int lOperatingMode = pNewValue;
 		final String lHexOperatingModeString = ProtocolXX.toHexadecimalString(lOperatingMode,
-																				1);
+																																					1);
 		final String lSetOperatingModeCommandString = String.format(ProtocolXX.cSetOperatingModeCommand,
-																	lHexOperatingModeString);
+																																lHexOperatingModeString);
 
 		final byte[] lSetOperatingModeCommandBytes = lSetOperatingModeCommandString.getBytes();
 

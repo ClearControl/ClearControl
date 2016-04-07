@@ -21,12 +21,10 @@ public class InterpolationTableTests
 		final Row lAddRow2 = lInterpolationTable.addRow(2.0);
 		final Row lAddRow4 = lInterpolationTable.addRow(3.2);
 		final Row lAddRow5 = lInterpolationTable.addRow(4);
-		
-		
+
 		Row lRow = lInterpolationTable.getRow(1);
 		// System.out.println(lRow);
-		assertTrue(lRow.getX()==2.0);
-		
+		assertTrue(lRow.getX() == 2.0);
 
 		lAddRow1.setY(0, 1);
 		lAddRow2.setY(0, 2);
@@ -41,11 +39,10 @@ public class InterpolationTableTests
 		lAddRow5.setY(1, Double.NaN);
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(0,
-																	1.2));
+																																1.2));
 
 		System.out.println(lInterpolationTable.getInterpolatedValue(1,
-																	1.2));
-
+																																1.2));
 
 		/*final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
 

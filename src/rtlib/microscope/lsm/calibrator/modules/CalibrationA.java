@@ -18,7 +18,7 @@ import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.SmartArgMaxFinder;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -204,7 +204,7 @@ public class CalibrationA
 				for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				{
 					final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(i)
-																																																							.get();
+																																			.get();
 
 					OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 

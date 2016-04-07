@@ -14,9 +14,9 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;

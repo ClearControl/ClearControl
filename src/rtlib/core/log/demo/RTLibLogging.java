@@ -15,8 +15,8 @@ public class RTLibLogging implements Loggable
 			info("test", "bla");
 
 		final LogWindowHandler lLogWindowHandler = LogWindowHandler.getInstance("test",
-																				768,
-																				320);
+																																						768,
+																																						320);
 
 		getLogger("test").addHandler(lLogWindowHandler);
 

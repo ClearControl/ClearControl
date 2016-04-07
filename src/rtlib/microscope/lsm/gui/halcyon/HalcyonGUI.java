@@ -58,7 +58,6 @@ public class HalcyonGUI extends Application
 
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI(laserDevice);
 
-
 			HalcyonNode node = new HalcyonNode(	"Laser-" + i,
 																					NodeType.Laser,
 																					laserDeviceGUI.getPanel());
@@ -72,7 +71,6 @@ public class HalcyonGUI extends Application
 
 			// Stage
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI(stageDevice);
-
 
 			HalcyonNode node = new HalcyonNode(	"Stage-" + i,
 																					NodeType.Stage,

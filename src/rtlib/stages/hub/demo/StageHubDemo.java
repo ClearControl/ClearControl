@@ -17,7 +17,7 @@ public class StageHubDemo
 	{
 		ECC100StageDevice lECC100StageDevice = new ECC100StageDevice();
 		SMC100StageDevice lSMC100StageDevice = new SMC100StageDevice(	"SMC100",
-																		"COM1");
+																																	"COM1");
 
 		StageDeviceHub lStageHub = new StageDeviceHub("Hub");
 

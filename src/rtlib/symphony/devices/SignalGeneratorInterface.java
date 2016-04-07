@@ -4,12 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.symphony.score.ScoreInterface;
 
 public interface SignalGeneratorInterface	extends
-											OpenCloseDeviceInterface,
-											StateQueueDeviceInterface
+																					OpenCloseDeviceInterface,
+																					StateQueueDeviceInterface
 {
 
 	public double getTemporalGranularityInMicroseconds();
@@ -20,7 +20,7 @@ public interface SignalGeneratorInterface	extends
 
 	public ScoreInterface getQueuedScore();
 
-	public BooleanVariable getTriggerVariable();
+	public ObjectVariable<Boolean> getTriggerVariable();
 
 	public boolean isPlaying();
 

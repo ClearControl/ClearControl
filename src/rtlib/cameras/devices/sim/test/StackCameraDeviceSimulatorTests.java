@@ -5,8 +5,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -29,8 +28,8 @@ public class StackCameraDeviceSimulatorTests
 																																	103L,
 																																	lRecycler);
 
-		BooleanVariable lTrigger = new BooleanVariable(	"CameraTrigger",
-																										false);
+		ObjectVariable<Boolean> lTrigger = new ObjectVariable<Boolean>(	"CameraTrigger",
+																																		false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
 																																														lTrigger);
@@ -61,7 +60,7 @@ public class StackCameraDeviceSimulatorTests
 
 		for (int i = 0; i < 20; i++)
 		{
-			lTrigger.setEdge(true);
+			lTrigger.setEdge(false, true);
 		}
 
 		lStackCameraDeviceSimulator.stop();

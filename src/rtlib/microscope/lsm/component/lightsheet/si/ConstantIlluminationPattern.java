@@ -4,8 +4,8 @@ import rtlib.symphony.staves.IntervalStave;
 import rtlib.symphony.staves.StaveInterface;
 
 public class ConstantIlluminationPattern extends
-										StructuredIlluminationPatternBase	implements
-																			StructuredIlluminationPatternInterface
+																				StructuredIlluminationPatternBase	implements
+																																					StructuredIlluminationPatternInterface
 {
 
 	private final IntervalStave mStave;

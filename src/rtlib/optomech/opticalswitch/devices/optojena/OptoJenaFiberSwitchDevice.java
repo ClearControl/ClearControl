@@ -2,7 +2,7 @@ package rtlib.optomech.opticalswitch.devices.optojena;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.PositionDeviceInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -32,7 +32,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 		final FiberSwitchPositionAdapter lFiberSwitchPosition = new FiberSwitchPositionAdapter(this);
 
 		mPositionVariable = addSerialVariable("OpticalSwitchPosition",
-																								lFiberSwitchPosition);
+																					lFiberSwitchPosition);
 
 	}
 

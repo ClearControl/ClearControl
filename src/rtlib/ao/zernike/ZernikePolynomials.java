@@ -10,18 +10,18 @@ public class ZernikePolynomials
 {
 
 	/**
-	 * Computes the value of the Zernike polynomial Z(i,j) at position (x,y)
-	 * This is a re-parametrization of the Zernike basis so that it is easier to
+	 * Computes the value of the Zernike polynomial Z(i,j) at position (x,y) This
+	 * is a re-parametrization of the Zernike basis so that it is easier to
 	 * interpret as a transform.
 	 * 
 	 * @param i
-	 *            non-negative integer: i = (n-m)/2
+	 *          non-negative integer: i = (n-m)/2
 	 * @param j
-	 *            non-negative integer: j = (n+m)/2
+	 *          non-negative integer: j = (n+m)/2
 	 * @param x
-	 *            x-coordinate
+	 *          x-coordinate
 	 * @param y
-	 *            y-coordinate
+	 *          y-coordinate
 	 * @return returns value
 	 */
 	public static double computeZijxy(int i, int j, double x, double y)
@@ -39,13 +39,13 @@ public class ZernikePolynomials
 	 * Computes the value of the Zernike polynomial Z(n,m) at position (x,y)
 	 * 
 	 * @param n
-	 *            non-negative integer
+	 *          non-negative integer
 	 * @param m
-	 *            integer
+	 *          integer
 	 * @param x
-	 *            x-coordinate
+	 *          x-coordinate
 	 * @param y
-	 *            y-coordinate
+	 *          y-coordinate
 	 * @return returns value
 	 */
 	public static double computeZnmxy(int n, int m, double x, double y)
@@ -60,13 +60,13 @@ public class ZernikePolynomials
 	 * (polar coordinates)
 	 * 
 	 * @param n
-	 *            non-negative integer
+	 *          non-negative integer
 	 * @param m
-	 *            integer
+	 *          integer
 	 * @param r
-	 *            x-coordinate
+	 *          x-coordinate
 	 * @param t
-	 *            y-coordinate
+	 *          y-coordinate
 	 * @return returns value
 	 */
 	public static double computeZnmrt(int n, int m, double r, double t)
@@ -80,19 +80,16 @@ public class ZernikePolynomials
 	 * (polar coordinates)
 	 * 
 	 * @param n
-	 *            non-negative integer
+	 *          non-negative integer
 	 * @param m
-	 *            integer
+	 *          integer
 	 * @param r2
-	 *            squared modulus (ro)
+	 *          squared modulus (ro)
 	 * @param t
-	 *            argument (theta)
+	 *          argument (theta)
 	 * @return returns value
 	 */
-	public static double computeZnmr2t(	int n,
-										int m,
-										double r2,
-										double t)
+	public static double computeZnmr2t(int n, int m, double r2, double t)
 	{
 		/*if (r2 > 1.0)
 		{
@@ -117,16 +114,16 @@ public class ZernikePolynomials
 	 * ComputesZernike radial polynomial R(n,m) value for modulus r
 	 * 
 	 * @param n
-	 *            parameter n
+	 *          parameter n
 	 * @param m
-	 *            parameter m
+	 *          parameter m
 	 * @param r
-	 *            modulus r
+	 *          modulus r
 	 * @return Zernike radial polynomial R(n,m) value for modulus r
 	 */
 	public static double computeRnmr(	final int n,
-										final int m,
-										final double r)
+																		final int m,
+																		final double r)
 	{
 		return computeRnmr2(n, m, r * r);
 	}
@@ -135,16 +132,16 @@ public class ZernikePolynomials
 	 * ComputesZernike radial polynomial R(n,m) value for square modulus r^2
 	 * 
 	 * @param n
-	 *            paameter n
+	 *          paameter n
 	 * @param m
-	 *            parmeter m
+	 *          parmeter m
 	 * @param r2
-	 *            squared modulus r^2
+	 *          squared modulus r^2
 	 * @return Zernike radial polynomial R(n,m) value for square modulus r^2
 	 */
-	public static double computeRnmr2(	final int n,
-										final int m,
-										final double r2)
+	public static double computeRnmr2(final int n,
+																		final int m,
+																		final double r2)
 	{
 		int i;
 		int k;

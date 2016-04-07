@@ -13,7 +13,7 @@ public interface StackSinkInterface<T extends NativeType<T>, A extends ArrayData
 	public void addMetaData(String pPrefix, double pValue);
 
 	public void addMetaDataVariable(final String pPrefix,
-									final VariableInterface<?> pVariable);
+																	final VariableInterface<?> pVariable);
 
 	public void removeAllMetaDataVariables();
 

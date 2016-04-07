@@ -3,25 +3,22 @@ package rtlib.cameras;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
 																																		CameraDeviceInterface
 {
 
-	protected ObjectVariable<Double> 
-			mExposureInMicrosecondsVariable,
+	protected ObjectVariable<Double> mExposureInMicrosecondsVariable,
 			mPixelSizeinNanometersVariable,
 			mLineReadOutTimeInMicrosecondsVariable;
 
 	protected ObjectVariable<Long> mStackBytesPerPixelVariable,
-			mStackWidthVariable,
-			mStackHeightVariable, mStackDepthVariable;
+			mStackWidthVariable, mStackHeightVariable, mStackDepthVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
-	protected BooleanVariable mIsAcquiring;
+	protected ObjectVariable<Boolean> mIsAcquiring;
 
 	public CameraDeviceBase(final String pDeviceName)
 	{
@@ -78,7 +75,7 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	}
 
 	@Override
-	public BooleanVariable getIsAcquiringVariable()
+	public ObjectVariable<Boolean> getIsAcquiringVariable()
 	{
 		return mIsAcquiring;
 	}

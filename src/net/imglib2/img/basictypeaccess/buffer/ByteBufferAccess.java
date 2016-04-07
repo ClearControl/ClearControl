@@ -6,8 +6,8 @@ import net.imglib2.img.basictypeaccess.ByteAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class ByteBufferAccess	implements
-								ByteAccess,
-								ArrayDataAccess<ByteBufferAccess>
+															ByteAccess,
+															ArrayDataAccess<ByteBufferAccess>
 {
 	protected ByteBuffer data;
 

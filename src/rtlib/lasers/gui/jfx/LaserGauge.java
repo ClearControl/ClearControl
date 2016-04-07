@@ -90,7 +90,6 @@ public class LaserGauge
 		return mActualGauge.valueProperty();
 	}
 
-
 	private void init()
 	{
 		// Power on/off
@@ -152,9 +151,9 @@ public class LaserGauge
 		pane = new HBox();
 
 		VBox lVBoxForColoredRectangle = new VBox();
-		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(Color.web(getWebColorString(waveLength)),
-																												CornerRadii.EMPTY,
-																												Insets.EMPTY)));
+		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	Color.web(getWebColorString(waveLength)),
+																																							CornerRadii.EMPTY,
+																																							Insets.EMPTY)));
 		Rectangle rectangle = new Rectangle(20, 80, Color.TRANSPARENT);
 		lVBoxForColoredRectangle.getChildren().add(rectangle);
 
@@ -170,7 +169,6 @@ public class LaserGauge
 
 		pane.getChildren().addAll(lVBoxForColoredRectangle, vBox);
 
-
 	}
 
 	public HBox getPanel()
@@ -183,10 +181,8 @@ public class LaserGauge
 		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
 									+ "-fx-border-color: black");
 
-
 		return hBox;
 	}
-
 
 	public String getWebColorString(String wavelength)
 	{

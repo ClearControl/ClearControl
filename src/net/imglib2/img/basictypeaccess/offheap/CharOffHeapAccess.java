@@ -6,14 +6,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
 public class CharOffHeapAccess extends AbstractOffHeapAccess implements
-															CharAccess,
-															ArrayDataAccess<CharOffHeapAccess>
+																														CharAccess,
+																														ArrayDataAccess<CharOffHeapAccess>
 {
 
 	public CharOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateChars("CharOffHeapAccess",
-														numEntities);
+																										numEntities);
 	}
 
 	public CharOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

@@ -3,9 +3,9 @@ package rtlib.serial;
 import jssc.SerialPortException;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
 import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
@@ -257,7 +257,6 @@ public class SerialDevice extends NamedVirtualDevice implements
 	{
 		return mVariableBundle.getVariable(pVariableName);
 	}
-
 
 	@Override
 	public boolean open()

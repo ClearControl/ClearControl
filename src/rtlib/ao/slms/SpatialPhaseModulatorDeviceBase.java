@@ -3,31 +3,31 @@ package rtlib.ao.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import rtlib.core.device.SignalStartableDevice;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
-														SignalStartableDevice	implements
-																				SpatialPhaseModulatorDeviceInterface
+																											SignalStartableDevice	implements
+																																						SpatialPhaseModulatorDeviceInterface
 {
 
-	protected  ObjectVariable<Double> mMatrixWidthVariable;
-	protected  ObjectVariable<Double> mMatrixHeightVariable;
-	protected  ObjectVariable<Double> mActuatorResolutionVariable;
-	protected  ObjectVariable<Double> mNumberOfActuatorsVariable;
+	protected ObjectVariable<Double> mMatrixWidthVariable;
+	protected ObjectVariable<Double> mMatrixHeightVariable;
+	protected ObjectVariable<Double> mActuatorResolutionVariable;
+	protected ObjectVariable<Double> mNumberOfActuatorsVariable;
 
 	protected ObjectVariable<DenseMatrix64F> mMatrixVariable;
 
 	public SpatialPhaseModulatorDeviceBase(	String pDeviceName,
-											int pFullMatrixWidthHeight,
-											int pActuatorResolution)
+																					int pFullMatrixWidthHeight,
+																					int pActuatorResolution)
 	{
 		super(pDeviceName);
 
-		mMatrixWidthVariable =   new ObjectVariable<Double>  (	"MatrixWidth",
+		mMatrixWidthVariable = new ObjectVariable<Double>("MatrixWidth",
 																											(double) pFullMatrixWidthHeight);
-		mMatrixHeightVariable =   new ObjectVariable<Double>  (	"MatrixHeight",
+		mMatrixHeightVariable = new ObjectVariable<Double>(	"MatrixHeight",
 																												(double) pFullMatrixWidthHeight);
-		mActuatorResolutionVariable =   new ObjectVariable<Double>  (	"ActuatorResolution",
+		mActuatorResolutionVariable = new ObjectVariable<Double>(	"ActuatorResolution",
 																															(double) pActuatorResolution);
 
 	}
@@ -51,25 +51,25 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	}
 
 	@Override
-	public  ObjectVariable<Double> getMatrixWidthVariable()
+	public ObjectVariable<Double> getMatrixWidthVariable()
 	{
 		return mMatrixWidthVariable;
 	}
 
 	@Override
-	public  ObjectVariable<Double> getMatrixHeightVariable()
+	public ObjectVariable<Double> getMatrixHeightVariable()
 	{
 		return mMatrixHeightVariable;
 	}
 
 	@Override
-	public  ObjectVariable<Double> getActuatorResolutionVariable()
+	public ObjectVariable<Double> getActuatorResolutionVariable()
 	{
 		return mActuatorResolutionVariable;
 	}
 
 	@Override
-	public  ObjectVariable<Double> getNumberOfActuatorVariable()
+	public ObjectVariable<Double> getNumberOfActuatorVariable()
 	{
 		return mNumberOfActuatorsVariable;
 	}
@@ -83,9 +83,7 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 	@Override
 	public void setMode(int pU, int pV, double pValue)
 	{
-		mMatrixVariable.get().set(	pU + getMatrixWidth() * pV,
-									0,
-									pValue);
+		mMatrixVariable.get().set(pU + getMatrixWidth() * pV, 0, pValue);
 		mMatrixVariable.setCurrent();
 	}
 

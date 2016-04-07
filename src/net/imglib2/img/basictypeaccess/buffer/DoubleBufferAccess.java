@@ -8,16 +8,16 @@ import net.imglib2.img.basictypeaccess.DoubleAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class DoubleBufferAccess	implements
-								DoubleAccess,
-								ArrayDataAccess<DoubleBufferAccess>
+																DoubleAccess,
+																ArrayDataAccess<DoubleBufferAccess>
 {
 	protected DoubleBuffer data;
 
 	public DoubleBufferAccess(final int numEntities)
 	{
 		this.data = ByteBuffer.allocateDirect(numEntities * 4)
-								.order(ByteOrder.nativeOrder())
-								.asDoubleBuffer();
+													.order(ByteOrder.nativeOrder())
+													.asDoubleBuffer();
 	}
 
 	@Override

@@ -29,10 +29,7 @@ public class TheilSenEstimatorTest
 			for (int j = 0; j < 100; j++)
 			{
 				final double x = 0 + i + noise * rnd.nextGaussian();
-				final double y = b	+ a
-									* i
-									+ noise
-									* rnd.nextGaussian();
+				final double y = b + a * i + noise * rnd.nextGaussian();
 				lTheilSenEstimator.enter(x, y);
 			}
 		}
@@ -43,8 +40,8 @@ public class TheilSenEstimatorTest
 
 		System.out.println(lModel);
 		System.out.format("Error: %f \n", stderror);
-		
-		assertTrue(stderror<0.1);
+
+		assertTrue(stderror < 0.1);
 
 	}
 

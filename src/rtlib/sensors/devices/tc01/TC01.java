@@ -3,7 +3,7 @@ package rtlib.sensors.devices.tc01;
 import org.bridj.Pointer;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.sensors.TemperatureSensorDeviceBase;
 import rtlib.sensors.devices.tc01.bridj.TC01libLibrary;
 

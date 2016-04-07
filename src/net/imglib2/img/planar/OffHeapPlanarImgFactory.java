@@ -18,8 +18,8 @@ import coremem.SafeMemory;
 import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
 
-public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
-																NativeImgFactory<T>
+public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
+																															NativeImgFactory<T>
 {
 
 	private final boolean mAddSafetyWrapper;
@@ -41,107 +41,107 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 		return type.createSuitableNativeImg(this, dim);
 	}
 
-	public NativeImg<T, ByteOffHeapAccess> createByteInstance(	ContiguousMemoryInterface pContiguousMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, ByteOffHeapAccess> createByteInstance(ContiguousMemoryInterface pContiguousMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, ByteOffHeapAccess> lInstance = (OffHeapPlanarImg<T, ByteOffHeapAccess>) createByteInstance(	lFragmentedMemory,
-																																dimensions,
-																																type);
+																																																													dimensions,
+																																																													type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
-	public NativeImg<T, CharOffHeapAccess> createCharInstance(	ContiguousMemoryInterface pContiguousMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, CharOffHeapAccess> createCharInstance(ContiguousMemoryInterface pContiguousMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, CharOffHeapAccess> lInstance = (OffHeapPlanarImg<T, CharOffHeapAccess>) createCharInstance(	lFragmentedMemory,
-																																dimensions,
-																																type);
+																																																													dimensions,
+																																																													type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
-	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(	ContiguousMemoryInterface pContiguousMemory,
-																	final long[] dimensions,
-																	final T type)
+	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(ContiguousMemoryInterface pContiguousMemory,
+																																final long[] dimensions,
+																																final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, DoubleOffHeapAccess> lInstance = (OffHeapPlanarImg<T, DoubleOffHeapAccess>) createDoubleInstance(	lFragmentedMemory,
-																																	dimensions,
-																																	type);
+																																																																dimensions,
+																																																																type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
 	public NativeImg<T, FloatOffHeapAccess> createFloatInstance(ContiguousMemoryInterface pContiguousMemory,
-																final long[] dimensions,
-																final T type)
+																															final long[] dimensions,
+																															final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, FloatOffHeapAccess> lInstance = (OffHeapPlanarImg<T, FloatOffHeapAccess>) createFloatInstance(lFragmentedMemory,
-																																dimensions,
-																																type);
+																																																														dimensions,
+																																																														type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
 	public NativeImg<T, IntOffHeapAccess> createIntInstance(ContiguousMemoryInterface pContiguousMemory,
-															final long[] dimensions,
-															final T type)
+																													final long[] dimensions,
+																													final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
-		final OffHeapPlanarImg<T, IntOffHeapAccess> lInstance = (OffHeapPlanarImg<T, IntOffHeapAccess>) createIntInstance(	lFragmentedMemory,
-																															dimensions,
-																															type);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
+		final OffHeapPlanarImg<T, IntOffHeapAccess> lInstance = (OffHeapPlanarImg<T, IntOffHeapAccess>) createIntInstance(lFragmentedMemory,
+																																																											dimensions,
+																																																											type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
-	public NativeImg<T, LongOffHeapAccess> createLongInstance(	ContiguousMemoryInterface pContiguousMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, LongOffHeapAccess> createLongInstance(ContiguousMemoryInterface pContiguousMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, LongOffHeapAccess> lInstance = (OffHeapPlanarImg<T, LongOffHeapAccess>) createLongInstance(	lFragmentedMemory,
-																																dimensions,
-																																type);
+																																																													dimensions,
+																																																													type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
 
 	public NativeImg<T, ShortOffHeapAccess> createShortInstance(ContiguousMemoryInterface pContiguousMemory,
-																final long[] dimensions,
-																final T type)
+																															final long[] dimensions,
+																															final T type)
 	{
 		final int lNumberOfDimensions = dimensions.length;
 		final int lLastDimension = (int) dimensions[lNumberOfDimensions - 1];
-		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(	pContiguousMemory,
-																			lLastDimension);
+		final FragmentedMemory lFragmentedMemory = FragmentedMemory.split(pContiguousMemory,
+																																			lLastDimension);
 		final OffHeapPlanarImg<T, ShortOffHeapAccess> lInstance = (OffHeapPlanarImg<T, ShortOffHeapAccess>) createShortInstance(lFragmentedMemory,
-																																dimensions,
-																																type);
+																																																														dimensions,
+																																																														type);
 		lInstance.setContiguousMemory(pContiguousMemory);
 		return lInstance;
 	}
@@ -152,20 +152,20 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 	 * Creates a byte instance given a fragmented buffer, dimensions and a type
 	 * 
 	 * @param pFragmentedMemory
-	 *            fragmnted buffer
+	 *          fragmnted buffer
 	 * @param dimensions
-	 *            dimensions
+	 *          dimensions
 	 * @param type
-	 *            type
+	 *          type
 	 * @return native image
 	 */
-	public NativeImg<T, ByteOffHeapAccess> createByteInstance(	FragmentedMemoryInterface pFragmentedMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, ByteOffHeapAccess> createByteInstance(FragmentedMemoryInterface pFragmentedMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, ByteOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, ByteOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																				dimensions);
+																																																																						dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -179,13 +179,13 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 		return lOffHeapPlanarImg;
 	}
 
-	public NativeImg<T, CharOffHeapAccess> createCharInstance(	FragmentedMemoryInterface pFragmentedMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, CharOffHeapAccess> createCharInstance(FragmentedMemoryInterface pFragmentedMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, CharOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, CharOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																				dimensions);
+																																																																						dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -198,13 +198,13 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 		return lOffHeapPlanarImg;
 	}
 
-	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(	FragmentedMemoryInterface pFragmentedMemory,
-																	final long[] dimensions,
-																	final T type)
+	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(FragmentedMemoryInterface pFragmentedMemory,
+																																final long[] dimensions,
+																																final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, DoubleOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, DoubleOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																					dimensions);
+																																																																								dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -218,12 +218,12 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 	}
 
 	public NativeImg<T, FloatOffHeapAccess> createFloatInstance(FragmentedMemoryInterface pFragmentedMemory,
-																final long[] dimensions,
-																final T type)
+																															final long[] dimensions,
+																															final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, FloatOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, FloatOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																					dimensions);
+																																																																							dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -237,12 +237,12 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 	}
 
 	public NativeImg<T, IntOffHeapAccess> createIntInstance(FragmentedMemoryInterface pFragmentedMemory,
-															final long[] dimensions,
-															final T type)
+																													final long[] dimensions,
+																													final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, IntOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, IntOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																				dimensions);
+																																																																					dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -255,13 +255,13 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 		return lOffHeapPlanarImg;
 	}
 
-	public NativeImg<T, LongOffHeapAccess> createLongInstance(	FragmentedMemoryInterface pFragmentedMemory,
-																final long[] dimensions,
-																final T type)
+	public NativeImg<T, LongOffHeapAccess> createLongInstance(FragmentedMemoryInterface pFragmentedMemory,
+																														final long[] dimensions,
+																														final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, LongOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, LongOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																				dimensions);
+																																																																						dimensions);
 
 		int i = 0;
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -275,12 +275,12 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 	}
 
 	public NativeImg<T, ShortOffHeapAccess> createShortInstance(FragmentedMemoryInterface pFragmentedMemory,
-																final long[] dimensions,
-																final T type)
+																															final long[] dimensions,
+																															final T type)
 	{
 		@SuppressWarnings("unchecked")
 		final OffHeapPlanarImg<T, ShortOffHeapAccess> lOffHeapPlanarImg = (OffHeapPlanarImg<T, ShortOffHeapAccess>) type.createSuitableNativeImg(	this,
-																																					dimensions);
+																																																																							dimensions);
 
 		int i = 0;
 		for (final ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
@@ -294,66 +294,66 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 	/*********************************************************************************************************/
 
 	@Override
-	public NativeImg<T, ByteOffHeapAccess> createByteInstance(	final long[] dimensions,
-																final Fraction entitiesPerPixel)
+	public NativeImg<T, ByteOffHeapAccess> createByteInstance(final long[] dimensions,
+																														final Fraction entitiesPerPixel)
 	{
-		return new OffHeapPlanarImg<T, ByteOffHeapAccess>(	new ByteOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+		return new OffHeapPlanarImg<T, ByteOffHeapAccess>(new ByteOffHeapAccess(1),
+																											dimensions,
+																											entitiesPerPixel);
 	}
 
 	@Override
-	public NativeImg<T, CharOffHeapAccess> createCharInstance(	final long[] dimensions,
-																final Fraction entitiesPerPixel)
+	public NativeImg<T, CharOffHeapAccess> createCharInstance(final long[] dimensions,
+																														final Fraction entitiesPerPixel)
 	{
-		return new OffHeapPlanarImg<T, CharOffHeapAccess>(	new CharOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+		return new OffHeapPlanarImg<T, CharOffHeapAccess>(new CharOffHeapAccess(1),
+																											dimensions,
+																											entitiesPerPixel);
 	}
 
 	@Override
-	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(	final long[] dimensions,
-																	final Fraction entitiesPerPixel)
+	public NativeImg<T, DoubleOffHeapAccess> createDoubleInstance(final long[] dimensions,
+																																final Fraction entitiesPerPixel)
 	{
 		return new OffHeapPlanarImg<T, DoubleOffHeapAccess>(new DoubleOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+																												dimensions,
+																												entitiesPerPixel);
 	}
 
 	@Override
 	public NativeImg<T, FloatOffHeapAccess> createFloatInstance(final long[] dimensions,
-																final Fraction entitiesPerPixel)
+																															final Fraction entitiesPerPixel)
 	{
 		return new OffHeapPlanarImg<T, FloatOffHeapAccess>(	new FloatOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+																												dimensions,
+																												entitiesPerPixel);
 	}
 
 	@Override
 	public NativeImg<T, IntOffHeapAccess> createIntInstance(final long[] dimensions,
-															final Fraction entitiesPerPixel)
+																													final Fraction entitiesPerPixel)
 	{
 		return new OffHeapPlanarImg<T, IntOffHeapAccess>(	new IntOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+																											dimensions,
+																											entitiesPerPixel);
 	}
 
 	@Override
-	public NativeImg<T, LongOffHeapAccess> createLongInstance(	final long[] dimensions,
-																final Fraction entitiesPerPixel)
+	public NativeImg<T, LongOffHeapAccess> createLongInstance(final long[] dimensions,
+																														final Fraction entitiesPerPixel)
 	{
-		return new OffHeapPlanarImg<T, LongOffHeapAccess>(	new LongOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+		return new OffHeapPlanarImg<T, LongOffHeapAccess>(new LongOffHeapAccess(1),
+																											dimensions,
+																											entitiesPerPixel);
 	}
 
 	@Override
 	public NativeImg<T, ShortOffHeapAccess> createShortInstance(final long[] dimensions,
-																final Fraction entitiesPerPixel)
+																															final Fraction entitiesPerPixel)
 	{
 		return new OffHeapPlanarImg<T, ShortOffHeapAccess>(	new ShortOffHeapAccess(1),
-															dimensions,
-															entitiesPerPixel);
+																												dimensions,
+																												entitiesPerPixel);
 	}
 
 	@SuppressWarnings(
@@ -364,7 +364,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>>	extends
 		if (NativeType.class.isInstance(type))
 			return new PlanarImgFactory();
 		throw new IncompatibleTypeException(this,
-											type.getClass()
-												.getCanonicalName() + " does not implement NativeType.");
+																				type.getClass()
+																						.getCanonicalName() + " does not implement NativeType.");
 	}
 }

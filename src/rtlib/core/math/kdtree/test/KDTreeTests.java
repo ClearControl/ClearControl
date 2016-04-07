@@ -25,12 +25,12 @@ public class KDTreeTests
 		lKDTree.addPoint(new double[]
 		{ 3, 4, 5 }, "C");
 
-		NearestNeighborIterator<String> lNearestNeighborIterator = lKDTree.getNearestNeighborIterator(	new double[]
-																										{	3,
-																											4,
-																											5 },
-																										2,
-																										new SquareEuclideanDistanceFunction());
+		NearestNeighborIterator<String> lNearestNeighborIterator = lKDTree.getNearestNeighborIterator(new double[]
+																																																	{ 3,
+																																																		4,
+																																																		5 },
+																																																	2,
+																																																	new SquareEuclideanDistanceFunction());
 
 		int i = 0;
 		for (String lString : lNearestNeighborIterator)

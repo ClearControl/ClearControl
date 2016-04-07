@@ -60,7 +60,7 @@ public class NDIterator implements Iterator<int[]>
 			}
 		}
 	}
-	
+
 	public int get(int pIndex)
 	{
 		return mCursor[pIndex];
@@ -74,6 +74,5 @@ public class NDIterator implements Iterator<int[]>
 			lSize *= mDimensions[i];
 		return lSize;
 	}
-
 
 }

@@ -34,11 +34,7 @@ public class TestGroovyScripting
 		lMap.put("x", x);
 		lMap.put("y", y);
 
-		GroovyUtils.runScript(	"Test",
-								"x=y; println x",
-								lMap,
-								null,
-								false);
+		GroovyUtils.runScript("Test", "x=y; println x", lMap, null, false);
 
 		assertEquals(lMap.get("x"), lMap.get("y"));
 
@@ -50,11 +46,11 @@ public class TestGroovyScripting
 
 		try
 		{
-			GroovyUtils.runScript(	"TestAutoImports",
-									"String lString = new String(\"test\");  ",
-									(Map<String, Object>) null,
-									null,
-									false);
+			GroovyUtils.runScript("TestAutoImports",
+														"String lString = new String(\"test\");  ",
+														(Map<String, Object>) null,
+														null,
+														false);
 		}
 		catch (final Throwable e)
 		{
@@ -65,7 +61,7 @@ public class TestGroovyScripting
 
 	@Test
 	public void testGroovyScriptingWithScriptEngine()	throws IOException,
-														ExecutionException
+																										ExecutionException
 	{
 		final HashSet<Double> s = new HashSet<>();
 		s.add((double) 1);
@@ -73,7 +69,7 @@ public class TestGroovyScripting
 		final GroovyScripting lGroovyScripting = new GroovyScripting();
 
 		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																		null);
+																																	null);
 
 		lScriptingEngine.set("s", s);
 		lScriptingEngine.setScript("s.add(2.0); println \"script:\"+s");
@@ -82,31 +78,31 @@ public class TestGroovyScripting
 		{
 
 			@Override
-			public void updatedScript(	ScriptingEngine pScriptingEngine,
-										String pScript)
+			public void updatedScript(ScriptingEngine pScriptingEngine,
+																String pScript)
 			{
 			}
 
 			@Override
-			public void beforeScriptExecution(	ScriptingEngine pScriptingEngine,
-												String pScriptString)
+			public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
+																				String pScriptString)
 			{
 				System.out.println("before");
 			}
 
 			@Override
 			public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
-												String pScriptString)
+																				String pScriptString)
 			{
 				System.out.println("after");
 			}
 
 			@Override
 			public void asynchronousResult(	ScriptingEngine pScriptingEngine,
-											String pScriptString,
-											Map<String, Object> pBinding,
-											Throwable pThrowable,
-											String pErrorMessage)
+																			String pScriptString,
+																			Map<String, Object> pBinding,
+																			Throwable pThrowable,
+																			String pErrorMessage)
 			{
 				System.out.println(pErrorMessage);
 				if (pThrowable != null)
@@ -122,8 +118,8 @@ public class TestGroovyScripting
 
 		lScriptingEngine.executeScriptAsynchronously();
 
-		assertTrue(lScriptingEngine.waitForCompletion(	1000,
-														TimeUnit.SECONDS));
+		assertTrue(lScriptingEngine.waitForCompletion(1000,
+																									TimeUnit.SECONDS));
 
 		System.out.println("code:" + s);
 		assertTrue(s.contains(1.0));
@@ -142,12 +138,12 @@ public class TestGroovyScripting
 	{
 		final StopWatch lStopWatch = new StopWatch();
 		lStopWatch.start();
-		GroovyUtils.runScript(	"TestIndy",
-								"double[] array = new double[1000]; for(int i=0; i<" + cNumberIterations
-										+ "; i++) array[i%1000]+=1+array[(i+1)%1000] ",
-								(Map<String, Object>) null,
-								null,
-								false);
+		GroovyUtils.runScript("TestIndy",
+													"double[] array = new double[1000]; for(int i=0; i<" + cNumberIterations
+															+ "; i++) array[i%1000]+=1+array[(i+1)%1000] ",
+													(Map<String, Object>) null,
+													null,
+													false);
 		lStopWatch.stop();
 		System.out.println("script:" + lStopWatch.getTime());
 

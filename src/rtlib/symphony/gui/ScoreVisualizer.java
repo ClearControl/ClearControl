@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableListener;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.ScoreInterface;
 import rtlib.symphony.staves.StaveInterface;
@@ -98,8 +98,7 @@ public class ScoreVisualizer extends JPanel	implements
 		if (lScore.getNumberOfMovements() == 0 || lScore.getDuration(TimeUnit.NANOSECONDS) == 0)
 			return;
 
-		final float lScaling = mScalingVariable.get()
-																										.floatValue();
+		final float lScaling = mScalingVariable.get().floatValue();
 		final int lNumberOfMovements = lScore.getNumberOfMovements();
 		final int lMaxNumberOfStaves = lScore.getMaxNumberOfStaves();
 		final double lPixelsPerStave = ((double) lHeight) / lMaxNumberOfStaves;

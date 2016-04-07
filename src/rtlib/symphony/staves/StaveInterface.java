@@ -18,7 +18,7 @@ public interface StaveInterface extends NameableInterface, Cloneable
 	 * Sets whether this stave is enabled.
 	 * 
 	 * @param pEnabled
-	 *            true if enabled, false otherwise
+	 *          true if enabled, false otherwise
 	 */
 	void setEnabled(boolean pEnabled);
 
@@ -33,7 +33,7 @@ public interface StaveInterface extends NameableInterface, Cloneable
 	 * Returns value at given normalized time.
 	 * 
 	 * @param pNormalizedTime
-	 *            normalized time within [0,1]
+	 *          normalized time within [0,1]
 	 * @return value
 	 */
 	float getValue(float pNormalizedTime);

@@ -1,17 +1,17 @@
 package rtlib.core.device;
 
-import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.VariableEdgeListener;
 
 public abstract class SignalStartableDevice	extends
-											NamedVirtualDevice	implements
-																OpenCloseDeviceInterface,
-																StartStopDeviceInterface
+																						NamedVirtualDevice implements
+																															OpenCloseDeviceInterface,
+																															StartStopDeviceInterface
 {
 
-	protected final BooleanVariable mStartSignal;
+	protected final ObjectVariable<Boolean> mStartSignal;
 
-	protected final BooleanVariable mStopSignal;
+	protected final ObjectVariable<Boolean> mStopSignal;
 
 	public SignalStartableDevice(final String pDeviceName)
 	{
@@ -19,19 +19,20 @@ public abstract class SignalStartableDevice	extends
 	}
 
 	public SignalStartableDevice(	final String pDeviceName,
-									final boolean pOnlyStart)
+																final boolean pOnlyStart)
 	{
 		super(pDeviceName);
 
-		mStartSignal = new BooleanVariable(	pDeviceName + "Start",
-											false);
+		mStartSignal = new ObjectVariable<Boolean>(	pDeviceName + "Start",
+																								false);
 
-		mStopSignal = new BooleanVariable(pDeviceName + "Stop", false);
+		mStopSignal = new ObjectVariable<Boolean>(pDeviceName + "Stop",
+																							false);
 
-		mStartSignal.addEdgeListener(new BooleanEventListenerInterface()
+		mStartSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
 			@Override
-			public void fire(final boolean pCurrentBooleanValue)
+			public void fire(final Boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue)
 				{
@@ -42,10 +43,10 @@ public abstract class SignalStartableDevice	extends
 
 		if (!pOnlyStart)
 		{
-			mStopSignal.addEdgeListener(new BooleanEventListenerInterface()
+			mStopSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
 			{
 				@Override
-				public void fire(final boolean pCurrentBooleanValue)
+				public void fire(final Boolean pCurrentBooleanValue)
 				{
 					if (pCurrentBooleanValue)
 					{
@@ -56,12 +57,12 @@ public abstract class SignalStartableDevice	extends
 		}
 	}
 
-	public BooleanVariable getStartSignalBooleanVariable()
+	public ObjectVariable<Boolean> getStartSignalBooleanVariable()
 	{
 		return mStartSignal;
 	}
 
-	public BooleanVariable getStopSignalBooleanVariable()
+	public ObjectVariable<Boolean> getStopSignalBooleanVariable()
 	{
 		return mStopSignal;
 	}

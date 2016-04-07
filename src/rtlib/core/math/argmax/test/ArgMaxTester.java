@@ -18,15 +18,15 @@ public class ArgMaxTester
 {
 
 	public static TDoubleArrayList loadData(Class<?> pContextClass,
-											String pRessource,
-											int pColumn) throws IOException,
-														URISyntaxException
+																					String pRessource,
+																					int pColumn) throws IOException,
+																											URISyntaxException
 	{
 		final TDoubleArrayList lList = new TDoubleArrayList();
 
-		try (BufferedReader lBufferedReader = Files.newBufferedReader(Paths.get(Resources.getResource(	pContextClass,
-																										pRessource)
-																							.toURI())))
+		try (BufferedReader lBufferedReader = Files.newBufferedReader(Paths.get(Resources.getResource(pContextClass,
+																																																	pRessource)
+																																											.toURI())))
 		{
 			String lLine;
 			while ((lLine = lBufferedReader.readLine()) != null)
@@ -46,23 +46,23 @@ public class ArgMaxTester
 		return lList;
 	}
 
-	public static double test(	ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
-								int pNumberOfDatasets)	throws IOException,
-														URISyntaxException
+	public static double test(ArgMaxFinder1DInterface pArgMaxFinder1DInterface,
+														int pNumberOfDatasets) throws IOException,
+																									URISyntaxException
 	{
 		double lMaxError = 0;
 		for (int i = 1; i <= pNumberOfDatasets; i++)
 		{
 			final TDoubleArrayList lY = loadData(	ArgMaxTester.class,
-													"./benchmark/Benchmark.txt",
-													i);
+																						"./benchmark/Benchmark.txt",
+																						i);
 			final double LArgMaxReference = lY.get(0);
 			lY.remove(0, 1);
 			System.out.println(lY);
 
 			final TDoubleArrayList lX = loadData(	ArgMaxTester.class,
-													"./benchmark/Benchmark.txt",
-													0);
+																						"./benchmark/Benchmark.txt",
+																						0);
 			lX.remove(0, 1);
 			if (lY.size() < lX.size())
 				lX.remove(lY.size(), lX.size() - lY.size());
@@ -71,11 +71,11 @@ public class ArgMaxTester
 			System.out.println("LArgMaxReference: " + LArgMaxReference);
 
 			final Double lArgmax = pArgMaxFinder1DInterface.argmax(	lX.toArray(),
-																	lY.toArray());
+																															lY.toArray());
 
 			System.out.println("class: " + pArgMaxFinder1DInterface
-								+ "\n\t\targmax: "
-								+ lArgmax);/**/
+													+ "\n\t\targmax: "
+													+ lArgmax);/**/
 
 			double lError = 0;
 

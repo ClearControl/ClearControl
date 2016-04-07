@@ -10,16 +10,19 @@ import javafx.scene.paint.Paint;
 /**
  * SnapshotView is a copy of scene
  */
-public class SnapshotView extends View3D {
+public class SnapshotView extends View3D
+{
 
 	private final SnapshotParameters params;
 	private final ImageView viewPane;
 	private WritableImage wImage = null;
 
-	public SnapshotView( final Group root3D ) {
+	public SnapshotView(final Group root3D)
+	{
 		super(root3D);
 
-		perspectiveCamera.getTransforms().setAll(viewingRotate, viewingTranslate);
+		perspectiveCamera.getTransforms().setAll(	viewingRotate,
+																							viewingTranslate);
 
 		params = new SnapshotParameters();
 		params.setCamera(perspectiveCamera);
@@ -35,35 +38,42 @@ public class SnapshotView extends View3D {
 
 	}
 
-	public ImageView getViewPane() {
+	public ImageView getViewPane()
+	{
 		return viewPane;
 	}
 
-	public void drawView(final double width, final double height) {
+	public void drawView(final double width, final double height)
+	{
 
 		params.setViewport(new Rectangle2D(0, 0, width, height));
 
-		if (wImage == null ||
-				wImage.getWidth() != width || wImage.getHeight() != height) {
+		if (wImage == null || wImage.getWidth() != width
+				|| wImage.getHeight() != height)
+		{
 			wImage = root3D.snapshot(params, null);
 		}
-		else {
+		else
+		{
 			root3D.snapshot(params, wImage);
 		}
 
 		viewPane.setImage(wImage);
 	}
 
-	public void setBackground(final Paint bg) {
-		params.setFill( bg );
+	public void setBackground(final Paint bg)
+	{
+		params.setFill(bg);
 	}
 
-	@Override double getWidth()
+	@Override
+	double getWidth()
 	{
 		return viewPane.getBoundsInLocal().getWidth();
 	}
 
-	@Override double getHeight()
+	@Override
+	double getHeight()
 	{
 		return viewPane.getBoundsInLocal().getHeight();
 	}

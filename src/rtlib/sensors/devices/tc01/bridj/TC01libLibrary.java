@@ -37,22 +37,21 @@ public class TC01libLibrary
 	 * \rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:9</i>
 	 * 
 	 * @param physicalChannel
-	 *            channel
+	 *          channel
 	 * @param thermocoupleType
-	 *            type
+	 *          type
 	 * @return temperature in Celcius
 	 */
 	@Name("TC01lib")
 	public static double tC01lib(	Pointer<Byte> physicalChannel,
-									int thermocoupleType)
+																int thermocoupleType)
 	{
-		return tC01lib(	Pointer.getPeer(physicalChannel),
-						thermocoupleType);
+		return tC01lib(Pointer.getPeer(physicalChannel), thermocoupleType);
 	}
 
 	@Name("TC01lib")
 	protected native static double tC01lib(	@Ptr long physicalChannel,
-											int thermocoupleType);
+																					int thermocoupleType);
 
 	/**
 	 * Original signature : <code>long LVDLLStatus(char*, int, void*)</code><br>
@@ -61,27 +60,27 @@ public class TC01libLibrary
 	 * \rtlib\sensors\devices\tc01\labview\lib\TC01lib.h:11</i>
 	 * 
 	 * @param errStr
-	 *            error string
+	 *          error string
 	 * @param errStrLen
-	 *            error str length
+	 *          error str length
 	 * @param module
-	 *            module
+	 *          module
 	 * @return code
 	 */
 	@Name("LVDLLStatus")
 	@CLong
 	public static long lVDLLStatus(	Pointer<Byte> errStr,
-									int errStrLen,
-									Pointer<?> module)
+																	int errStrLen,
+																	Pointer<?> module)
 	{
 		return lVDLLStatus(	Pointer.getPeer(errStr),
-							errStrLen,
-							Pointer.getPeer(module));
+												errStrLen,
+												Pointer.getPeer(module));
 	}
 
 	@Name("LVDLLStatus")
 	@CLong
 	protected native static long lVDLLStatus(	@Ptr long errStr,
-												int errStrLen,
-												@Ptr long module);
+																						int errStrLen,
+																						@Ptr long module);
 }

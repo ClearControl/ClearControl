@@ -8,15 +8,15 @@ import java.util.concurrent.Future;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 
-public class AdaptationZ extends NDIteratorAdaptationModule implements
-															AdaptationModuleInterface
+public class AdaptationZ extends NDIteratorAdaptationModule	implements
+																														AdaptationModuleInterface
 {
 
 	private double mDeltaZ;
 
-	public AdaptationZ(double pDeltaZ,
-						int pNumberOfSamples,
-						double pProbabilityThreshold)
+	public AdaptationZ(	double pDeltaZ,
+											int pNumberOfSamples,
+											double pProbabilityThreshold)
 	{
 		super(pNumberOfSamples, pProbabilityThreshold);
 		mDeltaZ = pDeltaZ;
@@ -24,8 +24,8 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 
 	@Override
 	public Future<?> atomicStep(int pControlPlaneIndex,
-								int pLightSheetIndex,
-								int pNumberOfSamples)
+															int pLightSheetIndex,
+															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
@@ -33,13 +33,12 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 		int lBestDetectionArm = getAdaptator().getStackAcquisition()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
-
-		int lHalfSamples = (pNumberOfSamples-1)/2;
+		int lHalfSamples = (pNumberOfSamples - 1) / 2;
 		double lMinZ = -mDeltaZ * lHalfSamples;
 		double lMaxZ = mDeltaZ * lHalfSamples;
-		
+
 		final TDoubleArrayList lDZList = new TDoubleArrayList();
-		
+
 		lLSM.clearQueue();
 
 		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
@@ -69,17 +68,17 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-								pLightSheetIndex,
-								lLSM,
-								lStackAcquisition,
+														pLightSheetIndex,
+														lLSM,
+														lStackAcquisition,
 														lDZList);
 
 	}
 
 	@Override
 	public void updateNewState(	int pControlPlaneIndex,
-								int pLightSheetIndex,
-								ArrayList<Double> pArgMaxList)
+															int pLightSheetIndex,
+															ArrayList<Double> pArgMaxList)
 	{
 		int lBestDetectioArm = getAdaptator().getStackAcquisition()
 																					.getBestDetectionArm(pControlPlaneIndex);
@@ -87,8 +86,8 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 		double lCorrection = -pArgMaxList.get(lBestDetectioArm);
 
 		getAdaptator().getNewAcquisitionState()
-						.addAtControlPlaneIZ(	pControlPlaneIndex,
-												pLightSheetIndex,
+									.addAtControlPlaneIZ(	pControlPlaneIndex,
+																				pLightSheetIndex,
 																				lCorrection);
 	}
 

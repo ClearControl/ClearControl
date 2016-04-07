@@ -6,14 +6,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
 public class FloatOffHeapAccess extends AbstractOffHeapAccess	implements
-																FloatAccess,
-																ArrayDataAccess<FloatOffHeapAccess>
+																															FloatAccess,
+																															ArrayDataAccess<FloatOffHeapAccess>
 {
 
 	public FloatOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateFloats(	"FloatOffHeapAccess",
-															numEntities);
+																											numEntities);
 	}
 
 	public FloatOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

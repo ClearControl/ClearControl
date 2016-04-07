@@ -9,8 +9,8 @@ import org.apache.commons.math3.stat.descriptive.rank.Median;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1DBase;
 
-public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase	implements
-																	ArgMaxFinder1DInterface
+public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase implements
+																																	ArgMaxFinder1DInterface
 {
 
 	private PolynomialCurveFitter mPolynomialCurveFitter;
@@ -23,7 +23,7 @@ public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase	implements
 	public SymetricParabolaFitArgMaxFinder(int pMaxIterations)
 	{
 		mPolynomialCurveFitter = PolynomialCurveFitter.create(2)
-														.withMaxIterations(pMaxIterations);
+																									.withMaxIterations(pMaxIterations);
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase	implements
 	}
 
 	public double argmaxWithOneParabola(int pIndex,
-										double[] pX,
-										double[] pY)
+																			double[] pX,
+																			double[] pY)
 	{
 		WeightedObservedPoints lObservedPoints = new WeightedObservedPoints();
 
@@ -78,7 +78,7 @@ public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase	implements
 	public String toString()
 	{
 		return String.format(	"SymetricParabolaFitArgMaxFinder [mPolynomialCurveFitter=%s]",
-								mPolynomialCurveFitter);
+													mPolynomialCurveFitter);
 	}
 
 }

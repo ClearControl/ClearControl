@@ -27,8 +27,8 @@ public class Ecc100StageDeviceDemo
 		{
 			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);
 			System.out.println("lCurrentPosition" + dof
-								+ "="
-								+ lCurrentPosition);
+													+ "="
+													+ lCurrentPosition);
 		}
 
 		for (int dof = 0; dof < lNumberOfDOFs; dof++)
@@ -45,8 +45,8 @@ public class Ecc100StageDeviceDemo
 		{
 			double lCurrentPosition = lECC100StageDevice.getCurrentPosition(dof);
 			System.out.println("lCurrentPosition" + dof
-								+ "="
-								+ lCurrentPosition);
+													+ "="
+													+ lCurrentPosition);
 		}
 
 		assertTrue(lECC100StageDevice.stop());

@@ -7,11 +7,11 @@ import java.util.Iterator;
  * Nearest Neighbor Iterator
  *
  * @param <T>
- *            type returned by iterator
+ *          type returned by iterator
  */
 public class NearestNeighborIterator<T> implements
-										Iterator<T>,
-										Iterable<T>
+																				Iterator<T>,
+																				Iterable<T>
 {
 	private final DistanceFunction distanceFunction;
 	private final double[] searchPoint;
@@ -20,15 +20,14 @@ public class NearestNeighborIterator<T> implements
 	private int pointsRemaining;
 	private double lastDistanceReturned;
 
-	protected NearestNeighborIterator(	KdNode<T> treeRoot,
-										double[] searchPoint,
-										int maxPointsReturned,
-										DistanceFunction distanceFunction)
+	protected NearestNeighborIterator(KdNode<T> treeRoot,
+																		double[] searchPoint,
+																		int maxPointsReturned,
+																		DistanceFunction distanceFunction)
 	{
-		this.searchPoint = Arrays.copyOf(	searchPoint,
-											searchPoint.length);
+		this.searchPoint = Arrays.copyOf(searchPoint, searchPoint.length);
 		this.pointsRemaining = Math.min(maxPointsReturned,
-										treeRoot.size());
+																		treeRoot.size());
 		this.distanceFunction = distanceFunction;
 		this.pendingPaths = new BinaryHeap.Min<KdNode<T>>();
 		this.pendingPaths.offer(0, treeRoot);
@@ -54,10 +53,10 @@ public class NearestNeighborIterator<T> implements
 		while (pendingPaths.size() > 0 && (evaluatedPoints.size() == 0 || (pendingPaths.getMinKey() < evaluatedPoints.getMinKey())))
 		{
 			KdTree.nearestNeighborSearchStep(	pendingPaths,
-												evaluatedPoints,
-												pointsRemaining,
-												distanceFunction,
-												searchPoint);
+																				evaluatedPoints,
+																				pointsRemaining,
+																				distanceFunction,
+																				searchPoint);
 		}
 
 		// Return the smallest distance point

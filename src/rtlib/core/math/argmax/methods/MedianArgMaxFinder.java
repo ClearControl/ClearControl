@@ -30,9 +30,9 @@ public class MedianArgMaxFinder implements ArgMaxFinder1DInterface
 				final double xa = pX[i];
 				final double xb = pX[i + 1];
 
-				double lArgmax = xa	* ((lHalfSum - lRunningSum) / lY)
-									+ xb
-									* ((lRunningSum + lY - lHalfSum) / lY);
+				double lArgmax = xa * ((lHalfSum - lRunningSum) / lY)
+													+ xb
+													* ((lRunningSum + lY - lHalfSum) / lY);
 
 				return lArgmax;
 			}

@@ -21,8 +21,7 @@ public class LightSheetPositioner
 	public LightSheetPositioner(SimpleMatrix pTransformMatrix)
 	{
 		mTransformMatrix = pTransformMatrix.getMatrix();
-		mInverseTransformMatrix = pTransformMatrix.invert()
-													.getMatrix();
+		mInverseTransformMatrix = pTransformMatrix.invert().getMatrix();
 	}
 
 	public void setAt(LightSheetMicroscope pLightSheetMicroscope,
@@ -36,13 +35,12 @@ public class LightSheetPositioner
 		setAt(lLightSheetDevice, pPixelX, pPixelY);
 	}
 
-	public void setAt(	LightSheetInterface pLightSheetDevice,
-						double pPixelX,
-						double pPixelY)
+	public void setAt(LightSheetInterface pLightSheetDevice,
+										double pPixelX,
+										double pPixelY)
 	{
 
-		SimpleMatrix lControlVector = getControlVector(	pPixelX,
-														pPixelY);
+		SimpleMatrix lControlVector = getControlVector(pPixelX, pPixelY);
 
 		double lLightSheetX = lControlVector.get(0, 0);
 		double lLightSheetY = lControlVector.get(1, 0);
@@ -51,11 +49,11 @@ public class LightSheetPositioner
 		pLightSheetDevice.getYVariable().set(lLightSheetY);
 	}
 
-	public void illuminateBox(	LightSheetInterface pLightSheetDevice,
-								double pMinX,
-								double pMinY,
-								double pMaxX,
-								double pMaxY)
+	public void illuminateBox(LightSheetInterface pLightSheetDevice,
+														double pMinX,
+														double pMinY,
+														double pMaxX,
+														double pMaxY)
 	{
 
 		SimpleMatrix lControlVectorA = getControlVector(pMinX, pMinY);
@@ -89,21 +87,20 @@ public class LightSheetPositioner
 
 		pLightSheetDevice.getXVariable().set(lX);
 		pLightSheetDevice.getYVariable().set(lY);
-		
+
 		pLightSheetDevice.getWidthVariable().set(lWidth);
 		pLightSheetDevice.getHeightVariable().set(lHeight);
 
 	}
 
-	private SimpleMatrix getControlVector(	double pPixelX,
-											double pPixelY)
+	private SimpleMatrix getControlVector(double pPixelX, double pPixelY)
 	{
 		SimpleMatrix lVector = new SimpleMatrix(2, 1);
 		lVector.set(0, 0, pPixelX);
 		lVector.set(1, 0, pPixelY);
 
 		SimpleMatrix lControlVector = SimpleMatrix.wrap(mInverseTransformMatrix)
-													.mult(lVector);
+																							.mult(lVector);
 		return lControlVector;
 	}
 

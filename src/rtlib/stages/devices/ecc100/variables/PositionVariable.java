@@ -1,6 +1,6 @@
 package rtlib.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import ecc100.ECC100Axis;
 
 public class PositionVariable extends ObjectVariable<Double>

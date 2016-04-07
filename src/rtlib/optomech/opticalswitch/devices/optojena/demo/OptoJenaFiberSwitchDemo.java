@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 
 public class OptoJenaFiberSwitchDemo

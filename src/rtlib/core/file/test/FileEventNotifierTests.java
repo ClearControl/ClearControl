@@ -22,9 +22,9 @@ public class FileEventNotifierTests
 	public void test() throws Exception
 	{
 		final File lTestFile = File.createTempFile(	"FileEventNotifierTests",
-													"test");
+																								"test");
 		final File lOtherFile = File.createTempFile("FileEventNotifierTests",
-													"other");
+																								"other");
 
 		lTestFile.delete();
 		lOtherFile.delete();
@@ -35,15 +35,15 @@ public class FileEventNotifierTests
 		{
 
 			@Override
-			public void fileEvent(	final FileEventNotifier pThis,
-									final File pFile,
-									final FileEventKind pEventKind)
+			public void fileEvent(final FileEventNotifier pThis,
+														final File pFile,
+														final FileEventKind pEventKind)
 			{
 				lEventCounter++;
-				System.out.format(	"Received Event: %s %s %s \n",
-									pThis.toString(),
-									pFile.toString(),
-									pEventKind.toString());
+				System.out.format("Received Event: %s %s %s \n",
+													pThis.toString(),
+													pFile.toString(),
+													pEventKind.toString());
 			}
 		});
 

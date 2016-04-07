@@ -6,14 +6,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
 public class ByteOffHeapAccess extends AbstractOffHeapAccess implements
-															ByteAccess,
-															ArrayDataAccess<ByteOffHeapAccess>
+																														ByteAccess,
+																														ArrayDataAccess<ByteOffHeapAccess>
 {
 
 	public ByteOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateBytes("ByteOffHeapAccess",
-														numEntities);
+																										numEntities);
 	}
 
 	public ByteOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

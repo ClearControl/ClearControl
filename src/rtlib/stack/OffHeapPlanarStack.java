@@ -304,10 +304,10 @@ public class OffHeapPlanarStack extends StackBase	implements
 	{
 		final long lSizeInBytes = this.getSizeInBytes();
 		final OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(lSizeInBytes);
-		return OffHeapPlanarStack.createStack(	lOffHeapMemory,
-																														getWidth(),
-																														getHeight(),
-																														getDepth());
+		return OffHeapPlanarStack.createStack(lOffHeapMemory,
+																					getWidth(),
+																					getHeight(),
+																					getDepth());
 	}
 
 	@SuppressWarnings("unchecked")

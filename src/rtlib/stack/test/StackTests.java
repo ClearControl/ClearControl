@@ -43,10 +43,10 @@ public class StackTests
 		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
 																																											* cSizeZ);
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(lContiguousMemory,
-																																													cSizeX,
-																																													cSizeY,
-																																													cSizeZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	lContiguousMemory,
+																																			cSizeX,
+																																			cSizeY,
+																																			cSizeZ);
 
 		assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
 

@@ -15,6 +15,9 @@ public class RawNIOWriteSpeedTests
 	public void test() throws IOException
 	{
 		File file = File.createTempFile("RawNIOWriteSpeedTests", "file");
+		file.deleteOnExit();
+
+		System.out.println(file);
 
 		ByteBuffer buf = ByteBuffer.allocateDirect(64_000_000);
 		for (int i = 0; i < buf.capacity(); i++)
@@ -41,6 +44,7 @@ public class RawNIOWriteSpeedTests
 		double lSpeed = (lSize * 1e-6) / lElapsedTimeInSeconds;
 
 		System.out.format("speed: %g \n", lSpeed);
+
 
 
 	}

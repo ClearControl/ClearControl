@@ -50,7 +50,7 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1DInterface
 	public String toString()
 	{
 		return String.format(	"DenoisingArgMaxFinder [%s]",
-								mArgMaxFinder1DInterface);
+													mArgMaxFinder1DInterface);
 	}
 
 }

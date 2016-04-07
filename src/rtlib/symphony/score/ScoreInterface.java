@@ -37,7 +37,7 @@ public interface ScoreInterface
 	 * Removes movement at given index.
 	 * 
 	 * @param pIndex
-	 *            movement index.
+	 *          movement index.
 	 */
 	public abstract void removeMovementAt(final int pIndex);
 
@@ -45,18 +45,18 @@ public interface ScoreInterface
 	 * Inserts movement at given index.
 	 * 
 	 * @param pIndex
-	 *            given index
+	 *          given index
 	 * @param pMovement
-	 *            given movement
+	 *          given movement
 	 */
-	public abstract void insertMovementAt(	final int pIndex,
-											final MovementInterface pMovement);
+	public abstract void insertMovementAt(final int pIndex,
+																				final MovementInterface pMovement);
 
 	/**
 	 * Adds movement to score.
 	 * 
 	 * @param pMovement
-	 *            movement to add
+	 *          movement to add
 	 */
 	public abstract void addMovement(final MovementInterface pMovement);
 
@@ -64,18 +64,18 @@ public interface ScoreInterface
 	 * Adds movement multiple times.
 	 * 
 	 * @param pMovement
-	 *            movement to add
+	 *          movement to add
 	 * @param pNumberOfTimes
-	 *            number of times
+	 *          number of times
 	 */
-	public abstract void addMovementMultipleTimes(	final MovementInterface pMovement,
-													final int pNumberOfTimes);
+	public abstract void addMovementMultipleTimes(final MovementInterface pMovement,
+																								final int pNumberOfTimes);
 
 	/**
 	 * Adds all movements in given score to this score.
 	 * 
 	 * @param pScore
-	 *            score from which movements are added
+	 *          score from which movements are added
 	 */
 	public abstract void addScore(ScoreInterface pScore);
 
@@ -83,7 +83,7 @@ public interface ScoreInterface
 	 * Adds _copies_ of all movements in given score to this score
 	 * 
 	 * @param pScore
-	 *            score to copy into this score.
+	 *          score to copy into this score.
 	 */
 	public abstract void addScoreCopy(ScoreInterface pScore);
 
@@ -91,7 +91,7 @@ public interface ScoreInterface
 	 * Returns the movement at the given movement index position.
 	 * 
 	 * @param pMovementIndex
-	 *            movement index.
+	 *          movement index.
 	 * @return movement
 	 */
 	public abstract MovementInterface getMovement(int pMovementIndex);
@@ -107,7 +107,7 @@ public interface ScoreInterface
 	 * Returns the duration of this score in the requested time unit
 	 * 
 	 * @param pTimeUnit
-	 *            time unit
+	 *          time unit
 	 * @return duration
 	 */
 	public abstract long getDuration(TimeUnit pTimeUnit);

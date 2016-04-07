@@ -16,8 +16,8 @@ public class GetSpecPowerAdapter extends OmicronAdapter<Number>	implements
 	@Override
 	public Number parseValue(final byte[] pMessage)
 	{
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(	ProtocolXX.cGetSpecInfoReplyPrefix,
-																	pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetSpecInfoReplyPrefix,
+																															pMessage);
 		final String lSpecPowerString = lSplittedMessage[1];
 		final int lSpecPower = Integer.parseInt(lSpecPowerString);
 		return (double) lSpecPower;

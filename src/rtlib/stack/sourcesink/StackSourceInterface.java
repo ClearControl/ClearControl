@@ -20,8 +20,8 @@ public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDa
 	public StackInterface getStack(long pStackIndex);
 
 	public StackInterface getStack(	final long pStackIndex,
-											long pTime,
-											TimeUnit pTimeUnit);
+																	long pTime,
+																	TimeUnit pTimeUnit);
 
 	public double getStackTimeStampInSeconds(final long pStackIndex);
 

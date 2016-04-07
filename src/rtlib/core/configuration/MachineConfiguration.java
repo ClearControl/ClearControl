@@ -44,7 +44,7 @@ public class MachineConfiguration
 			mPersistentVariablesFolder = getFolder("PersistentVariables");
 
 			final File lConfigurationFile = new File(	mRTLibFolder,
-														"configuration.txt");
+																								"configuration.txt");
 
 			if (!lConfigurationFile.exists())
 			{
@@ -115,8 +115,7 @@ public class MachineConfiguration
 		return Double.parseDouble(lProperty);
 	}
 
-	public boolean getBooleanProperty(	String pKey,
-										boolean pDefaultValue)
+	public boolean getBooleanProperty(String pKey, boolean pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -125,56 +124,56 @@ public class MachineConfiguration
 			return pDefaultValue;
 
 		return Boolean.parseBoolean(lProperty.toLowerCase()) || lProperty.trim()
-																			.equals("1")
-				|| lProperty.trim().toLowerCase().equals("on")
-				|| lProperty.trim().toLowerCase().equals("present")
-				|| lProperty.trim().toLowerCase().equals("true");
+																																			.equals("1")
+						|| lProperty.trim().toLowerCase().equals("on")
+						|| lProperty.trim().toLowerCase().equals("present")
+						|| lProperty.trim().toLowerCase().equals("true");
 	}
 
 	public File getFileProperty(String pKey, File pDefaultFile)
 	{
-		return new File(getStringProperty(	pKey,
-											pDefaultFile == null ? null
-																: pDefaultFile.getPath()));
+		return new File(getStringProperty(pKey,
+																			pDefaultFile == null ? null
+																													: pDefaultFile.getPath()));
 	}
 
-	public String getSerialDevicePort(	String pDeviceName,
-										int pDeviceIndex,
-										String pDefaultPort)
+	public String getSerialDevicePort(String pDeviceName,
+																		int pDeviceIndex,
+																		String pDefaultPort)
 	{
 		final String lKey = "device.serial." + pDeviceName.toLowerCase()
-							+ "."
-							+ pDeviceIndex;
+												+ "."
+												+ pDeviceIndex;
 		final String lPort = getStringProperty(lKey, pDefaultPort);
 		return lPort;
 	}
 
 	public String[] getNetworkDeviceHostnameAndPort(String pDeviceName,
-													int pDeviceIndex,
-													String pDefaultHostNameAndPort)
+																									int pDeviceIndex,
+																									String pDefaultHostNameAndPort)
 	{
 		final String lKey = "device.network." + pDeviceName.toLowerCase()
-							+ "."
-							+ pDeviceIndex;
-		final String lHostnameAndPort = getStringProperty(	lKey,
-															pDefaultHostNameAndPort);
+												+ "."
+												+ pDeviceIndex;
+		final String lHostnameAndPort = getStringProperty(lKey,
+																											pDefaultHostNameAndPort);
 		return lHostnameAndPort.split(":");
 	}
 
 	public Integer getIODevicePort(	String pDeviceName,
-									Integer pDefaultPort)
+																	Integer pDefaultPort)
 	{
 		final String lKey = "device." + pDeviceName.toLowerCase();
 		final Integer lPort = getIntegerProperty(lKey, pDefaultPort);
 		return lPort;
 	}
 
-	public boolean getIsDevicePresent(	String pDeviceName,
-										int pDeviceIndex)
+	public boolean getIsDevicePresent(String pDeviceName,
+																		int pDeviceIndex)
 	{
 		final String lKey = "device." + pDeviceName.toLowerCase()
-							+ "."
-							+ pDeviceIndex;
+												+ "."
+												+ pDeviceIndex;
 		return getBooleanProperty(lKey, false);
 	}
 
@@ -184,8 +183,7 @@ public class MachineConfiguration
 		for (int i = 0; i < Integer.MAX_VALUE; i++)
 		{
 			final String lKey = pPrefix + "." + i;
-			final String lProperty = mProperties.getProperty(	lKey,
-																null);
+			final String lProperty = mProperties.getProperty(lKey, null);
 			if (lProperty == null)
 				break;
 			lList.add(lProperty);
@@ -213,7 +211,7 @@ public class MachineConfiguration
 	public UnivariateAffineComposableFunction getUnivariateAffineFunction(String pFunctionName)
 	{
 		String lAffineFunctionString = getStringProperty(	pFunctionName,
-															null);
+																											null);
 
 		if (lAffineFunctionString == null)
 		{
@@ -228,15 +226,15 @@ public class MachineConfiguration
 		try
 		{
 			HashMap<String, Double> lMap = sObjectMapper.readValue(	lAffineFunctionString,
-																	lTypeReference);
-			
-			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(lMap.get("a"),lMap.get("b"));
+																															lTypeReference);
+
+			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(lMap.get("a"),
+																																												lMap.get("b"));
 			lUnivariateAffineFunction.setMin(lMap.get("minx"));
 			lUnivariateAffineFunction.setMax(lMap.get("maxx"));
-			
-			
+
 			return lUnivariateAffineFunction;
-			
+
 		}
 		catch (IOException e)
 		{

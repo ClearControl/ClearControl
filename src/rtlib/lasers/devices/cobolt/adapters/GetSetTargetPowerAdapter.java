@@ -25,8 +25,8 @@ public class GetSetTargetPowerAdapter extends CoboltAdapter<Number>	implements
 																					final Number pNewPowerInMilliWatt)
 	{
 		final double lPowerInWatt = pNewPowerInMilliWatt.doubleValue() * 0.001;
-		final String lSetTargetPowerCommandString = String.format(	ProtocolCobolt.cSetOutputPowerCommand,
-																	lPowerInWatt);
+		final String lSetTargetPowerCommandString = String.format(ProtocolCobolt.cSetOutputPowerCommand,
+																															lPowerInWatt);
 		final byte[] lSetTargetPowerCommandBytes = lSetTargetPowerCommandString.getBytes();
 		return lSetTargetPowerCommandBytes;
 	}

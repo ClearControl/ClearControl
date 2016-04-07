@@ -8,16 +8,16 @@ import net.imglib2.img.basictypeaccess.CharAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class CharBufferAccess	implements
-								CharAccess,
-								ArrayDataAccess<CharBufferAccess>
+															CharAccess,
+															ArrayDataAccess<CharBufferAccess>
 {
 	protected CharBuffer data;
 
 	public CharBufferAccess(final int numEntities)
 	{
 		this.data = ByteBuffer.allocateDirect(2 * numEntities)
-								.order(ByteOrder.nativeOrder())
-								.asCharBuffer();
+													.order(ByteOrder.nativeOrder())
+													.asCharBuffer();
 	}
 
 	@Override

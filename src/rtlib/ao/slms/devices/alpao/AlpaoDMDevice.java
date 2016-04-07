@@ -5,11 +5,11 @@ import org.ejml.data.DenseMatrix64F;
 import rtlib.ao.slms.DeformableMirrorDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import asdk.AlpaoDeformableMirror;
 
 public class AlpaoDMDevice extends DeformableMirrorDevice	implements
-															Loggable
+																													Loggable
 {
 	private static final int cFullMatrixWidthHeight = 11;
 	private static final int cActuatorResolution = 2 << 14;
@@ -19,16 +19,16 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 	public AlpaoDMDevice(int pAlpaoDeviceIndex)
 	{
 		this(MachineConfiguration.getCurrentMachineConfiguration()
-									.getStringProperty(	"device.ao.dm.alpao." + pAlpaoDeviceIndex,
-														"NULL"));
+															.getStringProperty(	"device.ao.dm.alpao." + pAlpaoDeviceIndex,
+																									"NULL"));
 
 	}
 
 	public AlpaoDMDevice(String pAlpaoSerialName)
 	{
-		super(	"ALPAO_" + pAlpaoSerialName,
-				cFullMatrixWidthHeight,
-				cActuatorResolution);
+		super("ALPAO_" + pAlpaoSerialName,
+					cFullMatrixWidthHeight,
+					cActuatorResolution);
 
 		mAlpaoDeformableMirror = new AlpaoDeformableMirror(pAlpaoSerialName);
 
@@ -36,7 +36,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
-												final DenseMatrix64F pNewValue)
+																					final DenseMatrix64F pNewValue)
 			{
 
 				mAlpaoDeformableMirror.sendFullMatrixMirrorShapeVector(pNewValue.data);

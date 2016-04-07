@@ -20,7 +20,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -43,19 +43,19 @@ public class CalibrationWP
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mMultiPlotAdjustPCurves = MultiPlot.getMultiPlot(this.getClass()
-																.getSimpleName() + " calibration: adjust power curves");
+																													.getSimpleName() + " calibration: adjust power curves");
 		mMultiPlotAdjustPCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfDetectionArmDevices();
+																												.getNumberOfDetectionArmDevices();
 
 		mWPFunctions = new MultiKeyMap<>();
 	}
 
-	public void calibrate(	int pLightSheetIndex,
-							int pDetectionArmIndex,
-							int pNumberOfSamplesW,
-							int pNumberOfSamplesP)
+	public void calibrate(int pLightSheetIndex,
+												int pDetectionArmIndex,
+												int pNumberOfSamplesW,
+												int pNumberOfSamplesP)
 	{
 
 		mMultiPlotAdjustPCurves.clear();
@@ -63,12 +63,12 @@ public class CalibrationWP
 			mMultiPlotAdjustPCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
-																.getLightSheetDevice(pLightSheetIndex);
+																														.getLightSheetDevice(pLightSheetIndex);
 
 		UnivariateAffineComposableFunction lWidthFunction = lLightSheet.getWidthFunction()
-																		.get();
+																																		.get();
 		UnivariateAffineComposableFunction lPowerFunction = lLightSheet.getWidthFunction()
-																		.get();
+																																		.get();
 
 		double lMinP = lPowerFunction.getMin();
 		double lMaxP = lPowerFunction.getMax();
@@ -80,28 +80,28 @@ public class CalibrationWP
 		double lReferenceW = (lMaxW - lMinW) / 2;
 
 		final double lReferenceIntensity = adjustP(	pLightSheetIndex,
-													pDetectionArmIndex,
-													lReferencePower,
-													lReferencePower,
-													pNumberOfSamplesP,
-													lReferenceW,
-													0,
-													true);
+																								pDetectionArmIndex,
+																								lReferencePower,
+																								lReferencePower,
+																								pNumberOfSamplesP,
+																								lReferenceW,
+																								0,
+																								true);
 
 		final WeightedObservedPoints lObservations = new WeightedObservedPoints();
 		TDoubleArrayList lWList = new TDoubleArrayList();
 		TDoubleArrayList lPRList = new TDoubleArrayList();
-		
+
 		for (double w = lMinW; w <= lMaxW; w += lStepW)
 		{
-			final double lPower = adjustP(	pLightSheetIndex,
-											pDetectionArmIndex,
-											lMinP,
-											lMaxP,
-											10,
-											w,
-											lReferenceIntensity,
-											false);
+			final double lPower = adjustP(pLightSheetIndex,
+																		pDetectionArmIndex,
+																		lMinP,
+																		lMaxP,
+																		10,
+																		w,
+																		lReferenceIntensity,
+																		false);
 
 			double lPowerRatio = lPower / lReferencePower;
 
@@ -117,12 +117,12 @@ public class CalibrationWP
 		PolynomialFunction lPowerRatioFunction = new PolynomialFunction(lCoeficients);
 
 		mWPFunctions.put(	pLightSheetIndex,
-							pDetectionArmIndex,
-							lPowerRatioFunction);
+											pDetectionArmIndex,
+											lPowerRatioFunction);
 
-		PlotTab lPlot = mMultiPlotHPPCurves.getPlot(String.format(	" D=%d, I=%d, W=%g",
-																	pDetectionArmIndex,
-																	pLightSheetIndex));
+		PlotTab lPlot = mMultiPlotHPPCurves.getPlot(String.format(" D=%d, I=%d, W=%g",
+																															pDetectionArmIndex,
+																															pLightSheetIndex));
 
 		lPlot.setScatterPlot("samples");
 		lPlot.setScatterPlot("fit");
@@ -131,9 +131,8 @@ public class CalibrationWP
 		for (int j = 0; j < lWList.size(); j++)
 		{
 			lPlot.addPoint("samples", lWList.get(j), lPRList.get(j));
-			lPlot.addPoint(	"fit",
-							lWList.get(j),
-							lObservationsList.get(j).getY());
+			lPlot.addPoint("fit", lWList.get(j), lObservationsList.get(j)
+																														.getY());
 
 		}
 		lPlot.ensureUpToDate();
@@ -141,13 +140,13 @@ public class CalibrationWP
 	}
 
 	private Double adjustP(	int pLightSheetIndex,
-							int pDetectionArmIndex,
-							double pMinP,
-							double pMaxP,
-							int pNumberOfSamples,
-							double pW,
-							double pTargetIntensity,
-							boolean pReturnIntensity)
+													int pDetectionArmIndex,
+													double pMinP,
+													double pMaxP,
+													int pNumberOfSamples,
+													double pW,
+													double pTargetIntensity,
+													boolean pReturnIntensity)
 	{
 		try
 		{
@@ -192,13 +191,13 @@ public class CalibrationWP
 			mLightSheetMicroscope.finalizeQueue();
 
 			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
-			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
-																								TimeUnit.SECONDS);
+			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+																																												TimeUnit.SECONDS);
 
 			if (lPlayQueueAndWait)
 			{
 				final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
-																													.get();
+																																		.get();
 
 				OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 
@@ -208,20 +207,20 @@ public class CalibrationWP
 
 				smooth(lAvgIntensityArray, 1);
 
-				PlotTab lPlot = mMultiPlotAdjustPCurves.getPlot(String.format(	"Mode=%s, D=%d, I=%d, W=%g",
-																				pReturnIntensity ? "ret_int"
-																								: "ret_pow",
-																				pDetectionArmIndex,
-																				pLightSheetIndex,
-																				pW));
+				PlotTab lPlot = mMultiPlotAdjustPCurves.getPlot(String.format("Mode=%s, D=%d, I=%d, W=%g",
+																																			pReturnIntensity ? "ret_int"
+																																											: "ret_pow",
+																																			pDetectionArmIndex,
+																																			pLightSheetIndex,
+																																			pW));
 				lPlot.setScatterPlot("samples");
 
 				// System.out.format("metric array: \n");
 				for (int j = 0; j < lAvgIntensityArray.length; j++)
 				{
 					lPlot.addPoint(	"samples",
-									lPList.get(j),
-									lAvgIntensityArray[j]);
+													lPList.get(j),
+													lAvgIntensityArray[j]);
 					/*System.out.format("%d,%d\t%g\t%g\n",
 														i,
 														j,
@@ -233,13 +232,12 @@ public class CalibrationWP
 				if (pReturnIntensity)
 				{
 					double lAvgIntensity = StatUtils.percentile(lAvgIntensityArray,
-																50);
+																											50);
 					return lAvgIntensity;
 				}
 				else
 				{
-					int lIndex = find(	lAvgIntensityArray,
-										pTargetIntensity);
+					int lIndex = find(lAvgIntensityArray, pTargetIntensity);
 
 					double lPower = lPList.get(lIndex);
 
@@ -307,20 +305,20 @@ public class CalibrationWP
 		System.out.println("LightSheet index: " + pLightSheetIndex);
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																		.getLightSheetDevice(pLightSheetIndex);
+																																	.getLightSheetDevice(pLightSheetIndex);
 
 		PolynomialFunction lNewWidthPowerFunction = mWPFunctions.get(	pLightSheetIndex,
-																		pDetectionArmIndex);
+																																	pDetectionArmIndex);
 
 		ObjectVariable<PolynomialFunction> lFunctionVariable = lLightSheetDevice.getWidthPowerFunction();
 
-		System.out.format(	"Current WidthPower function: %s \n",
-							lFunctionVariable.get());
+		System.out.format("Current WidthPower function: %s \n",
+											lFunctionVariable.get());
 
 		lFunctionVariable.set(lNewWidthPowerFunction);
 
-		System.out.format(	"New WidthPower function: %s \n",
-							lFunctionVariable.get());
+		System.out.format("New WidthPower function: %s \n",
+											lFunctionVariable.get());
 
 		double lError = 0;
 

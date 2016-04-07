@@ -5,17 +5,16 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 public abstract class StageDeviceBase extends NamedVirtualDevice implements
-																StageDeviceInterface,
-																Waiting
+																																StageDeviceInterface,
+																																Waiting
 {
-	protected ArrayList<BooleanVariable> mEnableVariables,
+	protected ArrayList<ObjectVariable<Boolean>> mEnableVariables,
 			mReadyVariables, mHomingVariables, mStopVariables,
 			mResetVariables;
 	protected ArrayList<ObjectVariable<Double>> mPositionVariables,
@@ -46,19 +45,19 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 	@Override
 	public void reset(int pIndex)
 	{
-		mResetVariables.get(pIndex).setEdge(true);
+		mResetVariables.get(pIndex).setEdge(false, true);
 	}
 
 	@Override
 	public void home(int pIndex)
 	{
-		mHomingVariables.get(pIndex).setEdge(true);
+		mHomingVariables.get(pIndex).setEdge(false, true);
 	}
 
 	@Override
 	public void enable(int pIndex)
 	{
-		mEnableVariables.get(pIndex).setEdge(true);
+		mEnableVariables.get(pIndex).setEdge(false, true);
 	}
 
 	@Override
@@ -75,54 +74,53 @@ public abstract class StageDeviceBase extends NamedVirtualDevice implements
 
 	@Override
 	public Boolean waitToBeReady(	int pIndex,
-									int pTimeOut,
-									TimeUnit pTimeUnit)
+																int pTimeOut,
+																TimeUnit pTimeUnit)
 	{
 		System.out.println("waiting...");
 		return waitFor(	pTimeOut,
-						pTimeUnit,
-						() -> mReadyVariables.get(pIndex)
-												.getBooleanValue());
+										pTimeUnit,
+										() -> mReadyVariables.get(pIndex).get());
 	}
 
 	@Override
-	public  ObjectVariable<Double> getPositionVariable(int pIndex)
+	public ObjectVariable<Double> getPositionVariable(int pIndex)
 	{
 		return mPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public  ObjectVariable<Double> getMinPositionVariable(int pIndex)
+	public ObjectVariable<Double> getMinPositionVariable(int pIndex)
 	{
 		return mMinPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public  ObjectVariable<Double> getMaxPositionVariable(int pIndex)
+	public ObjectVariable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariables.get(pIndex);
 	}
 
 	@Override
-	public BooleanVariable getEnableVariable(int pIndex)
+	public ObjectVariable<Boolean> getEnableVariable(int pIndex)
 	{
 		return mEnableVariables.get(pIndex);
 	}
 
 	@Override
-	public BooleanVariable getReadyVariable(int pIndex)
+	public ObjectVariable<Boolean> getReadyVariable(int pIndex)
 	{
 		return mReadyVariables.get(pIndex);
 	}
 
 	@Override
-	public BooleanVariable getHomingVariable(int pIndex)
+	public ObjectVariable<Boolean> getHomingVariable(int pIndex)
 	{
 		return mHomingVariables.get(pIndex);
 	}
 
 	@Override
-	public BooleanVariable getStopVariable(int pIndex)
+	public ObjectVariable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariables.get(pIndex);
 	}

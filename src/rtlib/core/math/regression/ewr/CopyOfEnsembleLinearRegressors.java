@@ -5,7 +5,7 @@ import org.apache.commons.math3.analysis.MultivariateFunction;
 import rtlib.core.math.kdtree.KdTree;
 
 public class CopyOfEnsembleLinearRegressors	implements
-											MultivariateFunction
+																						MultivariateFunction
 {
 	private static final int cBucketCapacity = 10;
 

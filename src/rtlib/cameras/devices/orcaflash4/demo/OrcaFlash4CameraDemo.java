@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
@@ -122,7 +122,7 @@ public class OrcaFlash4CameraDemo
 
 		lOrcaFlash4StackCamera.setBinning(4);
 
-		lOrcaFlash4StackCamera.getStackModeVariable().setValue(true);
+		lOrcaFlash4StackCamera.getStackModeVariable().set(true);
 		lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
 													.set(500.0);
 		lOrcaFlash4StackCamera.getStackWidthVariable().set(1024L);

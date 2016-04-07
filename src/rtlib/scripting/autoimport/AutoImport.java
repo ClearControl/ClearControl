@@ -14,8 +14,8 @@ public class AutoImport
 		return generateImportStatements("rtlib", pScriptText);
 	}
 
-	public static String generateImportStatements(	String pBasePackage,
-													String pScriptText)
+	public static String generateImportStatements(String pBasePackage,
+																								String pScriptText)
 	{
 		final HashSet<String> lClassNames = extractClassNames(pScriptText);
 
@@ -24,7 +24,7 @@ public class AutoImport
 		for (final String lClassName : lClassNames)
 		{
 			final List<String> lFullyQualifiedNames = ClassPathResolver.getFullyQualifiedNames(	pBasePackage,
-																								lClassName);
+																																													lClassName);
 
 			if (lFullyQualifiedNames.size() == 1)
 			{
@@ -32,9 +32,9 @@ public class AutoImport
 			}
 			else if (lFullyQualifiedNames.size() > 1)
 			{
-				System.err.format(	"Could not resolve %s to a single class!\n found these: %s\n",
-									lClassName,
-									lFullyQualifiedNames);
+				System.err.format("Could not resolve %s to a single class!\n found these: %s\n",
+													lClassName,
+													lFullyQualifiedNames);
 			}
 			else if (lFullyQualifiedNames.size() == 1)
 			{

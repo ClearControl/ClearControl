@@ -10,44 +10,42 @@ import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class AdaptationW extends NDIteratorAdaptationModule	implements
-															AdaptationModuleInterface
+																														AdaptationModuleInterface
 {
 
 	private static final int cRepeats = 2;
 
 	public AdaptationW(	int pNumberOfSamples,
-						double pProbabilityThreshold)
+											double pProbabilityThreshold)
 	{
 		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
 	@Override
 	public Future<?> atomicStep(int pControlPlaneIndex,
-								int pLightSheetIndex,
-								int pNumberOfSamples)
+															int pLightSheetIndex,
+															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-													.getLightSheetDevice(pLightSheetIndex);
+																								.getLightSheetDevice(pLightSheetIndex);
 		double lMinW = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMin();
+																		.get()
+																		.getMin();
 		double lMaxW = lLightSheetDevice.getWidthFunction()
-										.get()
-										.getMax();
+																		.get()
+																		.getMax();
 		double lStepW = (lMaxW - lMinW) / (pNumberOfSamples - 1);
 
 		double lCurrentW = lLSM.getIW(pLightSheetIndex);
-		
+
 		lLSM.clearQueue();
 
 		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
 
 		final TDoubleArrayList lIWList = new TDoubleArrayList();
-
-		
 
 		lLSM.setC(false);
 		lLSM.setILO(false);
@@ -55,7 +53,6 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		lLSM.setI(pLightSheetIndex);
 		for (int r = 0; r < cRepeats; r++)
 			lLSM.addCurrentStateToQueue();
-
 
 		for (double w = lMinW; w <= lMaxW; w += lStepW)
 		{
@@ -84,26 +81,26 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-								pLightSheetIndex,
-								lLSM,
-								lStackAcquisition,
-								lIWList);
+														pLightSheetIndex,
+														lLSM,
+														lStackAcquisition,
+														lIWList);
 
 	}
 
 	@Override
 	public void updateNewState(	int pControlPlaneIndex,
-								int pLightSheetIndex,
-								ArrayList<Double> pArgMaxList)
+															int pLightSheetIndex,
+															ArrayList<Double> pArgMaxList)
 	{
 
 		int lBestDetectioArm = getAdaptator().getStackAcquisition()
-												.getBestDetectionArm(pControlPlaneIndex);
+																					.getBestDetectionArm(pControlPlaneIndex);
 
 		getAdaptator().getNewAcquisitionState()
-						.setAtControlPlaneIW(	pControlPlaneIndex,
-												pLightSheetIndex,
-												pArgMaxList.get(lBestDetectioArm));
+									.setAtControlPlaneIW(	pControlPlaneIndex,
+																				pLightSheetIndex,
+																				pArgMaxList.get(lBestDetectioArm));
 	}
 
 }

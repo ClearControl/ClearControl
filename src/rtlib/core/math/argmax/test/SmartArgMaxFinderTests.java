@@ -62,7 +62,7 @@ public class SmartArgMaxFinderTests
 			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
 			final double[] lY = new double[]
-			{	1.542E-4,
+			{ 1.542E-4,
 				1.547E-4,
 				1.555E-4,
 				1.557E-4,
@@ -87,7 +87,7 @@ public class SmartArgMaxFinderTests
 			final double[] lX = new double[]
 			{ 0, 1, 2, 3, 4, 5, 6 };
 			final double[] lY = new double[]
-			{	1.504E-4,
+			{ 1.504E-4,
 				1.506E-4,
 				1.517E-4,
 				1.513E-4,
@@ -150,29 +150,27 @@ public class SmartArgMaxFinderTests
 	{
 
 		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-		final double lMaxError = ArgMaxTester.test(	lSmartArgMaxFinder,
-													15);
+		final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 15);
 		assertEquals(0, lMaxError, 1);
 
 	}
 
 	@Test
 	public void benchmarkWithFitEstimation() throws IOException,
-											URISyntaxException
+																					URISyntaxException
 	{
 		final SmartArgMaxFinder lSmartArgMaxFinder = new SmartArgMaxFinder();
-		final double lMaxError = ArgMaxTester.test(	lSmartArgMaxFinder,
-													8);
+		final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
 		assertEquals(0, lMaxError, 0.7);
 
 	}
 
 	@Test
 	public void regressionTestBug()	throws IOException,
-									URISyntaxException
+																	URISyntaxException
 	{
 		final double[] lX = new double[]
-		{	-4.000E+02,
+		{ -4.000E+02,
 			-3.600E+02,
 			-3.200E+02,
 			-2.800E+02,
@@ -195,7 +193,7 @@ public class SmartArgMaxFinderTests
 			4.000E+02 };
 
 		final double[] lY = new double[]
-		{	3.173E-04,
+		{ 3.173E-04,
 			3.148E-04,
 			3.138E-04,
 			3.164E-04,

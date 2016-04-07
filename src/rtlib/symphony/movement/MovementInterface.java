@@ -18,9 +18,9 @@ public interface MovementInterface extends NameableInterface
 	 * Sets stave at index.
 	 * 
 	 * @param pStaveIndex
-	 *            stave index
+	 *          stave index
 	 * @param pStave
-	 *            stave
+	 *          stave
 	 */
 	void setStave(int pStaveIndex, StaveInterface pStave);
 
@@ -29,19 +29,19 @@ public interface MovementInterface extends NameableInterface
 	 * stave.
 	 * 
 	 * @param pStaveIndex
-	 *            stave index
+	 *          stave index
 	 * @param pNewStave
-	 *            new stave
+	 *          new stave
 	 * @return currently set stave
 	 */
 	public <O extends StaveInterface> O ensureSetStave(	int pStaveIndex,
-														O pNewStave);
+																											O pNewStave);
 
 	/**
 	 * Returns the stave for a given index
 	 * 
 	 * @param pStaveIndex
-	 *            stave index
+	 *          stave index
 	 * @return stave
 	 */
 	StaveInterface getStave(int pStaveIndex);
@@ -57,9 +57,9 @@ public interface MovementInterface extends NameableInterface
 	 * Returns the duration of the stave in the provided time unit.
 	 * 
 	 * @param pDuration
-	 *            duration of the movement
+	 *          duration of the movement
 	 * @param pTimeUnit
-	 *            time unit
+	 *          time unit
 	 */
 	void setDuration(long pDuration, TimeUnit pTimeUnit);
 
@@ -67,7 +67,7 @@ public interface MovementInterface extends NameableInterface
 	 * Returns the duration of the stave in the provided time unit.
 	 * 
 	 * @param pTimeUnit
-	 *            time unit
+	 *          time unit
 	 * @return time
 	 */
 	long getDuration(TimeUnit pTimeUnit);
@@ -76,7 +76,7 @@ public interface MovementInterface extends NameableInterface
 	 * Sets whether this movement can be triggered (synced).
 	 * 
 	 * @param pSync
-	 *            true if sync, false if not.
+	 *          true if sync, false if not.
 	 */
 	public void setSync(boolean pSync);
 
@@ -91,7 +91,7 @@ public interface MovementInterface extends NameableInterface
 	 * Sets whether this movement should sync to a rising or falling edge.
 	 * 
 	 * @param pSyncOnRisingEdge
-	 *            true if sync on raising edge, false if sync on falling edge
+	 *          true if sync on raising edge, false if sync on falling edge
 	 */
 	public void setSyncOnRisingEdge(boolean pSyncOnRisingEdge);
 
@@ -106,7 +106,7 @@ public interface MovementInterface extends NameableInterface
 	 * Sets the sync channel
 	 * 
 	 * @param pSyncChannel
-	 *            sync channel
+	 *          sync channel
 	 */
 	public void setSyncChannel(int pSyncChannel);
 

@@ -15,8 +15,8 @@ import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerBase;
 import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerInterface;
 import rtlib.stack.StackInterface;
 
-public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
-																	AcquisitionTimerInterface
+public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase implements
+																																	AcquisitionTimerInterface
 {
 
 	private static final int cPower = 2;
@@ -40,7 +40,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 	}
 
 	public AdaptiveAcquisitionTimer(StackAcquisition pStackAcquisition,
-									double pPValueThreshold)
+																	double pPValueThreshold)
 	{
 		super();
 		mStackAcquisition = pStackAcquisition;
@@ -94,8 +94,8 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 			if (lLastStack != null)
 			{
 				double lMetric = StackUtils.computeAverageDifference(	lLastStack,
-																		lNewStack,
-																		cPower);
+																															lNewStack,
+																															cPower);
 
 				lStats.addValue(lMetric);
 			}
@@ -109,8 +109,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 		double lMean = lStats.getMean();
 		double lStdVar = lStats.getStandardDeviation();
 
-		mCalibrationNoiseGaussian = new NormalDistribution(	lMean,
-															lStdVar);
+		mCalibrationNoiseGaussian = new NormalDistribution(lMean, lStdVar);
 
 	}
 
@@ -125,13 +124,13 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 		if (mLastMonitoredStack != null)
 		{
 			double lAvgDifference = StackUtils.computeAverageDifference(mMonitoringStackAtLastAcquisition,
-																		lMonitoringStack,
-																		cPower);
+																																	lMonitoringStack,
+																																	cPower);
 
 			mMetricHistory.add(lAvgDifference);
 
 			mAdaptiveAcquisitionTimerVisualizer.append(	mMetricHistory.size() - 1,
-														lAvgDifference);
+																									lAvgDifference);
 
 			if (isSignificant(lAvgDifference))
 				mAcquireNow = true;
@@ -165,12 +164,12 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 		LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
 
 		int lNumberOfLightSheets = lLSM.getDeviceLists()
-										.getNumberOfLightSheetDevices();
+																		.getNumberOfLightSheetDevices();
 
 		lLSM.clearQueue();
 
 		int lNumberOfControlPlanes = mStackAcquisition.getCurrentState()
-														.getNumberOfControlPlanes();
+																									.getNumberOfControlPlanes();
 
 		for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
 		{
@@ -196,9 +195,9 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 		try
 		{
-			lLSM.useRecycler("adaptive_timing",1, 1, 1);
-			Boolean lSuccess = lLSM.playQueueAndWaitForStacks(	lLSM.getQueueLength(),
-																TimeUnit.SECONDS);
+			lLSM.useRecycler("adaptive_timing", 1, 1, 1);
+			Boolean lSuccess = lLSM.playQueueAndWaitForStacks(lLSM.getQueueLength(),
+																												TimeUnit.SECONDS);
 
 			if (lSuccess != null && lSuccess)
 			{

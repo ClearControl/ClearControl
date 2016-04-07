@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class LaserDeviceBase extends NamedVirtualDevice	implements
 																												LaserDeviceInterface

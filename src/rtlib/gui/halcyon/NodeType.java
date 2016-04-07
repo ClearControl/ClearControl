@@ -7,5 +7,11 @@ import model.node.HalcyonNodeType;
  */
 public enum NodeType implements HalcyonNodeType
 {
-	Camera, Laser, LightSheet, Stage, FilterWheel, AdaptiveOptics, Other
+	Camera,
+	Laser,
+	LightSheet,
+	Stage,
+	FilterWheel,
+	AdaptiveOptics,
+	Other
 }

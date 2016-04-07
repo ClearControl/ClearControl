@@ -12,20 +12,18 @@ public class StackUtils
 
 	public static StackInterface fuse(LightSheetMicroscopeInterface pLSM)
 	{
-		StackInterface lFirstStack = pLSM.getStackVariable(0)
-																				.get();
+		StackInterface lFirstStack = pLSM.getStackVariable(0).get();
 
 		StackInterface lFusedStack = lFirstStack.duplicate();
 
 		int lNumberOfStacksToFuse = pLSM.getDeviceLists()
-										.getNumberOfDetectionArmDevices();
-		
+																		.getNumberOfDetectionArmDevices();
+
 		if (lNumberOfStacksToFuse > 1)
 		{
 			for (int d = 1; d < lNumberOfStacksToFuse; d++)
 			{
-				StackInterface lStack = pLSM.getStackVariable(0)
-																					.get();
+				StackInterface lStack = pLSM.getStackVariable(0).get();
 
 				maxStack(lFusedStack, lStack);
 			}
@@ -35,7 +33,7 @@ public class StackUtils
 	}
 
 	private static void maxStack(	StackInterface pMaxStack,
-									StackInterface pOtherStack)
+																StackInterface pOtherStack)
 	{
 		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
@@ -51,8 +49,9 @@ public class StackUtils
 		}
 	}
 
-	public static double computeAverageDifference(	StackInterface pStack1,
-											StackInterface pStack2, int pPower)
+	public static double computeAverageDifference(StackInterface pStack1,
+																								StackInterface pStack2,
+																								int pPower)
 	{
 		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pStack1.getContiguousMemory());
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pStack2.getContiguousMemory());
@@ -62,11 +61,11 @@ public class StackUtils
 		{
 			char u = lMaxBuffer.readChar();
 			char v = lOtherBuffer.readChar();
-			lDifference += pow(1.0*abs(u-v),pPower);
+			lDifference += pow(1.0 * abs(u - v), pPower);
 		}
-		
-		double lAverageDifference = (lDifference)/(lMaxBuffer.getSizeInBytes()/2);
-		
+
+		double lAverageDifference = (lDifference) / (lMaxBuffer.getSizeInBytes() / 2);
+
 		return lAverageDifference;
 	}
 

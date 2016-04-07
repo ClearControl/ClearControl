@@ -35,8 +35,8 @@ public class PlotTab
 	}
 
 	public void addPoint(	final String pVariableName,
-							final double pX,
-							final double pY)
+												final double pX,
+												final double pY)
 	{
 		synchronized (mLock)
 		{
@@ -100,15 +100,15 @@ public class PlotTab
 
 								if (mIsLinePlot.get(lVariableName) != null && mIsLinePlot.get(lVariableName))
 								{
-									mPlot.addLinePlot(	lVariableName,
-														lX.toArray(),
-														lY.toArray());
+									mPlot.addLinePlot(lVariableName,
+																		lX.toArray(),
+																		lY.toArray());
 								}
 								else
 								{
 									mPlot.addScatterPlot(	lVariableName,
-															lX.toArray(),
-															lY.toArray());
+																				lX.toArray(),
+																				lY.toArray());
 								}
 
 							}
@@ -123,7 +123,7 @@ public class PlotTab
 					{
 						e.printStackTrace();
 						System.err.println(PlotTab.class.getSimpleName() + ": "
-											+ e.getLocalizedMessage());
+																+ e.getLocalizedMessage());
 					}
 				}
 			}

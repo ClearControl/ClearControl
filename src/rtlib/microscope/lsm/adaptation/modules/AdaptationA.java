@@ -149,7 +149,7 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 																									.getBestDetectionArm(pControlPlaneIndex);
 
 			final StackInterface lStackInterface = pLSM.getStackVariable(lBestDetectioArm)
-																																												.get();
+																									.get();
 			StackInterface lDuplicateStack = lStackInterface.duplicate();
 
 			Runnable lRunnable = () -> {

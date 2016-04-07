@@ -20,19 +20,18 @@ public class CalibrationDataTests
 {
 
 	@Test
-	public void saveload()	throws JsonGenerationException,
-							JsonMappingException,
-							IOException
+	public void saveload() throws JsonGenerationException,
+												JsonMappingException,
+												IOException
 	{
 		CalibrationData lCalibrationData = new CalibrationData();
 
 		SimpleMatrix lMatrix = SimpleMatrix.identity(2);
 		LightSheetPositioner lLightSheetPositioner = new LightSheetPositioner(lMatrix);
-		lCalibrationData.mPositionerMap.put("test",
-											lLightSheetPositioner);
+		lCalibrationData.mPositionerMap.put("test", lLightSheetPositioner);
 
 		File lFile = File.createTempFile(	CalibrationDataTests.class.getSimpleName(),
-											"saveload");
+																			"saveload");
 		System.out.println(lFile);
 
 		lCalibrationData.saveTo(lFile);
@@ -44,14 +43,14 @@ public class CalibrationDataTests
 		assertNotNull(lCalibrationDataRead);
 
 		assertEquals(	1,
-						lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	0,
-																								0),
-						0.001);
+									lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	0,
+																																												0),
+									0.001);
 
 		assertEquals(	0,
-						lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	1,
-																								0),
-						0.001);
+									lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	1,
+																																												0),
+									0.001);
 
 	}
 

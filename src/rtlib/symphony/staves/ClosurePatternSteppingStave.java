@@ -1,13 +1,13 @@
 package rtlib.symphony.staves;
 
 public class ClosurePatternSteppingStave extends PatternSteppingStave	implements
-																		StaveInterface
+																																			StaveInterface
 {
 
 	private final SteppingFunction mSteppingFunction;
 
 	public ClosurePatternSteppingStave(	final String pName,
-										SteppingFunction pSteppingFunction)
+																			SteppingFunction pSteppingFunction)
 	{
 		super(pName);
 		mSteppingFunction = pSteppingFunction;
@@ -28,7 +28,7 @@ public class ClosurePatternSteppingStave extends PatternSteppingStave	implements
 	public StaveInterface copy()
 	{
 		return new ClosurePatternSteppingStave(	getName(),
-												getSteppingFunction());
+																						getSteppingFunction());
 	}
 
 }

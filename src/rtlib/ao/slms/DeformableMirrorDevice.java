@@ -1,16 +1,14 @@
 package rtlib.ao.slms;
 
 public abstract class DeformableMirrorDevice extends
-											SpatialPhaseModulatorDeviceBase
+																						SpatialPhaseModulatorDeviceBase
 {
 
-	public DeformableMirrorDevice(	final String pDeviceName,
-									int pFullMatrixWidthHeight,
-									int pActuatorResolution)
+	public DeformableMirrorDevice(final String pDeviceName,
+																int pFullMatrixWidthHeight,
+																int pActuatorResolution)
 	{
-		super(	pDeviceName,
-				pFullMatrixWidthHeight,
-				pActuatorResolution);
+		super(pDeviceName, pFullMatrixWidthHeight, pActuatorResolution);
 	}
 
 }

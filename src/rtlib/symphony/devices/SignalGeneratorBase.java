@@ -8,15 +8,15 @@ import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.queue.QueueProvider;
 import rtlib.core.device.queue.QueueProviderUsingDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.symphony.movement.MovementInterface;
 import rtlib.symphony.score.Score;
 import rtlib.symphony.score.ScoreInterface;
 
 public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
-																	SignalGeneratorInterface,
-																	AsynchronousExecutorServiceAccess,
-																	QueueProviderUsingDeviceInterface
+																																		SignalGeneratorInterface,
+																																		AsynchronousExecutorServiceAccess,
+																																		QueueProviderUsingDeviceInterface
 {
 
 	protected final ScoreInterface mStagingScore;
@@ -25,8 +25,8 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	protected volatile int mEnqueuedStateCounter = 0;
 	protected QueueProvider<?> mQueueProvider;
 
-	protected final BooleanVariable mTriggerVariable = new BooleanVariable(	"Trigger",
-																			false);
+	protected final ObjectVariable<Boolean> mTriggerVariable = new ObjectVariable<Boolean>(	"Trigger",
+																																													false);
 	protected volatile boolean mIsPlaying;
 
 	public SignalGeneratorBase(String pDeviceName)
@@ -37,7 +37,7 @@ public abstract class SignalGeneratorBase extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public BooleanVariable getTriggerVariable()
+	public ObjectVariable<Boolean> getTriggerVariable()
 	{
 		return mTriggerVariable;
 	}

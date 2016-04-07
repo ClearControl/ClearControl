@@ -2,9 +2,9 @@ package rtlib.core.variable.bundle.test;
 
 import org.junit.Test;
 
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableBundleTests
 {
@@ -18,7 +18,7 @@ public class VariableBundleTests
 
 			@Override
 			public void setEvent(	VariableBundle pCurrentValue,
-									VariableBundle pNewValue)
+														VariableBundle pNewValue)
 			{
 				// TODO Auto-generated method stub
 
@@ -32,7 +32,7 @@ public class VariableBundleTests
 			}
 		});
 
-		final  ObjectVariable<Double> lTestVariable =   new ObjectVariable<Double>  ("var1");
+		final ObjectVariable<Double> lTestVariable = new ObjectVariable<Double>("var1");
 		lVariableBundle.addVariable(lTestVariable);
 
 	}

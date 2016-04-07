@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.cameras.gui.jfx.CameraDevicePanel;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -30,8 +30,8 @@ public class CameraDevicePanelDemo extends Application
 																																	103L,
 																																	lRecycler);
 
-		BooleanVariable lTrigger = new BooleanVariable(	"CameraTrigger",
-																										false);
+		ObjectVariable<Boolean> lTrigger = new ObjectVariable<Boolean>(	"CameraTrigger",
+																																		false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
 																																														lTrigger);

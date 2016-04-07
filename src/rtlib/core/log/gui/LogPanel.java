@@ -26,13 +26,13 @@ class LogPanel extends JPanel
 		mTextArea = new JTextArea();
 
 		((AbstractDocument) mTextArea.getDocument()).setDocumentFilter(new LineLimitedDocumentFilter(	mTextArea,
-																										cMaxNumberOfLines));
+																																																	cMaxNumberOfLines));
 
 		final DefaultCaret lDefaultCaret = (DefaultCaret) mTextArea.getCaret();
 		lDefaultCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		setLayout(new MigLayout("insets 0",
-								"[4px,grow,fill]",
-								"[20px,grow,fill]"));
+														"[4px,grow,fill]",
+														"[20px,grow,fill]"));
 
 		mPane = new JScrollPane(mTextArea);
 		add(mPane, "cell 0 0,alignx left,aligny top");

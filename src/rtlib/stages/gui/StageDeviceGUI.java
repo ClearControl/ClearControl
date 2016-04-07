@@ -13,22 +13,26 @@ public class StageDeviceGUI implements RunnableFX
 {
 	public final Stage3DControl mStage;
 
-	public StageDeviceGUI( StageDeviceInterface stageDeviceInterface )
+	public StageDeviceGUI(StageDeviceInterface stageDeviceInterface)
 	{
 		mStage = new Stage3DControl();
 	}
 
-	@Override public void init()
+	@Override
+	public void init()
 	{
 		mStage.init();
 	}
 
-	@Override public void start(Stage stage) {
+	@Override
+	public void start(Stage stage)
+	{
 
-		mStage.start( stage );
+		mStage.start(stage);
 	}
 
-	@Override public void stop()
+	@Override
+	public void stop()
 	{
 		mStage.stop();
 	}
@@ -40,6 +44,6 @@ public class StageDeviceGUI implements RunnableFX
 
 	public static void main(String[] args)
 	{
-		RunFX.start( new StageDeviceGUI( null ) );
+		RunFX.start(new StageDeviceGUI(null));
 	}
 }

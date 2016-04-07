@@ -11,8 +11,8 @@ import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
 public class QuarticFitArgMaxFinder extends Fitting1DBase	implements
-															ArgMaxFinder1DInterface,
-															Fitting1D
+																													ArgMaxFinder1DInterface,
+																													Fitting1D
 {
 	private static final int cNumberOfSamples = 1024;
 	private PolynomialFunction mPolynomialFunction;
@@ -25,8 +25,8 @@ public class QuarticFitArgMaxFinder extends Fitting1DBase	implements
 			fit(pX, pY);
 
 		double lArgMax = UnivariateFunctionArgMax.argmax(	pX,
-															mPolynomialFunction,
-															cNumberOfSamples);
+																											mPolynomialFunction,
+																											cNumberOfSamples);
 
 		mPolynomialFunction = null;
 		return lArgMax;
@@ -58,7 +58,7 @@ public class QuarticFitArgMaxFinder extends Fitting1DBase	implements
 	public String toString()
 	{
 		return String.format(	"QuarticFitArgMaxFinder [mPolynomialFunction=%s]",
-								mPolynomialFunction);
+													mPolynomialFunction);
 	}
 
 }

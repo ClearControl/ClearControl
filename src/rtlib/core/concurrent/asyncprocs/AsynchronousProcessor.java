@@ -1,7 +1,7 @@
 package rtlib.core.concurrent.asyncprocs;
 
 public class AsynchronousProcessor<I, O>	extends
-											AsynchronousProcessorBase<I, O>
+																					AsynchronousProcessorBase<I, O>
 {
 
 	private ProcessorInterface<I, O> mProcessor;
@@ -9,8 +9,8 @@ public class AsynchronousProcessor<I, O>	extends
 	@SuppressWarnings(
 	{ "unchecked", "rawtypes" })
 	public AsynchronousProcessor(	String pName,
-									int pMaxQueueSize,
-									final ProcessorInterface pProcessor)
+																int pMaxQueueSize,
+																final ProcessorInterface pProcessor)
 	{
 		super(pName, pMaxQueueSize);
 		mProcessor = pProcessor;

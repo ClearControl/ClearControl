@@ -26,7 +26,7 @@ public class NIRIOSignalGeneratorDemo
 		final ScoreInterface lScore = buildScore();
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualize(	"test",
-																					lScore);/**/
+																																							lScore);/**/
 
 		for (int i = 0; i < 100000 && lVisualize.isVisible(); i++)
 		{
@@ -53,14 +53,14 @@ public class NIRIOSignalGeneratorDemo
 		lMovement.setDuration(1, TimeUnit.MILLISECONDS);
 
 		final SinusStave lSinusStave1 = new SinusStave(	"sinus1",
-														1f,
-														0f,
-														0.5f);
+																										1f,
+																										0f,
+																										0.5f);
 
 		final SinusStave lSinusStave2 = new SinusStave(	"sinus2",
-														1f,
-														0f,
-														0.5f);
+																										1f,
+																										0f,
+																										0.5f);
 
 		lMovement.setStave(0, lSinusStave1);
 		lMovement.setStave(1, lSinusStave2);
@@ -68,7 +68,7 @@ public class NIRIOSignalGeneratorDemo
 		lScore.addMovementMultipleTimes(lMovement, 10);
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualize(	"test",
-																					lScore);/**/
+																																							lScore);/**/
 
 		for (int i = 0; i < 100000 && lVisualize.isVisible(); i++)
 		{
@@ -91,17 +91,17 @@ public class NIRIOSignalGeneratorDemo
 		final Movement lMovement = new Movement("Test Movement");
 
 		final SinusStave lSinusStave1 = new SinusStave(	"sinus1",
-														1f,
-														0f,
-														0.5f);
+																										1f,
+																										0f,
+																										0.5f);
 		final SinusStave lSinusStave2 = new SinusStave(	"sinus2",
-														0.25f,
-														0f,
-														0.25f);
+																										0.25f,
+																										0f,
+																										0.25f);
 		final SinusStave lSinusStave3 = new SinusStave(	"sinus3",
-														0.125f,
-														0f,
-														1f);
+																										0.125f,
+																										0f,
+																										1f);
 
 		/*for (int i = 0; i < 1; i++)
 			lMovement.setStave(i, lSinusStave1);

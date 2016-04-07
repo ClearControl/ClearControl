@@ -43,7 +43,7 @@ public class LStrPtrStruct extends StructObject
 	 * number of bytes that follow
 	 * 
 	 * @param cnt
-	 *            number of bytes that follow
+	 *          number of bytes that follow
 	 * @return number of bytes that follow
 	 */
 	@Field(0)

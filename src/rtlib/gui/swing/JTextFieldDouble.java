@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class JTextFieldDouble extends JPanel
 {
@@ -26,7 +26,7 @@ public class JTextFieldDouble extends JPanel
 	private String mLabelsFormatString = "%g";
 
 	// private final JTextFieldDouble mThis;
-	private  ObjectVariable<Double> mDoubleVariable;
+	private ObjectVariable<Double> mDoubleVariable;
 
 	private double mMin;
 	private double mMax;
@@ -38,34 +38,34 @@ public class JTextFieldDouble extends JPanel
 	}
 
 	public JTextFieldDouble(final String pValueName,
-							final boolean pNorthSouthLayout,
-							final double pValue)
+													final boolean pNorthSouthLayout,
+													final double pValue)
 	{
 
 		this(	pValueName,
-				pNorthSouthLayout,
-				"%.1f",
-				Double.NEGATIVE_INFINITY,
-				Double.POSITIVE_INFINITY,
-				pValue);
+					pNorthSouthLayout,
+					"%.1f",
+					Double.NEGATIVE_INFINITY,
+					Double.POSITIVE_INFINITY,
+					pValue);
 	}
 
 	public JTextFieldDouble(final String pValueName,
-							final boolean pNorthSouthLayout,
-							final String pLabelsFormatString,
-							final double pMin,
-							final double pMax,
-							final double pValue)
+													final boolean pNorthSouthLayout,
+													final String pLabelsFormatString,
+													final double pMin,
+													final double pMax,
+													final double pValue)
 	{
 		super();
 		setMin(pMin);
 		setMax(pMax);
 
-		mDoubleVariable =   new ObjectVariable<Double>  (pValueName, pValue)
+		mDoubleVariable = new ObjectVariable<Double>(pValueName, pValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
-										final Double pNewValue)
+																	final Double pNewValue)
 			{
 
 				if (pNewValue != mNewValue)
@@ -78,7 +78,7 @@ public class JTextFieldDouble extends JPanel
 						{
 							// System.out.println("mValueTextField.setText('' + pNewValue);");
 							final String lString = String.format(	getLabelsFormatString(),
-																	clamp(pNewValue));
+																										clamp(pNewValue));
 							mValueTextField.setText(lString);
 							mValueTextField.setBackground(Color.white);
 
@@ -96,9 +96,9 @@ public class JTextFieldDouble extends JPanel
 		mValueTextField = new JTextField("" + pValue);
 
 		add(mNameLabel, pNorthSouthLayout	? BorderLayout.NORTH
-											: BorderLayout.WEST);
-		add(mValueTextField, pNorthSouthLayout	? BorderLayout.SOUTH
-												: BorderLayout.CENTER);
+																			: BorderLayout.WEST);
+		add(mValueTextField, pNorthSouthLayout ? BorderLayout.SOUTH
+																					: BorderLayout.CENTER);
 
 		if (pNorthSouthLayout)
 		{
@@ -114,27 +114,27 @@ public class JTextFieldDouble extends JPanel
 		setLabelsFormatString(pLabelsFormatString);
 
 		mValueTextField.getDocument()
-						.addDocumentListener(new DocumentListener()
-						{
+										.addDocumentListener(new DocumentListener()
+										{
 
-							@Override
-							public void removeUpdate(final DocumentEvent pE)
-							{
-								mValueTextField.setBackground(Color.red);
-							}
+											@Override
+											public void removeUpdate(final DocumentEvent pE)
+											{
+												mValueTextField.setBackground(Color.red);
+											}
 
-							@Override
-							public void insertUpdate(final DocumentEvent pE)
-							{
-								mValueTextField.setBackground(Color.red);
-							}
+											@Override
+											public void insertUpdate(final DocumentEvent pE)
+											{
+												mValueTextField.setBackground(Color.red);
+											}
 
-							@Override
-							public void changedUpdate(final DocumentEvent pE)
-							{
+											@Override
+											public void changedUpdate(final DocumentEvent pE)
+											{
 
-							}
-						});
+											}
+										});
 
 		mValueTextField.addActionListener(new ActionListener()
 		{
@@ -143,8 +143,7 @@ public class JTextFieldDouble extends JPanel
 			public void actionPerformed(final ActionEvent pE)
 			{
 
-				final String lTextString = mValueTextField.getText()
-															.trim();
+				final String lTextString = mValueTextField.getText().trim();
 				if (lTextString.isEmpty())
 				{
 					return;

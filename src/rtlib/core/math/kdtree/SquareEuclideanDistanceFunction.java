@@ -4,7 +4,7 @@ package rtlib.core.math.kdtree;
  *
  */
 public class SquareEuclideanDistanceFunction implements
-											DistanceFunction
+																						DistanceFunction
 {
 	@Override
 	public double distance(double[] p1, double[] p2)
@@ -22,8 +22,8 @@ public class SquareEuclideanDistanceFunction implements
 
 	@Override
 	public double distanceToRect(	double[] point,
-									double[] min,
-									double[] max)
+																double[] min,
+																double[] max)
 	{
 		double d = 0;
 

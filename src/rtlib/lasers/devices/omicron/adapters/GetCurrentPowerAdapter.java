@@ -26,18 +26,18 @@ public class GetCurrentPowerAdapter extends OmicronAdapter<Number> implements
 			// final String lCurrentPowerString = lSplittedMessage[0];
 			final String lCurrentPowerString = new String(pMessage);
 			final double lCurrentPowerInMilliwatts = ProtocolXX.parseDouble(ProtocolXX.cMeasureDiodePowerReplyPrefix,
-																			lCurrentPowerString);
+																																			lCurrentPowerString);
 
 			mCurrentPowerInMilliwatts = (1 - cCurrentPowerFilteringAlpha) * mCurrentPowerInMilliwatts
-										+ cCurrentPowerFilteringAlpha
-										* lCurrentPowerInMilliwatts;
+																	+ cCurrentPowerFilteringAlpha
+																	* lCurrentPowerInMilliwatts;
 		}
 		catch (Throwable e)
 		{
-			System.err.printf(	"%s-%s: Problem while parsing current power level (received:'%s') \n",
-								GetCurrentPowerAdapter.class.getSimpleName(),
-								this.toString(),
-								new String(pMessage));
+			System.err.printf("%s-%s: Problem while parsing current power level (received:'%s') \n",
+												GetCurrentPowerAdapter.class.getSimpleName(),
+												this.toString(),
+												new String(pMessage));
 		}
 
 		return mCurrentPowerInMilliwatts;

@@ -17,8 +17,8 @@ public class TextFieldDoubleDemo
 {
 
 	@Test
-	public void demo()	throws InvocationTargetException,
-						InterruptedException
+	public void demo() throws InvocationTargetException,
+										InterruptedException
 	{
 
 		final JFrame lJFrame = runDemo();
@@ -31,7 +31,7 @@ public class TextFieldDoubleDemo
 	}
 
 	public JFrame runDemo()	throws InterruptedException,
-							InvocationTargetException
+													InvocationTargetException
 	{
 
 		final JFrame lJFrame = new JFrame("Demo");
@@ -54,26 +54,26 @@ public class TextFieldDoubleDemo
 					final JTextFieldDouble lJTextFieldDouble = new JTextFieldDouble();
 
 					lJTextFieldDouble.getDoubleVariable()
-										.addListener(new VariableListener<Double>()
-										{
+														.addListener(new VariableListener<Double>()
+														{
 
-											@Override
-											public void setEvent(	Double pCurrentValue,
-																	Double pNewValue)
-											{
-												System.out.format(	"setEvent(%s,%s) \n",
-																	pCurrentValue,
-																	pNewValue);
+															@Override
+															public void setEvent(	Double pCurrentValue,
+																										Double pNewValue)
+															{
+																System.out.format("setEvent(%s,%s) \n",
+																									pCurrentValue,
+																									pNewValue);
 
-											}
+															}
 
-											@Override
-											public void getEvent(Double pCurrentValue)
-											{
-												System.out.format(	"getEvent(%s,%s) \n",
-																	pCurrentValue);
-											}
-										});
+															@Override
+															public void getEvent(Double pCurrentValue)
+															{
+																System.out.format("getEvent(%s,%s) \n",
+																									pCurrentValue);
+															}
+														});
 
 					lJFrame.add(lJTextFieldDouble);
 

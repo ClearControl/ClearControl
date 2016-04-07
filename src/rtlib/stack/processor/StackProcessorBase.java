@@ -1,33 +1,34 @@
 package rtlib.stack.processor;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public abstract class StackProcessorBase implements
 																				StackProcessorInterface
 {
-	private final BooleanVariable mIsActiveVariable;
+	private final ObjectVariable<Boolean> mIsActiveVariable;
 	private final String mProcessorName;
 
 	public StackProcessorBase(final String pProcessorName)
 	{
 		super();
 		mProcessorName = pProcessorName;
-		mIsActiveVariable = new BooleanVariable(pProcessorName, false);
+		mIsActiveVariable = new ObjectVariable<Boolean>(pProcessorName,
+																										false);
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return mIsActiveVariable.getBooleanValue();
+		return mIsActiveVariable.get();
 	}
 
 	@Override
 	public void setActive(final boolean pIsActive)
 	{
-		mIsActiveVariable.setValue(pIsActive);
+		mIsActiveVariable.set(pIsActive);
 	}
 
-	public BooleanVariable getIsActiveBooleanVariable()
+	public ObjectVariable<Boolean> getIsActiveBooleanVariable()
 	{
 		return mIsActiveVariable;
 	}

@@ -3,7 +3,7 @@ package rtlib.symphony.staves;
 import static java.lang.Math.floor;
 
 public abstract class PatternSteppingStave extends StaveAbstract implements
-																StaveInterface
+																																StaveInterface
 {
 
 	private volatile float mSyncStart = 0;
@@ -16,9 +16,9 @@ public abstract class PatternSteppingStave extends StaveAbstract implements
 	}
 
 	public PatternSteppingStave(final String pName,
-								float pSyncStart,
-								float pSyncStop,
-								int pNumberOfSteps)
+															float pSyncStart,
+															float pSyncStop,
+															int pNumberOfSteps)
 	{
 		super(pName);
 		setNumberOfSteps(pNumberOfSteps);

@@ -29,13 +29,13 @@ public class FileEventNotifier implements AutoCloseable
 	public FileEventNotifier(final File pFileToMonitor)
 	{
 		this(	pFileToMonitor,
-				cDefaultMonitoringPeriodInMilliseconds,
-				TimeUnit.MILLISECONDS);
+					cDefaultMonitoringPeriodInMilliseconds,
+					TimeUnit.MILLISECONDS);
 	}
 
 	public FileEventNotifier(	final File pFileToMonitor,
-								final long pPeriod,
-								final TimeUnit pTimeUnit)
+														final long pPeriod,
+														final TimeUnit pTimeUnit)
 	{
 		super();
 		mFileToMonitor = pFileToMonitor;
@@ -78,9 +78,7 @@ public class FileEventNotifier implements AutoCloseable
 			@Override
 			public void onDirectoryDelete(final File pDirectory)
 			{
-				notifyFileEvent(lThis,
-								pDirectory,
-								FileEventKind.Deleted);
+				notifyFileEvent(lThis, pDirectory, FileEventKind.Deleted);
 			}
 
 			@Override
@@ -95,7 +93,7 @@ public class FileEventNotifier implements AutoCloseable
 		});
 
 		mFileAlterationMonitor = new FileAlterationMonitor(TimeUnit.MILLISECONDS.convert(	pPeriod,
-																							pTimeUnit));
+																																											pTimeUnit));
 		mFileAlterationMonitor.addObserver(mFileAlterationObserver);
 	}
 
@@ -115,8 +113,8 @@ public class FileEventNotifier implements AutoCloseable
 	}
 
 	protected void notifyFileEvent(	final FileEventNotifier pThis,
-									final File pFile,
-									final FileEventKind pEventKind)
+																	final File pFile,
+																	final FileEventKind pEventKind)
 	{
 		if (mIgnore)
 			return;
@@ -125,9 +123,7 @@ public class FileEventNotifier implements AutoCloseable
 		{
 			for (final FileEventNotifierListener lFileEventNotifierListener : mListenerList)
 			{
-				lFileEventNotifierListener.fileEvent(	pThis,
-														pFile,
-														pEventKind);
+				lFileEventNotifierListener.fileEvent(pThis, pFile, pEventKind);
 			}
 		}
 	}

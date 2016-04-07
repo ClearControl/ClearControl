@@ -284,8 +284,6 @@ public class ScriptingPanel extends JPanel implements
 
 	}
 
-
-
 	private void saveToFile(String pScriptText, String pFileName) throws IOException
 	{
 		try

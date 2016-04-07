@@ -15,9 +15,9 @@ import coremem.rgc.Freeable;
 import coremem.rgc.FreedException;
 
 public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																						PlanarImg<T, A>	implements
-																										Freeable,
-																										SizedInBytes
+																																											PlanarImg<T, A>	implements
+																																																			Freeable,
+																																																			SizedInBytes
 {
 
 	private ContiguousMemoryInterface mContiguousMemory;
@@ -28,8 +28,8 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
 	}
 
 	public OffHeapPlanarImg(A pCreator,
-							long[] pDim,
-							Fraction pEntitiesPerPixel)
+													long[] pDim,
+													Fraction pEntitiesPerPixel)
 	{
 		super(pCreator, pDim, pEntitiesPerPixel);
 	}

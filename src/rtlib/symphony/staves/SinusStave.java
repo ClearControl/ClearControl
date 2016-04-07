@@ -4,7 +4,7 @@ import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
 public class SinusStave extends StaveAbstract	implements
-												StaveInterface
+																							StaveInterface
 {
 	private volatile float mSinusPeriod;
 	private volatile float mSinusPhase;
@@ -12,10 +12,10 @@ public class SinusStave extends StaveAbstract	implements
 
 	private volatile float mOmega;
 
-	public SinusStave(	final String pName,
-						final float pSinusPeriod,
-						final float pSinusPhase,
-						final float pSinusAmplitude)
+	public SinusStave(final String pName,
+										final float pSinusPeriod,
+										final float pSinusPhase,
+										final float pSinusAmplitude)
 	{
 		super(pName);
 		setSinusPeriod(pSinusPeriod);
@@ -66,10 +66,10 @@ public class SinusStave extends StaveAbstract	implements
 	public StaveInterface copy()
 	{
 
-		return new SinusStave(	getName(),
-								getSinusPeriod(),
-								getSinusPhase(),
-								getSinusAmplitude());
+		return new SinusStave(getName(),
+													getSinusPeriod(),
+													getSinusPhase(),
+													getSinusAmplitude());
 	}
 
 }

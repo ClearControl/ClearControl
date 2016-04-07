@@ -13,9 +13,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder(
 { "slope", "constant", "min", "max" })
 public class UnivariateAffineFunction	implements
-										UnivariateAffineComposableFunction,
-										FunctionDomain,
-										Serializable
+																			UnivariateAffineComposableFunction,
+																			FunctionDomain,
+																			Serializable
 {
 
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class UnivariateAffineFunction	implements
 	}
 
 	public UnivariateAffineFunction()	throws NullArgumentException,
-										NoDataException
+																		NoDataException
 	{
 		this(1, 0);
 	}
@@ -49,7 +49,7 @@ public class UnivariateAffineFunction	implements
 	}
 
 	public UnivariateAffineFunction(double pA, double pB)	throws NullArgumentException,
-															NoDataException
+																												NoDataException
 	{
 		mA = pA;
 		mB = pB;
@@ -141,9 +141,9 @@ public class UnivariateAffineFunction	implements
 	public String toString()
 	{
 		return "UnivariateAffineFunction [Y = " + mA
-				+ " * X + "
-				+ mB
-				+ "]";
+						+ " * X + "
+						+ mB
+						+ "]";
 	}
 
 	@Override

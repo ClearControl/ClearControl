@@ -4,8 +4,7 @@ import java.util.Arrays;
 
 import coremem.recycling.RecyclerRequest;
 
-public class StackRequest implements
-													RecyclerRequest
+public class StackRequest implements RecyclerRequest
 {
 
 	private final long[] mDimensions;
@@ -45,13 +44,11 @@ public class StackRequest implements
 		return mDimensions[2];
 	}
 
-
-
 	@Override
 	public String toString()
 	{
 		return String.format(	"StackRequest [mDimensions=%s]",
-								Arrays.toString(mDimensions));
+													Arrays.toString(mDimensions));
 	}
 
 }

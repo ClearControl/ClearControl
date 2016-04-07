@@ -4,7 +4,7 @@ import rtlib.optomech.filterwheels.FilterWheelDeviceBase;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 
 public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
-																		FilterWheelDeviceInterface
+																																			FilterWheelDeviceInterface
 {
 
 	public FilterWheelDeviceSimulator(String pDeviceName)

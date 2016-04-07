@@ -18,11 +18,11 @@ public final class CompactFormatter extends Formatter
 		// final Date lDate = new Date(record.getMillis());
 
 		lStringBuilder.append(record.getLevel()
-									.getLocalizedName()
-									.substring(0, 1))
-						.append(": ")
-						.append(formatMessage(record).trim())
-						.append(LINE_SEPARATOR);
+																.getLocalizedName()
+																.substring(0, 1))
+									.append(": ")
+									.append(formatMessage(record).trim())
+									.append(LINE_SEPARATOR);
 
 		if (record.getThrown() != null)
 		{

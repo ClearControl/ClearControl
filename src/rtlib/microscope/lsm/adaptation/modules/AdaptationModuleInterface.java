@@ -4,7 +4,8 @@ import java.util.function.Function;
 
 import rtlib.microscope.lsm.adaptation.Adaptator;
 
-public interface AdaptationModuleInterface extends Function<Void,Boolean>
+public interface AdaptationModuleInterface extends
+																					Function<Void, Boolean>
 {
 
 	void setAdaptator(Adaptator pLSMAdaptator);

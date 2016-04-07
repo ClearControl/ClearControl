@@ -1,7 +1,7 @@
 package rtlib.optomech.filterwheels;
 
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public abstract class FilterWheelDeviceBase	extends
 																						NamedVirtualDevice implements

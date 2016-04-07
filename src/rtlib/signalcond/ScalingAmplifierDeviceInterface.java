@@ -1,10 +1,10 @@
 package rtlib.signalcond;
 
 import rtlib.core.device.NameableInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public interface ScalingAmplifierDeviceInterface extends
-												NameableInterface
+																								NameableInterface
 {
 
 	public void setGain(double pGain);
@@ -15,8 +15,8 @@ public interface ScalingAmplifierDeviceInterface extends
 
 	public double getOffset();
 
-	public  ObjectVariable<Double> getGainVariable();
+	public ObjectVariable<Double> getGainVariable();
 
-	public  ObjectVariable<Double> getOffsetVariable();
+	public ObjectVariable<Double> getOffsetVariable();
 
 }

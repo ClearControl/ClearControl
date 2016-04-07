@@ -6,14 +6,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
 public class LongOffHeapAccess extends AbstractOffHeapAccess implements
-															LongAccess,
-															ArrayDataAccess<LongOffHeapAccess>
+																														LongAccess,
+																														ArrayDataAccess<LongOffHeapAccess>
 {
 
 	public LongOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateInts(	"LongOffHeapAccess",
-														numEntities);
+																										numEntities);
 	}
 
 	public LongOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

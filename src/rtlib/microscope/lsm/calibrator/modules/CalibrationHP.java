@@ -18,7 +18,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
@@ -71,7 +71,7 @@ public class CalibrationHP
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
 																														.getLightSheetDevice(pLightSheetIndex);
 
-		lLightSheet.getAdaptPowerToWidthHeightVariable().setValue(false);
+		lLightSheet.getAdaptPowerToWidthHeightVariable().set(false);
 
 		UnivariateAffineComposableFunction lWidthFunction = lLightSheet.getWidthFunction()
 																																		.get();
@@ -191,7 +191,7 @@ public class CalibrationHP
 			if (lPlayQueueAndWait)
 			{
 				final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
-																																																						.get();
+																																		.get();
 
 				OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 

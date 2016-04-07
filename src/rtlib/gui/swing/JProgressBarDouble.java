@@ -4,7 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JProgressBar;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class JProgressBarDouble extends JProgressBar
 {

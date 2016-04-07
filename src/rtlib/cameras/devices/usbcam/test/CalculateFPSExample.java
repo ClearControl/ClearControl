@@ -53,8 +53,8 @@ public class CalculateFPSExample
 				t2 = System.currentTimeMillis();
 
 				System.out.println("FPS " + k
-									+ ": "
-									+ (1000 * r / (t2 - t1 + 1)));
+														+ ": "
+														+ (1000 * r / (t2 - t1 + 1)));
 
 			}
 			// lWebcam.close();

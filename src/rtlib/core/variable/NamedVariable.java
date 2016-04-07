@@ -8,6 +8,7 @@ public abstract class NamedVariable<O>
 	private String mVariableName;
 
 	private final CopyOnWriteArrayList<VariableSetListener<O>> mVariableSetListeners = new CopyOnWriteArrayList<VariableSetListener<O>>();
+	private final CopyOnWriteArrayList<VariableEdgeListener<O>> mVariableEdgeListeners = new CopyOnWriteArrayList<VariableEdgeListener<O>>();
 	private final CopyOnWriteArrayList<VariableGetListener<O>> mVariableGetListeners = new CopyOnWriteArrayList<VariableGetListener<O>>();
 
 	public NamedVariable(final String pVariableName)
@@ -33,6 +34,11 @@ public abstract class NamedVariable<O>
 		mVariableSetListeners.add(pVariableSetListener);
 	}
 
+	public void addEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
+	{
+		mVariableEdgeListeners.add(pVariableEdgeListener);
+	}
+
 	public void addGetListener(final VariableGetListener<O> pVariableGetListener)
 	{
 		mVariableGetListeners.add(pVariableGetListener);
@@ -41,6 +47,11 @@ public abstract class NamedVariable<O>
 	public void removeSetListener(final VariableSetListener<O> pVariableSetListener)
 	{
 		mVariableSetListeners.remove(pVariableSetListener);
+	}
+
+	public void removeEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
+	{
+		mVariableEdgeListeners.remove(pVariableEdgeListener);
 	}
 
 	public void removeGetListener(final VariableGetListener<O> pVariableGetListener)
@@ -69,17 +80,31 @@ public abstract class NamedVariable<O>
 		return mVariableSetListeners;
 	}
 
+	public CopyOnWriteArrayList<VariableEdgeListener<O>> getVariableEdgeListeners()
+	{
+		return mVariableEdgeListeners;
+	}
+
 	public CopyOnWriteArrayList<VariableGetListener<O>> getVariableGetListeners()
 	{
 		return mVariableGetListeners;
 	}
 
-	public void notifyListenersOfSetEvent(	final O pCurentValue,
-											final O pNewValue)
+	public void notifyListenersOfSetEvent(final O pCurentValue,
+																				final O pNewValue)
 	{
 		for (final VariableSetListener<O> lVariableListener : getVariableSetListeners())
 		{
 			lVariableListener.setEvent(pCurentValue, pNewValue);
+		}
+	}
+
+	public void notifyListenersOfEdgeEvent(	final O pCurentValue,
+																					final O pNewValue)
+	{
+		for (final VariableEdgeListener<O> lVariableListener : getVariableEdgeListeners())
+		{
+			lVariableListener.fire(pNewValue);
 		}
 	}
 

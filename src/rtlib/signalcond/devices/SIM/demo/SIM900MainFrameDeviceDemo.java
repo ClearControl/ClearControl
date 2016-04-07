@@ -18,8 +18,8 @@ public class SIM900MainFrameDeviceDemo
 
 		assertTrue(lSIM900MainframeDevice.open());
 
-		final SIM983ScalingAmplifierDevice lScalingAmp = new SIM983ScalingAmplifierDevice(	lSIM900MainframeDevice,
-																							4);
+		final SIM983ScalingAmplifierDevice lScalingAmp = new SIM983ScalingAmplifierDevice(lSIM900MainframeDevice,
+																																											4);
 
 		assertTrue(lScalingAmp.open());
 

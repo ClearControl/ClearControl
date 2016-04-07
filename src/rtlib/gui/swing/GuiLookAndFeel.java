@@ -22,8 +22,7 @@ public class GuiLookAndFeel
 			UIManager.setLookAndFeel(pLookAndFeel);
 		}
 		catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException
-				| UnsupportedLookAndFeelException e)
+				| IllegalAccessException | UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
 		}
@@ -34,7 +33,7 @@ public class GuiLookAndFeel
 		final MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
 		String lLookAndFeelName = lCurrentMachineConfiguration.getStringProperty(	"lookandfeel",
-																					"system");
+																																							"system");
 
 		if (lLookAndFeelName.equalsIgnoreCase("system"))
 			setSystemLookAndFeel();

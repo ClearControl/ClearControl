@@ -12,8 +12,7 @@ import rtlib.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.units.Magnitude;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
@@ -102,8 +101,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 					while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
 				}
 
-				mFrameReference.set(Pair.of(	lKeepAcquiredImageArray,
-																							pDcamFrame));
+				mFrameReference.set(Pair.of(lKeepAcquiredImageArray,
+																		pDcamFrame));
 			}
 
 		});
@@ -193,7 +192,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 		};
 
-		mIsAcquiring = new BooleanVariable("IsAcquiring", false)
+		mIsAcquiring = new ObjectVariable<Boolean>("IsAcquiring", false)
 		{
 
 			@Override
@@ -313,9 +312,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	{
 		super.playQueue();
 
-		acquisition(false,
-								getStackModeVariable().getBooleanValue(),
-								false);
+		acquisition(false, getStackModeVariable().get(), false);
 
 		final Future<Boolean> lFuture = executeAsynchronously(new Callable<Boolean>()
 		{
@@ -371,7 +368,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	{
 		synchronized (mLock)
 		{
-			final boolean lIsAcquiring = getIsAcquiringVariable().getBooleanValue();
+			final boolean lIsAcquiring = getIsAcquiringVariable().get();
 			if (lIsAcquiring)
 			{
 				stop();
@@ -403,7 +400,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			// System.out.println(this.getClass().getSimpleName() +
 			// ": acquisition() begin");
 
-			if (getIsAcquiringVariable().getBooleanValue())
+			if (getIsAcquiringVariable().get())
 			{
 				if (isReOpenDeviceNeeded())
 				{

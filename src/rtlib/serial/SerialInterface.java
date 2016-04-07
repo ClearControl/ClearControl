@@ -6,7 +6,7 @@ public interface SerialInterface
 {
 
 	public boolean connect() throws SerialPortException,
-							SerialException;
+													SerialException;
 
 	boolean connect(String pPortName) throws SerialPortException;
 

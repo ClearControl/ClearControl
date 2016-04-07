@@ -53,15 +53,15 @@ public class Serial implements SerialInterface
 	{
 		final ArrayList<String> lListOfFreeCommPorts = new ArrayList<String>();
 		final String[] lPortNameList = SerialPortList.getPortNames(	Pattern.compile("tty\\..+"),
-																	new Comparator<String>()
-																	{
-																		@Override
-																		public int compare(	final String pO1,
-																							final String pO2)
-																		{
-																			return -1;
-																		}
-																	});
+																																new Comparator<String>()
+																																{
+																																	@Override
+																																	public int compare(	final String pO1,
+																																											final String pO2)
+																																	{
+																																		return -1;
+																																	}
+																																});
 
 		for (final String lPortName : lPortNameList)
 		{
@@ -104,8 +104,8 @@ public class Serial implements SerialInterface
 	}
 
 	@Override
-	public final boolean connect()	throws SerialPortException,
-									SerialException
+	public final boolean connect() throws SerialPortException,
+																SerialException
 	{
 		if (mPortNameHint == null)
 			throw new SerialException("No hint given for port name.");
@@ -122,10 +122,10 @@ public class Serial implements SerialInterface
 			mSerialPort = new SerialPort(pPortName);
 
 			mSerialPort.openPort();
-			mSerialPort.setParams(	mBaudRate,
-									SerialPort.DATABITS_8,
-									SerialPort.STOPBITS_1,
-									SerialPort.PARITY_NONE);
+			mSerialPort.setParams(mBaudRate,
+														SerialPort.DATABITS_8,
+														SerialPort.STOPBITS_1,
+														SerialPort.PARITY_NONE);
 
 			mSerialPort.setFlowControlMode(mFlowControl);
 			mSerialPort.purgePort(SerialPort.PURGE_RXCLEAR | SerialPort.PURGE_TXCLEAR);
@@ -288,7 +288,7 @@ public class Serial implements SerialInterface
 	}
 
 	public final class SerialReaderEventBased	implements
-												SerialPortEventListener
+																						SerialPortEventListener
 	{
 		public SerialReaderEventBased(final SerialPort pSerialPort)
 		{
@@ -376,13 +376,12 @@ public class Serial implements SerialInterface
 				byte[] lByte;
 				do
 				{
-					lByte = mSerialPort.readBytes(	1,
-													pTimeOutInMilliseconds);
+					lByte = mSerialPort.readBytes(1, pTimeOutInMilliseconds);
 				}
 				while (lByte[0] != mEndOfMessageCharacter);
 			}
 			final byte[] lReadBytes = mSerialPort.readBytes(mMessageLength,
-															pTimeOutInMilliseconds);
+																											pTimeOutInMilliseconds);
 			return lReadBytes;
 		}
 		catch (final Throwable e)
@@ -407,8 +406,8 @@ public class Serial implements SerialInterface
 			if (mEcho)
 			{
 				final String lMessage = new String(	mBuffer.toArray(),
-													0,
-													mBuffer.size());
+																						0,
+																						mBuffer.size());
 				// System.out.print(lMessage);
 			}
 
@@ -427,8 +426,8 @@ public class Serial implements SerialInterface
 	{
 		final byte[] lReadTextMessage = readTextMessage();
 		final String lMessage = new String(	lReadTextMessage,
-											0,
-											lReadTextMessage.length);
+																				0,
+																				lReadTextMessage.length);
 		return lMessage;
 	}
 

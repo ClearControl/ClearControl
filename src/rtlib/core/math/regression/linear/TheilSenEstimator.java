@@ -228,6 +228,6 @@ public class TheilSenEstimator
 	public String toString()
 	{
 		return String.format(	"TheilSenEstimator [mLinear1to1=%s]",
-								getModel());
+													getModel());
 	}
 }

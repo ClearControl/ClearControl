@@ -34,7 +34,7 @@ public class OutlierRemoverTests
 		assertTrue(lSamples.max() >= 10);
 
 		final TDoubleArrayList lOutliersRemoved = OutlierRemover.removeOutliers(lSamples.toArray(),
-																				6);
+																																						6);
 
 		System.out.println(lOutliersRemoved.min());
 		System.out.println(lOutliersRemoved.max());

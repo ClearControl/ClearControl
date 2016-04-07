@@ -10,27 +10,27 @@ public class JythonUtils
 {
 
 	public static Object runScript(	final String pScriptName,
-									final String pScriptString,
-									Map<String, Object> pMap,
-									OutputStream pOutputStream,
-									boolean pDebug)
+																	final String pScriptString,
+																	Map<String, Object> pMap,
+																	OutputStream pOutputStream,
+																	boolean pDebug)
 	{
 		return runScript(	pScriptName,
-							"",
-							pScriptString,
-							"",
-							pMap,
-							pOutputStream,
-							pDebug);
+											"",
+											pScriptString,
+											"",
+											pMap,
+											pOutputStream,
+											pDebug);
 	}
 
 	public static Object runScript(	final String pScriptName,
-									final String pPreambleString,
-									final String pScriptString,
-									final String pPostambleString,
-									Map<String, Object> pMap,
-									OutputStream pOutputStream,
-									boolean pDebug)
+																	final String pPreambleString,
+																	final String pScriptString,
+																	final String pPostambleString,
+																	Map<String, Object> pMap,
+																	OutputStream pOutputStream,
+																	boolean pDebug)
 	{
 		Options.importSite = false;
 		final PythonInterpreter lPythonInterpreter = new PythonInterpreter();
@@ -48,8 +48,7 @@ public class JythonUtils
 			lPythonInterpreter.setErr(pOutputStream);
 		}
 
-		lPythonInterpreter.exec(pPreambleString + "\n"
-								+ pScriptString);
+		lPythonInterpreter.exec(pPreambleString + "\n" + pScriptString);
 
 		for (final Map.Entry<String, Object> lEntry : pMap.entrySet())
 		{

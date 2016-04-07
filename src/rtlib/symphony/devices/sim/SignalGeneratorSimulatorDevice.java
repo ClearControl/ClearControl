@@ -3,24 +3,24 @@ package rtlib.symphony.devices.sim;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.symphony.devices.SignalGeneratorBase;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.score.ScoreInterface;
 
 public class SignalGeneratorSimulatorDevice	extends
-											SignalGeneratorBase	implements
-																SignalGeneratorInterface
+																						SignalGeneratorBase	implements
+																																SignalGeneratorInterface
 {
 
-	private final BooleanVariable mTriggerVariable;
+	private final ObjectVariable<Boolean> mTriggerVariable;
 
 	public SignalGeneratorSimulatorDevice()
 	{
 		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
 
-		mTriggerVariable = new BooleanVariable(	getName() + "Trigger",
-												false);
+		mTriggerVariable = new ObjectVariable<Boolean>(	getName() + "Trigger",
+																										false);
 
 	}
 
@@ -47,14 +47,14 @@ public class SignalGeneratorSimulatorDevice	extends
 		catch (final InterruptedException e)
 		{
 		}
-		mTriggerVariable.setEdge(true);
+		mTriggerVariable.setEdge(false, true);
 		return true;
 	}
 
 	@Override
 	public Future<Boolean> playQueue()
 	{
-		getTriggerVariable().setEdge(true);
+		getTriggerVariable().setEdge(false, true);
 		return super.playQueue();
 	}
 
@@ -65,7 +65,7 @@ public class SignalGeneratorSimulatorDevice	extends
 	}
 
 	@Override
-	public BooleanVariable getTriggerVariable()
+	public ObjectVariable<Boolean> getTriggerVariable()
 	{
 		return mTriggerVariable;
 	}

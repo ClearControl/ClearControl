@@ -3,22 +3,21 @@ package rtlib.cameras;
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
-public interface CameraDeviceInterface	extends
-										OpenCloseDeviceInterface,
-										StartStopDeviceInterface,
-										StateQueueDeviceInterface
+public interface CameraDeviceInterface extends
+																			OpenCloseDeviceInterface,
+																			StartStopDeviceInterface,
+																			StateQueueDeviceInterface
 {
 
-	 ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable();
+	ObjectVariable<Double> getLineReadOutTimeInMicrosecondsVariable();
 
-	 ObjectVariable<Double> getExposureInMicrosecondsVariable();
+	ObjectVariable<Double> getExposureInMicrosecondsVariable();
 
-	 ObjectVariable<Double> getPixelSizeInNanometersVariable();
+	ObjectVariable<Double> getPixelSizeInNanometersVariable();
 
-	BooleanVariable getIsAcquiringVariable();
+	ObjectVariable<Boolean> getIsAcquiringVariable();
 
 	void trigger();
 

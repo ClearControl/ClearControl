@@ -1,8 +1,7 @@
 package rtlib.lasers.devices.cobolt;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.devices.cobolt.adapters.GetCurrentPowerAdapter;
@@ -64,7 +63,7 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 		mPowerOnVariable = mSerialDevice.addSerialVariable(	"PowerOn",
 																												lSetPowerOnOffAdapter);
 
-		mLaserOnVariable = new BooleanVariable("LaserOn", false);
+		mLaserOnVariable = new ObjectVariable<Boolean>("LaserOn", false);
 
 		final GetWorkingHoursAdapter lGetWorkingHoursAdapter = new GetWorkingHoursAdapter();
 		mWorkingHoursVariable = mSerialDevice.addSerialVariable("WorkingHours",

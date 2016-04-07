@@ -33,7 +33,7 @@ public class ClampingArgMaxFinder implements ArgMaxFinder1DInterface
 	public String toString()
 	{
 		return String.format(	"ClampingArgMaxFinder [%s]",
-								mArgMaxFinder1DInterface);
+													mArgMaxFinder1DInterface);
 	}
 
 }

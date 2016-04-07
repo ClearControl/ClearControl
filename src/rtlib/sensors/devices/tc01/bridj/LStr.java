@@ -43,7 +43,7 @@ public class LStr extends StructObject
 	 * number of bytes that follow
 	 * 
 	 * @param cnt
-	 *            count
+	 *          count
 	 * @return LStr
 	 */
 	@Field(0)

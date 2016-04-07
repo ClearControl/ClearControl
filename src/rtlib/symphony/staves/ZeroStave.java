@@ -1,7 +1,7 @@
 package rtlib.symphony.staves;
 
 public class ZeroStave extends ConstantStave implements
-											StaveInterface
+																						StaveInterface
 {
 	public ZeroStave()
 	{

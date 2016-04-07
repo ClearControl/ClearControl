@@ -43,17 +43,17 @@ public class ProtocolXX
 	private static final int cAdGocModeMask = 1 << 13;
 
 	public static double parseDouble(	String pPrefix,
-										String pReceivedString)
+																		String pReceivedString)
 	{
 		int lIndex = pReceivedString.indexOf(pPrefix) + pPrefix.length();
 		String lStringWithoutPrefix = pReceivedString.substring(lIndex)
-														.trim();
+																									.trim();
 		double lDoubleValue = Double.parseDouble(lStringWithoutPrefix);
 		return lDoubleValue;
 	}
 
-	public static final String[] splitMessage(	String pPrefix,
-												final byte[] pMessage)
+	public static final String[] splitMessage(String pPrefix,
+																						final byte[] pMessage)
 	{
 		String lMessageString = new String(pMessage);
 		int lIndex = lMessageString.indexOf(pPrefix) + pPrefix.length();
@@ -66,8 +66,8 @@ public class ProtocolXX
 	public static String toHexadecimalString(final int n, final int k)
 	{
 		return String.format("%" + k + "s", Integer.toHexString(n))
-						.replace(' ', '0')
-						.toUpperCase();
+									.replace(' ', '0')
+									.toUpperCase();
 	}
 
 	public static final boolean setNoAdHocMode(final Serial pSerial)
@@ -76,7 +76,7 @@ public class ProtocolXX
 	}
 
 	private static final boolean setNoAdHocModeInternal(final Serial pSerial,
-														final int pMaxtries)
+																											final int pMaxtries)
 	{
 		if (pMaxtries <= 0)
 		{
@@ -91,18 +91,18 @@ public class ProtocolXX
 			pSerial.write(cGetOperatingModeCommand);
 			final byte[] lReadTextMessage = pSerial.readTextMessage();
 			final String[] lSplitMessage = splitMessage(cGetOperatingModeReplyPrefix,
-														lReadTextMessage);
+																									lReadTextMessage);
 			final String lOperatingModeAsHexString = lSplitMessage[0];
 
 			int lOperatingModeAsInteger = Integer.parseInt(	lOperatingModeAsHexString,
-															16);
+																											16);
 
 			lOperatingModeAsInteger = lOperatingModeAsInteger & ~cAdGocModeMask;
 
 			final String lNewOperatingModeAsHexString = toHexadecimalString(lOperatingModeAsInteger,
-																			4);
-			final String lNewOperatingModeCommand = String.format(	cSetOperatingModeCommand,
-																	lNewOperatingModeAsHexString);
+																																			4);
+			final String lNewOperatingModeCommand = String.format(cSetOperatingModeCommand,
+																														lNewOperatingModeAsHexString);
 
 			purge(pSerial);
 			pSerial.write(lNewOperatingModeCommand.getBytes());
@@ -116,8 +116,7 @@ public class ProtocolXX
 			}
 			else
 			{
-				lSuccess = setNoAdHocModeInternal(	pSerial,
-													pMaxtries - 1);
+				lSuccess = setNoAdHocModeInternal(pSerial, pMaxtries - 1);
 			}
 
 			purge(pSerial);

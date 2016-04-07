@@ -7,11 +7,11 @@ import java.util.Map.Entry;
 
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.lasers.LaserDeviceInterface;
 
 public class LasertHubDevice extends NamedVirtualDevice	implements
-														StartStopDeviceInterface
+																												StartStopDeviceInterface
 {
 
 	ArrayList<LaserDeviceInterface> mAddedLaserDeviceList = new ArrayList<LaserDeviceInterface>();
@@ -73,13 +73,13 @@ public class LasertHubDevice extends NamedVirtualDevice	implements
 			if (lLaserDeviceOpened)
 			{
 				final int lWavelengthInNanoMeter = lLaserDevice.getWavelengthInNanoMeter();
-				mWavelengthToOpenedLaserDeviceMap.put(	lWavelengthInNanoMeter,
-														lLaserDevice);
+				mWavelengthToOpenedLaserDeviceMap.put(lWavelengthInNanoMeter,
+																							lLaserDevice);
 			}
 			else
 			{
 				System.out.println(LasertHubDevice.class.getSimpleName() + ": could not open: "
-									+ lLaserDevice.getName());
+														+ lLaserDevice.getName());
 			}
 		}
 		return lAllLasersOpen;

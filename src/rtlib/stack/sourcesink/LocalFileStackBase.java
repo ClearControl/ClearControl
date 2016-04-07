@@ -11,8 +11,8 @@ import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
 
 public abstract class LocalFileStackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>> extends
-																								StackServerBase<T, A>	implements
-																														AutoCloseable
+																																																StackServerBase<T, A>	implements
+																																																											AutoCloseable
 {
 	protected final File mFolder;
 	private final File mDataFolder;
@@ -24,10 +24,10 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 	protected final File mMetaDataFile;
 	protected final VariableBundleAsFile mMetaDataVariableBundleAsFile;
 
-	public LocalFileStackBase(	final T pType,
-								final File pRootFolder,
-								final String pName,
-								final boolean pReadOnly) throws IOException
+	public LocalFileStackBase(final T pType,
+														final File pRootFolder,
+														final String pName,
+														final boolean pReadOnly) throws IOException
 	{
 		super();
 		mFolder = new File(pRootFolder, pName);
@@ -59,13 +59,13 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 			mMetaDataFile.getParentFile().mkdirs();
 		}
 
-		mMetaDataVariableBundleAsFile = new VariableBundleAsFile(	pName	+ "MetaData",
-																	mMetaDataFile,
-																	false);
+		mMetaDataVariableBundleAsFile = new VariableBundleAsFile(	pName + "MetaData",
+																															mMetaDataFile,
+																															false);
 	}
 
-	protected FileChannel getFileChannelForBinaryFile(	final boolean pReadOnly,
-														final boolean pForMapping) throws IOException
+	protected FileChannel getFileChannelForBinaryFile(final boolean pReadOnly,
+																										final boolean pForMapping) throws IOException
 	{
 		FileChannel lFileChannel;
 		if (pReadOnly)
@@ -73,12 +73,12 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 			if (pForMapping)
 			{
 				lFileChannel = FileChannel.open(mBinaryFile.toPath(),
-												StandardOpenOption.READ);
+																				StandardOpenOption.READ);
 			}
 			else
 			{
 				lFileChannel = FileChannel.open(mBinaryFile.toPath(),
-												StandardOpenOption.READ);
+																				StandardOpenOption.READ);
 			}
 		}
 		else
@@ -86,16 +86,16 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 			if (pForMapping)
 			{
 				lFileChannel = FileChannel.open(mBinaryFile.toPath(),
-												StandardOpenOption.CREATE,
-												StandardOpenOption.READ,
-												StandardOpenOption.WRITE);
+																				StandardOpenOption.CREATE,
+																				StandardOpenOption.READ,
+																				StandardOpenOption.WRITE);
 			}
 			else
 			{
 				lFileChannel = FileChannel.open(mBinaryFile.toPath(),
-												StandardOpenOption.APPEND,
-												StandardOpenOption.WRITE,
-												StandardOpenOption.CREATE);
+																				StandardOpenOption.APPEND,
+																				StandardOpenOption.WRITE,
+																				StandardOpenOption.CREATE);
 			}
 		}
 		return lFileChannel;

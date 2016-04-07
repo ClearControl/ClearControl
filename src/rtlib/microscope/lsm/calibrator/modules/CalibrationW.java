@@ -41,41 +41,42 @@ public class CalibrationW
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfDetectionArmDevices();
+																												.getNumberOfDetectionArmDevices();
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfLightSheetDevices();
+																											.getNumberOfLightSheetDevices();
 
 		mAverageIntensityCurves = MultiPlot.getMultiPlot(this.getClass()
-																.getSimpleName() + "W-calibration: average intensity curves");
+																													.getSimpleName() + "W-calibration: average intensity curves");
 		mAverageIntensityCurves.setVisible(false);
 
 	}
 
 	public boolean calibrate(	int pDetectionArmIndex,
-								int pNumberOfSamples)
+														int pNumberOfSamples)
 	{
 		mIntensityLists.clear();
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			double[] lAverageIntensities = calibrate(	l,
-														pDetectionArmIndex,
-														3);
+																								pDetectionArmIndex,
+																								3);
 			if (lAverageIntensities == null)
 				return false;
 
 			mIntensityLists.put(l,
-								new TDoubleArrayList(lAverageIntensities));
+													new TDoubleArrayList(lAverageIntensities));
 
-			if(ScriptingEngine.isCancelRequestedStatic()) return false;
+			if (ScriptingEngine.isCancelRequestedStatic())
+				return false;
 		}
 
 		return true;
 	}
 
-	public double[] calibrate(	int pLightSheetIndex,
-								int pDetectionArmIndex,
-								int pNumberOfSamples)
+	public double[] calibrate(int pLightSheetIndex,
+														int pDetectionArmIndex,
+														int pNumberOfSamples)
 	{
 		if (!mAverageIntensityCurves.isVisible())
 			mAverageIntensityCurves.setVisible(true);
@@ -83,10 +84,10 @@ public class CalibrationW
 		try
 		{
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																			.getLightSheetDevice(pLightSheetIndex);
+																																		.getLightSheetDevice(pLightSheetIndex);
 
 			UnivariateAffineComposableFunction lWFunction = lLightSheetDevice.getWidthFunction()
-																				.get();
+																																				.get();
 			double lMinW = lWFunction.getMin();
 			double lMaxW = lWFunction.getMax();
 			double lStep = (lMaxW - lMinW) / pNumberOfSamples;
@@ -124,14 +125,14 @@ public class CalibrationW
 			// Building queue end.
 
 			mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
-			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
-																								TimeUnit.SECONDS);
+			final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+																																												TimeUnit.SECONDS);
 
 			if (!lPlayQueueAndWait)
 				return null;
 
 			final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
-																												.get();
+																																	.get();
 
 			OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 
@@ -140,28 +141,29 @@ public class CalibrationW
 			long lWidth = lImage.dimension(0);
 			long lHeight = lImage.dimension(1);
 
-			System.out.format(	"Image: width=%d, height=%d \n",
-								lWidth,
-								lHeight);
+			System.out.format("Image: width=%d, height=%d \n",
+												lWidth,
+												lHeight);
 
 			double[] lAverageIntensities = ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lImage);
 
 			System.out.format("Image: average intensities: \n");
 
-			PlotTab lPlot = mAverageIntensityCurves.getPlot(String.format(	"D=%d, I=%d",
-																			pDetectionArmIndex,
-																			pLightSheetIndex));
+			PlotTab lPlot = mAverageIntensityCurves.getPlot(String.format("D=%d, I=%d",
+																																		pDetectionArmIndex,
+																																		pLightSheetIndex));
 			lPlot.clearPoints();
 			lPlot.setScatterPlot("avg. intensity");
 
 			for (int i = 0; i < lAverageIntensities.length; i++)
 			{
 				System.out.println(lAverageIntensities[i]);
-				lPlot.addPoint("avg. intensity", mWList.get(i),lAverageIntensities[i]);
+				lPlot.addPoint(	"avg. intensity",
+												mWList.get(i),
+												lAverageIntensities[i]);
 			}
-			
+
 			lPlot.ensureUpToDate();
-			
 
 			return lAverageIntensities;
 		}
@@ -217,11 +219,10 @@ public class CalibrationW
 			{
 
 				int lReferenceIndex = searchFirstAbove(	lReferenceIntensityList,
-														i);
+																								i);
 				double lReferenceW = mWList.get(lReferenceIndex);
 
-				int lOtherIndex = searchFirstAbove(	lReferenceIntensityList,
-													i);
+				int lOtherIndex = searchFirstAbove(lReferenceIntensityList, i);
 
 				double lOtherW = mWList.get(lOtherIndex);
 
@@ -236,36 +237,36 @@ public class CalibrationW
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			double lMedianOffset = StatUtils.percentile(lOffsetsLists[l].toArray(),
-														50);
+																									50);
 			lMedianOffsets.add(lMedianOffset);
 		}
 
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																			.getLightSheetDevice(l);
+																																		.getLightSheetDevice(l);
 
 			UnivariateAffineComposableFunction lFunction = lLightSheetDevice.getWidthFunction()
-																			.get();
+																																			.get();
 
 			double lOffset = lMedianOffsets.get(l);
 
-			System.out.format(	"Applying offset: %g to lightsheet %d \n",
-								lOffset,
-								l);
+			System.out.format("Applying offset: %g to lightsheet %d \n",
+												lOffset,
+												l);
 
 			lFunction.composeWith(UnivariateAffineFunction.axplusb(	1,
-																	lOffset));
+																															lOffset));
 
-			System.out.format(	"Width function for lightsheet %d is now: %s \n",
-								l,
-								lFunction);
+			System.out.format("Width function for lightsheet %d is now: %s \n",
+												l,
+												lFunction);
 
 			lError += abs(lOffset);
 		}
 
-		System.out.format(	"Error after applying width offset correction: %g \n",
-							lError);
+		System.out.format("Error after applying width offset correction: %g \n",
+											lError);
 
 		return lError;
 	}

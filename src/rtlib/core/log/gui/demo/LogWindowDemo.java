@@ -13,9 +13,7 @@ public class LogWindowDemo
 
 	public LogWindowDemo()
 	{
-		mLogWindowHandler = LogWindowHandler.getInstance(	"test",
-															768,
-															320);
+		mLogWindowHandler = LogWindowHandler.getInstance("test", 768, 320);
 		mLogger = Logger.getLogger("test");
 		mLogger.setUseParentHandlers(false);
 		mLogWindowHandler.setFormatter(new CompactFormatter());

@@ -17,10 +17,10 @@ import rtlib.core.math.argmax.methods.SplineFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.SymetricParabolaFitArgMaxFinder;
 import rtlib.core.math.argmax.methods.Top5ArgMaxFinder;
 
-public class SmartArgMaxFinder	implements
-								ArgMaxFinder1DInterface,
-								Fitting1D,
-								FitProbabilityInterface
+public class SmartArgMaxFinder implements
+															ArgMaxFinder1DInterface,
+															Fitting1D,
+															FitProbabilityInterface
 {
 
 	private static final double cDefaultFitProbabilityThreshold = 0.95;
@@ -85,27 +85,27 @@ public class SmartArgMaxFinder	implements
 
 		final EnsembleArgMaxFinder lEnsembleArgMaxFinder = new EnsembleArgMaxFinder();
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mParabolaFitArgMaxFinder));
+																						mParabolaFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mSymetricParabolaFitArgMaxFinder));
+																						mSymetricParabolaFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mGaussianFitArgMaxFinder));
+																						mGaussianFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mQuarticFitArgMaxFinder));
+																						mQuarticFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mSplineFitArgMaxFinder));
+																						mSplineFitArgMaxFinder));
 		/*lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
 																						mRandomSplineFitArgMaxFinder));/**/
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mLoessFitArgMaxFinder));
+																						mLoessFitArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mTop5ParabolaArgMaxFinder));
+																						mTop5ParabolaArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mCOMArgMaxFinder));
+																						mCOMArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mModeArgMaxFinder));
+																						mModeArgMaxFinder));
 		lEnsembleArgMaxFinder.add(denoiseBefore(lDenoiseBefore,
-												mMedianArgMaxFinder));
+																						mMedianArgMaxFinder));
 		lEnsembleArgMaxFinder.add(mDenoisingArgMaxFinder);
 
 		return lEnsembleArgMaxFinder.argmax(pX, pY);
@@ -135,8 +135,8 @@ public class SmartArgMaxFinder	implements
 		return mRMSD;
 	}
 
-	private ArgMaxFinder1DInterface denoiseBefore(	boolean pDenoiseBefore,
-													ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
+	private ArgMaxFinder1DInterface denoiseBefore(boolean pDenoiseBefore,
+																								ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
 	{
 		if (pDenoiseBefore && mDenoisingActive)
 			return new DenoisingArgMaxFinder(normalize(clamp(pArgMaxFinder1DInterface)));
@@ -183,18 +183,18 @@ public class SmartArgMaxFinder	implements
 	public String toString()
 	{
 		return String.format(	"SmartArgMaxFinder [mParabolaFitArgMaxFinder=%s, mSymetricParabolaFitArgMaxFinder=%s, mGaussianFitArgMaxFinder=%s, mQuarticFitArgMaxFinder=%s, mSplineFitArgMaxFinder=%s, mRandomSplineFitArgMaxFinder=%s, mLoessFitArgMaxFinder=%s, mTop5ParabolaArgMaxFinder=%s, mCOMArgMaxFinder=%s, mModeArgMaxFinder=%s, mMedianArgMaxFinder=%s, mDenoisingArgMaxFinder=%s]",
-								mParabolaFitArgMaxFinder,
-								mSymetricParabolaFitArgMaxFinder,
-								mGaussianFitArgMaxFinder,
-								mQuarticFitArgMaxFinder,
-								mSplineFitArgMaxFinder,
-								mRandomSplineFitArgMaxFinder,
-								mLoessFitArgMaxFinder,
-								mTop5ParabolaArgMaxFinder,
-								mCOMArgMaxFinder,
-								mModeArgMaxFinder,
-								mMedianArgMaxFinder,
-								mDenoisingArgMaxFinder);
+													mParabolaFitArgMaxFinder,
+													mSymetricParabolaFitArgMaxFinder,
+													mGaussianFitArgMaxFinder,
+													mQuarticFitArgMaxFinder,
+													mSplineFitArgMaxFinder,
+													mRandomSplineFitArgMaxFinder,
+													mLoessFitArgMaxFinder,
+													mTop5ParabolaArgMaxFinder,
+													mCOMArgMaxFinder,
+													mModeArgMaxFinder,
+													mMedianArgMaxFinder,
+													mDenoisingArgMaxFinder);
 	}
 
 	public boolean isDenoisingActive()

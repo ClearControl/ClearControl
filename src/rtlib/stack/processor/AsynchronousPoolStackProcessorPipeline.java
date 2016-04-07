@@ -8,7 +8,7 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.BasicRecycler;

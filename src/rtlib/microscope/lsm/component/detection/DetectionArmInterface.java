@@ -2,12 +2,12 @@ package rtlib.microscope.lsm.component.detection;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
-public interface DetectionArmInterface	extends
-										OpenCloseDeviceInterface
+public interface DetectionArmInterface extends
+																			OpenCloseDeviceInterface
 {
-	public  ObjectVariable<Double> getZVariable();
+	public ObjectVariable<Double> getZVariable();
 
 	@SuppressWarnings("rawtypes")
 	public ObjectVariable<UnivariateAffineComposableFunction> getZFunction();

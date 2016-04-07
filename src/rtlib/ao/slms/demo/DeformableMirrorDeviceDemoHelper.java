@@ -7,8 +7,8 @@ import rtlib.ao.slms.DeformableMirrorDevice;
 
 public class DeformableMirrorDeviceDemoHelper
 {
-	public static void sweepModes(	final DeformableMirrorDevice pDeformableMirrorDevice,
-									final DenseMatrix64F pTransformMatrix)
+	public static void sweepModes(final DeformableMirrorDevice pDeformableMirrorDevice,
+																final DenseMatrix64F pTransformMatrix)
 	{
 		final DenseMatrix64F lInputVector = new DenseMatrix64F(64, 1);
 		final DenseMatrix64F lShapeVector = new DenseMatrix64F(64, 1);
@@ -19,17 +19,15 @@ public class DeformableMirrorDeviceDemoHelper
 				for (double x = -1; x < 1; x += lStep)
 				{
 					double lValue = 0.1 * x;
-					System.out.format(	"r=%d, m=%d, x=%g, value=%g \n",
-										r,
-										m,
-										x,
-										lValue);
+					System.out.format("r=%d, m=%d, x=%g, value=%g \n",
+														r,
+														m,
+														x,
+														lValue);
 					lInputVector.set(m, lValue);
-					CommonOps.mult(	pTransformMatrix,
-									lInputVector,
-									lShapeVector);
+					CommonOps.mult(pTransformMatrix, lInputVector, lShapeVector);
 					pDeformableMirrorDevice.getMatrixReference()
-											.set(lShapeVector);
+																	.set(lShapeVector);
 					try
 					{
 						Thread.sleep(100);
@@ -41,8 +39,8 @@ public class DeformableMirrorDeviceDemoHelper
 	}
 
 	public static void playRandomShapes(final DeformableMirrorDevice pDeformableMirrorDevice,
-										final DenseMatrix64F pTransformMatrix,
-										int pNumberOfShapes)
+																			final DenseMatrix64F pTransformMatrix,
+																			int pNumberOfShapes)
 	{
 		final DenseMatrix64F lInputVector = new DenseMatrix64F(64, 1);
 		final DenseMatrix64F lShapeVector = new DenseMatrix64F(64, 1);
@@ -50,16 +48,13 @@ public class DeformableMirrorDeviceDemoHelper
 		for (int i = 0; i < pNumberOfShapes; i++)
 		{
 			generateRandomVector(lInputVector, 0.1);
-			CommonOps.mult(	pTransformMatrix,
-							lInputVector,
-							lShapeVector);
-			pDeformableMirrorDevice.getMatrixReference()
-									.set(lShapeVector);
+			CommonOps.mult(pTransformMatrix, lInputVector, lShapeVector);
+			pDeformableMirrorDevice.getMatrixReference().set(lShapeVector);
 		}
 	}
 
 	private static void generateRandomVector(	DenseMatrix64F pMatrix,
-												double pAmplitude)
+																						double pAmplitude)
 	{
 		for (int i = 0; i < pMatrix.getNumElements(); i++)
 			pMatrix.set(i, pAmplitude * (2 * Math.random() - 1));

@@ -23,9 +23,7 @@ public class NDIteratorTests
 		{
 			lNext = lNDIterator.next();
 
-			System.out.println("i=" + i
-								+ " -> "
-								+ Arrays.toString(lNext));
+			System.out.println("i=" + i + " -> " + Arrays.toString(lNext));
 
 			if (i == 0)
 				assertArrayEquals(lNext, new int[]
@@ -40,10 +38,10 @@ public class NDIteratorTests
 				assertArrayEquals(lNext, new int[]
 				{ 1, 2, 4 });
 
-			i++;  
+			i++;
 		}
 
-		assertEquals(i, lNDIterator.getNumberOfIterations()); 
+		assertEquals(i, lNDIterator.getNumberOfIterations());
 	}
 
 }

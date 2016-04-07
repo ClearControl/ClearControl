@@ -10,10 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableInterface;
 import rtlib.core.variable.VariableListener;
 import rtlib.core.variable.bundle.VariableBundle;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableBundleAsFile extends VariableBundle
 {

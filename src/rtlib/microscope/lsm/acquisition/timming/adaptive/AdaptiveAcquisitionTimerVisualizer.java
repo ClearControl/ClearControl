@@ -12,7 +12,6 @@ public class AdaptiveAcquisitionTimerVisualizer
 
 	private MultiPlot mMultiPlotState;
 
-	
 	public AdaptiveAcquisitionTimerVisualizer()
 	{
 		super();
@@ -27,7 +26,7 @@ public class AdaptiveAcquisitionTimerVisualizer
 		if (mMultiPlotState == null)
 		{
 			mMultiPlotState = MultiPlot.getMultiPlot(this.getClass()
-															.getSimpleName() + "State");
+																										.getSimpleName() + "State");
 			mMultiPlotState.setVisible(true);
 		}
 	}
@@ -40,7 +39,7 @@ public class AdaptiveAcquisitionTimerVisualizer
 			lPlot.addPoint("metric", pPosition, pMetric);
 		lPlot.ensureUpToDate();
 	}
-	
+
 	public void visualizeStack(StackInterface pStack)
 	{
 		ImagePlus lShow = ImageJFunctions.show(pStack.getImage().copy());

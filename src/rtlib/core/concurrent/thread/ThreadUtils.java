@@ -31,7 +31,7 @@ public class ThreadUtils
 						long lTimeToWaitInMillis = TimeUnit.NANOSECONDS.toMillis(lTimeToWaitInNanos);
 
 						Thread.sleep(	lTimeToWaitInMillis,
-										(int) (lTimeToWaitInNanos % 1000000L));
+													(int) (lTimeToWaitInNanos % 1000000L));
 					}
 				}
 			}

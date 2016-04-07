@@ -8,8 +8,7 @@ import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public abstract class SignalStartableLoopTaskDevice	extends
 																										SignalStartableDevice	implements
@@ -21,7 +20,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	private final SignalStartableLoopTaskDevice lThis;
 	private final TimeUnit mTimeUnit;
 	private final ObjectVariable<Long> mLoopPeriodVariable;
-	private final BooleanVariable mIsRunningVariable;
+	private final ObjectVariable<Boolean> mIsRunningVariable;
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public SignalStartableLoopTaskDevice(	final String pDeviceName,
@@ -41,8 +40,8 @@ public abstract class SignalStartableLoopTaskDevice	extends
 																												+ pTimeUnit.name(),
 																										0L);
 
-		mIsRunningVariable = new BooleanVariable(	pDeviceName + "IsRunning",
-																							false);
+		mIsRunningVariable = new ObjectVariable<Boolean>(	pDeviceName + "IsRunning",
+																											false);
 
 		lThis = this;
 	}
@@ -71,7 +70,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 		final boolean lStarted = mScheduledFuture != null;
 
-		mIsRunningVariable.setValue(lStarted);
+		mIsRunningVariable.set(lStarted);
 
 		return lStarted;
 	}
@@ -96,7 +95,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 				mScheduledFuture.cancel(false);
 				mScheduledFuture.waitForCompletion(10, TimeUnit.SECONDS);
 			}
-			mIsRunningVariable.setValue(false);
+			mIsRunningVariable.set(false);
 			return true;
 		}
 		catch (final ExecutionException e)
@@ -117,7 +116,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		return mLoopPeriodVariable;
 	}
 
-	public BooleanVariable getIsRunningVariable()
+	public ObjectVariable<Boolean> getIsRunningVariable()
 	{
 		return mIsRunningVariable;
 	}

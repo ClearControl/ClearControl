@@ -1,7 +1,7 @@
 package rtlib.symphony.staves;
 
 public class BinaryPatternSteppingStave extends PatternSteppingStave implements
-																	StaveInterface
+																																		StaveInterface
 {
 
 	private volatile int mPatternPeriod = 9;
@@ -14,14 +14,14 @@ public class BinaryPatternSteppingStave extends PatternSteppingStave implements
 		super(pName);
 	}
 
-	public BinaryPatternSteppingStave(	final String pName,
-										float pSyncStart,
-										float pSyncStop,
-										int pNumberOfSteps,
-										int pPeriod,
-										int pPhaseIndex,
-										int pOnLength,
-										int pPhaseIncrement)
+	public BinaryPatternSteppingStave(final String pName,
+																		float pSyncStart,
+																		float pSyncStop,
+																		int pNumberOfSteps,
+																		int pPeriod,
+																		int pPhaseIndex,
+																		int pOnLength,
+																		int pPhaseIncrement)
 	{
 		super(pName);
 		setNumberOfSteps(pNumberOfSteps);
@@ -83,14 +83,14 @@ public class BinaryPatternSteppingStave extends PatternSteppingStave implements
 	@Override
 	public StaveInterface copy()
 	{
-		return new BinaryPatternSteppingStave(	getName(),
-												getSyncStart(),
-												getSyncStop(),
-												getNumberOfSteps(),
-												getPatternPeriod(),
-												getPatternPhaseIndex(),
-												getPatternOnLength(),
-												getPatternPhaseIncrement());
+		return new BinaryPatternSteppingStave(getName(),
+																					getSyncStart(),
+																					getSyncStop(),
+																					getNumberOfSteps(),
+																					getPatternPeriod(),
+																					getPatternPhaseIndex(),
+																					getPatternOnLength(),
+																					getPatternPhaseIncrement());
 	}
 
 }

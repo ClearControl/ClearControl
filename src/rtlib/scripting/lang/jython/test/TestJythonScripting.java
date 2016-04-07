@@ -54,7 +54,7 @@ public class TestJythonScripting
 
 	@Test
 	public void testJythonScriptingWithScriptEngine()	throws IOException,
-														ExecutionException
+																										ExecutionException
 	{
 		final Double x = new Double(1);
 		final Double y = new Double(2);
@@ -62,7 +62,7 @@ public class TestJythonScripting
 		final JythonScripting lJythonScripting = new JythonScripting();
 
 		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lJythonScripting,
-																		null);
+																																	null);
 
 		lScriptingEngine.set("x", x);
 		lScriptingEngine.set("y", y);
@@ -72,31 +72,31 @@ public class TestJythonScripting
 		{
 
 			@Override
-			public void updatedScript(	ScriptingEngine pScriptingEngine,
-										String pScript)
+			public void updatedScript(ScriptingEngine pScriptingEngine,
+																String pScript)
 			{
 			}
 
 			@Override
-			public void beforeScriptExecution(	ScriptingEngine pScriptingEngine,
-												String pScriptString)
+			public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
+																				String pScriptString)
 			{
 				System.out.println("before");
 			}
 
 			@Override
 			public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
-												String pScriptString)
+																				String pScriptString)
 			{
 				System.out.println("after");
 			}
 
 			@Override
 			public void asynchronousResult(	ScriptingEngine pScriptingEngine,
-											String pScriptString,
-											Map<String, Object> pBinding,
-											Throwable pThrowable,
-											String pErrorMessage)
+																			String pScriptString,
+																			Map<String, Object> pBinding,
+																			Throwable pThrowable,
+																			String pErrorMessage)
 			{
 				System.out.println(pBinding);
 			}
@@ -110,10 +110,8 @@ public class TestJythonScripting
 
 		lScriptingEngine.executeScriptAsynchronously();
 
-		assertTrue(lScriptingEngine.waitForCompletion(	1,
-														TimeUnit.SECONDS));
-		assertEquals(	lScriptingEngine.get("x"),
-						lScriptingEngine.get("y"));
+		assertTrue(lScriptingEngine.waitForCompletion(1, TimeUnit.SECONDS));
+		assertEquals(lScriptingEngine.get("x"), lScriptingEngine.get("y"));
 
 	}
 

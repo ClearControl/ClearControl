@@ -6,14 +6,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
 public class ShortOffHeapAccess extends AbstractOffHeapAccess	implements
-																ShortAccess,
-																ArrayDataAccess<ShortOffHeapAccess>
+																															ShortAccess,
+																															ArrayDataAccess<ShortOffHeapAccess>
 {
 
 	public ShortOffHeapAccess(int numEntities)
 	{
 		mContiguousMemory = OffHeapMemory.allocateShorts(	"ShortOffHeapAccess",
-															numEntities);
+																											numEntities);
 	}
 
 	public ShortOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

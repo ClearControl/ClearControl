@@ -7,17 +7,17 @@ import java.nio.FloatBuffer;
 import net.imglib2.img.basictypeaccess.FloatAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
-public class FloatBufferAccess	implements
-								FloatAccess,
-								ArrayDataAccess<FloatBufferAccess>
+public class FloatBufferAccess implements
+															FloatAccess,
+															ArrayDataAccess<FloatBufferAccess>
 {
 	protected FloatBuffer data;
 
 	public FloatBufferAccess(final int numEntities)
 	{
 		this.data = ByteBuffer.allocateDirect(numEntities * 4)
-								.order(ByteOrder.nativeOrder())
-								.asFloatBuffer();
+													.order(ByteOrder.nativeOrder())
+													.asFloatBuffer();
 	}
 
 	@Override

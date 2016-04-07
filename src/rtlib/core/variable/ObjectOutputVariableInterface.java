@@ -1,4 +1,4 @@
-package rtlib.core.variable.types.objectv;
+package rtlib.core.variable;
 
 public interface ObjectOutputVariableInterface<O>
 {

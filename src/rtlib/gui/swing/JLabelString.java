@@ -4,7 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JLabel;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class JLabelString extends JLabel
 {
@@ -12,17 +12,17 @@ public class JLabelString extends JLabel
 	private JLabelString mThis;
 
 	public JLabelString(final String pLabelName,
-						final String pInicialValue)
+											final String pInicialValue)
 	{
 		super(pInicialValue);
 		mThis = this;
 
 		mStringVariable = new ObjectVariable<String>(	pLabelName,
-														pInicialValue)
+																									pInicialValue)
 		{
 			@Override
 			public String setEventHook(	final String pOldValue,
-										final String pNewValue)
+																	final String pNewValue)
 			{
 				if (!pNewValue.equals(mThis.getText()))
 				{

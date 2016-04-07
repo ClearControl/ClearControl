@@ -43,21 +43,21 @@ public class OCLProcessor
 	{
 		final CLDevice dev = mCLContext.getDevices()[0];
 		System.out.printf("Device name:    \t %s \n", dev);
-		System.out.printf(	"Global Mem size: \t %s \n",
-							dev.getGlobalMemSize());
-		System.out.printf(	"Local Mem size: \t %s \n",
-							dev.getLocalMemSize());
-		System.out.printf(	"Max compute units: \t %s \n",
-							dev.getMaxComputeUnits());
+		System.out.printf("Global Mem size: \t %s \n",
+											dev.getGlobalMemSize());
+		System.out.printf("Local Mem size: \t %s \n",
+											dev.getLocalMemSize());
+		System.out.printf("Max compute units: \t %s \n",
+											dev.getMaxComputeUnits());
 
-		System.out.printf(	"Max Workgroup size: \t %s \n",
-							dev.getMaxWorkGroupSize());
-		System.out.printf(	"Max Workitem sizes: \t %s \n",
-							Arrays.toString(dev.getMaxWorkItemSizes()));
-		System.out.printf(	"Maximal Image size: \t %s x %s x %s\n",
-							dev.getImage3DMaxWidth(),
-							dev.getImage3DMaxHeight(),
-							dev.getImage3DMaxDepth());
+		System.out.printf("Max Workgroup size: \t %s \n",
+											dev.getMaxWorkGroupSize());
+		System.out.printf("Max Workitem sizes: \t %s \n",
+											Arrays.toString(dev.getMaxWorkItemSizes()));
+		System.out.printf("Maximal Image size: \t %s x %s x %s\n",
+											dev.getImage3DMaxWidth(),
+											dev.getImage3DMaxHeight(),
+											dev.getImage3DMaxDepth());
 
 		// kernel.getCompileWorkGroupSize().get(dev);
 
@@ -65,8 +65,7 @@ public class OCLProcessor
 
 	}
 
-	public CLKernel compileKernel(	final URL url,
-									final String kernelName)
+	public CLKernel compileKernel(final URL url, final String kernelName)
 	{
 
 		// Read the program sources and compile them :
@@ -100,7 +99,7 @@ public class OCLProcessor
 		catch (final Exception e)
 		{
 			System.err.println("couldn't create kernel '" + kernelName
-								+ "'");
+													+ "'");
 			e.printStackTrace();
 		}
 

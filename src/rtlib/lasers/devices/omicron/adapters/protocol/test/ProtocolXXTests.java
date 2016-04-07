@@ -16,7 +16,7 @@ public class ProtocolXXTests
 	{
 		final String lTestMessage = new String("!GFwLuxX\u00A74\u00A71.30.");
 		final String[] lSplitMessage = ProtocolXX.splitMessage(	"!GFw",
-																lTestMessage.getBytes());
+																														lTestMessage.getBytes());
 		assertEquals(lSplitMessage[0], "LuxX");
 		assertEquals(lSplitMessage[1], "4");
 		assertEquals(lSplitMessage[2], "1.30.");

@@ -16,8 +16,8 @@ public class GetWavelengthAdapter extends OmicronAdapter<Integer>	implements
 	@Override
 	public Integer parseValue(final byte[] pMessage)
 	{
-		final String[] lSplittedMessage = ProtocolXX.splitMessage(	ProtocolXX.cGetSpecInfoReplyPrefix,
-																	pMessage);
+		final String[] lSplittedMessage = ProtocolXX.splitMessage(ProtocolXX.cGetSpecInfoReplyPrefix,
+																															pMessage);
 		final String lWavelengthString = lSplittedMessage[0];
 		final int lWavelengthInNanometer = Integer.parseInt(lWavelengthString);
 		return lWavelengthInNanometer;

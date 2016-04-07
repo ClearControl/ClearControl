@@ -15,8 +15,7 @@ public class Mirao52eDeviceDemo
 {
 
 	@Test
-	public void demoZernicke()	throws IOException,
-								InterruptedException
+	public void demoZernicke() throws IOException, InterruptedException
 	{
 		final Mirao52eDevice lMirao52eDevice = new Mirao52eDevice(1);
 		final DenseMatrix64F lZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lMirao52eDevice.getMatrixWidth());
@@ -24,7 +23,7 @@ public class Mirao52eDeviceDemo
 		assertTrue(lMirao52eDevice.open());
 
 		DeformableMirrorDeviceDemoHelper.sweepModes(lMirao52eDevice,
-													lZernickeTransformMatrix);
+																								lZernickeTransformMatrix);
 
 		assertTrue(lMirao52eDevice.close());
 	}
@@ -38,7 +37,7 @@ public class Mirao52eDeviceDemo
 		assertTrue(lMirao52eDevice.open());
 
 		DeformableMirrorDeviceDemoHelper.sweepModes(lMirao52eDevice,
-													lCosineTransformMatrix);
+																								lCosineTransformMatrix);
 
 		assertTrue(lMirao52eDevice.close());
 	}
@@ -51,9 +50,9 @@ public class Mirao52eDeviceDemo
 
 		assertTrue(lMirao52eDevice.open());
 
-		DeformableMirrorDeviceDemoHelper.playRandomShapes(	lMirao52eDevice,
-															lCosineTransformMatrix,
-															10000);
+		DeformableMirrorDeviceDemoHelper.playRandomShapes(lMirao52eDevice,
+																											lCosineTransformMatrix,
+																											10000);
 
 		assertTrue(lMirao52eDevice.close());
 	}

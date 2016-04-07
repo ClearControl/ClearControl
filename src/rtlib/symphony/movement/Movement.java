@@ -6,8 +6,8 @@ import rtlib.core.device.NameableAbstract;
 import rtlib.symphony.staves.StaveInterface;
 import rtlib.symphony.staves.ZeroStave;
 
-public class Movement extends NameableAbstract	implements
-												MovementInterface
+public class Movement extends NameableAbstract implements
+																							MovementInterface
 {
 
 	public static final int cDefaultNumberOfStavesPerMovement = 16;
@@ -35,7 +35,7 @@ public class Movement extends NameableAbstract	implements
 
 	@Override
 	public void setStave(	final int pStaveIndex,
-							final StaveInterface pNewStave)
+												final StaveInterface pNewStave)
 	{
 		mStaveListArray[pStaveIndex] = pNewStave;
 	}
@@ -43,7 +43,7 @@ public class Movement extends NameableAbstract	implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends StaveInterface> O ensureSetStave(	int pStaveIndex,
-														O pNewStave)
+																											O pNewStave)
 	{
 		if (mStaveListArray[pStaveIndex] != null && !(mStaveListArray[pStaveIndex] instanceof ZeroStave))
 			return (O) mStaveListArray[pStaveIndex];
@@ -70,15 +70,15 @@ public class Movement extends NameableAbstract	implements
 	@Override
 	public void setDuration(long pDuration, TimeUnit pTimeUnit)
 	{
-		mDurationInNanoseconds = TimeUnit.NANOSECONDS.convert(	pDuration,
-																pTimeUnit);
+		mDurationInNanoseconds = TimeUnit.NANOSECONDS.convert(pDuration,
+																													pTimeUnit);
 	}
 
 	@Override
 	public long getDuration(TimeUnit pTimeUnit)
 	{
 		return pTimeUnit.convert(	mDurationInNanoseconds,
-									TimeUnit.NANOSECONDS);
+															TimeUnit.NANOSECONDS);
 	}
 
 	@Override
@@ -133,12 +133,12 @@ public class Movement extends NameableAbstract	implements
 	public MovementInterface copy()
 	{
 		final MovementInterface lMovementCopy = new Movement(	getName(),
-																getNumberOfStaves());
+																													getNumberOfStaves());
 		lMovementCopy.setSync(isSync());
 		lMovementCopy.setSyncChannel(getSyncChannel());
 		lMovementCopy.setSyncOnRisingEdge(isSyncOnRisingEdge());
-		lMovementCopy.setDuration(	getDuration(TimeUnit.NANOSECONDS),
-									TimeUnit.NANOSECONDS);
+		lMovementCopy.setDuration(getDuration(TimeUnit.NANOSECONDS),
+															TimeUnit.NANOSECONDS);
 
 		for (int i = 0; i < mStaveListArray.length; i++)
 		{

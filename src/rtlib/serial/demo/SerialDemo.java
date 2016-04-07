@@ -18,8 +18,8 @@ public class SerialDemo
 
 	@Test
 	public void serialConsoleDemo()	throws InterruptedException,
-									SerialPortException,
-									SerialException
+																	SerialPortException,
+																	SerialException
 	{
 
 		final Serial lSerial = new Serial(115200);
@@ -29,7 +29,7 @@ public class SerialDemo
 		{
 			@Override
 			public void textMessageReceived(SerialInterface pSerial,
-											String pMessage)
+																			String pMessage)
 			{
 				super.textMessageReceived(pSerial, pMessage);
 

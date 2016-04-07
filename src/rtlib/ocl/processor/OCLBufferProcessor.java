@@ -18,10 +18,10 @@ public class OCLBufferProcessor extends OCLProcessor
 	{
 		Nx = Nx0;
 		Ny = Ny0;
-		mInputCLBuffer = mCLContext.createShortBuffer(	Usage.Input,
-														Nx * Ny * 2);
+		mInputCLBuffer = mCLContext.createShortBuffer(Usage.Input,
+																									Nx * Ny * 2);
 		mOutputCLBuffer = mCLContext.createShortBuffer(	Usage.Output,
-														Nx * Ny * 2);
+																										Nx * Ny * 2);
 	}
 
 	public CLEvent setInputShortBuffer(final ShortBuffer buf)

@@ -12,7 +12,7 @@ public class StackAcquisitionTests
 		
 		lStackAcquisition.setup(-1, 0, 1, 0.1, 0.2, 0.05);
 		/**/
-		
+
 	}
 
 }

@@ -9,7 +9,8 @@ public abstract class Object3D extends Group
 {
 	private static final double MODEL_SCALE_FACTOR = 10;
 
-	public Group buildScene() {
+	public Group buildScene()
+	{
 		this.setScaleX(MODEL_SCALE_FACTOR);
 		this.setScaleY(MODEL_SCALE_FACTOR);
 		this.setScaleZ(MODEL_SCALE_FACTOR);

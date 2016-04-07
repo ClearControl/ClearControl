@@ -7,7 +7,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class JOpenFileChooserButton extends JButton
 {
@@ -15,15 +15,15 @@ public class JOpenFileChooserButton extends JButton
 	private final ObjectVariable<File> mFileVariable = new ObjectVariable<File>("FileVariable");
 	private final boolean mOnlyFolders;
 
-	public JOpenFileChooserButton(	final String pLabel,
-									final boolean pOnlyFolders)
+	public JOpenFileChooserButton(final String pLabel,
+																final boolean pOnlyFolders)
 	{
 		this(cDefaultFolder, pLabel, pOnlyFolders);
 	}
 
-	public JOpenFileChooserButton(	final File pCurrentFolder,
-									final String pLabel,
-									final boolean pOnlyFolders)
+	public JOpenFileChooserButton(final File pCurrentFolder,
+																final String pLabel,
+																final boolean pOnlyFolders)
 	{
 		super(pLabel);
 		mFileVariable.set(pCurrentFolder);

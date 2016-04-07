@@ -7,7 +7,7 @@ import java.util.Arrays;
  * supported
  * 
  * @param <T>
- *            type stored into binary heap
+ *          type stored into binary heap
  */
 public abstract class BinaryHeap<T>
 {
@@ -139,8 +139,8 @@ public abstract class BinaryHeap<T>
 		return capacity;
 	}
 
-	public static final class Max<T> extends BinaryHeap<T>	implements
-															MaxHeap<T>
+	public static final class Max<T> extends BinaryHeap<T> implements
+																												MaxHeap<T>
 	{
 		public Max()
 		{
@@ -177,8 +177,8 @@ public abstract class BinaryHeap<T>
 		}
 	}
 
-	public static final class Min<T> extends BinaryHeap<T>	implements
-															MinHeap<T>
+	public static final class Min<T> extends BinaryHeap<T> implements
+																												MinHeap<T>
 	{
 		public Min()
 		{

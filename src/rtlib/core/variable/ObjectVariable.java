@@ -1,15 +1,11 @@
-package rtlib.core.variable.types.objectv;
+package rtlib.core.variable;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import rtlib.core.variable.EventPropagator;
-import rtlib.core.variable.NamedVariable;
-import rtlib.core.variable.ObjectVariableInterface;
-
 public class ObjectVariable<O> extends NamedVariable<O>	implements
-														ObjectVariableInterface<O>,
-														ObjectInputOutputVariableInterface<O>
+																												ObjectVariableInterface<O>,
+																												ObjectInputOutputVariableInterface<O>
 {
 	protected volatile O mReference;
 	protected final CopyOnWriteArrayList<ObjectVariable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<ObjectVariable<O>>();
@@ -20,8 +16,7 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		mReference = null;
 	}
 
-	public ObjectVariable(	final String pVariableName,
-							final O pReference)
+	public ObjectVariable(final String pVariableName, final O pReference)
 	{
 		super(pVariableName);
 		mReference = pReference;
@@ -46,6 +41,25 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		setReferenceInternal(pNewReference);
 	}
 
+	public void setEdge(O pBeforeEdge, O pAfterEdge)
+	{
+		set(pBeforeEdge);
+		set(pAfterEdge);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggle()
+	{
+		if (mReference instanceof Number)
+		{
+			set((O) new Double(-(Double) get()));
+		}
+		else if (mReference instanceof Boolean)
+		{
+			set((O) new Boolean(!(Boolean) get()));
+		}
+	}
+
 	public boolean setReferenceInternal(final O pNewReference)
 	{
 		if (EventPropagator.hasBeenTraversed(this))
@@ -53,8 +67,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 			return false;
 		}
 
-		final O lNewValueAfterHook = setEventHook(	mReference,
-													pNewReference);
+		final O lNewValueAfterHook = setEventHook(mReference,
+																							pNewReference);
 
 		EventPropagator.add(this);
 		if (mVariablesToSendUpdatesTo != null)
@@ -72,6 +86,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		mReference = lNewValueAfterHook;
 
 		notifyListenersOfSetEvent(lOldReference, lNewValueAfterHook);
+		if (!lOldReference.equals(lNewValueAfterHook))
+			notifyListenersOfEdgeEvent(lOldReference, lNewValueAfterHook);
 
 		return true;
 	}
@@ -200,8 +216,8 @@ public class ObjectVariable<O> extends NamedVariable<O>	implements
 		try
 		{
 			return getName() + "="
-					+ ((mReference == null)	? "null"
-											: mReference.toString());
+							+ ((mReference == null)	? "null"
+																			: mReference.toString());
 		}
 		catch (final NullPointerException e)
 		{

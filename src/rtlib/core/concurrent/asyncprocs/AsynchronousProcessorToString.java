@@ -1,8 +1,8 @@
 package rtlib.core.concurrent.asyncprocs;
 
-public class AsynchronousProcessorToString<I>	extends
-												AsynchronousProcessorBase<I, String> implements
-																					AsynchronousProcessorInterface<I, String>
+public class AsynchronousProcessorToString<I> extends
+																							AsynchronousProcessorBase<I, String> implements
+																																									AsynchronousProcessorInterface<I, String>
 {
 
 	public AsynchronousProcessorToString()

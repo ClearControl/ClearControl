@@ -55,7 +55,6 @@ public class CameraDevicePanel
 		init();
 	}
 
-
 	private void init()
 	{
 		gridPane = new GridPane();
@@ -85,7 +84,6 @@ public class CameraDevicePanel
 		}
 	}
 
-	
 	public Parent getPanel()
 	{
 		Pane canvas = new Pane();

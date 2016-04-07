@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.device.SwitchingDeviceInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;

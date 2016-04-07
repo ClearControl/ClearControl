@@ -6,7 +6,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 
 public class NormalizingArgMaxFinder implements
-									ArgMaxFinder1DInterface
+																		ArgMaxFinder1DInterface
 {
 
 	private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
@@ -37,7 +37,7 @@ public class NormalizingArgMaxFinder implements
 		}
 
 		final Double lArgmax = mArgMaxFinder1DInterface.argmax(	pX,
-																lNormY.toArray());
+																														lNormY.toArray());
 
 		return lArgmax;
 	}
@@ -46,7 +46,7 @@ public class NormalizingArgMaxFinder implements
 	public String toString()
 	{
 		return String.format(	"NormalizingArgMaxFinder [%s]",
-								mArgMaxFinder1DInterface);
+													mArgMaxFinder1DInterface);
 	}
 
 }

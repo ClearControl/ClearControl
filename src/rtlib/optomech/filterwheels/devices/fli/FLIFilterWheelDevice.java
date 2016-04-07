@@ -1,8 +1,8 @@
 package rtlib.optomech.filterwheels.devices.fli;
 
 import rtlib.core.configuration.MachineConfiguration;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
 import rtlib.optomech.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;

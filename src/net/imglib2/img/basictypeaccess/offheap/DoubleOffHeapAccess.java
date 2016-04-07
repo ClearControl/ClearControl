@@ -5,15 +5,15 @@ import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 
-public class DoubleOffHeapAccess extends AbstractOffHeapAccess	implements
-																DoubleAccess,
-																ArrayDataAccess<DoubleOffHeapAccess>
+public class DoubleOffHeapAccess extends AbstractOffHeapAccess implements
+																															DoubleAccess,
+																															ArrayDataAccess<DoubleOffHeapAccess>
 {
 
 	public DoubleOffHeapAccess(int numEntities)
 	{
-		mContiguousMemory = OffHeapMemory.allocateDoubles(	"DoubleOffHeapAccess",
-															numEntities);
+		mContiguousMemory = OffHeapMemory.allocateDoubles("DoubleOffHeapAccess",
+																											numEntities);
 	}
 
 	public DoubleOffHeapAccess(ContiguousMemoryInterface pContiguousMemoryInterface)

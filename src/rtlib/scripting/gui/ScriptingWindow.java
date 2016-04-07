@@ -18,16 +18,16 @@ public class ScriptingWindow extends JFrame
 	}
 
 	public ScriptingWindow(	String pTitle,
-							ScriptingEngine pScriptingEngine,
-							int pNumberOfRows,
-							int pNumberOfCols) throws HeadlessException
+													ScriptingEngine pScriptingEngine,
+													int pNumberOfRows,
+													int pNumberOfCols) throws HeadlessException
 	{
 		super(pTitle);
 
 		mScriptingPanel = new ScriptingPanel(	pTitle,
-												pScriptingEngine,
-												pNumberOfRows,
-												pNumberOfCols);
+																					pScriptingEngine,
+																					pNumberOfRows,
+																					pNumberOfCols);
 		add(mScriptingPanel);
 		pack();
 		setSize(512, 512);

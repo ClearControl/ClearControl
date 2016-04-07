@@ -8,16 +8,16 @@ import net.imglib2.img.basictypeaccess.LongAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class LongBufferAccess	implements
-								LongAccess,
-								ArrayDataAccess<LongBufferAccess>
+															LongAccess,
+															ArrayDataAccess<LongBufferAccess>
 {
 	protected LongBuffer data;
 
 	public LongBufferAccess(final int numEntities)
 	{
 		this.data = ByteBuffer.allocateDirect(numEntities * 4)
-								.order(ByteOrder.nativeOrder())
-								.asLongBuffer();
+													.order(ByteOrder.nativeOrder())
+													.asLongBuffer();
 	}
 
 	@Override

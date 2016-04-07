@@ -26,8 +26,7 @@ public class RSyntaxTextAreaDemo
 
 			final JPanel cp = new JPanel(new BorderLayout());
 
-			final RSyntaxTextArea textArea = new RSyntaxTextArea(	20,
-																	60);
+			final RSyntaxTextArea textArea = new RSyntaxTextArea(20, 60);
 			textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON);
 			textArea.setCodeFoldingEnabled(true);
 			final RTextScrollPane sp = new RTextScrollPane(textArea);
@@ -44,8 +43,8 @@ public class RSyntaxTextAreaDemo
 	}
 
 	@Test
-	public void test()	throws InvocationTargetException,
-						InterruptedException
+	public void test() throws InvocationTargetException,
+										InterruptedException
 	{
 		final TextEditorDemo lTextEditorDemo = new TextEditorDemo();
 

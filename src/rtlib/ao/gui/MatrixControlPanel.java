@@ -15,8 +15,8 @@ import net.miginfocom.swing.MigLayout;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.gui.swing.JSliderDouble;
 
 public class MatrixControlPanel extends JPanel
@@ -43,10 +43,10 @@ public class MatrixControlPanel extends JPanel
 	private JButton mZeroAllModesButton;
 	private JButton mZeroCurrentModeButton;
 
-	public MatrixControlPanel(	int pMatrixWidth,
-								int pMatrixHeight,
-								DenseMatrix64F pTransformMatrix,
-								DenseMatrix64F pTransformMatrixForDisplay)
+	public MatrixControlPanel(int pMatrixWidth,
+														int pMatrixHeight,
+														DenseMatrix64F pTransformMatrix,
+														DenseMatrix64F pTransformMatrixForDisplay)
 	{
 		mMatrixWidth = pMatrixWidth;
 		mMatrixHeight = pMatrixHeight;
@@ -55,13 +55,13 @@ public class MatrixControlPanel extends JPanel
 
 		mModeVector = new DenseMatrix64F(mTransformMatrix.numRows, 1);
 
-		mInputModeVectorVariable = new ObjectVariable<DenseMatrix64F>(	"InputMatrix",
-																		new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
-																							1))
+		mInputModeVectorVariable = new ObjectVariable<DenseMatrix64F>("InputMatrix",
+																																	new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
+																																											1))
 		{
 			@Override
 			public DenseMatrix64F setEventHook(	DenseMatrix64F pOldValue,
-												DenseMatrix64F pNewValue)
+																					DenseMatrix64F pNewValue)
 			{
 
 				mModeVector.set(pNewValue);
@@ -70,9 +70,8 @@ public class MatrixControlPanel extends JPanel
 				for (int y = 0; y < pMatrixHeight; y++)
 					for (int x = 0; x < pMatrixWidth; x++)
 					{
-						final double lValue = pNewValue.get(x		* mMatrixWidth
-																	+ y,
-															0);
+						final double lValue = pNewValue.get(x * mMatrixWidth + y,
+																								0);
 
 						setNewValueForModeMatrix(x, y, lValue, .5f);
 					}
@@ -82,36 +81,36 @@ public class MatrixControlPanel extends JPanel
 		};
 
 		mOutputMatrixVariable = new ObjectVariable<DenseMatrix64F>(	"OutputMatrix",
-																	new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
-																						1));
+																																new DenseMatrix64F(	mMatrixWidth * mMatrixHeight,
+																																										1));
 
 		final JSliderDouble lModeSlider = new JSliderDouble("Mode",
-															-1,
-															1,
-															0);
+																												-1,
+																												1,
+																												0);
 		lModeSlider.removeLabelAndTextField();
 		lModeSlider.getDoubleVariable()
-					.addSetListener(new VariableSetListener<Double>()
-					{
+								.addSetListener(new VariableSetListener<Double>()
+								{
 
-						@Override
-						public void setEvent(	Double pCurrentValue,
-												Double pNewValue)
-						{
+									@Override
+									public void setEvent(	Double pCurrentValue,
+																				Double pNewValue)
+									{
 
-							mModeVector.set(mCurrentX + pMatrixWidth
-											* mCurrentY, pNewValue);
+										mModeVector.set(mCurrentX + pMatrixWidth
+																		* mCurrentY, pNewValue);
 
-							updateOutputMatrix();
+										updateOutputMatrix();
 
-							setNewValueForModeMatrix(	mCurrentX,
-														mCurrentY,
-														pNewValue,
-														0.5f);
+										setNewValueForModeMatrix(	mCurrentX,
+																							mCurrentY,
+																							pNewValue,
+																							0.5f);
 
-						}
+									}
 
-					});
+								});
 
 		mSymetricRangeSlider = new JSliderDouble("MaxRange", 0, 1, 1);
 		mSymetricRangeSlider.removeLabelAndTextField();
@@ -128,9 +127,9 @@ public class MatrixControlPanel extends JPanel
 			lRowString += lRowString;
 
 		// mModesMatrixPanel.setBackground(Color.BLACK);
-		mModesMatrixPanel.setLayout(new MigLayout(	"insets 0",
-													"[grow]",
-													"[grow]"));
+		mModesMatrixPanel.setLayout(new MigLayout("insets 0",
+																							"[grow]",
+																							"[grow]"));
 
 		mMatrixPanels = new MatrixPanel[pMatrixWidth][pMatrixHeight];
 
@@ -138,16 +137,16 @@ public class MatrixControlPanel extends JPanel
 			for (int x = 0; x < pMatrixWidth; x++)
 			{
 				final MatrixPanel lMatrixPanel = MatrixPanel.getMatrixForMatrixEntry(	1,
-																						(int) sqrt(mTransformMatrixForDisplay.numCols),
-																						(int) sqrt(mTransformMatrixForDisplay.numRows),
-																						mTransformMatrixForDisplay,
-																						x,
-																						y);
+																																							(int) sqrt(mTransformMatrixForDisplay.numCols),
+																																							(int) sqrt(mTransformMatrixForDisplay.numRows),
+																																							mTransformMatrixForDisplay,
+																																							x,
+																																							y);
 				lMatrixPanel.setSaturation(0.2f);
 				lMatrixPanel.setSymetricRange(true);
 
 				mSymetricRangeSlider.getDoubleVariable()
-									.syncWith(lMatrixPanel.getMaxRangeVariable());
+														.syncWith(lMatrixPanel.getMaxRangeVariable());
 
 				final int fx = x;
 				final int fy = y;
@@ -160,23 +159,20 @@ public class MatrixControlPanel extends JPanel
 						mCurrentY = fy;
 
 						final double lCurrentValue = mModeVector.get(	mCurrentY * mMatrixWidth
-																				+ mCurrentX,
-																		0);
-						lModeSlider.getDoubleVariable()
-.set(lCurrentValue);
+																															+ mCurrentX,
+																													0);
+						lModeSlider.getDoubleVariable().set(lCurrentValue);
 					}
 				});
 
 				mMatrixPanels[x][y] = lMatrixPanel;
-				mModesMatrixPanel.add(	lMatrixPanel,
-										String.format(	"cell %d %d, grow",
-														x,
-														y));
+				mModesMatrixPanel.add(lMatrixPanel,
+															String.format("cell %d %d, grow", x, y));
 			}
 
 		final MatrixPanel lMatrixPanel = new MatrixPanel(	32,
-															pMatrixWidth,
-															pMatrixHeight);
+																											pMatrixWidth,
+																											pMatrixHeight);
 		lMatrixPanel.setSymetricRange(true);
 
 		getOutputMatrixVariable().syncWith(lMatrixPanel.getMatrixVariable());
@@ -184,8 +180,8 @@ public class MatrixControlPanel extends JPanel
 		getSymetricRangeVariable().syncWith(lMatrixPanel.getMaxRangeVariable());
 
 		setLayout(new MigLayout("insets 0",
-								"[grow][grow]",
-								"[][grow][grow][grow]"));
+														"[grow][grow]",
+														"[][grow][grow][grow]"));
 
 		mZeroAllModesButton = new JButton("Zero all modes");
 		mZeroAllModesButton.addActionListener(new ActionListener()
@@ -193,8 +189,7 @@ public class MatrixControlPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent pE)
 			{
-				mModeVector.set(mCurrentX + pMatrixWidth * mCurrentY,
-								0);
+				mModeVector.set(mCurrentX + pMatrixWidth * mCurrentY, 0);
 				updateOutputMatrix();
 				zeroModeMatrix();
 			}
@@ -209,10 +204,7 @@ public class MatrixControlPanel extends JPanel
 			{
 				mModeVector.zero();
 				updateOutputMatrix();
-				setNewValueForModeMatrix(	mCurrentX,
-											mCurrentY,
-											1,
-											0.2f);
+				setNewValueForModeMatrix(mCurrentX, mCurrentY, 1, 0.2f);
 			}
 		});
 		add(mZeroCurrentModeButton, "cell 1 0,growx,aligny center");
@@ -228,24 +220,24 @@ public class MatrixControlPanel extends JPanel
 
 	}
 
-	private void setNewValueForModeMatrix(	int pX,
-											int pY,
-											double pNewValue,
-											float pSaturation)
+	private void setNewValueForModeMatrix(int pX,
+																				int pY,
+																				double pNewValue,
+																				float pSaturation)
 	{
 		final DenseMatrix64F mTempVectorForDisplay = new DenseMatrix64F(mTransformMatrixForDisplay.numRows,
-																		1);
+																																		1);
 
 		mTempVectorForDisplay.zero();
-		mTempVectorForDisplay.set(	(int) (pX + sqrt(mTransformMatrixForDisplay.numCols) * pY),
-									pNewValue);
+		mTempVectorForDisplay.set((int) (pX + sqrt(mTransformMatrixForDisplay.numCols) * pY),
+															pNewValue);
 
 		final DenseMatrix64F lShapeVectorForDisplay = new DenseMatrix64F(	mTransformMatrixForDisplay.numRows,
-																			1);
+																																			1);
 
 		CommonOps.mult(	mTransformMatrixForDisplay,
-						mTempVectorForDisplay,
-						lShapeVectorForDisplay);
+										mTempVectorForDisplay,
+										lShapeVectorForDisplay);
 
 		final MatrixPanel lMatrixPanel = mMatrixPanels[pX][pY];
 		lMatrixPanel.setSaturation(pSaturation);
@@ -280,7 +272,7 @@ public class MatrixControlPanel extends JPanel
 		return mInputModeVectorVariable;
 	}
 
-	public  ObjectVariable<Double> getSymetricRangeVariable()
+	public ObjectVariable<Double> getSymetricRangeVariable()
 	{
 		return mSymetricRangeSlider.getDoubleVariable();
 	}

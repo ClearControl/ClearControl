@@ -6,8 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
 import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -16,11 +15,11 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 																																		StackCameraDeviceInterface,
 																																		StateQueueDeviceInterface
 {
-	protected BooleanVariable mStackMode = new BooleanVariable(	"StackMode",
-																															true);
+	protected ObjectVariable<Boolean> mStackMode = new ObjectVariable<Boolean>(	"StackMode",
+																																							true);
 
-	protected BooleanVariable mKeepPlane = new BooleanVariable(	"KeepPlane",
-																															true);
+	protected ObjectVariable<Boolean> mKeepPlane = new ObjectVariable<Boolean>(	"KeepPlane",
+																																							true);
 
 	protected ObjectVariable<Long> mNumberOfImagesPerPlaneVariable = new ObjectVariable<Long>("NumberOfImagesPerPlane",
 																																														1L);
@@ -71,13 +70,13 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	}
 
 	@Override
-	public BooleanVariable getStackModeVariable()
+	public ObjectVariable<Boolean> getStackModeVariable()
 	{
 		return mStackMode;
 	}
 
 	@Override
-	public BooleanVariable getKeepPlaneVariable()
+	public ObjectVariable<Boolean> getKeepPlaneVariable()
 	{
 		return mKeepPlane;
 	}
@@ -102,8 +101,8 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 		mQueueLength++;
 		if (mStagingKeepAcquiredImageArray == null)
 			mStagingKeepAcquiredImageArray = new TByteArrayList();
-		mStagingKeepAcquiredImageArray.add((byte) (mKeepPlane.getBooleanValue()	? 1
-																																						: 0));
+		mStagingKeepAcquiredImageArray.add((byte) (mKeepPlane.get()	? 1
+																																: 0));
 	}
 
 	@Override

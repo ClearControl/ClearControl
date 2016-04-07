@@ -92,8 +92,7 @@ public class AdaptationP extends AdaptationModuleBase	implements
 			ArrayList<double[]> lAvgIntensities = new ArrayList<>();
 			for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 			{
-				final StackInterface lStack = lLSM.getStackVariable(d)
-																																									.get();
+				final StackInterface lStack = lLSM.getStackVariable(d).get();
 				double[] lImageSumIntensity = ImageAnalysisUtils.computeImageAverageIntensityPerPlane((OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStack.getImage());
 				lAvgIntensities.add(lImageSumIntensity);
 			}

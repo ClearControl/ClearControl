@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import rtlib.core.variable.NamedVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 
 public class VariableBundle extends NamedVariable<VariableBundle>
 {
@@ -49,8 +49,8 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 		return (VariableInterface<O>) mVariableNameToVariableMap.get(pVariableName);
 	}
 
-	public <O> void sendUpdatesTo(	final String pVariableName,
-									final VariableInterface<O> pToVariable)
+	public <O> void sendUpdatesTo(final String pVariableName,
+																final VariableInterface<O> pToVariable)
 	{
 		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
 
@@ -62,7 +62,7 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	}
 
 	public <O> void doNotSendUpdatesTo(	final String pVariableName,
-										final VariableInterface<O> pToVariable)
+																			final VariableInterface<O> pToVariable)
 	{
 		final VariableInterface<O> lFromVariable = getVariable(pVariableName);
 
@@ -74,7 +74,7 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	}
 
 	public <O> void getUpdatesFrom(	final String pVariableName,
-									final VariableInterface<O> pFromVariable)
+																	final VariableInterface<O> pFromVariable)
 	{
 		final VariableInterface<O> lToVariable = getVariable(pVariableName);
 
@@ -86,7 +86,7 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	}
 
 	public <O> void doNotGetUpdatesFrom(final String pVariableName,
-										final VariableInterface<O> pFromVariable)
+																			final VariableInterface<O> pFromVariable)
 	{
 		final VariableInterface<O> lToVariable = getVariable(pVariableName);
 
@@ -98,14 +98,14 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	}
 
 	public <O> void syncWith(	final String pVariableName,
-								final VariableInterface<O> pVariable)
+														final VariableInterface<O> pVariable)
 	{
 		this.sendUpdatesTo(pVariableName, pVariable);
 		this.getUpdatesFrom(pVariableName, pVariable);
 	}
 
-	public <O> void doNotSyncWith(	final String pVariableName,
-									final VariableInterface<O> pVariable)
+	public <O> void doNotSyncWith(final String pVariableName,
+																final VariableInterface<O> pVariable)
 	{
 		this.doNotSendUpdatesTo(pVariableName, pVariable);
 		this.doNotGetUpdatesFrom(pVariableName, pVariable);
@@ -115,8 +115,8 @@ public class VariableBundle extends NamedVariable<VariableBundle>
 	public String toString()
 	{
 		return String.format(	"VariableBundle(%s,%s)",
-								getName(),
-								mVariableNameToVariableMap);
+													getName(),
+													mVariableNameToVariableMap);
 	}
 
 }

@@ -12,8 +12,8 @@ import org.apache.commons.math3.stat.StatUtils;
 public class OutlierRemover
 {
 
-	static public TDoubleArrayList removeOutliers(	double[] pDataPoints,
-													double pSigmas)
+	static public TDoubleArrayList removeOutliers(double[] pDataPoints,
+																								double pSigmas)
 	{
 		final int length = pDataPoints.length;
 
@@ -25,12 +25,12 @@ public class OutlierRemover
 			lAbsoluteDeviations[i] = abs(pDataPoints[i] - lMedian);
 
 		final double lMedianAbsoluteDeviation = StatUtils.percentile(	lAbsoluteDeviations,
-																		50);
+																																	50);
 
 		final double lLowerBound = lMedian - pSigmas
-									* lMedianAbsoluteDeviation;
+																* lMedianAbsoluteDeviation;
 		final double lUpperBound = lMedian + pSigmas
-									* lMedianAbsoluteDeviation;
+																* lMedianAbsoluteDeviation;
 
 		final TDoubleArrayList lResultArray = new TDoubleArrayList(length);
 
@@ -42,7 +42,7 @@ public class OutlierRemover
 	}
 
 	static public <O> ArrayList<Pair<O, Double>> removeOutliers(List<Pair<O, Double>> pDataPoints,
-																double pSigmas)
+																															double pSigmas)
 	{
 		final int length = pDataPoints.size();
 
@@ -52,7 +52,7 @@ public class OutlierRemover
 			lDataPoints.add(lValuedObject.getValue());
 
 		final double lMedian = StatUtils.percentile(lDataPoints.toArray(),
-													50);
+																								50);
 
 		final double[] lAbsoluteDeviations = new double[length];
 
@@ -60,12 +60,12 @@ public class OutlierRemover
 			lAbsoluteDeviations[i] = abs(lDataPoints.getQuick(i) - lMedian);
 
 		final double lMedianAbsoluteDeviation = StatUtils.percentile(	lAbsoluteDeviations,
-																		50);
+																																	50);
 
 		final double lLowerBound = lMedian - pSigmas
-									* lMedianAbsoluteDeviation;
+																* lMedianAbsoluteDeviation;
 		final double lUpperBound = lMedian + pSigmas
-									* lMedianAbsoluteDeviation;
+																* lMedianAbsoluteDeviation;
 
 		final ArrayList<Pair<O, Double>> lResultList = new ArrayList<>(length);
 

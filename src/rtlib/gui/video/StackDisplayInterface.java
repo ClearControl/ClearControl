@@ -1,6 +1,6 @@
 package rtlib.gui.video;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.stack.StackInterface;
 
 public interface StackDisplayInterface

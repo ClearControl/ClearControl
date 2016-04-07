@@ -6,7 +6,7 @@ import java.util.Arrays;
  * An implementation of an implicit binary interval heap.
  * 
  * @param <T>
- *            type stored in interval heap
+ *          type stored in interval heap
  */
 public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 {
@@ -365,9 +365,9 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 		final java.text.DecimalFormat twoPlaces = new java.text.DecimalFormat("0.00");
 		final StringBuffer str = new StringBuffer(IntervalHeap.class.getCanonicalName());
 		str.append(", size: ")
-			.append(size())
-			.append(" capacity: ")
-			.append(capacity());
+				.append(size())
+				.append(" capacity: ")
+				.append(capacity());
 		int i = 0, p = 2;
 		while (i < size())
 		{
@@ -375,8 +375,7 @@ public class IntervalHeap<T> implements MinHeap<T>, MaxHeap<T>
 			str.append("\t");
 			while ((i + x) < size() && x < p)
 			{
-				str.append(twoPlaces.format(keys[i + x]))
-					.append(", ");
+				str.append(twoPlaces.format(keys[i + x])).append(", ");
 				x++;
 			}
 			str.append("\n");

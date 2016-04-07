@@ -4,8 +4,8 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
 

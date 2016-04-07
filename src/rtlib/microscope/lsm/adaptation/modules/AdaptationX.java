@@ -9,7 +9,7 @@ import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
-public class AdaptationX extends NDIteratorAdaptationModule implements
+public class AdaptationX extends NDIteratorAdaptationModule	implements
 																														AdaptationModuleInterface
 {
 
@@ -31,18 +31,16 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 																								.getLightSheetDevice(pLightSheetIndex);
 		double lMinX = lLightSheetDevice.getXFunction().get().getMin();
 		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
-		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples-1);
+		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);
 
-		
 		double lCurrentX = lLSM.getIX(pLightSheetIndex);
-		
+
 		lLSM.clearQueue();
-		
+
 		lStackAcquisition.setToControlPlane(pControlPlaneIndex);
 
 		final TDoubleArrayList lIXList = new TDoubleArrayList();
 
-		
 		lLSM.setILO(false);
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lMinX);
@@ -59,20 +57,20 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 			lLSM.setI(pLightSheetIndex);
 			lLSM.addCurrentStateToQueue();
 		}
-		
+
 		lLSM.setILO(false);
 		lLSM.setC(false);
 		lLSM.setIX(pLightSheetIndex, lCurrentX);
 		lLSM.setI(pLightSheetIndex);
 		lLSM.addCurrentStateToQueue();
-		
+
 		lLSM.finalizeQueue();
 
 		return findBestDOFValue(pControlPlaneIndex,
-																pLightSheetIndex,
-																lLSM,
-																lStackAcquisition,
-																lIXList);
+														pLightSheetIndex,
+														lLSM,
+														lStackAcquisition,
+														lIXList);
 
 	}
 
@@ -81,8 +79,9 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 															int pLightSheetIndex,
 															ArrayList<Double> pArgMaxList)
 	{
-		int lBestDetectioArm = getAdaptator().getStackAcquisition().getBestDetectionArm(pControlPlaneIndex);
-		
+		int lBestDetectioArm = getAdaptator().getStackAcquisition()
+																					.getBestDetectionArm(pControlPlaneIndex);
+
 		getAdaptator().getNewAcquisitionState()
 									.setAtControlPlaneIX(	pControlPlaneIndex,
 																				pLightSheetIndex,

@@ -43,7 +43,7 @@ public class FitQualityEstimator
 	public FitQualityEstimator()
 	{
 		this(Executors.newFixedThreadPool(Runtime.getRuntime()
-													.availableProcessors()));
+																							.availableProcessors()));
 	}
 
 	public FitQualityEstimator(ExecutorService pExecutorService)
@@ -61,8 +61,7 @@ public class FitQualityEstimator
 			if (!lCacheFile.exists())
 			{
 				lNormalDistribution = computeNullHypothesisDistribution(lLength);
-				sNullHypothesisDistribution.put(lLength,
-												lNormalDistribution);
+				sNullHypothesisDistribution.put(lLength, lNormalDistribution);
 				try
 				{
 					writeToFile(lNormalDistribution, lCacheFile);
@@ -90,8 +89,7 @@ public class FitQualityEstimator
 			if (lNormalDistribution == null)
 			{
 				lNormalDistribution = computeNullHypothesisDistribution(lLength);
-				sNullHypothesisDistribution.put(lLength,
-												lNormalDistribution);
+				sNullHypothesisDistribution.put(lLength, lNormalDistribution);
 				try
 				{
 					writeToFile(lNormalDistribution, lCacheFile);
@@ -115,32 +113,32 @@ public class FitQualityEstimator
 		if (!lStatsFolder.exists())
 			lStatsFolder.mkdirs();
 		final File lFile = new File(lStatsFolder,
-									String.format(	"%s_l=%d.obj",
-													this.getClass()
-														.getSimpleName(),
-													pLength));
+																String.format("%s_l=%d.obj",
+																							this.getClass()
+																									.getSimpleName(),
+																							pLength));
 
 		return lFile;
 	}
 
 	public void writeToFile(NormalDistribution pNormalDistribution,
-							File pFile) throws IOException
+													File pFile) throws IOException
 	{
 		final FileOutputStream lFileOutputStream = new FileOutputStream(pFile);
 		final BufferedOutputStream lBufferedOutputStream = new BufferedOutputStream(lFileOutputStream,
-																					cBufferLength);
+																																								cBufferLength);
 		final ObjectOutputStream lObjectOutputStream = new ObjectOutputStream(lBufferedOutputStream);
 		lObjectOutputStream.writeObject(pNormalDistribution);
 		lObjectOutputStream.close();
 		lFileOutputStream.close();
 	}
 
-	public NormalDistribution readFromFile(File pFile)	throws IOException,
-														ClassNotFoundException
+	public NormalDistribution readFromFile(File pFile) throws IOException,
+																										ClassNotFoundException
 	{
 		final FileInputStream lFileInputStream = new FileInputStream(pFile);
 		final BufferedInputStream lBufferedInputStream = new BufferedInputStream(	lFileInputStream,
-																					cBufferLength);
+																																							cBufferLength);
 		final ObjectInputStream lObjectInputStream = new ObjectInputStream(lBufferedInputStream);
 		final NormalDistribution lNormalDistribution = (NormalDistribution) lObjectInputStream.readObject();
 		lObjectInputStream.close();
@@ -164,8 +162,7 @@ public class FitQualityEstimator
 		{
 			final RandomizedDataGaussianFitter lRandomizedDataGaussianFitter = new RandomizedDataGaussianFitter();
 			final Callable<Double> lCallable = () -> {
-				Thread.currentThread()
-						.setPriority(Thread.MIN_PRIORITY);
+				Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 				return lRandomizedDataGaussianFitter.computeRMSDForRandomData(lX);
 			};
 			final FutureTask<Double> lFutureTask = new FutureTask<Double>(lCallable);
@@ -179,7 +176,7 @@ public class FitQualityEstimator
 			try
 			{
 				final Double lRMSD = lFutureTask.get(	200,
-														TimeUnit.MILLISECONDS);
+																							TimeUnit.MILLISECONDS);
 				if (lRMSD != null)
 					lIRMSDList.add(lRMSD);
 			}
@@ -203,8 +200,8 @@ public class FitQualityEstimator
 		// lCenterValue = 0.25;// lMean.evaluate(lIRMSDArray);
 		// lStandardDeviation = 0.0625; // sqrt(lVarianceValue);
 
-		final NormalDistribution lNormalDistribution = new NormalDistribution(	lCenterValue,
-																				lStandardDeviation);
+		final NormalDistribution lNormalDistribution = new NormalDistribution(lCenterValue,
+																																					lStandardDeviation);
 		return lNormalDistribution;
 
 	}
@@ -213,8 +210,8 @@ public class FitQualityEstimator
 	{
 		final double[] lNormY = RandomizedDataGaussianFitter.normalizeCopy(pY);
 
-		final RandomizedDataGaussianFitter lDataGaussianFitter = new RandomizedDataGaussianFitter(	pX,
-																									lNormY);
+		final RandomizedDataGaussianFitter lDataGaussianFitter = new RandomizedDataGaussianFitter(pX,
+																																															lNormY);
 		try
 		{
 			mRealDataRMSD = lDataGaussianFitter.computeRMSD();
@@ -258,8 +255,8 @@ public class FitQualityEstimator
 		for (int i = 0; i < pX.length; i++)
 		{
 			lFittedY[i] = lMin + (lMax - lMin)
-							* (mUnivariateDifferentiableFunction == null ? 0
-																		: mUnivariateDifferentiableFunction.value(pX[i]));
+										* (mUnivariateDifferentiableFunction == null ? 0
+																																: mUnivariateDifferentiableFunction.value(pX[i]));
 		}
 		return lFittedY;
 	}

@@ -12,8 +12,7 @@ import javax.swing.border.EmptyBorder;
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.swing.JButtonBoolean;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.Stack2DDisplay;
@@ -53,7 +52,7 @@ public class VideoFrame2DDisplayDemo
 																																	512);
 
 		lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
-												.setValue(true);
+												.set(true);
 		lVideoDisplayDevice.open();
 
 		final int lSizeX = 256;
@@ -90,8 +89,7 @@ public class VideoFrame2DDisplayDemo
 
 		final JFrame lJFrame = runDemo(lVideoDisplayDevice);
 
-		while (lVideoDisplayDevice.getDisplayOnVariable()
-															.getBooleanValue() && lJFrame.isVisible())
+		while (lVideoDisplayDevice.getDisplayOnVariable().get() && lJFrame.isVisible())
 		{
 			Thread.sleep(100);
 		}
@@ -128,10 +126,10 @@ public class VideoFrame2DDisplayDemo
 																																		"No Display");
 					mcontentPane.add(lJButtonBoolean, BorderLayout.NORTH);
 
-					final BooleanVariable lStartStopVariable = lJButtonBoolean.getBooleanVariable();
+					final ObjectVariable<Boolean> lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
-					lStartStopVariable.sendUpdatesTo(new BooleanVariable(	"StartStopVariableHook",
-																																false)
+					lStartStopVariable.sendUpdatesTo(new ObjectVariable<Boolean>(	"StartStopVariableHook",
+																																				false)
 					{
 						@Override
 						public Boolean setEventHook(final Boolean pOldValue,

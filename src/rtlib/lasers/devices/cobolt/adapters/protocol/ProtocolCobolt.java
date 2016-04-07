@@ -17,8 +17,8 @@ public class ProtocolCobolt
 	public static String toHexadecimalString(final int n, final int k)
 	{
 		return String.format("%" + k + "s", Integer.toHexString(n))
-						.replace(' ', '0')
-						.toUpperCase();
+									.replace(' ', '0')
+									.toUpperCase();
 	}
 
 	public static double parseFloat(final byte[] pMessage)

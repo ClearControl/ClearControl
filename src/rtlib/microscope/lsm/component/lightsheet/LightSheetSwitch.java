@@ -3,8 +3,8 @@ package rtlib.microscope.lsm.component.lightsheet;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.SwitchingDeviceInterface;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.symphony.movement.Movement;
 import rtlib.symphony.staves.ConstantStave;
@@ -14,7 +14,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 																												OptoMechDeviceInterface
 {
 
-	private final BooleanVariable[] mLightSheetOnOff;
+	private final ObjectVariable<Boolean>[] mLightSheetOnOff;
 	private final ConstantStave[] mBitStave;
 	private int[] mStaveIndex;
 
@@ -31,7 +31,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 
 		mBitStave = new ConstantStave[pNumberOfLightSheets];
 		mStaveIndex = new int[pNumberOfLightSheets];
-		mLightSheetOnOff = new BooleanVariable[pNumberOfLightSheets];
+		mLightSheetOnOff = new ObjectVariable[pNumberOfLightSheets];
 
 		for (int i = 0; i < mBitStave.length; i++)
 		{
@@ -42,9 +42,9 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 																																-1);
 			mBitStave[i] = new ConstantStave("lightsheet.s." + i, 0);
 
-			mLightSheetOnOff[i] = new BooleanVariable(String.format("LightSheet%dOnOff",
-																															i),
-																								false);
+			mLightSheetOnOff[i] = new ObjectVariable<Boolean>(String.format("LightSheet%dOnOff",
+																																			i),
+																												false);
 			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
 
 		}
@@ -63,7 +63,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public BooleanVariable getSwitchingVariable(int pLightSheetIndex)
+	public ObjectVariable<Boolean> getSwitchingVariable(int pLightSheetIndex)
 	{
 		return mLightSheetOnOff[pLightSheetIndex];
 	}
@@ -92,8 +92,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 		{
 			for (int i = 0; i < mBitStave.length; i++)
 			{
-				mBitStave[i].setValue(mLightSheetOnOff[i].getBooleanValue()	? 1
-																																		: 0);
+				mBitStave[i].setValue(mLightSheetOnOff[i].get() ? 1 : 0);
 			}
 		}
 	}

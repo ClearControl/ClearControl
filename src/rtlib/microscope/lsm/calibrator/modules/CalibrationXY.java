@@ -19,7 +19,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
@@ -45,10 +45,10 @@ public class CalibrationXY
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfDetectionArmDevices();
+																												.getNumberOfDetectionArmDevices();
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-															.getNumberOfLightSheetDevices();
+																											.getNumberOfLightSheetDevices();
 
 		mOriginFromX = new MultiKeyMap<>();
 		mUnitVectorFromX = new MultiKeyMap<>();
@@ -59,25 +59,25 @@ public class CalibrationXY
 	}
 
 	public boolean calibrate(	int pLightSheetIndex,
-								int pDetectionArmIndex,
-								int pNumberOfPoints)
+														int pDetectionArmIndex,
+														int pNumberOfPoints)
 	{
 		return calibrate(	pLightSheetIndex,
-							pDetectionArmIndex,
-							pNumberOfPoints,
-							true) && calibrate(	pLightSheetIndex,
-												pDetectionArmIndex,
-												pNumberOfPoints,
-												false);
+											pDetectionArmIndex,
+											pNumberOfPoints,
+											true) && calibrate(	pLightSheetIndex,
+																					pDetectionArmIndex,
+																					pNumberOfPoints,
+																					false);
 	}
 
-	private boolean calibrate(	int pLightSheetIndex,
-								int pDetectionArmIndex,
-								int pNumberOfPoints,
-								boolean pDoAxisX)
+	private boolean calibrate(int pLightSheetIndex,
+														int pDetectionArmIndex,
+														int pNumberOfPoints,
+														boolean pDoAxisX)
 	{
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
-																.getLightSheetDevice(pLightSheetIndex);
+																														.getLightSheetDevice(pLightSheetIndex);
 
 		double lMin, lMax;
 
@@ -103,7 +103,7 @@ public class CalibrationXY
 			TDoubleArrayList lUnitVectorYList = new TDoubleArrayList();
 
 			double lMaxAbsY = min(abs(lMin), abs(lMax));
-			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / (pNumberOfPoints-1)))
+			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / (pNumberOfPoints - 1)))
 			{
 				Vector2D lCenterP, lCenter0, lCenterN;
 
@@ -112,42 +112,42 @@ public class CalibrationXY
 				if (pDoAxisX)
 				{
 					lCenterP = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															f,
-															0,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									f,
+																									0,
+																									lNumberOfPreImages);
 
 					lCenter0 = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															0,
-															0,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									0,
+																									0,
+																									lNumberOfPreImages);
 
 					lCenterN = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															-f,
-															0,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									-f,
+																									0,
+																									lNumberOfPreImages);
 				}
 				else
 				{
 					lCenterP = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															0,
-															f,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									0,
+																									f,
+																									lNumberOfPreImages);
 
 					lCenter0 = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															0,
-															0,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									0,
+																									0,
+																									lNumberOfPreImages);
 
 					lCenterN = lightSheetImageCenterWhenAt(	pLightSheetIndex,
-															pDetectionArmIndex,
-															0,
-															-f,
-															lNumberOfPreImages);
+																									pDetectionArmIndex,
+																									0,
+																									-f,
+																									lNumberOfPreImages);
 				}
 
 				System.out.format("center at %g: %s \n", f, lCenterP);
@@ -164,9 +164,7 @@ public class CalibrationXY
 					double ux = (lCenterP.getX() - lCenterN.getX()) / 2f;
 					double uy = (lCenterP.getY() - lCenterN.getY()) / 2f;
 
-					System.out.format(	"Unit vector: (%g,%g) \n",
-										ux,
-										uy);
+					System.out.format("Unit vector: (%g,%g) \n", ux, uy);
 
 					lUnitVectorXList.add(ux);
 					lUnitVectorYList.add(uy);
@@ -174,44 +172,40 @@ public class CalibrationXY
 			}
 
 			double lOriginX = StatUtils.percentile(	lOriginXList.toArray(),
-													50);
+																							50);
 			double lOriginY = StatUtils.percentile(	lOriginYList.toArray(),
-													50);
+																							50);
 
 			double lUnitVectorX = StatUtils.percentile(	lUnitVectorXList.toArray(),
-														50);
+																									50);
 			double lUnitVectorY = StatUtils.percentile(	lUnitVectorYList.toArray(),
-														50);
+																									50);
 
 			if (pDoAxisX)
 			{
 				mOriginFromX.put(	pLightSheetIndex,
-									pDetectionArmIndex,
-									new Vector2D(lOriginX, lOriginY));
+													pDetectionArmIndex,
+													new Vector2D(lOriginX, lOriginY));
 				mUnitVectorFromX.put(	pLightSheetIndex,
-										pDetectionArmIndex,
-										new Vector2D(	lUnitVectorX,
-														lUnitVectorY));
+															pDetectionArmIndex,
+															new Vector2D(lUnitVectorX, lUnitVectorY));
 
 				System.out.format("From X axis: \n");
 				System.out.format("Origin : %s \n", mOriginFromX);
-				System.out.format(	"Unit Vector : %s \n",
-									mUnitVectorFromX);
+				System.out.format("Unit Vector : %s \n", mUnitVectorFromX);
 			}
 			else
 			{
 				mOriginFromY.put(	pLightSheetIndex,
-									pDetectionArmIndex,
-									new Vector2D(lOriginX, lOriginY));
+													pDetectionArmIndex,
+													new Vector2D(lOriginX, lOriginY));
 				mUnitVectorFromY.put(	pLightSheetIndex,
-										pDetectionArmIndex,
-										new Vector2D(	lUnitVectorX,
-														lUnitVectorY));
+															pDetectionArmIndex,
+															new Vector2D(lUnitVectorX, lUnitVectorY));
 
 				System.out.format("From X axis: \n");
 				System.out.format("Origin : %s \n", mOriginFromY);
-				System.out.format(	"Unit Vector : %s \n",
-									mUnitVectorFromY);
+				System.out.format("Unit Vector : %s \n", mUnitVectorFromY);
 			}
 
 		}
@@ -229,12 +223,12 @@ public class CalibrationXY
 	}
 
 	private Vector2D lightSheetImageCenterWhenAt(	int pLightSheetIndex,
-													int pDetectionArmIndex,
-													double pX,
-													double pY,
-													int pN)	throws InterruptedException,
-															ExecutionException,
-															TimeoutException
+																								int pDetectionArmIndex,
+																								double pX,
+																								double pY,
+																								int pN)	throws InterruptedException,
+																												ExecutionException,
+																												TimeoutException
 	{
 		// Building queue start:
 		mLightSheetMicroscope.clearQueue();
@@ -260,14 +254,14 @@ public class CalibrationXY
 		// Building queue end.
 
 		mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
-		final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(	mLightSheetMicroscope.getQueueLength(),
-																							TimeUnit.SECONDS);
+		final Boolean lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+																																											TimeUnit.SECONDS);
 
 		if (!lPlayQueueAndWait)
 			return null;
 
 		final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
-																											.get();
+																																.get();
 
 		OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 
@@ -276,37 +270,37 @@ public class CalibrationXY
 		long lWidth = lImage.dimension(0);
 		long lHeight = lImage.dimension(1);
 
-		System.out.format(	"image: width=%d, height=%d \n",
-							lWidth,
-							lHeight);
+		System.out.format("image: width=%d, height=%d \n",
+											lWidth,
+											lHeight);
 
 		Vector2D lPoint = ImageAnalysisUtils.findCOMOfBrightestPointsForEachPlane(lImage)[0];
 
-		lPoint = lPoint.subtract(new Vector2D(	0.5 * lWidth,
-												0.5 * lHeight));
-		
-		System.out.format(	"image: lightsheet center at: %s \n",
-		      							lPoint);
-		
-		Vector2D lNormalizedPoint = new Vector2D(2*lPoint.getX()/lWidth,2*lPoint.getY()/lHeight);
+		lPoint = lPoint.subtract(new Vector2D(0.5 * lWidth, 0.5 * lHeight));
 
+		System.out.format("image: lightsheet center at: %s \n", lPoint);
 
-		System.out.format(	"image: lightsheet center at normalized coord: %s \n",
-		                  	lNormalizedPoint);
+		Vector2D lNormalizedPoint = new Vector2D(	2		* lPoint.getX()
+																									/ lWidth,
+																							2		* lPoint.getY()
+																									/ lHeight);
+
+		System.out.format("image: lightsheet center at normalized coord: %s \n",
+											lNormalizedPoint);
 
 		return lNormalizedPoint;
 	}
 
 	public double apply(int pLightSheetIndex, int pDetectionArmIndex)
 	{
-		System.out.format(	"Light sheet index: %d, detection arm index: %d \n",
-							pLightSheetIndex,
-							pDetectionArmIndex);
+		System.out.format("Light sheet index: %d, detection arm index: %d \n",
+											pLightSheetIndex,
+											pDetectionArmIndex);
 
 		Vector2D lOriginFromX = mOriginFromX.get(	pLightSheetIndex,
-													pDetectionArmIndex);
+																							pDetectionArmIndex);
 		Vector2D lOriginFromY = mOriginFromY.get(	pLightSheetIndex,
-													pDetectionArmIndex);
+																							pDetectionArmIndex);
 
 		System.out.format("lOriginFromX: %s \n", lOriginFromX);
 		System.out.format("lOriginFromY: %s \n", lOriginFromY);
@@ -319,9 +313,9 @@ public class CalibrationXY
 		System.out.format("lOrigin: %s \n", lOrigin);
 
 		Vector2D lUnitVectorU = mUnitVectorFromX.get(	pLightSheetIndex,
-														pDetectionArmIndex);
+																									pDetectionArmIndex);
 		Vector2D lUnitVectorV = mUnitVectorFromY.get(	pLightSheetIndex,
-														pDetectionArmIndex);
+																									pDetectionArmIndex);
 
 		System.out.format("lUnitVectorU: %s \n", lUnitVectorU);
 		System.out.format("lUnitVectorV: %s \n", lUnitVectorV);
@@ -336,8 +330,8 @@ public class CalibrationXY
 		lMatrix.print(4, 3);
 
 		mTransformMatrices.put(	pLightSheetIndex,
-								pDetectionArmIndex,
-								lMatrix);
+														pDetectionArmIndex,
+														lMatrix);
 
 		SimpleMatrix lInverseMatrix = lMatrix.invert();
 
@@ -363,49 +357,45 @@ public class CalibrationXY
 		System.out.format("lYOffset: %s \n", lYOffset);
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																		.getLightSheetDevice(pLightSheetIndex);
+																																	.getLightSheetDevice(pLightSheetIndex);
 
-		System.out.format(	"lLightSheetDevice: %s \n",
-							lLightSheetDevice);
+		System.out.format("lLightSheetDevice: %s \n", lLightSheetDevice);
 
 		ObjectVariable<UnivariateAffineComposableFunction> lFunctionXVariable = lLightSheetDevice.getXFunction();
 		ObjectVariable<UnivariateAffineComposableFunction> lFunctionYVariable = lLightSheetDevice.getYFunction();
 
-		System.out.format(	"lFunctionXVariable: %s \n",
-							lFunctionXVariable);
-		System.out.format(	"lFunctionYVariable: %s \n",
-							lFunctionYVariable);
+		System.out.format("lFunctionXVariable: %s \n", lFunctionXVariable);
+		System.out.format("lFunctionYVariable: %s \n", lFunctionYVariable);
 
 		// TODO: use pixel calibration here...
 		lFunctionXVariable.get()
-							.composeWith(UnivariateAffineFunction.axplusb(	1,
-																			-lXOffset));
+											.composeWith(UnivariateAffineFunction.axplusb(1,
+																																		-lXOffset));
 		lFunctionYVariable.get()
-							.composeWith(UnivariateAffineFunction.axplusb(	1,
-																			-lYOffset));
+											.composeWith(UnivariateAffineFunction.axplusb(1,
+																																		-lYOffset));
 
 		lFunctionXVariable.setCurrent();
 		lFunctionYVariable.setCurrent();
 
-		System.out.format(	"Updated-> lFunctionXVariable: %s \n",
-							lFunctionXVariable);
-		System.out.format(	"Updated-> lFunctionYVariable: %s \n",
-							lFunctionYVariable);
+		System.out.format("Updated-> lFunctionXVariable: %s \n",
+											lFunctionXVariable);
+		System.out.format("Updated-> lFunctionYVariable: %s \n",
+											lFunctionYVariable);
 
 		// TODO: use pixel calibration here...
 		ObjectVariable<UnivariateAffineComposableFunction> lHeightFunctionVariable = lLightSheetDevice.getHeightFunction();
-		System.out.format(	"lHeightFunctionVariable: %s \n",
-							lHeightFunctionVariable);
+		System.out.format("lHeightFunctionVariable: %s \n",
+											lHeightFunctionVariable);
 		UnivariateAffineFunction lHeightFunction = UnivariateAffineFunction.axplusb(1,
-																					0);
+																																								0);
 		lHeightFunction.setMin(-1);
 		lHeightFunction.setMax(1);
 		lHeightFunctionVariable.set(lHeightFunction);
 		lHeightFunctionVariable.setCurrent();
 
-		System.out.format(	"Updated-> lHeightFunctionVariable: %s \n",
-							lHeightFunctionVariable);
-
+		System.out.format("Updated-> lHeightFunctionVariable: %s \n",
+											lHeightFunctionVariable);
 
 		double lError = abs(lXOffset) + abs(lYOffset);
 
@@ -420,10 +410,10 @@ public class CalibrationXY
 	}
 
 	public SimpleMatrix getTransformMatrix(	int pLightSheetIndex,
-											int pDetectionArmIndex)
+																					int pDetectionArmIndex)
 	{
-		return mTransformMatrices.get(	pLightSheetIndex,
-										pDetectionArmIndex);
+		return mTransformMatrices.get(pLightSheetIndex,
+																	pDetectionArmIndex);
 	}
 
 }

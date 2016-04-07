@@ -17,7 +17,7 @@ public class LineLimitedDocumentFilter extends DocumentFilter
 	private final DefaultCaret mDefaultCaret;
 
 	public LineLimitedDocumentFilter(	JTextArea pTextArea,
-										int pMaxNumberOfLines)
+																		int pMaxNumberOfLines)
 	{
 		this.area = pTextArea;
 		this.max = pMaxNumberOfLines;
@@ -28,10 +28,10 @@ public class LineLimitedDocumentFilter extends DocumentFilter
 
 	@Override
 	public void replace(FilterBypass fb,
-						int offset,
-						int length,
-						String text,
-						AttributeSet attrs) throws BadLocationException
+											int offset,
+											int length,
+											String text,
+											AttributeSet attrs) throws BadLocationException
 	{
 		super.replace(fb, offset, length, text, attrs);
 		controlSize(fb);
@@ -39,9 +39,9 @@ public class LineLimitedDocumentFilter extends DocumentFilter
 
 	@Override
 	public void insertString(	FilterBypass pFb,
-								int pOffset,
-								String pString,
-								AttributeSet pAttr) throws BadLocationException
+														int pOffset,
+														String pString,
+														AttributeSet pAttr) throws BadLocationException
 	{
 		super.insertString(pFb, pOffset, pString, pAttr);
 		controlSize(pFb);

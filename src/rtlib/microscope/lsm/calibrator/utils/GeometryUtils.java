@@ -8,14 +8,13 @@ import rtlib.core.math.regression.linear.TheilSenEstimator;
 
 public class GeometryUtils
 {
-	public static Line computeYLineOnImage(long lWidth,
-											final Vector2D[] lPoints)
+	public static Line computeYLineOnImage(	long lWidth,
+																					final Vector2D[] lPoints)
 	{
 		TheilSenEstimator lTheilSenEstimator = new TheilSenEstimator();
 
 		for (int j = 0; j < lPoints.length; j++)
-			lTheilSenEstimator.enter(	lPoints[j].getX(),
-										lPoints[j].getY());
+			lTheilSenEstimator.enter(lPoints[j].getX(), lPoints[j].getY());
 
 		UnivariateAffineFunction lModel = lTheilSenEstimator.getModel();
 		System.out.println("lModel=" + lModel);

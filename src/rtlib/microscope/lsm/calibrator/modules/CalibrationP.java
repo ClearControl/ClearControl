@@ -85,7 +85,6 @@ public class CalibrationP
 			mLightSheetMicroscope.clearQueue();
 			mLightSheetMicroscope.zero();
 
-
 			mLightSheetMicroscope.setIX(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
 			mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
@@ -113,7 +112,7 @@ public class CalibrationP
 				return null;
 
 			final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
-																																																					.get();
+																																	.get();
 
 			OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
 
@@ -148,8 +147,7 @@ public class CalibrationP
 
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
-			System.out.format("Light sheet index: %d \n",
-												l);
+			System.out.format("Light sheet index: %d \n", l);
 
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
 																																		.getLightSheetDevice(l);

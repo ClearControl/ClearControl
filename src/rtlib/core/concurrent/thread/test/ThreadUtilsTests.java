@@ -20,8 +20,7 @@ public class ThreadUtilsTests
 			for (int i = 0; i < 10000; i++)
 			{
 				lDummyData[i] += Math.random() * 10;
-				ThreadUtils.sleep(	lDummyData[i],
-									TimeUnit.MILLISECONDS);
+				ThreadUtils.sleep(lDummyData[i], TimeUnit.MILLISECONDS);
 			}
 		};
 

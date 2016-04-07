@@ -1,7 +1,7 @@
 package rtlib.symphony.staves;
 
 public class TriggerStave extends IntervalStave	implements
-												StaveInterface
+																								StaveInterface
 {
 
 	public TriggerStave(String pName)
@@ -10,16 +10,12 @@ public class TriggerStave extends IntervalStave	implements
 	}
 
 	public TriggerStave(String pName,
-						float pSyncStart,
-						float pSyncStop,
-						float pInsideValue,
-						float pOutsideValue)
+											float pSyncStart,
+											float pSyncStop,
+											float pInsideValue,
+											float pOutsideValue)
 	{
-		super(	pName,
-				pSyncStart,
-				pSyncStop,
-				pInsideValue,
-				pOutsideValue);
+		super(pName, pSyncStart, pSyncStop, pInsideValue, pOutsideValue);
 	}
 
 }

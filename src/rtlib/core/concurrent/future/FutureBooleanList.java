@@ -54,7 +54,7 @@ public class FutureBooleanList implements Future<Boolean>
 
 	@Override
 	public Boolean get() throws InterruptedException,
-						ExecutionException
+											ExecutionException
 	{
 		for (final Future<Boolean> lFuture : mFutureMap.keySet())
 		{
@@ -67,8 +67,8 @@ public class FutureBooleanList implements Future<Boolean>
 
 	@Override
 	public Boolean get(long pTimeout, TimeUnit pUnit)	throws InterruptedException,
-														ExecutionException,
-														TimeoutException
+																										ExecutionException,
+																										TimeoutException
 	{
 		for (final Future<Boolean> lFuture : mFutureMap.keySet())
 		{
@@ -79,8 +79,8 @@ public class FutureBooleanList implements Future<Boolean>
 			}
 			catch (TimeoutException e)
 			{
-				System.out.format(	"Timeout caused by: %s \n",
-									mFutureMap.get(lFuture).trim());
+				System.out.format("Timeout caused by: %s \n",
+													mFutureMap.get(lFuture).trim());
 
 				throw e;
 			}

@@ -13,9 +13,8 @@ import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import rtlib.symphony.movement.Movement;
@@ -86,15 +85,15 @@ public class LightSheet extends NamedVirtualDevice implements
 																																										0.0);
 	private final ObjectVariable<Double> mPowerVariable = new ObjectVariable<Double>(	"LightSheetLengthPower",
 																																										1.0);
-	private final BooleanVariable mAdaptPowerToWidthHeightVariable = new BooleanVariable(	"AdaptLightSheetPowerToWidthHeight",
-																																												false);
+	private final ObjectVariable<Boolean> mAdaptPowerToWidthHeightVariable = new ObjectVariable<Boolean>(	"AdaptLightSheetPowerToWidthHeight",
+																																																				false);
 
 	private final ObjectVariable<Double> mLineExposureInMicrosecondsVariable = new ObjectVariable<Double>("LineExposureInMicroseconds",
 																																																				10.0);
 
-	private final BooleanVariable[] mLaserOnOffVariableArray;
+	private final ObjectVariable<Boolean>[] mLaserOnOffVariableArray;
 
-	private final BooleanVariable[] mSIPatternOnOffVariableArray;
+	private final ObjectVariable<Boolean>[] mSIPatternOnOffVariableArray;
 
 	private final ObjectVariable<StructuredIlluminationPatternInterface>[] mStructuredIlluminationPatternVariableArray;
 
@@ -126,9 +125,9 @@ public class LightSheet extends NamedVirtualDevice implements
 			update();
 		};
 
-		mLaserOnOffVariableArray = new BooleanVariable[mNumberOfLaserDigitalControls];
+		mLaserOnOffVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
-		mSIPatternOnOffVariableArray = new BooleanVariable[mNumberOfLaserDigitalControls];
+		mSIPatternOnOffVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
 		mStructuredIlluminationPatternVariableArray = new ObjectVariable[mNumberOfLaserDigitalControls];
 
@@ -166,12 +165,12 @@ public class LightSheet extends NamedVirtualDevice implements
 			mStructuredIlluminationPatternVariableArray[i] = new ObjectVariable("StructuredIlluminationPattern",
 																																					new BinaryStructuredIlluminationPattern());
 
-			mLaserOnOffVariableArray[i] = new BooleanVariable(lLaserName,
-																												false);
+			mLaserOnOffVariableArray[i] = new ObjectVariable<Boolean>(lLaserName,
+																																false);
 			mLaserOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
 
-			mSIPatternOnOffVariableArray[i] = new BooleanVariable(lLaserName + "SIPatternOnOff",
-																														false);
+			mSIPatternOnOffVariableArray[i] = new ObjectVariable<Boolean>(lLaserName + "SIPatternOnOff",
+																																		false);
 			mSIPatternOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
 		}
 
@@ -476,7 +475,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			boolean lIsStepping = true;
 			for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
-				lIsStepping &= mSIPatternOnOffVariableArray[i].getBooleanValue();
+				lIsStepping &= mSIPatternOnOffVariableArray[i].get();
 
 			mBeforeExposureYStave.setStepping(lIsStepping);
 			mExposureYStave.setStepping(lIsStepping);
@@ -485,14 +484,14 @@ public class LightSheet extends NamedVirtualDevice implements
 
 			for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 			{
-				final BooleanVariable lLaserBooleanVariable = mLaserOnOffVariableArray[i];
+				final ObjectVariable<Boolean> lLaserBooleanVariable = mLaserOnOffVariableArray[i];
 
-				if (mSIPatternOnOffVariableArray[i].getBooleanValue())
+				if (mSIPatternOnOffVariableArray[i].get())
 				{
 
 					final StructuredIlluminationPatternInterface lStructuredIlluminatioPatternInterface = mStructuredIlluminationPatternVariableArray[i].get();
 					final StaveInterface lSIIlluminationLaserTriggerStave = lStructuredIlluminatioPatternInterface.getStave(lMarginTimeRelativeUnits);
-					lSIIlluminationLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
+					lSIIlluminationLaserTriggerStave.setEnabled(lLaserBooleanVariable.get());
 
 					setLaserDigitalTriggerStave(mExposureMovement,
 																			i,
@@ -500,7 +499,7 @@ public class LightSheet extends NamedVirtualDevice implements
 				}
 				else
 				{
-					mNonSIIluminationLaserTriggerStave.setEnabled(lLaserBooleanVariable.getBooleanValue());
+					mNonSIIluminationLaserTriggerStave.setEnabled(lLaserBooleanVariable.get());
 					mNonSIIluminationLaserTriggerStave.setStart((float) lMarginTimeRelativeUnits);
 					mNonSIIluminationLaserTriggerStave.setStop((float) (1 - lMarginTimeRelativeUnits));
 					setLaserDigitalTriggerStave(mExposureMovement,
@@ -513,7 +512,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			double lPowerValue = mPowerFunction.get()
 																					.value(mPowerVariable.get());
 
-			if (mAdaptPowerToWidthHeightVariable.getBooleanValue())
+			if (mAdaptPowerToWidthHeightVariable.get())
 			{
 				double lWidthPowerFactor = mWidthPowerFunction.get()
 																											.value(lWidthValue);
@@ -539,7 +538,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	public long getExposureMovementDuration(TimeUnit pTimeUnit)
 	{
 		return pTimeUnit.convert(	mEffectiveExposureInMicrosecondsVariable.get()
-																																							.longValue(),
+																																			.longValue(),
 															TimeUnit.MICROSECONDS);
 	}
 
@@ -647,7 +646,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public BooleanVariable getAdaptPowerToWidthHeightVariable()
+	public ObjectVariable<Boolean> getAdaptPowerToWidthHeightVariable()
 	{
 		return mAdaptPowerToWidthHeightVariable;
 	}
@@ -666,13 +665,13 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public BooleanVariable getSIPatternOnOffVariable(int pLaserIndex)
+	public ObjectVariable<Boolean> getSIPatternOnOffVariable(int pLaserIndex)
 	{
 		return mSIPatternOnOffVariableArray[pLaserIndex];
 	}
 
 	@Override
-	public BooleanVariable getLaserOnOffArrayVariable(int pLaserIndex)
+	public ObjectVariable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex)
 	{
 		return mLaserOnOffVariableArray[pLaserIndex];
 	}

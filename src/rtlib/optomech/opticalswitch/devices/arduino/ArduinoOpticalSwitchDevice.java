@@ -2,9 +2,8 @@ package rtlib.optomech.opticalswitch.devices.arduino;
 
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.SwitchingDeviceInterface;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 import rtlib.serial.SerialDevice;
@@ -16,7 +15,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 
 	private final ObjectVariable<Long> mCommandVariable;
 
-	private final BooleanVariable[] mLightSheetOnOff;
+	private final ObjectVariable<Boolean>[] mLightSheetOnOff;
 
 	private static final long cAllClosed = 0;
 	private static final long cAllOpened = 100;
@@ -35,29 +34,29 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 
 		final ArduinoOpticalSwitchPositionAdapter lFiberSwitchPosition = new ArduinoOpticalSwitchPositionAdapter(this);
 
-		mCommandVariable = addSerialVariable("OpticalSwitchPosition",
-																																lFiberSwitchPosition);
+		mCommandVariable = addSerialVariable(	"OpticalSwitchPosition",
+																					lFiberSwitchPosition);
 
-		mLightSheetOnOff = new BooleanVariable[4];
+		mLightSheetOnOff = new ObjectVariable[4];
 
 		final VariableSetListener<Boolean> lBooleanVariableListener = (	u,
 																																		v) -> {
 
 			int lCount = 0;
 			for (int i = 0; i < mLightSheetOnOff.length; i++)
-				if (mLightSheetOnOff[i].getBooleanValue())
+				if (mLightSheetOnOff[i].get())
 					lCount++;
 
 			if (lCount == 1)
 			{
 				for (int i = 0; i < mLightSheetOnOff.length; i++)
-					if (mLightSheetOnOff[i].getBooleanValue())
+					if (mLightSheetOnOff[i].get())
 						mCommandVariable.set((long) (101 + i));
 			}
 			else
 				for (int i = 0; i < mLightSheetOnOff.length; i++)
 				{
-					boolean lOn = mLightSheetOnOff[i].getBooleanValue();
+					boolean lOn = mLightSheetOnOff[i].get();
 					mCommandVariable.set((long) ((i + 1) * (lOn ? 1 : -1)));
 				}
 		};
@@ -65,9 +64,9 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 		for (int i = 0; i < mLightSheetOnOff.length; i++)
 		{
 
-			mLightSheetOnOff[i] = new BooleanVariable(String.format("LightSheet%dOnOff",
-																															i),
-																								false);
+			mLightSheetOnOff[i] = new ObjectVariable<Boolean>(String.format("LightSheet%dOnOff",
+																																			i),
+																												false);
 			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
 
 		}
@@ -99,7 +98,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	}
 
 	@Override
-	public BooleanVariable getSwitchingVariable(int pSwitchIndex)
+	public ObjectVariable<Boolean> getSwitchingVariable(int pSwitchIndex)
 	{
 		return mLightSheetOnOff[pSwitchIndex];
 	}

@@ -4,11 +4,11 @@ import java.util.concurrent.TimeUnit;
 
 import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
-																OpenCloseDeviceInterface,
-																StartStopDeviceInterface
+																															OpenCloseDeviceInterface,
+																															StartStopDeviceInterface
 {
 	private static final long cTimeOutInSeconds = 1;
 
@@ -18,17 +18,17 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 	private final AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
 
 	public ObjectVariableAsynchronousPooledProcessor(	final String pName,
-														final int pMaxQueueSize,
-														final int pThreadPoolSize,
-														final ProcessorInterface<I, O> pProcessor,
-														final boolean pDropIfQueueFull)
+																										final int pMaxQueueSize,
+																										final int pThreadPoolSize,
+																										final ProcessorInterface<I, O> pProcessor,
+																										final boolean pDropIfQueueFull)
 	{
 		super();
 
 		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(	pName,
-																			pMaxQueueSize,
-																			pThreadPoolSize,
-																			pProcessor);
+																																			pMaxQueueSize,
+																																			pThreadPoolSize,
+																																			pProcessor);
 
 		mOutputObjectVariable = new ObjectVariable<O>(pName + "Output");
 
@@ -49,7 +49,7 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 		};
 
 		final AsynchronousProcessorBase<O, O> lConnector = new AsynchronousProcessorBase<O, O>(	"AsynchronousProcessorPool->OutputObjectVariable",
-																								pMaxQueueSize)
+																																														pMaxQueueSize)
 		{
 
 			@Override
@@ -91,7 +91,7 @@ public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
 	public boolean stop()
 	{
 		return mAsynchronousProcessorPool.stop(	cTimeOutInSeconds,
-												TimeUnit.SECONDS);
+																						TimeUnit.SECONDS);
 	}
 
 	@Override

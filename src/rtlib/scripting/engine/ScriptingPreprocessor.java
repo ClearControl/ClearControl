@@ -13,19 +13,19 @@ public class ScriptingPreprocessor
 {
 
 	public static String process(	final Class pClassInPackageWhereScriptsCanBeFound,
-									final String pPathForFindingScripts,
-									final String pScriptString)
+																final String pPathForFindingScripts,
+																final String pScriptString)
 	{
 		return process(	pClassInPackageWhereScriptsCanBeFound,
-						pPathForFindingScripts,
-						pScriptString,
-						new HashSet<String>());
+										pPathForFindingScripts,
+										pScriptString,
+										new HashSet<String>());
 	}
 
 	public static String process(	final Class pClassForFindingScripts,
-									final String pPathForFindingScripts,
-									final String pScriptString,
-									final HashSet<String> pAllreadyIncludedFiles)
+																final String pPathForFindingScripts,
+																final String pScriptString,
+																final HashSet<String> pAllreadyIncludedFiles)
 	{
 		final StringBuilder lStringBuilder = new StringBuilder();
 
@@ -49,17 +49,17 @@ public class ScriptingPreprocessor
 						final FileInputStream lFileInputStream = new FileInputStream(lIncludedFile);
 						final String lIncludedFileString = IOUtils.toString(lFileInputStream);
 						final String lPreProcessedIncludedFileString = process(	pClassForFindingScripts,
-																				pPathForFindingScripts,
-																				lIncludedFileString,
-																				pAllreadyIncludedFiles);
+																																		pPathForFindingScripts,
+																																		lIncludedFileString,
+																																		pAllreadyIncludedFiles);
 						lStringBuilder.append(lPreProcessedIncludedFileString);
 						lStringBuilder.append("\n");
 					}
 				}
 				catch (final IOException e)
 				{
-					System.err.format(	"File not included!! Cannot read file: %s \n",
-										lFileName);
+					System.err.format("File not included!! Cannot read file: %s \n",
+														lFileName);
 				}
 			}
 			else if (lLine.startsWith("//coreinclude"))
@@ -76,16 +76,16 @@ public class ScriptingPreprocessor
 
 						final String lIncludedFileString = IOUtils.toString(lResourceAsStream);
 						final String lPreProcessedIncludedFileString = process(	pClassForFindingScripts,
-																				pPathForFindingScripts,
-																				lIncludedFileString,
-																				pAllreadyIncludedFiles);
+																																		pPathForFindingScripts,
+																																		lIncludedFileString,
+																																		pAllreadyIncludedFiles);
 						lStringBuilder.append(lPreProcessedIncludedFileString);
 						lStringBuilder.append("\n");
 					}
 					catch (final Throwable e)
 					{
-						System.err.format(	"File not included!! Cannot read file: %s \n",
-											pPathForFindingScripts + lFileName);
+						System.err.format("File not included!! Cannot read file: %s \n",
+															pPathForFindingScripts + lFileName);
 					}
 				}
 

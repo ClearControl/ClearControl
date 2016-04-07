@@ -19,7 +19,7 @@ import com.google.common.collect.Table;
 import coremem.ContiguousMemoryInterface;
 
 public class DCTS2D	implements
-					ImageQualityMetricInterface<UnsignedShortType, ShortOffHeapAccess>
+										ImageQualityMetricInterface<UnsignedShortType, ShortOffHeapAccess>
 {
 	private final Table<Long, Long, DoubleDCT_2D> mDoubleDCT2DCache = HashBasedTable.create();
 
@@ -33,18 +33,16 @@ public class DCTS2D	implements
 	}
 
 	private DoubleDCT_2D getDCTForWidthAndHeight(	long pWidth,
-													long pHeight)
+																								long pHeight)
 	{
 		DoubleDCT_2D lDoubleDCT_2D = mDoubleDCT2DCache.get(	pWidth,
-															pHeight);
+																												pHeight);
 
 		if (lDoubleDCT_2D == null)
 		{
 			try
 			{
-				lDoubleDCT_2D = new DoubleDCT_2D(	pHeight,
-													pWidth,
-													true);
+				lDoubleDCT_2D = new DoubleDCT_2D(pHeight, pWidth, true);
 				mDoubleDCT2DCache.put(pWidth, pHeight, lDoubleDCT_2D);
 			}
 			catch (final Throwable e)
@@ -67,7 +65,7 @@ public class DCTS2D	implements
 		if (mDoubleWorkingStack != null)
 		{
 			final boolean lWrongDimensions = mDoubleWorkingStack.dimension(0) != lWidth || mDoubleWorkingStack.dimension(1) != lHeight
-												|| mDoubleWorkingStack.dimension(2) != lDepth;
+																				|| mDoubleWorkingStack.dimension(2) != lDepth;
 			if (lWrongDimensions)
 			{
 				mDoubleWorkingStack.free();
@@ -80,8 +78,8 @@ public class DCTS2D	implements
 			final OffHeapPlanarImgFactory<DoubleType> lOffHeapPlanarImgFactory = new OffHeapPlanarImgFactory<DoubleType>();
 			final int[] lDimensions = new int[]
 			{ lWidth, lHeight, lDepth };
-			mDoubleWorkingStack = (OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess>) lOffHeapPlanarImgFactory.create(	lDimensions,
-																														new DoubleType());
+			mDoubleWorkingStack = (OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess>) lOffHeapPlanarImgFactory.create(lDimensions,
+																																																								new DoubleType());
 		}
 
 		final PlanarCursor<UnsignedShortType> lCursorShort = pOffHeapPlanarImg.cursor();
@@ -100,13 +98,13 @@ public class DCTS2D	implements
 			final long lAddress = lPlaneContiguousMemory.getAddress();
 			final long lLengthInElements = lWidth * lHeight;
 			final DoubleLargeArray lDoubleLargeArray = new DoubleLargeArray(mDoubleWorkingStack,
-																			lAddress,
-																			lLengthInElements);
+																																			lAddress,
+																																			lLengthInElements);
 
 			final double lDCTS = computeDCTSForSinglePlane(	lDoubleLargeArray,
-															lWidth,
-															lHeight,
-															getPSFSupportRadius());
+																											lWidth,
+																											lHeight,
+																											getPSFSupportRadius());
 
 			lDCTSArray[z] = lDCTS;
 		}
@@ -115,12 +113,12 @@ public class DCTS2D	implements
 	}
 
 	private final double computeDCTSForSinglePlane(	DoubleLargeArray pDoubleLargeArray,
-													long pWidth,
-													long pHeight,
-													double pPSFSupportRadius)
+																									long pWidth,
+																									long pHeight,
+																									double pPSFSupportRadius)
 	{
 		final DoubleDCT_2D lDCTForWidthAndHeight = getDCTForWidthAndHeight(	pWidth,
-																			pHeight);
+																																				pHeight);
 
 		lDCTForWidthAndHeight.forward(pDoubleLargeArray, false);
 
@@ -130,12 +128,12 @@ public class DCTS2D	implements
 		final long lOTFSupportRadiusY = Math.round(pHeight / pPSFSupportRadius);
 
 		final double lEntropy = entropyPerPixelSubTriangle(	pDoubleLargeArray,
-															pWidth,
-															pHeight,
-															0,
-															0,
-															lOTFSupportRadiusX,
-															lOTFSupportRadiusY);
+																												pWidth,
+																												pHeight,
+																												0,
+																												0,
+																												lOTFSupportRadiusX,
+																												lOTFSupportRadiusY);
 
 		return lEntropy;
 	}
@@ -168,12 +166,12 @@ public class DCTS2D	implements
 	}
 
 	private final double entropyPerPixelSubTriangle(DoubleLargeArray pDoubleLargeArray,
-													final long pWidth,
-													final long pHeight,
-													final long xl,
-													final long yl,
-													final long xh,
-													final long yh)
+																									final long pWidth,
+																									final long pHeight,
+																									final long xl,
+																									final long yl,
+																									final long xh,
+																									final long yh)
 	{
 		double entropy = 0;
 		for (long y = yl; y < yh; y++)
@@ -181,22 +179,18 @@ public class DCTS2D	implements
 			final long yi = y * pWidth;
 
 			final long xend = xh - y * xh / yh;
-			entropy = entropySub(	pDoubleLargeArray,
-									xl,
-									entropy,
-									yi,
-									xend);
+			entropy = entropySub(pDoubleLargeArray, xl, entropy, yi, xend);
 		}
 		entropy = -entropy / (2 * xh * yh);
 
 		return entropy;
 	}
 
-	private double entropySub(	DoubleLargeArray pDoubleLargeArray,
-								final long xl,
-								final double entropy,
-								final long yi,
-								final long xend)
+	private double entropySub(DoubleLargeArray pDoubleLargeArray,
+														final long xl,
+														final double entropy,
+														final long yi,
+														final long xend)
 	{
 		double lEntropy = entropy;
 		for (long x = xl; x < xend; x++)

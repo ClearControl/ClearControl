@@ -7,7 +7,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.junit.Test;
 
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.OffHeapPlanarStack;
@@ -41,10 +41,10 @@ public class VideoFrame3DDisplayDemos
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(lContiguousMemory,
-																																													lResolutionX,
-																																													lResolutionY,
-																																													lResolutionZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	lContiguousMemory,
+																																			lResolutionX,
+																																			lResolutionY,
+																																			lResolutionZ);
 
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
 																																																																									new UnsignedShortType());
@@ -101,10 +101,10 @@ public class VideoFrame3DDisplayDemos
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(lContiguousMemory,
-																																													lResolutionX,
-																																													lResolutionY,
-																																													lResolutionZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	lContiguousMemory,
+																																			lResolutionX,
+																																			lResolutionY,
+																																			lResolutionZ);
 
 		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
 																																																																									new UnsignedShortType());

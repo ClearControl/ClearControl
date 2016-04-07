@@ -7,8 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.gui.video.StackDisplayInterface;
 import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import rtlib.stack.EmptyStack;
@@ -35,8 +34,8 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 	private volatile StackInterface mReceivedStackCopy;
 
-	private final BooleanVariable mDisplayOn;
-	private final BooleanVariable mManualMinMaxIntensity;
+	private final ObjectVariable<Boolean> mDisplayOn;
+	private final ObjectVariable<Boolean> mManualMinMaxIntensity;
 	private final ObjectVariable<Double> mMinimumIntensity;
 	private final ObjectVariable<Double> mMaximumIntensity;
 
@@ -204,7 +203,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 
 		};
 
-		mDisplayOn = new BooleanVariable("DisplayOn", true)
+		mDisplayOn = new ObjectVariable<Boolean>("DisplayOn", true)
 		{
 			@Override
 			public Boolean setEventHook(final Boolean pOldValue,
@@ -216,8 +215,8 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mManualMinMaxIntensity = new BooleanVariable(	"ManualMinMaxIntensity",
-																									false)
+		mManualMinMaxIntensity = new ObjectVariable<Boolean>(	"ManualMinMaxIntensity",
+																													false)
 		{
 			@Override
 			public Boolean setEventHook(final Boolean pOldValue,
@@ -372,12 +371,12 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		mOutputStackVariable = pOutputStackVariable;
 	}
 
-	public BooleanVariable getDisplayOnVariable()
+	public ObjectVariable<Boolean> getDisplayOnVariable()
 	{
 		return mDisplayOn;
 	}
 
-	public BooleanVariable getManualMinMaxIntensityOnVariable()
+	public ObjectVariable<Boolean> getManualMinMaxIntensityOnVariable()
 	{
 		return mManualMinMaxIntensity;
 	}
@@ -405,7 +404,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	@Override
 	public boolean open()
 	{
-		mDisplayOn.setValue(true);
+		mDisplayOn.set(true);
 		setVisible(true);
 		mVideoWindow.start();
 		return true;
@@ -418,7 +417,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		try
 		{
 			mVideoWindow.stop();
-			mDisplayOn.setValue(false);
+			mDisplayOn.set(false);
 			mVideoWindow.close();
 			return true;
 		}

@@ -5,20 +5,20 @@ import java.util.concurrent.Future;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.log.Loggable;
-import rtlib.core.variable.types.booleanv.BooleanEventListenerInterface;
-import rtlib.core.variable.types.booleanv.BooleanVariable;
+import rtlib.core.variable.ObjectVariable;
+import rtlib.core.variable.VariableEdgeListener;
 
 public abstract class SignalStartableTaskDevice	extends
-												SignalStartableDevice	implements
-																		OpenCloseDeviceInterface,
-																		AsynchronousExecutorServiceAccess,
-																		Loggable,
-																		Runnable
+																								SignalStartableDevice	implements
+																																			OpenCloseDeviceInterface,
+																																			AsynchronousExecutorServiceAccess,
+																																			Loggable,
+																																			Runnable
 {
 
 	private final SignalStartableTaskDevice lThis;
 
-	protected final BooleanVariable mCancelBooleanVariable;
+	protected final ObjectVariable<Boolean> mCancelBooleanVariable;
 
 	protected volatile boolean mCanceledSignal = false;
 
@@ -27,14 +27,14 @@ public abstract class SignalStartableTaskDevice	extends
 		super(pDeviceName, true);
 		lThis = this;
 
-		mCancelBooleanVariable = new BooleanVariable(	pDeviceName + "Cancel",
-														false);
+		mCancelBooleanVariable = new ObjectVariable<Boolean>(	pDeviceName + "Cancel",
+																													false);
 
-		mCancelBooleanVariable.addEdgeListener(new BooleanEventListenerInterface()
+		mCancelBooleanVariable.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
 
 			@Override
-			public void fire(final boolean pCurrentBooleanValue)
+			public void fire(final Boolean pCurrentBooleanValue)
 			{
 				if (pCurrentBooleanValue)
 				{
@@ -82,14 +82,14 @@ public abstract class SignalStartableTaskDevice	extends
 		}
 	}
 
-	public BooleanVariable getIsCanceledBooleanVariable()
+	public ObjectVariable<Boolean> getIsCanceledBooleanVariable()
 	{
 		return mCancelBooleanVariable;
 	}
 
 	public void clearCanceled()
 	{
-		mCancelBooleanVariable.setValue(false);
+		mCancelBooleanVariable.set(false);
 		mCanceledSignal = false;
 	}
 

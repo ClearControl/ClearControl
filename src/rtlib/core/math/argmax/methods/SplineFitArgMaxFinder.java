@@ -10,8 +10,8 @@ import rtlib.core.math.argmax.Fitting1DBase;
 import rtlib.core.math.argmax.UnivariateFunctionArgMax;
 
 public class SplineFitArgMaxFinder extends Fitting1DBase implements
-														ArgMaxFinder1DInterface,
-														Fitting1D
+																												ArgMaxFinder1DInterface,
+																												Fitting1D
 {
 
 	private static final int cNumberOfSamples = 1024;
@@ -25,8 +25,8 @@ public class SplineFitArgMaxFinder extends Fitting1DBase implements
 			fit(pX, pY);
 
 		double lArgMax = UnivariateFunctionArgMax.argmax(	pX,
-															mPolynomialSplineFunction,
-															cNumberOfSamples);
+																											mPolynomialSplineFunction,
+																											cNumberOfSamples);
 
 		mPolynomialSplineFunction = null;
 		return lArgMax;
@@ -39,7 +39,7 @@ public class SplineFitArgMaxFinder extends Fitting1DBase implements
 		SplineInterpolator lSplineInterpolator = new SplineInterpolator();
 
 		mPolynomialSplineFunction = lSplineInterpolator.interpolate(pX,
-																	pY);
+																																pY);
 
 		double[] lFittedY = new double[pY.length];
 
@@ -55,7 +55,7 @@ public class SplineFitArgMaxFinder extends Fitting1DBase implements
 	public String toString()
 	{
 		return String.format(	"SplineFitArgMaxFinder [mPolynomialSplineFunction=%s]",
-								mPolynomialSplineFunction);
+													mPolynomialSplineFunction);
 	}
 
 }

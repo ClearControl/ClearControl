@@ -1,7 +1,7 @@
 package rtlib.symphony.staves;
 
 public class ConstantStave extends StaveAbstract implements
-												StaveInterface
+																								StaveInterface
 {
 	private volatile float mConstantValue;
 

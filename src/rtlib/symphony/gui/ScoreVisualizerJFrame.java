@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.symphony.score.ScoreInterface;
 
 public class ScoreVisualizerJFrame extends JFrame
@@ -20,9 +20,7 @@ public class ScoreVisualizerJFrame extends JFrame
 	{
 		super(pTitle);
 		setSize(768, 768);
-		setLayout(new MigLayout("insets 0",
-								"[grow,fill]",
-								"[grow,fill]"));
+		setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
 		mScoreVisualizer = new ScoreVisualizer();
 		add(mScoreVisualizer, "cell 0 0 ");
 		validate();
@@ -34,10 +32,10 @@ public class ScoreVisualizerJFrame extends JFrame
 	}
 
 	public static ScoreVisualizerJFrame visualizeAndWait(	String pString,
-															ScoreInterface pScore)
+																												ScoreInterface pScore)
 	{
 		final ScoreVisualizerJFrame lVisualize = visualize(	pString,
-															pScore);
+																												pScore);
 
 		while (lVisualize.isVisible())
 		{
@@ -53,8 +51,8 @@ public class ScoreVisualizerJFrame extends JFrame
 		return lVisualize;
 	}
 
-	public static ScoreVisualizerJFrame visualize(	String pWindowTitle,
-													ScoreInterface pScoreInterface)
+	public static ScoreVisualizerJFrame visualize(String pWindowTitle,
+																								ScoreInterface pScoreInterface)
 	{
 		final ScoreVisualizerJFrame lScoreVisualizerJFrame = new ScoreVisualizerJFrame(pWindowTitle);
 		try
@@ -62,7 +60,7 @@ public class ScoreVisualizerJFrame extends JFrame
 			SwingUtilities.invokeAndWait(() -> {
 
 				lScoreVisualizerJFrame.getScoreVariable()
-										.set(pScoreInterface);
+															.set(pScoreInterface);
 				lScoreVisualizerJFrame.setVisible(true);
 			});
 		}

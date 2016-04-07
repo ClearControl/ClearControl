@@ -63,7 +63,6 @@ public class AllLaserDevicesGUIDemo extends Application
 
 	}
 
-
 	@Override
 	public void start(Stage stage)
 	{
@@ -80,7 +79,6 @@ public class AllLaserDevicesGUIDemo extends Application
 		stage.setScene(scene);
 		stage.show();
 	}
-
 
 	public static void main(String[] args)
 	{

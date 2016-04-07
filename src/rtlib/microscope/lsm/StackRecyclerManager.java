@@ -16,8 +16,8 @@ public class StackRecyclerManager
 	final private ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> mRecyclerMap = new ConcurrentHashMap<>();
 
 	public RecyclerInterface<StackInterface, StackRequest> getRecycler(	String pName,
-																																	int pMaximumNumberOfAvailableObjects,
-																																	int pMaximumNumberOfLiveObjects)
+																																			int pMaximumNumberOfAvailableObjects,
+																																			int pMaximumNumberOfLiveObjects)
 	{
 
 		RecyclerInterface<StackInterface, StackRequest> lRecycler = mRecyclerMap.get(pName);
@@ -26,9 +26,9 @@ public class StackRecyclerManager
 		{
 
 			lRecycler = new BasicRecycler<>(mOffHeapPlanarStackFactory,
-											pMaximumNumberOfAvailableObjects,
-											pMaximumNumberOfLiveObjects,
-											true);
+																			pMaximumNumberOfAvailableObjects,
+																			pMaximumNumberOfLiveObjects,
+																			true);
 			mRecyclerMap.put(pName, lRecycler);
 		}
 

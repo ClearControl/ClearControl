@@ -1,7 +1,7 @@
 package rtlib.core.device;
 
 public class OpenCloseDeviceAdapter	implements
-									OpenCloseDeviceInterface
+																		OpenCloseDeviceInterface
 {
 	@Override
 	public boolean open()

@@ -16,13 +16,12 @@ import net.imglib2.type.NativeType;
 import net.imglib2.util.Fraction;
 
 public class ArrayImgBufferFactory<T extends NativeType<T>> extends
-															NativeImgFactory<T>
+																														NativeImgFactory<T>
 {
 	@Override
 	public ArrayImg<T, ?> create(final long[] dim, final T type)
 	{
-		return (ArrayImg<T, ?>) type.createSuitableNativeImg(	this,
-																dim);
+		return (ArrayImg<T, ?>) type.createSuitableNativeImg(this, dim);
 	}
 
 	@Override
@@ -34,33 +33,33 @@ public class ArrayImgBufferFactory<T extends NativeType<T>> extends
 	}
 
 	public static int numEntitiesRangeCheck(final long[] dimensions,
-											final Fraction entitiesPerPixel)
+																					final Fraction entitiesPerPixel)
 	{
 		final long numEntities = entitiesPerPixel.mulCeil(AbstractImg.numElements(dimensions));
 
 		if (numEntities > Integer.MAX_VALUE)
 			throw new RuntimeException("Number of elements in Container too big, use for example CellContainer instead: " + numEntities
-										+ " > "
-										+ Integer.MAX_VALUE);
+																	+ " > "
+																	+ Integer.MAX_VALUE);
 
 		return (int) numEntities;
 	}
 
 	@Override
 	public ArrayImg<T, ByteBufferAccess> createByteInstance(final long[] dimensions,
-															final Fraction entitiesPerPixel)
+																													final Fraction entitiesPerPixel)
 	{
-		final int numEntities = numEntitiesRangeCheck(	dimensions,
-														entitiesPerPixel);
+		final int numEntities = numEntitiesRangeCheck(dimensions,
+																									entitiesPerPixel);
 
 		return new ArrayImg<T, ByteBufferAccess>(	new ByteBufferAccess(numEntities),
-													dimensions,
-													entitiesPerPixel);
+																							dimensions,
+																							entitiesPerPixel);
 	}
 
 	@Override
 	public ArrayImg<T, CharArray> createCharInstance(	final long[] dimensions,
-														final Fraction entitiesPerPixel)
+																										final Fraction entitiesPerPixel)
 	{
 		// TODO
 		throw new UnsupportedOperationException();
@@ -68,39 +67,39 @@ public class ArrayImgBufferFactory<T extends NativeType<T>> extends
 
 	@Override
 	public ArrayImg<T, DoubleArray> createDoubleInstance(	final long[] dimensions,
-															final Fraction entitiesPerPixel)
+																												final Fraction entitiesPerPixel)
 	{
 		// TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ArrayImg<T, FloatBufferAccess> createFloatInstance(	final long[] dimensions,
-																final Fraction entitiesPerPixel)
+	public ArrayImg<T, FloatBufferAccess> createFloatInstance(final long[] dimensions,
+																														final Fraction entitiesPerPixel)
 	{
-		final int numEntities = numEntitiesRangeCheck(	dimensions,
-														entitiesPerPixel);
+		final int numEntities = numEntitiesRangeCheck(dimensions,
+																									entitiesPerPixel);
 
-		return new ArrayImg<T, FloatBufferAccess>(	new FloatBufferAccess(numEntities),
-													dimensions,
-													entitiesPerPixel);
+		return new ArrayImg<T, FloatBufferAccess>(new FloatBufferAccess(numEntities),
+																							dimensions,
+																							entitiesPerPixel);
 	}
 
 	@Override
-	public ArrayImg<T, IntBufferAccess> createIntInstance(	final long[] dimensions,
-															final Fraction entitiesPerPixel)
+	public ArrayImg<T, IntBufferAccess> createIntInstance(final long[] dimensions,
+																												final Fraction entitiesPerPixel)
 	{
-		final int numEntities = numEntitiesRangeCheck(	dimensions,
-														entitiesPerPixel);
+		final int numEntities = numEntitiesRangeCheck(dimensions,
+																									entitiesPerPixel);
 
 		return new ArrayImg<T, IntBufferAccess>(new IntBufferAccess(numEntities),
-												dimensions,
-												entitiesPerPixel);
+																						dimensions,
+																						entitiesPerPixel);
 	}
 
 	@Override
 	public ArrayImg<T, LongArray> createLongInstance(	final long[] dimensions,
-														final Fraction entitiesPerPixel)
+																										final Fraction entitiesPerPixel)
 	{
 		// TODO
 		throw new UnsupportedOperationException();
@@ -108,7 +107,7 @@ public class ArrayImgBufferFactory<T extends NativeType<T>> extends
 
 	@Override
 	public ArrayImg<T, ShortArray> createShortInstance(	final long[] dimensions,
-														final Fraction entitiesPerPixel)
+																											final Fraction entitiesPerPixel)
 	{
 		// TODO
 		throw new UnsupportedOperationException();
@@ -122,7 +121,7 @@ public class ArrayImgBufferFactory<T extends NativeType<T>> extends
 		if (NativeType.class.isInstance(type))
 			return new ArrayImgBufferFactory();
 		throw new IncompatibleTypeException(this,
-											type.getClass()
-												.getCanonicalName() + " does not implement NativeType.");
+																				type.getClass()
+																						.getCanonicalName() + " does not implement NativeType.");
 	}
 }

@@ -17,63 +17,63 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 	private final BlockingQueue<Future<?>> mFutureQueue = new LinkedBlockingQueue<Future<?>>(Integer.MAX_VALUE);
 
 	public CompletingThreadPoolExecutor(int pCorePoolSize,
-										int pMaximumPoolSize,
-										long pKeepAliveTime,
-										TimeUnit pUnit,
-										BlockingQueue<Runnable> pWorkQueue)
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue)
 	{
-		super(	pCorePoolSize,
-				pMaximumPoolSize,
-				pKeepAliveTime,
-				pUnit,
-				pWorkQueue);
+		super(pCorePoolSize,
+					pMaximumPoolSize,
+					pKeepAliveTime,
+					pUnit,
+					pWorkQueue);
 	}
 
 	public CompletingThreadPoolExecutor(int pCorePoolSize,
-										int pMaximumPoolSize,
-										long pKeepAliveTime,
-										TimeUnit pUnit,
-										BlockingQueue<Runnable> pWorkQueue,
-										RejectedExecutionHandler pHandler)
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			RejectedExecutionHandler pHandler)
 	{
-		super(	pCorePoolSize,
-				pMaximumPoolSize,
-				pKeepAliveTime,
-				pUnit,
-				pWorkQueue,
-				pHandler);
+		super(pCorePoolSize,
+					pMaximumPoolSize,
+					pKeepAliveTime,
+					pUnit,
+					pWorkQueue,
+					pHandler);
 	}
 
 	public CompletingThreadPoolExecutor(int pCorePoolSize,
-										int pMaximumPoolSize,
-										long pKeepAliveTime,
-										TimeUnit pUnit,
-										BlockingQueue<Runnable> pWorkQueue,
-										ThreadFactory pThreadFactory,
-										RejectedExecutionHandler pHandler)
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			ThreadFactory pThreadFactory,
+																			RejectedExecutionHandler pHandler)
 	{
-		super(	pCorePoolSize,
-				pMaximumPoolSize,
-				pKeepAliveTime,
-				pUnit,
-				pWorkQueue,
-				pThreadFactory,
-				pHandler);
+		super(pCorePoolSize,
+					pMaximumPoolSize,
+					pKeepAliveTime,
+					pUnit,
+					pWorkQueue,
+					pThreadFactory,
+					pHandler);
 	}
 
 	public CompletingThreadPoolExecutor(int pCorePoolSize,
-										int pMaximumPoolSize,
-										long pKeepAliveTime,
-										TimeUnit pUnit,
-										BlockingQueue<Runnable> pWorkQueue,
-										ThreadFactory pThreadFactory)
+																			int pMaximumPoolSize,
+																			long pKeepAliveTime,
+																			TimeUnit pUnit,
+																			BlockingQueue<Runnable> pWorkQueue,
+																			ThreadFactory pThreadFactory)
 	{
-		super(	pCorePoolSize,
-				pMaximumPoolSize,
-				pKeepAliveTime,
-				pUnit,
-				pWorkQueue,
-				pThreadFactory);
+		super(pCorePoolSize,
+					pMaximumPoolSize,
+					pKeepAliveTime,
+					pUnit,
+					pWorkQueue,
+					pThreadFactory);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 	}
 
 	public void waitForCompletion(long pTimeOut, TimeUnit pTimeUnit) throws ExecutionException,
-																	TimeoutException
+																																	TimeoutException
 	{
 		final long lStartTimeNanos = System.nanoTime();
 		final long lDeadlineTimeNanos = lStartTimeNanos + pTimeUnit.toNanos(pTimeOut);
@@ -134,8 +134,8 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 
 		if (System.nanoTime() > lDeadlineTimeNanos)
 			throw new TimeoutException("Run out of time waiting for " + this.getClass()
-																			.getSimpleName()
-										+ " tasks to finish!");
+																																			.getSimpleName()
+																	+ " tasks to finish!");
 	}
 
 	private void reinject(Future<?> lFuture)

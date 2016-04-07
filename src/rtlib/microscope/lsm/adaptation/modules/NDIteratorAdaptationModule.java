@@ -165,7 +165,7 @@ public abstract class NDIteratorAdaptationModule extends
 				if (isRelevantDetectionArm(pControlPlaneIndex, d))
 				{
 					final StackInterface lStackInterface = pLSM.getStackVariable(d)
-																																														.get();
+																											.get();
 					lStacks.add(lStackInterface.duplicate());
 
 				}

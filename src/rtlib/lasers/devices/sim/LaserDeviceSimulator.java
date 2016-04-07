@@ -1,7 +1,6 @@
 package rtlib.lasers.devices.sim;
 
-import rtlib.core.variable.types.booleanv.BooleanVariable;
-import rtlib.core.variable.types.objectv.ObjectVariable;
+import rtlib.core.variable.ObjectVariable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 
@@ -31,9 +30,9 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 		mSetOperatingModeVariable = new ObjectVariable<Integer>("OperatingMode",
 																														0);
 
-		mPowerOnVariable = new BooleanVariable("PowerOn", false);
+		mPowerOnVariable = new ObjectVariable<Boolean>("PowerOn", false);
 
-		mLaserOnVariable = new BooleanVariable("LaserOn", false);
+		mLaserOnVariable = new ObjectVariable<Boolean>("LaserOn", false);
 
 		mWorkingHoursVariable = new ObjectVariable<Integer>("WorkingHours",
 																												0);
