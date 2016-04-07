@@ -1,6 +1,7 @@
 package rtlib.microscope.lsm.gui.halcyon;
 
 import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNode;
 import halcyon.view.TreePanel;
 
 import java.util.concurrent.CountDownLatch;
