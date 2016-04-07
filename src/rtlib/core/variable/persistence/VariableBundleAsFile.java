@@ -143,13 +143,16 @@ public class VariableBundleAsFile extends VariableBundle
 
 							final VariableInterface<?> lVariable = mPrefixWithNameToVariableMap.get(lKey);
 
-							if (lVariable.get() instanceof Number)
+							if (lVariable != null)
 							{
-								readDoubleVariable(lValue, lVariable);
-							}
-							else if (lVariable instanceof ObjectVariable<?>)
-							{
-								readObjectVariable(lValue, lVariable);
+								if (lVariable.get() instanceof Number)
+								{
+									readDoubleVariable(lValue, lVariable);
+								}
+								else if (lVariable instanceof ObjectVariable<?>)
+								{
+									readObjectVariable(lValue, lVariable);
+								}
 							}
 						}
 					}

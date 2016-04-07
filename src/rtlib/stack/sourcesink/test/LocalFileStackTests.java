@@ -233,7 +233,6 @@ public class LocalFileStackTests
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
 		}
 
 	}
