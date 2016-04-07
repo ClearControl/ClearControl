@@ -141,7 +141,7 @@ dependencies
     compile group: "org.dockfx", name: "DockFX", version:"0.1.2", changing: true, transitive: true
 
     // Halcyon:
-    compile group: "net.halcyon", name:"Halcyon", version: "0.2.4", changing: true, transitive: true
+    compile group: "net.halcyon", name:"Halcyon", version: "(,1.0.0]", changing: true, transitive: true
 
     // MigLayout:
     compile 'com.miglayout:miglayout:3.7.4'

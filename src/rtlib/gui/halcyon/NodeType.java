@@ -1,11 +1,12 @@
 package rtlib.gui.halcyon;
 
-import javafx.scene.Node;
 import halcyon.model.node.HalcyonNodeType;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import javafx.scene.Node;
 
 /**
  * HalcyonNode Type enumeration
@@ -21,7 +22,8 @@ public enum NodeType implements HalcyonNodeType
 	Other;
 
 	private static Properties mProperties;
-	static {
+	static
+	{
 		try
 		{
 			mProperties = new Properties();
@@ -35,8 +37,9 @@ public enum NodeType implements HalcyonNodeType
 		}
 	}
 
-	@Override public Node getIcon()
+	@Override
+	public Node getIcon()
 	{
-		return getIcon( mProperties.getProperty( name().toLowerCase() + ".icon" ) );
+		return getIcon(mProperties.getProperty(name().toLowerCase() + ".icon"));
 	}
 }
