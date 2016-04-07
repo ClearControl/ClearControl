@@ -1,32 +1,28 @@
 package rtlib.stack;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclableFactory;
+import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
-public class ContiguousOffHeapPlanarStackFactory<T extends NativeType<T>, A extends ArrayDataAccess<A>> implements
-																										RecyclableFactory<StackInterface<T, A>, StackRequest<T>>
+public class ContiguousOffHeapPlanarStackFactory implements
+																								RecyclableFactory<StackInterface, StackRequest>
 {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public OffHeapPlanarStack<T, A> create(StackRequest<T> pParameters)
+	public OffHeapPlanarStack create(StackRequest pParameters)
 	{
-		final int lBytesPerVoxel = Size.of(pParameters.getType()
-														.getClass()
-														.getName());
+		final int lBytesPerVoxel = Size.of(NativeTypeEnum.UnsignedShort);
 		final long lVolume = pParameters.getWidth() * pParameters.getHeight()
-								* pParameters.getDepth();
+													* pParameters.getDepth();
 		final long lBufferSizeInBytes = lVolume * lBytesPerVoxel;
 		final ContiguousMemoryInterface lContiguousMemoryInterface = new OffHeapMemory(	"OffHeapPlanarStack" + pParameters,
-																						lBufferSizeInBytes);
-		return (OffHeapPlanarStack<T, A>) OffHeapPlanarStack.createStack(	lContiguousMemoryInterface,
-																			pParameters.getType(),
-																			pParameters.getWidth(),
-																			pParameters.getHeight(),
-																			pParameters.getDepth());
+																																										lBufferSizeInBytes);
+		return OffHeapPlanarStack.createStack(	lContiguousMemoryInterface,
+																																pParameters.getWidth(),
+																																pParameters.getHeight(),
+																																pParameters.getDepth());
 	}
 }

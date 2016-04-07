@@ -18,12 +18,12 @@ class MouseControl extends MouseAdapter implements MouseListener
 	/**
 	 * 
 	 */
-	private final VideoWindow<?> mVideoWindow;
+	private final VideoWindow mVideoWindow;
 
 	/**
 	 * @param pJoglVolumeRenderer
 	 */
-	MouseControl(final VideoWindow<?> pVideoWindow)
+	MouseControl(final VideoWindow pVideoWindow)
 	{
 		mVideoWindow = pVideoWindow;
 	}

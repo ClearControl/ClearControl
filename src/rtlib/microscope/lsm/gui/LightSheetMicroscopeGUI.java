@@ -32,9 +32,9 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private ArrayList<Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>> mStack2DVideoDeviceList = new ArrayList<>();
+	private ArrayList<Stack2DDisplay> mStack2DVideoDeviceList = new ArrayList<>();
 	private Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> mStack3DVideoDevice;
-	private ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>[] mCleanupStackVariable;
+	private ObjectVariable<StackInterface>[] mCleanupStackVariable;
 	private ScriptingWindow mScriptingWindow;
 	private final boolean m3dView;
 	private HalcyonGUI mHalcyonMicroscopeGUI;
@@ -68,33 +68,33 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
 
-			mCleanupStackVariable[i] = new ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>(	"CleanupStackVariable",
-																																																						null)
+			mCleanupStackVariable[i] = new ObjectVariable<StackInterface>("CleanupStackVariable",
+																																		null)
 			{
-				ConcurrentLinkedQueue<StackInterface<UnsignedShortType, ShortOffHeapAccess>> mKeepStacksAliveQueue = new ConcurrentLinkedQueue<>();
+				ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue = new ConcurrentLinkedQueue<>();
 
-				public StackInterface<UnsignedShortType, ShortOffHeapAccess> setEventHook(StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldValue,
-																																									StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewValue)
+				@Override
+				public StackInterface setEventHook(	StackInterface pOldValue,
+																						StackInterface pNewValue)
 				{
 					if (pOldValue != null && !pOldValue.isReleased())
 						mKeepStacksAliveQueue.add(pOldValue);
 
 					if (mKeepStacksAliveQueue.size() > lNumberOfCameras)
 					{
-						StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackToRelease = mKeepStacksAliveQueue.remove();
+						StackInterface lStackToRelease = mKeepStacksAliveQueue.remove();
 						lStackToRelease.release();
 					}
 					return pNewValue;
 				}
 			};
 
-			final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lStackCameraDevice = mLightSheetMicroscope.getDeviceLists()
-																																																												.getStackCameraDevice(i);
+			final StackCameraDeviceInterface lStackCameraDevice = mLightSheetMicroscope.getDeviceLists()
+																																									.getStackCameraDevice(i);
 
-			final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2DDisplay = new Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess>("Video 2D - " + lStackCameraDevice.getName(),
-																																																																							new UnsignedShortType(),
-																																																																							cDefaultWindowWidth,
-																																																																							cDefaultWindowHeight);
+			final Stack2DDisplay lStack2DDisplay = new Stack2DDisplay("Video 2D - " + lStackCameraDevice.getName(),
+																																cDefaultWindowWidth,
+																																cDefaultWindowHeight);
 			mStack2DVideoDeviceList.add(lStack2DDisplay);
 
 		}
@@ -185,17 +185,17 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 	@Override
 	public boolean open()
 	{
-			try
-			{
-				mHalcyonMicroscopeGUI.externalStart();
-			}
-			catch (Throwable e)
-			{
-				e.printStackTrace();
-			}
+		try
+		{
+			mHalcyonMicroscopeGUI.externalStart();
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
 
 		executeAsynchronously(() -> {
-			for (final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2dDisplay : mStack2DVideoDeviceList)
+			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
 			{
 				lStack2dDisplay.open();
 			}
@@ -209,7 +209,6 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		SwingUtilities.invokeLater(() -> {
 			mScriptingWindow.setVisible(true);
 		});
-		
 
 		return super.open();
 	}
@@ -227,7 +226,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		});
 
 		executeAsynchronously(() -> {
-			for (final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2dDisplay : mStack2DVideoDeviceList)
+			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
 			{
 				lStack2dDisplay.close();
 			}
@@ -255,7 +254,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
-			final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2DDisplay = mStack2DVideoDeviceList.get(i);
+			final Stack2DDisplay lStack2DDisplay = mStack2DVideoDeviceList.get(i);
 
 			mLightSheetMicroscope.getDeviceLists()
 														.getStackVariable(i)
@@ -280,7 +279,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
 
-			final Stack2DDisplay<UnsignedShortType, ShortOffHeapAccess> lStack2DDisplay = mStack2DVideoDeviceList.get(i);
+			final Stack2DDisplay lStack2DDisplay = mStack2DVideoDeviceList.get(i);
 
 			mLightSheetMicroscope.getDeviceLists()
 														.getStackVariable(i)

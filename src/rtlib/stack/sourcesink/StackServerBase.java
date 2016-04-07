@@ -16,7 +16,7 @@ public abstract class StackServerBase<T extends NativeType<T>, A extends ArrayDa
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
-	protected final HashMap<Long, StackRequest<T>> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest<T>>();
+	protected final HashMap<Long, StackRequest> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest>();
 
 	public StackServerBase() throws IOException
 	{

@@ -19,7 +19,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 																					StackSourceInterface<T, A>
 {
 
-	ArrayList<StackInterface<T, A>> mStackList = new ArrayList<StackInterface<T, A>>();
+	ArrayList<StackInterface> mStackList = new ArrayList<StackInterface>();
 	final TLongArrayList mStackTimePointList = new TLongArrayList();
 
 	protected final VariableBundle mMetaDataVariableBundle = new VariableBundle("MetaData");
@@ -42,12 +42,12 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public void setStackRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 	{
 	}
 
 	@Override
-	public StackInterface<T, A> getStack(	final long pStackIndex,
+	public StackInterface getStack(	final long pStackIndex,
 											long pTime,
 											TimeUnit pTimeUnit)
 	{
@@ -55,7 +55,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public StackInterface<T, A> getStack(long pStackIndex)
+	public StackInterface getStack(long pStackIndex)
 	{
 		return mStackList.get((int) pStackIndex);
 	}
@@ -67,7 +67,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public boolean appendStack(final StackInterface<T, A> pStack)
+	public boolean appendStack(final StackInterface pStack)
 	{
 		mStackTimePointList.add(pStack.getTimeStampInNanoseconds());
 		return mStackList.add(pStack);

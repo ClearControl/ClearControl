@@ -5,8 +5,6 @@ import gnu.trove.list.array.TByteArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -15,10 +13,9 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
-public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																																		CameraDeviceBase implements
-																																																										StackCameraDeviceInterface<T, A>,
-																																																										StateQueueDeviceInterface
+public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
+																																		StackCameraDeviceInterface,
+																																		StateQueueDeviceInterface
 {
 	protected BooleanVariable mStackMode = new BooleanVariable(	"StackMode",
 																															true);
@@ -33,9 +30,9 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	protected TByteArrayList mStagingKeepAcquiredImageArray;
 	protected ConcurrentLinkedQueue<TByteArrayList> mKeepAcquiredImageArrayQueue = new ConcurrentLinkedQueue<TByteArrayList>();
 
-	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mRecycler;
+	protected RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
-	protected ObjectVariable<StackInterface<T, A>> mStackReference;
+	protected ObjectVariable<StackInterface> mStackReference;
 
 	private int mMinimalNumberOfAvailableStacks = 6;
 
@@ -63,13 +60,13 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	}
 
 	@Override
-	public void setStackRecycler(RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pRecycler)
+	public void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
 		mRecycler = pRecycler;
 	}
 
 	@Override
-	public RecyclerInterface<StackInterface<T, A>, StackRequest<T>> getStackRecycler()
+	public RecyclerInterface<StackInterface, StackRequest> getStackRecycler()
 	{
 		return mRecycler;
 	}
@@ -87,7 +84,7 @@ public abstract class StackCameraDeviceBase<T extends NativeType<T>, A extends A
 	}
 
 	@Override
-	public ObjectVariable<StackInterface<T, A>> getStackVariable()
+	public ObjectVariable<StackInterface> getStackVariable()
 	{
 		return mStackReference;
 	}

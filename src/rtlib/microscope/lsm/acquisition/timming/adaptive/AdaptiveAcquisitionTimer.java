@@ -6,9 +6,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -29,8 +26,8 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 	private double mProbabilityThreshold;
 
-	private volatile StackInterface<UnsignedShortType, ShortOffHeapAccess> mMonitoringStackAtLastAcquisition;
-	private volatile StackInterface<UnsignedShortType, ShortOffHeapAccess> mLastMonitoredStack;
+	private volatile StackInterface mMonitoringStackAtLastAcquisition;
+	private volatile StackInterface mLastMonitoredStack;
 
 	private NormalDistribution mCalibrationNoiseGaussian;
 	private TDoubleArrayList mMetricHistory = new TDoubleArrayList();
@@ -85,13 +82,13 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 	public void calibrate(int pRounds)
 	{
-		StackInterface<UnsignedShortType, ShortOffHeapAccess> lLastStack = null;
+		StackInterface lLastStack = null;
 
 		DescriptiveStatistics lStats = new DescriptiveStatistics();
 
 		for (int i = 0; i <= pRounds; i++)
 		{
-			StackInterface<UnsignedShortType, ShortOffHeapAccess> lNewStack;
+			StackInterface lNewStack;
 			lNewStack = acquireMonitoringStack();
 
 			if (lLastStack != null)
@@ -119,7 +116,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 	public void monitor()
 	{
-		StackInterface<UnsignedShortType, ShortOffHeapAccess> lMonitoringStack;
+		StackInterface lMonitoringStack;
 
 		lMonitoringStack = acquireMonitoringStack();
 
@@ -163,7 +160,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 		return (1 - lPValue) < getProbabilityThreshold();
 	}
 
-	public StackInterface<UnsignedShortType, ShortOffHeapAccess> acquireMonitoringStack()
+	public StackInterface acquireMonitoringStack()
 	{
 		LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
 
@@ -205,7 +202,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase	implements
 
 			if (lSuccess != null && lSuccess)
 			{
-				StackInterface<UnsignedShortType, ShortOffHeapAccess> lFusedStack = StackUtils.fuse(lLSM);
+				StackInterface lFusedStack = StackUtils.fuse(lLSM);
 				return lFusedStack;
 			}
 			else

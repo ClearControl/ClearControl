@@ -123,6 +123,7 @@ public class SmartArgMaxFinder	implements
 		return lFitQualityEstimator.getFit(pX, pY);
 	}
 
+	@Override
 	public Double getLastFitProbability()
 	{
 		return mFitProbability;

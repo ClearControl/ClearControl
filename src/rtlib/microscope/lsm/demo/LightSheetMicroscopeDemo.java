@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 import org.python.google.common.collect.Lists;
 
@@ -40,9 +37,8 @@ public class LightSheetMicroscopeDemo
 																ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = new StackCameraDeviceSimulator<>(	null,
-																																																												new UnsignedShortType(),
-																																																												lSignalGeneratorDevice.getTriggerVariable());
+		final StackCameraDeviceInterface lCamera = new StackCameraDeviceSimulator(null,
+																																							lSignalGeneratorDevice.getTriggerVariable());
 
 		demoWith(	true,
 							false,
@@ -58,8 +54,8 @@ public class LightSheetMicroscopeDemo
 																							ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
-																																																																				false);
+		final StackCameraDeviceInterface lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
+																																																	false);
 
 		demoWith(	false,
 							false,
@@ -75,10 +71,10 @@ public class LightSheetMicroscopeDemo
 																														ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
-																																																																					false);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(	1,
-																																																																					false);
+		final StackCameraDeviceInterface lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
+																																																	false);
+		final StackCameraDeviceInterface lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,
+																																																	false);
 
 		demoWith(	true,
 							false,
@@ -94,10 +90,10 @@ public class LightSheetMicroscopeDemo
 																																		ExecutionException
 	{
 		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
-																																																																					false);
-		final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(	1,
-																																																																					false);
+		final StackCameraDeviceInterface lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
+																																																	false);
+		final StackCameraDeviceInterface lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,
+																																																	false);
 
 		demoWith(	true,
 							false,
@@ -111,7 +107,7 @@ public class LightSheetMicroscopeDemo
 	public void demoWith(	boolean pWithGUI,
 												boolean pWith3D,
 												boolean pAutoStart,
-												ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> pCameras,
+												ArrayList<StackCameraDeviceInterface> pCameras,
 												SignalGeneratorInterface pSignalGeneratorDevice,
 												int pNumberOfLightSheets)	throws InterruptedException,
 																									ExecutionException
@@ -124,9 +120,9 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addOptoMechanicalDevice(lOptoJenaFiberSwitchDevice);
 
-		for (final StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> lCamera : pCameras)
+		for (final StackCameraDeviceInterface lCamera : pCameras)
 		{
-			final StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess> lStackIdentityPipeline = new StackIdentityPipeline<UnsignedShortType, ShortOffHeapAccess>();
+			final StackIdentityPipeline lStackIdentityPipeline = new StackIdentityPipeline();
 
 			lStackIdentityPipeline.getOutputVariable()
 														.addSetListener((pCurrentValue, pNewValue) -> {

@@ -9,8 +9,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.device.ActivableDeviceInterface;
 import rtlib.core.device.OpenCloseDeviceInterface;
@@ -185,7 +183,7 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public void setRecycler(RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pRecycler)
+	public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
 		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
 		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
@@ -194,14 +192,14 @@ public class LightSheetMicroscope	extends
 
 	@Override
 	public void setRecycler(int pStackCameraDeviceIndex,
-													RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pRecycler)
+													RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
 		getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
 										.setStackRecycler(pRecycler);
 	}
 
 	@Override
-	public RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> getRecycler(int pStackCameraDeviceIndex)
+	public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex)
 	{
 		return getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
 														.getStackRecycler();
@@ -214,7 +212,7 @@ public class LightSheetMicroscope	extends
 													final int pMaximumNumberOfLiveObjects)
 	{
 		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
-		RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = mStackRecyclerManager.getRecycler(pName,
+		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
 																																																																														lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
 																																																																														lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
 
@@ -285,19 +283,19 @@ public class LightSheetMicroscope	extends
 
 		mAverageTimeInNS = 0;
 
-		ArrayList<VariableSetListener<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> lListenerList = new ArrayList<>();
+		ArrayList<VariableSetListener<StackInterface>> lListenerList = new ArrayList<>();
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 		{
 			lStacksReceivedLatches[i] = new CountDownLatch(1);
 
 			final int fi = i;
 
-			VariableSetListener<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lVariableSetListener = new VariableSetListener<StackInterface<UnsignedShortType, ShortOffHeapAccess>>()
+			VariableSetListener<StackInterface> lVariableSetListener = new VariableSetListener<StackInterface>()
 			{
 
 				@Override
-				public void setEvent(	StackInterface<UnsignedShortType, ShortOffHeapAccess> pCurrentValue,
-															StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewValue)
+				public void setEvent(	StackInterface pCurrentValue,
+															StackInterface pNewValue)
 				{
 					lStacksReceivedLatches[fi].countDown();
 					mAverageTimeInNS += pNewValue.getTimeStampInNanoseconds() / lNumberOfDetectionArmDevices;
@@ -322,7 +320,7 @@ public class LightSheetMicroscope	extends
 			}
 		}
 
-		for (VariableSetListener<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lVariableSetListener : lListenerList)
+		for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
 			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 			{
 				getStackVariable(i).removeSetListener(lVariableSetListener);
@@ -338,7 +336,7 @@ public class LightSheetMicroscope	extends
 	}
 
 	@Override
-	public ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> getStackVariable(int pIndex)
+	public ObjectVariable<StackInterface> getStackVariable(int pIndex)
 	{
 		return getDeviceLists().getStackVariable(pIndex);
 	}

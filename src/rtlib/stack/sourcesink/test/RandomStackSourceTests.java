@@ -4,9 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
@@ -22,9 +19,9 @@ public class RandomStackSourceTests
 	@Test
 	public void test() throws IOException
 	{
-		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
+		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
 																																																																																																																					10);
 		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
 																																	101L,
@@ -33,7 +30,7 @@ public class RandomStackSourceTests
 
 		for (int i = 0; i < 100; i++)
 		{
-			StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = lRandomStackSource.getStack(i);
+			StackInterface lStack = lRandomStackSource.getStack(i);
 
 			lStack.getContiguousMemory().setByte(1, (byte) i);
 			assertTrue(lStack.getContiguousMemory().getByte(1) == (byte) i);

@@ -19,6 +19,7 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 		super(pNumberOfSamples, pProbabilityThreshold);
 	}
 
+	@Override
 	public Future<?> atomicStep(int pControlPlaneIndex,
 															int pLightSheetIndex,
 															int pNumberOfSamples)
@@ -75,6 +76,7 @@ public class AdaptationX extends NDIteratorAdaptationModule implements
 
 	}
 
+	@Override
 	public void updateNewState(	int pControlPlaneIndex,
 															int pLightSheetIndex,
 															ArrayList<Double> pArgMaxList)

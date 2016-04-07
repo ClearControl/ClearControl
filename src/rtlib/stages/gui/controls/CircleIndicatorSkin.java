@@ -86,7 +86,7 @@ public class CircleIndicatorSkin extends BehaviorSkinBase<CircleIndicator, Behav
 				public StyleableProperty<Paint> getStyleableProperty( CircleIndicator n )
 				{
 					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
-					return (StyleableProperty<Paint>) (WritableValue<Paint>) skin.progressColor;
+					return (StyleableProperty<Paint>) skin.progressColor;
 				}
 			};
 	private static final CssMetaData<CircleIndicator, Number> INDETERMINATE_SEGMENT_COUNT =
@@ -104,7 +104,7 @@ public class CircleIndicatorSkin extends BehaviorSkinBase<CircleIndicator, Behav
 				@Override public StyleableProperty<Number> getStyleableProperty( CircleIndicator n )
 				{
 					final CircleIndicatorSkin skin = (CircleIndicatorSkin) n.getSkin();
-					return (StyleableProperty<Number>) (WritableValue<Number>) skin.indeterminateSegmentCount;
+					return (StyleableProperty<Number>) skin.indeterminateSegmentCount;
 				}
 			};
 	private static final CssMetaData<CircleIndicator, Boolean> SPIN_ENABLED =
@@ -121,7 +121,7 @@ public class CircleIndicatorSkin extends BehaviorSkinBase<CircleIndicator, Behav
 				@Override public StyleableProperty<Boolean> getStyleableProperty( CircleIndicator node )
 				{
 					final CircleIndicatorSkin skin = (CircleIndicatorSkin) node.getSkin();
-					return (StyleableProperty<Boolean>) (WritableValue<Boolean>) skin.spinEnabled;
+					return (StyleableProperty<Boolean>) skin.spinEnabled;
 				}
 			};
 
@@ -711,7 +711,7 @@ public class CircleIndicatorSkin extends BehaviorSkinBase<CircleIndicator, Behav
 				if (indeterminateTransition == null)
 				{
 					indeterminateTransition = new Timeline();
-					indeterminateTransition.setCycleCount( Timeline.INDEFINITE );
+					indeterminateTransition.setCycleCount( Animation.INDEFINITE );
 					indeterminateTransition.setDelay( UNCLIPPED_DELAY );
 				} else
 				{

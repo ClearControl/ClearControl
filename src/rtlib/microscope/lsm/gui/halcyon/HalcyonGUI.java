@@ -31,6 +31,7 @@ public class HalcyonGUI extends Application
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				new JFXPanel(); // initializes JavaFX environment

@@ -7,9 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
 import rtlib.core.concurrent.executors.RTlibExecutors;
@@ -36,21 +33,20 @@ public class StackTests
 	private static final long cBig = 2;
 
 	private static final long cLengthInBytes = cSizeX * cSizeY
-												* cSizeZ
-												* cBytesPerPixel;
+																							* cSizeZ
+																							* cBytesPerPixel;
 
 	@Test
 	public void testLifeCycle()
 	{
 
 		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
-																							* cSizeZ);
+																																											* cSizeZ);
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(lContiguousMemory,
-																																											new UnsignedShortType(),
-																																											cSizeX,
-																																											cSizeY,
-																																											cSizeZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(lContiguousMemory,
+																																													cSizeX,
+																																													cSizeY,
+																																													cSizeZ);
 
 		assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
 
@@ -93,44 +89,42 @@ public class StackTests
 	{
 		final long lStartTotalAllocatedMemory = OffHeapMemoryAccess.getTotalAllocatedMemory();
 
-		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																												cMaximumNumberOfObjects);
+		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+																																																											cMaximumNumberOfObjects);
 
 		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
-																									Thread.NORM_PRIORITY,
-																									1,
-																									1,
-																									100);
+																																																Thread.NORM_PRIORITY,
+																																																1,
+																																																1,
+																																																100);
 
 		for (int i = 0; i < 100; i++)
 		{
 			// System.out.println(i);
-			final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack;
+			final StackInterface lStack;
 			if ((i % 100) < 50)
 			{
 
-				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(	lRecycler,
-																	10,
-																	TimeUnit.SECONDS,
-																	new UnsignedShortType(),
-																	cSizeX	* cBig,
-																	cSizeY	* cBig,
-																	cSizeZ	* cBig);
+				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(lRecycler,
+																													10,
+																													TimeUnit.SECONDS,
+																													cSizeX * cBig,
+																													cSizeY * cBig,
+																													cSizeZ * cBig);
 				assertEquals(	cLengthInBytes * Math.pow(cBig, 3),
-								lStack.getSizeInBytes(),
-								0);
+											lStack.getSizeInBytes(),
+											0);
 			}
 			else
 			{
-				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(	lRecycler,
-																	10,
-																	TimeUnit.SECONDS,
-																	new UnsignedShortType(),
-																	cSizeX,
-																	cSizeY,
-																	cSizeZ);
+				lStack = OffHeapPlanarStack.getOrWaitWithRecycler(lRecycler,
+																													10,
+																													TimeUnit.SECONDS,
+																													cSizeX,
+																													cSizeY,
+																													cSizeZ);
 				assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 			}
 

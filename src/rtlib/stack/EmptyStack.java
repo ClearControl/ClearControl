@@ -1,17 +1,15 @@
 package rtlib.stack;
 
 import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
-public class EmptyStack<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																								StackBase<T, A>	implements
-																																																StackInterface<T, A>
+public class EmptyStack extends StackBase implements StackInterface
 {
 
 	public EmptyStack()
@@ -20,13 +18,13 @@ public class EmptyStack<T extends NativeType<T>, A extends ArrayDataAccess<A>>	e
 	}
 
 	@Override
-	public boolean isCompatible(StackRequest<T> pParameters)
+	public boolean isCompatible(StackRequest pParameters)
 	{
 		return false;
 	}
 
 	@Override
-	public void recycle(StackRequest<T> pParameters)
+	public void recycle(StackRequest pParameters)
 	{
 
 	}
@@ -50,7 +48,7 @@ public class EmptyStack<T extends NativeType<T>, A extends ArrayDataAccess<A>>	e
 	}
 
 	@Override
-	public NativeImg<T, A> getImage()
+	public NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage()
 	{
 		return null;
 	}
@@ -122,15 +120,15 @@ public class EmptyStack<T extends NativeType<T>, A extends ArrayDataAccess<A>>	e
 	}
 
 	@Override
-	public StackInterface<T, A> allocateSameSize()
+	public StackInterface allocateSameSize()
 	{
 		return null;
 	}
 
 	@Override
-	public StackInterface<T, A> duplicate()
+	public StackInterface duplicate()
 	{
-		return new EmptyStack<T, A>();
+		return new EmptyStack();
 	}
 
 }

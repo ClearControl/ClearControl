@@ -35,6 +35,7 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 		mMaxDefocus = pMaxDefocus;
 	}
 
+	@Override
 	public Future<?> atomicStep(int pControlPlaneIndex,
 															int pLightSheetIndex,
 															int pNumberOfSamples)
@@ -147,9 +148,9 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 			final int lBestDetectioArm = getAdaptator().getStackAcquisition()
 																									.getBestDetectionArm(pControlPlaneIndex);
 
-			final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = pLSM.getStackVariable(lBestDetectioArm)
+			final StackInterface lStackInterface = pLSM.getStackVariable(lBestDetectioArm)
 																																												.get();
-			StackInterface<UnsignedShortType, ShortOffHeapAccess> lDuplicateStack = lStackInterface.duplicate();
+			StackInterface lDuplicateStack = lStackInterface.duplicate();
 
 			Runnable lRunnable = () -> {
 
@@ -242,7 +243,7 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 																						int pLightSheetIndex,
 																						int pDetectionArmIndex,
 																						final TDoubleArrayList lDOFValueList,
-																						StackInterface<UnsignedShortType, ShortOffHeapAccess> lDuplicatedStack)
+																						StackInterface lDuplicatedStack)
 	{
 		DCTS2D lDCTS2D = new DCTS2D();
 

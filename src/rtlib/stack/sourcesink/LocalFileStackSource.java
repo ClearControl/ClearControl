@@ -18,19 +18,19 @@ import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
 public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																							LocalFileStackBase<T, A> implements
-																													StackSourceInterface<T, A>,
-																													AutoCloseable
+																																													LocalFileStackBase<T, A> implements
+																																																									StackSourceInterface<T, A>,
+																																																									AutoCloseable
 {
 
 	private static final long cSingleReadLimit = 64_000_000;
-	private RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
+	private RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
 	private FileChannel mBinarylFileChannel;
 
 	public LocalFileStackSource(T pType,
-								final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pStackRecycler,
-								final File pRootFolder,
-								final String pName) throws IOException
+															final BasicRecycler<StackInterface, StackRequest> pStackRecycler,
+															final File pRootFolder,
+															final String pName) throws IOException
 	{
 		super(pType, pRootFolder, pName, true);
 		mStackBasicRecycler = pStackRecycler;
@@ -45,22 +45,22 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 	}
 
 	@Override
-	public void setStackRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler)
+	public void setStackRecycler(final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 	{
 		mStackBasicRecycler = pStackRecycler;
 
 	}
 
 	@Override
-	public StackInterface<T, A> getStack(final long pStackIndex)
+	public StackInterface getStack(final long pStackIndex)
 	{
 		return getStack(pStackIndex, 1, TimeUnit.NANOSECONDS);
 	}
 
 	@Override
-	public StackInterface<T, A> getStack(	final long pStackIndex,
-											long pTime,
-											TimeUnit pTimeUnit)
+	public StackInterface getStack(	final long pStackIndex,
+																	long pTime,
+																	TimeUnit pTimeUnit)
 	{
 		if (mStackBasicRecycler == null)
 		{
@@ -70,20 +70,19 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 		{
 			final long lPositionInFileInBytes = mStackIndexToBinaryFilePositionMap.get(pStackIndex);
 
-			final StackRequest<T> lStackRequest = mStackIndexToStackRequestMap.get(pStackIndex);
+			final StackRequest lStackRequest = mStackIndexToStackRequestMap.get(pStackIndex);
 
-			final StackInterface<T, A> lStack = mStackBasicRecycler.getOrWait(	pTime,
-																				pTimeUnit,
-																				lStackRequest);
+			final StackInterface lStack = mStackBasicRecycler.getOrWait(pTime,
+																																	pTimeUnit,
+																																	lStackRequest);
 
-			mBinarylFileChannel = getFileChannelForBinaryFile(	true,
-																true);
+			mBinarylFileChannel = getFileChannelForBinaryFile(true, true);
 
 			if (lStack.getContiguousMemory() != null)
 				lStack.getContiguousMemory()
-						.readBytesFromFileChannel(	mBinarylFileChannel,
-													lPositionInFileInBytes,
-													lStack.getSizeInBytes());
+							.readBytesFromFileChannel(mBinarylFileChannel,
+																				lPositionInFileInBytes,
+																				lStack.getSizeInBytes());
 			else
 			{
 				FragmentedMemoryInterface lFragmentedMemory = lStack.getFragmentedMemory();
@@ -99,8 +98,8 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 
 						long lSizeInBytes = lContiguousMemoryInterface.getSizeInBytes();
 						lContiguousMemoryInterface.readBytesFromFileChannel(mBinarylFileChannel,
-																			lPosition,
-																			lSizeInBytes);
+																																lPosition,
+																																lSizeInBytes);
 
 						lPosition += lSizeInBytes;
 					}
@@ -108,8 +107,8 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 				}
 				else
 					lFragmentedMemory.readBytesFromFileChannel(	mBinarylFileChannel,
-																lPositionInFileInBytes,
-																lStack.getSizeInBytes());
+																											lPositionInFileInBytes,
+																											lStack.getSizeInBytes());
 
 			}
 
@@ -148,18 +147,16 @@ public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAc
 				final long lHeight = Long.parseLong(lDimensionsStringArray[2]);
 				final long lDepth = Long.parseLong(lDimensionsStringArray[3]);
 
-				final StackRequest<T> lStackRequest = StackRequest.build(	mType,
-																			lWidth,
-																			lHeight,
-																			lDepth);
+				final StackRequest lStackRequest = StackRequest.build(lWidth,
+																															lHeight,
+																															lDepth);
 
 				final long lPositionInFile = Long.parseLong(lSplittedLine[3].trim());
 				mStackIndexToTimeStampInSecondsMap.put(	lStackIndex,
-														lTimeStampInSeconds);
+																								lTimeStampInSeconds);
 				mStackIndexToBinaryFilePositionMap.put(	lStackIndex,
-														lPositionInFile);
-				mStackIndexToStackRequestMap.put(	lStackIndex,
-													lStackRequest);
+																								lPositionInFile);
+				mStackIndexToStackRequestMap.put(lStackIndex, lStackRequest);
 			}
 
 			lIndexFileScanner.close();

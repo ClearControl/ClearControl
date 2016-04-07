@@ -203,7 +203,7 @@ public class CalibrationA
 			if (lPlayQueueAndWait)
 				for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
 				{
-					final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = mLightSheetMicroscope.getStackVariable(i)
+					final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(i)
 																																																							.get();
 
 					OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();

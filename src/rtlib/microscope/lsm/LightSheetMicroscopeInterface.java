@@ -4,8 +4,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.device.queue.StateQueueDeviceInterface;
 import rtlib.core.variable.types.objectv.ObjectVariable;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -31,14 +29,14 @@ public interface LightSheetMicroscopeInterface extends
 	 * @param pStackCameraDeviceIndex
 	 */
 	void setRecycler(	int pStackCameraDeviceIndex,
-										RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pRecycler);
+										RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
 	/**
 	 * Sets the recycler that should be used by _all_ stack camera devices.
 	 * 
 	 * @param pRecycler
 	 */
-	void setRecycler(RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pRecycler);
+	void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
 	/**
 	 * Returns the recycler currently b the stack camera device of given id.
@@ -47,7 +45,7 @@ public interface LightSheetMicroscopeInterface extends
 	 *          stack camera index id.
 	 * @return recycler.
 	 */
-	RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> getRecycler(int pStackCameraDeviceIndex);
+	RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex);
 
 	/**
 	 * Uses a recycler with given parameters. This recycler will be used for all
@@ -116,7 +114,7 @@ public interface LightSheetMicroscopeInterface extends
 	 */
 	long lastAcquiredStacksTimeStampInNS();
 
-	ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> getStackVariable(int pIndex);
+	ObjectVariable<StackInterface> getStackVariable(int pIndex);
 
 	/**
 	 * Sets with and height of camera image

@@ -11,12 +11,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedIntType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.DoubleType;
-import net.imglib2.type.numeric.real.FloatType;
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 
@@ -25,9 +19,9 @@ import com.jogamp.opengl.GLException;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
+import coremem.types.NativeTypeEnum;
 
-public class VideoWindow<T extends NativeType<T>> implements
-																									AutoCloseable
+public class VideoWindow implements AutoCloseable
 {
 
 	static final double cEpsilon = 0.01;
@@ -36,7 +30,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 
 	static final int cMipMapLevel = 3;
 
-	T mType;
+	NativeTypeEnum mType;
 	ClearGLWindow mClearGLWindow;
 	volatile int mEffectiveWindowWidth;
 
@@ -81,7 +75,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 	// private GLPixelBufferObject mPixelBufferObject;
 
 	public VideoWindow(	final String pWindowName,
-											final T pType,
+											final NativeTypeEnum pType,
 											final int pWindowWidth,
 											final int pWindowHeight) throws GLException
 	{
@@ -93,7 +87,7 @@ public class VideoWindow<T extends NativeType<T>> implements
 		mEffectiveWindowWidth = pWindowWidth;
 		mEffectiveWindowHeight = pWindowHeight;
 
-		mClearGLDebugEventListener = new ClearGLDebugEventListenerForVideoWindow<T>(this);
+		mClearGLDebugEventListener = new ClearGLDebugEventListenerForVideoWindow(this);
 
 		mClearGLWindow = new ClearGLWindow(	pWindowName,
 																				pWindowWidth,
@@ -317,35 +311,35 @@ public class VideoWindow<T extends NativeType<T>> implements
 		double lMin = Double.POSITIVE_INFINITY;
 		double lMax = Double.NEGATIVE_INFINITY;
 
-		if (this.mType instanceof UnsignedByteType)
+		if (this.mType == NativeTypeEnum.UnsignedByte)
 			for (int i = lStartPixel; i < lLength; i += lStep)
 			{
 				final double lValue = (0xFF & pSourceBuffer.getByteAligned(i)) / 255d;
 				lMin = min(lMin, lValue);
 				lMax = max(lMax, lValue);
 			}
-		else if (this.mType instanceof UnsignedShortType)
+		else if (this.mType == NativeTypeEnum.UnsignedShort)
 			for (int i = lStartPixel; i < lLength; i += lStep)
 			{
 				final double lValue = (0xFFFF & pSourceBuffer.getCharAligned(i)) / 65535d;
 				lMin = min(lMin, lValue);
 				lMax = max(lMax, lValue);
 			}
-		else if (this.mType instanceof UnsignedIntType)
+		else if (this.mType == NativeTypeEnum.UnsignedInt)
 			for (int i = lStartPixel; i < lLength; i += lStep)
 			{
 				final double lValue = (0xFFFFFFFF & pSourceBuffer.getIntAligned(i)) / 4294967296d;
 				lMin = min(lMin, lValue);
 				lMax = max(lMax, lValue);
 			}
-		else if (this.mType instanceof FloatType)
+		else if (this.mType == NativeTypeEnum.Float)
 			for (int i = lStartPixel; i < lLength; i += lStep)
 			{
 				final float lFloatAligned = pSourceBuffer.getFloatAligned(i);
 				lMin = min(lMin, lFloatAligned);
 				lMax = max(lMax, lFloatAligned);
 			}
-		else if (this.mType instanceof DoubleType)
+		else if (this.mType == NativeTypeEnum.Double)
 			for (int i = lStartPixel; i < lLength; i += lStep)
 			{
 				final double lDoubleAligned = pSourceBuffer.getDoubleAligned(i);

@@ -5,16 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import rtlib.stack.processor.SameTypeStackProcessorBase;
-import rtlib.stack.processor.SameTypeStackProcessorInterface;
+import rtlib.stack.processor.StackProcessorBase;
+import rtlib.stack.processor.StackProcessorInterface;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
@@ -27,27 +24,26 @@ public class StackProcessorTests
 	public void test()
 	{
 
-		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		final SameTypeStackProcessorInterface<UnsignedShortType, ShortOffHeapAccess> lStackProcessor = new SameTypeStackProcessorBase<UnsignedShortType, ShortOffHeapAccess>("Test")
+		final StackProcessorInterface lStackProcessor = new StackProcessorBase("Test")
 		{
 
-			BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mRelayBasicRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																													10);
+			BasicRecycler<StackInterface, StackRequest> mRelayBasicRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+																																																												10);
 
 			@Override
-			public StackInterface<UnsignedShortType, ShortOffHeapAccess> process(	final StackInterface<UnsignedShortType, ShortOffHeapAccess> pStack,
-																					final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pStackRecycler)
+			public StackInterface process(final StackInterface pStack,
+																		final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 			{
 
-				final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	pStack.getType(),
-																							pStack.getWidth(),
-																							pStack.getHeight(),
-																							1);
+				final StackRequest lStackRequest = StackRequest.build(pStack.getWidth(),
+																															pStack.getHeight(),
+																															1);
 
-				final StackInterface<UnsignedShortType, ShortOffHeapAccess> lNewStack = mRelayBasicRecycler.getOrWait(	1L,
-																														TimeUnit.MILLISECONDS,
-																														lStackRequest);
+				final StackInterface lNewStack = mRelayBasicRecycler.getOrWait(	1L,
+																																				TimeUnit.MILLISECONDS,
+																																				lStackRequest);
 				assertTrue(lNewStack != null);
 				lNewStack.copyMetaDataFrom(pStack);
 				pStackRecycler.release(pStack);
@@ -56,18 +52,17 @@ public class StackProcessorTests
 
 		};
 
-		final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mStartRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
+		final BasicRecycler<StackInterface, StackRequest> mStartRecycler = new BasicRecycler<StackInterface, StackRequest>(	lOffHeapPlanarStackFactory,
 																																																												cMaximalNumberOfAvailableObjects);
 
-		final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = mStartRecycler.getOrFail(StackRequest.build(	new UnsignedShortType(),
-																															1L,
-																															10L,
-																															10L,
-																															10L));
+		final StackInterface lStack = mStartRecycler.getOrFail(StackRequest.build(1L,
+																																							10L,
+																																							10L,
+																																							10L));
 		assertTrue(lStack.getBytesPerVoxel() == 2);
 
-		final StackInterface<UnsignedShortType, ShortOffHeapAccess> lProcessedStack = lStackProcessor.process(	lStack,
-																												mStartRecycler);
+		final StackInterface lProcessedStack = lStackProcessor.process(	lStack,
+																																		mStartRecycler);
 
 		assertFalse(lProcessedStack == lStack);
 

@@ -8,7 +8,7 @@ import rtlib.stack.StackInterface;
 public interface StackSinkInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {
 
-	public boolean appendStack(final StackInterface<T, A> pStack);
+	public boolean appendStack(final StackInterface pStack);
 
 	public void addMetaData(String pPrefix, double pValue);
 

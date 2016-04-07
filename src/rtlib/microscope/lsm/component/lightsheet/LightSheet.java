@@ -221,6 +221,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 	}
 
+	@Override
 	public void resetFunctions()
 	{
 		mXFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
@@ -378,6 +379,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																						pStave);
 	}
 
+	@Override
 	public void update()
 	{
 		synchronized (this)
@@ -386,9 +388,9 @@ public class LightSheet extends NamedVirtualDevice implements
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
-			mBeforeExposureMovement.setDuration((long) round(lReadoutTimeInMicroseconds),
+			mBeforeExposureMovement.setDuration(round(lReadoutTimeInMicroseconds),
 																					TimeUnit.MICROSECONDS);
-			mExposureMovement.setDuration((long) round(lExposureMovementTimeInMicroseconds),
+			mExposureMovement.setDuration(round(lExposureMovementTimeInMicroseconds),
 																		TimeUnit.MICROSECONDS);
 
 			final double lLineExposureTimeInMicroseconds = lReadoutTimeInMicroseconds + lExposureMovementTimeInMicroseconds;

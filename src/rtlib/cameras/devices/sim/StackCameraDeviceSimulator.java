@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import net.imglib2.exception.IncompatibleTypeException;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import rtlib.cameras.StackCameraDeviceBase;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
@@ -32,30 +30,25 @@ import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
-public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																																StackCameraDeviceBase<T, A>	implements
-																																																														Loggable,
-																																																														SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>,
-																																																														AsynchronousSchedulerServiceAccess
+public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
+																																			Loggable,
+																																			SimulatorDeviceInterface<StackCameraDeviceSimulatorHint>,
+																																			AsynchronousSchedulerServiceAccess
 {
 	private StackCameraDeviceSimulatorHint mHint;
-	private StackSourceInterface<T, A> mStackSource;
+	private StackSourceInterface mStackSource;
 	private BooleanVariable mTriggerVariable;
 	protected volatile long mCurrentStackIndex = 0;
-	private RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mRecycler;
-	private final T mType;
+	private RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
 	private volatile CountDownLatch mLeftInQueue;
 	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
-
-	public StackCameraDeviceSimulator(StackSourceInterface<T, A> pStackSource,
-																		T pType,
+	public StackCameraDeviceSimulator(StackSourceInterface pStackSource,
 																		BooleanVariable pTriggerVariable)
 	{
 		super("StackCameraSimulator");
 		mStackSource = pStackSource;
-		mType = pType;
 		mTriggerVariable = pTriggerVariable;
 
 		mLineReadOutTimeInMicrosecondsVariable = new DoubleVariable("LineReadOutTimeInMicroseconds",
@@ -94,7 +87,7 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 
 				if (pCurrentBooleanValue)
 				{
-					StackInterface<T, A> lStack;
+					StackInterface lStack;
 					if (mStackSource != null)
 					{
 						lStack = mStackSource.getStack(mCurrentStackIndex);
@@ -129,14 +122,14 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 			}
 		});
 
-		final ContiguousOffHeapPlanarStackFactory<T, A> lContiguousOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<T, A>();
+		final ContiguousOffHeapPlanarStackFactory lContiguousOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		mRecycler = new BasicRecycler<StackInterface<T, A>, StackRequest<T>>(	lContiguousOffHeapPlanarStackFactory,
-																																					20);
+		mRecycler = new BasicRecycler<StackInterface, StackRequest>(lContiguousOffHeapPlanarStackFactory,
+																																20);
 
 	}
 
-	protected StackInterface<T, A> generateSyntheticStack() throws IncompatibleTypeException
+	protected StackInterface generateSyntheticStack() throws IncompatibleTypeException
 	{
 		final int lWidth = (int) max(16, mStackWidthVariable.getValue());
 		final int lHeight = (int) max(16, mStackHeightVariable.getValue());
@@ -149,14 +142,13 @@ public class StackCameraDeviceSimulator<T extends NativeType<T>, A extends Array
 		if (lWidth * lHeight * lDepth <= 0)
 			return null;
 
-		final StackRequest<T> lStackRequest = StackRequest.build(	mType,
-																															lWidth,
-																															lHeight,
-																															lDepth);
+		final StackRequest lStackRequest = StackRequest.build(lWidth,
+																													lHeight,
+																													lDepth);
 
-		final StackInterface<T, A> lStack = mRecycler.getOrWait(1,
-																														TimeUnit.SECONDS,
-																														lStackRequest);
+		final StackInterface lStack = mRecycler.getOrWait(1,
+																											TimeUnit.SECONDS,
+																											lStackRequest);
 
 		// mRecycler.printDebugInfo();
 		// System.out.println(lStackRequest.toString());

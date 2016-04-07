@@ -1,5 +1,6 @@
 package rtlib.stages.gui;
 
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -95,7 +96,7 @@ public class CubeScene extends View3D
 		final KeyFrame kf1 = new KeyFrame( Duration.millis(50000), kv1); // min speed, max duration
 
 		cubeRotTimeline = new Timeline();
-		cubeRotTimeline.setCycleCount( Timeline.INDEFINITE );
+		cubeRotTimeline.setCycleCount( Animation.INDEFINITE );
 		cubeRotTimeline.getKeyFrames().setAll( kf0, kf1 );
 
 		root3D.getTransforms().setAll( cubeRotate );

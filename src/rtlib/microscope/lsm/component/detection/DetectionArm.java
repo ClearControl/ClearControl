@@ -54,6 +54,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 	}
 
+	@Override
 	public void resetFunctions()
 	{
 		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
@@ -86,6 +87,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 		pExposureMovement.setStave(mStaveIndex, mDetectionPathStaveZ);
 	}
 
+	@Override
 	public void update()
 	{
 		synchronized (this)

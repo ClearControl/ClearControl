@@ -22,6 +22,7 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 		mDeltaZ = pDeltaZ;
 	}
 
+	@Override
 	public Future<?> atomicStep(int pControlPlaneIndex,
 								int pLightSheetIndex,
 								int pNumberOfSamples)
@@ -75,6 +76,7 @@ public class AdaptationZ extends NDIteratorAdaptationModule implements
 
 	}
 
+	@Override
 	public void updateNewState(	int pControlPlaneIndex,
 								int pLightSheetIndex,
 								ArrayList<Double> pArgMaxList)

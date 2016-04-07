@@ -55,11 +55,13 @@ public class UnivariateAffineFunction	implements
 		mB = pB;
 	}
 
+	@Override
 	public void setConstant(double pB)
 	{
 		mB = pB;
 	}
 
+	@Override
 	public void setSlope(double pA)
 	{
 		mA = pA;

@@ -2,9 +2,7 @@ package rtlib.microscope.lsm.acquisition.timming.adaptive;
 
 import ij.ImageJ;
 import ij.ImagePlus;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.stack.StackInterface;
@@ -43,7 +41,7 @@ public class AdaptiveAcquisitionTimerVisualizer
 		lPlot.ensureUpToDate();
 	}
 	
-	public void visualizeStack(StackInterface<UnsignedShortType, ShortOffHeapAccess> pStack)
+	public void visualizeStack(StackInterface pStack)
 	{
 		ImagePlus lShow = ImageJFunctions.show(pStack.getImage().copy());
 		lShow.setDisplayRange(0, 1000);

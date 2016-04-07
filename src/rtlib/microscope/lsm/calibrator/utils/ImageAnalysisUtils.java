@@ -51,7 +51,7 @@ public class ImageAnalysisUtils
 			ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(p);
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
-			double lSum = (double) 0;
+			double lSum = 0;
 			long lCount = 0;
 
 			while (lBuffer.hasRemaining())
@@ -75,7 +75,7 @@ public class ImageAnalysisUtils
 			ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(p);
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
-			double lSumOfPowers = (double) 0;
+			double lSumOfPowers = 0;
 			long lCount = 0;
 
 			while (lBuffer.hasRemaining())

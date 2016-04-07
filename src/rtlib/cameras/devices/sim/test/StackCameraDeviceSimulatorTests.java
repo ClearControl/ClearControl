@@ -2,9 +2,6 @@ package rtlib.cameras.devices.sim.test;
 
 import java.io.IOException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
@@ -23,10 +20,10 @@ public class StackCameraDeviceSimulatorTests
 	@Test
 	public void test() throws IOException
 	{
-		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
-																																																																																																																					10);
+		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+																																																											10);
 		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
 																																	101L,
 																																	103L,
@@ -36,13 +33,12 @@ public class StackCameraDeviceSimulatorTests
 																										false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
-																																														new UnsignedShortType(),
 																																														lTrigger);
 
-		ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lStackVariable = lStackCameraDeviceSimulator.getStackVariable();
+		ObjectVariable<StackInterface> lStackVariable = lStackCameraDeviceSimulator.getStackVariable();
 
-		lStackVariable.addSetListener((	StackInterface<UnsignedShortType, ShortOffHeapAccess> pOldStack,
-																		StackInterface<UnsignedShortType, ShortOffHeapAccess> pNewStack) -> {
+		lStackVariable.addSetListener((	StackInterface pOldStack,
+																		StackInterface pNewStack) -> {
 			System.out.println("Arrived: " + pNewStack);
 			pNewStack.release();
 		});

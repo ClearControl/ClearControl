@@ -36,7 +36,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public boolean appendStack(final StackInterface<T, A> pStack)
+	public boolean appendStack(final StackInterface pStack)
 	{
 
 		try
@@ -49,7 +49,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
 													mNextFreeTypePosition);
 
-			final StackRequest<T> lStackRequest = StackRequest.buildFrom(pStack);
+			final StackRequest lStackRequest = StackRequest.buildFrom(pStack);
 
 			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
 												lStackRequest);

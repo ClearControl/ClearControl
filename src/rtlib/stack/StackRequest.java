@@ -2,32 +2,27 @@ package rtlib.stack;
 
 import java.util.Arrays;
 
-import net.imglib2.type.NativeType;
 import coremem.recycling.RecyclerRequest;
 
-public class StackRequest<T extends NativeType<T>>	implements
+public class StackRequest implements
 													RecyclerRequest
 {
 
-	private final T mType;
 	private final long[] mDimensions;
 
-	public StackRequest(final T pType, final long... pDimensions)
+	public StackRequest(final long... pDimensions)
 	{
-		mType = pType;
 		mDimensions = Arrays.copyOf(pDimensions, pDimensions.length);
 	}
 
-	public static <LT extends NativeType<LT>> StackRequest<LT> build(	final LT pType,
-																		final long... pDimensions)
+	public static StackRequest build(final long... pDimensions)
 	{
-		return new StackRequest<LT>(pType, pDimensions);
+		return new StackRequest(pDimensions);
 	}
 
-	public static <LT extends NativeType<LT>> StackRequest<LT> buildFrom(final StackInterface<LT, ?> pStack)
+	public static StackRequest buildFrom(final StackInterface pStack)
 	{
-		return new StackRequest<LT>(pStack.getType(),
-									pStack.getDimensions());
+		return new StackRequest(pStack.getDimensions());
 	}
 
 	public long[] getDimensions()
@@ -50,16 +45,12 @@ public class StackRequest<T extends NativeType<T>>	implements
 		return mDimensions[2];
 	}
 
-	public T getType()
-	{
-		return mType;
-	}
+
 
 	@Override
 	public String toString()
 	{
-		return String.format(	"StackRequest [mType=%s, mDimensions=%s]",
-								mType,
+		return String.format(	"StackRequest [mDimensions=%s]",
 								Arrays.toString(mDimensions));
 	}
 

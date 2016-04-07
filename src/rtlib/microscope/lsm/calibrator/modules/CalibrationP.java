@@ -112,7 +112,7 @@ public class CalibrationP
 			if (!lPlayQueueAndWait)
 				return null;
 
-			final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
+			final StackInterface lStackInterface = mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
 																																																					.get();
 
 			OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage = (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();

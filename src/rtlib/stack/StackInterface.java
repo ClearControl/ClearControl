@@ -1,25 +1,23 @@
 package rtlib.stack;
 
 import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
-import coremem.interfaces.Typed;
 import coremem.recycling.RecyclableInterface;
 import coremem.rgc.Freeable;
 
-public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																						RecyclableInterface<StackInterface<T, A>, StackRequest<T>>,
-																						Typed<T>,
-																						SizedInBytes,
-																						Freeable
+public interface StackInterface	extends
+																RecyclableInterface<StackInterface, StackRequest>,
+																SizedInBytes,
+																Freeable
 {
-	NativeImg<T, A> getImage();
+	NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage();
 
 	long getTimeStampInNanoseconds();
 
@@ -50,7 +48,7 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 	double getVoxelSizeInRealUnits(int pIndex);
 
 	void setVoxelSizeInRealUnits(	int pIndex,
-									double pVoxelSizeInRealUnits);
+																double pVoxelSizeInRealUnits);
 
 	double[] getVoxelSizeInRealUnits();
 
@@ -66,10 +64,10 @@ public interface StackInterface<T extends NativeType<T>, A extends ArrayDataAcce
 
 	FragmentedMemoryInterface getFragmentedMemory();
 
-	void copyMetaDataFrom(StackInterface<T, A> pStack);
+	void copyMetaDataFrom(StackInterface pStack);
 
-	StackInterface<T, A> allocateSameSize();
+	StackInterface allocateSameSize();
 
-	StackInterface<T, A> duplicate();
+	StackInterface duplicate();
 
 }

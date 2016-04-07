@@ -1,7 +1,5 @@
 package rtlib.cameras;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import rtlib.core.device.NameableInterface;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
 import rtlib.core.variable.types.doublev.DoubleVariable;
@@ -10,9 +8,9 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
-public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																									CameraDeviceInterface,
-																									NameableInterface
+public interface StackCameraDeviceInterface	extends
+																						CameraDeviceInterface,
+																						NameableInterface
 {
 	DoubleVariable getNumberOfImagesPerPlaneVariable();
 
@@ -28,19 +26,17 @@ public interface StackCameraDeviceInterface<T extends NativeType<T>, A extends A
 
 	DoubleVariable getStackDepthVariable();
 
-	void setStackRecycler(RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pRecycler);
-	
+	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
+
 	int getMinimalNumberOfAvailableStacks();
 
 	void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks);
 
-	RecyclerInterface<StackInterface<T, A>, StackRequest<T>> getStackRecycler();
+	RecyclerInterface<StackInterface, StackRequest> getStackRecycler();
 
-	ObjectVariable<StackInterface<T, A>> getStackVariable();
+	ObjectVariable<StackInterface> getStackVariable();
 
 	@Override
 	void trigger();
-
-
 
 }

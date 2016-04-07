@@ -27,6 +27,7 @@ public class SingleUpdateTargetObjectVariable<O>	extends
 		mVariablesToSendUpdatesTo.add(pObjectVariable);
 	}
 
+	@Override
 	public final ObjectVariable<O> sendUpdatesToInstead(final ObjectVariable<O> pObjectVariable)
 	{
 		if (mVariablesToSendUpdatesTo.size() >= 2)

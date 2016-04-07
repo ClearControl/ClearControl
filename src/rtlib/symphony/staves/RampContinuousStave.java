@@ -69,8 +69,8 @@ public class RampContinuousStave extends StaveAbstract implements
 		}
 		else
 		{
-			final float lExponentiatedValue = (float) (getStartValue() + (getStopValue() - getStartValue()) * abspow(	lNormalizedRampTime,
-																																																						mExponent));
+			final float lExponentiatedValue = getStartValue() + (getStopValue() - getStartValue()) * abspow(	lNormalizedRampTime,
+																																																						mExponent);
 
 			return lExponentiatedValue;
 		}

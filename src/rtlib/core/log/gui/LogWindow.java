@@ -1,6 +1,7 @@
 package rtlib.core.log.gui;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 class LogWindow extends JFrame
 {
@@ -12,7 +13,7 @@ class LogWindow extends JFrame
 	public LogWindow(String title, int width, int height)
 	{
 		super(title);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setSize(width, height);
 		mLogPanel = new LogPanel();
 		getContentPane().add(mLogPanel);

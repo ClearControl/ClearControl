@@ -21,17 +21,17 @@ import coremem.util.Size;
 
 public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
 																																										NamedVirtualDevice implements
-																																																			StackDisplayInterface<T, A>
+																																																			StackDisplayInterface
 {
 	private static final int cDefaultDisplayQueueLength = 2;
 	protected static final long cTimeOutForBufferCopy = 5;
 
 	private ClearVolumeRendererInterface mClearVolumeRenderer;
 
-	private final ObjectVariable<StackInterface<T, A>> mInputStackVariable;
-	private ObjectVariable<StackInterface<T, A>> mOutputStackVariable;
+	private final ObjectVariable<StackInterface> mInputStackVariable;
+	private ObjectVariable<StackInterface> mOutputStackVariable;
 
-	private AsynchronousProcessorBase<StackInterface<T, A>, Object> mAsynchronousDisplayUpdater;
+	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
 	private volatile BooleanVariable mDisplayOn;
 	private volatile BooleanVariable mWaitForLastChannel;
@@ -76,11 +76,11 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		mClearVolumeRenderer.setVisible(true);
 		mClearVolumeRenderer.setAdaptiveLODActive(false);
 
-		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface<T, A>, Object>("AsynchronousDisplayUpdater-" + pWindowName,
-																																															pUpdaterQueueLength)
+		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface, Object>("AsynchronousDisplayUpdater-" + pWindowName,
+																																												pUpdaterQueueLength)
 		{
 			@Override
-			public Object process(final StackInterface<T, A> pStack)
+			public Object process(final StackInterface pStack)
 			{
 				if (pStack instanceof EmptyStack)
 					return null;
@@ -142,12 +142,12 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 			}
 		};
 
-		mInputStackVariable = new ObjectVariable<StackInterface<T, A>>("VideoFrame")
+		mInputStackVariable = new ObjectVariable<StackInterface>("VideoFrame")
 		{
 
 			@Override
-			public StackInterface<T, A> setEventHook(	final StackInterface<T, A> pOldStack,
-																								final StackInterface<T, A> pNewStack)
+			public StackInterface setEventHook(	final StackInterface pOldStack,
+																					final StackInterface pNewStack)
 			{
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 					pNewStack.release();
@@ -173,13 +173,13 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	}
 
 	@Override
-	public ObjectVariable<StackInterface<T, A>> getOutputStackVariable()
+	public ObjectVariable<StackInterface> getOutputStackVariable()
 	{
 		return mOutputStackVariable;
 	}
 
 	@Override
-	public void setOutputStackVariable(ObjectVariable<StackInterface<T, A>> pOutputStackVariable)
+	public void setOutputStackVariable(ObjectVariable<StackInterface> pOutputStackVariable)
 	{
 		mOutputStackVariable = pOutputStackVariable;
 	}
@@ -189,7 +189,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		return mDisplayOn;
 	}
 
-	public ObjectVariable<StackInterface<T, A>> getStackInputVariable()
+	public ObjectVariable<StackInterface> getStackInputVariable()
 	{
 		return mInputStackVariable;
 	}

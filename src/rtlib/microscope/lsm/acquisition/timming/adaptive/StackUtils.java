@@ -3,8 +3,6 @@ package rtlib.microscope.lsm.acquisition.timming.adaptive;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stack.StackInterface;
 import coremem.buffers.ContiguousBuffer;
@@ -12,12 +10,12 @@ import coremem.buffers.ContiguousBuffer;
 public class StackUtils
 {
 
-	public static StackInterface<UnsignedShortType, ShortOffHeapAccess> fuse(LightSheetMicroscopeInterface pLSM)
+	public static StackInterface fuse(LightSheetMicroscopeInterface pLSM)
 	{
-		StackInterface<UnsignedShortType, ShortOffHeapAccess> lFirstStack = pLSM.getStackVariable(0)
+		StackInterface lFirstStack = pLSM.getStackVariable(0)
 																				.get();
 
-		StackInterface<UnsignedShortType, ShortOffHeapAccess> lFusedStack = lFirstStack.duplicate();
+		StackInterface lFusedStack = lFirstStack.duplicate();
 
 		int lNumberOfStacksToFuse = pLSM.getDeviceLists()
 										.getNumberOfDetectionArmDevices();
@@ -26,7 +24,7 @@ public class StackUtils
 		{
 			for (int d = 1; d < lNumberOfStacksToFuse; d++)
 			{
-				StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = pLSM.getStackVariable(0)
+				StackInterface lStack = pLSM.getStackVariable(0)
 																					.get();
 
 				maxStack(lFusedStack, lStack);
@@ -36,8 +34,8 @@ public class StackUtils
 		return lFusedStack;
 	}
 
-	private static void maxStack(	StackInterface<UnsignedShortType, ShortOffHeapAccess> pMaxStack,
-									StackInterface<UnsignedShortType, ShortOffHeapAccess> pOtherStack)
+	private static void maxStack(	StackInterface pMaxStack,
+									StackInterface pOtherStack)
 	{
 		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
@@ -53,8 +51,8 @@ public class StackUtils
 		}
 	}
 
-	public static double computeAverageDifference(	StackInterface<UnsignedShortType, ShortOffHeapAccess> pStack1,
-											StackInterface<UnsignedShortType, ShortOffHeapAccess> pStack2, int pPower)
+	public static double computeAverageDifference(	StackInterface pStack1,
+											StackInterface pStack2, int pPower)
 	{
 		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pStack1.getContiguousMemory());
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pStack2.getContiguousMemory());
@@ -67,7 +65,7 @@ public class StackUtils
 			lDifference += pow(1.0*abs(u-v),pPower);
 		}
 		
-		double lAverageDifference = ((double)lDifference)/(lMaxBuffer.getSizeInBytes()/2);
+		double lAverageDifference = (lDifference)/(lMaxBuffer.getSizeInBytes()/2);
 		
 		return lAverageDifference;
 	}

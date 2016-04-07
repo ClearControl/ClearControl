@@ -15,11 +15,11 @@ public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDa
 
 	public long getNumberOfStacks();
 
-	public void setStackRecycler(RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pStackRecycler);
+	public void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pStackRecycler);
 
-	public StackInterface<T, A> getStack(long pStackIndex);
+	public StackInterface getStack(long pStackIndex);
 
-	public StackInterface<T, A> getStack(	final long pStackIndex,
+	public StackInterface getStack(	final long pStackIndex,
 											long pTime,
 											TimeUnit pTimeUnit);
 

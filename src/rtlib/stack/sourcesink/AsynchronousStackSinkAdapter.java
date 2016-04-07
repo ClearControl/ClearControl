@@ -16,9 +16,9 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 
 	private StackSinkInterface<T, A> mStackSink;
 
-	private AsynchronousProcessorInterface<StackInterface<T, A>, StackInterface<T, A>> mAsynchronousConversionProcessor;
+	private AsynchronousProcessorInterface<StackInterface, StackInterface> mAsynchronousConversionProcessor;
 
-	private ObjectVariable<StackInterface<T, A>> mFinishedProcessingStackVariable;
+	private ObjectVariable<StackInterface> mFinishedProcessingStackVariable;
 
 	public static <ST extends NativeType<ST>, SA extends ArrayDataAccess<SA>> AsynchronousStackSinkAdapter<ST, SA> wrap(StackSinkInterface<ST, SA> pStackSink,
 																														final int pMaxQueueSize)
@@ -33,11 +33,11 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 		super();
 		mStackSink = pStackSink;
 
-		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<StackInterface<T, A>, StackInterface<T, A>>(	"AsynchronousStackSinkAdapter",
+		mAsynchronousConversionProcessor = new AsynchronousProcessorBase<StackInterface, StackInterface>(	"AsynchronousStackSinkAdapter",
 																														pMaxQueueSize)
 		{
 			@Override
-			public StackInterface<T, A> process(final StackInterface<T, A> pStack)
+			public StackInterface process(final StackInterface pStack)
 			{
 				mStackSink.appendStack(pStack);
 				if (mFinishedProcessingStackVariable != null)
@@ -55,7 +55,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 	}
 
 	@Override
-	public boolean appendStack(final StackInterface<T, A> pStack)
+	public boolean appendStack(final StackInterface pStack)
 	{
 		return mAsynchronousConversionProcessor.passOrWait(pStack);
 	}
@@ -102,7 +102,7 @@ public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends Arr
 		mStackSink.removeAllMetaDataVariables();
 	}
 
-	public void setFinishedProcessingStackVariable(final ObjectVariable<StackInterface<T, A>> pVariable)
+	public void setFinishedProcessingStackVariable(final ObjectVariable<StackInterface> pVariable)
 	{
 		mFinishedProcessingStackVariable = pVariable;
 	}

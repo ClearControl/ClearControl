@@ -62,10 +62,9 @@ public class LocalFileStackTests
 																																																																													"testSink");
 
 			@SuppressWarnings("unchecked")
-			final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedShortType(),
-																																																																																					cSizeX,
-																																																																																					cSizeY,
-																																																																																					cSizeZ);
+			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(cSizeX,
+																																														cSizeY,
+																																														cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNumberOfVoxels());
@@ -110,8 +109,6 @@ public class LocalFileStackTests
 			}
 		}
 
-
-
 	}
 
 	@Test
@@ -141,10 +138,9 @@ public class LocalFileStackTests
 																															"123"));
 
 			@SuppressWarnings("unchecked")
-			final OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedShortType, ShortOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedShortType(),
-																																																																																					cSizeX,
-																																																																																					cSizeY,
-																																																																																					cSizeZ);
+			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(cSizeX,
+																																														cSizeY,
+																																														cSizeZ);
 
 			assertEquals(	cSizeX * cSizeY * cSizeZ,
 										lStack.getNumberOfVoxels());
@@ -185,10 +181,10 @@ public class LocalFileStackTests
 		}
 
 		{
-			final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+			final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-			final BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lStackRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(	lOffHeapPlanarStackFactory,
-																																																																																																																							cMaximalNumberOfAvailableStacks);
+			final BasicRecycler<StackInterface, StackRequest> lStackRecycler = new BasicRecycler<StackInterface, StackRequest>(	lOffHeapPlanarStackFactory,
+																																																													cMaximalNumberOfAvailableStacks);
 
 			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
 																																																																																lStackRecycler,
@@ -208,7 +204,7 @@ public class LocalFileStackTests
 			// System.out.println(lVariable2.get());
 			assertEquals("123", lVariable2.get());
 
-			StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack;
+			StackInterface lStack;
 
 			lLocalFileStackSource.update();
 

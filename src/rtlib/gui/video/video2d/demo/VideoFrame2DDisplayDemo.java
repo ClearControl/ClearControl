@@ -9,9 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import net.imglib2.img.basictypeaccess.offheap.ByteOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
@@ -34,7 +31,7 @@ public class VideoFrame2DDisplayDemo
 	private volatile long rnd;
 
 	private void generateNoiseBuffer(	double pIntensity,
-										final ContiguousMemoryInterface pContiguousMemory)
+																		final ContiguousMemoryInterface pContiguousMemory)
 	{
 		// System.out.println(rnd);
 
@@ -50,29 +47,27 @@ public class VideoFrame2DDisplayDemo
 	}
 
 	@Test
-	public void demo()	throws InvocationTargetException,
-						InterruptedException
+	public void demo() throws InvocationTargetException,
+										InterruptedException
 	{
-		final Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> lVideoDisplayDevice = new Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess>(new UnsignedByteType(),
-																																				512,
-																																				512);
+		final Stack2DDisplay lVideoDisplayDevice = new Stack2DDisplay(512,
+																																	512);
 
 		lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
-							.setValue(true);
+												.setValue(true);
 		lVideoDisplayDevice.open();
 
-		final int lSizeX = 2048;
+		final int lSizeX = 256;
 		final int lSizeY = lSizeX;
 		final int lSizeZ = 16;
 
 		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess> lStack = (OffHeapPlanarStack<UnsignedByteType, ByteOffHeapAccess>) OffHeapPlanarStack.createStack(new UnsignedByteType(),
-																																										false,
-																																										lSizeX,
-																																										lSizeY,
-																																										lSizeZ);
+		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(false,
+																																													lSizeX,
+																																													lSizeY,
+																																													lSizeZ);
 
-		final ObjectVariable<StackInterface<UnsignedByteType, ByteOffHeapAccess>> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
+		final ObjectVariable<StackInterface> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
 
 		final Runnable lRunnable = () -> {
 			while (true)
@@ -80,13 +75,12 @@ public class VideoFrame2DDisplayDemo
 				if (sDisplay)
 				{
 					for (int i = 0; i < lStack.getDepth(); i++)
-						generateNoiseBuffer(1 + i,
-											lStack.getContiguousMemory(i));
+						generateNoiseBuffer(1 + i, lStack.getContiguousMemory(i));
 
 					lStackVariable.setReference(lStack);
 					// System.out.println(lStack);
 				}
-				ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
+				ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
 			}
 		};
 
@@ -98,7 +92,7 @@ public class VideoFrame2DDisplayDemo
 		final JFrame lJFrame = runDemo(lVideoDisplayDevice);
 
 		while (lVideoDisplayDevice.getDisplayOnVariable()
-									.getBooleanValue() && lJFrame.isVisible())
+															.getBooleanValue() && lJFrame.isVisible())
 		{
 			Thread.sleep(100);
 		}
@@ -106,8 +100,8 @@ public class VideoFrame2DDisplayDemo
 		lVideoDisplayDevice.close();
 	}
 
-	public JFrame runDemo(Stack2DDisplay<UnsignedByteType, ByteOffHeapAccess> pVideoDisplayDevice)	throws InterruptedException,
-																									InvocationTargetException
+	public JFrame runDemo(Stack2DDisplay pVideoDisplayDevice)	throws InterruptedException,
+																														InvocationTargetException
 	{
 
 		final JFrame lJFrame = new JFrame("TextFieldDoubleDemo");
@@ -128,47 +122,43 @@ public class VideoFrame2DDisplayDemo
 					lJFrame.setVisible(true);
 
 					final JSliderDouble lJSliderDouble = new JSliderDouble("gray size");
-					mcontentPane.add(	lJSliderDouble,
-										BorderLayout.SOUTH);
+					mcontentPane.add(lJSliderDouble, BorderLayout.SOUTH);
 
-					final JButtonBoolean lJButtonBoolean = new JButtonBoolean(	false,
-																				"Display",
-																				"No Display");
-					mcontentPane.add(	lJButtonBoolean,
-										BorderLayout.NORTH);
+					final JButtonBoolean lJButtonBoolean = new JButtonBoolean(false,
+																																		"Display",
+																																		"No Display");
+					mcontentPane.add(lJButtonBoolean, BorderLayout.NORTH);
 
 					final BooleanVariable lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
 					lStartStopVariable.sendUpdatesTo(new DoubleVariable("StartStopVariableHook",
-																		0)
+																															0)
 					{
 						@Override
 						public Double setEventHook(	final Double pOldValue,
-													final Double pNewValue)
+																				final Double pNewValue)
 						{
 							final boolean lBoolean = BooleanVariable.double2boolean(pNewValue);
 							sDisplay = lBoolean;
 							System.out.println("sDisplay=" + sDisplay);
-							return super.setEventHook(	pOldValue,
-														pNewValue);
+							return super.setEventHook(pOldValue, pNewValue);
 						}
 					});
 
 					final DoubleVariable lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
 					lDoubleVariable.sendUpdatesTo(new DoubleVariable(	"SliderDoubleEventHook",
-																		0)
+																														0)
 					{
 
 						@Override
 						public Double setEventHook(	final Double pOldValue,
-													final Double pNewValue)
+																				final Double pNewValue)
 						{
 							sValue = pNewValue;
 							System.out.println(pNewValue);
 
-							return super.setEventHook(	pOldValue,
-														pNewValue);
+							return super.setEventHook(pOldValue, pNewValue);
 						}
 					});
 

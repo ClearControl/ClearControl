@@ -2,8 +2,6 @@ package rtlib.microscope.lsm;
 
 import java.util.ArrayList;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.device.SwitchingDeviceInterface;
@@ -14,7 +12,7 @@ import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.stack.StackInterface;
-import rtlib.stack.processor.SameTypeStackProcessingPipeline;
+import rtlib.stack.processor.StackProcessingPipeline;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 
@@ -33,9 +31,9 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mDetectionPhaseModulatorDeviceList = new ArrayList<>();
 	private final ArrayList<SpatialPhaseModulatorDeviceInterface> mIlluminationPhaseModulatorDeviceList = new ArrayList<>();
 
-	private final ArrayList<StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess>> mStackCameraDeviceList = new ArrayList<>();
-	private final ArrayList<SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess>> mStackPipelineList = new ArrayList<>();
-	private final ArrayList<ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>>> mStackVariableList = new ArrayList<>();
+	private final ArrayList<StackCameraDeviceInterface> mStackCameraDeviceList = new ArrayList<>();
+	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
+	private final ArrayList<ObjectVariable<StackInterface>> mStackVariableList = new ArrayList<>();
 
 	private SwitchingDeviceInterface mLightSheetSwitch;
 
@@ -44,8 +42,8 @@ public class LightSheetMicroscopeDeviceLists
 
 	}
 
-	public int addStackCameraDevice(StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> pCameraDevice,
-																	SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> pStackPipeline)
+	public int addStackCameraDevice(StackCameraDeviceInterface pCameraDevice,
+																	StackProcessingPipeline pStackPipeline)
 	{
 		mStackCameraDeviceList.add(pCameraDevice);
 		mAllDeviceList.add(pCameraDevice);
@@ -69,17 +67,17 @@ public class LightSheetMicroscopeDeviceLists
 		return mStackCameraDeviceList.size();
 	}
 
-	public StackCameraDeviceInterface<UnsignedShortType, ShortOffHeapAccess> getStackCameraDevice(int pIndex)
+	public StackCameraDeviceInterface getStackCameraDevice(int pIndex)
 	{
 		return mStackCameraDeviceList.get(pIndex);
 	}
 
-	public SameTypeStackProcessingPipeline<UnsignedShortType, ShortOffHeapAccess> getStackPipeline(int pIndex)
+	public StackProcessingPipeline getStackPipeline(int pIndex)
 	{
 		return mStackPipelineList.get(pIndex);
 	}
 
-	public ObjectVariable<StackInterface<UnsignedShortType, ShortOffHeapAccess>> getStackVariable(int pIndex)
+	public ObjectVariable<StackInterface> getStackVariable(int pIndex)
 	{
 		return mStackVariableList.get(pIndex);
 	}

@@ -58,6 +58,7 @@ public abstract class NDIteratorAdaptationModule extends
 		mNDIterator = pNDIterator;
 	}
 
+	@Override
 	public int getNumberOfSteps()
 	{
 		return mNDIterator.getNumberOfIterations();
@@ -159,11 +160,11 @@ public abstract class NDIteratorAdaptationModule extends
 																										.getNumberOfDetectionArmDevices();
 
 			@SuppressWarnings("unchecked")
-			ArrayList<StackInterface<UnsignedShortType, ShortOffHeapAccess>> lStacks = new ArrayList<>();
+			ArrayList<StackInterface> lStacks = new ArrayList<>();
 			for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 				if (isRelevantDetectionArm(pControlPlaneIndex, d))
 				{
-					final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStackInterface = pLSM.getStackVariable(d)
+					final StackInterface lStackInterface = pLSM.getStackVariable(d)
 																																														.get();
 					lStacks.add(lStackInterface.duplicate());
 
@@ -223,7 +224,7 @@ public abstract class NDIteratorAdaptationModule extends
 
 					System.out.println("lArgMaxList=" + lArgMaxList.toString());
 
-					for (StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack : lStacks)
+					for (StackInterface lStack : lStacks)
 						lStack.free();
 
 					updateNewState(	pControlPlaneIndex,
@@ -274,7 +275,7 @@ public abstract class NDIteratorAdaptationModule extends
 																		int pLightSheetIndex,
 																		int pDetectionArmIndex,
 																		final TDoubleArrayList lDOFValueList,
-																		StackInterface<UnsignedShortType, ShortOffHeapAccess> lDuplicatedStack)
+																		StackInterface lDuplicatedStack)
 	{
 
 		DCTS2D lDCTS2D = new DCTS2D();

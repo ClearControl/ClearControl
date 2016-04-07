@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,11 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import model.component.RunnableFX;
 import rtlib.cameras.StackCameraDeviceInterface;
-import utils.RunFX;
 
 /**
  * CameraDeviceGUI
@@ -51,7 +47,7 @@ public class CameraDevicePanel
 	Line hLine, vLine;
 	Text hText, vText;
 
-	public CameraDevicePanel(StackCameraDeviceInterface<?, ?> cameraDeviceInterface)
+	public CameraDevicePanel(StackCameraDeviceInterface cameraDeviceInterface)
 	{
 		// Setting up the double properties with 256x256
 		widthDoubleProperty = new SimpleDoubleProperty(37.5);

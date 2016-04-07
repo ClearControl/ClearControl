@@ -62,21 +62,25 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 		return mStackDepthVariable;
 	}
 
+	@Override
 	public DoubleVariable getExposureInMicrosecondsVariable()
 	{
 		return mExposureInMicrosecondsVariable;
 	}
 
+	@Override
 	public DoubleVariable getPixelSizeInNanometersVariable()
 	{
 		return mPixelSizeinNanometersVariable;
 	}
 
+	@Override
 	public BooleanVariable getIsAcquiringVariable()
 	{
 		return mIsAcquiring;
 	}
 
+	@Override
 	public DoubleVariable getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;

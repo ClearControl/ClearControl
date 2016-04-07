@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.cameras.gui.jfx.CameraDevicePanel;
 import rtlib.core.variable.types.booleanv.BooleanVariable;
@@ -23,10 +21,10 @@ public class CameraDevicePanelDemo extends Application
 	public void start(Stage pPrimaryStage) throws Exception
 	{
 
-		final ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess> lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory<UnsignedShortType, ShortOffHeapAccess>();
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-		final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> lRecycler = new BasicRecycler<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>>(lOffHeapPlanarStackFactory,
-																																																																																																																					10);
+		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+																																																											10);
 		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
 																																	101L,
 																																	103L,
@@ -36,7 +34,6 @@ public class CameraDevicePanelDemo extends Application
 																										false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
-																																														new UnsignedShortType(),
 																																														lTrigger);
 
 		CameraDevicePanel lCameraDevicePanel = new CameraDevicePanel(lStackCameraDeviceSimulator);

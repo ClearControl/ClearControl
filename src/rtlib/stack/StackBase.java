@@ -3,21 +3,17 @@ package rtlib.stack;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
 
-public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																						FreeableBase implements
-																									StackInterface<T, A>
+public abstract class StackBase extends FreeableBase implements
+																										StackInterface
 {
 
-	protected RecyclerInterface<StackInterface<T, A>, StackRequest<T>> mStackBasicRecycler;
+	protected RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
 	protected volatile boolean mIsReleased;
 
-	protected T mType;
 	protected volatile long mStackIndex;
 	protected volatile long mTimeStampInNanoseconds;
 	protected double[] mVoxelSizeInRealUnits;
@@ -38,13 +34,13 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 
 	@Override
 	public void setVoxelSizeInRealUnits(final int pIndex,
-										final double pVoxelSizeInRealUnits)
+																			final double pVoxelSizeInRealUnits)
 	{
 		if (mVoxelSizeInRealUnits == null)
 			mVoxelSizeInRealUnits = new double[pIndex + 1];
 		if (mVoxelSizeInRealUnits.length <= pIndex)
-			mVoxelSizeInRealUnits = Arrays.copyOf(	mVoxelSizeInRealUnits,
-													pIndex + 1);
+			mVoxelSizeInRealUnits = Arrays.copyOf(mVoxelSizeInRealUnits,
+																						pIndex + 1);
 		for (int i = 0; i < mVoxelSizeInRealUnits.length; i++)
 			if (mVoxelSizeInRealUnits[i] == 0)
 				mVoxelSizeInRealUnits[i] = 1;
@@ -58,7 +54,7 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 		if (mVoxelSizeInRealUnits == null)
 			return null;
 		return Arrays.copyOf(	mVoxelSizeInRealUnits,
-								mVoxelSizeInRealUnits.length);
+													mVoxelSizeInRealUnits.length);
 	}
 
 	@Override
@@ -110,23 +106,12 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public T getType()
-	{
-		return mType;
-	}
-
-	public void setType(final T pType)
-	{
-		mType = pType;
-	}
-
-	@Override
-	public void copyMetaDataFrom(final StackInterface<T, A> pStack)
+	public void copyMetaDataFrom(final StackInterface pStack)
 	{
 		mVoxelSizeInRealUnits = getVoxelSizeInRealUnits();
 		setIndex(pStack.getIndex());
 		setTimeStampInNanoseconds(pStack.getTimeStampInNanoseconds());
-		setType(pStack.getType());
+
 	}
 
 	@Override
@@ -156,40 +141,35 @@ public abstract class StackBase<T extends NativeType<T>, A extends ArrayDataAcce
 	}
 
 	@Override
-	public void setRecycler(final RecyclerInterface<StackInterface<T, A>, StackRequest<T>> pRecycler)
+	public void setRecycler(final RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
 		mStackBasicRecycler = pRecycler;
 	}
 
-	public static <T extends NativeType<T>, A extends ArrayDataAccess<A>> StackInterface<T, A> requestOrWaitWithRecycler(	final BasicRecycler<StackInterface<T, A>, StackRequest<T>> pRecycler,
-																															final long pWaitTime,
-																															final TimeUnit pTimeUnit,
-																															final T pType,
-																															final long pWidth,
-																															final long pHeight,
-																															final long pDepth)
+	public static StackInterface requestOrWaitWithRecycler(	final BasicRecycler<StackInterface, StackRequest> pRecycler,
+																													final long pWaitTime,
+																													final TimeUnit pTimeUnit,
+																													final long pWidth,
+																													final long pHeight,
+																													final long pDepth)
 	{
-		final StackRequest<T> lStackRequest = new StackRequest<T>(	pType,
-																	pWidth,
-																	pHeight,
-																	pDepth);
+		final StackRequest lStackRequest = new StackRequest(pWidth,
+																												pHeight,
+																												pDepth);
 
-		return pRecycler.getOrWait(	pWaitTime,
-									pTimeUnit,
-									lStackRequest);
+		return pRecycler.getOrWait(pWaitTime, pTimeUnit, lStackRequest);
 	}
 
 	@Override
 	public String toString()
 	{
-		return String.format(	"StackBase [mStackIndex=%s, mTimeStampInNanoseconds=%s, mType=%s, mVoxelSizeInRealUnits=%s, mNumberOfImagesPerPlane=%s, mIsReleased=%s, mStackBasicRecycler=%s]",
-								mStackIndex,
-								mTimeStampInNanoseconds,
-								mType,
-								Arrays.toString(mVoxelSizeInRealUnits),
-								mNumberOfImagesPerPlane,
-								mIsReleased,
-								mStackBasicRecycler);
+		return String.format(	"StackBase [mStackIndex=%s, mTimeStampInNanoseconds=%s, mVoxelSizeInRealUnits=%s, mNumberOfImagesPerPlane=%s, mIsReleased=%s, mStackBasicRecycler=%s]",
+													mStackIndex,
+													mTimeStampInNanoseconds,
+													Arrays.toString(mVoxelSizeInRealUnits),
+													mNumberOfImagesPerPlane,
+													mIsReleased,
+													mStackBasicRecycler);
 	}
 
 }

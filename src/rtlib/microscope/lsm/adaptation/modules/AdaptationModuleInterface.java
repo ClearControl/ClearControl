@@ -15,6 +15,7 @@ public interface AdaptationModuleInterface extends Function<Void,Boolean>
 
 	int getPriority();
 
+	@Override
 	Boolean apply(Void pVoid);
 
 	boolean isReady();

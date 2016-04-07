@@ -15,7 +15,7 @@ public class RandomStackSource implements
 															StackSourceInterface<UnsignedShortType, ShortOffHeapAccess>
 {
 
-	private RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> mStackBasicRecycler;
+	private RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
 	private long mWidth;
 	private long mHeight;
 	private long mDepth;
@@ -23,7 +23,7 @@ public class RandomStackSource implements
 	public RandomStackSource(	long pWidth,
 														long pHeight,
 														long pDepth,
-														final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pStackRecycler) throws IOException
+														final RecyclerInterface<StackInterface, StackRequest> pStackRecycler) throws IOException
 	{
 		mWidth = pWidth;
 		mHeight = pHeight;
@@ -32,7 +32,7 @@ public class RandomStackSource implements
 	}
 
 	@Override
-	public void setStackRecycler(final RecyclerInterface<StackInterface<UnsignedShortType, ShortOffHeapAccess>, StackRequest<UnsignedShortType>> pStackRecycler)
+	public void setStackRecycler(final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 	{
 		mStackBasicRecycler = pStackRecycler;
 	}
@@ -56,15 +56,15 @@ public class RandomStackSource implements
 	}
 
 	@Override
-	public StackInterface<UnsignedShortType, ShortOffHeapAccess> getStack(final long pStackIndex)
+	public StackInterface getStack(final long pStackIndex)
 	{
 		return getStack(pStackIndex, 1, TimeUnit.NANOSECONDS);
 	}
 
 	@Override
-	public StackInterface<UnsignedShortType, ShortOffHeapAccess> getStack(final long pStackIndex,
-																																				long pTime,
-																																				TimeUnit pTimeUnit)
+	public StackInterface getStack(	final long pStackIndex,
+																	long pTime,
+																	TimeUnit pTimeUnit)
 	{
 		if (mStackBasicRecycler == null)
 		{
@@ -72,14 +72,13 @@ public class RandomStackSource implements
 		}
 		try
 		{
-			final StackRequest<UnsignedShortType> lStackRequest = StackRequest.build(	new UnsignedShortType(),
-																																mWidth,
-																																mHeight,
-																																mDepth);
+			final StackRequest lStackRequest = StackRequest.build(mWidth,
+																														mHeight,
+																														mDepth);
 
-			final StackInterface<UnsignedShortType, ShortOffHeapAccess> lStack = mStackBasicRecycler.getOrWait(	pTime,
-																																				pTimeUnit,
-																																				lStackRequest);
+			final StackInterface lStack = mStackBasicRecycler.getOrWait(pTime,
+																																	pTimeUnit,
+																																	lStackRequest);
 
 			if (lStack.getContiguousMemory() != null)
 			{

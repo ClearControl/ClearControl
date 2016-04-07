@@ -126,6 +126,7 @@ public class Adaptator implements
 		return apply(1);
 	}
 
+	@Override
 	public Boolean apply(Integer pTimes)
 	{
 		if (pTimes <= 0 || mAdaptationModuleList.size() == 0)
@@ -175,7 +176,7 @@ public class Adaptator implements
 		long lStopTimeNS = System.nanoTime();
 
 		long lElapsedTimeInNS = lStopTimeNS - lStartTimeNS;
-		double lElpasedTimeInMilliseconds = (double) TimeUnit.MILLISECONDS.convert(	lElapsedTimeInNS,
+		double lElpasedTimeInMilliseconds = TimeUnit.MILLISECONDS.convert(	lElapsedTimeInNS,
 																																								TimeUnit.NANOSECONDS);
 
 		mTimmingMap.put(pMethod, lElapsedTimeInNS);

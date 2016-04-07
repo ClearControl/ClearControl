@@ -2,15 +2,6 @@ package rtlib.gui.video.video2d.videowindow;
 
 import java.io.IOException;
 
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.integer.ByteType;
-import net.imglib2.type.numeric.integer.IntType;
-import net.imglib2.type.numeric.integer.ShortType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedIntType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.DoubleType;
-import net.imglib2.type.numeric.real.FloatType;
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 import cleargl.GLAttribute;
@@ -29,8 +20,8 @@ import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
-final class ClearGLDebugEventListenerForVideoWindow<T extends NativeType<T>>	extends
-																																							ClearGLDefaultEventListener
+final class ClearGLDebugEventListenerForVideoWindow	extends
+																										ClearGLDefaultEventListener
 {
 
 	private GLProgram mGLProgramVideoRender;
@@ -60,14 +51,14 @@ final class ClearGLDebugEventListenerForVideoWindow<T extends NativeType<T>>	ext
 	/**
 	 * 
 	 */
-	private final VideoWindow<T> mVideoWindow;
+	private final VideoWindow mVideoWindow;
 
 	/**
 	 * Constructs an instance of the ClearGLDebugEventListenerForVideoWindow class
 	 * 
 	 * @param pVideoWindow
 	 */
-	ClearGLDebugEventListenerForVideoWindow(VideoWindow<T> pVideoWindow)
+	ClearGLDebugEventListenerForVideoWindow(VideoWindow pVideoWindow)
 	{
 		mVideoWindow = pVideoWindow;
 	}
@@ -205,21 +196,21 @@ final class ClearGLDebugEventListenerForVideoWindow<T extends NativeType<T>>	ext
 
 		NativeTypeEnum lGLType = null;
 
-		if (mVideoWindow.mType instanceof ByteType)
+		if (mVideoWindow.mType == NativeTypeEnum.Byte)
 			lGLType = NativeTypeEnum.Byte;
-		else if (mVideoWindow.mType instanceof UnsignedByteType)
+		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedByte)
 			lGLType = NativeTypeEnum.UnsignedByte;
-		else if (mVideoWindow.mType instanceof ShortType)
+		else if (mVideoWindow.mType == NativeTypeEnum.Short)
 			lGLType = NativeTypeEnum.Short;
-		else if (mVideoWindow.mType instanceof UnsignedShortType)
+		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedShort)
 			lGLType = NativeTypeEnum.UnsignedShort;
-		else if (mVideoWindow.mType instanceof IntType)
+		else if (mVideoWindow.mType == NativeTypeEnum.Int)
 			lGLType = NativeTypeEnum.Int;
-		else if (mVideoWindow.mType instanceof UnsignedIntType)
+		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedInt)
 			lGLType = NativeTypeEnum.UnsignedInt;
-		else if (mVideoWindow.mType instanceof FloatType)
+		else if (mVideoWindow.mType == NativeTypeEnum.Float)
 			lGLType = NativeTypeEnum.Float;
-		else if (mVideoWindow.mType instanceof DoubleType)
+		else if (mVideoWindow.mType == NativeTypeEnum.Double)
 			lGLType = NativeTypeEnum.Float;
 
 		mTexture = new GLTexture(	mGLProgramVideoRender,
@@ -370,7 +361,7 @@ final class ClearGLDebugEventListenerForVideoWindow<T extends NativeType<T>>	ext
 																									int pBufferHeight)
 	{
 
-		if (mVideoWindow.mType instanceof DoubleType)
+		if (mVideoWindow.mType == NativeTypeEnum.Double)
 		{
 			final int lLengthInFloats = pBufferWidth * pBufferHeight;
 			if (mVideoWindow.mConversionBuffer == null || mVideoWindow.mConversionBuffer.getSizeInBytes() != lLengthInFloats * Size.FLOAT)

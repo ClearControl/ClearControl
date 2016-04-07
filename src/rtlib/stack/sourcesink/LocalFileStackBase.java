@@ -14,8 +14,6 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 																								StackServerBase<T, A>	implements
 																														AutoCloseable
 {
-	protected final T mType;
-
 	protected final File mFolder;
 	private final File mDataFolder;
 	protected final File mBinaryFile;
@@ -32,7 +30,6 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 								final boolean pReadOnly) throws IOException
 	{
 		super();
-		mType = pType;
 		mFolder = new File(pRootFolder, pName);
 		mDataFolder = new File(mFolder, "/data/");
 		mBinaryFile = new File(mDataFolder, "data.bin");
