@@ -29,8 +29,8 @@ public class HalcyonGUI extends Application
 
 	public HalcyonGUI()
 	{
-		TreePanel lTreePanel = new TreePanel(	"Config",
-																					"Microscopy",
+		TreePanel lTreePanel = new TreePanel(	"Device tree",
+																					"Root",
 																					this.getClass()
 																							.getResourceAsStream("/rtlib/gui/halcyon/icons/folder_16.png"),
 																					NodeType.values());

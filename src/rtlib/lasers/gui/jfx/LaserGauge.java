@@ -51,9 +51,9 @@ public class LaserGauge
 	private double mMaxPower;
 
 	private IconSwitch mLaserOnSwitch;
-	private RadialBargraph mTargetGauge;
-	private RadialBargraph mActualGauge;
-	Marker mwMarker;
+	private RadialBargraph mTargetPowerGauge;
+	private RadialBargraph mCurrentPowerGauge;
+	private Marker mTargetPowerMarker;
 
 	private VBox properties;
 	private HBox pane;
@@ -82,12 +82,12 @@ public class LaserGauge
 
 	public Property<Number> getTargetPowerProperty()
 	{
-		return mwMarker.valueProperty();
+		return mTargetPowerMarker.valueProperty();
 	}
 
 	public Property<Number> getCurrentPowerProperty()
 	{
-		return mActualGauge.valueProperty();
+		return mCurrentPowerGauge.valueProperty();
 	}
 
 	private void init()
@@ -111,31 +111,32 @@ public class LaserGauge
 		// Target gauge build
 
 		// Marker for user input
-		mwMarker = new Marker(0, mPowerUnits);
-		mTargetGauge = RadialBargraphBuilder.create()
-																				.title("Target")
-																				.unit(mPowerUnits)
-																				.markers(mwMarker)
-																				.maxValue(mMaxPower)
-																				.build();
-		mTargetGauge.setBarGradientEnabled(true);
-		mTargetGauge.setBarGradient(stops);
-		mTargetGauge.setAnimated(false);
-		mTargetGauge.setInteractive(true);
+		mTargetPowerMarker = new Marker(0, mPowerUnits);
+		mTargetPowerGauge = RadialBargraphBuilder.create()
+																							.title("Target")
+																							.unit(mPowerUnits)
+																							.markers(mTargetPowerMarker)
+																							.maxValue(mMaxPower)
+																							.build();
+		mTargetPowerGauge.setBarGradientEnabled(true);
+		mTargetPowerGauge.setBarGradient(stops);
+		mTargetPowerGauge.setAnimated(false);
+		mTargetPowerGauge.setInteractive(true);
 
 		// As soon as user changes the target value, it updates gauge value
-		mTargetGauge.valueProperty().bind(mwMarker.valueProperty());
+		mTargetPowerMarker.valueProperty()
+											.bindBidirectional(mTargetPowerGauge.valueProperty());
 
 		// Actual gauge build
-		mActualGauge = RadialBargraphBuilder.create()
-																				.title("Current")
-																				.unit(mPowerUnits)
-																				.maxValue(mMaxPower)
-																				.build();
-		mActualGauge.setAnimated(false);
-		mActualGauge.setBarGradientEnabled(true);
-		mActualGauge.setBarGradient(stops);
-		mActualGauge.setDisable(true);
+		mCurrentPowerGauge = RadialBargraphBuilder.create()
+																							.title("Current")
+																							.unit(mPowerUnits)
+																							.maxValue(mMaxPower)
+																							.build();
+		mCurrentPowerGauge.setAnimated(false);
+		mCurrentPowerGauge.setBarGradientEnabled(true);
+		mCurrentPowerGauge.setBarGradient(stops);
+		mCurrentPowerGauge.setDisable(true);
 
 		// Laser name with Wavelength
 		properties = new VBox();
@@ -177,7 +178,9 @@ public class LaserGauge
 		hBox.setBackground(null);
 		// hBox.setPadding(new Insets(15, 15, 15, 15));
 		hBox.setSpacing(10);
-		hBox.getChildren().addAll(pane, mTargetGauge, mActualGauge);
+		hBox.getChildren().addAll(pane,
+															mTargetPowerGauge,
+															mCurrentPowerGauge);
 		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
 									+ "-fx-border-color: black");
 

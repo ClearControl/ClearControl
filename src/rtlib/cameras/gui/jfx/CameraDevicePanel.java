@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -26,6 +27,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import rtlib.cameras.StackCameraDeviceInterface;
+import rtlib.core.variable.javafx.JFXSimpleLongPropertyVariable;
 
 /**
  * CameraDeviceGUI
@@ -33,25 +35,71 @@ import rtlib.cameras.StackCameraDeviceInterface;
 public class CameraDevicePanel
 {
 	final private int resUnit = 256;
-	final int size = 300;
+	final int mMainRectangleSize = 300;
+
+	int mMaxCameraWidth = 2048;
+	int mMaxCameraHeight = 2048;
 
 	// String properties hold the actual dimension size for the capture resolution
-	private StringProperty widthStringProperty, heightStringProperty;
+	private StringProperty mCameraWidthStringProperty,
+			mCameraHeightStringProperty;
 
 	// Double properties hold pixel based values for the rectangle's width and
 	// height
-	private DoubleProperty widthDoubleProperty, heightDoubleProperty;
+	private DoubleProperty mRectangleWidthProperty,
+			mRectangleHeightProperty;
+
+	private SimpleLongProperty mCameraWidthProperty,
+			mCameraHeightProperty;
 
 	private GridPane gridPane;
 	Rectangle rect = createDraggableRectangle(37.5, 37.5);
 	Line hLine, vLine;
 	Text hText, vText;
 
-	public CameraDevicePanel(StackCameraDeviceInterface cameraDeviceInterface)
+	public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
 	{
 		// Setting up the double properties with 256x256
-		widthDoubleProperty = new SimpleDoubleProperty(37.5);
-		heightDoubleProperty = new SimpleDoubleProperty(37.5);
+		mRectangleWidthProperty = new SimpleDoubleProperty(37.5);
+		mRectangleHeightProperty = new SimpleDoubleProperty(37.5);
+
+		mCameraWidthProperty = new SimpleLongProperty(256L);
+		mCameraHeightProperty = new SimpleLongProperty(256L);
+
+		mCameraWidthProperty.addListener((obs, pOldValue, pNewValue) -> {
+			if (pOldValue != pNewValue)
+				mRectangleWidthProperty.set((pNewValue.longValue() * mMainRectangleSize) / mMaxCameraWidth);
+		});
+
+		mCameraHeightProperty.addListener((obs, pOldValue, pNewValue) -> {
+			if (pOldValue != pNewValue)
+				mRectangleHeightProperty.set((pNewValue.longValue() * mMainRectangleSize) / mMaxCameraHeight);
+		});
+
+		mRectangleWidthProperty.addListener((obs, pOldValue, pNewValue) -> {
+			if (pOldValue != pNewValue)
+				mCameraWidthProperty.set((pNewValue.longValue() * mMaxCameraWidth) / mMainRectangleSize);
+		});
+
+		mRectangleHeightProperty.addListener((obs, pOldValue, pNewValue) -> {
+			if (pOldValue != pNewValue)
+				mCameraHeightProperty.set((pNewValue.longValue() * mMaxCameraHeight) / mMainRectangleSize);
+		});/**/
+
+		JFXSimpleLongPropertyVariable lWidthPropertyVariable = new JFXSimpleLongPropertyVariable(	mCameraWidthProperty,
+																																															"WidthPropertyVariable",
+																																															0L);
+
+		pCameraDeviceInterface.getStackWidthVariable()
+													.syncWith(lWidthPropertyVariable);
+
+		JFXSimpleLongPropertyVariable lHeightWidthPropertyVariable = new JFXSimpleLongPropertyVariable(	mCameraHeightProperty,
+																																																		"HeightPropertyVariable",
+																																																		0L);
+
+		pCameraDeviceInterface.getStackHeightVariable()
+													.syncWith(lHeightWidthPropertyVariable);
+
 		init();
 	}
 
@@ -69,11 +117,13 @@ public class CameraDevicePanel
 				Button button = new Button(height + "\n" + width);
 				button.setMaxWidth(Double.MAX_VALUE);
 				button.setOnAction(event -> {
-					widthDoubleProperty.set(width * size / 2048);
-					heightDoubleProperty.set(height * size / 2048);
+					mRectangleWidthProperty.set(width * mMainRectangleSize
+																			/ mMaxCameraWidth);
+					mRectangleHeightProperty.set(height * mMainRectangleSize
+																				/ mMaxCameraHeight);
 
-					widthStringProperty.set(Integer.toString(width));
-					heightStringProperty.set(Integer.toString(height));
+					mCameraWidthStringProperty.set(Integer.toString(width));
+					mCameraHeightStringProperty.set(Integer.toString(height));
 
 					// System.out.println( "Set width/height: " + width + "/" + height );
 				});
@@ -88,12 +138,18 @@ public class CameraDevicePanel
 	{
 		Pane canvas = new Pane();
 		canvas.setStyle("-fx-background-color: green;");
-		canvas.setPrefSize(size, size);
+		canvas.setPrefSize(mMainRectangleSize, mMainRectangleSize);
 
-		Line line = new Line(size / 2, 0, size / 2, size);
+		Line line = new Line(	mMainRectangleSize / 2,
+													0,
+													mMainRectangleSize / 2,
+													mMainRectangleSize);
 		canvas.getChildren().add(line);
 
-		line = new Line(0, size / 2, size, size / 2);
+		line = new Line(0,
+										mMainRectangleSize / 2,
+										mMainRectangleSize,
+										mMainRectangleSize / 2);
 		canvas.getChildren().add(line);
 
 		canvas.getChildren().addAll(rect);
@@ -104,7 +160,7 @@ public class CameraDevicePanel
 		widthBox.getChildren().add(new Label("Width: "));
 		TextField width = new TextField();
 		width.setPrefWidth(80);
-		widthStringProperty = width.textProperty();
+		mCameraWidthStringProperty = width.textProperty();
 		widthBox.getChildren().add(width);
 
 		HBox heightBox = new HBox(5);
@@ -113,7 +169,7 @@ public class CameraDevicePanel
 		heightBox.getChildren().add(new Label("Height: "));
 		TextField height = new TextField();
 		height.setPrefWidth(80);
-		heightStringProperty = height.textProperty();
+		mCameraHeightStringProperty = height.textProperty();
 		heightBox.getChildren().add(height);
 
 		VBox vBox = new VBox(gridPane, widthBox, heightBox);
@@ -132,44 +188,44 @@ public class CameraDevicePanel
 		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
 									+ "-fx-border-color: grey");
 
-		widthDoubleProperty.bindBidirectional(rect.widthProperty());
-		heightDoubleProperty.bindBidirectional(rect.heightProperty());
+		mRectangleWidthProperty.bindBidirectional(rect.widthProperty());
+		mRectangleHeightProperty.bindBidirectional(rect.heightProperty());
 
-		Bindings.bindBidirectional(	widthStringProperty,
-																widthDoubleProperty,
+		Bindings.bindBidirectional(	mCameraWidthStringProperty,
+																mRectangleWidthProperty,
 																new StringConverter<Number>()
 																{
 																	@Override
 																	public String toString(Number object)
 																	{
-																		return Integer.toString((int) Math.round(object.doubleValue() * 2048
-																																							/ size));
+																		return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraWidth
+																																							/ mMainRectangleSize));
 																	}
 
 																	@Override
 																	public Number fromString(String string)
 																	{
-																		return Double.parseDouble(string) * size
-																						/ 2048;
+																		return Double.parseDouble(string) * mMainRectangleSize
+																						/ mMaxCameraWidth;
 																	}
 																});
 
-		Bindings.bindBidirectional(	heightStringProperty,
-																heightDoubleProperty,
+		Bindings.bindBidirectional(	mCameraHeightStringProperty,
+																mRectangleHeightProperty,
 																new StringConverter<Number>()
 																{
 																	@Override
 																	public String toString(Number object)
 																	{
-																		return Integer.toString((int) Math.round(object.doubleValue() * 2048
-																																							/ size));
+																		return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraHeight
+																																							/ mMainRectangleSize));
 																	}
 
 																	@Override
 																	public Number fromString(String string)
 																	{
-																		return Double.parseDouble(string) * size
-																						/ 2048;
+																		return Double.parseDouble(string) * mMainRectangleSize
+																						/ mMaxCameraHeight;
 																	}
 																});
 
@@ -208,18 +264,18 @@ public class CameraDevicePanel
 	private Rectangle createDraggableRectangle(	double width,
 																							double height)
 	{
-		double x = size / 2 - width / 2;
-		double y = size / 2 - height / 2;
+		double x = mMainRectangleSize / 2 - width / 2;
+		double y = mMainRectangleSize / 2 - height / 2;
 
 		Rectangle rect = new Rectangle(x, y, width, height);
 
 		rect.heightProperty()
-				.addListener((observable, oldValue, newValue) -> rect.setY(size / 2
+				.addListener((observable, oldValue, newValue) -> rect.setY(mMainRectangleSize / 2
 																																		- newValue.intValue()
 																																		/ 2));
 
 		rect.widthProperty()
-				.addListener((observable, oldValue, newValue) -> rect.setX(size / 2
+				.addListener((observable, oldValue, newValue) -> rect.setX(mMainRectangleSize / 2
 																																		- newValue.intValue()
 																																		/ 2));
 
@@ -229,9 +285,10 @@ public class CameraDevicePanel
 
 		hText = new Text();
 		hText.setStroke(Color.WHITE);
-		hText.textProperty().bind(rect.widthProperty()
-																	.multiply(2048f / size)
-																	.asString("%.0f px"));
+		hText.textProperty()
+					.bind(rect.widthProperty()
+										.multiply(mMaxCameraWidth / mMainRectangleSize)
+										.asString("%.0f px"));
 		hText.translateXProperty().bind(rect.xProperty()
 																				.add(rect.widthProperty()
 																									.divide(2.5)));
@@ -257,7 +314,7 @@ public class CameraDevicePanel
 			{
 				double deltaY = event.getSceneY() - mouseLocation.value.getY();
 				double newMaxY = rect.getY() + rect.getHeight() + deltaY;
-				if (newMaxY >= rect.getY() && newMaxY <= size)
+				if (newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize)
 				{
 					rect.setHeight(rect.getHeight() + deltaY * 2);
 				}
@@ -269,9 +326,10 @@ public class CameraDevicePanel
 		vText = new Text();
 		vText.setStroke(Color.WHITE);
 		vText.setTranslateX(7);
-		vText.textProperty().bind(rect.heightProperty()
-																	.multiply(2048f / size)
-																	.asString("%.0f px"));
+		vText.textProperty()
+					.bind(rect.heightProperty()
+										.multiply(mMaxCameraHeight / mMainRectangleSize)
+										.asString("%.0f px"));
 		vText.translateXProperty().bind(rect.xProperty()
 																				.add(rect.widthProperty()
 																									.subtract(55)));
@@ -297,7 +355,7 @@ public class CameraDevicePanel
 			{
 				double deltaX = event.getSceneX() - mouseLocation.value.getX();
 				double newMaxX = rect.getX() + rect.getWidth() + deltaX;
-				if (newMaxX >= rect.getX() && newMaxX <= size)
+				if (newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize)
 				{
 					rect.setWidth(rect.getWidth() + deltaX * 2);
 				}
