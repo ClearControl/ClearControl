@@ -1,13 +1,14 @@
 package rtlib.core.variable.javafx;
 
-import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 import rtlib.core.variable.Variable;
+import rtlib.core.variable.events.EventPropagator;
 
 public class JFXPropertyVariable<O> extends Variable<O>
 {
 	private Property<O> mProperty;
+	private Object mThreadDispatch = new Object();
 
 	public JFXPropertyVariable(	Property<O> pProperty,
 															String pVariableName,
@@ -20,21 +21,33 @@ public class JFXPropertyVariable<O> extends Variable<O>
 														O pOldValue,
 														O pNewValue) -> {
 
-			if (pOldValue != pNewValue)
+			if (!pOldValue.equals(pNewValue))
+			{
+				EventPropagator.add(mThreadDispatch);
 				this.set(pNewValue);
+			}
 		});
 
 		addSetListener((O pOldValue, O pNewValue) -> {
-			if (pOldValue != pNewValue)
+			if (!pOldValue.equals(pNewValue))
 			{
-				Platform.runLater(new Runnable()
+				// ArrayList<Object> lListOfTraversedObjects =
+				// EventPropagator.getListOfTraversedObjects();
+
+				if (!pOldValue.equals(pNewValue))
+				{
+					EventPropagator.add(mThreadDispatch);
+					mProperty.setValue(pNewValue);
+				}
+
+				/*Platform.runLater(new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						mProperty.setValue(pNewValue);
+						
 					}
-				});
+				});/**/
 			}
 
 		});

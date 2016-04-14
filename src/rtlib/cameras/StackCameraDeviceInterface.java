@@ -24,6 +24,10 @@ public interface StackCameraDeviceInterface	extends
 
 	Variable<Long> getStackDepthVariable();
 
+	Variable<Long> getStackMaxWidthVariable();
+
+	Variable<Long> getStackMaxHeightVariable();
+
 	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
 	int getMinimalNumberOfAvailableStacks();

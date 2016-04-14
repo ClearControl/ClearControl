@@ -37,7 +37,7 @@ public class LightSheetMicroscope	extends
 	public LightSheetMicroscope(String pDeviceName)
 	{
 		super(pDeviceName, false);
-		mLSMDeviceLists = new LightSheetMicroscopeDeviceLists();
+		mLSMDeviceLists = new LightSheetMicroscopeDeviceLists(this);
 		mStackRecyclerManager = new StackRecyclerManager();
 	}
 

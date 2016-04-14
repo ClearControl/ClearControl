@@ -20,8 +20,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	protected Variable<Integer> mWorkingHoursVariable,
 			mSetOperatingModeVariable, mDeviceIdVariable,
 			mWavelengthVariable;
-	protected Variable<Boolean> mPowerOnVariable,
-			mLaserOnVariable;
+	protected Variable<Boolean> mPowerOnVariable, mLaserOnVariable;
 	private Runnable mCurrentPowerPoller;
 
 	private ScheduledFuture<?> mCurrentPowerPollerScheduledFutur;
@@ -53,10 +52,6 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	{
 		try
 		{
-
-			setTargetPowerInPercent(0);
-			setPowerOn(true);
-
 			mCurrentPowerPoller = new Runnable()
 			{
 				@Override
@@ -80,7 +75,6 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 																																												300,
 																																												TimeUnit.MILLISECONDS);
 
-			setLaserOn(true);
 			return true;
 		}
 		catch (final Throwable e)
@@ -95,7 +89,7 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	{
 		try
 		{
-			setLaserOn(false);
+
 			mCurrentPowerPollerScheduledFutur.cancel(true);
 			return true;
 		}
@@ -111,9 +105,6 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	{
 		try
 		{
-			setTargetPowerInPercent(0);
-			setLaserOn(false);
-			setPowerOn(false);
 			return super.close();
 		}
 		catch (final Throwable e)
@@ -257,10 +248,21 @@ public class LaserDeviceBase extends NamedVirtualDevice	implements
 	@Override
 	public String toString()
 	{
-		return String.format(	"LaserDeviceBase [mDeviceIdVariable=%d, mWavelengthVariable=%d, mMaxPowerVariable=%g]",
-													(int) mDeviceIdVariable.get(),
-													(int) mWavelengthVariable.get(),
-													mMaxPowerInMilliWattVariable.get());
+		if (mDeviceIdVariable == null || mWavelengthVariable == null
+				|| mMaxPowerInMilliWattVariable == null
+				|| mDeviceIdVariable.get() == null
+				|| mWavelengthVariable.get() == null
+				|| mMaxPowerInMilliWattVariable.get() == null)
+		{
+			return String.format("LaserDevice [null]");
+		}
+		else
+		{
+			return String.format(	"LaserDevice [mDeviceIdVariable=%d, mWavelengthVariable=%d, mMaxPowerVariable=%g]",
+														(int) mDeviceIdVariable.get(),
+														(int) mWavelengthVariable.get(),
+														mMaxPowerInMilliWattVariable.get());
+		}
 	}
 
 }

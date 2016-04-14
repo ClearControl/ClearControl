@@ -112,6 +112,8 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 			// setPowerOn(true);
 			mGetSetTargetPowerAdapter.setMaxPowerInMilliWatt(mMaxPowerInMilliWattVariable.get()
 																																										.doubleValue());
+			setPowerOn(true);
+
 			return lOpen;
 		}
 		catch (final Throwable e)
@@ -127,7 +129,6 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 		try
 		{
 			final boolean lStartResult = super.start();
-			// setLaserOn(true);
 			return lStartResult;
 		}
 		catch (final Throwable e)
@@ -142,7 +143,6 @@ public class OmicronLaserDevice extends LaserDeviceBase	implements
 	{
 		try
 		{
-			// setLaserOn(false);
 			return super.stop();
 		}
 		catch (final Throwable e)

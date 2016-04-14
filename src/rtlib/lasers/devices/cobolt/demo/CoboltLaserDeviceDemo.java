@@ -26,10 +26,9 @@ public class CoboltLaserDeviceDemo
 		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
 		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
 
-		lCoboltLaserDevice.getPowerOnVariable().set(true);
-		lCoboltLaserDevice.getLaserOnVariable().set(true);
-
 		assertTrue(lCoboltLaserDevice.start());
+
+		lCoboltLaserDevice.setLaserOn(true);
 
 		System.out.println("setting target power to 0mW ");
 		lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
@@ -52,21 +51,86 @@ public class CoboltLaserDeviceDemo
 		System.out.println("current power (mW): " + lCoboltLaserDevice.getCurrentPowerInMilliWatt());
 		System.out.println("current power (%): " + lCoboltLaserDevice.getCurrentPowerInPercent());
 
-		final int lTargetPower = 100;
+		final int lTargetPower = 76;
 		System.out.format("setting target power to: \t%d mW \n",
 											lTargetPower);
 		lCoboltLaserDevice.setTargetPowerInMilliWatt(lTargetPower);
 
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 20; i++)
 		{
 			System.out.format("       current power at: \t%g mW \n",
 												lCoboltLaserDevice.getCurrentPowerInMilliWatt());
 			Thread.sleep(500);
 		}
 
+		lCoboltLaserDevice.setLaserOn(false);
+
 		assertTrue(lCoboltLaserDevice.stop());
 
 		lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
+
+		assertTrue(lCoboltLaserDevice.close());
+
+	}
+
+	@Test
+	public void testStartStopCycle() throws InterruptedException
+	{
+		final CoboltLaserDevice lCoboltLaserDevice = new CoboltLaserDevice(	"Mambo",
+																																				100,
+																																				cCOMPORT);
+
+		assertTrue(lCoboltLaserDevice.open());
+
+		System.out.println("device id: " + lCoboltLaserDevice.getDeviceId());
+		System.out.println("working hours: " + lCoboltLaserDevice.getWorkingHours());
+		System.out.println("wavelength: " + lCoboltLaserDevice.getWavelengthInNanoMeter());
+		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
+		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
+
+		{
+			assertTrue(lCoboltLaserDevice.start());
+
+			lCoboltLaserDevice.getLaserOnVariable().set(true);
+
+			final int lTargetPower = 76;
+			System.out.format("setting target power to: \t%d mW \n",
+												lTargetPower);
+			lCoboltLaserDevice.setTargetPowerInMilliWatt(lTargetPower);
+
+			for (int i = 0; i < 10; i++)
+			{
+				System.out.format("       current power at: \t%g mW \n",
+													lCoboltLaserDevice.getCurrentPowerInMilliWatt());
+				Thread.sleep(500);
+			}
+
+			assertTrue(lCoboltLaserDevice.stop());
+
+			lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
+		}
+
+		{
+			assertTrue(lCoboltLaserDevice.start());
+
+			lCoboltLaserDevice.getLaserOnVariable().set(true);
+
+			final int lTargetPower = 76;
+			System.out.format("setting target power to: \t%d mW \n",
+												lTargetPower);
+			lCoboltLaserDevice.setTargetPowerInMilliWatt(lTargetPower);
+
+			for (int i = 0; i < 10; i++)
+			{
+				System.out.format("       current power at: \t%g mW \n",
+													lCoboltLaserDevice.getCurrentPowerInMilliWatt());
+				Thread.sleep(500);
+			}
+
+			assertTrue(lCoboltLaserDevice.stop());
+
+			lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
+		}
 
 		assertTrue(lCoboltLaserDevice.close());
 
@@ -87,9 +151,6 @@ public class CoboltLaserDeviceDemo
 		System.out.println("spec power (mW): " + lCoboltLaserDevice.getSpecPowerInMilliWatt());
 		System.out.println("max power (mW): " + lCoboltLaserDevice.getMaxPowerInMilliWatt());/**/
 
-		lCoboltLaserDevice.getPowerOnVariable().set(true);
-		lCoboltLaserDevice.getLaserOnVariable().set(true);
-
 		for (int i = 0; i < 20; i++)
 		{
 			System.out.format("       current power at: \t%g mW \n",
@@ -98,6 +159,8 @@ public class CoboltLaserDeviceDemo
 		}
 
 		assertTrue(lCoboltLaserDevice.start());
+
+		lCoboltLaserDevice.setLaserOn(true);
 
 		System.out.println("setting target power to 0mW ");
 		lCoboltLaserDevice.setTargetPowerInMilliWatt(0);
@@ -133,6 +196,8 @@ public class CoboltLaserDeviceDemo
 				Thread.sleep(10);
 			}
 		}
+
+		lCoboltLaserDevice.setLaserOn(false);
 
 		assertTrue(lCoboltLaserDevice.stop());
 

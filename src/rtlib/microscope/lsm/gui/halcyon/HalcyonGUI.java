@@ -2,6 +2,8 @@ package rtlib.microscope.lsm.gui.halcyon;
 
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNode;
+import halcyon.model.node.HalcyonNodeInterface;
+import halcyon.model.node.HalcyonSwingNode;
 import halcyon.view.TreePanel;
 
 import java.util.concurrent.CountDownLatch;
@@ -15,11 +17,14 @@ import javax.swing.SwingUtilities;
 
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.gui.jfx.CameraDevicePanel;
+import rtlib.core.configuration.MachineConfiguration;
 import rtlib.gui.halcyon.NodeType;
 import rtlib.lasers.LaserDeviceInterface;
 import rtlib.lasers.gui.jfx.LaserDeviceGUI;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
+import rtlib.scripting.engine.ScriptingEngine;
+import rtlib.scripting.gui.ScriptingWindow;
 import rtlib.stages.StageDeviceInterface;
 import rtlib.stages.gui.StageDeviceGUI;
 
@@ -67,12 +72,12 @@ public class HalcyonGUI extends Application
 
 		mHalcyonFrame = new HalcyonFrame(lTreePanel);
 
-		LightSheetMicroscopeDeviceLists deviceLists = pLightSheetMicroscopeInterface.getDeviceLists();
+		LightSheetMicroscopeDeviceLists lDeviceLists = pLightSheetMicroscopeInterface.getDeviceLists();
 
 		// Laser Device list
-		for (int i = 0; i < deviceLists.getNumberOfLaserDevices(); i++)
+		for (int i = 0; i < lDeviceLists.getNumberOfLaserDevices(); i++)
 		{
-			LaserDeviceInterface laserDevice = deviceLists.getLaserDevice(i);
+			LaserDeviceInterface laserDevice = lDeviceLists.getLaserDevice(i);
 
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI(laserDevice);
 
@@ -83,9 +88,9 @@ public class HalcyonGUI extends Application
 		}
 
 		// Stage Device List
-		for (int i = 0; i < deviceLists.getNumberOfStageDevices(); i++)
+		for (int i = 0; i < lDeviceLists.getNumberOfStageDevices(); i++)
 		{
-			StageDeviceInterface stageDevice = deviceLists.getStageDevice(i);
+			StageDeviceInterface stageDevice = lDeviceLists.getStageDevice(i);
 
 			// Stage
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI(stageDevice);
@@ -97,15 +102,37 @@ public class HalcyonGUI extends Application
 		}
 
 		// Stack Camera List
-		for (int i = 0; i < deviceLists.getNumberOfStackCameraDevices(); i++)
+		for (int i = 0; i < lDeviceLists.getNumberOfStackCameraDevices(); i++)
 		{
-			StackCameraDeviceInterface cameraDevice = deviceLists.getStackCameraDevice(i);
+			StackCameraDeviceInterface cameraDevice = lDeviceLists.getStackCameraDevice(i);
 
 			CameraDevicePanel cameraDeviceGUI = new CameraDevicePanel(cameraDevice);
 
 			HalcyonNode node = new HalcyonNode(	"Camera-" + i,
 																					NodeType.Camera,
 																					cameraDeviceGUI.getPanel());
+			mHalcyonFrame.addNode(node);
+		}
+
+		// Script Engines:
+		for (int i = 0; i < lDeviceLists.getNumberOfScriptingEngines(); i++)
+		{
+			ScriptingEngine lScriptingEngine = lDeviceLists.getScriptingEngine(i);
+
+			MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
+
+			ScriptingWindow lScriptingWindow = new ScriptingWindow(	pLightSheetMicroscopeInterface.getName() + " scripting window",
+																															lScriptingEngine,
+																															lCurrentMachineConfiguration.getIntegerProperty("scripting.nbrows",
+																																																							60),
+																															lCurrentMachineConfiguration.getIntegerProperty("scripting.nbcols",
+																																																							80));
+
+			lScriptingWindow.loadLastLoadedScriptFile();
+
+			HalcyonNodeInterface node = new HalcyonSwingNode(	"ScriptingEngine-" + i,
+																												NodeType.Scripting,
+																												lScriptingWindow);
 			mHalcyonFrame.addNode(node);
 		}
 
@@ -157,5 +184,10 @@ public class HalcyonGUI extends Application
 	public static void main(final String[] args)
 	{
 		launch(args);
+	}
+
+	public boolean isVisible()
+	{
+		return mHalcyonFrame.isVisible();
 	}
 }

@@ -70,7 +70,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		super(pWindowName);
 
 		mVideoWindow = new VideoWindow(	pWindowName,
-																		NativeTypeEnum.UnsignedByte,
+																		NativeTypeEnum.UnsignedShort,
 																		pWindowWidth,
 																		pWindowHeight);
 
@@ -216,7 +216,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		};
 
 		mManualMinMaxIntensity = new Variable<Boolean>(	"ManualMinMaxIntensity",
-																													false)
+																										false)
 		{
 			@Override
 			public Boolean setEventHook(final Boolean pOldValue,
@@ -228,8 +228,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMinimumIntensity = new Variable<Double>(	"MinimumIntensity",
-																										0.0)
+		mMinimumIntensity = new Variable<Double>("MinimumIntensity", 0.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -241,8 +240,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			}
 		};
 
-		mMaximumIntensity = new Variable<Double>(	"MaximumIntensity",
-																										1.0)
+		mMaximumIntensity = new Variable<Double>("MaximumIntensity", 1.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,
@@ -255,7 +253,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		};
 
 		mStackSliceNormalizedIndex = new Variable<Double>("StackSliceNormalizedIndex",
-																														Double.NaN);
+																											Double.NaN);
 
 		Runnable lAutoRescaleRunnable = () -> {
 			boolean lTryLock = false;

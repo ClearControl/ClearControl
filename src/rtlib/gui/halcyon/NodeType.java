@@ -19,7 +19,8 @@ public enum NodeType implements HalcyonNodeType
 	Stage,
 	FilterWheel,
 	AdaptiveOptics,
-	Other;
+	Other,
+	Scripting;
 
 	private static Properties mProperties;
 	static

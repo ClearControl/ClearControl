@@ -14,7 +14,9 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 			mLineReadOutTimeInMicrosecondsVariable;
 
 	protected Variable<Long> mStackBytesPerPixelVariable,
-			mStackWidthVariable, mStackHeightVariable, mStackDepthVariable;
+			mStackWidthVariable, mStackHeightVariable,
+			mStackMaxWidthVariable, mStackMaxHeightVariable,
+			mStackDepthVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
@@ -60,6 +62,16 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	public Variable<Long> getStackDepthVariable()
 	{
 		return mStackDepthVariable;
+	}
+
+	public Variable<Long> getStackMaxWidthVariable()
+	{
+		return mStackMaxWidthVariable;
+	}
+
+	public Variable<Long> getStackMaxHeightVariable()
+	{
+		return mStackMaxHeightVariable;
 	}
 
 	@Override

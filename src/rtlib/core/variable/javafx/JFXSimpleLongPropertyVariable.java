@@ -21,12 +21,12 @@ public class JFXSimpleLongPropertyVariable extends Variable<Long>
 														Number pOldValue,
 														Number pNewValue) -> {
 
-			if (pOldValue != pNewValue)
+			if (!pOldValue.equals(pNewValue))
 				this.set(pNewValue.longValue());
 		});
 
 		addSetListener((Long pOldValue, Long pNewValue) -> {
-			if (pOldValue != pNewValue)
+			if (!pOldValue.equals(pNewValue))
 			{
 				Platform.runLater(new Runnable()
 				{

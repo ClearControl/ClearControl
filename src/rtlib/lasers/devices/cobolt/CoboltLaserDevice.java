@@ -1,5 +1,6 @@
 package rtlib.lasers.devices.cobolt;
 
+import jssc.SerialPortException;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.Variable;
 import rtlib.lasers.LaserDeviceBase;
@@ -8,6 +9,7 @@ import rtlib.lasers.devices.cobolt.adapters.GetCurrentPowerAdapter;
 import rtlib.lasers.devices.cobolt.adapters.GetSetTargetPowerAdapter;
 import rtlib.lasers.devices.cobolt.adapters.GetWorkingHoursAdapter;
 import rtlib.lasers.devices.cobolt.adapters.SetPowerOnOffAdapter;
+import rtlib.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.lasers.devices.cobolt.models.CoboltDeviceEnum;
 import rtlib.serial.SerialDevice;
 
@@ -45,19 +47,19 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 		mMaxPowerInMilliWatt = pMaxPowerInMilliWatt;
 
 		mDeviceIdVariable = new Variable<Integer>("DeviceId",
-																										mCoboltModel.ordinal());
+																							mCoboltModel.ordinal());
 
 		mWavelengthVariable = new Variable<Integer>("WavelengthInNanoMeter",
-																											CoboltDeviceEnum.getWavelengthInNanoMeter(mCoboltModel));
+																								CoboltDeviceEnum.getWavelengthInNanoMeter(mCoboltModel));
 
 		mSpecInMilliWattPowerVariable = new Variable<Number>(	"SpecPowerInMilliWatt",
-																																mMaxPowerInMilliWatt);
+																													mMaxPowerInMilliWatt);
 
 		mMaxPowerInMilliWattVariable = new Variable<Number>("MaxPowerInMilliWatt",
-																															mMaxPowerInMilliWatt);
+																												mMaxPowerInMilliWatt);
 
 		mSetOperatingModeVariable = new Variable<Integer>("OperatingMode",
-																														0);
+																											0);
 
 		final SetPowerOnOffAdapter lSetPowerOnOffAdapter = new SetPowerOnOffAdapter();
 		mPowerOnVariable = mSerialDevice.addSerialVariable(	"PowerOn",
@@ -81,27 +83,73 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 	@Override
 	public boolean open()
 	{
-		return mSerialDevice.open();
+		boolean lResult = mSerialDevice.open();
+		mSerialDevice.getSerial()
+									.setLineTerminationCharacter(ProtocolCobolt.cMessageTerminationCharacter);
+
+		if (lResult)
+		{
+			// Clears 'faults'
+			sendCommand("cf\r");
+
+			// This command is needed otherwise the laser cannot be controlled via
+			// Serial,
+			// the documentation is really poor, and it took some work to figure this
+			// out...
+			sendCommand("@cobas 0\r");
+
+			/*sendCommand("f?\r");
+			sendCommand("ilk?\r");
+			sendCommand("@cobas?\r");
+			sendCommand("l?\r");
+			sendCommand("p?\r");
+			sendCommand("pa?\r");
+			sendCommand("i?\r");
+			sendCommand("leds?\r");
+			sendCommand("@cobasdr?\r");
+			sendCommand("@cobasky?\r");/**/
+		}
+
+		getPowerOnVariable().set(true);
+
+		return lResult;
 	}
 
 	@Override
 	public boolean start()
 	{
-		// mPowerOnVariable.setValue(true);
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		// mPowerOnVariable.setValue(false);
 		return true;
 	}
 
 	@Override
 	public boolean close()
 	{
+		getPowerOnVariable().set(false);
 		return mSerialDevice.close();
+	}
+
+	public String sendCommand(String pCommandString)
+	{
+		try
+		{
+			System.out.print(pCommandString.replace('\r', ' ').trim() + " --> ");
+			String lAnswer = mSerialDevice.getSerial()
+																		.writeStringAndGetAnswer(pCommandString);
+			System.out.println(lAnswer.trim());
+			return lAnswer;
+		}
+		catch (SerialPortException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

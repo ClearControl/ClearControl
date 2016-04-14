@@ -108,13 +108,12 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 		});
 
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
-																																				9.74);
+																																	9.74);
 
 		mStackBytesPerPixelVariable = new Variable<Long>(	"BytesPerPixel",
-																														mDcamAcquisition.getFrameBytesPerPixel());
+																											mDcamAcquisition.getFrameBytesPerPixel());
 
-		mStackWidthVariable = new Variable<Long>(	"FrameWidth",
-																										2048L)
+		mStackWidthVariable = new Variable<Long>("FrameWidth", 2048L)
 		{
 			@Override
 			public Long setEventHook(	final Long pOldValue,
@@ -135,8 +134,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 		};
 
-		mStackHeightVariable = new Variable<Long>("FrameHeight",
-																										2048L)
+		mStackHeightVariable = new Variable<Long>("FrameHeight", 2048L)
 		{
 			@Override
 			public Long setEventHook(	final Long pOldValue,
@@ -166,11 +164,16 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 		};
 
+		mStackMaxWidthVariable = new Variable<Long>("FrameMaxWidth",
+																								2048L);
+		mStackMaxHeightVariable = new Variable<Long>(	"FrameMaxHeight",
+																									2048L);
+
 		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeInNanometers",
-																																160.0);
+																													160.0);
 
 		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
-																																	5000.0)
+																														5000.0)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldExposureInMicroseconds,

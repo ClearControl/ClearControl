@@ -11,6 +11,7 @@ import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.optomech.OptoMechDeviceInterface;
 import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
+import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.StackProcessingPipeline;
 import rtlib.stages.StageDeviceInterface;
@@ -18,6 +19,7 @@ import rtlib.symphony.devices.SignalGeneratorInterface;
 
 public class LightSheetMicroscopeDeviceLists
 {
+	private LightSheetMicroscope mLightSheetMicroscope;
 
 	private final ArrayList<Object> mAllDeviceList = new ArrayList<>();
 
@@ -35,10 +37,13 @@ public class LightSheetMicroscopeDeviceLists
 	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
 	private final ArrayList<Variable<StackInterface>> mStackVariableList = new ArrayList<>();
 
+	private final ArrayList<ScriptingEngine> mScriptingEngineList = new ArrayList<>();
+
 	private SwitchingDeviceInterface mLightSheetSwitch;
 
-	public LightSheetMicroscopeDeviceLists()
+	public LightSheetMicroscopeDeviceLists(LightSheetMicroscope pLightSheetMicroscope)
 	{
+		mLightSheetMicroscope = pLightSheetMicroscope;
 
 	}
 
@@ -243,6 +248,24 @@ public class LightSheetMicroscopeDeviceLists
 	public void setLightSheetSelectorDevice(SwitchingDeviceInterface pDeviceSwitchingInterface)
 	{
 		mLightSheetSwitch = pDeviceSwitchingInterface;
+	}
+
+	public int addScriptingEngine(ScriptingEngine pScriptingEngine)
+	{
+		mAllDeviceList.add(pScriptingEngine);
+		mScriptingEngineList.add(pScriptingEngine);
+		pScriptingEngine.set("lsm", mLightSheetMicroscope);
+		return mScriptingEngineList.size() - 1;
+	}
+
+	public int getNumberOfScriptingEngines()
+	{
+		return mScriptingEngineList.size();
+	}
+
+	public ScriptingEngine getScriptingEngine(int pIndex)
+	{
+		return mScriptingEngineList.get(pIndex);
 	}
 
 	public ArrayList<Object> getAllDeviceList()

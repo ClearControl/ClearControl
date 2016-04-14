@@ -16,6 +16,13 @@ public interface LightSheetMicroscopeInterface extends
 {
 
 	/**
+	 * Returns the microscopes name.
+	 * 
+	 * @return microscope's name.
+	 */
+	public String getName();
+
+	/**
 	 * Returns the device list object from which all devices can be queried.
 	 * 
 	 * @return device list object

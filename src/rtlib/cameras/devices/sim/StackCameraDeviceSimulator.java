@@ -50,17 +50,22 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		mTriggerVariable = pTriggerVariable;
 
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
-																																				1.0);
+																																	1.0);
 		mStackBytesPerPixelVariable = new Variable<Long>(	"FrameBytesPerPixel",
-																														2L);
+																											2L);
 		mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
-		mStackHeightVariable = new Variable<Long>("FrameHeight",
-																										320L);
+		mStackHeightVariable = new Variable<Long>("FrameHeight", 320L);
+
+		mStackMaxWidthVariable = new Variable<Long>("FrameMaxWidth",
+																								2048L);
+		mStackMaxHeightVariable = new Variable<Long>(	"FrameMaxHeight",
+																									2048L);
+
 		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
 		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
-																																	1000.0);
+																														1000.0);
 		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeinNanometers",
-																																160.0);
+																													160.0);
 
 		mStackReference = new Variable<>("StackReference");
 

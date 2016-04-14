@@ -29,6 +29,8 @@ public class OmicronLaserDeviceDemo
 
 		assertTrue(lOmicronLaserDevice.start());
 
+		lOmicronLaserDevice.setLaserOn(true);
+
 		System.out.println("seting target power to 0mW ");
 		lOmicronLaserDevice.setTargetPowerInMilliWatt(50);
 		System.out.println("target power (mW): " + lOmicronLaserDevice.getTargetPowerInMilliWatt());
@@ -36,7 +38,9 @@ public class OmicronLaserDeviceDemo
 		System.out.println("current power (mW): " + lOmicronLaserDevice.getCurrentPowerInMilliWatt());
 		System.out.println("current power (%): " + lOmicronLaserDevice.getCurrentPowerInPercent());
 
-		ThreadUtils.sleep(60, TimeUnit.SECONDS);
+		ThreadUtils.sleep(5, TimeUnit.SECONDS);
+
+		lOmicronLaserDevice.setLaserOn(false);
 
 		assertTrue(lOmicronLaserDevice.stop());
 

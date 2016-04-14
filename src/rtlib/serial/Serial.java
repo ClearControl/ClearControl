@@ -171,6 +171,12 @@ public class Serial implements SerialInterface
 		write(String.format(format, args));
 	}
 
+	public String writeStringAndGetAnswer(String pString) throws SerialPortException
+	{
+		write(pString);
+		return readTextMessageAsString();
+	}
+
 	@Override
 	public final void purge() throws SerialPortException
 	{

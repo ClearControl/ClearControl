@@ -29,19 +29,21 @@ public class VideoFrame2DDisplayDemo
 	private volatile long rnd;
 
 	private void generateNoiseBuffer(	double pIntensity,
-																		final ContiguousMemoryInterface pContiguousMemory)
+																		final ContiguousMemoryInterface pContiguousMemory,
+																		final int pWidth,
+																		final int pHeight)
 	{
 		// System.out.println(rnd);
 
-		final int lBufferLength = (int) pContiguousMemory.getSizeInBytes();
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(pContiguousMemory);
-		for (int i = 0; i < lBufferLength; i++)
-		{
-			rnd = ((rnd % 257) * i) + 1 + (rnd << 7);
-			final byte lValue = (byte) ((rnd & 0xFF) * pIntensity * sValue); // Math.random()
-			lContiguousBuffer.writeByte(lValue);
-			// System.out.println(lValue);
-		}
+
+		for (int y = 0; y < pHeight; y++)
+			for (int x = 0; x < pWidth; x++)
+			{
+				rnd = ((rnd % 257)) + 1 + (rnd << 7);
+				final char lValue = (char) (((rnd & 0xFFFF) * pIntensity * x * sValue) / pWidth); // Math.random()
+				lContiguousBuffer.writeChar(lValue);
+			}
 	}
 
 	@Test
@@ -65,6 +67,8 @@ public class VideoFrame2DDisplayDemo
 																																			lSizeY,
 																																			lSizeZ);
 
+		System.out.println(lStack.getSizeInBytes());
+
 		final Variable<StackInterface> lStackVariable = lVideoDisplayDevice.getInputStackVariable();
 
 		final Runnable lRunnable = () -> {
@@ -73,7 +77,10 @@ public class VideoFrame2DDisplayDemo
 				if (sDisplay)
 				{
 					for (int i = 0; i < lStack.getDepth(); i++)
-						generateNoiseBuffer(1 + i, lStack.getContiguousMemory(i));
+						generateNoiseBuffer(0.5 + (1.0 + i) / (2 * lSizeZ),
+																lStack.getContiguousMemory(i),
+																lSizeX,
+																lSizeY);
 
 					lStackVariable.set(lStack);
 					// System.out.println(lStack);
@@ -129,7 +136,7 @@ public class VideoFrame2DDisplayDemo
 					final Variable<Boolean> lStartStopVariable = lJButtonBoolean.getBooleanVariable();
 
 					lStartStopVariable.sendUpdatesTo(new Variable<Boolean>(	"StartStopVariableHook",
-																																				false)
+																																	false)
 					{
 						@Override
 						public Boolean setEventHook(final Boolean pOldValue,
@@ -145,7 +152,7 @@ public class VideoFrame2DDisplayDemo
 					final Variable<Double> lDoubleVariable = lJSliderDouble.getDoubleVariable();
 
 					lDoubleVariable.sendUpdatesTo(new Variable<Double>(	"SliderDoubleEventHook",
-																																		0.0)
+																															0.0)
 					{
 
 						@Override

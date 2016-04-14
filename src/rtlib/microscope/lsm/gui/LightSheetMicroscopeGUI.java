@@ -1,10 +1,7 @@
 package rtlib.microscope.lsm.gui;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.swing.SwingUtilities;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -17,10 +14,6 @@ import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.gui.halcyon.HalcyonGUI;
-import rtlib.scripting.engine.ScriptingEngine;
-import rtlib.scripting.engine.ScriptingEngineListener;
-import rtlib.scripting.gui.ScriptingWindow;
-import rtlib.scripting.lang.groovy.GroovyScripting;
 import rtlib.stack.StackInterface;
 
 public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
@@ -35,7 +28,6 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 	private ArrayList<Stack2DDisplay> mStack2DVideoDeviceList = new ArrayList<>();
 	private Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> mStack3DVideoDevice;
 	private Variable<StackInterface>[] mCleanupStackVariable;
-	private ScriptingWindow mScriptingWindow;
 	private final boolean m3dView;
 	private HalcyonGUI mHalcyonMicroscopeGUI;
 
@@ -69,7 +61,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 		{
 
 			mCleanupStackVariable[i] = new Variable<StackInterface>("CleanupStackVariable",
-																																		null)
+																															null)
 			{
 				ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue = new ConcurrentLinkedQueue<>();
 
@@ -117,63 +109,6 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 	public void setupScripting(	LightSheetMicroscope pLightSheetMicroscope,
 															final MachineConfiguration lCurrentMachineConfiguration)
 	{
-		final GroovyScripting lGroovyScripting = new GroovyScripting();
-
-		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																																	null);
-
-		lScriptingEngine.addListener(new ScriptingEngineListener()
-		{
-
-			@Override
-			public void updatedScript(ScriptingEngine pScriptingEngine,
-																String pScript)
-			{
-
-			}
-
-			@Override
-			public void beforeScriptExecution(ScriptingEngine pScriptingEngine,
-																				String pScriptString)
-			{
-
-			}
-
-			@Override
-			public void asynchronousResult(	ScriptingEngine pScriptingEngine,
-																			String pScriptString,
-																			Map<String, Object> pBinding,
-																			Throwable pThrowable,
-																			String pErrorMessage)
-			{
-				if (pThrowable != null)
-					pThrowable.printStackTrace();
-			}
-
-			@Override
-			public void afterScriptExecution(	ScriptingEngine pScriptingEngine,
-																				String pScriptString)
-			{
-
-			}
-
-			@Override
-			public void scriptAlreadyExecuting(ScriptingEngine pScriptingEngine)
-			{
-
-			}
-		});
-
-		lScriptingEngine.set("lsm", pLightSheetMicroscope);
-
-		mScriptingWindow = new ScriptingWindow(	pLightSheetMicroscope.getName() + " scripting window",
-																						lScriptingEngine,
-																						lCurrentMachineConfiguration.getIntegerProperty("scripting.nbrows",
-																																														60),
-																						lCurrentMachineConfiguration.getIntegerProperty("scripting.nbcols",
-																																														80));
-
-		mScriptingWindow.loadLastLoadedScriptFile();
 
 	}
 
@@ -206,19 +141,12 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 				mStack3DVideoDevice.open();
 		});
 
-		SwingUtilities.invokeLater(() -> {
-			mScriptingWindow.setVisible(true);
-		});
-
 		return super.open();
 	}
 
 	@Override
 	public boolean close()
 	{
-		SwingUtilities.invokeLater(() -> {
-			mScriptingWindow.setVisible(false);
-		});
 
 		executeAsynchronously(() -> {
 			if (m3dView)
@@ -297,7 +225,7 @@ public class LightSheetMicroscopeGUI extends NamedVirtualDevice	implements
 
 	public boolean isVisible()
 	{
-		return mScriptingWindow != null && mScriptingWindow.isVisible();
+		return mHalcyonMicroscopeGUI.isVisible();
 	}
 
 }
