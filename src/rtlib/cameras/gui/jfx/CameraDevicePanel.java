@@ -34,11 +34,10 @@ import rtlib.core.variable.javafx.JFXSimpleLongPropertyVariable;
  */
 public class CameraDevicePanel
 {
-	final private int resUnit = 256;
 	final int mMainRectangleSize = 300;
 
-	int mMaxCameraWidth = 2048;
-	int mMaxCameraHeight = 2048;
+	float mMaxCameraWidth = 2048;
+	float mMaxCameraHeight = 2048;
 
 	// String properties hold the actual dimension size for the capture resolution
 	private StringProperty mCameraWidthStringProperty,
@@ -52,39 +51,50 @@ public class CameraDevicePanel
 	private SimpleLongProperty mCameraWidthProperty,
 			mCameraHeightProperty;
 
-	private GridPane gridPane;
-	Rectangle rect = createDraggableRectangle(37.5, 37.5);
-	Line hLine, vLine;
-	Text hText, vText;
+	private GridPane mGridPane;
+	private AnchorPane mMainPane;
+
+	Rectangle mRect = createDraggableRectangle(37.5, 37.5);
+	Line mHLine, mVLine;
+	Text mHText, mVText;
 
 	public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
 	{
-		// Setting up the double properties with 256x256
-		mRectangleWidthProperty = new SimpleDoubleProperty(37.5);
-		mRectangleHeightProperty = new SimpleDoubleProperty(37.5);
+		init();
 
-		mCameraWidthProperty = new SimpleLongProperty(256L);
-		mCameraHeightProperty = new SimpleLongProperty(256L);
+		Bindings.bindBidirectional(	mCameraWidthStringProperty,
+				mCameraWidthProperty,
+				new StringConverter<Number>()
+				{
+					@Override
+					public String toString(Number object)
+					{
+						return Long.toString(object.longValue());
+					}
 
-		mCameraWidthProperty.addListener((obs, pOldValue, pNewValue) -> {
-			if (pOldValue != pNewValue)
-				mRectangleWidthProperty.set((pNewValue.longValue() * mMainRectangleSize) / mMaxCameraWidth);
-		});
+					@Override
+					public Number fromString(String string)
+					{
+						return Long.parseLong(string);
+					}
+				});
 
-		mCameraHeightProperty.addListener((obs, pOldValue, pNewValue) -> {
-			if (pOldValue != pNewValue)
-				mRectangleHeightProperty.set((pNewValue.longValue() * mMainRectangleSize) / mMaxCameraHeight);
-		});
+		Bindings.bindBidirectional(	mCameraHeightStringProperty,
+				mCameraHeightProperty,
+				new StringConverter<Number>()
+				{
+					@Override
+					public String toString(Number object)
+					{
+						return Long.toString(object.longValue());
+					}
 
-		mRectangleWidthProperty.addListener((obs, pOldValue, pNewValue) -> {
-			if (pOldValue != pNewValue)
-				mCameraWidthProperty.set((pNewValue.longValue() * mMaxCameraWidth) / mMainRectangleSize);
-		});
-
-		mRectangleHeightProperty.addListener((obs, pOldValue, pNewValue) -> {
-			if (pOldValue != pNewValue)
-				mCameraHeightProperty.set((pNewValue.longValue() * mMaxCameraHeight) / mMainRectangleSize);
-		});/**/
+					@Override
+					public Number fromString(String string)
+					{
+						return Long.parseLong(string);
+					}
+				});
 
 		JFXSimpleLongPropertyVariable lWidthPropertyVariable = new JFXSimpleLongPropertyVariable(	mCameraWidthProperty,
 																																															"WidthPropertyVariable",
@@ -100,12 +110,18 @@ public class CameraDevicePanel
 		pCameraDeviceInterface.getStackHeightVariable()
 													.syncWith(lHeightWidthPropertyVariable);
 
-		init();
 	}
 
 	private void init()
 	{
-		gridPane = new GridPane();
+		// Setting up the double properties with 256x256
+		mRectangleWidthProperty = new SimpleDoubleProperty(37.5);
+		mRectangleHeightProperty = new SimpleDoubleProperty(37.5);
+
+		mCameraWidthProperty = new SimpleLongProperty(256L);
+		mCameraHeightProperty = new SimpleLongProperty(256L);
+
+		mGridPane = new GridPane();
 
 		for (int x = 7; x < 11; x++)
 		{
@@ -129,30 +145,27 @@ public class CameraDevicePanel
 				});
 
 				// Place the button on the GridPane
-				gridPane.add(button, x, y);
+				mGridPane.add( button, x, y );
 			}
 		}
-	}
 
-	public Parent getPanel()
-	{
 		Pane canvas = new Pane();
 		canvas.setStyle("-fx-background-color: green;");
 		canvas.setPrefSize(mMainRectangleSize, mMainRectangleSize);
 
 		Line line = new Line(	mMainRectangleSize / 2,
-													0,
-													mMainRectangleSize / 2,
-													mMainRectangleSize);
+				0,
+				mMainRectangleSize / 2,
+				mMainRectangleSize);
 		canvas.getChildren().add(line);
 
 		line = new Line(0,
-										mMainRectangleSize / 2,
-										mMainRectangleSize,
-										mMainRectangleSize / 2);
+				mMainRectangleSize / 2,
+				mMainRectangleSize,
+				mMainRectangleSize / 2);
 		canvas.getChildren().add(line);
 
-		canvas.getChildren().addAll(rect);
+		canvas.getChildren().addAll( mRect );
 
 		HBox widthBox = new HBox(5);
 		widthBox.setPadding(new Insets(30, 10, 10, 10));
@@ -172,64 +185,67 @@ public class CameraDevicePanel
 		mCameraHeightStringProperty = height.textProperty();
 		heightBox.getChildren().add(height);
 
-		VBox vBox = new VBox(gridPane, widthBox, heightBox);
+		VBox vBox = new VBox( mGridPane, widthBox, heightBox);
 
-		AnchorPane hBox = new AnchorPane();
-		hBox.setBackground(null);
-		hBox.setPadding(new Insets(15, 15, 15, 15));
-		hBox.getChildren().addAll(vBox, canvas);
+		mMainPane = new AnchorPane();
+		mMainPane.setBackground( null );
+		mMainPane.setPadding( new Insets( 15, 15, 15, 15 ) );
+		mMainPane.getChildren().addAll( vBox, canvas );
 
-		AnchorPane.setLeftAnchor(vBox, 3d);
-		AnchorPane.setTopAnchor(vBox, 10d);
+		AnchorPane.setLeftAnchor( vBox, 3d );
+		AnchorPane.setTopAnchor( vBox, 10d );
 
-		AnchorPane.setLeftAnchor(canvas, 220d);
+		AnchorPane.setLeftAnchor( canvas, 220d );
 		AnchorPane.setTopAnchor(canvas, 10d);
 
-		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
-									+ "-fx-border-color: grey");
+		mMainPane.setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
+				+ "-fx-border-color: grey" );
 
-		mRectangleWidthProperty.bindBidirectional(rect.widthProperty());
-		mRectangleHeightProperty.bindBidirectional(rect.heightProperty());
+		mRectangleWidthProperty.bindBidirectional( mRect.widthProperty() );
+		mRectangleHeightProperty.bindBidirectional( mRect.heightProperty());
 
 		Bindings.bindBidirectional(	mCameraWidthStringProperty,
-																mRectangleWidthProperty,
-																new StringConverter<Number>()
-																{
-																	@Override
-																	public String toString(Number object)
-																	{
-																		return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraWidth
-																																							/ mMainRectangleSize));
-																	}
+				mRectangleWidthProperty,
+				new StringConverter<Number>()
+				{
+					@Override
+					public String toString(Number object)
+					{
+						return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraWidth
+								/ mMainRectangleSize));
+					}
 
-																	@Override
-																	public Number fromString(String string)
-																	{
-																		return Double.parseDouble(string) * mMainRectangleSize
-																						/ mMaxCameraWidth;
-																	}
-																});
+					@Override
+					public Number fromString(String string)
+					{
+						return Double.parseDouble(string) * mMainRectangleSize
+								/ mMaxCameraWidth;
+					}
+				});
 
 		Bindings.bindBidirectional(	mCameraHeightStringProperty,
-																mRectangleHeightProperty,
-																new StringConverter<Number>()
-																{
-																	@Override
-																	public String toString(Number object)
-																	{
-																		return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraHeight
-																																							/ mMainRectangleSize));
-																	}
+				mRectangleHeightProperty,
+				new StringConverter<Number>()
+				{
+					@Override
+					public String toString(Number object)
+					{
+						return Integer.toString((int) Math.round(object.doubleValue() * mMaxCameraHeight
+								/ mMainRectangleSize));
+					}
 
-																	@Override
-																	public Number fromString(String string)
-																	{
-																		return Double.parseDouble(string) * mMainRectangleSize
-																						/ mMaxCameraHeight;
-																	}
-																});
+					@Override
+					public Number fromString(String string)
+					{
+						return Double.parseDouble(string) * mMainRectangleSize
+								/ mMaxCameraHeight;
+					}
+				});
+	}
 
-		return hBox;
+	public Parent getPanel()
+	{
+		return mMainPane;
 	}
 
 	private void setDragHandlers(	final Line line,
@@ -283,91 +299,91 @@ public class CameraDevicePanel
 
 		Wrapper<Point2D> mouseLocation = new Wrapper<>();
 
-		hText = new Text();
-		hText.setStroke(Color.WHITE);
-		hText.textProperty()
-					.bind(rect.widthProperty()
-										.multiply(mMaxCameraWidth / mMainRectangleSize)
-										.asString("%.0f px"));
-		hText.translateXProperty().bind(rect.xProperty()
+		mHText = new Text();
+		mHText.setStroke( Color.WHITE );
+		mHText.textProperty()
+					.bind( rect.widthProperty()
+							.multiply( mMaxCameraWidth / mMainRectangleSize )
+							.asString( "%.0f px" ) );
+		mHText.translateXProperty().bind(rect.xProperty()
 																				.add(rect.widthProperty()
 																									.divide(2.5)));
-		hText.translateYProperty().bind(rect.yProperty()
+		mHText.translateYProperty().bind(rect.yProperty()
 																				.add(rect.heightProperty()
 																									.subtract(13)));
 
-		hLine = new Line(x, y, x + width, y);
-		hLine.setStrokeWidth(5);
-		hLine.setStroke(Color.WHITE);
-		setDragHandlers(hLine, rect, Cursor.V_RESIZE, mouseLocation);
+		mHLine = new Line(x, y, x + width, y);
+		mHLine.setStrokeWidth( 5 );
+		mHLine.setStroke( Color.WHITE );
+		setDragHandlers( mHLine, rect, Cursor.V_RESIZE, mouseLocation );
 
-		hLine.startXProperty().bind(rect.xProperty());
-		hLine.startYProperty().bind(rect.yProperty()
-																		.add(rect.heightProperty()));
-		hLine.endYProperty().bind(rect.yProperty()
+		mHLine.startXProperty().bind(rect.xProperty());
+		mHLine.startYProperty().bind(rect.yProperty()
+																		.add( rect.heightProperty() ));
+		mHLine.endYProperty().bind(rect.yProperty()
 																	.add(rect.heightProperty()));
-		hLine.endXProperty().bind(rect.xProperty()
+		mHLine.endXProperty().bind(rect.xProperty()
 																	.add(rect.widthProperty()));
 
-		hLine.setOnMouseDragged(event -> {
-			if (mouseLocation.value != null)
+		mHLine.setOnMouseDragged( event -> {
+			if ( mouseLocation.value != null )
 			{
 				double deltaY = event.getSceneY() - mouseLocation.value.getY();
 				double newMaxY = rect.getY() + rect.getHeight() + deltaY;
-				if (newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize)
+				if ( newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize )
 				{
-					rect.setHeight(rect.getHeight() + deltaY * 2);
+					rect.setHeight( rect.getHeight() + deltaY * 2 );
 				}
-				mouseLocation.value = new Point2D(event.getSceneX(),
-																					event.getSceneY());
+				mouseLocation.value = new Point2D( event.getSceneX(),
+						event.getSceneY() );
 			}
-		});
+		} );
 
-		vText = new Text();
-		vText.setStroke(Color.WHITE);
-		vText.setTranslateX(7);
-		vText.textProperty()
-					.bind(rect.heightProperty()
-										.multiply(mMaxCameraHeight / mMainRectangleSize)
-										.asString("%.0f px"));
-		vText.translateXProperty().bind(rect.xProperty()
+		mVText = new Text();
+		mVText.setStroke( Color.WHITE );
+		mVText.setTranslateX( 7 );
+		mVText.textProperty()
+					.bind( rect.heightProperty()
+							.multiply( mMaxCameraHeight / mMainRectangleSize )
+							.asString( "%.0f px" ) );
+		mVText.translateXProperty().bind(rect.xProperty()
 																				.add(rect.widthProperty()
 																									.subtract(55)));
-		vText.translateYProperty().bind(rect.yProperty()
+		mVText.translateYProperty().bind(rect.yProperty()
 																				.add(rect.heightProperty()
 																									.divide(2)));
 
-		vLine = new Line(x + width, y, x + width, y + height);
-		vLine.setStrokeWidth(5);
-		vLine.setStroke(Color.WHITE);
-		setDragHandlers(vLine, rect, Cursor.H_RESIZE, mouseLocation);
+		mVLine = new Line(x + width, y, x + width, y + height);
+		mVLine.setStrokeWidth( 5 );
+		mVLine.setStroke( Color.WHITE );
+		setDragHandlers( mVLine, rect, Cursor.H_RESIZE, mouseLocation );
 
-		vLine.startXProperty().bind(rect.xProperty()
-																		.add(rect.widthProperty()));
-		vLine.startYProperty().bind(rect.yProperty());
-		vLine.endXProperty().bind(rect.xProperty()
+		mVLine.startXProperty().bind(rect.xProperty()
+																		.add( rect.widthProperty() ));
+		mVLine.startYProperty().bind(rect.yProperty());
+		mVLine.endXProperty().bind(rect.xProperty()
 																	.add(rect.widthProperty()));
-		vLine.endYProperty().bind(rect.yProperty()
+		mVLine.endYProperty().bind(rect.yProperty()
 																	.add(rect.heightProperty()));
 
-		vLine.setOnMouseDragged(event -> {
-			if (mouseLocation.value != null)
+		mVLine.setOnMouseDragged( event -> {
+			if ( mouseLocation.value != null )
 			{
 				double deltaX = event.getSceneX() - mouseLocation.value.getX();
 				double newMaxX = rect.getX() + rect.getWidth() + deltaX;
-				if (newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize)
+				if ( newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize )
 				{
-					rect.setWidth(rect.getWidth() + deltaX * 2);
+					rect.setWidth( rect.getWidth() + deltaX * 2 );
 				}
-				mouseLocation.value = new Point2D(event.getSceneX(),
-																					event.getSceneY());
+				mouseLocation.value = new Point2D( event.getSceneX(),
+						event.getSceneY() );
 			}
-		});
+		} );
 
 		// force controls to live in same parent as rectangle:
 		rect.parentProperty()
 				.addListener((obs, oldParent, newParent) -> {
-					for (Node c : Arrays.asList(hLine, vLine, hText, vText))
+					for (Node c : Arrays.asList( mHLine, mVLine, mHText, mVText ))
 					{
 						Pane currentParent = (Pane) c.getParent();
 						if (currentParent != null)
