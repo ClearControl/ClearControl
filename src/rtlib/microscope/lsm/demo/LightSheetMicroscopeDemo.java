@@ -24,6 +24,8 @@ import rtlib.microscope.lsm.component.detection.DetectionArm;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
 import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.scripting.engine.ScriptingEngine;
+import rtlib.scripting.lang.groovy.GroovyScripting;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -158,6 +160,13 @@ public class LightSheetMicroscopeDemo
 			lLightSheet.getImageHeightVariable()
 									.set(cImageResolution);
 		}
+		
+		GroovyScripting lGroovyScripting = new GroovyScripting();
+		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
+																																	null);
+		lLightSheetMicroscope.getDeviceLists()
+													.addScriptingEngine(lScriptingEngine);
+		
 
 		// setting up scope GUI:
 
