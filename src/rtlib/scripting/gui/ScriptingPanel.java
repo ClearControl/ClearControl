@@ -310,12 +310,15 @@ public class ScriptingPanel extends JPanel implements
 	{
 		try
 		{
-			Scanner lScanner = new Scanner(mLastLoadedScriptFile);
-			String lFileName = lScanner.nextLine();
-			SwingUtilities.invokeAndWait(() -> mCurrentFileTextField.setText(lFileName));
-			loadFromFile(lFileName);
-			SwingUtilities.invokeAndWait(() -> mRSyntaxTextArea.requestFocusInWindow());
-			lScanner.close();
+			if (mLastLoadedScriptFile.exists())
+			{
+				Scanner lScanner = new Scanner(mLastLoadedScriptFile);
+				String lFileName = lScanner.nextLine();
+				SwingUtilities.invokeAndWait(() -> mCurrentFileTextField.setText(lFileName));
+				loadFromFile(lFileName);
+				SwingUtilities.invokeAndWait(() -> mRSyntaxTextArea.requestFocusInWindow());
+				lScanner.close();
+			}
 		}
 		catch (Throwable e)
 		{

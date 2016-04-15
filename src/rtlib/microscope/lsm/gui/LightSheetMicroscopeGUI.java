@@ -5,13 +5,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.Variable;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
+import rtlib.hardware.cameras.StackCameraDeviceInterface;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.gui.halcyon.HalcyonGUI;
 import rtlib.stack.StackInterface;

@@ -5,9 +5,9 @@ import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.optomech.OptoMechDeviceInterface;
-import rtlib.symphony.movement.Movement;
-import rtlib.symphony.staves.ConstantStave;
+import rtlib.hardware.optomech.OptoMechDeviceInterface;
+import rtlib.hardware.signalgen.movement.Movement;
+import rtlib.hardware.signalgen.staves.ConstantStave;
 
 public class LightSheetSwitch extends NamedVirtualDevice implements
 																												SwitchingDeviceInterface,

@@ -1,6 +1,6 @@
 package rtlib.microscope.lsm.component.lightsheet.si;
 
-import rtlib.symphony.staves.StaveInterface;
+import rtlib.hardware.signalgen.staves.StaveInterface;
 
 public class GenericStructuredIlluminationPattern<S extends StaveInterface> extends
 																																						StructuredIlluminationPatternBase	implements

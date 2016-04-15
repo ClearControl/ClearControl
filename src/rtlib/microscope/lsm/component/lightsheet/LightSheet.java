@@ -15,14 +15,14 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
+import rtlib.hardware.signalgen.movement.Movement;
+import rtlib.hardware.signalgen.staves.ConstantStave;
+import rtlib.hardware.signalgen.staves.EdgeStave;
+import rtlib.hardware.signalgen.staves.IntervalStave;
+import rtlib.hardware.signalgen.staves.RampSteppingStave;
+import rtlib.hardware.signalgen.staves.StaveInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
-import rtlib.symphony.movement.Movement;
-import rtlib.symphony.staves.ConstantStave;
-import rtlib.symphony.staves.EdgeStave;
-import rtlib.symphony.staves.IntervalStave;
-import rtlib.symphony.staves.RampSteppingStave;
-import rtlib.symphony.staves.StaveInterface;
 
 public class LightSheet extends NamedVirtualDevice implements
 																									LightSheetInterface,

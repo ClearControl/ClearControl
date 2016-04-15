@@ -15,18 +15,18 @@ import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
 
-import rtlib.cameras.StackCameraDeviceInterface;
-import rtlib.cameras.gui.jfx.CameraDevicePanel;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.gui.halcyon.NodeType;
-import rtlib.lasers.LaserDeviceInterface;
-import rtlib.lasers.gui.jfx.LaserDeviceGUI;
+import rtlib.hardware.cameras.StackCameraDeviceInterface;
+import rtlib.hardware.cameras.gui.jfx.CameraDevicePanel;
+import rtlib.hardware.lasers.LaserDeviceInterface;
+import rtlib.hardware.lasers.gui.jfx.LaserDeviceGUI;
+import rtlib.hardware.stages.StageDeviceInterface;
+import rtlib.hardware.stages.gui.jfx.StageDeviceGUI;
 import rtlib.microscope.lsm.LightSheetMicroscopeDeviceLists;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.scripting.gui.ScriptingWindow;
-import rtlib.stages.StageDeviceInterface;
-import rtlib.stages.gui.StageDeviceGUI;
 
 public class HalcyonGUI extends Application
 {

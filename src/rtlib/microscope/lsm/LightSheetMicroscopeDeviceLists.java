@@ -2,20 +2,20 @@ package rtlib.microscope.lsm;
 
 import java.util.ArrayList;
 
-import rtlib.ao.slms.SpatialPhaseModulatorDeviceInterface;
-import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.Variable;
-import rtlib.lasers.LaserDeviceInterface;
+import rtlib.hardware.ao.slms.SpatialPhaseModulatorDeviceInterface;
+import rtlib.hardware.cameras.StackCameraDeviceInterface;
+import rtlib.hardware.lasers.LaserDeviceInterface;
+import rtlib.hardware.optomech.OptoMechDeviceInterface;
+import rtlib.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
+import rtlib.hardware.signalgen.devices.SignalGeneratorInterface;
+import rtlib.hardware.stages.StageDeviceInterface;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
-import rtlib.optomech.OptoMechDeviceInterface;
-import rtlib.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
 import rtlib.stack.processor.StackProcessingPipeline;
-import rtlib.stages.StageDeviceInterface;
-import rtlib.symphony.devices.SignalGeneratorInterface;
 
 public class LightSheetMicroscopeDeviceLists
 {

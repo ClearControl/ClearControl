@@ -8,13 +8,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import rtlib.hardware.signalgen.devices.SignalGeneratorInterface;
+import rtlib.hardware.signalgen.devices.nirio.NIRIOSignalGenerator;
+import rtlib.hardware.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
+import rtlib.hardware.signalgen.gui.ScoreVisualizerJFrame;
+import rtlib.hardware.signalgen.movement.Movement;
+import rtlib.hardware.signalgen.score.ScoreInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
-import rtlib.symphony.devices.SignalGeneratorInterface;
-import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
-import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
-import rtlib.symphony.gui.ScoreVisualizerJFrame;
-import rtlib.symphony.movement.Movement;
-import rtlib.symphony.score.ScoreInterface;
 
 public class LightSheetDemo
 {

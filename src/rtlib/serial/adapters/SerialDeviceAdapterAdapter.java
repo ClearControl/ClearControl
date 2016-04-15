@@ -21,6 +21,7 @@ public class SerialDeviceAdapterAdapter<O>	implements
 	{
 		return 0;
 	}
+	
 
 	@Override
 	public boolean hasResponseForGet()
@@ -57,6 +58,7 @@ public class SerialDeviceAdapterAdapter<O>	implements
 	{
 		return false;
 	}
+	
 
 	@Override
 	public boolean checkAcknowledgementSetValueReturnMessage(byte[] pMessage)

@@ -1,7 +1,7 @@
 package rtlib.microscope.lsm.component.lightsheet.si;
 
-import rtlib.symphony.staves.IntervalStave;
-import rtlib.symphony.staves.StaveInterface;
+import rtlib.hardware.signalgen.staves.IntervalStave;
+import rtlib.hardware.signalgen.staves.StaveInterface;
 
 public class ConstantIlluminationPattern extends
 																				StructuredIlluminationPatternBase	implements

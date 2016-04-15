@@ -1,7 +1,7 @@
 package rtlib.microscope.lsm.component.lightsheet.si;
 
-import rtlib.symphony.staves.ClosurePatternSteppingStave;
-import rtlib.symphony.staves.SteppingFunction;
+import rtlib.hardware.signalgen.staves.ClosurePatternSteppingStave;
+import rtlib.hardware.signalgen.staves.SteppingFunction;
 
 public class ClosureStructuredIlluminationPattern	extends
 																									GenericStructuredIlluminationPattern<ClosurePatternSteppingStave>	implements

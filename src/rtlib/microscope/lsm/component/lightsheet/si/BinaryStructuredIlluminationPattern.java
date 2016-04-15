@@ -1,7 +1,7 @@
 package rtlib.microscope.lsm.component.lightsheet.si;
 
-import rtlib.symphony.staves.BinaryPatternSteppingStave;
-import rtlib.symphony.staves.StaveInterface;
+import rtlib.hardware.signalgen.staves.BinaryPatternSteppingStave;
+import rtlib.hardware.signalgen.staves.StaveInterface;
 
 public class BinaryStructuredIlluminationPattern extends
 																								StructuredIlluminationPatternBase	implements

@@ -6,8 +6,8 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.symphony.movement.Movement;
-import rtlib.symphony.staves.ConstantStave;
+import rtlib.hardware.signalgen.movement.Movement;
+import rtlib.hardware.signalgen.staves.ConstantStave;
 
 public class DetectionArm extends NamedVirtualDevice implements
 																										DetectionArmInterface
