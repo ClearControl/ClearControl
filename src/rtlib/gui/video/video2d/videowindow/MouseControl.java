@@ -102,6 +102,7 @@ class MouseControl extends MouseAdapter implements MouseListener
 	@Override
 	public void mouseClicked(final MouseEvent pMouseEvent)
 	{
-
+		if (pMouseEvent.getClickCount() == 2)
+			mVideoWindow.toggleFullScreen();
 	}
 }

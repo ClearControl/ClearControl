@@ -131,7 +131,9 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 	@Override
 	public boolean close()
 	{
-		getPowerOnVariable().set(false);
+		setTargetPowerInMilliWatt(0);
+		setLaserOn(false);
+		setPowerOn(false);
 		return mSerialDevice.close();
 	}
 

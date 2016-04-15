@@ -278,8 +278,22 @@ public class VideoWindow implements AutoCloseable
 
 	public void setDisplayLines(boolean pIsDisplayLines)
 	{
-
 		mIsDisplayLines = pIsDisplayLines;
+	}
+
+	public boolean isFullScreen()
+	{
+		return mClearGLWindow.isFullscreen();
+	}
+
+	public void setFullScreen(boolean pFullScreen)
+	{
+		mClearGLWindow.setFullscreen(pFullScreen);
+	}
+
+	public void toggleFullScreen()
+	{
+		mClearGLWindow.toggleFullScreen();
 	}
 
 	public void disableClose()

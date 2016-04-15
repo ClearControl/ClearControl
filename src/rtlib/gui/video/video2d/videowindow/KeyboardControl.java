@@ -45,6 +45,10 @@ class KeyboardControl extends KeyAdapter implements KeyListener
 		case KeyEvent.VK_L:
 			mVideoWindow.setDisplayLines(!mVideoWindow.isDisplayLines());
 			break;
+		case KeyEvent.VK_ESCAPE:
+			if (mVideoWindow.isFullScreen())
+				mVideoWindow.setFullScreen(false);
+			break;
 		}
 
 	}
