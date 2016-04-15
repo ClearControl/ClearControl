@@ -54,7 +54,11 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		mStackBytesPerPixelVariable = new Variable<Long>(	"FrameBytesPerPixel",
 																											2L);
 		mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
+		mStackWidthVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera width: "+n);});
+		
 		mStackHeightVariable = new Variable<Long>("FrameHeight", 320L);
+		mStackHeightVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera height: "+n);});
+		
 
 		mStackMaxWidthVariable = new Variable<Long>("FrameMaxWidth",
 																								2048L);
@@ -62,8 +66,13 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 																									2048L);
 
 		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
+		mStackDepthVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera stack depth: "+n);});
+		
+		
 		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
 																														1000.0);
+		mExposureInMicrosecondsVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera exposure: "+n);});
+		
 		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeinNanometers",
 																													160.0);
 

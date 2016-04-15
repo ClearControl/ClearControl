@@ -42,7 +42,6 @@ public class StackTests
 
 		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(cSizeX * cSizeY
 																																											* cSizeZ);
-		@SuppressWarnings("unchecked")
 		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	lContiguousMemory,
 																																			cSizeX,
 																																			cSizeY,

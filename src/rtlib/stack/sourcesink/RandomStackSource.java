@@ -11,8 +11,7 @@ import rtlib.stack.StackRequest;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.RecyclerInterface;
 
-public class RandomStackSource implements
-															StackSourceInterface<UnsignedShortType, ShortOffHeapAccess>
+public class RandomStackSource implements StackSourceInterface
 {
 
 	private RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
@@ -23,7 +22,7 @@ public class RandomStackSource implements
 	public RandomStackSource(	long pWidth,
 														long pHeight,
 														long pDepth,
-														final RecyclerInterface<StackInterface, StackRequest> pStackRecycler) throws IOException
+														final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 	{
 		mWidth = pWidth;
 		mHeight = pHeight;

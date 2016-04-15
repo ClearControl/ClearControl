@@ -10,9 +10,8 @@ import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
 
-public abstract class LocalFileStackBase<T extends NativeType<T>, A extends ArrayDataAccess<A>> extends
-																																																StackServerBase<T, A>	implements
-																																																											AutoCloseable
+public abstract class LocalFileStackBase extends StackServerBase implements
+																																AutoCloseable
 {
 	protected final File mFolder;
 	private final File mDataFolder;
@@ -24,8 +23,7 @@ public abstract class LocalFileStackBase<T extends NativeType<T>, A extends Arra
 	protected final File mMetaDataFile;
 	protected final VariableBundleAsFile mMetaDataVariableBundleAsFile;
 
-	public LocalFileStackBase(final T pType,
-														final File pRootFolder,
+	public LocalFileStackBase(final File pRootFolder,
 														final String pName,
 														final boolean pReadOnly) throws IOException
 	{

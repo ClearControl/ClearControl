@@ -8,7 +8,7 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
-public interface StackSourceInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
+public interface StackSourceInterface
 {
 
 	public boolean update();

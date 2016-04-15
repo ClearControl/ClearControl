@@ -121,9 +121,7 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
 
-		final VariableSetListener lDoubleVariableListener = (u, v) -> {
-			update();
-		};
+
 
 		mLaserOnOffVariableArray = new Variable[mNumberOfLaserDigitalControls];
 
@@ -158,37 +156,42 @@ public class LightSheet extends NamedVirtualDevice implements
 																														1,
 																														0);
 
+		@SuppressWarnings("rawtypes")
+		final VariableSetListener lVariableListener = (u, v) -> {
+			update();
+		};
+		
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 		{
 			final String lLaserName = "Laser" + i + ".exposure.trig";
 
-			mStructuredIlluminationPatternVariableArray[i] = new Variable("StructuredIlluminationPattern",
+			mStructuredIlluminationPatternVariableArray[i] = new Variable<StructuredIlluminationPatternInterface>("StructuredIlluminationPattern",
 																																					new BinaryStructuredIlluminationPattern());
 
 			mLaserOnOffVariableArray[i] = new Variable<Boolean>(lLaserName,
 																																false);
-			mLaserOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
+			mLaserOnOffVariableArray[i].addSetListener(lVariableListener);
 
 			mSIPatternOnOffVariableArray[i] = new Variable<Boolean>(lLaserName + "SIPatternOnOff",
 																																		false);
-			mSIPatternOnOffVariableArray[i].addSetListener(lDoubleVariableListener);
+			mSIPatternOnOffVariableArray[i].addSetListener(lVariableListener);
 		}
 
-		mReadoutTimeInMicrosecondsPerLineVariable.addSetListener(lDoubleVariableListener);
-		mOverScanVariable.addSetListener(lDoubleVariableListener);
-		mEffectiveExposureInMicrosecondsVariable.addSetListener(lDoubleVariableListener);
-		mImageHeightVariable.addSetListener(lDoubleVariableListener);
+		mReadoutTimeInMicrosecondsPerLineVariable.addSetListener(lVariableListener);
+		mOverScanVariable.addSetListener(lVariableListener);
+		mEffectiveExposureInMicrosecondsVariable.addSetListener(lVariableListener);
+		mImageHeightVariable.addSetListener(lVariableListener);
 
-		mXVariable.addSetListener(lDoubleVariableListener);
-		mXVariable.addSetListener(lDoubleVariableListener);
-		mZVariable.addSetListener(lDoubleVariableListener);
-		mBetaInDegreesVariable.addSetListener(lDoubleVariableListener);
-		mAlphaInDegreesVariable.addSetListener(lDoubleVariableListener);
-		mHeightVariable.addSetListener(lDoubleVariableListener);
-		mWidthVariable.addSetListener(lDoubleVariableListener);
-		mPowerVariable.addSetListener(lDoubleVariableListener);
-		mOverScanVariable.addSetListener(lDoubleVariableListener);
-		mAdaptPowerToWidthHeightVariable.addSetListener(lDoubleVariableListener);
+		mXVariable.addSetListener(lVariableListener);
+		mXVariable.addSetListener(lVariableListener);
+		mZVariable.addSetListener(lVariableListener);
+		mBetaInDegreesVariable.addSetListener(lVariableListener);
+		mAlphaInDegreesVariable.addSetListener(lVariableListener);
+		mHeightVariable.addSetListener(lVariableListener);
+		mWidthVariable.addSetListener(lVariableListener);
+		mPowerVariable.addSetListener(lVariableListener);
+		mOverScanVariable.addSetListener(lVariableListener);
+		mAdaptPowerToWidthHeightVariable.addSetListener(lVariableListener);
 
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 		{

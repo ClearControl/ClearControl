@@ -47,7 +47,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																					.getIntegerProperty("device.lsm.detection." + getName()
 																																	+ ".z.index",
-																															-1);
+																															0);
 
 		mStaveIndex = lStaveIndex;
 

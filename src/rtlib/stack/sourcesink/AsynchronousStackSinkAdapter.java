@@ -9,24 +9,23 @@ import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 
-public class AsynchronousStackSinkAdapter<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																																	StackSinkInterface<T, A>
+public class AsynchronousStackSinkAdapter	implements
+																					StackSinkInterface
 {
 
-	private StackSinkInterface<T, A> mStackSink;
+	private StackSinkInterface mStackSink;
 
 	private AsynchronousProcessorInterface<StackInterface, StackInterface> mAsynchronousConversionProcessor;
 
 	private Variable<StackInterface> mFinishedProcessingStackVariable;
 
-	public static <ST extends NativeType<ST>, SA extends ArrayDataAccess<SA>> AsynchronousStackSinkAdapter<ST, SA> wrap(StackSinkInterface<ST, SA> pStackSink,
-																																																											final int pMaxQueueSize)
+	public static AsynchronousStackSinkAdapter wrap(StackSinkInterface pStackSink,
+																									final int pMaxQueueSize)
 	{
-		return new AsynchronousStackSinkAdapter<ST, SA>(pStackSink,
-																										pMaxQueueSize);
+		return new AsynchronousStackSinkAdapter(pStackSink, pMaxQueueSize);
 	}
 
-	public AsynchronousStackSinkAdapter(final StackSinkInterface<T, A> pStackSink,
+	public AsynchronousStackSinkAdapter(final StackSinkInterface pStackSink,
 																			final int pMaxQueueSize)
 	{
 		super();

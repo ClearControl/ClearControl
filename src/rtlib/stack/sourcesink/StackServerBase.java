@@ -11,8 +11,7 @@ import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.StackRequest;
 
-public abstract class StackServerBase<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																															AutoCloseable
+public abstract class StackServerBase implements AutoCloseable
 {
 	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
 	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();

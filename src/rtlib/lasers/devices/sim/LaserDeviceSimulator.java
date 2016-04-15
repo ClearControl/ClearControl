@@ -1,11 +1,15 @@
 package rtlib.lasers.devices.sim;
 
+import java.util.concurrent.TimeUnit;
+
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.variable.Variable;
 import rtlib.lasers.LaserDeviceBase;
 import rtlib.lasers.LaserDeviceInterface;
 
 public class LaserDeviceSimulator extends LaserDeviceBase	implements
-																													LaserDeviceInterface
+																													LaserDeviceInterface,
+																													AsynchronousSchedulerServiceAccess
 {
 
 	public LaserDeviceSimulator(String pDeviceName,
@@ -15,54 +19,61 @@ public class LaserDeviceSimulator extends LaserDeviceBase	implements
 	{
 		super(pDeviceName);
 
-		mDeviceIdVariable = new Variable<Integer>("DeviceId",
-																										pDeviceId);
+		mDeviceIdVariable = new Variable<Integer>("DeviceId", pDeviceId);
 
 		mWavelengthVariable = new Variable<Integer>("WavelengthInNanoMeter",
-																											pWavelengthInNanoMeter);
+																								pWavelengthInNanoMeter);
 
 		mSpecInMilliWattPowerVariable = new Variable<Number>(	"SpecPowerInMilliWatt",
-																																pMaxPowerInMilliWatt);
+																													pMaxPowerInMilliWatt);
 
 		mMaxPowerInMilliWattVariable = new Variable<Number>("MaxPowerInMilliWatt",
-																															pMaxPowerInMilliWatt);
+																												pMaxPowerInMilliWatt);
 
 		mSetOperatingModeVariable = new Variable<Integer>("OperatingMode",
-																														0);
+																											0);
 
 		mPowerOnVariable = new Variable<Boolean>("PowerOn", false);
+		mPowerOnVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ":New power on state: " + n);
+		});
 
 		mLaserOnVariable = new Variable<Boolean>("LaserOn", false);
+		mLaserOnVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ":New laser on state: " + n);
+		});
 
-		mWorkingHoursVariable = new Variable<Integer>("WorkingHours",
-																												0);
+		mWorkingHoursVariable = new Variable<Integer>("WorkingHours", 0);
 
 		mTargetPowerInMilliWattVariable = new Variable<Number>(	"TargetPowerMilliWatt",
-																																	0.0);
+																														0.0);
+		mTargetPowerInMilliWattVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ":New target power: " + n);
+		});
 
 		mCurrentPowerInMilliWattVariable = new Variable<Number>("CurrentPowerInMilliWatt",
-																																	0.0);
+																														0.0);
 
-		mTargetPowerInMilliWattVariable.syncWith(mCurrentPowerInMilliWattVariable);
-	}
+		Runnable lRunnable = () -> {
+			double lCurrentValue = mCurrentPowerInMilliWattVariable.get()
+																															.doubleValue();
+			double lTargetValue = mTargetPowerInMilliWattVariable.get()
+																														.doubleValue();
 
-	/*
-	 * timer = new AnimationTimer()
-		{
-			@Override
-			public void handle(long now)
-			{
-				if (now > lastTimerCall + 500_000_000l)
-				{
+			if (mLaserOnVariable.get() && mTargetPowerInMilliWattVariable.get()
+																																		.doubleValue() > 0)
 
-					double v = (2 * RND.nextDouble() - 1);
-					// v = (v > 0.5)? v * 0.05 + 1.0d : v * -0.05 + 1.0d;
-
-					actualGauge.setValue(mwMarker.getValue() + v);
-					lastTimerCall = now;
-				}
-			}
+				mCurrentPowerInMilliWattVariable.set(0.8 * lCurrentValue
+																							+ 0.2
+																							* lTargetValue
+																							+ Math.random()
+																							* 5);
+			else
+				mCurrentPowerInMilliWattVariable.set(0.8 * lCurrentValue);
 		};
-	 */
+
+		scheduleAtFixedRate(lRunnable, 200, TimeUnit.MILLISECONDS);
+
+	}
 
 }

@@ -16,21 +16,19 @@ import rtlib.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
-public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																												LocalFileStackBase<T, A> implements
-																																																								StackSinkInterface<T, A>,
-																																																								AutoCloseable
+public class LocalFileStackSink extends LocalFileStackBase implements
+																													StackSinkInterface,
+																													AutoCloseable
 {
 
 	private static final long cSingleWriteLimit = 64_000_000L;
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 	private FileChannel mBinnaryFileChannel;
 
-	public LocalFileStackSink(T pType,
-														final File pRootFolder,
+	public LocalFileStackSink(final File pRootFolder,
 														final String pName) throws IOException
 	{
-		super(pType, pRootFolder, pName, false);
+		super(pRootFolder, pName, false);
 
 	}
 
@@ -157,7 +155,7 @@ public class LocalFileStackSink<T extends NativeType<T>, A extends ArrayDataAcce
 	{
 		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
 																							new Variable<Double>(	pPrefix,
-																																					pValue));
+																																		pValue));
 	}
 
 	@Override

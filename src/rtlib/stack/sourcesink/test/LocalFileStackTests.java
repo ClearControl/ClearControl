@@ -55,9 +55,8 @@ public class LocalFileStackTests
 			lRootFolder.mkdirs();
 			System.out.println(lRootFolder);
 
-			final LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSink = new LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
-																																																																													lRootFolder,
-																																																																													"testSink");
+			final LocalFileStackSink lLocalFileStackSink = new LocalFileStackSink(lRootFolder,
+																																						"testSink");
 
 			@SuppressWarnings("unchecked")
 			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	cSizeX,
@@ -124,16 +123,15 @@ public class LocalFileStackTests
 		System.out.println(lRootFolder);
 
 		{
-			final LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSink = new LocalFileStackSink<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
-																																																																													lRootFolder,
-																																																																													"testSink");
+			final LocalFileStackSink lLocalFileStackSink = new LocalFileStackSink(lRootFolder,
+																																						"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSink.getMetaDataVariableBundle();
 
 			lVariableBundle.addVariable(new Variable<Double>(	"doublevar1",
-																															312.0));
+																												312.0));
 			lVariableBundle.addVariable(new Variable<String>(	"stringvar1",
-																															"123"));
+																												"123"));
 
 			@SuppressWarnings("unchecked")
 			final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	cSizeX,
@@ -184,16 +182,15 @@ public class LocalFileStackTests
 			final BasicRecycler<StackInterface, StackRequest> lStackRecycler = new BasicRecycler<StackInterface, StackRequest>(	lOffHeapPlanarStackFactory,
 																																																													cMaximalNumberOfAvailableStacks);
 
-			final LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess> lLocalFileStackSource = new LocalFileStackSource<UnsignedShortType, ShortOffHeapAccess>(new UnsignedShortType(),
-																																																																																lStackRecycler,
-																																																																																lRootFolder,
-																																																																																"testSink");
+			final LocalFileStackSource lLocalFileStackSource = new LocalFileStackSource(lStackRecycler,
+																																									lRootFolder,
+																																									"testSink");
 
 			final VariableBundle lVariableBundle = lLocalFileStackSource.getMetaDataVariableBundle();
 			lVariableBundle.addVariable(new Variable<Double>(	"doublevar1",
-																															312.0));
+																												312.0));
 			lVariableBundle.addVariable(new Variable<String>(	"stringvar1",
-																															"123"));
+																												"123"));
 			final Variable<Double> lVariable1 = lVariableBundle.getVariable("doublevar1");
 			// System.out.println(lVariable1.get());
 			assertEquals(312, lVariable1.get(), 0.5);

@@ -132,7 +132,8 @@ public class HalcyonGUI extends Application
 
 			HalcyonNodeInterface node = new HalcyonSwingNode(	"ScriptingEngine-" + i,
 																												NodeType.Scripting,
-																												lScriptingWindow);
+																												lScriptingWindow,
+																												true);
 			mHalcyonFrame.addNode(node);
 		}
 

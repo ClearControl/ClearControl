@@ -1,11 +1,9 @@
 package rtlib.stack.sourcesink;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 
-public interface StackSinkInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
+public interface StackSinkInterface
 {
 
 	public boolean appendStack(final StackInterface pStack);

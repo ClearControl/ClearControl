@@ -13,9 +13,9 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
-public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A>>	implements
-																																										StackSinkInterface<T, A>,
-																																										StackSourceInterface<T, A>
+public class StackRAMServer	implements
+														StackSinkInterface,
+														StackSourceInterface
 {
 
 	ArrayList<StackInterface> mStackList = new ArrayList<StackInterface>();
@@ -76,7 +76,7 @@ public class StackRAMServer<T extends NativeType<T>, A extends ArrayDataAccess<A
 	public void addMetaData(final String pPrefix, final double pValue)
 	{
 		mMetaDataVariableBundle.addVariable(new Variable<Double>(	pPrefix,
-																																		pValue));
+																															pValue));
 	}
 
 	@Override

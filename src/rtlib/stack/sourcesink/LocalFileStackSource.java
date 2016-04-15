@@ -17,22 +17,20 @@ import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
-public class LocalFileStackSource<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																													LocalFileStackBase<T, A> implements
-																																																									StackSourceInterface<T, A>,
-																																																									AutoCloseable
+public class LocalFileStackSource extends LocalFileStackBase implements
+																														StackSourceInterface,
+																														AutoCloseable
 {
 
 	private static final long cSingleReadLimit = 64_000_000;
 	private RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
 	private FileChannel mBinarylFileChannel;
 
-	public LocalFileStackSource(T pType,
-															final BasicRecycler<StackInterface, StackRequest> pStackRecycler,
+	public LocalFileStackSource(final BasicRecycler<StackInterface, StackRequest> pStackRecycler,
 															final File pRootFolder,
 															final String pName) throws IOException
 	{
-		super(pType, pRootFolder, pName, true);
+		super(pRootFolder, pName, true);
 		mStackBasicRecycler = pStackRecycler;
 		mMetaDataVariableBundleAsFile.read();
 		update();

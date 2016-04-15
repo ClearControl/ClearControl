@@ -2,13 +2,6 @@ package rtlib.stack;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.AbstractImg;
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.img.planar.OffHeapPlanarImgFactory;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
@@ -17,6 +10,12 @@ import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
+import net.imglib2.img.AbstractImg;
+import net.imglib2.img.NativeImg;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.img.planar.OffHeapPlanarImgFactory;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class OffHeapPlanarStack extends StackBase	implements
 																									StackInterface

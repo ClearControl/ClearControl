@@ -9,17 +9,26 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.python.google.common.collect.Lists;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import rtlib.cameras.StackCameraDeviceInterface;
 import rtlib.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.concurrent.thread.ThreadUtils;
+import rtlib.core.variable.Variable;
+import rtlib.lasers.LaserDeviceInterface;
+import rtlib.lasers.devices.sim.LaserDeviceSimulator;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.component.detection.DetectionArm;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
 import rtlib.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
+import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackIdentityPipeline;
+import rtlib.stack.sourcesink.RandomStackSource;
 import rtlib.symphony.devices.SignalGeneratorInterface;
 import rtlib.symphony.devices.nirio.NIRIOSignalGenerator;
 import rtlib.symphony.devices.sim.SignalGeneratorSimulatorDevice;
@@ -33,95 +42,44 @@ public class LightSheetMicroscopeDemo
 	private static final long cImageResolution = 2048;
 
 	@Test
-	public void demoOnSimulators() throws InterruptedException,
-																ExecutionException
+	public void demoSimulatedScope() throws InterruptedException,
+																	ExecutionException
 	{
-		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
-		final StackCameraDeviceInterface lCamera = new StackCameraDeviceSimulator(null,
-																																							lSignalGeneratorDevice.getTriggerVariable());
 
-		demoWith(	true,
-							false,
-							true,
-							Lists.newArrayList(lCamera),
-							lSignalGeneratorDevice,
-							1);
+		
+		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
-	}
+		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+																																																											10);
+		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
+																																	101L,
+																																	103L,
+																																	lRecycler);
 
-	@Test
-	public void demoOnRealHardwareSingleCamera() throws InterruptedException,
-																							ExecutionException
-	{
-		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface lCamera = OrcaFlash4StackCamera.buildWithExternalTriggering(	0,
-																																																	false);
+		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
+																												false);
 
-		demoWith(	false,
-							false,
-							true,
-							Lists.newArrayList(lCamera),
-							lSignalGeneratorDevice,
-							1);
-
-	}
-
-	@Test
-	public void demoOnRealHardwareTwoCamerasFourLightSheets()	throws InterruptedException,
-																														ExecutionException
-	{
-		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
-																																																	false);
-		final StackCameraDeviceInterface lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,
-																																																	false);
-
-		demoWith(	true,
-							false,
-							true,
-							Lists.newArrayList(lCamera1, lCamera2),
-							lSignalGeneratorDevice,
-							4);
-
-	}
-
-	@Test
-	public void demoScriptingOnRealHardwareTwoCamerasFourLightSheets() throws InterruptedException,
-																																		ExecutionException
-	{
-		final SignalGeneratorInterface lSignalGeneratorDevice = new NIRIOSignalGenerator();
-		final StackCameraDeviceInterface lCamera1 = OrcaFlash4StackCamera.buildWithExternalTriggering(0,
-																																																	false);
-		final StackCameraDeviceInterface lCamera2 = OrcaFlash4StackCamera.buildWithExternalTriggering(1,
-																																																	false);
-
-		demoWith(	true,
-							false,
-							false,
-							Lists.newArrayList(lCamera1, lCamera2),
-							lSignalGeneratorDevice,
-							4);
-
-	}
-
-	public void demoWith(	boolean pWithGUI,
-												boolean pWith3D,
-												boolean pAutoStart,
-												ArrayList<StackCameraDeviceInterface> pCameras,
-												SignalGeneratorInterface pSignalGeneratorDevice,
-												int pNumberOfLightSheets)	throws InterruptedException,
-																									ExecutionException
-	{
+		
 
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
-		OptoJenaFiberSwitchDevice lOptoJenaFiberSwitchDevice = new OptoJenaFiberSwitchDevice("COM10");
-		lOptoJenaFiberSwitchDevice.setPosition(2);
-		lLightSheetMicroscope.getDeviceLists()
-													.addOptoMechanicalDevice(lOptoJenaFiberSwitchDevice);
 
-		for (final StackCameraDeviceInterface lCamera : pCameras)
+		// Setting up lasers:
+		int[] lLaserWavelengths = new int[]{405,488,561,594};
+		for(int l=0; l<3; l++)
 		{
+			LaserDeviceInterface lLaser = new LaserDeviceSimulator("Laser"+l,l,lLaserWavelengths[l],100+10*l);
+			lLightSheetMicroscope.getDeviceLists().addLaserDevice(lLaser);
+		}
+		
+		
+		
+		// Setting up cameras:
+		for (int c=0; c<2 ; c++)
+		{
+			final StackCameraDeviceInterface lCamera = new StackCameraDeviceSimulator(	lRandomStackSource,
+																																									lTrigger);
+			
 			final StackIdentityPipeline lStackIdentityPipeline = new StackIdentityPipeline();
 
 			lStackIdentityPipeline.getOutputVariable()
@@ -141,15 +99,17 @@ public class LightSheetMicroscopeDemo
 																									lStackIdentityPipeline);
 		}
 
+		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
+
 		lLightSheetMicroscope.getDeviceLists()
-													.addSignalGeneratorDevice(pSignalGeneratorDevice);
+													.addSignalGeneratorDevice(lSignalGeneratorDevice);
 
 		// Setting up staging movements:
 
 		final Movement lBeforeExposureMovement = new Movement("BeforeExposure");
 		final Movement lExposureMovement = new Movement("Exposure");
 
-		final ScoreInterface lStagingScore = pSignalGeneratorDevice.getStagingScore();
+		final ScoreInterface lStagingScore = lSignalGeneratorDevice.getStagingScore();
 
 		lStagingScore.addMovement(lBeforeExposureMovement);
 		lStagingScore.addMovement(lExposureMovement);
@@ -161,9 +121,9 @@ public class LightSheetMicroscopeDemo
 
 		// Setting up detection path:
 
-		for (int i = 0; i < pCameras.size(); i++)
+		for (int c = 0; c < 2; c++)
 		{
-			final DetectionArm lDetectionArm = new DetectionArm("D" + i);
+			final DetectionArm lDetectionArm = new DetectionArm("D" + c);
 
 			lLightSheetMicroscope.getDeviceLists()
 														.addDetectionArmDevice(lDetectionArm);
@@ -174,7 +134,7 @@ public class LightSheetMicroscopeDemo
 
 		// Setting up lightsheets:
 
-		for (int i = 0; i < pNumberOfLightSheets; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			final LightSheet lLightSheet = new LightSheet("demolightsheet" + i,
 																										9.4,
@@ -196,16 +156,13 @@ public class LightSheetMicroscopeDemo
 									.set(5000.0);
 
 			lLightSheet.getImageHeightVariable()
-									.set(pCameras.get(0).getStackHeightVariable().get());
+									.set(cImageResolution);
 		}
 
 		// setting up scope GUI:
 
-		LightSheetMicroscopeGUI lGUI = null;
-
-		if (pWithGUI)
-			lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
-																					pWith3D);
+		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																																true);
 
 		if (lGUI != null)
 			assertTrue(lGUI.open());
@@ -218,7 +175,7 @@ public class LightSheetMicroscopeDemo
 		if (lGUI != null)
 			lGUI.connectGUI();
 
-		if (pAutoStart)
+		if (false)
 		{
 			System.out.println("Start building queue");
 
