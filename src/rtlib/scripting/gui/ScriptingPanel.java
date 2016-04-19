@@ -313,6 +313,10 @@ public class ScriptingPanel extends JPanel implements
 			if (mLastLoadedScriptFile.exists())
 			{
 				Scanner lScanner = new Scanner(mLastLoadedScriptFile);
+
+				// If there is empty line, return
+				if(!lScanner.hasNext()) return;
+
 				String lFileName = lScanner.nextLine();
 				SwingUtilities.invokeAndWait(() -> mCurrentFileTextField.setText(lFileName));
 				loadFromFile(lFileName);
