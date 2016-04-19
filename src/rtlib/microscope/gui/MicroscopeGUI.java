@@ -15,7 +15,7 @@ import rtlib.microscope.MicroscopeBase;
 import rtlib.microscope.MicroscopeInterface;
 import rtlib.microscope.gui.halcyon.HalcyonGUIGenerator;
 import rtlib.microscope.gui.halcyon.MicroscopeNodeType;
-import rtlib.microscope.lsm.gui.LSMNodeType;
+import rtlib.microscope.lightsheet.gui.LSMNodeType;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.scripting.lang.ScriptingLanguageInterface;
 import rtlib.scripting.lang.groovy.GroovyScripting;

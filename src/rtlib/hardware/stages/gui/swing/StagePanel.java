@@ -6,7 +6,7 @@ import net.miginfocom.swing.MigLayout;
 import rtlib.core.variable.VariableListener;
 import rtlib.gui.swing.JSliderDouble;
 import rtlib.hardware.stages.StageDeviceInterface;
-import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
+import rtlib.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
 public class StagePanel extends JPanel
 {

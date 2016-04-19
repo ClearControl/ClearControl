@@ -18,7 +18,7 @@ import rtlib.device.signal.SignalStartableLoopTaskDevice;
 import rtlib.device.startstop.StartStopDeviceInterface;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
 import rtlib.hardware.signalgen.SignalGeneratorInterface;
-import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessingPipeline;
