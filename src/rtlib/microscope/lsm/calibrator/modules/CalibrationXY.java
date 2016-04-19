@@ -21,6 +21,7 @@ import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
@@ -44,10 +45,10 @@ public class CalibrationXY
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+																											.getNumberOfDevices(LightSheetInterface.class);
 
 		mOriginFromX = new MultiKeyMap<>();
 		mUnitVectorFromX = new MultiKeyMap<>();
@@ -76,7 +77,8 @@ public class CalibrationXY
 														boolean pDoAxisX)
 	{
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
-																														.getLightSheetDevice(pLightSheetIndex);
+																														.getDevice(	LightSheetInterface.class,
+																																				pLightSheetIndex);
 
 		double lMin, lMax;
 
@@ -356,7 +358,8 @@ public class CalibrationXY
 		System.out.format("lYOffset: %s \n", lYOffset);
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																	.getLightSheetDevice(pLightSheetIndex);
+																																	.getDevice(	LightSheetInterface.class,
+																																							pLightSheetIndex);
 
 		System.out.format("lLightSheetDevice: %s \n", lLightSheetDevice);
 

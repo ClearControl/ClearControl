@@ -30,7 +30,8 @@ public class LightSheetPositioner
 										double pPixelY)
 	{
 		LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
-																																	.getLightSheetDevice(pLightSheetIndex);
+																																	.getDevice(	LightSheetInterface.class,
+																																							pLightSheetIndex);
 
 		setAt(lLightSheetDevice, pPixelX, pPixelY);
 	}

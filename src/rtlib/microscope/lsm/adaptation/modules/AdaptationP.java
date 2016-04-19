@@ -12,6 +12,8 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
 public class AdaptationP extends AdaptationModuleBase	implements
@@ -43,11 +45,11 @@ public class AdaptationP extends AdaptationModuleBase	implements
 
 		int lNumberOfLightSheets = getAdaptator().getLightSheetMicroscope()
 																							.getDeviceLists()
-																							.getNumberOfLightSheetDevices();
+																							.getNumberOfDevices(LightSheetInterface.class);
 
 		int lNumberOfDetectionArmDevices = getAdaptator().getLightSheetMicroscope()
 																											.getDeviceLists()
-																											.getNumberOfDetectionArmDevices();
+																											.getNumberOfDevices(DetectionArmInterface.class);
 
 		lLSM.clearQueue();
 

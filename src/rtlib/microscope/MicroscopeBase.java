@@ -16,27 +16,57 @@ import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.device.queue.StateQueueDeviceInterface;
 import rtlib.device.signal.SignalStartableLoopTaskDevice;
 import rtlib.device.startstop.StartStopDeviceInterface;
+import rtlib.hardware.cameras.StackCameraDeviceInterface;
+import rtlib.hardware.signalgen.SignalGeneratorInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
+import rtlib.stack.processor.StackProcessingPipeline;
 
-public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice implements MicroscopeInterface
+public abstract class MicroscopeBase extends
+																		SignalStartableLoopTaskDevice	implements
+																																	MicroscopeInterface
 {
 	protected final StackRecyclerManager mStackRecyclerManager;
 	protected final MicroscopeDeviceLists mLSMDeviceLists;
 	protected volatile int mNumberOfEnqueuedStates;
 	protected volatile long mAverageTimeInNS;
-	
+
+	// TODO: use this:
+	private final ArrayList<Variable<StackInterface>> mStackVariableList = new ArrayList<>();
+	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
+
 	public MicroscopeBase(String pDeviceName, boolean pOnlyStart)
 	{
-		super(pDeviceName,pOnlyStart);
+		super(pDeviceName, pOnlyStart);
 		mStackRecyclerManager = new StackRecyclerManager();
 		mLSMDeviceLists = new MicroscopeDeviceLists(this);
 	}
-	
+
 	@Override
 	public MicroscopeDeviceLists getDeviceLists()
 	{
 		return mLSMDeviceLists;
+	}
+
+	public void addStackCameraDevice(int pIndex,
+																	StackCameraDeviceInterface pCameraDevice,
+																	StackProcessingPipeline pStackPipeline)
+	{
+		getDeviceLists().addDevice(pIndex, pCameraDevice);
+
+		if (pStackPipeline != null)
+		{
+			getDeviceLists().addDevice(pIndex,pStackPipeline);
+			pCameraDevice.getStackVariable()
+										.sendUpdatesTo(pStackPipeline.getInputVariable());
+			mStackVariableList.add(pStackPipeline.getOutputVariable());
+		}
+		else
+		{
+			mStackVariableList.add(pCameraDevice.getStackVariable());
+		}
+		
 	}
 
 	@Override
@@ -149,7 +179,7 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 	{
 		// TODO: this should be put in a subclass specific to the way that we
 		// trigger cameras...
-		mLSMDeviceLists.getSignalGeneratorDevice(0)
+		mLSMDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
 										.addCurrentStateToQueue();
 
 		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
@@ -173,8 +203,7 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 		}
 		return lIsActive;
 	}
-	
-	
+
 	@Override
 	public long lastAcquiredStacksTimeStampInNS()
 	{
@@ -184,14 +213,13 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 	@Override
 	public Variable<StackInterface> getStackVariable(int pIndex)
 	{
-		return getDeviceLists().getStackVariable(pIndex);
+		return getStackVariable(pIndex);
 	}
-
 
 	@Override
 	public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
-		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
+		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
 		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
 			setRecycler(i, pRecycler);
 	}
@@ -200,14 +228,16 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 	public void setRecycler(int pStackCameraDeviceIndex,
 													RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
-		getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
+		getDeviceLists().getDevice(	StackCameraDeviceInterface.class,
+																pStackCameraDeviceIndex)
 										.setStackRecycler(pRecycler);
 	}
 
 	@Override
 	public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex)
 	{
-		return getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
+		return getDeviceLists().getDevice(StackCameraDeviceInterface.class,
+																			pStackCameraDeviceIndex)
 														.getStackRecycler();
 	}
 
@@ -217,13 +247,13 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 													final int pMaximumNumberOfAvailableObjects,
 													final int pMaximumNumberOfLiveObjects)
 	{
-		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
+		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
 		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
 																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
 																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
 
 		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			getDeviceLists().getStackCameraDevice(i)
+			getDeviceLists().getDevice(StackCameraDeviceInterface.class, i)
 											.setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
 
 		setRecycler(lRecycler);
@@ -284,7 +314,7 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 																																ExecutionException,
 																																TimeoutException
 	{
-		int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDetectionArmDevices();
+		int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
 		CountDownLatch[] lStacksReceivedLatches = new CountDownLatch[lNumberOfDetectionArmDevices];
 
 		mAverageTimeInNS = 0;
@@ -334,6 +364,5 @@ public abstract class MicroscopeBase extends SignalStartableLoopTaskDevice imple
 
 		return lBoolean;
 	}
-
 
 }

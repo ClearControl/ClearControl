@@ -29,7 +29,8 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-																								.getLightSheetDevice(pLightSheetIndex);
+																								.getDevice(	LightSheetInterface.class,
+																														pLightSheetIndex);
 		double lMinW = lLightSheetDevice.getWidthFunction()
 																		.get()
 																		.getMin();

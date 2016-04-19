@@ -16,6 +16,7 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
@@ -33,10 +34,10 @@ public class CalibrationP
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+																											.getNumberOfDevices(LightSheetInterface.class);
 
 	}
 
@@ -150,7 +151,8 @@ public class CalibrationP
 			System.out.format("Light sheet index: %d \n", l);
 
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																		.getLightSheetDevice(l);
+																																		.getDevice(	LightSheetInterface.class,
+																																								l);
 
 			UnivariateAffineComposableFunction lFunction = lLightSheetDevice.getPowerFunction()
 																																			.get();

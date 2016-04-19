@@ -1,4 +1,4 @@
-package rtlib.gui.halcyon;
+package rtlib.microscope.lsm.gui;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,21 +10,10 @@ import javafx.scene.Node;
 /**
  * HalcyonNode Type enumeration
  */
-public enum NodeType implements HalcyonNodeType
+public enum LSMNodeType implements HalcyonNodeType
 {
-	Camera,
-	Laser,
 	LightSheet,
-	Stage,
-	FilterWheel,
-	OpticalSwitch,
-	SignalGenerator,
-	ScalingAmplifier,
-	AdaptiveOptics,
-	Scripting,
-	StackDisplay2D,
-	StackDisplay3D,
-	Other;
+	DetectionArm;
 
 	private static Properties mProperties;
 	static
@@ -32,7 +21,7 @@ public enum NodeType implements HalcyonNodeType
 		try
 		{
 			mProperties = new Properties();
-			InputStream lResourceAsStream = NodeType.class.getResourceAsStream("icons/IconMap.properties");
+			InputStream lResourceAsStream = LSMNodeType.class.getResourceAsStream("icons/IconMap.properties");
 			mProperties.load(lResourceAsStream);
 			lResourceAsStream.close();
 		}

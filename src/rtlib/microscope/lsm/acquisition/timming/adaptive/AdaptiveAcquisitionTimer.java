@@ -12,6 +12,7 @@ import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.microscope.lsm.acquisition.StackAcquisition;
 import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerBase;
 import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
 public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase implements
@@ -163,7 +164,7 @@ public class AdaptiveAcquisitionTimer extends AcquisitionTimerBase implements
 		LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
 
 		int lNumberOfLightSheets = lLSM.getDeviceLists()
-																		.getNumberOfLightSheetDevices();
+																		.getNumberOfDevices(LightSheetInterface.class);
 
 		lLSM.clearQueue();
 

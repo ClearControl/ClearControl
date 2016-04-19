@@ -6,6 +6,7 @@ import static java.lang.Math.pow;
 
 import coremem.buffers.ContiguousBuffer;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.stack.StackInterface;
 
 public class StackUtils
@@ -18,7 +19,7 @@ public class StackUtils
 		StackInterface lFusedStack = lFirstStack.duplicate();
 
 		int lNumberOfStacksToFuse = pLSM.getDeviceLists()
-																		.getNumberOfDetectionArmDevices();
+																		.getNumberOfDevices(DetectionArmInterface.class);
 
 		if (lNumberOfStacksToFuse > 1)
 		{

@@ -6,9 +6,12 @@ import static java.lang.Math.round;
 import java.util.Iterator;
 
 import rtlib.core.variable.Variable;
+import rtlib.hardware.lasers.LaserDeviceInterface;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateEvolutionVisualizer;
 import rtlib.microscope.lsm.acquisition.gui.AcquisitionStateVisualizer;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class StackAcquisition implements StackAcquisitionInterface
 {
@@ -16,12 +19,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
 	private final Variable<Double> mLowZ = new Variable<Double>("LowZ",
-																																					25.0);
+																															25.0);
 	private final Variable<Double> mHighZ = new Variable<Double>(	"HighZ",
-																																						75.0);
+																																75.0);
 
 	private final Variable<Double> mZStep = new Variable<Double>(	"ZStep",
-																																						0.5);
+																																0.5);
 
 	private volatile AcquisitionState mCurrentAcquisitionState;
 
@@ -165,7 +168,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 	public void setToStackPlane(int pPlaneIndex)
 	{
 		final int lNumberOfDetectionPathDevices = mLightSheetMicroscope.getDeviceLists()
-																																		.getNumberOfDetectionArmDevices();
+																																		.getNumberOfDevices(DetectionArmInterface.class);
 
 		for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
 		{
@@ -173,7 +176,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 		}
 
 		final int lNumberOfLightsheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfLightSheetDevices();
+																																.getNumberOfDevices(LightSheetInterface.class);
 
 		for (int l = 0; l < lNumberOfLightsheetDevices; l++)
 		{
@@ -189,7 +192,7 @@ public class StackAcquisition implements StackAcquisitionInterface
 		}
 
 		final int lNumberOfLaserDevices = mLightSheetMicroscope.getDeviceLists()
-																														.getNumberOfLaserDevices();
+																														.getNumberOfDevices(LaserDeviceInterface.class);
 
 		for (int i = 0; i < lNumberOfLaserDevices; i++)
 		{

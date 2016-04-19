@@ -2,6 +2,8 @@ package rtlib.microscope.lsm.acquisition;
 
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.interpolation.InterpolationTable;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 
 public class AcquisitionState implements AcquisitionStateInterface
 {
@@ -18,30 +20,31 @@ public class AcquisitionState implements AcquisitionStateInterface
 	private final InterpolationTable mInterpolationTableIH;
 	private final InterpolationTable mInterpolationTableIP;
 
+	private int mNumberOfLightSheetDevices;
+
+	private int mNumberOfDetectionArmDevices;
+
 	public AcquisitionState(LightSheetMicroscope pLightSheetMicroscope)
 	{
 		super();
 		mLightSheetMicroscope = pLightSheetMicroscope;
-		mInterpolationTableDZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfDetectionArmDevices());
 
-		mInterpolationTableIX = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIY = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIZ = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
+																														.getNumberOfDevices(DetectionArmInterface.class);
+		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
+																													.getNumberOfDevices(LightSheetInterface.class);
 
-		mInterpolationTableIA = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIB = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIW = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIH = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
-		mInterpolationTableIP = new InterpolationTable(mLightSheetMicroscope.getDeviceLists()
-																																				.getNumberOfLightSheetDevices());
+		mInterpolationTableDZ = new InterpolationTable(mNumberOfDetectionArmDevices);
+
+		mInterpolationTableIX = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIY = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIZ = new InterpolationTable(mNumberOfLightSheetDevices);
+
+		mInterpolationTableIA = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIB = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIW = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIH = new InterpolationTable(mNumberOfLightSheetDevices);
+		mInterpolationTableIP = new InterpolationTable(mNumberOfLightSheetDevices);
 	}
 
 	public AcquisitionState(AcquisitionState pCurrentAcquisitionState)
@@ -195,12 +198,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setDZ(double pValue)
 	{
-		int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																														.getNumberOfDetectionArmDevices();
-
+		
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfDetectionArmDevices; l++)
+		for (int l = 0; l < mNumberOfDetectionArmDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableDZ.getRow(c).setY(l, pValue);
 	}
@@ -240,12 +241,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIX(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIX.getRow(c).setY(l, pValue);
 	}
@@ -285,12 +284,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIY(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
 
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIY.getRow(c).setY(l, pValue);
 	}
@@ -330,12 +327,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIZ(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIZ.getRow(c).setY(l, pValue);
 	}
@@ -375,12 +370,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIA(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
 
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIA.getRow(c).setY(l, pValue);
 	}
@@ -420,12 +413,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIB(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIB.getRow(c).setY(l, pValue);
 	}
@@ -465,12 +456,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIW(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIW.getRow(c).setY(l, pValue);
 	}
@@ -510,12 +499,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIH(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIH.getRow(c).setY(l, pValue);
 	}
@@ -555,12 +542,10 @@ public class AcquisitionState implements AcquisitionStateInterface
 
 	public void setIP(double pValue)
 	{
-		int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																													.getNumberOfLightSheetDevices();
-
+	
 		int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
-		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
+		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 			for (int c = 0; c < lNumberOfControlPlanes; c++)
 				mInterpolationTableIP.getRow(c).setY(l, pValue);
 	}

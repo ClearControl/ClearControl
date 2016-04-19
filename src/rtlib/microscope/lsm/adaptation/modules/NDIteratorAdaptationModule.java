@@ -21,6 +21,8 @@ import rtlib.ip.iqm.DCTS2D;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.adaptation.utils.NDIterator;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 
@@ -95,7 +97,7 @@ public abstract class NDIteratorAdaptationModule extends
 																									.getNumberOfControlPlanes();
 
 		int lNumberOfLighSheets = lLightSheetMicroscope.getDeviceLists()
-																										.getNumberOfLightSheetDevices();
+																										.getNumberOfDevices(LightSheetInterface.class);
 
 		setNDIterator(new NDIterator(	lNumberOfControlPlanes,
 																	lNumberOfLighSheets));
@@ -156,7 +158,7 @@ public abstract class NDIteratorAdaptationModule extends
 				return null;
 
 			final int lNumberOfDetectionArmDevices = pLSM.getDeviceLists()
-																										.getNumberOfDetectionArmDevices();
+																										.getNumberOfDevices(DetectionArmInterface.class);
 
 			@SuppressWarnings("unchecked")
 			ArrayList<StackInterface> lStacks = new ArrayList<>();

@@ -59,10 +59,10 @@ public class Calibrator
 		mCalibrationHP = new CalibrationHP(pLightSheetMicroscope);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+																											.getNumberOfDevices(LightSheetInterface.class);
 
 	}
 
@@ -264,23 +264,25 @@ public class Calibrator
 		mCalibrationW.reset();
 
 		final int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																																	.getNumberOfDetectionArmDevices();
+																																	.getNumberOfDevices(DetectionArmInterface.class);
 
 		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 		{
 			final DetectionArmInterface lDetectionArmDevice = mLightSheetMicroscope.getDeviceLists()
-																																							.getDetectionArmDevice(i);
+																																							.getDevice(	DetectionArmInterface.class,
+																																													i);
 			lDetectionArmDevice.resetFunctions();
 
 		}
 
 		final int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfLightSheetDevices();
+																																.getNumberOfDevices(LightSheetInterface.class);
 
 		for (int i = 0; i < lNumberOfLightSheetDevices; i++)
 		{
 			final LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																					.getLightSheetDevice(i);
+																																					.getDevice(	LightSheetInterface.class,
+																																											i);
 
 			lLightSheetDevice.resetFunctions();
 
@@ -291,10 +293,10 @@ public class Calibrator
 	{
 
 		final int lNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																																.getNumberOfLightSheetDevices();
+																																.getNumberOfDevices(LightSheetInterface.class);
 
 		final int lNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																																	.getNumberOfDetectionArmDevices();
+																																	.getNumberOfDevices(DetectionArmInterface.class);
 
 		for (int l = 0; l < lNumberOfLightSheetDevices; l++)
 			for (int d = 0; d < lNumberOfDetectionArmDevices; d++)

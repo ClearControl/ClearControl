@@ -27,7 +27,8 @@ public class AdaptationX extends NDIteratorAdaptationModule	implements
 		StackAcquisitionInterface lStackAcquisition = getAdaptator().getStackAcquisition();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-																								.getLightSheetDevice(pLightSheetIndex);
+																								.getDevice(	LightSheetInterface.class,
+																														pLightSheetIndex);
 		double lMinX = lLightSheetDevice.getXFunction().get().getMin();
 		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
 		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);

@@ -13,36 +13,32 @@ public class DetectionArm extends NamedVirtualDevice implements
 																										DetectionArmInterface
 {
 
-	private int mDeviceIndex;
-
-	private final Variable<Double> mDetectionFocusZ = new Variable<Double>(	"FocusZ",
-																																											0.0);
+	private final Variable<Number> mDetectionFocusZ = new Variable<Number>(	"FocusZ",
+																																					0.0);
 
 	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"DetectionZFunction",
-																																																			new UnivariateAffineFunction());
+																																													new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
 
 	private final int mStaveIndex;
 
+	@SuppressWarnings("unchecked")
 	public DetectionArm(String pName)
 	{
 		super(pName);
 
 		resetFunctions();
 
-		final VariableSetListener<Double> lDoubleVariableListener = (u, v) -> {
+		@SuppressWarnings("rawtypes")
+		final VariableSetListener lVariableListener = (o, n) -> {
+			System.out.println(getName() + ": new Z value: " + n);
 			update();
 		};
 
-		final VariableSetListener<UnivariateAffineComposableFunction> lObjectVariableListener = (	u,
-																																															v) -> {
-			update();
-		};
-
-		mDetectionFocusZ.addSetListener(lDoubleVariableListener);
-		mZFunction.addSetListener(lObjectVariableListener);
+		mDetectionFocusZ.addSetListener(lVariableListener);
+		mZFunction.addSetListener(lVariableListener);
 
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																					.getIntegerProperty("device.lsm.detection." + getName()
@@ -59,10 +55,12 @@ public class DetectionArm extends NamedVirtualDevice implements
 		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
 																				.getUnivariateAffineFunction("device.lsm.detection." + getName()
 																																			+ ".z.f"));
+		
+		
 	}
 
 	@Override
-	public Variable<Double> getZVariable()
+	public Variable<Number> getZVariable()
 	{
 		return mDetectionFocusZ;
 	}
@@ -92,7 +90,8 @@ public class DetectionArm extends NamedVirtualDevice implements
 		synchronized (this)
 		{
 			mDetectionPathStaveZ.setValue((float) mZFunction.get()
-																											.value(mDetectionFocusZ.get()));
+																											.value(mDetectionFocusZ.get()
+																																							.doubleValue()));
 		}
 	}
 }

@@ -50,10 +50,10 @@ public class CalibrationData
 		super();
 
 		int lNumberOfLightSheets = pLightSheetMicroscope.getDeviceLists()
-																										.getNumberOfLightSheetDevices();
+																										.getNumberOfDevices(LightSheetInterface.class);
 
 		int lNumberOfDetectioArms = pLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfDetectionArmDevices();
+																											.getNumberOfDevices(DetectionArmInterface.class);
 
 		mLightSheetXFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
 		mLightSheetYFunctions = new UnivariateAffineFunction[lNumberOfLightSheets];
@@ -75,7 +75,8 @@ public class CalibrationData
 		for (int l = 0; l < mLightSheetXFunctions.length; l++)
 		{
 			LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
-																																		.getLightSheetDevice(l);
+																																		.getDevice(	LightSheetInterface.class,
+																																								l);
 
 			lLightSheetDevice.getXFunction()
 												.set(new UnivariateAffineFunction(mLightSheetXFunctions[l]));
@@ -102,7 +103,8 @@ public class CalibrationData
 		for (int d = 0; d < mDetectionArmZFunctions.length; d++)
 		{
 			DetectionArmInterface lDetectionArmDevice = pLightSheetMicroscope.getDeviceLists()
-																																				.getDetectionArmDevice(d);
+																																				.getDevice(	DetectionArmInterface.class,
+																																										d);
 
 			lDetectionArmDevice.getZFunction()
 													.set(new UnivariateAffineFunction(mDetectionArmZFunctions[d]));
@@ -116,7 +118,8 @@ public class CalibrationData
 		for (int l = 0; l < mLightSheetXFunctions.length; l++)
 		{
 			LightSheetInterface lLightSheetDevice = pLightSheetMicroscope.getDeviceLists()
-																																		.getLightSheetDevice(l);
+																																		.getDevice(	LightSheetInterface.class,
+																																								l);
 
 			mLightSheetXFunctions[l] = new UnivariateAffineFunction(lLightSheetDevice.getXFunction()
 																																								.get());
@@ -145,7 +148,8 @@ public class CalibrationData
 		for (int d = 0; d < mDetectionArmZFunctions.length; d++)
 		{
 			DetectionArmInterface lDetectionArmDevice = pLightSheetMicroscope.getDeviceLists()
-																																				.getDetectionArmDevice(d);
+																																				.getDevice(	DetectionArmInterface.class,
+																																										d);
 
 			mDetectionArmZFunctions[d] = new UnivariateAffineFunction(lDetectionArmDevice.getZFunction()
 																																										.get());

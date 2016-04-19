@@ -23,6 +23,7 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
@@ -45,10 +46,10 @@ public class CalibrationA
 																												.getSimpleName() + " calibration: focus curves");
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+																											.getNumberOfDevices(LightSheetInterface.class);
 
 		mModels = new HashMap<>();
 	}
@@ -62,7 +63,8 @@ public class CalibrationA
 			mMultiPlotAFocusCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
-																														.getLightSheetDevice(pLightSheetIndex);
+																														.getDevice(	LightSheetInterface.class,
+																																				pLightSheetIndex);
 
 		System.out.println("Current Alpha function: " + lLightSheet.getAlphaFunction());
 
@@ -320,7 +322,8 @@ public class CalibrationA
 		System.out.println("LightSheet index: " + pLightSheetIndex);
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																	.getLightSheetDevice(pLightSheetIndex);
+																																	.getDevice(	LightSheetInterface.class,
+																																							pLightSheetIndex);
 
 		UnivariateAffineFunction lUnivariateAffineFunction = mModels.get(pLightSheetIndex);
 

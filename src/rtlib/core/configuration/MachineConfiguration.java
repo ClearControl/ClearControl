@@ -216,7 +216,11 @@ public class MachineConfiguration
 		if (lAffineFunctionString == null)
 		{
 			System.out.println("Cannot find following function def in configuration file: " + pFunctionName);
-			return new UnivariateAffineFunction(1, 0);
+			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(1,
+																																												0);
+			lUnivariateAffineFunction.setMin(-100);
+			lUnivariateAffineFunction.setMax(100);
+			return lUnivariateAffineFunction;
 		}
 
 		TypeReference<HashMap<String, Double>> lTypeReference = new TypeReference<HashMap<String, Double>>()

@@ -1,5 +1,6 @@
 package rtlib.microscope.gui.halcyon;
 
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
@@ -8,6 +9,7 @@ import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonExternalNode;
 import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonNodeInterface;
+import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonSwingNode;
 import halcyon.view.TreePanel;
 import javafx.application.Application;
@@ -16,7 +18,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.device.switches.gui.jfx.SwitchingDevicePanel;
-import rtlib.gui.halcyon.NodeType;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.gui.video.video3d.Stack3DDisplay;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
@@ -38,14 +39,15 @@ import rtlib.microscope.gui.MicroscopeGUI;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.scripting.gui.ScriptingWindow;
 
-public class HalcyonGUIGenerator extends Application
+public class HalcyonGUIGenerator
 {
 	private MicroscopeInterface mMicroscopeInterface;
 	private HalcyonFrame mHalcyonFrame;
 	private MicroscopeGUI mMicroscopeGUI;
 
 	public HalcyonGUIGenerator(	MicroscopeInterface pMicroscopeInterface,
-															MicroscopeGUI pMicroscopeGUI)
+															MicroscopeGUI pMicroscopeGUI,
+															Collection<HalcyonNodeType> pNodeTypeNamesList)
 	{
 		mMicroscopeInterface = pMicroscopeInterface;
 		mMicroscopeGUI = pMicroscopeGUI;
@@ -54,24 +56,32 @@ public class HalcyonGUIGenerator extends Application
 		TreePanel lTreePanel = new TreePanel(	"Config",
 																					"Microscopy",
 																					this.getClass()
-																							.getResourceAsStream("/rtlib/gui/halcyon/icons/folder_16.png"),
-																					NodeType.values());
+																							.getResourceAsStream("./icons/folder_16.png"),
+																					pNodeTypeNamesList);
 
 		mHalcyonFrame = new HalcyonFrame(lTreePanel);
 
-		MicroscopeDeviceLists lDeviceLists = mMicroscopeInterface.getDeviceLists();
+	}
+
+	public HalcyonFrame getHalcyonFrame()
+	{
+		return mHalcyonFrame;
+	}
+
+	public void setupDeviceGUIs()
+	{
 
 		// Setting up devices:
-		setupLasers(lDeviceLists);
-		setupOpticalSwitches(lDeviceLists);
-		setupFilterWheels(lDeviceLists);
-		setupStages(lDeviceLists);
-		setupCameras(lDeviceLists);
-		setupSignalGenerators(lDeviceLists);
-		setupScalingAmplifiers(lDeviceLists);
+		setupLasers();
+		setupOpticalSwitches();
+		setupFilterWheels();
+		setupStages();
+		setupCameras();
+		setupSignalGenerators();
+		setupScalingAmplifiers();
 
 		// seting up script engines:
-		setupScriptEngines(pMicroscopeInterface);
+		setupScriptEngines(mMicroscopeInterface);
 
 		// setting up 2D and 3D displays:
 		setup2DDisplays();
@@ -80,6 +90,7 @@ public class HalcyonGUIGenerator extends Application
 		// Utility interfaces are added
 		// lHalcyonFrame.addToolbar( new DemoToolbarWindow(
 		// lHalcyonFrame.getViewManager() ) );
+
 	}
 
 	private void initJavaFX()
@@ -111,7 +122,7 @@ public class HalcyonGUIGenerator extends Application
 		for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DStackDisplayList())
 		{
 			HalcyonNodeInterface node = new HalcyonExternalNode(lStack3DDisplay.getName(),
-																													NodeType.StackDisplay3D,
+																													MicroscopeNodeType.StackDisplay3D,
 																													() -> {
 																														lStack3DDisplay.setVisible(true);
 																														lStack3DDisplay.requestFocus();
@@ -133,7 +144,7 @@ public class HalcyonGUIGenerator extends Application
 		for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DStackDisplayList())
 		{
 			HalcyonNodeInterface node = new HalcyonExternalNode(lStack2DDisplay.getName(),
-																													NodeType.StackDisplay2D,
+																													MicroscopeNodeType.StackDisplay2D,
 																													() -> {
 																														lStack2DDisplay.setVisible(true);
 																														lStack2DDisplay.requestFocus();
@@ -168,169 +179,114 @@ public class HalcyonGUIGenerator extends Application
 
 			HalcyonNodeInterface node = new HalcyonSwingNode(	lScriptingEngine.getScriptingLanguageInterface()
 																																				.getName(),
-																												NodeType.Scripting,
+																												MicroscopeNodeType.Scripting,
 																												lScriptingWindow,
 																												true);
 			mHalcyonFrame.addNode(node);
 		}/**/
 	}
 
-	private void setupSignalGenerators(MicroscopeDeviceLists lDeviceLists)
+	private void setupSignalGenerators()
 	{
-		for (int i = 0; i < lDeviceLists.getNumberOfSignalGeneratorDevices(); i++)
+		for (SignalGeneratorInterface lSignalGenerator : mMicroscopeInterface.getDeviceLists()
+																																					.getDevices(SignalGeneratorInterface.class))
 		{
-			SignalGeneratorInterface lSignalGenerator = lDeviceLists.getSignalGeneratorDevice(i);
-
 			SignalGeneratorPanel lSignalGeneratorPanel = new SignalGeneratorPanel(lSignalGenerator);
 
 			HalcyonSwingNode node = new HalcyonSwingNode(	lSignalGenerator.getName(),
-																										NodeType.SignalGenerator,
+																										MicroscopeNodeType.SignalGenerator,
 																										lSignalGeneratorPanel);
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupScalingAmplifiers(MicroscopeDeviceLists lDeviceLists)
+	private void setupScalingAmplifiers()
 	{
-		for (int i = 0; i < lDeviceLists.getNumberOfScalingAmplifierDevices(); i++)
+		for (ScalingAmplifierDeviceInterface lScalingAmplifier : mMicroscopeInterface.getDeviceLists()
+																																									.getDevices(ScalingAmplifierDeviceInterface.class))
 		{
-			ScalingAmplifierDeviceInterface lScalingAmplifier = lDeviceLists.getScalingAmplifierDevice(i);
-
 			ScalingAmplifierPanel lScalingAmplifierPanel = new ScalingAmplifierPanel(lScalingAmplifier);
 
 			HalcyonNode node = new HalcyonNode(	lScalingAmplifier.getName(),
-																					NodeType.ScalingAmplifier,
+																					MicroscopeNodeType.ScalingAmplifier,
 																					lScalingAmplifierPanel);
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupCameras(MicroscopeDeviceLists lDeviceLists)
+	private void setupCameras()
 	{
-		// Stack Camera List
-		for (int i = 0; i < lDeviceLists.getNumberOfStackCameraDevices(); i++)
+		for (StackCameraDeviceInterface lStackCamera : mMicroscopeInterface.getDeviceLists()
+																																				.getDevices(StackCameraDeviceInterface.class))
 		{
-			StackCameraDeviceInterface lCameraDevice = lDeviceLists.getStackCameraDevice(i);
+			CameraDevicePanel cameraDeviceGUI = new CameraDevicePanel(lStackCamera);
 
-			CameraDevicePanel cameraDeviceGUI = new CameraDevicePanel(lCameraDevice);
-
-			HalcyonNode node = new HalcyonNode(	lCameraDevice.getName(),
-																					NodeType.Camera,
+			HalcyonNode node = new HalcyonNode(	lStackCamera.getName(),
+																					MicroscopeNodeType.Camera,
 																					cameraDeviceGUI.getPanel());
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupStages(MicroscopeDeviceLists lDeviceLists)
+	private void setupStages()
 	{
-		// Stage Device List
-		for (int i = 0; i < lDeviceLists.getNumberOfStageDevices(); i++)
+		for (StageDeviceInterface lStageDevice : mMicroscopeInterface.getDeviceLists()
+																																	.getDevices(StageDeviceInterface.class))
 		{
-			StageDeviceInterface lStageDevice = lDeviceLists.getStageDevice(i);
-
-			// Stage
 			StageDeviceGUI stageDeviceGUI = new StageDeviceGUI(lStageDevice);
 
 			HalcyonNode node = new HalcyonNode(	lStageDevice.getName(),
-																					NodeType.Stage,
+																					MicroscopeNodeType.Stage,
 																					stageDeviceGUI.getPanel());
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupFilterWheels(MicroscopeDeviceLists lDeviceLists)
+	private void setupFilterWheels()
 	{
-		// FilterWheel Device list
-		for (int i = 0; i < lDeviceLists.getNumberOfFilterWheelDevices(); i++)
+		for (FilterWheelDeviceInterface lFilterWheel : mMicroscopeInterface.getDeviceLists()
+																																				.getDevices(FilterWheelDeviceInterface.class))
 		{
-			FilterWheelDeviceInterface lFilterWheelDeviceInterface = lDeviceLists.getFilterWheelDevice(i);
+			FilterWheelDevicePanel lFilterWheelDevicePanel = new FilterWheelDevicePanel(lFilterWheel);
 
-			FilterWheelDevicePanel lFilterWheelDevicePanel = new FilterWheelDevicePanel(lFilterWheelDeviceInterface);
-
-			HalcyonNode node = new HalcyonNode(	lFilterWheelDeviceInterface.getName(),
-																					NodeType.FilterWheel,
+			HalcyonNode node = new HalcyonNode(	lFilterWheel.getName(),
+																					MicroscopeNodeType.FilterWheel,
 																					lFilterWheelDevicePanel);
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupOpticalSwitches(MicroscopeDeviceLists lDeviceLists)
+	private void setupOpticalSwitches()
 	{
-		// OpticalSwitch Device list
-		for (int i = 0; i < lDeviceLists.getNumberOfOpticalSwitchDevices(); i++)
+		for (OpticalSwitchDeviceInterface lOpticalSwitch : mMicroscopeInterface.getDeviceLists()
+																																						.getDevices(OpticalSwitchDeviceInterface.class))
 		{
-			OpticalSwitchDeviceInterface lOpticalSwitchDeviceInterface = lDeviceLists.getOpticalSwitchDevice(i);
+			SwitchingDevicePanel lSwitchingDeviceGUI = new SwitchingDevicePanel(lOpticalSwitch);
 
-			SwitchingDevicePanel lSwitchingDeviceGUI = new SwitchingDevicePanel(lOpticalSwitchDeviceInterface);
-
-			HalcyonNode node = new HalcyonNode(	lOpticalSwitchDeviceInterface.getName(),
-																					NodeType.OpticalSwitch,
+			HalcyonNode node = new HalcyonNode(	lOpticalSwitch.getName(),
+																					MicroscopeNodeType.OpticalSwitch,
 																					lSwitchingDeviceGUI);
 			mHalcyonFrame.addNode(node);
 		}
 	}
 
-	private void setupLasers(MicroscopeDeviceLists lDeviceLists)
+	private void setupLasers()
 	{
-		// Laser Device list
-		for (int i = 0; i < lDeviceLists.getNumberOfLaserDevices(); i++)
+		for (LaserDeviceInterface lLaserDevice : mMicroscopeInterface.getDeviceLists()
+																																	.getDevices(LaserDeviceInterface.class))
 		{
-			LaserDeviceInterface lLaserDevice = lDeviceLists.getLaserDevice(i);
-
 			LaserDeviceGUI laserDeviceGUI = new LaserDeviceGUI(lLaserDevice);
 
 			HalcyonNode node = new HalcyonNode(	lLaserDevice.getName(),
-																					NodeType.Laser,
+																					MicroscopeNodeType.Laser,
 																					laserDeviceGUI.getPanel());
 			mHalcyonFrame.addNode(node);
 		}
-	}
-
-	@Override
-	public void start(Stage pJavaFxStage) throws Exception
-	{
-		mHalcyonFrame.start(pJavaFxStage);
-	}
-
-	public void externalStart()
-	{
-		HalcyonGUIGenerator lThis = this;
-		Platform.runLater(() -> {
-			Stage stage = new Stage();
-			try
-			{
-				lThis.start(stage);
-			}
-			catch (Throwable e)
-			{
-				e.printStackTrace();
-			}
-		});
-
-	}
-
-	public void externalStop()
-	{
-		HalcyonGUIGenerator lThis = this;
-		Platform.runLater(() -> {
-			try
-			{
-				lThis.stop();
-			}
-			catch (Throwable e)
-			{
-				e.printStackTrace();
-			}
-		});
-	}
-
-	public static void main(final String[] args)
-	{
-		launch(args);
 	}
 
 	public boolean isVisible()
 	{
 		return mHalcyonFrame.isVisible();
 	}
+
 }

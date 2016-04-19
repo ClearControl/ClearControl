@@ -21,6 +21,8 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
+import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.stack.StackInterface;
@@ -40,10 +42,10 @@ public class CalibrationW
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
-																											.getNumberOfLightSheetDevices();
+																											.getNumberOfDevices(LightSheetInterface.class);
 
 		mAverageIntensityCurves = MultiPlot.getMultiPlot(this.getClass()
 																													.getSimpleName() + "W-calibration: average intensity curves");
@@ -83,7 +85,8 @@ public class CalibrationW
 		try
 		{
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																		.getLightSheetDevice(pLightSheetIndex);
+																																		.getDevice(	LightSheetInterface.class,
+																																								pLightSheetIndex);
 
 			UnivariateAffineComposableFunction lWFunction = lLightSheetDevice.getWidthFunction()
 																																				.get();
@@ -243,7 +246,8 @@ public class CalibrationW
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																		.getLightSheetDevice(l);
+																																		.getDevice(	LightSheet.class,
+																																								l);
 
 			UnivariateAffineComposableFunction lFunction = lLightSheetDevice.getWidthFunction()
 																																			.get();

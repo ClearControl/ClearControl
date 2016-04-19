@@ -4,10 +4,13 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.Variable;
+import rtlib.device.name.NameableInterface;
 import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
-public interface LightSheetInterface extends OpenCloseDeviceInterface
+public interface LightSheetInterface extends
+																		NameableInterface,
+																		OpenCloseDeviceInterface
 {
 
 	public Variable<Long> getImageHeightVariable();
@@ -24,7 +27,7 @@ public interface LightSheetInterface extends OpenCloseDeviceInterface
 
 	public Variable<Double> getYVariable();
 
-	public Variable<Double> getZVariable();
+	public Variable<Number> getZVariable();
 
 	public Variable<Double> getAlphaInDegreesVariable();
 

@@ -72,7 +72,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																																								0.0);
 	private final Variable<Double> mYVariable = new Variable<Double>(	"LightSheetY",
 																																								0.0);
-	private final Variable<Double> mZVariable = new Variable<Double>(	"LightSheetZ",
+	private final Variable<Number> mZVariable = new Variable<Number>(	"LightSheetZ",
 																																								0.0);
 
 	private final Variable<Double> mAlphaInDegreesVariable = new Variable<Double>("LightSheetAlphaInDegrees",
@@ -398,7 +398,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			mLineExposureInMicrosecondsVariable.set(lLineExposureTimeInMicroseconds);
 
 			final double lGalvoYOffsetBeforeRotation = mYVariable.get();
-			final double lGalvoZOffsetBeforeRotation = mZVariable.get();
+			final double lGalvoZOffsetBeforeRotation = mZVariable.get().doubleValue();
 
 			final double lGalvoYOffset = galvoRotateY(lGalvoYOffsetBeforeRotation,
 																								lGalvoZOffsetBeforeRotation);
@@ -613,7 +613,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public Variable<Double> getZVariable()
+	public Variable<Number> getZVariable()
 	{
 		return mZVariable;
 	}

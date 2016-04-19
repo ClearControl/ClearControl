@@ -24,6 +24,7 @@ import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.utils.ImageAnalysisUtils;
+import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.stack.StackInterface;
 
@@ -46,7 +47,7 @@ public class CalibrationWP
 		mMultiPlotAdjustPCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
-																												.getNumberOfDetectionArmDevices();
+																												.getNumberOfDevices(DetectionArmInterface.class);
 
 		mWPFunctions = new MultiKeyMap<>();
 	}
@@ -62,7 +63,8 @@ public class CalibrationWP
 			mMultiPlotAdjustPCurves.setVisible(true);
 
 		LightSheetInterface lLightSheet = mLightSheetMicroscope.getDeviceLists()
-																														.getLightSheetDevice(pLightSheetIndex);
+																														.getDevice(	LightSheetInterface.class,
+																																				pLightSheetIndex);
 
 		UnivariateAffineComposableFunction lWidthFunction = lLightSheet.getWidthFunction()
 																																		.get();
@@ -304,7 +306,8 @@ public class CalibrationWP
 		System.out.println("LightSheet index: " + pLightSheetIndex);
 
 		LightSheetInterface lLightSheetDevice = mLightSheetMicroscope.getDeviceLists()
-																																	.getLightSheetDevice(pLightSheetIndex);
+																																	.getDevice(	LightSheetInterface.class,
+																																							pLightSheetIndex);
 
 		PolynomialFunction lNewWidthPowerFunction = mWPFunctions.get(	pLightSheetIndex,
 																																	pDetectionArmIndex);
