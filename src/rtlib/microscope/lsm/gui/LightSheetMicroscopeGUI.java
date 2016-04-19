@@ -13,7 +13,7 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 	{
 		super(pLightSheetMicroscope,p3DView);
 		
-		pLightSheetMicroscope.getDeviceLists()
+		//pLightSheetMicroscope.getDeviceLists()
 	}
 
 }
