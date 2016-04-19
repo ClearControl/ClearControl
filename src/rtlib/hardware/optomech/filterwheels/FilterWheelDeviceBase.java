@@ -1,46 +1,32 @@
 package rtlib.hardware.optomech.filterwheels;
 
-import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.variable.Variable;
+import rtlib.device.position.PositionDeviceBase;
 
 public abstract class FilterWheelDeviceBase	extends
-																						NamedVirtualDevice implements
+																						PositionDeviceBase implements
 																															FilterWheelDeviceInterface
 {
-	protected Variable<Integer> mFilterPositionVariable = null,
-			mFilterSpeedVariable = null;
+	protected Variable<Integer> mFilterSpeedVariable = null;
 
-	public FilterWheelDeviceBase(String pDeviceName)
+	public FilterWheelDeviceBase(String pDeviceName, int[] pValidPositions)
 	{
-		super(pDeviceName);
-		mFilterPositionVariable = new Variable<Integer>("FilterWheelPosition",
-																													0);
+		super(pDeviceName,pValidPositions);
 		mFilterSpeedVariable = new Variable<Integer>(	"FilterWheelSpeed",
-																												0);
+																									0);
 	}
-
-	@Override
-	public final Variable<Integer> getPositionVariable()
+	
+	public FilterWheelDeviceBase(String pDeviceName, int pDeviceIndex)
 	{
-		return mFilterPositionVariable;
+		super("filterwheel",pDeviceName,pDeviceIndex);
+		mFilterSpeedVariable = new Variable<Integer>(	"FilterWheelSpeed",
+																									0);
 	}
 
 	@Override
 	public final Variable<Integer> getSpeedVariable()
 	{
 		return mFilterSpeedVariable;
-	}
-
-	@Override
-	public int getPosition()
-	{
-		return mFilterPositionVariable.get();
-	}
-
-	@Override
-	public void setPosition(final int pPosition)
-	{
-		mFilterPositionVariable.set(pPosition);
 	}
 
 	@Override

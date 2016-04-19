@@ -2,9 +2,9 @@ package rtlib.core.concurrent.asyncprocs;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
+import rtlib.device.startstop.StartStopDeviceInterface;
 
 public class ObjectVariableAsynchronousProcessor<I, O>	implements
 																												OpenCloseDeviceInterface,

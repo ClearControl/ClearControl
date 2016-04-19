@@ -26,7 +26,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
-import rtlib.core.variable.javafx.JFXSimpleLongPropertyVariable;
+import rtlib.gui.variable.JFXSimpleLongPropertyVariable;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
 
 /**

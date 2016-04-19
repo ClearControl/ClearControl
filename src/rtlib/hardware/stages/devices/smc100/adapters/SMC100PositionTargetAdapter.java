@@ -2,10 +2,10 @@ package rtlib.hardware.stages.devices.smc100.adapters;
 
 import java.util.concurrent.TimeUnit;
 
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.core.variable.Variable;
 import rtlib.hardware.stages.devices.smc100.SMC100StageDevice;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100PositionTargetAdapter extends
 																	SerialDeviceAdapterAdapter<Double> implements

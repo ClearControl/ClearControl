@@ -1,11 +1,10 @@
 package rtlib.gui.halcyon;
 
-import halcyon.model.node.HalcyonNodeType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import halcyon.model.node.HalcyonNodeType;
 import javafx.scene.Node;
 
 /**
@@ -18,9 +17,14 @@ public enum NodeType implements HalcyonNodeType
 	LightSheet,
 	Stage,
 	FilterWheel,
+	OpticalSwitch,
+	SignalGenerator,
+	ScalingAmplifier,
 	AdaptiveOptics,
-	Other,
-	Scripting;
+	Scripting,
+	StackDisplay2D,
+	StackDisplay3D,
+	Other;
 
 	private static Properties mProperties;
 	static
@@ -41,6 +45,31 @@ public enum NodeType implements HalcyonNodeType
 	@Override
 	public Node getIcon()
 	{
-		return getIcon(mProperties.getProperty(name().toLowerCase() + ".icon"));
+		String lKey = name().toLowerCase() + ".icon";
+		try
+		{
+			String lProperty = mProperties.getProperty(lKey);
+			if (lProperty == null)
+			{
+				System.err.println("Cannot find property for key: " + lKey);
+				return null;
+			}
+
+			Node lIcon = getIcon(lProperty);
+
+			if (lIcon == null)
+			{
+				System.err.println("Cannot find icon for key: " + lProperty);
+				return null;
+			}
+
+			return lIcon;
+		}
+		catch (Throwable e)
+		{
+			System.err.println("Problem while obtaining icon for key: " + lKey);
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 package rtlib.hardware.lasers.devices.omicron.adapters.protocol.copy;
 
 import jssc.SerialPortException;
-import rtlib.serial.Serial;
+import rtlib.com.serial.Serial;
 
 public class ProtocolXX
 {

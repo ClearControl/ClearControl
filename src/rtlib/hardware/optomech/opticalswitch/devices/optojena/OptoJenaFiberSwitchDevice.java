@@ -1,11 +1,13 @@
 package rtlib.hardware.optomech.opticalswitch.devices.optojena;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import rtlib.com.serial.SerialDevice;
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.PositionDeviceInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.position.PositionDeviceInterface;
 import rtlib.hardware.optomech.OptoMechDeviceInterface;
 import rtlib.hardware.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
-import rtlib.serial.SerialDevice;
 
 public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																														PositionDeviceInterface,
@@ -13,6 +15,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 {
 
 	private Variable<Integer> mPositionVariable;
+	private ConcurrentHashMap<Integer, String> mFilterPositionToNameMap;
 
 	public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
 	{
@@ -21,8 +24,7 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 																										pDeviceIndex,
 																										"NULL"));
 
-		mPositionVariable = new Variable<Integer>("SwitchPosition",
-																										0);
+		mPositionVariable = new Variable<Integer>("SwitchPosition", 0);
 	}
 
 	public OptoJenaFiberSwitchDevice(final String pPortName)
@@ -68,6 +70,18 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice	implements
 	{
 		return new int[]
 		{ 1, 2, 3, 4, 5, 6 };
+	}
+
+	@Override
+	public void setPositionName(int pPositionIndex, String pPositionName)
+	{
+		mFilterPositionToNameMap.put(pPositionIndex, pPositionName);
+	}
+
+	@Override
+	public String getPositionName(int pPositionIndex)
+	{
+		return mFilterPositionToNameMap.get(mPositionVariable);
 	}
 
 }

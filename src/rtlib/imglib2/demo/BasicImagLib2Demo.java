@@ -1,6 +1,11 @@
 package rtlib.imglib2.demo;
 
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import coremem.fragmented.FragmentedMemory;
+import coremem.offheap.OffHeapMemory;
 import ij.ImagePlus;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessible;
@@ -15,11 +20,6 @@ import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
-
-import org.junit.Test;
-
-import coremem.fragmented.FragmentedMemory;
-import coremem.offheap.OffHeapMemory;
 
 public class BasicImagLib2Demo
 {

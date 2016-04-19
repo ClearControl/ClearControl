@@ -1,6 +1,6 @@
 package rtlib.hardware.optomech;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 
 public interface OptoMechDeviceInterface extends
 																				OpenCloseDeviceInterface

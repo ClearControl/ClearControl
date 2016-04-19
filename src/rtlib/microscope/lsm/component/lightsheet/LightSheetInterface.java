@@ -2,9 +2,9 @@ package rtlib.microscope.lsm.component.lightsheet;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.Variable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends OpenCloseDeviceInterface

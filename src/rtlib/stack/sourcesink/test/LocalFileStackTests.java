@@ -6,14 +6,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import net.imglib2.Cursor;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.PlanarCursor;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
+import coremem.recycling.BasicRecycler;
+import net.imglib2.Cursor;
+import net.imglib2.img.planar.PlanarCursor;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
@@ -22,9 +23,6 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.sourcesink.LocalFileStackSink;
 import rtlib.stack.sourcesink.LocalFileStackSource;
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
-import coremem.recycling.BasicRecycler;
 
 public class LocalFileStackTests
 {

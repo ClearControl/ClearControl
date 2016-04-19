@@ -1,6 +1,7 @@
 package rtlib.hardware.lasers.devices.cobolt;
 
 import jssc.SerialPortException;
+import rtlib.com.serial.SerialDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.Variable;
 import rtlib.hardware.lasers.LaserDeviceBase;
@@ -11,7 +12,6 @@ import rtlib.hardware.lasers.devices.cobolt.adapters.GetWorkingHoursAdapter;
 import rtlib.hardware.lasers.devices.cobolt.adapters.SetPowerOnOffAdapter;
 import rtlib.hardware.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import rtlib.hardware.lasers.devices.cobolt.models.CoboltDeviceEnum;
-import rtlib.serial.SerialDevice;
 
 public class CoboltLaserDevice extends LaserDeviceBase implements
 																											LaserDeviceInterface

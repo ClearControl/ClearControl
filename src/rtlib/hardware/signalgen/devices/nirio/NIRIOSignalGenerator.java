@@ -1,9 +1,10 @@
 package rtlib.hardware.signalgen.devices.nirio;
 
 import static java.lang.Math.toIntExact;
+
 import nirioj.direttore.Direttore;
-import rtlib.hardware.signalgen.devices.SignalGeneratorBase;
-import rtlib.hardware.signalgen.devices.SignalGeneratorInterface;
+import rtlib.hardware.signalgen.SignalGeneratorBase;
+import rtlib.hardware.signalgen.SignalGeneratorInterface;
 import rtlib.hardware.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import rtlib.hardware.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import rtlib.hardware.signalgen.score.ScoreInterface;

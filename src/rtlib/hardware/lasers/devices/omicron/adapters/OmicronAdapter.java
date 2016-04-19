@@ -1,8 +1,8 @@
 package rtlib.hardware.lasers.devices.omicron.adapters;
 
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.hardware.lasers.devices.omicron.adapters.protocol.ProtocolXX;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public abstract class OmicronAdapter<O> extends
 																				SerialDeviceAdapterAdapter<O>	implements

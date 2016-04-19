@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import rtlib.gui.video.video2d.videowindow.VideoWindow;
 import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;
+import rtlib.gui.video.video2d.videowindow.VideoWindow;
 
 public class VideoWindowDemo
 {

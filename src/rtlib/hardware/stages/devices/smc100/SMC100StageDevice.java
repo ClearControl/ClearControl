@@ -2,6 +2,8 @@ package rtlib.hardware.stages.devices.smc100;
 
 import java.util.concurrent.TimeUnit;
 
+import rtlib.com.serial.SerialDevice;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.core.concurrent.timing.Waiting;
 import rtlib.core.variable.Variable;
 import rtlib.hardware.stages.StageDeviceInterface;
@@ -16,8 +18,6 @@ import rtlib.hardware.stages.devices.smc100.adapters.SMC100Protocol;
 import rtlib.hardware.stages.devices.smc100.adapters.SMC100ReadyAdapter;
 import rtlib.hardware.stages.devices.smc100.adapters.SMC100ResetAdapter;
 import rtlib.hardware.stages.devices.smc100.adapters.SMC100StopAdapter;
-import rtlib.serial.SerialDevice;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100StageDevice extends SerialDevice	implements
 																										StageDeviceInterface,

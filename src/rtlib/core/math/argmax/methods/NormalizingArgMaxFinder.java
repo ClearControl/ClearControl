@@ -2,6 +2,7 @@ package rtlib.core.math.argmax.methods;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
 import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 

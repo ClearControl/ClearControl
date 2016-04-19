@@ -4,16 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.Variable;
-import rtlib.gui.video.StackDisplayInterface;
-import rtlib.gui.video.video2d.videowindow.VideoWindow;
-import rtlib.stack.EmptyStack;
-import rtlib.stack.StackInterface;
-import rtlib.stack.imglib2.ImageJStackDisplay;
-
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
@@ -22,6 +12,15 @@ import com.jogamp.newt.event.MouseEvent;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
+import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import rtlib.core.variable.Variable;
+import rtlib.device.name.NamedVirtualDevice;
+import rtlib.gui.video.StackDisplayInterface;
+import rtlib.gui.video.video2d.videowindow.VideoWindow;
+import rtlib.stack.EmptyStack;
+import rtlib.stack.StackInterface;
+import rtlib.stack.imglib2.ImageJStackDisplay;
 
 public class Stack2DDisplay extends NamedVirtualDevice implements
 																											StackDisplayInterface,
@@ -75,6 +74,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 																		pWindowHeight);
 
 		mVideoWindow.setVisible(true);
+		
 
 		final MouseAdapter lMouseAdapter = new MouseAdapter()
 		{
@@ -398,12 +398,17 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	{
 		mVideoWindow.setVisible(pIsVisible);
 	}
+	
+
+	public void requestFocus()
+	{
+		mVideoWindow.requestFocus();
+	}
 
 	@Override
 	public boolean open()
 	{
 		mDisplayOn.set(true);
-		setVisible(true);
 		mVideoWindow.start();
 		return true;
 	}
@@ -416,6 +421,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 		{
 			mVideoWindow.stop();
 			mDisplayOn.set(false);
+			mVideoWindow.setVisible(false);
 			mVideoWindow.close();
 			return true;
 		}
@@ -430,5 +436,6 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	{
 		mVideoWindow.disableClose();
 	}
+
 
 }

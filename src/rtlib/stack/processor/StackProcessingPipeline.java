@@ -1,10 +1,10 @@
 package rtlib.stack.processor;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
+import coremem.recycling.RecyclableFactory;
 import rtlib.core.variable.Variable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclableFactory;
 
 public interface StackProcessingPipeline extends
 																				OpenCloseDeviceInterface

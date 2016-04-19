@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-public interface ScriptingLanguageInterface
+import rtlib.device.name.ReadOnlyNameableInterface;
+
+public interface ScriptingLanguageInterface extends ReadOnlyNameableInterface
 {
 	String getPostamble();
 

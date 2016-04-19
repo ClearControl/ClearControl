@@ -3,8 +3,8 @@ package rtlib.core.variable.bundle;
 import java.util.Collection;
 import java.util.HashMap;
 
-import rtlib.core.variable.VariableBase;
 import rtlib.core.variable.Variable;
+import rtlib.core.variable.VariableBase;
 
 public class VariableBundle extends VariableBase<VariableBundle>
 {

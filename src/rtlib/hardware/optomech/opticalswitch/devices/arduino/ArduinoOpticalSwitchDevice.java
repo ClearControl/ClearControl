@@ -1,16 +1,15 @@
 package rtlib.hardware.optomech.opticalswitch.devices.arduino;
 
+import rtlib.com.serial.SerialDevice;
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
-import rtlib.hardware.optomech.OptoMechDeviceInterface;
+import rtlib.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 import rtlib.hardware.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
-import rtlib.serial.SerialDevice;
 
 public class ArduinoOpticalSwitchDevice extends SerialDevice implements
-																														SwitchingDeviceInterface,
-																														OptoMechDeviceInterface
+																														OpticalSwitchDeviceInterface
+
 {
 
 	private final Variable<Long> mCommandVariable;
@@ -65,8 +64,8 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 		{
 
 			mLightSheetOnOff[i] = new Variable<Boolean>(String.format("LightSheet%dOnOff",
-																																			i),
-																												false);
+																																i),
+																									false);
 			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
 
 		}
@@ -98,9 +97,15 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	}
 
 	@Override
-	public Variable<Boolean> getSwitchingVariable(int pSwitchIndex)
+	public Variable<Boolean> getSwitchVariable(int pSwitchIndex)
 	{
 		return mLightSheetOnOff[pSwitchIndex];
+	}
+
+	@Override
+	public String getSwitchName(int pSwitchIndex)
+	{
+		return "optical switch "+pSwitchIndex;
 	}
 
 }

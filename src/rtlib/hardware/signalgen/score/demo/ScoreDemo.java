@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.hardware.signalgen.gui.ScoreVisualizerJFrame;
+import rtlib.hardware.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.score.Score;
 import rtlib.hardware.signalgen.staves.RampSteppingStave;

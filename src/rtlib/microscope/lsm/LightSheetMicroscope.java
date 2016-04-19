@@ -2,344 +2,31 @@ package rtlib.microscope.lsm;
 
 import static java.lang.Math.toIntExact;
 
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import rtlib.core.concurrent.future.FutureBooleanList;
-import rtlib.core.device.ActivableDeviceInterface;
-import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.device.SignalStartableLoopTaskDevice;
-import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.device.queue.StateQueueDeviceInterface;
-import rtlib.core.variable.Variable;
-import rtlib.core.variable.VariableSetListener;
+import rtlib.device.queue.StateQueueDeviceInterface;
+import rtlib.microscope.MicroscopeBase;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lsm.component.lightsheet.si.StructuredIlluminationPatternInterface;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
-public class LightSheetMicroscope	extends
-																	SignalStartableLoopTaskDevice	implements
-																																StateQueueDeviceInterface,
-																																LightSheetMicroscopeInterface
+public class LightSheetMicroscope extends MicroscopeBase implements
+																										StateQueueDeviceInterface,
+																										LightSheetMicroscopeInterface
 {
 
-	private final LightSheetMicroscopeDeviceLists mLSMDeviceLists;
-	private final StackRecyclerManager mStackRecyclerManager;
-	private volatile int mNumberOfEnqueuedStates;
-	private volatile long mAverageTimeInNS;
+	
+	
+
 
 	public LightSheetMicroscope(String pDeviceName)
 	{
 		super(pDeviceName, false);
-		mLSMDeviceLists = new LightSheetMicroscopeDeviceLists(this);
-		mStackRecyclerManager = new StackRecyclerManager();
+		
 	}
 
-	@Override
-	public LightSheetMicroscopeDeviceLists getDeviceLists()
-	{
-		return mLSMDeviceLists;
-	}
+	
 
-	@Override
-	public boolean open()
-	{
-		boolean lIsOpen = super.open();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof OpenCloseDeviceInterface)
-			{
-				final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
-				final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
-				if (!lIsThisDeviceOpen)
-				{
-					System.out.println("Could not open device: " + lDevice);
-				}
 
-				lIsOpen &= lIsThisDeviceOpen;
-			}
-		}
-
-		return lIsOpen;
-	}
-
-	@Override
-	public boolean close()
-	{
-		boolean lIsClosed = true;
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof OpenCloseDeviceInterface)
-			{
-				final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
-				lIsClosed &= lOpenCloseDevice.close();
-			}
-		}
-
-		lIsClosed &= super.close();
-
-		mStackRecyclerManager.clearAll();
-
-		return lIsClosed;
-	}
-
-	@Override
-	public boolean start()
-	{
-		boolean lIsStarted = super.start();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StartStopDeviceInterface)
-			{
-				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-				lIsStarted &= lStartStopDevice.start();
-			}
-		}
-
-		return lIsStarted;
-	}
-
-	@Override
-	public boolean stop()
-	{
-		boolean lIsStopped = super.start();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StartStopDeviceInterface)
-			{
-				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-				lIsStopped &= lStartStopDevice.stop();
-			}
-		}
-
-		return lIsStopped;
-	}
-
-	@Override
-	public void clearQueue()
-	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.clearQueue();
-				}
-		}
-		mNumberOfEnqueuedStates = 0;
-	}
-
-	@Override
-	public void addCurrentStateToQueue()
-	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.addCurrentStateToQueue();
-				}
-
-		}
-		mNumberOfEnqueuedStates++;
-	}
-
-	@Override
-	public void finalizeQueue()
-	{
-		// TODO: this should be put in a subclass specific to the way that we
-		// trigger cameras...
-		mLSMDeviceLists.getSignalGeneratorDevice(0)
-										.addCurrentStateToQueue();
-
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.finalizeQueue();
-				}
-		}
-	}
-
-	private boolean isActiveDevice(final Object lDevice)
-	{
-		boolean lIsActive = true;
-		if (lDevice instanceof ActivableDeviceInterface)
-		{
-			ActivableDeviceInterface lActivableDeviceInterface = (ActivableDeviceInterface) lDevice;
-			lIsActive = lActivableDeviceInterface.isActive();
-		}
-		return lIsActive;
-	}
-
-	@Override
-	public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler)
-	{
-		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
-		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			setRecycler(i, pRecycler);
-	}
-
-	@Override
-	public void setRecycler(int pStackCameraDeviceIndex,
-													RecyclerInterface<StackInterface, StackRequest> pRecycler)
-	{
-		getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
-										.setStackRecycler(pRecycler);
-	}
-
-	@Override
-	public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex)
-	{
-		return getDeviceLists().getStackCameraDevice(pStackCameraDeviceIndex)
-														.getStackRecycler();
-	}
-
-	@Override
-	public void useRecycler(final String pName,
-													final int pMinimumNumberOfAvailableStacks,
-													final int pMaximumNumberOfAvailableObjects,
-													final int pMaximumNumberOfLiveObjects)
-	{
-		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfStackCameraDevices();
-		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
-
-		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			getDeviceLists().getStackCameraDevice(i)
-											.setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
-
-		setRecycler(lRecycler);
-	}
-
-	@Override
-	public void clearRecycler(String pName)
-	{
-		mStackRecyclerManager.clear(pName);
-	}
-
-	@Override
-	public void clearAllRecyclers()
-	{
-		mStackRecyclerManager.clearAll();
-	}
-
-	@Override
-	public int getQueueLength()
-	{
-		return mNumberOfEnqueuedStates;
-	}
-
-	@Override
-	public FutureBooleanList playQueue()
-	{
-		System.gc();
-		final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
-
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
-		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",
-													lDevice);
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
-				lFutureBooleanList.addFuture(	lDevice.toString(),
-																			lPlayQueueFuture);
-			}
-		}
-
-		return lFutureBooleanList;
-	}
-
-	@Override
-	public Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit) throws InterruptedException,
-																																		ExecutionException,
-																																		TimeoutException
-	{
-		final FutureBooleanList lPlayQueue = playQueue();
-		return lPlayQueue.get(pTimeOut, pTimeUnit);
-	}
-
-	@Override
-	public Boolean playQueueAndWaitForStacks(	long pTimeOut,
-																						TimeUnit pTimeUnit)	throws InterruptedException,
-																																ExecutionException,
-																																TimeoutException
-	{
-		int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDetectionArmDevices();
-		CountDownLatch[] lStacksReceivedLatches = new CountDownLatch[lNumberOfDetectionArmDevices];
-
-		mAverageTimeInNS = 0;
-
-		ArrayList<VariableSetListener<StackInterface>> lListenerList = new ArrayList<>();
-		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-		{
-			lStacksReceivedLatches[i] = new CountDownLatch(1);
-
-			final int fi = i;
-
-			VariableSetListener<StackInterface> lVariableSetListener = new VariableSetListener<StackInterface>()
-			{
-
-				@Override
-				public void setEvent(	StackInterface pCurrentValue,
-															StackInterface pNewValue)
-				{
-					lStacksReceivedLatches[fi].countDown();
-					mAverageTimeInNS += pNewValue.getTimeStampInNanoseconds() / lNumberOfDetectionArmDevices;
-				}
-			};
-
-			lListenerList.add(lVariableSetListener);
-
-			getStackVariable(i).addSetListener(lVariableSetListener);
-		}
-
-		System.out.println("Playing queue of length: " + getQueueLength());
-		final FutureBooleanList lPlayQueue = playQueue();
-
-		Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);
-
-		if (lBoolean != null && lBoolean)
-		{
-			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-			{
-				lStacksReceivedLatches[i].await(pTimeOut, pTimeUnit);
-			}
-		}
-
-		for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
-			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-			{
-				getStackVariable(i).removeSetListener(lVariableSetListener);
-			}
-
-		return lBoolean;
-	}
-
-	@Override
-	public long lastAcquiredStacksTimeStampInNS()
-	{
-		return mAverageTimeInNS;
-	}
-
-	@Override
-	public Variable<StackInterface> getStackVariable(int pIndex)
-	{
-		return getDeviceLists().getStackVariable(pIndex);
-	}
 
 	@Override
 	protected boolean loop()
@@ -549,7 +236,7 @@ public class LightSheetMicroscope	extends
 	public void setI(int pLightSheetIndex, boolean pOnOff)
 	{
 		getDeviceLists().getLightSheetSwitchingDevice()
-										.getSwitchingVariable(pLightSheetIndex)
+										.getSwitchVariable(pLightSheetIndex)
 										.set(pOnOff);
 	};
 
@@ -566,7 +253,7 @@ public class LightSheetMicroscope	extends
 	public boolean getI(int pLightSheetIndex)
 	{
 		return getDeviceLists().getLightSheetSwitchingDevice()
-														.getSwitchingVariable(pLightSheetIndex)
+														.getSwitchVariable(pLightSheetIndex)
 														.get();
 	}
 

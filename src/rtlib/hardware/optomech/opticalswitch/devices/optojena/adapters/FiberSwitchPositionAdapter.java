@@ -1,8 +1,8 @@
 package rtlib.hardware.optomech.opticalswitch.devices.optojena.adapters;
 
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.hardware.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class FiberSwitchPositionAdapter	extends
 																				SerialDeviceAdapterAdapter<Integer>	implements

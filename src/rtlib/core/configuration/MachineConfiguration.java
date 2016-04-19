@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
-import rtlib.core.math.functions.UnivariateAffineFunction;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 
 public class MachineConfiguration
 {

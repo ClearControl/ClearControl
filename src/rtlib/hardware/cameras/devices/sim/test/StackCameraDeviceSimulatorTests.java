@@ -4,14 +4,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import rtlib.core.variable.Variable;
 import rtlib.hardware.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.sourcesink.RandomStackSource;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulatorTests
 {
@@ -29,9 +29,10 @@ public class StackCameraDeviceSimulatorTests
 																																	lRecycler);
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
-																																		false);
+																												false);
 
-		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
+		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator("StackCamera",
+																																														lRandomStackSource,
 																																														lTrigger);
 
 		Variable<StackInterface> lStackVariable = lStackCameraDeviceSimulator.getStackVariable();

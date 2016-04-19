@@ -5,7 +5,7 @@ import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.NameableAbstract;
+import rtlib.device.name.NameableAbstract;
 import rtlib.hardware.signalgen.movement.MovementInterface;
 
 public class Score extends NameableAbstract implements ScoreInterface

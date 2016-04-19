@@ -1,10 +1,10 @@
 package rtlib.hardware.cameras;
 
-import rtlib.core.device.NameableInterface;
+import coremem.recycling.RecyclerInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.name.NameableInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 public interface StackCameraDeviceInterface	extends
 																						CameraDeviceInterface,

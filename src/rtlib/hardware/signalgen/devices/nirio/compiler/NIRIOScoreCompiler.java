@@ -8,6 +8,7 @@ import static java.lang.Math.toIntExact;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import coremem.buffers.ContiguousBuffer;
 import nirioj.direttore.Direttore;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.hardware.signalgen.movement.Movement;
@@ -17,7 +18,6 @@ import rtlib.hardware.signalgen.staves.ConstantStave;
 import rtlib.hardware.signalgen.staves.IntervalStave;
 import rtlib.hardware.signalgen.staves.StaveInterface;
 import rtlib.hardware.signalgen.staves.ZeroStave;
-import coremem.buffers.ContiguousBuffer;
 
 public class NIRIOScoreCompiler	implements
 																AsynchronousExecutorServiceAccess

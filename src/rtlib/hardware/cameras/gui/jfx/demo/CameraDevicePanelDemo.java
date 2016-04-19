@@ -1,5 +1,7 @@
 package rtlib.hardware.cameras.gui.jfx.demo;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -11,8 +13,6 @@ import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.sourcesink.RandomStackSource;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class CameraDevicePanelDemo extends Application
 {
@@ -31,9 +31,10 @@ public class CameraDevicePanelDemo extends Application
 																																	lRecycler);
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
-																																		false);
+																												false);
 
-		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator(lRandomStackSource,
+		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator("StackCamera",
+																																														lRandomStackSource,
 																																														lTrigger);
 
 		CameraDevicePanel lCameraDevicePanel = new CameraDevicePanel(lStackCameraDeviceSimulator);

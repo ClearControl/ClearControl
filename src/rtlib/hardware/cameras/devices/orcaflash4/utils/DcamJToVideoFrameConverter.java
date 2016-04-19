@@ -1,7 +1,5 @@
 package rtlib.hardware.cameras.devices.orcaflash4.utils;
 
-import gnu.trove.list.array.TByteArrayList;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -10,24 +8,25 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bridj.Pointer;
 
+import coremem.offheap.OffHeapMemory;
+import coremem.recycling.RecyclerInterface;
+import dcamj.DcamFrame;
+import gnu.trove.list.array.TByteArrayList;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessor;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import rtlib.core.concurrent.asyncprocs.ProcessorInterface;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.concurrent.executors.RTlibExecutors;
-import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.util.SingleUpdateTargetObjectVariable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
+import rtlib.device.signal.SignalStartableDevice;
 import rtlib.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.stack.EmptyStack;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorInterface;
-import coremem.offheap.OffHeapMemory;
-import coremem.recycling.RecyclerInterface;
-import dcamj.DcamFrame;
 
 public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 																																			OpenCloseDeviceInterface,

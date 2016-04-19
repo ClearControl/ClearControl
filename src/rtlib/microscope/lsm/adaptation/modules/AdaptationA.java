@@ -2,7 +2,6 @@ package rtlib.microscope.lsm.adaptation.modules;
 
 import static java.lang.Math.atan;
 import static java.lang.Math.toDegrees;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -10,6 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;

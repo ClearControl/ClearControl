@@ -1,7 +1,5 @@
 package rtlib.microscope.lsm.acquisition.timming.adaptive;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -9,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.microscope.lsm.acquisition.StackAcquisition;
 import rtlib.microscope.lsm.acquisition.timming.AcquisitionTimerBase;

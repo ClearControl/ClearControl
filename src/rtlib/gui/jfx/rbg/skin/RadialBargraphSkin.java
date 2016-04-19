@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
+import eu.hansolo.enzo.common.ConicalGradient;
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.Section;
+import eu.hansolo.enzo.common.ValueEvent;
+import eu.hansolo.enzo.fonts.Fonts;
+import eu.hansolo.enzo.gauge.RadialBargraph;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -56,12 +62,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import eu.hansolo.enzo.common.ConicalGradient;
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.Section;
-import eu.hansolo.enzo.common.ValueEvent;
-import eu.hansolo.enzo.fonts.Fonts;
-import eu.hansolo.enzo.gauge.RadialBargraph;
 
 /**
  * Created by hansolo Modified by hkmoon User: HongKee Date: 29.01.15 Time:

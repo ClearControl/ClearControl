@@ -3,9 +3,10 @@ package rtlib.microscope.lsm.acquisition.timming.adaptive;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
+
+import coremem.buffers.ContiguousBuffer;
 import rtlib.microscope.lsm.LightSheetMicroscopeInterface;
 import rtlib.stack.StackInterface;
-import coremem.buffers.ContiguousBuffer;
 
 public class StackUtils
 {

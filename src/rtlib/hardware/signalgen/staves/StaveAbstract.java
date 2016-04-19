@@ -1,6 +1,6 @@
 package rtlib.hardware.signalgen.staves;
 
-import rtlib.core.device.NameableAbstract;
+import rtlib.device.name.NameableAbstract;
 
 public abstract class StaveAbstract extends NameableAbstract implements
 																														StaveInterface

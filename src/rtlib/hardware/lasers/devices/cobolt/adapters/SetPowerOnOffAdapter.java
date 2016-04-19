@@ -1,7 +1,7 @@
 package rtlib.hardware.lasers.devices.cobolt.adapters;
 
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.hardware.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class SetPowerOnOffAdapter extends CoboltAdapter<Boolean> implements
 																																SerialTextDeviceAdapter<Boolean>

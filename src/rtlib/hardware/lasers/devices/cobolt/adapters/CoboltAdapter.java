@@ -1,8 +1,8 @@
 package rtlib.hardware.lasers.devices.cobolt.adapters;
 
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.hardware.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public abstract class CoboltAdapter<O>	extends
 																				SerialDeviceAdapterAdapter<O>	implements

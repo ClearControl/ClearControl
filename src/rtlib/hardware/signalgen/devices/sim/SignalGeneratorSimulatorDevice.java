@@ -4,8 +4,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import rtlib.core.variable.Variable;
-import rtlib.hardware.signalgen.devices.SignalGeneratorBase;
-import rtlib.hardware.signalgen.devices.SignalGeneratorInterface;
+import rtlib.hardware.signalgen.SignalGeneratorBase;
+import rtlib.hardware.signalgen.SignalGeneratorInterface;
 import rtlib.hardware.signalgen.score.ScoreInterface;
 
 public class SignalGeneratorSimulatorDevice	extends

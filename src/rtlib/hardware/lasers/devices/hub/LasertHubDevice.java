@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.name.NamedVirtualDevice;
+import rtlib.device.startstop.StartStopDeviceInterface;
 import rtlib.hardware.lasers.LaserDeviceInterface;
 
 public class LasertHubDevice extends NamedVirtualDevice	implements

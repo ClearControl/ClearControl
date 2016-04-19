@@ -3,7 +3,7 @@ package rtlib.hardware.lasers.gui.jfx;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.scene.layout.HBox;
-import rtlib.core.variable.javafx.JFXPropertyVariable;
+import rtlib.gui.variable.JFXPropertyVariable;
 import rtlib.hardware.lasers.LaserDeviceInterface;
 
 /**

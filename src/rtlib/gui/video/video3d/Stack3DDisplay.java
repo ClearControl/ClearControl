@@ -2,25 +2,23 @@ package rtlib.gui.video.video3d;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.variable.Variable;
-import rtlib.gui.video.StackDisplayInterface;
-import rtlib.stack.EmptyStack;
-import rtlib.stack.StackInterface;
+import cleargl.ClearGLWindow;
 import clearvolume.renderer.ClearVolumeRendererInterface;
+import clearvolume.renderer.cleargl.ClearGLVolumeRenderer;
 import clearvolume.renderer.factory.ClearVolumeRendererFactory;
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
+import rtlib.core.concurrent.asyncprocs.AsynchronousProcessorBase;
+import rtlib.core.variable.Variable;
+import rtlib.device.name.NamedVirtualDevice;
+import rtlib.gui.video.StackDisplayInterface;
+import rtlib.gui.video.util.WindowControl;
+import rtlib.stack.EmptyStack;
+import rtlib.stack.StackInterface;
 
-public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A>>	extends
-																																										NamedVirtualDevice implements
-																																																			StackDisplayInterface
+public class Stack3DDisplay extends NamedVirtualDevice implements
+																											StackDisplayInterface
 {
 	private static final int cDefaultDisplayQueueLength = 2;
 	protected static final long cTimeOutForBufferCopy = 5;
@@ -35,13 +33,12 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	private volatile Variable<Boolean> mDisplayOn;
 	private volatile Variable<Boolean> mWaitForLastChannel;
 
-	public Stack3DDisplay(final String pWindowName, final T pType)
+	public Stack3DDisplay(final String pWindowName)
 	{
-		this(pWindowName, pType, 512, 512, 1, cDefaultDisplayQueueLength);
+		this(pWindowName, 512, 512, 1, cDefaultDisplayQueueLength);
 	}
 
 	public Stack3DDisplay(final String pWindowName,
-												final T pType,
 												final int pWindowWidth,
 												final int pWindowHeight,
 												final int pNumberOfLayers,
@@ -49,19 +46,7 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	{
 		super(pWindowName);
 
-		/*
-		mJCudaClearVolumeRenderer = new JCudaClearVolumeRenderer(	pWindowName,
-																															768,
-																															768,
-																															Size.sizeOf(pType));
-		mJCudaClearVolumeRenderer.setTransfertFunction(TransferFunctions.getCoolWarm());
-		mJCudaClearVolumeRenderer.setVolumeSize(1, 1, 1);/**/
-
-		NativeTypeEnum lNativeTypeEnum = NativeTypeEnum.UnsignedByte;
-		if (pType instanceof UnsignedByteType)
-			lNativeTypeEnum = NativeTypeEnum.UnsignedByte;
-		else if (pType instanceof UnsignedShortType)
-			lNativeTypeEnum = NativeTypeEnum.UnsignedShort;
+		NativeTypeEnum lNativeTypeEnum = NativeTypeEnum.UnsignedShort;
 
 		mClearVolumeRenderer = ClearVolumeRendererFactory.newBestRenderer(pWindowName,
 																																			pWindowWidth,
@@ -74,6 +59,14 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 
 		mClearVolumeRenderer.setVisible(true);
 		mClearVolumeRenderer.setAdaptiveLODActive(false);
+		mClearVolumeRenderer.disableClose();
+		
+		if(mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+		{
+			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer)mClearVolumeRenderer;
+			ClearGLWindow lClearGLWindow = lClearGLVolumeRenderer.getClearGLWindow();
+			lClearGLWindow.addWindowListener(new WindowControl(lClearGLWindow));
+		}
 
 		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface, Object>("AsynchronousDisplayUpdater-" + pWindowName,
 																																												pUpdaterQueueLength)
@@ -167,9 +160,11 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 		};
 
 		mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
-																											false);
+																								false);
 
 	}
+	
+	
 
 	@Override
 	public Variable<StackInterface> getOutputStackVariable()
@@ -201,7 +196,6 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	@Override
 	public boolean open()
 	{
-		mClearVolumeRenderer.setVisible(true);
 		mAsynchronousDisplayUpdater.start();
 		return false;
 	}
@@ -211,8 +205,8 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	{
 		try
 		{
-
 			mAsynchronousDisplayUpdater.stop();
+			mAsynchronousDisplayUpdater.waitToFinish(1, TimeUnit.SECONDS);
 			mAsynchronousDisplayUpdater.close();
 			mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
 																													TimeUnit.SECONDS);
@@ -231,6 +225,21 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	{
 		return mClearVolumeRenderer.isShowing();
 	}
+	
+	public void setVisible(boolean pVisible)
+	{
+		mClearVolumeRenderer.setVisible(pVisible);
+	}
+	
+	public void requestFocus()
+	{
+		if(mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+		{
+			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer)mClearVolumeRenderer;
+			ClearGLWindow lClearGLWindow = lClearGLVolumeRenderer.getClearGLWindow();
+			lClearGLWindow.requestFocus();
+		}
+	}
 
 	public void disableClose()
 	{
@@ -246,5 +255,9 @@ public class Stack3DDisplay<T extends NativeType<T>, A extends ArrayDataAccess<A
 	{
 		mWaitForLastChannel = pWaitForLastChannel;
 	}
+
+
+
+
 
 }

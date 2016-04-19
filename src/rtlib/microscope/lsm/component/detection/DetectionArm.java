@@ -1,11 +1,11 @@
 package rtlib.microscope.lsm.component.detection;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.NamedVirtualDevice;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
+import rtlib.device.name.NamedVirtualDevice;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.staves.ConstantStave;
 

@@ -2,6 +2,9 @@ package rtlib.gui.video.video2d.videowindow;
 
 import java.io.IOException;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GLAutoDrawable;
+
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 import cleargl.GLAttribute;
@@ -11,10 +14,6 @@ import cleargl.GLTexture;
 import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLAutoDrawable;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;

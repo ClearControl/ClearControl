@@ -1,13 +1,14 @@
 package rtlib.core.math.outliers;
 
 import static java.lang.Math.abs;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.StatUtils;
+
+import gnu.trove.list.array.TDoubleArrayList;
 
 public class OutlierRemover
 {

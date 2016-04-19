@@ -6,6 +6,10 @@ import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.calibrator.modules.CalibrationA;
@@ -18,10 +22,6 @@ import rtlib.microscope.lsm.calibrator.modules.CalibrationZ;
 import rtlib.microscope.lsm.component.detection.DetectionArmInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;
 import rtlib.scripting.engine.ScriptingEngine;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class Calibrator
 {

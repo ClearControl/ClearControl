@@ -1,10 +1,10 @@
 package rtlib.microscope.lsm.component.lightsheet;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.device.SwitchingDeviceInterface;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
+import rtlib.device.name.NamedVirtualDevice;
+import rtlib.device.switches.SwitchingDeviceInterface;
 import rtlib.hardware.optomech.OptoMechDeviceInterface;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.staves.ConstantStave;
@@ -43,8 +43,8 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 			mBitStave[i] = new ConstantStave("lightsheet.s." + i, 0);
 
 			mLightSheetOnOff[i] = new Variable<Boolean>(String.format("LightSheet%dOnOff",
-																																			i),
-																												false);
+																																i),
+																									false);
 			mLightSheetOnOff[i].addSetListener(lBooleanVariableListener);
 
 		}
@@ -63,7 +63,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public Variable<Boolean> getSwitchingVariable(int pLightSheetIndex)
+	public Variable<Boolean> getSwitchVariable(int pLightSheetIndex)
 	{
 		return mLightSheetOnOff[pLightSheetIndex];
 	}
@@ -95,6 +95,12 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 				mBitStave[i].setValue(mLightSheetOnOff[i].get() ? 1 : 0);
 			}
 		}
+	}
+
+	@Override
+	public String getSwitchName(int pSwitchIndex)
+	{
+		return "light sheet " + pSwitchIndex;
 	}
 
 }

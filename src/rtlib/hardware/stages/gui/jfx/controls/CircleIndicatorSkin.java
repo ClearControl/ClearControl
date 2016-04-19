@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.javafx.css.converters.BooleanConverter;
+import com.sun.javafx.css.converters.PaintConverter;
+import com.sun.javafx.css.converters.SizeConverter;
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+import com.sun.javafx.scene.control.skin.resources.ControlResources;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -34,13 +41,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
-
-import com.sun.javafx.css.converters.BooleanConverter;
-import com.sun.javafx.css.converters.PaintConverter;
-import com.sun.javafx.css.converters.SizeConverter;
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
-import com.sun.javafx.scene.control.skin.resources.ControlResources;
 
 /**
  * Created by moon on 12/2/15.

@@ -1,6 +1,6 @@
 package rtlib.hardware.lasers.devices.omicron.adapters.protocol;
 
-import rtlib.serial.Serial;
+import rtlib.com.serial.Serial;
 
 public class ProtocolXX
 {

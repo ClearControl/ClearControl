@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.core.variable.persistence.VariableBundleAsFile;
 

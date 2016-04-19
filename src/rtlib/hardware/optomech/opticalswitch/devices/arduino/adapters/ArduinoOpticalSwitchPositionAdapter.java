@@ -1,8 +1,8 @@
 package rtlib.hardware.optomech.opticalswitch.devices.arduino.adapters;
 
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 import rtlib.hardware.optomech.opticalswitch.devices.arduino.ArduinoOpticalSwitchDevice;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
 
 public class ArduinoOpticalSwitchPositionAdapter extends
 																								SerialDeviceAdapterAdapter<Long> implements

@@ -2,21 +2,20 @@ package rtlib.microscope.lsm.calibrator.modules;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
 import org.ejml.simple.SimpleMatrix;
 
+import gnu.trove.list.array.TDoubleArrayList;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;

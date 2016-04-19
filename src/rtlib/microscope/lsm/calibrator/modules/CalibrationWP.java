@@ -1,16 +1,11 @@
 package rtlib.microscope.lsm.calibrator.modules;
 
 import static java.lang.Math.abs;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -19,6 +14,10 @@ import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
+import gnu.trove.list.array.TDoubleArrayList;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.Variable;
 import rtlib.gui.plots.MultiPlot;

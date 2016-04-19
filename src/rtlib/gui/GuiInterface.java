@@ -1,6 +1,6 @@
 package rtlib.gui;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 
 public interface GuiInterface extends OpenCloseDeviceInterface
 {

@@ -1,8 +1,8 @@
 package rtlib.hardware.optomech.filterwheels.devices.fli.adapters;
 
+import rtlib.com.serial.adapters.SerialBinaryDeviceAdapter;
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
 import rtlib.hardware.optomech.filterwheels.devices.fli.FLIFilterWheelDevice;
-import rtlib.serial.adapters.SerialBinaryDeviceAdapter;
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
 
 public abstract class FilterWheelDeviceAdapter extends
 																							SerialDeviceAdapterAdapter<Integer>	implements

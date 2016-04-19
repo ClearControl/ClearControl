@@ -2,7 +2,7 @@ package rtlib.hardware.signalgen.movement;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.NameableAbstract;
+import rtlib.device.name.NameableAbstract;
 import rtlib.hardware.signalgen.staves.StaveInterface;
 import rtlib.hardware.signalgen.staves.ZeroStave;
 

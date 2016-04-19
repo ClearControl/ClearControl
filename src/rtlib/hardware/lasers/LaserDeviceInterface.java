@@ -1,9 +1,9 @@
 package rtlib.hardware.lasers;
 
-import rtlib.core.device.NameableInterface;
-import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.device.StartStopDeviceInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.name.NameableInterface;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
+import rtlib.device.startstop.StartStopDeviceInterface;
 
 public interface LaserDeviceInterface	extends
 																			NameableInterface,

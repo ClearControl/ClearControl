@@ -1,23 +1,22 @@
 package rtlib.hardware.cameras.devices.orcaflash4;
 
-import gnu.trove.list.array.TByteArrayList;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import rtlib.core.device.OpenCloseDeviceInterface;
-import rtlib.core.units.Magnitude;
-import rtlib.core.variable.Variable;
-import rtlib.hardware.cameras.StackCameraDeviceBase;
-import rtlib.hardware.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
+import gnu.trove.list.array.TByteArrayList;
+import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import rtlib.core.units.Magnitude;
+import rtlib.core.variable.Variable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
+import rtlib.hardware.cameras.StackCameraDeviceBase;
+import rtlib.hardware.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 
 public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																																OpenCloseDeviceInterface,

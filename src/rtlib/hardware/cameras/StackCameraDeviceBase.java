@@ -1,15 +1,14 @@
 package rtlib.hardware.cameras;
 
-import gnu.trove.list.array.TByteArrayList;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import rtlib.core.device.queue.StateQueueDeviceInterface;
+import coremem.recycling.RecyclerInterface;
+import gnu.trove.list.array.TByteArrayList;
 import rtlib.core.variable.Variable;
+import rtlib.device.queue.StateQueueDeviceInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 																																		StackCameraDeviceInterface,

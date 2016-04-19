@@ -1,12 +1,14 @@
 package rtlib.hardware.optomech.filterwheels.devices.fli;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import rtlib.com.serial.SerialDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
 import rtlib.hardware.optomech.filterwheels.devices.fli.adapters.FilterWheelPositionDeviceAdapter;
 import rtlib.hardware.optomech.filterwheels.devices.fli.adapters.FilterWheelSpeedDeviceAdapter;
-import rtlib.serial.SerialDevice;
 
 public class FLIFilterWheelDevice extends SerialDevice implements
 																											FilterWheelDeviceInterface
@@ -15,6 +17,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	private final Variable<Integer> mFilterPositionVariable,
 			mFilterSpeedVariable;
 	private volatile int mCachedPosition, mCachedSpeed;
+	private ConcurrentHashMap<Integer, String> mFilterPositionToNameMap;
 
 	public FLIFilterWheelDevice(final int pDeviceIndex)
 	{
@@ -27,6 +30,8 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	public FLIFilterWheelDevice(final String pPortName)
 	{
 		super("FLIFilterWheel", pPortName, 9600);
+		
+		mFilterPositionToNameMap = new ConcurrentHashMap<>();
 
 		final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
 		mFilterPositionVariable = addSerialVariable("FilterWheelPosition",
@@ -127,6 +132,19 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	{
 		return new int[]
 		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	}
+
+	@Override
+	public void setPositionName(int pPositionIndex, String pPositionName)
+	{
+		mFilterPositionToNameMap.put(pPositionIndex, pPositionName);
+		
+	}
+
+	@Override
+	public String getPositionName(int pPositionIndex)
+	{
+		return mFilterPositionToNameMap.get(pPositionIndex);
 	}
 
 }

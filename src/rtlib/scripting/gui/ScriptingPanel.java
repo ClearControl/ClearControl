@@ -36,14 +36,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultCaret;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import net.miginfocom.swing.MigLayout;
 import rtlib.core.file.FileEventNotifier;
 import rtlib.core.file.FileEventNotifier.FileEventKind;
 import rtlib.core.file.FileEventNotifierListener;

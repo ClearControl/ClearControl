@@ -23,7 +23,7 @@ public class ArduinoOpticalSwitchDeviceDemo
 		{
 			for (int j = 0; j < lNumberOfSwitches; j++)
 			{
-				final Variable<Boolean> lSwitchVariable = lArduinoOpticalSwitchDevice.getSwitchingVariable(j);
+				final Variable<Boolean> lSwitchVariable = lArduinoOpticalSwitchDevice.getSwitchVariable(j);
 
 				lSwitchVariable.set(i % 2 == 0);
 				Thread.sleep(300);

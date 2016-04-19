@@ -2,14 +2,16 @@ package rtlib.hardware.stages;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.variable.Variable;
+import rtlib.device.name.NameableInterface;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 
 public interface StageDeviceInterface	extends
+																			NameableInterface,
 																			OpenCloseDeviceInterface
 {
 	StageType getStageType();
-	
+
 	int getNumberOfDOFs();
 
 	int getDOFIndexByName(String pName);
@@ -23,11 +25,10 @@ public interface StageDeviceInterface	extends
 	void enable(int pDOFIndex);
 
 	void setTargetPosition(int pIndex, double pPosition);
-	
+
 	double getTargetPosition(int pIndex);
-	
+
 	double getCurrentPosition(int pDOFIndex);
-	
 
 	Boolean waitToBeReady(int pDOFIndex,
 												int pTimeOut,
@@ -40,7 +41,7 @@ public interface StageDeviceInterface	extends
 	Variable<Boolean> getEnableVariable(int pDOFIndex);
 
 	Variable<Double> getTargetPositionVariable(int pDOFIndex);
-	
+
 	Variable<Double> getCurrentPositionVariable(int pDOFIndex);
 
 	Variable<Boolean> getReadyVariable(int pDOFIndex);
@@ -48,7 +49,5 @@ public interface StageDeviceInterface	extends
 	Variable<Boolean> getHomingVariable(int pDOFIndex);
 
 	Variable<Boolean> getStopVariable(int pDOFIndex);
-
-
 
 }

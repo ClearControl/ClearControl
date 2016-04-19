@@ -1,17 +1,14 @@
 package rtlib.stack.sourcesink;
 
-import gnu.trove.list.array.TLongArrayList;
-
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
+import coremem.recycling.RecyclerInterface;
+import gnu.trove.list.array.TLongArrayList;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bundle.VariableBundle;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 public class StackRAMServer	implements
 														StackSinkInterface,

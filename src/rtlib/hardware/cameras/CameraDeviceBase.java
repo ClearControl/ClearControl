@@ -2,8 +2,8 @@ package rtlib.hardware.cameras;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import rtlib.core.device.SignalStartableDevice;
 import rtlib.core.variable.Variable;
+import rtlib.device.signal.SignalStartableDevice;
 
 public abstract class CameraDeviceBase extends SignalStartableDevice implements
 																																		CameraDeviceInterface
@@ -17,6 +17,8 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 			mStackWidthVariable, mStackHeightVariable,
 			mStackMaxWidthVariable, mStackMaxHeightVariable,
 			mStackDepthVariable;
+	
+	protected Variable<Integer> mChannelVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
@@ -43,6 +45,12 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	}
 
 	public abstract void reopen();
+	
+	@Override
+	public Variable<Integer> getChannelVariable()
+	{
+		return mChannelVariable;
+	}
 
 	public Variable<Long> getStackBytesPerPixelVariable()
 	{

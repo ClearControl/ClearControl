@@ -1,5 +1,6 @@
 package rtlib.hardware.lasers.devices.omicron;
 
+import rtlib.com.serial.SerialDevice;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.hardware.lasers.LaserDeviceBase;
 import rtlib.hardware.lasers.LaserDeviceInterface;
@@ -14,7 +15,6 @@ import rtlib.hardware.lasers.devices.omicron.adapters.SetLaserOnOffAdapter;
 import rtlib.hardware.lasers.devices.omicron.adapters.SetOperatingModeAdapter;
 import rtlib.hardware.lasers.devices.omicron.adapters.SetPowerOnOffAdapter;
 import rtlib.hardware.lasers.devices.omicron.adapters.protocol.ProtocolXX;
-import rtlib.serial.SerialDevice;
 
 public class OmicronLaserDevice extends LaserDeviceBase	implements
 																												LaserDeviceInterface

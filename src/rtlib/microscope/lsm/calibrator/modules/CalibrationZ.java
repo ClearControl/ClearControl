@@ -3,18 +3,17 @@ package rtlib.microscope.lsm.calibrator.modules;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
+import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.methods.ModeArgMaxFinder;

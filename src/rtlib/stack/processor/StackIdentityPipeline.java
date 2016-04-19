@@ -1,9 +1,9 @@
 package rtlib.stack.processor;
 
+import coremem.recycling.RecyclableFactory;
 import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclableFactory;
 
 public class StackIdentityPipeline implements StackProcessingPipeline
 {

@@ -1,15 +1,12 @@
 package rtlib.stack.sourcesink;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import coremem.buffers.ContiguousBuffer;
+import coremem.recycling.RecyclerInterface;
 import rtlib.core.units.Magnitude;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.buffers.ContiguousBuffer;
-import coremem.recycling.RecyclerInterface;
 
 public class RandomStackSource implements StackSourceInterface
 {

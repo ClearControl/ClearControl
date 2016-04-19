@@ -147,7 +147,7 @@ dependencies
     compile 'com.miglayout:miglayout:3.7.4'
 
     // JMathPlot:
-    compile fileTree(dir: './libs/jmathplot', include: '*.jar')
+    compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
     // JTransforms:
     compile fileTree(dir: './libs/jtransforms', include: '*.jar')

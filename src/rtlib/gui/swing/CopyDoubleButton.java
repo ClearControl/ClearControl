@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import rtlib.core.variable.VariableSetInterface;
 import rtlib.core.variable.VariableGetInterface;
+import rtlib.core.variable.VariableSetInterface;
 
 public class CopyDoubleButton<O> extends JButton
 {

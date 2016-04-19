@@ -1,7 +1,6 @@
 package rtlib.microscope.lsm.acquisition.interpolation;
 
 import static java.lang.Math.abs;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,6 +10,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;

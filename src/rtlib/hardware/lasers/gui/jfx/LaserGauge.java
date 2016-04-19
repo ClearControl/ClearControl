@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.geometry.Insets;
@@ -22,9 +25,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import rtlib.gui.jfx.rbg.RadialBargraph;
 import rtlib.gui.jfx.rbg.RadialBargraphBuilder;
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.IconSwitch;
 
 /**
  * Laser Gauge Controls

@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessorBase;
 import rtlib.stack.processor.StackProcessorInterface;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class StackProcessorTests
 {

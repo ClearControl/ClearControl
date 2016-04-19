@@ -1,7 +1,7 @@
 package rtlib.hardware.stages.devices.smc100.adapters;
 
-import rtlib.serial.adapters.SerialDeviceAdapterAdapter;
-import rtlib.serial.adapters.SerialTextDeviceAdapter;
+import rtlib.com.serial.adapters.SerialDeviceAdapterAdapter;
+import rtlib.com.serial.adapters.SerialTextDeviceAdapter;
 
 public class SMC100ResetAdapter	extends
 																SerialDeviceAdapterAdapter<Boolean>	implements

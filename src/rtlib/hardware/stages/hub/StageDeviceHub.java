@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.NamedVirtualDevice;
-import rtlib.core.device.StartStopDeviceInterface;
-import rtlib.core.variable.Variable;
-import rtlib.hardware.stages.StageDeviceInterface;
-import rtlib.hardware.stages.StageType;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import rtlib.core.variable.Variable;
+import rtlib.device.name.NamedVirtualDevice;
+import rtlib.device.startstop.StartStopDeviceInterface;
+import rtlib.hardware.stages.StageDeviceInterface;
+import rtlib.hardware.stages.StageType;
 
 public class StageDeviceHub extends NamedVirtualDevice implements
 																											StageDeviceInterface,

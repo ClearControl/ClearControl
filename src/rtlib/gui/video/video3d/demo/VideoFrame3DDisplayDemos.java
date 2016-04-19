@@ -2,17 +2,8 @@ package rtlib.gui.video.video3d.demo;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
 import org.junit.Test;
 
-import rtlib.core.variable.Variable;
-import rtlib.gui.video.video3d.Stack3DDisplay;
-import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
-import rtlib.stack.OffHeapPlanarStack;
-import rtlib.stack.StackInterface;
-import rtlib.stack.StackRequest;
 import clearcuda.CudaContext;
 import clearcuda.CudaDevice;
 import clearcuda.CudaHostPointer;
@@ -22,6 +13,12 @@ import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
+import rtlib.core.variable.Variable;
+import rtlib.gui.video.video3d.Stack3DDisplay;
+import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
+import rtlib.stack.OffHeapPlanarStack;
+import rtlib.stack.StackInterface;
+import rtlib.stack.StackRequest;
 
 public class VideoFrame3DDisplayDemos
 {
@@ -46,8 +43,7 @@ public class VideoFrame3DDisplayDemos
 																																			lResolutionY,
 																																			lResolutionZ);
 
-		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																									new UnsignedShortType());
+		final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
 
 		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
@@ -106,8 +102,7 @@ public class VideoFrame3DDisplayDemos
 																																			lResolutionY,
 																																			lResolutionZ);
 
-		final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																									new UnsignedShortType());
+		final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
 
 		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
@@ -158,8 +153,7 @@ public class VideoFrame3DDisplayDemos
 			final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
 																																																												cMaximumNumberOfObjects);
 
-			final Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess> lVideoFrame3DDisplay = new Stack3DDisplay<UnsignedShortType, ShortOffHeapAccess>(	"Test",
-																																																																										new UnsignedShortType());
+			final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
 
 			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 

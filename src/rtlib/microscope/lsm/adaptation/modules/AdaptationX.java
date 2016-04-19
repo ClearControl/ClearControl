@@ -1,10 +1,9 @@
 package rtlib.microscope.lsm.adaptation.modules;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.acquisition.StackAcquisitionInterface;
 import rtlib.microscope.lsm.component.lightsheet.LightSheetInterface;

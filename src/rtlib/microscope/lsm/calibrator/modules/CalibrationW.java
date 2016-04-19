@@ -3,19 +3,18 @@ package rtlib.microscope.lsm.calibrator.modules;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.math3.stat.StatUtils;
+
+import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import org.apache.commons.math3.stat.StatUtils;
-
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.gui.plots.MultiPlot;

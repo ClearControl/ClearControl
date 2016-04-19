@@ -1,8 +1,5 @@
 package rtlib.scripting.lang.groovy;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +11,8 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import rtlib.scripting.autoimport.AutoImport;
 
 public class GroovyUtils

@@ -11,15 +11,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import cleargl.ClearGLDefaultEventListener;
-import cleargl.ClearGLWindow;
-
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
+import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.opengl.GLException;
 
+import cleargl.ClearGLDefaultEventListener;
+import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;
+import rtlib.gui.video.util.WindowControl;
 
 public class VideoWindow implements AutoCloseable
 {
@@ -99,6 +100,11 @@ public class VideoWindow implements AutoCloseable
 		mClearGLWindow.addMouseListener(lMouseControl);
 		final KeyboardControl lKeyboardControl = new KeyboardControl(this);
 		mClearGLWindow.addKeyListener(lKeyboardControl);
+		
+		WindowAdapter lWindowControl = new WindowControl(getGLWindow());
+		mClearGLWindow.addWindowListener(lWindowControl );
+		
+	  getGLWindow().setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 
 	}
 
@@ -182,7 +188,7 @@ public class VideoWindow implements AutoCloseable
 	@Override
 	public void close() throws IOException
 	{
-
+		mClearGLWindow.close();
 	}
 
 	public void setVisible(final boolean pVisible)
@@ -193,6 +199,11 @@ public class VideoWindow implements AutoCloseable
 	public boolean isVisible()
 	{
 		return mClearGLWindow.isVisible();
+	}
+	
+	public void requestFocus()
+	{
+		mClearGLWindow.requestFocus();
 	}
 
 	public void setDisplayOn(final boolean pDisplayOn)
@@ -379,5 +390,7 @@ public class VideoWindow implements AutoCloseable
 		// System.out.println("mSampledMaxIntensity=" +
 		// mSampledMaxIntensity);
 	}
+
+
 
 }

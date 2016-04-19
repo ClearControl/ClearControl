@@ -2,28 +2,27 @@ package rtlib.microscope.lsm.demo;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
-import org.python.google.common.collect.Lists;
 
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-import rtlib.core.concurrent.future.FutureBooleanList;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.Variable;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
-import rtlib.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import rtlib.hardware.cameras.devices.sim.StackCameraDeviceSimulator;
 import rtlib.hardware.lasers.LaserDeviceInterface;
 import rtlib.hardware.lasers.devices.sim.LaserDeviceSimulator;
-import rtlib.hardware.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
-import rtlib.hardware.signalgen.devices.SignalGeneratorInterface;
-import rtlib.hardware.signalgen.devices.nirio.NIRIOSignalGenerator;
+import rtlib.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
+import rtlib.hardware.optomech.filterwheels.devices.sim.FilterWheelDeviceSimulator;
+import rtlib.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
+import rtlib.hardware.optomech.opticalswitch.devices.sim.OpticalSwitchDeviceSimulator;
+import rtlib.hardware.signalamp.ScalingAmplifierDeviceInterface;
+import rtlib.hardware.signalamp.devices.sim.ScalingAmplifierSimulator;
+import rtlib.hardware.signalgen.SignalGeneratorInterface;
 import rtlib.hardware.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
-import rtlib.hardware.signalgen.gui.ScoreVisualizerJFrame;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.score.ScoreInterface;
 import rtlib.hardware.stages.StageType;
@@ -32,8 +31,6 @@ import rtlib.microscope.lsm.LightSheetMicroscope;
 import rtlib.microscope.lsm.component.detection.DetectionArm;
 import rtlib.microscope.lsm.component.lightsheet.LightSheet;
 import rtlib.microscope.lsm.gui.LightSheetMicroscopeGUI;
-import rtlib.scripting.engine.ScriptingEngine;
-import rtlib.scripting.lang.groovy.GroovyScripting;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
@@ -65,6 +62,7 @@ public class LightSheetMicroscopeDemo
 		final LightSheetMicroscope lLightSheetMicroscope = new LightSheetMicroscope("demoscope");
 
 		// Setting up lasers:
+
 		int[] lLaserWavelengths = new int[]
 		{ 405, 488, 561, 594 };
 		for (int l = 0; l < 3; l++)
@@ -85,10 +83,31 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addStageDevice(lStageDeviceSimulator);
 
+		// Setting up optical switch:
+
+		OpticalSwitchDeviceInterface lOpticalSwitchDeviceSimulator = new OpticalSwitchDeviceSimulator("OpticalSwitch",
+																																																	4);
+		lLightSheetMicroscope.getDeviceLists()
+													.addOpticalSwitchDevice(lOpticalSwitchDeviceSimulator);
+
+		// Setting up Filterwheel:
+
+		int[] lFilterWheelPositions = new int[]
+		{ 0, 1, 2, 3 };
+		FilterWheelDeviceInterface lFilterWheelDevice = new FilterWheelDeviceSimulator(	"FilterWheel",
+																																										lFilterWheelPositions);
+		lFilterWheelDevice.setPositionName(0, "405 filter");
+		lFilterWheelDevice.setPositionName(1, "488 filter");
+		lFilterWheelDevice.setPositionName(2, "561 filter");
+		lFilterWheelDevice.setPositionName(3, "594 filter");
+		lLightSheetMicroscope.getDeviceLists()
+													.addFilterWheelDevice(lFilterWheelDevice);
+
 		// Setting up cameras:
 		for (int c = 0; c < 2; c++)
 		{
-			final StackCameraDeviceInterface lCamera = new StackCameraDeviceSimulator(lRandomStackSource,
+			final StackCameraDeviceInterface lCamera = new StackCameraDeviceSimulator("StackCamera" + c,
+																																								lRandomStackSource,
 																																								lTrigger);
 
 			final StackIdentityPipeline lStackIdentityPipeline = new StackIdentityPipeline();
@@ -110,6 +129,16 @@ public class LightSheetMicroscopeDemo
 																									lStackIdentityPipeline);
 		}
 
+		// Scaling Amplifier:
+		
+		ScalingAmplifierDeviceInterface lScalingAmplifier1 = new ScalingAmplifierSimulator("ScalingAmplifier1");
+		lLightSheetMicroscope.getDeviceLists().addScalingAmplifierDevice(lScalingAmplifier1);
+		
+		ScalingAmplifierDeviceInterface lScalingAmplifier2 = new ScalingAmplifierSimulator("ScalingAmplifier2");
+		lLightSheetMicroscope.getDeviceLists().addScalingAmplifierDevice(lScalingAmplifier2);
+		
+		// Signal generator:
+		
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 
 		lLightSheetMicroscope.getDeviceLists()
@@ -127,8 +156,8 @@ public class LightSheetMicroscopeDemo
 
 		// setting up staging score visualization:
 
-		final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
-																																							lStagingScore);
+		/*final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
+																																							lStagingScore);/**/
 
 		// Setting up detection path:
 
@@ -169,28 +198,28 @@ public class LightSheetMicroscopeDemo
 			lLightSheet.getImageHeightVariable().set(cImageResolution);
 		}
 
-		GroovyScripting lGroovyScripting = new GroovyScripting();
-		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																																	null);
-		lLightSheetMicroscope.getDeviceLists()
-													.addScriptingEngine(lScriptingEngine);
-
 		// setting up scope GUI:
 
-		LightSheetMicroscopeGUI lGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
-																																true);
+		LightSheetMicroscopeGUI lMicroscopeGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																																					true);
 
-		if (lGUI != null)
-			assertTrue(lGUI.open());
+		lMicroscopeGUI.addGroovyScripting("lsm");
+		lMicroscopeGUI.addJythonScripting("lsm");
+
+		lMicroscopeGUI.generate();
+
+		if (lMicroscopeGUI != null)
+			assertTrue(lMicroscopeGUI.open());
 		else
 			lLightSheetMicroscope.sendStacksToNull();
 
 		assertTrue(lLightSheetMicroscope.open());
 		Thread.sleep(1000);
 
-		if (lGUI != null)
-			lGUI.connectGUI();
+		// if (lGUI != null)
+		// lGUI.connectGUI();
 
+		/*
 		if (false)
 		{
 			System.out.println("Start building queue");
@@ -212,17 +241,17 @@ public class LightSheetMicroscopeDemo
 				// Thread.sleep(4000);
 			}
 		}
-		else
+		else/**/
 		{
-			while (lVisualizer.isVisible())
+			while (lMicroscopeGUI.isVisible())
 			{
 				ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
 			}
 		}
 
 		assertTrue(lLightSheetMicroscope.close());
-		if (lGUI != null)
-			assertTrue(lGUI.close());
+		if (lMicroscopeGUI != null)
+			assertTrue(lMicroscopeGUI.close());
 
 	}
 

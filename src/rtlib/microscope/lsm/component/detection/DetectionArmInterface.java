@@ -1,8 +1,8 @@
 package rtlib.microscope.lsm.component.detection;
 
-import rtlib.core.device.OpenCloseDeviceInterface;
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.Variable;
+import rtlib.device.openclose.OpenCloseDeviceInterface;
 
 public interface DetectionArmInterface extends
 																			OpenCloseDeviceInterface

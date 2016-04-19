@@ -10,6 +10,12 @@ public class GroovyScripting implements ScriptingLanguageInterface
 {
 
 	@Override
+	public String getName()
+	{
+		return "Groovy";
+	}
+	
+	@Override
 	public String getPostamble()
 	{
 		return "";

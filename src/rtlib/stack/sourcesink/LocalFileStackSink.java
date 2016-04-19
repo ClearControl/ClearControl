@@ -7,14 +7,12 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
 import rtlib.core.units.Magnitude;
 import rtlib.core.variable.Variable;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.ContiguousMemoryInterface;
-import coremem.fragmented.FragmentedMemoryInterface;
 
 public class LocalFileStackSink extends LocalFileStackBase implements
 																													StackSinkInterface,

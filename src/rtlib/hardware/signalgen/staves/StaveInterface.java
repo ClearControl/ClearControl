@@ -1,6 +1,6 @@
 package rtlib.hardware.signalgen.staves;
 
-import rtlib.core.device.NameableInterface;
+import rtlib.device.name.NameableInterface;
 
 /**
  * Stave Interface

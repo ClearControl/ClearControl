@@ -10,23 +10,23 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import net.imglib2.exception.IncompatibleTypeException;
 import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.executors.WaitingScheduledFuture;
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.device.SimulatorDeviceInterface;
 import rtlib.core.log.Loggable;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableEdgeListener;
+import rtlib.device.sim.SimulatorDeviceInterface;
 import rtlib.hardware.cameras.StackCameraDeviceBase;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.sourcesink.StackSourceInterface;
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 																																			Loggable,
@@ -42,23 +42,29 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	private volatile CountDownLatch mLeftInQueue;
 	private WaitingScheduledFuture<?> mTriggerScheduledAtFixedRate;
 
-	public StackCameraDeviceSimulator(StackSourceInterface pStackSource,
+	public StackCameraDeviceSimulator(String pDeviceName,
+																		StackSourceInterface pStackSource,
 																		Variable<Boolean> pTriggerVariable)
 	{
-		super("StackCameraSimulator");
+		super(pDeviceName);
 		mStackSource = pStackSource;
 		mTriggerVariable = pTriggerVariable;
+
+		mChannelVariable = new Variable<Integer>("Channel", 0);
 
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																	1.0);
 		mStackBytesPerPixelVariable = new Variable<Long>(	"FrameBytesPerPixel",
 																											2L);
 		mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
-		mStackWidthVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera width: "+n);});
-		
+		mStackWidthVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ": New camera width: " + n);
+		});
+
 		mStackHeightVariable = new Variable<Long>("FrameHeight", 320L);
-		mStackHeightVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera height: "+n);});
-		
+		mStackHeightVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ": New camera height: " + n);
+		});
 
 		mStackMaxWidthVariable = new Variable<Long>("FrameMaxWidth",
 																								2048L);
@@ -66,13 +72,16 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 																									2048L);
 
 		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
-		mStackDepthVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera stack depth: "+n);});
-		
-		
+		mStackDepthVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ": New camera stack depth: " + n);
+		});
+
 		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
 																														1000.0);
-		mExposureInMicrosecondsVariable.addSetListener((o,n) ->{System.out.println(getName()+": New camera exposure: "+n);});
-		
+		mExposureInMicrosecondsVariable.addSetListener((o, n) -> {
+			System.out.println(getName() + ": New camera exposure: " + n);
+		});
+
 		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeinNanometers",
 																													160.0);
 
@@ -128,6 +137,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 					}
 
 					lStack.setNumberOfImagesPerPlane(getNumberOfImagesPerPlaneVariable().get());
+					lStack.setChannel(getChannelVariable().get());
 					mStackReference.set(lStack);
 
 					if (mLeftInQueue != null)
@@ -324,5 +334,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	{
 		mHint = pHint;
 	}
+
+
 
 }

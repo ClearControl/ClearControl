@@ -1,8 +1,8 @@
 package rtlib.stack.processor;
 
+import coremem.recycling.RecyclerInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 public interface StackProcessorInterface
 {

@@ -7,9 +7,17 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 																																			FilterWheelDeviceInterface
 {
 
-	public FilterWheelDeviceSimulator(String pDeviceName)
+	public FilterWheelDeviceSimulator(String pDeviceName,
+																		int[] pValidPositions)
 	{
-		super(pDeviceName);
+		super(pDeviceName, pValidPositions);
+
+		mPositionVariable.addSetListener((o, n) -> {
+			System.out.format("%s: new position: %d corresponding to filter '%s' \n",
+												pDeviceName,
+												n,
+												getPositionName(n));
+		});
 	}
 
 	@Override
@@ -22,13 +30,6 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 	public boolean close()
 	{
 		return true;
-	}
-
-	@Override
-	public int[] getValidPositions()
-	{
-		return new int[]
-		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	}
 
 }

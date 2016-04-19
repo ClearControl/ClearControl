@@ -2,11 +2,9 @@ package rtlib.stack.sourcesink;
 
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.type.NativeType;
+import coremem.recycling.RecyclerInterface;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 public interface StackSourceInterface
 {

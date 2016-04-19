@@ -8,7 +8,13 @@ import rtlib.scripting.lang.ScriptingLanguageInterface;
 
 public class JythonScripting implements ScriptingLanguageInterface
 {
-
+	@Override
+	public String getName()
+	{
+		return "Jython";
+	}
+	
+	
 	@Override
 	public String getPostamble()
 	{
@@ -51,5 +57,8 @@ public class JythonScripting implements ScriptingLanguageInterface
 		}/**/
 		return pThrowable.toString();
 	}
+
+
+
 
 }

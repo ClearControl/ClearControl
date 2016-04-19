@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import coremem.recycling.BasicRecycler;
+import coremem.recycling.RecyclerInterface;
 import rtlib.stack.ContiguousOffHeapPlanarStackFactory;
 import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.sourcesink.RandomStackSource;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class RandomStackSourceTests
 {

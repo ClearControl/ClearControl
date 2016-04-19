@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.junit.Test;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
 import rtlib.core.concurrent.thread.ThreadUtils;
 import rtlib.core.variable.Variable;
 import rtlib.gui.swing.JButtonBoolean;
@@ -18,8 +20,6 @@ import rtlib.gui.swing.JSliderDouble;
 import rtlib.gui.video.video2d.Stack2DDisplay;
 import rtlib.stack.OffHeapPlanarStack;
 import rtlib.stack.StackInterface;
-import coremem.ContiguousMemoryInterface;
-import coremem.buffers.ContiguousBuffer;
 
 public class VideoFrame2DDisplayDemo
 {

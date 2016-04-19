@@ -1,7 +1,7 @@
 package rtlib.hardware.stages.devices.ecc100.variables;
 
-import rtlib.core.variable.Variable;
 import ecc100.ECC100Axis;
+import rtlib.core.variable.Variable;
 
 public class EnableVariable extends Variable<Boolean>
 {

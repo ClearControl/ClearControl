@@ -2,8 +2,8 @@ package rtlib.hardware.sensors;
 
 import java.util.concurrent.TimeUnit;
 
-import rtlib.core.device.SignalStartableLoopTaskDevice;
 import rtlib.core.variable.Variable;
+import rtlib.device.signal.SignalStartableLoopTaskDevice;
 
 public abstract class TemperatureSensorDeviceBase	extends
 																									SignalStartableLoopTaskDevice	implements
