@@ -53,8 +53,8 @@ public class HalcyonGUIGenerator
 		mMicroscopeGUI = pMicroscopeGUI;
 		initJavaFX();
 
-		TreePanel lTreePanel = new TreePanel(	"Config",
-																					"Microscopy",
+		TreePanel lTreePanel = new TreePanel(	"component tree",
+																					"Hardware",
 																					this.getClass()
 																							.getResourceAsStream("./icons/folder_16.png"),
 																					pNodeTypeNamesList);
