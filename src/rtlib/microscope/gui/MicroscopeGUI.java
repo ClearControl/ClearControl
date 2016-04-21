@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
+import javafx.application.Platform;
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.variable.Variable;
 import rtlib.device.name.NamedVirtualDevice;
@@ -72,7 +73,7 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 	public void generate()
 	{
 		setup2Dand3DDisplays();
-		setupHalcyonWindow(mMicroscope);
+		setupHalcyonWindow( mMicroscope );
 	}
 
 	public MicroscopeInterface getMicroscope()
@@ -169,23 +170,30 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 		HalcyonGUIGenerator lHalcyonGUIGenerator = new HalcyonGUIGenerator(	pMicroscopeInterface,
 																										this,
 																										lNodeTypeList);
-		lHalcyonGUIGenerator.setupDeviceGUIs();
-		
-		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
-	}
 
-	@Override
-	public boolean open()
-	{
+		// HalcyonFrame should be started before adding nodes.
+		// Then, JavaFX will know the scene graphs from the stage
+		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
 		try
 		{
 			mHalcyonFrame.externalStart();
+			Platform.runLater( new Runnable()
+			{
+				@Override public void run()
+				{
+					lHalcyonGUIGenerator.setupDeviceGUIs();
+				}
+			} );
 		}
 		catch (Throwable e)
 		{
 			e.printStackTrace();
 		}
+	}
 
+	@Override
+	public boolean open()
+	{
 		executeAsynchronously(() -> {
 			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
 			{

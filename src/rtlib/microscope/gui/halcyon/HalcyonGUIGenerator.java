@@ -12,10 +12,7 @@ import halcyon.model.node.HalcyonNodeInterface;
 import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonSwingNode;
 import halcyon.view.TreePanel;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.stage.Stage;
 import rtlib.core.configuration.MachineConfiguration;
 import rtlib.device.switches.gui.jfx.SwitchingDevicePanel;
 import rtlib.gui.video.video2d.Stack2DDisplay;
@@ -33,7 +30,6 @@ import rtlib.hardware.signalgen.SignalGeneratorInterface;
 import rtlib.hardware.signalgen.gui.swing.SignalGeneratorPanel;
 import rtlib.hardware.stages.StageDeviceInterface;
 import rtlib.hardware.stages.gui.jfx.StageDeviceGUI;
-import rtlib.microscope.MicroscopeDeviceLists;
 import rtlib.microscope.MicroscopeInterface;
 import rtlib.microscope.gui.MicroscopeGUI;
 import rtlib.scripting.engine.ScriptingEngine;
@@ -177,11 +173,10 @@ public class HalcyonGUIGenerator
 
 			lScriptingWindow.loadLastLoadedScriptFile();
 
-			HalcyonNodeInterface node = new HalcyonSwingNode(	lScriptingEngine.getScriptingLanguageInterface()
+			HalcyonNodeInterface node = new HalcyonNode(	lScriptingEngine.getScriptingLanguageInterface()
 																																				.getName(),
 																												MicroscopeNodeType.Scripting,
-																												lScriptingWindow,
-																												true);
+																												lScriptingWindow);
 			mHalcyonFrame.addNode(node);
 		}/**/
 	}
