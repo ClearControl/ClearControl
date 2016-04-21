@@ -3,7 +3,6 @@ package rtlib.scripting.gui;
 import java.awt.HeadlessException;
 
 import javax.swing.SwingUtilities;
-
 import javafx.embed.swing.SwingNode;
 import javafx.scene.layout.BorderPane;
 import rtlib.scripting.engine.ScriptingEngine;
@@ -13,6 +12,7 @@ public class ScriptingWindow extends BorderPane
 
 	private static final long serialVersionUID = 1L;
 	private ScriptingPanel mScriptingPanel;
+	private boolean mChanged = false;
 
 	public ScriptingWindow() throws HeadlessException
 	{
@@ -40,11 +40,19 @@ public class ScriptingWindow extends BorderPane
 			}
 		} );
 
-		this.widthProperty().addListener( ( observable, oldValue, newValue ) -> SwingUtilities.invokeLater(
-				() -> node.setContent( mScriptingPanel ) ) );
+		this.setOnMouseClicked( event -> {
+			if(mChanged)
+			{
+				node.setContent( mScriptingPanel );
+				mChanged = false;
+			}
+		} );
 
-		this.heightProperty().addListener( ( observable, oldValue, newValue ) -> SwingUtilities.invokeLater(
-				() -> node.setContent( mScriptingPanel ) ) );
+		this.widthProperty().addListener(
+				( observable, oldValue, newValue ) -> mChanged = true );
+
+		this.heightProperty().addListener(
+				( observable, oldValue, newValue ) -> mChanged = true );
 
 		setCenter( node );
 	}
