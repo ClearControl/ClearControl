@@ -3,6 +3,7 @@ package rtlib.scripting.gui;
 import java.awt.HeadlessException;
 
 import javax.swing.SwingUtilities;
+
 import javafx.embed.swing.SwingNode;
 import javafx.scene.layout.BorderPane;
 import rtlib.scripting.engine.ScriptingEngine;
@@ -31,28 +32,16 @@ public class ScriptingWindow extends BorderPane
 																					pNumberOfCols);
 		final SwingNode node = new SwingNode();
 
-		SwingUtilities.invokeLater( new Runnable()
-		{
-			@Override
-			public void run()
-			{
+		SwingUtilities.invokeLater( () -> node.setContent( mScriptingPanel ) );
+
+		this.focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
+			if(newValue)
 				node.setContent( mScriptingPanel );
-			}
 		} );
 
 		this.setOnMouseClicked( event -> {
-			if(mChanged)
-			{
-				node.setContent( mScriptingPanel );
-				mChanged = false;
-			}
+			this.requestFocus();
 		} );
-
-		this.widthProperty().addListener(
-				( observable, oldValue, newValue ) -> mChanged = true );
-
-		this.heightProperty().addListener(
-				( observable, oldValue, newValue ) -> mChanged = true );
 
 		setCenter( node );
 	}
