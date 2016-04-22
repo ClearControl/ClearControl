@@ -170,30 +170,25 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 		HalcyonGUIGenerator lHalcyonGUIGenerator = new HalcyonGUIGenerator(	pMicroscopeInterface,
 																										this,
 																										lNodeTypeList);
+		lHalcyonGUIGenerator.setupDeviceGUIs();
 
-		// HalcyonFrame should be started before adding nodes.
-		// Then, JavaFX will know the scene graphs from the stage
 		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
-		try
-		{
-			mHalcyonFrame.externalStart();
-			Platform.runLater( new Runnable()
-			{
-				@Override public void run()
-				{
-					lHalcyonGUIGenerator.setupDeviceGUIs();
-				}
-			} );
-		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public boolean open()
 	{
+		executeAsynchronously(() -> {
+			try
+			{
+				mHalcyonFrame.externalStart();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		});
+
 		executeAsynchronously(() -> {
 			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
 			{

@@ -37,7 +37,6 @@ public class ScriptingWindow extends BorderPane
 		{
 			@Override public void changed( ObservableValue< ? extends Scene > observable, Scene oldValue, Scene newValue )
 			{
-				System.out.println(newValue);
 				if(newValue != null) {
 					node.setContent( mScriptingPanel );
 					setCenter( node );
