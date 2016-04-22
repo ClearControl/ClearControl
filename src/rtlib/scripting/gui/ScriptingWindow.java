@@ -2,8 +2,6 @@ package rtlib.scripting.gui;
 
 import java.awt.HeadlessException;
 
-import javax.swing.SwingUtilities;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingNode;
