@@ -55,7 +55,7 @@ public class Stage3DControl
 	{
 		rootGroup = new BorderPane();
 
-		System.out.println("3D supported? " + Platform.isSupported(ConditionalFeature.SCENE3D));
+//		System.out.println("3D supported? " + Platform.isSupported(ConditionalFeature.SCENE3D));
 
 		cubeScene = new CubeScene();
 		subScene = cubeScene.getSubScene();
