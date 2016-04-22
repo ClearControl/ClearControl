@@ -4,7 +4,10 @@ import java.awt.HeadlessException;
 
 import javax.swing.SwingUtilities;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingNode;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import rtlib.scripting.engine.ScriptingEngine;
 
@@ -32,18 +35,27 @@ public class ScriptingWindow extends BorderPane
 																					pNumberOfCols);
 		final SwingNode node = new SwingNode();
 
-		SwingUtilities.invokeLater( () -> node.setContent( mScriptingPanel ) );
+		sceneProperty().addListener( new ChangeListener< Scene >()
+		{
+			@Override public void changed( ObservableValue< ? extends Scene > observable, Scene oldValue, Scene newValue )
+			{
+				System.out.println(newValue);
+				if(newValue != null) {
+					node.setContent( mScriptingPanel );
+					setCenter( node );
+					sceneProperty().removeListener( this );
+				}
+			}
+		} );
 
-		this.focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
+		focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
 			if(newValue)
 				node.setContent( mScriptingPanel );
 		} );
 
-		this.setOnMouseClicked( event -> {
+		setOnMouseClicked( event -> {
 			this.requestFocus();
 		} );
-
-		setCenter( node );
 	}
 
 	public void loadLastLoadedScriptFile()
