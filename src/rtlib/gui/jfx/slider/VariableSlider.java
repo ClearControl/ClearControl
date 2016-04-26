@@ -123,11 +123,11 @@ public class VariableSlider<T extends Number> extends HBox
 
 		getTextField().focusedProperty().addListener((obs, o, n) -> {
 			if (!n)
-				setSliderValue(getSlider(), getTextField());
+				setSliderValueFromTextField();
 		});
 		getTextField().setOnKeyPressed((e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
-				setSliderValue(getSlider(), getTextField());
+				setSliderValueFromTextField();
 			;
 		});
 
@@ -177,8 +177,7 @@ public class VariableSlider<T extends Number> extends HBox
 				});
 		});
 		
-		setSliderValue(mSlider, lTextField);
-		
+		setSliderValue(mVariable.get().doubleValue());
 
 	}
 
@@ -277,6 +276,15 @@ public class VariableSlider<T extends Number> extends HBox
 			// e.printStackTrace();
 		}
 	}
+	
+	private void setSliderValue(double pValue)
+	{
+			double lCorrectedValue = (double) correctValueDouble(pValue);
+			mSlider.setValue(lCorrectedValue);
+			getTextField().setStyle("-fx-text-fill: black");
+	}
+	
+	
 
 	public Label getLabel()
 	{

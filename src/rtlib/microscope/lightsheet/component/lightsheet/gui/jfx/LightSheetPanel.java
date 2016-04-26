@@ -1,9 +1,9 @@
 package rtlib.microscope.lightsheet.component.lightsheet.gui.jfx;
 
-import rtlib.gui.jfx.sliderpanel.SliderPanel;
+import rtlib.gui.jfx.sliderpanel.CustomVariablePane;
 import rtlib.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
-public class LightSheetPanel extends SliderPanel
+public class LightSheetPanel extends CustomVariablePane
 {
 
 	public LightSheetPanel(LightSheetInterface pLightSheetInterface)

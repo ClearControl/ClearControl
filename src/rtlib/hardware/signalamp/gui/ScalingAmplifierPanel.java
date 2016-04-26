@@ -1,9 +1,9 @@
 package rtlib.hardware.signalamp.gui;
 
-import rtlib.gui.jfx.sliderpanel.SliderPanel;
+import rtlib.gui.jfx.sliderpanel.CustomVariablePane;
 import rtlib.hardware.signalamp.ScalingAmplifierDeviceInterface;
 
-public class ScalingAmplifierPanel extends SliderPanel
+public class ScalingAmplifierPanel extends CustomVariablePane
 {
 
 	public ScalingAmplifierPanel(ScalingAmplifierDeviceInterface pScalingAmplifierInterface)

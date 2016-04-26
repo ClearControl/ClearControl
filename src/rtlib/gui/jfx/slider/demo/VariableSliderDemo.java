@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import rtlib.core.variable.Variable;
 import rtlib.gui.jfx.slider.VariableSlider;
-import rtlib.gui.jfx.sliderpanel.SliderPanel;
+import rtlib.gui.jfx.sliderpanel.CustomVariablePane;
 
 public class VariableSliderDemo extends Application
 {

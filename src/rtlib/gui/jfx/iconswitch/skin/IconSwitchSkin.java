@@ -104,8 +104,8 @@ public class IconSwitchSkin extends SkinBase<IconSwitch> implements Skin<IconSwi
 		pane = new Pane(background, symbol, text, thumb);
 		pane.getStyleClass().setAll("icon-switch");
 
-		moveToDeselected = new TranslateTransition(Duration.millis(60), thumb);
-		moveToSelected = new TranslateTransition(Duration.millis(60), thumb);
+		moveToDeselected = new TranslateTransition(Duration.millis(30), thumb);
+		moveToSelected = new TranslateTransition(Duration.millis(30), thumb);
 
 		// Add all nodes
 		getChildren().setAll(pane);

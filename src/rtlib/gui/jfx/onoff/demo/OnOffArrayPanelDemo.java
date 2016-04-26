@@ -7,9 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
-import rtlib.gui.jfx.onoff.OnOffArrayPanel;
+import rtlib.gui.jfx.onoff.OnOffArrayPane;
 import rtlib.gui.jfx.slider.VariableSlider;
-import rtlib.gui.jfx.sliderpanel.SliderPanel;
+import rtlib.gui.jfx.sliderpanel.CustomVariablePane;
 
 public class OnOffArrayPanelDemo extends Application
 {
@@ -23,7 +23,7 @@ public class OnOffArrayPanelDemo extends Application
 		stage.setTitle("Slider Sample");
 		// scene.setFill(Color.BLACK);
 
-		OnOffArrayPanel lOnOffArrayPanel = new OnOffArrayPanel(true);
+		OnOffArrayPane lOnOffArrayPanel = new OnOffArrayPane();
 
 		for (int i = 0; i < 5; i++)
 		{

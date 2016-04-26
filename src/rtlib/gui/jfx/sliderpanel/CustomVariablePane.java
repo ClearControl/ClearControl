@@ -3,13 +3,15 @@ package rtlib.gui.jfx.sliderpanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
+import rtlib.gui.jfx.onoff.OnOffArrayPane;
 import rtlib.gui.jfx.slider.VariableSlider;
 
-public class SliderPanel extends GridPane
+public class CustomVariablePane extends GridPane
 {
 
 	private static final double cDefaultWidth = 300;
@@ -17,12 +19,12 @@ public class SliderPanel extends GridPane
 	private int mCursor = 0;
 	private double mSliderWidth;
 
-	public SliderPanel()
+	public CustomVariablePane()
 	{
 		this(cDefaultWidth);
 	}
 
-	public SliderPanel(double pSliderWidth)
+	public CustomVariablePane(double pSliderWidth)
 	{
 		super();
 		mSliderWidth = pSliderWidth;
@@ -102,4 +104,27 @@ public class SliderPanel extends GridPane
 
 		return lSlider;
 	}
+	
+	public <T extends Number> OnOffArrayPane addOnOffArray(String pOnOffArrayPaneName)
+	{
+		
+		final OnOffArrayPane lOnOffArrayPane = new OnOffArrayPane();
+		lOnOffArrayPane.setVertical(false);
+		
+		lOnOffArrayPane.setPrefWidth(mSliderWidth);
+		lOnOffArrayPane.setMinWidth(mSliderWidth/4);
+		lOnOffArrayPane.setMaxWidth(Double.MAX_VALUE);
+
+		GridPane.setHgrow(lOnOffArrayPane, Priority.ALWAYS);
+
+		Label lLabel = new Label(pOnOffArrayPaneName); 
+		
+		int lCursor = mCursor++;
+		add(lLabel, 0, lCursor);
+		add(lOnOffArrayPane, 1, lCursor);
+		GridPane.setColumnSpan(lOnOffArrayPane, 2);
+
+		return lOnOffArrayPane;
+	}
+	
 }

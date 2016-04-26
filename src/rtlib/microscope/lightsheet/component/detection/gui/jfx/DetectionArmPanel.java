@@ -1,9 +1,9 @@
 package rtlib.microscope.lightsheet.component.detection.gui.jfx;
 
-import rtlib.gui.jfx.sliderpanel.SliderPanel;
+import rtlib.gui.jfx.sliderpanel.CustomVariablePane;
 import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
 
-public class DetectionArmPanel extends SliderPanel
+public class DetectionArmPanel extends CustomVariablePane
 {
 
 	public DetectionArmPanel(DetectionArmInterface pDetectionArmInterface)
