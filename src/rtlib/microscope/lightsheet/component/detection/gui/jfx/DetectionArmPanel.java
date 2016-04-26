@@ -13,9 +13,11 @@ public class DetectionArmPanel extends SliderPanel
 		double lMinOffset = pDetectionArmInterface.getZFunction().get().getMin();
 		double lMaxOffset = pDetectionArmInterface.getZFunction().get().getMax();
 
-		addSliderForVariable(	pDetectionArmInterface.getZVariable(),
+		addSliderForVariable(	"D.Z :",
+		                     	pDetectionArmInterface.getZVariable(),
 													lMinOffset,
 													lMaxOffset,
+													0,
 													0.1 * (lMaxOffset - lMinOffset));/**/
 	}
 

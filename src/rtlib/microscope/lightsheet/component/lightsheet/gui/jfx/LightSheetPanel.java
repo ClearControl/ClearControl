@@ -10,14 +10,42 @@ public class LightSheetPanel extends SliderPanel
 	{
 		super();
 
-	
-		double lMinOffset = pLightSheetInterface.getZFunction().get().getMin();
-		double lMaxOffset = pLightSheetInterface.getZFunction().get().getMax();
+		addSliderForVariable(	"X :",
+													pLightSheetInterface.getXVariable(),
+													5.0);
 
-		addSliderForVariable(	pLightSheetInterface.getZVariable(),
-													lMinOffset,
-													lMaxOffset,
-													0.1 * (lMaxOffset - lMinOffset));/**/
+		addSliderForVariable(	"Y :",
+													pLightSheetInterface.getYVariable(),
+													5.0);
+
+		addSliderForVariable(	"Z :",
+													pLightSheetInterface.getZVariable(),
+													5.0);
+
+		addSliderForVariable(	"Alpha :",
+													pLightSheetInterface.getAlphaInDegreesVariable(),
+													0.2);
+
+		addSliderForVariable(	"Beta :",
+													pLightSheetInterface.getBetaInDegreesVariable(),
+													0.2);
+
+		addSliderForVariable(	"Width :",
+													pLightSheetInterface.getWidthVariable(),
+													5.0);
+
+		addSliderForVariable(	"Height :",
+													pLightSheetInterface.getHeightVariable(),
+													5.0);
+
+		addSliderForVariable(	"Overscan :",
+													pLightSheetInterface.getOverScanVariable(),
+													1.0);
+
+		addSliderForVariable(	"Power :",
+													pLightSheetInterface.getPowerVariable(),
+													0.1);
+
 	}
 
 }

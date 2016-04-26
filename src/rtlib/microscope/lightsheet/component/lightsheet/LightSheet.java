@@ -14,6 +14,7 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.device.name.NamedVirtualDevice;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.staves.ConstantStave;
@@ -30,66 +31,66 @@ public class LightSheet extends NamedVirtualDevice implements
 {
 
 	private final Variable<UnivariateAffineComposableFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
-																																																			new UnivariateAffineFunction());
+																																													new UnivariateAffineFunction());
 	private final Variable<UnivariateAffineComposableFunction> mYFunction = new Variable<>(	"LightSheetYFunction",
-																																																			new UnivariateAffineFunction());
+																																													new UnivariateAffineFunction());
 	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"LightSheetZFunction",
-																																																			new UnivariateAffineFunction());
+																																													new UnivariateAffineFunction());
 
 	private final Variable<UnivariateAffineComposableFunction> mWidthFunction = new Variable<>(	"LightSheetWidthFunction",
-																																																					new UnivariateAffineFunction());
+																																															new UnivariateAffineFunction());
 	private final Variable<UnivariateAffineComposableFunction> mHeightFunction = new Variable<>("LightSheetHeightFunction",
-																																																					new UnivariateAffineFunction());
+																																															new UnivariateAffineFunction());
 
 	private final Variable<UnivariateAffineComposableFunction> mAlphaFunction = new Variable<>(	"LightSheetAlphaFunction",
-																																																					new UnivariateAffineFunction());
+																																															new UnivariateAffineFunction());
 	private final Variable<UnivariateAffineComposableFunction> mBetaFunction = new Variable<>("LightSheetBetaFunction",
-																																																				new UnivariateAffineFunction());
+																																														new UnivariateAffineFunction());
 
 	private final Variable<UnivariateAffineComposableFunction> mPowerFunction = new Variable<>(	"LightSheetPowerFunction",
-																																																					new UnivariateAffineFunction());
+																																															new UnivariateAffineFunction());
 
 	private final Variable<PolynomialFunction> mWidthPowerFunction = new Variable<>("LightSheetWidthPowerFunction",
-																																															new PolynomialFunction(new double[]
-																																															{ 1,
-																																																0 }));
+																																									new PolynomialFunction(new double[]
+																																									{ 1,
+																																										0 }));
 
 	private final Variable<PolynomialFunction> mHeightPowerFunction = new Variable<>(	"LightSheetHeightPowerFunction",
-																																																new PolynomialFunction(new double[]
-																																																{ 1,
-																																																	0 }));
+																																										new PolynomialFunction(new double[]
+																																										{ 1,
+																																											0 }));
 
-	private final Variable<Double> mEffectiveExposureInMicrosecondsVariable = new Variable<Double>(	"EffectiveExposureInMicroseconds",
-																																																							5000.0);
-	private final Variable<Long> mImageHeightVariable = new Variable<Long>(	"ImageHeight",
-																																											2 * 1024L);
-	private final Variable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new Variable<Double>("ReadoutTimeInMicrosecondsPerLine",
-																																																							9.74);
-	private final Variable<Double> mOverScanVariable = new Variable<Double>("OverScan",
-																																											1.2);
+	private final BoundedVariable<Double> mEffectiveExposureInMicrosecondsVariable = new BoundedVariable<Double>(	"EffectiveExposureInMicroseconds",
+																																																								5000.0);
+	private final BoundedVariable<Long> mImageHeightVariable = new BoundedVariable<Long>(	"ImageHeight",
+																																												2 * 1024L);
+	private final BoundedVariable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine",
+																																																								9.74);
+	private final BoundedVariable<Double> mOverScanVariable = new BoundedVariable<Double>("OverScan",
+																																												1.2);
 
-	private final Variable<Double> mXVariable = new Variable<Double>(	"LightSheetX",
-																																								0.0);
-	private final Variable<Double> mYVariable = new Variable<Double>(	"LightSheetY",
-																																								0.0);
-	private final Variable<Number> mZVariable = new Variable<Number>(	"LightSheetZ",
-																																								0.0);
+	private final BoundedVariable<Double> mXVariable = new BoundedVariable<Double>(	"LightSheetX",
+																																									0.0);
+	private final BoundedVariable<Double> mYVariable = new BoundedVariable<Double>(	"LightSheetY",
+																																									0.0);
+	private final BoundedVariable<Number> mZVariable = new BoundedVariable<Number>(	"LightSheetZ",
+																																									0.0);
 
-	private final Variable<Double> mAlphaInDegreesVariable = new Variable<Double>("LightSheetAlphaInDegrees",
-																																														0.0);
-	private final Variable<Double> mBetaInDegreesVariable = new Variable<Double>(	"LightSheetBetaInDegrees",
-																																														0.0);
-	private final Variable<Double> mWidthVariable = new Variable<Double>(	"LightSheetRange",
-																																										0.0);
-	private final Variable<Double> mHeightVariable = new Variable<Double>("LightSheetLength",
-																																										0.0);
-	private final Variable<Double> mPowerVariable = new Variable<Double>(	"LightSheetLengthPower",
-																																										1.0);
+	private final BoundedVariable<Double> mAlphaInDegreesVariable = new BoundedVariable<Double>("LightSheetAlphaInDegrees",
+																																															0.0);
+	private final BoundedVariable<Double> mBetaInDegreesVariable = new BoundedVariable<Double>(	"LightSheetBetaInDegrees",
+																																															0.0);
+	private final BoundedVariable<Double> mWidthVariable = new BoundedVariable<Double>(	"LightSheetRange",
+																																											0.0);
+	private final BoundedVariable<Double> mHeightVariable = new BoundedVariable<Double>("LightSheetLength",
+																																											0.0);
+	private final BoundedVariable<Double> mPowerVariable = new BoundedVariable<Double>(	"LightSheetLengthPower",
+																																											1.0);
 	private final Variable<Boolean> mAdaptPowerToWidthHeightVariable = new Variable<Boolean>(	"AdaptLightSheetPowerToWidthHeight",
-																																																				false);
+																																														false);
 
-	private final Variable<Double> mLineExposureInMicrosecondsVariable = new Variable<Double>("LineExposureInMicroseconds",
-																																																				10.0);
+	private final BoundedVariable<Double> mLineExposureInMicrosecondsVariable = new BoundedVariable<Double>("LineExposureInMicroseconds",
+																																																					10.0);
 
 	private final Variable<Boolean>[] mLaserOnOffVariableArray;
 
@@ -120,8 +121,6 @@ public class LightSheet extends NamedVirtualDevice implements
 		super(pName);
 
 		mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
-
-
 
 		mLaserOnOffVariableArray = new Variable[mNumberOfLaserDigitalControls];
 
@@ -160,20 +159,20 @@ public class LightSheet extends NamedVirtualDevice implements
 		final VariableSetListener lVariableListener = (u, v) -> {
 			update();
 		};
-		
+
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 		{
 			final String lLaserName = "Laser" + i + ".exposure.trig";
 
 			mStructuredIlluminationPatternVariableArray[i] = new Variable<StructuredIlluminationPatternInterface>("StructuredIlluminationPattern",
-																																					new BinaryStructuredIlluminationPattern());
+																																																						new BinaryStructuredIlluminationPattern());
 
 			mLaserOnOffVariableArray[i] = new Variable<Boolean>(lLaserName,
-																																false);
+																													false);
 			mLaserOnOffVariableArray[i].addSetListener(lVariableListener);
 
 			mSIPatternOnOffVariableArray[i] = new Variable<Boolean>(lLaserName + "SIPatternOnOff",
-																																		false);
+																															false);
 			mSIPatternOnOffVariableArray[i].addSetListener(lVariableListener);
 		}
 
@@ -398,7 +397,8 @@ public class LightSheet extends NamedVirtualDevice implements
 			mLineExposureInMicrosecondsVariable.set(lLineExposureTimeInMicroseconds);
 
 			final double lGalvoYOffsetBeforeRotation = mYVariable.get();
-			final double lGalvoZOffsetBeforeRotation = mZVariable.get().doubleValue();
+			final double lGalvoZOffsetBeforeRotation = mZVariable.get()
+																														.doubleValue();
 
 			final double lGalvoYOffset = galvoRotateY(lGalvoYOffsetBeforeRotation,
 																								lGalvoZOffsetBeforeRotation);
@@ -566,7 +566,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public Variable<Long> getImageHeightVariable()
+	public BoundedVariable<Long> getImageHeightVariable()
 	{
 		return mImageHeightVariable;
 	}
@@ -577,73 +577,73 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public Variable<Double> getEffectiveExposureInMicrosecondsVariable()
+	public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable()
 	{
 		return mEffectiveExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public Variable<Double> getLineExposureInMicrosecondsVariable()
+	public BoundedVariable<Double> getLineExposureInMicrosecondsVariable()
 	{
 		return mLineExposureInMicrosecondsVariable;
 	}
 
 	@Override
-	public Variable<Double> getOverScanVariable()
+	public BoundedVariable<Double> getOverScanVariable()
 	{
 		return mOverScanVariable;
 	}
 
 	@Override
-	public Variable<Double> getReadoutTimeInMicrosecondsPerLineVariable()
+	public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable()
 	{
 		return mReadoutTimeInMicrosecondsPerLineVariable;
 	}
 
 	@Override
-	public Variable<Double> getXVariable()
+	public BoundedVariable<Double> getXVariable()
 	{
 		return mXVariable;
 	}
 
 	@Override
-	public Variable<Double> getYVariable()
+	public BoundedVariable<Double> getYVariable()
 	{
 		return mYVariable;
 	}
 
 	@Override
-	public Variable<Number> getZVariable()
+	public BoundedVariable<Number> getZVariable()
 	{
 		return mZVariable;
 	}
 
 	@Override
-	public Variable<Double> getAlphaInDegreesVariable()
+	public BoundedVariable<Double> getAlphaInDegreesVariable()
 	{
 		return mAlphaInDegreesVariable;
 	}
 
 	@Override
-	public Variable<Double> getBetaInDegreesVariable()
+	public BoundedVariable<Double> getBetaInDegreesVariable()
 	{
 		return mBetaInDegreesVariable;
 	}
 
 	@Override
-	public Variable<Double> getWidthVariable()
+	public BoundedVariable<Double> getWidthVariable()
 	{
 		return mWidthVariable;
 	}
 
 	@Override
-	public Variable<Double> getHeightVariable()
+	public BoundedVariable<Double> getHeightVariable()
 	{
 		return mHeightVariable;
 	}
 
 	@Override
-	public Variable<Double> getPowerVariable()
+	public BoundedVariable<Double> getPowerVariable()
 	{
 		return mPowerVariable;
 	}

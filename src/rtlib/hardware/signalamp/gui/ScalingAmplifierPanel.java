@@ -13,17 +13,21 @@ public class ScalingAmplifierPanel extends SliderPanel
 		double lMinGain = pScalingAmplifierInterface.getMinGain();
 		double lMaxGain = pScalingAmplifierInterface.getMaxGain();
 
-		addSliderForVariable(	pScalingAmplifierInterface.getGainVariable(),
+		addSliderForVariable(	"Gain: ",
+													pScalingAmplifierInterface.getGainVariable(),
 													lMinGain,
 													lMaxGain,
+													0.001,
 													0.1 * (lMaxGain - lMinGain));
 
 		double lMinOffset = pScalingAmplifierInterface.getMinOffset();
 		double lMaxOffset = pScalingAmplifierInterface.getMaxOffset();
 
-		addSliderForVariable(	pScalingAmplifierInterface.getOffsetVariable(),
+		addSliderForVariable(	"Offset: ",
+													pScalingAmplifierInterface.getOffsetVariable(),
 													lMinOffset,
 													lMaxOffset,
+													0.001,
 													0.1 * (lMaxOffset - lMinOffset));
 	}
 

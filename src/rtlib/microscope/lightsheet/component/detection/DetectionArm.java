@@ -5,6 +5,7 @@ import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.device.name.NamedVirtualDevice;
 import rtlib.hardware.signalgen.movement.Movement;
 import rtlib.hardware.signalgen.staves.ConstantStave;
@@ -13,7 +14,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 																										DetectionArmInterface
 {
 
-	private final Variable<Number> mDetectionFocusZ = new Variable<Number>(	"FocusZ",
+	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
 																																					0.0);
 
 	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"DetectionZFunction",

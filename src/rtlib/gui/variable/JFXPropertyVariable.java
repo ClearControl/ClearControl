@@ -18,7 +18,7 @@ public class JFXPropertyVariable<O> extends Variable<O>
 	{
 		super(pVariableName, pInitialState);
 		mProperty = pProperty;
-
+		
 		mProperty.addListener((	ObservableValue<? extends O> observable,
 														O pOldValue,
 														O pNewValue) -> {

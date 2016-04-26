@@ -4,6 +4,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.variable.Variable;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.device.name.NameableInterface;
 import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -15,29 +16,29 @@ public interface LightSheetInterface extends
 
 	public Variable<Long> getImageHeightVariable();
 
-	public Variable<Double> getEffectiveExposureInMicrosecondsVariable();
+	public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
 
-	public Variable<Double> getLineExposureInMicrosecondsVariable();
+	public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
 
-	public Variable<Double> getOverScanVariable();
+	public BoundedVariable<Double> getOverScanVariable();
 
-	public Variable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
+	public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
 
-	public Variable<Double> getXVariable();
+	public BoundedVariable<Double> getXVariable();
 
-	public Variable<Double> getYVariable();
+	public BoundedVariable<Double> getYVariable();
 
-	public Variable<Number> getZVariable();
+	public BoundedVariable<Number> getZVariable();
 
-	public Variable<Double> getAlphaInDegreesVariable();
+	public BoundedVariable<Double> getAlphaInDegreesVariable();
 
-	public Variable<Double> getBetaInDegreesVariable();
+	public BoundedVariable<Double> getBetaInDegreesVariable();
 
-	public Variable<Double> getWidthVariable();
+	public BoundedVariable<Double> getWidthVariable();
 
-	public Variable<Double> getHeightVariable();
+	public BoundedVariable<Double> getHeightVariable();
 
-	public Variable<Double> getPowerVariable();
+	public BoundedVariable<Double> getPowerVariable();
 
 	public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
 
