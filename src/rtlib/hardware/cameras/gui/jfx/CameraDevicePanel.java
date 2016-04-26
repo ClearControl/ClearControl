@@ -7,6 +7,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -201,8 +203,23 @@ public class CameraDevicePanel
 		mMainPane.setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
 				+ "-fx-border-color: grey" );
 
-		mRectangleWidthProperty.bindBidirectional( mRect.widthProperty() );
-		mRectangleHeightProperty.bindBidirectional( mRect.heightProperty());
+		mRectangleWidthProperty.addListener( new ChangeListener< Number >()
+		{
+			@Override public void changed( ObservableValue< ? extends Number > observable, Number oldValue, Number newValue )
+			{
+				mRect.widthProperty().set( newValue.doubleValue() );
+			}
+		} );
+
+		mRectangleHeightProperty.addListener( new ChangeListener< Number >()
+		{
+			@Override public void changed( ObservableValue< ? extends Number > observable, Number oldValue, Number newValue )
+			{
+				mRect.heightProperty().set( newValue.doubleValue() );
+			}
+		} );
+//		mRectangleWidthProperty.bind( mRect.widthProperty() );
+//		mRectangleHeightProperty.bind( mRect.heightProperty() );
 
 		Bindings.bindBidirectional(	mCameraWidthStringProperty,
 				mRectangleWidthProperty,
@@ -266,12 +283,14 @@ public class CameraDevicePanel
 			}
 		});
 
-		line.setOnDragDetected(event -> {
-			mouseLocation.value = new Point2D(event.getSceneX(),
-																				event.getSceneY());
-		});
+		line.setOnMousePressed( event ->
+				mouseLocation.value = new Point2D(event.getSceneX(),
+						event.getSceneY())
+		);
 
 		line.setOnMouseReleased(event -> {
+			mRectangleHeightProperty.set( mRect.heightProperty().get() );
+			mRectangleWidthProperty.set( mRect.widthProperty().get() );
 			mouseLocation.value = null;
 			line.setCursor(Cursor.NONE);
 		});
@@ -382,17 +401,17 @@ public class CameraDevicePanel
 
 		// force controls to live in same parent as rectangle:
 		rect.parentProperty()
-				.addListener((obs, oldParent, newParent) -> {
-					for (Node c : Arrays.asList( mHLine, mVLine, mHText, mVText ))
+				.addListener( ( obs, oldParent, newParent ) -> {
+					for ( Node c : Arrays.asList( mHLine, mVLine, mHText, mVText ) )
 					{
-						Pane currentParent = (Pane) c.getParent();
-						if (currentParent != null)
+						Pane currentParent = ( Pane ) c.getParent();
+						if ( currentParent != null )
 						{
-							currentParent.getChildren().remove(c);
+							currentParent.getChildren().remove( c );
 						}
-						((Pane) newParent).getChildren().add(c);
+						( ( Pane ) newParent ).getChildren().add( c );
 					}
-				});
+				} );
 
 		return rect;
 	}
