@@ -75,13 +75,13 @@ public class VariableSlider<T extends Number> extends HBox
 
 		if (Double.isInfinite(mMin.get().doubleValue()) || Double.isNaN(mMin.get()
 																																				.doubleValue()))
-			getSlider().setMin(-100*pTicks.doubleValue());
+			getSlider().setMin(-10*pTicks.doubleValue());
 		else
 			getSlider().setMin(pMin.get().doubleValue());
 
 		if (Double.isInfinite(mMax.get().doubleValue()) || Double.isNaN(mMax.get()
 																																				.doubleValue()))
-			getSlider().setMax(100*pTicks.doubleValue());
+			getSlider().setMax(10*pTicks.doubleValue());
 		else
 			getSlider().setMax(pMax.get().doubleValue());
 
