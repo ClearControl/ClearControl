@@ -176,6 +176,9 @@ public class VariableSlider<T extends Number> extends HBox
 
 				});
 		});
+		
+		setSliderValue(mSlider, lTextField);
+		
 
 	}
 
@@ -258,15 +261,14 @@ public class VariableSlider<T extends Number> extends HBox
 		getTextField().setText(String.format("%d", (long) n.longValue()));
 	}
 
-	private void setSliderValue(final Slider lSlider,
-															TextField lTextField)
+	private void setSliderValueFromTextField()
 	{
 		try
 		{
-			Double lDoubleValue = Double.parseDouble(lTextField.getText());
+			Double lDoubleValue = Double.parseDouble(mTextField.getText());
 
 			double lCorrectedValue = (double) correctValueDouble(lDoubleValue);
-			lSlider.setValue(lCorrectedValue);
+			mSlider.setValue(lCorrectedValue);
 			getTextField().setStyle("-fx-text-fill: black");
 		}
 		catch (NumberFormatException e)
