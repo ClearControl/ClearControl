@@ -173,7 +173,26 @@ public class CameraDevicePanel
 		widthBox.setPadding(new Insets(30, 10, 10, 10));
 		widthBox.setAlignment(Pos.CENTER);
 		widthBox.getChildren().add(new Label("Width: "));
-		TextField width = new TextField();
+		TextField width = new TextField(){
+			@Override public void replaceText(int start, int end, String text) {
+				// If the replaced text would end up being invalid, then simply
+				// ignore this call!
+				if (text.matches("[0-9]*")) {
+
+					String replaced = checkNewString( getText(), start, end, text );
+					if(isLessThanMaxValue( mMaxCameraWidth, replaced ))
+						super.replaceText(start, end, text);
+				}
+			}
+
+			@Override public void replaceSelection(String text) {
+				if (text.matches("[0-9]*")) {
+					if(isLessThanMaxValue( mMaxCameraWidth, text ))
+						super.replaceSelection( text );
+				}
+			}
+		};
+
 		width.setPrefWidth(80);
 		mCameraWidthStringProperty = width.textProperty();
 		widthBox.getChildren().add(width);
@@ -182,7 +201,26 @@ public class CameraDevicePanel
 		heightBox.setPadding(new Insets(10, 10, 10, 10));
 		heightBox.setAlignment(Pos.CENTER);
 		heightBox.getChildren().add(new Label("Height: "));
-		TextField height = new TextField();
+		TextField height = new TextField(){
+			@Override public void replaceText(int start, int end, String text) {
+				// If the replaced text would end up being invalid, then simply
+				// ignore this call!
+				if (text.matches("[0-9]*")) {
+
+					String replaced = checkNewString( getText(), start, end, text );
+					if(isLessThanMaxValue( mMaxCameraHeight, replaced ))
+						super.replaceText( start, end, text );
+				}
+			}
+
+			@Override public void replaceSelection(String text) {
+				if (text.matches("[0-9]*")) {
+					if(isLessThanMaxValue( mMaxCameraHeight, text ))
+						super.replaceSelection( text );
+				}
+			}
+		};
+
 		height.setPrefWidth(80);
 		mCameraHeightStringProperty = height.textProperty();
 		heightBox.getChildren().add(height);
@@ -259,6 +297,21 @@ public class CameraDevicePanel
 					}
 				});
 	}
+
+	private static boolean isLessThanMaxValue(final float max, final String text)
+	{
+		Float lValue = Float.parseFloat( text );
+		return lValue <= max;
+	}
+
+	private String checkNewString(String oldText, int start, int end, String text)
+	{
+		String newString = oldText.substring( 0, start );
+		newString += text;
+		newString += oldText.substring( start, oldText.length() );
+		return newString;
+	}
+
 
 	public Parent getPanel()
 	{
@@ -349,9 +402,10 @@ public class CameraDevicePanel
 			{
 				double deltaY = event.getSceneY() - mouseLocation.value.getY();
 				double newMaxY = rect.getY() + rect.getHeight() + deltaY;
-				if ( newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize )
+				double newValue = rect.getHeight() + deltaY * 2;
+				if ( newValue > 0 && newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize )
 				{
-					rect.setHeight( rect.getHeight() + deltaY * 2 );
+					rect.setHeight( newValue );
 				}
 				mouseLocation.value = new Point2D( event.getSceneX(),
 						event.getSceneY() );
@@ -390,9 +444,10 @@ public class CameraDevicePanel
 			{
 				double deltaX = event.getSceneX() - mouseLocation.value.getX();
 				double newMaxX = rect.getX() + rect.getWidth() + deltaX;
-				if ( newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize )
+				double newValue = rect.getWidth() + deltaX * 2;
+				if ( newValue > 0 && newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize )
 				{
-					rect.setWidth( rect.getWidth() + deltaX * 2 );
+					rect.setWidth( newValue );
 				}
 				mouseLocation.value = new Point2D( event.getSceneX(),
 						event.getSceneY() );
