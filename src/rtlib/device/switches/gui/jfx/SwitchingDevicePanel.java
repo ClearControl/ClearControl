@@ -1,7 +1,7 @@
 package rtlib.device.switches.gui.jfx;
 
 import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.IconSwitch;
+import rtlib.gui.jfx.iconswitch.IconSwitch;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
