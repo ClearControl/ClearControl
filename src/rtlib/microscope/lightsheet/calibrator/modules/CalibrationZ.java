@@ -17,9 +17,9 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.methods.ModeArgMaxFinder;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.math.regression.linear.TheilSenEstimator;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
@@ -95,8 +95,9 @@ public class CalibrationZ
 																																	.getDevice(	LightSheetInterface.class,
 																																							pLightSheetIndex);
 
-		double lMinIZ = lLightSheetDevice.getZFunction().get().getMin();
-		double lMaxIZ = lLightSheetDevice.getZFunction().get().getMax();
+		BoundedVariable<Number> lZVariable = lLightSheetDevice.getZVariable();
+		double lMinIZ = lZVariable.getMin().doubleValue();
+		double lMaxIZ = lZVariable.getMax().doubleValue();
 
 		double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
@@ -130,14 +131,13 @@ public class CalibrationZ
 									d,
 									lTheilSenEstimators[d].getModel());
 
-			UnivariateAffineComposableFunction lDetectionFocusZFunction = mLightSheetMicroscope.getDeviceLists()
-																																													.getDevice(	DetectionArmInterface.class,
-																																																			d)
-																																													.getZFunction()
-																																													.get();
+			BoundedVariable<Number> lDetectionFocusZVariable = mLightSheetMicroscope.getDeviceLists()
+																																								.getDevice(	DetectionArmInterface.class,
+																																														d)
+																																								.getZVariable();
 
-			double lMinDZ = lDetectionFocusZFunction.getMin();
-			double lMaxDZ = lDetectionFocusZFunction.getMax();
+			double lMinDZ = lDetectionFocusZVariable.getMin().doubleValue();
+			double lMaxDZ = lDetectionFocusZVariable.getMax().doubleValue();
 			double lStepDZ = (lMaxDZ - lMinDZ) / 1000;
 
 			for (double z = lMinDZ; z <= lMaxDZ; z += lStepDZ)
@@ -166,14 +166,13 @@ public class CalibrationZ
 
 			for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
 			{
-				UnivariateAffineComposableFunction lDetectionFocusZFunction = mLightSheetMicroscope.getDeviceLists()
-																																														.getDevice(	DetectionArmInterface.class,
-																																																				d)
-																																														.getZFunction()
-																																														.get();
+				BoundedVariable<Number> lDetectionFocusZVariable = mLightSheetMicroscope.getDeviceLists()
+																																									.getDevice(	DetectionArmInterface.class,
+																																															d)
+																																									.getZVariable();
 
-				lMinDZ = max(lMinDZ, lDetectionFocusZFunction.getMin());
-				lMaxDZ = min(lMaxDZ, lDetectionFocusZFunction.getMax());
+				lMinDZ = max(lMinDZ, lDetectionFocusZVariable.getMin().doubleValue());
+				lMaxDZ = min(lMaxDZ, lDetectionFocusZVariable.getMax().doubleValue());
 			}
 
 			System.out.format("Focus: LightSheet=%d, Iz=%g, minDZ=%g, maxDZ=%g \n",
@@ -392,16 +391,12 @@ public class CalibrationZ
 																																								.get()
 																																								.getSlope(),
 																															0));
-			lLightSheetDevice.getYFunction()
-												.get()
-												.setMin(lLightSheetDevice.getZFunction()
-																									.get()
-																									.getMin());
-			lLightSheetDevice.getYFunction()
-												.get()
-												.setMax(lLightSheetDevice.getZFunction()
-																									.get()
-																									.getMax());
+
+			BoundedVariable<Number> lZVariable = lLightSheetDevice.getZVariable();
+			BoundedVariable<Double> lYVariable = lLightSheetDevice.getYVariable();
+
+			lYVariable.setMinMax(lZVariable.getMin().doubleValue(), lZVariable.getMax().doubleValue());
+
 			System.out.println("after: getYFunction()=" + lLightSheetDevice.getYFunction());
 
 			if (pAdjustDetectionZ)
@@ -433,10 +428,10 @@ public class CalibrationZ
 				System.out.println("Before: lDetectionArmDevice0.getDetectionFocusZFunction()=" + lDetectionArmDevice0.getZFunction());
 				System.out.println("Before: lDetectionArmDevice1.getDetectionFocusZFunction()=" + lDetectionArmDevice1.getZFunction());
 
-				UnivariateAffineComposableFunction lFunction0 = lDetectionArmDevice0.getZFunction()
-																																						.get();
-				UnivariateAffineComposableFunction lFunction1 = lDetectionArmDevice1.getZFunction()
-																																						.get();
+				UnivariateAffineFunction lFunction0 = lDetectionArmDevice0.getZFunction()
+																																	.get();
+				UnivariateAffineFunction lFunction1 = lDetectionArmDevice1.getZFunction()
+																																	.get();
 
 				lFunction0.composeWith(UnivariateAffineFunction.axplusb(1,
 																																lInterceptCorrection0));

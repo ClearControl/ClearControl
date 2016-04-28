@@ -1,7 +1,6 @@
 package rtlib.microscope.lightsheet.component.detection;
 
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
@@ -15,10 +14,10 @@ public class DetectionArm extends NamedVirtualDevice implements
 {
 
 	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
-																																					0.0);
+																																												0.0);
 
-	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"DetectionZFunction",
-																																													new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mZFunction = new Variable<>(	"DetectionZFunction",
+																																								new UnivariateAffineFunction());
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
@@ -31,6 +30,7 @@ public class DetectionArm extends NamedVirtualDevice implements
 		super(pName);
 
 		resetFunctions();
+		resetBounds();
 
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
@@ -39,7 +39,15 @@ public class DetectionArm extends NamedVirtualDevice implements
 		};
 
 		mDetectionFocusZ.addSetListener(lVariableListener);
-		mZFunction.addSetListener(lVariableListener);
+		
+		
+		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (o, n) -> {
+			System.out.println(getName() + ": new Z function: " + n);
+			resetBounds();
+			update();
+		};
+		
+		mZFunction.addSetListener(lFunctionVariableListener);
 
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																					.getIntegerProperty("device.lsm.detection." + getName()
@@ -56,18 +64,29 @@ public class DetectionArm extends NamedVirtualDevice implements
 		mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
 																				.getUnivariateAffineFunction("device.lsm.detection." + getName()
 																																			+ ".z.f"));
-		
-		
+
 	}
 
 	@Override
-	public Variable<Number> getZVariable()
+	public void resetBounds()
+	{
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.detection." + getName()
+																									+ ".z.bounds",
+																							mDetectionFocusZ,
+																							mZFunction.get());
+
+	}
+
+	@Override
+	public BoundedVariable<Number> getZVariable()
 	{
 		return mDetectionFocusZ;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getZFunction()
+	public Variable<UnivariateAffineFunction> getZFunction()
 	{
 		return mZFunction;
 	}

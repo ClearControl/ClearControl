@@ -12,8 +12,8 @@ import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
+import rtlib.core.variable.Variable;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -154,8 +154,7 @@ public class CalibrationP
 																																		.getDevice(	LightSheetInterface.class,
 																																								l);
 
-			UnivariateAffineComposableFunction lFunction = lLightSheetDevice.getPowerFunction()
-																																			.get();
+			Variable<UnivariateAffineFunction> lPowerFunctionVariable = lLightSheetDevice.getPowerFunction();
 
 			double lPowerRatio = mRatioList.get(l);
 
@@ -166,13 +165,13 @@ public class CalibrationP
 												lPowerRatio,
 												l);
 
-			lFunction.composeWith(UnivariateAffineFunction.axplusb(	lPowerRatio,
+			lPowerFunctionVariable.get().composeWith(UnivariateAffineFunction.axplusb(	lPowerRatio,
 																															0));
-			lLightSheetDevice.getPowerFunction().set(lFunction);
+			lPowerFunctionVariable.setCurrent();
 
 			System.out.format("Power function for lightsheet %d is now: %s \n",
 												l,
-												lFunction);
+												lPowerFunctionVariable.get());
 
 			lError += abs(log(lPowerRatio));
 		}

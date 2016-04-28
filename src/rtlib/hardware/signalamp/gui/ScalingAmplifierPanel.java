@@ -13,6 +13,7 @@ public class ScalingAmplifierPanel extends CustomVariablePane
 		double lMinGain = pScalingAmplifierInterface.getMinGain();
 		double lMaxGain = pScalingAmplifierInterface.getMaxGain();
 
+		addTab("");
 		addSliderForVariable(	"Gain: ",
 													pScalingAmplifierInterface.getGainVariable(),
 													lMinGain,

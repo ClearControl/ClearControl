@@ -9,11 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.InvertibleFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
+import rtlib.core.variable.bounded.BoundedVariable;
 
 public class MachineConfiguration
 {
@@ -208,7 +211,7 @@ public class MachineConfiguration
 		return new File(getPersistencyFolder(), pVariableName);
 	}
 
-	public UnivariateAffineComposableFunction getUnivariateAffineFunction(String pFunctionName)
+	public UnivariateAffineFunction getUnivariateAffineFunction(String pFunctionName)
 	{
 		String lAffineFunctionString = getStringProperty(	pFunctionName,
 																											null);
@@ -218,8 +221,6 @@ public class MachineConfiguration
 			System.out.println("Cannot find following function def in configuration file: " + pFunctionName);
 			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(1,
 																																												0);
-			lUnivariateAffineFunction.setMin(-100);
-			lUnivariateAffineFunction.setMax(100);
 			return lUnivariateAffineFunction;
 		}
 
@@ -234,8 +235,6 @@ public class MachineConfiguration
 
 			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(lMap.get("a"),
 																																												lMap.get("b"));
-			lUnivariateAffineFunction.setMin(lMap.get("minx"));
-			lUnivariateAffineFunction.setMax(lMap.get("maxx"));
 
 			return lUnivariateAffineFunction;
 
@@ -248,4 +247,59 @@ public class MachineConfiguration
 
 	}
 
+	public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
+																																										BoundedVariable<T> pVariable)
+	{
+		getBoundsForVariable(pBoundsName, pVariable, null);
+	}
+
+	public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
+																																										BoundedVariable<T> pVariable,
+																																										InvertibleFunction<F> pFunction)
+	{
+		String lAffineFunctionString = getStringProperty(	pBoundsName,
+																											null);
+
+		if (lAffineFunctionString == null)
+		{
+			System.out.println("Cannot find following bounds def in configuration file: " + pBoundsName);
+			pVariable.setMinMax(-100.0, 100.0);
+
+			return;
+		}
+
+		TypeReference<HashMap<String, Double>> lTypeReference = new TypeReference<HashMap<String, Double>>()
+		{
+		};
+
+		try
+		{
+			HashMap<String, Double> lMap = sObjectMapper.readValue(	lAffineFunctionString,
+																															lTypeReference);
+
+			Double lMin = lMap.get("min");
+			Double lMax = lMap.get("max");
+
+			if (pFunction !=null && lMin != null && lMax != null)
+			{
+				UnivariateFunction lInverse = pFunction.inverse();
+				pVariable.setMinMax(lInverse.value(lMin),
+														lInverse.value(lMax));
+			}
+
+			Double lGranularity = lMap.get("granularity");
+			if (lGranularity != null)
+			{
+				pVariable.setGranularity(lGranularity);
+			}
+
+			return;
+
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
 }

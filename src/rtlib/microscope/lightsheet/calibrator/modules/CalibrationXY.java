@@ -16,9 +16,9 @@ import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
 import rtlib.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -84,15 +84,15 @@ public class CalibrationXY
 
 		if (pDoAxisX)
 		{
-			Variable<UnivariateAffineComposableFunction> lLightSheetXFunction = lLightSheet.getXFunction();
-			lMin = lLightSheetXFunction.get().getMin();
-			lMax = lLightSheetXFunction.get().getMax();
+			BoundedVariable<Double> lLightSheetXFunction = lLightSheet.getXVariable();
+			lMin = lLightSheetXFunction.getMin();
+			lMax = lLightSheetXFunction.getMax();
 		}
 		else
 		{
-			Variable<UnivariateAffineComposableFunction> lLightSheetYFunction = lLightSheet.getYFunction();
-			lMin = lLightSheetYFunction.get().getMin();
-			lMax = lLightSheetYFunction.get().getMax();
+			BoundedVariable<Double> lLightSheetYFunction = lLightSheet.getYVariable();
+			lMin = lLightSheetYFunction.getMin();
+			lMax = lLightSheetYFunction.getMax();
 		}
 
 		try
@@ -363,8 +363,8 @@ public class CalibrationXY
 
 		System.out.format("lLightSheetDevice: %s \n", lLightSheetDevice);
 
-		Variable<UnivariateAffineComposableFunction> lFunctionXVariable = lLightSheetDevice.getXFunction();
-		Variable<UnivariateAffineComposableFunction> lFunctionYVariable = lLightSheetDevice.getYFunction();
+		Variable<UnivariateAffineFunction> lFunctionXVariable = lLightSheetDevice.getXFunction();
+		Variable<UnivariateAffineFunction> lFunctionYVariable = lLightSheetDevice.getYFunction();
 
 		System.out.format("lFunctionXVariable: %s \n", lFunctionXVariable);
 		System.out.format("lFunctionYVariable: %s \n", lFunctionYVariable);
@@ -386,13 +386,13 @@ public class CalibrationXY
 											lFunctionYVariable);
 
 		// TODO: use pixel calibration here...
-		Variable<UnivariateAffineComposableFunction> lHeightFunctionVariable = lLightSheetDevice.getHeightFunction();
+		BoundedVariable<Double> lHeightVariable = lLightSheetDevice.getHeightVariable();
+		Variable<UnivariateAffineFunction> lHeightFunctionVariable = lLightSheetDevice.getHeightFunction();
 		System.out.format("lHeightFunctionVariable: %s \n",
 											lHeightFunctionVariable);
 		UnivariateAffineFunction lHeightFunction = UnivariateAffineFunction.axplusb(1,
 																																								0);
-		lHeightFunction.setMin(-1);
-		lHeightFunction.setMax(1);
+		lHeightVariable.setMinMax(-1.0,1.0);
 		lHeightFunctionVariable.set(lHeightFunction);
 		lHeightFunctionVariable.setCurrent();
 

@@ -10,7 +10,6 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import rtlib.core.configuration.MachineConfiguration;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
@@ -30,25 +29,25 @@ public class LightSheet extends NamedVirtualDevice implements
 																									AsynchronousExecutorServiceAccess
 {
 
-	private final Variable<UnivariateAffineComposableFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
-																																													new UnivariateAffineFunction());
-	private final Variable<UnivariateAffineComposableFunction> mYFunction = new Variable<>(	"LightSheetYFunction",
-																																													new UnivariateAffineFunction());
-	private final Variable<UnivariateAffineComposableFunction> mZFunction = new Variable<>(	"LightSheetZFunction",
-																																													new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
+																																								new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mYFunction = new Variable<>(	"LightSheetYFunction",
+																																								new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mZFunction = new Variable<>(	"LightSheetZFunction",
+																																								new UnivariateAffineFunction());
 
-	private final Variable<UnivariateAffineComposableFunction> mWidthFunction = new Variable<>(	"LightSheetWidthFunction",
-																																															new UnivariateAffineFunction());
-	private final Variable<UnivariateAffineComposableFunction> mHeightFunction = new Variable<>("LightSheetHeightFunction",
-																																															new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mWidthFunction = new Variable<>(	"LightSheetWidthFunction",
+																																										new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mHeightFunction = new Variable<>("LightSheetHeightFunction",
+																																										new UnivariateAffineFunction());
 
-	private final Variable<UnivariateAffineComposableFunction> mAlphaFunction = new Variable<>(	"LightSheetAlphaFunction",
-																																															new UnivariateAffineFunction());
-	private final Variable<UnivariateAffineComposableFunction> mBetaFunction = new Variable<>("LightSheetBetaFunction",
-																																														new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mAlphaFunction = new Variable<>(	"LightSheetAlphaFunction",
+																																										new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mBetaFunction = new Variable<>("LightSheetBetaFunction",
+																																									new UnivariateAffineFunction());
 
-	private final Variable<UnivariateAffineComposableFunction> mPowerFunction = new Variable<>(	"LightSheetPowerFunction",
-																																															new UnivariateAffineFunction());
+	private final Variable<UnivariateAffineFunction> mPowerFunction = new Variable<>(	"LightSheetPowerFunction",
+																																										new UnivariateAffineFunction());
 
 	private final Variable<PolynomialFunction> mWidthPowerFunction = new Variable<>("LightSheetWidthPowerFunction",
 																																									new PolynomialFunction(new double[]
@@ -156,7 +155,8 @@ public class LightSheet extends NamedVirtualDevice implements
 																														0);
 
 		@SuppressWarnings("rawtypes")
-		final VariableSetListener lVariableListener = (u, v) -> {
+		final VariableSetListener lVariableListener = (o, n) -> {
+			System.out.println(getName() + ": new variable value: " + n);
 			update();
 		};
 
@@ -200,24 +200,27 @@ public class LightSheet extends NamedVirtualDevice implements
 			});
 		}
 
-		final VariableSetListener<?> lObjectVariableListener = (u, v) -> {
+		final VariableSetListener<?> lFunctionVariableListener = (o, n) -> {
+			System.out.println(getName() + ": new function: " + n);
+			resetBounds();
 			update();
 		};
 
 		resetFunctions();
+		resetBounds();
 
-		mXFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mYFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mZFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
+		mXFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mYFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mZFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
 
-		mAlphaFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mBetaFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mWidthFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mHeightFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
-		mPowerFunction.addSetListener((VariableSetListener<UnivariateAffineComposableFunction>) lObjectVariableListener);
+		mAlphaFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mBetaFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mWidthFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mHeightFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
+		mPowerFunction.addSetListener((VariableSetListener<UnivariateAffineFunction>) lFunctionVariableListener);
 
-		mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lObjectVariableListener);
-		mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lObjectVariableListener);
+		mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
+		mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
 	}
 
@@ -262,6 +265,79 @@ public class LightSheet extends NamedVirtualDevice implements
 
 		mHeightPowerFunction.set(new PolynomialFunction(new double[]
 		{ 1 }));/**/
+	}
+
+	@Override
+	public void resetBounds()
+	{
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".x.bounds",
+																							mXVariable,
+																							mXFunction.get());
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".y.bounds",
+																							mYVariable,
+																							mYFunction.get());
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".z.bounds",
+																							mZVariable,
+																							mZFunction.get());
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".w.bounds",
+																							mWidthVariable,
+																							mWidthFunction.get());
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".h.bounds",
+																							mHeightVariable,
+																							mHeightFunction.get());
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".a.bounds",
+																							mAlphaInDegreesVariable,
+																							mAlphaFunction.get());
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".b.bounds",
+																							mBetaInDegreesVariable,
+																							mBetaFunction.get());
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".p.bounds",
+																							mPowerVariable,
+																							mPowerFunction.get());
+
+		/**
+		 * private final BoundedVariable<Double>
+		 * mEffectiveExposureInMicrosecondsVariable = new BoundedVariable<Double>(
+		 * "EffectiveExposureInMicroseconds", 5000.0); private final
+		 * BoundedVariable<Long> mImageHeightVariable = new BoundedVariable<Long>(
+		 * "ImageHeight", 2 * 1024L); private final BoundedVariable<Double>
+		 * mReadoutTimeInMicrosecondsPerLineVariable = new
+		 * BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine", 9.74);
+		 * private final BoundedVariable<Double> mOverScanVariable = new
+		 * BoundedVariable<Double>("OverScan", 1.2);
+		 */
+
+		// Bounds below are for
+
+		MachineConfiguration.getCurrentMachineConfiguration()
+												.getBoundsForVariable("device.lsm.lighsheet." + getName()
+																									+ ".p.bounds",
+																							mPowerVariable);
+		
+		MachineConfiguration.getCurrentMachineConfiguration()
+		.getBoundsForVariable("device.lsm.lighsheet." + getName()
+															+ ".p.bounds",
+													mPowerVariable);
 	}
 
 	public void setBeforeExposureMovement(Movement pBeforeExposureMovement)
@@ -680,49 +756,49 @@ public class LightSheet extends NamedVirtualDevice implements
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getXFunction()
+	public Variable<UnivariateAffineFunction> getXFunction()
 	{
 		return mXFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getYFunction()
+	public Variable<UnivariateAffineFunction> getYFunction()
 	{
 		return mYFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getZFunction()
+	public Variable<UnivariateAffineFunction> getZFunction()
 	{
 		return mZFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getWidthFunction()
+	public Variable<UnivariateAffineFunction> getWidthFunction()
 	{
 		return mWidthFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getHeightFunction()
+	public Variable<UnivariateAffineFunction> getHeightFunction()
 	{
 		return mHeightFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getAlphaFunction()
+	public Variable<UnivariateAffineFunction> getAlphaFunction()
 	{
 		return mAlphaFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getBetaFunction()
+	public Variable<UnivariateAffineFunction> getBetaFunction()
 	{
 		return mBetaFunction;
 	}
 
 	@Override
-	public Variable<UnivariateAffineComposableFunction> getPowerFunction()
+	public Variable<UnivariateAffineFunction> getPowerFunction()
 	{
 		return mPowerFunction;
 	}

@@ -29,8 +29,8 @@ public class AdaptationX extends NDIteratorAdaptationModule	implements
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
 																								.getDevice(	LightSheetInterface.class,
 																														pLightSheetIndex);
-		double lMinX = lLightSheetDevice.getXFunction().get().getMin();
-		double lMaxX = lLightSheetDevice.getXFunction().get().getMax();
+		double lMinX = lLightSheetDevice.getXVariable().getMin();
+		double lMaxX = lLightSheetDevice.getXVariable().getMax();
 		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);
 
 		double lCurrentX = lLSM.getIX(pLightSheetIndex);

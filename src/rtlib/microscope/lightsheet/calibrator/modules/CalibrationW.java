@@ -15,8 +15,8 @@ import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
@@ -88,10 +88,12 @@ public class CalibrationW
 																																		.getDevice(	LightSheetInterface.class,
 																																								pLightSheetIndex);
 
-			UnivariateAffineComposableFunction lWFunction = lLightSheetDevice.getWidthFunction()
-																																				.get();
-			double lMinW = lWFunction.getMin();
-			double lMaxW = lWFunction.getMax();
+			BoundedVariable<Double> lWVariable = lLightSheetDevice.getWidthVariable();
+
+			UnivariateAffineFunction lWFunction = lLightSheetDevice.getWidthFunction()
+																															.get();
+			double lMinW = lWVariable.getMin();
+			double lMaxW = lWVariable.getMax();
 			double lStep = (lMaxW - lMinW) / pNumberOfSamples;
 
 			// Building queue start:
@@ -249,8 +251,8 @@ public class CalibrationW
 																																		.getDevice(	LightSheet.class,
 																																								l);
 
-			UnivariateAffineComposableFunction lFunction = lLightSheetDevice.getWidthFunction()
-																																			.get();
+			UnivariateAffineFunction lFunction = lLightSheetDevice.getWidthFunction()
+																														.get();
 
 			double lOffset = lMedianOffsets.get(l);
 

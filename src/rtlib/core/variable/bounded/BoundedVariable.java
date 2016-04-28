@@ -178,4 +178,89 @@ public class BoundedVariable<T extends Number> extends Variable<T>
 		return mGranularity;
 	}
 
+	public T getMin()
+	{
+		return mMin.get();
+	}
+
+	public T getMax()
+	{
+		return mMax.get();
+	}
+
+	public T getGranularity()
+	{
+		return mGranularity.get();
+	}
+
+	public void setMinMax(T pMin, T pMax)
+	{
+		mMin.set(pMin);
+		mMax.set(pMax);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setMinMax(double pMin, double pMax)
+	{
+		if (mReference instanceof Double)
+		{
+			mMin.set((T) new Double(pMin));
+			mMax.set((T) new Double(pMax));
+		}
+		else if (mReference instanceof Float)
+		{
+			mMin.set((T) new Float(pMin));
+			mMax.set((T) new Float(pMax));
+		}
+		else if (mReference instanceof Long)
+		{
+			mMin.set((T) new Long((long) pMin));
+			mMax.set((T) new Long((long) pMax));
+		}
+		else if (mReference instanceof Integer)
+		{
+			mMin.set((T) new Integer((int) pMin));
+			mMax.set((T) new Integer((int) pMax));
+		}
+		else if (mReference instanceof Short)
+		{
+			mMin.set((T) new Short((short) pMin));
+			mMax.set((T) new Short((short) pMax));
+		}
+		else if (mReference instanceof Byte)
+		{
+			mMin.set((T) new Byte((byte) pMin));
+			mMax.set((T) new Byte((byte) pMax));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setGranularity(double pGranularity)
+	{
+		if (mReference instanceof Double)
+		{
+			mGranularity.set((T) new Double(pGranularity));
+		}
+		else if (mReference instanceof Float)
+		{
+			mGranularity.set((T) new Float(pGranularity));
+		}
+		else if (mReference instanceof Long)
+		{
+			mGranularity.set((T) new Long((long) pGranularity));
+		}
+		else if (mReference instanceof Integer)
+		{
+			mGranularity.set((T) new Integer((int) pGranularity));
+		}
+		else if (mReference instanceof Short)
+		{
+			mGranularity.set((T) new Short((short) pGranularity));
+		}
+		else if (mReference instanceof Byte)
+		{
+			mGranularity.set((T) new Byte((byte) pGranularity));
+		}
+	}
+
 }

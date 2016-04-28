@@ -2,7 +2,7 @@ package rtlib.microscope.lightsheet.component.lightsheet;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.device.name.NameableInterface;
@@ -14,6 +14,8 @@ public interface LightSheetInterface extends
 																		OpenCloseDeviceInterface
 {
 
+	// These variables should be synced with camera variables:
+	
 	public Variable<Long> getImageHeightVariable();
 
 	public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
@@ -23,6 +25,8 @@ public interface LightSheetInterface extends
 	public BoundedVariable<Double> getOverScanVariable();
 
 	public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
+	
+	// Below are variables that can be adjusted freely:
 
 	public BoundedVariable<Double> getXVariable();
 
@@ -48,32 +52,39 @@ public interface LightSheetInterface extends
 
 	public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
 
-	public Variable<UnivariateAffineComposableFunction> getXFunction();
+	public Variable<UnivariateAffineFunction> getXFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getYFunction();
+	public Variable<UnivariateAffineFunction> getYFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getZFunction();
+	public Variable<UnivariateAffineFunction> getZFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getWidthFunction();
+	public Variable<UnivariateAffineFunction> getWidthFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getHeightFunction();
+	public Variable<UnivariateAffineFunction> getHeightFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getAlphaFunction();
+	public Variable<UnivariateAffineFunction> getAlphaFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getBetaFunction();
+	public Variable<UnivariateAffineFunction> getBetaFunction();
 
-	public Variable<UnivariateAffineComposableFunction> getPowerFunction();
+	public Variable<UnivariateAffineFunction> getPowerFunction();
 
 	public Variable<PolynomialFunction> getWidthPowerFunction();
 
 	public Variable<PolynomialFunction> getHeightPowerFunction();
 
+	// Convenience methods:
+	
 	public int getNumberOfPhases(int pLaserIndex);
 
 	public int getNumberOfLaserDigitalControls();
 
-	public void resetFunctions();
 
-	void update();
+	// Resetting and updating:
+	
+	public void resetFunctions();
+	
+	public void resetBounds();
+
+	public void update();
 
 }

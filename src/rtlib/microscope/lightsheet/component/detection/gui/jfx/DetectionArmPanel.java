@@ -10,15 +10,13 @@ public class DetectionArmPanel extends CustomVariablePane
 	{
 		super();
 
-		double lMinOffset = pDetectionArmInterface.getZFunction().get().getMin();
-		double lMaxOffset = pDetectionArmInterface.getZFunction().get().getMax();
-
-		addSliderForVariable(	"D.Z :",
-		                     	pDetectionArmInterface.getZVariable(),
-													lMinOffset,
-													lMaxOffset,
-													0,
-													0.1 * (lMaxOffset - lMinOffset));/**/
+		addTab("DOFs");
+		addSliderForVariable(	"Z :",
+		                     	pDetectionArmInterface.getZVariable(),1);/**/
+		
+		addTab("Functions");
+		
+		addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
 	}
 
 }

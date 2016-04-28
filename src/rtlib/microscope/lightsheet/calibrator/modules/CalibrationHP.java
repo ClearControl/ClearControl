@@ -16,8 +16,9 @@ import gnu.trove.list.array.TDoubleArrayList;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
+import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.gui.plots.MultiPlot;
 import rtlib.gui.plots.PlotTab;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
@@ -74,17 +75,15 @@ public class CalibrationHP
 
 		lLightSheet.getAdaptPowerToWidthHeightVariable().set(false);
 
-		UnivariateAffineComposableFunction lWidthFunction = lLightSheet.getWidthFunction()
-																																		.get();
-		UnivariateAffineComposableFunction lPowerFunction = lLightSheet.getPowerFunction()
-																																		.get();
+		BoundedVariable<Double> lWidthVariable = lLightSheet.getWidthVariable();
+		BoundedVariable<Double> lPowerVariable = lLightSheet.getPowerVariable();
 
-		double lMinP = lPowerFunction.getMin();
-		double lMaxP = lPowerFunction.getMax();
+		double lMinP = lPowerVariable.getMin();
+		double lMaxP = lPowerVariable.getMax();
 		double lReferencePower = lMaxP;
 
-		double lMinH = lWidthFunction.getMin();
-		double lMaxH = lWidthFunction.getMax();
+		double lMinH = lWidthVariable.getMin();
+		double lMaxH = lWidthVariable.getMax();
 		double lStepH = (lMaxH - lMinH) / pNumberOfSamplesH;
 		double lReferenceH = lMaxH;
 

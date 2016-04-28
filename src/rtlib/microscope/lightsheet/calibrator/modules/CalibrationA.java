@@ -16,7 +16,6 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import rtlib.core.math.argmax.ArgMaxFinder1DInterface;
 import rtlib.core.math.argmax.Fitting1D;
 import rtlib.core.math.argmax.SmartArgMaxFinder;
-import rtlib.core.math.functions.UnivariateAffineComposableFunction;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.gui.plots.MultiPlot;
@@ -71,8 +70,8 @@ public class CalibrationA
 		double lMinA = -25;
 		double lMaxA = 25;
 
-		double lMinY = lLightSheet.getYFunction().get().getMin();
-		double lMaxY = lLightSheet.getYFunction().get().getMax();
+		double lMinY = lLightSheet.getYVariable().getMin();
+		double lMaxY = lLightSheet.getYVariable().getMax();
 
 		double[] angles = new double[mNumberOfDetectionArmDevices];
 		int lCount = 0;
@@ -333,7 +332,7 @@ public class CalibrationA
 			return Double.POSITIVE_INFINITY;
 		}
 
-		Variable<UnivariateAffineComposableFunction> lFunctionVariable = lLightSheetDevice.getAlphaFunction();
+		Variable<UnivariateAffineFunction> lFunctionVariable = lLightSheetDevice.getAlphaFunction();
 
 		System.out.format("Correction function: %s \n",
 											lUnivariateAffineFunction);

@@ -5,24 +5,23 @@ import static java.lang.Math.min;
 
 import java.io.Serializable;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder(
-{ "slope", "constant", "min", "max" })
+{ "slope", "constant" })
 public class UnivariateAffineFunction	implements
-																			UnivariateAffineComposableFunction,
-																			FunctionDomain,
+																			ComposableFunction<UnivariateAffineFunction>,
+																			InvertibleFunction<UnivariateAffineFunction>,
 																			Serializable
 {
 
 	private static final long serialVersionUID = 1L;
 
 	private volatile double mA, mB;
-	private volatile double mMin = Double.NEGATIVE_INFINITY,
-			mMax = Double.POSITIVE_INFINITY;
 
 	public static UnivariateAffineFunction identity()
 	{
@@ -40,12 +39,10 @@ public class UnivariateAffineFunction	implements
 		this(1, 0);
 	}
 
-	public UnivariateAffineFunction(UnivariateAffineComposableFunction pUnivariateAffineComposableFunction)
+	public UnivariateAffineFunction(UnivariateAffineFunction pUnivariateAffineFunction)
 	{
-		mA = pUnivariateAffineComposableFunction.getSlope();
-		mB = pUnivariateAffineComposableFunction.getConstant();
-		mMin = pUnivariateAffineComposableFunction.getMin();
-		mMax = pUnivariateAffineComposableFunction.getMax();
+		mA = pUnivariateAffineFunction.getSlope();
+		mB = pUnivariateAffineFunction.getConstant();
 	}
 
 	public UnivariateAffineFunction(double pA, double pB)	throws NullArgumentException,
@@ -55,52 +52,25 @@ public class UnivariateAffineFunction	implements
 		mB = pB;
 	}
 
-	@Override
+
 	public void setConstant(double pB)
 	{
 		mB = pB;
 	}
 
-	@Override
 	public void setSlope(double pA)
 	{
 		mA = pA;
 	}
 
-	@Override
 	public double getConstant()
 	{
 		return mB;
 	}
 
-	@Override
 	public double getSlope()
 	{
 		return mA;
-	}
-
-	@Override
-	public double getMin()
-	{
-		return mMin;
-	}
-
-	@Override
-	public void setMin(double pMin)
-	{
-		mMin = pMin;
-	}
-
-	@Override
-	public double getMax()
-	{
-		return mMax;
-	}
-
-	@Override
-	public void setMax(double pMax)
-	{
-		mMax = pMax;
 	}
 
 	@Override
@@ -108,21 +78,9 @@ public class UnivariateAffineFunction	implements
 	{
 		mA = mA * pFunction.getSlope();
 		mB = mA * pFunction.getConstant() + mB;
-
-		UnivariateAffineFunction lInverse = pFunction.inverse();
-		if (lInverse == null)
-		{
-			mMin = Double.NEGATIVE_INFINITY;
-			mMax = Double.POSITIVE_INFINITY;
-		}
-		else
-		{
-			mMin = min(lInverse.value(mMin), lInverse.value(mMax));
-			mMax = max(lInverse.value(mMin), lInverse.value(mMax));
-		}
 	}
 
-	private UnivariateAffineFunction inverse()
+	public UnivariateAffineFunction inverse()
 	{
 		if (mA == 0)
 			return null;
@@ -146,7 +104,6 @@ public class UnivariateAffineFunction	implements
 						+ "]";
 	}
 
-	@Override
 	public void setIdentity()
 	{
 		mA = 1;

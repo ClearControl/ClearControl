@@ -31,11 +31,9 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
 																								.getDevice(	LightSheetInterface.class,
 																														pLightSheetIndex);
-		double lMinW = lLightSheetDevice.getWidthFunction()
-																		.get()
+		double lMinW = lLightSheetDevice.getWidthVariable()
 																		.getMin();
-		double lMaxW = lLightSheetDevice.getWidthFunction()
-																		.get()
+		double lMaxW = lLightSheetDevice.getWidthVariable()
 																		.getMax();
 		double lStepW = (lMaxW - lMinW) / (pNumberOfSamples - 1);
 

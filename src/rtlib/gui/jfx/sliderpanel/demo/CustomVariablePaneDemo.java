@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
 import rtlib.gui.jfx.onoff.OnOffArrayPane;
@@ -25,38 +26,40 @@ public class CustomVariablePaneDemo extends Application
 
 		CustomVariablePane lCustomVariablePane = new CustomVariablePane();
 
+		lCustomVariablePane.addTab("First");
+
 		Variable<Number> lDoubleVariable = new Variable<Number>("DoubleVar",
 																														0.0);
 		lDoubleVariable.addSetListener((o, n) -> {
 			System.out.println("double: " + n);
 		});
-		lCustomVariablePane.addSliderForVariable(lDoubleVariable,
-																			-1.0,
-																			1.0,
-																			0.1,
-																			0.1);
+		lCustomVariablePane.addSliderForVariable(	lDoubleVariable,
+																							-1.0,
+																							1.0,
+																							0.1,
+																							0.1);
 
 		Variable<Number> lIntegerVariable1 = new Variable<Number>("IntegerVar",
 																															2);
 		lIntegerVariable1.addSetListener((o, n) -> {
 			System.out.println("int: " + n);
 		});
-		lCustomVariablePane.addSliderForVariable(lIntegerVariable1,
-																			-10,
-																			30,
-																			1,
-																			5);
+		lCustomVariablePane.addSliderForVariable(	lIntegerVariable1,
+																							-10,
+																							30,
+																							1,
+																							5);
 
 		Variable<Number> lIntegerVariable2 = new Variable<Number>("IntegerChng",
 																															2);
 		lIntegerVariable2.addSetListener((o, n) -> {
 			System.out.println("int2: " + n);
 		});
-		VariableSlider<Number> lAddSliderForVariable = lCustomVariablePane.addSliderForVariable(	lIntegerVariable2,
-																																											-10,
-																																											30,
-																																											1,
-																																											5);
+		VariableSlider<Number> lAddSliderForVariable = lCustomVariablePane.addSliderForVariable(lIntegerVariable2,
+																																														-10,
+																																														30,
+																																														1,
+																																														5);
 		lAddSliderForVariable.setUpdateIfChanging(true);
 
 		BoundedVariable<Number> lBoundedVariable = new BoundedVariable<Number>(	"Bounded",
@@ -67,33 +70,48 @@ public class CustomVariablePaneDemo extends Application
 		lBoundedVariable.addSetListener((o, n) -> {
 			System.out.println("boundeddouble: " + n);
 		});
-		VariableSlider<Number> lBoundedVariableSlider = lCustomVariablePane.addSliderForVariable(lBoundedVariable,
-																																											5.0);
+		VariableSlider<Number> lBoundedVariableSlider = lCustomVariablePane.addSliderForVariable(	lBoundedVariable,
+																																															5.0);
 
-		
-		
-		
 		OnOffArrayPane lAddOnOffArray = lCustomVariablePane.addOnOffArray("onoff");
-		
+
 		for (int i = 0; i < 5; i++)
 		{
 			final int fi = i;
 
-			Variable<Boolean> lBoolVariable = new Variable<>(	"b"+i,
-																												i%2==0);
+			Variable<Boolean> lBoolVariable = new Variable<>(	"b" + i,
+																												i % 2 == 0);
 			lBoolVariable.addSetListener((o, n) -> {
-				System.out.println("bool "+fi+": " + n);
+				System.out.println("bool " + fi + ": " + n);
 			});
 
-			lAddOnOffArray.addSwitch("S"+i, lBoolVariable);
+			lAddOnOffArray.addSwitch("S" + i, lBoolVariable);
 		}
-		
-		
-		
+
+		Variable<UnivariateAffineFunction> lFunctionVariable = new Variable<>("Fun",
+																																					UnivariateAffineFunction.identity());
+
+		lFunctionVariable.addSetListener((o, n) -> {
+			System.out.println("new function: " + lFunctionVariable);
+		});
+
+		lCustomVariablePane.addFunctionPane("MyFunction",
+																				lFunctionVariable);
+
+		lCustomVariablePane.addTab("Second");
+
+		Variable<Number> lAnotherDoubleVariable = new Variable<Number>(	"AnotherDoubleVar",
+																																		0.0);
+		lAnotherDoubleVariable.addSetListener((o, n) -> {
+			System.out.println("anotherdouble: " + n);
+		});
+		lCustomVariablePane.addSliderForVariable(	lAnotherDoubleVariable,
+																							-1.0,
+																							1.0,
+																							0.1,
+																							0.1);/**/
+
 		root.getChildren().add(lCustomVariablePane);
-		
-		
-		
 
 		stage.show();
 	}
