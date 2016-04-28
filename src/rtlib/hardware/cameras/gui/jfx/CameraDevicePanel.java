@@ -34,7 +34,7 @@ import rtlib.hardware.cameras.StackCameraDeviceInterface;
 /**
  * CameraDeviceGUI
  */
-public class CameraDevicePanel
+public class CameraDevicePanel extends AnchorPane
 {
 	final int mMainRectangleSize = 300;
 
@@ -54,7 +54,6 @@ public class CameraDevicePanel
 			mCameraHeightProperty;
 
 	private GridPane mGridPane;
-	private AnchorPane mMainPane;
 
 	Rectangle mRect = createDraggableRectangle(37.5, 37.5);
 	Line mHLine, mVLine;
@@ -227,10 +226,9 @@ public class CameraDevicePanel
 
 		VBox vBox = new VBox( mGridPane, widthBox, heightBox);
 
-		mMainPane = new AnchorPane();
-		mMainPane.setBackground( null );
-		mMainPane.setPadding( new Insets( 15, 15, 15, 15 ) );
-		mMainPane.getChildren().addAll( vBox, canvas );
+		setBackground( null );
+		setPadding( new Insets( 15, 15, 15, 15 ) );
+		getChildren().addAll( vBox, canvas );
 
 		AnchorPane.setLeftAnchor( vBox, 3d );
 		AnchorPane.setTopAnchor( vBox, 10d );
@@ -238,7 +236,7 @@ public class CameraDevicePanel
 		AnchorPane.setLeftAnchor( canvas, 220d );
 		AnchorPane.setTopAnchor(canvas, 10d);
 
-		mMainPane.setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
+		setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
 				+ "-fx-border-color: grey" );
 
 		mRectangleWidthProperty.addListener( new ChangeListener< Number >()
@@ -310,12 +308,6 @@ public class CameraDevicePanel
 		newString += text;
 		newString += oldText.substring( start, oldText.length() );
 		return newString;
-	}
-
-
-	public Parent getPanel()
-	{
-		return mMainPane;
 	}
 
 	private void setDragHandlers(	final Line line,

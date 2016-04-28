@@ -1,5 +1,6 @@
 package rtlib.hardware.stages.gui.jfx;
 
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import rtlib.hardware.stages.StageDeviceInterface;
@@ -7,13 +8,13 @@ import rtlib.hardware.stages.StageDeviceInterface;
 /**
  * StageDeviceGUI for Halcyon
  */
-public class StageDeviceGUI
+public class StageDeviceGUI extends BorderPane
 {
 	public final Stage3DControl mStage;
 
 	public StageDeviceGUI(StageDeviceInterface stageDeviceInterface)
 	{
-		mStage = new Stage3DControl();
+		mStage = new Stage3DControl(this);
 	}
 
 	public void init()
@@ -30,10 +31,4 @@ public class StageDeviceGUI
 	{
 		mStage.stop();
 	}
-
-	public Pane getPanel()
-	{
-		return mStage.getPanel();
-	}
-
 }

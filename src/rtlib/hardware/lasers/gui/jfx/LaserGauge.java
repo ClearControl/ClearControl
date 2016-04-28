@@ -172,9 +172,8 @@ public class LaserGauge
 
 	}
 
-	public HBox getPanel()
+	public void getPanel(HBox hBox)
 	{
-		HBox hBox = new HBox();
 		hBox.setBackground(null);
 		// hBox.setPadding(new Insets(15, 15, 15, 15));
 		hBox.setSpacing(10);
@@ -183,8 +182,6 @@ public class LaserGauge
 															mCurrentPowerGauge);
 		hBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
 									+ "-fx-border-color: black");
-
-		return hBox;
 	}
 
 	public String getWebColorString(String wavelength)

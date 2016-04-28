@@ -46,15 +46,14 @@ public class Stage3DControl
 	private AnimationTimer viewTimer = null;
 	private Scene scene = null;
 
-	public Stage3DControl()
+	public Stage3DControl(final BorderPane rootPane)
 	{
+		rootGroup = rootPane;
 		init();
 	}
 
 	public void init()
 	{
-		rootGroup = new BorderPane();
-
 //		System.out.println("3D supported? " + Platform.isSupported(ConditionalFeature.SCENE3D));
 
 		cubeScene = new CubeScene();
@@ -173,11 +172,6 @@ public class Stage3DControl
 	public void stop()
 	{
 		viewTimer.stop();
-	}
-
-	public Pane getPanel()
-	{
-		return rootGroup;
 	}
 
 	private VBox createControls(CubeScene cubeScene)
