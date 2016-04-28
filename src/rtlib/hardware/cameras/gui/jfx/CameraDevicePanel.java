@@ -34,7 +34,7 @@ import rtlib.hardware.cameras.StackCameraDeviceInterface;
 /**
  * CameraDeviceGUI
  */
-public class CameraDevicePanel
+public class CameraDevicePanel extends AnchorPane
 {
 	final int mMainRectangleSize = 300;
 
@@ -54,7 +54,6 @@ public class CameraDevicePanel
 			mCameraHeightProperty;
 
 	private GridPane mGridPane;
-	private AnchorPane mMainPane;
 
 	Rectangle mRect = createDraggableRectangle(37.5, 37.5);
 	Line mHLine, mVLine;
@@ -173,7 +172,26 @@ public class CameraDevicePanel
 		widthBox.setPadding(new Insets(30, 10, 10, 10));
 		widthBox.setAlignment(Pos.CENTER);
 		widthBox.getChildren().add(new Label("Width: "));
-		TextField width = new TextField();
+		TextField width = new TextField(){
+			@Override public void replaceText(int start, int end, String text) {
+				// If the replaced text would end up being invalid, then simply
+				// ignore this call!
+				if (text.matches("[0-9]*")) {
+
+					String replaced = checkNewString( getText(), start, end, text );
+					if(isLessThanMaxValue( mMaxCameraWidth, replaced ))
+						super.replaceText(start, end, text);
+				}
+			}
+
+			@Override public void replaceSelection(String text) {
+				if (text.matches("[0-9]*")) {
+					if(isLessThanMaxValue( mMaxCameraWidth, text ))
+						super.replaceSelection( text );
+				}
+			}
+		};
+
 		width.setPrefWidth(80);
 		mCameraWidthStringProperty = width.textProperty();
 		widthBox.getChildren().add(width);
@@ -182,17 +200,35 @@ public class CameraDevicePanel
 		heightBox.setPadding(new Insets(10, 10, 10, 10));
 		heightBox.setAlignment(Pos.CENTER);
 		heightBox.getChildren().add(new Label("Height: "));
-		TextField height = new TextField();
+		TextField height = new TextField(){
+			@Override public void replaceText(int start, int end, String text) {
+				// If the replaced text would end up being invalid, then simply
+				// ignore this call!
+				if (text.matches("[0-9]*")) {
+
+					String replaced = checkNewString( getText(), start, end, text );
+					if(isLessThanMaxValue( mMaxCameraHeight, replaced ))
+						super.replaceText( start, end, text );
+				}
+			}
+
+			@Override public void replaceSelection(String text) {
+				if (text.matches("[0-9]*")) {
+					if(isLessThanMaxValue( mMaxCameraHeight, text ))
+						super.replaceSelection( text );
+				}
+			}
+		};
+
 		height.setPrefWidth(80);
 		mCameraHeightStringProperty = height.textProperty();
 		heightBox.getChildren().add(height);
 
 		VBox vBox = new VBox( mGridPane, widthBox, heightBox);
 
-		mMainPane = new AnchorPane();
-		mMainPane.setBackground( null );
-		mMainPane.setPadding( new Insets( 15, 15, 15, 15 ) );
-		mMainPane.getChildren().addAll( vBox, canvas );
+		setBackground( null );
+		setPadding( new Insets( 15, 15, 15, 15 ) );
+		getChildren().addAll( vBox, canvas );
 
 		AnchorPane.setLeftAnchor( vBox, 3d );
 		AnchorPane.setTopAnchor( vBox, 10d );
@@ -200,7 +236,7 @@ public class CameraDevicePanel
 		AnchorPane.setLeftAnchor( canvas, 220d );
 		AnchorPane.setTopAnchor(canvas, 10d);
 
-		mMainPane.setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
+		setStyle( "-fx-border-style: solid;" + "-fx-border-width: 1;"
 				+ "-fx-border-color: grey" );
 
 		mRectangleWidthProperty.addListener( new ChangeListener< Number >()
@@ -260,9 +296,18 @@ public class CameraDevicePanel
 				});
 	}
 
-	public Parent getPanel()
+	private static boolean isLessThanMaxValue(final float max, final String text)
 	{
-		return mMainPane;
+		Float lValue = Float.parseFloat( text );
+		return lValue <= max;
+	}
+
+	private String checkNewString(String oldText, int start, int end, String text)
+	{
+		String newString = oldText.substring( 0, start );
+		newString += text;
+		newString += oldText.substring( start, oldText.length() );
+		return newString;
 	}
 
 	private void setDragHandlers(	final Line line,
@@ -349,9 +394,10 @@ public class CameraDevicePanel
 			{
 				double deltaY = event.getSceneY() - mouseLocation.value.getY();
 				double newMaxY = rect.getY() + rect.getHeight() + deltaY;
-				if ( newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize )
+				double newValue = rect.getHeight() + deltaY * 2;
+				if ( newValue > 0 && newMaxY >= rect.getY() && newMaxY <= mMainRectangleSize )
 				{
-					rect.setHeight( rect.getHeight() + deltaY * 2 );
+					rect.setHeight( newValue );
 				}
 				mouseLocation.value = new Point2D( event.getSceneX(),
 						event.getSceneY() );
@@ -390,9 +436,10 @@ public class CameraDevicePanel
 			{
 				double deltaX = event.getSceneX() - mouseLocation.value.getX();
 				double newMaxX = rect.getX() + rect.getWidth() + deltaX;
-				if ( newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize )
+				double newValue = rect.getWidth() + deltaX * 2;
+				if ( newValue > 0 && newMaxX >= rect.getX() && newMaxX <= mMainRectangleSize )
 				{
-					rect.setWidth( rect.getWidth() + deltaX * 2 );
+					rect.setWidth( newValue );
 				}
 				mouseLocation.value = new Point2D( event.getSceneX(),
 						event.getSceneY() );

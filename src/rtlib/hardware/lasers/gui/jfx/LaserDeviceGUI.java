@@ -10,7 +10,7 @@ import rtlib.hardware.lasers.LaserDeviceInterface;
  * LaserDeviceGUI handles the collection of lasers to creates multiple instances
  * of LaserGauge
  */
-public class LaserDeviceGUI
+public class LaserDeviceGUI extends HBox
 {
 	public final LaserGauge mLaser;
 
@@ -59,11 +59,7 @@ public class LaserDeviceGUI
 			pLaserDeviceInterface.getCurrentPowerInMilliWattVariable()
 														.syncWith(lCurrentPowerPropertyVariable);
 		}
-	}
 
-	public HBox getPanel()
-	{
-		return mLaser.getPanel();
+		mLaser.getPanel( this );
 	}
-
 }

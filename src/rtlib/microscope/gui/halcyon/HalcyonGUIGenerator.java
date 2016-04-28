@@ -218,7 +218,7 @@ public class HalcyonGUIGenerator
 
 			HalcyonNode node = new HalcyonNode(	lStackCamera.getName(),
 																					MicroscopeNodeType.Camera,
-																					cameraDeviceGUI.getPanel());
+																					cameraDeviceGUI);
 			mHalcyonFrame.addNode(node);
 		}
 	}
@@ -232,7 +232,7 @@ public class HalcyonGUIGenerator
 
 			HalcyonNode node = new HalcyonNode(	lStageDevice.getName(),
 																					MicroscopeNodeType.Stage,
-																					stageDeviceGUI.getPanel());
+																					stageDeviceGUI);
 			mHalcyonFrame.addNode(node);
 		}
 	}
@@ -274,7 +274,7 @@ public class HalcyonGUIGenerator
 
 			HalcyonNode node = new HalcyonNode(	lLaserDevice.getName(),
 																					MicroscopeNodeType.Laser,
-																					laserDeviceGUI.getPanel());
+																					laserDeviceGUI);
 			mHalcyonFrame.addNode(node);
 		}
 	}

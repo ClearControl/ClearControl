@@ -41,7 +41,7 @@ public class CameraDevicePanelDemo extends Application
 
 		VBox pane = new VBox();
 
-		pane.getChildren().add(lCameraDevicePanel.getPanel());
+		pane.getChildren().add(lCameraDevicePanel);
 
 		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
 
