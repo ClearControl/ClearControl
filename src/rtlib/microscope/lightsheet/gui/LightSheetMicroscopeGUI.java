@@ -1,7 +1,9 @@
 package rtlib.microscope.lightsheet.gui;
 
+import halcyon.demo.DemoToolbarWindow;
 import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonSwingNode;
+import javafx.scene.layout.GridPane;
 import rtlib.hardware.signalgen.SignalGeneratorInterface;
 import rtlib.hardware.signalgen.gui.swing.SignalGeneratorPanel;
 import rtlib.microscope.MicroscopeBase;
@@ -12,6 +14,7 @@ import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import rtlib.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
+import rtlib.microscope.lightsheet.gui.toolbar.StartStopToolbarWindow;
 import rtlib.scripting.engine.ScriptingEngine;
 import rtlib.scripting.lang.groovy.GroovyScripting;
 
@@ -27,8 +30,14 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 	public void generate()
 	{
 		super.generate();
+		setupToolBar();
 		setupLightSheetInHalcyon();
 		setupDetectionArmInHalcyon();
+	}
+
+	private void setupToolBar()
+	{
+		getHalcyonFrame().addToolbar(new StartStopToolbarWindow(new GridPane()));		
 	}
 
 	private void setupLightSheetInHalcyon()

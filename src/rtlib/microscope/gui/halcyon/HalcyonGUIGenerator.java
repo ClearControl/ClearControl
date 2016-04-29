@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.SwingUtilities;
 
 import halcyon.HalcyonFrame;
+import halcyon.demo.DemoToolbarWindow;
 import halcyon.model.node.HalcyonExternalNode;
 import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonNodeInterface;
@@ -56,6 +57,8 @@ public class HalcyonGUIGenerator
 																					pNodeTypeNamesList);
 
 		mHalcyonFrame = new HalcyonFrame(lTreePanel);
+		
+	
 
 	}
 

@@ -68,8 +68,9 @@ public class AllLaserDevicesGUIDemo extends Application
 	{
 		VBox pane = new VBox();
 
+		for(LaserGauge lLaserGauge :mLaserGauges)
 		pane.getChildren()
-				.addAll(mLaserGauges);
+				.add(lLaserGauge);
 
 		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
 
