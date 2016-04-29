@@ -64,28 +64,28 @@ public class LightSheetPanel extends CustomVariablePane
 													pLightSheetInterface.getEffectiveExposureInMicrosecondsVariable(),
 													1.0,
 													1000000.0,
-													10000.0,
-													1.0).setUpdateIfChanging(true);
+													1.0,
+													10000.0).setUpdateIfChanging(true);
 		
 		addSliderForVariable(	"LineExposure :",
 													pLightSheetInterface.getLineExposureInMicrosecondsVariable(),
 													1.0,
 													1000000.0,
-													10000.0,
-													1.0).setUpdateIfChanging(true);
+													1.0,
+													10000.0).setUpdateIfChanging(true);
 		
 		addSliderForVariable(	"Overscan :",
 													pLightSheetInterface.getOverScanVariable(),
 													0.0,
 													1.0,
-													0.1,
-													1.0).setUpdateIfChanging(true);
+													1.0,
+													0.01).setUpdateIfChanging(true);
 		
 		addSliderForVariable(	"Readout Time :",
 													pLightSheetInterface.getReadoutTimeInMicrosecondsPerLineVariable(),
 													0.0,
 													10.0,
-													1.0,
+													0.0,
 													1.0).setUpdateIfChanging(true);
 		
 
