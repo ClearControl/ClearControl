@@ -177,7 +177,7 @@ public class Stage3DControl
 	private VBox createControls(CubeScene cubeScene)
 	{
 		// R-Stage
-		final Label caption = new Label("Sample Stage R (micro-degree)");
+		final Label caption = new Label("Stage R (micro-degree)");
 
 		final Slider slider = new Slider();
 		slider.setMin(0);
@@ -204,7 +204,7 @@ public class Stage3DControl
 		BoundingBox cubeBB = cubeScene.getCubeBoundingBox();
 
 		// X-Stage
-		final Label xStageLabel = new Label("Sample Stage X (microns)");
+		final Label xStageLabel = new Label("Stage X (microns)");
 		double xMin = cubeScene.getCubeCenterGroup().getTranslateX();
 		double xMax = cubeScene.getCubeCenterGroup().getTranslateX() + CubeScene.VIEWPORT_SIZE
 									- cubeBB.getMaxX()
@@ -242,7 +242,7 @@ public class Stage3DControl
 		HBox.setHgrow(xStage, Priority.ALWAYS);
 
 		// Y-Stage
-		final Label yStageLabel = new Label("Sample Stage Y (microns)");
+		final Label yStageLabel = new Label("Stage Y (microns)");
 
 		double yMin = cubeScene.getCubeCenterGroup().getTranslateY();
 		double yMax = cubeScene.getCubeCenterGroup().getTranslateY() + CubeScene.VIEWPORT_SIZE
@@ -280,7 +280,7 @@ public class Stage3DControl
 		HBox.setHgrow(yStage, Priority.ALWAYS);
 
 		// Z-Stage
-		final Label zStageLabel = new Label("Sample Stage Z (microns)");
+		final Label zStageLabel = new Label("Stage Z (microns)");
 
 		double zMin = cubeScene.getCubeCenterGroup().getTranslateZ();
 		double zMax = cubeScene.getCubeCenterGroup().getTranslateZ() + CubeScene.VIEWPORT_SIZE
