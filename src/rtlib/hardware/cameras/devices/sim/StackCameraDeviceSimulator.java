@@ -274,7 +274,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	{
 		mLeftInQueue = new CountDownLatch(getQueueLength());
 
-		mStackDepthVariable.set(mStackDepthVariable.get() + 1);
+		//mStackDepthVariable.set(mStackDepthVariable.get() + 1);
 
 		final Future<Boolean> lFuture = new Future<Boolean>()
 		{

@@ -12,23 +12,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import rtlib.core.variable.Variable;
+import rtlib.gui.jfx.gridpane.StandardGridPane;
 import rtlib.gui.jfx.iconswitch.IconSwitch;
 import rtlib.gui.variable.JFXPropertyVariable;
 
-public class OnOffArrayPane extends GridPane
+public class OnOffArrayPane extends StandardGridPane
 {
 
 	private boolean mVertical = true;
 	private boolean mFancyStyle = false;
 	private int mCursor = 0;
 
-	public OnOffArrayPane()
-	{
-		setAlignment(Pos.CENTER);
-		setHgap(10);
-		setVgap(10);
-		setPadding(new Insets(25, 25, 25, 25));
-	}
+
 
 	public void addSwitch(String pName, Variable<Boolean> pVariable)
 	{

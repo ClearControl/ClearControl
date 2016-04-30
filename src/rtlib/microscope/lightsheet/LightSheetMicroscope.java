@@ -9,6 +9,7 @@ import rtlib.device.switches.SwitchingDeviceInterface;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
 import rtlib.hardware.lasers.LaserDeviceInterface;
 import rtlib.microscope.MicroscopeBase;
+import rtlib.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -19,11 +20,13 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 {
 	
 	private SwitchingDeviceInterface mLightSheetSwitch;
+	
+	private final InteractiveAcquisition mInteractiveAcquisition;
 
 	public LightSheetMicroscope(String pDeviceName)
 	{
-		super(pDeviceName, false);
-
+		super(pDeviceName);
+		mInteractiveAcquisition = new InteractiveAcquisition(getName()+"InteractiveAcquisition",this);
 	}
 
 	public void setLightSheetSelectorDevice(SwitchingDeviceInterface pDeviceSwitchingInterface)
@@ -34,14 +37,6 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	private SwitchingDeviceInterface getLightSheetSwitchingDevice()
 	{
 		return mLightSheetSwitch;
-	}
-	
-	
-	@Override
-	protected boolean loop()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public void sendStacksToNull()
@@ -537,6 +532,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 
 		return lNumberOfLightSheetsDOFs + lNumberOfDetectionArmDOFs;
 	}
+	
+	public InteractiveAcquisition getInteractiveAcquisition()
+	{
+		return mInteractiveAcquisition;
+	}
 
 	@Override
 	public String toString()
@@ -544,5 +544,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return String.format(	"LightSheetMicroscope: \n%s\n",
 													mLSMDeviceLists.toString());
 	}
+
+
 
 }

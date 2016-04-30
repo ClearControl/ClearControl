@@ -12,10 +12,11 @@ import javafx.scene.layout.Priority;
 import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
+import rtlib.gui.jfx.gridpane.StandardGridPane;
 import rtlib.gui.jfx.onoff.OnOffArrayPane;
 import rtlib.gui.jfx.slider.VariableSlider;
 
-public class UnivariateAffineFunctionPane extends GridPane
+public class UnivariateAffineFunctionPane extends StandardGridPane
 {
 	// number of decimals after comma:
 	int mPrecision = 3;
@@ -32,8 +33,8 @@ public class UnivariateAffineFunctionPane extends GridPane
 
 		setAlignment(Pos.CENTER);
 		setHgap(10);
-		setVgap(10);
-		setPadding(new Insets(25, 25, 25, 25));
+		setVgap(0);
+		setPadding(new Insets(0, 25, 0, 25));
 
 		Label lNameLabel = null;
 		if (pName != null)

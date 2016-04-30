@@ -13,6 +13,7 @@ import rtlib.core.math.functions.UnivariateAffineFunction;
 import rtlib.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.bounded.BoundedVariable;
+import rtlib.gui.jfx.gridpane.StandardGridPane;
 import rtlib.gui.jfx.onoff.OnOffArrayPane;
 import rtlib.gui.jfx.slider.VariableSlider;
 
@@ -24,7 +25,7 @@ public class CustomVariablePane extends TabPane
 	private int mCursor = 0;
 	private double mSliderWidth;
 
-	private GridPane mCurrentTabGridPane;
+	private StandardGridPane mCurrentTabGridPane;
 
 	@SuppressWarnings("unchecked")
 	public CustomVariablePane()
@@ -61,7 +62,7 @@ public class CustomVariablePane extends TabPane
 		lTab.setClosable(false);
 		getTabs().add(lTab);
 
-		GridPane lGridPane = new GridPane();
+		StandardGridPane lGridPane = new StandardGridPane();
 		lGridPane.setAlignment(Pos.CENTER);
 		lGridPane.setHgap(10);
 		lGridPane.setVgap(10);
@@ -77,6 +78,8 @@ public class CustomVariablePane extends TabPane
 			//final StackPane header = (StackPane) lookup(".tab-header-area");
 			//header.setStyle("visibility: showing ;");
 		}
+		
+		mCursor=0;
 	}
 
 	public <T extends Number> VariableSlider<T> addSliderForVariable(	Variable<T> pVariable,

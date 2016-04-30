@@ -1,22 +1,15 @@
 package rtlib.microscope.lightsheet.gui;
 
-import halcyon.demo.DemoToolbarWindow;
 import halcyon.model.node.HalcyonNode;
-import halcyon.model.node.HalcyonSwingNode;
 import javafx.scene.layout.GridPane;
-import rtlib.hardware.signalgen.SignalGeneratorInterface;
-import rtlib.hardware.signalgen.gui.swing.SignalGeneratorPanel;
-import rtlib.microscope.MicroscopeBase;
 import rtlib.microscope.gui.MicroscopeGUI;
-import rtlib.microscope.gui.halcyon.MicroscopeNodeType;
 import rtlib.microscope.lightsheet.LightSheetMicroscope;
+import rtlib.microscope.lightsheet.acquisition.gui.StartStopToolbarWindow;
+import rtlib.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import rtlib.microscope.lightsheet.component.detection.DetectionArmInterface;
 import rtlib.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import rtlib.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import rtlib.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
-import rtlib.microscope.lightsheet.gui.toolbar.StartStopToolbarWindow;
-import rtlib.scripting.engine.ScriptingEngine;
-import rtlib.scripting.lang.groovy.GroovyScripting;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
@@ -37,7 +30,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
 	private void setupToolBar()
 	{
-		getHalcyonFrame().addToolbar(new StartStopToolbarWindow(new GridPane()));		
+		InteractiveAcquisition lInteractiveAcquisition = ((LightSheetMicroscope)getMicroscope()).getInteractiveAcquisition();
+		StartStopToolbarWindow lStartStopToolbarWindow = new StartStopToolbarWindow(lInteractiveAcquisition);
+		getHalcyonFrame().addToolbar(lStartStopToolbarWindow);		
 	}
 
 	private void setupLightSheetInHalcyon()

@@ -8,13 +8,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import coremem.recycling.RecyclerInterface;
+import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import rtlib.core.concurrent.future.FutureBooleanList;
+import rtlib.core.log.Loggable;
 import rtlib.core.variable.Variable;
 import rtlib.core.variable.VariableSetListener;
 import rtlib.device.active.ActivableDeviceInterface;
+import rtlib.device.name.NamedVirtualDevice;
 import rtlib.device.openclose.OpenCloseDeviceInterface;
 import rtlib.device.queue.StateQueueDeviceInterface;
-import rtlib.device.signal.SignalStartableLoopTaskDevice;
 import rtlib.device.startstop.StartStopDeviceInterface;
 import rtlib.hardware.cameras.StackCameraDeviceInterface;
 import rtlib.hardware.signalgen.SignalGeneratorInterface;
@@ -23,22 +25,28 @@ import rtlib.stack.StackInterface;
 import rtlib.stack.StackRequest;
 import rtlib.stack.processor.StackProcessingPipeline;
 
-public abstract class MicroscopeBase extends
-																		SignalStartableLoopTaskDevice	implements
-																																	MicroscopeInterface
+public abstract class MicroscopeBase extends NamedVirtualDevice	implements
+																																MicroscopeInterface,
+																																StartStopDeviceInterface,
+																																AsynchronousSchedulerServiceAccess,
+																																Loggable
 {
+
 	protected final StackRecyclerManager mStackRecyclerManager;
 	protected final MicroscopeDeviceLists mLSMDeviceLists;
 	protected volatile int mNumberOfEnqueuedStates;
 	protected volatile long mAverageTimeInNS;
 
+	// Lock:
+	protected Object mAcquisitionLock = new Object();
+
 	// TODO: use this:
 	private final ArrayList<Variable<StackInterface>> mStackVariableList = new ArrayList<>();
 	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
 
-	public MicroscopeBase(String pDeviceName, boolean pOnlyStart)
+	public MicroscopeBase(String pDeviceName)
 	{
-		super(pDeviceName, pOnlyStart);
+		super(pDeviceName);
 		mStackRecyclerManager = new StackRecyclerManager();
 		mLSMDeviceLists = new MicroscopeDeviceLists(this);
 	}
@@ -49,15 +57,15 @@ public abstract class MicroscopeBase extends
 		return mLSMDeviceLists;
 	}
 
-	public void addStackCameraDevice(int pIndex,
-																	StackCameraDeviceInterface pCameraDevice,
-																	StackProcessingPipeline pStackPipeline)
+	public void addStackCameraDevice(	int pIndex,
+																		StackCameraDeviceInterface pCameraDevice,
+																		StackProcessingPipeline pStackPipeline)
 	{
 		getDeviceLists().addDevice(pIndex, pCameraDevice);
 
 		if (pStackPipeline != null)
 		{
-			getDeviceLists().addDevice(pIndex,pStackPipeline);
+			getDeviceLists().addDevice(pIndex, pStackPipeline);
 			pCameraDevice.getStackVariable()
 										.sendUpdatesTo(pStackPipeline.getInputVariable());
 			mStackVariableList.add(pStackPipeline.getOutputVariable());
@@ -66,130 +74,149 @@ public abstract class MicroscopeBase extends
 		{
 			mStackVariableList.add(pCameraDevice.getStackVariable());
 		}
-		
+
 	}
 
 	@Override
 	public boolean open()
 	{
-		boolean lIsOpen = super.open();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof OpenCloseDeviceInterface)
+			boolean lIsOpen = true;
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
-				final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
-				final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
-				if (!lIsThisDeviceOpen)
+				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
-					System.out.println("Could not open device: " + lDevice);
+					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
+					final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
+					if (!lIsThisDeviceOpen)
+					{
+						System.out.println("Could not open device: " + lDevice);
+					}
+
+					lIsOpen &= lIsThisDeviceOpen;
 				}
-
-				lIsOpen &= lIsThisDeviceOpen;
 			}
-		}
 
-		return lIsOpen;
+			return lIsOpen;
+		}
 	}
 
 	@Override
 	public boolean close()
 	{
-		boolean lIsClosed = true;
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof OpenCloseDeviceInterface)
+			boolean lIsClosed = true;
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
-				final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
-				lIsClosed &= lOpenCloseDevice.close();
+				if (lDevice instanceof OpenCloseDeviceInterface)
+				{
+					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
+					lIsClosed &= lOpenCloseDevice.close();
+				}
 			}
+
+			mStackRecyclerManager.clearAll();
+
+			return lIsClosed;
 		}
-
-		lIsClosed &= super.close();
-
-		mStackRecyclerManager.clearAll();
-
-		return lIsClosed;
 	}
 
 	@Override
 	public boolean start()
 	{
-		boolean lIsStarted = super.start();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StartStopDeviceInterface)
+			boolean lIsStarted = true;
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
-				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-				lIsStarted &= lStartStopDevice.start();
+				if (lDevice instanceof StartStopDeviceInterface)
+				{
+					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
+					lIsStarted &= lStartStopDevice.start();
+				}
 			}
-		}
 
-		return lIsStarted;
+			return lIsStarted;
+		}
 	}
 
 	@Override
 	public boolean stop()
 	{
-		boolean lIsStopped = super.start();
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StartStopDeviceInterface)
+			boolean lIsStopped = true;
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
-				final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-				lIsStopped &= lStartStopDevice.stop();
+				if (lDevice instanceof StartStopDeviceInterface)
+				{
+					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
+					lIsStopped &= lStartStopDevice.stop();
+				}
 			}
-		}
 
-		return lIsStopped;
+			return lIsStopped;
+		}
 	}
 
 	@Override
 	public void clearQueue()
 	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.clearQueue();
-				}
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			{
+				if (lDevice instanceof StateQueueDeviceInterface)
+					if (isActiveDevice(lDevice))
+					{
+						final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+						lStateQueueDeviceInterface.clearQueue();
+					}
+			}
+			mNumberOfEnqueuedStates = 0;
 		}
-		mNumberOfEnqueuedStates = 0;
 	}
 
 	@Override
 	public void addCurrentStateToQueue()
 	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.addCurrentStateToQueue();
-				}
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			{
+				if (lDevice instanceof StateQueueDeviceInterface)
+					if (isActiveDevice(lDevice))
+					{
+						final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+						lStateQueueDeviceInterface.addCurrentStateToQueue();
+					}
 
+			}
+			mNumberOfEnqueuedStates++;
 		}
-		mNumberOfEnqueuedStates++;
 	}
 
 	@Override
 	public void finalizeQueue()
 	{
-		// TODO: this should be put in a subclass specific to the way that we
-		// trigger cameras...
-		mLSMDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
-										.addCurrentStateToQueue();
-
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-				if (isActiveDevice(lDevice))
-				{
-					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-					lStateQueueDeviceInterface.finalizeQueue();
-				}
+			// TODO: this should be put in a subclass specific to the way that we
+			// trigger cameras...
+			mLSMDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
+											.addCurrentStateToQueue();
+
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			{
+				if (lDevice instanceof StateQueueDeviceInterface)
+					if (isActiveDevice(lDevice))
+					{
+						final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+						lStateQueueDeviceInterface.finalizeQueue();
+					}
+			}
 		}
 	}
 
@@ -280,23 +307,26 @@ public abstract class MicroscopeBase extends
 	@Override
 	public FutureBooleanList playQueue()
 	{
-		System.gc();
-		final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
-
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		synchronized (mAcquisitionLock)
 		{
-			if (lDevice instanceof StateQueueDeviceInterface)
-			{
-				System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",
-													lDevice);
-				final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
-				final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
-				lFutureBooleanList.addFuture(	lDevice.toString(),
-																			lPlayQueueFuture);
-			}
-		}
+			System.gc();
+			final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
 
-		return lFutureBooleanList;
+			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			{
+				if (lDevice instanceof StateQueueDeviceInterface)
+				{
+					System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",
+														lDevice);
+					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
+					final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
+					lFutureBooleanList.addFuture(	lDevice.toString(),
+																				lPlayQueueFuture);
+				}
+			}
+
+			return lFutureBooleanList;
+		}
 	}
 
 	@Override
@@ -304,8 +334,11 @@ public abstract class MicroscopeBase extends
 																																		ExecutionException,
 																																		TimeoutException
 	{
-		final FutureBooleanList lPlayQueue = playQueue();
-		return lPlayQueue.get(pTimeOut, pTimeUnit);
+		synchronized (mAcquisitionLock)
+		{
+			final FutureBooleanList lPlayQueue = playQueue();
+			return lPlayQueue.get(pTimeOut, pTimeUnit);
+		}
 	}
 
 	@Override
@@ -314,55 +347,58 @@ public abstract class MicroscopeBase extends
 																																ExecutionException,
 																																TimeoutException
 	{
-		int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
-		CountDownLatch[] lStacksReceivedLatches = new CountDownLatch[lNumberOfDetectionArmDevices];
-
-		mAverageTimeInNS = 0;
-
-		ArrayList<VariableSetListener<StackInterface>> lListenerList = new ArrayList<>();
-		for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+		synchronized (mAcquisitionLock)
 		{
-			lStacksReceivedLatches[i] = new CountDownLatch(1);
+			int lNumberOfDetectionArmDevices = getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
+			CountDownLatch[] lStacksReceivedLatches = new CountDownLatch[lNumberOfDetectionArmDevices];
 
-			final int fi = i;
+			mAverageTimeInNS = 0;
 
-			VariableSetListener<StackInterface> lVariableSetListener = new VariableSetListener<StackInterface>()
+			ArrayList<VariableSetListener<StackInterface>> lListenerList = new ArrayList<>();
+			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
 			{
+				lStacksReceivedLatches[i] = new CountDownLatch(1);
 
-				@Override
-				public void setEvent(	StackInterface pCurrentValue,
-															StackInterface pNewValue)
+				final int fi = i;
+
+				VariableSetListener<StackInterface> lVariableSetListener = new VariableSetListener<StackInterface>()
 				{
-					lStacksReceivedLatches[fi].countDown();
-					mAverageTimeInNS += pNewValue.getTimeStampInNanoseconds() / lNumberOfDetectionArmDevices;
+
+					@Override
+					public void setEvent(	StackInterface pCurrentValue,
+																StackInterface pNewValue)
+					{
+						lStacksReceivedLatches[fi].countDown();
+						mAverageTimeInNS += pNewValue.getTimeStampInNanoseconds() / lNumberOfDetectionArmDevices;
+					}
+				};
+
+				lListenerList.add(lVariableSetListener);
+
+				getStackVariable(i).addSetListener(lVariableSetListener);
+			}
+
+			System.out.println("Playing queue of length: " + getQueueLength());
+			final FutureBooleanList lPlayQueue = playQueue();
+
+			Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);
+
+			if (lBoolean != null && lBoolean)
+			{
+				for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+				{
+					lStacksReceivedLatches[i].await(pTimeOut, pTimeUnit);
 				}
-			};
-
-			lListenerList.add(lVariableSetListener);
-
-			getStackVariable(i).addSetListener(lVariableSetListener);
-		}
-
-		System.out.println("Playing queue of length: " + getQueueLength());
-		final FutureBooleanList lPlayQueue = playQueue();
-
-		Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);
-
-		if (lBoolean != null && lBoolean)
-		{
-			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-			{
-				lStacksReceivedLatches[i].await(pTimeOut, pTimeUnit);
-			}
-		}
-
-		for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
-			for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
-			{
-				getStackVariable(i).removeSetListener(lVariableSetListener);
 			}
 
-		return lBoolean;
+			for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
+				for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+				{
+					getStackVariable(i).removeSetListener(lVariableSetListener);
+				}
+
+			return lBoolean;
+		}
 	}
 
 }

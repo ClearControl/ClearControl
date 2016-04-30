@@ -6,18 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import rtlib.core.variable.Variable;
 import rtlib.device.position.PositionDeviceInterface;
+import rtlib.gui.jfx.gridpane.StandardGridPane;
 
-public class PositionDevicePanel extends GridPane
+public class PositionDevicePanel extends StandardGridPane
 {
 
 	public PositionDevicePanel(PositionDeviceInterface pPositionDeviceInterface)
 	{
 		super();
-
-		setAlignment(Pos.CENTER);
-		setHgap(10);
-		setVgap(10);
-		setPadding(new Insets(25, 25, 25, 25));
 
 		int[] lValidPositions = pPositionDeviceInterface.getValidPositions();
 

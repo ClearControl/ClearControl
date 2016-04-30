@@ -52,6 +52,9 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean start()
 	{
+		if(mIsRunningVariable.get())
+			return true;
+		
 		final Runnable lRunnable = () -> {
 			final long lStartTime = System.nanoTime();
 			loop();
@@ -89,6 +92,8 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean stop()
 	{
+		if(!mIsRunningVariable.get())
+			return true;
 		try
 		{
 			if (mScheduledFuture != null)
