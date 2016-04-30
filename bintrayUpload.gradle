@@ -13,13 +13,13 @@ if(hasProperty('bintray_user') && hasProperty('bintray_key') )
 			dryRun = false //Whether to run this as dry-run, without deploying
 			publish = true //If version should be auto published after an upload
 			pkg {
-				repo = 'RTlib'
-				userOrg = 'rtlib' //An optional organization name when the repo belongs to one of the user's orgs
+				repo = 'ClearControl'
+				userOrg = 'clearcontrol' //An optional organization name when the repo belongs to one of the user's orgs
 				name = project.name
 				desc = project.name
-				websiteUrl = 'https://github.com/RTlib'
-				issueTrackerUrl = 'https://github.com/RTlib/RTlib/issues'
-				vcsUrl = 'https://github.com/RTlib/RTlib.git'
+				websiteUrl = 'https://github.com/ClearControl'
+				issueTrackerUrl = 'https://github.com/ClearControl/ClearControl/issues'
+				vcsUrl = 'https://github.com/ClearControl/ClearControl.git'
 				licenses = ['GPL-3.0']
 				publicDownloadNumbers = true
 				version {

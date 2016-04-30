@@ -207,14 +207,11 @@ repositories
     maven { url "http://oss.sonatype.org/content/groups/public"} 
     maven { url "http://mvnrepository.com/artifact" }
 
-    // RTlib:
-    maven { url  "http://dl.bintray.com/rtlib/CoreMem" }
-    maven { url  "http://dl.bintray.com/rtlib/Halcyon" }
-    maven { url  "http://dl.bintray.com/rtlib/Drivers"  }
+    // ClearControl:
+    maven { url  "http://dl.bintray.com/clearcontrol/ClearControl"  }
 
     // ClearVolume: 
     maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
-
 
     //imglib2:
     maven { url  "http://maven.imagej.net/content/repositories/releases" }
