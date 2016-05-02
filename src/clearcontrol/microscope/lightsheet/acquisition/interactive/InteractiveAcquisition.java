@@ -12,10 +12,9 @@ public class InteractiveAcquisition	extends
 {
 
 	private LightSheetMicroscope mLightSheetMicroscope;
-	
+
 	private volatile InteractiveAcquisitionModes mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
 	private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
-
 
 	public InteractiveAcquisition(String pDeviceName,
 																LightSheetMicroscope pLightSheetMicroscope)
@@ -32,19 +31,43 @@ public class InteractiveAcquisition	extends
 		{
 			try
 			{
-				if(mRequestedAcquisitionMode!=mCurrentAcquisitionMode)
+				if (mRequestedAcquisitionMode != mCurrentAcquisitionMode)
 				{
 					// prepare queue
 					System.out.println("Preparing Queue...");
-					
-				
+
+					if (mRequestedAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
+					{
+						mLightSheetMicroscope.useRecycler("2DIntercative",
+																							60,
+																							60,
+																							60);
+
+						mLightSheetMicroscope.clearQueue();
+						mLightSheetMicroscope.addCurrentStateToQueue();
+						mLightSheetMicroscope.finalizeQueue();
+
+					}
+					else if (mRequestedAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
+					{
+						mLightSheetMicroscope.useRecycler("2DIntercative",
+																							3,
+																							3,
+																							3);
+
+						// TODO: 3D stack here
+					}
+
 					mCurrentAcquisitionMode = mRequestedAcquisitionMode;
 				}
-				
-				
-				//play queue
-				System.out.println("Playing Queue...");
-				mLightSheetMicroscope.playQueueAndWait(10, TimeUnit.SECONDS);
+
+				if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
+				{
+					// play queue
+					System.out.println("Playing Queue...");
+					mLightSheetMicroscope.playQueueAndWaitForStacks(10,
+																													TimeUnit.SECONDS);
+				}
 			}
 			catch (InterruptedException | ExecutionException e)
 			{
@@ -66,17 +89,17 @@ public class InteractiveAcquisition	extends
 		start();
 	}
 
-
 	public void start3DAcquisition()
 	{
 		System.out.println("Starting 3D Acquisition...");
 		mRequestedAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
 		start();
 	}
-	
+
 	public void stopAcquisition()
 	{
 		System.out.println("Stopping Acquisition...");
+		mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
 		stop();
 	}
 

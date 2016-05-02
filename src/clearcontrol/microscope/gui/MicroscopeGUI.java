@@ -1,5 +1,8 @@
 package clearcontrol.microscope.gui;
 
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNodeType;
+
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -9,7 +12,6 @@ import clearcontrol.device.name.NamedVirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.microscope.MicroscopeBase;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
@@ -19,9 +21,6 @@ import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
-import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonNodeType;
-import javafx.application.Platform;
 
 public class MicroscopeGUI extends NamedVirtualDevice	implements
 																											AsynchronousExecutorServiceAccess
@@ -73,7 +72,7 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 	public void generate()
 	{
 		setup2Dand3DDisplays();
-		setupHalcyonWindow( mMicroscope );
+		setupHalcyonWindow(mMicroscope);
 	}
 
 	public MicroscopeInterface getMicroscope()
@@ -161,15 +160,14 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 	private void setupHalcyonWindow(MicroscopeInterface pMicroscopeInterface)
 	{
 		ArrayList<HalcyonNodeType> lNodeTypeList = new ArrayList<>();
-		for(HalcyonNodeType lNode : MicroscopeNodeType.values())
-		lNodeTypeList.add(lNode);
-		for(HalcyonNodeType lNode : LSMNodeType.values())
+		for (HalcyonNodeType lNode : MicroscopeNodeType.values())
 			lNodeTypeList.add(lNode);
-		
-		
+		for (HalcyonNodeType lNode : LSMNodeType.values())
+			lNodeTypeList.add(lNode);
+
 		HalcyonGUIGenerator lHalcyonGUIGenerator = new HalcyonGUIGenerator(	pMicroscopeInterface,
-																										this,
-																										lNodeTypeList);
+																																				this,
+																																				lNodeTypeList);
 		lHalcyonGUIGenerator.setupDeviceGUIs();
 
 		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
@@ -291,8 +289,8 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 
 			if (m3dView)
 			{
-				connect2DTo3D(lCameraIndex, lCameraIndex);
-				mStack3DVideoDeviceList.get(lCameraIndex)
+				connect2DTo3D(lCameraIndex, 0);
+				mStack3DVideoDeviceList.get(0)
 																.setOutputStackVariable(mCleanupStackVariable[lCameraIndex]);
 			}
 			else
@@ -313,7 +311,7 @@ public class MicroscopeGUI extends NamedVirtualDevice	implements
 
 			if (m3dView)
 			{
-				disconnect2DTo3D(lCameraIndex, lCameraIndex);
+				disconnect2DTo3D(lCameraIndex, 0);
 			}
 			else
 				mStack2DVideoDeviceList.get(lCameraIndex)

@@ -24,6 +24,37 @@ public interface MicroscopeInterface extends
 	public String getName();
 
 	/**
+	 * Adds a device of a given type. Devices are uniquely identified by their
+	 * class and index: (class,index) -> device
+	 * 
+	 * @param pDeviceIndex
+	 * @param pDevice
+	 */
+	public <T> void addDevice(int pDeviceIndex, T pDevice);
+
+	/**
+	 * Returns the number of devices of a given class. Devices are uniquely
+	 * identified by their class and index: (class,index) -> device
+	 * 
+	 * @param pClass
+	 *          class
+	 * @return number of devices of a given type
+	 */
+	public <T> int getNumberOfDevices(Class<T> pClass);
+
+	/**
+	 * Returns a device for a given type (class) and index. Devices are uniquely
+	 * identified by their class and index: (class,index) -> device
+	 * 
+	 * @param pClass
+	 *          class
+	 * @param pIndex
+	 *          index
+	 * @return device for given pair; (class,index)
+	 */
+	public <T> T getDevice(Class<T> pClass, int pIndex);
+
+	/**
 	 * Returns the device list object from which all devices can be queried.
 	 * 
 	 * @return device list object
@@ -123,6 +154,5 @@ public interface MicroscopeInterface extends
 	long lastAcquiredStacksTimeStampInNS();
 
 	Variable<StackInterface> getStackVariable(int pIndex);
-
 
 }

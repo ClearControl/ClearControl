@@ -4,21 +4,20 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.device.name.NamedVirtualDevice;
-import clearcontrol.device.switches.SwitchingDeviceInterface;
-import clearcontrol.hardware.optomech.OptoMechDeviceInterface;
+import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class LightSheetSwitch extends NamedVirtualDevice implements
-																												SwitchingDeviceInterface,
-																												OptoMechDeviceInterface
+public class LightSheetOpticalSwitch extends NamedVirtualDevice	implements
+																																OpticalSwitchDeviceInterface
 {
 
 	private final Variable<Boolean>[] mLightSheetOnOff;
 	private final ConstantStave[] mBitStave;
 	private int[] mStaveIndex;
 
-	public LightSheetSwitch(String pName, int pNumberOfLightSheets)
+	public LightSheetOpticalSwitch(	String pName,
+																	int pNumberOfLightSheets)
 	{
 		super(pName);
 
@@ -26,7 +25,9 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 
 		final VariableSetListener<Boolean> lBooleanVariableListener = (	u,
 																																		v) -> {
-			update();
+
+			if (u != v)
+				update();
 		};
 
 		mBitStave = new ConstantStave[pNumberOfLightSheets];
@@ -36,7 +37,7 @@ public class LightSheetSwitch extends NamedVirtualDevice implements
 		for (int i = 0; i < mBitStave.length; i++)
 		{
 			mStaveIndex[i] = MachineConfiguration.getCurrentMachineConfiguration()
-																						.getIntegerProperty("device.lsm.selector." + getName()
+																						.getIntegerProperty("device.lsm.switch." + getName()
 																																		+ i
 																																		+ ".index",
 																																-1);

@@ -71,7 +71,7 @@ public class LightSheetMicroscopeDemo
 																															l,
 																															lLaserWavelengths[l],
 																															100 + 10 * l);
-			lLightSheetMicroscope.getDeviceLists().addDevice(l, lLaser);
+			lLightSheetMicroscope.addDevice(l, lLaser);
 		}
 
 		// Setting up Stage:
@@ -80,15 +80,13 @@ public class LightSheetMicroscopeDemo
 																																					StageType.XYZR);
 		lStageDeviceSimulator.addXYZRDOFs();
 
-		lLightSheetMicroscope.getDeviceLists()
-													.addDevice(0, lStageDeviceSimulator);
+		lLightSheetMicroscope.addDevice(0, lStageDeviceSimulator);
 
 		// Setting up optical switch:
 
 		OpticalSwitchDeviceInterface lOpticalSwitchDeviceSimulator = new OpticalSwitchDeviceSimulator("OpticalSwitch",
 																																																	4);
-		lLightSheetMicroscope.getDeviceLists()
-													.addDevice(0, lOpticalSwitchDeviceSimulator);
+		lLightSheetMicroscope.addDevice(0, lOpticalSwitchDeviceSimulator);
 
 		// Setting up Filterwheel:
 
@@ -124,27 +122,25 @@ public class LightSheetMicroscopeDemo
 			lCamera.getStackHeightVariable().set(cImageResolution);
 			lCamera.getExposureInMicrosecondsVariable().set(5000.0);
 
-			lLightSheetMicroscope.addStackCameraDevice(	c,
-																									lCamera,
-																									lStackIdentityPipeline);
+			lLightSheetMicroscope.addDevice(c, lCamera);
+
+			lLightSheetMicroscope.setStackProcessingPipeline(	c,
+																												lStackIdentityPipeline);
 		}
 
 		// Scaling Amplifier:
 
 		ScalingAmplifierDeviceInterface lScalingAmplifier1 = new ScalingAmplifierSimulator("ScalingAmplifier1");
-		lLightSheetMicroscope.getDeviceLists()
-													.addDevice(0, lScalingAmplifier1);
+		lLightSheetMicroscope.addDevice(0, lScalingAmplifier1);
 
 		ScalingAmplifierDeviceInterface lScalingAmplifier2 = new ScalingAmplifierSimulator("ScalingAmplifier2");
-		lLightSheetMicroscope.getDeviceLists()
-													.addDevice(1, lScalingAmplifier2);
+		lLightSheetMicroscope.addDevice(1, lScalingAmplifier2);
 
 		// Signal generator:
 
 		final SignalGeneratorInterface lSignalGeneratorDevice = new SignalGeneratorSimulatorDevice();
 
-		lLightSheetMicroscope.getDeviceLists()
-													.addDevice(0, lSignalGeneratorDevice);
+		lLightSheetMicroscope.addDevice(0, lSignalGeneratorDevice);
 
 		// Setting up staging movements:
 
@@ -167,8 +163,7 @@ public class LightSheetMicroscopeDemo
 		{
 			final DetectionArm lDetectionArm = new DetectionArm("D" + c);
 
-			lLightSheetMicroscope.getDeviceLists()
-														.addDevice(c, lDetectionArm);
+			lLightSheetMicroscope.addDevice(c, lDetectionArm);
 
 			lDetectionArm.addStavesToBeforeExposureMovement(lBeforeExposureMovement);
 			lDetectionArm.addStavesToExposureMovement(lExposureMovement);
@@ -182,8 +177,7 @@ public class LightSheetMicroscopeDemo
 																										9.4,
 																										512,
 																										2);
-			lLightSheetMicroscope.getDeviceLists()
-														.addDevice(l, lLightSheet);
+			lLightSheetMicroscope.addDevice(l, lLightSheet);
 
 			lBeforeExposureMovement.setDuration(lLightSheet.getBeforeExposureMovementDuration(TimeUnit.NANOSECONDS),
 																					TimeUnit.NANOSECONDS);
