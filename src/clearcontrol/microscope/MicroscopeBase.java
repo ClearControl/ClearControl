@@ -74,6 +74,12 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		return mLSMDeviceLists.getDevice(pClass, pIndex);
 	}
 
+	@Override
+	public <T> ArrayList<T> getDevices(Class<T> pClass)
+	{
+		return mLSMDeviceLists.getDevices(pClass);
+	}
+
 	public void setStackProcessingPipeline(	int pIndex,
 																					StackProcessingPipeline pStackPipeline)
 	{

@@ -1,7 +1,17 @@
 package clearcontrol.microscope.gui.halcyon;
 
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonExternalNode;
+import halcyon.model.node.HalcyonNode;
+import halcyon.model.node.HalcyonNodeInterface;
+import halcyon.model.node.HalcyonNodeType;
+import halcyon.model.node.HalcyonSwingNode;
+import halcyon.view.TreePanel;
+
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
+
+import javafx.embed.swing.JFXPanel;
 
 import javax.swing.SwingUtilities;
 
@@ -26,15 +36,6 @@ import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingWindow;
-import halcyon.HalcyonFrame;
-import halcyon.demo.DemoToolbarWindow;
-import halcyon.model.node.HalcyonExternalNode;
-import halcyon.model.node.HalcyonNode;
-import halcyon.model.node.HalcyonNodeInterface;
-import halcyon.model.node.HalcyonNodeType;
-import halcyon.model.node.HalcyonSwingNode;
-import halcyon.view.TreePanel;
-import javafx.embed.swing.JFXPanel;
 
 public class HalcyonGUIGenerator
 {
@@ -57,8 +58,6 @@ public class HalcyonGUIGenerator
 																					pNodeTypeNamesList);
 
 		mHalcyonFrame = new HalcyonFrame(lTreePanel);
-		
-	
 
 	}
 
@@ -176,10 +175,10 @@ public class HalcyonGUIGenerator
 
 			lScriptingWindow.loadLastLoadedScriptFile();
 
-			HalcyonNodeInterface node = new HalcyonNode(	lScriptingEngine.getScriptingLanguageInterface()
-																																				.getName(),
-																												MicroscopeNodeType.Scripting,
-																												lScriptingWindow);
+			HalcyonNodeInterface node = new HalcyonNode(lScriptingEngine.getScriptingLanguageInterface()
+																																	.getName(),
+																									MicroscopeNodeType.Scripting,
+																									lScriptingWindow);
 			mHalcyonFrame.addNode(node);
 		}/**/
 	}

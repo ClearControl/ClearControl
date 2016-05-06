@@ -183,7 +183,7 @@ public class CoboltLaserDeviceDemo
 		System.out.println("current power (mW): " + lCoboltLaserDevice.getCurrentPowerInMilliWatt());
 		System.out.println("current power (%): " + lCoboltLaserDevice.getCurrentPowerInPercent());
 
-		for (int r = 0; r < 3; r++)
+		for (int r = 0; r < 30; r++)
 		{
 			for (int i = 0; i < 100; i++)
 			{

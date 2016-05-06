@@ -21,6 +21,8 @@ public class InteractiveAcquisition	extends
 	{
 		super(pDeviceName, false);
 		mLightSheetMicroscope = pLightSheetMicroscope;
+
+		getLoopPeriodVariable().set(500L);
 	}
 
 	@Override
@@ -31,34 +33,23 @@ public class InteractiveAcquisition	extends
 		{
 			try
 			{
+
 				if (mRequestedAcquisitionMode != mCurrentAcquisitionMode)
 				{
-					// prepare queue
-					System.out.println("Preparing Queue...");
-
-					if (mRequestedAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
-					{
-						mLightSheetMicroscope.useRecycler("2DIntercative",
-																							60,
-																							60,
-																							60);
-
-						mLightSheetMicroscope.clearQueue();
-						mLightSheetMicroscope.addCurrentStateToQueue();
-						mLightSheetMicroscope.finalizeQueue();
-
-					}
-					else if (mRequestedAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
-					{
-						mLightSheetMicroscope.useRecycler("2DIntercative",
-																							3,
-																							3,
-																							3);
-
-						// TODO: 3D stack here
-					}
-
 					mCurrentAcquisitionMode = mRequestedAcquisitionMode;
+				}
+
+				if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
+				{
+					mLightSheetMicroscope.useRecycler("2DIntercative",
+																						60,
+																						60,
+																						60);
+
+					mLightSheetMicroscope.clearQueue();
+					mLightSheetMicroscope.addCurrentStateToQueue();
+					mLightSheetMicroscope.finalizeQueue();
+
 				}
 
 				if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)

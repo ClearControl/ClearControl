@@ -182,7 +182,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		mImageHeightVariable.addSetListener(lVariableListener);
 
 		mXVariable.addSetListener(lVariableListener);
-		mXVariable.addSetListener(lVariableListener);
+		mYVariable.addSetListener(lVariableListener);
 		mZVariable.addSetListener(lVariableListener);
 		mBetaInDegreesVariable.addSetListener(lVariableListener);
 		mAlphaInDegreesVariable.addSetListener(lVariableListener);
@@ -315,29 +315,6 @@ public class LightSheet extends NamedVirtualDevice implements
 																							mPowerVariable,
 																							mPowerFunction.get());
 
-		/**
-		 * private final BoundedVariable<Double>
-		 * mEffectiveExposureInMicrosecondsVariable = new BoundedVariable<Double>(
-		 * "EffectiveExposureInMicroseconds", 5000.0); private final
-		 * BoundedVariable<Long> mImageHeightVariable = new BoundedVariable<Long>(
-		 * "ImageHeight", 2 * 1024L); private final BoundedVariable<Double>
-		 * mReadoutTimeInMicrosecondsPerLineVariable = new
-		 * BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine", 9.74);
-		 * private final BoundedVariable<Double> mOverScanVariable = new
-		 * BoundedVariable<Double>("OverScan", 1.2);
-		 */
-
-		// Bounds below are for
-
-		MachineConfiguration.getCurrentMachineConfiguration()
-												.getBoundsForVariable("device.lsm.lighsheet." + getName()
-																									+ ".p.bounds",
-																							mPowerVariable);
-		
-		MachineConfiguration.getCurrentMachineConfiguration()
-		.getBoundsForVariable("device.lsm.lighsheet." + getName()
-															+ ".p.bounds",
-													mPowerVariable);
 	}
 
 	public void setBeforeExposureMovement(Movement pBeforeExposureMovement)
