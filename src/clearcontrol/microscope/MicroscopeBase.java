@@ -1,6 +1,7 @@
 package clearcontrol.microscope;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -40,9 +41,7 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 	// Lock:
 	protected Object mAcquisitionLock = new Object();
 
-	// TODO: use this:
-	private final ArrayList<Variable<StackInterface>> mStackVariableList = new ArrayList<>();
-	private final ArrayList<StackProcessingPipeline> mStackPipelineList = new ArrayList<>();
+	private final HashMap<Integer, StackProcessingPipeline> mStackPipelines = new HashMap<>();
 
 	public MicroscopeBase(String pDeviceName)
 	{
@@ -57,24 +56,47 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		return mLSMDeviceLists;
 	}
 
-	public void addStackCameraDevice(	int pIndex,
-																		StackCameraDeviceInterface pCameraDevice,
-																		StackProcessingPipeline pStackPipeline)
+	@Override
+	public <T> void addDevice(int pDeviceIndex, T pDevice)
 	{
-		getDeviceLists().addDevice(pIndex, pCameraDevice);
+		mLSMDeviceLists.addDevice(pDeviceIndex, pDevice);
+	}
 
-		if (pStackPipeline != null)
+	@Override
+	public <T> int getNumberOfDevices(Class<T> pClass)
+	{
+		return mLSMDeviceLists.getNumberOfDevices(pClass);
+	}
+
+	@Override
+	public <T> T getDevice(Class<T> pClass, int pIndex)
+	{
+		return mLSMDeviceLists.getDevice(pClass, pIndex);
+	}
+
+	@Override
+	public <T> ArrayList<T> getDevices(Class<T> pClass)
+	{
+		return mLSMDeviceLists.getDevices(pClass);
+	}
+
+	public void setStackProcessingPipeline(	int pIndex,
+																					StackProcessingPipeline pStackPipeline)
+	{
+		StackCameraDeviceInterface lDevice = mLSMDeviceLists.getDevice(	StackCameraDeviceInterface.class,
+																																		pIndex);
+		StackProcessingPipeline lStackProcessingPipeline = mStackPipelines.get(pIndex);
+
+		if (lStackProcessingPipeline != null)
 		{
-			getDeviceLists().addDevice(pIndex, pStackPipeline);
-			pCameraDevice.getStackVariable()
-										.sendUpdatesTo(pStackPipeline.getInputVariable());
-			mStackVariableList.add(pStackPipeline.getOutputVariable());
-		}
-		else
-		{
-			mStackVariableList.add(pCameraDevice.getStackVariable());
+			lDevice.getStackVariable()
+							.doNotSendUpdatesTo(lStackProcessingPipeline.getInputVariable());
 		}
 
+		lDevice.getStackVariable()
+						.sendUpdatesTo(pStackPipeline.getInputVariable());
+
+		mStackPipelines.put(pIndex, pStackPipeline);
 	}
 
 	@Override
@@ -240,7 +262,13 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 	@Override
 	public Variable<StackInterface> getStackVariable(int pIndex)
 	{
-		return getStackVariable(pIndex);
+		StackProcessingPipeline lStackProcessingPipeline = mStackPipelines.get(pIndex);
+		if (lStackProcessingPipeline != null)
+			return lStackProcessingPipeline.getOutputVariable();
+		else
+			return mLSMDeviceLists.getDevice(	StackCameraDeviceInterface.class,
+																				pIndex)
+														.getStackVariable();
 	}
 
 	@Override
@@ -274,14 +302,13 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 													final int pMaximumNumberOfAvailableObjects,
 													final int pMaximumNumberOfLiveObjects)
 	{
-		int lNumberOfStackCameraDevices = getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
+		int lNumberOfStackCameraDevices = getNumberOfDevices(StackCameraDeviceInterface.class);
 		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
 																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
 																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
 
 		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			getDeviceLists().getDevice(StackCameraDeviceInterface.class, i)
-											.setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
+			getDevice(StackCameraDeviceInterface.class, i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
 
 		setRecycler(lRecycler);
 	}

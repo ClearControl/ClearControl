@@ -19,7 +19,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 																												LightSheetMicroscopeInterface
 {
 	
-	private SwitchingDeviceInterface mLightSheetSwitch;
+	private SwitchingDeviceInterface mLightSheetOpticalSwitch;
 	
 	private final InteractiveAcquisition mInteractiveAcquisition;
 
@@ -29,14 +29,14 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		mInteractiveAcquisition = new InteractiveAcquisition(getName()+"InteractiveAcquisition",this);
 	}
 
-	public void setLightSheetSelectorDevice(SwitchingDeviceInterface pDeviceSwitchingInterface)
+	public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)
 	{
-		mLightSheetSwitch = pDeviceSwitchingInterface;
+		mLightSheetOpticalSwitch = pLightSheetOpticalSwitch;
 	}
 	
 	private SwitchingDeviceInterface getLightSheetSwitchingDevice()
 	{
-		return mLightSheetSwitch;
+		return mLightSheetOpticalSwitch;
 	}
 
 	public void sendStacksToNull()

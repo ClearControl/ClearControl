@@ -4,12 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.jogamp.newt.event.KeyAdapter;
-import com.jogamp.newt.event.KeyEvent;
-import com.jogamp.newt.event.KeyListener;
-import com.jogamp.newt.event.MouseAdapter;
-import com.jogamp.newt.event.MouseEvent;
-
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
@@ -19,6 +13,13 @@ import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.imglib2.ImageJStackDisplay;
+
+import com.jogamp.newt.event.KeyAdapter;
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseAdapter;
+import com.jogamp.newt.event.MouseEvent;
+
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 
@@ -73,8 +74,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 																		pWindowWidth,
 																		pWindowHeight);
 
-		mVideoWindow.setVisible(true);
-		
+		// mVideoWindow.setVisible(true);
 
 		final MouseAdapter lMouseAdapter = new MouseAdapter()
 		{
@@ -194,6 +194,7 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 			public StackInterface setEventHook(	final StackInterface pOldStack,
 																					final StackInterface pNewStack)
 			{
+				System.out.println("RECEIVED STACK!!!!");
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
 					pNewStack.release();
@@ -398,7 +399,6 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	{
 		mVideoWindow.setVisible(pIsVisible);
 	}
-	
 
 	public void requestFocus()
 	{
@@ -436,6 +436,5 @@ public class Stack2DDisplay extends NamedVirtualDevice implements
 	{
 		mVideoWindow.disableClose();
 	}
-
 
 }
