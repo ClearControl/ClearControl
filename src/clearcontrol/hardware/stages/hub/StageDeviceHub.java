@@ -9,12 +9,12 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.StageType;
 
-public class StageDeviceHub extends NamedVirtualDevice implements
+public class StageDeviceHub extends VirtualDevice implements
 																											StageDeviceInterface,
 																											StartStopDeviceInterface
 {

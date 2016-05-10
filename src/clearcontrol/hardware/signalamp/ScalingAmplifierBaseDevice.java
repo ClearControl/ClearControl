@@ -1,9 +1,9 @@
 package clearcontrol.hardware.signalamp;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 
-public class ScalingAmplifierBaseDevice extends NamedVirtualDevice implements
+public class ScalingAmplifierBaseDevice extends VirtualDevice implements
 																																	ScalingAmplifierDeviceInterface
 {
 

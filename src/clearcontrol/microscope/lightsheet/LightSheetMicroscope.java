@@ -27,6 +27,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	{
 		super(pDeviceName);
 		mInteractiveAcquisition = new InteractiveAcquisition(getName()+"InteractiveAcquisition",this);
+		addDevice(0, mInteractiveAcquisition);
 	}
 
 	public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)

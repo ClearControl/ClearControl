@@ -5,17 +5,19 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetInterface extends
 																		NameableInterface,
-																		OpenCloseDeviceInterface
+																		OpenCloseDeviceInterface,
+																		HasChangeListenerInterface
 {
 
 	// These variables should be synced with camera variables:
-	
+
 	public Variable<Long> getImageHeightVariable();
 
 	public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
@@ -25,7 +27,7 @@ public interface LightSheetInterface extends
 	public BoundedVariable<Double> getOverScanVariable();
 
 	public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
-	
+
 	// Below are variables that can be adjusted freely:
 
 	public BoundedVariable<Double> getXVariable();
@@ -73,16 +75,15 @@ public interface LightSheetInterface extends
 	public Variable<PolynomialFunction> getHeightPowerFunction();
 
 	// Convenience methods:
-	
+
 	public int getNumberOfPhases(int pLaserIndex);
 
 	public int getNumberOfLaserDigitalControls();
 
-
 	// Resetting and updating:
-	
+
 	public void resetFunctions();
-	
+
 	public void resetBounds();
 
 	public void update();

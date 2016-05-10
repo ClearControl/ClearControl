@@ -6,9 +6,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 
-public class LaserDeviceBase extends NamedVirtualDevice	implements
+public class LaserDeviceBase extends VirtualDevice	implements
 																												LaserDeviceInterface
 {
 

@@ -13,8 +13,10 @@ import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.active.ActivableDeviceInterface;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.change.ChangeListener;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
@@ -26,11 +28,11 @@ import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipeline;
 import coremem.recycling.RecyclerInterface;
 
-public abstract class MicroscopeBase extends NamedVirtualDevice	implements
-																																MicroscopeInterface,
-																																StartStopDeviceInterface,
-																																AsynchronousSchedulerServiceAccess,
-																																Loggable
+public abstract class MicroscopeBase extends VirtualDevice implements
+																													MicroscopeInterface,
+																													StartStopDeviceInterface,
+																													AsynchronousSchedulerServiceAccess,
+																													Loggable
 {
 
 	protected final StackRecyclerManager mStackRecyclerManager;
@@ -80,6 +82,33 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		return mLSMDeviceLists.getDevices(pClass);
 	}
 
+	@Override
+	public void addChangeListener(ChangeListener pChangeListener)
+	{
+		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		{
+			if (lDevice instanceof HasChangeListenerInterface)
+			{
+				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				lHasChangeListenersInterface.addChangeListener(pChangeListener);
+			}
+		}
+	}
+
+	@Override
+	public void removeChangeListener(ChangeListener pChangeListener)
+	{
+		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		{
+
+			if (lDevice instanceof HasChangeListenerInterface)
+			{
+				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				lHasChangeListenersInterface.removeChangeListener(pChangeListener);
+			}
+		}
+	}
+
 	public void setStackProcessingPipeline(	int pIndex,
 																					StackProcessingPipeline pStackPipeline)
 	{
@@ -105,8 +134,10 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		synchronized (mAcquisitionLock)
 		{
 			boolean lIsOpen = true;
+
 			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
+
 				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
@@ -341,6 +372,7 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 
 			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
+
 				if (lDevice instanceof StateQueueDeviceInterface)
 				{
 					System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",

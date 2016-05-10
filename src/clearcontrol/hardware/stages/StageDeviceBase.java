@@ -8,9 +8,9 @@ import com.google.common.collect.HashBiMap;
 
 import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 
-public abstract class StageDeviceBase extends NamedVirtualDevice implements
+public abstract class StageDeviceBase extends VirtualDevice implements
 																																StageDeviceInterface,
 																																Waiting
 {

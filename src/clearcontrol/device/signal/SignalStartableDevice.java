@@ -2,12 +2,12 @@ package clearcontrol.device.signal;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 
 public abstract class SignalStartableDevice	extends
-																						NamedVirtualDevice implements
+																						VirtualDevice implements
 																															OpenCloseDeviceInterface,
 																															StartStopDeviceInterface
 {

@@ -4,11 +4,11 @@ import clearcontrol.com.serial.adapters.SerialBinaryDeviceAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bundle.VariableBundle;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import jssc.SerialPortException;
 
-public class SerialDevice extends NamedVirtualDevice implements
+public class SerialDevice extends VirtualDevice implements
 																										OpenCloseDeviceInterface
 {
 

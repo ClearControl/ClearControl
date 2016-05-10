@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
@@ -23,7 +23,7 @@ import com.jogamp.newt.event.MouseEvent;
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 
-public class Stack2DDisplay extends NamedVirtualDevice implements
+public class Stack2DDisplay extends VirtualDevice implements
 																											StackDisplayInterface,
 																											AsynchronousSchedulerServiceAccess
 {

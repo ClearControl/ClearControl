@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 
-public abstract class PositionDeviceBase extends NamedVirtualDevice	implements
+public abstract class PositionDeviceBase extends VirtualDevice	implements
 																																		PositionDeviceInterface
 {
 	protected Variable<Integer> mPositionVariable = null;

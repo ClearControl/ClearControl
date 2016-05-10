@@ -3,12 +3,12 @@ package clearcontrol.microscope.lightsheet.component.lightsheet;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class LightSheetOpticalSwitch extends NamedVirtualDevice	implements
+public class LightSheetOpticalSwitch extends VirtualDevice	implements
 																																OpticalSwitchDeviceInterface
 {
 

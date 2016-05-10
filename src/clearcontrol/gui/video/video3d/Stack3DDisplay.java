@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.util.WindowControl;
 import clearcontrol.stack.EmptyStack;
@@ -17,7 +17,7 @@ import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
-public class Stack3DDisplay extends NamedVirtualDevice implements
+public class Stack3DDisplay extends VirtualDevice implements
 																											StackDisplayInterface
 {
 	private static final int cDefaultDisplayQueueLength = 2;

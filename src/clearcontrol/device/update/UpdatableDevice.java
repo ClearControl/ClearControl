@@ -1,8 +1,8 @@
 package clearcontrol.device.update;
 
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 
-public abstract class UpdatableDevice extends NamedVirtualDevice implements
+public abstract class UpdatableDevice extends VirtualDevice implements
 																																UpdatableInterface
 {
 
