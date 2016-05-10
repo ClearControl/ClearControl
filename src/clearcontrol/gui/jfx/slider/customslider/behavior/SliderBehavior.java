@@ -1,4 +1,4 @@
-package clearcontrol.gui.jfx.slider.behavior;
+package clearcontrol.gui.jfx.slider.customslider.behavior;
 /*
  * Copyright (c) 2010, 2015, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -30,7 +30,7 @@ import com.sun.javafx.scene.control.behavior.OrientedKeyBinding;
 import com.sun.javafx.scene.control.behavior.TwoLevelFocusBehavior;
 import com.sun.javafx.util.Utils;
 
-import clearcontrol.gui.jfx.slider.Slider;
+import clearcontrol.gui.jfx.slider.customslider.Slider;
 import javafx.event.EventType;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;

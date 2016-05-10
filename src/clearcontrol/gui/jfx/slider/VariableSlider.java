@@ -2,8 +2,11 @@ package clearcontrol.gui.jfx.slider;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.slider.customslider.Slider;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -63,14 +66,18 @@ public class VariableSlider<T extends Number> extends HBox
 		mMax = pMax;
 		mGranularity = pGranularity;
 
-		// setAlignment(Pos.CENTER);
-		// setPadding(new Insets(25, 25, 25, 25));
+		setAlignment(Pos.CENTER);
+		setPadding(new Insets(25, 25, 25, 25));
 
 		mLabel = new Label(pSliderName);
+		mLabel.setAlignment(Pos.CENTER);
+		
 		mSlider = new Slider();
 
 		mTextField = new TextField();
-		getTextField().setPrefWidth(5 * 15);
+		mTextField.setAlignment(Pos.CENTER);
+		
+		getTextField().setPrefWidth(7 * 15);
 
 		if (Double.isInfinite(mMin.get().doubleValue()) || Double.isNaN(mMin.get()
 																																				.doubleValue()))

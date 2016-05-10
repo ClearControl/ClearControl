@@ -2,8 +2,8 @@ package clearcontrol.microscope.lightsheet.gui;
 
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.gui.StartStopToolbarWindow;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx.StartStopToolbarWindow;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;

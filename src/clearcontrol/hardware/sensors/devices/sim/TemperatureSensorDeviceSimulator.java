@@ -14,7 +14,7 @@ public class TemperatureSensorDeviceSimulator	extends
 	public TemperatureSensorDeviceSimulator(String pDeviceName)
 	{
 		super(pDeviceName);
-		getLoopPeriodVariable().set(15000L);
+		getLoopPeriodVariable().set(15000.0);
 	}
 
 	@Override

@@ -2,12 +2,9 @@ package clearcontrol.gui.jfx.slider.demo;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.slider.VariableSlider;
-import clearcontrol.gui.jfx.sliderpanel.CustomVariablePane;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class VariableSliderDemo extends Application

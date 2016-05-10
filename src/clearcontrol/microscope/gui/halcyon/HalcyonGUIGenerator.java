@@ -1,7 +1,7 @@
 package clearcontrol.microscope.gui.halcyon;
 
 import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonExternalNode;
+import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonNodeInterface;
 import halcyon.model.node.HalcyonNodeType;
@@ -57,7 +57,11 @@ public class HalcyonGUIGenerator
 																							.getResourceAsStream("./icons/folder_16.png"),
 																					pNodeTypeNamesList);
 
-		mHalcyonFrame = new HalcyonFrame(lTreePanel);
+		
+		mHalcyonFrame = new HalcyonFrame(1280,768);
+		
+		mHalcyonFrame.setTreeDockNode(lTreePanel);
+
 
 	}
 
@@ -119,7 +123,7 @@ public class HalcyonGUIGenerator
 
 		for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DStackDisplayList())
 		{
-			HalcyonNodeInterface node = new HalcyonExternalNode(lStack3DDisplay.getName(),
+			HalcyonNodeInterface node = new HalcyonOtherNode(lStack3DDisplay.getName(),
 																													MicroscopeNodeType.StackDisplay3D,
 																													() -> {
 																														lStack3DDisplay.setVisible(true);
@@ -141,7 +145,7 @@ public class HalcyonGUIGenerator
 
 		for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DStackDisplayList())
 		{
-			HalcyonNodeInterface node = new HalcyonExternalNode(lStack2DDisplay.getName(),
+			HalcyonNodeInterface node = new HalcyonOtherNode(lStack2DDisplay.getName(),
 																													MicroscopeNodeType.StackDisplay2D,
 																													() -> {
 																														lStack2DDisplay.setVisible(true);

@@ -16,7 +16,7 @@ public abstract class TemperatureSensorDeviceBase	extends
 	{
 		super(pDeviceName, false, TimeUnit.MILLISECONDS);
 		mTemperatureVariable = new Variable<Double>(pDeviceName + "TemperatureInCelcius");
-		getLoopPeriodVariable().set(500L);
+		getLoopPeriodVariable().set(500.0);
 	}
 
 	@Override

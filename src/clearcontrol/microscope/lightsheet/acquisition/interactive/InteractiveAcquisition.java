@@ -4,6 +4,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.signal.SignalStartableLoopTaskDevice;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 
@@ -16,13 +18,26 @@ public class InteractiveAcquisition	extends
 	private volatile InteractiveAcquisitionModes mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
 	private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
 
+	private final BoundedVariable<Double> mExposureVariableInSeconds;
+	private final Variable<Boolean> mTriggerOnChangeVariable;
+
 	public InteractiveAcquisition(String pDeviceName,
 																LightSheetMicroscope pLightSheetMicroscope)
 	{
 		super(pDeviceName, false);
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
-		getLoopPeriodVariable().set(500L);
+		getLoopPeriodVariable().set(500.0);
+
+		mExposureVariableInSeconds = new BoundedVariable<Double>(	pDeviceName + "Exposure",
+																															0.0,
+																															0.0,
+																															Double.POSITIVE_INFINITY,
+																															0.0);
+
+		mTriggerOnChangeVariable = new Variable<Boolean>(	pDeviceName + "TriggerOnChange",
+																											false);
+
 	}
 
 	@Override
@@ -47,6 +62,9 @@ public class InteractiveAcquisition	extends
 																						60);
 
 					mLightSheetMicroscope.clearQueue();
+					mLightSheetMicroscope.setC(true);
+					mLightSheetMicroscope.setExposure((long) (mExposureVariableInSeconds.get() * 1000000L),
+																						TimeUnit.MICROSECONDS);
 					mLightSheetMicroscope.addCurrentStateToQueue();
 					mLightSheetMicroscope.finalizeQueue();
 
@@ -92,6 +110,16 @@ public class InteractiveAcquisition	extends
 		System.out.println("Stopping Acquisition...");
 		mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
 		stop();
+	}
+
+	public BoundedVariable<Double> getExposureVariable()
+	{
+		return mExposureVariableInSeconds;
+	}
+
+	public Variable<Boolean> getTriggerOnChangeVariable()
+	{
+		return mTriggerOnChangeVariable;
 	}
 
 }

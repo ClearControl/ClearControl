@@ -1,4 +1,4 @@
-package clearcontrol.gui.jfx.slider;
+package clearcontrol.gui.jfx.slider.customslider;
 /*
  * Copyright (c) 2010, 2015, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -29,7 +29,7 @@ import com.sun.javafx.css.converters.EnumConverter;
 import com.sun.javafx.css.converters.SizeConverter;
 import com.sun.javafx.util.Utils;
 
-import clearcontrol.gui.jfx.slider.skin.SliderSkin;
+import clearcontrol.gui.jfx.slider.customslider.skin.SliderSkin;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;

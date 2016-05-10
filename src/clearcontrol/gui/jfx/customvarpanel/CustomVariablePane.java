@@ -1,4 +1,4 @@
-package clearcontrol.gui.jfx.sliderpanel;
+package clearcontrol.gui.jfx.customvarpanel;
 
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
