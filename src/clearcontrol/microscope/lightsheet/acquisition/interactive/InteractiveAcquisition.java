@@ -16,7 +16,6 @@ public class InteractiveAcquisition	extends
 
 	private LightSheetMicroscope mLightSheetMicroscope;
 
-	private volatile InteractiveAcquisitionModes mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
 	private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
 
 	private final BoundedVariable<Double> mExposureVariableInSeconds;
@@ -29,7 +28,7 @@ public class InteractiveAcquisition	extends
 	public InteractiveAcquisition(String pDeviceName,
 																LightSheetMicroscope pLightSheetMicroscope)
 	{
-		super(pDeviceName, false);
+		super(pDeviceName, false, TimeUnit.SECONDS);
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		mExposureVariableInSeconds = new BoundedVariable<Double>(	pDeviceName + "Exposure",
@@ -45,7 +44,7 @@ public class InteractiveAcquisition	extends
 		getExposureVariable().set(0.010);
 
 		mChangeListener = (o) -> {
-			//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Received request to update queue!!");
+			// System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Received request to update queue!!");
 			mUpdate = true;
 		};
 	}
@@ -73,12 +72,7 @@ public class InteractiveAcquisition	extends
 			try
 			{
 
-				if (mRequestedAcquisitionMode != mCurrentAcquisitionMode)
-				{
-					mCurrentAcquisitionMode = mRequestedAcquisitionMode;
-				}
-
-				if (mUpdate)
+				if (mUpdate || mLightSheetMicroscope.getQueueLength() == 0)
 				{
 
 					if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
@@ -100,11 +94,17 @@ public class InteractiveAcquisition	extends
 					mUpdate = false;
 				}
 
+				if (mLightSheetMicroscope.getQueueLength() == 0)
+				{
+					// this leads to a call to stop() which stops the loop
+					return false;
+				}
+
 				if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
 				{
 					// play queue
-					System.out.println("Playing Queue...");
-					mLightSheetMicroscope.playQueueAndWaitForStacks(1,
+					// System.out.println("Playing Queue...");
+					mLightSheetMicroscope.playQueueAndWaitForStacks(10,
 																													TimeUnit.SECONDS);
 				}
 			}
@@ -118,27 +118,29 @@ public class InteractiveAcquisition	extends
 			e.printStackTrace();
 		}
 
+		System.out.println("loop");
+
 		return true;
 	}
 
 	public void start2DAcquisition()
 	{
 		System.out.println("Starting 2D Acquisition...");
-		mRequestedAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
+		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
 		start();
 	}
 
 	public void start3DAcquisition()
 	{
 		System.out.println("Starting 3D Acquisition...");
-		mRequestedAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
+		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
 		start();
 	}
 
 	public void stopAcquisition()
 	{
 		System.out.println("Stopping Acquisition...");
-		mRequestedAcquisitionMode = InteractiveAcquisitionModes.None;
+		mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
 		stop();
 	}
 

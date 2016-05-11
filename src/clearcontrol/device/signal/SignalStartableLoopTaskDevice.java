@@ -39,11 +39,11 @@ public abstract class SignalStartableLoopTaskDevice	extends
 		mTimeUnit = pTimeUnit;
 
 		mLoopPeriodVariable = new BoundedVariable<Double>(pDeviceName + "LoopPeriodIn"
-																												+ pTimeUnit.name(),
-																										0.0,
-																										0.0,
-																										Double.POSITIVE_INFINITY,
-																										0.0);
+																													+ pTimeUnit.name(),
+																											0.0,
+																											0.0,
+																											Double.POSITIVE_INFINITY,
+																											0.0);
 
 		mIsRunningVariable = new Variable<Boolean>(	pDeviceName + "IsRunning",
 																								false);
@@ -61,17 +61,25 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 		final Runnable lRunnable = () -> {
 			final long lStartTime = System.nanoTime();
-			loop();
+			boolean lResult = loop();
 			final long lStopTime = System.nanoTime();
 
 			final long lElapsedTimeInNanoseconds = lStopTime - lStartTime;
-			
-			final long lFactor = TimeUnit.NANOSECONDS.convert(1,mTimeUnit);
-			
-			final long lExtraWaitTimeInNanoseconds = (long)(mLoopPeriodVariable.get()*lFactor) - lElapsedTimeInNanoseconds;
-			if (lExtraWaitTimeInNanoseconds > 0)
-				ThreadUtils.sleep(lExtraWaitTimeInNanoseconds,
-													TimeUnit.NANOSECONDS);
+
+			final long lFactor = TimeUnit.NANOSECONDS.convert(1, mTimeUnit);
+
+			final long lExtraWaitTimeInNanoseconds = (long) (mLoopPeriodVariable.get() * lFactor) - lElapsedTimeInNanoseconds;
+			// System.out.println("lExtraWaitTimeInNanoseconds=" +
+			// lExtraWaitTimeInNanoseconds);
+			if (lExtraWaitTimeInNanoseconds > 0 && lResult)
+				ThreadUtils.sleepWhile(	lExtraWaitTimeInNanoseconds,
+																TimeUnit.NANOSECONDS,
+																() -> {
+																	return !mStopSignal.get() && mIsRunningVariable.get();
+																});
+
+			if (!lResult)
+				stop();
 
 		};
 		mScheduledFuture = scheduleAtFixedRate(	lRunnable,

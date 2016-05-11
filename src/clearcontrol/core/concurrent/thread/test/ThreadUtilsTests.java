@@ -2,6 +2,7 @@ package clearcontrol.core.concurrent.thread.test;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -46,4 +47,34 @@ public class ThreadUtilsTests
 		}
 	}
 
+	static volatile boolean flag;
+
+	@Test
+	public void testSleepWhile() throws Exception
+	{
+
+		Runnable lRunnable = () -> {
+			ThreadUtils.sleep(250, TimeUnit.MILLISECONDS);
+			flag = false;
+		};
+
+		Thread lOtherThread = new Thread(lRunnable);
+		lOtherThread.setDaemon(true);
+
+		Callable<Boolean> lCondition = () -> {
+			return flag;
+		};
+
+		flag = true;
+
+		long lStart = System.nanoTime();
+		lOtherThread.start();
+		ThreadUtils.sleepWhile(500, TimeUnit.MILLISECONDS, lCondition);
+		long lStop = System.nanoTime();
+
+		long lElapsed = TimeUnit.MILLISECONDS.convert(lStop - lStart,
+																									TimeUnit.NANOSECONDS);
+
+		assertTrue(lElapsed > 200 && lElapsed < 300);
+	}
 }
