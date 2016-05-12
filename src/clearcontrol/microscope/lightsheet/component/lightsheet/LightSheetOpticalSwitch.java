@@ -16,6 +16,7 @@ public class LightSheetOpticalSwitch extends VirtualDevice	implements
 	private final ConstantStave[] mBitStave;
 	private int[] mStaveIndex;
 
+	@SuppressWarnings("unchecked")
 	public LightSheetOpticalSwitch(	String pName,
 																	int pNumberOfLightSheets)
 	{
@@ -27,7 +28,10 @@ public class LightSheetOpticalSwitch extends VirtualDevice	implements
 																																		v) -> {
 
 			if (u != v)
+			{
 				update();
+				notifyChange();
+			}
 		};
 
 		mBitStave = new ConstantStave[pNumberOfLightSheets];

@@ -1,6 +1,7 @@
 package clearcontrol.microscope.lightsheet.component.detection.gui.jfx;
 
 import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
+import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 
 public class DetectionArmPanel extends CustomVariablePane
@@ -18,6 +19,10 @@ public class DetectionArmPanel extends CustomVariablePane
 		addTab("Functions");
 
 		addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
+		
+
+		
+		
 	}
 
 }

@@ -193,6 +193,8 @@ public class LightSheetMicroscopeDemo
 
 			lLightSheet.getImageHeightVariable().set(cImageResolution);
 		}
+		
+		lLightSheetMicroscope.setupInteractiveAcquisition();
 
 		// setting up scope GUI:
 

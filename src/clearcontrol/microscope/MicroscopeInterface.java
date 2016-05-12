@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.stack.StackInterface;
@@ -14,6 +15,7 @@ import coremem.recycling.RecyclerInterface;
 
 public interface MicroscopeInterface extends
 																		NameableInterface,
+																		HasChangeListenerInterface,
 																		StateQueueDeviceInterface
 {
 

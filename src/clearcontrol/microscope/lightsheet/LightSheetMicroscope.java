@@ -18,15 +18,20 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 																												StateQueueDeviceInterface,
 																												LightSheetMicroscopeInterface
 {
-	
+
 	private SwitchingDeviceInterface mLightSheetOpticalSwitch;
-	
-	private final InteractiveAcquisition mInteractiveAcquisition;
+
+	private InteractiveAcquisition mInteractiveAcquisition;
 
 	public LightSheetMicroscope(String pDeviceName)
 	{
 		super(pDeviceName);
-		mInteractiveAcquisition = new InteractiveAcquisition(getName()+"InteractiveAcquisition",this);
+	}
+	
+	public void setupInteractiveAcquisition()
+	{
+		mInteractiveAcquisition = new InteractiveAcquisition(	getName() + "InteractiveAcquisition",
+																													this);
 		addDevice(0, mInteractiveAcquisition);
 	}
 
@@ -34,7 +39,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	{
 		mLightSheetOpticalSwitch = pLightSheetOpticalSwitch;
 	}
-	
+
 	private SwitchingDeviceInterface getLightSheetSwitchingDevice()
 	{
 		return mLightSheetOpticalSwitch;
@@ -229,7 +234,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return getDeviceLists().getDevice(DetectionArmInterface.class,
 																			pDetectionArmIndex)
 														.getZVariable()
-														.get().doubleValue();
+														.get()
+														.doubleValue();
 	}
 
 	@Override
@@ -249,8 +255,6 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		getLightSheetSwitchingDevice().getSwitchVariable(pLightSheetIndex)
 																	.set(pOnOff);
 	};
-
-
 
 	@Override
 	public void setI(boolean pOnOff)
@@ -317,7 +321,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return getDeviceLists().getDevice(LightSheetInterface.class,
 																			pLightSheetIndex)
 														.getZVariable()
-														.get().doubleValue();
+														.get()
+														.doubleValue();
 	}
 
 	@Override
@@ -533,7 +538,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 
 		return lNumberOfLightSheetsDOFs + lNumberOfDetectionArmDOFs;
 	}
-	
+
 	public InteractiveAcquisition getInteractiveAcquisition()
 	{
 		return mInteractiveAcquisition;
