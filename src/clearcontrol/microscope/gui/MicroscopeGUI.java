@@ -4,7 +4,6 @@ import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.variable.Variable;
@@ -12,6 +11,7 @@ import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
+import clearcontrol.microscope.CleanupStackVariable;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
@@ -22,8 +22,8 @@ import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 
-public class MicroscopeGUI extends VirtualDevice	implements
-																											AsynchronousExecutorServiceAccess
+public class MicroscopeGUI extends VirtualDevice implements
+																								AsynchronousExecutorServiceAccess
 {
 
 	private static final int cDefaultWindowWidth = 512;
@@ -36,7 +36,7 @@ public class MicroscopeGUI extends VirtualDevice	implements
 	private ArrayList<Stack2DDisplay> mStack2DVideoDeviceList = new ArrayList<>();
 	private ArrayList<Stack3DDisplay> mStack3DVideoDeviceList = new ArrayList<>();
 
-	private Variable<StackInterface> mCleanupStackVariable;
+	private ArrayList<Variable<StackInterface>> mCleanupStackVariableList = new ArrayList<>();
 	private final boolean m3dView;
 	private HalcyonFrame mHalcyonFrame;
 
@@ -109,31 +109,14 @@ public class MicroscopeGUI extends VirtualDevice	implements
 		ArrayList<StackCameraDeviceInterface> lDevices = mMicroscope.getDevices(StackCameraDeviceInterface.class);
 		System.out.println(lDevices);
 
-		mCleanupStackVariable = new Variable<StackInterface>(	"CleanupStackVariable",
-																													null)
-		{
-			ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue = new ConcurrentLinkedQueue<>();
-
-			@Override
-			public StackInterface setEventHook(	StackInterface pOldValue,
-																					StackInterface pNewValue)
-			{
-				if (pOldValue != null && !pOldValue.isReleased())
-					mKeepStacksAliveQueue.add(pOldValue);
-
-				while (mKeepStacksAliveQueue.size() > lNumberOfCameras)
-				{
-					StackInterface lStackToRelease = mKeepStacksAliveQueue.remove();
-					System.out.println("RELEASING:" + lStackToRelease);
-					lStackToRelease.release();
-				}
-
-				return pNewValue;
-			}
-		};
-
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{
+
+			CleanupStackVariable lCleanupStackVariable = new CleanupStackVariable("CleanupStackVariable",
+																																						null,
+																																						2);
+
+			mCleanupStackVariableList.add(lCleanupStackVariable);
 
 			final StackCameraDeviceInterface lStackCameraDevice = mMicroscope.getDevice(StackCameraDeviceInterface.class,
 																																									i);
@@ -248,7 +231,7 @@ public class MicroscopeGUI extends VirtualDevice	implements
 		mMicroscope.getStackVariable(pStackCameraIndex)
 								.sendUpdatesTo(lStack2dDisplay.getInputStackVariable());
 
-		lStack2dDisplay.setOutputStackVariable(mCleanupStackVariable);
+		lStack2dDisplay.setOutputStackVariable(mCleanupStackVariableList.get(pStackCameraIndex));
 
 	}
 

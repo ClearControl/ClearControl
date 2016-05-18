@@ -169,6 +169,13 @@ public interface MicroscopeInterface extends
 	 */
 	public long lastAcquiredStacksTimeStampInNS();
 
+	/**
+	 * Returns Stack Variable for given stack camera index
+	 * 
+	 * @param pIndex
+	 *          stack camera index
+	 * @return Stack Variable
+	 */
 	public Variable<StackInterface> getStackVariable(int pIndex);
 
 }

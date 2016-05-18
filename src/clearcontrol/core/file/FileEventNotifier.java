@@ -12,7 +12,7 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 public class FileEventNotifier implements AutoCloseable
 {
 
-	private static final long cDefaultMonitoringPeriodInMilliseconds = 100;
+	private static final long cDefaultMonitoringPeriodInMilliseconds = 300;
 	private final File mFileToMonitor;
 	private final File mParentFolder;
 	private final FileAlterationObserver mFileAlterationObserver;

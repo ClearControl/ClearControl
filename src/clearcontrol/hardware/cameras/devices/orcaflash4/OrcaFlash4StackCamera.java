@@ -1,5 +1,7 @@
 package clearcontrol.hardware.cameras.devices.orcaflash4;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -16,7 +18,6 @@ import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
-import gnu.trove.list.array.TByteArrayList;
 
 public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																																OpenCloseDeviceInterface,
@@ -321,7 +322,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			@Override
 			public Boolean call() throws Exception
 			{
-				System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
+				// System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
 				mDcamAcquisition.waitAcquisitionFinishedAndStop();
 				return true;
 			}
@@ -383,7 +384,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			DcamFrame.clearFrames();
 			mDcamAcquisition.reopen();
 
-			System.out.println(this.getClass().getSimpleName() + ": reopened() done !!!!");
+			// System.out.println(this.getClass().getSimpleName() +
+			// ": reopened() done !!!!");
 			clearReOpen();
 
 			if (lIsAcquiring)

@@ -12,6 +12,7 @@ import clearcontrol.device.signal.SignalStartableLoopTaskDevice;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 
 public class InteractiveAcquisition	extends
 																		SignalStartableLoopTaskDevice
@@ -38,17 +39,20 @@ public class InteractiveAcquisition	extends
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		@SuppressWarnings("rawtypes")
-		VariableSetListener lListener = (o,n)->{if(!o.equals(n)) mUpdate = true;};
-		
+		VariableSetListener lListener = (o, n) -> {
+			if (!o.equals(n))
+				mUpdate = true;
+		};
+
 		mExposureVariableInSeconds = new BoundedVariable<Double>(	pDeviceName + "Exposure",
 																															0.0,
 																															0.0,
 																															Double.POSITIVE_INFINITY,
 																															0.0);
-		
+
 		mTriggerOnChangeVariable = new Variable<Boolean>(	pDeviceName + "TriggerOnChange",
 																											false);
-		
+
 		mExposureVariableInSeconds.addSetListener(lListener);
 		mTriggerOnChangeVariable.addSetListener(lListener);
 		getLoopPeriodVariable().addSetListener(lListener);
@@ -62,7 +66,7 @@ public class InteractiveAcquisition	extends
 		{
 			mActiveCameraVariableArray[c] = new Variable<Boolean>("ActiveCamera" + c,
 																														true);
-			
+
 			mActiveCameraVariableArray[c].addSetListener(lListener);
 		}
 
@@ -100,7 +104,7 @@ public class InteractiveAcquisition	extends
 
 					if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
 					{
-						getLightSheetMicroscope().useRecycler("2DIntercative",
+						getLightSheetMicroscope().useRecycler("2DInteractive",
 																									60,
 																									60,
 																									60);
@@ -114,7 +118,9 @@ public class InteractiveAcquisition	extends
 						}
 						getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get() * 1000000L),
 																									TimeUnit.MICROSECONDS);
+
 						getLightSheetMicroscope().addCurrentStateToQueue();
+
 						getLightSheetMicroscope().finalizeQueue();
 
 					}
@@ -191,6 +197,12 @@ public class InteractiveAcquisition	extends
 	{
 		int lNumberOfCameras = mLightSheetMicroscope.getNumberOfDevices(StackCameraDeviceInterface.class);
 		return lNumberOfCameras;
+	}
+
+	private int getNumberOfLightsSheets()
+	{
+		int lNumberOfLightsSheets = mLightSheetMicroscope.getNumberOfDevices(LightSheet.class);
+		return lNumberOfLightsSheets;
 	}
 
 	public Variable<Boolean> getActiveCameraVariable(int pCameraIndex)

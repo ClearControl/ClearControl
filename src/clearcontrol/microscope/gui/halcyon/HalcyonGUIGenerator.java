@@ -1,10 +1,10 @@
 package clearcontrol.microscope.gui.halcyon;
 
 import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonNodeInterface;
 import halcyon.model.node.HalcyonNodeType;
+import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.HalcyonSwingNode;
 import halcyon.view.TreePanel;
 
@@ -57,11 +57,9 @@ public class HalcyonGUIGenerator
 																							.getResourceAsStream("./icons/folder_16.png"),
 																					pNodeTypeNamesList);
 
-		
-		mHalcyonFrame = new HalcyonFrame(1280,768);
-		
-		mHalcyonFrame.setTreeDockNode(lTreePanel);
+		mHalcyonFrame = new HalcyonFrame(1280, 768);
 
+		mHalcyonFrame.setTreeDockNode(lTreePanel);
 
 	}
 
@@ -82,7 +80,7 @@ public class HalcyonGUIGenerator
 		setupSignalGenerators();
 		setupScalingAmplifiers();
 
-		// seting up script engines:
+		// setting up script engines:
 		setupScriptEngines(mMicroscopeInterface);
 
 		// setting up 2D and 3D displays:
@@ -123,18 +121,18 @@ public class HalcyonGUIGenerator
 
 		for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DStackDisplayList())
 		{
-			HalcyonNodeInterface node = new HalcyonOtherNode(lStack3DDisplay.getName(),
-																													MicroscopeNodeType.StackDisplay3D,
-																													() -> {
-																														lStack3DDisplay.setVisible(true);
-																														lStack3DDisplay.requestFocus();
-																													},
-																													() -> {
-																														lStack3DDisplay.setVisible(false);
-																													},
-																													() -> {
-																														lStack3DDisplay.close();
-																													});
+			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack3DDisplay.getName(),
+																												MicroscopeNodeType.StackDisplay3D,
+																												() -> {
+																													lStack3DDisplay.setVisible(true);
+																													lStack3DDisplay.requestFocus();
+																												},
+																												() -> {
+																													lStack3DDisplay.setVisible(false);
+																												},
+																												() -> {
+																													lStack3DDisplay.close();
+																												});
 			mHalcyonFrame.addNode(node);
 		}
 	}
@@ -145,18 +143,18 @@ public class HalcyonGUIGenerator
 
 		for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DStackDisplayList())
 		{
-			HalcyonNodeInterface node = new HalcyonOtherNode(lStack2DDisplay.getName(),
-																													MicroscopeNodeType.StackDisplay2D,
-																													() -> {
-																														lStack2DDisplay.setVisible(true);
-																														lStack2DDisplay.requestFocus();
-																													},
-																													() -> {
-																														lStack2DDisplay.setVisible(false);
-																													},
-																													() -> {
-																														lStack2DDisplay.close();
-																													});
+			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack2DDisplay.getName(),
+																												MicroscopeNodeType.StackDisplay2D,
+																												() -> {
+																													lStack2DDisplay.setVisible(true);
+																													lStack2DDisplay.requestFocus();
+																												},
+																												() -> {
+																													lStack2DDisplay.setVisible(false);
+																												},
+																												() -> {
+																													lStack2DDisplay.close();
+																												});
 			mHalcyonFrame.addNode(node);
 		}
 	}
