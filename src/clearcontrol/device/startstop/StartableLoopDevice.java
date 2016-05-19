@@ -1,4 +1,4 @@
-package clearcontrol.device.signal;
+package clearcontrol.device.startstop;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -11,27 +11,28 @@ import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.device.task.SignalStartStopDevice;
 
-public abstract class SignalStartableLoopTaskDevice	extends
-																										SignalStartableDevice	implements
+public abstract class StartableLoopDevice	extends
+																										SignalStartStopDevice	implements
 																																					OpenCloseDeviceInterface,
 																																					AsynchronousSchedulerServiceAccess,
 																																					Loggable
 {
 
-	private final SignalStartableLoopTaskDevice lThis;
+	private final StartableLoopDevice lThis;
 	private final TimeUnit mTimeUnit;
 	private final BoundedVariable<Double> mLoopPeriodVariable;
 	private final Variable<Boolean> mIsRunningVariable;
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
-	public SignalStartableLoopTaskDevice(	final String pDeviceName,
+	public StartableLoopDevice(	final String pDeviceName,
 																				final boolean pOnlyStart)
 	{
 		this(pDeviceName, pOnlyStart, TimeUnit.MILLISECONDS);
 	}
 
-	public SignalStartableLoopTaskDevice(	final String pDeviceName,
+	public StartableLoopDevice(	final String pDeviceName,
 																				final boolean pOnlyStart,
 																				TimeUnit pTimeUnit)
 	{

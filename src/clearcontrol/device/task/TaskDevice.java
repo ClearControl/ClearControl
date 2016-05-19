@@ -1,4 +1,4 @@
-package clearcontrol.device.signal;
+package clearcontrol.device.task;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -9,27 +9,31 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 
-public abstract class SignalStartableTaskDevice	extends
-																								SignalStartableDevice	implements
-																																			OpenCloseDeviceInterface,
-																																			AsynchronousExecutorServiceAccess,
-																																			Loggable,
-																																			Runnable
+public abstract class TaskDevice extends SignalStartStopDevice implements
+																															OpenCloseDeviceInterface,
+																															AsynchronousExecutorServiceAccess,
+																															Loggable
 {
 
-	private final SignalStartableTaskDevice lThis;
+	private final TaskDevice lThis;
 
 	protected final Variable<Boolean> mCancelBooleanVariable;
 
 	protected volatile boolean mCanceledSignal = false;
 
-	public SignalStartableTaskDevice(final String pDeviceName)
+	private Runnable mTask;
+
+	public TaskDevice(final String pDeviceName, Runnable pTask)
 	{
 		super(pDeviceName, true);
+
+		setTaskOnStart(this::startTask);
+		setTaskOnStop(this::cancel);
+
 		lThis = this;
 
 		mCancelBooleanVariable = new Variable<Boolean>(	pDeviceName + "Cancel",
-																													false);
+																										false);
 
 		mCancelBooleanVariable.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
@@ -43,33 +47,17 @@ public abstract class SignalStartableTaskDevice	extends
 				}
 			}
 		});
+		mTask = pTask;
 	}
 
-	@Override
-	public abstract void run();
-
-	@Override
-	public boolean start()
+	public boolean startTask()
 	{
 		clearCanceled();
-		Future<?> lExecuteAsynchronously = executeAsynchronously(this);
+		Future<?> lExecuteAsynchronously = executeAsynchronously(mTask);
 		return lExecuteAsynchronously != null;
 	}
 
-	public boolean pause()
-	{
-
-		return true;
-	}
-
-	public boolean resume()
-	{
-
-		return true;
-	}
-
-	@Override
-	public boolean stop()
+	public boolean waitForTaskCompletion()
 	{
 		try
 		{
@@ -86,6 +74,12 @@ public abstract class SignalStartableTaskDevice	extends
 	public Variable<Boolean> getIsCanceledBooleanVariable()
 	{
 		return mCancelBooleanVariable;
+	}
+
+	public void cancel()
+	{
+		mCancelBooleanVariable.set(false);
+		mCanceledSignal = false;
 	}
 
 	public void clearCanceled()

@@ -8,14 +8,14 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.signal.SignalStartableLoopTaskDevice;
+import clearcontrol.device.startstop.StartableLoopDevice;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 
 public class InteractiveAcquisition	extends
-																		SignalStartableLoopTaskDevice
+																		StartableLoopDevice
 {
 
 	private final LightSheetMicroscopeInterface mLightSheetMicroscope;
@@ -118,6 +118,12 @@ public class InteractiveAcquisition	extends
 						}
 						getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get() * 1000000L),
 																									TimeUnit.MICROSECONDS);
+
+						for (int l = getNumberOfLightsSheets() - 1; l >= 0; l--)
+						{
+							getLightSheetMicroscope().setI(	l,
+																							getLightSheetMicroscope().getI(l));
+						}
 
 						getLightSheetMicroscope().addCurrentStateToQueue();
 

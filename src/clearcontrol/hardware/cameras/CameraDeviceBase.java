@@ -3,10 +3,10 @@ package clearcontrol.hardware.cameras;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.signal.SignalStartableDevice;
+import clearcontrol.device.VirtualDevice;
 
-public abstract class CameraDeviceBase extends SignalStartableDevice implements
-																																		CameraDeviceInterface
+public abstract class CameraDeviceBase extends VirtualDevice implements
+																														CameraDeviceInterface
 {
 
 	protected Variable<Double> mExposureInMicrosecondsVariable,
@@ -17,7 +17,7 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 			mStackWidthVariable, mStackHeightVariable,
 			mStackMaxWidthVariable, mStackMaxHeightVariable,
 			mStackDepthVariable;
-	
+
 	protected Variable<Integer> mChannelVariable;
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
@@ -45,7 +45,7 @@ public abstract class CameraDeviceBase extends SignalStartableDevice implements
 	}
 
 	public abstract void reopen();
-	
+
 	@Override
 	public Variable<Integer> getChannelVariable()
 	{

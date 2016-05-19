@@ -3,10 +3,10 @@ package clearcontrol.hardware.sensors;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.signal.SignalStartableLoopTaskDevice;
+import clearcontrol.device.startstop.StartableLoopDevice;
 
 public abstract class TemperatureSensorDeviceBase	extends
-																									SignalStartableLoopTaskDevice	implements
+																									StartableLoopDevice	implements
 																																								TemperatureSensorDeviceInterface
 {
 

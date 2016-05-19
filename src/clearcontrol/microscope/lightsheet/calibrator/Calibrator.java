@@ -6,11 +6,9 @@ import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.device.task.TaskDevice;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationA;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationHP;
@@ -23,7 +21,11 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
-public class Calibrator
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+public class Calibrator extends TaskDevice
 {
 
 	private static final int cMaxIterations = 5;
@@ -45,10 +47,26 @@ public class Calibrator
 	private int mNumberOfDetectionArmDevices;
 	private int mNumberOfLightSheetDevices;
 
-	private double mPixelSizeInMicrons;
+	private final Variable<Boolean> mCalibrateZVariable = new Variable<Boolean>("CalibrateZ",
+																																							true);
+	private final Variable<Boolean> mCalibrateAVariable = new Variable<Boolean>("CalibrateA",
+																																							false);
+	private final Variable<Boolean> mCalibrateXYVariable = new Variable<Boolean>(	"CalibrateXY",
+																																								false);
+
+	private final Variable<Boolean> mCalibratePVariable = new Variable<Boolean>("CalibrateP",
+																																							false);
+	private final Variable<Boolean> mCalibrateWVariable = new Variable<Boolean>("CalibrateW",
+																																							false);
+	private final Variable<Boolean> mCalibrateWPVariable = new Variable<Boolean>(	"CalibrateWP",
+																																								false);
+	private final Variable<Boolean> mCalibrateHPVariable = new Variable<Boolean>(	"CalibrateHP",
+																																								false);
 
 	public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
 	{
+		super(pLightSheetMicroscope.getName() + "Calibrator");
+
 		mLightSheetMicroscope = pLightSheetMicroscope;
 		mCalibrationZ = new CalibrationZ(pLightSheetMicroscope);
 		mCalibrationA = new CalibrationA(pLightSheetMicroscope);
@@ -66,25 +84,32 @@ public class Calibrator
 
 	}
 
+	@Override
+	public void run()
+	{
+		calibrate();
+	}
+
 	public boolean calibrate()
 	{
+
 		if (!calibrateZ(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		if (!calibrateA(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		if (!calibrateXY(6))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		/*if (!calibrateW(32))
@@ -92,11 +117,11 @@ public class Calibrator
 
 		if (!calibrateZ(64))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
 			return false;/**/
 
 		return true;

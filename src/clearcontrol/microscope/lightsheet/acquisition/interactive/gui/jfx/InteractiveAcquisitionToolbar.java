@@ -18,11 +18,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
-public class StartStopToolbarWindow extends DockNode
+public class InteractiveAcquisitionToolbar extends DockNode
 {
 	private GridPane mGridPane;
 
-	public StartStopToolbarWindow(InteractiveAcquisition pInteractiveAcquisition)
+	public InteractiveAcquisitionToolbar(InteractiveAcquisition pInteractiveAcquisition)
 	{
 		super(new StandardGridPane());
 		mGridPane = (GridPane) getContents();

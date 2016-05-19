@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
+import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -40,6 +41,8 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	protected volatile int mNumberOfEnqueuedStates;
 	protected volatile long mAverageTimeInNS;
 
+	final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList = new ArrayList<>();
+
 	// Lock:
 	protected Object mAcquisitionLock = new Object();
 
@@ -50,6 +53,29 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		super(pDeviceName);
 		mStackRecyclerManager = new StackRecyclerManager();
 		mLSMDeviceLists = new MicroscopeDeviceLists(this);
+
+		for (int i = 0; i < 128; i++)
+		{
+			Double lPixelSizeInNanometers = MachineConfiguration.getCurrentMachineConfiguration()
+																													.getDoubleProperty(	"device.camera" + i
+																																									+ ".pixelsizenm",
+																																							null);
+
+			if (lPixelSizeInNanometers == null)
+				break;
+
+			Variable<Double> lPixelSizeInNanometersVariable = new Variable<Double>(	"Camera" + i
+																																									+ "PixelSizeNm",
+																																							lPixelSizeInNanometers);
+			mCameraPixelSizeInNanometerVariableList.add(lPixelSizeInNanometersVariable);
+		}
+
+	}
+
+	@Override
+	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex)
+	{
+		return mCameraPixelSizeInNanometerVariableList.get(pCameraIndex);
 	}
 
 	@Override

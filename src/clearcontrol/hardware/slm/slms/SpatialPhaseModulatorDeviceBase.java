@@ -3,11 +3,11 @@ package clearcontrol.hardware.slm.slms;
 import org.ejml.data.DenseMatrix64F;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.signal.SignalStartableDevice;
+import clearcontrol.device.VirtualDevice;
 
 public abstract class SpatialPhaseModulatorDeviceBase	extends
-																											SignalStartableDevice	implements
-																																						SpatialPhaseModulatorDeviceInterface
+																											VirtualDevice	implements
+																																		SpatialPhaseModulatorDeviceInterface
 {
 
 	protected Variable<Double> mMatrixWidthVariable;
@@ -24,11 +24,11 @@ public abstract class SpatialPhaseModulatorDeviceBase	extends
 		super(pDeviceName);
 
 		mMatrixWidthVariable = new Variable<Double>("MatrixWidth",
-																											(double) pFullMatrixWidthHeight);
+																								(double) pFullMatrixWidthHeight);
 		mMatrixHeightVariable = new Variable<Double>(	"MatrixHeight",
-																												(double) pFullMatrixWidthHeight);
+																									(double) pFullMatrixWidthHeight);
 		mActuatorResolutionVariable = new Variable<Double>(	"ActuatorResolution",
-																															(double) pActuatorResolution);
+																												(double) pActuatorResolution);
 
 	}
 

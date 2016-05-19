@@ -178,4 +178,15 @@ public interface MicroscopeInterface extends
 	 */
 	public Variable<StackInterface> getStackVariable(int pIndex);
 
+	/**
+	 * Returns the size in nanometer (anisotropic XY) of a pixel. this is the
+	 * actual physical size in the sample - thus taking into account overall
+	 * magnification. The size is returned wrapped into a Variable.
+	 * 
+	 * @param pCameraIndex
+	 *          camera index
+	 * @return size in nanometer as a Variable
+	 */
+	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
+
 }

@@ -85,7 +85,7 @@ public class MachineConfiguration
 		return mProperties.getProperty(pKey, pDefaultValue);
 	}
 
-	public int getIntegerProperty(String pKey, int pDefaultValue)
+	public int getIntegerProperty(String pKey, Integer pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -96,7 +96,7 @@ public class MachineConfiguration
 		return Integer.parseInt(lProperty);
 	}
 
-	public long getLongProperty(String pKey, long pDefaultValue)
+	public long getLongProperty(String pKey, Long pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -107,7 +107,7 @@ public class MachineConfiguration
 		return Long.parseLong(lProperty);
 	}
 
-	public double getDoubleProperty(String pKey, double pDefaultValue)
+	public double getDoubleProperty(String pKey, Double pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -118,7 +118,7 @@ public class MachineConfiguration
 		return Double.parseDouble(lProperty);
 	}
 
-	public boolean getBooleanProperty(String pKey, boolean pDefaultValue)
+	public boolean getBooleanProperty(String pKey, Boolean pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;

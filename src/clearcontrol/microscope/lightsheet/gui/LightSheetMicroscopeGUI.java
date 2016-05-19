@@ -1,15 +1,14 @@
 package clearcontrol.microscope.lightsheet.gui;
 
+import halcyon.model.node.HalcyonNode;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
-import clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx.StartStopToolbarWindow;
+import clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
-import halcyon.model.node.HalcyonNode;
-import javafx.scene.layout.GridPane;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
@@ -30,9 +29,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
 	private void setupToolBar()
 	{
-		InteractiveAcquisition lInteractiveAcquisition = ((LightSheetMicroscope)getMicroscope()).getInteractiveAcquisition();
-		StartStopToolbarWindow lStartStopToolbarWindow = new StartStopToolbarWindow(lInteractiveAcquisition);
-		getHalcyonFrame().addToolbar(lStartStopToolbarWindow);		
+		InteractiveAcquisition lInteractiveAcquisition = ((LightSheetMicroscope) getMicroscope()).getInteractiveAcquisition();
+		InteractiveAcquisitionToolbar lInteractiveAcquisitionToolbar = new InteractiveAcquisitionToolbar(lInteractiveAcquisition);
+		getHalcyonFrame().addToolbar(lInteractiveAcquisitionToolbar);
 	}
 
 	private void setupLightSheetInHalcyon()

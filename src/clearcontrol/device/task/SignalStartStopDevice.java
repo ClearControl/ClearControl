@@ -1,36 +1,25 @@
-package clearcontrol.device.signal;
+package clearcontrol.device.task;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
 import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.startstop.StartStopDeviceInterface;
 
-public abstract class SignalStartableDevice	extends
-																						VirtualDevice implements
-																															OpenCloseDeviceInterface,
-																															StartStopDeviceInterface
+public abstract class SignalStartStopDevice extends VirtualDevice
 {
 
 	protected final Variable<Boolean> mStartSignal;
-
 	protected final Variable<Boolean> mStopSignal;
+	protected Runnable mStartRunnable = null;
+	protected Runnable mStopRunnable = null;
 
-	public SignalStartableDevice(final String pDeviceName)
-	{
-		this(pDeviceName, false);
-	}
-
-	public SignalStartableDevice(	final String pDeviceName,
+	public SignalStartStopDevice(	final String pDeviceName,
 																final boolean pOnlyStart)
 	{
 		super(pDeviceName);
 
-		mStartSignal = new Variable<Boolean>(	pDeviceName + "Start",
-																								false);
+		mStartSignal = new Variable<Boolean>(pDeviceName + "Start", false);
 
-		mStopSignal = new Variable<Boolean>(pDeviceName + "Stop",
-																							false);
+		mStopSignal = new Variable<Boolean>(pDeviceName + "Stop", false);
 
 		mStartSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
@@ -39,7 +28,8 @@ public abstract class SignalStartableDevice	extends
 			{
 				if (pCurrentBooleanValue)
 				{
-					start();
+					if (mStartRunnable != null)
+						mStartRunnable.run();
 				}
 			}
 		});
@@ -53,11 +43,22 @@ public abstract class SignalStartableDevice	extends
 				{
 					if (pCurrentBooleanValue)
 					{
-						stop();
+						if (mStopRunnable != null)
+							mStopRunnable.run();
 					}
 				}
 			});
 		}
+	}
+
+	public void setTaskOnStart(Runnable pStartRunnable)
+	{
+		mStartRunnable = pStartRunnable;
+	}
+
+	public void setTaskOnStop(Runnable pStopRunnable)
+	{
+		mStopRunnable = pStopRunnable;
 	}
 
 	public Variable<Boolean> getStartSignalBooleanVariable()
@@ -69,11 +70,5 @@ public abstract class SignalStartableDevice	extends
 	{
 		return mStopSignal;
 	}
-
-	@Override
-	public abstract boolean start();
-
-	@Override
-	public abstract boolean stop();
 
 }

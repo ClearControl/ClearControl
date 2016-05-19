@@ -18,8 +18,9 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.util.SingleUpdateTargetObjectVariable;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.signal.SignalStartableDevice;
+import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
@@ -29,9 +30,10 @@ import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
 
-public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
-																																			OpenCloseDeviceInterface,
-																																			AsynchronousExecutorServiceAccess
+public class DcamJToVideoFrameConverter extends VirtualDevice	implements
+																															OpenCloseDeviceInterface,
+																															StartStopDeviceInterface,
+																															AsynchronousExecutorServiceAccess
 {
 
 	private OrcaFlash4StackCamera mOrcaFlash4StackCamera;
