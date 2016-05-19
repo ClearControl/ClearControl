@@ -59,7 +59,7 @@ public class HalcyonGUIGenerator
 
 		mHalcyonFrame = new HalcyonFrame(1280, 768);
 
-		mHalcyonFrame.setTreeDockNode(lTreePanel);
+		mHalcyonFrame.setTreePanel(lTreePanel);
 
 	}
 
