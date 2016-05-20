@@ -4,7 +4,6 @@ import static java.lang.Math.cos;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -16,9 +15,6 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.change.HasChangeListenerInterface;
-import clearcontrol.device.update.UpdatableInterface;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 import clearcontrol.hardware.signalgen.staves.EdgeStave;
@@ -28,9 +24,9 @@ import clearcontrol.hardware.signalgen.staves.StaveInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
-public class LightSheet extends VirtualDevice implements
-																									LightSheetInterface,
-																									AsynchronousExecutorServiceAccess
+public class LightSheet extends VirtualDevice	implements
+																							LightSheetInterface,
+																							AsynchronousExecutorServiceAccess
 {
 
 	private final Variable<UnivariateAffineFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
@@ -114,8 +110,6 @@ public class LightSheet extends VirtualDevice implements
 	private EdgeStave mBeforeExposureTStave, mExposureTStave;
 
 	private final int mNumberOfLaserDigitalControls;
-	
-
 
 	@SuppressWarnings("unchecked")
 	public LightSheet(String pName,
@@ -162,12 +156,10 @@ public class LightSheet extends VirtualDevice implements
 
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
-			System.out.println(getName() + ": new variable value: " + n);
+			// System.out.println(getName() + ": new variable value: " + n);
 			update();
 			notifyChange();
 		};
-		
-		
 
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
 		{
@@ -233,11 +225,9 @@ public class LightSheet extends VirtualDevice implements
 		mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 		mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
+		update();
 		notifyChange();
 	}
-	
-
-	
 
 	@Override
 	public void resetFunctions()
@@ -438,6 +428,7 @@ public class LightSheet extends VirtualDevice implements
 																																		int i,
 																																		O pStave)
 	{
+
 		final int lLaserDigitalLineIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																														.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".ld.index"
@@ -452,12 +443,16 @@ public class LightSheet extends VirtualDevice implements
 	{
 		synchronized (this)
 		{
+			if (mBeforeExposureMovement == null || mExposureMovement == null)
+				return;
+
 			// System.out.println("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
 			mBeforeExposureMovement.setDuration(round(lReadoutTimeInMicroseconds),
 																					TimeUnit.MICROSECONDS);
+
 			mExposureMovement.setDuration(round(lExposureMovementTimeInMicroseconds),
 																		TimeUnit.MICROSECONDS);
 
@@ -598,7 +593,7 @@ public class LightSheet extends VirtualDevice implements
 			mExposureLAStave.setValue((float) lPowerValue);
 
 		}
-		
+
 	}
 
 	@Override
@@ -863,7 +858,5 @@ public class LightSheet extends VirtualDevice implements
 	{
 		return pSubTime / pTotalTime;
 	}
-
-
 
 }

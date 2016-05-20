@@ -1,15 +1,5 @@
 package clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx;
 
-import org.dockfx.DockNode;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
-import clearcontrol.gui.jfx.slider.VariableSlider;
-import clearcontrol.gui.variable.JFXPropertyVariable;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
-import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -17,6 +7,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+
+import org.dockfx.DockNode;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.gridpane.StandardGridPane;
+import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
+import clearcontrol.gui.jfx.slider.VariableSlider;
+import clearcontrol.gui.variable.JFXPropertyVariable;
+import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 
 public class InteractiveAcquisitionToolbar extends DockNode
 {
@@ -26,6 +25,8 @@ public class InteractiveAcquisitionToolbar extends DockNode
 	{
 		super(new StandardGridPane());
 		mGridPane = (GridPane) getContents();
+
+		setTitle("Interactive");
 
 		Button lStart2D = new Button("Start 2D");
 		lStart2D.setAlignment(Pos.CENTER);
