@@ -10,6 +10,7 @@ import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
@@ -21,18 +22,22 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 
 	private SwitchingDeviceInterface mLightSheetOpticalSwitch;
 
-	private InteractiveAcquisition mInteractiveAcquisition;
-
 	public LightSheetMicroscope(String pDeviceName)
 	{
 		super(pDeviceName);
 	}
-	
-	public void setupInteractiveAcquisition()
+
+	public void addInteractiveAcquisition()
 	{
-		mInteractiveAcquisition = new InteractiveAcquisition(	getName() + "InteractiveAcquisition",
-																													this);
-		addDevice(0, mInteractiveAcquisition);
+		InteractiveAcquisition lInteractiveAcquisition = new InteractiveAcquisition(getName() + "InteractiveAcquisition",
+																																								this);
+		addDevice(0, lInteractiveAcquisition);
+	}
+
+	public void addCalibrator()
+	{
+		Calibrator lCalibrator = new Calibrator(this);
+		addDevice(0, lCalibrator);
 	}
 
 	public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)
@@ -539,18 +544,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return lNumberOfLightSheetsDOFs + lNumberOfDetectionArmDOFs;
 	}
 
-	public InteractiveAcquisition getInteractiveAcquisition()
-	{
-		return mInteractiveAcquisition;
-	}
-
 	@Override
 	public String toString()
 	{
 		return String.format(	"LightSheetMicroscope: \n%s\n",
 													mLSMDeviceLists.toString());
 	}
-
-
 
 }
