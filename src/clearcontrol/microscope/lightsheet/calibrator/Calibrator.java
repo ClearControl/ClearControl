@@ -93,36 +93,42 @@ public class Calibrator extends TaskDevice
 	public boolean calibrate()
 	{
 
-		if (!calibrateZ(32))
+		if (getCalibrateZVariable().get() && !calibrateZ(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		if (!calibrateA(32))
+		if (getCalibrateAVariable().get() && !calibrateA(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		if (!calibrateXY(6))
+		if (getCalibrateXYVariable().get() && !calibrateXY(6))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
+		if (getCalibratePVariable().get() && !calibrateP())
+			return false;
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
 		/*if (!calibrateW(32))
 			return false;/**/
 
-		if (!calibrateZ(64))
+		if (getCalibrateZVariable().get() && !calibrateZ(64))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic() || isCanceled())
-			return false;/**/
+		if (getCalibratePVariable().get() && !calibrateP())
+			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+				return false;/**/
 
 		return true;
 	}
@@ -394,6 +400,41 @@ public class Calibrator extends TaskDevice
 	private File getFile(String pName)
 	{
 		return new File(mCalibrationFolder, pName + ".json");
+	}
+
+	public Variable<Boolean> getCalibrateZVariable()
+	{
+		return mCalibrateZVariable;
+	}
+
+	public Variable<Boolean> getCalibrateAVariable()
+	{
+		return mCalibrateAVariable;
+	}
+
+	public Variable<Boolean> getCalibrateXYVariable()
+	{
+		return mCalibrateXYVariable;
+	}
+
+	public Variable<Boolean> getCalibratePVariable()
+	{
+		return mCalibratePVariable;
+	}
+
+	public Variable<Boolean> getCalibrateWVariable()
+	{
+		return mCalibrateWVariable;
+	}
+
+	public Variable<Boolean> getCalibrateWPVariable()
+	{
+		return mCalibrateWPVariable;
+	}
+
+	public Variable<Boolean> getCalibrateHPVariable()
+	{
+		return mCalibrateHPVariable;
 	}
 
 }

@@ -1,4 +1,4 @@
-package clearcontrol.device.task;
+package clearcontrol.device.startstop;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
@@ -12,8 +12,7 @@ public abstract class SignalStartStopDevice extends VirtualDevice
 	protected Runnable mStartRunnable = null;
 	protected Runnable mStopRunnable = null;
 
-	public SignalStartStopDevice(	final String pDeviceName,
-																final boolean pOnlyStart)
+	public SignalStartStopDevice(final String pDeviceName)
 	{
 		super(pDeviceName);
 
@@ -34,21 +33,19 @@ public abstract class SignalStartStopDevice extends VirtualDevice
 			}
 		});
 
-		if (!pOnlyStart)
+		mStopSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
 		{
-			mStopSignal.addEdgeListener(new VariableEdgeListener<Boolean>()
+			@Override
+			public void fire(final Boolean pCurrentBooleanValue)
 			{
-				@Override
-				public void fire(final Boolean pCurrentBooleanValue)
+				if (pCurrentBooleanValue)
 				{
-					if (pCurrentBooleanValue)
-					{
-						if (mStopRunnable != null)
-							mStopRunnable.run();
-					}
+					if (mStopRunnable != null)
+						mStopRunnable.run();
 				}
-			});
-		}
+			}
+		});
+
 	}
 
 	public void setTaskOnStart(Runnable pStartRunnable)

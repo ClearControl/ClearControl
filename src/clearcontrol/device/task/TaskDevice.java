@@ -2,66 +2,89 @@ package clearcontrol.device.task;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.RTlibExecutors;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.device.startstop.SignalStartStopDevice;
 
 public abstract class TaskDevice extends SignalStartStopDevice implements
+																															Runnable,
 																															OpenCloseDeviceInterface,
 																															AsynchronousExecutorServiceAccess,
 																															Loggable
 {
 
-	private final TaskDevice lThis;
+	private final Variable<Boolean> mIsRunningVariable;
 
-	protected final Variable<Boolean> mCancelBooleanVariable;
-
-	protected volatile boolean mCanceledSignal = false;
-
-	private Runnable mTask;
-
-	public TaskDevice(final String pDeviceName, Runnable pTask)
+	public TaskDevice(final String pDeviceName)
 	{
-		super(pDeviceName, true);
+		this(pDeviceName, Thread.NORM_PRIORITY);
+	}
+
+	public TaskDevice(final String pDeviceName, int pThreadPriority)
+	{
+		super(pDeviceName);
 
 		setTaskOnStart(this::startTask);
-		setTaskOnStop(this::cancel);
 
-		lThis = this;
+		mIsRunningVariable = new Variable<Boolean>(	pDeviceName + "IsRunning",
+																								false);
 
-		mCancelBooleanVariable = new Variable<Boolean>(	pDeviceName + "Cancel",
-																										false);
+		RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
+																									pThreadPriority,
+																									1,
+																									1,
+																									Integer.MAX_VALUE);
+	}
 
-		mCancelBooleanVariable.addEdgeListener(new VariableEdgeListener<Boolean>()
-		{
+	public Variable<Boolean> getIsRunningVariable()
+	{
+		return mIsRunningVariable;
+	}
 
-			@Override
-			public void fire(final Boolean pCurrentBooleanValue)
-			{
-				if (pCurrentBooleanValue)
-				{
-					mCanceledSignal = true;
-				}
-			}
-		});
-		mTask = pTask;
+	public void stopTask()
+	{
+		mStopSignal.set(true);
+	}
+
+	public void clearStopped()
+	{
+		mStopSignal.set(false);
+	}
+
+	public boolean isStopped()
+	{
+		return mStopSignal.get();
 	}
 
 	public boolean startTask()
 	{
-		clearCanceled();
-		Future<?> lExecuteAsynchronously = executeAsynchronously(mTask);
+
+		Runnable lRunnableWrapper = () -> {
+			clearStopped();
+			mIsRunningVariable.set(true);
+			run();
+			mIsRunningVariable.set(false);
+		};
+
+		Future<?> lExecuteAsynchronously = executeAsynchronously(lRunnableWrapper);
 		return lExecuteAsynchronously != null;
 	}
 
-	public boolean waitForTaskCompletion()
+	public boolean waitForTaskCompletion(	long pTimeOut,
+																				TimeUnit pTimeUnit)
 	{
 		try
 		{
-			return waitForCompletion();
+			boolean lWaitForCompletion = waitForCompletion(	pTimeOut,
+																											pTimeUnit);
+			mIsRunningVariable.set(false);
+			return lWaitForCompletion;
 		}
 		catch (ExecutionException e)
 		{
@@ -71,26 +94,9 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 		}
 	}
 
-	public Variable<Boolean> getIsCanceledBooleanVariable()
+	public Variable<Boolean> getIsStoppedBooleanVariable()
 	{
-		return mCancelBooleanVariable;
-	}
-
-	public void cancel()
-	{
-		mCancelBooleanVariable.set(false);
-		mCanceledSignal = false;
-	}
-
-	public void clearCanceled()
-	{
-		mCancelBooleanVariable.set(false);
-		mCanceledSignal = false;
-	}
-
-	public boolean isCanceled()
-	{
-		return mCanceledSignal;
+		return mStopSignal;
 	}
 
 }

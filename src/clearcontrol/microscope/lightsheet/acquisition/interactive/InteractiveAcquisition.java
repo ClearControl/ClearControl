@@ -9,13 +9,13 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.change.ChangeListener;
 import clearcontrol.device.startstop.StartableLoopDevice;
+import clearcontrol.device.task.LoopTaskDevice;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 
-public class InteractiveAcquisition	extends
-																		StartableLoopDevice
+public class InteractiveAcquisition extends LoopTaskDevice
 {
 
 	private final LightSheetMicroscopeInterface mLightSheetMicroscope;
@@ -35,7 +35,7 @@ public class InteractiveAcquisition	extends
 	public InteractiveAcquisition(String pDeviceName,
 																LightSheetMicroscope pLightSheetMicroscope)
 	{
-		super(pDeviceName, false, TimeUnit.SECONDS);
+		super(pDeviceName, 1, TimeUnit.SECONDS);
 		mLightSheetMicroscope = pLightSheetMicroscope;
 
 		@SuppressWarnings("rawtypes")
@@ -91,7 +91,7 @@ public class InteractiveAcquisition	extends
 	}
 
 	@Override
-	protected boolean loop()
+	public boolean loop()
 	{
 
 		try
@@ -167,21 +167,21 @@ public class InteractiveAcquisition	extends
 	{
 		System.out.println("Starting 2D Acquisition...");
 		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
-		start();
+		startTask();
 	}
 
 	public void start3DAcquisition()
 	{
 		System.out.println("Starting 3D Acquisition...");
 		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
-		start();
+		startTask();
 	}
 
 	public void stopAcquisition()
 	{
 		System.out.println("Stopping Acquisition...");
 		mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
-		stop();
+		stopTask();
 	}
 
 	public BoundedVariable<Double> getExposureVariable()

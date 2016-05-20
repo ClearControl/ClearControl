@@ -11,13 +11,13 @@ import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.task.SignalStartStopDevice;
 
 public abstract class StartableLoopDevice	extends
-																										SignalStartStopDevice	implements
-																																					OpenCloseDeviceInterface,
-																																					AsynchronousSchedulerServiceAccess,
-																																					Loggable
+																					SignalStartStopDevice	implements
+																																OpenCloseDeviceInterface,
+																																StartStopDeviceInterface,
+																																AsynchronousSchedulerServiceAccess,
+																																Loggable
 {
 
 	private final StartableLoopDevice lThis;
@@ -27,21 +27,21 @@ public abstract class StartableLoopDevice	extends
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
 	public StartableLoopDevice(	final String pDeviceName,
-																				final boolean pOnlyStart)
+															final boolean pOnlyStart)
 	{
-		this(pDeviceName, pOnlyStart, TimeUnit.MILLISECONDS);
+		this(pDeviceName, 10, TimeUnit.MILLISECONDS);
 	}
 
 	public StartableLoopDevice(	final String pDeviceName,
-																				final boolean pOnlyStart,
-																				TimeUnit pTimeUnit)
+															double pPeriod,
+															TimeUnit pTimeUnit)
 	{
-		super(pDeviceName, pOnlyStart);
+		super(pDeviceName);
 		mTimeUnit = pTimeUnit;
 
 		mLoopPeriodVariable = new BoundedVariable<Double>(pDeviceName + "LoopPeriodIn"
 																													+ pTimeUnit.name(),
-																											0.0,
+																											pPeriod,
 																											0.0,
 																											Double.POSITIVE_INFINITY,
 																											0.0);
