@@ -23,9 +23,9 @@ import com.jogamp.newt.event.MouseEvent;
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 
-public class Stack2DDisplay extends VirtualDevice implements
-																											StackDisplayInterface,
-																											AsynchronousSchedulerServiceAccess
+public class Stack2DDisplay extends VirtualDevice	implements
+																									StackDisplayInterface,
+																									AsynchronousSchedulerServiceAccess
 {
 	private final VideoWindow mVideoWindow;
 
@@ -194,7 +194,7 @@ public class Stack2DDisplay extends VirtualDevice implements
 			public StackInterface setEventHook(	final StackInterface pOldStack,
 																					final StackInterface pNewStack)
 			{
-				System.out.println("RECEIVED STACK!!!!");
+				// System.out.println("RECEIVED STACK!!!!");
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
 					pNewStack.release();

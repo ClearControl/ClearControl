@@ -84,7 +84,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+				/*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
 														+ " index="
 														+ pDcamFrame.getIndex()
 														+ " pFrameIndexInBufferList="
@@ -96,7 +96,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 					do
 					{
 						lKeepAcquiredImageArray = mKeepAcquiredImageArrayQueue.remove();
-						System.out.println("lKeepAcquiredImageArray=" + lKeepAcquiredImageArray);
+						// System.out.println("lKeepAcquiredImageArray=" +
+						// lKeepAcquiredImageArray);
 					}
 					while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
 				}

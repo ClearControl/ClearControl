@@ -63,18 +63,20 @@ public class Calibrator extends TaskDevice
 	private final Variable<Boolean> mCalibrateHPVariable = new Variable<Boolean>(	"CalibrateHP",
 																																								false);
 
+	private final Variable<Double> mProgressVariable;
+
 	public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
 	{
 		super(pLightSheetMicroscope.getName() + "Calibrator");
 
 		mLightSheetMicroscope = pLightSheetMicroscope;
-		mCalibrationZ = new CalibrationZ(pLightSheetMicroscope);
-		mCalibrationA = new CalibrationA(pLightSheetMicroscope);
-		mCalibrationXY = new CalibrationXY(pLightSheetMicroscope);
-		mCalibrationP = new CalibrationP(pLightSheetMicroscope);
-		mCalibrationW = new CalibrationW(pLightSheetMicroscope);
-		mCalibrationWP = new CalibrationWP(pLightSheetMicroscope);
-		mCalibrationHP = new CalibrationHP(pLightSheetMicroscope);
+		mCalibrationZ = new CalibrationZ(this);
+		mCalibrationA = new CalibrationA(this);
+		mCalibrationXY = new CalibrationXY(this);
+		mCalibrationP = new CalibrationP(this);
+		mCalibrationW = new CalibrationW(this);
+		mCalibrationWP = new CalibrationWP(this);
+		mCalibrationHP = new CalibrationHP(this);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);
@@ -82,12 +84,24 @@ public class Calibrator extends TaskDevice
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
 																											.getNumberOfDevices(LightSheetInterface.class);
 
+		mProgressVariable = new Variable<Double>(	getName() + "Progress",
+																							0.0);
+
+	}
+
+	public LightSheetMicroscope getLightSheetMicroscope()
+	{
+		return mLightSheetMicroscope;
 	}
 
 	@Override
 	public void run()
 	{
+		mProgressVariable.set(0.0);
 		calibrate();
+		mProgressVariable.set(1.0);
+		System.out.println("############################################## Calibration done");
+
 	}
 
 	public boolean calibrate()
@@ -120,7 +134,8 @@ public class Calibrator extends TaskDevice
 		/*if (!calibrateW(32))
 			return false;/**/
 
-		if (getCalibrateZVariable().get() && !calibrateZ(64))
+		if ((getCalibrateAVariable().get() || getCalibrateXYVariable().get()) && getCalibrateZVariable().get()
+				&& !calibrateZ(64))
 			return false;
 
 		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
@@ -142,11 +157,14 @@ public class Calibrator extends TaskDevice
 			do
 			{
 				lError = calibrateZ(l, pNumberOfSamples, l == 0);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.02 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -160,11 +178,14 @@ public class Calibrator extends TaskDevice
 			do
 			{
 				lError = calibrateA(l, pNumberOfAngles);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.5 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -178,11 +199,14 @@ public class Calibrator extends TaskDevice
 			do
 			{
 				lError = calibrateXY(l, 0, pNumberOfPoints);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.05 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 
 		return true;
@@ -198,11 +222,14 @@ public class Calibrator extends TaskDevice
 			mCalibrationP.calibrate();
 			lError = mCalibrationP.apply();
 
-			System.out.println("Error = " + lError);
-			if (ScriptingEngine.isCancelRequestedStatic())
+			System.out.println("############################################## Error = " + lError);
+			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 				return false;
+
+			mProgressVariable.set((1.0 * lIteration) / cMaxIterations);
 		}
 		while (lError >= 0.04 && lIteration++ < cMaxIterations);
+		System.out.println("############################################## Done ");
 
 		return true;
 	}
@@ -213,6 +240,8 @@ public class Calibrator extends TaskDevice
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			calibrateHP(l, 0, pNumberOfSamplesH, pNumberOfSamplesP);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -435,6 +464,11 @@ public class Calibrator extends TaskDevice
 	public Variable<Boolean> getCalibrateHPVariable()
 	{
 		return mCalibrateHPVariable;
+	}
+
+	public Variable<Double> getProgressVariable()
+	{
+		return mProgressVariable;
 	}
 
 }

@@ -1,6 +1,10 @@
 package clearcontrol.microscope.lightsheet.calibrator.utils;
 
 import static java.lang.Math.max;
+import gnu.trove.list.array.TDoubleArrayList;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
@@ -9,10 +13,6 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.fragmented.FragmentedMemoryInterface;
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class ImageAnalysisUtils
 {
@@ -112,6 +112,41 @@ public class ImageAnalysisUtils
 		return lSumIntensity;
 	}
 
+	public static void cleanWithMin(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+	{
+		int lNumberOfPlanes = pImage.numSlices();
+		int lWidth = (int) pImage.max(0);
+		int lHeight = (int) pImage.max(1);
+		int lLength = lWidth * lHeight;
+
+		FragmentedMemoryInterface lFragmentedMemory = pImage.getFragmentedMemory();
+		for (int p = 0; p < lNumberOfPlanes; p++)
+		{
+			ContiguousMemoryInterface lBuffer = lFragmentedMemory.get(p);
+
+			for (int o = 0; o < 2; o++)
+				for (int i = lWidth; i < (lLength - lWidth - 1); i += 2)
+				{
+					char lN = lBuffer.getCharAligned(o + i - lWidth);
+					char lW = lBuffer.getCharAligned(o + i - 1);
+					char lC = lBuffer.getCharAligned(o + i);
+					char lE = lBuffer.getCharAligned(o + i + 1);
+					char lS = lBuffer.getCharAligned(o + i + lWidth);
+
+					char lMin = min(min(min(lN, lW), min(lC, lE)), lS);
+
+					lBuffer.setCharAligned(o + i, lMin);
+				}
+
+		}
+
+	}
+
+	private static final char min(char pA, char pB)
+	{
+		return (pA > pB) ? pB : pA;
+	}
+
 	public static Vector2D[] findCOMOfBrightestPointsForEachPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
 	{
 		int lNumberOfPlanes = pImage.numSlices();
@@ -151,6 +186,7 @@ public class ImageAnalysisUtils
 					{
 						lXList.add(x);
 						lYList.add(y);
+						System.out.format("(%d,%d)->%d\n", x, y, lValue);
 					}
 				}
 			}

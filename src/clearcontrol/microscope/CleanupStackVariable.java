@@ -28,7 +28,7 @@ public class CleanupStackVariable extends Variable<StackInterface>
 		while (mKeepStacksAliveQueue.size() > mNumberOfStacksToKeepAlive)
 		{
 			StackInterface lStackToRelease = mKeepStacksAliveQueue.remove();
-			System.out.println("RELEASING:" + lStackToRelease);
+			// System.out.println("RELEASING:" + lStackToRelease);
 			lStackToRelease.release();
 		}
 

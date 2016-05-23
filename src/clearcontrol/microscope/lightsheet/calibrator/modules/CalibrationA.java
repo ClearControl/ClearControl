@@ -2,6 +2,7 @@ package clearcontrol.microscope.lightsheet.calibrator.modules;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +10,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.SmartArgMaxFinder;
@@ -17,14 +21,11 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.StackInterface;
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationA
 {
@@ -36,10 +37,10 @@ public class CalibrationA
 	private int mNumberOfDetectionArmDevices;
 	private int mNumberOfLightSheetDevices;
 
-	public CalibrationA(LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationA(Calibrator pCalibrator)
 	{
 		super();
-		mLightSheetMicroscope = pLightSheetMicroscope;
+		mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
 
 		mMultiPlotAFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");

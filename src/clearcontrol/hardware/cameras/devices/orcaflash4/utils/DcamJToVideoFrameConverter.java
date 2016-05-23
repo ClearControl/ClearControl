@@ -25,7 +25,6 @@ import clearcontrol.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.processor.StackProcessorInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
@@ -55,8 +54,6 @@ public class DcamJToVideoFrameConverter extends VirtualDevice	implements
 
 	private final Variable<Long> mNumberOfImagesPerPlaneVariable = new Variable<Long>("NumberOfPhases",
 																																										1L);
-
-	private final ArrayList<StackProcessorInterface> mStackProcessorList = new ArrayList<StackProcessorInterface>();
 
 	public DcamJToVideoFrameConverter(final OrcaFlash4StackCamera pOrcaFlash4StackCamera,
 																		Variable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
@@ -170,15 +167,19 @@ public class DcamJToVideoFrameConverter extends VirtualDevice	implements
 					lStackRecycler.ensurePreallocated(mMinimalNumberOfAvailableStacks,
 																						lStackRequest);
 
-				System.out.println("before: getNumberOfLiveObjects()=" + lStackRecycler.getNumberOfLiveObjects());
-				System.out.println("before: getNumberOfAvailableObjects()=" + lStackRecycler.getNumberOfAvailableObjects());
+				// System.out.println("before: getNumberOfLiveObjects()=" +
+				// lStackRecycler.getNumberOfLiveObjects());
+				// System.out.println("before: getNumberOfAvailableObjects()=" +
+				// lStackRecycler.getNumberOfAvailableObjects());
 
 				lOffHeapPlanarStack = lStackRecycler.getOrWait(	mWaitForRecycledStackTimeInMicroSeconds,
 																												TimeUnit.MICROSECONDS,
 																												lStackRequest);
 
-				System.out.println("after: getNumberOfLiveObjects()=" + lStackRecycler.getNumberOfLiveObjects());
-				System.out.println("after: getNumberOfAvailableObjects()=" + lStackRecycler.getNumberOfAvailableObjects());
+				// System.out.println("after: getNumberOfLiveObjects()=" +
+				// lStackRecycler.getNumberOfLiveObjects());
+				// System.out.println("after: getNumberOfAvailableObjects()=" +
+				// lStackRecycler.getNumberOfAvailableObjects());
 			}
 
 			if (lOffHeapPlanarStack == null)

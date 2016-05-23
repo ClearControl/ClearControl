@@ -1,9 +1,11 @@
 package clearcontrol.microscope.lightsheet.calibrator.gui.jfx;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -114,6 +116,18 @@ public class CalibratorToolbar extends DockNode
 		});
 		GridPane.setColumnSpan(lLoadCalibration, 2);
 		mGridPane.add(lLoadCalibration, 2, 2);
+
+		ProgressIndicator lProgressIndicator = new ProgressIndicator(0.0);
+		lProgressIndicator.setStyle(".percentage { visibility: hidden; }");
+		mGridPane.add(lProgressIndicator, 4, 0);
+
+		pCalibrator.getProgressVariable()
+								.addEdgeListener((n) -> {
+									Platform.runLater(() -> {
+										lProgressIndicator.setProgress(pCalibrator.getProgressVariable()
+																															.get());
+									});
+								});
 
 	}
 
