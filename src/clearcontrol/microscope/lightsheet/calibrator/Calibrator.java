@@ -63,6 +63,9 @@ public class Calibrator extends TaskDevice
 	private final Variable<Boolean> mCalibrateHPVariable = new Variable<Boolean>(	"CalibrateHP",
 																																								false);
 
+	private final Variable<String> mCalibrationDataName = new Variable<String>(	"CalibrationName",
+																																							"system");
+
 	private final Variable<Double> mProgressVariable;
 
 	public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
@@ -119,7 +122,7 @@ public class Calibrator extends TaskDevice
 		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		if (getCalibrateXYVariable().get() && !calibrateXY(6))
+		if (getCalibrateXYVariable().get() && !calibrateXY(3))
 			return false;
 
 		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
@@ -258,7 +261,7 @@ public class Calibrator extends TaskDevice
 														int pNumberOfSamples,
 														boolean pAdjustDetectionZ)
 	{
-		mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 7);
+		mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 9);
 
 		return mCalibrationZ.apply(pLightSheetIndex, pAdjustDetectionZ);
 	}
@@ -394,6 +397,20 @@ public class Calibrator extends TaskDevice
 
 	}
 
+	public void save() throws JsonGenerationException,
+										JsonMappingException,
+										IOException
+	{
+		save(mCalibrationDataName.get());
+	}
+
+	public boolean load()	throws JsonGenerationException,
+												JsonMappingException,
+												IOException
+	{
+		return load(mCalibrationDataName.get());
+	}
+
 	public void save(String pName) throws JsonGenerationException,
 																JsonMappingException,
 																IOException
@@ -469,6 +486,11 @@ public class Calibrator extends TaskDevice
 	public Variable<Double> getProgressVariable()
 	{
 		return mProgressVariable;
+	}
+
+	public Variable<String> getCalibrationDataNameVariable()
+	{
+		return mCalibrationDataName;
 	}
 
 }

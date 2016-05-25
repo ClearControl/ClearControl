@@ -44,6 +44,7 @@ public class CalibrationA
 
 		mMultiPlotAFocusCurves = MultiPlot.getMultiPlot(this.getClass()
 																												.getSimpleName() + " calibration: focus curves");
+		mMultiPlotAFocusCurves.setVisible(false);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);

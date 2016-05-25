@@ -110,7 +110,7 @@ public class CalibrationXY
 			TDoubleArrayList lUnitVectorYList = new TDoubleArrayList();
 
 			double lMaxAbsY = min(abs(lMin), abs(lMax));
-			for (double f = 0.5 * lMaxAbsY; f <= 0.8 * lMaxAbsY; f += (0.3 * lMaxAbsY / (pNumberOfPoints - 1)))
+			for (double f = 0.5 * lMaxAbsY; f <= 0.7 * lMaxAbsY; f += (0.2 * lMaxAbsY / (pNumberOfPoints - 1)))
 			{
 				Vector2D lCenterP, lCenter0, lCenterN;
 
@@ -416,7 +416,8 @@ public class CalibrationXY
 											lHeightFunctionVariable);
 		UnivariateAffineFunction lHeightFunction = UnivariateAffineFunction.axplusb(1,
 																																								0);
-		lHeightVariable.setMinMax(-1.0, 1.0);
+		lHeightVariable.setMinMax(-1, 1);
+
 		lHeightFunctionVariable.set(lHeightFunction);
 		lHeightFunctionVariable.setCurrent();
 

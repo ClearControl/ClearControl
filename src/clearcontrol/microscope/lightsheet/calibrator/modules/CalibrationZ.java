@@ -77,6 +77,8 @@ public class CalibrationZ
 		mMultiPlotZFocusCurves.setVisible(true);
 
 		mIteration++;
+		if (pLightSheetIndex == 0)
+			mMultiPlotZModels.clear();
 		if (!mMultiPlotZModels.isVisible())
 			mMultiPlotZModels.setVisible(true);
 
@@ -107,6 +109,11 @@ public class CalibrationZ
 
 		for (double iz = lMinIZ; iz <= lMaxIZ; iz += lStepIZ)
 		{
+
+			final double lPerturbedIZ = iz + 0.1
+																	* lStepIZ
+																	* (2 * Math.random() - 1);
+
 			final double[] dz = focusZ(	pLightSheetIndex,
 																	pNumberOfDSamples,
 																	iz);
@@ -114,11 +121,12 @@ public class CalibrationZ
 			if (dz == null)
 				return false;
 
-			for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
-				if (!Double.isNaN(dz[i]))
+			for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
+				if (!Double.isNaN(dz[d]))
 				{
-					lTheilSenEstimators[i].enter(dz[i], iz);
-					lPlots[i].addPoint("D" + i, dz[i], iz);
+					lTheilSenEstimators[d].enter(dz[d], lPerturbedIZ);
+					lPlots[d].addPoint("D" + d, dz[d], lPerturbedIZ);
+					lPlots[d].ensureUpToDate();
 				}
 
 			if (ScriptingEngine.isCancelRequestedStatic() || mCalibrator.isStopped())

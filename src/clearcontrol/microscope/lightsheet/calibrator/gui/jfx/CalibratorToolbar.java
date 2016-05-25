@@ -71,7 +71,17 @@ public class CalibratorToolbar extends DockNode
 																		2,
 																		4);
 
-		TextField lCalibrationDataNameTextField = new TextField();
+		TextField lCalibrationDataNameTextField = new TextField(pCalibrator.getCalibrationDataNameVariable()
+																																				.get());
+
+		lCalibrationDataNameTextField.textProperty().addListener((obs,
+																															o,
+																															n) -> {
+			String lName = n.trim();
+			if (!lName.isEmpty())
+				pCalibrator.getCalibrationDataNameVariable().set(lName);
+
+		});
 
 		GridPane.setColumnSpan(lCalibrationDataNameTextField, 2);
 		mGridPane.add(lCalibrationDataNameTextField, 2, 0);
@@ -83,11 +93,7 @@ public class CalibratorToolbar extends DockNode
 		lSaveCalibration.setOnAction((e) -> {
 			try
 			{
-				String lName = lCalibrationDataNameTextField.textProperty()
-																										.get()
-																										.trim();
-				if (lName != null && !lName.isEmpty())
-					pCalibrator.save(lName);
+				pCalibrator.save();
 			}
 			catch (Exception e1)
 			{
@@ -103,11 +109,7 @@ public class CalibratorToolbar extends DockNode
 		lLoadCalibration.setOnAction((e) -> {
 			try
 			{
-				String lName = lCalibrationDataNameTextField.textProperty()
-																										.get()
-																										.trim();
-				if (lName != null && !lName.isEmpty())
-					pCalibrator.load(lName);
+				pCalibrator.load();
 			}
 			catch (Exception e1)
 			{

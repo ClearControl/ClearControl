@@ -66,7 +66,7 @@ public class LightSheet extends VirtualDevice	implements
 	private final BoundedVariable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine",
 																																																								9.74);
 	private final BoundedVariable<Double> mOverScanVariable = new BoundedVariable<Double>("OverScan",
-																																												1.2);
+																																												1.3);
 
 	private final BoundedVariable<Double> mXVariable = new BoundedVariable<Double>(	"LightSheetX",
 																																									0.0);
@@ -154,9 +154,11 @@ public class LightSheet extends VirtualDevice	implements
 																														1,
 																														0);
 
+		mOverScanVariable.setMinMax(1.001, 2);
+
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
-			// System.out.println(getName() + ": new variable value: " + n);
+			System.out.println(getName() + ": new variable value: " + n);
 			update();
 			notifyChange();
 		};
@@ -446,7 +448,7 @@ public class LightSheet extends VirtualDevice	implements
 			if (mBeforeExposureMovement == null || mExposureMovement == null)
 				return;
 
-			// System.out.println("Updating: " + getName());
+			System.out.println("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
@@ -534,8 +536,8 @@ public class LightSheet extends VirtualDevice	implements
 			mExposureWStave.setValue((float) lWidthValue);
 
 			final double lOverscan = mOverScanVariable.get();
-			final double lMarginTimeInMicroseconds = (lOverscan - 1) / (2 * lOverscan)
-																								* lExposureMovementTimeInMicroseconds;
+			double lMarginTimeInMicroseconds = (lOverscan - 1) / (2 * lOverscan)
+																					* lExposureMovementTimeInMicroseconds;
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
 																																			lMarginTimeInMicroseconds);
 
