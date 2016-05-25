@@ -1,4 +1,4 @@
-package clearcontrol.gui.jfx.slider.skin;
+package clearcontrol.gui.jfx.slider.customslider.skin;
 /*
  * Copyright (c) 2010, 2014, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -26,8 +26,8 @@ package clearcontrol.gui.jfx.slider.skin;
 
 import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 
-import clearcontrol.gui.jfx.slider.Slider;
-import clearcontrol.gui.jfx.slider.behavior.SliderBehavior;
+import clearcontrol.gui.jfx.slider.customslider.Slider;
+import clearcontrol.gui.jfx.slider.customslider.behavior.SliderBehavior;
 import javafx.animation.Transition;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;

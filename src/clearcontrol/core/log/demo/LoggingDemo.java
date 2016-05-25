@@ -5,7 +5,7 @@ import org.junit.Test;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.log.gui.LogWindowHandler;
 
-public class RTLibLogging implements Loggable
+public class LoggingDemo implements Loggable
 {
 
 	@Test

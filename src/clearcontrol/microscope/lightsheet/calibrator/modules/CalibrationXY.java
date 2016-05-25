@@ -2,10 +2,19 @@ package clearcontrol.microscope.lightsheet.calibrator.modules;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import net.imglib2.RandomAccessible;
+import net.imglib2.algorithm.gauss3.Gauss3;
+import net.imglib2.exception.IncompatibleTypeException;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.view.Views;
 
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -16,14 +25,11 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.StackInterface;
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationXY
 {
@@ -39,10 +45,10 @@ public class CalibrationXY
 	private MultiKeyMap<Integer, SimpleMatrix> mTransformMatrices;
 
 	@SuppressWarnings("unchecked")
-	public CalibrationXY(LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationXY(Calibrator pCalibrator)
 	{
 		super();
-		mLightSheetMicroscope = pLightSheetMicroscope;
+		mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);
@@ -104,7 +110,7 @@ public class CalibrationXY
 			TDoubleArrayList lUnitVectorYList = new TDoubleArrayList();
 
 			double lMaxAbsY = min(abs(lMin), abs(lMax));
-			for (double f = 0.7 * lMaxAbsY; f <= lMaxAbsY; f += (0.3 * lMaxAbsY / (pNumberOfPoints - 1)))
+			for (double f = 0.5 * lMaxAbsY; f <= 0.7 * lMaxAbsY; f += (0.2 * lMaxAbsY / (pNumberOfPoints - 1)))
 			{
 				Vector2D lCenterP, lCenter0, lCenterN;
 
@@ -275,6 +281,24 @@ public class CalibrationXY
 											lWidth,
 											lHeight);
 
+		// ImagePlus lShow = ImageJFunctions.show(lImage);
+		// lShow.setDisplayRange(0, 150);
+		try
+		{
+			final RandomAccessible<UnsignedShortType> infiniteImg = Views.extendValue(lImage,
+																																								new UnsignedShortType());
+			Gauss3.gauss(1, infiniteImg, lImage);
+			// ImagePlus lShow = ImageJFunctions.show(lImage);
+			// lShow.setDisplayRange(-100, 100);
+			// lShow.setDisplayRange(-100, 100);
+		}
+		catch (IncompatibleTypeException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ImageAnalysisUtils.cleanWithMin(lImage);
 		Vector2D lPoint = ImageAnalysisUtils.findCOMOfBrightestPointsForEachPlane(lImage)[0];
 
 		lPoint = lPoint.subtract(new Vector2D(0.5 * lWidth, 0.5 * lHeight));
@@ -392,7 +416,8 @@ public class CalibrationXY
 											lHeightFunctionVariable);
 		UnivariateAffineFunction lHeightFunction = UnivariateAffineFunction.axplusb(1,
 																																								0);
-		lHeightVariable.setMinMax(-1.0,1.0);
+		lHeightVariable.setMinMax(-1, 1);
+
 		lHeightFunctionVariable.set(lHeightFunction);
 		lHeightFunctionVariable.setCurrent();
 

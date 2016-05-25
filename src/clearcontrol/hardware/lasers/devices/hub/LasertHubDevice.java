@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 
-public class LasertHubDevice extends NamedVirtualDevice	implements
+public class LasertHubDevice extends VirtualDevice	implements
 																												StartStopDeviceInterface
 {
 

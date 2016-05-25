@@ -14,7 +14,7 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 import clearcontrol.hardware.signalgen.staves.EdgeStave;
@@ -24,9 +24,9 @@ import clearcontrol.hardware.signalgen.staves.StaveInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
-public class LightSheet extends NamedVirtualDevice implements
-																									LightSheetInterface,
-																									AsynchronousExecutorServiceAccess
+public class LightSheet extends VirtualDevice	implements
+																							LightSheetInterface,
+																							AsynchronousExecutorServiceAccess
 {
 
 	private final Variable<UnivariateAffineFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
@@ -66,7 +66,7 @@ public class LightSheet extends NamedVirtualDevice implements
 	private final BoundedVariable<Double> mReadoutTimeInMicrosecondsPerLineVariable = new BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine",
 																																																								9.74);
 	private final BoundedVariable<Double> mOverScanVariable = new BoundedVariable<Double>("OverScan",
-																																												1.2);
+																																												1.3);
 
 	private final BoundedVariable<Double> mXVariable = new BoundedVariable<Double>(	"LightSheetX",
 																																									0.0);
@@ -154,10 +154,13 @@ public class LightSheet extends NamedVirtualDevice implements
 																														1,
 																														0);
 
+		mOverScanVariable.setMinMax(1.001, 2);
+
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
 			System.out.println(getName() + ": new variable value: " + n);
 			update();
+			notifyChange();
 		};
 
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
@@ -182,7 +185,7 @@ public class LightSheet extends NamedVirtualDevice implements
 		mImageHeightVariable.addSetListener(lVariableListener);
 
 		mXVariable.addSetListener(lVariableListener);
-		mXVariable.addSetListener(lVariableListener);
+		mYVariable.addSetListener(lVariableListener);
 		mZVariable.addSetListener(lVariableListener);
 		mBetaInDegreesVariable.addSetListener(lVariableListener);
 		mAlphaInDegreesVariable.addSetListener(lVariableListener);
@@ -197,6 +200,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			mStructuredIlluminationPatternVariableArray[i].addSetListener((	u,
 																																			v) -> {
 				update();
+				notifyChange();
 			});
 		}
 
@@ -204,6 +208,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			System.out.println(getName() + ": new function: " + n);
 			resetBounds();
 			update();
+			notifyChange();
 		};
 
 		resetFunctions();
@@ -222,6 +227,8 @@ public class LightSheet extends NamedVirtualDevice implements
 		mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 		mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
+		update();
+		notifyChange();
 	}
 
 	@Override
@@ -315,29 +322,6 @@ public class LightSheet extends NamedVirtualDevice implements
 																							mPowerVariable,
 																							mPowerFunction.get());
 
-		/**
-		 * private final BoundedVariable<Double>
-		 * mEffectiveExposureInMicrosecondsVariable = new BoundedVariable<Double>(
-		 * "EffectiveExposureInMicroseconds", 5000.0); private final
-		 * BoundedVariable<Long> mImageHeightVariable = new BoundedVariable<Long>(
-		 * "ImageHeight", 2 * 1024L); private final BoundedVariable<Double>
-		 * mReadoutTimeInMicrosecondsPerLineVariable = new
-		 * BoundedVariable<Double>("ReadoutTimeInMicrosecondsPerLine", 9.74);
-		 * private final BoundedVariable<Double> mOverScanVariable = new
-		 * BoundedVariable<Double>("OverScan", 1.2);
-		 */
-
-		// Bounds below are for
-
-		MachineConfiguration.getCurrentMachineConfiguration()
-												.getBoundsForVariable("device.lsm.lighsheet." + getName()
-																									+ ".p.bounds",
-																							mPowerVariable);
-		
-		MachineConfiguration.getCurrentMachineConfiguration()
-		.getBoundsForVariable("device.lsm.lighsheet." + getName()
-															+ ".p.bounds",
-													mPowerVariable);
 	}
 
 	public void setBeforeExposureMovement(Movement pBeforeExposureMovement)
@@ -446,6 +430,7 @@ public class LightSheet extends NamedVirtualDevice implements
 																																		int i,
 																																		O pStave)
 	{
+
 		final int lLaserDigitalLineIndex = MachineConfiguration.getCurrentMachineConfiguration()
 																														.getIntegerProperty("device.lsm.lightsheet." + getName().toLowerCase()
 																																										+ ".ld.index"
@@ -460,12 +445,16 @@ public class LightSheet extends NamedVirtualDevice implements
 	{
 		synchronized (this)
 		{
-			// System.out.println("Updating: " + getName());
+			if (mBeforeExposureMovement == null || mExposureMovement == null)
+				return;
+
+			System.out.println("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
 			mBeforeExposureMovement.setDuration(round(lReadoutTimeInMicroseconds),
 																					TimeUnit.MICROSECONDS);
+
 			mExposureMovement.setDuration(round(lExposureMovementTimeInMicroseconds),
 																		TimeUnit.MICROSECONDS);
 
@@ -547,8 +536,8 @@ public class LightSheet extends NamedVirtualDevice implements
 			mExposureWStave.setValue((float) lWidthValue);
 
 			final double lOverscan = mOverScanVariable.get();
-			final double lMarginTimeInMicroseconds = (lOverscan - 1) / (2 * lOverscan)
-																								* lExposureMovementTimeInMicroseconds;
+			double lMarginTimeInMicroseconds = (lOverscan - 1) / (2 * lOverscan)
+																					* lExposureMovementTimeInMicroseconds;
 			final double lMarginTimeRelativeUnits = microsecondsToRelative(	lExposureMovementTimeInMicroseconds,
 																																			lMarginTimeInMicroseconds);
 
@@ -606,6 +595,7 @@ public class LightSheet extends NamedVirtualDevice implements
 			mExposureLAStave.setValue((float) lPowerValue);
 
 		}
+
 	}
 
 	@Override

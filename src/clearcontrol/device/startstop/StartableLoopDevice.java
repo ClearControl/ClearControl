@@ -1,4 +1,4 @@
-package clearcontrol.device.signal;
+package clearcontrol.device.startstop;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -9,40 +9,45 @@ import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 
-public abstract class SignalStartableLoopTaskDevice	extends
-																										SignalStartableDevice	implements
-																																					OpenCloseDeviceInterface,
-																																					AsynchronousSchedulerServiceAccess,
-																																					Loggable
+public abstract class StartableLoopDevice	extends
+																					SignalStartStopDevice	implements
+																																OpenCloseDeviceInterface,
+																																StartStopDeviceInterface,
+																																AsynchronousSchedulerServiceAccess,
+																																Loggable
 {
 
-	private final SignalStartableLoopTaskDevice lThis;
+	private final StartableLoopDevice lThis;
 	private final TimeUnit mTimeUnit;
-	private final Variable<Long> mLoopPeriodVariable;
+	private final BoundedVariable<Double> mLoopPeriodVariable;
 	private final Variable<Boolean> mIsRunningVariable;
 	private volatile WaitingScheduledFuture<?> mScheduledFuture;
 
-	public SignalStartableLoopTaskDevice(	final String pDeviceName,
-																				final boolean pOnlyStart)
+	public StartableLoopDevice(	final String pDeviceName,
+															final boolean pOnlyStart)
 	{
-		this(pDeviceName, pOnlyStart, TimeUnit.MILLISECONDS);
+		this(pDeviceName, 10, TimeUnit.MILLISECONDS);
 	}
 
-	public SignalStartableLoopTaskDevice(	final String pDeviceName,
-																				final boolean pOnlyStart,
-																				TimeUnit pTimeUnit)
+	public StartableLoopDevice(	final String pDeviceName,
+															double pPeriod,
+															TimeUnit pTimeUnit)
 	{
-		super(pDeviceName, pOnlyStart);
+		super(pDeviceName);
 		mTimeUnit = pTimeUnit;
 
-		mLoopPeriodVariable = new Variable<Long>(	pDeviceName + "LoopPeriodIn"
-																												+ pTimeUnit.name(),
-																										0L);
+		mLoopPeriodVariable = new BoundedVariable<Double>(pDeviceName + "LoopPeriodIn"
+																													+ pTimeUnit.name(),
+																											pPeriod,
+																											0.0,
+																											Double.POSITIVE_INFINITY,
+																											0.0);
 
 		mIsRunningVariable = new Variable<Boolean>(	pDeviceName + "IsRunning",
-																											false);
+																								false);
 
 		lThis = this;
 	}
@@ -52,20 +57,30 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean start()
 	{
-		if(mIsRunningVariable.get())
+		if (mIsRunningVariable.get())
 			return true;
-		
+
 		final Runnable lRunnable = () -> {
 			final long lStartTime = System.nanoTime();
-			loop();
+			boolean lResult = loop();
 			final long lStopTime = System.nanoTime();
 
 			final long lElapsedTimeInNanoseconds = lStopTime - lStartTime;
-			final long lExtraWaitTimeInNanoseconds = TimeUnit.NANOSECONDS.convert(mLoopPeriodVariable.get(),
-																																						mTimeUnit) - lElapsedTimeInNanoseconds;
-			if (lExtraWaitTimeInNanoseconds > 0)
-				ThreadUtils.sleep(lExtraWaitTimeInNanoseconds,
-													TimeUnit.NANOSECONDS);
+
+			final long lFactor = TimeUnit.NANOSECONDS.convert(1, mTimeUnit);
+
+			final long lExtraWaitTimeInNanoseconds = (long) (mLoopPeriodVariable.get() * lFactor) - lElapsedTimeInNanoseconds;
+			// System.out.println("lExtraWaitTimeInNanoseconds=" +
+			// lExtraWaitTimeInNanoseconds);
+			if (lExtraWaitTimeInNanoseconds > 0 && lResult)
+				ThreadUtils.sleepWhile(	lExtraWaitTimeInNanoseconds,
+																TimeUnit.NANOSECONDS,
+																() -> {
+																	return !mStopSignal.get() && mIsRunningVariable.get();
+																});
+
+			if (!lResult)
+				stop();
 
 		};
 		mScheduledFuture = scheduleAtFixedRate(	lRunnable,
@@ -92,7 +107,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 	@Override
 	public boolean stop()
 	{
-		if(!mIsRunningVariable.get())
+		if (!mIsRunningVariable.get())
 			return true;
 		try
 		{
@@ -117,7 +132,7 @@ public abstract class SignalStartableLoopTaskDevice	extends
 
 	}
 
-	public Variable<Long> getLoopPeriodVariable()
+	public BoundedVariable<Double> getLoopPeriodVariable()
 	{
 		return mLoopPeriodVariable;
 	}

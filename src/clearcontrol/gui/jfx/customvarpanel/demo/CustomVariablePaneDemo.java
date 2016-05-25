@@ -1,11 +1,11 @@
-package clearcontrol.gui.jfx.sliderpanel.demo;
+package clearcontrol.gui.jfx.customvarpanel.demo;
 
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
 import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
 import clearcontrol.gui.jfx.slider.VariableSlider;
-import clearcontrol.gui.jfx.sliderpanel.CustomVariablePane;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;

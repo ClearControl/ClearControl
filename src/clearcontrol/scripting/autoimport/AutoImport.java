@@ -1,7 +1,6 @@
 package clearcontrol.scripting.autoimport;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,10 +10,11 @@ public class AutoImport
 
 	public static String generateImportStatements(String pScriptText)
 	{
-		return generateImportStatements("rtlib", pScriptText);
+		return generateImportStatements(new String[]
+		{ "clearcontrol", "coremem" }, pScriptText);
 	}
 
-	public static String generateImportStatements(String pBasePackage,
+	public static String generateImportStatements(String[] pBasePackages,
 																								String pScriptText)
 	{
 		final HashSet<String> lClassNames = extractClassNames(pScriptText);
@@ -23,20 +23,27 @@ public class AutoImport
 
 		for (final String lClassName : lClassNames)
 		{
-			final List<String> lFullyQualifiedNames = ClassPathResolver.getFullyQualifiedNames(	pBasePackage,
-																																													lClassName);
 
-			if (lFullyQualifiedNames.size() == 1)
+			final HashSet<String> lFullyQualifiedNames = new HashSet<>(10000);
+
+			for (String lBasePackage : pBasePackages)
 			{
-				lImportStatements.append(importStatement(lFullyQualifiedNames.get(0)));
+
+				lFullyQualifiedNames.addAll(ClassPathResolver.getFullyQualifiedNames(	lBasePackage,
+																																							lClassName));
+
 			}
-			else if (lFullyQualifiedNames.size() > 1)
+
+			if (lFullyQualifiedNames.size() >= 1)
 			{
-				System.err.format("Could not resolve %s to a single class!\n found these: %s\n",
-													lClassName,
-													lFullyQualifiedNames);
+				lImportStatements.append(importStatement(lFullyQualifiedNames.iterator()
+																																			.next()));
+				if (lFullyQualifiedNames.size() > 1)
+					System.err.format("Warning: could not resolve %s to a single class!\n found these: %s, picking first. \n",
+														lClassName,
+														lFullyQualifiedNames);
 			}
-			else if (lFullyQualifiedNames.size() == 1)
+			else if (lFullyQualifiedNames.size() == 0)
 			{
 				System.err.format("Could not resolve %s !\n",
 													lClassName,

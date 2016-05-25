@@ -10,11 +10,14 @@ import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
+import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.Loggable;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.active.ActivableDeviceInterface;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.change.ChangeListener;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
@@ -26,17 +29,19 @@ import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipeline;
 import coremem.recycling.RecyclerInterface;
 
-public abstract class MicroscopeBase extends NamedVirtualDevice	implements
-																																MicroscopeInterface,
-																																StartStopDeviceInterface,
-																																AsynchronousSchedulerServiceAccess,
-																																Loggable
+public abstract class MicroscopeBase extends VirtualDevice implements
+																													MicroscopeInterface,
+																													StartStopDeviceInterface,
+																													AsynchronousSchedulerServiceAccess,
+																													Loggable
 {
 
 	protected final StackRecyclerManager mStackRecyclerManager;
 	protected final MicroscopeDeviceLists mLSMDeviceLists;
 	protected volatile int mNumberOfEnqueuedStates;
 	protected volatile long mAverageTimeInNS;
+
+	final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList = new ArrayList<>();
 
 	// Lock:
 	protected Object mAcquisitionLock = new Object();
@@ -48,6 +53,29 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		super(pDeviceName);
 		mStackRecyclerManager = new StackRecyclerManager();
 		mLSMDeviceLists = new MicroscopeDeviceLists(this);
+
+		for (int i = 0; i < 128; i++)
+		{
+			Double lPixelSizeInNanometers = MachineConfiguration.getCurrentMachineConfiguration()
+																													.getDoubleProperty(	"device.camera" + i
+																																									+ ".pixelsizenm",
+																																							null);
+
+			if (lPixelSizeInNanometers == null)
+				break;
+
+			Variable<Double> lPixelSizeInNanometersVariable = new Variable<Double>(	"Camera" + i
+																																									+ "PixelSizeNm",
+																																							lPixelSizeInNanometers);
+			mCameraPixelSizeInNanometerVariableList.add(lPixelSizeInNanometersVariable);
+		}
+
+	}
+
+	@Override
+	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex)
+	{
+		return mCameraPixelSizeInNanometerVariableList.get(pCameraIndex);
 	}
 
 	@Override
@@ -72,6 +100,39 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 	public <T> T getDevice(Class<T> pClass, int pIndex)
 	{
 		return mLSMDeviceLists.getDevice(pClass, pIndex);
+	}
+
+	@Override
+	public <T> ArrayList<T> getDevices(Class<T> pClass)
+	{
+		return mLSMDeviceLists.getDevices(pClass);
+	}
+
+	@Override
+	public void addChangeListener(ChangeListener pChangeListener)
+	{
+		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		{
+			if (lDevice instanceof HasChangeListenerInterface)
+			{
+				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				lHasChangeListenersInterface.addChangeListener(pChangeListener);
+			}
+		}
+	}
+
+	@Override
+	public void removeChangeListener(ChangeListener pChangeListener)
+	{
+		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		{
+
+			if (lDevice instanceof HasChangeListenerInterface)
+			{
+				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				lHasChangeListenersInterface.removeChangeListener(pChangeListener);
+			}
+		}
 	}
 
 	public void setStackProcessingPipeline(	int pIndex,
@@ -99,8 +160,10 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 		synchronized (mAcquisitionLock)
 		{
 			boolean lIsOpen = true;
+
 			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
+
 				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
@@ -335,6 +398,7 @@ public abstract class MicroscopeBase extends NamedVirtualDevice	implements
 
 			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
 			{
+
 				if (lDevice instanceof StateQueueDeviceInterface)
 				{
 					System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",

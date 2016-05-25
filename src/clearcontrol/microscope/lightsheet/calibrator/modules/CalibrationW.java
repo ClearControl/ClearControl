@@ -3,11 +3,16 @@ package clearcontrol.microscope.lightsheet.calibrator.modules;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.math3.stat.StatUtils;
 
@@ -16,16 +21,13 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.StackInterface;
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationW
 {
@@ -37,9 +39,9 @@ public class CalibrationW
 	private TDoubleArrayList mWList = new TDoubleArrayList();
 	private MultiPlot mAverageIntensityCurves;
 
-	public CalibrationW(LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationW(Calibrator pCalibrator)
 	{
-		mLightSheetMicroscope = pLightSheetMicroscope;
+		mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);

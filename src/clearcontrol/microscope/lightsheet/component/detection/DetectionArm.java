@@ -5,12 +5,12 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class DetectionArm extends NamedVirtualDevice implements
-																										DetectionArmInterface
+public class DetectionArm extends VirtualDevice	implements
+																								DetectionArmInterface
 {
 
 	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
@@ -34,19 +34,21 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
-			System.out.println(getName() + ": new Z value: " + n);
+			// System.out.println(getName() + ": new Z value: " + n);
 			update();
+			notifyChange();
 		};
 
 		mDetectionFocusZ.addSetListener(lVariableListener);
-		
-		
-		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (o, n) -> {
+
+		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (	o,
+																																											n) -> {
 			System.out.println(getName() + ": new Z function: " + n);
 			resetBounds();
 			update();
+			notifyChange();
 		};
-		
+
 		mZFunction.addSetListener(lFunctionVariableListener);
 
 		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
@@ -56,6 +58,8 @@ public class DetectionArm extends NamedVirtualDevice implements
 
 		mStaveIndex = lStaveIndex;
 
+		update();
+		notifyChange();
 	}
 
 	@Override
@@ -109,9 +113,10 @@ public class DetectionArm extends NamedVirtualDevice implements
 	{
 		synchronized (this)
 		{
-			mDetectionPathStaveZ.setValue((float) mZFunction.get()
-																											.value(mDetectionFocusZ.get()
-																																							.doubleValue()));
+			double lZFocus = mDetectionFocusZ.get().doubleValue();
+			float lZFocusTransformed = (float) mZFunction.get()
+																										.value(lZFocus);
+			mDetectionPathStaveZ.setValue(lZFocusTransformed);
 		}
 	}
 }

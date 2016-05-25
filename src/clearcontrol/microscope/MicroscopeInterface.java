@@ -1,10 +1,12 @@
 package clearcontrol.microscope;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.stack.StackInterface;
@@ -13,6 +15,7 @@ import coremem.recycling.RecyclerInterface;
 
 public interface MicroscopeInterface extends
 																		NameableInterface,
+																		HasChangeListenerInterface,
 																		StateQueueDeviceInterface
 {
 
@@ -55,11 +58,23 @@ public interface MicroscopeInterface extends
 	public <T> T getDevice(Class<T> pClass, int pIndex);
 
 	/**
+	 * Returns all devices for a given type (class). Devices are uniquely
+	 * identified by their class and index: (class,index) -> device
+	 * 
+	 * @param pClass
+	 *          class
+	 * @param pIndex
+	 *          index
+	 * @return device for given pair; (class,index)
+	 */
+	public <T> ArrayList<T> getDevices(Class<T> pClass);
+
+	/**
 	 * Returns the device list object from which all devices can be queried.
 	 * 
 	 * @return device list object
 	 */
-	MicroscopeDeviceLists getDeviceLists();
+	public MicroscopeDeviceLists getDeviceLists();
 
 	/**
 	 * Sets the recycler that should be used by the stack camera device of given
@@ -67,15 +82,15 @@ public interface MicroscopeInterface extends
 	 * 
 	 * @param pStackCameraDeviceIndex
 	 */
-	void setRecycler(	int pStackCameraDeviceIndex,
-										RecyclerInterface<StackInterface, StackRequest> pRecycler);
+	public void setRecycler(int pStackCameraDeviceIndex,
+													RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
 	/**
 	 * Sets the recycler that should be used by _all_ stack camera devices.
 	 * 
 	 * @param pRecycler
 	 */
-	void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
+	public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
 	/**
 	 * Returns the recycler currently b the stack camera device of given id.
@@ -84,7 +99,7 @@ public interface MicroscopeInterface extends
 	 *          stack camera index id.
 	 * @return recycler.
 	 */
-	RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex);
+	public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex);
 
 	/**
 	 * Uses a recycler with given parameters. This recycler will be used for all
@@ -97,22 +112,22 @@ public interface MicroscopeInterface extends
 	 * @param pMaximumNumberOfLiveStacks
 	 *          maximum number of live stacks
 	 */
-	void useRecycler(	String pName,
-										int pMinimumNumberOfAvailableStacks,
-										int pMaximumNumberOfAvailableStacks,
-										int pMaximumNumberOfLiveStacks);
+	public void useRecycler(String pName,
+													int pMinimumNumberOfAvailableStacks,
+													int pMaximumNumberOfAvailableStacks,
+													int pMaximumNumberOfLiveStacks);
 
 	/**
 	 * Clears a given recycler.
 	 * 
 	 * @param pName
 	 */
-	void clearRecycler(String pName);
+	public void clearRecycler(String pName);
 
 	/**
 	 * Clears all recyclers.
 	 */
-	void clearAllRecyclers();
+	public void clearAllRecyclers();
 
 	/**
 	 * Plays queue for all devices, and waits for playback to finish.
@@ -126,9 +141,9 @@ public interface MicroscopeInterface extends
 	 * @throws ExecutionException
 	 * @throws TimeoutException
 	 */
-	Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit)	throws InterruptedException,
-																															ExecutionException,
-																															TimeoutException;
+	public Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit) throws InterruptedException,
+																																		ExecutionException,
+																																		TimeoutException;
 
 	/**
 	 * Plays queue for all devices, waits for playback to finish as well as waits
@@ -141,9 +156,10 @@ public interface MicroscopeInterface extends
 	 * @throws ExecutionException
 	 * @throws TimeoutException
 	 */
-	Boolean playQueueAndWaitForStacks(long pTimeOut, TimeUnit pTimeUnit) throws InterruptedException,
-																																			ExecutionException,
-																																			TimeoutException;
+	public Boolean playQueueAndWaitForStacks(	long pTimeOut,
+																						TimeUnit pTimeUnit)	throws InterruptedException,
+																																ExecutionException,
+																																TimeoutException;
 
 	/**
 	 * Returns the average timestamp for all stacks acquired during for last
@@ -151,8 +167,26 @@ public interface MicroscopeInterface extends
 	 * 
 	 * @return timestamp in nanoseconds
 	 */
-	long lastAcquiredStacksTimeStampInNS();
+	public long lastAcquiredStacksTimeStampInNS();
 
-	Variable<StackInterface> getStackVariable(int pIndex);
+	/**
+	 * Returns Stack Variable for given stack camera index
+	 * 
+	 * @param pIndex
+	 *          stack camera index
+	 * @return Stack Variable
+	 */
+	public Variable<StackInterface> getStackVariable(int pIndex);
+
+	/**
+	 * Returns the size in nanometer (anisotropic XY) of a pixel. this is the
+	 * actual physical size in the sample - thus taking into account overall
+	 * magnification. The size is returned wrapped into a Variable.
+	 * 
+	 * @param pCameraIndex
+	 *          camera index
+	 * @return size in nanometer as a Variable
+	 */
+	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
 
 }

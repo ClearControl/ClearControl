@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import clearcontrol.com.serial.SerialDevice;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.hardware.signalamp.devices.srs.adapters.protocol.ProtocolSIM;
 
-public class SIM900MainframeDevice extends NamedVirtualDevice
+public class SIM900MainframeDevice extends VirtualDevice
 {
 	private final SerialDevice mSerialDevice;
 

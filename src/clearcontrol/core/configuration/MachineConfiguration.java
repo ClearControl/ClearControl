@@ -11,12 +11,12 @@ import java.util.Properties;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import clearcontrol.core.math.functions.InvertibleFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MachineConfiguration
 {
@@ -85,7 +85,7 @@ public class MachineConfiguration
 		return mProperties.getProperty(pKey, pDefaultValue);
 	}
 
-	public int getIntegerProperty(String pKey, int pDefaultValue)
+	public Integer getIntegerProperty(String pKey, Integer pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -96,7 +96,7 @@ public class MachineConfiguration
 		return Integer.parseInt(lProperty);
 	}
 
-	public long getLongProperty(String pKey, long pDefaultValue)
+	public Long getLongProperty(String pKey, Long pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -107,7 +107,7 @@ public class MachineConfiguration
 		return Long.parseLong(lProperty);
 	}
 
-	public double getDoubleProperty(String pKey, double pDefaultValue)
+	public Double getDoubleProperty(String pKey, Double pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -118,7 +118,7 @@ public class MachineConfiguration
 		return Double.parseDouble(lProperty);
 	}
 
-	public boolean getBooleanProperty(String pKey, boolean pDefaultValue)
+	public boolean getBooleanProperty(String pKey, Boolean pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -280,18 +280,33 @@ public class MachineConfiguration
 			Double lMin = lMap.get("min");
 			Double lMax = lMap.get("max");
 
-			if (pFunction !=null && lMin != null && lMax != null)
+			if (lMin == null || lMax == null)
 			{
-				UnivariateFunction lInverse = pFunction.inverse();
-				pVariable.setMinMax(lInverse.value(lMin),
-														lInverse.value(lMax));
+				System.out.println("Cannot find following bounds def in configuration file: " + pBoundsName);
+				pVariable.setMinMax(-100.0, 100.0);
+				return;
 			}
 
-			Double lGranularity = lMap.get("granularity");
-			if (lGranularity != null)
+			if (pFunction == null)
 			{
-				pVariable.setGranularity(lGranularity);
+				System.out.format("Function provided for setting bounds of %s is null! \n",
+													pBoundsName);
+				pVariable.setMinMax(-100.0, 100.0);
+				return;
 			}
+
+			UnivariateFunction lInverse = pFunction.inverse();
+
+			double lDomainMin = lInverse.value(lMin);
+			double lDomainMax = lInverse.value(lMax);
+
+			pVariable.setMinMax(lDomainMin, lDomainMax);
+
+			Double lGranularity = lMap.get("granularity");
+			if (lGranularity == null)
+				pVariable.setGranularity(0);
+			else
+				pVariable.setGranularity(lGranularity);
 
 			return;
 

@@ -1,14 +1,14 @@
 package clearcontrol.device.update;
 
-public interface UpdatableInterface
+public interface UpdatableInterface 
 {
+	
+	public void ensureIsUpToDate();
 
-	public abstract void ensureIsUpToDate();
+	public boolean isUpToDate();
 
-	public abstract boolean isUpToDate();
+	public void setUpToDate(boolean pIsUpToDate);
 
-	public abstract void setUpToDate(boolean pIsUpToDate);
-
-	public abstract void requestUpdate();
+	public void requestUpdate();
 
 }

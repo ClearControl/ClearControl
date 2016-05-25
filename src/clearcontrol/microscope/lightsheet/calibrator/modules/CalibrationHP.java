@@ -1,10 +1,15 @@
 package clearcontrol.microscope.lightsheet.calibrator.modules;
 
 import static java.lang.Math.abs;
+import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -12,20 +17,16 @@ import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.StackInterface;
-import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationHP
 {
@@ -36,10 +37,10 @@ public class CalibrationHP
 	private MultiKeyMap<Integer, PolynomialFunction> mHPFunctions;
 	private int mNumberOfDetectionArmDevices;
 
-	public CalibrationHP(LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationHP(Calibrator pCalibrator)
 	{
 		super();
-		mLightSheetMicroscope = pLightSheetMicroscope;
+		mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
 
 		mMultiPlotAdjustPCurves = MultiPlot.getMultiPlot(this.getClass()
 																													.getSimpleName() + " calibration: adjust power curves");

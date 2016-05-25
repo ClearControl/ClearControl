@@ -2,9 +2,6 @@ package clearcontrol.gui.video.video2d.videowindow;
 
 import java.io.IOException;
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLAutoDrawable;
-
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 import cleargl.GLAttribute;
@@ -14,6 +11,10 @@ import cleargl.GLTexture;
 import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GLAutoDrawable;
+
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;
@@ -279,78 +280,86 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 	@Override
 	public void display(final GLAutoDrawable pGLAutoDrawable)
 	{
-		super.display(pGLAutoDrawable);
-		final GL lGL = pGLAutoDrawable.getGL().getGL();
-
-		// System.out.println("DISPLAY");
-		if (!mVideoWindow.mDisplayOn)
-			return;
-
-		if (mVideoWindow.mSourceBuffer != null)
+		try
 		{
-			mVideoWindow.mSendBufferLock.lock();
-			{
-				final int lBufferWidth = mVideoWindow.mSourceBufferWidth;
-				final int lBufferHeight = mVideoWindow.mSourceBufferHeight;
-				final ContiguousMemoryInterface lSourceBuffer = mVideoWindow.mSourceBuffer;
-				mVideoWindow.mSourceBuffer = null;
+			super.display(pGLAutoDrawable);
+			final GL lGL = pGLAutoDrawable.getGL().getGL();
 
-				if (mVideoWindow.mVideoWidth != lBufferWidth || mVideoWindow.mVideoHeight != lBufferHeight
-						|| mTexture.getWidth() != lBufferWidth
-						|| mTexture.getHeight() != lBufferHeight)
+			// System.out.println("DISPLAY");
+			if (!mVideoWindow.mDisplayOn)
+				return;
+
+			if (mVideoWindow.mSourceBuffer != null)
+			{
+				mVideoWindow.mSendBufferLock.lock();
 				{
-					mVideoWindow.mVideoWidth = lBufferWidth;
-					mVideoWindow.mVideoHeight = lBufferHeight;
-					initializeTexture(mVideoWindow.mVideoWidth,
-														mVideoWindow.mVideoHeight);
+					final int lBufferWidth = mVideoWindow.mSourceBufferWidth;
+					final int lBufferHeight = mVideoWindow.mSourceBufferHeight;
+					final ContiguousMemoryInterface lSourceBuffer = mVideoWindow.mSourceBuffer;
+					mVideoWindow.mSourceBuffer = null;
+
+					if (mVideoWindow.mVideoWidth != lBufferWidth || mVideoWindow.mVideoHeight != lBufferHeight
+							|| mTexture.getWidth() != lBufferWidth
+							|| mTexture.getHeight() != lBufferHeight)
+					{
+						mVideoWindow.mVideoWidth = lBufferWidth;
+						mVideoWindow.mVideoHeight = lBufferHeight;
+						initializeTexture(mVideoWindow.mVideoWidth,
+															mVideoWindow.mVideoHeight);
+					}
+
+					if (!mVideoWindow.mMinMaxFixed)
+						mVideoWindow.fastMinMaxSampling(lSourceBuffer);
+					final ContiguousMemoryInterface lConvertedBuffer = convertBuffer(	lSourceBuffer,
+																																						lBufferWidth,
+																																						lBufferHeight);
+
+					mTexture.copyFrom(lConvertedBuffer);
+					mVideoWindow.mNotifyBufferCopy.countDown();
+
+				}
+				mVideoWindow.mSendBufferLock.unlock();
+			}
+
+			{
+				if (mVideoWindow.mManualMinMax)
+				{
+					mMinimumUniform.setFloat((float) mVideoWindow.mMinIntensity);
+					mMaximumUniform.setFloat((float) mVideoWindow.mMaxIntensity);
+				}
+				else
+				{
+					mMinimumUniform.setFloat((float) mVideoWindow.mSampledMinIntensity);
+					mMaximumUniform.setFloat((float) mVideoWindow.mSampledMaxIntensity);
+				}
+				mGammaUniform.setFloat((float) mVideoWindow.mGamma);
+
+				setOrthoProjectionMatrixWithAspectRatio(mVideoWindow.mEffectiveWindowWidth,
+																								mVideoWindow.mEffectiveWindowHeight,
+																								mVideoWindow.mVideoWidth,
+																								mVideoWindow.mVideoHeight);
+				mProjectionMatrix.setFloatMatrix(	getClearGLWindow().getProjectionMatrix()
+																														.getFloatArray(),
+																					false);
+
+				mGLProgramVideoRender.use(lGL);
+				mTexture.bind(mGLProgramVideoRender);
+				// System.out.println("DRAW");
+				mQuadVertexArray.draw(GL.GL_TRIANGLES);
+
+				if (mVideoWindow.isDisplayLines())
+				{
+					mGLProgramGuides.bind();
+					// mXLinesGuidesVertexArray.draw(GL.GL_LINES);
+
+					mGridGuidesVertexArray.draw(GL.GL_LINES);
 				}
 
-				if (!mVideoWindow.mMinMaxFixed)
-					mVideoWindow.fastMinMaxSampling(lSourceBuffer);
-				final ContiguousMemoryInterface lConvertedBuffer = convertBuffer(	lSourceBuffer,
-																																					lBufferWidth,
-																																					lBufferHeight);
-
-				mTexture.copyFrom(lConvertedBuffer);
-				mVideoWindow.mNotifyBufferCopy.countDown();
-
 			}
-			mVideoWindow.mSendBufferLock.unlock();
 		}
-
+		catch (Throwable e)
 		{
-			if (mVideoWindow.mManualMinMax)
-			{
-				mMinimumUniform.setFloat((float) mVideoWindow.mMinIntensity);
-				mMaximumUniform.setFloat((float) mVideoWindow.mMaxIntensity);
-			}
-			else
-			{
-				mMinimumUniform.setFloat((float) mVideoWindow.mSampledMinIntensity);
-				mMaximumUniform.setFloat((float) mVideoWindow.mSampledMaxIntensity);
-			}
-			mGammaUniform.setFloat((float) mVideoWindow.mGamma);
-
-			setOrthoProjectionMatrixWithAspectRatio(mVideoWindow.mEffectiveWindowWidth,
-																							mVideoWindow.mEffectiveWindowHeight,
-																							mVideoWindow.mVideoWidth,
-																							mVideoWindow.mVideoHeight);
-			mProjectionMatrix.setFloatMatrix(	getClearGLWindow().getProjectionMatrix()
-																													.getFloatArray(),
-																				false);
-
-			mGLProgramVideoRender.use(lGL);
-			mTexture.bind(mGLProgramVideoRender);
-			// System.out.println("DRAW");
-			mQuadVertexArray.draw(GL.GL_TRIANGLES);
-
-			if (mVideoWindow.isDisplayLines())
-			{
-				mGLProgramGuides.bind();
-				// mXLinesGuidesVertexArray.draw(GL.GL_LINES);
-				mGridGuidesVertexArray.draw(GL.GL_LINES);
-			}
-
+			e.printStackTrace();
 		}
 
 	}

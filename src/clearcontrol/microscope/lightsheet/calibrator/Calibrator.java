@@ -6,11 +6,9 @@ import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.device.task.TaskDevice;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationA;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationHP;
@@ -23,7 +21,11 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
-public class Calibrator
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+public class Calibrator extends TaskDevice
 {
 
 	private static final int cMaxIterations = 5;
@@ -45,18 +47,39 @@ public class Calibrator
 	private int mNumberOfDetectionArmDevices;
 	private int mNumberOfLightSheetDevices;
 
-	private double mPixelSizeInMicrons;
+	private final Variable<Boolean> mCalibrateZVariable = new Variable<Boolean>("CalibrateZ",
+																																							true);
+	private final Variable<Boolean> mCalibrateAVariable = new Variable<Boolean>("CalibrateA",
+																																							false);
+	private final Variable<Boolean> mCalibrateXYVariable = new Variable<Boolean>(	"CalibrateXY",
+																																								false);
+
+	private final Variable<Boolean> mCalibratePVariable = new Variable<Boolean>("CalibrateP",
+																																							false);
+	private final Variable<Boolean> mCalibrateWVariable = new Variable<Boolean>("CalibrateW",
+																																							false);
+	private final Variable<Boolean> mCalibrateWPVariable = new Variable<Boolean>(	"CalibrateWP",
+																																								false);
+	private final Variable<Boolean> mCalibrateHPVariable = new Variable<Boolean>(	"CalibrateHP",
+																																								false);
+
+	private final Variable<String> mCalibrationDataName = new Variable<String>(	"CalibrationName",
+																																							"system");
+
+	private final Variable<Double> mProgressVariable;
 
 	public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
 	{
+		super(pLightSheetMicroscope.getName() + "Calibrator");
+
 		mLightSheetMicroscope = pLightSheetMicroscope;
-		mCalibrationZ = new CalibrationZ(pLightSheetMicroscope);
-		mCalibrationA = new CalibrationA(pLightSheetMicroscope);
-		mCalibrationXY = new CalibrationXY(pLightSheetMicroscope);
-		mCalibrationP = new CalibrationP(pLightSheetMicroscope);
-		mCalibrationW = new CalibrationW(pLightSheetMicroscope);
-		mCalibrationWP = new CalibrationWP(pLightSheetMicroscope);
-		mCalibrationHP = new CalibrationHP(pLightSheetMicroscope);
+		mCalibrationZ = new CalibrationZ(this);
+		mCalibrationA = new CalibrationA(this);
+		mCalibrationXY = new CalibrationXY(this);
+		mCalibrationP = new CalibrationP(this);
+		mCalibrationW = new CalibrationW(this);
+		mCalibrationWP = new CalibrationWP(this);
+		mCalibrationHP = new CalibrationHP(this);
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);
@@ -64,40 +87,66 @@ public class Calibrator
 		mNumberOfLightSheetDevices = mLightSheetMicroscope.getDeviceLists()
 																											.getNumberOfDevices(LightSheetInterface.class);
 
+		mProgressVariable = new Variable<Double>(	getName() + "Progress",
+																							0.0);
+
+	}
+
+	public LightSheetMicroscope getLightSheetMicroscope()
+	{
+		return mLightSheetMicroscope;
+	}
+
+	@Override
+	public void run()
+	{
+		mProgressVariable.set(0.0);
+		calibrate();
+		mProgressVariable.set(1.0);
+		System.out.println("############################################## Calibration done");
+
 	}
 
 	public boolean calibrate()
 	{
-		if (!calibrateZ(32))
+
+		if (getCalibrateZVariable().get() && !calibrateZ(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		if (!calibrateA(32))
+		if (getCalibrateAVariable().get() && !calibrateA(32))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		if (!calibrateXY(6))
+		if (getCalibrateXYVariable().get() && !calibrateXY(3))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic())
+		if (getCalibratePVariable().get() && !calibrateP())
+			return false;
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
 		/*if (!calibrateW(32))
 			return false;/**/
 
-		if (!calibrateZ(64))
+		if ((getCalibrateAVariable().get() || getCalibrateXYVariable().get()) && getCalibrateZVariable().get()
+				&& !calibrateZ(64))
 			return false;
-		if (ScriptingEngine.isCancelRequestedStatic())
+
+		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 			return false;/**/
 
-		calibrateP();
-		if (ScriptingEngine.isCancelRequestedStatic())
-			return false;/**/
+		if (getCalibratePVariable().get() && !calibrateP())
+			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+				return false;/**/
 
 		return true;
 	}
@@ -111,11 +160,14 @@ public class Calibrator
 			do
 			{
 				lError = calibrateZ(l, pNumberOfSamples, l == 0);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.02 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -129,11 +181,14 @@ public class Calibrator
 			do
 			{
 				lError = calibrateA(l, pNumberOfAngles);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.5 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -147,11 +202,14 @@ public class Calibrator
 			do
 			{
 				lError = calibrateXY(l, 0, pNumberOfPoints);
-				System.out.println("Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic())
+				System.out.println("############################################## Error = " + lError);
+				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 					return false;
+
 			}
 			while (lError >= 0.05 && lIteration++ < cMaxIterations);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 
 		return true;
@@ -167,11 +225,14 @@ public class Calibrator
 			mCalibrationP.calibrate();
 			lError = mCalibrationP.apply();
 
-			System.out.println("Error = " + lError);
-			if (ScriptingEngine.isCancelRequestedStatic())
+			System.out.println("############################################## Error = " + lError);
+			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
 				return false;
+
+			mProgressVariable.set((1.0 * lIteration) / cMaxIterations);
 		}
 		while (lError >= 0.04 && lIteration++ < cMaxIterations);
+		System.out.println("############################################## Done ");
 
 		return true;
 	}
@@ -182,6 +243,8 @@ public class Calibrator
 		for (int l = 0; l < mNumberOfLightSheetDevices; l++)
 		{
 			calibrateHP(l, 0, pNumberOfSamplesH, pNumberOfSamplesP);
+			System.out.println("############################################## Done ");
+			mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
 		}
 		return true;
 	}
@@ -198,7 +261,7 @@ public class Calibrator
 														int pNumberOfSamples,
 														boolean pAdjustDetectionZ)
 	{
-		mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 7);
+		mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 9);
 
 		return mCalibrationZ.apply(pLightSheetIndex, pAdjustDetectionZ);
 	}
@@ -334,6 +397,20 @@ public class Calibrator
 
 	}
 
+	public void save() throws JsonGenerationException,
+										JsonMappingException,
+										IOException
+	{
+		save(mCalibrationDataName.get());
+	}
+
+	public boolean load()	throws JsonGenerationException,
+												JsonMappingException,
+												IOException
+	{
+		return load(mCalibrationDataName.get());
+	}
+
 	public void save(String pName) throws JsonGenerationException,
 																JsonMappingException,
 																IOException
@@ -369,6 +446,51 @@ public class Calibrator
 	private File getFile(String pName)
 	{
 		return new File(mCalibrationFolder, pName + ".json");
+	}
+
+	public Variable<Boolean> getCalibrateZVariable()
+	{
+		return mCalibrateZVariable;
+	}
+
+	public Variable<Boolean> getCalibrateAVariable()
+	{
+		return mCalibrateAVariable;
+	}
+
+	public Variable<Boolean> getCalibrateXYVariable()
+	{
+		return mCalibrateXYVariable;
+	}
+
+	public Variable<Boolean> getCalibratePVariable()
+	{
+		return mCalibratePVariable;
+	}
+
+	public Variable<Boolean> getCalibrateWVariable()
+	{
+		return mCalibrateWVariable;
+	}
+
+	public Variable<Boolean> getCalibrateWPVariable()
+	{
+		return mCalibrateWPVariable;
+	}
+
+	public Variable<Boolean> getCalibrateHPVariable()
+	{
+		return mCalibrateHPVariable;
+	}
+
+	public Variable<Double> getProgressVariable()
+	{
+		return mProgressVariable;
+	}
+
+	public Variable<String> getCalibrationDataNameVariable()
+	{
+		return mCalibrationDataName;
 	}
 
 }

@@ -202,35 +202,38 @@ public class BoundedVariable<T extends Number> extends Variable<T>
 	@SuppressWarnings("unchecked")
 	public void setMinMax(double pMin, double pMax)
 	{
+		double lReordedMin = Math.min(pMin, pMax);
+		double lReordedlMax = Math.max(pMin, pMax);
+
 		if (mReference instanceof Double)
 		{
-			mMin.set((T) new Double(pMin));
-			mMax.set((T) new Double(pMax));
+			mMin.set((T) new Double(lReordedMin));
+			mMax.set((T) new Double(lReordedlMax));
 		}
 		else if (mReference instanceof Float)
 		{
-			mMin.set((T) new Float(pMin));
-			mMax.set((T) new Float(pMax));
+			mMin.set((T) new Float(lReordedMin));
+			mMax.set((T) new Float(lReordedlMax));
 		}
 		else if (mReference instanceof Long)
 		{
-			mMin.set((T) new Long((long) pMin));
-			mMax.set((T) new Long((long) pMax));
+			mMin.set((T) new Long((long) lReordedMin));
+			mMax.set((T) new Long((long) lReordedlMax));
 		}
 		else if (mReference instanceof Integer)
 		{
-			mMin.set((T) new Integer((int) pMin));
-			mMax.set((T) new Integer((int) pMax));
+			mMin.set((T) new Integer((int) lReordedMin));
+			mMax.set((T) new Integer((int) lReordedlMax));
 		}
 		else if (mReference instanceof Short)
 		{
-			mMin.set((T) new Short((short) pMin));
-			mMax.set((T) new Short((short) pMax));
+			mMin.set((T) new Short((short) lReordedMin));
+			mMax.set((T) new Short((short) lReordedlMax));
 		}
 		else if (mReference instanceof Byte)
 		{
-			mMin.set((T) new Byte((byte) pMin));
-			mMax.set((T) new Byte((byte) pMax));
+			mMin.set((T) new Byte((byte) lReordedMin));
+			mMax.set((T) new Byte((byte) lReordedlMax));
 		}
 	}
 

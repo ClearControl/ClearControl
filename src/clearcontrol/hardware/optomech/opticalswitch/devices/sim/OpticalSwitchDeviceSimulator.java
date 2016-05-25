@@ -1,10 +1,10 @@
 package clearcontrol.hardware.optomech.opticalswitch.devices.sim;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.name.NamedVirtualDevice;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 
-public class OpticalSwitchDeviceSimulator extends NamedVirtualDevice implements
+public class OpticalSwitchDeviceSimulator extends VirtualDevice implements
 																																		OpticalSwitchDeviceInterface
 
 {

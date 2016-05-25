@@ -1,5 +1,7 @@
 package clearcontrol.hardware.cameras.devices.orcaflash4.utils;
 
+import gnu.trove.list.array.TByteArrayList;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -16,21 +18,21 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.util.SingleUpdateTargetObjectVariable;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.signal.SignalStartableDevice;
+import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.processor.StackProcessorInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
-import gnu.trove.list.array.TByteArrayList;
 
-public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
-																																			OpenCloseDeviceInterface,
-																																			AsynchronousExecutorServiceAccess
+public class DcamJToVideoFrameConverter extends VirtualDevice	implements
+																															OpenCloseDeviceInterface,
+																															StartStopDeviceInterface,
+																															AsynchronousExecutorServiceAccess
 {
 
 	private OrcaFlash4StackCamera mOrcaFlash4StackCamera;
@@ -51,9 +53,7 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 	private final SingleUpdateTargetObjectVariable<StackInterface> mStackReference = new SingleUpdateTargetObjectVariable<StackInterface>("OffHeapPlanarStack");
 
 	private final Variable<Long> mNumberOfImagesPerPlaneVariable = new Variable<Long>("NumberOfPhases",
-																																																1L);
-
-	private final ArrayList<StackProcessorInterface> mStackProcessorList = new ArrayList<StackProcessorInterface>();
+																																										1L);
 
 	public DcamJToVideoFrameConverter(final OrcaFlash4StackCamera pOrcaFlash4StackCamera,
 																		Variable<Pair<TByteArrayList, DcamFrame>> pDcamFrameReference,
@@ -146,12 +146,6 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			// if (lNumberOfImagesKept == 0)
 			// return null;
 
-			final StackRequest lStackRequest = StackRequest.build(pDcamFrame.getRight()
-																																			.getWidth(),
-																														pDcamFrame.getRight()
-																																			.getHeight(),
-																														lNumberOfImagesKept);
-
 			StackInterface lOffHeapPlanarStack = null;
 
 			if (lNumberOfImagesKept == 0)
@@ -163,16 +157,29 @@ public class DcamJToVideoFrameConverter extends SignalStartableDevice	implements
 			{
 				RecyclerInterface<StackInterface, StackRequest> lStackRecycler = mOrcaFlash4StackCamera.getStackRecycler();
 
+				final StackRequest lStackRequest = StackRequest.build(pDcamFrame.getRight()
+																																				.getWidth(),
+																															pDcamFrame.getRight()
+																																				.getHeight(),
+																															lNumberOfImagesKept);
+
 				if (lStackRecycler.getNumberOfAvailableObjects() < mMinimalNumberOfAvailableStacks)
 					lStackRecycler.ensurePreallocated(mMinimalNumberOfAvailableStacks,
 																						lStackRequest);
 
-				System.out.println("m3DStackBasicRecycler.getNumberOfLiveObjects()=" + lStackRecycler.getNumberOfLiveObjects());
-				System.out.println("m3DStackBasicRecycler.getNumberOfAvailableObjects()=" + lStackRecycler.getNumberOfAvailableObjects());
+				// System.out.println("before: getNumberOfLiveObjects()=" +
+				// lStackRecycler.getNumberOfLiveObjects());
+				// System.out.println("before: getNumberOfAvailableObjects()=" +
+				// lStackRecycler.getNumberOfAvailableObjects());
 
 				lOffHeapPlanarStack = lStackRecycler.getOrWait(	mWaitForRecycledStackTimeInMicroSeconds,
 																												TimeUnit.MICROSECONDS,
 																												lStackRequest);
+
+				// System.out.println("after: getNumberOfLiveObjects()=" +
+				// lStackRecycler.getNumberOfLiveObjects());
+				// System.out.println("after: getNumberOfAvailableObjects()=" +
+				// lStackRecycler.getNumberOfAvailableObjects());
 			}
 
 			if (lOffHeapPlanarStack == null)

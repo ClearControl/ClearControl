@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.component.detection.gui.jfx;
 
-import clearcontrol.gui.jfx.sliderpanel.CustomVariablePane;
+import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 
 public class DetectionArmPanel extends CustomVariablePane
@@ -12,11 +12,13 @@ public class DetectionArmPanel extends CustomVariablePane
 
 		addTab("DOFs");
 		addSliderForVariable(	"Z :",
-		                     	pDetectionArmInterface.getZVariable(),1);/**/
-		
+													pDetectionArmInterface.getZVariable(),
+													5).setUpdateIfChanging(true);/**/
+
 		addTab("Functions");
-		
+
 		addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
+
 	}
 
 }

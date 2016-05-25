@@ -23,9 +23,14 @@ public class OnOffArrayPane extends StandardGridPane
 	private boolean mFancyStyle = false;
 	private int mCursor = 0;
 
-
-
 	public void addSwitch(String pName, Variable<Boolean> pVariable)
+	{
+		addSwitch(pName, pVariable, true);
+	}
+
+	public void addSwitch(String pName,
+												Variable<Boolean> pVariable,
+												boolean pBidirectional)
 	{
 		Control lControl;
 		BooleanProperty lSelectedProperty;
@@ -63,7 +68,11 @@ public class OnOffArrayPane extends StandardGridPane
 																																													pVariable.getName(),
 																																													false);
 
-		lJFXPropertyVariable.syncWith(pVariable);
+		if(pBidirectional)
+			lJFXPropertyVariable.syncWith(pVariable);
+		else
+			lJFXPropertyVariable.sendUpdatesTo(pVariable);
+		
 		lSelectedProperty.set(pVariable.get());
 
 	}

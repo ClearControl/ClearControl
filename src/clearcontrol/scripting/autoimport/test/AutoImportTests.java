@@ -16,7 +16,8 @@ public class AutoImportTests
 		final String lScriptText = IOUtils.toString(this.getClass()
 																										.getResourceAsStream("script.txt"),
 																								"UTF-8");
-		final String lGeneratedImportStatements = AutoImport.generateImportStatements("rtlib",
+		final String lGeneratedImportStatements = AutoImport.generateImportStatements(new String[]
+																																									{ "clearcontrol" },
 																																									lScriptText);
 
 		System.out.println(lGeneratedImportStatements);
