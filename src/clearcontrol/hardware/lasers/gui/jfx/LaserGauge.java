@@ -11,8 +11,13 @@ import clearcontrol.gui.jfx.rbg.RadialBargraphBuilder;
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
+
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -90,6 +95,8 @@ public class LaserGauge
 		return mCurrentPowerGauge.valueProperty();
 	}
 
+	private DoubleProperty fontSize = new SimpleDoubleProperty(22);
+
 	private void init()
 	{
 		// Power on/off
@@ -141,21 +148,34 @@ public class LaserGauge
 		// Laser name with Wavelength
 		properties = new VBox();
 		// properties.setPadding(new Insets(10));
-		properties.setSpacing(3);
+		properties.setPrefWidth( 100 );
+		properties.setSpacing( 3 );
 
 		Label laserLabel = new Label();
+		String fontFamily = "Arial Black";
 		laserLabel.setText(waveLength + " nm");
-		laserLabel.setFont(new Font("Arial Black", 22));
+		laserLabel.setFont(new Font(fontFamily, 24));
+
+		VBox lVBoxForColoredRectangle = new VBox();
+		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	Color.web(getWebColorString(waveLength)),
+				CornerRadii.EMPTY,
+				Insets.EMPTY)));
+		Rectangle rectangle = new Rectangle(33, 80, Color.TRANSPARENT);
+
+		properties.widthProperty().addListener( new ChangeListener< Number >()
+		{
+			@Override public void changed( ObservableValue< ? extends Number > observable, Number oldValue, Number newValue )
+			{
+				laserLabel.fontProperty().set( Font.font( fontFamily, newValue.doubleValue() / 4.1 ) );
+				rectangle.setWidth( newValue.doubleValue() / 3 );
+			}
+		} );
 
 		properties.getChildren().add(laserLabel);
 
 		pane = new HBox();
 
-		VBox lVBoxForColoredRectangle = new VBox();
-		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	Color.web(getWebColorString(waveLength)),
-																																							CornerRadii.EMPTY,
-																																							Insets.EMPTY)));
-		Rectangle rectangle = new Rectangle(20, 80, Color.TRANSPARENT);
+
 		lVBoxForColoredRectangle.getChildren().add(rectangle);
 
 		VBox vBox = new VBox();
