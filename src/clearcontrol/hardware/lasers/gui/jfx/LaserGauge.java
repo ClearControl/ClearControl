@@ -6,12 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import clearcontrol.gui.jfx.rbg.RadialBargraph;
-import clearcontrol.gui.jfx.rbg.RadialBargraphBuilder;
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.IconSwitch;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
@@ -30,6 +24,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import clearcontrol.gui.jfx.rbg.RadialBargraph;
+import clearcontrol.gui.jfx.rbg.RadialBargraphBuilder;
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.onoffswitch.IconSwitch;
 
 /**
  * Laser Gauge Controls
@@ -148,8 +147,8 @@ public class LaserGauge
 		// Laser name with Wavelength
 		properties = new VBox();
 		// properties.setPadding(new Insets(10));
-		properties.setPrefWidth( 100 );
-		properties.setSpacing( 3 );
+		properties.setPrefWidth(100);
+		properties.setSpacing(3);
 
 		Label laserLabel = new Label();
 		String fontFamily = "Arial Black";
@@ -158,23 +157,28 @@ public class LaserGauge
 
 		VBox lVBoxForColoredRectangle = new VBox();
 		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	Color.web(getWebColorString(waveLength)),
-				CornerRadii.EMPTY,
-				Insets.EMPTY)));
+																																							CornerRadii.EMPTY,
+																																							Insets.EMPTY)));
 		Rectangle rectangle = new Rectangle(33, 80, Color.TRANSPARENT);
 
-		properties.widthProperty().addListener( new ChangeListener< Number >()
-		{
-			@Override public void changed( ObservableValue< ? extends Number > observable, Number oldValue, Number newValue )
-			{
-				laserLabel.fontProperty().set( Font.font( fontFamily, newValue.doubleValue() / 4.1 ) );
-				rectangle.setWidth( newValue.doubleValue() / 3 );
-			}
-		} );
+		properties.widthProperty()
+							.addListener(new ChangeListener<Number>()
+							{
+								@Override
+								public void changed(ObservableValue<? extends Number> observable,
+																		Number oldValue,
+																		Number newValue)
+								{
+									laserLabel.fontProperty()
+														.set(Font.font(	fontFamily,
+																						newValue.doubleValue() / 4.1));
+									rectangle.setWidth(newValue.doubleValue() / 3);
+								}
+							});
 
 		properties.getChildren().add(laserLabel);
 
 		pane = new HBox();
-
 
 		lVBoxForColoredRectangle.getChildren().add(rectangle);
 

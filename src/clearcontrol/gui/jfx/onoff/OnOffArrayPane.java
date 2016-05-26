@@ -1,20 +1,18 @@
 package clearcontrol.gui.jfx.onoff;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.gridpane.StandardGridPane;
 import clearcontrol.gui.jfx.iconswitch.IconSwitch;
 import clearcontrol.gui.variable.JFXPropertyVariable;
 import eu.hansolo.enzo.common.SymbolType;
-import javafx.beans.property.BooleanProperty;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 public class OnOffArrayPane extends StandardGridPane
 {
@@ -22,6 +20,11 @@ public class OnOffArrayPane extends StandardGridPane
 	private boolean mVertical = true;
 	private boolean mFancyStyle = false;
 	private int mCursor = 0;
+
+	public OnOffArrayPane()
+	{
+		super(0, StandardGridPane.cStandardGap);
+	}
 
 	public void addSwitch(String pName, Variable<Boolean> pVariable)
 	{
@@ -68,11 +71,11 @@ public class OnOffArrayPane extends StandardGridPane
 																																													pVariable.getName(),
 																																													false);
 
-		if(pBidirectional)
+		if (pBidirectional)
 			lJFXPropertyVariable.syncWith(pVariable);
 		else
 			lJFXPropertyVariable.sendUpdatesTo(pVariable);
-		
+
 		lSelectedProperty.set(pVariable.get());
 
 	}

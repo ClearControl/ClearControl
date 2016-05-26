@@ -145,6 +145,12 @@ dependencies
 
     // JavaFX:
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
+    compile 'org.jfxtras:jfxtras-common:8.0-r5-SNAPSHOT'
+    compile 'org.jfxtras:jfxtras-controls:8.0-r5-SNAPSHOT'
+    compile 'org.jfxtras:jfxtras-window:8.0-r5-SNAPSHOT'
+    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5-SNAPSHOT'
+    compile 'org.jfxtras:jfxtras-labs:8.0-r5-SNAPSHOT'
+    
 
     // Halcyon:
     compile group: "net.halcyon", name:"Halcyon", version: "(,1.0.0]", changing: true, transitive: true

@@ -6,7 +6,7 @@ public abstract class StaveAbstract extends NameableAbstract implements
 																														StaveInterface
 
 {
-	private volatile boolean mEnabled = false;
+	private volatile boolean mEnabled = true;
 	private volatile long mDurationInNanoseconds;
 
 	/**

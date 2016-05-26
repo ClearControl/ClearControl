@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 public interface AsynchronousExecutorServiceAccess
 {
 
-	public default ThreadPoolExecutor initializeExecutors()
+	public default ThreadPoolExecutor initializeDefaultExecutor()
 	{
 		return RTlibExecutors.getOrCreateThreadPoolExecutor(this,
 																												Thread.NORM_PRIORITY,
@@ -19,11 +19,41 @@ public interface AsynchronousExecutorServiceAccess
 																												Integer.MAX_VALUE);
 	}
 
+	public default ThreadPoolExecutor initializeExecutor(	int pQueueLength,
+																												int pNumberOfThreads)
+	{
+		return RTlibExecutors.getOrCreateThreadPoolExecutor(this,
+																												Thread.NORM_PRIORITY,
+																												pNumberOfThreads,
+																												pNumberOfThreads,
+																												pQueueLength);
+	}
+
+	public default ThreadPoolExecutor initializeSerialExecutor()
+	{
+		return RTlibExecutors.getOrCreateThreadPoolExecutor(this,
+																												Thread.NORM_PRIORITY,
+																												1,
+																												1,
+																												Integer.MAX_VALUE);
+	}
+
+	public default ThreadPoolExecutor initializeConcurentExecutor()
+	{
+		return RTlibExecutors.getOrCreateThreadPoolExecutor(this,
+																												Thread.NORM_PRIORITY,
+																												Runtime.getRuntime()
+																																.availableProcessors() / 2,
+																												Runtime.getRuntime()
+																																.availableProcessors(),
+																												Integer.MAX_VALUE);
+	}
+
 	public default Future<?> executeAsynchronously(final Runnable pRunnable)
 	{
 		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 		if (lThreadPoolExecutor == null)
-			lThreadPoolExecutor = initializeExecutors();
+			lThreadPoolExecutor = initializeDefaultExecutor();
 
 		return lThreadPoolExecutor.submit(pRunnable);
 	}
@@ -32,7 +62,7 @@ public interface AsynchronousExecutorServiceAccess
 	{
 		ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getThreadPoolExecutor(this);
 		if (lThreadPoolExecutor == null)
-			lThreadPoolExecutor = initializeExecutors();
+			lThreadPoolExecutor = initializeDefaultExecutor();
 
 		return lThreadPoolExecutor.submit(pCallable);
 	}

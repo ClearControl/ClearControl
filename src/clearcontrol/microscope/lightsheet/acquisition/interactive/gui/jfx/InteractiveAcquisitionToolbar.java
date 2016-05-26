@@ -16,6 +16,8 @@ import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
 import clearcontrol.gui.jfx.slider.VariableSlider;
 import clearcontrol.gui.variable.JFXPropertyVariable;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
+import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
+import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
 
 public class InteractiveAcquisitionToolbar extends DockNode
 {
@@ -34,7 +36,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		lStart2D.setOnAction((e) -> {
 			pInteractiveAcquisition.start2DAcquisition();
 		});
-		GridPane.setColumnSpan(lStart2D, 3);
+		GridPane.setColumnSpan(lStart2D, 2);
 		mGridPane.add(lStart2D, 0, 0);
 
 		Button lStart3D = new Button("Start 3D");
@@ -43,7 +45,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		lStart3D.setOnAction((e) -> {
 			pInteractiveAcquisition.start3DAcquisition();
 		});
-		GridPane.setColumnSpan(lStart3D, 3);
+		GridPane.setColumnSpan(lStart3D, 2);
 		mGridPane.add(lStart3D, 0, 1);
 
 		Button lStop = new Button("Stop");
@@ -52,8 +54,21 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		lStop.setOnAction((e) -> {
 			pInteractiveAcquisition.stopAcquisition();
 		});
-		GridPane.setColumnSpan(lStop, 3);
+		GridPane.setColumnSpan(lStop, 2);
 		mGridPane.add(lStop, 0, 2);
+
+		SimpleIndicator lAcquisitionStateIndicator = new SimpleIndicator();
+		lAcquisitionStateIndicator.indicatorStyleProperty()
+															.set(IndicatorStyle.RED);
+		pInteractiveAcquisition.getIsRunningVariable()
+														.addSetListener((o, n) -> {
+															lAcquisitionStateIndicator.onProperty()
+																												.set(n);
+														});
+
+		GridPane.setColumnSpan(lAcquisitionStateIndicator, 1);
+		GridPane.setRowSpan(lAcquisitionStateIndicator, 3);
+		mGridPane.add(lAcquisitionStateIndicator, 2, 0);
 
 		VariableSlider<Double> lIntervalSlider = new VariableSlider<Double>("Period (s)",
 																																				pInteractiveAcquisition.getLoopPeriodVariable(),

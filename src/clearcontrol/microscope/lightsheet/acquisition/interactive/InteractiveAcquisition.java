@@ -133,7 +133,6 @@ public class InteractiveAcquisition extends LoopTaskDevice
 
 					}
 
-					mUpdate = false;
 				}
 
 				if (getLightSheetMicroscope().getQueueLength() == 0)
@@ -144,11 +143,17 @@ public class InteractiveAcquisition extends LoopTaskDevice
 
 				if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
 				{
+					if (getTriggerOnChangeVariable().get() && !mUpdate)
+						return true;
+
 					// play queue
 					// System.out.println("Playing Queue...");
 					getLightSheetMicroscope().playQueueAndWaitForStacks(10,
 																															TimeUnit.SECONDS);
 				}
+
+				if (mUpdate)
+					mUpdate = false;
 			}
 			catch (InterruptedException | ExecutionException e)
 			{
