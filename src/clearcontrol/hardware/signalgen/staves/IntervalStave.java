@@ -30,7 +30,8 @@ public class IntervalStave extends StaveAbstract implements
 	@Override
 	public float getValue(float pNormalizedTime)
 	{
-		if ((pNormalizedTime < getStart()) || (pNormalizedTime > getStop()))
+		if ((pNormalizedTime < getStart()) || (pNormalizedTime > getStop())
+				|| !isEnabled())
 			return getOutsideValue();
 		else
 			return getInsideValue();
