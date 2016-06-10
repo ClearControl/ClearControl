@@ -550,7 +550,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	public String toString()
 	{
 		return String.format(	"LightSheetMicroscope: \n%s\n",
-													mLSMDeviceLists.toString());
+													mDeviceLists.toString());
 	}
 
 }
