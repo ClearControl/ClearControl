@@ -39,7 +39,7 @@ public class LightSheetPanel extends CustomVariablePane
 
 		addSliderForVariable(	"Height :",
 													pLightSheetInterface.getHeightVariable(),
-													0.1).setUpdateIfChanging(true);
+													10.0).setUpdateIfChanging(true);
 
 		addSliderForVariable(	"Power :",
 													pLightSheetInterface.getPowerVariable(),

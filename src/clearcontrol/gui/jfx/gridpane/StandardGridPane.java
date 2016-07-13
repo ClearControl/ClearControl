@@ -7,13 +7,24 @@ import javafx.scene.layout.GridPane;
 public class StandardGridPane extends GridPane
 {
 
+	public static final int cStandardGap = 10;
+	public static final int cStandardPadding = 25;
+
 	public StandardGridPane()
+	{
+		this(cStandardPadding, cStandardGap);
+	}
+
+	public StandardGridPane(int pAddPading, int pGaps)
 	{
 		super();
 		setAlignment(Pos.CENTER);
-		setHgap(10);
-		setVgap(10);
-		setPadding(new Insets(25, 25, 25, 25));
+		setHgap(pGaps);
+		setVgap(pGaps);
+		setPadding(new Insets(pAddPading,
+													pAddPading,
+													pAddPading,
+													pAddPading));
 	}
 
 }

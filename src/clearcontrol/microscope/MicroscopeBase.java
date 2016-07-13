@@ -167,7 +167,11 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
+
+					System.out.println("Opening: " + lDevice);
 					final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
+					System.out.println("done.");
+
 					if (!lIsThisDeviceOpen)
 					{
 						System.out.println("Could not open device: " + lDevice);
@@ -192,7 +196,11 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
+
+					System.out.println("Opening: " + lDevice);
 					lIsClosed &= lOpenCloseDevice.close();
+					System.out.println("done.");
+
 				}
 			}
 

@@ -57,7 +57,9 @@ public class HalcyonGUIGenerator
 																							.getResourceAsStream("./icons/folder_16.png"),
 																					pNodeTypeNamesList);
 
-		mHalcyonFrame = new HalcyonFrame(1280, 768);
+		mHalcyonFrame = new HalcyonFrame(	pMicroscopeInterface.getName(),
+																			1280,
+																			768);
 
 		mHalcyonFrame.setTreePanel(lTreePanel);
 

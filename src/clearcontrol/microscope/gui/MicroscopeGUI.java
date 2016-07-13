@@ -46,6 +46,8 @@ public class MicroscopeGUI extends VirtualDevice implements
 		super(pLightSheetMicroscope.getName() + "GUI");
 		mMicroscope = pLightSheetMicroscope;
 		m3dView = p3DView;
+
+		initializeConcurentExecutor();
 	}
 
 	public void addScripting(	String pMicroscopeObjectName,
@@ -161,16 +163,6 @@ public class MicroscopeGUI extends VirtualDevice implements
 	@Override
 	public boolean open()
 	{
-		executeAsynchronously(() -> {
-			try
-			{
-				mHalcyonFrame.externalStart();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		});
 
 		executeAsynchronously(() -> {
 			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
@@ -186,6 +178,15 @@ public class MicroscopeGUI extends VirtualDevice implements
 					lStack3dDisplay.open();
 				}
 		});
+
+		try
+		{
+			mHalcyonFrame.externalStart();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		return super.open();
 	}
