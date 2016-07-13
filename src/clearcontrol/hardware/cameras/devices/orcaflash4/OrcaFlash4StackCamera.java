@@ -23,22 +23,29 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																																OpenCloseDeviceInterface,
 																																AsynchronousExecutorServiceAccess
 {
+	
+	// declaring instance variables
+	
 	public static final int cDcamJNumberOfBuffers = 1024;
 
-	private final int mCameraDeviceIndex;
+	private final int mCameraDeviceIndex; // camera id index used in the name and passed to the constructor
 
-	private final DcamAcquisition mDcamAcquisition;
+	private final DcamAcquisition mDcamAcquisition; // creating the environment for the camera
 
-	private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new Variable<>("DCamJVideoFrame");
+	private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new Variable<>("DCamJVideoFrame"); // some weird hamamatsu stuff, not sure if I need it with Andor
 
-	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing;
+	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing; // hamamtsu again
 
-	private final Object mLock = new Object();
+	private final Object mLock = new Object(); //lock object
 
-	private int mStackProcessorQueueSize = 6;
+	private int mStackProcessorQueueSize = 6; // queue size, would be nice to have a better understanding of this number
 
-	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000;
+	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000; // whatever
 
+	
+	// exotic calls to constructors to ensure proper triggering
+	
+	// external
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
 	{
@@ -47,6 +54,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																			pFlipX);
 	}
 
+	// internal
 	public static final OrcaFlash4StackCamera buildWithInternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
 	{
@@ -55,6 +63,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																			pFlipX);
 	}
 
+	// software
 	public static final OrcaFlash4StackCamera buildWithSoftwareTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
 	{
@@ -63,16 +72,23 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																			pFlipX);
 	}
 
+	
+	// constructor per se
 	private OrcaFlash4StackCamera(final int pCameraDeviceIndex,
 																final TriggerType pTriggerType,
 																boolean pFlipX)
 	{
+		
+		// run the constructors of parents
 		super("OrcaFlash4Camera" + pCameraDeviceIndex);
-
+		
+		// initialize the index instance variable with the given parameter
 		mCameraDeviceIndex = pCameraDeviceIndex;
+		// create the environment
 		mDcamAcquisition = new DcamAcquisition(getCameraDeviceIndex());
+		// set trigger type
 		mDcamAcquisition.setTriggerType(pTriggerType);
-
+		// some camera specific listener functional interface with the method frameArrived
 		mDcamAcquisition.addListener(new DcamAcquisitionListener()
 		{
 
@@ -107,13 +123,15 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 
 		});
-
+		// ----------------------- done with the listener -------- //
+		
+		// more instance vars
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																	9.74);
-
+		// even more
 		mStackBytesPerPixelVariable = new Variable<Long>(	"BytesPerPixel",
 																											mDcamAcquisition.getFrameBytesPerPixel());
-
+		// again
 		mStackWidthVariable = new Variable<Long>("FrameWidth", 2048L)
 		{
 			@Override
