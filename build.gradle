@@ -145,11 +145,11 @@ dependencies
 
     // JavaFX:
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
-    compile 'org.jfxtras:jfxtras-common:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-controls:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-window:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-labs:8.0-r5-SNAPSHOT'
+    compile 'org.jfxtras:jfxtras-common:8.0-r5'
+    compile 'org.jfxtras:jfxtras-controls:8.0-r5'
+    compile 'org.jfxtras:jfxtras-window:8.0-r5'
+    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5'
+    compile 'org.jfxtras:jfxtras-labs:8.0-r5'
     
 
     // Halcyon:
@@ -230,6 +230,9 @@ repositories
     maven { url  "http://maven.imagej.net/content/repositories/releases" }
     maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
     maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+    
+    //jfxtras:
+    maven { url "https://mvnrepository.com/artifact/org.jfxtras/jfxtras-labs" }
 
 }
 

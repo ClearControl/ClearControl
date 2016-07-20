@@ -8,6 +8,7 @@ import cleargl.GLAttribute;
 import cleargl.GLFloatArray;
 import cleargl.GLProgram;
 import cleargl.GLTexture;
+import cleargl.GLTypeEnum;
 import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
@@ -88,8 +89,8 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																											"shaders/video.vertex.glsl",
 																											"shaders/video.fragment.glsl");
 
-			mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
-			mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
+			mPositionAttribute = mGLProgramVideoRender.getAttribute("position");
+			mTexCoordAttribute = mGLProgramVideoRender.getAttribute("texcoord");
 			mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
 			mTexUnit.setInt(0);
 
@@ -137,7 +138,7 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																								"shaders/guides.vertex.glsl",
 																								"shaders/guides.fragment.glsl");
 
-			mGuidesPositionAttribute = mGLProgramGuides.getAtribute("position");
+			mGuidesPositionAttribute = mGLProgramGuides.getAttribute("position");
 
 			mXLinesPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
 																																	4);
@@ -194,24 +195,24 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 		if (mTexture != null)
 			mTexture.close();
 
-		NativeTypeEnum lGLType = null;
+		GLTypeEnum lGLType = null;
 
 		if (mVideoWindow.mType == NativeTypeEnum.Byte)
-			lGLType = NativeTypeEnum.Byte;
+			lGLType = GLTypeEnum.Byte;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedByte)
-			lGLType = NativeTypeEnum.UnsignedByte;
+			lGLType = GLTypeEnum.UnsignedByte;
 		else if (mVideoWindow.mType == NativeTypeEnum.Short)
-			lGLType = NativeTypeEnum.Short;
+			lGLType = GLTypeEnum.Short;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedShort)
-			lGLType = NativeTypeEnum.UnsignedShort;
+			lGLType = GLTypeEnum.UnsignedShort;
 		else if (mVideoWindow.mType == NativeTypeEnum.Int)
-			lGLType = NativeTypeEnum.Int;
+			lGLType = GLTypeEnum.Int;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedInt)
-			lGLType = NativeTypeEnum.UnsignedInt;
+			lGLType = GLTypeEnum.UnsignedInt;
 		else if (mVideoWindow.mType == NativeTypeEnum.Float)
-			lGLType = NativeTypeEnum.Float;
+			lGLType = GLTypeEnum.Float;
 		else if (mVideoWindow.mType == NativeTypeEnum.Double)
-			lGLType = NativeTypeEnum.Float;
+			lGLType = GLTypeEnum.Float;
 
 		mTexture = new GLTexture(	mGLProgramVideoRender,
 															lGLType,
@@ -314,7 +315,7 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																																						lBufferWidth,
 																																						lBufferHeight);
 
-					mTexture.copyFrom(lConvertedBuffer);
+					mTexture.copyFrom(lConvertedBuffer.getByteBuffer());
 					mVideoWindow.mNotifyBufferCopy.countDown();
 
 				}
