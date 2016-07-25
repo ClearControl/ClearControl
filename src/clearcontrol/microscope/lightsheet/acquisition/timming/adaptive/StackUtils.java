@@ -40,7 +40,7 @@ public class StackUtils
 		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
 
-		while (lMaxBuffer.hasRemaining() && lOtherBuffer.hasRemaining())
+		while (lMaxBuffer.hasRemainingByte() && lOtherBuffer.hasRemainingByte())
 		{
 			char u = lMaxBuffer.readChar();
 			char v = lOtherBuffer.readChar();
@@ -59,7 +59,7 @@ public class StackUtils
 		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pStack2.getContiguousMemory());
 
 		double lDifference = 0;
-		while (lMaxBuffer.hasRemaining() && lOtherBuffer.hasRemaining())
+		while (lMaxBuffer.hasRemainingByte() && lOtherBuffer.hasRemainingByte())
 		{
 			char u = lMaxBuffer.readChar();
 			char v = lOtherBuffer.readChar();

@@ -39,8 +39,8 @@ public class OutlierRemoverTests
 		System.out.println(lOutliersRemoved.min());
 		System.out.println(lOutliersRemoved.max());
 
-		assertTrue(lOutliersRemoved.min() > -4);
-		assertTrue(lOutliersRemoved.max() < 4);
+		assertTrue(lOutliersRemoved.min() > -10);
+		assertTrue(lOutliersRemoved.max() < 10);
 
 	}
 
