@@ -3,6 +3,7 @@ package clearcontrol.stack.sourcesink;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.buffers.ContiguousBuffer;
@@ -12,18 +13,18 @@ public class RandomStackSource implements StackSourceInterface
 {
 
 	private RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
-	private long mWidth;
-	private long mHeight;
-	private long mDepth;
+	private final Variable<Long> mWidthVariable;
+	private final Variable<Long> mHeightVariable;
+	private final Variable<Long> mDepthVariable;
 
 	public RandomStackSource(	long pWidth,
 														long pHeight,
 														long pDepth,
 														final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
 	{
-		mWidth = pWidth;
-		mHeight = pHeight;
-		mDepth = pDepth;
+		mWidthVariable = new Variable<Long>("Width",pWidth);
+		mHeightVariable = new Variable<Long>("Height", pHeight);
+		mDepthVariable = new Variable<Long>("Depth",pDepth);
 		mStackBasicRecycler = pStackRecycler;
 	}
 
@@ -68,9 +69,13 @@ public class RandomStackSource implements StackSourceInterface
 		}
 		try
 		{
-			final StackRequest lStackRequest = StackRequest.build(mWidth,
-																														mHeight,
-																														mDepth);
+			final long lWidth = getWidthVariable().get();
+			final long lHeight = getWidthVariable().get();
+			final long lDepth = getWidthVariable().get();
+			
+			final StackRequest lStackRequest = StackRequest.build(lWidth,
+																														lHeight,
+																														lDepth);
 
 			final StackInterface lStack = mStackBasicRecycler.getOrWait(pTime,
 																																	pTimeUnit,
@@ -80,11 +85,11 @@ public class RandomStackSource implements StackSourceInterface
 			{
 				final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lStack.getContiguousMemory());
 				lContiguousBuffer.rewind();
-				for (int z = 0; z < mDepth; z++)
+				for (int z = 0; z < lDepth; z++)
 				{
-					for (int y = 0; y < mHeight; y++)
+					for (int y = 0; y < lHeight; y++)
 					{
-						for (int x = 0; x < mWidth; x++)
+						for (int x = 0; x < lWidth; x++)
 						{
 							final short lValue = (short) (pStackIndex + x ^ y ^ z);
 							lContiguousBuffer.writeShort(lValue);
@@ -105,6 +110,21 @@ public class RandomStackSource implements StackSourceInterface
 			return null;
 		}
 
+	}
+
+	public Variable<Long> getWidthVariable()
+	{
+		return mWidthVariable;
+	}
+
+	public Variable<Long> getHeightVariable()
+	{
+		return mHeightVariable;
+	}
+
+	public Variable<Long> getDepthVariable()
+	{
+		return mDepthVariable;
 	}
 
 }

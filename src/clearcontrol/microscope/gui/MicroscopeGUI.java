@@ -4,8 +4,10 @@ import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
@@ -144,6 +146,10 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Setup Halcyon window (automatically) for a given Microscope.
+	 * @param pMicroscopeInterface
+	 */
 	private void setupHalcyonWindow(MicroscopeInterface pMicroscopeInterface)
 	{
 		ArrayList<HalcyonNodeType> lNodeTypeList = new ArrayList<>();
@@ -160,6 +166,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
 	}
 
+	/* (non-Javadoc)
+	 * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#open()
+	 */
 	@Override
 	public boolean open()
 	{
@@ -191,6 +200,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		return super.open();
 	}
 
+	/* (non-Javadoc)
+	 * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#close()
+	 */
 	@Override
 	public boolean close()
 	{
@@ -224,6 +236,11 @@ public class MicroscopeGUI extends VirtualDevice implements
 		return super.close();
 	}
 
+	/**
+	 * Connects Stack camera of given index to 2D display of given idex.
+	 * @param pStackCameraIndex
+	 * @param p2DStackDisplayIndex
+	 */
 	public void connectCameraTo2D(int pStackCameraIndex,
 																int p2DStackDisplayIndex)
 	{
@@ -236,6 +253,10 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Disconnects variable of given index.
+	 * @param pStackCameraIndex camera index.
+	 */
 	public void disconnectCamera(int pStackCameraIndex)
 	{
 		Variable<StackInterface> lStackVariable = mMicroscope.getStackVariable(pStackCameraIndex);
@@ -245,6 +266,11 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Connects 2D and 3D display variables.
+	 * @param p2DStackDisplayIndex
+	 * @param p3DStackDisplayIndex
+	 */
 	public void connect2DTo3D(int p2DStackDisplayIndex,
 														int p3DStackDisplayIndex)
 	{
@@ -254,6 +280,12 @@ public class MicroscopeGUI extends VirtualDevice implements
 		lStack2dDisplay.setOutputStackVariable(lStack3dDisplay.getStackInputVariable());
 	}
 
+	/**
+	 * Disconnects 2D to 3D display variables.
+	 * 
+	 * @param p2DStackDisplayIndex index of 2D display 
+	 * @param p3DStackDisplayIndex index of 3D display
+	 */
 	public void disconnect2DTo3D(	int p2DStackDisplayIndex,
 																int p3DStackDisplayIndex)
 	{
@@ -263,6 +295,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		lStack2dDisplay.setOutputStackVariable(null);
 	}
 
+	/**
+	 * Connects GUI to microscope variables
+	 */
 	public void connectGUI()
 	{
 
@@ -284,6 +319,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		}
 	}
 
+	/**
+	 * Disconnects GUI from microscope variables
+	 */
 	public void disconnectGUI()
 	{
 		final int lNumberOfCameras = mMicroscope.getNumberOfDevices(StackCameraDeviceInterface.class);
@@ -304,9 +342,25 @@ public class MicroscopeGUI extends VirtualDevice implements
 		}
 	}
 
+	/**
+	 * Retruns whether the GUI elements are visible.
+	 * 
+	 * @return true if GUI elements (windows) are visible
+	 */
 	public boolean isVisible()
 	{
 		return mHalcyonFrame.isVisible();
+	}
+
+	/**
+	 * Waits until the GUI window(s) are closed.
+	 */
+	public void waitForClose()
+	{
+		while (isVisible())
+		{
+			ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+		}
 	}
 
 }
