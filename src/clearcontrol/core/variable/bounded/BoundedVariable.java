@@ -107,7 +107,8 @@ public class BoundedVariable<T extends Number> extends Variable<T>
 		{
 			double lNewValue = pNewReference.doubleValue();
 
-			if (mGranularity != null && mGranularity.get().doubleValue() != 0.0)
+			if (mGranularity != null && mGranularity.get() != null
+					&& mGranularity.get().doubleValue() != 0.0)
 			{
 				double lGranularity = mGranularity.get().doubleValue();
 				lNewValue = lGranularity * Math.round(lNewValue / lGranularity);
@@ -134,7 +135,8 @@ public class BoundedVariable<T extends Number> extends Variable<T>
 		{
 			long lNewValue = pNewReference.longValue();
 
-			if (mGranularity != null && mGranularity.get().longValue() != 0L)
+			if (mGranularity != null && mGranularity.get() != null
+					&& mGranularity.get().longValue() != 0L)
 			{
 				long lGranularity = mGranularity.get().longValue();
 				lNewValue = lGranularity * Math.round(lNewValue / lGranularity);
