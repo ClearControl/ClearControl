@@ -24,6 +24,7 @@ import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipeline;
@@ -138,8 +139,8 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	public void setStackProcessingPipeline(	int pIndex,
 																					StackProcessingPipeline pStackPipeline)
 	{
-		StackCameraDeviceInterface lDevice = mDeviceLists.getDevice(	StackCameraDeviceInterface.class,
-																																		pIndex);
+		StackCameraDeviceInterface lDevice = mDeviceLists.getDevice(StackCameraDeviceInterface.class,
+																																pIndex);
 		StackProcessingPipeline lStackProcessingPipeline = mStackPipelines.get(pIndex);
 
 		if (lStackProcessingPipeline != null)
@@ -169,15 +170,10 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
 					System.out.println("Opening: " + lDevice);
-					final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
-					System.out.println("done.");
+					final boolean lResult = lOpenCloseDevice.open();
+					System.out.println(lResult ? "successfully" : "failed!");
 
-					if (!lIsThisDeviceOpen)
-					{
-						System.out.println("Could not open device: " + lDevice);
-					}
-
-					lIsOpen &= lIsThisDeviceOpen;
+					lIsOpen &= lResult;
 				}
 			}
 
@@ -197,10 +193,10 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
-					System.out.println("Opening: " + lDevice);
-					lIsClosed &= lOpenCloseDevice.close();
-					System.out.println("done.");
-
+					System.out.println("Closing: " + lDevice);
+					boolean lResult = lOpenCloseDevice.close();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsClosed &= lResult;
 				}
 			}
 
@@ -221,7 +217,11 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				if (lDevice instanceof StartStopDeviceInterface)
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-					lIsStarted &= lStartStopDevice.start();
+
+					System.out.println("Starting: " + lDevice);
+					boolean lResult = lStartStopDevice.start();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsStarted &= lResult;
 				}
 			}
 
@@ -240,7 +240,10 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				if (lDevice instanceof StartStopDeviceInterface)
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-					lIsStopped &= lStartStopDevice.stop();
+					System.out.println("Stopping: " + lDevice);
+					boolean lResult = lStartStopDevice.stop();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsStopped &= lResult;
 				}
 			}
 
@@ -293,7 +296,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 			// TODO: this should be put in a subclass specific to the way that we
 			// trigger cameras...
 			mDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
-											.addCurrentStateToQueue();
+									.addCurrentStateToQueue();
 
 			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
@@ -331,9 +334,26 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		if (lStackProcessingPipeline != null)
 			return lStackProcessingPipeline.getOutputVariable();
 		else
-			return mDeviceLists.getDevice(	StackCameraDeviceInterface.class,
-																				pIndex)
-														.getStackVariable();
+			return mDeviceLists.getDevice(StackCameraDeviceInterface.class,
+																		pIndex).getStackVariable();
+	}
+
+
+	@Override
+	public void useRecycler(final String pName,
+													final int pMinimumNumberOfAvailableStacks,
+													final int pMaximumNumberOfAvailableObjects,
+													final int pMaximumNumberOfLiveObjects)
+	{
+		int lNumberOfStackCameraDevices = getNumberOfDevices(StackCameraDeviceInterface.class);
+		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
+
+		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
+			getDevice(StackCameraDeviceInterface.class, i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
+
+		setRecycler(lRecycler);
 	}
 
 	@Override
@@ -359,23 +379,6 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		return getDeviceLists().getDevice(StackCameraDeviceInterface.class,
 																			pStackCameraDeviceIndex)
 														.getStackRecycler();
-	}
-
-	@Override
-	public void useRecycler(final String pName,
-													final int pMinimumNumberOfAvailableStacks,
-													final int pMaximumNumberOfAvailableObjects,
-													final int pMaximumNumberOfLiveObjects)
-	{
-		int lNumberOfStackCameraDevices = getNumberOfDevices(StackCameraDeviceInterface.class);
-		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
-
-		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			getDevice(StackCameraDeviceInterface.class, i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
-
-		setRecycler(lRecycler);
 	}
 
 	@Override

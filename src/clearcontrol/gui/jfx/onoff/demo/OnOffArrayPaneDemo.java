@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class OnOffArrayPanelDemo extends Application
+public class OnOffArrayPaneDemo extends Application
 {
 
 	@Override

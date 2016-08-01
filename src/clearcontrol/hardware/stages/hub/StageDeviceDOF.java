@@ -63,7 +63,7 @@ public class StageDeviceDOF
 		return mStageDeviceInterface.getCurrentPosition(mDOFIndex);
 	}
 
-	public Boolean waitToBeReady(int pTimeOut, TimeUnit pTimeUnit)
+	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
 	{
 		return mStageDeviceInterface.waitToBeReady(	mDOFIndex,
 																								pTimeOut,

@@ -1,4 +1,4 @@
-package clearcontrol.microscope;
+package clearcontrol.microscope.stacks;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

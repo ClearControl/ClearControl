@@ -158,7 +158,7 @@ public class StageDeviceHub extends VirtualDevice implements
 
 	@Override
 	public Boolean waitToBeReady(	int pDOFIndex,
-																int pTimeOut,
+																long pTimeOut,
 																TimeUnit pTimeUnit)
 	{
 		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);

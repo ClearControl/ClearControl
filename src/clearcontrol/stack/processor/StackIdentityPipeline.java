@@ -3,7 +3,7 @@ package clearcontrol.stack.processor;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclableFactoryInterface;
 
 public class StackIdentityPipeline implements StackProcessingPipeline
 {
@@ -36,7 +36,7 @@ public class StackIdentityPipeline implements StackProcessingPipeline
 
 	@Override
 	public void addStackProcessor(StackProcessorInterface pStackProcessor,
-																RecyclableFactory<StackInterface, StackRequest> pStackFactory,
+																RecyclableFactoryInterface<StackInterface, StackRequest> pStackFactory,
 																int pMaximumNumberOfObjects)
 	{
 		// TODO Auto-generated method stub

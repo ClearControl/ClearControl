@@ -8,16 +8,17 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.microscope.CleanupStackVariable;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.gui.LSMNodeType;
+import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
@@ -25,7 +26,8 @@ import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 
 public class MicroscopeGUI extends VirtualDevice implements
-																								AsynchronousExecutorServiceAccess
+																								AsynchronousExecutorServiceAccess,
+																								Waiting
 {
 
 	private static final int cDefaultWindowWidth = 512;
@@ -148,6 +150,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	/**
 	 * Setup Halcyon window (automatically) for a given Microscope.
+	 * 
 	 * @param pMicroscopeInterface
 	 */
 	private void setupHalcyonWindow(MicroscopeInterface pMicroscopeInterface)
@@ -238,6 +241,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	/**
 	 * Connects Stack camera of given index to 2D display of given idex.
+	 * 
 	 * @param pStackCameraIndex
 	 * @param p2DStackDisplayIndex
 	 */
@@ -255,7 +259,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	/**
 	 * Disconnects variable of given index.
-	 * @param pStackCameraIndex camera index.
+	 * 
+	 * @param pStackCameraIndex
+	 *          camera index.
 	 */
 	public void disconnectCamera(int pStackCameraIndex)
 	{
@@ -268,6 +274,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	/**
 	 * Connects 2D and 3D display variables.
+	 * 
 	 * @param p2DStackDisplayIndex
 	 * @param p3DStackDisplayIndex
 	 */
@@ -278,13 +285,17 @@ public class MicroscopeGUI extends VirtualDevice implements
 		Stack3DDisplay lStack3dDisplay = mStack3DVideoDeviceList.get(p3DStackDisplayIndex);
 
 		lStack2dDisplay.setOutputStackVariable(lStack3dDisplay.getStackInputVariable());
+		
+		lStack3dDisplay.setOutputStackVariable(mCleanupStackVariableList.get(p3DStackDisplayIndex));
 	}
 
 	/**
 	 * Disconnects 2D to 3D display variables.
 	 * 
-	 * @param p2DStackDisplayIndex index of 2D display 
-	 * @param p3DStackDisplayIndex index of 3D display
+	 * @param p2DStackDisplayIndex
+	 *          index of 2D display
+	 * @param p3DStackDisplayIndex
+	 *          index of 3D display
 	 */
 	public void disconnect2DTo3D(	int p2DStackDisplayIndex,
 																int p3DStackDisplayIndex)
@@ -307,15 +318,12 @@ public class MicroscopeGUI extends VirtualDevice implements
 		{
 			connectCameraTo2D(lCameraIndex, lCameraIndex);
 
-			/*if (m3dView)
+			if (m3dView)
 			{
-				connect2DTo3D(lCameraIndex, 0);
-				mStack3DVideoDeviceList.get(0)
-																.setOutputStackVariable(mCleanupStackVariable);
+				connect2DTo3D(lCameraIndex, 0);				
 			}
-			else
-				mStack2DVideoDeviceList.get(lCameraIndex)
-																.setOutputStackVariable(mCleanupStackVariable);/**/
+
+				
 		}
 	}
 
@@ -353,14 +361,23 @@ public class MicroscopeGUI extends VirtualDevice implements
 	}
 
 	/**
-	 * Waits until the GUI window(s) are closed.
+	 * Waits until the GUI main window is either visible or not visible.
+	 * 
+	 * @param pVisible
+	 *          main window state to wait for
+	 * @param pTimeOut
+	 *          time out
+	 * @param pTimeUnit
+	 *          time out unit
+	 * @return whether the main window is visible or not.
 	 */
-	public void waitForClose()
+	public boolean waitForVisible(boolean pVisible,
+																Long pTimeOut,
+																TimeUnit pTimeUnit)
 	{
-		while (isVisible())
-		{
-			ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
-		}
+		MicroscopeGUI lMicroscopeGUI = this;
+		return waitFor(pTimeOut, pTimeUnit, () -> {
+			return lMicroscopeGUI.isVisible() == pVisible;
+		});
 	}
-
 }

@@ -12,7 +12,7 @@ import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclableFactoryInterface;
 import coremem.recycling.RecyclerInterface;
 
 public class AsynchronousPoolStackProcessorPipeline	implements
@@ -100,7 +100,7 @@ public class AsynchronousPoolStackProcessorPipeline	implements
 
 	@Override
 	public void addStackProcessor(StackProcessorInterface pStackProcessor,
-																RecyclableFactory<StackInterface, StackRequest> pStackFactory,
+																RecyclableFactoryInterface<StackInterface, StackRequest> pStackFactory,
 																int pMaximumNumberOfObjects)
 	{
 		final RecyclerInterface<StackInterface, StackRequest> lStackRecycler = new BasicRecycler<StackInterface, StackRequest>(	pStackFactory,
