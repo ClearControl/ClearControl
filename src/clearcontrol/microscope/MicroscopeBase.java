@@ -52,9 +52,12 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	public MicroscopeBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		mStackRecyclerManager = new StackRecyclerManager();
+		
 		mDeviceLists = new MicroscopeDeviceLists(this);
 
+		mStackRecyclerManager = new StackRecyclerManager();		
+		mDeviceLists.addDevice(0, mStackRecyclerManager);
+		
 		for (int i = 0; i < 128; i++)
 		{
 			Double lPixelSizeInNanometers = MachineConfiguration.getCurrentMachineConfiguration()

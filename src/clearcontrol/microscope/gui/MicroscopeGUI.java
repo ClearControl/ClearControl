@@ -1,13 +1,9 @@
 package clearcontrol.microscope.gui;
 
-import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonNodeType;
-
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
@@ -24,6 +20,8 @@ import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNodeType;
 
 public class MicroscopeGUI extends VirtualDevice implements
 																								AsynchronousExecutorServiceAccess,

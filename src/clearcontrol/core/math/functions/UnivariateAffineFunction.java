@@ -1,11 +1,7 @@
 package clearcontrol.core.math.functions;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.io.Serializable;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 

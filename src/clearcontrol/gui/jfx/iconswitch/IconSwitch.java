@@ -1,5 +1,9 @@
 package clearcontrol.gui.jfx.iconswitch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.sun.javafx.css.converters.PaintConverter;
 
 import clearcontrol.gui.jfx.iconswitch.skin.IconSwitchSkin;
@@ -25,10 +29,6 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**

@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition;
+package clearcontrol.microscope.lightsheet.acquisition.state;
 
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.interpolation.InterpolationTable;

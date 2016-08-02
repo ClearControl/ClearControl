@@ -1,5 +1,7 @@
 package clearcontrol.microscope.lightsheet.acquisition;
 
+import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
+
 public interface StackAcquisitionInterface extends Iterable<Integer>
 {
 

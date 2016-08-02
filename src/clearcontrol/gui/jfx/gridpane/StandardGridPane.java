@@ -19,12 +19,22 @@ public class StandardGridPane extends GridPane
 	{
 		super();
 		setAlignment(Pos.CENTER);
-		setHgap(pGaps);
-		setVgap(pGaps);
+		setGap(pGaps);
+		setPadding(pAddPading);
+	}
+
+	public void setPadding(double pAddPading)
+	{
 		setPadding(new Insets(pAddPading,
 													pAddPading,
 													pAddPading,
 													pAddPading));
+	}
+
+	public void setGap(double pGap)
+	{
+		setHgap(pGap);
+		setVgap(pGap);
 	}
 
 }

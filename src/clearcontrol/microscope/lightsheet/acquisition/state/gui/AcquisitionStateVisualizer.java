@@ -1,9 +1,9 @@
-package clearcontrol.microscope.lightsheet.acquisition.gui;
+package clearcontrol.microscope.lightsheet.acquisition.state.gui;
 
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionState;
 import clearcontrol.microscope.lightsheet.acquisition.interpolation.InterpolationTable;
+import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
 
 public class AcquisitionStateVisualizer
 {

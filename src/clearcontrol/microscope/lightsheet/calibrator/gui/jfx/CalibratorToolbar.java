@@ -1,5 +1,11 @@
 package clearcontrol.microscope.lightsheet.calibrator.gui.jfx;
 
+import org.dockfx.DockNode;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.gridpane.StandardGridPane;
+import clearcontrol.gui.variable.JFXPropertyVariable;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,13 +16,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-
-import org.dockfx.DockNode;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.variable.JFXPropertyVariable;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 
 public class CalibratorToolbar extends DockNode
 {

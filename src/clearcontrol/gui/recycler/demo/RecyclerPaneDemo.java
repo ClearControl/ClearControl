@@ -2,6 +2,7 @@ package clearcontrol.gui.recycler.demo;
 
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
@@ -18,17 +19,17 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class RecyclerPaneDemo extends Application	implements
-																															AsynchronousExecutorServiceAccess
+																									AsynchronousExecutorServiceAccess
 {
 
 	private class DemoRequest implements RecyclerRequestInterface
 	{
+		public String value;
+
 		public DemoRequest(String pString)
 		{
 			value = pString;
 		}
-
-		public String value;
 	}
 
 	private class DemoFactory	implements
@@ -46,6 +47,7 @@ public class RecyclerPaneDemo extends Application	implements
 	{
 		RecyclerInterface<DemoRecyclable, DemoRequest> mRecycler;
 		String mString;
+		AtomicBoolean mReleased = new AtomicBoolean(false);
 
 		public DemoRecyclable(String pString)
 		{
@@ -55,7 +57,8 @@ public class RecyclerPaneDemo extends Application	implements
 		@Override
 		public long getSizeInBytes()
 		{
-			return mString.length() * Character.BYTES;
+			return (mString == null || mString.isEmpty())	? 0
+																										: mString.length() * Character.BYTES;
 		}
 
 		@Override
@@ -96,19 +99,19 @@ public class RecyclerPaneDemo extends Application	implements
 		@Override
 		public void setReleased(boolean pIsReleased)
 		{
-			mString = null;
+			mReleased.set(pIsReleased);
 		}
 
 		@Override
 		public boolean isReleased()
 		{
-			return mString == null;
+			return mReleased.get();
 		}
 
 		@Override
 		public void release()
 		{
-			mString = null;
+			setReleased(true);
 			mRecycler.release(this);
 		}
 
@@ -118,7 +121,9 @@ public class RecyclerPaneDemo extends Application	implements
 	public void start(Stage stage)
 	{
 		Group root = new Group();
-		Scene scene = new Scene(root, 600, 100);
+		Scene scene = new Scene(root,
+														RecyclerPane.cPrefWidth,
+														RecyclerPane.cPrefHeight);
 		stage.setScene(scene);
 		stage.setTitle("RecyclerPane Demo");
 		// scene.setFill(Color.BLACK);
@@ -126,7 +131,7 @@ public class RecyclerPaneDemo extends Application	implements
 		DemoFactory lFactory = new DemoFactory();
 
 		BasicRecycler<DemoRecyclable, DemoRequest> lRecycler = new BasicRecycler<>(	lFactory,
-																																															250);
+																																								250);
 
 		RecyclerPane lInstrumentedRecyclerPane = new RecyclerPane(lRecycler);
 
@@ -142,8 +147,8 @@ public class RecyclerPaneDemo extends Application	implements
 				{
 					if ((i / 100) % 2 == 1)
 					{
-						//System.out.println("RELEASING!");
-						if (!lStack.isEmpty() && Math.random()<0.9)
+						// System.out.println("RELEASING!");
+						if (!lStack.isEmpty() && Math.random() < 0.9)
 						{
 							DemoRecyclable lRecyclable = lStack.pop();
 							lRecyclable.release();
@@ -151,8 +156,8 @@ public class RecyclerPaneDemo extends Application	implements
 					}
 					else
 					{
-						///System.out.println("REQUESTING!");
-						DemoRequest lRequest = new DemoRequest("" + i);
+						// /System.out.println("REQUESTING!");
+						DemoRequest lRequest = new DemoRequest("req" + i);
 
 						DemoRecyclable lRecyclable = lRecycler.request(	true,
 																														1,
@@ -161,7 +166,7 @@ public class RecyclerPaneDemo extends Application	implements
 
 						if (lRecyclable == null)
 						{
-							//System.out.println("!!NULL!!");
+							// System.out.println("!!NULL!!");
 						}
 						else
 							lStack.push(lRecyclable);
@@ -169,7 +174,7 @@ public class RecyclerPaneDemo extends Application	implements
 
 					ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
 				}
-				
+
 				System.out.println("Done!");
 			}
 			catch (Throwable e)
@@ -178,8 +183,8 @@ public class RecyclerPaneDemo extends Application	implements
 			}
 
 		});
-		
-		RecyclerPane.openPaneInWindow("test",lRecycler);
+
+		RecyclerPane.openPaneInWindow("test", lRecycler);
 
 		stage.show();
 	}

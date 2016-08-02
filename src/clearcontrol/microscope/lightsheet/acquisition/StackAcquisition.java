@@ -8,8 +8,9 @@ import java.util.Iterator;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.gui.AcquisitionStateEvolutionVisualizer;
-import clearcontrol.microscope.lightsheet.acquisition.gui.AcquisitionStateVisualizer;
+import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
+import clearcontrol.microscope.lightsheet.acquisition.state.gui.AcquisitionStateEvolutionVisualizer;
+import clearcontrol.microscope.lightsheet.acquisition.state.gui.AcquisitionStateVisualizer;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 

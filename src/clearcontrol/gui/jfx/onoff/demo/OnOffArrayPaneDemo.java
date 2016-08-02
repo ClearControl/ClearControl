@@ -1,14 +1,10 @@
 package clearcontrol.gui.jfx.onoff.demo;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
 import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
-import clearcontrol.gui.jfx.slider.VariableSlider;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class OnOffArrayPaneDemo extends Application

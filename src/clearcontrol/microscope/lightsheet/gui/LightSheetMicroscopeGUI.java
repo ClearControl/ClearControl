@@ -1,8 +1,9 @@
 package clearcontrol.microscope.lightsheet.gui;
 
-import halcyon.model.node.HalcyonNode;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.acquisition.StackAcquisitionInterface;
+import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.StackAcquisitionPane;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
@@ -11,6 +12,7 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
+import halcyon.model.node.HalcyonNode;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
@@ -27,6 +29,7 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 		setupToolBars();
 		setupLightSheetInHalcyon();
 		setupDetectionArmInHalcyon();
+		setupStackAcquisitionInHalcyon();
 	}
 
 	private void setupToolBars()
@@ -73,6 +76,20 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 			HalcyonNode node = new HalcyonNode(	lDetectionArm.getName(),
 																					LSMNodeType.DetectionArm,
 																					lDetetcionArmPanel);
+			getHalcyonFrame().addNode(node);
+		}
+	}
+
+	private void setupStackAcquisitionInHalcyon()
+	{
+		for (StackAcquisitionInterface lStackAcquisitionInterface : getMicroscope().getDeviceLists()
+																															.getDevices(StackAcquisitionInterface.class))
+		{
+			StackAcquisitionPane lStackAcquisitionPane = new StackAcquisitionPane(lStackAcquisitionInterface);
+
+			HalcyonNode node = new HalcyonNode(	"Stack Acquisition & Timelapse",
+																					LSMNodeType.StackAcquisition,
+																					lStackAcquisitionPane);
 			getHalcyonFrame().addNode(node);
 		}
 	}

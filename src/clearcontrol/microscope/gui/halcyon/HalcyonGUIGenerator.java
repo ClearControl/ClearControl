@@ -1,17 +1,7 @@
 package clearcontrol.microscope.gui.halcyon;
 
-import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonNode;
-import halcyon.model.node.HalcyonNodeInterface;
-import halcyon.model.node.HalcyonNodeType;
-import halcyon.model.node.HalcyonOtherNode;
-import halcyon.model.node.HalcyonSwingNode;
-import halcyon.view.TreePanel;
-
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
-
-import javafx.embed.swing.JFXPanel;
 
 import javax.swing.SwingUtilities;
 
@@ -34,8 +24,18 @@ import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.gui.jfx.StageDeviceGUI;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.MicroscopeGUI;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
+import clearcontrol.microscope.stacks.gui.StackRecyclerManagerPanel;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingWindow;
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNode;
+import halcyon.model.node.HalcyonNodeInterface;
+import halcyon.model.node.HalcyonNodeType;
+import halcyon.model.node.HalcyonOtherNode;
+import halcyon.model.node.HalcyonSwingNode;
+import halcyon.view.TreePanel;
+import javafx.embed.swing.JFXPanel;
 
 public class HalcyonGUIGenerator
 {
@@ -81,6 +81,7 @@ public class HalcyonGUIGenerator
 		setupCameras();
 		setupSignalGenerators();
 		setupScalingAmplifiers();
+		setupOthers();
 
 		// setting up script engines:
 		setupScriptEngines(mMicroscopeInterface);
@@ -281,6 +282,20 @@ public class HalcyonGUIGenerator
 			HalcyonNode node = new HalcyonNode(	lLaserDevice.getName(),
 																					MicroscopeNodeType.Laser,
 																					laserDeviceGUI);
+			mHalcyonFrame.addNode(node);
+		}
+	}
+
+	private void setupOthers()
+	{
+		for (StackRecyclerManager lStackRecyclerManager : mMicroscopeInterface.getDeviceLists()
+																																					.getDevices(StackRecyclerManager.class))
+		{
+			StackRecyclerManagerPanel lStackRecyclerManagerPanel = new StackRecyclerManagerPanel(lStackRecyclerManager);
+
+			HalcyonNode node = new HalcyonNode(	"Stack recycler manager",
+																					MicroscopeNodeType.Other,
+																					lStackRecyclerManagerPanel);
 			mHalcyonFrame.addNode(node);
 		}
 	}

@@ -3,10 +3,7 @@ package clearcontrol.device.position.gui.jfx;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.position.PositionDeviceInterface;
 import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 
 public class PositionDevicePanel extends StandardGridPane
 {

@@ -1,7 +1,5 @@
 package clearcontrol.hardware.cameras.devices.orcaflash4;
 
-import gnu.trove.list.array.TByteArrayList;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -18,6 +16,7 @@ import dcamj.DcamAcquisition.TriggerType;
 import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
+import gnu.trove.list.array.TByteArrayList;
 
 public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																																OpenCloseDeviceInterface,

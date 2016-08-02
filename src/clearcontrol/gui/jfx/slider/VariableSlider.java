@@ -3,6 +3,10 @@ package clearcontrol.gui.jfx.slider;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.signum;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.slider.customslider.Slider;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
@@ -11,9 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.slider.customslider.Slider;
 
 public class VariableSlider<T extends Number> extends HBox
 {

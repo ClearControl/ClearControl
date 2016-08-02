@@ -9,6 +9,7 @@ import clearcontrol.device.switches.SwitchingDeviceInterface;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
+import clearcontrol.microscope.lightsheet.acquisition.StackAcquisition;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -40,6 +41,13 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		Calibrator lCalibrator = new Calibrator(this);
 		addDevice(0, lCalibrator);
 		return lCalibrator;
+	}
+
+	public StackAcquisition addStackAcquisition()
+	{
+		StackAcquisition lStackAcquisition = new StackAcquisition(this);
+		addDevice(0, lStackAcquisition);
+		return lStackAcquisition;
 	}
 
 	public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)

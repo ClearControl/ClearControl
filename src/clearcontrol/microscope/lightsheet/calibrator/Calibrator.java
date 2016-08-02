@@ -6,6 +6,10 @@ import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.task.TaskDevice;
@@ -20,10 +24,6 @@ import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationZ;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class Calibrator extends TaskDevice
 {

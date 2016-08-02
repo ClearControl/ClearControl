@@ -11,8 +11,8 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionState;
 import clearcontrol.microscope.lightsheet.acquisition.StackAcquisitionInterface;
+import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
 import clearcontrol.microscope.lightsheet.adaptation.modules.AdaptationModuleInterface;
 
 public class Adaptator implements

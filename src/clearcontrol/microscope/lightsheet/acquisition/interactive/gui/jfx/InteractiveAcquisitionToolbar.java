@@ -1,13 +1,5 @@
 package clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-
 import org.dockfx.DockNode;
 
 import clearcontrol.core.variable.Variable;
@@ -18,6 +10,13 @@ import clearcontrol.gui.variable.JFXPropertyVariable;
 import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
+import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 public class InteractiveAcquisitionToolbar extends DockNode
 {

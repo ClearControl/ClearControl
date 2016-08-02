@@ -11,12 +11,12 @@ import java.util.Properties;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import clearcontrol.core.math.functions.InvertibleFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MachineConfiguration
 {
