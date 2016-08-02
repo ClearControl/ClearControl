@@ -155,7 +155,7 @@ dependencies
     
 
     // Halcyon:
-    compile group: "net.halcyon", name:"Halcyon", version: "(,1.0.0]", changing: true, transitive: true
+    compile group: "net.halcyon", name:"Halcyon", version: "[0.3.1,1.0.0]", changing: true, transitive: true
 
     // MigLayout:
     compile 'com.miglayout:miglayout:3.7.4'
@@ -185,7 +185,7 @@ dependencies
     compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
 
     // CoreMem:
-    compile group: "net.coremem", name: "CoreMem", version: "(,1.0.0]", changing: true, transitive:true
+    compile group: "net.coremem", name: "CoreMem", version: "[0.2.0,1.0.0]", changing: true, transitive:true
 
     // ClearVolume:
     compile group: "net.clearvolume", name: "clearvolume", version: "(,1.10]", changing: true, transitive: true
