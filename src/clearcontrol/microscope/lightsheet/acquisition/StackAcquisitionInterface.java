@@ -1,5 +1,6 @@
 package clearcontrol.microscope.lightsheet.acquisition;
 
+import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
 
 public interface StackAcquisitionInterface extends Iterable<Integer>
@@ -60,5 +61,17 @@ public interface StackAcquisitionInterface extends Iterable<Integer>
 	void addStackMargin(int pZPlaneIndex, int pNumber);
 
 	void addStackMargin(int pNumber);
+
+	Variable<Number> getStackZLowVariable();
+
+	Variable<Number> getStackZHighVariable();
+	
+	Variable<Number> getStackZStepVariable();
+
+	Variable<Number> getStackZMinVariable();
+
+	Variable<Number> getStackZMaxVariable();
+
+
 
 }

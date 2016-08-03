@@ -11,6 +11,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.state.AcquisitionState;
 import clearcontrol.microscope.lightsheet.acquisition.state.gui.AcquisitionStateEvolutionVisualizer;
 import clearcontrol.microscope.lightsheet.acquisition.state.gui.AcquisitionStateVisualizer;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
@@ -19,12 +20,12 @@ public class StackAcquisition implements StackAcquisitionInterface
 
 	private final LightSheetMicroscope mLightSheetMicroscope;
 
-	private final Variable<Double> mLowZ = new Variable<Double>("LowZ",
+	private final Variable<Number> mZLow = new Variable<Number>("LowZ",
 																															25.0);
-	private final Variable<Double> mHighZ = new Variable<Double>(	"HighZ",
+	private final Variable<Number> mZHigh = new Variable<Number>(	"HighZ",
 																																75.0);
 
-	private final Variable<Double> mZStep = new Variable<Double>(	"ZStep",
+	private final Variable<Number> mZStep = new Variable<Number>(	"ZStep",
 																																0.5);
 
 	private volatile AcquisitionState mCurrentAcquisitionState;
@@ -85,25 +86,25 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public void setLowZ(double pValue)
 	{
-		mLowZ.set(pValue);
+		mZLow.set(pValue);
 	}
 
 	@Override
 	public double getMinZ()
 	{
-		return mLowZ.get();
+		return mZLow.get().doubleValue();
 	}
 
 	@Override
 	public void setHighZ(double pValue)
 	{
-		mHighZ.set(pValue);
+		mZHigh.set(pValue);
 	}
 
 	@Override
 	public double getMaxZ()
 	{
-		return mHighZ.get();
+		return mZHigh.get().doubleValue();
 	}
 
 	@Override
@@ -115,13 +116,13 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getStepZ()
 	{
-		return mZStep.get();
+		return mZStep.get().doubleValue();
 	}
 
 	@Override
 	public double getStackDepthInMicrons()
 	{
-		return (mHighZ.get() - mLowZ.get());
+		return (mZHigh.get().doubleValue() - mZLow.get().doubleValue());
 	}
 
 	@Override
@@ -136,7 +137,41 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public int getStackDepth()
 	{
-		return (int) floor(getStackDepthInMicrons() / mZStep.get());
+		return (int) floor(getStackDepthInMicrons() / mZStep.get().doubleValue());
+	}
+
+	@Override
+	public Variable<Number> getStackZLowVariable()
+	{
+		return mZLow;
+	}
+
+	@Override
+	public Variable<Number> getStackZHighVariable()
+	{
+		return mZHigh;
+	}
+	
+	@Override
+	public Variable<Number> getStackZStepVariable()
+	{
+		return mZStep;
+	}
+
+	@Override
+	public Variable<Number> getStackZMinVariable()
+	{
+		return getLightSheetMicroscope().getDevice(DetectionArm.class, 0)
+																		.getZVariable()
+																		.getMinVariable();
+	}
+
+	@Override
+	public Variable<Number> getStackZMaxVariable()
+	{
+		return getLightSheetMicroscope().getDevice(DetectionArm.class, 0)
+																		.getZVariable()
+																		.getMaxVariable();
 	}
 
 	@Override
@@ -236,14 +271,14 @@ public class StackAcquisition implements StackAcquisitionInterface
 	@Override
 	public double getZRamp(int pPlaneIndex)
 	{
-		final double lZ = mLowZ.get() + pPlaneIndex * getStepZ();
+		final double lZ = mZLow.get().doubleValue() + pPlaneIndex * getStepZ();
 		return lZ;
 	}
 
 	@Override
 	public int getPlaneIndexForZRamp(double pZRampValue)
 	{
-		final int lIndex = (int) round((pZRampValue - mLowZ.get()) / getStepZ());
+		final int lIndex = (int) round((pZRampValue - mZLow.get().doubleValue()) / getStepZ());
 		return lIndex;
 	}
 
