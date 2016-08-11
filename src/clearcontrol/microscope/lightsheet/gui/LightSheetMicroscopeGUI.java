@@ -1,17 +1,20 @@
 package clearcontrol.microscope.lightsheet.gui;
 
 import clearcontrol.microscope.gui.MicroscopeGUI;
+import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.StackAcquisitionInterface;
-import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.StackAcquisitionPane;
-import clearcontrol.microscope.lightsheet.acquisition.interactive.InteractiveAcquisition;
-import clearcontrol.microscope.lightsheet.acquisition.interactive.gui.jfx.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
+import clearcontrol.microscope.lightsheet.autopilot.gui.jfx.AutoPilotPane;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
+import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
+import clearcontrol.microscope.lightsheet.timelapse.gui.jfx.TimelapsePane;
 import halcyon.model.node.HalcyonNode;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
@@ -20,7 +23,8 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
 																	boolean p3DView)
 	{
-		super(pLightSheetMicroscope, p3DView);
+		super(pLightSheetMicroscope, LSMNodeType.values(), p3DView);
+
 	}
 
 	public void generate()
@@ -29,7 +33,8 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 		setupToolBars();
 		setupLightSheetInHalcyon();
 		setupDetectionArmInHalcyon();
-		setupStackAcquisitionInHalcyon();
+		setupTimelapseInHalcyon();
+		setupAutoPilotInHalcyon();
 	}
 
 	private void setupToolBars()
@@ -80,16 +85,30 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 		}
 	}
 
-	private void setupStackAcquisitionInHalcyon()
+	private void setupTimelapseInHalcyon()
 	{
-		for (StackAcquisitionInterface lStackAcquisitionInterface : getMicroscope().getDeviceLists()
-																															.getDevices(StackAcquisitionInterface.class))
+		for (TimelapseInterface lTimelapseInterface : getMicroscope().getDeviceLists()
+																																	.getDevices(TimelapseInterface.class))
 		{
-			StackAcquisitionPane lStackAcquisitionPane = new StackAcquisitionPane(lStackAcquisitionInterface);
+			TimelapsePane lTimelapsePane = new TimelapsePane(lTimelapseInterface);
 
-			HalcyonNode node = new HalcyonNode(	"Stack Acquisition & Timelapse",
-																					LSMNodeType.StackAcquisition,
-																					lStackAcquisitionPane);
+			HalcyonNode node = new HalcyonNode(	"Timelapse",
+																					MicroscopeNodeType.Acquisition,
+																					lTimelapsePane);
+			getHalcyonFrame().addNode(node);
+		}
+	}
+
+	private void setupAutoPilotInHalcyon()
+	{
+		for (AutoPilotInterface lAutoPilotInterface : getMicroscope().getDeviceLists()
+																																	.getDevices(AutoPilotInterface.class))
+		{
+			AutoPilotPane lAutoPilotPane = new AutoPilotPane(lAutoPilotInterface);
+
+			HalcyonNode node = new HalcyonNode(	"AutoPilot",
+																					MicroscopeNodeType.Acquisition,
+																					lAutoPilotPane);
 			getHalcyonFrame().addNode(node);
 		}
 	}

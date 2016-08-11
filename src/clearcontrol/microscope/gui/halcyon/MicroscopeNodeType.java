@@ -15,6 +15,7 @@ public enum MicroscopeNodeType implements HalcyonNodeType
 	SignalGenerator,
 	ScalingAmplifier,
 	AdaptiveOptics,
+	Acquisition,
 	Scripting,
 	StackDisplay2D,
 	StackDisplay3D,

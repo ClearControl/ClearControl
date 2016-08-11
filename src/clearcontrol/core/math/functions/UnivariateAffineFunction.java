@@ -48,7 +48,6 @@ public class UnivariateAffineFunction	implements
 		mB = pB;
 	}
 
-
 	public void setConstant(double pB)
 	{
 		mB = pB;
@@ -74,6 +73,14 @@ public class UnivariateAffineFunction	implements
 	{
 		mA = mA * pFunction.getSlope();
 		mB = mA * pFunction.getConstant() + mB;
+	}
+
+	public boolean hasInverse()
+	{
+		return (mA > 0 || mA < 0) && Double.isFinite(mA)
+						&& !Double.isNaN(mA)
+						&& Double.isFinite(mB)
+						&& !Double.isNaN(mB);
 	}
 
 	public UnivariateAffineFunction inverse()

@@ -3,6 +3,8 @@ package clearcontrol.microscope.stacks;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.device.change.ChangeListener;
+import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -15,15 +17,14 @@ import coremem.recycling.RecyclerInterface;
  * 
  * @author royer
  */
-public class StackRecyclerManager
+public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManager>
 {
 
 	final private ContiguousOffHeapPlanarStackFactory mOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
 	final private ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> mRecyclerMap = new ConcurrentHashMap<>();
 
-	CopyOnWriteArrayList<StackRecyclerManagerListener> mListenersList = new CopyOnWriteArrayList<StackRecyclerManagerListener>();
-
+	
 	/**
 	 * Creates StackRecyclerManager
 	 */
@@ -32,21 +33,6 @@ public class StackRecyclerManager
 		super();
 	}
 
-	/**
-	 * @param pStackRecyclerManagerListener
-	 */
-	public void addListener(StackRecyclerManagerListener pStackRecyclerManagerListener)
-	{
-		mListenersList.add(pStackRecyclerManagerListener);
-	}
-
-	/**
-	 * @param pStackRecyclerManagerListener
-	 */
-	public void removeListener(StackRecyclerManagerListener pStackRecyclerManagerListener)
-	{
-		mListenersList.add(pStackRecyclerManagerListener);
-	}
 
 	/**
 	 * Requests a recycler with given characteristics, if it already exists and it
@@ -62,7 +48,7 @@ public class StackRecyclerManager
 																																			int pMaximumNumberOfLiveObjects,
 																																			int pMaximumNumberOfAvailableObjects)
 	{
-		RecyclerInterface<StackInterface, StackRequest> lRecycler = mRecyclerMap.get(pName);
+		RecyclerInterface<StackInterface, StackRequest> lRecycler = getRecyclerMap().get(pName);
 
 		if (lRecycler == null || lRecycler.getNumberOfAvailableObjects() != pMaximumNumberOfAvailableObjects
 				|| lRecycler.getNumberOfLiveObjects() != pMaximumNumberOfLiveObjects)
@@ -71,7 +57,7 @@ public class StackRecyclerManager
 																			pMaximumNumberOfLiveObjects,
 																			pMaximumNumberOfAvailableObjects,
 																			true);
-			mRecyclerMap.put(pName, lRecycler);
+			getRecyclerMap().put(pName, lRecycler);
 			notifyListeners();
 		}
 
@@ -88,7 +74,7 @@ public class StackRecyclerManager
 	 */
 	public void clear(String pName)
 	{
-		mRecyclerMap.remove(pName);
+		getRecyclerMap().remove(pName);
 		notifyListeners();
 	}
 
@@ -97,19 +83,18 @@ public class StackRecyclerManager
 	 */
 	public void clearAll()
 	{
-		mRecyclerMap.clear();
+		getRecyclerMap().clear();
 		notifyListeners();
 	}
 
-	/**
-	 * Notifies listeners of changes to the recylcers collection.
-	 */
-	private void notifyListeners()
+
+	public ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> getRecyclerMap()
 	{
-		for (StackRecyclerManagerListener lListener : mListenersList)
-		{
-			lListener.update(mRecyclerMap);
-		}
+		return mRecyclerMap;
 	}
+
+
+
+
 
 }

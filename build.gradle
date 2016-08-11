@@ -151,6 +151,14 @@ dependencies
     compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5'
     compile 'org.jfxtras:jfxtras-labs:8.0-r5'/**/
     compile 'org.controlsfx:controlsfx:8.40.11'
+    
+    compile 'de.jensd:fontawesomefx:8.9'
+    compile 'de.jensd:fontawesomefx-fontawesome:4.6.3'
+		compile 'de.jensd:fontawesomefx-materialdesignfont:1.6.50'
+		compile 'de.jensd:fontawesomefx-materialicons:2.2.0'
+		compile 'de.jensd:fontawesomefx-octicons:4.3.0'
+		compile 'de.jensd:fontawesomefx-icons525:2.6.0'
+		compile 'de.jensd:fontawesomefx-weathericons:2.0-3'
 
     
 
@@ -235,6 +243,9 @@ repositories
     
     //jfxtras:
     maven { url "https://mvnrepository.com/artifact/org.jfxtras/jfxtras-labs" }
+    
+    //FontAwesome:
+    maven { url "https://bintray.com/jerady/maven/FontAwesomeFX/view"}
 
 }
 
