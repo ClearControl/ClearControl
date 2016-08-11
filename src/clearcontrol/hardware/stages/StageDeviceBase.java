@@ -83,7 +83,7 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 
 	@Override
 	public Boolean waitToBeReady(	int pIndex,
-																int pTimeOut,
+																long pTimeOut,
 																TimeUnit pTimeUnit)
 	{
 		System.out.println("waiting...");

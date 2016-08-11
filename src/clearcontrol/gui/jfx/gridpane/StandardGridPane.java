@@ -7,8 +7,8 @@ import javafx.scene.layout.GridPane;
 public class StandardGridPane extends GridPane
 {
 
-	public static final int cStandardGap = 10;
-	public static final int cStandardPadding = 25;
+	public static final int cStandardGap = 5;
+	public static final int cStandardPadding = 10;
 
 	public StandardGridPane()
 	{
@@ -19,12 +19,22 @@ public class StandardGridPane extends GridPane
 	{
 		super();
 		setAlignment(Pos.CENTER);
-		setHgap(pGaps);
-		setVgap(pGaps);
+		setGap(pGaps);
+		setPadding(pAddPading);
+	}
+
+	public void setPadding(double pAddPading)
+	{
 		setPadding(new Insets(pAddPading,
 													pAddPading,
 													pAddPading,
 													pAddPading));
+	}
+
+	public void setGap(double pGap)
+	{
+		setHgap(pGap);
+		setVgap(pGap);
 	}
 
 }

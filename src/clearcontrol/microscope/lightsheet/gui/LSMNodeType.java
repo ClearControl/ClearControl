@@ -12,8 +12,7 @@ import javafx.scene.Node;
  */
 public enum LSMNodeType implements HalcyonNodeType
 {
-	LightSheet,
-	DetectionArm;
+	LightSheet, DetectionArm;
 
 	private static Properties mProperties;
 	static

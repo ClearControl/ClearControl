@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.jogamp.newt.event.KeyAdapter;
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseAdapter;
+import com.jogamp.newt.event.MouseEvent;
+
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
@@ -13,13 +19,6 @@ import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.imglib2.ImageJStackDisplay;
-
-import com.jogamp.newt.event.KeyAdapter;
-import com.jogamp.newt.event.KeyEvent;
-import com.jogamp.newt.event.KeyListener;
-import com.jogamp.newt.event.MouseAdapter;
-import com.jogamp.newt.event.MouseEvent;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 
@@ -138,43 +137,12 @@ public class Stack2DDisplay extends VirtualDevice	implements
 
 				try
 				{
-
-					if (mReceivedStackCopy == null || mReceivedStackCopy.getWidth() != pStack.getWidth()
-							|| mReceivedStackCopy.getHeight() != pStack.getHeight()
-							|| mReceivedStackCopy.getDepth() != pStack.getDepth()
-							|| mReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
+					if (mVideoWindow.isVisible())
 					{
-						if (mReceivedStackCopy != null)
-						{
-							mDisplayLock.lock();
-							final StackInterface lStackToFree = mReceivedStackCopy;
-							mReceivedStackCopy = pStack.allocateSameSize();
-							lStackToFree.free();
-							mDisplayLock.unlock();
-
-						}
-						else
-							mReceivedStackCopy = pStack.allocateSameSize();
+						makeCopyOfReceivedStack(pStack);
+						displayStack(mReceivedStackCopy, false);
 					}
-
-					if (!mReceivedStackCopy.isFree())
-					{
-						mDisplayLock.lock();
-						mReceivedStackCopy.getContiguousMemory()
-															.copyFrom(pStack.getContiguousMemory());
-						mDisplayLock.unlock();
-
-					}
-
-					displayStack(mReceivedStackCopy, false);
-
-					if (mOutputStackVariable != null)
-					{
-						mOutputStackVariable.set(pStack);
-					}
-					else
-						pStack.release();
-
+					forwardStack(pStack);
 				}
 				catch (coremem.rgc.FreedException e)
 				{
@@ -183,6 +151,7 @@ public class Stack2DDisplay extends VirtualDevice	implements
 
 				return null;
 			}
+
 		};
 
 		mAsynchronousDisplayUpdater.start();
@@ -194,11 +163,8 @@ public class Stack2DDisplay extends VirtualDevice	implements
 			public StackInterface setEventHook(	final StackInterface pOldStack,
 																					final StackInterface pNewStack)
 			{
-				// System.out.println("RECEIVED STACK!!!!");
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
-				{
-					//pNewStack.release();
-				}
+					forwardStack(pNewStack);
 				return super.setEventHook(pOldStack, pNewStack);
 			}
 
@@ -290,6 +256,36 @@ public class Stack2DDisplay extends VirtualDevice	implements
 
 	}
 
+	private void makeCopyOfReceivedStack(final StackInterface pStack)
+	{
+		if (mReceivedStackCopy == null || mReceivedStackCopy.getWidth() != pStack.getWidth()
+				|| mReceivedStackCopy.getHeight() != pStack.getHeight()
+				|| mReceivedStackCopy.getDepth() != pStack.getDepth()
+				|| mReceivedStackCopy.getSizeInBytes() != pStack.getSizeInBytes())
+		{
+			if (mReceivedStackCopy != null)
+			{
+				mDisplayLock.lock();
+				final StackInterface lStackToFree = mReceivedStackCopy;
+				mReceivedStackCopy = pStack.allocateSameSize();
+				lStackToFree.free();
+				mDisplayLock.unlock();
+
+			}
+			else
+				mReceivedStackCopy = pStack.allocateSameSize();
+		}
+
+		if (!mReceivedStackCopy.isFree())
+		{
+			mDisplayLock.lock();
+			mReceivedStackCopy.getContiguousMemory()
+												.copyFrom(pStack.getContiguousMemory());
+			mDisplayLock.unlock();
+
+		}
+	}
+
 	private void displayStack(final StackInterface pStack,
 														boolean pNonBlockingLock)
 	{
@@ -356,6 +352,14 @@ public class Stack2DDisplay extends VirtualDevice	implements
 		else if (Double.isNaN(lStackZIndex))
 			lStackZIndex = (int) Math.round(lStackDepth / 2.0);
 		return lStackZIndex;
+	}
+
+	private void forwardStack(final StackInterface pStack)
+	{
+		if (mOutputStackVariable != null)
+			mOutputStackVariable.set(pStack);
+		else if (!pStack.isReleased())
+			pStack.release();
 	}
 
 	@Override

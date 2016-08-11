@@ -24,6 +24,7 @@ import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipeline;
@@ -37,7 +38,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 {
 
 	protected final StackRecyclerManager mStackRecyclerManager;
-	protected final MicroscopeDeviceLists mLSMDeviceLists;
+	protected final MicroscopeDeviceLists mDeviceLists;
 	protected volatile int mNumberOfEnqueuedStates;
 	protected volatile long mAverageTimeInNS;
 
@@ -51,9 +52,12 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	public MicroscopeBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		mStackRecyclerManager = new StackRecyclerManager();
-		mLSMDeviceLists = new MicroscopeDeviceLists(this);
+		
+		mDeviceLists = new MicroscopeDeviceLists(this);
 
+		mStackRecyclerManager = new StackRecyclerManager();		
+		mDeviceLists.addDevice(0, mStackRecyclerManager);
+		
 		for (int i = 0; i < 128; i++)
 		{
 			Double lPixelSizeInNanometers = MachineConfiguration.getCurrentMachineConfiguration()
@@ -81,37 +85,37 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	@Override
 	public MicroscopeDeviceLists getDeviceLists()
 	{
-		return mLSMDeviceLists;
+		return mDeviceLists;
 	}
 
 	@Override
 	public <T> void addDevice(int pDeviceIndex, T pDevice)
 	{
-		mLSMDeviceLists.addDevice(pDeviceIndex, pDevice);
+		mDeviceLists.addDevice(pDeviceIndex, pDevice);
 	}
 
 	@Override
 	public <T> int getNumberOfDevices(Class<T> pClass)
 	{
-		return mLSMDeviceLists.getNumberOfDevices(pClass);
+		return mDeviceLists.getNumberOfDevices(pClass);
 	}
 
 	@Override
 	public <T> T getDevice(Class<T> pClass, int pIndex)
 	{
-		return mLSMDeviceLists.getDevice(pClass, pIndex);
+		return mDeviceLists.getDevice(pClass, pIndex);
 	}
 
 	@Override
 	public <T> ArrayList<T> getDevices(Class<T> pClass)
 	{
-		return mLSMDeviceLists.getDevices(pClass);
+		return mDeviceLists.getDevices(pClass);
 	}
 
 	@Override
 	public void addChangeListener(ChangeListener pChangeListener)
 	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		for (final Object lDevice : mDeviceLists.getAllDeviceList())
 		{
 			if (lDevice instanceof HasChangeListenerInterface)
 			{
@@ -124,7 +128,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	@Override
 	public void removeChangeListener(ChangeListener pChangeListener)
 	{
-		for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+		for (final Object lDevice : mDeviceLists.getAllDeviceList())
 		{
 
 			if (lDevice instanceof HasChangeListenerInterface)
@@ -138,8 +142,8 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	public void setStackProcessingPipeline(	int pIndex,
 																					StackProcessingPipeline pStackPipeline)
 	{
-		StackCameraDeviceInterface lDevice = mLSMDeviceLists.getDevice(	StackCameraDeviceInterface.class,
-																																		pIndex);
+		StackCameraDeviceInterface lDevice = mDeviceLists.getDevice(StackCameraDeviceInterface.class,
+																																pIndex);
 		StackProcessingPipeline lStackProcessingPipeline = mStackPipelines.get(pIndex);
 
 		if (lStackProcessingPipeline != null)
@@ -161,7 +165,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		{
 			boolean lIsOpen = true;
 
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 
 				if (lDevice instanceof OpenCloseDeviceInterface)
@@ -169,15 +173,10 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
 					System.out.println("Opening: " + lDevice);
-					final boolean lIsThisDeviceOpen = lOpenCloseDevice.open();
-					System.out.println("done.");
+					final boolean lResult = lOpenCloseDevice.open();
+					System.out.println(lResult ? "successfully" : "failed!");
 
-					if (!lIsThisDeviceOpen)
-					{
-						System.out.println("Could not open device: " + lDevice);
-					}
-
-					lIsOpen &= lIsThisDeviceOpen;
+					lIsOpen &= lResult;
 				}
 			}
 
@@ -191,16 +190,16 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		synchronized (mAcquisitionLock)
 		{
 			boolean lIsClosed = true;
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof OpenCloseDeviceInterface)
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
-					System.out.println("Opening: " + lDevice);
-					lIsClosed &= lOpenCloseDevice.close();
-					System.out.println("done.");
-
+					System.out.println("Closing: " + lDevice);
+					boolean lResult = lOpenCloseDevice.close();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsClosed &= lResult;
 				}
 			}
 
@@ -216,12 +215,16 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		synchronized (mAcquisitionLock)
 		{
 			boolean lIsStarted = true;
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof StartStopDeviceInterface)
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-					lIsStarted &= lStartStopDevice.start();
+
+					System.out.println("Starting: " + lDevice);
+					boolean lResult = lStartStopDevice.start();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsStarted &= lResult;
 				}
 			}
 
@@ -235,12 +238,15 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		synchronized (mAcquisitionLock)
 		{
 			boolean lIsStopped = true;
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof StartStopDeviceInterface)
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-					lIsStopped &= lStartStopDevice.stop();
+					System.out.println("Stopping: " + lDevice);
+					boolean lResult = lStartStopDevice.stop();
+					System.out.println(lResult ? "successfully" : "failed!");
+					lIsStopped &= lResult;
 				}
 			}
 
@@ -253,7 +259,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	{
 		synchronized (mAcquisitionLock)
 		{
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof StateQueueDeviceInterface)
 					if (isActiveDevice(lDevice))
@@ -271,7 +277,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	{
 		synchronized (mAcquisitionLock)
 		{
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof StateQueueDeviceInterface)
 					if (isActiveDevice(lDevice))
@@ -292,10 +298,10 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		{
 			// TODO: this should be put in a subclass specific to the way that we
 			// trigger cameras...
-			mLSMDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
-											.addCurrentStateToQueue();
+			mDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
+									.addCurrentStateToQueue();
 
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 				if (lDevice instanceof StateQueueDeviceInterface)
 					if (isActiveDevice(lDevice))
@@ -331,9 +337,26 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 		if (lStackProcessingPipeline != null)
 			return lStackProcessingPipeline.getOutputVariable();
 		else
-			return mLSMDeviceLists.getDevice(	StackCameraDeviceInterface.class,
-																				pIndex)
-														.getStackVariable();
+			return mDeviceLists.getDevice(StackCameraDeviceInterface.class,
+																		pIndex).getStackVariable();
+	}
+
+
+	@Override
+	public void useRecycler(final String pName,
+													final int pMinimumNumberOfAvailableStacks,
+													final int pMaximumNumberOfAvailableObjects,
+													final int pMaximumNumberOfLiveObjects)
+	{
+		int lNumberOfStackCameraDevices = getNumberOfDevices(StackCameraDeviceInterface.class);
+		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
+																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
+
+		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
+			getDevice(StackCameraDeviceInterface.class, i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
+
+		setRecycler(lRecycler);
 	}
 
 	@Override
@@ -362,23 +385,6 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	}
 
 	@Override
-	public void useRecycler(final String pName,
-													final int pMinimumNumberOfAvailableStacks,
-													final int pMaximumNumberOfAvailableObjects,
-													final int pMaximumNumberOfLiveObjects)
-	{
-		int lNumberOfStackCameraDevices = getNumberOfDevices(StackCameraDeviceInterface.class);
-		RecyclerInterface<StackInterface, StackRequest> lRecycler = mStackRecyclerManager.getRecycler(pName,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfAvailableObjects,
-																																																	lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
-
-		for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-			getDevice(StackCameraDeviceInterface.class, i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
-
-		setRecycler(lRecycler);
-	}
-
-	@Override
 	public void clearRecycler(String pName)
 	{
 		mStackRecyclerManager.clear(pName);
@@ -404,7 +410,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 			System.gc();
 			final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
 
-			for (final Object lDevice : mLSMDeviceLists.getAllDeviceList())
+			for (final Object lDevice : mDeviceLists.getAllDeviceList())
 			{
 
 				if (lDevice instanceof StateQueueDeviceInterface)

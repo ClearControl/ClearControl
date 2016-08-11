@@ -11,7 +11,7 @@ public abstract class StackBase extends FreeableBase implements
 																										StackInterface
 {
 
-	protected RecyclerInterface<StackInterface, StackRequest> mStackBasicRecycler;
+	protected RecyclerInterface<StackInterface, StackRequest> mStackRecycler;
 	protected volatile boolean mIsReleased;
 
 	protected volatile long mStackIndex;
@@ -129,21 +129,21 @@ public abstract class StackBase extends FreeableBase implements
 	@Override
 	public void release()
 	{
-		if (mStackBasicRecycler != null)
+		if (mStackRecycler != null)
 		{
 			// System.out.println(this);
 			// System.out.println("getNumberOfAvailableObjects=" +
 			// mStackBasicRecycler.getNumberOfAvailableObjects());
 			// System.out.println("getNumberOfLiveObjects=" +
 			// mStackBasicRecycler.getNumberOfLiveObjects());
-			mStackBasicRecycler.release(this);
+			mStackRecycler.release(this);
 		}
 	}
 
 	@Override
 	public void setRecycler(final RecyclerInterface<StackInterface, StackRequest> pRecycler)
 	{
-		mStackBasicRecycler = pRecycler;
+		mStackRecycler = pRecycler;
 	}
 
 	public static StackInterface requestOrWaitWithRecycler(	final BasicRecycler<StackInterface, StackRequest> pRecycler,
@@ -169,7 +169,7 @@ public abstract class StackBase extends FreeableBase implements
 													Arrays.toString(mVoxelSizeInRealUnits),
 													mNumberOfImagesPerPlane,
 													mIsReleased,
-													mStackBasicRecycler);
+													mStackRecycler);
 	}
 
 }

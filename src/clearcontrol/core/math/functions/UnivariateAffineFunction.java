@@ -1,11 +1,7 @@
 package clearcontrol.core.math.functions;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.io.Serializable;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.NoDataException;
 import org.apache.commons.math3.exception.NullArgumentException;
 
@@ -52,7 +48,6 @@ public class UnivariateAffineFunction	implements
 		mB = pB;
 	}
 
-
 	public void setConstant(double pB)
 	{
 		mB = pB;
@@ -78,6 +73,14 @@ public class UnivariateAffineFunction	implements
 	{
 		mA = mA * pFunction.getSlope();
 		mB = mA * pFunction.getConstant() + mB;
+	}
+
+	public boolean hasInverse()
+	{
+		return (mA > 0 || mA < 0) && Double.isFinite(mA)
+						&& !Double.isNaN(mA)
+						&& Double.isFinite(mB)
+						&& !Double.isNaN(mB);
 	}
 
 	public UnivariateAffineFunction inverse()

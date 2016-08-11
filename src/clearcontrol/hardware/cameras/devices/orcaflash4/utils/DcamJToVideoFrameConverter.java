@@ -1,7 +1,5 @@
 package clearcontrol.hardware.cameras.devices.orcaflash4.utils;
 
-import gnu.trove.list.array.TByteArrayList;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -28,6 +26,7 @@ import clearcontrol.stack.StackRequest;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
+import gnu.trove.list.array.TByteArrayList;
 
 public class DcamJToVideoFrameConverter extends VirtualDevice	implements
 																															OpenCloseDeviceInterface,

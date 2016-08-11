@@ -1,7 +1,7 @@
 package net.imglib2.img.planar;
 
 import coremem.ContiguousMemoryInterface;
-import coremem.SafeMemory;
+import coremem.SafeContiguousMemory;
 import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -171,7 +171,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final ByteOffHeapAccess lByteBufferAccess = new ByteOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lByteBufferAccess);
 		}
@@ -191,7 +191,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final CharOffHeapAccess lCharOffHeapAccess = new CharOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lCharOffHeapAccess);
 		}
@@ -210,7 +210,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final DoubleOffHeapAccess lDoubleOffHeapAccess = new DoubleOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lDoubleOffHeapAccess);
 		}
@@ -229,7 +229,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final FloatOffHeapAccess lFloatOffHeapAccess = new FloatOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lFloatOffHeapAccess);
 		}
@@ -248,7 +248,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final IntOffHeapAccess lIntOffHeapAccess = new IntOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lIntOffHeapAccess);
 		}
@@ -267,7 +267,7 @@ public class OffHeapPlanarImgFactory<T extends NativeType<T>> extends
 		for (ContiguousMemoryInterface lContiguousMemoryInterface : pFragmentedMemory)
 		{
 			if (mAddSafetyWrapper)
-				lContiguousMemoryInterface = new SafeMemory(lContiguousMemoryInterface);
+				lContiguousMemoryInterface = new SafeContiguousMemory(lContiguousMemoryInterface);
 			final LongOffHeapAccess lLongOffHeapAccess = new LongOffHeapAccess(lContiguousMemoryInterface);
 			lOffHeapPlanarImg.setPlane(i++, lLongOffHeapAccess);
 		}

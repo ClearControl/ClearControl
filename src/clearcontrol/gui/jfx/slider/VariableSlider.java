@@ -3,6 +3,10 @@ package clearcontrol.gui.jfx.slider;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.signum;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.slider.customslider.Slider;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
@@ -11,9 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.slider.customslider.Slider;
 
 public class VariableSlider<T extends Number> extends HBox
 {
@@ -83,6 +84,7 @@ public class VariableSlider<T extends Number> extends HBox
 		mTextField.setAlignment(Pos.CENTER);
 
 		getTextField().setPrefWidth(7 * 15);
+		getSlider().setPrefWidth(14 * 15);
 
 		updateSliderMinMax(pMin, pMax, pTicks);
 
@@ -106,25 +108,16 @@ public class VariableSlider<T extends Number> extends HBox
 				});
 		});
 
-		if (pMin.get() instanceof Double || pMin.get() instanceof Float)
-		{
-			getSlider().valueProperty().addListener((obs, o, n) -> {
-				if (!o.equals(n))
-					setTextFieldDouble(n);
-			});
-		}
-		if (pMin.get() instanceof Integer || pMin.get() instanceof Long)
-		{
-			getSlider().valueProperty().addListener((obs, o, n) -> {
-				if (!o.equals(n))
-					setTextFieldLongValue(n);
-			});
-		}
+		getTextField().textProperty().addListener((obs, o, n) -> {
+			if (!o.equals(n))
+				setUpdatedTextField();
+		});
 
 		getTextField().focusedProperty().addListener((obs, o, n) -> {
 			if (!n)
 				setSliderValueFromTextField();
 		});
+
 		getTextField().setOnKeyPressed((e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 			{
@@ -150,10 +143,14 @@ public class VariableSlider<T extends Number> extends HBox
 		DoubleProperty lValueProperty = getSlider().valueProperty();
 
 		lValueProperty.addListener((obs, o, n) -> {
-			if (!isUpdateIfChanging() && getSlider().isValueChanging())
-				return;
+
 			double lCorrectedOldValue = correctValueDouble(o.doubleValue());
 			double lCorrectedNewValue = correctValueDouble(n.doubleValue());
+			setTextFieldValue(lCorrectedNewValue);
+			setSliderValue(lCorrectedNewValue);
+
+			if (!isUpdateIfChanging() && getSlider().isValueChanging())
+				return;
 
 			if (lCorrectedOldValue != lCorrectedNewValue)
 				setVariableValue(o, n);
@@ -182,6 +179,15 @@ public class VariableSlider<T extends Number> extends HBox
 
 		setSliderValue(mVariable.get().doubleValue());
 
+	}
+
+	private void setTextFieldValue(Number n)
+	{
+		if (mMin.get() instanceof Double || mMin.get() instanceof Float)
+			setTextFieldDouble(n);
+
+		else if (mMin.get() instanceof Integer || mMin.get() instanceof Long)
+			setTextFieldLongValue(n);
 	}
 
 	private void updateSliderMinMax(Variable<T> pMin,
@@ -301,11 +307,13 @@ public class VariableSlider<T extends Number> extends HBox
 	{
 		double lCorrectedValue = (double) correctValueDouble(pDoubleValue.doubleValue());
 		getTextField().setText(String.format("%.3f", lCorrectedValue));
+		getTextField().setStyle("-fx-text-fill: black");
 	}
 
 	private void setTextFieldLongValue(Number n)
 	{
 		getTextField().setText(String.format("%d", (long) n.longValue()));
+		getTextField().setStyle("-fx-text-fill: black");
 	}
 
 	private void setSliderValueFromTextField()
@@ -321,6 +329,11 @@ public class VariableSlider<T extends Number> extends HBox
 			getTextField().setStyle("-fx-text-fill: red");
 			// e.printStackTrace();
 		}
+	}
+
+	private void setUpdatedTextField()
+	{
+		getTextField().setStyle("-fx-text-fill: orange");
 	}
 
 	private void setVariableValueFromTextField()

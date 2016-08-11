@@ -13,6 +13,11 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
+/**
+ * MicroscopeInterface is a generic interface for all microscopes types.
+ * 
+ * @author royer
+ */
 public interface MicroscopeInterface extends
 																		NameableInterface,
 																		HasChangeListenerInterface,
@@ -25,6 +30,16 @@ public interface MicroscopeInterface extends
 	 * @return microscope's name.
 	 */
 	public String getName();
+
+	/**
+	 * Returns whether the microscope is in simulation mode.
+	 * 
+	 * @return true if simulation mode, or false otherwise
+	 */
+	default boolean isSimulation()
+	{
+		return false;
+	};
 
 	/**
 	 * Adds a device of a given type. Devices are uniquely identified by their

@@ -2,12 +2,12 @@ package clearcontrol.stack;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
-import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclableFactoryInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
 public class ContiguousOffHeapPlanarStackFactory implements
-																								RecyclableFactory<StackInterface, StackRequest>
+																								RecyclableFactoryInterface<StackInterface, StackRequest>
 {
 
 	@SuppressWarnings("unchecked")

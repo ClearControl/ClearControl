@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.file.FileEventNotifier;
-import clearcontrol.core.file.FileEventNotifierListener;
 import clearcontrol.core.file.FileEventNotifier.FileEventKind;
+import clearcontrol.core.file.FileEventNotifierListener;
 
 public class FileEventNotifierTests
 {

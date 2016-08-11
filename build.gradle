@@ -145,15 +145,25 @@ dependencies
 
     // JavaFX:
     compile 'eu.hansolo.enzo:Enzo:0.3.6'
-    compile 'org.jfxtras:jfxtras-common:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-controls:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-window:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5-SNAPSHOT'
-    compile 'org.jfxtras:jfxtras-labs:8.0-r5-SNAPSHOT'
+    /*compile 'org.jfxtras:jfxtras-common:8.0-r5'
+    compile 'org.jfxtras:jfxtras-controls:8.0-r5'
+    compile 'org.jfxtras:jfxtras-window:8.0-r5'
+    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5'
+    compile 'org.jfxtras:jfxtras-labs:8.0-r5'/**/
+    compile 'org.controlsfx:controlsfx:8.40.11'
+    
+    compile 'de.jensd:fontawesomefx:8.9'
+    compile 'de.jensd:fontawesomefx-fontawesome:4.6.3'
+		compile 'de.jensd:fontawesomefx-materialdesignfont:1.6.50'
+		compile 'de.jensd:fontawesomefx-materialicons:2.2.0'
+		compile 'de.jensd:fontawesomefx-octicons:4.3.0'
+		compile 'de.jensd:fontawesomefx-icons525:2.6.0'
+		compile 'de.jensd:fontawesomefx-weathericons:2.0-3'
+
     
 
     // Halcyon:
-    compile group: "net.halcyon", name:"Halcyon", version: "(,1.0.0]", changing: true, transitive: true
+    compile group: "net.halcyon", name:"Halcyon", version: "[0.3.1,1.0.0]", changing: true, transitive: true
 
     // MigLayout:
     compile 'com.miglayout:miglayout:3.7.4'
@@ -183,13 +193,13 @@ dependencies
     compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
 
     // CoreMem:
-    compile group: "net.coremem", name: "CoreMem", version: "(,1.0.0]", changing: true, transitive:true
+    compile group: "net.coremem", name: "CoreMem", version: "[0.2.0,1.0.0]", changing: true, transitive:true
 
     // ClearVolume:
-    compile group: "net.clearvolume", name: "clearvolume", version: "(,1.1]", changing: true, transitive: true
-    compile group: "net.clearvolume", name: "cleargl", version: "(,1.1]", changing: true, transitive: true
-    compile group: "net.clearvolume", name: "clearcl", version: "(,1.1]", changing: true, transitive: true
-    compile group: "net.clearvolume", name: "clearaudio", version: "(,1.1]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "clearvolume", version: "(,1.10]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "cleargl", version: "(1.0.8,1.10]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "clearcl", version: "(,1.10]", changing: true, transitive: true
+    compile group: "net.clearvolume", name: "clearaudio", version: "(,1.10]", changing: true, transitive: true
 
     // AO:
     compile group: "net.rtlib", name: "Mirao52J", version: "(,2.0.0]", transitive:true, changing: true
@@ -230,6 +240,12 @@ repositories
     maven { url  "http://maven.imagej.net/content/repositories/releases" }
     maven { url  "http://maven.imagej.net/content/repositories/snapshots" }
     maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" }
+    
+    //jfxtras:
+    maven { url "https://mvnrepository.com/artifact/org.jfxtras/jfxtras-labs" }
+    
+    //FontAwesome:
+    maven { url "https://bintray.com/jerady/maven/FontAwesomeFX/view"}
 
 }
 

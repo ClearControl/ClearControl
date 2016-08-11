@@ -1,29 +1,44 @@
 package clearcontrol.microscope.gui;
 
-import halcyon.HalcyonFrame;
-import halcyon.model.node.HalcyonNodeType;
-
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.microscope.CleanupStackVariable;
+import clearcontrol.hardware.cameras.gui.jfx.CameraDevicePanel;
+import clearcontrol.hardware.lasers.LaserDeviceInterface;
+import clearcontrol.hardware.lasers.gui.jfx.LaserDevicePanel;
+import clearcontrol.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
+import clearcontrol.hardware.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
+import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
+import clearcontrol.hardware.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
+import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
+import clearcontrol.hardware.signalamp.gui.jfx.ScalingAmplifierPanel;
+import clearcontrol.hardware.stages.StageDeviceInterface;
+import clearcontrol.hardware.stages.gui.jfx.StageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.gui.LSMNodeType;
+import clearcontrol.microscope.stacks.CleanupStackVariable;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
+import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
+import halcyon.HalcyonFrame;
+import halcyon.model.node.HalcyonNodeType;
 
 public class MicroscopeGUI extends VirtualDevice implements
-																								AsynchronousExecutorServiceAccess
+																								AsynchronousExecutorServiceAccess,
+																								Waiting
 {
 
 	private static final int cDefaultWindowWidth = 512;
@@ -38,16 +53,55 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	private ArrayList<Variable<StackInterface>> mCleanupStackVariableList = new ArrayList<>();
 	private final boolean m3dView;
+	private HalcyonGUIGenerator mHalcyonGUIGenerator;
 	private HalcyonFrame mHalcyonFrame;
 
 	public MicroscopeGUI(	MicroscopeInterface pLightSheetMicroscope,
+												HalcyonNodeType[] pHalcyonNodeTypeArray,
 												boolean p3DView)
 	{
 		super(pLightSheetMicroscope.getName() + "GUI");
 		mMicroscope = pLightSheetMicroscope;
 		m3dView = p3DView;
 
+		ArrayList<HalcyonNodeType> lNodeTypeList = new ArrayList<>();
+		for (HalcyonNodeType lNode : MicroscopeNodeType.values())
+			lNodeTypeList.add(lNode);
+		for (HalcyonNodeType lNode : pHalcyonNodeTypeArray)
+			lNodeTypeList.add(lNode);
+
+		mHalcyonGUIGenerator = new HalcyonGUIGenerator(	pLightSheetMicroscope,
+																										this,
+																										lNodeTypeList);
+
+		addHalcyonMappingEntry(	LaserDeviceInterface.class,
+														LaserDevicePanel.class);
+
+		addHalcyonMappingEntry(	StackCameraDeviceInterface.class,
+														CameraDevicePanel.class);
+
+		addHalcyonMappingEntry(	FilterWheelDeviceInterface.class,
+														FilterWheelDevicePanel.class);
+
+		addHalcyonMappingEntry(	OpticalSwitchDeviceInterface.class,
+														OpticalSwitchDevicePanel.class);
+
+		addHalcyonMappingEntry(	ScalingAmplifierDeviceInterface.class,
+														ScalingAmplifierPanel.class);
+
+		addHalcyonMappingEntry(	StageDeviceInterface.class,
+														StageDevicePanel.class);
+
+		addHalcyonMappingEntry(	StackRecyclerManager.class,
+														StackRecyclerManagerPanel.class);
+
 		initializeConcurentExecutor();
+	}
+
+	public <U, V> void addHalcyonMappingEntry(Class<U> pDeviceClass,
+																						Class<V> pPanelClass)
+	{
+		mHalcyonGUIGenerator.addMappingEntry(pDeviceClass, pPanelClass);
 	}
 
 	public void addScripting(	String pMicroscopeObjectName,
@@ -144,22 +198,21 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Setup Halcyon window (automatically) for a given Microscope.
+	 * 
+	 * @param pMicroscopeInterface
+	 */
 	private void setupHalcyonWindow(MicroscopeInterface pMicroscopeInterface)
 	{
-		ArrayList<HalcyonNodeType> lNodeTypeList = new ArrayList<>();
-		for (HalcyonNodeType lNode : MicroscopeNodeType.values())
-			lNodeTypeList.add(lNode);
-		for (HalcyonNodeType lNode : LSMNodeType.values())
-			lNodeTypeList.add(lNode);
+		mHalcyonGUIGenerator.setupDeviceGUIs();
 
-		HalcyonGUIGenerator lHalcyonGUIGenerator = new HalcyonGUIGenerator(	pMicroscopeInterface,
-																																				this,
-																																				lNodeTypeList);
-		lHalcyonGUIGenerator.setupDeviceGUIs();
-
-		mHalcyonFrame = lHalcyonGUIGenerator.getHalcyonFrame();
+		mHalcyonFrame = mHalcyonGUIGenerator.getHalcyonFrame();
 	}
 
+	/* (non-Javadoc)
+	 * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#open()
+	 */
 	@Override
 	public boolean open()
 	{
@@ -191,6 +244,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		return super.open();
 	}
 
+	/* (non-Javadoc)
+	 * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#close()
+	 */
 	@Override
 	public boolean close()
 	{
@@ -224,6 +280,12 @@ public class MicroscopeGUI extends VirtualDevice implements
 		return super.close();
 	}
 
+	/**
+	 * Connects Stack camera of given index to 2D display of given idex.
+	 * 
+	 * @param pStackCameraIndex
+	 * @param p2DStackDisplayIndex
+	 */
 	public void connectCameraTo2D(int pStackCameraIndex,
 																int p2DStackDisplayIndex)
 	{
@@ -236,6 +298,12 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Disconnects variable of given index.
+	 * 
+	 * @param pStackCameraIndex
+	 *          camera index.
+	 */
 	public void disconnectCamera(int pStackCameraIndex)
 	{
 		Variable<StackInterface> lStackVariable = mMicroscope.getStackVariable(pStackCameraIndex);
@@ -245,6 +313,12 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 	}
 
+	/**
+	 * Connects 2D and 3D display variables.
+	 * 
+	 * @param p2DStackDisplayIndex
+	 * @param p3DStackDisplayIndex
+	 */
 	public void connect2DTo3D(int p2DStackDisplayIndex,
 														int p3DStackDisplayIndex)
 	{
@@ -252,8 +326,18 @@ public class MicroscopeGUI extends VirtualDevice implements
 		Stack3DDisplay lStack3dDisplay = mStack3DVideoDeviceList.get(p3DStackDisplayIndex);
 
 		lStack2dDisplay.setOutputStackVariable(lStack3dDisplay.getStackInputVariable());
+
+		lStack3dDisplay.setOutputStackVariable(mCleanupStackVariableList.get(p3DStackDisplayIndex));
 	}
 
+	/**
+	 * Disconnects 2D to 3D display variables.
+	 * 
+	 * @param p2DStackDisplayIndex
+	 *          index of 2D display
+	 * @param p3DStackDisplayIndex
+	 *          index of 3D display
+	 */
 	public void disconnect2DTo3D(	int p2DStackDisplayIndex,
 																int p3DStackDisplayIndex)
 	{
@@ -263,6 +347,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 		lStack2dDisplay.setOutputStackVariable(null);
 	}
 
+	/**
+	 * Connects GUI to microscope variables
+	 */
 	public void connectGUI()
 	{
 
@@ -272,18 +359,17 @@ public class MicroscopeGUI extends VirtualDevice implements
 		{
 			connectCameraTo2D(lCameraIndex, lCameraIndex);
 
-			/*if (m3dView)
+			if (m3dView)
 			{
 				connect2DTo3D(lCameraIndex, 0);
-				mStack3DVideoDeviceList.get(0)
-																.setOutputStackVariable(mCleanupStackVariable);
 			}
-			else
-				mStack2DVideoDeviceList.get(lCameraIndex)
-																.setOutputStackVariable(mCleanupStackVariable);/**/
+
 		}
 	}
 
+	/**
+	 * Disconnects GUI from microscope variables
+	 */
 	public void disconnectGUI()
 	{
 		final int lNumberOfCameras = mMicroscope.getNumberOfDevices(StackCameraDeviceInterface.class);
@@ -304,9 +390,34 @@ public class MicroscopeGUI extends VirtualDevice implements
 		}
 	}
 
+	/**
+	 * Retruns whether the GUI elements are visible.
+	 * 
+	 * @return true if GUI elements (windows) are visible
+	 */
 	public boolean isVisible()
 	{
 		return mHalcyonFrame.isVisible();
 	}
 
+	/**
+	 * Waits until the GUI main window is either visible or not visible.
+	 * 
+	 * @param pVisible
+	 *          main window state to wait for
+	 * @param pTimeOut
+	 *          time out
+	 * @param pTimeUnit
+	 *          time out unit
+	 * @return whether the main window is visible or not.
+	 */
+	public boolean waitForVisible(boolean pVisible,
+																Long pTimeOut,
+																TimeUnit pTimeUnit)
+	{
+		MicroscopeGUI lMicroscopeGUI = this;
+		return waitFor(pTimeOut, pTimeUnit, () -> {
+			return lMicroscopeGUI.isVisible() == pVisible;
+		});
+	}
 }
