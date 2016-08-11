@@ -197,7 +197,7 @@ public class Stack2DDisplay extends VirtualDevice	implements
 				// System.out.println("RECEIVED STACK!!!!");
 				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
 				{
-					pNewStack.release();
+					//pNewStack.release();
 				}
 				return super.setEventHook(pOldStack, pNewStack);
 			}
@@ -395,9 +395,19 @@ public class Stack2DDisplay extends VirtualDevice	implements
 		return mInputStackVariable;
 	}
 
+	public VideoWindow getVideoWindow()
+	{
+		return mVideoWindow;
+	}
+	
 	public void setVisible(final boolean pIsVisible)
 	{
 		mVideoWindow.setVisible(pIsVisible);
+	}
+	
+	public boolean isVisible()
+	{
+		return mVideoWindow.isVisible();
 	}
 
 	public void requestFocus()

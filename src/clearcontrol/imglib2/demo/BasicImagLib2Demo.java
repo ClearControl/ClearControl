@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import coremem.fragmented.FragmentedMemory;
 import coremem.offheap.OffHeapMemory;
+import ij.ImageJ;
 import ij.ImagePlus;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessible;
@@ -115,7 +116,7 @@ public class BasicImagLib2Demo
 
 		try
 		{
-			// new ImageJ();
+			new ImageJ();
 
 			ImagePlus lShow = ImageJFunctions.show(lOffHeapPlanarImg);
 			lShow.setDisplayRange(-100, 100);
