@@ -37,6 +37,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	private int mStackProcessorQueueSize = 6;
 
 	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000;
+	
+
 
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
@@ -61,6 +63,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																			TriggerType.Software,
 																			pFlipX);
 	}
+
 
 	private OrcaFlash4StackCamera(final int pCameraDeviceIndex,
 																final TriggerType pTriggerType,
@@ -224,6 +227,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}
+
 
 	public void setBinning(int pBinSize)
 	{
