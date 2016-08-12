@@ -2,6 +2,7 @@ package clearcontrol.microscope.lightsheet;
 
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
@@ -9,7 +10,6 @@ public interface LightSheetMicroscopeInterface extends
 																							MicroscopeInterface
 {
 
-	
 	/**
 	 * Sets with and height of camera image
 	 * 
@@ -468,5 +468,65 @@ public interface LightSheetMicroscopeInterface extends
 	 */
 	public boolean getIPatternOnOff(int pLightSheetIndex,
 																	int pLaserIndex);
+
+	/**
+	 * Sets the main sample stage X position.
+	 * 
+	 * @param pXValue
+	 *          x position value
+	 */
+	public void setStageX(double pXValue);
+
+	/**
+	 * Sets the main sample stage Y position.
+	 * 
+	 * @param pYValue
+	 *          y position value
+	 */
+	public void setStageY(double pYValue);
+
+	/**
+	 * Sets the sample's main stage Z position.
+	 * 
+	 * @param pZValue
+	 *          z position value
+	 */
+	public void setStageZ(double pZValue);
+
+	/**
+	 * Sets the sample's main stage R position.
+	 * 
+	 * @param pRValue
+	 *          r position value
+	 */
+	public void setStageR(double pRValue);
+
+	/**
+	 * Returns the main sample stage X position.
+	 * 
+	 * @return x position value
+	 */
+	public double getStageX();
+
+	/**
+	 * Returns the main sample stage Y position.
+	 * 
+	 * @return y position value
+	 */
+	public double getStageY();
+
+	/**
+	 * Returns the sample's main stage Z position.
+	 * 
+	 * @return z position value
+	 */
+	public double getStageZ();
+
+	/**
+	 * Returns the sample's main stage R position.
+	 * 
+	 * @return r position value
+	 */
+	public double getStageR();
 
 }

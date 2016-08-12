@@ -19,24 +19,24 @@ public class NIRIOSignalGeneratorDemo
 	@Test
 	public void demo1() throws InterruptedException
 	{
-		final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
+		//final NIRIOSignalGenerator lNIRIOSignalGenerator = new NIRIOSignalGenerator();
 
-		assertTrue(lNIRIOSignalGenerator.open());
+		//assertTrue(lNIRIOSignalGenerator.open());
 
 		final ScoreInterface lScore = buildScore();
 
 		final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualize(	"test",
 																																							lScore);/**/
 
-		for (int i = 0; i < 100000 && lVisualize.isVisible(); i++)
+		for (int i = 0; i < 1000000000 && lVisualize.isVisible(); i++)
 		{
-			lNIRIOSignalGenerator.playScore(lScore);
+			//lNIRIOSignalGenerator.playScore(lScore);
 			System.out.println(i);
 		}
 
 		lVisualize.dispose();
 
-		assertTrue(lNIRIOSignalGenerator.close());
+		//assertTrue(lNIRIOSignalGenerator.close());
 
 	}
 

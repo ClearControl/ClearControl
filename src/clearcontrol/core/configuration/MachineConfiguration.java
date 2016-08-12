@@ -11,19 +11,32 @@ import java.util.Properties;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import clearcontrol.core.math.functions.InvertibleFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+/**
+ * MachineConfiguration is a singleton that can be accessed to query infromation
+ * about the current system. Typically, it holds information such as the
+ * assigned COM ports for serial devices and other configuration info that is
+ * specific to a computer and its connected hardware.
+ * 
+ * @author royer
+ */
 public class MachineConfiguration
 {
 	private static final String cComments = "RTlib machine configuration file";
 	private static final MachineConfiguration sConfiguration = new MachineConfiguration();
 	private static ObjectMapper sObjectMapper = new ObjectMapper();
 
+	/**
+	 * Returns the singleton instance of MachineConfiguration.
+	 * 
+	 * @return singketon instance of MachineConfiguration
+	 */
 	public static MachineConfiguration getCurrentMachineConfiguration()
 	{
 		return sConfiguration;
@@ -34,7 +47,10 @@ public class MachineConfiguration
 	private File mRTLibFolder;
 	private File mPersistentVariablesFolder;
 
-	public MachineConfiguration()
+	/**
+	 * Constructs a MachineConfiguration (should be done only once).
+	 */
+	private MachineConfiguration()
 	{
 		super();
 
@@ -66,11 +82,18 @@ public class MachineConfiguration
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public Properties getProperties()
 	{
 		return mProperties;
 	}
 
+	/**
+	 * @param pKey
+	 * @return
+	 */
 	public boolean containsKey(String pKey)
 	{
 		if (mProperties == null)
@@ -78,6 +101,11 @@ public class MachineConfiguration
 		return mProperties.containsKey(pKey);
 	}
 
+	/**
+	 * @param pKey
+	 * @param pDefaultValue
+	 * @return
+	 */
 	public String getStringProperty(String pKey, String pDefaultValue)
 	{
 		if (mProperties == null)
@@ -85,7 +113,12 @@ public class MachineConfiguration
 		return mProperties.getProperty(pKey, pDefaultValue);
 	}
 
-	public int getIntegerProperty(String pKey, int pDefaultValue)
+	/**
+	 * @param pKey
+	 * @param pDefaultValue
+	 * @return
+	 */
+	public Integer getIntegerProperty(String pKey, Integer pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -96,7 +129,12 @@ public class MachineConfiguration
 		return Integer.parseInt(lProperty);
 	}
 
-	public long getLongProperty(String pKey, long pDefaultValue)
+	/**
+	 * @param pKey
+	 * @param pDefaultValue
+	 * @return
+	 */
+	public Long getLongProperty(String pKey, Long pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -107,7 +145,12 @@ public class MachineConfiguration
 		return Long.parseLong(lProperty);
 	}
 
-	public double getDoubleProperty(String pKey, double pDefaultValue)
+	/**
+	 * @param pKey
+	 * @param pDefaultValue
+	 * @return
+	 */
+	public Double getDoubleProperty(String pKey, Double pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -118,7 +161,12 @@ public class MachineConfiguration
 		return Double.parseDouble(lProperty);
 	}
 
-	public boolean getBooleanProperty(String pKey, boolean pDefaultValue)
+	/**
+	 * @param pKey
+	 * @param pDefaultValue
+	 * @return
+	 */
+	public boolean getBooleanProperty(String pKey, Boolean pDefaultValue)
 	{
 		if (mProperties == null)
 			return pDefaultValue;
@@ -133,6 +181,11 @@ public class MachineConfiguration
 						|| lProperty.trim().toLowerCase().equals("true");
 	}
 
+	/**
+	 * @param pKey
+	 * @param pDefaultFile
+	 * @return
+	 */
 	public File getFileProperty(String pKey, File pDefaultFile)
 	{
 		return new File(getStringProperty(pKey,
@@ -140,6 +193,12 @@ public class MachineConfiguration
 																													: pDefaultFile.getPath()));
 	}
 
+	/**
+	 * @param pDeviceName
+	 * @param pDeviceIndex
+	 * @param pDefaultPort
+	 * @return
+	 */
 	public String getSerialDevicePort(String pDeviceName,
 																		int pDeviceIndex,
 																		String pDefaultPort)
@@ -151,6 +210,12 @@ public class MachineConfiguration
 		return lPort;
 	}
 
+	/**
+	 * @param pDeviceName
+	 * @param pDeviceIndex
+	 * @param pDefaultHostNameAndPort
+	 * @return
+	 */
 	public String[] getNetworkDeviceHostnameAndPort(String pDeviceName,
 																									int pDeviceIndex,
 																									String pDefaultHostNameAndPort)
@@ -163,6 +228,11 @@ public class MachineConfiguration
 		return lHostnameAndPort.split(":");
 	}
 
+	/**
+	 * @param pDeviceName
+	 * @param pDefaultPort
+	 * @return
+	 */
 	public Integer getIODevicePort(	String pDeviceName,
 																	Integer pDefaultPort)
 	{
@@ -180,6 +250,10 @@ public class MachineConfiguration
 		return getBooleanProperty(lKey, false);
 	}
 
+	/**
+	 * @param pPrefix
+	 * @return
+	 */
 	public ArrayList<String> getList(String pPrefix)
 	{
 		final ArrayList<String> lList = new ArrayList<String>();
@@ -194,6 +268,10 @@ public class MachineConfiguration
 		return lList;
 	}
 
+	/**
+	 * @param pFolderName
+	 * @return
+	 */
 	public File getFolder(String pFolderName)
 	{
 		File lFolder = new File(mRTLibFolder, pFolderName);
@@ -201,16 +279,27 @@ public class MachineConfiguration
 		return lFolder;
 	}
 
+	/**
+	 * @return
+	 */
 	public File getPersistencyFolder()
 	{
 		return mPersistentVariablesFolder;
 	}
 
+	/**
+	 * @param pVariableName
+	 * @return
+	 */
 	public File getPersistentVariableFile(String pVariableName)
 	{
 		return new File(getPersistencyFolder(), pVariableName);
 	}
 
+	/**
+	 * @param pFunctionName
+	 * @return
+	 */
 	public UnivariateAffineFunction getUnivariateAffineFunction(String pFunctionName)
 	{
 		String lAffineFunctionString = getStringProperty(	pFunctionName,
@@ -247,12 +336,21 @@ public class MachineConfiguration
 
 	}
 
+	/**
+	 * @param pBoundsName
+	 * @param pVariable
+	 */
 	public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
 																																										BoundedVariable<T> pVariable)
 	{
 		getBoundsForVariable(pBoundsName, pVariable, null);
 	}
 
+	/**
+	 * @param pBoundsName
+	 * @param pVariable
+	 * @param pFunction
+	 */
 	public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
 																																										BoundedVariable<T> pVariable,
 																																										InvertibleFunction<F> pFunction)

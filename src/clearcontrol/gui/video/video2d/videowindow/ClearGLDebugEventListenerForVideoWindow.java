@@ -2,6 +2,9 @@ package clearcontrol.gui.video.video2d.videowindow;
 
 import java.io.IOException;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GLAutoDrawable;
+
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 import cleargl.GLAttribute;
@@ -11,10 +14,6 @@ import cleargl.GLTexture;
 import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
-
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLAutoDrawable;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.types.NativeTypeEnum;
@@ -88,8 +87,8 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																											"shaders/video.vertex.glsl",
 																											"shaders/video.fragment.glsl");
 
-			mPositionAttribute = mGLProgramVideoRender.getAtribute("position");
-			mTexCoordAttribute = mGLProgramVideoRender.getAtribute("texcoord");
+			mPositionAttribute = mGLProgramVideoRender.getAttribute("position");
+			mTexCoordAttribute = mGLProgramVideoRender.getAttribute("texcoord");
 			mTexUnit = mGLProgramVideoRender.getUniform("texUnit");
 			mTexUnit.setInt(0);
 
@@ -137,7 +136,7 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																								"shaders/guides.vertex.glsl",
 																								"shaders/guides.fragment.glsl");
 
-			mGuidesPositionAttribute = mGLProgramGuides.getAtribute("position");
+			mGuidesPositionAttribute = mGLProgramGuides.getAttribute("position");
 
 			mXLinesPositionAttributeArray = new GLVertexAttributeArray(	mGuidesPositionAttribute,
 																																	4);
@@ -314,7 +313,7 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 																																						lBufferWidth,
 																																						lBufferHeight);
 
-					mTexture.copyFrom(lConvertedBuffer);
+					mTexture.copyFrom(lConvertedBuffer.getByteBuffer());
 					mVideoWindow.mNotifyBufferCopy.countDown();
 
 				}

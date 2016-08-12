@@ -43,8 +43,8 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import clearcontrol.core.file.FileEventNotifier;
-import clearcontrol.core.file.FileEventNotifierListener;
 import clearcontrol.core.file.FileEventNotifier.FileEventKind;
+import clearcontrol.core.file.FileEventNotifierListener;
 import clearcontrol.core.gui.LineLimitedDocumentFilter;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.engine.ScriptingEngineListener;

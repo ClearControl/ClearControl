@@ -21,6 +21,7 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -424,8 +425,7 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements
 		}
 		else if ("VALUE".equals(PROPERTY))
 		{
-			withinSpeedLimit = !(Instant.now()
-																	.minusMillis((long) getSkinnable().getAnimationDuration()).isBefore(lastCall));
+			withinSpeedLimit = !(Instant.now().minusMillis( ( long ) getSkinnable().getAnimationDuration() ).isBefore(lastCall));
 			lastCall = Instant.now();
 			setBar();
 		}
@@ -438,75 +438,83 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph> implements
 		{
 			// if (getSkinnable().isInteractive()) return;
 
-			double currentValue = angle.get() / angleStep;
+			Platform.runLater( new Runnable()
+			{
+				@Override public void run()
+				{
+					double currentValue = angle.get() / angleStep;
 
-			value.setText(String.format(Locale.US,
-																	"%." + getSkinnable().getDecimals()
-																			+ "f",
-																	currentValue));
-			value.setTranslateX((size - value.getLayoutBounds().getWidth()) * 0.5);
-			bar.setLength(-currentValue * angleStep);
+					value.setText(String.format(Locale.US,
+							"%." + getSkinnable().getDecimals()
+									+ "f",
+							currentValue));
+					value.setTranslateX((size - value.getLayoutBounds().getWidth()) * 0.5);
+					bar.setLength(-currentValue * angleStep);
 
-			// Check threshold
-			if (thresholdExceeded)
-			{
-				if (currentValue < getSkinnable().getThreshold())
-				{
-					getSkinnable().fireEvent(new ValueEvent(this,
-																									null,
-																									ValueEvent.VALUE_UNDERRUN));
-					thresholdExceeded = false;
-				}
-			}
-			else
-			{
-				if (currentValue > getSkinnable().getThreshold())
-				{
-					getSkinnable().fireEvent(new ValueEvent(this,
-																									null,
-																									ValueEvent.VALUE_EXCEEDED));
-					thresholdExceeded = true;
-				}
-			}
-			// Check each marker
-			for (Marker marker : getSkinnable().getMarkers().keySet())
-			{
-				if (marker.isExceeded())
-				{
-					if (currentValue < marker.getValue())
+					// Check threshold
+					if (thresholdExceeded)
 					{
-						marker.fireMarkerEvent(new Marker.MarkerEvent(this,
-																													null,
-																													Marker.MarkerEvent.MARKER_UNDERRUN));
-						marker.setExceeded(false);
+						if (currentValue < getSkinnable().getThreshold())
+						{
+							getSkinnable().fireEvent(new ValueEvent(this,
+									null,
+									ValueEvent.VALUE_UNDERRUN));
+							thresholdExceeded = false;
+						}
+					}
+					else
+					{
+						if (currentValue > getSkinnable().getThreshold())
+						{
+							getSkinnable().fireEvent(new ValueEvent(this,
+									null,
+									ValueEvent.VALUE_EXCEEDED));
+							thresholdExceeded = true;
+						}
+					}
+					// Check each marker
+					for (Marker marker : getSkinnable().getMarkers().keySet())
+					{
+						if (marker.isExceeded())
+						{
+							if (currentValue < marker.getValue())
+							{
+								marker.fireMarkerEvent(new Marker.MarkerEvent(this,
+										null,
+										Marker.MarkerEvent.MARKER_UNDERRUN));
+								marker.setExceeded(false);
+							}
+						}
+						else
+						{
+							if (currentValue > marker.getValue())
+							{
+								marker.fireMarkerEvent(new Marker.MarkerEvent(this,
+										null,
+										Marker.MarkerEvent.MARKER_EXCEEDED));
+								marker.setExceeded(true);
+							}
+						}
+					}
+					// Check min- and maxMeasuredValue
+					if (currentValue < getSkinnable().getMinMeasuredValue())
+					{
+						getSkinnable().setMinMeasuredValue(currentValue);
+						minMeasuredValueRotate.setAngle(currentValue * angleStep
+								- 180
+								- getSkinnable().getStartAngle());
+					}
+					if (currentValue > getSkinnable().getMaxMeasuredValue())
+					{
+						getSkinnable().setMaxMeasuredValue(currentValue);
+						maxMeasuredValueRotate.setAngle(currentValue * angleStep
+								- 180
+								- getSkinnable().getStartAngle());
 					}
 				}
-				else
-				{
-					if (currentValue > marker.getValue())
-					{
-						marker.fireMarkerEvent(new Marker.MarkerEvent(this,
-																													null,
-																													Marker.MarkerEvent.MARKER_EXCEEDED));
-						marker.setExceeded(true);
-					}
-				}
-			}
-			// Check min- and maxMeasuredValue
-			if (currentValue < getSkinnable().getMinMeasuredValue())
-			{
-				getSkinnable().setMinMeasuredValue(currentValue);
-				minMeasuredValueRotate.setAngle(currentValue * angleStep
-																				- 180
-																				- getSkinnable().getStartAngle());
-			}
-			if (currentValue > getSkinnable().getMaxMeasuredValue())
-			{
-				getSkinnable().setMaxMeasuredValue(currentValue);
-				maxMeasuredValueRotate.setAngle(currentValue * angleStep
-																				- 180
-																				- getSkinnable().getStartAngle());
-			}
+			} );
+
+
 		}
 		else if ("PLAIN_VALUE".equals(PROPERTY))
 		{

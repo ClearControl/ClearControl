@@ -31,7 +31,7 @@ public interface StageDeviceInterface	extends
 	double getCurrentPosition(int pDOFIndex);
 
 	Boolean waitToBeReady(int pDOFIndex,
-												int pTimeOut,
+												long pTimeOut,
 												TimeUnit pTimeUnit);
 
 	Variable<Double> getMinPositionVariable(int pDOFIndex);

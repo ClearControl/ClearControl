@@ -43,6 +43,8 @@ public class LocalFileStackTests
 
 		for (int r = 0; r < 10; r++)
 		{
+			System.gc();
+			
 			/*final File lRootFolder = new File(File.createTempFile("test",
 																														"test")
 																						.getParentFile(),
@@ -68,15 +70,15 @@ public class LocalFileStackTests
 										lStack.getSizeInBytes());
 
 			System.out.println("generating data...");
-
+			System.out.println("size: "+lStack.getSizeInBytes()+" bytes!");
 			ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemory);
 			int i = 0;
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
-				lBuffer.writeChar((char) i++);
-			}
+				lBuffer.writeByte((byte) i++);
+			}/**/
 
 			System.out.println("done generating data...");
 
@@ -102,6 +104,8 @@ public class LocalFileStackTests
 			{
 				System.out.println(e);
 			}
+			
+			lStack.free();
 		}
 
 	}

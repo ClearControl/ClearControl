@@ -2,8 +2,6 @@ package clearcontrol.hardware.stages.gui.jfx;
 
 import clearcontrol.hardware.stages.gui.jfx.controls.CircleIndicator;
 import javafx.animation.AnimationTimer;
-import javafx.application.ConditionalFeature;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.BoundingBox;

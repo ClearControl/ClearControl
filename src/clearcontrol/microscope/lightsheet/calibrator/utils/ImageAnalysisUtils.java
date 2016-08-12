@@ -30,7 +30,7 @@ public class ImageAnalysisUtils
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
 			lDescriptiveStatistics.clear();
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
 				double lValue = lBuffer.readChar();
 				lDescriptiveStatistics.addValue(lValue);
@@ -54,7 +54,7 @@ public class ImageAnalysisUtils
 			double lSum = 0;
 			long lCount = 0;
 
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
 				lSum += lBuffer.readChar();
 				lCount++;
@@ -78,7 +78,7 @@ public class ImageAnalysisUtils
 			double lSumOfPowers = 0;
 			long lCount = 0;
 
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
 				float lValue = 1.0f * lBuffer.readChar();
 				float lSquareValue = lValue * lValue;
@@ -103,13 +103,48 @@ public class ImageAnalysisUtils
 			ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(p);
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
 				lSumIntensity += lBuffer.readChar();
 			}
 		}
 
 		return lSumIntensity;
+	}
+
+	public static void cleanWithMin(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+	{
+		int lNumberOfPlanes = pImage.numSlices();
+		int lWidth = (int) pImage.max(0);
+		int lHeight = (int) pImage.max(1);
+		int lLength = lWidth * lHeight;
+
+		FragmentedMemoryInterface lFragmentedMemory = pImage.getFragmentedMemory();
+		for (int p = 0; p < lNumberOfPlanes; p++)
+		{
+			ContiguousMemoryInterface lBuffer = lFragmentedMemory.get(p);
+
+			for (int o = 0; o < 2; o++)
+				for (int i = lWidth; i < (lLength - lWidth - 1); i += 2)
+				{
+					char lN = lBuffer.getCharAligned(o + i - lWidth);
+					char lW = lBuffer.getCharAligned(o + i - 1);
+					char lC = lBuffer.getCharAligned(o + i);
+					char lE = lBuffer.getCharAligned(o + i + 1);
+					char lS = lBuffer.getCharAligned(o + i + lWidth);
+
+					char lMin = min(min(min(lN, lW), min(lC, lE)), lS);
+
+					lBuffer.setCharAligned(o + i, lMin);
+				}
+
+		}
+
+	}
+
+	private static final char min(char pA, char pB)
+	{
+		return (pA > pB) ? pB : pA;
 	}
 
 	public static Vector2D[] findCOMOfBrightestPointsForEachPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
@@ -132,7 +167,7 @@ public class ImageAnalysisUtils
 			ContiguousBuffer lBuffer = ContiguousBuffer.wrap(lContiguousMemory);
 
 			int lMaxValue = 0;
-			while (lBuffer.hasRemaining())
+			while (lBuffer.hasRemainingByte())
 			{
 				lMaxValue = max(lMaxValue, lBuffer.readChar());
 			}
@@ -151,6 +186,7 @@ public class ImageAnalysisUtils
 					{
 						lXList.add(x);
 						lYList.add(y);
+						System.out.format("(%d,%d)->%d\n", x, y, lValue);
 					}
 				}
 			}

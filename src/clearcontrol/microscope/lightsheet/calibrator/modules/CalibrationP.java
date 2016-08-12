@@ -11,6 +11,7 @@ import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
@@ -29,9 +30,9 @@ public class CalibrationP
 	private int mNumberOfLightSheetDevices;
 	private TDoubleArrayList mRatioList;
 
-	public CalibrationP(LightSheetMicroscope pLightSheetMicroscope)
+	public CalibrationP(Calibrator pCalibrator)
 	{
-		mLightSheetMicroscope = pLightSheetMicroscope;
+		mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
 
 		mNumberOfDetectionArmDevices = mLightSheetMicroscope.getDeviceLists()
 																												.getNumberOfDevices(DetectionArmInterface.class);
@@ -165,8 +166,9 @@ public class CalibrationP
 												lPowerRatio,
 												l);
 
-			lPowerFunctionVariable.get().composeWith(UnivariateAffineFunction.axplusb(	lPowerRatio,
-																															0));
+			lPowerFunctionVariable.get()
+														.composeWith(UnivariateAffineFunction.axplusb(lPowerRatio,
+																																					0));
 			lPowerFunctionVariable.setCurrent();
 
 			System.out.format("Power function for lightsheet %d is now: %s \n",

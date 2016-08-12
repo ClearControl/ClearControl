@@ -18,7 +18,7 @@ public class EdgeStave extends IntervalStave implements
 	@Override
 	public float getValue(float pNormalizedTime)
 	{
-		if (pNormalizedTime > getEdgePosition())
+		if (isEnabled() && pNormalizedTime > getEdgePosition())
 			return getValueAfter();
 		else
 			return getValueBefore();

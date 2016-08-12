@@ -2,9 +2,9 @@ package clearcontrol.stack;
 
 import java.util.Arrays;
 
-import coremem.recycling.RecyclerRequest;
+import coremem.recycling.RecyclerRequestInterface;
 
-public class StackRequest implements RecyclerRequest
+public class StackRequest implements RecyclerRequestInterface
 {
 
 	private final long[] mDimensions;

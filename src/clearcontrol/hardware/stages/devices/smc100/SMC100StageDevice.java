@@ -210,7 +210,7 @@ public class SMC100StageDevice extends SerialDevice	implements
 
 	@Override
 	public Boolean waitToBeReady(	int pIndex,
-																int pTimeOut,
+																long pTimeOut,
 																TimeUnit pTimeUnit)
 	{
 		// System.out.println("waiting...");

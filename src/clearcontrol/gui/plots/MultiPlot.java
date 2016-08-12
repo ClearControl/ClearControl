@@ -66,6 +66,8 @@ public class MultiPlot
 				SwingUtilities.invokeAndWait(() -> {
 
 					mTabbedPane.addTab(pName, lFinalPlotTab.getPlot());
+
+					mTabbedPane.setSelectedIndex(mTabbedPane.getTabCount() - 1);
 				});
 			}
 			catch (InvocationTargetException | InterruptedException e)

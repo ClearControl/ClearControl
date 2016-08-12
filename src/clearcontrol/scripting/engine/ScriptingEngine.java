@@ -134,7 +134,10 @@ public class ScriptingEngine implements
 
 	public static boolean isCancelRequestedStatic()
 	{
-		return mCancelThreadLocal.get();
+		Boolean lBoolean = mCancelThreadLocal.get();
+		if (lBoolean == null)
+			return false;
+		return lBoolean;
 	}
 
 	public ScriptingLanguageInterface getScriptingLanguageInterface()

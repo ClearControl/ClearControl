@@ -1,7 +1,8 @@
 package clearcontrol.microscope.lightsheet.demo;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -101,6 +102,8 @@ public class LightSheetMicroscopeDemo
 		lLightSheetMicroscope.getDeviceLists()
 													.addDevice(0, lFilterWheelDevice);
 
+		ArrayList<StackCameraDeviceInterface> lCameraList = new ArrayList<>();
+
 		// Setting up cameras:
 		for (int c = 0; c < 2; c++)
 		{
@@ -126,6 +129,7 @@ public class LightSheetMicroscopeDemo
 
 			lLightSheetMicroscope.setStackProcessingPipeline(	c,
 																												lStackIdentityPipeline);
+			lCameraList.add(lCamera);
 		}
 
 		// Scaling Amplifier:
@@ -161,7 +165,8 @@ public class LightSheetMicroscopeDemo
 
 		for (int c = 0; c < 2; c++)
 		{
-			final DetectionArm lDetectionArm = new DetectionArm("D" + c);
+			final DetectionArm lDetectionArm = new DetectionArm("D" + c,
+																													lCameraList.get(c));
 
 			lLightSheetMicroscope.addDevice(c, lDetectionArm);
 
@@ -193,6 +198,9 @@ public class LightSheetMicroscopeDemo
 
 			lLightSheet.getImageHeightVariable().set(cImageResolution);
 		}
+
+		lLightSheetMicroscope.addInteractiveAcquisition();
+		lLightSheetMicroscope.addCalibrator();
 
 		// setting up scope GUI:
 
@@ -250,5 +258,4 @@ public class LightSheetMicroscopeDemo
 			assertTrue(lMicroscopeGUI.close());
 
 	}
-
 }

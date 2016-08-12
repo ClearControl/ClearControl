@@ -2,19 +2,13 @@ package clearcontrol.core.math.functions.gui.jfx;
 
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
-import clearcontrol.gui.jfx.slider.VariableSlider;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 public class UnivariateAffineFunctionPane extends StandardGridPane
 {

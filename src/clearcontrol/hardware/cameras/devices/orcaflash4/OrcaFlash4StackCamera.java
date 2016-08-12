@@ -86,7 +86,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																final DcamFrame pDcamFrame)
 			{
 				final long lDepth = pDcamFrame.getDepth();
-				System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
+				/*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
 														+ " index="
 														+ pDcamFrame.getIndex()
 														+ " pFrameIndexInBufferList="
@@ -98,7 +98,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 					do
 					{
 						lKeepAcquiredImageArray = mKeepAcquiredImageArrayQueue.remove();
-						System.out.println("lKeepAcquiredImageArray=" + lKeepAcquiredImageArray);
+						// System.out.println("lKeepAcquiredImageArray=" +
+						// lKeepAcquiredImageArray);
 					}
 					while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
 				}
@@ -325,7 +326,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			@Override
 			public Boolean call() throws Exception
 			{
-				System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
+				// System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
 				mDcamAcquisition.waitAcquisitionFinishedAndStop();
 				return true;
 			}
@@ -387,7 +388,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			DcamFrame.clearFrames();
 			mDcamAcquisition.reopen();
 
-			System.out.println(this.getClass().getSimpleName() + ": reopened() done !!!!");
+			// System.out.println(this.getClass().getSimpleName() +
+			// ": reopened() done !!!!");
 			clearReOpen();
 
 			if (lIsAcquiring)

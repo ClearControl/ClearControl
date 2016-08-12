@@ -54,7 +54,6 @@ public class SignalGeneratorSimulatorDevice	extends
 	@Override
 	public Future<Boolean> playQueue()
 	{
-		getTriggerVariable().setEdge(false, true);
 		return super.playQueue();
 	}
 

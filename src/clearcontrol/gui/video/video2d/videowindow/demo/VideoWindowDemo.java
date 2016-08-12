@@ -33,7 +33,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 10000; i++)
+		for (int i = 0; i < 10000 && lVideoWindow.isVisible(); i++)
 		{
 			generateUnsignedByteNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lWidth, lHeight);
@@ -64,7 +64,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 100 && lVideoWindow.isVisible(); i++)
 		{
 			generateUnsignedByteNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
@@ -95,7 +95,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 100000 && lVideoWindow.isVisible(); i++)
 		{
 			generateUnsignedShortNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
@@ -126,7 +126,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 100000 && lVideoWindow.isVisible(); i++)
 		{
 			generateUnsignedIntNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
@@ -157,7 +157,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 100000 && lVideoWindow.isVisible(); i++)
 		{
 			generateFloatNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);
@@ -188,7 +188,7 @@ public class VideoWindowDemo
 		lVideoWindow.setVisible(true);
 
 		lVideoWindow.start();
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 100000 && lVideoWindow.isVisible(); i++)
 		{
 			generateDoubleNoiseBuffer(lBuffer);
 			lVideoWindow.sendBuffer(lBuffer, lSize, lSize);

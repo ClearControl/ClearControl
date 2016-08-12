@@ -19,8 +19,10 @@ public abstract class VariableBase<O>
 
 	public void addListener(final VariableListener<O> pVariableListener)
 	{
-		mVariableSetListeners.add(pVariableListener);
-		mVariableGetListeners.add(pVariableListener);
+		if (!mVariableSetListeners.contains(pVariableListener))
+			mVariableSetListeners.add(pVariableListener);
+		if (!mVariableGetListeners.contains(pVariableListener))
+			mVariableGetListeners.add(pVariableListener);
 	}
 
 	public void removeListener(final VariableListener<O> pVariableListener)
@@ -31,17 +33,20 @@ public abstract class VariableBase<O>
 
 	public void addSetListener(final VariableSetListener<O> pVariableSetListener)
 	{
-		mVariableSetListeners.add(pVariableSetListener);
+		if (!mVariableSetListeners.contains(pVariableSetListener))
+			mVariableSetListeners.add(pVariableSetListener);
 	}
 
 	public void addEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
 	{
-		mVariableEdgeListeners.add(pVariableEdgeListener);
+		if (!mVariableEdgeListeners.contains(pVariableEdgeListener))
+			mVariableEdgeListeners.add(pVariableEdgeListener);
 	}
 
 	public void addGetListener(final VariableGetListener<O> pVariableGetListener)
 	{
-		mVariableGetListeners.add(pVariableGetListener);
+		if (!mVariableGetListeners.contains(pVariableGetListener))
+			mVariableGetListeners.add(pVariableGetListener);
 	}
 
 	public void removeSetListener(final VariableSetListener<O> pVariableSetListener)
@@ -49,15 +54,17 @@ public abstract class VariableBase<O>
 		mVariableSetListeners.remove(pVariableSetListener);
 	}
 
+	public void removeGetListener(final VariableGetListener<O> pVariableGetListener)
+	{
+		mVariableGetListeners.remove(pVariableGetListener);
+	}
+	
 	public void removeEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
 	{
 		mVariableEdgeListeners.remove(pVariableEdgeListener);
 	}
 
-	public void removeGetListener(final VariableGetListener<O> pVariableGetListener)
-	{
-		mVariableGetListeners.remove(pVariableGetListener);
-	}
+
 
 	public void removeAllSetListeners()
 	{
@@ -73,6 +80,7 @@ public abstract class VariableBase<O>
 	{
 		mVariableSetListeners.clear();
 		mVariableGetListeners.clear();
+		mVariableEdgeListeners.clear();
 	}
 
 	public CopyOnWriteArrayList<VariableSetListener<O>> getVariableSetListeners()

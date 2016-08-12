@@ -6,14 +6,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
+/**
+ * MicroscopeInterface is a generic interface for all microscopes types.
+ * 
+ * @author royer
+ */
 public interface MicroscopeInterface extends
 																		NameableInterface,
+																		HasChangeListenerInterface,
 																		StateQueueDeviceInterface
 {
 
@@ -23,6 +30,16 @@ public interface MicroscopeInterface extends
 	 * @return microscope's name.
 	 */
 	public String getName();
+
+	/**
+	 * Returns whether the microscope is in simulation mode.
+	 * 
+	 * @return true if simulation mode, or false otherwise
+	 */
+	default boolean isSimulation()
+	{
+		return false;
+	};
 
 	/**
 	 * Adds a device of a given type. Devices are uniquely identified by their
@@ -167,6 +184,24 @@ public interface MicroscopeInterface extends
 	 */
 	public long lastAcquiredStacksTimeStampInNS();
 
+	/**
+	 * Returns Stack Variable for given stack camera index
+	 * 
+	 * @param pIndex
+	 *          stack camera index
+	 * @return Stack Variable
+	 */
 	public Variable<StackInterface> getStackVariable(int pIndex);
+
+	/**
+	 * Returns the size in nanometer (anisotropic XY) of a pixel. this is the
+	 * actual physical size in the sample - thus taking into account overall
+	 * magnification. The size is returned wrapped into a Variable.
+	 * 
+	 * @param pCameraIndex
+	 *          camera index
+	 * @return size in nanometer as a Variable
+	 */
+	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
 
 }

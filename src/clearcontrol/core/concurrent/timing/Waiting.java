@@ -7,20 +7,24 @@ import java.util.concurrent.atomic.AtomicLong;
 public interface Waiting
 {
 
-	default public void notifyWaitingThreads()
-	{
-		synchronized (this)
-		{
-			notifyAll();
-		}
-	}
-
+	/**
+	 * Waits until call to Callable returns true.
+	 * @param pCallable
+	 * @return last boolean state returned 
+	 */
 	default public Boolean waitFor(Callable<Boolean> pCallable)
 	{
 		return waitFor(Long.MAX_VALUE, TimeUnit.DAYS, pCallable);
 	}
 
-	default public Boolean waitFor(	long pTimeOut,
+	/**
+	 * Waits until call to Callable returns true.
+	 * @param pTimeOut time out
+	 * @param pTimeUnit time out unit
+	 * @param pCallable callable returning boolean state
+	 * @return last boolean state returned 
+	 */
+	default public Boolean waitFor(	Long pTimeOut,
 																	TimeUnit pTimeUnit,
 																	Callable<Boolean> pCallable)
 	{
@@ -30,8 +34,9 @@ public interface Waiting
 			try
 			{
 				AtomicLong lCounter = new AtomicLong();
-				long lTimeOutInMillis = pTimeUnit.toMillis(pTimeOut);
-				while (!pCallable.call() && lCounter.incrementAndGet() < lTimeOutInMillis)
+				long lTimeOutInMillis = pTimeUnit == null	? 0
+																									: pTimeUnit.toMillis(pTimeOut);
+				while (!pCallable.call() && (pTimeOut == null || lCounter.incrementAndGet() < lTimeOutInMillis))
 				{
 					try
 					{
