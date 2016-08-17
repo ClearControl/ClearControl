@@ -18,32 +18,54 @@ import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 import gnu.trove.list.array.TByteArrayList;
 
+/**
+ * @author royer
+ *
+ */
 public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																																OpenCloseDeviceInterface,
 																																AsynchronousExecutorServiceAccess
 {
-	
+
 	// declaring instance variables
-	
+
 	public static final int cDcamJNumberOfBuffers = 1024;
 
-	private final int mCameraDeviceIndex; // camera id index used in the name and passed to the constructor
+	/**
+	 * 
+	 */
+	private final int mCameraDeviceIndex; // camera id index used in the name and
+																				// passed to the constructor
 
-	private final DcamAcquisition mDcamAcquisition; // creating the environment for the camera
+	private final DcamAcquisition mDcamAcquisition; // creating the environment
+																									// for the camera
 
-	private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new Variable<>("DCamJVideoFrame"); // some weird hamamatsu stuff, not sure if I need it with Andor
+	private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference = new Variable<>("DCamJVideoFrame"); // some
+																																																								// weird
+																																																								// hamamatsu
+																																																								// stuff,
+																																																								// not
+																																																								// sure
+																																																								// if
+																																																								// I
+																																																								// need
+																																																								// it
+																																																								// with
+																																																								// Andor
 
-	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing; // hamamtsu again
+	private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing; // hamamtsu
+																																								// again
 
-	private final Object mLock = new Object(); //lock object
+	private final Object mLock = new Object(); // lock object
 
-	private int mStackProcessorQueueSize = 6; // queue size, would be nice to have a better understanding of this number
+	private int mStackProcessorQueueSize = 6; // queue size, would be nice to have
+																						// a better understanding of this
+																						// number
 
-	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000; // whatever
+	private long mWaitForRecycledStackTimeInMicroSeconds = 1 * 1000 * 1000;
 
-	
 	// exotic calls to constructors to ensure proper triggering
-	
+
 	// external
 	public static final OrcaFlash4StackCamera buildWithExternalTriggering(final int pCameraDeviceIndex,
 																																				boolean pFlipX)
@@ -71,23 +93,22 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 																			pFlipX);
 	}
 
-	
-	// constructor per se
 	private OrcaFlash4StackCamera(final int pCameraDeviceIndex,
 																final TriggerType pTriggerType,
 																boolean pFlipX)
 	{
-		
+
 		// run the constructors of parents
 		super("OrcaFlash4Camera" + pCameraDeviceIndex);
-		
+
 		// initialize the index instance variable with the given parameter
 		mCameraDeviceIndex = pCameraDeviceIndex;
 		// create the environment
 		mDcamAcquisition = new DcamAcquisition(getCameraDeviceIndex());
 		// set trigger type
 		mDcamAcquisition.setTriggerType(pTriggerType);
-		// some camera specific listener functional interface with the method frameArrived
+		// some camera specific listener functional interface with the method
+		// frameArrived
 		mDcamAcquisition.addListener(new DcamAcquisitionListener()
 		{
 
@@ -123,7 +144,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 		});
 		// ----------------------- done with the listener -------- //
-		
+
 		// more instance vars
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																	9.74);
@@ -139,13 +160,16 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			{
 				synchronized (mLock)
 				{
-					requestReOpen();
 					final long lNewValue = pNewValue;
 					final long lRoundto4 = DcamProperties.roundto4((int) lNewValue);
 					if (lRoundto4 != pNewValue)
 					{
 						this.set(lRoundto4);
 					}
+
+					if (pOldValue != lRoundto4)
+						requestReOpen();
+
 					return super.setEventHook(pOldValue, lRoundto4);
 				}
 			}
@@ -160,27 +184,22 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			{
 				synchronized (mLock)
 				{
-					requestReOpen();
 					final long lNewValue = pNewValue;
 					final long lRoundto4 = DcamProperties.roundto4((int) lNewValue);
 					if (lRoundto4 != pNewValue)
 					{
 						this.set(lRoundto4);
 					}
+
+					if (pOldValue != lRoundto4)
+						requestReOpen();
+
 					return super.setEventHook(pOldValue, lRoundto4);
 				}
 			}
 		};
 
-		mStackDepthVariable = new Variable<Long>("FrameDepth", 64L)
-		{
-			@Override
-			public Long setEventHook(	final Long pOldValue,
-																final Long pNewValue)
-			{
-				return super.setEventHook(pOldValue, pNewValue);
-			}
-		};
+		mStackDepthVariable = new Variable<Long>("FrameDepth", 64L);
 
 		mStackMaxWidthVariable = new Variable<Long>("FrameMaxWidth",
 																								2048L);
@@ -223,6 +242,13 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			}
 
 		};
+
+		getTriggerVariable().addEdgeListener((n) -> {
+			if (n)
+			{
+				mDcamAcquisition.trigger();
+			}
+		});
 
 		/*
 		 * DcamJToVideoFrameConverter(final int pCameraId,
@@ -494,12 +520,6 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 				return false;
 			}
 		}
-	}
-
-	@Override
-	public void trigger()
-	{
-		mDcamAcquisition.trigger();
 	}
 
 	@Override

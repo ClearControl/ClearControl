@@ -38,7 +38,7 @@ public class StackRecyclerManagerPanel extends VBox
 		super();
 
 		pStackRecyclerManager.addChangeListener((m) -> {
-			updateRecyclerPanels(m.getRecyclerMap());
+			updateRecyclerPanels(((StackRecyclerManager)m).getRecyclerMap());
 		});
 
 	}

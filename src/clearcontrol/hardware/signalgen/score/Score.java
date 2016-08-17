@@ -5,10 +5,10 @@ import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.device.name.NameableAbstract;
+import clearcontrol.device.name.NameableBase;
 import clearcontrol.hardware.signalgen.movement.MovementInterface;
 
-public class Score extends NameableAbstract implements ScoreInterface
+public class Score extends NameableBase implements ScoreInterface
 {
 
 	private final ArrayList<MovementInterface> mMovementList = new ArrayList<MovementInterface>();

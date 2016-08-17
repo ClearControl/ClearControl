@@ -1,5 +1,6 @@
 package clearcontrol.hardware.stages.devices.smc100;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.com.serial.SerialDevice;
@@ -60,11 +61,11 @@ public class SMC100StageDevice extends SerialDevice	implements
 
 		final SerialTextDeviceAdapter<Double> lTargetPositionAdapter = new SMC100PositionTargetAdapter(this);
 		mTargetPositionVariable = addSerialVariable(pDeviceName + "TargetPosition",
-		                                            lTargetPositionAdapter);
-		
+																								lTargetPositionAdapter);
+
 		final SerialTextDeviceAdapter<Double> lCurrentPositionAdapter = new SMC100PositionCurrentAdapter(this);
-		mCurrentPositionVariable = addSerialVariable(pDeviceName + "CurrentPosition",
-		                                             lCurrentPositionAdapter);
+		mCurrentPositionVariable = addSerialVariable(	pDeviceName + "CurrentPosition",
+																									lCurrentPositionAdapter);
 
 		final SerialTextDeviceAdapter<Boolean> lResetAdapter = new SMC100ResetAdapter();
 		mResetVariable = addSerialVariable(	pDeviceName + "Reset",
@@ -215,6 +216,12 @@ public class SMC100StageDevice extends SerialDevice	implements
 	{
 		// System.out.println("waiting...");
 		return waitFor(pTimeOut, pTimeUnit, () -> mReadyVariable.get());
+	}
+
+	@Override
+	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
+	{
+		return waitToBeReady(0, pTimeOut, pTimeUnit);
 	}
 
 	@Override

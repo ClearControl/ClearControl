@@ -1,16 +1,16 @@
 package clearcontrol.device.name;
 
-public abstract class NameableAbstract implements NameableInterface
+public abstract class NameableBase implements NameableInterface
 {
 	private String mName;
 
 	@SuppressWarnings("unused")
-	private NameableAbstract()
+	private NameableBase()
 	{
 		super();
 	}
 
-	public NameableAbstract(final String pName)
+	public NameableBase(final String pName)
 	{
 		super();
 		mName = pName;

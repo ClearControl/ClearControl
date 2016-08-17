@@ -30,7 +30,7 @@ public class LightSheetOpticalSwitch extends VirtualDevice	implements
 			if (u != v)
 			{
 				update();
-				notifyChange();
+				notifyListeners(this);
 			}
 		};
 

@@ -1,11 +1,9 @@
 package clearcontrol.microscope.gui.halcyon;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Properties;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
@@ -14,17 +12,8 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.hardware.lasers.LaserDeviceInterface;
-import clearcontrol.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
-import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
-import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
-import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
-import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.MicroscopeGUI;
-import clearcontrol.microscope.stacks.StackRecyclerManager;
-import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingWindow;
 import halcyon.HalcyonFrame;
@@ -41,7 +30,8 @@ public class HalcyonGUIGenerator
 	private MicroscopeInterface mMicroscopeInterface;
 	private HalcyonFrame mHalcyonFrame;
 	private MicroscopeGUI mMicroscopeGUI;
-	private Properties mProperties = new Properties();
+	private HashMap<Class<?>, Class<?>> mDeviceClassToPanelMap = new HashMap<>();
+	private HashMap<Class<?>, HalcyonNodeType> mDeviceClassToHalcyonTypeMap = new HashMap<>();
 
 	public HalcyonGUIGenerator(	MicroscopeInterface pMicroscopeInterface,
 															MicroscopeGUI pMicroscopeGUI,
@@ -57,35 +47,18 @@ public class HalcyonGUIGenerator
 																							.getResourceAsStream("./icons/folder_16.png"),
 																					pNodeTypeNamesList);
 
-		mHalcyonFrame = new HalcyonFrame(	pMicroscopeInterface.getName(),
-																			1280,
-																			768);
+		mHalcyonFrame = new HalcyonFrame(pMicroscopeInterface.getName());
 
 		mHalcyonFrame.setTreePanel(lTreePanel);
 
 	}
 
-	public <T> void loadMappingFromRessourceFile(	Class<T> pClass,
-																								String pRessourcesPath)
+	public <U, V> void addMappingEntry(	Class<U> pDeviceClass,
+																			Class<V> pPanelClass,
+																			HalcyonNodeType pNodeType)
 	{
-		try
-		{
-			InputStream lResourceAsStream = pClass.getResourceAsStream(pRessourcesPath);
-			mProperties.load(lResourceAsStream);
-			lResourceAsStream.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	public <U,V> void addMappingEntry(Class<U> pDeviceClass, Class<V> pPanelClass)
-	{
-		String lDeviceSimpleName = pDeviceClass.getSimpleName();
-		String lPanelFullName = pPanelClass.getName();
-
-		mProperties.setProperty(lDeviceSimpleName, lPanelFullName);
+		mDeviceClassToPanelMap.put(pDeviceClass, pPanelClass);
+		mDeviceClassToHalcyonTypeMap.put(pDeviceClass, pNodeType);
 	}
 
 	public HalcyonFrame getHalcyonFrame()
@@ -97,20 +70,22 @@ public class HalcyonGUIGenerator
 	{
 
 		// Setting up devices:
-		setupDevicePanels(LaserDeviceInterface.class, MicroscopeNodeType.Laser);
-		setupDevicePanels(OpticalSwitchDeviceInterface.class,
-					MicroscopeNodeType.OpticalSwitch);
-		setupDevicePanels(FilterWheelDeviceInterface.class,
-					MicroscopeNodeType.FilterWheel);
-		setupDevicePanels(StageDeviceInterface.class, MicroscopeNodeType.Stage);
-		setupDevicePanels(StackCameraDeviceInterface.class, MicroscopeNodeType.Camera);
-		setupDevicePanels(SignalGeneratorInterface.class,
-					MicroscopeNodeType.SignalGenerator);
-		setupDevicePanels(ScalingAmplifierDeviceInterface.class,
-					MicroscopeNodeType.ScalingAmplifier);
-		setupDevicePanels(StackRecyclerManager.class, MicroscopeNodeType.Other);
-		setupDevicePanels(AcquisitionStateManager.class, MicroscopeNodeType.Acquisition);
-		
+
+		for (Class<?> lClass : mDeviceClassToPanelMap.keySet())
+		{
+			System.out.println("setting up Halcyon frame for device class: " + lClass.getSimpleName());
+			setupDevicePanels(lClass);
+		}
+
+		/*setupDevicePanels(LaserDeviceInterface.class);
+		setupDevicePanels(OpticalSwitchDeviceInterface.class);
+		setupDevicePanels(FilterWheelDeviceInterface.class);
+		setupDevicePanels(StageDeviceInterface.class);
+		setupDevicePanels(StackCameraDeviceInterface.class);
+		setupDevicePanels(SignalGeneratorInterface.class);
+		setupDevicePanels(ScalingAmplifierDeviceInterface.class);
+		setupDevicePanels(StackRecyclerManager.class);
+		setupDevicePanels(AcquisitionStateManager.class);/**/
 
 		// setting up script engines:
 		setupScriptEngines(mMicroscopeInterface);
@@ -217,50 +192,59 @@ public class HalcyonGUIGenerator
 		}/**/
 	}
 
-	
-	private <T> void setupDevicePanels(Class<T> pClass, HalcyonNodeType pNodeType)
+	private <T> void setupDevicePanels(Class<T> pClass)
 	{
+
 		try
 		{
-			String lDeviceClassSimpleName = pClass.getSimpleName();
-			String lPanelClassName = mProperties.getProperty(lDeviceClassSimpleName);
 
-			if (lPanelClassName == null)
+			Class<?> lPanelClass = mDeviceClassToPanelMap.get(pClass);
+
+			if (lPanelClass == null)
 			{
-				System.err.println("Could not find panel class name for: "+lDeviceClassSimpleName);
+				String lDeviceClassSimpleName = pClass.getSimpleName();
+				System.err.println("Could not find panel class for: " + lDeviceClassSimpleName);
 				return;
 			}
 
-			Class<?> lClass = Class.forName(lPanelClassName);
+			HalcyonNodeType lNodeType = mDeviceClassToHalcyonTypeMap.get(pClass);
 
 			for (Object lDevice : mMicroscopeInterface.getDevices(pClass))
 			{
 
-				Constructor<?> lConstructor = lClass.getConstructor(pClass);
-				Object lPanelAsObject = lConstructor.newInstance(lDevice);
-				Node lPanelAsNode = (Node) lPanelAsObject;
+				try
+				{
+					Constructor<?> lConstructor = lPanelClass.getConstructor(pClass);
 
-				HalcyonNode node;
-				if (lDevice instanceof NameableInterface)
-				{
-					NameableInterface lNameableDevice = (NameableInterface) lDevice;
-					node = new HalcyonNode(	lNameableDevice.getName(),
-																	pNodeType,
-																	lPanelAsNode);
+					Object lPanelAsObject = lConstructor.newInstance(lDevice);
+					Node lPanelAsNode = (Node) lPanelAsObject;
+
+					HalcyonNode node;
+					if (lDevice instanceof NameableInterface)
+					{
+						NameableInterface lNameableDevice = (NameableInterface) lDevice;
+						node = new HalcyonNode(	lNameableDevice.getName(),
+																		lNodeType,
+																		lPanelAsNode);
+					}
+					else
+					{
+						node = new HalcyonNode(	pClass.getSimpleName(),
+																		lNodeType,
+																		lPanelAsNode);
+					}
+					mHalcyonFrame.addNode(node);
 				}
-				else
+				catch (NoSuchMethodException | SecurityException
+						| InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException e)
 				{
-					node = new HalcyonNode(	pClass.getSimpleName(),
-																	pNodeType,
-																	lPanelAsNode);
+					e.printStackTrace();
 				}
-				mHalcyonFrame.addNode(node);
+
 			}
 		}
-		catch (ClassNotFoundException | NoSuchMethodException
-				| SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e)
+		catch (Throwable e)
 		{
 			e.printStackTrace();
 		}

@@ -52,12 +52,12 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	public MicroscopeBase(String pDeviceName)
 	{
 		super(pDeviceName);
-		
+
 		mDeviceLists = new MicroscopeDeviceLists(this);
 
-		mStackRecyclerManager = new StackRecyclerManager();		
+		mStackRecyclerManager = new StackRecyclerManager();
 		mDeviceLists.addDevice(0, mStackRecyclerManager);
-		
+
 		for (int i = 0; i < 128; i++)
 		{
 			Double lPixelSizeInNanometers = MachineConfiguration.getCurrentMachineConfiguration()
@@ -113,27 +113,29 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	}
 
 	@Override
-	public void addChangeListener(ChangeListener pChangeListener)
+	public void addChangeListener(ChangeListener<VirtualDevice> pChangeListener)
 	{
+		super.addChangeListener(pChangeListener);
 		for (final Object lDevice : mDeviceLists.getAllDeviceList())
 		{
 			if (lDevice instanceof HasChangeListenerInterface)
 			{
-				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				final HasChangeListenerInterface<VirtualDevice> lHasChangeListenersInterface = (HasChangeListenerInterface<VirtualDevice>) lDevice;
 				lHasChangeListenersInterface.addChangeListener(pChangeListener);
 			}
 		}
-	}
+	}/**/
 
 	@Override
-	public void removeChangeListener(ChangeListener pChangeListener)
+	public void removeChangeListener(ChangeListener<VirtualDevice> pChangeListener)
 	{
+		super.removeChangeListener(pChangeListener);
 		for (final Object lDevice : mDeviceLists.getAllDeviceList())
 		{
 
 			if (lDevice instanceof HasChangeListenerInterface)
 			{
-				final HasChangeListenerInterface lHasChangeListenersInterface = (HasChangeListenerInterface) lDevice;
+				final HasChangeListenerInterface<VirtualDevice> lHasChangeListenersInterface = (HasChangeListenerInterface<VirtualDevice>) lDevice;
 				lHasChangeListenersInterface.removeChangeListener(pChangeListener);
 			}
 		}
@@ -340,7 +342,6 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 			return mDeviceLists.getDevice(StackCameraDeviceInterface.class,
 																		pIndex).getStackVariable();
 	}
-
 
 	@Override
 	public void useRecycler(final String pName,

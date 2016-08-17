@@ -3,11 +3,13 @@ package clearcontrol.microscope.lightsheet;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 public interface LightSheetMicroscopeInterface extends
 																							MicroscopeInterface
+
 {
 
 	/**
@@ -528,5 +530,20 @@ public interface LightSheetMicroscopeInterface extends
 	 * @return r position value
 	 */
 	public double getStageR();
+
+	/**
+	 * Sets the main XYZR stage of this microscope.
+	 * 
+	 * @param pStageDeviceInterface
+	 *          main XYZR stage.
+	 */
+	public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
+
+	/**
+	 * Returns the main XYZR stage of this microscope.
+	 * 
+	 * @return main XYZR stage
+	 */
+	public StageDeviceInterface getMainXYZRStage();
 
 }
