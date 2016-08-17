@@ -1,6 +1,8 @@
 package clearcontrol.hardware.cameras.devices.sim.test;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.junit.Test;
 
@@ -17,22 +19,13 @@ public class StackCameraDeviceSimulatorTests
 {
 
 	@Test
-	public void test() throws IOException
+	public void test() throws IOException, InterruptedException, ExecutionException
 	{
-		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
-
-		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
-																																																											10);
-		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
-																																	101L,
-																																	103L,
-																																	lRecycler);
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
 																												false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator("StackCamera",
-																																														lRandomStackSource,
 																																														lTrigger);
 
 		Variable<StackInterface> lStackVariable = lStackCameraDeviceSimulator.getStackVariable();
@@ -59,12 +52,14 @@ public class StackCameraDeviceSimulatorTests
 
 		lStackCameraDeviceSimulator.finalizeQueue();
 
-		lStackCameraDeviceSimulator.playQueue();
+		Future<Boolean> playQueue = lStackCameraDeviceSimulator.playQueue();
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < lStackCameraDeviceSimulator.getStackDepthVariable().get()+1; i++)
 		{
 			lTrigger.setEdge(false, true);
 		}
+		
+		System.out.println(playQueue.get());
 
 		lStackCameraDeviceSimulator.stop();
 
