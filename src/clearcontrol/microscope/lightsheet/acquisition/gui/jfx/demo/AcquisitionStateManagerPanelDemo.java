@@ -30,11 +30,14 @@ public class AcquisitionStateManagerPanelDemo extends Application	implements
 		InterpolatedAcquisitionState lState1 = new InterpolatedAcquisitionState("State1",2,4);
 		InterpolatedAcquisitionState lState2 = new InterpolatedAcquisitionState("State2",2,4);
 		
+		lState1.setup(0, 50, 100, 1, 5, 5);
+		lState2.setup(-100, 50, 100, 2, 5, 5);
+		
 		lAcquisitionStateManager.addState(lState1);
 		lAcquisitionStateManager.addState(lState2);
 		
 
-		Scene scene = new Scene(lAcquisitionStateManagerPanel, AcquisitionStatePanel.cPrefWidth, AcquisitionStatePanel.cPrefHeight);
+		Scene scene = new Scene(lAcquisitionStateManagerPanel, 1000, 1000);
 		stage.setScene(scene);
 		stage.setTitle("AcquisitionStateManagerPanel Demo");
 	

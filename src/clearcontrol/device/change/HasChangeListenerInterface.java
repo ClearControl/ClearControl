@@ -1,8 +1,10 @@
 package clearcontrol.device.change;
 
-public interface HasChangeListenerInterface<O>
+public interface HasChangeListenerInterface<E>
 {
-	public void addChangeListener(ChangeListener<O> pChangeListener);
+	public void addChangeListener(ChangeListener<E> pChangeListener);
 
-	public void removeChangeListener(ChangeListener<O> pChangeListener);
+	public void removeChangeListener(ChangeListener<E> pChangeListener);
+	
+	public void notifyListeners(E pEvent);
 }
