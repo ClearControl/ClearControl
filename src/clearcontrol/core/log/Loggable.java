@@ -51,11 +51,25 @@ public interface Loggable
 																														+ pMessage);
 	}
 
+	
+	public default void info(String pMessage)
+	{
+		getLogger(this.getClass().getPackage().getName()).info(this.getClass().getSimpleName() + ": "
+																		+ pMessage);
+	}
+	
 	public default void info(	final String pSubSystemName,
 														String pMessage)
 	{
 		getLogger(pSubSystemName).info(this.getClass().getSimpleName() + ": "
 																		+ pMessage);
+	}
+	
+	public default void info(	String pFormat,
+														Object... args)
+	{
+		getLogger(this.getClass().getPackage().getName()).info(this.getClass().getSimpleName() + ": "
+																		+ String.format(pFormat, args));
 	}
 
 	public default void info(	final String pSubSystemName,
@@ -65,12 +79,27 @@ public interface Loggable
 		getLogger(pSubSystemName).info(this.getClass().getSimpleName() + ": "
 																		+ String.format(pFormat, args));
 	}
+	
+	
 
+	public default void warning(String pMessage)
+	{
+		getLogger(this.getClass().getPackage().getName()).warning(this.getClass().getSimpleName() + ": "
+																			+ pMessage);
+	}
+	
 	public default void warning(final String pSubSystemName,
 															String pMessage)
 	{
 		getLogger(pSubSystemName).warning(this.getClass().getSimpleName() + ": "
 																			+ pMessage);
+	}
+	
+	public default void warning(String pFormat,
+															Object... args)
+	{
+		getLogger(this.getClass().getPackage().getName()).warning(this.getClass().getSimpleName() + ": "
+																			+ String.format(pFormat, args));
 	}
 
 	public default void warning(final String pSubSystemName,
@@ -81,11 +110,25 @@ public interface Loggable
 																			+ String.format(pFormat, args));
 	}
 
+	public default void severe(	String pMessage)
+	{
+		getLogger(this.getClass().getPackage().getName()).severe(this.getClass().getSimpleName() + ": "
+																			+ pMessage);
+	}
+	
+	
 	public default void severe(	final String pSubSystemName,
 															String pMessage)
 	{
 		getLogger(pSubSystemName).severe(this.getClass().getSimpleName() + ": "
 																			+ pMessage);
+	}
+	
+	public default void severe(	String pFormat,
+															Object... args)
+	{
+		getLogger(this.getClass().getPackage().getName()).severe(this.getClass().getSimpleName() + ": "
+																			+ String.format(pFormat, args));
 	}
 
 	public default void severe(	final String pSubSystemName,

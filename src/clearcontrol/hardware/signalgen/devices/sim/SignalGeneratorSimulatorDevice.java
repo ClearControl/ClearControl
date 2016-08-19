@@ -3,6 +3,7 @@ package clearcontrol.hardware.signalgen.devices.sim;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.signalgen.SignalGeneratorBase;
 import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
@@ -13,14 +14,9 @@ public class SignalGeneratorSimulatorDevice	extends
 																																SignalGeneratorInterface
 {
 
-	private final Variable<Boolean> mTriggerVariable;
-
 	public SignalGeneratorSimulatorDevice()
 	{
 		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
-
-		mTriggerVariable = new Variable<Boolean>(	getName() + "Trigger",
-																										false);
 
 	}
 
@@ -40,14 +36,15 @@ public class SignalGeneratorSimulatorDevice	extends
 	public boolean playScore(ScoreInterface pScore)
 	{
 		final long lDurationInMilliseconds = pScore.getDuration(TimeUnit.MILLISECONDS);
-		try
+
+		long ltriggerPeriodInMilliseconds = lDurationInMilliseconds/mEnqueuedStateCounter;
+		
+		for(int i=0; i<mEnqueuedStateCounter; i++)
 		{
-			Thread.sleep(lDurationInMilliseconds);
+			mTriggerVariable.setEdge(false, true);
+			ThreadUtils.sleep(ltriggerPeriodInMilliseconds, TimeUnit.MILLISECONDS);
 		}
-		catch (final InterruptedException e)
-		{
-		}
-		mTriggerVariable.setEdge(false, true);
+		
 		return true;
 	}
 

@@ -19,12 +19,31 @@ public class SingleCheckCellManager<T extends NameableInterface>
 		mCellList.add(pCell);
 	}
 
-	public void checkOnly(SingleCheckCell<T> pCheckedCell)
+	public void checkOnlyCell(SingleCheckCell<T> pCheckedCell)
 	{
 		if (!mCellList.contains(pCheckedCell))
 			mCellList.add(pCheckedCell);
 		mCheckedItem = pCheckedCell.getItem();
 		updateChecked();
+	}
+
+	public void checkOnlyItem(T pCheckedItem)
+	{
+		mCheckedItem = pCheckedItem;
+		for (SingleCheckCell<T> lCell : mCellList)
+			if (lCell.getItem() != null && lCell.getItem() == mCheckedItem)
+			{
+				lCell.setChecked(true);
+			}
+			else if (lCell.getItem() != null && lCell.getItem() != mCheckedItem)
+			{
+				lCell.setChecked(false);
+			}
+			else
+			{
+				continue;
+			}
+
 	}
 
 	public void updateChecked()

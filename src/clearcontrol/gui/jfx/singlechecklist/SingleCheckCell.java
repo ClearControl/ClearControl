@@ -79,7 +79,7 @@ public class SingleCheckCell<T extends NameableInterface> extends
 			{
 				if (mCorrespondingItem != null)
 				{
-					mStateCellManager.checkOnly(lThisStateCell);
+					mStateCellManager.checkOnlyCell(lThisStateCell);
 				}
 			}
 		});

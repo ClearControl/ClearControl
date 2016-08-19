@@ -1,6 +1,10 @@
 package clearcontrol.hardware.cameras.devices.sim.test;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
@@ -17,22 +21,17 @@ public class StackCameraDeviceSimulatorTests
 {
 
 	@Test
-	public void test() throws IOException
+	public void test() throws IOException,
+										InterruptedException,
+										ExecutionException,
+										TimeoutException
 	{
-		final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
-
-		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
-																																																											10);
-		RandomStackSource lRandomStackSource = new RandomStackSource(	100L,
-																																	101L,
-																																	103L,
-																																	lRecycler);
+		
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
 																												false);
 
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator("StackCamera",
-																																														lRandomStackSource,
 																																														lTrigger);
 
 		Variable<StackInterface> lStackVariable = lStackCameraDeviceSimulator.getStackVariable();
@@ -51,7 +50,7 @@ public class StackCameraDeviceSimulatorTests
 		lStackCameraDeviceSimulator.start();
 
 		lStackCameraDeviceSimulator.clearQueue();
-		
+
 		for (int i = 0; i < 20; i++)
 		{
 			lStackCameraDeviceSimulator.addCurrentStateToQueue();
@@ -59,11 +58,20 @@ public class StackCameraDeviceSimulatorTests
 
 		lStackCameraDeviceSimulator.finalizeQueue();
 
-		lStackCameraDeviceSimulator.playQueue();
+		
 
-		for (int i = 0; i < 20; i++)
+		for (int j = 0; j < 10; j++)
 		{
-			lTrigger.setEdge(false, true);
+			Future<Boolean> lPlayQueue = lStackCameraDeviceSimulator.playQueue();
+			
+			for (int i = 0; i < lStackCameraDeviceSimulator.getQueueLength(); i++)
+			{
+				lTrigger.setEdge(false, true);
+			}
+
+			System.out.println("waiting...");
+			lPlayQueue.get(20L, TimeUnit.SECONDS);
+			System.out.println(" ...done waiting.");
 		}
 
 		lStackCameraDeviceSimulator.stop();

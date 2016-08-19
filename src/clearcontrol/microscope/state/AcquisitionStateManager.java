@@ -48,6 +48,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
 				mAcquisitionStateList.add(pCurrentState);
 			System.out.println("setCurrent: " + pCurrentState.getName());
 			mCurrentState = pCurrentState;
+			notifyListeners(this);
 		}
 	}
 

@@ -3,9 +3,11 @@ package clearcontrol.microscope.lightsheet.acquisition.tables;
 import java.util.ArrayList;
 
 import clearcontrol.core.math.interpolation.SplineInterpolationTable;
+import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 
-public class InterpolationTables
+public class InterpolationTables extends
+																ChangeListeningBase<InterpolationTables>
 {
 	private final int mNumberOfLightSheetDevices;
 	private final int mNumberOfDetectionArmDevices;
@@ -58,16 +60,12 @@ public class InterpolationTables
 	{
 		for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
 			lSplineInterpolationTable.addRow(pZ);
+		notifyListeners(this);
 	}
 
 	public int getNumberOfControlPlanes()
 	{
 		return mInterpolationTableList.get(0).getNumberOfRows();
-	}
-
-	public SplineInterpolationTable getTable(LightSheetDOF pLightSheetDOF)
-	{
-		return mInterpolationTableList.get(pLightSheetDOF.ordinal());
 	}
 
 	public int getNumberOfDevices(LightSheetDOF pLightSheetDOF)
@@ -110,6 +108,7 @@ public class InterpolationTables
 		getTable(pLightSheetDOF).setY(pControlPlaneIndex,
 																	pDeviceIndex,
 																	pZ);
+		notifyListeners(this);
 	}
 
 	public void add(LightSheetDOF pLightSheetDOF,
@@ -120,6 +119,7 @@ public class InterpolationTables
 		getTable(pLightSheetDOF).addY(pControlPlaneIndex,
 																	pDeviceIndex,
 																	pZ);
+		notifyListeners(this);
 	}
 
 	public void set(LightSheetDOF pLightSheetDOF,
@@ -127,21 +127,29 @@ public class InterpolationTables
 									double pZ)
 	{
 		getTable(pLightSheetDOF).setY(pControlPlaneIndex, pZ);
+		notifyListeners(this);
 	}
 
 	public void set(LightSheetDOF pLightSheetDOF, double pZ)
 	{
 		getTable(pLightSheetDOF).setY(pZ);
+		notifyListeners(this);
 	}
 
 	public void setTransitionPlane(double pZ)
 	{
 		mTransitionPlaneZ = pZ;
+		notifyListeners(this);
 	}
 
 	public double getTransitionPlane()
 	{
 		return mTransitionPlaneZ;
+	}
+
+	private SplineInterpolationTable getTable(LightSheetDOF pLightSheetDOF)
+	{
+		return mInterpolationTableList.get(pLightSheetDOF.ordinal());
 	}
 
 }

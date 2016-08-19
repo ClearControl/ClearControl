@@ -10,6 +10,6 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface> extend
 
 {
 
-	void applyState(M pMicroscope);
+	void applyAcquisitionState(M pMicroscope);
 
 }

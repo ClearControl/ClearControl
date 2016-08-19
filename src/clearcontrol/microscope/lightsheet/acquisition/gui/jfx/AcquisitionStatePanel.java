@@ -10,6 +10,7 @@ import clearcontrol.gui.jfx.rangeslider.VariableRangeSlider;
 import clearcontrol.gui.jfx.slider.VariableSlider;
 import clearcontrol.gui.jfx.textfield.VariableNumberTextField;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart.Data;
@@ -153,7 +154,9 @@ public class AcquisitionStatePanel extends StandardGridPane
 		pAcquisitionState.addChangeListener((e) -> {
 			if (isVisible())
 			{
-				updateChart(pAcquisitionState, lMultiChart);
+				Platform.runLater(() -> {
+					updateChart(pAcquisitionState, lMultiChart);
+				});
 			}
 
 		});
@@ -163,119 +166,126 @@ public class AcquisitionStatePanel extends StandardGridPane
 														MultiChart pMultiChart)
 	{
 
-		int lDepth = pAcquisitionState.getStackDepth();
-		int lNumberOfDetectionArms = pAcquisitionState.getNumberOfDetectionArms();
-		int lNumberOfIlluminationArms = pAcquisitionState.getNumberOfIlluminationArms();
-
-		for (int d = 0; d < lNumberOfDetectionArms; d++)
+		try
 		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("DZ" + d);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getDZ(zi, d));
-			}
-		}
+			int lDepth = pAcquisitionState.getStackDepth();
+			int lNumberOfDetectionArms = pAcquisitionState.getNumberOfDetectionArms();
+			int lNumberOfIlluminationArms = pAcquisitionState.getNumberOfIlluminationArms();
 
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			for (int d = 0; d < lNumberOfDetectionArms; d++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("DZ" + d);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getDZ(zi, d));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IX" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIX(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IY" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIY(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IZ" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIZ(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IA" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIA(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IB" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIB(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IH" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIH(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IW" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIW(zi, i));
+				}
+			}
+
+			for (int i = 0; i < lNumberOfIlluminationArms; i++)
+			{
+				ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IP" + i);
+				lData.clear();
+				for (int zi = 0; zi < lDepth; zi++)
+				{
+					MultiChart.addData(	lData,
+															pAcquisitionState.getZRamp(zi),
+															pAcquisitionState.getIP(zi, i));
+				}
+			}
+
+			pMultiChart.updateMinMax();
+		}
+		catch (Throwable e)
 		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IX" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIX(zi, i));
-			}
+			e.printStackTrace();
 		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IY" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIY(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IZ" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIZ(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IA" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIA(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IB" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIB(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IH" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIH(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IW" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIW(zi, i));
-			}
-		}
-
-		for (int i = 0; i < lNumberOfIlluminationArms; i++)
-		{
-			ObservableList<Data<Number, Number>> lData = mNameToDataMap.get("IP" + i);
-			lData.clear();
-			for (int zi = 0; zi < lDepth; zi++)
-			{
-				MultiChart.addData(	lData,
-														pAcquisitionState.getZRamp(zi),
-														pAcquisitionState.getIP(zi, i));
-			}
-		}
-
-		pMultiChart.updateMinMax();
 
 	}
 }

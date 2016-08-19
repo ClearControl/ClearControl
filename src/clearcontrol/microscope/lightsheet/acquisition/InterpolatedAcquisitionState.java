@@ -3,19 +3,13 @@ package clearcontrol.microscope.lightsheet.acquisition;
 import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.NameableWithChangeListener;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.name.NameableBase;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
-import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -58,7 +52,7 @@ public class InterpolatedAcquisitionState	extends
 																																							0,
 																																							1000);
 
-	private volatile InterpolationTables mInterpolationTable;
+	private final InterpolationTables mInterpolationTables;
 
 	public InterpolatedAcquisitionState(String pName,
 																			int pNumberOfDetectionArmDevices,
@@ -68,8 +62,12 @@ public class InterpolatedAcquisitionState	extends
 		mNumberOfDetectionArms = pNumberOfDetectionArmDevices;
 		mNumberOfIlluminationArms = pNumberOfLightSheetDevices;
 
-		mInterpolationTable = new InterpolationTables(pNumberOfDetectionArmDevices,
+		mInterpolationTables = new InterpolationTables(pNumberOfDetectionArmDevices,
 																									pNumberOfLightSheetDevices);
+
+		mInterpolationTables.addChangeListener((e) -> {
+			notifyListeners(this);
+		});
 
 		VariableSetListener<Number> lVariableSetListener = (o, n) -> {
 			notifyListeners(this);
@@ -123,11 +121,11 @@ public class InterpolatedAcquisitionState	extends
 		getStackZLowVariable().set(pLowZ);
 		getStackZHighVariable().set(pHighZ);
 		getStackZStepVariable().set(pStepZ);
-		mInterpolationTable.setTransitionPlane(pMiddleZ);
+		mInterpolationTables.setTransitionPlane(pMiddleZ);
 
 		for (double z = pLowZ + pMarginZ; z <= pHighZ - pMarginZ; z += pControlPlaneStepZ)
 		{
-			mInterpolationTable.addControlPlane(z);
+			mInterpolationTables.addControlPlane(z);
 		}
 		notifyListeners(this);
 	}
@@ -154,15 +152,18 @@ public class InterpolatedAcquisitionState	extends
 	}
 
 	@Override
-	public void applyState(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
+	public void applyAcquisitionState(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
 	{
 		// addStackMargin();
 		pLightSheetMicroscopeInterface.clearQueue();
 		applyStagePosition(pLightSheetMicroscopeInterface);
+		pLightSheetMicroscopeInterface.clearQueue();
 		for (int lIndex = 0; lIndex < getStackDepth(); lIndex++)
 		{
-			applyStateAtStackPlane(pLightSheetMicroscopeInterface, lIndex);
+			applyAcquisitionStateAtStackPlane(pLightSheetMicroscopeInterface, lIndex);
+			pLightSheetMicroscopeInterface.addCurrentStateToQueue();
 		}
+		pLightSheetMicroscopeInterface.finalizeQueue();
 		// addStackMargin();
 	}
 
@@ -179,7 +180,7 @@ public class InterpolatedAcquisitionState	extends
 																	.waitToBeReady(10, TimeUnit.SECONDS);
 	}
 
-	public void applyStateAtStackPlane(	LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+	public void applyAcquisitionStateAtStackPlane(	LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
 																			int pPlaneIndex)
 	{
 		final int lNumberOfDetectionPathDevices = pLightSheetMicroscopeInterface.getDeviceLists()
@@ -221,7 +222,7 @@ public class InterpolatedAcquisitionState	extends
 	{
 		double lControlPlaneZ = getControlPlaneZ(pControlPlaneIndex);
 		int lStackPlaneIndex = getPlaneIndexForZRamp(lControlPlaneZ);
-		applyStateAtStackPlane(	pLightSheetMicroscopeInterface,
+		applyAcquisitionStateAtStackPlane(	pLightSheetMicroscopeInterface,
 														lStackPlaneIndex);
 	}
 
@@ -237,7 +238,7 @@ public class InterpolatedAcquisitionState	extends
 															int pStackPlaneIndex,
 															int pNumberOfMarginPlanesToAdd)
 	{
-		applyStateAtStackPlane(	pLightSheetMicroscopeInterface,
+		applyAcquisitionStateAtStackPlane(	pLightSheetMicroscopeInterface,
 														pStackPlaneIndex);
 		pLightSheetMicroscopeInterface.setC(false);
 		pLightSheetMicroscopeInterface.setILO(false);
@@ -247,7 +248,7 @@ public class InterpolatedAcquisitionState	extends
 
 	public double getControlPlaneZ(int pControlPlaneIndex)
 	{
-		return mInterpolationTable.getZ(pControlPlaneIndex);
+		return mInterpolationTables.getZ(pControlPlaneIndex);
 	}
 
 	public double getZRamp(int pPlaneIndex)
@@ -268,7 +269,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getDZ(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.DZ,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.DZ,
 																																					pDeviceIndex,
 																																					lRamp);
 		return lRamp + lInterpolatedValue;
@@ -277,7 +278,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIX(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IX,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IX,
 																																					pDeviceIndex,
 																																					lRamp);
 		return lInterpolatedValue;
@@ -286,7 +287,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIY(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IY,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IY,
 																																					pDeviceIndex,
 																																					lRamp);
 		return lInterpolatedValue;
@@ -295,7 +296,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIZ(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IZ,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IZ,
 																																					pDeviceIndex,
 																																					lRamp);
 		return lRamp + lInterpolatedValue;
@@ -304,7 +305,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIA(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IA,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IA,
 																																					pDeviceIndex,
 																																					lRamp);
 
@@ -314,7 +315,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIB(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IB,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IB,
 																																					pDeviceIndex,
 																																					lRamp);
 
@@ -324,7 +325,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIW(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IW,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IW,
 																																					pDeviceIndex,
 																																					lRamp);
 
@@ -334,7 +335,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIH(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IH,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IH,
 																																					pDeviceIndex,
 																																					lRamp);
 
@@ -344,7 +345,7 @@ public class InterpolatedAcquisitionState	extends
 	public double getIP(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IP,
+		final double lInterpolatedValue = mInterpolationTables.getInterpolated(LightSheetDOF.IP,
 																																					pDeviceIndex,
 																																					lRamp);
 
@@ -354,7 +355,7 @@ public class InterpolatedAcquisitionState	extends
 	public int getBestDetectionArm(int pControlPlaneIndex)
 	{
 
-		double lTransitionPlane = mInterpolationTable.getTransitionPlane();
+		double lTransitionPlane = mInterpolationTables.getTransitionPlane();
 
 		if (getZRamp(pControlPlaneIndex) <= lTransitionPlane)
 			return 0;
@@ -402,7 +403,7 @@ public class InterpolatedAcquisitionState	extends
 
 	public int getNumberOfControlPlanes()
 	{
-		return mInterpolationTable.getNumberOfControlPlanes();
+		return mInterpolationTables.getNumberOfControlPlanes();
 	}
 
 	public BoundedVariable<Number> getStageXVariable()
@@ -428,6 +429,11 @@ public class InterpolatedAcquisitionState	extends
 	public int getNumberOfIlluminationArms()
 	{
 		return mNumberOfIlluminationArms;
+	}
+
+	public InterpolationTables getInterpolationTables()
+	{
+		return mInterpolationTables;
 	}
 
 }
