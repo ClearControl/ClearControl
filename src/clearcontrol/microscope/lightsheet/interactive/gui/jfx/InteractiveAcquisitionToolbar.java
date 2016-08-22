@@ -28,6 +28,8 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		super(new StandardGridPane());
 		mGridPane = (GridPane) getContents();
 
+		mGridPane.setPrefSize( 300, 200 );
+
 		setTitle("Interactive");
 
 		Button lStart2D = new Button("Start 2D");
@@ -66,6 +68,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 																												.set(n);
 														});
 
+		lAcquisitionStateIndicator.setMinSize( 100, 100 );
 		GridPane.setColumnSpan(lAcquisitionStateIndicator, 1);
 		GridPane.setRowSpan(lAcquisitionStateIndicator, 3);
 		mGridPane.add(lAcquisitionStateIndicator, 2, 0);
