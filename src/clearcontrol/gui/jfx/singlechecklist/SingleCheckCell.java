@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition.gui.jfx.cell;
+package clearcontrol.gui.jfx.singlechecklist;
 
 import clearcontrol.device.name.NameableInterface;
 import javafx.application.Platform;
@@ -24,7 +24,6 @@ public class SingleCheckCell<T extends NameableInterface> extends
 
 	private HBox mHbox;
 	private TextField mNameTextField;
-	private Pane mPane = new Pane();
 	private CheckBox mCheckBox;
 	private T mCorrespondingItem;
 
@@ -45,7 +44,13 @@ public class SingleCheckCell<T extends NameableInterface> extends
 		mCheckBox.setPadding(new Insets(0, 0, 0, 0));
 		HBox.setMargin(mCheckBox, new Insets(0, 0, 0, 0));
 
+		mCheckBox.focusedProperty().addListener((obs, o, n) -> {
+			mSingleCheckListView.getSelectionModel()
+													.select(lThisStateCell.getItem());
+		});
+
 		mNameTextField = new TextField("--");
+		HBox.setHgrow(mNameTextField, Priority.ALWAYS);
 		mNameTextField.setPadding(new Insets(0, 0, 0, 0));
 		HBox.setMargin(mCheckBox, new Insets(0, 0, 0, 0));
 		mNameTextField.setStyle("-fx-focus-color: transparent;");
@@ -64,8 +69,9 @@ public class SingleCheckCell<T extends NameableInterface> extends
 				mCorrespondingItem.setName(mNameTextField.getText());
 		});
 
-		mHbox.getChildren().addAll(mCheckBox, mNameTextField, mPane);
-		HBox.setHgrow(mPane, Priority.ALWAYS);
+		mHbox.getChildren().addAll(mCheckBox, mNameTextField);
+
+		
 		mCheckBox.setOnAction(new EventHandler<ActionEvent>()
 		{
 			@Override

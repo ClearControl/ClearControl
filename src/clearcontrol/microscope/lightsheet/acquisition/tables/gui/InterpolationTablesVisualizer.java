@@ -1,8 +1,8 @@
 package clearcontrol.microscope.lightsheet.acquisition.tables.gui;
 
+import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
-import clearcontrol.microscope.lightsheet.acquisition.interpolation.InterpolationTable;
 import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
 
 public class InterpolationTablesVisualizer
@@ -71,7 +71,7 @@ public class InterpolationTablesVisualizer
 
 	public void plotTable(InterpolationTables pAcquisitionState,
 												String lName,
-												InterpolationTable lTable,
+												SplineInterpolationTable lTable,
 												int lNumberOfDevices)
 	{
 		for (int d = 0; d < lNumberOfDevices; d++)

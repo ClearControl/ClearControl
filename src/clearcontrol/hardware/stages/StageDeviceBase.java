@@ -1,6 +1,7 @@
 package clearcontrol.hardware.stages;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
@@ -10,15 +11,16 @@ import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
-public abstract class StageDeviceBase extends VirtualDevice implements
-																																StageDeviceInterface,
-																																Waiting
+public abstract class StageDeviceBase extends VirtualDevice	implements
+																														StageDeviceInterface,
+																														Waiting
 {
 	protected ArrayList<Variable<Boolean>> mEnableVariables,
 			mReadyVariables, mHomingVariables, mStopVariables,
 			mResetVariables;
-	protected ArrayList<Variable<Double>> mTargetPositionVariables,mCurrentPositionVariables,
-			mMinPositionVariables, mMaxPositionVariables;
+	protected ArrayList<Variable<Double>> mTargetPositionVariables,
+			mCurrentPositionVariables, mMinPositionVariables,
+			mMaxPositionVariables;
 
 	protected final BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
 
@@ -44,13 +46,13 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 	{
 		mTargetPositionVariables.get(pIndex).set(pPosition);
 	}
-	
+
 	@Override
 	public double getTargetPosition(int pIndex)
 	{
 		return mTargetPositionVariables.get(pIndex).get();
 	}
-	
+
 	@Override
 	public double getCurrentPosition(int pIndex)
 	{
@@ -86,10 +88,24 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 																long pTimeOut,
 																TimeUnit pTimeUnit)
 	{
-		System.out.println("waiting...");
 		return waitFor(	pTimeOut,
 										pTimeUnit,
 										() -> mReadyVariables.get(pIndex).get());
+	}
+
+	@Override
+	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
+	{
+		int lNumberOfDOFs = getNumberOfDOFs();
+
+		Callable<Boolean> lCallable = () -> {
+			for (int i = 0; i < lNumberOfDOFs; i++)
+				if (!mReadyVariables.get(i).get())
+					return false;
+			return true;
+		};
+
+		return waitFor(pTimeOut, pTimeUnit, lCallable);
 	}
 
 	@Override
@@ -104,7 +120,7 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Variable<Double> getMinPositionVariable(int pIndex)
 	{
@@ -152,8 +168,5 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 	{
 		return mIndexToNameMap.get(pIndex);
 	}
-
-	
-
 
 }

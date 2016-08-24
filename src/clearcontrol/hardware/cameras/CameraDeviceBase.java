@@ -17,8 +17,12 @@ public abstract class CameraDeviceBase extends VirtualDevice implements
 			mStackWidthVariable, mStackHeightVariable,
 			mStackMaxWidthVariable, mStackMaxHeightVariable,
 			mStackDepthVariable;
+	
+	protected Variable<Boolean> mTriggerVariable;
 
 	protected Variable<Integer> mChannelVariable;
+	
+	
 
 	private AtomicBoolean mReOpenDeviceNeeded = new AtomicBoolean(false);
 
@@ -27,6 +31,24 @@ public abstract class CameraDeviceBase extends VirtualDevice implements
 	public CameraDeviceBase(final String pDeviceName)
 	{
 		super(pDeviceName);
+	}
+	
+	@Override
+	public void setExposure(double pExposureInMicroseconds)
+	{
+		getExposureInMicrosecondsVariable().set(pExposureInMicroseconds);
+	}
+
+	@Override
+	public double getExposure()
+	{
+		return getExposureInMicrosecondsVariable().get();
+	}
+	
+	@Override
+	public void trigger()
+	{
+		getTriggerVariable().setEdge(false, true);
 	}
 
 	public boolean isReOpenDeviceNeeded()
@@ -104,6 +126,12 @@ public abstract class CameraDeviceBase extends VirtualDevice implements
 	public Variable<Double> getLineReadOutTimeInMicrosecondsVariable()
 	{
 		return mLineReadOutTimeInMicrosecondsVariable;
+	}
+	
+	@Override
+	public Variable<Boolean> getTriggerVariable()
+	{
+		return mTriggerVariable;
 	}
 
 }

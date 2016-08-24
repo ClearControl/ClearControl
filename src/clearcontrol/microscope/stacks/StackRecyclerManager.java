@@ -3,6 +3,7 @@ package clearcontrol.microscope.stacks;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.ChangeListener;
 import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
@@ -12,12 +13,12 @@ import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
 /**
- * StackRecyclerManager handle a colection of named stack recyclers used for
+ * StackRecyclerManager handle a collection of named stack recyclers used for
  * different purposes. Methods are available to clear all recyclers.
  * 
  * @author royer
  */
-public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManager>
+public class StackRecyclerManager extends VirtualDevice
 {
 
 	final private ContiguousOffHeapPlanarStackFactory mOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
@@ -30,7 +31,7 @@ public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManag
 	 */
 	public StackRecyclerManager()
 	{
-		super();
+		super("StackRecyclerManager");
 	}
 
 
@@ -58,7 +59,7 @@ public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManag
 																			pMaximumNumberOfAvailableObjects,
 																			true);
 			getRecyclerMap().put(pName, lRecycler);
-			notifyListeners();
+			notifyListeners(this);
 		}
 
 		if (lRecycler != null)
@@ -75,7 +76,7 @@ public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManag
 	public void clear(String pName)
 	{
 		getRecyclerMap().remove(pName);
-		notifyListeners();
+		notifyListeners(this);
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class StackRecyclerManager extends ChangeListeningBase<StackRecyclerManag
 	public void clearAll()
 	{
 		getRecyclerMap().clear();
-		notifyListeners();
+		notifyListeners(this);
 	}
 
 

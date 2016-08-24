@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition.interpolation;
+package clearcontrol.core.math.interpolation;
 
 import static java.lang.Math.abs;
 
@@ -15,14 +15,27 @@ import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class InterpolationTable
+/**
+ * SplineInterpolationTable provides Spline interpolation for tables. Each
+ * column of the table corresponds to a different 'function'f(x) and each row
+ * corresponds to a x value. The interpolated value for any x can be queried.
+ * 
+ * @author royer
+ */
+public class SplineInterpolationTable
 {
 	private final TreeSet<Row> mTable;
 	private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
 	private final int mNumberOfColumns;
 	private volatile boolean mIsUpToDate = false;
 
-	public InterpolationTable(int pNumberOfColumns)
+	/**
+	 * Creates a SplineInterpolationTable witha given number of columns.
+	 * 
+	 * @param pNumberOfColumns
+	 *          number of columns
+	 */
+	public SplineInterpolationTable(int pNumberOfColumns)
 	{
 		super();
 		mTable = new TreeSet<>();
@@ -30,7 +43,13 @@ public class InterpolationTable
 		mNumberOfColumns = pNumberOfColumns;
 	}
 
-	public InterpolationTable(InterpolationTable pInterpolationTable)
+	/**
+	 * Creates a copy of a SplineInterpolationTable.
+	 * 
+	 * @param pInterpolationTable
+	 *          table to copy
+	 */
+	public SplineInterpolationTable(SplineInterpolationTable pInterpolationTable)
 	{
 		this(pInterpolationTable.mNumberOfColumns);
 		for (Row lRow : pInterpolationTable.mTable)
@@ -38,16 +57,33 @@ public class InterpolationTable
 		mIsUpToDate = false;
 	}
 
+	/**
+	 * Returns the number of rows in the table
+	 * 
+	 * @return number of rows
+	 */
 	public int getNumberOfRows()
 	{
 		return mTable.size();
 	}
 
+	/**
+	 * Number of Columns
+	 * 
+	 * @return number of columns
+	 */
 	public int getNumberOfColumns()
 	{
 		return mTable.first().getNumberOfColumns();
 	}
 
+	/**
+	 * Returns the Row at a given index
+	 * 
+	 * @param pRowIndex
+	 *          Row index
+	 * @return Row at index
+	 */
 	public Row getRow(int pRowIndex)
 	{
 		Iterator<Row> lIterator = mTable.iterator();
@@ -58,6 +94,13 @@ public class InterpolationTable
 		return lIterator.next();
 	}
 
+	/**
+	 * Returns the nearest Row for a given X
+	 * 
+	 * @param pX
+	 *          X
+	 * @return nearest Row
+	 */
 	public Row getNearestRow(double pX)
 	{
 		final Row lCeiling = mTable.ceiling(new Row(0, pX));
@@ -69,18 +112,39 @@ public class InterpolationTable
 			return lFloor;
 	}
 
+	/**
+	 * Returns the ceiling Row for a given X
+	 * 
+	 * @param pX
+	 *          X
+	 * @return ceiling Row
+	 */
 	public Row getCeilRow(double pX)
 	{
 		final Row lCeiling = mTable.ceiling(new Row(0, pX));
 		return lCeiling;
 	}
 
+	/**
+	 * Returns the floor Row for a given X
+	 * 
+	 * @param pX
+	 *          X
+	 * @return floor row
+	 */
 	public Row getFloorRow(double pX)
 	{
 		final Row lFloor = mTable.floor(new Row(0, pX));
 		return lFloor;
 	}
 
+	/**
+	 * Adds a Row for a given X value.
+	 * 
+	 * @param pX
+	 *          X
+	 * @return Row
+	 */
 	public Row addRow(double pX)
 	{
 		final Row lRow = new Row(mNumberOfColumns, pX);
@@ -89,17 +153,155 @@ public class InterpolationTable
 		return lRow;
 	}
 
+	/**
+	 * Returns the max X
+	 * 
+	 * @return max X
+	 */
 	public double getMaxX()
 	{
 		return mTable.last().x;
 	}
 
+	/**
+	 * Returns min X
+	 * 
+	 * @return min X
+	 */
 	public double getMinX()
 	{
 		return mTable.first().x;
 	}
 
-	public boolean isIsUpToDate()
+	/**
+	 * Returns the nearest value Y=f(X) for a given column index and value X.
+	 * 
+	 * @param pColumnIndex
+	 *          column index
+	 * @param pX
+	 *          X value
+	 * @return Y=f(X) nearest value
+	 */
+	public double getNearestValue(int pColumnIndex, double pX)
+	{
+		return getNearestRow(pX).getY(pColumnIndex);
+	}
+
+	/**
+	 * Returns the ceiling value Y=f(X) for a given column index and value X.
+	 * 
+	 * @param pColumnIndex
+	 *          column index
+	 * @param pX
+	 *          X value
+	 * @return Y=f(X) ceiling value
+	 */
+	public double getCeil(int pColumnIndex, double pX)
+	{
+		return getNearestRow(pX).getY(pColumnIndex);
+	}
+
+	/**
+	 * Returns the interpolated value Y=f(X) for a given column index and value X.
+	 * 
+	 * @param pColumnIndex
+	 *          column index
+	 * @param pX
+	 *          X value
+	 * @return Y=f(X) interpolated value
+	 */
+	public double getInterpolatedValue(int pColumnIndex, double pX)
+	{
+		ensureIsUpToDate();
+
+		final UnivariateFunction lUnivariateFunction = mInterpolatingFunctionsList.get(pColumnIndex);
+		final double lValue = lUnivariateFunction.value(pX);
+		return lValue;
+	}
+
+	/**
+	 * Sets the Y value for a given column and row index.
+	 * 
+	 * @param pRowIndex
+	 *          row index
+	 * @param pColumnIndex
+	 *          column index
+	 * @param pValue
+	 *          value
+	 */
+	public void setY(int pRowIndex, int pColumnIndex, double pValue)
+	{
+		getRow(pRowIndex).setY(pColumnIndex, pValue);
+	}
+	
+	/**
+	 * Sets the Y value for a given column and row index.
+	 * 
+	 * @param pRowIndex
+	 *          row index
+	 * @param pColumnIndex
+	 *          column index
+	 * @param pValue
+	 *          value
+	 */
+	public void addY(int pRowIndex, int pColumnIndex, double pDeltaValue)
+	{
+		getRow(pRowIndex).addY(pColumnIndex, pDeltaValue);
+	}
+
+	/**
+	 * Returns the Y value for a given column and row index.
+	 * 
+	 * @param pRowIndex
+	 *          row index
+	 * @param pColumnIndex
+	 *          column index
+	 * @return
+	 */
+	public double getY(int pRowIndex, int pColumnIndex, double pValue)
+	{
+		return getRow(pRowIndex).getY(pColumnIndex);
+	}
+
+	/**
+	 * Sets the Y value at a given row index for all columns.
+	 * 
+	 * @param pRowIndex
+	 *          row index
+	 * @param pValue
+	 *          value
+	 */
+	public void setY(int pRowIndex, double pValue)
+	{
+		int lNumberOfColumns = getNumberOfColumns();
+		for (int c = 0; c < lNumberOfColumns; c++)
+			getRow(pRowIndex).setY(c, pValue);
+	}
+
+	/**
+	 * Sets the Y value for all entries in the table.
+	 * 
+	 * @param pValue
+	 *          value
+	 */
+	public void setY(double pValue)
+	{
+		int lNumberOfColumns = getNumberOfColumns();
+		int lNumberOfRows = getNumberOfRows();
+
+		for (int c = 0; c < lNumberOfColumns; c++)
+			for (int r = 0; r < lNumberOfRows; c++)
+				getRow(r).setY(c, pValue);
+	}
+
+
+
+	/**
+	 * Returns true if this table interpolation is up to date.
+	 * 
+	 * @return
+	 */
+	private boolean isIsUpToDate()
 	{
 		boolean lIsUpToDate = mIsUpToDate;
 		for (final Row lRow : mTable)
@@ -109,6 +311,9 @@ public class InterpolationTable
 		return lIsUpToDate;
 	}
 
+	/**
+	 * Sets the up-to-date flag to true.
+	 */
 	private void setUpToDate()
 	{
 		mIsUpToDate = true;
@@ -118,6 +323,9 @@ public class InterpolationTable
 		}
 	}
 
+	/**
+	 * Ensures that the table is up to date.
+	 */
 	private void ensureIsUpToDate()
 	{
 		if (!isIsUpToDate())
@@ -193,25 +401,12 @@ public class InterpolationTable
 		}
 	}
 
-	public double getNearestValue(int pColumnIndex, double pX)
-	{
-		return getNearestRow(pX).getY(pColumnIndex);
-	}
-
-	public double getCeil(int pColumnIndex, double pX)
-	{
-		return getNearestRow(pX).getY(pColumnIndex);
-	}
-
-	public double getInterpolatedValue(int pColumnIndex, double pX)
-	{
-		ensureIsUpToDate();
-
-		final UnivariateFunction lUnivariateFunction = mInterpolatingFunctionsList.get(pColumnIndex);
-		final double lValue = lUnivariateFunction.value(pX);
-		return lValue;
-	}
-
+	/**
+	 * Displays a MultiPlot for debug purposes.
+	 * 
+	 * @param pMultiPlotName
+	 * @return multiplot
+	 */
 	public MultiPlot displayTable(String pMultiPlotName)
 	{
 		final MultiPlot lMultiPlot = MultiPlot.getMultiPlot(pMultiPlotName);

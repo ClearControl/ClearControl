@@ -7,35 +7,48 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.ChangeListener;
 import clearcontrol.device.task.LoopTaskDevice;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
+import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 
 public class InteractiveAcquisition extends LoopTaskDevice
 {
+
+	private static final int cRecyclerMinimumNumberOfAvailableStacks = 60;
+	private static final int cRecyclerMaximumNumberOfAvailableStacks = 60;
+	private static final int cRecyclerMaximumNumberOfLiveStacks = 60;
 
 	private final LightSheetMicroscopeInterface mLightSheetMicroscope;
 
 	private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
 
 	private final BoundedVariable<Double> mExposureVariableInSeconds;
-	private final Variable<Boolean> mTriggerOnChangeVariable;
+	private final Variable<Boolean> mTriggerOnChangeVariable,
+			mUseCurrentAcquisitionStateVariable;
 
 	private volatile boolean mUpdate = true;
 
-	private ChangeListener mChangeListener;
+	private ChangeListener<VirtualDevice> mChangeListener;
 
 	private Variable<Boolean>[] mActiveCameraVariableArray;
 
+	private AcquisitionStateManager mAcquisitionStateManager;
+
 	@SuppressWarnings("unchecked")
 	public InteractiveAcquisition(String pDeviceName,
-																LightSheetMicroscope pLightSheetMicroscope)
+																LightSheetMicroscope pLightSheetMicroscope,
+																AcquisitionStateManager pAcquisitionStateManager)
 	{
 		super(pDeviceName, 1, TimeUnit.SECONDS);
 		mLightSheetMicroscope = pLightSheetMicroscope;
+		mAcquisitionStateManager = pAcquisitionStateManager;
 
 		@SuppressWarnings("rawtypes")
 		VariableSetListener lListener = (o, n) -> {
@@ -51,6 +64,9 @@ public class InteractiveAcquisition extends LoopTaskDevice
 
 		mTriggerOnChangeVariable = new Variable<Boolean>(	pDeviceName + "TriggerOnChange",
 																											false);
+
+		mUseCurrentAcquisitionStateVariable = new Variable<Boolean>(pDeviceName + "UseCurrentAcquisitionState",
+																																false);
 
 		mExposureVariableInSeconds.addSetListener(lListener);
 		mTriggerOnChangeVariable.addSetListener(lListener);
@@ -103,34 +119,54 @@ public class InteractiveAcquisition extends LoopTaskDevice
 
 					if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
 					{
-						getLightSheetMicroscope().useRecycler("2DInteractive",
-																									60,
-																									60,
-																									60);
 
-						getLightSheetMicroscope().clearQueue();
-
-						for (int c = 0; c < getNumberOfCameras(); c++)
+						if (getUseCurrentAcquisitionStateVariable().get())
 						{
-							getLightSheetMicroscope().setC(	c,
-																							mActiveCameraVariableArray[c].get());
 						}
-						getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get() * 1000000L),
-																									TimeUnit.MICROSECONDS);
+						else
+						{
 
-						for (int l = 0; l < getNumberOfLightsSheets(); l++)
-							if (getLightSheetMicroscope().getI(l))
+							getLightSheetMicroscope().useRecycler("2DInteractive",
+																										cRecyclerMinimumNumberOfAvailableStacks,
+																										cRecyclerMaximumNumberOfAvailableStacks,
+																										cRecyclerMaximumNumberOfLiveStacks);
+
+							getLightSheetMicroscope().clearQueue();
+
+							for (int c = 0; c < getNumberOfCameras(); c++)
 							{
-								System.out.println("ACTIVATING LIGHTSHEET " + l);
-								getLightSheetMicroscope().getDevice(LightSheet.class,
-																										l).update();
-								break;
+								getLightSheetMicroscope().setC(	c,
+																								mActiveCameraVariableArray[c].get());
 							}
+							getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get() * 1000000L),
+																										TimeUnit.MICROSECONDS);
 
-						getLightSheetMicroscope().addCurrentStateToQueue();
+							for (int l = 0; l < getNumberOfLightsSheets(); l++)
+								if (getLightSheetMicroscope().getI(l))
+								{
+									System.out.println("ACTIVATING LIGHTSHEET " + l);
+									getLightSheetMicroscope().getDevice(LightSheet.class,
+																											l)
+																						.update();
+									break;
+								}
 
-						getLightSheetMicroscope().finalizeQueue();
+							getLightSheetMicroscope().addCurrentStateToQueue();
 
+							getLightSheetMicroscope().finalizeQueue();
+						}
+					}
+					else if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
+					{
+						getLightSheetMicroscope().useRecycler("3DInteractive",
+																									cRecyclerMinimumNumberOfAvailableStacks,
+																									cRecyclerMaximumNumberOfAvailableStacks,
+																									cRecyclerMaximumNumberOfLiveStacks);
+
+						@SuppressWarnings("unchecked")
+						AcquisitionStateInterface<LightSheetMicroscopeInterface> lCurrentState = (AcquisitionStateInterface<LightSheetMicroscopeInterface>) mAcquisitionStateManager.getCurrentState();
+
+						lCurrentState.applyState(mLightSheetMicroscope);
 					}
 
 				}
@@ -199,6 +235,11 @@ public class InteractiveAcquisition extends LoopTaskDevice
 	public Variable<Boolean> getTriggerOnChangeVariable()
 	{
 		return mTriggerOnChangeVariable;
+	}
+
+	public Variable<Boolean> getUseCurrentAcquisitionStateVariable()
+	{
+		return mUseCurrentAcquisitionStateVariable;
 	}
 
 	public LightSheetMicroscopeInterface getLightSheetMicroscope()

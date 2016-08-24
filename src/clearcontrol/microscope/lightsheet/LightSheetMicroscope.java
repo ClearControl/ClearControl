@@ -21,6 +21,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.timelapse.FixedIntervalTimelapse;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 
 public class LightSheetMicroscope extends MicroscopeBase implements
 																												StateQueueDeviceInterface,
@@ -29,7 +30,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 
 	private StageDeviceInterface mMainXYZRStage;
 	private SwitchingDeviceInterface mLightSheetOpticalSwitch;
-	private InterpolatedAcquisitionState mStackAcquisition;
+	private AcquisitionStateManager mAcquisitionStateManager;
 	private int mStageXDOFIndex, mStageYDOFIndex, mStageZDOFIndex;
 
 	public LightSheetMicroscope(String pDeviceName)
@@ -37,10 +38,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		super(pDeviceName);
 	}
 
-	public InteractiveAcquisition addInteractiveAcquisition()
+	public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager pAcquisitionStateManager)
 	{
 		InteractiveAcquisition lInteractiveAcquisition = new InteractiveAcquisition(getName() + "InteractiveAcquisition",
-																																								this);
+																																								this,
+																																								pAcquisitionStateManager);
 		addDevice(0, lInteractiveAcquisition);
 		return lInteractiveAcquisition;
 	}
@@ -52,11 +54,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return lCalibrator;
 	}
 
-	public InterpolatedAcquisitionState addStackAcquisition()
+	public AcquisitionStateManager addAcquisitionStateManager()
 	{
-		mStackAcquisition = new InterpolatedAcquisitionState("", this);
-		addDevice(0, mStackAcquisition);
-		return mStackAcquisition;
+		mAcquisitionStateManager = new AcquisitionStateManager(this);
+		addDevice(0, mAcquisitionStateManager);
+		return mAcquisitionStateManager;
 	}
 
 	public FixedIntervalTimelapse addTimelapse()
@@ -69,9 +71,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	public AutoPilotInterface addAutoPilot()
 	{
 		return null;
-		//TODO: update when it is time...
 		/*AutoPilotInterface lAutoPilot = new AutoPilot(this,
-																									mStackAcquisition);
+		                                              mAcquisitionStateManager);
 		addDevice(0, lAutoPilot);
 		return lAutoPilot;/**/
 	}
@@ -588,6 +589,18 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 	}
 
 	@Override
+	public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface)
+	{
+		mMainXYZRStage = pStageDeviceInterface;
+	}
+
+	@Override
+	public StageDeviceInterface getMainXYZRStage()
+	{
+		return mMainXYZRStage;
+	}
+
+	@Override
 	public void setStageX(double pXValue)
 	{
 		Variable<Double> lTargetPositionVariable = mMainXYZRStage.getTargetPositionVariable(mStageXDOFIndex);
@@ -618,7 +631,7 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		if (lTargetPositionVariable != null)
 			lTargetPositionVariable.set(pZValue);
 	}
-	
+
 	@Override
 	public double getStageX()
 	{

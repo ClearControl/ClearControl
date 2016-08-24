@@ -5,6 +5,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
@@ -13,7 +14,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIllu
 public interface LightSheetInterface extends
 																		NameableInterface,
 																		OpenCloseDeviceInterface,
-																		HasChangeListenerInterface
+																		HasChangeListenerInterface<VirtualDevice>
 {
 
 	// These variables should be synced with camera variables:

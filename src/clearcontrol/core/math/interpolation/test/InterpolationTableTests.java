@@ -1,12 +1,12 @@
-package clearcontrol.microscope.lightsheet.acquisition.interpolation.test;
+package clearcontrol.core.math.interpolation.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import clearcontrol.microscope.lightsheet.acquisition.interpolation.InterpolationTable;
-import clearcontrol.microscope.lightsheet.acquisition.interpolation.Row;
+import clearcontrol.core.math.interpolation.SplineInterpolationTable;
+import clearcontrol.core.math.interpolation.Row;
 
 public class InterpolationTableTests
 {
@@ -14,7 +14,7 @@ public class InterpolationTableTests
 	@Test
 	public void test()
 	{
-		final InterpolationTable lInterpolationTable = new InterpolationTable(2);
+		final SplineInterpolationTable lInterpolationTable = new SplineInterpolationTable(2);
 
 		final Row lAddRow3 = lInterpolationTable.addRow(3.0);
 		final Row lAddRow1 = lInterpolationTable.addRow(1.0);
