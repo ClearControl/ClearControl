@@ -11,6 +11,12 @@ public interface CameraDeviceInterface extends
 																			StateQueueDeviceInterface
 {
 
+	void trigger();
+	
+	void setExposure(double pExposureInMicroseconds);
+	
+	double getExposure();
+	
 	Variable<Double> getLineReadOutTimeInMicrosecondsVariable();
 
 	Variable<Double> getExposureInMicrosecondsVariable();
@@ -21,6 +27,6 @@ public interface CameraDeviceInterface extends
 	
 	Variable<Integer> getChannelVariable();
 
-	void trigger();
+	Variable<Boolean> getTriggerVariable();
 
 }

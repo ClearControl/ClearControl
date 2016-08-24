@@ -10,7 +10,7 @@ public abstract class TemperatureSensorDeviceBase	extends
 																																								TemperatureSensorDeviceInterface
 {
 
-	Variable<Double> mTemperatureVariable;
+	private Variable<Double> mTemperatureVariable;
 
 	public TemperatureSensorDeviceBase(final String pDeviceName)
 	{

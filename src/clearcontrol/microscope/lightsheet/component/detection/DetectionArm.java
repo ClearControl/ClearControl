@@ -54,12 +54,12 @@ public class DetectionArm extends VirtualDevice	implements
 		if (mWidthFunction.get() != null && mWidthFunction.get()
 																											.hasInverse())
 		{
-			final long lMaxStackWidthInPixels = StackCameraDevice.getStackMaxWidthVariable()
+			final long lMaxStackWidthInPixels = mStackCameraDevice.getStackMaxWidthVariable()
 																														.get()
 																														.longValue();
-			final long lMaxStackHeightInPixels = StackCameraDevice.getStackMaxHeightVariable()
-																														.get()
-																														.longValue();
+			final long lMaxStackHeightInPixels = mStackCameraDevice.getStackMaxHeightVariable()
+																															.get()
+																															.longValue();
 
 			UnivariateAffineFunction lWidthInverse = mWidthFunction.get()
 																															.inverse();
@@ -69,7 +69,8 @@ public class DetectionArm extends VirtualDevice	implements
 			final long lMaxStackWidth = (long) round(lWidthInverse.value(lMaxStackWidthInPixels));
 			final long lMaxStackHeight = (long) round(lHeightInverse.value(lMaxStackHeightInPixels));
 
-			mWidth.setMinMax(lMaxStackWidth, lMaxStackHeight);
+			mWidth.setMinMax(1, lMaxStackWidth);
+			mHeight.setMinMax(1, lMaxStackHeight);
 		}
 
 		// Changes in Stack camera width and height are propagated to this detection
@@ -112,7 +113,7 @@ public class DetectionArm extends VirtualDevice	implements
 		final VariableSetListener lVariableListener = (o, n) -> {
 			// System.out.println(getName() + ": new Z value: " + n);
 			update();
-			notifyChange();
+			notifyListeners(this);
 		};
 
 		mWidth.addSetListener(lVariableListener);
@@ -124,7 +125,7 @@ public class DetectionArm extends VirtualDevice	implements
 			System.out.println(getName() + ": new Z function: " + n);
 			resetBounds();
 			update();
-			notifyChange();
+			notifyListeners(this);
 		};
 
 		mZFunction.addSetListener(lFunctionVariableListener);
@@ -137,7 +138,7 @@ public class DetectionArm extends VirtualDevice	implements
 		mStaveIndex = lStaveIndex;
 
 		update();
-		notifyChange();
+		notifyListeners(this);
 	}
 
 	@Override
@@ -230,8 +231,8 @@ public class DetectionArm extends VirtualDevice	implements
 																										.value(lZFocus);
 			mDetectionPathStaveZ.setValue(lZFocusTransformed);
 
-			final long lWidthInMicrons = mWidth.get().longValue();
-			final long lHeightInMicrons = mHeight.get().longValue();
+			final double lWidthInMicrons = mWidth.get().doubleValue();
+			final double lHeightInMicrons = mHeight.get().doubleValue();
 
 			final long lWidth = (long) Math.round(mWidthFunction.get()
 																													.value(lWidthInMicrons));

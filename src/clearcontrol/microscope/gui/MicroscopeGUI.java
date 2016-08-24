@@ -75,33 +75,41 @@ public class MicroscopeGUI extends VirtualDevice implements
 																										lNodeTypeList);
 
 		addHalcyonMappingEntry(	LaserDeviceInterface.class,
-														LaserDevicePanel.class);
+														LaserDevicePanel.class,
+														MicroscopeNodeType.Laser);
 
 		addHalcyonMappingEntry(	StackCameraDeviceInterface.class,
-														CameraDevicePanel.class);
+														CameraDevicePanel.class,
+														MicroscopeNodeType.Camera);
 
 		addHalcyonMappingEntry(	FilterWheelDeviceInterface.class,
-														FilterWheelDevicePanel.class);
+														FilterWheelDevicePanel.class,
+														MicroscopeNodeType.FilterWheel);
 
 		addHalcyonMappingEntry(	OpticalSwitchDeviceInterface.class,
-														OpticalSwitchDevicePanel.class);
+														OpticalSwitchDevicePanel.class,
+														MicroscopeNodeType.OpticalSwitch);
 
 		addHalcyonMappingEntry(	ScalingAmplifierDeviceInterface.class,
-														ScalingAmplifierPanel.class);
+														ScalingAmplifierPanel.class,
+														MicroscopeNodeType.ScalingAmplifier);
 
 		addHalcyonMappingEntry(	StageDeviceInterface.class,
-														StageDevicePanel.class);
+														StageDevicePanel.class,
+														MicroscopeNodeType.Stage);
 
 		addHalcyonMappingEntry(	StackRecyclerManager.class,
-														StackRecyclerManagerPanel.class);
+														StackRecyclerManagerPanel.class,
+														MicroscopeNodeType.Other);
 
 		initializeConcurentExecutor();
 	}
 
 	public <U, V> void addHalcyonMappingEntry(Class<U> pDeviceClass,
-																						Class<V> pPanelClass)
+																						Class<V> pPanelClass,
+																						HalcyonNodeType pNodeType)
 	{
-		mHalcyonGUIGenerator.addMappingEntry(pDeviceClass, pPanelClass);
+		mHalcyonGUIGenerator.addMappingEntry(pDeviceClass, pPanelClass,pNodeType);
 	}
 
 	public void addScripting(	String pMicroscopeObjectName,

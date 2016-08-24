@@ -160,7 +160,7 @@ public class LightSheet extends VirtualDevice	implements
 		final VariableSetListener lVariableListener = (o, n) -> {
 			System.out.println(getName() + ": new variable value: " + n);
 			update();
-			notifyChange();
+			notifyListeners(this);
 		};
 
 		for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
@@ -200,7 +200,7 @@ public class LightSheet extends VirtualDevice	implements
 			mStructuredIlluminationPatternVariableArray[i].addSetListener((	u,
 																																			v) -> {
 				update();
-				notifyChange();
+				notifyListeners(this);
 			});
 		}
 
@@ -208,7 +208,7 @@ public class LightSheet extends VirtualDevice	implements
 			System.out.println(getName() + ": new function: " + n);
 			resetBounds();
 			update();
-			notifyChange();
+			notifyListeners(this);
 		};
 
 		resetFunctions();
@@ -228,7 +228,7 @@ public class LightSheet extends VirtualDevice	implements
 		mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
 		update();
-		notifyChange();
+		notifyListeners(this);
 	}
 
 	@Override

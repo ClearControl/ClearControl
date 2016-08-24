@@ -3,21 +3,30 @@ package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 import java.util.ArrayList;
 import java.util.List;
 
+import clearcontrol.gui.jfx.gridpane.StandardGridPane;
+import clearcontrol.gui.jfx.singlechecklist.SingleCheckCell;
+import clearcontrol.gui.jfx.singlechecklist.SingleCheckCellManager;
+import clearcontrol.gui.jfx.singlechecklist.SingleCheckListView;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.cell.SingleCheckCell;
-import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.cell.SingleCheckCellManager;
-import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.cell.SingleCheckListView;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 /**
  * AcquisitionStateManagerPanel is a GUI element that displays information about
@@ -32,7 +41,9 @@ public class AcquisitionStateManagerPanel	extends
 
 	private SingleCheckListView<AcquisitionStateInterface<?>> mStateListView;
 	private ObservableList<AcquisitionStateInterface<?>> mObservableStateList = FXCollections.observableArrayList();
-	private Button mNewButton, mDuplicateButton, mDeleteButton;
+	private VBox mStateViewVBox;
+
+	private TitledPane mStateViewTitledPane;
 
 	public AcquisitionStateManagerPanel(AcquisitionStateManager pAcquisitionStateManager)
 	{
@@ -40,51 +51,60 @@ public class AcquisitionStateManagerPanel	extends
 		mAcquisitionStateManager = pAcquisitionStateManager;
 		AcquisitionStateManagerPanel lAcquisitionStateManagerPanel = this;
 
-		getColumnConstraints().add(new ColumnConstraints());
-		getColumnConstraints().add(new ColumnConstraints(100));
-
 		SingleCheckCellManager<AcquisitionStateInterface<?>> lManager = new SingleCheckCellManager<AcquisitionStateInterface<?>>()
 		{
-
 			@Override
 			public void checkOnly(SingleCheckCell<AcquisitionStateInterface<?>> pSelectedCell)
 			{
 				super.checkOnly(pSelectedCell);
-
 				AcquisitionStateInterface<?> lState = pSelectedCell.getItem();
-
-				lAcquisitionStateManagerPanel.setCurrent(lState);
+				lAcquisitionStateManagerPanel.setCurrentState(lState);
 			}
-
 		};
 
-		mStateListView = new SingleCheckListView<AcquisitionStateInterface<?>>(lManager);
-		mStateListView.setItems(mObservableStateList);
+		mStateListView = new SingleCheckListView<AcquisitionStateInterface<?>>(	lManager,
+																																						mObservableStateList);
 
-		add(mStateListView, 0, 0);
-		GridPane.setRowSpan(mStateListView, 6);
+		mStateListView.getSelectionModel()
+									.getSelectedItems()
+									.addListener(new ListChangeListener<AcquisitionStateInterface<?>>()
+									{
+										@Override
+										public void onChanged(ListChangeListener.Change<? extends AcquisitionStateInterface<?>> change)
+										{
+											AcquisitionStateInterface<?> lAcquisitionStateInterface = change.getList()
+																																											.get(0);
+											setViewedAcquisitionState(lAcquisitionStateInterface);
+										}
 
-		mNewButton = new Button("New");
-		mNewButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		GridPane.setHgrow(mNewButton, Priority.ALWAYS);
-		GridPane.setFillWidth(mNewButton, true);
-		add(mNewButton, 1, 0);
+									});
 
-		mDuplicateButton = new Button("Duplicate");
-		mDuplicateButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		GridPane.setHgrow(mDuplicateButton, Priority.ALWAYS);
-		GridPane.setFillWidth(mDuplicateButton, true);
-		add(mDuplicateButton, 1, 1);
+		ContextMenu contextMenu = new ContextMenu();
+		mStateListView.setContextMenu(contextMenu);
 
-		mDeleteButton = new Button("Delete");
-		mDeleteButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		GridPane.setHgrow(mDeleteButton, Priority.ALWAYS);
-		GridPane.setFillWidth(mDeleteButton, true);
-		add(mDeleteButton, 1, 2);
+		MenuItem lNewItem = new MenuItem("New");
+		MenuItem lDuplicateItem = new MenuItem("Duplicate");
+		MenuItem lDeleteItem = new MenuItem("Delete");
+
+		contextMenu.getItems().addAll(lNewItem,
+																	lDuplicateItem,
+																	lDeleteItem);
+
+		TitledPane lStateListTitledPane = new TitledPane(	"Acquisition state list",
+																											mStateListView);
+		lStateListTitledPane.setAnimated(false);
+
+		mStateViewVBox = new VBox();
+		mStateViewTitledPane = new TitledPane("Currently selected state",
+																					mStateViewVBox);
+		mStateViewTitledPane.setAnimated(false);
+
+		this.getChildren().addAll(lStateListTitledPane,
+															mStateViewTitledPane);
 
 		LightSheetMicroscopeInterface lMicroscope = (LightSheetMicroscopeInterface) pAcquisitionStateManager.getMicroscope();
 
-		mNewButton.setOnAction((e) -> {
+		lNewItem.setOnAction((e) -> {
 
 			InterpolatedAcquisitionState lInterpolatedAcquisitionState = new InterpolatedAcquisitionState("new",
 																																																		lMicroscope);
@@ -92,7 +112,7 @@ public class AcquisitionStateManagerPanel	extends
 
 		});
 
-		mDuplicateButton.setOnAction((e) -> {
+		lDuplicateItem.setOnAction((e) -> {
 
 			AcquisitionStateInterface<?> lSelectedItem = mStateListView.getSelectionModel()
 																																	.getSelectedItem();
@@ -108,13 +128,21 @@ public class AcquisitionStateManagerPanel	extends
 			}
 		});
 
-		mDeleteButton.setOnAction((e) -> {
+		lDeleteItem.setOnAction((e) -> {
 
 			AcquisitionStateInterface<?> lSelectedItem = mStateListView.getSelectionModel()
 																																	.getSelectedItem();
 			pAcquisitionStateManager.removeState(lSelectedItem);
 		});
 
+		Platform.runLater(() -> {
+			updateStateList(pAcquisitionStateManager.getStateList());
+			setCurrentState(pAcquisitionStateManager.getCurrentState());
+			setViewedAcquisitionState(pAcquisitionStateManager.getCurrentState());
+		});
+
+		
+		
 	}
 
 	protected void updateStateList(List<AcquisitionStateInterface<?>> pStateList)
@@ -146,9 +174,30 @@ public class AcquisitionStateManagerPanel	extends
 			Platform.runLater(lRunnable);
 	}
 
-	public void setCurrent(AcquisitionStateInterface<?> pState)
+	public void setCurrentState(AcquisitionStateInterface<?> pState)
 	{
-		mAcquisitionStateManager.setCurrent(pState);
+		mAcquisitionStateManager.setCurrentState(pState);
+	}
+
+	public void setViewedAcquisitionState(AcquisitionStateInterface<?> pState)
+	{
+		Platform.runLater(() -> {
+
+			if (pState instanceof InterpolatedAcquisitionState)
+			{
+				InterpolatedAcquisitionState lInterpolatedAcquisitionState = (InterpolatedAcquisitionState) pState;
+				AcquisitionStatePanel lAcquisitionStatePanel = new AcquisitionStatePanel(lInterpolatedAcquisitionState);
+
+				
+				for(Node lNode : mStateViewVBox.getChildren())
+					lNode.setVisible(false);
+				
+				mStateViewVBox.getChildren().clear();
+				mStateViewVBox.getChildren().add(lAcquisitionStatePanel);
+
+			}
+
+		});
 	}
 
 }

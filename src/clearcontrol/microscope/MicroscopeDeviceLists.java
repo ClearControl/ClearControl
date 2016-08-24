@@ -1,6 +1,7 @@
 package clearcontrol.microscope;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MicroscopeDeviceLists
@@ -56,6 +57,14 @@ public class MicroscopeDeviceLists
 	public ArrayList<Object> getAllDeviceList()
 	{
 		return mAllDeviceList;
+	}
+
+	public HashSet<Class<?>> getAllDeviceClassesList()
+	{
+		HashSet<Class<?>> lAllDeviceClassesList = new HashSet<>();
+		for (Object lDevice : mAllDeviceList)
+			lAllDeviceClassesList.add(lDevice.getClass());
+		return lAllDeviceClassesList;
 	}
 
 	/**

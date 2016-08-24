@@ -4,7 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.ChangeListeningBase;
+import clearcontrol.device.name.NameableInterface;
+import clearcontrol.device.name.ReadOnlyNameableInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 
 /**
@@ -14,8 +17,8 @@ import clearcontrol.microscope.MicroscopeInterface;
  * @author royer
  *
  */
-public class AcquisitionStateManager extends
-																		ChangeListeningBase<AcquisitionStateManager>
+public class AcquisitionStateManager extends VirtualDevice implements
+																													ReadOnlyNameableInterface
 {
 	private final MicroscopeInterface mMicroscopeInterface;
 
@@ -28,14 +31,21 @@ public class AcquisitionStateManager extends
 	 */
 	public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
 	{
-		super();
+		super("AcquisitionStateManager");
 		mMicroscopeInterface = pMicroscopeInterface;
 	}
 
-	public void setCurrent(AcquisitionStateInterface<?> pCurrentState)
+	public AcquisitionStateInterface<?> getCurrentState()
+	{
+		return mCurrentState;
+	}
+
+	public void setCurrentState(AcquisitionStateInterface<?> pCurrentState)
 	{
 		if (pCurrentState != null)
 		{
+			if (!mAcquisitionStateList.contains(pCurrentState))
+				mAcquisitionStateList.add(pCurrentState);
 			System.out.println("setCurrent: " + pCurrentState.getName());
 			mCurrentState = pCurrentState;
 		}
@@ -49,7 +59,7 @@ public class AcquisitionStateManager extends
 	public void addState(AcquisitionStateInterface<?> pState)
 	{
 		mAcquisitionStateList.add(pState);
-		notifyListeners();
+		notifyListeners(this);
 	}
 
 	/**
@@ -61,7 +71,7 @@ public class AcquisitionStateManager extends
 	public void removeState(AcquisitionStateInterface<?> pState)
 	{
 		mAcquisitionStateList.remove(pState);
-		notifyListeners();
+		notifyListeners(this);
 	}
 
 	/**
@@ -72,7 +82,7 @@ public class AcquisitionStateManager extends
 	public void clearStates(AcquisitionStateInterface<?> pState)
 	{
 		mAcquisitionStateList.clear();
-		notifyListeners();
+		notifyListeners(this);
 	}
 
 	/**
@@ -90,6 +100,12 @@ public class AcquisitionStateManager extends
 	public MicroscopeInterface getMicroscope()
 	{
 		return mMicroscopeInterface;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "AcquisitionStateManager";
 	}
 
 }

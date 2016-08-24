@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -93,23 +94,37 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		mGridPane.add(lExposureSlider.getSlider(), 1, 4);
 		mGridPane.add(lExposureSlider.getTextField(), 2, 4);
 
-		Label lTriggerOnChangeLabel = new Label("Trigger-on-change");
-		CheckBox lTriggerOnChangeLabelCheckBox = new CheckBox();
-		GridPane.setColumnSpan(lTriggerOnChangeLabel, 2);
-		mGridPane.add(lTriggerOnChangeLabel, 0, 5);
-		mGridPane.add(lTriggerOnChangeLabelCheckBox, 2, 5);
+		ToggleButton lTriggerOnChangeToggleButton = new ToggleButton("Trigger-on-change");
+		
+		mGridPane.add(lTriggerOnChangeToggleButton, 0, 5);
+		GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 2);
 
-		BooleanProperty lSelectedProperty = lTriggerOnChangeLabelCheckBox.selectedProperty();
-		JFXPropertyVariable<Boolean> lJFXPropertyVariable = new JFXPropertyVariable<Boolean>(	lSelectedProperty,
+		BooleanProperty lTriggerOnChangeSelectedProperty = lTriggerOnChangeToggleButton.selectedProperty();
+		JFXPropertyVariable<Boolean> lTriggerOnChangeJFXPropertyVariable = new JFXPropertyVariable<Boolean>(	lTriggerOnChangeSelectedProperty,
 																																													"TriggerOnChange",
 																																													false);
 
 		Variable<Boolean> lTriggerOnChangeVariable = pInteractiveAcquisition.getTriggerOnChangeVariable();
-		lJFXPropertyVariable.syncWith(lTriggerOnChangeVariable);
-		lSelectedProperty.set(lTriggerOnChangeVariable.get());
+		lTriggerOnChangeJFXPropertyVariable.syncWith(lTriggerOnChangeVariable);
+		lTriggerOnChangeSelectedProperty.set(lTriggerOnChangeVariable.get());
+		
+		ToggleButton lUseAcqStateToggleButton = new ToggleButton("Use current Acquisition State");
+		
+		mGridPane.add(lUseAcqStateToggleButton, 0, 5);
+		GridPane.setColumnSpan(lUseAcqStateToggleButton, 2);
+
+		BooleanProperty lUseAcqStateSelectedProperty = lUseAcqStateToggleButton.selectedProperty();
+		JFXPropertyVariable<Boolean> lUseAcqStateJFXPropertyVariable = new JFXPropertyVariable<Boolean>(	lUseAcqStateSelectedProperty,
+																																													"UseAcqState",
+																																													false);
+
+		Variable<Boolean> lUseAcqStateVariable = pInteractiveAcquisition.getUseCurrentAcquisitionStateVariable();
+		lUseAcqStateJFXPropertyVariable.syncWith(lUseAcqStateVariable);
+		lUseAcqStateSelectedProperty.set(lUseAcqStateVariable.get());
 
 		Label lActiveCamerasLabel = new Label("Active Cameras");
 		mGridPane.add(lActiveCamerasLabel, 0, 6);
+		GridPane.setColumnSpan(lActiveCamerasLabel, 2);
 
 		OnOffArrayPane lAddOnOffArray = new OnOffArrayPane();
 
@@ -120,7 +135,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		}
 
 		GridPane.setColumnSpan(lAddOnOffArray, 2);
-		mGridPane.add(lAddOnOffArray, 1, 6);
+		mGridPane.add(lAddOnOffArray, 2, 6);
 
 	}
 

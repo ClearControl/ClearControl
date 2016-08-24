@@ -4,10 +4,17 @@ import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.name.NameableAbstract;
+import clearcontrol.device.NameableWithChangeListener;
+import clearcontrol.device.VirtualDevice;
+import clearcontrol.device.change.ChangeListener;
+import clearcontrol.device.name.NameableBase;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
+import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
@@ -15,9 +22,12 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
-public class InterpolatedAcquisitionState extends NameableAbstract implements
-																																	AcquisitionStateInterface<LightSheetMicroscopeInterface>
+public class InterpolatedAcquisitionState	extends
+																					NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface>> implements
+																																																															AcquisitionStateInterface<LightSheetMicroscopeInterface>
 {
+
+	private int mNumberOfDetectionArms, mNumberOfIlluminationArms;
 
 	private BoundedVariable<Number> mStageX = new BoundedVariable<Number>("StageX",
 																																				25.0);
@@ -51,53 +61,56 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	private volatile InterpolationTables mInterpolationTable;
 
 	public InterpolatedAcquisitionState(String pName,
-																			LightSheetMicroscopeInterface pMicroscope)
+																			int pNumberOfDetectionArmDevices,
+																			int pNumberOfLightSheetDevices)
 	{
 		super(pName);
+		mNumberOfDetectionArms = pNumberOfDetectionArmDevices;
+		mNumberOfIlluminationArms = pNumberOfLightSheetDevices;
 
-		int lNumberOfDetectionArmDevices = 2;
-		int lNumberOfLightSheetDevices = 4;
-		if (pMicroscope != null)
-		{
-			lNumberOfDetectionArmDevices = pMicroscope.getDeviceLists()
-																								.getNumberOfDevices(DetectionArmInterface.class);
-			lNumberOfLightSheetDevices = pMicroscope.getDeviceLists()
-																							.getNumberOfDevices(LightSheetInterface.class);
-		}
+		mInterpolationTable = new InterpolationTables(pNumberOfDetectionArmDevices,
+																									pNumberOfLightSheetDevices);
 
-		mInterpolationTable = new InterpolationTables(lNumberOfDetectionArmDevices,
-																									lNumberOfLightSheetDevices);
+		VariableSetListener<Number> lVariableSetListener = (o, n) -> {
+			notifyListeners(this);
+		};
+		getStackZLowVariable().addSetListener(lVariableSetListener);
+		getStackZHighVariable().addSetListener(lVariableSetListener);
+		getStackZStepVariable().addSetListener(lVariableSetListener);
 
 		resetBounds();
 	}
 
 	public InterpolatedAcquisitionState(String pName,
-																			int pNumberOfDetectionArmDevices,
-																			int pNumberOfLightSheetDevices)
+																			LightSheetMicroscopeInterface pMicroscope)
 	{
-		super(pName);
+		this(pName, 2, 4);
 
-		mInterpolationTable = new InterpolationTables(pNumberOfDetectionArmDevices,
-																									pNumberOfLightSheetDevices);
-
-		resetBounds();
+		if (pMicroscope != null)
+		{
+			mNumberOfDetectionArms = pMicroscope.getDeviceLists()
+																					.getNumberOfDevices(DetectionArmInterface.class);
+			mNumberOfIlluminationArms = pMicroscope.getDeviceLists()
+																							.getNumberOfDevices(LightSheetInterface.class);
+		}
 	}
 
 	public InterpolatedAcquisitionState(String pName,
 																			InterpolatedAcquisitionState pInterpolatedAcquisitionState)
 	{
-		super(pName);
-
-		mInterpolationTable = new InterpolationTables(pInterpolatedAcquisitionState.mInterpolationTable);
-
-		resetBounds();
+		this(	pName,
+					pInterpolatedAcquisitionState.getNumberOfDetectionArms(),
+					pInterpolatedAcquisitionState.getNumberOfIlluminationArms());
 	}
 
 	public void resetBounds()
 	{
-
 		// TODO: get bounds
+	}
 
+	public void setupDefault()
+	{
+		setup(-100, 0, 100, 1, 20, 10);
 	}
 
 	public void setup(double pLowZ,
@@ -116,7 +129,7 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 		{
 			mInterpolationTable.addControlPlane(z);
 		}
-
+		notifyListeners(this);
 	}
 
 	public double getStackDepthInMicrons()
@@ -162,6 +175,8 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 		pLightSheetMicroscopeInterface.setStageX(lStageX);
 		pLightSheetMicroscopeInterface.setStageY(lStageY);
 		pLightSheetMicroscopeInterface.setStageZ(lStageZ);
+		pLightSheetMicroscopeInterface.getMainXYZRStage()
+																	.waitToBeReady(10, TimeUnit.SECONDS);
 	}
 
 	public void applyStateAtStackPlane(	LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
@@ -253,40 +268,45 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public double getDZ(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedDZ(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.DZ,
+																																					pDeviceIndex,
+																																					lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
 	public double getIX(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIX(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IX,
+																																					pDeviceIndex,
+																																					lRamp);
 		return lInterpolatedValue;
 	}
 
 	public double getIY(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIY(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IY,
+																																					pDeviceIndex,
+																																					lRamp);
 		return lInterpolatedValue;
 	}
 
 	public double getIZ(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIZ(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IZ,
+																																					pDeviceIndex,
+																																					lRamp);
 		return lRamp + lInterpolatedValue;
 	}
 
 	public double getIA(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIA(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IA,
+																																					pDeviceIndex,
+																																					lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -294,8 +314,9 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public double getIB(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIB(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IB,
+																																					pDeviceIndex,
+																																					lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -303,8 +324,9 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public double getIW(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIW(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IW,
+																																					pDeviceIndex,
+																																					lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -312,8 +334,9 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public double getIH(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIH(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IH,
+																																					pDeviceIndex,
+																																					lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -321,8 +344,9 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public double getIP(int pPlaneIndex, int pDeviceIndex)
 	{
 		final double lRamp = getZRamp(pPlaneIndex);
-		final double lInterpolatedValue = mInterpolationTable.getInterpolatedIP(pDeviceIndex,
-																																						lRamp);
+		final double lInterpolatedValue = mInterpolationTable.getInterpolated(LightSheetDOF.IP,
+																																					pDeviceIndex,
+																																					lRamp);
 
 		return lInterpolatedValue;
 	}
@@ -394,6 +418,16 @@ public class InterpolatedAcquisitionState extends NameableAbstract implements
 	public BoundedVariable<Number> getStageZVariable()
 	{
 		return mStageZ;
+	}
+
+	public int getNumberOfDetectionArms()
+	{
+		return mNumberOfDetectionArms;
+	}
+
+	public int getNumberOfIlluminationArms()
+	{
+		return mNumberOfIlluminationArms;
 	}
 
 }

@@ -16,10 +16,12 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -31,7 +33,7 @@ import javafx.scene.layout.VBox;
  * @author royer
  */
 public abstract class AcquisitionStateManagerPanelBase extends
-																											StandardGridPane
+																											VBox
 {
 
 	/**
@@ -46,7 +48,7 @@ public abstract class AcquisitionStateManagerPanelBase extends
 		super();
 
 		pAcquisitionStateManager.addChangeListener((m) -> {
-			updateStateList(m.getStateList());
+			updateStateList(((AcquisitionStateManager)m).getStateList());
 		});
 
 	}

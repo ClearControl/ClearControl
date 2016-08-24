@@ -1,8 +1,8 @@
 package clearcontrol.hardware.signalgen.staves;
 
-import clearcontrol.device.name.NameableAbstract;
+import clearcontrol.device.name.NameableBase;
 
-public abstract class StaveAbstract extends NameableAbstract implements
+public abstract class StaveAbstract extends NameableBase implements
 																														StaveInterface
 
 {

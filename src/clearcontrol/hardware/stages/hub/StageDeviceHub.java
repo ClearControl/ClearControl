@@ -3,11 +3,13 @@ package clearcontrol.hardware.stages.hub;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import clearcontrol.core.concurrent.timing.Waiting;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
@@ -16,7 +18,8 @@ import clearcontrol.hardware.stages.StageType;
 
 public class StageDeviceHub extends VirtualDevice implements
 																											StageDeviceInterface,
-																											StartStopDeviceInterface
+																											StartStopDeviceInterface,
+																											Waiting
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
@@ -162,6 +165,21 @@ public class StageDeviceHub extends VirtualDevice implements
 																TimeUnit pTimeUnit)
 	{
 		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);
+	}
+	
+	@Override
+	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
+	{
+		int lNumberOfDOFs = getNumberOfDOFs();
+
+		Callable<Boolean> lCallable = () -> {
+			for (int i = 0; i < lNumberOfDOFs; i++)
+				if (!mDOFList.get(i).getReadyVariable().get())
+					return false;
+			return true;
+		};
+
+		return waitFor(pTimeOut, pTimeUnit, lCallable);
 	}
 
 	@Override

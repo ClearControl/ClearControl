@@ -1,6 +1,6 @@
 package clearcontrol.device.change;
 
-public interface ChangeListener<O>
+public interface ChangeListener<E>
 {
-	public void changed(O pChangeListening);
+	public void changed(E pvent);
 }

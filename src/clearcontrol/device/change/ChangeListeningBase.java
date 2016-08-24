@@ -7,15 +7,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  *  @author royer
  */
-public abstract class ChangeListeningBase<O> implements HasChangeListenerInterface<O>
+public abstract class ChangeListeningBase<E> implements HasChangeListenerInterface<E>
 {
-	CopyOnWriteArrayList<ChangeListener<O>> mListenersList = new CopyOnWriteArrayList<>();
+	CopyOnWriteArrayList<ChangeListener<E>> mListenersList = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Adds a change listener
 	 * @param pListener listener to add
 	 */
-	public void addChangeListener(ChangeListener<O> pListener)
+	@Override
+	public void addChangeListener(ChangeListener<E> pListener)
 	{
 		mListenersList.add(pListener);
 	}
@@ -24,7 +25,8 @@ public abstract class ChangeListeningBase<O> implements HasChangeListenerInterfa
 	 * Removed a change listener
 	 * @param pListener listener to remove
 	 */
-	public void removeChangeListener(ChangeListener<O> pListener)
+	@Override
+	public void removeChangeListener(ChangeListener<E> pListener)
 	{
 		mListenersList.add(pListener);
 	}
@@ -33,11 +35,12 @@ public abstract class ChangeListeningBase<O> implements HasChangeListenerInterfa
 	 * Notifies listeners of changes .
 	 */
 	@SuppressWarnings("unchecked")
-	public void notifyListeners()
+	@Override
+	public void notifyListeners(E pEvent)
 	{
-		for (ChangeListener<O> lListener : mListenersList)
+		for (ChangeListener<E> lListener : mListenersList)
 		{
-			lListener.changed((O) this);
+			lListener.changed(pEvent);
 		}
 	}
 	

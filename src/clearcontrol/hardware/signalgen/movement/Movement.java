@@ -2,11 +2,11 @@ package clearcontrol.hardware.signalgen.movement;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.device.name.NameableAbstract;
+import clearcontrol.device.name.NameableBase;
 import clearcontrol.hardware.signalgen.staves.StaveInterface;
 import clearcontrol.hardware.signalgen.staves.ZeroStave;
 
-public class Movement extends NameableAbstract implements
+public class Movement extends NameableBase implements
 																							MovementInterface
 {
 

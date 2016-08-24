@@ -5,6 +5,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import clearcontrol.core.variable.events.EventPropagator;
 
+/**
+ * 
+ * 
+ * @author royer
+ *
+ * @param <O>
+ */
 public class Variable<O> extends VariableBase<O> implements
 																								VariableSyncInterface<O>,
 																								VariableSetInterface<O>,
@@ -26,6 +33,10 @@ public class Variable<O> extends VariableBase<O> implements
 		mReference = pReference;
 	}
 
+	/**
+	 * Sets _again_ the value of the variable, listeners, synced variables and
+	 * hooks are called again.
+	 */
 	public void setCurrent()
 	{
 		EventPropagator.clear();

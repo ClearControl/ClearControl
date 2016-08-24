@@ -30,6 +30,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -199,7 +200,9 @@ public class LightSheetMicroscopeDemo
 			lLightSheet.getImageHeightVariable().set(cImageResolution);
 		}
 
-		lLightSheetMicroscope.addInteractiveAcquisition();
+		AcquisitionStateManager lAddAcquisitionStateManager = lLightSheetMicroscope.addAcquisitionStateManager();
+		
+		lLightSheetMicroscope.addInteractiveAcquisition(lAddAcquisitionStateManager);
 		lLightSheetMicroscope.addCalibrator();
 
 		// setting up scope GUI:

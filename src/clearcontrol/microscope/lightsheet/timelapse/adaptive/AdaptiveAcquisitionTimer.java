@@ -161,7 +161,9 @@ public class AdaptiveAcquisitionTimer extends TimelapseBase implements
 
 	public StackInterface acquireMonitoringStack()
 	{
-		LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
+		//TODO: fix this method
+		return mLastMonitoredStack;
+		/*LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
 
 		int lNumberOfLightSheets = lLSM.getDeviceLists()
 																		.getNumberOfDevices(LightSheetInterface.class);
@@ -213,7 +215,7 @@ public class AdaptiveAcquisitionTimer extends TimelapseBase implements
 			e.printStackTrace();
 			return null;
 		}
-
+/**/
 	}
 
 }
