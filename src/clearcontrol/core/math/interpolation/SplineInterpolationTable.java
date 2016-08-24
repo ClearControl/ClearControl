@@ -290,7 +290,7 @@ public class SplineInterpolationTable
 		int lNumberOfRows = getNumberOfRows();
 
 		for (int c = 0; c < lNumberOfColumns; c++)
-			for (int r = 0; r < lNumberOfRows; c++)
+			for (int r = 0; r < lNumberOfRows; r++)
 				getRow(r).setY(c, pValue);
 	}
 

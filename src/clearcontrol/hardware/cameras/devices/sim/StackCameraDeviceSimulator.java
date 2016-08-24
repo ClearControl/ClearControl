@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.log.Loggable;
@@ -22,23 +23,28 @@ import clearcontrol.stack.sourcesink.StackSourceInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;
+import gnu.trove.list.array.TByteArrayList;
 import net.imglib2.exception.IncompatibleTypeException;
 
-public class StackCameraDeviceSimulator extends StackCameraDeviceBase
-																				implements
-																				Loggable,
-																				AsynchronousSchedulerServiceAccess
+public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
+																																			Loggable,
+																																			AsynchronousSchedulerServiceAccess,
+																																			AsynchronousExecutorServiceAccess
 {
 	private StackSourceInterface mStackSource;
 
 	protected AtomicLong mCurrentStackIndex = new AtomicLong(0);
 
-	private final Variable<SynteticStackTypeEnum> mSyntheticStackType =
-																																		new Variable<SynteticStackTypeEnum>("SyntheticStackType",
-																																																				SynteticStackTypeEnum.Fractal);
+	private final Variable<SynteticStackTypeEnum> mSyntheticStackTypeVariable = new Variable<SynteticStackTypeEnum>("SyntheticStackType",
+																																																					SynteticStackTypeEnum.Fractal);
 
+<<<<<<< HEAD
 	private AtomicLong mTriggerCounter = new AtomicLong(0);
 	private volatile CountDownLatch mLeftInQueue;
+=======
+	private volatile CountDownLatch mStackSent;
+	private final AtomicLong mTriggeCounter = new AtomicLong();
+>>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
 
 	/**
 	 * Crates a StackCameraDeviceSimulator of a given name. Synthetic Stacks are
@@ -77,9 +83,8 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 
 		mLineReadOutTimeInMicrosecondsVariable = new Variable<Double>("LineReadOutTimeInMicroseconds",
 																																	1.0);
-		mStackBytesPerPixelVariable =
-																new Variable<Long>(	"FrameBytesPerPixel",
-																										2L);
+		mStackBytesPerPixelVariable = new Variable<Long>(	"FrameBytesPerPixel",
+																											2L);
 		mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
 		mStackWidthVariable.addSetListener((o, n) -> {
 			System.out.println(getName() + ": New camera width: " + n);
@@ -97,13 +102,11 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 
 		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
 		mStackDepthVariable.addSetListener((o, n) -> {
-			System.out.println(getName()+ ": New camera stack depth: "
-													+ n);
+			System.out.println(getName() + ": New camera stack depth: " + n);
 		});
 
-		mExposureInMicrosecondsVariable =
-																		new Variable<Double>(	"ExposureInMicroseconds",
-																													1000.0);
+		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
+																														1000.0);
 		mExposureInMicrosecondsVariable.addSetListener((o, n) -> {
 			System.out.println(getName() + ": New camera exposure: " + n);
 		});
@@ -116,9 +119,8 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		if (mTriggerVariable == null)
 		{
 			severe(	"cameras",
-							"Cannot instantiate "
-													+ StackCameraDeviceSimulator.class.getSimpleName()
-													+ " because trigger variable is null!");
+							"Cannot instantiate " + StackCameraDeviceSimulator.class.getSimpleName()
+									+ " because trigger variable is null!");
 			return;
 		}
 
@@ -128,6 +130,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 			public void fire(Boolean pAfterEdge)
 			{
 				if (pAfterEdge)
+<<<<<<< HEAD
 				{
 					final long lEdgeCounterValue = mTriggerCounter.incrementAndGet();
 					if (lEdgeCounterValue >= getStackDepthVariable().get())
@@ -179,16 +182,84 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 						sendStack();
 						mTriggerCounter.set(0);
 					}
-				}
+=======
+					receivedTrigger();
 			}
 		});
 
 		final ContiguousOffHeapPlanarStackFactory lContiguousOffHeapPlanarStackFactory = new ContiguousOffHeapPlanarStackFactory();
 
+		mRecycler = new BasicRecycler<StackInterface, StackRequest>(lContiguousOffHeapPlanarStackFactory,
+																																40);
+
+	}
+
+	protected void receivedTrigger()
+	{
+		final long lExposuretimeInMicroSeconds = mExposureInMicrosecondsVariable.get()
+																																						.longValue();
+		final long lDepth = mStackDepthVariable.get();
+
+		if (mTriggeCounter.incrementAndGet() >= lDepth)
+		{
+			mTriggeCounter.set(0);
+
+			executeAsynchronously(() -> {
+
+				StackInterface lStack;
+				if (mStackSource != null)
+				{
+					final long Index = mCurrentStackIndex.get();
+					lStack = mStackSource.getStack(Index);
+					mCurrentStackIndex.set((Index + 1) % mStackSource.getNumberOfStacks());
+				}
+				else
+				{
+					try
+					{
+						switch (getSyntheticStackTypeVariable().get())
+						{
+						default:
+						case Fractal:
+							lStack = generateFractalStack();
+							break;
+						case Sinus:
+							lStack = generateSinusStack();
+							break;
+						}
+
+					}
+					catch (final Throwable e)
+					{
+						e.printStackTrace();
+						return;
+					}
+					mCurrentStackIndex.incrementAndGet();
+>>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
+				}
+				if (lStack == null)
+					System.err.println("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
+				else
+				{
+
+					lStack.setTimeStampInNanoseconds(System.nanoTime());
+					lStack.setIndex(mCurrentStackIndex.get());
+					lStack.setNumberOfImagesPerPlane(getNumberOfImagesPerPlaneVariable().get());
+					lStack.setChannel(getChannelVariable().get());
+					mStackReference.set(lStack);
+				}
+
+<<<<<<< HEAD
 		mRecycler =
 							new BasicRecycler<StackInterface, StackRequest>(lContiguousOffHeapPlanarStackFactory,
 																															40);
 <<<<<<< HEAD
+=======
+				if (mStackSent != null)
+					mStackSent.countDown();
+			});
+		}
+>>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
 
 	}
 
@@ -254,16 +325,15 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		final long lWidth = max(1, mStackWidthVariable.get());
 		final long lHeight = max(1, mStackHeightVariable.get());
 
-		byte lNumberOfKeptImages = mStagingKeepAcquiredImageArray.sum();
+		long lNumberOfKeptImages = sum(mStagingKeepAcquiredImageArray);
 
 		final long lDepth = max(1, lNumberOfKeptImages);
 		final int lChannel = mChannelVariable.get();
 
-		System.out.println("lChannel=" + lChannel);
+		//System.out.println("lChannel=" + lChannel);
 
-		final int lNumberOfImagesPerPlane =
-																			getNumberOfImagesPerPlaneVariable()	.get()
-																																					.intValue();
+		final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
+																																						.intValue();
 
 		final StackRequest lStackRequest = StackRequest.build(lWidth,
 																													lHeight,
@@ -277,8 +347,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		{
 			final byte time = (byte) mCurrentStackIndex.get();
 
-			final ContiguousMemoryInterface lContiguousMemory =
-																												lStack.getContiguousMemory();
+			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 			final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 <<<<<<< HEAD
@@ -302,13 +371,8 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 					for (int y = 0; y < lHeight; y++)
 						for (int x = 0; x < lWidth; x++)
 						{
-							short lValue = (short) (((byte) (x + time)
-																				^ (byte) (y
-																									+ (lHeight
-																											* lChannel)
-																										/ 3)
-																				^ (byte) z
-																				^ (byte) (time)));/**/
+							short lValue = (short) (((byte) (x + time) ^ (byte) (y + (lHeight * lChannel) / 3)
+																				^ (byte) z ^ (byte) (time)));/**/
 							if (lValue < 32)
 								lValue = 0;
 							lContiguousBuffer.writeShort(lValue);
@@ -318,6 +382,15 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		}
 
 		return lStack;
+	}
+
+	private long sum(TByteArrayList pArrayList)
+	{
+		int lLength = pArrayList.size();
+		long sum = 0;
+		for (int i = 0; i < lLength; i++)
+			sum += pArrayList.getQuick(i);
+		return sum;
 	}
 
 	/**
@@ -331,9 +404,8 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		final long lDepth = max(1, mStackDepthVariable.get());
 		final int lChannel = mChannelVariable.get();
 
-		final int lNumberOfImagesPerPlane =
-																			getNumberOfImagesPerPlaneVariable()	.get()
-																																					.intValue();
+		final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
+																																						.intValue();
 
 		final StackRequest lStackRequest = StackRequest.build(lWidth,
 																													lHeight,
@@ -347,14 +419,14 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		{
 			final byte time = (byte) mCurrentStackIndex.get();
 
-			final ContiguousMemoryInterface lContiguousMemory =
-																												lStack.getContiguousMemory();
+			final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
 			final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 			for (int z = 0; z < lDepth; z++)
 				for (int y = 0; y < lHeight; y++)
 					for (int x = 0; x < lWidth; x++)
 					{
+<<<<<<< HEAD
 <<<<<<< HEAD
 						short lValue = (short) (128
 																		+ 128 * Math.sin(
@@ -365,6 +437,9 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 																											/ 64.0));/**/
 =======
 						short lValue = (short) (128 + 128 * Math.sin(((x+time + (lWidth * lChannel) / 3) % lWidth) / 64.0));/**/
+=======
+						short lValue = (short) (128 + 128 * Math.sin(((x + time + (lWidth * lChannel) / 3) % lWidth) / 64.0));/**/
+>>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
 
 >>>>>>> 4a7f38538133b52c1ed547db9dd476a3063296fd
 						lContiguousBuffer.writeShort(lValue);
@@ -490,12 +565,17 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 	@Override
 	public Future<Boolean> playQueue()
 	{
+<<<<<<< HEAD
 		mTriggerCounter.set(0);
 		mLeftInQueue = new CountDownLatch(getQueueLength());
 
 		super.playQueue();
 
 		// mStackDepthVariable.set(mStackDepthVariable.get() + 1);
+=======
+		mStackSent = new CountDownLatch(1);
+		super.playQueue();
+>>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
 
 		final Future<Boolean> lFuture = new Future<Boolean>()
 		{
@@ -519,20 +599,19 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 			}
 
 			@Override
-			public Boolean get()	throws InterruptedException,
-														ExecutionException
+			public Boolean get() throws InterruptedException,
+													ExecutionException
 			{
-				mLeftInQueue.await();
+				mStackSent.await();
 				return true;
 			}
 
 			@Override
-			public Boolean get(	long pTimeout,
-													TimeUnit pUnit)	throws InterruptedException,
-																					ExecutionException,
-																					TimeoutException
+			public Boolean get(long pTimeout, TimeUnit pUnit)	throws InterruptedException,
+																												ExecutionException,
+																												TimeoutException
 			{
-				mLeftInQueue.await(pTimeout, pUnit);
+				mStackSent.await(pTimeout, pUnit);
 				return true;
 			}
 		};
@@ -546,6 +625,9 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		mTriggerVariable.setEdge(false, true);
 	}
 
-	
+	public Variable<SynteticStackTypeEnum> getSyntheticStackTypeVariable()
+	{
+		return mSyntheticStackTypeVariable;
+	}
 
 }

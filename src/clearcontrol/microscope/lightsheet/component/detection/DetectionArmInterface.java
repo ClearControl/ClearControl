@@ -42,20 +42,6 @@ public interface DetectionArmInterface extends
 	 */
 	public Variable<UnivariateAffineFunction> getZFunction();
 
-	/**
-	 * Returns low X variable. This variable translates to actual ROI on the
-	 * corresponding camera.
-	 * 
-	 * @return low X variable
-	 */
-	public BoundedVariable<Number> getWidthVariable();
 
-	/**
-	 * Returns high X variable. This variable translates to actual ROI on the
-	 * corresponding camera.
-	 * 
-	 * @return high X variable
-	 */
-	public BoundedVariable<Number> getHeightVariable();
 
 }

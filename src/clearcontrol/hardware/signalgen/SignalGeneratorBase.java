@@ -7,26 +7,22 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.queue.QueueProvider;
-import clearcontrol.device.queue.QueueProviderUsingDeviceInterface;
 import clearcontrol.hardware.signalgen.movement.MovementInterface;
 import clearcontrol.hardware.signalgen.score.Score;
 import clearcontrol.hardware.signalgen.score.ScoreInterface;
 
-public abstract class SignalGeneratorBase extends VirtualDevice implements
-																																		SignalGeneratorInterface,
-																																		AsynchronousExecutorServiceAccess,
-																																		QueueProviderUsingDeviceInterface
+public abstract class SignalGeneratorBase extends VirtualDevice	implements
+																																SignalGeneratorInterface,
+																																AsynchronousExecutorServiceAccess
 {
 
 	protected final ScoreInterface mStagingScore;
 	protected final ScoreInterface mQueuedScore;
 
 	protected volatile int mEnqueuedStateCounter = 0;
-	protected QueueProvider<?> mQueueProvider;
 
 	protected final Variable<Boolean> mTriggerVariable = new Variable<Boolean>(	"Trigger",
-																																													false);
+																																							false);
 	protected volatile boolean mIsPlaying;
 
 	public SignalGeneratorBase(String pDeviceName)
@@ -72,24 +68,6 @@ public abstract class SignalGeneratorBase extends VirtualDevice implements
 	public void finalizeQueue()
 	{
 
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setQueueProvider(QueueProvider<?> pQueueProvider)
-	{
-		mQueueProvider = pQueueProvider;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void buildQueueFromProvider()
-	{
-		if (mQueueProvider != null)
-		{
-			mQueuedScore.clear();
-			((QueueProvider<SignalGeneratorBase>) mQueueProvider).buildQueue(this);
-		}
 	}
 
 	@Override

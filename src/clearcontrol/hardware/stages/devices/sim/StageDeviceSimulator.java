@@ -1,12 +1,16 @@
 package clearcontrol.hardware.stages.devices.sim;
 
+import java.util.concurrent.TimeUnit;
+
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.stages.StageDeviceBase;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.StageType;
 
 public class StageDeviceSimulator extends StageDeviceBase	implements
-																													StageDeviceInterface
+																													StageDeviceInterface,
+																													AsynchronousSchedulerServiceAccess
 {
 
 	private StageType mStageType;
@@ -15,6 +19,10 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 	{
 		super(pDeviceName);
 		mStageType = pStageType;
+
+		scheduleAtFixedRate(() -> {
+			moveToTarget();
+		}, 50, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -81,6 +89,22 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 																										pMin));
 		mMaxPositionVariables.add(new Variable<Double>(	"MaxPosition" + pDOFName,
 																										pMax));
+
+	}
+
+	private void moveToTarget()
+	{
+		for (int i = 0; i < getNumberOfDOFs(); i++)
+		{
+			double lTarget = mTargetPositionVariables.get(i).get();
+			double lCurrent = mCurrentPositionVariables.get(i).get();
+			double lError = lTarget - lCurrent;
+
+			double lNewCurrent = lCurrent + 0.1 * Math.signum(lError);
+
+			if (lNewCurrent != lCurrent)
+				mCurrentPositionVariables.get(i).set(lNewCurrent);
+		}
 
 	}
 

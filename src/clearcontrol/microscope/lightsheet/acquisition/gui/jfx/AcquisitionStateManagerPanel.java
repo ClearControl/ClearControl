@@ -3,7 +3,6 @@ package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 import java.util.ArrayList;
 import java.util.List;
 
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
 import clearcontrol.gui.jfx.singlechecklist.SingleCheckCell;
 import clearcontrol.gui.jfx.singlechecklist.SingleCheckCellManager;
 import clearcontrol.gui.jfx.singlechecklist.SingleCheckListView;
@@ -13,19 +12,13 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -51,18 +44,18 @@ public class AcquisitionStateManagerPanel	extends
 		mAcquisitionStateManager = pAcquisitionStateManager;
 		AcquisitionStateManagerPanel lAcquisitionStateManagerPanel = this;
 
-		SingleCheckCellManager<AcquisitionStateInterface<?>> lManager = new SingleCheckCellManager<AcquisitionStateInterface<?>>()
+		SingleCheckCellManager<AcquisitionStateInterface<?>> lSingleCheckCellManager = new SingleCheckCellManager<AcquisitionStateInterface<?>>()
 		{
 			@Override
-			public void checkOnly(SingleCheckCell<AcquisitionStateInterface<?>> pSelectedCell)
+			public void checkOnlyCell(SingleCheckCell<AcquisitionStateInterface<?>> pSelectedCell)
 			{
-				super.checkOnly(pSelectedCell);
+				super.checkOnlyCell(pSelectedCell);
 				AcquisitionStateInterface<?> lState = pSelectedCell.getItem();
 				lAcquisitionStateManagerPanel.setCurrentState(lState);
 			}
 		};
 
-		mStateListView = new SingleCheckListView<AcquisitionStateInterface<?>>(	lManager,
+		mStateListView = new SingleCheckListView<AcquisitionStateInterface<?>>(	lSingleCheckCellManager,
 																																						mObservableStateList);
 
 		mStateListView.getSelectionModel()
@@ -135,14 +128,19 @@ public class AcquisitionStateManagerPanel	extends
 			pAcquisitionStateManager.removeState(lSelectedItem);
 		});
 
+		mAcquisitionStateManager.addChangeListener((e) -> {
+			Platform.runLater(() -> {
+				updateStateList(pAcquisitionStateManager.getStateList());
+				mStateListView.checkOnly(pAcquisitionStateManager.getCurrentState());
+			});
+		});
+
 		Platform.runLater(() -> {
 			updateStateList(pAcquisitionStateManager.getStateList());
 			setCurrentState(pAcquisitionStateManager.getCurrentState());
 			setViewedAcquisitionState(pAcquisitionStateManager.getCurrentState());
 		});
 
-		
-		
 	}
 
 	protected void updateStateList(List<AcquisitionStateInterface<?>> pStateList)
@@ -165,7 +163,6 @@ public class AcquisitionStateManagerPanel	extends
 				}
 			}
 			mObservableStateList.removeAll(lRemovalList);
-
 		};
 
 		if (Platform.isFxApplicationThread())
@@ -188,13 +185,11 @@ public class AcquisitionStateManagerPanel	extends
 				InterpolatedAcquisitionState lInterpolatedAcquisitionState = (InterpolatedAcquisitionState) pState;
 				AcquisitionStatePanel lAcquisitionStatePanel = new AcquisitionStatePanel(lInterpolatedAcquisitionState);
 
-				
-				for(Node lNode : mStateViewVBox.getChildren())
+				for (Node lNode : mStateViewVBox.getChildren())
 					lNode.setVisible(false);
-				
+
 				mStateViewVBox.getChildren().clear();
 				mStateViewVBox.getChildren().add(lAcquisitionStatePanel);
-
 			}
 
 		});

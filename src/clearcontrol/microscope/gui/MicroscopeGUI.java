@@ -80,7 +80,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 		addHalcyonMappingEntry(	StackCameraDeviceInterface.class,
 														CameraDevicePanel.class,
-														MicroscopeNodeType.Camera);
+														MicroscopeNodeType.Camera);/**/
 
 		addHalcyonMappingEntry(	FilterWheelDeviceInterface.class,
 														FilterWheelDevicePanel.class,

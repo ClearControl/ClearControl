@@ -10,6 +10,22 @@ public interface StackCameraDeviceInterface	extends
 																						CameraDeviceInterface,
 																						NameableInterface
 {
+	
+
+	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
+
+	int getMinimalNumberOfAvailableStacks();
+
+	void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks);
+
+	RecyclerInterface<StackInterface, StackRequest> getStackRecycler();
+
+	Variable<StackInterface> getStackVariable();
+
+	@Override
+	void trigger();
+	
+	
 	Variable<Long> getNumberOfImagesPerPlaneVariable();
 
 	Variable<Boolean> getStackModeVariable();
