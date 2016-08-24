@@ -35,6 +35,8 @@ public class VideoFrame3DDisplayDemos
 		final ContiguousMemoryInterface lContiguousMemory = OffHeapMemory.allocateShorts(lResolutionX * lResolutionY
 																																											* lResolutionZ);
 
+		
+		
 		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
 
 		@SuppressWarnings("unchecked")
@@ -47,6 +49,8 @@ public class VideoFrame3DDisplayDemos
 
 		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
+		
+		
 		lVideoFrame3DDisplay.open();
 
 		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)

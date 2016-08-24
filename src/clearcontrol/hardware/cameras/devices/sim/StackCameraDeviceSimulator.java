@@ -111,7 +111,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 		mPixelSizeinNanometersVariable = new Variable<Double>("PixelSizeinNanometers",
 																													160.0);
 
-		mStackReference = new Variable<>("StackReference");
+		mStackVariable = new Variable<>("StackReference");
 
 		if (mTriggerVariable == null)
 		{
@@ -191,12 +191,11 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 			System.err.println("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
 		else
 		{
-
 			lStack.setTimeStampInNanoseconds(System.nanoTime());
 			lStack.setIndex(mCurrentStackIndex.get());
 			lStack.setNumberOfImagesPerPlane(getNumberOfImagesPerPlaneVariable().get());
 			lStack.setChannel(getChannelVariable().get());
-			mStackReference.set(lStack);
+			mStackVariable.set(lStack);
 		}
 
 		if (mLeftInQueue != null)
@@ -400,25 +399,13 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
 	@Override
 	public boolean start()
 	{
-		/*final Runnable lRunnable = () -> {
-			trigger();
-		};
-		mTriggerScheduledAtFixedRate = scheduleAtFixedRate(	lRunnable,
-																												getExposureInMicrosecondsVariable().get()
-																																														.longValue(),
-																												TimeUnit.MICROSECONDS);
-																												
-																												/**/
+
 		return true;
 	}
 
 	@Override
 	public boolean stop()
 	{
-		/*
-		if (mTriggerScheduledAtFixedRate != null)
-			mTriggerScheduledAtFixedRate.cancel(false);
-			/**/
 
 		return true;
 	}

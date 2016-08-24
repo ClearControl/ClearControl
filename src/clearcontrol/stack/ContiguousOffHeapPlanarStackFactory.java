@@ -6,23 +6,29 @@ import coremem.recycling.RecyclableFactoryInterface;
 import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
-public class ContiguousOffHeapPlanarStackFactory implements
-																								RecyclableFactoryInterface<StackInterface, StackRequest>
+public class ContiguousOffHeapPlanarStackFactory	implements
+																									RecyclableFactoryInterface<StackInterface, StackRequest>
 {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public OffHeapPlanarStack create(StackRequest pParameters)
+	public OffHeapPlanarStack create(StackRequest pStackRequest)
 	{
 		final int lBytesPerVoxel = Size.of(NativeTypeEnum.UnsignedShort);
-		final long lVolume = pParameters.getWidth() * pParameters.getHeight()
-													* pParameters.getDepth();
-		final long lBufferSizeInBytes = lVolume * lBytesPerVoxel;
-		final ContiguousMemoryInterface lContiguousMemoryInterface = new OffHeapMemory(	"OffHeapPlanarStack" + pParameters,
-																																										lBufferSizeInBytes);
+		final long lVolume = pStackRequest.getWidth()
+													* pStackRequest.getHeight()
+													* pStackRequest.getDepth();
+		final long lBufferSizeInBytesWithMetaData =
+																							lVolume * lBytesPerVoxel
+																								+ pStackRequest.getMetadataSizeInBytes();
+		final ContiguousMemoryInterface lContiguousMemoryInterface = OffHeapMemory.allocateAlignedBytes("OffHeapPlanarStack"
+																																																		+ pStackRequest,
+																																																		lBufferSizeInBytesWithMetaData,
+																																																		pStackRequest.getAlignment());
+
 		return OffHeapPlanarStack.createStack(lContiguousMemoryInterface,
-																					pParameters.getWidth(),
-																					pParameters.getHeight(),
-																					pParameters.getDepth());
+																					pStackRequest.getWidth(),
+																					pStackRequest.getHeight(),
+																					pStackRequest.getDepth());
 	}
 }
