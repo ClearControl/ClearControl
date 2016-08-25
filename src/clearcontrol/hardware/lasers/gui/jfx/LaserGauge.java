@@ -172,13 +172,25 @@ public class LaserGauge
 									laserLabel.fontProperty()
 														.set(Font.font(	fontFamily,
 																						newValue.doubleValue() / 4.1));
-									rectangle.setWidth(newValue.doubleValue() / 3);
 								}
 							});
 
 		properties.getChildren().add(laserLabel);
 
 		pane = new HBox();
+
+		pane.widthProperty()
+				.addListener(new ChangeListener<Number>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Number> observable,
+							Number oldValue,
+							Number newValue)
+					{
+						rectangle.setWidth(newValue.doubleValue() / 4.5 );
+					}
+				});
+
 
 		lVBoxForColoredRectangle.getChildren().add(rectangle);
 
