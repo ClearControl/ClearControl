@@ -23,7 +23,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * AcquisitionStateManagerPanel is a GUI element that displays information about
- * all acquisition states managed by a AcquisitionStateManager.
+ * all acquisition states managed by a LoggingManager.
  * 
  * @author royer
  */

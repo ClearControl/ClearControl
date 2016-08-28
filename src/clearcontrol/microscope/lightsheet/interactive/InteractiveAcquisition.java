@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -20,7 +20,7 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 
 public class InteractiveAcquisition extends LoopTaskDevice implements
-																													Loggable
+																													LoggingInterface
 {
 
 	private static final int cRecyclerMinimumNumberOfAvailableStacks = 60;

@@ -9,14 +9,14 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 
 public class AsynchronousProcessorPool<I, O>	extends
 																							AsynchronousProcessorBase<I, O>	implements
 																																							AsynchronousProcessorInterface<I, O>,
 																																							AsynchronousExecutorServiceAccess,
 																																							AsynchronousSchedulerServiceAccess,
-																																							Loggable
+																																							LoggingInterface
 {
 
 	private final ProcessorInterface<I, O> mProcessor;

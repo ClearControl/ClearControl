@@ -27,7 +27,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * AcquisitionStateManagerPanelBase is a GUI element that displays information
- * about all acquisition states managed by a AcquisitionStateManager. This is a
+ * about all acquisition states managed by a LoggingManager. This is a
  * base class offering the basic functionality for derived classes.
  * 
  * @author royer

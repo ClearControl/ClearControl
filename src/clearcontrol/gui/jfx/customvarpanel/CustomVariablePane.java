@@ -7,12 +7,16 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.gridpane.StandardGridPane;
 import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
 import clearcontrol.gui.jfx.slider.VariableSlider;
+import clearcontrol.gui.jfx.togglebutton.CustomToggleButton;
+import clearcontrol.gui.variable.JFXPropertyVariable;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -45,8 +49,8 @@ public class CustomVariablePane extends TabPane
 		});
 
 		setStyle("-fx-tab-max-height: 0 ;");
-		//final StackPane header = (StackPane) lookup(".tab-header-area");
-		//header.setStyle("visibility: hidden ;");
+		// final StackPane header = (StackPane) lookup(".tab-header-area");
+		// header.setStyle("visibility: hidden ;");
 
 	}
 
@@ -75,11 +79,27 @@ public class CustomVariablePane extends TabPane
 		if (getTabs().size() > 1)
 		{
 			setStyle("-fx-tab-max-height: 20 ;");
-			//final StackPane header = (StackPane) lookup(".tab-header-area");
-			//header.setStyle("visibility: showing ;");
+			// final StackPane header = (StackPane) lookup(".tab-header-area");
+			// header.setStyle("visibility: showing ;");
 		}
-		
-		mCursor=0;
+
+		mCursor = 0;
+	}
+
+	public CustomToggleButton addToggleButton(String pSelectedText,
+																						String pDeselectedText,
+																						Variable<Boolean> pBooleanVariable)
+	{
+		final CustomToggleButton lToggleButton = new CustomToggleButton(pSelectedText,
+																																		pDeselectedText,
+																																		pBooleanVariable);
+
+		int lCursor = mCursor++;
+		mCurrentTabGridPane.add(lToggleButton, 0, lCursor);
+		GridPane.setHgrow(lToggleButton, Priority.ALWAYS);
+		GridPane.setColumnSpan(lToggleButton, 3);
+
+		return lToggleButton;
 	}
 
 	public <T extends Number> VariableSlider<T> addSliderForVariable(	Variable<T> pVariable,

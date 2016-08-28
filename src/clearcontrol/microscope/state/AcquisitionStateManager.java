@@ -11,7 +11,7 @@ import clearcontrol.device.name.ReadOnlyNameableInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 
 /**
- * AcquisitionStateManager handles a set of saved acquisition states. These
+ * LoggingManager handles a set of saved acquisition states. These
  * states are used for acquisition purposes.
  * 
  * @author royer
@@ -27,7 +27,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
 	private volatile AcquisitionStateInterface<?> mCurrentState;
 
 	/**
-	 * Constructs an AcquisitionStateManager.
+	 * Constructs an LoggingManager.
 	 */
 	public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
 	{
@@ -106,7 +106,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
 	@Override
 	public String getName()
 	{
-		return "AcquisitionStateManager";
+		return "LoggingManager";
 	}
 
 }

@@ -85,7 +85,7 @@ public class HalcyonGUIGenerator
 		setupDevicePanels(SignalGeneratorInterface.class);
 		setupDevicePanels(ScalingAmplifierDeviceInterface.class);
 		setupDevicePanels(StackRecyclerManager.class);
-		setupDevicePanels(AcquisitionStateManager.class);/**/
+		setupDevicePanels(LoggingManager.class);/**/
 
 		// setting up script engines:
 		setupScriptEngines(mMicroscopeInterface);
@@ -131,11 +131,11 @@ public class HalcyonGUIGenerator
 			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack3DDisplay.getName(),
 																												MicroscopeNodeType.StackDisplay3D,
 																												() -> {
-																													lStack3DDisplay.setVisible(true);
+																													lStack3DDisplay.getVisibleVariable().set(true);
 																													lStack3DDisplay.requestFocus();
 																												},
 																												() -> {
-																													lStack3DDisplay.setVisible(false);
+																													lStack3DDisplay.getVisibleVariable().set(false);
 																												},
 																												() -> {
 																													lStack3DDisplay.close();

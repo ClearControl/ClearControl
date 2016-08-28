@@ -25,9 +25,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
 
 	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
-																	boolean p3DView)
+																	boolean p2DDisplay, boolean p3DDisplay)
 	{
-		super(pLightSheetMicroscope, LSMNodeType.values(), p3DView);
+		super(pLightSheetMicroscope, LSMNodeType.values(), p2DDisplay,p3DDisplay);
 
 		addHalcyonMappingEntry(	LightSheetInterface.class,
 														LightSheetPanel.class,

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.device.VirtualDevice;
@@ -34,7 +34,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 																													MicroscopeInterface,
 																													StartStopDeviceInterface,
 																													AsynchronousSchedulerServiceAccess,
-																													Loggable
+																													LoggingInterface
 {
 
 	protected final StackRecyclerManager mStackRecyclerManager;

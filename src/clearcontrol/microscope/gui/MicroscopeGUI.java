@@ -24,7 +24,9 @@ import clearcontrol.hardware.stages.gui.jfx.StageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
+import clearcontrol.microscope.gui.sim.SimulationManagerPanel;
 import clearcontrol.microscope.lightsheet.gui.LSMNodeType;
+import clearcontrol.microscope.sim.SimulationManager;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
@@ -52,17 +54,19 @@ public class MicroscopeGUI extends VirtualDevice implements
 	private ArrayList<Stack3DDisplay> mStack3DVideoDeviceList = new ArrayList<>();
 
 	private ArrayList<Variable<StackInterface>> mCleanupStackVariableList = new ArrayList<>();
-	private final boolean m3dView;
+	private final boolean m2DDisplay, m3DDisplay;
 	private HalcyonGUIGenerator mHalcyonGUIGenerator;
 	private HalcyonFrame mHalcyonFrame;
 
 	public MicroscopeGUI(	MicroscopeInterface pLightSheetMicroscope,
 												HalcyonNodeType[] pHalcyonNodeTypeArray,
-												boolean p3DView)
+												boolean p2DDisplay,
+												boolean p3DDisplay)
 	{
 		super(pLightSheetMicroscope.getName() + "GUI");
 		mMicroscope = pLightSheetMicroscope;
-		m3dView = p3DView;
+		m2DDisplay = p2DDisplay;
+		m3DDisplay = p3DDisplay;
 
 		ArrayList<HalcyonNodeType> lNodeTypeList = new ArrayList<>();
 		for (HalcyonNodeType lNode : MicroscopeNodeType.values())
@@ -101,6 +105,13 @@ public class MicroscopeGUI extends VirtualDevice implements
 		addHalcyonMappingEntry(	StackRecyclerManager.class,
 														StackRecyclerManagerPanel.class,
 														MicroscopeNodeType.Other);
+		
+		addHalcyonMappingEntry(	SimulationManager.class,
+		                       	SimulationManagerPanel.class,
+														MicroscopeNodeType.Other);
+		
+		SimulationManager lSimulationManager = new SimulationManager(pLightSheetMicroscope);
+		mMicroscope.addDevice(0, lSimulationManager);
 
 		initializeConcurentExecutor();
 	}
@@ -109,7 +120,9 @@ public class MicroscopeGUI extends VirtualDevice implements
 																						Class<V> pPanelClass,
 																						HalcyonNodeType pNodeType)
 	{
-		mHalcyonGUIGenerator.addMappingEntry(pDeviceClass, pPanelClass,pNodeType);
+		mHalcyonGUIGenerator.addMappingEntry(	pDeviceClass,
+																					pPanelClass,
+																					pNodeType);
 	}
 
 	public void addScripting(	String pMicroscopeObjectName,
@@ -136,7 +149,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 	public void generate()
 	{
 		setup2Dand3DDisplays();
-		setupHalcyonWindow(mMicroscope);
+		setupHalcyonWindow();
 	}
 
 	public MicroscopeInterface getMicroscope()
@@ -182,36 +195,35 @@ public class MicroscopeGUI extends VirtualDevice implements
 
 			mCleanupStackVariableList.add(lCleanupStackVariable);
 
-			final StackCameraDeviceInterface lStackCameraDevice = mMicroscope.getDevice(StackCameraDeviceInterface.class,
-																																									i);
+			if (m2DDisplay)
+			{
+				final StackCameraDeviceInterface lStackCameraDevice = mMicroscope.getDevice(StackCameraDeviceInterface.class,
+																																										i);
 
-			final Stack2DDisplay lStack2DDisplay = new Stack2DDisplay("Video 2D - " + lStackCameraDevice.getName(),
-																																cDefaultWindowWidth,
-																																cDefaultWindowHeight);
-			lStack2DDisplay.setVisible(false);
-			mStack2DVideoDeviceList.add(lStack2DDisplay);
+				final Stack2DDisplay lStack2DDisplay = new Stack2DDisplay("Video 2D - " + lStackCameraDevice.getName(),
+																																	cDefaultWindowWidth,
+																																	cDefaultWindowHeight);
+				lStack2DDisplay.setVisible(false);
+				mStack2DVideoDeviceList.add(lStack2DDisplay);
+			}
 
 		}
 
-		if (m3dView)
+		if (m3DDisplay)
 		{
 			final Stack3DDisplay lStack3DDisplay = new Stack3DDisplay("Video 3D",
 																																cDefaultWindowWidth,
 																																cDefaultWindowHeight,
 																																lNumberOfCameras,
 																																10);
-			lStack3DDisplay.setVisible(false);
+			lStack3DDisplay.getVisibleVariable().set(false);
 			mStack3DVideoDeviceList.add(lStack3DDisplay);
 		}
 
 	}
 
-	/**
-	 * Setup Halcyon window (automatically) for a given Microscope.
-	 * 
-	 * @param pMicroscopeInterface
-	 */
-	private void setupHalcyonWindow(MicroscopeInterface pMicroscopeInterface)
+
+	private void setupHalcyonWindow()
 	{
 		mHalcyonGUIGenerator.setupDeviceGUIs();
 
@@ -225,20 +237,21 @@ public class MicroscopeGUI extends VirtualDevice implements
 	public boolean open()
 	{
 
-		executeAsynchronously(() -> {
-			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
-			{
-				lStack2dDisplay.open();
-			}
-		});
+		if (m2DDisplay)
+			executeAsynchronously(() -> {
+				for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
+				{
+					lStack2dDisplay.open();
+				}
+			});
 
-		executeAsynchronously(() -> {
-			if (m3dView)
+		if (m3DDisplay)
+			executeAsynchronously(() -> {
 				for (final Stack3DDisplay lStack3dDisplay : mStack3DVideoDeviceList)
 				{
 					lStack3dDisplay.open();
 				}
-		});
+			});
 
 		try
 		{
@@ -258,21 +271,21 @@ public class MicroscopeGUI extends VirtualDevice implements
 	@Override
 	public boolean close()
 	{
+		if (m2DDisplay)
+			executeAsynchronously(() -> {
+				for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
+				{
+					lStack2dDisplay.close();
+				}
+			});
 
-		executeAsynchronously(() -> {
-			if (m3dView)
+		if (m3DDisplay)
+			executeAsynchronously(() -> {
 				for (final Stack3DDisplay mStack3DVideoDevice : mStack3DVideoDeviceList)
 				{
 					mStack3DVideoDevice.close();
 				}
-		});
-
-		executeAsynchronously(() -> {
-			for (final Stack2DDisplay lStack2dDisplay : mStack2DVideoDeviceList)
-			{
-				lStack2dDisplay.close();
-			}
-		});
+			});
 
 		executeAsynchronously(() -> {
 			try
@@ -364,15 +377,14 @@ public class MicroscopeGUI extends VirtualDevice implements
 		final int lNumberOfCameras = mMicroscope.getNumberOfDevices(StackCameraDeviceInterface.class);
 
 		for (int lCameraIndex = 0; lCameraIndex < lNumberOfCameras; lCameraIndex++)
-		{
-			connectCameraTo2D(lCameraIndex, lCameraIndex);
-
-			if (m3dView)
+			if (m2DDisplay)
 			{
-				connect2DTo3D(lCameraIndex, 0);
+				connectCameraTo2D(lCameraIndex, lCameraIndex);
+
+				if (m3DDisplay)
+					connect2DTo3D(lCameraIndex, 0);
 			}
 
-		}
 	}
 
 	/**
@@ -383,19 +395,19 @@ public class MicroscopeGUI extends VirtualDevice implements
 		final int lNumberOfCameras = mMicroscope.getNumberOfDevices(StackCameraDeviceInterface.class);
 
 		for (int lCameraIndex = 0; lCameraIndex < lNumberOfCameras; lCameraIndex++)
-		{
-
-			disconnectCamera(lCameraIndex);
-
-			if (m3dView)
+			if (m2DDisplay)
 			{
-				disconnect2DTo3D(lCameraIndex, 0);
-			}
-			else
-				mStack2DVideoDeviceList.get(lCameraIndex)
-																.setOutputStackVariable(null);
+				disconnectCamera(lCameraIndex);
 
-		}
+				if (m3DDisplay)
+				{
+					disconnect2DTo3D(lCameraIndex, 0);
+				}
+				else
+					mStack2DVideoDeviceList.get(lCameraIndex)
+																	.setOutputStackVariable(null);
+
+			}
 	}
 
 	/**

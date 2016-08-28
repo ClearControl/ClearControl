@@ -1,10 +1,14 @@
 package clearcontrol.hardware.optomech.filterwheels.devices.sim;
 
+import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.optomech.filterwheels.FilterWheelDeviceBase;
 import clearcontrol.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
 
 public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
-																																			FilterWheelDeviceInterface
+																																			FilterWheelDeviceInterface,
+																																			LoggingInterface,
+																																			SimulationDeviceInterface
 {
 
 	public FilterWheelDeviceSimulator(String pDeviceName,
@@ -13,10 +17,15 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 		super(pDeviceName, pValidPositions);
 
 		mPositionVariable.addSetListener((o, n) -> {
-			System.out.format("%s: new position: %d corresponding to filter '%s' \n",
-												pDeviceName,
-												n,
-												getPositionName(n));
+			if (isSimLogging())
+			{
+				String lMessage = String.format("%s: new position: %d corresponding to filter '%s' \n",
+																				pDeviceName,
+																				n,
+																				getPositionName(n));
+
+				info(lMessage);
+			}
 		});
 	}
 

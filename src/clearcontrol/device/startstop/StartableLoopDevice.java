@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
@@ -17,7 +17,7 @@ public abstract class StartableLoopDevice	extends
 																																OpenCloseDeviceInterface,
 																																StartStopDeviceInterface,
 																																AsynchronousSchedulerServiceAccess,
-																																Loggable
+																																LoggingInterface
 {
 
 	private final StartableLoopDevice lThis;
