@@ -3,7 +3,7 @@ package clearcontrol.device.task;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
@@ -11,7 +11,7 @@ import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 public abstract class LoopTaskDevice extends TaskDevice	implements
 																												OpenCloseDeviceInterface,
 																												LoggingInterface,
-																												Waiting
+																												WaitingInterface
 {
 
 	private final TimeUnit mTimeUnit;

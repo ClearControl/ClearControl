@@ -1,23 +1,63 @@
 package clearcontrol.core.log;
 
+import java.util.Arrays;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 public interface LoggingInterface
 {
 
+	class Reference<T>
+	{
+		public volatile T mReference;
+
+		public T get()
+		{
+			return mReference;
+		}
+
+		public void set(T pReference)
+		{
+			mReference = pReference;
+		}
+	}
+
 	static final String cMainLoggerName = "main";
 
-	public static Logger getLoggerStatic(final String pSubSystemName)
+	static Reference<Logger> sLoggerReference = new Reference<Logger>();
+
+	static Logger getLoggerStatic()
 	{
-		final Logger mLogger = Logger.getLogger(pSubSystemName);
-		for (final Handler lHandler : mLogger.getHandlers())
-			lHandler.setFormatter(new CompactFormatter());
-		for (final Handler lHandler : mLogger.getParent().getHandlers())
+
+		if (sLoggerReference.get() != null)
+			return sLoggerReference.get();
+
+		sLoggerReference.set(Logger.getLogger(cMainLoggerName));
+
+		sLoggerReference.get().setUseParentHandlers(true);
+		
+		Handler[] lHandlers = sLoggerReference.get().getParent().getHandlers();
+		
+		for(Handler lHandler : lHandlers)
+			sLoggerReference.get().getParent().removeHandler(lHandler);
+
+		StdOutConsoleHandler lStdOutConsoleHandler = new StdOutConsoleHandler();
+		sLoggerReference.get().getParent().addHandler(lStdOutConsoleHandler);
+		
+		for (final Handler lHandler : sLoggerReference.get()
+																									.getHandlers())
 			lHandler.setFormatter(new CompactFormatter());
 		
-		// mLogger.setUseParentHandlers(false);
-		return mLogger;
+		for (final Handler lHandler : sLoggerReference.get()
+																									.getParent()
+																									.getHandlers())
+			lHandler.setFormatter(new CompactFormatter());
+
+		
+
+		return sLoggerReference.get();
 	}
 
 	public default Logger getLogger(final String pSubSystemName)
@@ -25,138 +65,40 @@ public interface LoggingInterface
 		return Logger.getLogger(pSubSystemName);
 	}
 
-	public static void loginfo(	Object pObject,
-															final String pSubSystemName,
-															String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).info(pObject == null ? "null"
-																												: (pObject.getClass().getSimpleName()) + ": "
-																													+ pMessage);
-	}
-
-	public static void logwarning(Object pObject,
-																final String pSubSystemName,
-																String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).warning(pObject == null	? "null"
-																														: (pObject.getClass().getSimpleName()) + ": "
-																															+ pMessage);
-	}
-
-	public static void logsevere(	Object pObject,
-																final String pSubSystemName,
-																String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).severe(pObject == null ? "null"
-																													: (pObject.getClass().getSimpleName()) + ": "
-																														+ pMessage);
-	}
-
 	public default void info(String pMessage)
 	{
-		getLoggerStatic(cMainLoggerName).info(this.getClass()
-																							.getSimpleName() + ": "
-																					+ pMessage);
-	}
-
-	public default void info(	final String pSubSystemName,
-														String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).info(this.getClass()
-																							.getSimpleName() + ": "
-																					+ pMessage);
+		getLoggerStatic().info(this.getClass().getSimpleName() + ": "
+														+ pMessage.trim());
 	}
 
 	public default void info(String pFormat, Object... args)
 	{
-		getLoggerStatic(cMainLoggerName).info(this.getClass()
-																							.getSimpleName() + ": "
-																					+ String.format(pFormat,
-																													args));
-	}
-
-	public default void info(	final String pSubSystemName,
-														String pFormat,
-														Object... args)
-	{
-		getLoggerStatic(pSubSystemName).info(this.getClass()
-																							.getSimpleName() + ": "
-																					+ String.format(pFormat,
-																													args));
+		getLoggerStatic().info(this.getClass().getSimpleName() + ": "
+														+ String.format(pFormat, args).trim());
 	}
 
 	public default void warning(String pMessage)
 	{
-		getLoggerStatic(cMainLoggerName).warning(this.getClass()
-																									.getSimpleName() + ": "
-																							+ pMessage);
-	}
-
-	public default void warning(final String pSubSystemName,
-															String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).warning(this.getClass()
-																								.getSimpleName() + ": "
-																						+ pMessage);
+		getLoggerStatic().warning(this.getClass().getSimpleName() + ": "
+															+ pMessage.trim());
 	}
 
 	public default void warning(String pFormat, Object... args)
 	{
-		getLoggerStatic(cMainLoggerName).warning(this.getClass()
-																									.getSimpleName() + ": "
-																							+ String.format(pFormat,
-																															args));
-	}
-
-	public default void warning(final String pSubSystemName,
-															String pFormat,
-															Object... args)
-	{
-		getLoggerStatic(pSubSystemName).warning(this.getClass()
-																								.getSimpleName() + ": "
-																						+ String.format(pFormat,
-																														args));
+		getLoggerStatic().warning(this.getClass().getSimpleName() + ": "
+															+ String.format(pFormat, args).trim());
 	}
 
 	public default void severe(String pMessage)
 	{
-		getLoggerStatic(cMainLoggerName).severe(this.getClass()
-																								.getSimpleName() + ": "
-																						+ pMessage);
-	}
-
-	public default void severe(	final String pSubSystemName,
-															String pMessage)
-	{
-		getLoggerStatic(pSubSystemName).severe(this.getClass()
-																								.getSimpleName() + ": "
-																						+ pMessage);
+		getLoggerStatic().severe(this.getClass().getSimpleName() + ": "
+															+ pMessage.trim());
 	}
 
 	public default void severe(String pFormat, Object... args)
 	{
-		getLoggerStatic(cMainLoggerName).severe(this.getClass()
-																								.getSimpleName() + ": "
-																						+ String.format(pFormat,
-																														args));
-	}
-
-	public default void severe(	final String pSubSystemName,
-															String pFormat,
-															Object... args)
-	{
-		getLoggerStatic(pSubSystemName).severe(this.getClass()
-																								.getSimpleName() + ": "
-																						+ String.format(pFormat,
-																														args));
-	}
-
-	public default void severe(	final String pSubSystemName,
-															String pMessage,
-															Throwable e)
-	{
-		severe(	pSubSystemName,
-						": '" + e.toString() + "-> " + e.getStackTrace()[0] + "'");
+		getLoggerStatic().severe(this.getClass().getSimpleName() + ": "
+															+ String.format(pFormat, args).trim());
 	}
 
 }

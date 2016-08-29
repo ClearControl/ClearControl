@@ -9,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.SwingUtilities;
 
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
@@ -25,7 +26,7 @@ import halcyon.view.TreePanel;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 
-public class HalcyonGUIGenerator
+public class HalcyonGUIGenerator implements LoggingInterface
 {
 	private MicroscopeInterface mMicroscopeInterface;
 	private HalcyonFrame mHalcyonFrame;
@@ -73,19 +74,9 @@ public class HalcyonGUIGenerator
 
 		for (Class<?> lClass : mDeviceClassToPanelMap.keySet())
 		{
-			System.out.println("setting up Halcyon frame for device class: " + lClass.getSimpleName());
+			info("Setting up Halcyon frame for device class: " + lClass.getSimpleName());
 			setupDevicePanels(lClass);
 		}
-
-		/*setupDevicePanels(LaserDeviceInterface.class);
-		setupDevicePanels(OpticalSwitchDeviceInterface.class);
-		setupDevicePanels(FilterWheelDeviceInterface.class);
-		setupDevicePanels(StageDeviceInterface.class);
-		setupDevicePanels(StackCameraDeviceInterface.class);
-		setupDevicePanels(SignalGeneratorInterface.class);
-		setupDevicePanels(ScalingAmplifierDeviceInterface.class);
-		setupDevicePanels(StackRecyclerManager.class);
-		setupDevicePanels(LoggingManager.class);/**/
 
 		// setting up script engines:
 		setupScriptEngines(mMicroscopeInterface);
@@ -94,9 +85,6 @@ public class HalcyonGUIGenerator
 		setup2DDisplays();
 		setup3DDisplays();
 
-		// Utility interfaces are added
-		// lHalcyonFrame.addToolbar( new DemoToolbarWindow(
-		// lHalcyonFrame.getViewManager() ) );
 
 	}
 
@@ -124,18 +112,21 @@ public class HalcyonGUIGenerator
 
 	private void setup3DDisplays()
 	{
-		// 3D Views:
+		info("Setting up 3D displays");
 
 		for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DStackDisplayList())
 		{
+			info("Setting up %s", lStack3DDisplay);
 			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack3DDisplay.getName(),
 																												MicroscopeNodeType.StackDisplay3D,
 																												() -> {
-																													lStack3DDisplay.getVisibleVariable().set(true);
+																													lStack3DDisplay.getVisibleVariable()
+																																					.set(true);
 																													lStack3DDisplay.requestFocus();
 																												},
 																												() -> {
-																													lStack3DDisplay.getVisibleVariable().set(false);
+																													lStack3DDisplay.getVisibleVariable()
+																																					.set(false);
 																												},
 																												() -> {
 																													lStack3DDisplay.close();
@@ -146,10 +137,12 @@ public class HalcyonGUIGenerator
 
 	private void setup2DDisplays()
 	{
-		// 2D Views:
+		info("Setting up 2D displays");
 
 		for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DStackDisplayList())
 		{
+			info("Setting up %s", lStack2DDisplay);
+
 			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack2DDisplay.getName(),
 																												MicroscopeNodeType.StackDisplay2D,
 																												() -> {
@@ -168,11 +161,12 @@ public class HalcyonGUIGenerator
 
 	private void setupScriptEngines(MicroscopeInterface pMicroscopeInterface)
 	{
+		info("Setting up scripting engines");
 		// Script Engines:
 
 		for (ScriptingEngine lScriptingEngine : mMicroscopeGUI.getScriptingEnginesList())
 		{
-
+			info("Setting up %s", lScriptingEngine);
 			MachineConfiguration lCurrentMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
 
 			ScriptingWindow lScriptingWindow = new ScriptingWindow(	pMicroscopeInterface.getName() + " scripting window",

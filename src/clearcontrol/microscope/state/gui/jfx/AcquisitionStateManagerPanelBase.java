@@ -37,7 +37,7 @@ public abstract class AcquisitionStateManagerPanelBase extends
 {
 
 	/**
-	 * Constructs a {@link AcquisitionStateManagerPanel} given a
+	 * Constructs a {@link InteractiveAcquisitionPanel} given a
 	 * {@link StackRecyclerManager}.
 	 * 
 	 * @param pStackRecyclerManager

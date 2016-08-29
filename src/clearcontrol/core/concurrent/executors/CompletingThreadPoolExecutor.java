@@ -127,7 +127,6 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 			}
 			catch (InterruptedException e)
 			{
-				// System.out.println("InterruptedException");
 				reinject(lFuture);
 			}
 		}

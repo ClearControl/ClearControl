@@ -13,6 +13,7 @@ import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionA
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
 import clearcontrol.microscope.lightsheet.timelapse.gui.jfx.TimelapsePanel;
@@ -36,6 +37,10 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 		addHalcyonMappingEntry(	DetectionArmInterface.class,
 														DetectionArmPanel.class,
 														LSMNodeType.DetectionArm);
+		
+		addHalcyonMappingEntry(	InteractiveAcquisition.class,
+		                       	InteractiveAcquisitionPanel.class,
+														MicroscopeNodeType.Acquisition);
 
 		addHalcyonMappingEntry(	AcquisitionStateManager.class,
 														AcquisitionStateManagerPanel.class,

@@ -1,6 +1,7 @@
 package clearcontrol.hardware.lasers.devices.omicron.adapters.protocol;
 
 import clearcontrol.com.serial.Serial;
+import clearcontrol.core.log.LoggingInterface;
 
 public class ProtocolXX
 {
@@ -112,7 +113,7 @@ public class ProtocolXX
 
 			if (lSuccess)
 			{
-				System.out.println(ProtocolXX.class.getSimpleName() + ": Success setting non-AdHoc mode!");
+				pSerial.info(ProtocolXX.class.getSimpleName() + ": Success setting non-AdHoc mode!");
 			}
 			else
 			{
@@ -124,7 +125,7 @@ public class ProtocolXX
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-			System.out.println(ProtocolXX.class.getSimpleName() + ": Failed to set non-AdHoc mode, trying again...");
+			pSerial.warning(ProtocolXX.class.getSimpleName() + ": Failed to set non-AdHoc mode, trying again...");
 			purge(pSerial);
 			lSuccess = setNoAdHocModeInternal(pSerial, pMaxtries - 1);
 		}

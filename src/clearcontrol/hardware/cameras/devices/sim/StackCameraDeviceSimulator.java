@@ -219,8 +219,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		final long lDepth = max(1, lNumberOfKeptImages);
 		final int lChannel = mChannelVariable.get();
 
-		// System.out.println("lChannel=" + lChannel);
-
+		
 		final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
 																																						.intValue();
 

@@ -38,7 +38,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice implements
 			try
 			{
 				mMirao52eDeformableMirror.loadFlatCalibrationMatrix(lFlatCalibrationFile);
-				System.out.println(Mirao52eDevice.class.getSimpleName() + ":Loaded flat calibration info");
+				info("Loaded flat calibration info");
 			}
 			catch (FileNotFoundException e)
 			{

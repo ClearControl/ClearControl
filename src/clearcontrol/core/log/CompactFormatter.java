@@ -20,7 +20,7 @@ public final class CompactFormatter extends Formatter
 		lStringBuilder.append(record.getLevel()
 																.getLocalizedName()
 																.substring(0, 1))
-									.append("~")
+									.append(": ")
 									.append(formatMessage(record).trim())
 									.append(LINE_SEPARATOR);
 

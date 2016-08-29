@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
@@ -19,7 +19,7 @@ import clearcontrol.hardware.stages.StageType;
 public class StageDeviceHub extends VirtualDevice implements
 																											StageDeviceInterface,
 																											StartStopDeviceInterface,
-																											Waiting
+																											WaitingInterface
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();

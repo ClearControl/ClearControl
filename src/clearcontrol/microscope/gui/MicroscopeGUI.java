@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
@@ -24,9 +24,9 @@ import clearcontrol.hardware.stages.gui.jfx.StageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
-import clearcontrol.microscope.gui.sim.SimulationManagerPanel;
 import clearcontrol.microscope.lightsheet.gui.LSMNodeType;
 import clearcontrol.microscope.sim.SimulationManager;
+import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
@@ -40,7 +40,7 @@ import halcyon.model.node.HalcyonNodeType;
 
 public class MicroscopeGUI extends VirtualDevice implements
 																								AsynchronousExecutorServiceAccess,
-																								Waiting
+																								WaitingInterface
 {
 
 	private static final int cDefaultWindowWidth = 512;
@@ -184,7 +184,6 @@ public class MicroscopeGUI extends VirtualDevice implements
 																						.getNumberOfDevices(StackCameraDeviceInterface.class);
 
 		ArrayList<StackCameraDeviceInterface> lDevices = mMicroscope.getDevices(StackCameraDeviceInterface.class);
-		System.out.println(lDevices);
 
 		for (int i = 0; i < lNumberOfCameras; i++)
 		{

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.com.serial.SerialDevice;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.StageType;
@@ -22,7 +22,7 @@ import clearcontrol.hardware.stages.devices.smc100.adapters.SMC100StopAdapter;
 
 public class SMC100StageDevice extends SerialDevice	implements
 																										StageDeviceInterface,
-																										Waiting
+																										WaitingInterface
 {
 
 	private final Variable<Boolean> mEnableVariable, mReadyVariable,
@@ -214,7 +214,6 @@ public class SMC100StageDevice extends SerialDevice	implements
 																long pTimeOut,
 																TimeUnit pTimeUnit)
 	{
-		// System.out.println("waiting...");
 		return waitFor(pTimeOut, pTimeUnit, () -> mReadyVariable.get());
 	}
 

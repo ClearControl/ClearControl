@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.task.TaskDevice;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
@@ -25,7 +26,7 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
-public class Calibrator extends TaskDevice
+public class Calibrator extends TaskDevice implements LoggingInterface
 {
 
 	private static final int cMaxIterations = 5;

@@ -61,7 +61,6 @@ public class LineLimitedDocumentFilter extends DocumentFilter
 				final int lengthToRemove = area.getLineStartOffset(linesToRemove);
 				remove(fb, 0, lengthToRemove);
 				mDefaultCaret.setUpdatePolicy(lUpdatePolicy);
-				// System.out.println("triming...");
 			}
 			mLastCheck = lTimeNow;
 		}

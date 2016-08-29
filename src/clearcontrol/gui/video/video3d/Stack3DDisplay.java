@@ -89,7 +89,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 				if (mClearVolumeRenderer.isShowing())
 				{
-					// System.out.println(pStack);
+					info("received stack: "+pStack);
 
 					final long lSizeInBytes = pStack.getSizeInBytes();
 					final long lWidth = pStack.getWidth();

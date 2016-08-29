@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
+import clearcontrol.core.log.LoggingInterface;
 import gnu.trove.list.array.TByteArrayList;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -12,7 +13,7 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
-public class Serial implements SerialInterface
+public class Serial implements SerialInterface, LoggingInterface
 {
 	public final static int cFLOWCONTROL_NONE = SerialPort.FLOWCONTROL_NONE;
 	public final static int cFLOWCONTROL_RTSCTS = SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT;
@@ -109,7 +110,7 @@ public class Serial implements SerialInterface
 		if (mPortNameHint == null)
 			throw new SerialException("No hint given for port name.");
 		final String lPortName = getOneSerialCommPortWithNameContaining(mPortNameHint);
-		// System.out.format("Connecting to '%s'\n", lPortName);
+
 		return connect(lPortName);
 	}
 
@@ -118,8 +119,12 @@ public class Serial implements SerialInterface
 	{
 		if (pPortName != null)
 		{
+			info("Connecting to '%s'\n", pPortName);
 			mSerialPort = new SerialPort(pPortName);
 
+			info(	"Opening port '%s' with baudrate: %d \n",
+						pPortName,
+						mBaudRate);
 			mSerialPort.openPort();
 			mSerialPort.setParams(mBaudRate,
 														SerialPort.DATABITS_8,
@@ -324,11 +329,11 @@ public class Serial implements SerialInterface
 			}
 			else if (event.getEventType() == SerialPortEvent.ERR)
 			{
-				System.err.println(this.getClass().getSimpleName() + ": Serial connection error!");
+				warning("Serial connection error!");
 			}
 			else if (event.getEventType() == SerialPortEvent.BREAK)
 			{
-				System.out.println(this.getClass().getSimpleName() + ": Serial connection broken!");
+				warning(": Serial connection broken!");
 			}
 		}
 	}

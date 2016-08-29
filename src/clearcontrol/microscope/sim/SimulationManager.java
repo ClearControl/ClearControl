@@ -2,6 +2,7 @@ package clearcontrol.microscope.sim;
 
 import java.util.ArrayList;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.name.ReadOnlyNameableInterface;
@@ -15,8 +16,9 @@ import clearcontrol.microscope.MicroscopeInterface;
  * @author royer
  *
  */
-public class SimulationManager  extends VirtualDevice implements
-																										ReadOnlyNameableInterface
+public class SimulationManager extends VirtualDevice implements
+																										ReadOnlyNameableInterface,
+																										LoggingInterface
 {
 	private final MicroscopeInterface mMicroscopeInterface;
 
@@ -31,19 +33,17 @@ public class SimulationManager  extends VirtualDevice implements
 		mMicroscopeInterface = pMicroscopeInterface;
 
 		mLoggingOnVariable.addSetListener((o, n) -> {
-			
-			
+
 			if (o == n)
 				return;
 
-
-			
 			if (mMicroscopeInterface == null)
 			{
 				return;
 			}
-			
-			System.out.println("Setting logging state to: " + n);
+
+			info("Loggin for simulated devices is turned " + (n ? "on"
+																												: "off"));
 
 			ArrayList<Object> lAllDeviceList = mMicroscopeInterface.getDeviceLists()
 																															.getAllDeviceList();

@@ -53,7 +53,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		final Runnable lRunnable = () -> {
 			try
 			{
-				// System.out.print("(");
+
 				@SuppressWarnings("unchecked")
 				final Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
 																																						TimeUnit.NANOSECONDS);
@@ -62,7 +62,6 @@ public class AsynchronousProcessorPool<I, O>	extends
 					final O lResult = lFuture.get();
 					send(lResult);
 				}
-				// System.out.print(")");
 			}
 			catch (final InterruptedException e)
 			{

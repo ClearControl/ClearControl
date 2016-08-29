@@ -8,14 +8,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 
 public class WaitingTests
 {
 	AtomicBoolean mWaitFlag = new AtomicBoolean(false);
 	AtomicBoolean mDoneFlag = new AtomicBoolean(false);
 
-	class TestClass implements Waiting
+	class TestClass implements WaitingInterface
 	{
 		public void switchOn()
 		{

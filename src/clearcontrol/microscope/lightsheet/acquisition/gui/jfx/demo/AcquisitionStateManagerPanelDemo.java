@@ -63,7 +63,7 @@ public class AcquisitionStateManagerPanelDemo extends Application	implements
 
 		Scene scene = new Scene(lAcquisitionStateManagerPanel, 1000, 1000);
 		stage.setScene(scene);
-		stage.setTitle("AcquisitionStateManagerPanel Demo");
+		stage.setTitle("Interactive2DAcquisitionPanel Demo");
 
 		stage.show();
 

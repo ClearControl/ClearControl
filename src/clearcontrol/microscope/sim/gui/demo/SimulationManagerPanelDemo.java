@@ -1,7 +1,7 @@
-package clearcontrol.microscope.gui.sim.demo;
+package clearcontrol.microscope.sim.gui.demo;
 
-import clearcontrol.microscope.gui.sim.SimulationManagerPanel;
 import clearcontrol.microscope.sim.SimulationManager;
+import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;

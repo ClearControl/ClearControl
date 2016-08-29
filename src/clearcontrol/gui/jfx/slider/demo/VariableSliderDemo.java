@@ -1,5 +1,9 @@
 package clearcontrol.gui.jfx.slider.demo;
 
+import java.util.concurrent.TimeUnit;
+
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.slider.VariableSlider;
 import javafx.application.Application;
@@ -7,7 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class VariableSliderDemo extends Application
+public class VariableSliderDemo extends Application	implements
+																										AsynchronousExecutorServiceAccess
 {
 
 	@Override
@@ -32,7 +37,7 @@ public class VariableSliderDemo extends Application
 																																							0.1,
 																																							0.1);
 
-		root.add(lVariableDoubleSlider,0,1);
+		root.add(lVariableDoubleSlider, 0, 1);
 
 		Variable<Number> lIntVariable = new Variable<Number>(	"DemoIntVar",
 																													0.0);
@@ -46,8 +51,33 @@ public class VariableSliderDemo extends Application
 																																						20,
 																																						1,
 																																						5);
+		lVariableIntSlider.setUpdateIfChanging(false);
 
-		root.add(lVariableIntSlider,0,2);
+		root.add(lVariableIntSlider, 0, 2);
+
+		Variable<Number> lChangingIntVariable = new Variable<Number>(	"DemoChangingIntVar",
+																																	0.0);
+		lChangingIntVariable.addSetListener((o, n) -> {
+			System.out.println("changing int: " + n);
+		});
+
+		executeAsynchronously(() -> {
+			while (true)
+			{
+				lChangingIntVariable.set((int) (Math.random() * 10));
+				ThreadUtils.sleep(700, TimeUnit.MILLISECONDS);
+			}
+		});
+
+		VariableSlider<Number> lVariableChangingIntSlider = new VariableSlider<Number>(	"an int value that changes: ",
+																																										lChangingIntVariable,
+																																										-10,
+																																										20,
+																																										1,
+																																										5);
+		lVariableChangingIntSlider.setUpdateIfChanging(false);
+
+		root.add(lVariableChangingIntSlider, 0, 3);
 
 		stage.show();
 	}
