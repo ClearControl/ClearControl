@@ -103,15 +103,10 @@ public class HalcyonGUIGenerator
 	private void initJavaFX()
 	{
 		final CountDownLatch latch = new CountDownLatch(1);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				new JFXPanel(); // initializes JavaFX environment
-				latch.countDown();
-			}
-		});
+
+		new JFXPanel(); // initializes JavaFX environment
+		latch.countDown();
+
 		try
 		{
 			latch.await();
