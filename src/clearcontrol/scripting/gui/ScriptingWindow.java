@@ -40,7 +40,6 @@ public class ScriptingWindow extends BorderPane
 				if(newValue != null) {
 					node.setContent( mScriptingPanel );
 					setCenter( node );
-					sceneProperty().removeListener( this );
 				}
 			}
 		} );
