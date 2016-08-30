@@ -22,6 +22,7 @@ import halcyon.model.node.HalcyonNode;
 import halcyon.model.node.HalcyonNodeInterface;
 import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonOtherNode;
+import halcyon.model.node.Window;
 import halcyon.view.TreePanel;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
@@ -91,15 +92,10 @@ public class HalcyonGUIGenerator implements LoggingInterface
 	private void initJavaFX()
 	{
 		final CountDownLatch latch = new CountDownLatch(1);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				new JFXPanel(); // initializes JavaFX environment
-				latch.countDown();
-			}
-		});
+
+		new JFXPanel(); // initializes JavaFX environment
+		latch.countDown();
+
 		try
 		{
 			latch.await();
@@ -119,17 +115,53 @@ public class HalcyonGUIGenerator implements LoggingInterface
 			info("Setting up %s", lStack3DDisplay);
 			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack3DDisplay.getName(),
 																												MicroscopeNodeType.StackDisplay3D,
-																												() -> {
-																													lStack3DDisplay.getVisibleVariable()
-																																					.set(true);
-																													lStack3DDisplay.requestFocus();
-																												},
-																												() -> {
-																													lStack3DDisplay.getVisibleVariable()
-																																					.set(false);
-																												},
-																												() -> {
-																													lStack3DDisplay.close();
+																												new Window()
+																												{
+																													@Override public int getWidth()
+																													{
+																														return lStack3DDisplay.getGLWindow().getWidth();
+																													}
+
+																													@Override public int getHeight()
+																													{
+																														return lStack3DDisplay.getGLWindow().getHeight();
+																													}
+
+																													@Override public void setSize( int width, int height )
+																													{
+																														lStack3DDisplay.getGLWindow().setSize( width, height );
+																													}
+
+																													@Override public int getX()
+																													{
+																														return lStack3DDisplay.getGLWindow().getWindowX();
+																													}
+
+																													@Override public int getY()
+																													{
+																														return lStack3DDisplay.getGLWindow().getWindowY();
+																													}
+
+																													@Override public void setPosition( int x, int y )
+																													{
+																														lStack3DDisplay.getGLWindow().setWindowPosition( x, y );
+																													}
+
+																													@Override public void show()
+																													{
+																														lStack3DDisplay.setVisible(true);
+																														lStack3DDisplay.requestFocus();
+																													}
+
+																													@Override public void hide()
+																													{
+																														lStack3DDisplay.setVisible(false);
+																													}
+
+																													@Override public void close()
+																													{
+																														lStack3DDisplay.close();
+																													}
 																												});
 			mHalcyonFrame.addNode(node);
 		}
@@ -145,15 +177,53 @@ public class HalcyonGUIGenerator implements LoggingInterface
 
 			HalcyonNodeInterface node = new HalcyonOtherNode(	lStack2DDisplay.getName(),
 																												MicroscopeNodeType.StackDisplay2D,
-																												() -> {
-																													lStack2DDisplay.setVisible(true);
-																													lStack2DDisplay.requestFocus();
-																												},
-																												() -> {
-																													lStack2DDisplay.setVisible(false);
-																												},
-																												() -> {
-																													lStack2DDisplay.close();
+																												new Window()
+																												{
+																													@Override public int getWidth()
+																													{
+																														return lStack2DDisplay.getGLWindow().getWidth();
+																													}
+
+																													@Override public int getHeight()
+																													{
+																														return lStack2DDisplay.getGLWindow().getHeight();
+																													}
+
+																													@Override public void setSize( int width, int height )
+																													{
+																														lStack2DDisplay.getGLWindow().setSize( width, height );
+																													}
+
+																													@Override public int getX()
+																													{
+																														return lStack2DDisplay.getGLWindow().getWindowX();
+																													}
+
+																													@Override public int getY()
+																													{
+																														return lStack2DDisplay.getGLWindow().getWindowY();
+																													}
+
+																													@Override public void setPosition( int x, int y )
+																													{
+																														lStack2DDisplay.getGLWindow().setWindowPosition( x, y );
+																													}
+
+																													@Override public void show()
+																													{
+																														lStack2DDisplay.setVisible(true);
+																														lStack2DDisplay.requestFocus();
+																													}
+
+																													@Override public void hide()
+																													{
+																														lStack2DDisplay.setVisible(false);
+																													}
+
+																													@Override public void close()
+																													{
+																														lStack2DDisplay.close();
+																													}
 																												});
 			mHalcyonFrame.addNode(node);
 		}

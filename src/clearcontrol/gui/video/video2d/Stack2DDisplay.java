@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import cleargl.ClearGLWindow;
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
@@ -451,4 +452,12 @@ public class Stack2DDisplay extends VirtualDevice	implements
 		mVideoWindow.disableClose();
 	}
 
+	/**
+	 * Gets GL window for handling size and position.
+	 * @return the GL window
+	 */
+	public ClearGLWindow getGLWindow()
+	{
+		return mVideoWindow.getGLWindow();
+	}
 }
