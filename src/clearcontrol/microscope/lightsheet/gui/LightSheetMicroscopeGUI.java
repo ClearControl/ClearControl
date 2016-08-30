@@ -4,8 +4,6 @@ import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.AcquisitionStateManagerPanel;
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
-import clearcontrol.microscope.lightsheet.autopilot.gui.jfx.AutoPilotPanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -17,10 +15,7 @@ import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisi
 import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
 import clearcontrol.microscope.lightsheet.timelapse.gui.jfx.TimelapsePanel;
-import clearcontrol.microscope.stacks.StackRecyclerManager;
-import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import halcyon.model.node.HalcyonNode;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
@@ -50,9 +45,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 														TimelapsePanel.class,
 														MicroscopeNodeType.Acquisition);
 
-		addHalcyonMappingEntry(	AutoPilotInterface.class,
+		/*addHalcyonMappingEntry(	AutoPilotInterface.class,
 														AutoPilotPanel.class,
-														MicroscopeNodeType.Acquisition);
+														MicroscopeNodeType.Acquisition);/**/
 
 	}
 

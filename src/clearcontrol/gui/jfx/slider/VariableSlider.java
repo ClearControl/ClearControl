@@ -152,23 +152,6 @@ public class VariableSlider<T extends Number> extends HBox
 													lCorrectedSliderValue);
 		});
 
-		/*
-		DoubleProperty lValueProperty = getSlider().valueProperty();
-
-		lValueProperty.addListener((obs, o, n) -> {
-
-			double lCorrectedOldValue = correctValueDouble(o.doubleValue());
-			double lCorrectedNewValue = correctValueDouble(n.doubleValue());
-			setTextFieldValue(lCorrectedNewValue);
-			setSliderValue(lCorrectedNewValue);
-
-			if (!isUpdateIfChanging() && getSlider().isValueChanging())
-				return;
-
-			if (lCorrectedOldValue != lCorrectedNewValue)
-				setVariableValue(o, n);
-		});/**/
-
 		getSlider().valueChangingProperty().addListener((obs, o, n) -> {
 			if (isUpdateIfChanging())
 				return;
