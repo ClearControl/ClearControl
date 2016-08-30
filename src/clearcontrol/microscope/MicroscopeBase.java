@@ -436,8 +436,8 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 
 				if (lDevice instanceof StateQueueDeviceInterface)
 				{
-					info("playQueue() on device: %s \n",
-														lDevice);
+					/*info("playQueue() on device: %s \n",
+														lDevice);/**/
 					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
 					final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();
 					lFutureBooleanList.addFuture(	lDevice.toString(),
@@ -498,7 +498,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				getStackVariable(i).addSetListener(lVariableSetListener);
 			}
 
-			System.out.println("Playing queue of length: " + getQueueLength());
+			//info("Playing queue of length: " + getQueueLength());
 			final FutureBooleanList lPlayQueue = playQueue();
 
 			Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);

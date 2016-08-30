@@ -11,8 +11,10 @@ import clearcontrol.gui.variable.JFXPropertyVariable;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -29,7 +31,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		super(new StandardGridPane());
 		mGridPane = (GridPane) getContents();
 
-		mGridPane.setPrefSize( 300, 200 );
+		mGridPane.setPrefSize(300, 200);
 
 		setTitle("Interactive");
 
@@ -82,7 +84,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 																												.set(n);
 														});
 
-		lAcquisitionStateIndicator.setMinSize( 100, 100 );
+		lAcquisitionStateIndicator.setMinSize(100, 100);
 		GridPane.setColumnSpan(lAcquisitionStateIndicator, 1);
 		GridPane.setRowSpan(lAcquisitionStateIndicator, 3);
 		mGridPane.add(lAcquisitionStateIndicator, 2, 1);
@@ -130,7 +132,8 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		GridPane.setColumnSpan(lAddOnOffArray, 2);
 		mGridPane.add(lAddOnOffArray, 2, 6);
 
-		CustomToggleButton lTriggerOnChangeToggleButton = new CustomToggleButton("Trigger-on-change active", "Trigger-on-change inactive");
+		CustomToggleButton lTriggerOnChangeToggleButton = new CustomToggleButton(	"Trigger-on-change active",
+																																							"Trigger-on-change inactive");
 		lTriggerOnChangeToggleButton.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(lTriggerOnChangeToggleButton, Priority.ALWAYS);
 		GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);
@@ -144,6 +147,31 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		Variable<Boolean> lTriggerOnChangeVariable = pInteractiveAcquisition.getTriggerOnChangeVariable();
 		lTriggerOnChangeJFXPropertyVariable.syncWith(lTriggerOnChangeVariable);
 		lTriggerOnChangeSelectedProperty.set(lTriggerOnChangeVariable.get());
+
+		Label lInteractiveAcquisitionStatusLabel = new Label();
+		lInteractiveAcquisitionStatusLabel.setAlignment(Pos.CENTER);
+		lInteractiveAcquisitionStatusLabel.setMinWidth(300);
+		lInteractiveAcquisitionStatusLabel.setMaxWidth(Double.POSITIVE_INFINITY);
+		GridPane.setHgrow(lInteractiveAcquisitionStatusLabel, Priority.ALWAYS);
+		GridPane.setColumnSpan(lInteractiveAcquisitionStatusLabel, 3);
+		GridPane.setValignment(lInteractiveAcquisitionStatusLabel, VPos.CENTER);
+		mGridPane.add(lInteractiveAcquisitionStatusLabel, 0, 11);
+
+		pInteractiveAcquisition.getAcquisitionCounterVariable()
+														.addSetListener((o, n) -> {
+															Platform.runLater(() -> {
+
+																long lAcquisitionCounter = n;
+																long lNumberOfCameras = pInteractiveAcquisition.getNumberOfCameras();
+																long lNumberofStacks = lAcquisitionCounter * lNumberOfCameras;
+																String lStatus = String.format(	"Number of stacks acquired: %d stacks = %d cam. x %d acqu.",
+																																lNumberofStacks,
+																																lNumberOfCameras,
+																																lAcquisitionCounter);
+																lInteractiveAcquisitionStatusLabel.setText(lStatus);
+															});
+
+														});
 
 	}
 

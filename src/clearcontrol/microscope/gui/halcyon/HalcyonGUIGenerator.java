@@ -181,12 +181,12 @@ public class HalcyonGUIGenerator implements LoggingInterface
 																												{
 																													@Override public int getWidth()
 																													{
-																														return lStack2DDisplay.getGLWindow().getWidth();
+																														return lStack2DDisplay.getGLWindow().getSurfaceWidth();
 																													}
 
 																													@Override public int getHeight()
 																													{
-																														return lStack2DDisplay.getGLWindow().getHeight();
+																														return lStack2DDisplay.getGLWindow().getSurfaceHeight();
 																													}
 
 																													@Override public void setSize( int width, int height )

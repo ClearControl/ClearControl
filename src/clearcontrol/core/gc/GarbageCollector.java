@@ -186,9 +186,9 @@ public class GarbageCollector implements LoggingInterface
 
 	public static void trigger()
 	{
-		sGarbageCollector.info("Garbage collection started.");
+		//sGarbageCollector.info("Garbage collection started.");
 		System.gc();
-		sGarbageCollector.info("Garbage collection finished.");
+		//sGarbageCollector.info("Garbage collection finished.");
 	}
 
 }

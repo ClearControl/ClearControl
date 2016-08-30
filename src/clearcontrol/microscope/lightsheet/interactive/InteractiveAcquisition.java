@@ -37,10 +37,12 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 			mUseCurrentAcquisitionStateVariable;
 	private final BoundedVariable<Number> m2DAcquisitionZVariable;
 	private final Variable<Boolean>[] mActiveCameraVariableArray;
-
+	private final Variable<Long> mAcquisitionCounterVariable;
+	
 	private volatile boolean mUpdate = true;
 
 	private ChangeListener<VirtualDevice> mChangeListener;
+
 
 	@SuppressWarnings("unchecked")
 	public InteractiveAcquisition(String pDeviceName,
@@ -82,6 +84,8 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 																													0,
 																													lMinVariable.get(),
 																													lMaxVariable.get());
+		
+		mAcquisitionCounterVariable = new Variable<Long>("AcquisitionCounter",0L);
 
 		lMinVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMinVariable());
 		lMaxVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMaxVariable());
@@ -203,7 +207,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 			if (getLightSheetMicroscope().getQueueLength() == 0)
 			{
 				// this leads to a call to stop() which stops the loop
-				info("Queue empty stopping interactive acquisition loop");
+				warning("Queue empty stopping interactive acquisition loop");
 				return false;
 			}
 
@@ -213,11 +217,14 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 					return true;
 
 				// play queue
-				info("Playing LightSheetMicroscope Queue...");
+				//info("Playing LightSheetMicroscope Queue...");
 				boolean lSuccess = getLightSheetMicroscope().playQueueAndWaitForStacks(	100,
 																																								TimeUnit.SECONDS);
+				
+				if(lSuccess)
+					mAcquisitionCounterVariable.set(mAcquisitionCounterVariable.get()+1);
 
-				info("... done waiting!");
+				//info("... done waiting!");
 			}
 
 			if (mUpdate)
@@ -228,7 +235,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 			e.printStackTrace();
 		}
 
-		info("end of loop");
+		//info("end of loop");
 
 		return true;
 	}
@@ -237,6 +244,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 	{
 		info("Starting 2D Acquisition...");
 		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition2D;
+		mAcquisitionCounterVariable.set(0L);
 		startTask();
 	}
 
@@ -244,6 +252,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 	{
 		info("Starting 3D Acquisition...");
 		mCurrentAcquisitionMode = InteractiveAcquisitionModes.Acquisition3D;
+		mAcquisitionCounterVariable.set(0L);
 		startTask();
 	}
 
@@ -294,6 +303,12 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 	public BoundedVariable<Number> get2DAcquisitionZVariable()
 	{
 		return m2DAcquisitionZVariable;
+	}
+
+	public Variable<Long> getAcquisitionCounterVariable()
+	{
+		return mAcquisitionCounterVariable;
+		
 	}
 
 }
