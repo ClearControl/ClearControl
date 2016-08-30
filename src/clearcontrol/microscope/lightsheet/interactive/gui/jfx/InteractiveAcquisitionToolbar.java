@@ -130,7 +130,7 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		GridPane.setColumnSpan(lAddOnOffArray, 2);
 		mGridPane.add(lAddOnOffArray, 2, 6);
 
-		CustomToggleButton lTriggerOnChangeToggleButton = new CustomToggleButton("Trigger-on-change");
+		CustomToggleButton lTriggerOnChangeToggleButton = new CustomToggleButton("Trigger-on-change active", "Trigger-on-change inactive");
 		lTriggerOnChangeToggleButton.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(lTriggerOnChangeToggleButton, Priority.ALWAYS);
 		GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);
