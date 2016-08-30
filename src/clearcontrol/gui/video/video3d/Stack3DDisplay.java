@@ -265,4 +265,18 @@ public class Stack3DDisplay extends VirtualDevice	implements
 		mWaitForLastChannel = pWaitForLastChannel;
 	}
 
+	/**
+	 * Gets GL window for handling size and position.
+	 * @return the GL window
+	 */
+	public ClearGLWindow getGLWindow()
+	{
+		if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+		{
+			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer) mClearVolumeRenderer;
+			return lClearGLVolumeRenderer.getClearGLWindow();
+		}
+		else
+			return null;
+	}
 }
