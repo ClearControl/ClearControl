@@ -11,7 +11,8 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.gc.GarbageCollector;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.device.VirtualDevice;
@@ -34,7 +35,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 																													MicroscopeInterface,
 																													StartStopDeviceInterface,
 																													AsynchronousSchedulerServiceAccess,
-																													Loggable
+																													LoggingInterface
 {
 
 	protected final StackRecyclerManager mStackRecyclerManager;
@@ -174,9 +175,12 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
-					System.out.println("Opening: " + lDevice);
+					info("Opening device: " + lDevice);
 					final boolean lResult = lOpenCloseDevice.open();
-					System.out.println(lResult ? "successfully" : "failed!");
+					if (lResult)
+						info("Successfully opened device: " + lDevice);
+					else
+						warning("Failed to open device: " + lDevice);
 
 					lIsOpen &= lResult;
 				}
@@ -198,9 +202,14 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				{
 					final OpenCloseDeviceInterface lOpenCloseDevice = (OpenCloseDeviceInterface) lDevice;
 
-					System.out.println("Closing: " + lDevice);
+					info("Closing device: " + lDevice);
 					boolean lResult = lOpenCloseDevice.close();
-					System.out.println(lResult ? "successfully" : "failed!");
+
+					if (lResult)
+						info("Successfully closed device: " + lDevice);
+					else
+						warning("Failed to close device: " + lDevice);
+
 					lIsClosed &= lResult;
 				}
 			}
@@ -223,9 +232,14 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
 
-					System.out.println("Starting: " + lDevice);
+					info("Starting device: " + lDevice);
 					boolean lResult = lStartStopDevice.start();
-					System.out.println(lResult ? "successfully" : "failed!");
+
+					if (lResult)
+						info("Successfully started device: " + lDevice);
+					else
+						warning("Failed to start device: " + lDevice);
+
 					lIsStarted &= lResult;
 				}
 			}
@@ -245,9 +259,15 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 				if (lDevice instanceof StartStopDeviceInterface)
 				{
 					final StartStopDeviceInterface lStartStopDevice = (StartStopDeviceInterface) lDevice;
-					System.out.println("Stopping: " + lDevice);
+
+					info("Stoping device: " + lDevice);
 					boolean lResult = lStartStopDevice.stop();
-					System.out.println(lResult ? "successfully" : "failed!");
+
+					if (lResult)
+						info("Successfully stopped device: " + lDevice);
+					else
+						warning("Failed to stop device: " + lDevice);
+
 					lIsStopped &= lResult;
 				}
 			}
@@ -408,7 +428,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 	{
 		synchronized (mAcquisitionLock)
 		{
-			System.gc();
+			GarbageCollector.trigger();
 			final FutureBooleanList lFutureBooleanList = new FutureBooleanList();
 
 			for (final Object lDevice : mDeviceLists.getAllDeviceList())
@@ -416,7 +436,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 
 				if (lDevice instanceof StateQueueDeviceInterface)
 				{
-					System.out.format("LightSheetMicroscope: playQueue() on device: %s \n",
+					info("playQueue() on device: %s \n",
 														lDevice);
 					final StateQueueDeviceInterface lStateQueueDeviceInterface = (StateQueueDeviceInterface) lDevice;
 					final Future<Boolean> lPlayQueueFuture = lStateQueueDeviceInterface.playQueue();

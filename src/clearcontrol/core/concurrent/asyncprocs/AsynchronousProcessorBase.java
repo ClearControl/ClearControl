@@ -10,15 +10,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
-import clearcontrol.core.concurrent.timing.Waiting;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
+import clearcontrol.core.log.LoggingInterface;
 
 public abstract class AsynchronousProcessorBase<I, O> implements
 																											AsynchronousProcessorInterface<I, O>,
 																											AsynchronousExecutorServiceAccess,
 																											AsynchronousSchedulerServiceAccess,
-																											Loggable,
-																											Waiting
+																											LoggingInterface,
+																											WaitingInterface
 {
 
 	private final String mName;

@@ -4,20 +4,28 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.signalgen.SignalGeneratorBase;
 import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
 import clearcontrol.hardware.signalgen.score.ScoreInterface;
 
 public class SignalGeneratorSimulatorDevice	extends
 																						SignalGeneratorBase	implements
-																																SignalGeneratorInterface
+																																SignalGeneratorInterface,
+																																LoggingInterface,
+																																SimulationDeviceInterface
 {
 
 	public SignalGeneratorSimulatorDevice()
 	{
 		super(SignalGeneratorSimulatorDevice.class.getSimpleName());
 
+		mTriggerVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("Trigger received");
+		});
 	}
 
 	@Override
@@ -37,14 +45,15 @@ public class SignalGeneratorSimulatorDevice	extends
 	{
 		final long lDurationInMilliseconds = pScore.getDuration(TimeUnit.MILLISECONDS);
 
-		long ltriggerPeriodInMilliseconds = lDurationInMilliseconds/mEnqueuedStateCounter;
-		
-		for(int i=0; i<mEnqueuedStateCounter; i++)
+		long ltriggerPeriodInMilliseconds = lDurationInMilliseconds / mEnqueuedStateCounter;
+
+		for (int i = 0; i < mEnqueuedStateCounter; i++)
 		{
 			mTriggerVariable.setEdge(false, true);
-			ThreadUtils.sleep(ltriggerPeriodInMilliseconds, TimeUnit.MILLISECONDS);
+			ThreadUtils.sleep(ltriggerPeriodInMilliseconds,
+												TimeUnit.MILLISECONDS);
 		}
-		
+
 		return true;
 	}
 

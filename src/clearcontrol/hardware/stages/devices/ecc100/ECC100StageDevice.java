@@ -5,8 +5,9 @@ import java.util.Collection;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.stages.StageDeviceBase;
 import clearcontrol.hardware.stages.StageDeviceInterface;
@@ -26,7 +27,8 @@ import ecc100.ECC100Controller;
 public class ECC100StageDevice extends StageDeviceBase implements
 																											StageDeviceInterface,
 																											StartStopDeviceInterface,
-																											Waiting
+																											WaitingInterface,
+																											LoggingInterface
 {
 
 	final ECC100Controller mECC100Controller;
@@ -75,12 +77,12 @@ public class ECC100StageDevice extends StageDeviceBase implements
 						final String lDeviceConfigString = "device.stage.ecc100." + lDeviceId
 																								+ "."
 																								+ axis;
-						System.out.println("Found device: " + lDeviceConfigString);
+						info("Found device: " + lDeviceConfigString);
 						final String lDeviceName = lCurrentMachineConfiguration.getStringProperty(lDeviceConfigString,
 																																											"");
 						if (!lDeviceName.isEmpty())
 						{
-							System.out.println(lDOFIndex);
+							info("DOF index: %d, device name: %s, axis: %s",lDOFIndex,lDeviceName,lAxis);
 							mIndexToAxisMap.put(lDOFIndex, lAxis);
 							mNameToAxisMap.put(lDeviceName, lAxis);
 							mIndexToNameMap.put(lDOFIndex, lDeviceName);

@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
 public abstract class StageDeviceBase extends VirtualDevice	implements
 																														StageDeviceInterface,
-																														Waiting
+																														WaitingInterface
 {
 	protected ArrayList<Variable<Boolean>> mEnableVariables,
 			mReadyVariables, mHomingVariables, mStopVariables,

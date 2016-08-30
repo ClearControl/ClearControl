@@ -319,11 +319,11 @@ public class CameraDevicePanel extends AnchorPane
 		line.setOnMouseDragged(event -> {
 			if (cursor == Cursor.V_RESIZE)
 			{
-				System.out.println(event.getSceneY());
+				//System.out.println(event.getSceneY());
 			}
 			else if (cursor == Cursor.H_RESIZE)
 			{
-				System.out.println(event.getSceneX());
+				//System.out.println(event.getSceneX());
 			}
 		});
 

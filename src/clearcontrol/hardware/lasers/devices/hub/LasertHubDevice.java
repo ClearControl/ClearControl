@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 
 public class LasertHubDevice extends VirtualDevice	implements
-																												StartStopDeviceInterface
+																												StartStopDeviceInterface, LoggingInterface
 {
 
 	ArrayList<LaserDeviceInterface> mAddedLaserDeviceList = new ArrayList<LaserDeviceInterface>();
@@ -78,7 +79,7 @@ public class LasertHubDevice extends VirtualDevice	implements
 			}
 			else
 			{
-				System.out.println(LasertHubDevice.class.getSimpleName() + ": could not open: "
+				warning(LasertHubDevice.class.getSimpleName() + ": could not open: "
 														+ lLaserDevice.getName());
 			}
 		}

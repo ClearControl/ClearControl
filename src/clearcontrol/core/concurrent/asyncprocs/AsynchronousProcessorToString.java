@@ -14,7 +14,6 @@ public class AsynchronousProcessorToString<I> extends
 	public String process(final I pInput)
 	{
 		final String lString = pInput.toString();
-		System.out.println(lString);
 		return lString;
 	}
 

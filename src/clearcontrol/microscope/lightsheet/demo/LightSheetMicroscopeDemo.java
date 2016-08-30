@@ -201,13 +201,14 @@ public class LightSheetMicroscopeDemo
 		}
 
 		AcquisitionStateManager lAddAcquisitionStateManager = lLightSheetMicroscope.addAcquisitionStateManager();
-		
+
 		lLightSheetMicroscope.addInteractiveAcquisition(lAddAcquisitionStateManager);
 		lLightSheetMicroscope.addCalibrator();
 
 		// setting up scope GUI:
 
 		LightSheetMicroscopeGUI lMicroscopeGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																																					true,
 																																					true);
 
 		lMicroscopeGUI.addGroovyScripting("lsm");

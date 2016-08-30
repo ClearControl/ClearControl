@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.startstop.SignalStartStopDevice;
@@ -15,7 +15,7 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 																															Runnable,
 																															OpenCloseDeviceInterface,
 																															AsynchronousExecutorServiceAccess,
-																															Loggable
+																															LoggingInterface
 {
 
 	private final Variable<Boolean> mIsRunningVariable;

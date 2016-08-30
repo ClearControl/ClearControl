@@ -9,14 +9,14 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
 import clearcontrol.core.concurrent.executors.RTlibExecutors;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 
 public class AsynchronousProcessorPool<I, O>	extends
 																							AsynchronousProcessorBase<I, O>	implements
 																																							AsynchronousProcessorInterface<I, O>,
 																																							AsynchronousExecutorServiceAccess,
 																																							AsynchronousSchedulerServiceAccess,
-																																							Loggable
+																																							LoggingInterface
 {
 
 	private final ProcessorInterface<I, O> mProcessor;
@@ -53,7 +53,7 @@ public class AsynchronousProcessorPool<I, O>	extends
 		final Runnable lRunnable = () -> {
 			try
 			{
-				// System.out.print("(");
+
 				@SuppressWarnings("unchecked")
 				final Future<O> lFuture = (Future<O>) mThreadPoolExecutor.getFutur(	1,
 																																						TimeUnit.NANOSECONDS);
@@ -62,7 +62,6 @@ public class AsynchronousProcessorPool<I, O>	extends
 					final O lResult = lFuture.get();
 					send(lResult);
 				}
-				// System.out.print(")");
 			}
 			catch (final InterruptedException e)
 			{

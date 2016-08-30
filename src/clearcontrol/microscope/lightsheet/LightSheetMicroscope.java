@@ -5,16 +5,12 @@ import static java.lang.Math.toIntExact;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.device.switches.SwitchingDeviceInterface;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilot;
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
@@ -68,14 +64,14 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return lFixedIntervalTimelapse;
 	}
 
-	public AutoPilotInterface addAutoPilot()
+	/*public AutoPilotInterface addAutoPilot()
 	{
 		return null;
-		/*AutoPilotInterface lAutoPilot = new AutoPilot(this,
+		AutoPilotInterface lAutoPilot = new AutoPilot(this,
 		                                              mAcquisitionStateManager);
 		addDevice(0, lAutoPilot);
-		return lAutoPilot;/**/
-	}
+		return lAutoPilot;
+	}/**/
 
 	public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)
 	{

@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.component.detection;
 import static java.lang.Math.round;
 
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -13,7 +14,8 @@ import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
 public class DetectionArm extends VirtualDevice	implements
-																								DetectionArmInterface
+																								DetectionArmInterface,
+																								LoggingInterface
 {
 
 	private StackCameraDeviceInterface mStackCameraDevice;
@@ -56,7 +58,7 @@ public class DetectionArm extends VirtualDevice	implements
 
 		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (	o,
 																																											n) -> {
-			System.out.println(getName() + ": new Z function: " + n);
+			info("new Z function: " + n);
 			resetBounds();
 			update();
 			notifyListeners(this);
@@ -127,6 +129,8 @@ public class DetectionArm extends VirtualDevice	implements
 	{
 		synchronized (this)
 		{
+			info("Updating: " + getName());
+			
 			double lZFocus = mDetectionFocusZ.get().doubleValue();
 			float lZFocusTransformed = (float) mZFunction.get()
 																										.value(lZFocus);

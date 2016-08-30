@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.device.name.NameableInterface;
@@ -11,14 +12,15 @@ import clearcontrol.device.name.ReadOnlyNameableInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 
 /**
- * AcquisitionStateManager handles a set of saved acquisition states. These
- * states are used for acquisition purposes.
+ * LoggingManager handles a set of saved acquisition states. These states are
+ * used for acquisition purposes.
  * 
  * @author royer
  *
  */
 public class AcquisitionStateManager extends VirtualDevice implements
-																													ReadOnlyNameableInterface
+																													ReadOnlyNameableInterface,
+																													LoggingInterface
 {
 	private final MicroscopeInterface mMicroscopeInterface;
 
@@ -27,7 +29,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
 	private volatile AcquisitionStateInterface<?> mCurrentState;
 
 	/**
-	 * Constructs an AcquisitionStateManager.
+	 * Constructs an LoggingManager.
 	 */
 	public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
 	{
@@ -46,7 +48,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
 		{
 			if (!mAcquisitionStateList.contains(pCurrentState))
 				mAcquisitionStateList.add(pCurrentState);
-			System.out.println("setCurrent: " + pCurrentState.getName());
+			info("setCurrent: " + pCurrentState.getName());
 			mCurrentState = pCurrentState;
 			notifyListeners(this);
 		}

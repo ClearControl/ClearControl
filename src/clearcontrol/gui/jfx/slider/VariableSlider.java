@@ -133,27 +133,23 @@ public class VariableSlider<T extends Number> extends HBox
 
 		if (pMin.get() instanceof Double || pMin.get() instanceof Float)
 		{
-			setTextFieldDouble(pVariable.get());
+			setTextFieldDouble(mVariable.get());
 		}
 		if (pMin.get() instanceof Integer || pMin.get() instanceof Long)
 		{
-			setTextFieldLongValue(pVariable.get());
+			setTextFieldLongValue(mVariable.get());
 		}
 
-		DoubleProperty lValueProperty = getSlider().valueProperty();
-
-		lValueProperty.addListener((obs, o, n) -> {
-
-			double lCorrectedOldValue = correctValueDouble(o.doubleValue());
-			double lCorrectedNewValue = correctValueDouble(n.doubleValue());
-			setTextFieldValue(lCorrectedNewValue);
-			setSliderValue(lCorrectedNewValue);
+		getSlider().setOnMouseDragged((e) -> {
+			double lCorrectedSliderValue = correctValueDouble(getSlider().getValue());
+			setTextFieldValue(lCorrectedSliderValue);
 
 			if (!isUpdateIfChanging() && getSlider().isValueChanging())
 				return;
 
-			if (lCorrectedOldValue != lCorrectedNewValue)
-				setVariableValue(o, n);
+			if (lCorrectedSliderValue != mVariable.get().doubleValue())
+				setVariableValue(	mVariable.get().doubleValue(),
+													lCorrectedSliderValue);
 		});
 
 		getSlider().valueChangingProperty().addListener((obs, o, n) -> {
@@ -166,13 +162,18 @@ public class VariableSlider<T extends Number> extends HBox
 		mVariable.addSetListener((o, n) -> {
 			if (!n.equals(o))
 				Platform.runLater(() -> {
-					if (n.equals(mSlider.getValue()) && n.equals(getTextFieldValue()))
+					if (n.equals(getSlider().getValue()) && n.equals(getTextFieldValue()))
+					{
+						//System.out.println("rejected");
 						return;
+					}
 
 					if (pMin.get() instanceof Double || pMin.get() instanceof Float)
 						setTextFieldDouble(n);
 					else
 						setTextFieldLongValue(n);
+
+					setSliderValueFromTextField();
 
 				});
 		});
@@ -244,15 +245,15 @@ public class VariableSlider<T extends Number> extends HBox
 			long lCorrectedValueLong = (long) correctValueLong(pNewValue.longValue());
 			if (mMin.get() instanceof Double)
 				mVariable.set((T) new Double(lCorrectedValueDouble));
-			if (mMin.get() instanceof Float)
+			else if (mMin.get() instanceof Float)
 				mVariable.set((T) new Float(lCorrectedValueDouble));
-			if (mMin.get() instanceof Long)
+			else if (mMin.get() instanceof Long)
 				mVariable.set((T) new Long((long) lCorrectedValueLong));
-			if (mMin.get() instanceof Integer)
+			else if (mMin.get() instanceof Integer)
 				mVariable.set((T) new Integer((int) lCorrectedValueLong));
-			if (mMin.get() instanceof Short)
+			else if (mMin.get() instanceof Short)
 				mVariable.set((T) new Short((short) lCorrectedValueLong));
-			if (mMin.get() instanceof Byte)
+			else if (mMin.get() instanceof Byte)
 				mVariable.set((T) new Byte((byte) lCorrectedValueLong));
 		}
 	}

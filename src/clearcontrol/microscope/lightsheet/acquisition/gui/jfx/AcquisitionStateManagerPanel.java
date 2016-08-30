@@ -22,8 +22,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
 /**
- * AcquisitionStateManagerPanel is a GUI element that displays information about
- * all acquisition states managed by a AcquisitionStateManager.
+ * Interactive2DAcquisitionPanel is a GUI element that displays information about
+ * all acquisition states managed by a LoggingManager.
  * 
  * @author royer
  */

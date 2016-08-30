@@ -9,7 +9,9 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
-public class FileEventNotifier implements AutoCloseable
+import clearcontrol.core.log.LoggingInterface;
+
+public class FileEventNotifier implements AutoCloseable, LoggingInterface
 {
 
 	private static final long cDefaultMonitoringPeriodInMilliseconds = 300;
@@ -118,7 +120,7 @@ public class FileEventNotifier implements AutoCloseable
 	{
 		if (mIgnore)
 			return;
-		// System.out.format("%s \t\t %s \n", pFile, pEventKind);
+		info("Event: %s \t\t %s", pFile, pEventKind);
 		if (pFile.getName().equals(mFileToMonitor.getName()))
 		{
 			for (final FileEventNotifierListener lFileEventNotifierListener : mListenerList)

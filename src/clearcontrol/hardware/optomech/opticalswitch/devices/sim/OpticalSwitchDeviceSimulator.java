@@ -1,11 +1,15 @@
 package clearcontrol.hardware.optomech.opticalswitch.devices.sim;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
+import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 
-public class OpticalSwitchDeviceSimulator extends VirtualDevice implements
-																																		OpticalSwitchDeviceInterface
+public class OpticalSwitchDeviceSimulator extends VirtualDevice	implements
+																																OpticalSwitchDeviceInterface,
+																																LoggingInterface,
+																																SimulationDeviceInterface
 
 {
 
@@ -29,10 +33,8 @@ public class OpticalSwitchDeviceSimulator extends VirtualDevice implements
 
 			final int fi = i;
 			mOpticalSwitchOnOffVariableArray[i].addSetListener((o, n) -> {
-				System.out.println(pDeviceName + ": switch "
-														+ fi
-														+ " new state: "
-														+ n);
+				if (isSimLogging())
+					info(pDeviceName + ": switch " + fi + " new state: " + n);
 			});
 		}
 

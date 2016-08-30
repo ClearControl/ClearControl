@@ -2,11 +2,15 @@ package clearcontrol.hardware.slm.slms.devices.sim;
 
 import org.ejml.data.DenseMatrix64F;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.slm.slms.SpatialPhaseModulatorDeviceBase;
 
 public class SpatialPhaseModulatorDeviceSimulator	extends
-																									SpatialPhaseModulatorDeviceBase
+																									SpatialPhaseModulatorDeviceBase	implements
+																																									LoggingInterface,
+																																									SimulationDeviceInterface
 {
 
 	public SpatialPhaseModulatorDeviceSimulator(String pDeviceName,
@@ -20,9 +24,10 @@ public class SpatialPhaseModulatorDeviceSimulator	extends
 			public DenseMatrix64F setEventHook(	final DenseMatrix64F pOldValue,
 																					final DenseMatrix64F pNewValue)
 			{
-				System.out.format("Device: %s received new data: %s",
-													getName(),
-													pNewValue);
+				if (isSimLogging())
+					info(	"Device: %s received new data: %s",
+								getName(),
+								pNewValue);
 
 				return super.setEventHook(pOldValue, pNewValue);
 			}

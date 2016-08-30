@@ -2,13 +2,17 @@ package clearcontrol.hardware.sensors.devices.sim;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.sensors.TemperatureSensorDeviceBase;
 import clearcontrol.hardware.sensors.TemperatureSensorDeviceInterface;
 
 public class TemperatureSensorDeviceSimulator	extends
 																							TemperatureSensorDeviceBase	implements
-																																					TemperatureSensorDeviceInterface
+																																					TemperatureSensorDeviceInterface,
+																																					LoggingInterface,
+																																					SimulationDeviceInterface
 {
 
 	public TemperatureSensorDeviceSimulator(String pDeviceName)
@@ -24,7 +28,6 @@ public class TemperatureSensorDeviceSimulator	extends
 		final ThreadLocalRandom lThreadLocalRandom = ThreadLocalRandom.current();
 		final double lTemperatureInCelcius = 24 + lThreadLocalRandom.nextDouble();
 		lTemperatureInCelciusVariable.set(lTemperatureInCelcius);
-
 		return true;
 	}
 

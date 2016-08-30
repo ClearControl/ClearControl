@@ -30,7 +30,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
-	private volatile Variable<Boolean> mDisplayOn;
+	private volatile Variable<Boolean> mVisibleVariable;
 	private volatile Variable<Boolean> mWaitForLastChannel;
 
 	public Stack3DDisplay(final String pWindowName)
@@ -57,7 +57,17 @@ public class Stack3DDisplay extends VirtualDevice	implements
 																																			pNumberOfLayers,
 																																			false);
 
-		mClearVolumeRenderer.setVisible(true);
+		mVisibleVariable = new Variable<Boolean>("Visible", false);
+
+
+		mVisibleVariable.addSetListener((o, n) -> {
+			mClearVolumeRenderer.setVisible(n);
+		});
+
+		setVisible(false);
+		
+	
+		
 		mClearVolumeRenderer.setAdaptiveLODActive(false);
 		mClearVolumeRenderer.disableClose();
 
@@ -79,7 +89,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 				if (mClearVolumeRenderer.isShowing())
 				{
-					// System.out.println(pStack);
+					info("received stack: "+pStack);
 
 					final long lSizeInBytes = pStack.getSizeInBytes();
 					final long lWidth = pStack.getWidth();
@@ -151,19 +161,9 @@ public class Stack3DDisplay extends VirtualDevice	implements
 			}
 
 		};
-
-		mDisplayOn = new Variable<Boolean>("DisplayOn", true)
-		{
-			@Override
-			public void set(final Boolean pBoolean)
-			{
-				final boolean lDisplayOn = pBoolean;
-				setDisplayOn(lDisplayOn);
-			}
-		};
-
+		
 		mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
-																								false);
+				false);
 
 	}
 
@@ -187,9 +187,9 @@ public class Stack3DDisplay extends VirtualDevice	implements
 		mOutputStackVariable = pOutputStackVariable;
 	}
 
-	public Variable<Boolean> getDisplayOnVariable()
+	public Variable<Boolean> getVisibleVariable()
 	{
-		return mDisplayOn;
+		return mVisibleVariable;
 	}
 
 	public Variable<StackInterface> getStackInputVariable()
@@ -197,9 +197,9 @@ public class Stack3DDisplay extends VirtualDevice	implements
 		return mInputStackVariable;
 	}
 
-	private void setDisplayOn(final boolean pIsDisplayOn)
+	public void setVisible(final boolean pIsVisible)
 	{
-		mClearVolumeRenderer.setVisible(pIsDisplayOn);
+		mVisibleVariable.set(pIsVisible);
 	}
 
 	@Override
@@ -230,14 +230,9 @@ public class Stack3DDisplay extends VirtualDevice	implements
 		}
 	}
 
-	public boolean isShowing()
+	public boolean isVisible()
 	{
 		return mClearVolumeRenderer.isShowing();
-	}
-
-	public void setVisible(boolean pVisible)
-	{
-		mClearVolumeRenderer.setVisible(pVisible);
 	}
 
 	public void requestFocus()
