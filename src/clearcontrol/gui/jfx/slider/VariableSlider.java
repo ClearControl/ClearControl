@@ -115,14 +115,19 @@ public class VariableSlider<T extends Number> extends HBox
 
 		getTextField().focusedProperty().addListener((obs, o, n) -> {
 			if (!n)
+			{
+				setTextFieldValue(getTextFieldValue());
 				setSliderValueFromTextField();
+				setVariableValue(getSlider().getValue());
+			}
 		});
 
 		getTextField().setOnKeyPressed((e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 			{
-				setVariableValue(Double.NaN, getSlider().getValue());
+				setTextFieldValue(getTextFieldValue());
 				setSliderValueFromTextField();
+				setVariableValue(getSlider().getValue());
 			}
 			;
 		});
@@ -148,15 +153,14 @@ public class VariableSlider<T extends Number> extends HBox
 				return;
 
 			if (lCorrectedSliderValue != mVariable.get().doubleValue())
-				setVariableValue(	mVariable.get().doubleValue(),
-													lCorrectedSliderValue);
+				setVariableValue(lCorrectedSliderValue);
 		});
 
 		getSlider().valueChangingProperty().addListener((obs, o, n) -> {
 			if (isUpdateIfChanging())
 				return;
 			if (o == true && n == false)
-				setVariableValue(Double.NaN, getSlider().getValue());
+				setVariableValue(getSlider().getValue());
 		});
 
 		mVariable.addSetListener((o, n) -> {
@@ -237,7 +241,7 @@ public class VariableSlider<T extends Number> extends HBox
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setVariableValue(Number pOldValue, Number pNewValue)
+	private void setVariableValue(Number pNewValue)
 	{
 		if (!mVariable.get().equals(pNewValue))
 		{
@@ -340,7 +344,7 @@ public class VariableSlider<T extends Number> extends HBox
 	private void setVariableValueFromTextField()
 	{
 		double lNewValue = getTextFieldValue();
-		setVariableValue(Double.NaN, lNewValue);
+		setVariableValue(lNewValue);
 	}
 
 	private double getTextFieldValue()

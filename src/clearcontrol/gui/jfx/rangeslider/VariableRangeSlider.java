@@ -126,43 +126,26 @@ public class VariableRangeSlider<T extends Number> extends HBox
 				});
 		});
 
-		DoubleProperty lLowValueProperty = getRangeSlider().lowValueProperty();
-		DoubleProperty lHighValueProperty = getRangeSlider().highValueProperty();
+		getRangeSlider().setOnMouseDragged((e) -> {
+			double lCorrectedSliderLowValue = correctLowValueDouble(getRangeSlider().getLowValue());
+			double lCorrectedSliderHighValue = correctLowValueDouble(getRangeSlider().getHighValue());
 
-		lLowValueProperty.addListener((obs, o, n) -> {
+			getRangeSlider().setLowValue(lCorrectedSliderLowValue);
+			getRangeSlider().setHighValue(lCorrectedSliderHighValue);
+			
+			setLowTextField(lCorrectedSliderLowValue);
+			setHighTextField(lCorrectedSliderHighValue);
 
-			double lCorrectedOldValue = correctLowValueDouble(o.doubleValue());
-			double lCorrectedNewValue = correctLowValueDouble(n.doubleValue());
-
-			// if (getRangeSlider().getLowValue() != lCorrectedNewValue)
-			setRangeSliderLowValue(lCorrectedNewValue);
-			setLowTextField(lCorrectedNewValue);
-
-			if (!isUpdateIfChanging() && getRangeSlider().isLowValueChanging())
-				return;
-
-			if (lCorrectedOldValue != lCorrectedNewValue)
+			if (!(!isUpdateIfChanging() && getRangeSlider().isLowValueChanging()))
 			{
-				setVariableValue(mLow, true, o, n);
+				// if (lCorrectedSliderLowValue != mLow.get().doubleValue())
+				setVariableValue(mLow, true, lCorrectedSliderLowValue);
 			}
 
-		});
-
-		lHighValueProperty.addListener((obs, o, n) -> {
-
-			double lCorrectedOldValue = correctHighValueDouble(o.doubleValue());
-			double lCorrectedNewValue = correctHighValueDouble(n.doubleValue());
-
-			// if (getRangeSlider().getHighValue() != lCorrectedNewValue)
-			setRangeSliderHighValue(lCorrectedNewValue);
-			setHighTextField(lCorrectedNewValue);
-
-			if (!isUpdateIfChanging() && getRangeSlider().isHighValueChanging())
-				return;
-
-			if (lCorrectedOldValue != lCorrectedNewValue)
+			if (!(!isUpdateIfChanging() && getRangeSlider().isHighValueChanging()))
 			{
-				setVariableValue(mHigh, false, o, n);
+				// if (lCorrectedSliderHighValue != mHigh.get().doubleValue())
+				setVariableValue(mHigh, false, lCorrectedSliderHighValue);
 			}
 
 		});
@@ -179,23 +162,30 @@ public class VariableRangeSlider<T extends Number> extends HBox
 
 		getLowTextField().focusedProperty().addListener((obs, o, n) -> {
 			if (!n)
+			{
+				setLowTextField(getLowTextFieldValue());
 				setRangeSliderLowValueFromTextField();
+				setVariableValue(mLow, true, getRangeSlider().getLowValue());
+			}
 		});
 
 		getHighTextField().focusedProperty().addListener((obs, o, n) -> {
 			if (!n)
+			{
+				setHighTextField(getHighTextFieldValue());
 				setRangeSliderHighValueFromTextField();
+				setVariableValue(	mHigh,
+													false,
+													getRangeSlider().getHighValue());
+			}
 		});
 
 		getLowTextField().setOnKeyPressed((e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 			{
-				setVariableValue(	mLow,
-													true,
-													Double.NaN,
-													getRangeSlider().getLowValue());
-
+				setLowTextField(getLowTextFieldValue());
 				setRangeSliderLowValueFromTextField();
+				setVariableValue(mLow, true, getRangeSlider().getLowValue());
 			}
 			;
 		});
@@ -203,11 +193,11 @@ public class VariableRangeSlider<T extends Number> extends HBox
 		getHighTextField().setOnKeyPressed((e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 			{
+				setHighTextField(getHighTextFieldValue());
+				setRangeSliderHighValueFromTextField();
 				setVariableValue(	mHigh,
 													false,
-													Double.NaN,
 													getRangeSlider().getHighValue());
-				setRangeSliderHighValueFromTextField();
 			}
 			;
 		});
@@ -234,10 +224,7 @@ public class VariableRangeSlider<T extends Number> extends HBox
 			if (isUpdateIfChanging())
 				return;
 			if (o == true && n == false)
-				setVariableValue(	mLow,
-													true,
-													Double.NaN,
-													getRangeSlider().getLowValue());
+				setVariableValue(mLow, true, getRangeSlider().getLowValue());
 		});
 
 		getRangeSlider().highValueChangingProperty().addListener((obs,
@@ -248,7 +235,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
 			if (o == true && n == false)
 				setVariableValue(	mHigh,
 													false,
-													Double.NaN,
 													getRangeSlider().getHighValue());
 		});
 
@@ -349,7 +335,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
 	@SuppressWarnings("unchecked")
 	private void setVariableValue(Variable<T> pVariable,
 																boolean pIsLow,
-																Number pOldValue,
 																Number pNewValue)
 	{
 		if (!pVariable.get().equals(pNewValue))
@@ -534,13 +519,13 @@ public class VariableRangeSlider<T extends Number> extends HBox
 	private void setVariableLowValueFromTextField()
 	{
 		double lNewValue = getLowTextFieldValue();
-		setVariableValue(mLow, true, Double.NaN, lNewValue);
+		setVariableValue(mLow, true, lNewValue);
 	}
 
 	private void setVariableHighValueFromTextField()
 	{
 		double lNewValue = getHighTextFieldValue();
-		setVariableValue(mHigh, false, Double.NaN, lNewValue);
+		setVariableValue(mHigh, false, lNewValue);
 	}
 
 	private double getLowTextFieldValue()
