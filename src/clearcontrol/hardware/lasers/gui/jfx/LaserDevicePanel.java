@@ -1,11 +1,9 @@
 package clearcontrol.hardware.lasers.gui.jfx;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
+import clearcontrol.core.physics.WavelengthToRGB;
 import clearcontrol.gui.jfx.custom.rbg.RadialBargraph;
 import clearcontrol.gui.jfx.custom.rbg.RadialBargraphBuilder;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
@@ -33,21 +31,6 @@ import javafx.scene.text.Font;
 
 public class LaserDevicePanel extends HBox
 {
-	static private Properties sProperties;
-	static
-	{
-		try
-		{
-			sProperties = new Properties();
-			InputStream lResourceAsStream = LaserDevicePanel.class.getResourceAsStream("./WavelengthColors.properties");
-			sProperties.load(lResourceAsStream);
-			lResourceAsStream.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	private LaserDeviceInterface mLaserDeviceInterface;
 
@@ -186,7 +169,7 @@ public class LaserDevicePanel extends HBox
 		laserLabel.setFont(new Font(fontFamily, 24));
 
 		VBox lVBoxForColoredRectangle = new VBox();
-		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	Color.web(getWebColorString("" + mWaveLength)),
+		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	getWebColor(mWaveLength),
 																																							CornerRadii.EMPTY,
 																																							Insets.EMPTY)));
 		Rectangle rectangle = new Rectangle(33, 80, Color.TRANSPARENT);
@@ -236,13 +219,11 @@ public class LaserDevicePanel extends HBox
 
 	}
 
-	public String getWebColorString(String wavelength)
+	public Color getWebColor(int pWavelength)
 	{
-		return sProperties.getProperty(wavelength);
+		Color lColor = WavelengthToRGB.waveLengthToJFXColor(pWavelength);
+
+		return lColor;
 	}
 
-	public java.awt.Color getWavelengthColor(String wavelength)
-	{
-		return java.awt.Color.decode(sProperties.getProperty(wavelength));
-	}
 }

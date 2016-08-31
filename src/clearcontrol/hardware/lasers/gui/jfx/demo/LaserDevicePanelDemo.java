@@ -15,7 +15,7 @@ public class LaserDevicePanelDemo extends Application
 
 		LaserDeviceSimulator lLaserDeviceSimulator = new LaserDeviceSimulator("demolaser",
 																																					0,
-																																					488,
+																																					594,
 																																					100);
 		lLaserDeviceSimulator.setSimLogging(true);
 
