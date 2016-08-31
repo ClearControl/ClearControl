@@ -66,7 +66,7 @@ public class BoundedVariableTests
 		lBoundedNumber.set(-1.1111111);
 
 		assertEquals(-1.1, lBoundedNumber.get(), 0.01);
-		
+
 		lBoundedNumber.set(-2.1111111);
 
 		assertEquals(-2.0, lBoundedNumber.get(), 0.01);

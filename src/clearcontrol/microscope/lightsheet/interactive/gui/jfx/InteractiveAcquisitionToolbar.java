@@ -3,22 +3,18 @@ package clearcontrol.microscope.lightsheet.interactive.gui.jfx;
 import org.dockfx.DockNode;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
-import clearcontrol.gui.jfx.slider.VariableSlider;
-import clearcontrol.gui.jfx.togglebutton.CustomToggleButton;
-import clearcontrol.gui.variable.JFXPropertyVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -28,25 +24,23 @@ public class InteractiveAcquisitionToolbar extends DockNode
 
 	public InteractiveAcquisitionToolbar(InteractiveAcquisition pInteractiveAcquisition)
 	{
-		super(new StandardGridPane());
+		super(new CustomGridPane());
 		mGridPane = (GridPane) getContents();
 
 		mGridPane.setPrefSize(300, 200);
 
 		setTitle("Interactive");
 
+		Variable<Boolean> lUseAcqStateVariable = pInteractiveAcquisition.getUseCurrentAcquisitionStateVariable();
+
 		CustomToggleButton lUseAcqStateToggleButton = new CustomToggleButton(	"Using current Acquisition State",
-																																					"Not using current Acquisition State");
+																																					"Not using current Acquisition State",
+																																					lUseAcqStateVariable);
 		// lUseAcqStateToggleButton.setMinWidth(250);
 		lUseAcqStateToggleButton.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(lUseAcqStateToggleButton, Priority.ALWAYS);
 		GridPane.setColumnSpan(lUseAcqStateToggleButton, 3);
 		mGridPane.add(lUseAcqStateToggleButton, 0, 0);
-
-		BooleanProperty lUseAcqStateSelectedProperty = lUseAcqStateToggleButton.selectedProperty();
-		JFXPropertyVariable<Boolean> lUseAcqStateJFXPropertyVariable = new JFXPropertyVariable<Boolean>(lUseAcqStateSelectedProperty,
-																																																		"UseAcqState",
-																																																		false);
 
 		Button lStart2D = new Button("Start 2D");
 		lStart2D.setAlignment(Pos.CENTER);
@@ -113,10 +107,6 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		mGridPane.add(lExposureSlider.getSlider(), 1, 5);
 		mGridPane.add(lExposureSlider.getTextField(), 2, 5);
 
-		Variable<Boolean> lUseAcqStateVariable = pInteractiveAcquisition.getUseCurrentAcquisitionStateVariable();
-		lUseAcqStateJFXPropertyVariable.syncWith(lUseAcqStateVariable);
-		lUseAcqStateSelectedProperty.set(lUseAcqStateVariable.get());
-
 		Label lActiveCamerasLabel = new Label("Active Cameras");
 		mGridPane.add(lActiveCamerasLabel, 0, 6);
 		GridPane.setColumnSpan(lActiveCamerasLabel, 2);
@@ -132,29 +122,25 @@ public class InteractiveAcquisitionToolbar extends DockNode
 		GridPane.setColumnSpan(lAddOnOffArray, 2);
 		mGridPane.add(lAddOnOffArray, 2, 6);
 
+		Variable<Boolean> lTriggerOnChangeVariable = pInteractiveAcquisition.getTriggerOnChangeVariable();
+
 		CustomToggleButton lTriggerOnChangeToggleButton = new CustomToggleButton(	"Trigger-on-change active",
-																																							"Trigger-on-change inactive");
+																																							"Trigger-on-change inactive",
+																																							lTriggerOnChangeVariable);
 		lTriggerOnChangeToggleButton.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(lTriggerOnChangeToggleButton, Priority.ALWAYS);
 		GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);
 		mGridPane.add(lTriggerOnChangeToggleButton, 0, 9);
 
-		BooleanProperty lTriggerOnChangeSelectedProperty = lTriggerOnChangeToggleButton.selectedProperty();
-		JFXPropertyVariable<Boolean> lTriggerOnChangeJFXPropertyVariable = new JFXPropertyVariable<Boolean>(lTriggerOnChangeSelectedProperty,
-																																																				"TriggerOnChange",
-																																																				false);
-
-		Variable<Boolean> lTriggerOnChangeVariable = pInteractiveAcquisition.getTriggerOnChangeVariable();
-		lTriggerOnChangeJFXPropertyVariable.syncWith(lTriggerOnChangeVariable);
-		lTriggerOnChangeSelectedProperty.set(lTriggerOnChangeVariable.get());
-
 		Label lInteractiveAcquisitionStatusLabel = new Label();
 		lInteractiveAcquisitionStatusLabel.setAlignment(Pos.CENTER);
 		lInteractiveAcquisitionStatusLabel.setMinWidth(300);
 		lInteractiveAcquisitionStatusLabel.setMaxWidth(Double.POSITIVE_INFINITY);
-		GridPane.setHgrow(lInteractiveAcquisitionStatusLabel, Priority.ALWAYS);
+		GridPane.setHgrow(lInteractiveAcquisitionStatusLabel,
+											Priority.ALWAYS);
 		GridPane.setColumnSpan(lInteractiveAcquisitionStatusLabel, 3);
-		GridPane.setValignment(lInteractiveAcquisitionStatusLabel, VPos.CENTER);
+		GridPane.setValignment(	lInteractiveAcquisitionStatusLabel,
+														VPos.CENTER);
 		mGridPane.add(lInteractiveAcquisitionStatusLabel, 0, 11);
 
 		pInteractiveAcquisition.getAcquisitionCounterVariable()

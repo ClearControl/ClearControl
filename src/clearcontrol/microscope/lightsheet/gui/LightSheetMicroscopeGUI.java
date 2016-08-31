@@ -21,9 +21,13 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
 
 	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
-																	boolean p2DDisplay, boolean p3DDisplay)
+																	boolean p2DDisplay,
+																	boolean p3DDisplay)
 	{
-		super(pLightSheetMicroscope, LSMNodeType.values(), p2DDisplay,p3DDisplay);
+		super(pLightSheetMicroscope,
+					LSMNodeType.values(),
+					p2DDisplay,
+					p3DDisplay);
 
 		addHalcyonMappingEntry(	LightSheetInterface.class,
 														LightSheetPanel.class,
@@ -32,9 +36,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 		addHalcyonMappingEntry(	DetectionArmInterface.class,
 														DetectionArmPanel.class,
 														LSMNodeType.DetectionArm);
-		
+
 		addHalcyonMappingEntry(	InteractiveAcquisition.class,
-		                       	InteractiveAcquisitionPanel.class,
+														InteractiveAcquisitionPanel.class,
 														MicroscopeNodeType.Acquisition);
 
 		addHalcyonMappingEntry(	AcquisitionStateManager.class,
@@ -51,6 +55,7 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
 	}
 
+	@Override
 	public void generate()
 	{
 		super.generate();

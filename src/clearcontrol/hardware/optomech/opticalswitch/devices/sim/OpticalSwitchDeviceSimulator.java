@@ -24,7 +24,7 @@ public class OpticalSwitchDeviceSimulator extends VirtualDevice	implements
 
 		mNumberOfSwitches = pNumberOfSwitches;
 
-		mOpticalSwitchOnOffVariableArray = (Variable<Boolean>[]) new Variable[mNumberOfSwitches];
+		mOpticalSwitchOnOffVariableArray = new Variable[mNumberOfSwitches];
 
 		for (int i = 0; i < pNumberOfSwitches; i++)
 		{

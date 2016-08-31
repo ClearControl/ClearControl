@@ -12,7 +12,7 @@ public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase	implements
 {
 
 	public FilterWheelDeviceSimulator(String pDeviceName,
-																		int[] pValidPositions)
+																		int... pValidPositions)
 	{
 		super(pDeviceName, pValidPositions);
 

@@ -5,9 +5,9 @@ import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.stages.devices.smc100.SMC100StageDevice;
 
-public class SMC100PositionCurrentAdapter extends
-																	SerialDeviceAdapterAdapter<Double> implements
-																																		SerialTextDeviceAdapter<Double>
+public class SMC100PositionCurrentAdapter	extends
+																					SerialDeviceAdapterAdapter<Double> implements
+																																						SerialTextDeviceAdapter<Double>
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 
@@ -46,26 +46,22 @@ public class SMC100PositionCurrentAdapter extends
 		return SMC100Protocol.cWaitTimeInMilliSeconds;
 	}
 
-	
 	@Override
 	public Character getGetValueReturnMessageTerminationCharacter()
 	{
 		return SMC100Protocol.cMessageTerminationCharacter;
 	}
-	
+
 	@Override
 	public Character getSetValueReturnMessageTerminationCharacter()
 	{
 		return SMC100Protocol.cMessageTerminationCharacter;
 	}
-	
 
 	@Override
 	public boolean hasResponseForGet()
 	{
 		return true;
 	}
-
-
 
 }

@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
-import clearcontrol.core.concurrent.executors.RTlibExecutors;
 import clearcontrol.core.log.LoggingInterface;
 
 public class AsynchronousProcessorPool<I, O>	extends
@@ -28,11 +28,11 @@ public class AsynchronousProcessorPool<I, O>	extends
 																		final ProcessorInterface<I, O> pProcessor)
 	{
 		super(pName, pMaxQueueSize);
-		mThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
-																																				Thread.NORM_PRIORITY,
-																																				pThreadPoolSize,
-																																				pThreadPoolSize,
-																																				pMaxQueueSize);
+		mThreadPoolExecutor = ClearControlExecutors.getOrCreateThreadPoolExecutor(this,
+																																							Thread.NORM_PRIORITY,
+																																							pThreadPoolSize,
+																																							pThreadPoolSize,
+																																							pMaxQueueSize);
 
 		mProcessor = pProcessor;
 	}

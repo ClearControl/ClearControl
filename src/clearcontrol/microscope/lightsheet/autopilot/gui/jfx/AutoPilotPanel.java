@@ -1,9 +1,9 @@
 package clearcontrol.microscope.lightsheet.autopilot.gui.jfx;
 
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
 
-public class AutoPilotPanel extends StandardGridPane
+public class AutoPilotPanel extends CustomGridPane
 {
 
 	private AutoPilotInterface mAutoPilotInterface;

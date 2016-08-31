@@ -3,7 +3,7 @@ package clearcontrol.hardware.signalgen.staves;
 import clearcontrol.device.name.NameableBase;
 
 public abstract class StaveAbstract extends NameableBase implements
-																														StaveInterface
+																												StaveInterface
 
 {
 	private volatile boolean mEnabled = true;

@@ -4,11 +4,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.jfx.multichart.MultiChart;
-import clearcontrol.gui.jfx.rangeslider.VariableRangeSlider;
-import clearcontrol.gui.jfx.slider.VariableSlider;
-import clearcontrol.gui.jfx.textfield.VariableNumberTextField;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.custom.multichart.MultiChart;
+import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -16,7 +16,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.layout.GridPane;
 
-public class AcquisitionStatePanel extends StandardGridPane
+public class AcquisitionStatePanel extends CustomGridPane
 {
 
 	public static final double cPrefWidth = 0;

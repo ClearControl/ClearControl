@@ -13,22 +13,33 @@ public class TemperatureSensorDeviceSimulator	extends
 																																					TemperatureSensorDeviceInterface,
 																																					LoggingInterface,
 																																					SimulationDeviceInterface
+
 {
 
 	public TemperatureSensorDeviceSimulator(String pDeviceName)
 	{
 		super(pDeviceName);
-		getLoopPeriodVariable().set(15000.0);
+		getLoopPeriodVariable().set(200.0);
 	}
 
 	@Override
 	protected boolean loop()
 	{
-		final Variable<Double> lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
-		final ThreadLocalRandom lThreadLocalRandom = ThreadLocalRandom.current();
-		final double lTemperatureInCelcius = 24 + lThreadLocalRandom.nextDouble();
-		lTemperatureInCelciusVariable.set(lTemperatureInCelcius);
+		try
+		{
+			final Variable<Double> lTemperatureInCelciusVariable = getTemperatureInCelciusVariable();
+			final ThreadLocalRandom lThreadLocalRandom = ThreadLocalRandom.current();
+			final double lTemperatureInCelcius = 24 + lThreadLocalRandom.nextDouble();
+			lTemperatureInCelciusVariable.set(lTemperatureInCelcius);
+
+			if (isSimLogging())
+				info("new temperature: " + lTemperatureInCelcius + " ºC");
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+
 		return true;
 	}
-
 }

@@ -36,6 +36,7 @@ public class CameraDevicePanelDemo extends Application
 		StackCameraDeviceSimulator lStackCameraDeviceSimulator = new StackCameraDeviceSimulator("StackCamera",
 																																														lRandomStackSource,
 																																														lTrigger);
+		lStackCameraDeviceSimulator.setSimLogging(true);
 
 		CameraDevicePanel lCameraDevicePanel = new CameraDevicePanel(lStackCameraDeviceSimulator);
 
@@ -45,7 +46,7 @@ public class CameraDevicePanelDemo extends Application
 
 		Scene scene = new Scene(pane, javafx.scene.paint.Color.WHITE);
 
-		pPrimaryStage.setTitle("Lasers");
+		pPrimaryStage.setTitle(this.getClass().getSimpleName());
 		pPrimaryStage.setScene(scene);
 		pPrimaryStage.show();
 

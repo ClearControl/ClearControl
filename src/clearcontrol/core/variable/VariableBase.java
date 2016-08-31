@@ -58,13 +58,11 @@ public abstract class VariableBase<O>
 	{
 		mVariableGetListeners.remove(pVariableGetListener);
 	}
-	
+
 	public void removeEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
 	{
 		mVariableEdgeListeners.remove(pVariableEdgeListener);
 	}
-
-
 
 	public void removeAllSetListeners()
 	{

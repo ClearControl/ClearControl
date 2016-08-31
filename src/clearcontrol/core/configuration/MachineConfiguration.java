@@ -389,7 +389,7 @@ public class MachineConfiguration implements LoggingInterface
 			if (pFunction == null)
 			{
 				warning("Function provided for setting bounds of %s is null! \n",
-													pBoundsName);
+								pBoundsName);
 				pVariable.setMinMax(-100.0, 100.0);
 				return;
 			}

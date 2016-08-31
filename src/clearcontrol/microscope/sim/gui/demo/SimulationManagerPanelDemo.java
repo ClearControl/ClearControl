@@ -20,11 +20,8 @@ public class SimulationManagerPanelDemo extends Application
 		// scene.setFill(Color.BLACK);
 
 		SimulationManager lSimulationManager = new SimulationManager(null);
-	
-		
-		SimulationManagerPanel lSimulationManagerPanel = new SimulationManagerPanel(lSimulationManager);
 
-	
+		SimulationManagerPanel lSimulationManagerPanel = new SimulationManagerPanel(lSimulationManager);
 
 		root.getChildren().add(lSimulationManagerPanel);
 

@@ -2,7 +2,9 @@ package clearcontrol.com.serial;
 
 import clearcontrol.core.log.LoggingInterface;
 
-public class SerialListenerAdapter implements SerialListener, LoggingInterface
+public class SerialListenerAdapter implements
+																	SerialListener,
+																	LoggingInterface
 {
 
 	@Override

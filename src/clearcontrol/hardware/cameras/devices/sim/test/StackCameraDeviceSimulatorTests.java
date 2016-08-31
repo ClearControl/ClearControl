@@ -10,12 +10,7 @@ import org.junit.Test;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.cameras.devices.sim.StackCameraDeviceSimulator;
-import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.sourcesink.RandomStackSource;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulatorTests
 {
@@ -26,7 +21,6 @@ public class StackCameraDeviceSimulatorTests
 										ExecutionException,
 										TimeoutException
 	{
-		
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
 																												false);
@@ -58,12 +52,10 @@ public class StackCameraDeviceSimulatorTests
 
 		lStackCameraDeviceSimulator.finalizeQueue();
 
-		
-
 		for (int j = 0; j < 10; j++)
 		{
 			Future<Boolean> lPlayQueue = lStackCameraDeviceSimulator.playQueue();
-			
+
 			for (int i = 0; i < lStackCameraDeviceSimulator.getQueueLength(); i++)
 			{
 				lTrigger.setEdge(false, true);

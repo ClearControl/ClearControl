@@ -1,11 +1,8 @@
 package clearcontrol.microscope.stacks;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -25,7 +22,6 @@ public class StackRecyclerManager extends VirtualDevice
 
 	final private ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> mRecyclerMap = new ConcurrentHashMap<>();
 
-	
 	/**
 	 * Creates StackRecyclerManager
 	 */
@@ -34,15 +30,17 @@ public class StackRecyclerManager extends VirtualDevice
 		super("StackRecyclerManager");
 	}
 
-
 	/**
 	 * Requests a recycler with given characteristics, if it already exists and it
 	 * has the right characteristics then it is used, otherwise a new one is
 	 * created.
 	 * 
-	 * @param pName recycler's name
-	 * @param pMaximumNumberOfLiveObjects maximum number of live objects
-	 * @param pMaximumNumberOfAvailableObjects maximum number of available objects
+	 * @param pName
+	 *          recycler's name
+	 * @param pMaximumNumberOfLiveObjects
+	 *          maximum number of live objects
+	 * @param pMaximumNumberOfAvailableObjects
+	 *          maximum number of available objects
 	 * @return requested recycler
 	 */
 	public RecyclerInterface<StackInterface, StackRequest> getRecycler(	String pName,
@@ -88,14 +86,9 @@ public class StackRecyclerManager extends VirtualDevice
 		notifyListeners(this);
 	}
 
-
 	public ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> getRecyclerMap()
 	{
 		return mRecyclerMap;
 	}
-
-
-
-
 
 }

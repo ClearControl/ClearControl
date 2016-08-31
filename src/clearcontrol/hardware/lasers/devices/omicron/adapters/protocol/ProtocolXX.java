@@ -1,7 +1,6 @@
 package clearcontrol.hardware.lasers.devices.omicron.adapters.protocol;
 
 import clearcontrol.com.serial.Serial;
-import clearcontrol.core.log.LoggingInterface;
 
 public class ProtocolXX
 {

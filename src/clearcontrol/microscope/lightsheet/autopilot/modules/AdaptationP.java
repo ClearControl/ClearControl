@@ -38,7 +38,8 @@ public class AdaptationP extends AdaptationModuleBase	implements
 	public Boolean apply(Void pVoid)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable().get();
+		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
+																																					.get();
 
 		int lNumberOfControlPlanes = getAdaptator().getNewAcquisitionState()
 																								.getNumberOfControlPlanes();
@@ -106,7 +107,8 @@ public class AdaptationP extends AdaptationModuleBase	implements
 				double lImageIntensityPerLightSheet = 0;
 				for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
 				{
-					int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable().get()
+					int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable()
+																								.get()
 																								.getBestDetectionArm(czi);
 
 					double[] lAvgIntensityArray = lAvgIntensities.get(lBestDetectionArm);

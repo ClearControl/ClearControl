@@ -69,7 +69,8 @@ public class GarbageCollector implements LoggingInterface
 
 	public static void setDebugOutputFlag(boolean pGCDebugOutputFlag)
 	{
-		sGarbageCollector.info("Setting GC debug output notification flag to %s",pGCDebugOutputFlag);
+		sGarbageCollector.info(	"Setting GC debug output notification flag to %s",
+														pGCDebugOutputFlag);
 		sGCDebugOutputFlag = pGCDebugOutputFlag;
 	}
 
@@ -186,9 +187,9 @@ public class GarbageCollector implements LoggingInterface
 
 	public static void trigger()
 	{
-		//sGarbageCollector.info("Garbage collection started.");
+		// sGarbageCollector.info("Garbage collection started.");
 		System.gc();
-		//sGarbageCollector.info("Garbage collection finished.");
+		// sGarbageCollector.info("Garbage collection finished.");
 	}
 
 }

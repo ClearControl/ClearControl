@@ -22,13 +22,13 @@ public class SIM983ScalingAmplifierDevice	extends
 		super(pSim900MainframeDevice + "." + pPort + "." + cDeviceName);
 		mSim900MainframeDevice = pSim900MainframeDevice;
 		mPort = pPort;
-		
-		mMinGain= -19.99;
-		mMaxGain= 19.99;
-		
-		mMinOffset= -10;
-		mMaxOffset= 10;
-		
+
+		mMinGain = -19.99;
+		mMaxGain = 19.99;
+
+		mMinOffset = -10;
+		mMaxOffset = 10;
+
 	}
 
 	@Override

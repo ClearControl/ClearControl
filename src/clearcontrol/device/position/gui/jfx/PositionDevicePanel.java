@@ -1,11 +1,14 @@
 package clearcontrol.device.position.gui.jfx;
 
+import java.util.ArrayList;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.position.PositionDeviceInterface;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import javafx.scene.control.Button;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import javafx.application.Platform;
 
-public class PositionDevicePanel extends StandardGridPane
+public class PositionDevicePanel extends CustomGridPane
 {
 
 	public PositionDevicePanel(PositionDeviceInterface pPositionDeviceInterface)
@@ -14,17 +17,36 @@ public class PositionDevicePanel extends StandardGridPane
 
 		int[] lValidPositions = pPositionDeviceInterface.getValidPositions();
 
+		Variable<Integer> lPositionVariable = pPositionDeviceInterface.getPositionVariable();
+
+		ArrayList<CustomToggleButton> lToggleButtonList = new ArrayList<>();
+
 		for (int i = 0; i < lValidPositions.length; i++)
 		{
 			String lPositionName = pPositionDeviceInterface.getPositionName(i);
-			Button lButton = new Button(lPositionName);
-			add(lButton, 0, i);
-
-			Variable<Integer> lPositionVariable = pPositionDeviceInterface.getPositionVariable();
+			CustomToggleButton lToggleButton = new CustomToggleButton(lPositionName);
+			add(lToggleButton, 0, i);
+			lToggleButtonList.add(lToggleButton);
 
 			final int fi = i;
-			lButton.setOnAction((e) -> lPositionVariable.set(fi));
-		}
-	}
+			lToggleButton.setOnAction((e) -> {
+				lPositionVariable.setAsync(fi);
+			});
 
+		}
+
+		lPositionVariable.addSetListener((o, n) -> {
+
+			if (n != o)
+				Platform.runLater(() -> {
+					int i = 0;
+					for (CustomToggleButton lCustomToggleButton : lToggleButtonList)
+					{
+						lCustomToggleButton.setSelected(i == n);
+						i++;
+					}
+				});
+		});
+
+	}
 }

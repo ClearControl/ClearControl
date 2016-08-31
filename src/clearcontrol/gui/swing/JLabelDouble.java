@@ -28,8 +28,7 @@ public class JLabelDouble extends JLabel
 		mIntegerConstraint = pIntegerConstraint;
 		mThis = this;
 
-		mDoubleVariable = new Variable<Double>(	pLabelName,
-																									pInicialValue)
+		mDoubleVariable = new Variable<Double>(pLabelName, pInicialValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,

@@ -83,6 +83,7 @@ public class UnivariateAffineFunction	implements
 						&& !Double.isNaN(mB);
 	}
 
+	@Override
 	public UnivariateAffineFunction inverse()
 	{
 		if (mA == 0)

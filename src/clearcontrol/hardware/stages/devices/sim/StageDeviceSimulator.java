@@ -29,7 +29,14 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 		mStageType = pStageType;
 
 		scheduleAtFixedRate(() -> {
-			moveToTarget();
+			try
+			{
+				moveToTarget();
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
 		}, 50, TimeUnit.MILLISECONDS);
 	}
 
@@ -117,8 +124,9 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 			double lNewCurrent = lCurrent + 0.1 * Math.signum(lError);
 
-			if (abs(lNewCurrent - lCurrent) < cEpsilon)
+			if (abs(lNewCurrent - lCurrent) > cEpsilon)
 				mCurrentPositionVariables.get(i).set(lNewCurrent);
+
 		}
 
 	}

@@ -3,14 +3,12 @@ package clearcontrol.microscope.lightsheet.calibrator.gui.jfx;
 import org.dockfx.DockNode;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.gridpane.StandardGridPane;
-import clearcontrol.gui.variable.JFXPropertyVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
@@ -23,7 +21,7 @@ public class CalibratorToolbar extends DockNode
 
 	public CalibratorToolbar(Calibrator pCalibrator)
 	{
-		super(new StandardGridPane());
+		super(new CustomGridPane());
 		mGridPane = (GridPane) getContents();
 
 		// this.setStyle("-fx-background-color: yellow;");
@@ -153,26 +151,23 @@ public class CalibratorToolbar extends DockNode
 																								int pColumn,
 																								int pRow)
 	{
-		StandardGridPane lGroupGridPane = new StandardGridPane(0, 3);
+		CustomGridPane lGroupGridPane = new CustomGridPane(0, 3);
 
-		Label lLabel = new Label(pName);
-		lLabel.setAlignment(Pos.CENTER_LEFT);
-		lLabel.setMaxWidth(Double.MAX_VALUE);
-		lGroupGridPane.add(lLabel, 0, 0);
+		VariableCheckBox lCheckBox = new VariableCheckBox(pName,
+																											lCalibrateVariable);
 
-		CheckBox lCheckBox = new CheckBox();
-		lCheckBox.setAlignment(Pos.CENTER_RIGHT);
-		lCheckBox.setMaxWidth(Double.MAX_VALUE);
-		lGroupGridPane.add(lCheckBox, 1, 0);
+		lCheckBox.getLabel().setAlignment(Pos.CENTER_LEFT);
+		lCheckBox.getLabel().setMaxWidth(Double.MAX_VALUE);
+
+		lCheckBox.getCheckBox().setAlignment(Pos.CENTER_RIGHT);
+		lCheckBox.getCheckBox().setMaxWidth(Double.MAX_VALUE);
+
+		lGroupGridPane.add(lCheckBox.getLabel(), 0, 0);
+		lGroupGridPane.add(lCheckBox.getCheckBox(), 1, 0);
 
 		lGroupGridPane.setMaxWidth(Double.MAX_VALUE);
+
 		mGridPane.add(lGroupGridPane, pColumn, pRow);
-
-		JFXPropertyVariable<Boolean> lCheckBoxPropertyVariable = new JFXPropertyVariable<>(	lCheckBox.selectedProperty(),
-																																												lCalibrateVariable.getName() + "Property",
-																																												false);
-
-		lCheckBoxPropertyVariable.syncWith(lCalibrateVariable);
 
 		lCalibrateVariable.setCurrent();
 	}

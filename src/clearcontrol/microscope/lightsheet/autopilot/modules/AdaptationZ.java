@@ -27,9 +27,11 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable().get();
+		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
+																																					.get();
 		double lCurrentIZ = lLSM.getIZ(pLightSheetIndex);
-		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
 		int lHalfSamples = (pNumberOfSamples - 1) / 2;
@@ -79,7 +81,8 @@ public class AdaptationZ extends NDIteratorAdaptationModule	implements
 															int pLightSheetIndex,
 															ArrayList<Double> pArgMaxList)
 	{
-		int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
 		double lCorrection = -pArgMaxList.get(lBestDetectioArm);

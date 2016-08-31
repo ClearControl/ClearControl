@@ -6,7 +6,8 @@ import java.util.Map;
 
 import clearcontrol.device.name.ReadOnlyNameableInterface;
 
-public interface ScriptingLanguageInterface extends ReadOnlyNameableInterface
+public interface ScriptingLanguageInterface	extends
+																						ReadOnlyNameableInterface
 {
 	String getPostamble();
 

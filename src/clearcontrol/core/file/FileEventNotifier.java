@@ -11,7 +11,9 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 
 import clearcontrol.core.log.LoggingInterface;
 
-public class FileEventNotifier implements AutoCloseable, LoggingInterface
+public class FileEventNotifier implements
+															AutoCloseable,
+															LoggingInterface
 {
 
 	private static final long cDefaultMonitoringPeriodInMilliseconds = 300;

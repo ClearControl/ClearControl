@@ -59,15 +59,12 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 		mVisibleVariable = new Variable<Boolean>("Visible", false);
 
-
 		mVisibleVariable.addSetListener((o, n) -> {
 			mClearVolumeRenderer.setVisible(n);
 		});
 
 		setVisible(false);
-		
-	
-		
+
 		mClearVolumeRenderer.setAdaptiveLODActive(false);
 		mClearVolumeRenderer.disableClose();
 
@@ -89,7 +86,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 				if (mClearVolumeRenderer.isShowing())
 				{
-					info("received stack: "+pStack);
+					info("received stack: " + pStack);
 
 					final long lSizeInBytes = pStack.getSizeInBytes();
 					final long lWidth = pStack.getWidth();
@@ -161,9 +158,9 @@ public class Stack3DDisplay extends VirtualDevice	implements
 			}
 
 		};
-		
+
 		mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
-				false);
+																								false);
 
 	}
 
@@ -262,6 +259,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 
 	/**
 	 * Gets GL window for handling size and position.
+	 * 
 	 * @return the GL window
 	 */
 	public ClearGLWindow getGLWindow()

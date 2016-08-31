@@ -5,8 +5,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.bridj.ann.Virtual;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.HasChangeListenerInterface;
@@ -32,6 +30,7 @@ public interface MicroscopeInterface extends
 	 * 
 	 * @return microscope's name.
 	 */
+	@Override
 	public String getName();
 
 	/**

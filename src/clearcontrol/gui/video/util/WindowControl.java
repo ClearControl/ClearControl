@@ -14,6 +14,7 @@ public class WindowControl extends WindowAdapter
 		mClearGLWindow = pClearGLWindow;
 	}
 
+	@Override
 	public void windowDestroyNotify(final WindowEvent e)
 	{
 		mClearGLWindow.setVisible(false);

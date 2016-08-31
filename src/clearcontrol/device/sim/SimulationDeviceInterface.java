@@ -19,6 +19,11 @@ public interface SimulationDeviceInterface
 		return lVariable;
 	};
 
+	default public void setSimLogging(boolean pSimulationLoggingOnFlag)
+	{
+		getSimLoggingVariable().set(pSimulationLoggingOnFlag);
+	}
+
 	default public boolean isSimLogging()
 	{
 		return getSimLoggingVariable().get();

@@ -21,7 +21,8 @@ public class StdOutConsoleHandler extends ConsoleHandler
 			setFormatter(new CompactFormatter());
 		}
 
-		try {
+		try
+		{
 			String message = getFormatter().format(record);
 			if (record.getLevel().intValue() >= Level.WARNING.intValue())
 			{
@@ -31,13 +32,20 @@ public class StdOutConsoleHandler extends ConsoleHandler
 			{
 				System.out.write(message.getBytes());
 			}
-		} catch (Exception exception) {
+		}
+		catch (Exception exception)
+		{
 			reportError(null, exception, ErrorManager.FORMAT_FAILURE);
 		}
 	}
 
 	@Override
-	public void close() throws SecurityException {}
+	public void close() throws SecurityException
+	{
+	}
+
 	@Override
-	public void flush(){}
+	public void flush()
+	{
+	}
 }

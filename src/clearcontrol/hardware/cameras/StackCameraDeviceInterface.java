@@ -10,7 +10,6 @@ public interface StackCameraDeviceInterface	extends
 																						CameraDeviceInterface,
 																						NameableInterface
 {
-	
 
 	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
@@ -24,8 +23,7 @@ public interface StackCameraDeviceInterface	extends
 
 	@Override
 	void trigger();
-	
-	
+
 	Variable<Long> getNumberOfImagesPerPlaneVariable();
 
 	Variable<Boolean> getStackModeVariable();

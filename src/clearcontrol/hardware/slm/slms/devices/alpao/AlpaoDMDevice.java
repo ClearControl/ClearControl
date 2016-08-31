@@ -55,7 +55,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		{
 			final boolean lOpen = mAlpaoDeformableMirror.open();
 			mNumberOfActuatorsVariable = new Variable<Double>("NumberOfActuators",
-																															(double) mAlpaoDeformableMirror.getNumberOfActuators());
+																												(double) mAlpaoDeformableMirror.getNumberOfActuators());
 			return lOpen;
 		}
 		catch (final Throwable e)

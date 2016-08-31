@@ -1,7 +1,7 @@
 package clearcontrol.microscope.sim.gui;
 
-import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
-import clearcontrol.gui.jfx.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
+import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 import clearcontrol.microscope.sim.SimulationManager;
 
 public class SimulationManagerPanel extends CustomVariablePane

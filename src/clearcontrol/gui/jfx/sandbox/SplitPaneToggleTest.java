@@ -27,7 +27,7 @@ public class SplitPaneToggleTest extends Application
 
 		TitledPane titledPane2 = new TitledPane("Options",
 																						new Label("Another option "));
-		
+
 		titledPane1.setAnimated(false);
 		titledPane2.setAnimated(false);
 

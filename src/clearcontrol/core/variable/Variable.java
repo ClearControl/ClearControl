@@ -3,6 +3,8 @@ package clearcontrol.core.variable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.core.concurrent.executors.ClearControlExecutors;
+import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
 import clearcontrol.core.variable.events.EventPropagator;
 
 /**
@@ -18,6 +20,18 @@ public class Variable<O> extends VariableBase<O> implements
 																								VariableGetInterface<O>
 
 {
+	static CompletingThreadPoolExecutor sAsyncExecutor;
+
+	static
+	{
+		sAsyncExecutor = ClearControlExecutors.getOrCreateThreadPoolExecutor(	Variable.class,
+																																					Thread.NORM_PRIORITY,
+																																					1,
+																																					Runtime.getRuntime()
+																																									.availableProcessors() / 2,
+																																					Integer.MAX_VALUE);
+	}
+
 	protected volatile O mReference;
 	protected final CopyOnWriteArrayList<Variable<O>> mVariablesToSendUpdatesTo = new CopyOnWriteArrayList<Variable<O>>();
 
@@ -43,9 +57,22 @@ public class Variable<O> extends VariableBase<O> implements
 		set(mReference);
 	}
 
-	public void setCurrentInternal()
+	protected void setCurrentInternal()
 	{
 		set(mReference);
+	}
+
+	public void setAsync(final O pNewReference)
+	{
+		sAsyncExecutor.execute(() -> {
+			set(pNewReference);
+		});
+	}
+
+	public void setEdge(O pBeforeEdge, O pAfterEdge)
+	{
+		set(pBeforeEdge);
+		set(pAfterEdge);
 	}
 
 	@Override
@@ -53,12 +80,6 @@ public class Variable<O> extends VariableBase<O> implements
 	{
 		EventPropagator.clear();
 		setReferenceInternal(pNewReference);
-	}
-
-	public void setEdge(O pBeforeEdge, O pAfterEdge)
-	{
-		set(pBeforeEdge);
-		set(pAfterEdge);
 	}
 
 	@SuppressWarnings("unchecked")

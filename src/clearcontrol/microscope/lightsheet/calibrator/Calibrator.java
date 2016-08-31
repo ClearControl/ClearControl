@@ -26,7 +26,8 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
-public class Calibrator extends TaskDevice implements LoggingInterface
+public class Calibrator extends TaskDevice implements
+																					LoggingInterface
 {
 
 	private static final int cMaxIterations = 5;

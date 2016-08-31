@@ -9,8 +9,9 @@ public interface WaitingInterface
 
 	/**
 	 * Waits until call to Callable returns true.
+	 * 
 	 * @param pCallable
-	 * @return last boolean state returned 
+	 * @return last boolean state returned
 	 */
 	default public Boolean waitFor(Callable<Boolean> pCallable)
 	{
@@ -19,10 +20,14 @@ public interface WaitingInterface
 
 	/**
 	 * Waits until call to Callable returns true.
-	 * @param pTimeOut time out
-	 * @param pTimeUnit time out unit
-	 * @param pCallable callable returning boolean state
-	 * @return last boolean state returned 
+	 * 
+	 * @param pTimeOut
+	 *          time out
+	 * @param pTimeUnit
+	 *          time out unit
+	 * @param pCallable
+	 *          callable returning boolean state
+	 * @return last boolean state returned
 	 */
 	default public Boolean waitFor(	Long pTimeOut,
 																	TimeUnit pTimeUnit,

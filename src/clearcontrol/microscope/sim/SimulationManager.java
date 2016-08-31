@@ -42,8 +42,8 @@ public class SimulationManager extends VirtualDevice implements
 				return;
 			}
 
-			info("Loggin for simulated devices is turned " + (n ? "on"
-																												: "off"));
+			info("Loggin for simulated devices is turned " + (n	? "on"
+																													: "off"));
 
 			ArrayList<Object> lAllDeviceList = mMicroscopeInterface.getDeviceLists()
 																															.getAllDeviceList();

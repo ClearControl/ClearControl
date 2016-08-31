@@ -2,7 +2,6 @@ package clearcontrol.microscope.lightsheet;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;

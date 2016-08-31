@@ -1,10 +1,7 @@
 package clearcontrol.core.log;
 
-import java.util.Arrays;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 public interface LoggingInterface
 {
@@ -37,25 +34,27 @@ public interface LoggingInterface
 		sLoggerReference.set(Logger.getLogger(cMainLoggerName));
 
 		sLoggerReference.get().setUseParentHandlers(true);
-		
-		Handler[] lHandlers = sLoggerReference.get().getParent().getHandlers();
-		
-		for(Handler lHandler : lHandlers)
+
+		Handler[] lHandlers = sLoggerReference.get()
+																					.getParent()
+																					.getHandlers();
+
+		for (Handler lHandler : lHandlers)
 			sLoggerReference.get().getParent().removeHandler(lHandler);
 
 		StdOutConsoleHandler lStdOutConsoleHandler = new StdOutConsoleHandler();
-		sLoggerReference.get().getParent().addHandler(lStdOutConsoleHandler);
-		
+		sLoggerReference.get()
+										.getParent()
+										.addHandler(lStdOutConsoleHandler);
+
 		for (final Handler lHandler : sLoggerReference.get()
 																									.getHandlers())
 			lHandler.setFormatter(new CompactFormatter());
-		
+
 		for (final Handler lHandler : sLoggerReference.get()
 																									.getParent()
 																									.getHandlers())
 			lHandler.setFormatter(new CompactFormatter());
-
-		
 
 		return sLoggerReference.get();
 	}

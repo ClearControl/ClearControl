@@ -13,7 +13,6 @@ import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
@@ -38,11 +37,10 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 	private final BoundedVariable<Number> m2DAcquisitionZVariable;
 	private final Variable<Boolean>[] mActiveCameraVariableArray;
 	private final Variable<Long> mAcquisitionCounterVariable;
-	
+
 	private volatile boolean mUpdate = true;
 
 	private ChangeListener<VirtualDevice> mChangeListener;
-
 
 	@SuppressWarnings("unchecked")
 	public InteractiveAcquisition(String pDeviceName,
@@ -84,8 +82,9 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 																													0,
 																													lMinVariable.get(),
 																													lMaxVariable.get());
-		
-		mAcquisitionCounterVariable = new Variable<Long>("AcquisitionCounter",0L);
+
+		mAcquisitionCounterVariable = new Variable<Long>(	"AcquisitionCounter",
+																											0L);
 
 		lMinVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMinVariable());
 		lMaxVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMaxVariable());
@@ -217,14 +216,14 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 					return true;
 
 				// play queue
-				//info("Playing LightSheetMicroscope Queue...");
+				// info("Playing LightSheetMicroscope Queue...");
 				boolean lSuccess = getLightSheetMicroscope().playQueueAndWaitForStacks(	100,
 																																								TimeUnit.SECONDS);
-				
-				if(lSuccess)
-					mAcquisitionCounterVariable.set(mAcquisitionCounterVariable.get()+1);
 
-				//info("... done waiting!");
+				if (lSuccess)
+					mAcquisitionCounterVariable.set(mAcquisitionCounterVariable.get() + 1);
+
+				// info("... done waiting!");
 			}
 
 			if (mUpdate)
@@ -235,7 +234,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 			e.printStackTrace();
 		}
 
-		//info("end of loop");
+		// info("end of loop");
 
 		return true;
 	}
@@ -308,7 +307,7 @@ public class InteractiveAcquisition extends LoopTaskDevice implements
 	public Variable<Long> getAcquisitionCounterVariable()
 	{
 		return mAcquisitionCounterVariable;
-		
+
 	}
 
 }

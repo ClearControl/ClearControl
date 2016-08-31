@@ -15,13 +15,13 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 																																		StateQueueDeviceInterface
 {
 	protected Variable<Boolean> mStackMode = new Variable<Boolean>(	"StackMode",
-																																							true);
+																																	true);
 
 	protected Variable<Boolean> mKeepPlane = new Variable<Boolean>(	"KeepPlane",
-																																							true);
+																																	true);
 
 	protected Variable<Long> mNumberOfImagesPerPlaneVariable = new Variable<Long>("NumberOfImagesPerPlane",
-																																														1L);
+																																								1L);
 
 	protected volatile int mQueueLength = 0;
 	protected TByteArrayList mStagingKeepAcquiredImageArray;

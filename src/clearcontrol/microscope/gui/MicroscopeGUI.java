@@ -20,11 +20,10 @@ import clearcontrol.hardware.optomech.opticalswitch.gui.jfx.OpticalSwitchDeviceP
 import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.hardware.signalamp.gui.jfx.ScalingAmplifierPanel;
 import clearcontrol.hardware.stages.StageDeviceInterface;
-import clearcontrol.hardware.stages.gui.jfx.StageDevicePanel;
+import clearcontrol.hardware.stages.gui.jfx.XYZRStageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
-import clearcontrol.microscope.lightsheet.gui.LSMNodeType;
 import clearcontrol.microscope.sim.SimulationManager;
 import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
@@ -99,17 +98,17 @@ public class MicroscopeGUI extends VirtualDevice implements
 														MicroscopeNodeType.ScalingAmplifier);
 
 		addHalcyonMappingEntry(	StageDeviceInterface.class,
-														StageDevicePanel.class,
+														XYZRStageDevicePanel.class,
 														MicroscopeNodeType.Stage);
 
 		addHalcyonMappingEntry(	StackRecyclerManager.class,
 														StackRecyclerManagerPanel.class,
 														MicroscopeNodeType.Other);
-		
+
 		addHalcyonMappingEntry(	SimulationManager.class,
-		                       	SimulationManagerPanel.class,
+														SimulationManagerPanel.class,
 														MicroscopeNodeType.Other);
-		
+
 		SimulationManager lSimulationManager = new SimulationManager(pLightSheetMicroscope);
 		mMicroscope.addDevice(0, lSimulationManager);
 
@@ -220,7 +219,6 @@ public class MicroscopeGUI extends VirtualDevice implements
 		}
 
 	}
-
 
 	private void setupHalcyonWindow()
 	{

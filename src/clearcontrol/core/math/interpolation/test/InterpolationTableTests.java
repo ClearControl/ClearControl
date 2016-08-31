@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 import clearcontrol.core.math.interpolation.Row;
+import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 
 public class InterpolationTableTests
 {

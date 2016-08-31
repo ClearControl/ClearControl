@@ -16,10 +16,10 @@ import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.StageType;
 
-public class StageDeviceHub extends VirtualDevice implements
-																											StageDeviceInterface,
-																											StartStopDeviceInterface,
-																											WaitingInterface
+public class StageDeviceHub extends VirtualDevice	implements
+																									StageDeviceInterface,
+																									StartStopDeviceInterface,
+																									WaitingInterface
 {
 
 	private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList = new ArrayList<StageDeviceInterface>();
@@ -166,7 +166,7 @@ public class StageDeviceHub extends VirtualDevice implements
 	{
 		return mDOFList.get(pDOFIndex).waitToBeReady(pTimeOut, pTimeUnit);
 	}
-	
+
 	@Override
 	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
 	{
@@ -228,6 +228,12 @@ public class StageDeviceHub extends VirtualDevice implements
 	public Variable<Boolean> getStopVariable(int pDOFIndex)
 	{
 		return mDOFList.get(pDOFIndex).getStopVariable();
+	}
+
+	@Override
+	public Variable<Boolean> getResetVariable(int pDOFIndex)
+	{
+		return mDOFList.get(pDOFIndex).getResetVariable();
 	}
 
 	@Override

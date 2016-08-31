@@ -41,9 +41,11 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable().get();
+		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
+																																					.get();
 
-		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
 		final TDoubleArrayList lDZList = new TDoubleArrayList();
@@ -91,7 +93,8 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 																double pCurrentH,
 																double pIY)
 	{
-		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
 		double lMinZ = -mMaxDefocus;
@@ -145,7 +148,8 @@ public class AdaptationA extends NDIteratorAdaptationModule	implements
 			if (!lPlayQueueAndWait)
 				return null;
 
-			final int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable().get()
+			final int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable()
+																									.get()
 																									.getBestDetectionArm(pControlPlaneIndex);
 
 			final StackInterface lStackInterface = pLSM.getStackVariable(lBestDetectioArm)

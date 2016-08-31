@@ -12,8 +12,7 @@ public abstract class StackProcessorBase implements
 	{
 		super();
 		mProcessorName = pProcessorName;
-		mIsActiveVariable = new Variable<Boolean>(pProcessorName,
-																										false);
+		mIsActiveVariable = new Variable<Boolean>(pProcessorName, false);
 	}
 
 	@Override

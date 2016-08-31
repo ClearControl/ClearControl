@@ -4,17 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcuda.CudaContext;
-import clearcuda.CudaDevice;
-import clearcuda.CudaHostPointer;
-import clearcuda.memory.CudaMemory;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;

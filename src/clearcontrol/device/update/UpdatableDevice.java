@@ -2,8 +2,8 @@ package clearcontrol.device.update;
 
 import clearcontrol.device.VirtualDevice;
 
-public abstract class UpdatableDevice extends VirtualDevice implements
-																																UpdatableInterface
+public abstract class UpdatableDevice extends VirtualDevice	implements
+																														UpdatableInterface
 {
 
 	private volatile boolean mIsUpToDate = false;

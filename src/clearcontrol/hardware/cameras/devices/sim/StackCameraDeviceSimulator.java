@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
@@ -102,8 +101,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
 		mStackDepthVariable.addSetListener((o, n) -> {
 			if (isSimLogging())
-				info(getName() + ": New camera stack depth: "
-														+ n);
+				info(getName() + ": New camera stack depth: " + n);
 		});
 
 		mExposureInMicrosecondsVariable = new Variable<Double>(	"ExposureInMicroseconds",
@@ -210,7 +208,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	{
 		if (isSimLogging())
 			info("Generating a Fractal Stack...");
-			
+
 		final long lWidth = max(1, mStackWidthVariable.get());
 		final long lHeight = max(1, mStackHeightVariable.get());
 
@@ -219,7 +217,6 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 		final long lDepth = max(1, lNumberOfKeptImages);
 		final int lChannel = mChannelVariable.get();
 
-		
 		final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
 																																						.intValue();
 
@@ -244,7 +241,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 						for (int x = 0; x < lWidth; x++)
 						{
 							short lValue = (short) (((byte) (x + time) ^ (byte) (y + (lHeight * lChannel) / 3)
-																				^ (byte) z ^ (byte) (time)));/**/
+																				^ (byte) z ^ (time)));/**/
 							if (lValue < 32)
 								lValue = 0;
 							lContiguousBuffer.writeShort(lValue);
@@ -272,7 +269,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	{
 		if (isSimLogging())
 			info("Generating a Sinus Stack...");
-		
+
 		final long lWidth = max(1, mStackWidthVariable.get());
 		final long lHeight = max(1, mStackHeightVariable.get());
 		final long lDepth = max(1, mStackDepthVariable.get());
@@ -347,7 +344,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	{
 		if (isSimLogging())
 			info("Playing queue...");
-		
+
 		mStackSent = new CountDownLatch(1);
 		super.playQueue();
 

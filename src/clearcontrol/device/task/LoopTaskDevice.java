@@ -40,6 +40,7 @@ public abstract class LoopTaskDevice extends TaskDevice	implements
 
 	}
 
+	@Override
 	public void run()
 	{
 		while (!getStopSignalBooleanVariable().get())

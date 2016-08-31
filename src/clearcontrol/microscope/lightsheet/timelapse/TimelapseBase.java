@@ -4,9 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 
-public class TimelapseBase	implements
-																	TimelapseInterface,
-																	WaitingInterface
+public class TimelapseBase implements
+													TimelapseInterface,
+													WaitingInterface
 {
 
 	private volatile long mLastAcquisitionTimeInNS = System.nanoTime();

@@ -11,8 +11,9 @@ import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.lasers.LaserDeviceInterface;
 
-public class LasertHubDevice extends VirtualDevice	implements
-																												StartStopDeviceInterface, LoggingInterface
+public class LasertHubDevice extends VirtualDevice implements
+																									StartStopDeviceInterface,
+																									LoggingInterface
 {
 
 	ArrayList<LaserDeviceInterface> mAddedLaserDeviceList = new ArrayList<LaserDeviceInterface>();
@@ -80,7 +81,7 @@ public class LasertHubDevice extends VirtualDevice	implements
 			else
 			{
 				warning(LasertHubDevice.class.getSimpleName() + ": could not open: "
-														+ lLaserDevice.getName());
+								+ lLaserDevice.getName());
 			}
 		}
 		return lAllLasersOpen;

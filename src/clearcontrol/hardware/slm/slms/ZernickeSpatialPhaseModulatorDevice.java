@@ -28,8 +28,8 @@ public class ZernickeSpatialPhaseModulatorDevice extends
 		mZernickeTransformMatrix = TransformMatrices.computeZernickeTransformMatrix(lMatrixHeight);
 
 		mMatrixVariable = new Variable<DenseMatrix64F>(	"Matrix",
-																													new DenseMatrix64F(	lMatrixHeight * lMatrixWidth,
-																																							1))
+																										new DenseMatrix64F(	lMatrixHeight * lMatrixWidth,
+																																				1))
 		{
 
 			@Override

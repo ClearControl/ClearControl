@@ -9,9 +9,9 @@ public interface LightSheetAcquisitionStateInterface
 {
 	InterpolationTables getCurrentState();
 
-	void applyStateAtControlPlane( int i );
+	void applyStateAtControlPlane(int i);
 
-	int getBestDetectionArm( int czi );
+	int getBestDetectionArm(int czi);
 
-	void setCurrentState( InterpolationTables newAcquisitionState );
+	void setCurrentState(InterpolationTables newAcquisitionState);
 }

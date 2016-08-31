@@ -1,7 +1,5 @@
 package clearcontrol.microscope.lightsheet.component.detection;
 
-import static java.lang.Math.round;
-
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
@@ -23,10 +21,8 @@ public class DetectionArm extends VirtualDevice	implements
 	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
 																																												0.0);
 
-
 	private final Variable<UnivariateAffineFunction> mZFunction = new Variable<>(	"DetectionZFunction",
 																																								new UnivariateAffineFunction());
-
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
@@ -43,16 +39,12 @@ public class DetectionArm extends VirtualDevice	implements
 		resetFunctions();
 		resetBounds();
 
-	
-
-
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
 			// System.out.println(getName() + ": new Z value: " + n);
 			update();
 			notifyListeners(this);
 		};
-
 
 		mDetectionFocusZ.addSetListener(lVariableListener);
 
@@ -80,7 +72,7 @@ public class DetectionArm extends VirtualDevice	implements
 	@Override
 	public void resetFunctions()
 	{
-	
+
 	}
 
 	@Override
@@ -107,8 +99,6 @@ public class DetectionArm extends VirtualDevice	implements
 		return mZFunction;
 	}
 
-
-
 	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
 	{
 		// Analog outputs before exposure:
@@ -130,7 +120,7 @@ public class DetectionArm extends VirtualDevice	implements
 		synchronized (this)
 		{
 			info("Updating: " + getName());
-			
+
 			double lZFocus = mDetectionFocusZ.get().doubleValue();
 			float lZFocusTransformed = (float) mZFunction.get()
 																										.value(lZFocus);

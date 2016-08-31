@@ -1,6 +1,5 @@
 package clearcontrol.hardware.stages.devices.smc100;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.com.serial.SerialDevice;
@@ -207,6 +206,12 @@ public class SMC100StageDevice extends SerialDevice	implements
 	public Variable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariable;
+	}
+
+	@Override
+	public Variable<Boolean> getResetVariable(int pIndex)
+	{
+		return mResetVariable;
 	}
 
 	@Override

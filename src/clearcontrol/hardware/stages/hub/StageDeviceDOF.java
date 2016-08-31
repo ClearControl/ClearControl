@@ -110,6 +110,11 @@ public class StageDeviceDOF
 		return mStageDeviceInterface.getStopVariable(mDOFIndex);
 	}
 
+	public Variable<Boolean> getResetVariable()
+	{
+		return mStageDeviceInterface.getStopVariable(mDOFIndex);
+	}
+
 	@Override
 	public String toString()
 	{

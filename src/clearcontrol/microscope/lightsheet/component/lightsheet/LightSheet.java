@@ -160,7 +160,7 @@ public class LightSheet extends VirtualDevice	implements
 
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
-			//System.out.println(getName() + ": new variable value: " + n);
+			// System.out.println(getName() + ": new variable value: " + n);
 			update();
 			notifyListeners(this);
 		};

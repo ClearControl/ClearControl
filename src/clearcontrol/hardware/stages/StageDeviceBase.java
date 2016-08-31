@@ -1,8 +1,6 @@
 package clearcontrol.hardware.stages;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -39,73 +37,13 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 		mMaxPositionVariables = new ArrayList<>();
 	}
 
+	@Override
 	public abstract StageType getStageType();
-
-	@Override
-	public void setTargetPosition(int pIndex, double pPosition)
-	{
-		mTargetPositionVariables.get(pIndex).set(pPosition);
-	}
-
-	@Override
-	public double getTargetPosition(int pIndex)
-	{
-		return mTargetPositionVariables.get(pIndex).get();
-	}
-
-	@Override
-	public double getCurrentPosition(int pIndex)
-	{
-		return mCurrentPositionVariables.get(pIndex).get();
-	}
-
-	@Override
-	public void reset(int pIndex)
-	{
-		mResetVariables.get(pIndex).setEdge(false, true);
-	}
-
-	@Override
-	public void home(int pIndex)
-	{
-		mHomingVariables.get(pIndex).setEdge(false, true);
-	}
-
-	@Override
-	public void enable(int pIndex)
-	{
-		mEnableVariables.get(pIndex).setEdge(false, true);
-	}
 
 	@Override
 	public int getNumberOfDOFs()
 	{
-		return mTargetPositionVariables.size();
-	}
-
-	@Override
-	public Boolean waitToBeReady(	int pIndex,
-																long pTimeOut,
-																TimeUnit pTimeUnit)
-	{
-		return waitFor(	pTimeOut,
-										pTimeUnit,
-										() -> mReadyVariables.get(pIndex).get());
-	}
-
-	@Override
-	public Boolean waitToBeReady(long pTimeOut, TimeUnit pTimeUnit)
-	{
-		int lNumberOfDOFs = getNumberOfDOFs();
-
-		Callable<Boolean> lCallable = () -> {
-			for (int i = 0; i < lNumberOfDOFs; i++)
-				if (!mReadyVariables.get(i).get())
-					return false;
-			return true;
-		};
-
-		return waitFor(pTimeOut, pTimeUnit, lCallable);
+		return mEnableVariables.size();
 	}
 
 	@Override
@@ -117,8 +55,7 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 	@Override
 	public Variable<Double> getCurrentPositionVariable(int pDOFIndex)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return mCurrentPositionVariables.get(pDOFIndex);
 	}
 
 	@Override
@@ -155,6 +92,12 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 	public Variable<Boolean> getStopVariable(int pIndex)
 	{
 		return mStopVariables.get(pIndex);
+	}
+
+	@Override
+	public Variable<Boolean> getResetVariable(int pIndex)
+	{
+		return mResetVariables.get(pIndex);
 	}
 
 	@Override

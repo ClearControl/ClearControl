@@ -82,7 +82,10 @@ public class ECC100StageDevice extends StageDeviceBase implements
 																																											"");
 						if (!lDeviceName.isEmpty())
 						{
-							info("DOF index: %d, device name: %s, axis: %s",lDOFIndex,lDeviceName,lAxis);
+							info(	"DOF index: %d, device name: %s, axis: %s",
+										lDOFIndex,
+										lDeviceName,
+										lAxis);
 							mIndexToAxisMap.put(lDOFIndex, lAxis);
 							mNameToAxisMap.put(lDeviceName, lAxis);
 							mIndexToNameMap.put(lDOFIndex, lDeviceName);
@@ -115,10 +118,10 @@ public class ECC100StageDevice extends StageDeviceBase implements
 																								lEcc100Axis));
 
 					mTargetPositionVariables.add(new PositionTargetVariable("TargetPosition" + mIndexToNameMap.get(dof),
-																														lEcc100Axis));
+																																	lEcc100Axis));
 
-					mCurrentPositionVariables.add(new PositionCurrentVariable(	"CurrentPosition" + mIndexToNameMap.get(dof),
-																															lEcc100Axis));
+					mCurrentPositionVariables.add(new PositionCurrentVariable("CurrentPosition" + mIndexToNameMap.get(dof),
+																																		lEcc100Axis));
 
 					mMinPositionVariables.add(new MinPositionVariable("MinPosition" + mIndexToNameMap.get(dof),
 																														lEcc100Axis));

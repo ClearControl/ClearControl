@@ -12,11 +12,11 @@ public interface CameraDeviceInterface extends
 {
 
 	void trigger();
-	
+
 	void setExposure(double pExposureInMicroseconds);
-	
+
 	double getExposure();
-	
+
 	Variable<Double> getLineReadOutTimeInMicrosecondsVariable();
 
 	Variable<Double> getExposureInMicrosecondsVariable();
@@ -24,7 +24,7 @@ public interface CameraDeviceInterface extends
 	Variable<Double> getPixelSizeInNanometersVariable();
 
 	Variable<Boolean> getIsAcquiringVariable();
-	
+
 	Variable<Integer> getChannelVariable();
 
 	Variable<Boolean> getTriggerVariable();

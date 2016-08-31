@@ -6,8 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.ChangeListeningBase;
-import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.name.ReadOnlyNameableInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 

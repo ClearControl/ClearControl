@@ -2,8 +2,7 @@ package clearcontrol.core.variable.util;
 
 import clearcontrol.core.variable.Variable;
 
-public class SingleUpdateTargetObjectVariable<O>	extends
-																									Variable<O>
+public class SingleUpdateTargetObjectVariable<O> extends Variable<O>
 {
 
 	public SingleUpdateTargetObjectVariable(final String pVariableName)

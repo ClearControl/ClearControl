@@ -23,8 +23,7 @@ public class LocalFileStackSink extends LocalFileStackBase implements
 	private volatile long mFirstTimePointAbsoluteNanoSeconds;
 	private FileChannel mBinnaryFileChannel;
 
-	public LocalFileStackSink(final File pRootFolder,
-														final String pName) throws IOException
+	public LocalFileStackSink(final File pRootFolder, final String pName) throws IOException
 	{
 		super(pRootFolder, pName, false);
 

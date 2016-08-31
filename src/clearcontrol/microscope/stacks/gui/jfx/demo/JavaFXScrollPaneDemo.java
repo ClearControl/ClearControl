@@ -18,7 +18,6 @@ public class JavaFXScrollPaneDemo extends Application
 	final VBox vb = new VBox();
 	final Label fileName = new Label();
 
-
 	@Override
 	public void start(Stage stage)
 	{
@@ -34,7 +33,7 @@ public class JavaFXScrollPaneDemo extends Application
 
 		for (int i = 0; i < 50; i++)
 		{
-			labels[i] = new Label("item"+i);
+			labels[i] = new Label("item" + i);
 			vb.getChildren().add(labels[i]);
 		}
 
@@ -43,11 +42,12 @@ public class JavaFXScrollPaneDemo extends Application
 		sp.setContent(vb);
 		sp.vvalueProperty().addListener(new ChangeListener<Number>()
 		{
+			@Override
 			public void changed(ObservableValue<? extends Number> ov,
 													Number old_val,
 													Number new_val)
 			{
-				fileName.setText("position"+new_val);
+				fileName.setText("position" + new_val);
 			}
 		});
 		stage.show();

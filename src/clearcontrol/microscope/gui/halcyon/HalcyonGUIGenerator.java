@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.SwingUtilities;
-
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.device.name.NameableInterface;
@@ -86,7 +84,6 @@ public class HalcyonGUIGenerator implements LoggingInterface
 		setup2DDisplays();
 		setup3DDisplays();
 
-
 	}
 
 	private void initJavaFX()
@@ -117,48 +114,67 @@ public class HalcyonGUIGenerator implements LoggingInterface
 																												MicroscopeNodeType.StackDisplay3D,
 																												new Window()
 																												{
-																													@Override public int getWidth()
+																													@Override
+																													public int getWidth()
 																													{
-																														return lStack3DDisplay.getGLWindow().getWidth();
+																														return lStack3DDisplay.getGLWindow()
+																																									.getWidth();
 																													}
 
-																													@Override public int getHeight()
+																													@Override
+																													public int getHeight()
 																													{
-																														return lStack3DDisplay.getGLWindow().getHeight();
+																														return lStack3DDisplay.getGLWindow()
+																																									.getHeight();
 																													}
 
-																													@Override public void setSize( int width, int height )
+																													@Override
+																													public void setSize(int width,
+																																							int height)
 																													{
-																														lStack3DDisplay.getGLWindow().setSize( width, height );
+																														lStack3DDisplay.getGLWindow()
+																																						.setSize(	width,
+																																											height);
 																													}
 
-																													@Override public int getX()
+																													@Override
+																													public int getX()
 																													{
-																														return lStack3DDisplay.getGLWindow().getWindowX();
+																														return lStack3DDisplay.getGLWindow()
+																																									.getWindowX();
 																													}
 
-																													@Override public int getY()
+																													@Override
+																													public int getY()
 																													{
-																														return lStack3DDisplay.getGLWindow().getWindowY();
+																														return lStack3DDisplay.getGLWindow()
+																																									.getWindowY();
 																													}
 
-																													@Override public void setPosition( int x, int y )
+																													@Override
+																													public void setPosition(int x,
+																																									int y)
 																													{
-																														lStack3DDisplay.getGLWindow().setWindowPosition( x, y );
+																														lStack3DDisplay.getGLWindow()
+																																						.setWindowPosition(	x,
+																																																y);
 																													}
 
-																													@Override public void show()
+																													@Override
+																													public void show()
 																													{
 																														lStack3DDisplay.setVisible(true);
 																														lStack3DDisplay.requestFocus();
 																													}
 
-																													@Override public void hide()
+																													@Override
+																													public void hide()
 																													{
 																														lStack3DDisplay.setVisible(false);
 																													}
 
-																													@Override public void close()
+																													@Override
+																													public void close()
 																													{
 																														lStack3DDisplay.close();
 																													}
@@ -179,48 +195,67 @@ public class HalcyonGUIGenerator implements LoggingInterface
 																												MicroscopeNodeType.StackDisplay2D,
 																												new Window()
 																												{
-																													@Override public int getWidth()
+																													@Override
+																													public int getWidth()
 																													{
-																														return lStack2DDisplay.getGLWindow().getSurfaceWidth();
+																														return lStack2DDisplay.getGLWindow()
+																																									.getSurfaceWidth();
 																													}
 
-																													@Override public int getHeight()
+																													@Override
+																													public int getHeight()
 																													{
-																														return lStack2DDisplay.getGLWindow().getSurfaceHeight();
+																														return lStack2DDisplay.getGLWindow()
+																																									.getSurfaceHeight();
 																													}
 
-																													@Override public void setSize( int width, int height )
+																													@Override
+																													public void setSize(int width,
+																																							int height)
 																													{
-																														lStack2DDisplay.getGLWindow().setSize( width, height );
+																														lStack2DDisplay.getGLWindow()
+																																						.setSize(	width,
+																																											height);
 																													}
 
-																													@Override public int getX()
+																													@Override
+																													public int getX()
 																													{
-																														return lStack2DDisplay.getGLWindow().getWindowX();
+																														return lStack2DDisplay.getGLWindow()
+																																									.getWindowX();
 																													}
 
-																													@Override public int getY()
+																													@Override
+																													public int getY()
 																													{
-																														return lStack2DDisplay.getGLWindow().getWindowY();
+																														return lStack2DDisplay.getGLWindow()
+																																									.getWindowY();
 																													}
 
-																													@Override public void setPosition( int x, int y )
+																													@Override
+																													public void setPosition(int x,
+																																									int y)
 																													{
-																														lStack2DDisplay.getGLWindow().setWindowPosition( x, y );
+																														lStack2DDisplay.getGLWindow()
+																																						.setWindowPosition(	x,
+																																																y);
 																													}
 
-																													@Override public void show()
+																													@Override
+																													public void show()
 																													{
 																														lStack2DDisplay.setVisible(true);
 																														lStack2DDisplay.requestFocus();
 																													}
 
-																													@Override public void hide()
+																													@Override
+																													public void hide()
 																													{
 																														lStack2DDisplay.setVisible(false);
 																													}
 
-																													@Override public void close()
+																													@Override
+																													public void close()
 																													{
 																														lStack2DDisplay.close();
 																													}

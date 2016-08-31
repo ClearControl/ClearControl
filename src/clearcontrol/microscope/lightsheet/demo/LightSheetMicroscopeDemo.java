@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.demo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

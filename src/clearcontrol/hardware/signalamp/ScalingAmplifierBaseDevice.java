@@ -3,8 +3,8 @@ package clearcontrol.hardware.signalamp;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
-public class ScalingAmplifierBaseDevice extends VirtualDevice implements
-																																	ScalingAmplifierDeviceInterface
+public class ScalingAmplifierBaseDevice extends VirtualDevice	implements
+																															ScalingAmplifierDeviceInterface
 {
 
 	protected double mMinGain = Double.NEGATIVE_INFINITY,

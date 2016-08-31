@@ -13,7 +13,8 @@ public class RandomStackSource implements StackSourceInterface
 {
 
 	private RecyclerInterface<StackInterface, StackRequest> mStackRecycler;
-	private final Variable<Long> mWidthVariable,mHeightVariable,mDepthVariable;
+	private final Variable<Long> mWidthVariable, mHeightVariable,
+			mDepthVariable;
 
 	public RandomStackSource(	long pWidth,
 														long pHeight,
@@ -75,9 +76,9 @@ public class RandomStackSource implements StackSourceInterface
 																														lHeight,
 																														lDepth);
 
-			final StackInterface lStack = mStackRecycler.getOrWait(pTime,
-																																	pTimeUnit,
-																																	lStackRequest);
+			final StackInterface lStack = mStackRecycler.getOrWait(	pTime,
+																															pTimeUnit,
+																															lStackRequest);
 			if (lStack != null)
 			{
 				if (lStack.getContiguousMemory() != null)
