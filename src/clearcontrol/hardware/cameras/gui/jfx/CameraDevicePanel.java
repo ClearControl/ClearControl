@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -19,6 +20,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -35,6 +38,7 @@ import javafx.util.StringConverter;
  */
 public class CameraDevicePanel extends AnchorPane
 {
+	private final StackCameraDeviceInterface mCameraDeviceInterface;
 	final int mMainRectangleSize = 300;
 
 	float mMaxCameraWidth = 2048;
@@ -60,6 +64,11 @@ public class CameraDevicePanel extends AnchorPane
 
 	public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
 	{
+		mCameraDeviceInterface = pCameraDeviceInterface;
+
+		mMaxCameraWidth = mCameraDeviceInterface.getStackMaxWidthVariable().get();
+		mMaxCameraHeight = mCameraDeviceInterface.getStackMaxHeightVariable().get();
+
 		init();
 
 		Bindings.bindBidirectional(	mCameraWidthStringProperty,
@@ -75,7 +84,10 @@ public class CameraDevicePanel extends AnchorPane
 																	@Override
 																	public Number fromString(String string)
 																	{
+																		if ( !string.isEmpty() )
 																		return Long.parseLong(string);
+																		else
+																			return 0;
 																	}
 																});
 
@@ -92,21 +104,26 @@ public class CameraDevicePanel extends AnchorPane
 																	@Override
 																	public Number fromString(String string)
 																	{
+																		if ( !string.isEmpty() )
 																		return Long.parseLong(string);
+																		else
+																			return 0;
 																	}
 																});
 
-		pCameraDeviceInterface.getStackWidthVariable()
-													.addSetListener((o, n) -> {
+		// data -> GUI
+		// StackWidth update (data -> GUI)
+		mCameraDeviceInterface.getStackWidthVariable()
+				.addSetListener( ( o, n ) -> {
 
-														if (mCameraWidthProperty.get() != n)
-															Platform.runLater(() -> {
-																mCameraWidthProperty.set(n);
-															});
+					if ( mCameraWidthProperty.get() != n )
+						Platform.runLater( () -> {
+							mCameraWidthProperty.set( n );
+						} );
 
-													});
-
-		pCameraDeviceInterface.getStackHeightVariable()
+				} );
+		// StackHeight update (data -> GUI)
+		mCameraDeviceInterface.getStackHeightVariable()
 													.addSetListener((o, n) -> {
 														if (mCameraHeightProperty.get() != n)
 															Platform.runLater(() -> {
@@ -120,6 +137,18 @@ public class CameraDevicePanel extends AnchorPane
 		// listen to properties events!
 		// example: pCameraDeviceInterface.getStackWidthVariable().setAsync(...)
 
+	}
+
+	// GUI -> data
+	// StackWidth update
+	// This function is called in (number) Buttons click event in init() and Mouse released event in setDragHandlers()
+	private void updateWidthHeight( Long nWidth, Long nHeight )
+	{
+		if ( !mCameraDeviceInterface.getStackWidthVariable().get().equals( nWidth ) )
+			mCameraDeviceInterface.getStackWidthVariable().setAsync( nWidth );
+
+		if ( !mCameraDeviceInterface.getStackHeightVariable().get().equals( nHeight ) )
+			mCameraDeviceInterface.getStackHeightVariable().setAsync( nHeight );
 	}
 
 	private void init()
@@ -151,6 +180,7 @@ public class CameraDevicePanel extends AnchorPane
 					mCameraWidthStringProperty.set(Integer.toString(width));
 					mCameraHeightStringProperty.set(Integer.toString(height));
 
+					updateWidthHeight( ( long ) width, ( long ) height );
 					// System.out.println( "Set width/height: " + width + "/" + height );
 				});
 
@@ -188,14 +218,18 @@ public class CameraDevicePanel extends AnchorPane
 			{
 				// If the replaced text would end up being invalid, then simply
 				// ignore this call!
-				if (text.matches("[0-9]*"))
+				if ( text.matches( "[0-9]*" ) )
 				{
-
-					String replaced = checkNewString(	getText(),
+					String replaced;
+					if ( getSelectedText().isEmpty() )
+						replaced = checkNewString( getText(),
 																						start,
 																						end,
 																						text);
-					if (isLessThanMaxValue(mMaxCameraWidth, replaced))
+					else
+						replaced = text;
+
+					if (isLessThanMaxValue( mMaxCameraWidth, replaced ))
 						super.replaceText(start, end, text);
 				}
 			}
@@ -203,6 +237,7 @@ public class CameraDevicePanel extends AnchorPane
 			@Override
 			public void replaceSelection(String text)
 			{
+				System.out.println( text );
 				if (text.matches("[0-9]*"))
 				{
 					if (isLessThanMaxValue(mMaxCameraWidth, text))
@@ -210,6 +245,15 @@ public class CameraDevicePanel extends AnchorPane
 				}
 			}
 		};
+
+		width.setOnKeyPressed( new EventHandler< KeyEvent >()
+		{
+			@Override public void handle( KeyEvent event )
+			{
+				if ( event.getCode() == KeyCode.ENTER )
+					updateWidthHeight( mCameraWidthProperty.get(), mCameraHeightProperty.get() );
+			}
+		} );
 
 		width.setPrefWidth(80);
 		mCameraWidthStringProperty = width.textProperty();
@@ -248,6 +292,15 @@ public class CameraDevicePanel extends AnchorPane
 				}
 			}
 		};
+
+		height.setOnKeyPressed( new EventHandler< KeyEvent >()
+		{
+			@Override public void handle( KeyEvent event )
+			{
+				if ( event.getCode() == KeyCode.ENTER )
+					updateWidthHeight( mCameraWidthProperty.get(), mCameraHeightProperty.get() );
+			}
+		} );
 
 		height.setPrefWidth(80);
 		mCameraHeightStringProperty = height.textProperty();
@@ -306,8 +359,11 @@ public class CameraDevicePanel extends AnchorPane
 																	@Override
 																	public Number fromString(String string)
 																	{
+																		if ( !string.isEmpty() )
 																		return Double.parseDouble(string) * mMainRectangleSize
 																						/ mMaxCameraWidth;
+																		else
+																			return 0;
 																	}
 																});
 
@@ -325,8 +381,11 @@ public class CameraDevicePanel extends AnchorPane
 																	@Override
 																	public Number fromString(String string)
 																	{
+																		if ( !string.isEmpty() )
 																		return Double.parseDouble(string) * mMainRectangleSize
 																						/ mMaxCameraHeight;
+																		else
+																			return 0;
 																	}
 																});
 	}
@@ -334,7 +393,11 @@ public class CameraDevicePanel extends AnchorPane
 	private static boolean isLessThanMaxValue(final float max,
 																						final String text)
 	{
-		Float lValue = Float.parseFloat(text);
+		Float lValue = 0f;
+
+		if ( !text.isEmpty() )
+			lValue = Float.parseFloat( text );
+
 		return lValue <= max;
 	}
 
@@ -375,6 +438,8 @@ public class CameraDevicePanel extends AnchorPane
 			mRectangleWidthProperty.set(mRect.widthProperty().get());
 			mouseLocation.value = null;
 			line.setCursor(Cursor.NONE);
+
+			updateWidthHeight( mCameraWidthProperty.get(), mCameraHeightProperty.get() );
 		});
 	}
 
