@@ -18,7 +18,7 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 			mResetVariables;
 	protected ArrayList<Variable<Double>> mTargetPositionVariables,
 			mCurrentPositionVariables, mMinPositionVariables,
-			mMaxPositionVariables;
+			mMaxPositionVariables, mGranularityPositionVariables;
 
 	protected final BiMap<Integer, String> mIndexToNameMap = HashBiMap.create();
 
@@ -35,6 +35,7 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 		mCurrentPositionVariables = new ArrayList<>();
 		mMinPositionVariables = new ArrayList<>();
 		mMaxPositionVariables = new ArrayList<>();
+		mGranularityPositionVariables = new ArrayList<>();
 	}
 
 	@Override
@@ -68,6 +69,12 @@ public abstract class StageDeviceBase extends VirtualDevice	implements
 	public Variable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariables.get(pIndex);
+	}
+
+	@Override
+	public Variable<Double> getGranularityPositionVariable(int pDOFIndex)
+	{
+		return mGranularityPositionVariables.get(pDOFIndex);
 	}
 
 	@Override

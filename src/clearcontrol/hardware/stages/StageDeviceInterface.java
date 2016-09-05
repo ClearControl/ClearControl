@@ -241,6 +241,14 @@ public interface StageDeviceInterface	extends
 	Variable<Double> getMaxPositionVariable(int pDOFIndex);
 
 	/**
+	 * Returns the Granularity Variable for a given DOF.
+	 * 
+	 * @param pDOFIndex DOF's index
+	 * @return
+	 */
+	Variable<Double> getGranularityPositionVariable(int pDOFIndex);
+
+	/**
 	 * Returns enable variable for a given DOF's index.
 	 * 
 	 * @param pDOFIndex
@@ -301,5 +309,7 @@ public interface StageDeviceInterface	extends
 	 * @return
 	 */
 	Variable<Boolean> getResetVariable(int pIndex);
+
+
 
 }

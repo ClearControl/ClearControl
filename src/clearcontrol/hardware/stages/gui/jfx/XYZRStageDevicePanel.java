@@ -1,5 +1,7 @@
 package clearcontrol.hardware.stages.gui.jfx;
 
+import org.jetbrains.annotations.ReadOnly;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.hardware.stages.StageDeviceInterface;
@@ -48,7 +50,6 @@ public class XYZRStageDevicePanel extends BorderPane
 	private SnapshotView thirdView = null;
 	private SnapshotView fourthView = null;
 
-
 	Slider rotateSlider, xStageSlider, yStageSlider, zStageSlider;
 
 	public XYZRStageDevicePanel(StageDeviceInterface pStageDeviceInterface)
@@ -58,44 +59,57 @@ public class XYZRStageDevicePanel extends BorderPane
 		init();
 
 		// TODO: @HongKee: please connect the variables from the stage to the GUI.
-		// TODO: @Loic: Could you check the Variable listener? When I change the value, it continues to change the values.
-		// TODO:        Maybe double checking needs less granularity.
-		for ( int i = 0; i < mStageDeviceInterface.getNumberOfDOFs(); i++ )
+		// TODO: @Loic: Could you check the Variable listener? When I change the
+		// value, it continues to change the values.
+		// TODO: Maybe double checking needs less granularity.
+		for (int i = 0; i < mStageDeviceInterface.getNumberOfDOFs(); i++)
 		{
-			String dof = mStageDeviceInterface.getDOFNameByIndex( i );
+			String dof = mStageDeviceInterface.getDOFNameByIndex(i);
 			Slider slider = null;
 
-			if ( dof.equals( "R" ) )
+			if (dof.equals("R"))
 				slider = rotateSlider;
-			else if ( dof.equals( "X" ) )
+			else if (dof.equals("X"))
 				slider = xStageSlider;
-			else if ( dof.equals( "Y" ) )
+			else if (dof.equals("Y"))
 				slider = yStageSlider;
-			else if ( dof.equals( "Z" ) )
+			else if (dof.equals("Z"))
 				slider = zStageSlider;
 
-			System.out.println( mStageDeviceInterface.getMaxPositionVariable( i ).get() );
+			System.out.println(mStageDeviceInterface.getMaxPositionVariable(i)
+																							.get());
 
-			slider.setMin( mStageDeviceInterface.getMinPositionVariable( i ).get() );
-			slider.setMax( mStageDeviceInterface.getMaxPositionVariable( i ).get() );
-			slider.setValue( mStageDeviceInterface.getCurrentPositionVariable( i ).get() );
+			slider.setMin(mStageDeviceInterface.getMinPositionVariable(i)
+																					.get());
+			slider.setMax(mStageDeviceInterface.getMaxPositionVariable(i)
+																					.get());
+			slider.setValue(mStageDeviceInterface.getCurrentPositionVariable(i)
+																						.get());
 
 			// Data -> GUI
 			final Slider finalSlider = slider;
-			mStageDeviceInterface.getCurrentPositionVariable( i ).addSetListener( ( pCurrentValue, pNewValue ) -> {
-				if ( !pNewValue.equals( finalSlider.getValue() ) )
-					Platform.runLater( new Runnable()
-					{
-						@Override public void run()
-						{
-							finalSlider.setValue( pNewValue );
-						}
-					} );
-			} );
+			mStageDeviceInterface.getCurrentPositionVariable(i)
+														.addSetListener((pCurrentValue, pNewValue) -> {
+															if (!pNewValue.equals(finalSlider.getValue()))
+																Platform.runLater(new Runnable()
+																{
+																	@Override
+																	public void run()
+																	{
+																		if (!pNewValue.equals(finalSlider.getValue()))
+																			finalSlider.setValue(pNewValue);
+																	}
+																});
+														});
 
 			// GUI -> Data
-			final Variable< Double > curPos = mStageDeviceInterface.getTargetPositionVariable( i );
-			slider.setOnMouseReleased( event -> curPos.set( finalSlider.getValue() ) );
+			final Variable<Double> curPos = mStageDeviceInterface.getTargetPositionVariable(i);
+			slider.setOnMouseClicked(event -> curPos.set(finalSlider.getValue()));
+			
+			//Note:  The problem is that there are two variables: a _target_ and _current_ variable.
+			// the user sets the target position and when the stage move sthe current position is changed.
+			//  So the current position is really readonly... We need to have a 'marker in the slider
+			
 		}
 
 		// same scheme as for the others...
@@ -176,8 +190,6 @@ public class XYZRStageDevicePanel extends BorderPane
 		layeredPane.widthProperty().addListener(sceneBoundsListener);
 		layeredPane.heightProperty().addListener(sceneBoundsListener);
 
-		
-
 		layeredPane.getChildren().addAll(	background1Pane,
 																			subScene,
 																			secondViewPane,
@@ -196,9 +208,7 @@ public class XYZRStageDevicePanel extends BorderPane
 		setTop(createControls(cubeScene));
 		setCenter(layeredPane);
 
-
 	}
-
 
 	private VBox createControls(CubeScene cubeScene)
 	{
@@ -206,25 +216,25 @@ public class XYZRStageDevicePanel extends BorderPane
 		final Label caption = new Label("Stage R (micro-degree)");
 
 		rotateSlider = new Slider();
-		rotateSlider.setMin( 0 );
-		rotateSlider.setMax( 360 );
-		rotateSlider.setMajorTickUnit( 90 );
-		rotateSlider.setShowTickMarks( true );
-		rotateSlider.setShowTickLabels( true );
+		rotateSlider.setMin(0);
+		rotateSlider.setMax(360);
+		rotateSlider.setMajorTickUnit(90);
+		rotateSlider.setShowTickMarks(true);
+		rotateSlider.setShowTickLabels(true);
 
 		final CircleIndicator pi = new CircleIndicator(0);
 
 		rotateSlider.valueProperty()
-					.addListener((ObservableValue<? extends Number> ov,
-												Number old_val,
-												Number new_val) -> pi.setProgress(new_val.doubleValue()));
+								.addListener((ObservableValue<? extends Number> ov,
+															Number old_val,
+															Number new_val) -> pi.setProgress(new_val.doubleValue()));
 
 		rotateSlider.valueProperty()
-					.bindBidirectional(cubeScene.getCubeCenterGroup()
-																			.rotateProperty());
+								.bindBidirectional(cubeScene.getCubeCenterGroup()
+																						.rotateProperty());
 
 		final HBox rStage = new HBox(5);
-		rStage.getChildren().addAll( caption, rotateSlider, pi );
+		rStage.getChildren().addAll(caption, rotateSlider, pi);
 		HBox.setHgrow(rStage, Priority.ALWAYS);
 
 		BoundingBox cubeBB = cubeScene.getCubeBoundingBox();
@@ -236,9 +246,7 @@ public class XYZRStageDevicePanel extends BorderPane
 									- cubeBB.getMaxX()
 									* 2.2;
 
-		xStageSlider = createSlider( 0,
-																							100,
-																							"X-axis stage control");
+		xStageSlider = createSlider(0, 100, "X-axis stage control");
 
 		xStageSlider.valueProperty()
 								.addListener(new ChangeListener<Number>()
@@ -250,7 +258,7 @@ public class XYZRStageDevicePanel extends BorderPane
 									{
 										cubeScene.getCubeCenterGroup()
 															.setTranslateX(newValue.doubleValue() * (xMax - xMin)
-																	/ xStageSlider.getMax()
+																							/ xStageSlider.getMax()
 																							+ xMin);
 									}
 								});
@@ -274,9 +282,7 @@ public class XYZRStageDevicePanel extends BorderPane
 		double yMax = cubeScene.getCubeCenterGroup().getTranslateY() + CubeScene.VIEWPORT_SIZE
 									- cubeBB.getMaxY()
 									* 2.2;
-		yStageSlider = createSlider( 0,
-																							100,
-																							"Y-axis stage control");
+		yStageSlider = createSlider(0, 100, "Y-axis stage control");
 
 		yStageSlider.valueProperty()
 								.addListener(new ChangeListener<Number>()
@@ -288,7 +294,7 @@ public class XYZRStageDevicePanel extends BorderPane
 									{
 										cubeScene.getCubeCenterGroup()
 															.setTranslateY(newValue.doubleValue() * (yMax - yMin)
-																	/ yStageSlider.getMax()
+																							/ yStageSlider.getMax()
 																							+ yMin);
 									}
 								});
@@ -312,9 +318,7 @@ public class XYZRStageDevicePanel extends BorderPane
 		double zMax = cubeScene.getCubeCenterGroup().getTranslateZ() + CubeScene.VIEWPORT_SIZE
 									- cubeBB.getMaxZ()
 									* 2.2;
-		zStageSlider = createSlider( 0,
-																							100,
-																							"Z-axis stage control");
+		zStageSlider = createSlider(0, 100, "Z-axis stage control");
 
 		zStageSlider.valueProperty()
 								.addListener(new ChangeListener<Number>()
@@ -326,7 +330,7 @@ public class XYZRStageDevicePanel extends BorderPane
 									{
 										cubeScene.getCubeCenterGroup()
 															.setTranslateZ(newValue.doubleValue() * (zMax - zMin)
-																	/ zStageSlider.getMax()
+																							/ zStageSlider.getMax()
 																							+ zMin);
 									}
 								});
