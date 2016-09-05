@@ -7,8 +7,8 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
-public abstract class PositionDeviceBase extends VirtualDevice	implements
-																																		PositionDeviceInterface
+public abstract class PositionDeviceBase extends VirtualDevice implements
+																															PositionDeviceInterface
 {
 	protected Variable<Integer> mPositionVariable = null;
 	protected int[] mValidPositions;
@@ -49,11 +49,12 @@ public abstract class PositionDeviceBase extends VirtualDevice	implements
 
 	}
 
+	@Override
 	public void setPositionName(int pPositionIndex, String pPositionName)
 	{
 		mPositionToNameMap.put(pPositionIndex, pPositionName);
 	}
-	
+
 	@Override
 	public String getPositionName(int pPositionIndex)
 	{
@@ -83,7 +84,5 @@ public abstract class PositionDeviceBase extends VirtualDevice	implements
 	{
 		return mValidPositions;
 	}
-
-
 
 }

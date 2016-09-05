@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import clearcontrol.core.concurrent.executors.RTlibExecutors;
+import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
@@ -93,11 +93,11 @@ public class StackTests
 		final RecyclerInterface<StackInterface, StackRequest> lRecycler = new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
 																																																											cMaximumNumberOfObjects);
 
-		final ThreadPoolExecutor lThreadPoolExecutor = RTlibExecutors.getOrCreateThreadPoolExecutor(this,
-																																																Thread.NORM_PRIORITY,
-																																																1,
-																																																1,
-																																																100);
+		final ThreadPoolExecutor lThreadPoolExecutor = ClearControlExecutors.getOrCreateThreadPoolExecutor(	this,
+																																																				Thread.NORM_PRIORITY,
+																																																				1,
+																																																				1,
+																																																				100);
 
 		for (int i = 0; i < 100; i++)
 		{

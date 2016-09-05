@@ -1,6 +1,10 @@
 package clearcontrol.com.serial;
 
-public class SerialListenerAdapter implements SerialListener
+import clearcontrol.core.log.LoggingInterface;
+
+public class SerialListenerAdapter implements
+																	SerialListener,
+																	LoggingInterface
 {
 
 	@Override
@@ -19,7 +23,7 @@ public class SerialListenerAdapter implements SerialListener
 	public void errorOccured(	final Serial pSerial,
 														final Throwable pException)
 	{
-		System.out.format("%s\n", pSerial.toString());
+		warning(pSerial.toString());
 		pException.printStackTrace();
 	}
 }

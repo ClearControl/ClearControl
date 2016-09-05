@@ -7,9 +7,9 @@ import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableBase;
 import clearcontrol.device.name.NameableInterface;
 
-public class NameableWithChangeListener<E> extends NameableBase implements
-																														HasChangeListenerInterface<E>,
-																														NameableInterface
+public class NameableWithChangeListener<E> extends NameableBase	implements
+																																HasChangeListenerInterface<E>,
+																																NameableInterface
 {
 
 	private CopyOnWriteArrayList<ChangeListener<E>> mChangeListenerList = new CopyOnWriteArrayList<>();
@@ -39,6 +39,5 @@ public class NameableWithChangeListener<E> extends NameableBase implements
 			lChangeListener.changed(pEvent);
 		}
 	}
-
 
 }

@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import clearcontrol.gui.jfx.recycler.RecyclerPanel;
+import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -38,7 +38,7 @@ public class StackRecyclerManagerPanel extends VBox
 		super();
 
 		pStackRecyclerManager.addChangeListener((m) -> {
-			updateRecyclerPanels(((StackRecyclerManager)m).getRecyclerMap());
+			updateRecyclerPanels(((StackRecyclerManager) m).getRecyclerMap());
 		});
 
 	}

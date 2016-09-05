@@ -42,6 +42,4 @@ public interface DetectionArmInterface extends
 	 */
 	public Variable<UnivariateAffineFunction> getZFunction();
 
-
-
 }

@@ -30,7 +30,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	public FLIFilterWheelDevice(final String pPortName)
 	{
 		super("FLIFilterWheel", pPortName, 9600);
-		
+
 		mFilterPositionToNameMap = new ConcurrentHashMap<>();
 
 		final FilterWheelPositionDeviceAdapter lFilterWheelPosition = new FilterWheelPositionDeviceAdapter(this);
@@ -138,7 +138,7 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 	public void setPositionName(int pPositionIndex, String pPositionName)
 	{
 		mFilterPositionToNameMap.put(pPositionIndex, pPositionName);
-		
+
 	}
 
 	@Override

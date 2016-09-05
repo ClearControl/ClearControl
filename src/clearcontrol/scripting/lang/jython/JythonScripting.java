@@ -13,8 +13,7 @@ public class JythonScripting implements ScriptingLanguageInterface
 	{
 		return "Jython";
 	}
-	
-	
+
 	@Override
 	public String getPostamble()
 	{
@@ -57,8 +56,5 @@ public class JythonScripting implements ScriptingLanguageInterface
 		}/**/
 		return pThrowable.toString();
 	}
-
-
-
 
 }

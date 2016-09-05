@@ -91,7 +91,8 @@ public abstract class NDIteratorAdaptationModule extends
 		super.reset();
 
 		LightSheetMicroscope lLightSheetMicroscope = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable().get();
+		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
+																																					.get();
 
 		int lNumberOfControlPlanes = lStackAcquisition.getCurrentState()
 																									.getNumberOfControlPlanes();
@@ -267,7 +268,8 @@ public abstract class NDIteratorAdaptationModule extends
 	public boolean isRelevantDetectionArm(int pControlPlaneIndex,
 																				int pDetectionArmIndex)
 	{
-		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectionArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 		return (lBestDetectionArm == pDetectionArmIndex);
 	};

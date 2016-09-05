@@ -141,10 +141,10 @@ public class CoboltLaserDevice extends LaserDeviceBase implements
 	{
 		try
 		{
-			System.out.print(pCommandString.replace('\r', ' ').trim() + " --> ");
+			// System.out.print(pCommandString.replace('\r', ' ').trim() + " --> ");
 			String lAnswer = mSerialDevice.getSerial()
 																		.writeStringAndGetAnswer(pCommandString);
-			System.out.println(lAnswer.trim());
+			// System.out.println(lAnswer.trim());
 			return lAnswer;
 		}
 		catch (SerialPortException e)

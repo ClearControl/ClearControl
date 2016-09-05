@@ -26,8 +26,7 @@ public class JTextFieldString extends JPanel
 	{
 		super();
 
-		mObjectVariable = new Variable<String>(	pValueName,
-																									pInicialValue)
+		mObjectVariable = new Variable<String>(pValueName, pInicialValue)
 		{
 			@Override
 			public String setEventHook(	final String pOldValue,

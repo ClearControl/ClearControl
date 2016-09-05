@@ -1,22 +1,18 @@
 package clearcontrol.microscope.lightsheet.timelapse.adaptive;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.timelapse.TimelapseBase;
 import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class AdaptiveAcquisitionTimer extends TimelapseBase implements
-																																	TimelapseInterface
+public class AdaptiveAcquisitionTimer extends TimelapseBase	implements
+																														TimelapseInterface
 {
 
 	private static final int cPower = 2;
@@ -161,7 +157,7 @@ public class AdaptiveAcquisitionTimer extends TimelapseBase implements
 
 	public StackInterface acquireMonitoringStack()
 	{
-		//TODO: fix this method
+		// TODO: fix this method
 		return mLastMonitoredStack;
 		/*LightSheetMicroscopeInterface lLSM = mStackAcquisition.getLightSheetMicroscope();
 
@@ -215,7 +211,7 @@ public class AdaptiveAcquisitionTimer extends TimelapseBase implements
 			e.printStackTrace();
 			return null;
 		}
-/**/
+		/**/
 	}
 
 }

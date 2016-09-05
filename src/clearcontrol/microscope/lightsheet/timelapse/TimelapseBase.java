@@ -2,11 +2,11 @@ package clearcontrol.microscope.lightsheet.timelapse;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.timing.Waiting;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 
-public class TimelapseBase	implements
-																	TimelapseInterface,
-																	Waiting
+public class TimelapseBase implements
+													TimelapseInterface,
+													WaitingInterface
 {
 
 	private volatile long mLastAcquisitionTimeInNS = System.nanoTime();

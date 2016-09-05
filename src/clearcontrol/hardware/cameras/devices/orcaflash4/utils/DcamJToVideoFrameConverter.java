@@ -13,7 +13,7 @@ import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.RTlibExecutors;
+import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.util.SingleUpdateTargetObjectVariable;
 import clearcontrol.device.VirtualDevice;
@@ -193,13 +193,13 @@ public class DcamJToVideoFrameConverter extends VirtualDevice	implements
 																															.getFrameTimeStampInNs());
 			lOffHeapPlanarStack.setNumberOfImagesPerPlane(lNumberOfImagesPerPlane);
 
-			RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
-																										Thread.NORM_PRIORITY - 1,
-																										Runtime.getRuntime()
-																														.availableProcessors(),
-																										Runtime.getRuntime()
-																														.availableProcessors(),
-																										Integer.MAX_VALUE);
+			ClearControlExecutors.getOrCreateThreadPoolExecutor(this,
+																													Thread.NORM_PRIORITY - 1,
+																													Runtime.getRuntime()
+																																	.availableProcessors(),
+																													Runtime.getRuntime()
+																																	.availableProcessors(),
+																													Integer.MAX_VALUE);
 
 			ArrayList<Future> lFutureList = new ArrayList<Future>((int) lNumberOfImages);
 

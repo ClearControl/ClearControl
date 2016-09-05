@@ -115,12 +115,12 @@ public class VideoWindow implements AutoCloseable
 
 	public int getWindowWidth()
 	{
-		return mClearGLWindow.getWidth();
+		return mClearGLWindow.getSurfaceWidth();
 	}
 
 	public int getWindowHeight()
 	{
-		return mClearGLWindow.getHeight();
+		return mClearGLWindow.getSurfaceHeight();
 	}
 
 	public void setWidth(final int pVideoWidth)

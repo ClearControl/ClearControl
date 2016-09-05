@@ -9,7 +9,13 @@ public class SandBox
 {
 
 	@Test
-	public void test() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	public void test() throws ClassNotFoundException,
+										NoSuchMethodException,
+										SecurityException,
+										InstantiationException,
+										IllegalAccessException,
+										IllegalArgumentException,
+										InvocationTargetException
 	{
 		Class<?> cl = Class.forName("javax.swing.JLabel");
 		Constructor<?> cons = cl.getConstructor(String.class);

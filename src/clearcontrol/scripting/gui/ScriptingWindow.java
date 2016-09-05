@@ -26,33 +26,34 @@ public class ScriptingWindow extends BorderPane
 													int pNumberOfRows,
 													int pNumberOfCols) throws HeadlessException
 	{
-		mScriptingPanel = new ScriptingPanel(	pTitle,
-																					pScriptingEngine,
+		mScriptingPanel = new ScriptingPanel(pTitle, pScriptingEngine,
 
-																							pNumberOfRows,
-																					pNumberOfCols);
+		pNumberOfRows, pNumberOfCols);
 		final SwingNode node = new SwingNode();
 
-		sceneProperty().addListener( new ChangeListener< Scene >()
+		sceneProperty().addListener(new ChangeListener<Scene>()
 		{
-			@Override public void changed( ObservableValue< ? extends Scene > observable, Scene oldValue, Scene newValue )
+			@Override
+			public void changed(ObservableValue<? extends Scene> observable,
+													Scene oldValue,
+													Scene newValue)
 			{
-				if(newValue != null) {
-					node.setContent( mScriptingPanel );
-					setCenter( node );
-					sceneProperty().removeListener( this );
+				if (newValue != null)
+				{
+					node.setContent(mScriptingPanel);
+					setCenter(node);
 				}
 			}
-		} );
+		});
 
-		focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-			if(newValue)
-				node.setContent( mScriptingPanel );
-		} );
+		focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue)
+				node.setContent(mScriptingPanel);
+		});
 
-		setOnMouseClicked( event -> {
+		setOnMouseClicked(event -> {
 			this.requestFocus();
-		} );
+		});
 	}
 
 	public void loadLastLoadedScriptFile()

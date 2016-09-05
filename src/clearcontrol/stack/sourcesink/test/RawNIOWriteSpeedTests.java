@@ -45,8 +45,6 @@ public class RawNIOWriteSpeedTests
 
 		System.out.format("speed: %g \n", lSpeed);
 
-
-
 	}
 
 }

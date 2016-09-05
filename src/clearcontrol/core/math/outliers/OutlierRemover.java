@@ -73,8 +73,8 @@ public class OutlierRemover
 		for (final Pair<O, Double> lValuedObject : pDataPoints)
 			if (lValuedObject.getValue() > lLowerBound && lValuedObject.getValue() < lUpperBound)
 				lResultList.add(lValuedObject);
-			else
-				System.out.println("removed: " + lValuedObject);
+		/*else
+			System.out.println("removed: " + lValuedObject);/**/
 
 		return lResultList;
 	}

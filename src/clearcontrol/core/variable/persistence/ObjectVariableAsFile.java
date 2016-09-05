@@ -15,7 +15,7 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 
 public class ObjectVariableAsFile<O> extends Variable<O> implements
-																															Closeable
+																												Closeable
 
 {
 	private volatile long mCachedReferenceFileSignature = Long.MIN_VALUE;

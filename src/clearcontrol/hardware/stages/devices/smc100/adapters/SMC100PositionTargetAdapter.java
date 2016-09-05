@@ -8,8 +8,8 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.stages.devices.smc100.SMC100StageDevice;
 
 public class SMC100PositionTargetAdapter extends
-																	SerialDeviceAdapterAdapter<Double> implements
-																																		SerialTextDeviceAdapter<Double>
+																				SerialDeviceAdapterAdapter<Double> implements
+																																					SerialTextDeviceAdapter<Double>
 {
 	protected static final double cEpsilon = 0.1; // 100nm
 
@@ -28,8 +28,6 @@ public class SMC100PositionTargetAdapter extends
 		mMinPositionVariable = pSmc100StageDevice.getMinPositionVariable(0);
 		mMaxPositionVariable = pSmc100StageDevice.getMaxPositionVariable(0);
 	}
-
-
 
 	@Override
 	public byte[] getSetValueCommandMessage(Double pOldValue,

@@ -17,8 +17,7 @@ public class JLabelString extends JLabel
 		super(pInicialValue);
 		mThis = this;
 
-		mStringVariable = new Variable<String>(	pLabelName,
-																									pInicialValue)
+		mStringVariable = new Variable<String>(pLabelName, pInicialValue)
 		{
 			@Override
 			public String setEventHook(	final String pOldValue,

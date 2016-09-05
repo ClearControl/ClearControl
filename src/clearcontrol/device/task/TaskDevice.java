@@ -5,8 +5,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.RTlibExecutors;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.concurrent.executors.ClearControlExecutors;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.startstop.SignalStartStopDevice;
@@ -15,7 +15,7 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 																															Runnable,
 																															OpenCloseDeviceInterface,
 																															AsynchronousExecutorServiceAccess,
-																															Loggable
+																															LoggingInterface
 {
 
 	private final Variable<Boolean> mIsRunningVariable;
@@ -39,11 +39,11 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 		mLastExceptionVariable = new Variable<Throwable>(	pDeviceName + "LastException",
 																											null);
 
-		RTlibExecutors.getOrCreateThreadPoolExecutor(	this,
-																									pThreadPriority,
-																									1,
-																									1,
-																									Integer.MAX_VALUE);
+		ClearControlExecutors.getOrCreateThreadPoolExecutor(this,
+																												pThreadPriority,
+																												1,
+																												1,
+																												Integer.MAX_VALUE);
 	}
 
 	public Variable<Boolean> getIsRunningVariable()

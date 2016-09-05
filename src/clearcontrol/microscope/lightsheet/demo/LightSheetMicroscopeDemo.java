@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.demo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -201,13 +201,14 @@ public class LightSheetMicroscopeDemo
 		}
 
 		AcquisitionStateManager lAddAcquisitionStateManager = lLightSheetMicroscope.addAcquisitionStateManager();
-		
+
 		lLightSheetMicroscope.addInteractiveAcquisition(lAddAcquisitionStateManager);
 		lLightSheetMicroscope.addCalibrator();
 
 		// setting up scope GUI:
 
 		LightSheetMicroscopeGUI lMicroscopeGUI = new LightSheetMicroscopeGUI(	lLightSheetMicroscope,
+																																					true,
 																																					true);
 
 		lMicroscopeGUI.addGroovyScripting("lsm");

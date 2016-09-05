@@ -4,12 +4,12 @@ import org.ejml.data.DenseMatrix64F;
 
 import asdk.AlpaoDeformableMirror;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.core.log.Loggable;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.slm.slms.DeformableMirrorDevice;
 
 public class AlpaoDMDevice extends DeformableMirrorDevice	implements
-																													Loggable
+																													LoggingInterface
 {
 	private static final int cFullMatrixWidthHeight = 11;
 	private static final int cActuatorResolution = 2 << 14;
@@ -55,7 +55,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice	implements
 		{
 			final boolean lOpen = mAlpaoDeformableMirror.open();
 			mNumberOfActuatorsVariable = new Variable<Double>("NumberOfActuators",
-																															(double) mAlpaoDeformableMirror.getNumberOfActuators());
+																												(double) mAlpaoDeformableMirror.getNumberOfActuators());
 			return lOpen;
 		}
 		catch (final Throwable e)

@@ -19,6 +19,7 @@ import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.imglib2.ImageJStackDisplay;
+import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
 import coremem.types.NativeTypeEnum;
 
@@ -403,12 +404,12 @@ public class Stack2DDisplay extends VirtualDevice	implements
 	{
 		return mVideoWindow;
 	}
-	
+
 	public void setVisible(final boolean pIsVisible)
 	{
 		mVideoWindow.setVisible(pIsVisible);
 	}
-	
+
 	public boolean isVisible()
 	{
 		return mVideoWindow.isVisible();
@@ -451,4 +452,13 @@ public class Stack2DDisplay extends VirtualDevice	implements
 		mVideoWindow.disableClose();
 	}
 
+	/**
+	 * Gets GL window for handling size and position.
+	 * 
+	 * @return the GL window
+	 */
+	public ClearGLWindow getGLWindow()
+	{
+		return mVideoWindow.getGLWindow();
+	}
 }

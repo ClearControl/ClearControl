@@ -2,7 +2,7 @@ package clearcontrol.device.switches.gui.jfx;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.switches.SwitchingDeviceInterface;
-import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 
 public class SwitchingDevicePanel extends OnOffArrayPane
 {

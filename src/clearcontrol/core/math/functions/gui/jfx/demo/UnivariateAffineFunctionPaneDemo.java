@@ -27,7 +27,7 @@ public class UnivariateAffineFunctionPaneDemo extends Application
 		});
 
 		UnivariateAffineFunctionPane lUnivariateAffineFunctionPane = new UnivariateAffineFunctionPane("MyFunction",
-		                                                                                              lFunctionVariable);
+																																																	lFunctionVariable);
 
 		root.getChildren().add(lUnivariateAffineFunctionPane);
 

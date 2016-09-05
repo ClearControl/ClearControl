@@ -18,25 +18,24 @@ public class LineChartSample extends Application
 		// defining the axes
 		final NumberAxis xAxis = new NumberAxis();
 		final NumberAxis yAxis = new NumberAxis();
-		
+
 		xAxis.setLabel("Number of Month");
 		xAxis.setSide(Side.TOP);
 		xAxis.setAnimated(false);
-		
+
 		yAxis.setAnimated(false);
-		
+
 		// creating the chart
-		final LineChart<Number, Number> lLineChart = new LineChart<Number, Number>(xAxis,
-																																							yAxis);
-		
+		final LineChart<Number, Number> lLineChart = new LineChart<Number, Number>(	xAxis,
+																																								yAxis);
+
 		lLineChart.setCreateSymbols(false);
 
 		lLineChart.setTitle("Stock Monitoring, 2010");
 		// defining a series
 		XYChart.Series<Number, Number> series = new XYChart.Series<>();
 		series.setName("My portfolio");
-		
-		
+
 		// populating the series with data
 		series.getData().add(new XYChart.Data<Number, Number>(1, 23));
 		series.getData().add(new XYChart.Data<Number, Number>(2, 14));

@@ -1,8 +1,7 @@
 package clearcontrol.microscope.lightsheet.component.detection;
 
-import static java.lang.Math.round;
-
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -13,7 +12,8 @@ import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
 public class DetectionArm extends VirtualDevice	implements
-																								DetectionArmInterface
+																								DetectionArmInterface,
+																								LoggingInterface
 {
 
 	private StackCameraDeviceInterface mStackCameraDevice;
@@ -21,10 +21,8 @@ public class DetectionArm extends VirtualDevice	implements
 	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
 																																												0.0);
 
-
 	private final Variable<UnivariateAffineFunction> mZFunction = new Variable<>(	"DetectionZFunction",
 																																								new UnivariateAffineFunction());
-
 
 	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
 																																				0);
@@ -41,9 +39,6 @@ public class DetectionArm extends VirtualDevice	implements
 		resetFunctions();
 		resetBounds();
 
-	
-
-
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
 			// System.out.println(getName() + ": new Z value: " + n);
@@ -51,12 +46,11 @@ public class DetectionArm extends VirtualDevice	implements
 			notifyListeners(this);
 		};
 
-
 		mDetectionFocusZ.addSetListener(lVariableListener);
 
 		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (	o,
 																																											n) -> {
-			System.out.println(getName() + ": new Z function: " + n);
+			info("new Z function: " + n);
 			resetBounds();
 			update();
 			notifyListeners(this);
@@ -78,7 +72,7 @@ public class DetectionArm extends VirtualDevice	implements
 	@Override
 	public void resetFunctions()
 	{
-	
+
 	}
 
 	@Override
@@ -105,8 +99,6 @@ public class DetectionArm extends VirtualDevice	implements
 		return mZFunction;
 	}
 
-
-
 	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
 	{
 		// Analog outputs before exposure:
@@ -127,6 +119,8 @@ public class DetectionArm extends VirtualDevice	implements
 	{
 		synchronized (this)
 		{
+			info("Updating: " + getName());
+
 			double lZFocus = mDetectionFocusZ.get().doubleValue();
 			float lZFocusTransformed = (float) mZFunction.get()
 																										.value(lZFocus);

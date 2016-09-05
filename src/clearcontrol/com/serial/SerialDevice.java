@@ -8,8 +8,8 @@ import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import jssc.SerialPortException;
 
-public class SerialDevice extends VirtualDevice implements
-																										OpenCloseDeviceInterface
+public class SerialDevice extends VirtualDevice	implements
+																								OpenCloseDeviceInterface
 {
 
 	private final Serial mSerial;
@@ -45,7 +45,7 @@ public class SerialDevice extends VirtualDevice implements
 	}
 
 	public <O> Variable<O> addSerialVariable(	final String pVariableName,
-																									final SerialBinaryDeviceAdapter<O> pSerialBinaryDevice)
+																						final SerialBinaryDeviceAdapter<O> pSerialBinaryDevice)
 	{
 		final Variable<O> lObjectVariable = new Variable<O>(pVariableName)
 		{
@@ -140,7 +140,7 @@ public class SerialDevice extends VirtualDevice implements
 	}
 
 	public <O> Variable<O> addSerialVariable(	final String pVariableName,
-																									final SerialTextDeviceAdapter<O> pSerialTextDeviceAdapter)
+																						final SerialTextDeviceAdapter<O> pSerialTextDeviceAdapter)
 	{
 		final Variable<O> lObjectVariable = new Variable<O>(pVariableName)
 		{

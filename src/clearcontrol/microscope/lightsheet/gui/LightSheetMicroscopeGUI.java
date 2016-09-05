@@ -4,8 +4,6 @@ import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.AcquisitionStateManagerPanel;
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
-import clearcontrol.microscope.lightsheet.autopilot.gui.jfx.AutoPilotPanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -13,21 +11,23 @@ import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionA
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
 import clearcontrol.microscope.lightsheet.timelapse.gui.jfx.TimelapsePanel;
-import clearcontrol.microscope.stacks.StackRecyclerManager;
-import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import halcyon.model.node.HalcyonNode;
 
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
 
 	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
-																	boolean p3DView)
+																	boolean p2DDisplay,
+																	boolean p3DDisplay)
 	{
-		super(pLightSheetMicroscope, LSMNodeType.values(), p3DView);
+		super(pLightSheetMicroscope,
+					LSMNodeType.values(),
+					p2DDisplay,
+					p3DDisplay);
 
 		addHalcyonMappingEntry(	LightSheetInterface.class,
 														LightSheetPanel.class,
@@ -37,6 +37,10 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 														DetectionArmPanel.class,
 														LSMNodeType.DetectionArm);
 
+		addHalcyonMappingEntry(	InteractiveAcquisition.class,
+														InteractiveAcquisitionPanel.class,
+														MicroscopeNodeType.Acquisition);
+
 		addHalcyonMappingEntry(	AcquisitionStateManager.class,
 														AcquisitionStateManagerPanel.class,
 														MicroscopeNodeType.Acquisition);
@@ -45,12 +49,13 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 														TimelapsePanel.class,
 														MicroscopeNodeType.Acquisition);
 
-		addHalcyonMappingEntry(	AutoPilotInterface.class,
+		/*addHalcyonMappingEntry(	AutoPilotInterface.class,
 														AutoPilotPanel.class,
-														MicroscopeNodeType.Acquisition);
+														MicroscopeNodeType.Acquisition);/**/
 
 	}
 
+	@Override
 	public void generate()
 	{
 		super.generate();

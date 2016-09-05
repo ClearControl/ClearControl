@@ -1,7 +1,9 @@
 package clearcontrol.hardware.stages;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
@@ -16,7 +18,8 @@ import clearcontrol.device.openclose.OpenCloseDeviceInterface;
  */
 public interface StageDeviceInterface	extends
 																			NameableInterface,
-																			OpenCloseDeviceInterface
+																			OpenCloseDeviceInterface,
+																			WaitingInterface
 {
 	/**
 	 * Returns the stage type.
@@ -56,7 +59,10 @@ public interface StageDeviceInterface	extends
 	 * @param pDOFIndex
 	 *          DOF's index
 	 */
-	void reset(int pDOFIndex);
+	public default void reset(int pIndex)
+	{
+		getResetVariable(pIndex).setEdge(false, true);
+	}
 
 	/**
 	 * Homes a given DOF.
@@ -64,7 +70,10 @@ public interface StageDeviceInterface	extends
 	 * @param pDOFIndex
 	 *          DOF's index
 	 */
-	void home(int pDOFIndex);
+	public default void home(int pIndex)
+	{
+		getHomingVariable(pIndex).setEdge(false, true);
+	}
 
 	/**
 	 * Enables a given DOF.
@@ -72,7 +81,10 @@ public interface StageDeviceInterface	extends
 	 * @param pDOFIndex
 	 *          DOF's index
 	 */
-	void enable(int pDOFIndex);
+	public default void enable(int pIndex)
+	{
+		getEnableVariable(pIndex).setEdge(false, true);
+	}
 
 	/**
 	 * Sets the target position of a DOF.
@@ -82,7 +94,10 @@ public interface StageDeviceInterface	extends
 	 * @param pPosition
 	 *          DOF's new target position
 	 */
-	void setTargetPosition(int pIndex, double pPosition);
+	public default void setTargetPosition(int pIndex, double pPosition)
+	{
+		getTargetPositionVariable(pIndex).set(pPosition);
+	}
 
 	/**
 	 * Returns the current DOF's target position.
@@ -91,7 +106,10 @@ public interface StageDeviceInterface	extends
 	 *          DOF's index
 	 * @return current position
 	 */
-	double getTargetPosition(int pIndex);
+	public default double getTargetPosition(int pIndex)
+	{
+		return getTargetPositionVariable(pIndex).get();
+	}
 
 	/**
 	 * Returns the current DOF's position
@@ -100,7 +118,10 @@ public interface StageDeviceInterface	extends
 	 *          DOF index
 	 * @return current position
 	 */
-	double getCurrentPosition(int pDOFIndex);
+	public default double getCurrentPosition(int pIndex)
+	{
+		return getCurrentPositionVariable(pIndex).get();
+	}
 
 	/**
 	 * Waits for DOF to be ready (finish last movement).
@@ -111,11 +132,16 @@ public interface StageDeviceInterface	extends
 	 *          timeout time
 	 * @param pTimeUnit
 	 *          timeout unit
-	 * @return true if fiished before timeout
+	 * @return true if finished before timeout
 	 */
-	Boolean waitToBeReady(int pDOFIndex,
-												long pTimeOut,
-												TimeUnit pTimeUnit);
+	public default Boolean waitToBeReady(	int pIndex,
+																				long pTimeOut,
+																				TimeUnit pTimeUnit)
+	{
+		return waitFor(	pTimeOut,
+										pTimeUnit,
+										() -> getReadyVariable(pIndex).get());
+	}
 
 	/**
 	 * Waits for all DOFs to be ready (finish all last movement)
@@ -126,7 +152,75 @@ public interface StageDeviceInterface	extends
 	 *          timeout unit
 	 * @return
 	 */
-	Boolean waitToBeReady(long pTimeOut, TimeUnit pSeconds);
+	public default Boolean waitToBeReady(	long pTimeOut,
+																				TimeUnit pTimeUnit)
+	{
+		int lNumberOfDOFs = getNumberOfDOFs();
+
+		Callable<Boolean> lCallable = () -> {
+			for (int i = 0; i < lNumberOfDOFs; i++)
+				if (!getReadyVariable(i).get())
+					return false;
+			return true;
+		};
+
+		return waitFor(pTimeOut, pTimeUnit, lCallable);
+	}
+
+	/**
+	 * Waits for a specific DOF (index) to arrive at the destination within an
+	 * epsilon distance radius. The DOF is given a certain time to arrive, if it
+	 * takes longer there is a timeout.
+	 * 
+	 * @param pIndex
+	 *          DOF index
+	 * @param pEpsilon
+	 *          epsilon (radius)
+	 * @param pTimeOut
+	 *          timeout
+	 * @param pTimeUnit
+	 *          timeout unit
+	 * @return true of no timeout occurred
+	 */
+	public default Boolean waitToArrive(int pIndex,
+																			double pEpsilon,
+																			long pTimeOut,
+																			TimeUnit pTimeUnit)
+	{
+		return waitFor(	pTimeOut,
+										pTimeUnit,
+										() -> {
+											double lError = Math.abs(getCurrentPosition(pIndex) - getTargetPosition(pIndex));
+											return lError < pEpsilon;
+										});
+	}
+
+	/**
+	 * Waits for all DOFs to arrive at the destination within an epsilon distance
+	 * radius. The DOFs are given a certain time (per DOF) to arrive, if it takes
+	 * longer there is a timeout.
+	 * 
+	 * @param pEpsilon
+	 *          epsilon (radius)
+	 * @param pTimeOut
+	 *          timeout
+	 * @param pTimeUnit
+	 *          timeout unit
+	 * @return true if no timeout occurred
+	 */
+	public default Boolean waitToArrive(double pEpsilon,
+																			long pTimeOut,
+																			TimeUnit pTimeUnit)
+	{
+		int lNumberOfDOFs = getNumberOfDOFs();
+
+		boolean lTimeOutFlag = true;
+
+		for (int i = 0; i < lNumberOfDOFs; i++)
+			lTimeOutFlag &= waitToArrive(pEpsilon, pTimeOut, pTimeUnit);
+
+		return lTimeOutFlag;
+	}
 
 	/**
 	 * Returns min position variable for a given DOF index.
@@ -139,51 +233,73 @@ public interface StageDeviceInterface	extends
 
 	/**
 	 * Returns max position variable for a given DOF index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return max position
 	 */
 	Variable<Double> getMaxPositionVariable(int pDOFIndex);
 
 	/**
 	 * Returns enable variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Boolean> getEnableVariable(int pDOFIndex);
 
 	/**
 	 * Returns the target position variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Double> getTargetPositionVariable(int pDOFIndex);
 
 	/**
 	 * Returns the current position variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Double> getCurrentPositionVariable(int pDOFIndex);
 
 	/**
 	 * Returns the ready variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Boolean> getReadyVariable(int pDOFIndex);
 
 	/**
 	 * Returns the homing variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Boolean> getHomingVariable(int pDOFIndex);
 
 	/**
 	 * Returns the stop variable for a given DOF's index.
-	 * @param pDOFIndex DOF's index
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
 	 * @return
 	 */
 	Variable<Boolean> getStopVariable(int pDOFIndex);
+
+	/**
+	 * Returns the reset variable for a given DOF's index.
+	 * 
+	 * @param pIndex
+	 * @return
+	 */
+	Variable<Boolean> getResetVariable(int pIndex);
 
 }

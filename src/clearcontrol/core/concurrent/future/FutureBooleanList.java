@@ -6,7 +6,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class FutureBooleanList implements Future<Boolean>
+import clearcontrol.core.log.LoggingInterface;
+
+public class FutureBooleanList implements
+															Future<Boolean>,
+															LoggingInterface
 {
 
 	LinkedHashMap<Future<Boolean>, String> mFutureMap = new LinkedHashMap<Future<Boolean>, String>();
@@ -79,8 +83,8 @@ public class FutureBooleanList implements Future<Boolean>
 			}
 			catch (TimeoutException e)
 			{
-				System.out.format("Timeout caused by: %s \n",
-													mFutureMap.get(lFuture).trim());
+				warning("Timeout caused by: %s \n", mFutureMap.get(lFuture)
+																											.trim());
 
 				throw e;
 			}

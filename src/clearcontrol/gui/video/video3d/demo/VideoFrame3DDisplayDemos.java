@@ -10,10 +10,6 @@ import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcuda.CudaContext;
-import clearcuda.CudaDevice;
-import clearcuda.CudaHostPointer;
-import clearcuda.memory.CudaMemory;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;
@@ -52,8 +48,12 @@ public class VideoFrame3DDisplayDemos
 		
 		
 		lVideoFrame3DDisplay.open();
+		lVideoFrame3DDisplay.setVisible(true);
 
-		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
+		/*while (!lVideoFrame3DDisplay.isShowing())
+			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);/**/
+
+		for (int i = 0; i < 32000; i++)
 		{
 
 			lContiguousBuffer.rewind();
@@ -71,79 +71,22 @@ public class VideoFrame3DDisplayDemos
 
 			lFrameReferenceVariable.set(lStack);
 			Thread.sleep(10);
-		}
 
-		lVideoFrame3DDisplay.close();
-
-		// Thread.sleep(1000);
-
-	}
-
-	@Test
-	public void demoPinnedMemoryStackNoRecycler() throws InterruptedException
-	{
-
-		final CudaDevice lCudaDevice = new CudaDevice(0);
-		final CudaContext lCudaContext = new CudaContext(	lCudaDevice,
-																											false);
-
-		final long lResolutionX = 320;
-		final long lResolutionY = lResolutionX + 1;
-		final long lResolutionZ = lResolutionX / 2;
-
-		final CudaHostPointer lCudaHostPointer = CudaHostPointer.mallocPinned(2		* lResolutionX
-																																							* lResolutionY
-																																							* lResolutionZ,
-																																					false,
-																																					false);
-		final ContiguousMemoryInterface lContiguousMemory = new CudaMemory(lCudaHostPointer);
-
-		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
-
-		@SuppressWarnings("unchecked")
-		final OffHeapPlanarStack lStack = OffHeapPlanarStack.createStack(	lContiguousMemory,
-																																			lResolutionX,
-																																			lResolutionY,
-																																			lResolutionZ);
-
-		final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
-
-		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
-
-		lVideoFrame3DDisplay.open();
-
-		for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
-		{
-
-			lContiguousBuffer.rewind();
-			for (int z = 0; z < lResolutionZ; z++)
+			if (!lVideoFrame3DDisplay.isVisible())
 			{
-				for (int y = 0; y < lResolutionY; y++)
-				{
-					for (int x = 0; x < lResolutionX; x++)
-					{
-						final short lValue = (short) (i + x ^ y ^ z);
-						lContiguousBuffer.writeShort(lValue);
-					}
-				}
-			}/**/
-
-			lFrameReferenceVariable.set(lStack);
-			Thread.sleep(1);
+				System.out.println("NOT SHOWING!");
+				break;
+			}
 		}
 
 		lVideoFrame3DDisplay.close();
 
-		lCudaContext.close();
-
-		lCudaDevice.close();
-
-		// Thread.sleep(1000);
+		Thread.sleep(1000);
 
 	}
 
 	@Test
-	public void demoStackRecycler() throws InterruptedException
+	public void demoWithStackRecycler() throws InterruptedException
 	{
 
 		for (int r = 0; r < 3; r++)
@@ -162,8 +105,9 @@ public class VideoFrame3DDisplayDemos
 			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
 
 			lVideoFrame3DDisplay.open();
+			lVideoFrame3DDisplay.setVisible(true);
 
-			for (int i = 0; i < 32000 && lVideoFrame3DDisplay.isShowing(); i++)
+			for (int i = 0; i < 32000; i++)
 			{
 
 				final StackInterface lStack = OffHeapPlanarStack.getOrWaitWithRecycler(	lRecycler,
@@ -194,6 +138,9 @@ public class VideoFrame3DDisplayDemos
 					System.out.println("lRecycler.getNumberOfAvailableObjects()=" + lRecycler.getNumberOfAvailableObjects());
 					System.out.println("lRecycler.getNumberOfLiveObjects()=" + lRecycler.getNumberOfLiveObjects());
 				}
+
+				if (!lVideoFrame3DDisplay.isVisible())
+					break;
 			}
 
 			lVideoFrame3DDisplay.close();

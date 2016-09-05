@@ -105,7 +105,7 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice implements
 	@Override
 	public String getSwitchName(int pSwitchIndex)
 	{
-		return "optical switch "+pSwitchIndex;
+		return "optical switch " + pSwitchIndex;
 	}
 
 }

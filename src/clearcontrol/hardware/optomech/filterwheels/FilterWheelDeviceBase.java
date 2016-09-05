@@ -9,16 +9,17 @@ public abstract class FilterWheelDeviceBase	extends
 {
 	protected Variable<Integer> mFilterSpeedVariable = null;
 
-	public FilterWheelDeviceBase(String pDeviceName, int[] pValidPositions)
+	public FilterWheelDeviceBase(	String pDeviceName,
+																int[] pValidPositions)
 	{
-		super(pDeviceName,pValidPositions);
+		super(pDeviceName, pValidPositions);
 		mFilterSpeedVariable = new Variable<Integer>(	"FilterWheelSpeed",
 																									0);
 	}
-	
+
 	public FilterWheelDeviceBase(String pDeviceName, int pDeviceIndex)
 	{
-		super("filterwheel",pDeviceName,pDeviceIndex);
+		super("filterwheel", pDeviceName, pDeviceIndex);
 		mFilterSpeedVariable = new Variable<Integer>(	"FilterWheelSpeed",
 																									0);
 	}

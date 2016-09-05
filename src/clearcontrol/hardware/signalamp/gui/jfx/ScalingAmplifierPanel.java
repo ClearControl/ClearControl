@@ -1,6 +1,6 @@
 package clearcontrol.hardware.signalamp.gui.jfx;
 
-import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
+import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
 
 public class ScalingAmplifierPanel extends CustomVariablePane

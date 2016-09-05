@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
-public class LaserDeviceBase extends VirtualDevice	implements
-																												LaserDeviceInterface
+public class LaserDeviceBase extends VirtualDevice implements
+																									LaserDeviceInterface
 {
 
 	private final ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(1);

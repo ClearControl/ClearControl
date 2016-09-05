@@ -7,7 +7,7 @@ import clearcontrol.hardware.signalgen.staves.StaveInterface;
 import clearcontrol.hardware.signalgen.staves.ZeroStave;
 
 public class Movement extends NameableBase implements
-																							MovementInterface
+																					MovementInterface
 {
 
 	public static final int cDefaultNumberOfStavesPerMovement = 16;

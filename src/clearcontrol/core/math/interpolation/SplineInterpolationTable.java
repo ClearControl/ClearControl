@@ -233,7 +233,7 @@ public class SplineInterpolationTable
 	{
 		getRow(pRowIndex).setY(pColumnIndex, pValue);
 	}
-	
+
 	/**
 	 * Sets the Y value for a given column and row index.
 	 * 
@@ -293,8 +293,6 @@ public class SplineInterpolationTable
 			for (int r = 0; r < lNumberOfRows; r++)
 				getRow(r).setY(c, pValue);
 	}
-
-
 
 	/**
 	 * Returns true if this table interpolation is up to date.

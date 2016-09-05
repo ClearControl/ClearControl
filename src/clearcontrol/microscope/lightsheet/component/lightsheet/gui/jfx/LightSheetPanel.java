@@ -1,7 +1,7 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx;
 
-import clearcontrol.gui.jfx.customvarpanel.CustomVariablePane;
-import clearcontrol.gui.jfx.onoff.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
 public class LightSheetPanel extends CustomVariablePane

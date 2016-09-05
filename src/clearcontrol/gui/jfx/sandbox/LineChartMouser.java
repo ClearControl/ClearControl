@@ -2,9 +2,14 @@ package clearcontrol.gui.jfx.sandbox;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.collections.*;
-import javafx.scene.*;
-import javafx.scene.chart.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;

@@ -7,15 +7,16 @@ import clearcontrol.device.startstop.StartableLoopDevice;
 
 public abstract class TemperatureSensorDeviceBase	extends
 																									StartableLoopDevice	implements
-																																								TemperatureSensorDeviceInterface
+																																			TemperatureSensorDeviceInterface
 {
 
 	private Variable<Double> mTemperatureVariable;
 
 	public TemperatureSensorDeviceBase(final String pDeviceName)
 	{
-		super(pDeviceName, 500.0 ,TimeUnit.MILLISECONDS);
-		mTemperatureVariable = new Variable<Double>(pDeviceName + "TemperatureInCelcius");
+		super(pDeviceName, 500.0, TimeUnit.MILLISECONDS);
+		mTemperatureVariable = new Variable<Double>(pDeviceName + "TemperatureInCelcius",
+																								Double.NaN);
 	}
 
 	@Override

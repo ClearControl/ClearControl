@@ -69,7 +69,7 @@ public abstract class SIMAdapter extends
 
 	@Override
 	public byte[] getSetValueCommandMessage(Number pOldValue,
-	                                        Number pNewValue)
+																					Number pNewValue)
 	{
 
 		final String lSetCommandString = String.format(	ProtocolSIM.cSetCommand,

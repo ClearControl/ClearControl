@@ -14,6 +14,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.InvertibleFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -26,7 +27,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
  * 
  * @author royer
  */
-public class MachineConfiguration
+public class MachineConfiguration implements LoggingInterface
 {
 	private static final String cComments = "RTlib machine configuration file";
 	private static final MachineConfiguration sConfiguration = new MachineConfiguration();
@@ -307,7 +308,7 @@ public class MachineConfiguration
 
 		if (lAffineFunctionString == null)
 		{
-			System.out.println("Cannot find following function def in configuration file: " + pFunctionName);
+			warning("Cannot find following function def in configuration file: " + pFunctionName);
 			UnivariateAffineFunction lUnivariateAffineFunction = new UnivariateAffineFunction(1,
 																																												0);
 			return lUnivariateAffineFunction;
@@ -360,7 +361,7 @@ public class MachineConfiguration
 
 		if (lAffineFunctionString == null)
 		{
-			System.out.println("Cannot find following bounds def in configuration file: " + pBoundsName);
+			warning("Cannot find following bounds def in configuration file: " + pBoundsName);
 			pVariable.setMinMax(-100.0, 100.0);
 
 			return;
@@ -380,15 +381,15 @@ public class MachineConfiguration
 
 			if (lMin == null || lMax == null)
 			{
-				System.out.println("Cannot find following bounds def in configuration file: " + pBoundsName);
+				warning("Cannot find following bounds def in configuration file: " + pBoundsName);
 				pVariable.setMinMax(-100.0, 100.0);
 				return;
 			}
 
 			if (pFunction == null)
 			{
-				System.out.format("Function provided for setting bounds of %s is null! \n",
-													pBoundsName);
+				warning("Function provided for setting bounds of %s is null! \n",
+								pBoundsName);
 				pVariable.setMinMax(-100.0, 100.0);
 				return;
 			}

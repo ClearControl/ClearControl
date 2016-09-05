@@ -41,8 +41,8 @@ public class JButtonBoolean extends JButton
 	{
 		mThis = this;
 		mBooleanVariable = new Variable<Boolean>(	pOnLabel + "/"
-																												+ pOffLabel,
-																										pInitialState)
+																									+ pOffLabel,
+																							pInitialState)
 		{
 			@Override
 			public Boolean setEventHook(final Boolean pOldValue,

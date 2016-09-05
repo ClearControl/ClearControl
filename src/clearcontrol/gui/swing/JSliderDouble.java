@@ -93,8 +93,7 @@ public class JSliderDouble extends JPanel
 
 		mResolution = min(cMaxResolution, pResolution);
 
-		mSliderDoubleVariable = new Variable<Double>(	pValueName,
-																												pValue)
+		mSliderDoubleVariable = new Variable<Double>(pValueName, pValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,

@@ -3,9 +3,9 @@ package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 import java.util.ArrayList;
 import java.util.List;
 
-import clearcontrol.gui.jfx.singlechecklist.SingleCheckCell;
-import clearcontrol.gui.jfx.singlechecklist.SingleCheckCellManager;
-import clearcontrol.gui.jfx.singlechecklist.SingleCheckListView;
+import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCell;
+import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCellManager;
+import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckListView;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
@@ -22,8 +22,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
 /**
- * AcquisitionStateManagerPanel is a GUI element that displays information about
- * all acquisition states managed by a AcquisitionStateManager.
+ * Interactive2DAcquisitionPanel is a GUI element that displays information
+ * about all acquisition states managed by a LoggingManager.
  * 
  * @author royer
  */
@@ -143,6 +143,7 @@ public class AcquisitionStateManagerPanel	extends
 
 	}
 
+	@Override
 	protected void updateStateList(List<AcquisitionStateInterface<?>> pStateList)
 	{
 		Runnable lRunnable = () -> {

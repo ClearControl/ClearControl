@@ -10,6 +10,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -26,7 +27,8 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIllu
 
 public class LightSheet extends VirtualDevice	implements
 																							LightSheetInterface,
-																							AsynchronousExecutorServiceAccess
+																							AsynchronousExecutorServiceAccess,
+																							LoggingInterface
 {
 
 	private final Variable<UnivariateAffineFunction> mXFunction = new Variable<>(	"LightSheetXFunction",
@@ -158,7 +160,7 @@ public class LightSheet extends VirtualDevice	implements
 
 		@SuppressWarnings("rawtypes")
 		final VariableSetListener lVariableListener = (o, n) -> {
-			System.out.println(getName() + ": new variable value: " + n);
+			// System.out.println(getName() + ": new variable value: " + n);
 			update();
 			notifyListeners(this);
 		};
@@ -205,7 +207,7 @@ public class LightSheet extends VirtualDevice	implements
 		}
 
 		final VariableSetListener<?> lFunctionVariableListener = (o, n) -> {
-			System.out.println(getName() + ": new function: " + n);
+			info("new function: " + n);
 			resetBounds();
 			update();
 			notifyListeners(this);
@@ -448,7 +450,7 @@ public class LightSheet extends VirtualDevice	implements
 			if (mBeforeExposureMovement == null || mExposureMovement == null)
 				return;
 
-			System.out.println("Updating: " + getName());
+			info("Updating: " + getName());
 			final double lReadoutTimeInMicroseconds = getBeforeExposureMovementDuration(TimeUnit.MICROSECONDS);
 			final double lExposureMovementTimeInMicroseconds = getExposureMovementDuration(TimeUnit.MICROSECONDS);
 

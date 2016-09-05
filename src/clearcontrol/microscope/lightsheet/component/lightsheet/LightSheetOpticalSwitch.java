@@ -8,8 +8,8 @@ import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class LightSheetOpticalSwitch extends VirtualDevice	implements
-																																OpticalSwitchDeviceInterface
+public class LightSheetOpticalSwitch extends VirtualDevice implements
+																													OpticalSwitchDeviceInterface
 {
 
 	private final Variable<Boolean>[] mLightSheetOnOff;

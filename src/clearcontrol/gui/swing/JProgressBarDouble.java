@@ -25,7 +25,7 @@ public class JProgressBarDouble extends JProgressBar
 		mMax = pMax;
 
 		mJProgressBarDoubleVariable = new Variable<Double>(	pName,
-																															pInicialValue)
+																												pInicialValue)
 		{
 			@Override
 			public Double setEventHook(	final Double pOldValue,

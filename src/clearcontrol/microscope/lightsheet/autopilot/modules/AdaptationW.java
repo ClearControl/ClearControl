@@ -26,15 +26,14 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 															int pNumberOfSamples)
 	{
 		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable().get();
+		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
+																																					.get();
 
 		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
 																								.getDevice(	LightSheetInterface.class,
 																														pLightSheetIndex);
-		double lMinW = lLightSheetDevice.getWidthVariable()
-																		.getMin();
-		double lMaxW = lLightSheetDevice.getWidthVariable()
-																		.getMax();
+		double lMinW = lLightSheetDevice.getWidthVariable().getMin();
+		double lMaxW = lLightSheetDevice.getWidthVariable().getMax();
 		double lStepW = (lMaxW - lMinW) / (pNumberOfSamples - 1);
 
 		double lCurrentW = lLSM.getIW(pLightSheetIndex);
@@ -92,7 +91,8 @@ public class AdaptationW extends NDIteratorAdaptationModule	implements
 															ArrayList<Double> pArgMaxList)
 	{
 
-		int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable().get()
+		int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable()
+																					.get()
 																					.getBestDetectionArm(pControlPlaneIndex);
 
 		getAdaptator().getNewAcquisitionState()

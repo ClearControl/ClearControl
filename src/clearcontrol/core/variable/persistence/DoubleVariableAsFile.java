@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import clearcontrol.core.variable.Variable;
 
 public class DoubleVariableAsFile extends Variable<Double> implements
-																																Closeable
+																													Closeable
 
 {
 	private final ExecutorService mSingleThreadExecutor = Executors.newSingleThreadExecutor();

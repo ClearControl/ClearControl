@@ -57,8 +57,7 @@ public class ScoreVisualizer extends JPanel	implements
 			}
 		};
 
-		mScalingVariable = new Variable<Double>("ScalingVariable",
-																									1.0);
+		mScalingVariable = new Variable<Double>("ScalingVariable", 1.0);
 		mScalingVariable.addListener((VariableListener<Double>) lVariableListener);
 
 		mScoreVariable = new Variable<ScoreInterface>("ScoreVariable");

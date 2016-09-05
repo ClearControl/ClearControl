@@ -3,23 +3,23 @@ package clearcontrol.hardware.cameras.devices.sim.test;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.hardware.cameras.devices.sim.StackCameraDeviceSimulator;
-import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.sourcesink.RandomStackSource;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 public class StackCameraDeviceSimulatorTests
 {
 
 	@Test
-	public void test() throws IOException, InterruptedException, ExecutionException
+	public void test() throws IOException,
+										InterruptedException,
+										ExecutionException,
+										TimeoutException
 	{
 
 		Variable<Boolean> lTrigger = new Variable<Boolean>(	"CameraTrigger",
@@ -44,7 +44,7 @@ public class StackCameraDeviceSimulatorTests
 		lStackCameraDeviceSimulator.start();
 
 		lStackCameraDeviceSimulator.clearQueue();
-		
+
 		for (int i = 0; i < 20; i++)
 		{
 			lStackCameraDeviceSimulator.addCurrentStateToQueue();
@@ -52,14 +52,19 @@ public class StackCameraDeviceSimulatorTests
 
 		lStackCameraDeviceSimulator.finalizeQueue();
 
-		Future<Boolean> playQueue = lStackCameraDeviceSimulator.playQueue();
-
-		for (int i = 0; i < lStackCameraDeviceSimulator.getStackDepthVariable().get()+1; i++)
+		for (int j = 0; j < 10; j++)
 		{
-			lTrigger.setEdge(false, true);
+			Future<Boolean> lPlayQueue = lStackCameraDeviceSimulator.playQueue();
+
+			for (int i = 0; i < lStackCameraDeviceSimulator.getQueueLength(); i++)
+			{
+				lTrigger.setEdge(false, true);
+			}
+
+			System.out.println("waiting...");
+			lPlayQueue.get(20L, TimeUnit.SECONDS);
+			System.out.println(" ...done waiting.");
 		}
-		
-		System.out.println(playQueue.get());
 
 		lStackCameraDeviceSimulator.stop();
 

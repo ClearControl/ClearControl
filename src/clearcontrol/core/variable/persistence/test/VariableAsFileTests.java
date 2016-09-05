@@ -84,10 +84,8 @@ public class VariableAsFileTests
 																								"testVariableBundleAsFile");
 		System.out.println(lTempFile);
 
-		final Variable<Double> x1 = new Variable<Double>(	"x",
-																																	1.0);
-		final Variable<String> y1 = new Variable<String>(	"y",
-																																	"1");
+		final Variable<Double> x1 = new Variable<Double>("x", 1.0);
+		final Variable<String> y1 = new Variable<String>("y", "1");
 
 		final VariableBundleAsFile lVariableBundleAsFile1 = new VariableBundleAsFile(	"bundle",
 																																									lTempFile);
@@ -103,10 +101,8 @@ public class VariableAsFileTests
 
 		// Thread.sleep(10000000);
 
-		final Variable<Double> x2 = new Variable<Double>(	"x",
-																																	1.0);
-		final Variable<String> y2 = new Variable<String>(	"y",
-																																	"1");
+		final Variable<Double> x2 = new Variable<Double>("x", 1.0);
+		final Variable<String> y2 = new Variable<String>("y", "1");
 
 		final VariableBundleAsFile lVariableBundleAsFile2 = new VariableBundleAsFile(	"bundle",
 																																									lTempFile);
