@@ -16,8 +16,10 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
-import clearcontrol.microscope.lightsheet.timelapse.FixedIntervalTimelapse;
 import clearcontrol.microscope.state.AcquisitionStateManager;
+import clearcontrol.microscope.timelapse.Timelapse;
+import clearcontrol.microscope.timelapse.TimelapseInterface;
+import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 
 public class LightSheetMicroscope extends MicroscopeBase implements
 																												StateQueueDeviceInterface,
@@ -57,11 +59,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 		return mAcquisitionStateManager;
 	}
 
-	public FixedIntervalTimelapse addTimelapse()
+	public TimelapseInterface addTimelapse()
 	{
-		FixedIntervalTimelapse lFixedIntervalTimelapse = new FixedIntervalTimelapse();
-		addDevice(0, lFixedIntervalTimelapse);
-		return lFixedIntervalTimelapse;
+		TimelapseInterface lTimelapseInterface = new Timelapse();
+		addDevice(0, lTimelapseInterface);
+		return lTimelapseInterface;
 	}
 
 	/*public AutoPilotInterface addAutoPilot()

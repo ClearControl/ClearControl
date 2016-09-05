@@ -8,7 +8,7 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.task.LoopTaskDevice;
+import clearcontrol.device.task.PeriodicLoopTaskDevice;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
@@ -18,7 +18,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 
-public class InteractiveAcquisition extends LoopTaskDevice implements
+public class InteractiveAcquisition extends PeriodicLoopTaskDevice implements
 																													LoggingInterface
 {
 

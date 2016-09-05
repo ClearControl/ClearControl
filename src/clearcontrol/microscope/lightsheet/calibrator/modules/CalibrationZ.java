@@ -128,7 +128,7 @@ public class CalibrationZ
 					lPlots[d].ensureUpToDate();
 				}
 
-			if (ScriptingEngine.isCancelRequestedStatic() || mCalibrator.isStopped())
+			if (ScriptingEngine.isCancelRequestedStatic() || !mCalibrator.isRunning())
 				return false;
 		}
 

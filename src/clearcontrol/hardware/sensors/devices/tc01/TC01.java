@@ -28,7 +28,7 @@ public class TC01 extends TemperatureSensorDeviceBase
 	}
 
 	@Override
-	protected boolean loop()
+	public boolean loop()
 	{
 		if (!mIsDevicePresent)
 			return false;

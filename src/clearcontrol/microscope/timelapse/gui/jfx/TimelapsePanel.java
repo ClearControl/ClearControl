@@ -1,7 +1,7 @@
-package clearcontrol.microscope.lightsheet.timelapse.gui.jfx;
+package clearcontrol.microscope.timelapse.gui.jfx;
 
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
+import clearcontrol.microscope.timelapse.TimelapseInterface;
 
 public class TimelapsePanel extends CustomGridPane
 {

@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.timelapse.adaptive;
+package clearcontrol.microscope.timelapse.timer.adaptive;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;

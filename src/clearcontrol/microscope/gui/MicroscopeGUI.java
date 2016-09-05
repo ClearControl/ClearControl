@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
@@ -434,6 +435,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 	{
 		MicroscopeGUI lMicroscopeGUI = this;
 		return waitFor(pTimeOut, pTimeUnit, () -> {
+			ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
 			return lMicroscopeGUI.isVisible() == pVisible;
 		});
 	}

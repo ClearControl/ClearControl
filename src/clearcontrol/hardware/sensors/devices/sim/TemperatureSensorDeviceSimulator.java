@@ -23,7 +23,7 @@ public class TemperatureSensorDeviceSimulator	extends
 	}
 
 	@Override
-	protected boolean loop()
+	public boolean loop()
 	{
 		try
 		{

@@ -1,6 +1,8 @@
 package clearcontrol.core.variable;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public abstract class VariableBase<O>
 {
@@ -120,6 +122,131 @@ public abstract class VariableBase<O>
 		{
 			lVariableListener.getEvent(pCurrentValue);
 		}
+	}
+
+	/**
+	 * Waits for the _exact_ object reference to be set to this variable. This is
+	 * rarely useful and it's often safer to use instead waitForEqualsTo(...).
+	 * This method does not poll, and therefore is the best way to wait for
+	 * events. (no CPU hogging)
+	 * 
+	 * @param pValueToWaitFor
+	 *          value to wait for
+	 * @param pTimeOut
+	 *          timeout
+	 * @param pTimeUnit
+	 *          timeout unit
+	 */
+	public boolean waitForSameAs(	final O pValueToWaitFor,
+																final long pTimeOut,
+																final TimeUnit pTimeUnit)
+	{
+		CountDownLatch lCountDownLatch = new CountDownLatch(1);
+
+		VariableSetListener<O> lListener = (o, n) -> {
+			if (n == pValueToWaitFor)
+			{
+				lCountDownLatch.countDown();
+			}
+		};
+
+		addSetListener(lListener);
+		try
+		{
+			try
+			{
+				return lCountDownLatch.await(pTimeOut, pTimeUnit);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		finally
+		{
+			removeSetListener(lListener);
+		}
+		return false;
+	}
+
+	/**
+	 * Waits for the an object that equals the given object. This method does not
+	 * poll, and therefore is the best way to wait for events. (no CPU hogging)
+	 * 
+	 * @param pValueToWaitFor
+	 *          value to wait for
+	 * @param pTimeOut
+	 *          timeout
+	 * @param pTimeUnit
+	 *          timeout unit
+	 */
+	public boolean waitForEqualsTo(	final O pValueToWaitFor,
+																	final long pTimeOut,
+																	final TimeUnit pTimeUnit)
+	{
+		CountDownLatch lCountDownLatch = new CountDownLatch(1);
+
+		VariableSetListener<O> lListener = (o, n) -> {
+			if (n.equals(pValueToWaitFor))
+			{
+				lCountDownLatch.countDown();
+			}
+		};
+
+		addSetListener(lListener);
+		try
+		{
+			return lCountDownLatch.await(pTimeOut, pTimeUnit);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			removeSetListener(lListener);
+		}
+		return false;
+	}
+
+	/**
+	 * Waits for the an object that equals the given object. This method does not
+	 * poll, and therefore is the best way to wait for events. (no CPU hogging)
+	 * 
+	 * @param pValueToWaitFor
+	 *          value to wait for
+	 * @param pTimeOut
+	 *          timeout
+	 * @param pTimeUnit
+	 *          timeout unit
+	 */
+	public boolean waitForEdge(	final O pNewValueToWaitFor,
+															final long pTimeOut,
+															final TimeUnit pTimeUnit)
+	{
+		CountDownLatch lCountDownLatch = new CountDownLatch(1);
+
+		VariableEdgeListener<O> lListener = (n) -> {
+			if (n.equals(pNewValueToWaitFor))
+			{
+				lCountDownLatch.countDown();
+			}
+		};
+
+		addEdgeListener(lListener);
+		try
+		{
+			return lCountDownLatch.await(pTimeOut, pTimeUnit);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			removeEdgeListener(lListener);
+		}
+		return false;
 	}
 
 	public String getName()

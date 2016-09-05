@@ -14,7 +14,7 @@ public class TC01Demo
 	{
 		final TC01 lTC01 = new TC01("Dev2/ai0", NIThermoCoupleType.J, 0);
 
-		lTC01.start();
+		lTC01.open();
 
 		lTC01.getTemperatureInCelciusVariable()
 					.addGetListener(new VariableGetListener<Double>()
@@ -28,7 +28,7 @@ public class TC01Demo
 
 		Thread.sleep(10 * 1000);
 
-		lTC01.stop();
+		lTC01.close();
 
 	}
 

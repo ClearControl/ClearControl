@@ -25,11 +25,8 @@ public abstract class SignalStartStopDevice extends VirtualDevice
 			@Override
 			public void fire(final Boolean pCurrentBooleanValue)
 			{
-				if (pCurrentBooleanValue)
-				{
-					if (mStartRunnable != null)
-						mStartRunnable.run();
-				}
+				if (mStartRunnable != null && pCurrentBooleanValue)
+					mStartRunnable.run();
 			}
 		});
 
@@ -38,11 +35,8 @@ public abstract class SignalStartStopDevice extends VirtualDevice
 			@Override
 			public void fire(final Boolean pCurrentBooleanValue)
 			{
-				if (pCurrentBooleanValue)
-				{
-					if (mStopRunnable != null)
-						mStopRunnable.run();
-				}
+				if (mStopRunnable != null && pCurrentBooleanValue)
+					mStopRunnable.run();
 			}
 		});
 

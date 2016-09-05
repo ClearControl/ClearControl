@@ -26,7 +26,7 @@ public class TemperatureSensorDevicePanelDemo extends Application
 		pPrimaryStage.setWidth(100);
 		pPrimaryStage.setHeight(100);/**/
 
-		lTemperatureSensorDeviceSimulator.start();
+		lTemperatureSensorDeviceSimulator.open();
 		pPrimaryStage.show();
 
 	}

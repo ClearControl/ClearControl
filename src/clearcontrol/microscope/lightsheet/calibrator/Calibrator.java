@@ -115,25 +115,25 @@ public class Calibrator extends TaskDevice implements
 		if (getCalibrateZVariable().get() && !calibrateZ(32))
 			return false;
 
-		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+		if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 			return false;/**/
 
 		if (getCalibrateAVariable().get() && !calibrateA(32))
 			return false;
 
-		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+		if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 			return false;/**/
 
 		if (getCalibrateXYVariable().get() && !calibrateXY(3))
 			return false;
 
-		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+		if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 			return false;/**/
 
 		if (getCalibratePVariable().get() && !calibrateP())
 			return false;
 
-		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+		if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 			return false;/**/
 
 		/*if (!calibrateW(32))
@@ -143,11 +143,11 @@ public class Calibrator extends TaskDevice implements
 				&& !calibrateZ(64))
 			return false;
 
-		if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+		if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 			return false;/**/
 
 		if (getCalibratePVariable().get() && !calibrateP())
-			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+			if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 				return false;/**/
 
 		return true;
@@ -163,7 +163,7 @@ public class Calibrator extends TaskDevice implements
 			{
 				lError = calibrateZ(l, pNumberOfSamples, l == 0);
 				System.out.println("############################################## Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+				if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 					return false;
 
 			}
@@ -184,7 +184,7 @@ public class Calibrator extends TaskDevice implements
 			{
 				lError = calibrateA(l, pNumberOfAngles);
 				System.out.println("############################################## Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+				if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 					return false;
 
 			}
@@ -205,7 +205,7 @@ public class Calibrator extends TaskDevice implements
 			{
 				lError = calibrateXY(l, 0, pNumberOfPoints);
 				System.out.println("############################################## Error = " + lError);
-				if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+				if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 					return false;
 
 			}
@@ -228,7 +228,7 @@ public class Calibrator extends TaskDevice implements
 			lError = mCalibrationP.apply();
 
 			System.out.println("############################################## Error = " + lError);
-			if (ScriptingEngine.isCancelRequestedStatic() || isStopped())
+			if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
 				return false;
 
 			mProgressVariable.set((1.0 * lIteration) / cMaxIterations);
@@ -493,6 +493,11 @@ public class Calibrator extends TaskDevice implements
 	public Variable<String> getCalibrationDataNameVariable()
 	{
 		return mCalibrationDataName;
+	}
+
+	public boolean isRunning()
+	{
+		return getIsRunningVariable().get();
 	}
 
 }

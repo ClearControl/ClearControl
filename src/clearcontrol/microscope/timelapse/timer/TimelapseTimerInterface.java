@@ -1,8 +1,8 @@
-package clearcontrol.microscope.lightsheet.timelapse;
+package clearcontrol.microscope.timelapse.timer;
 
 import java.util.concurrent.TimeUnit;
 
-public interface TimelapseInterface
+public interface TimelapseTimerInterface
 {
 
 	public long timeLeftBeforeNextTimePoint(TimeUnit pTimeUnit);
@@ -11,7 +11,7 @@ public interface TimelapseInterface
 																long pReservedTime,
 																TimeUnit pTimeUnit);
 
-	public void waitToAcquire(long pTimeStamp, TimeUnit pTimeUnit);
+	public void waitToAcquire(long pTimeout, TimeUnit pTimeUnit);
 
 	public long getLastAcquisitionTime(TimeUnit pTimeUnit);
 

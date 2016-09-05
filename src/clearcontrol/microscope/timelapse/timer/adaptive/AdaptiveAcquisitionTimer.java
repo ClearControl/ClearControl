@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.timelapse.adaptive;
+package clearcontrol.microscope.timelapse.timer.adaptive;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,13 +6,13 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.timelapse.TimelapseBase;
-import clearcontrol.microscope.lightsheet.timelapse.TimelapseInterface;
+import clearcontrol.microscope.timelapse.timer.TimelapseTimerBase;
+import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class AdaptiveAcquisitionTimer extends TimelapseBase	implements
-																														TimelapseInterface
+public class AdaptiveAcquisitionTimer extends TimelapseTimerBase	implements
+																														TimelapseTimerInterface
 {
 
 	private static final int cPower = 2;

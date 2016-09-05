@@ -42,7 +42,7 @@ public class XYZRStageDevicePanel extends BorderPane
 	private SnapshotView secondView = null;
 	private SnapshotView thirdView = null;
 	private SnapshotView fourthView = null;
-	private AnimationTimer viewTimer = null;
+
 
 	public XYZRStageDevicePanel(StageDeviceInterface pStageDeviceInterface)
 	{
@@ -129,19 +129,7 @@ public class XYZRStageDevicePanel extends BorderPane
 		layeredPane.widthProperty().addListener(sceneBoundsListener);
 		layeredPane.heightProperty().addListener(sceneBoundsListener);
 
-		viewTimer = new AnimationTimer()
-		{
-			@Override
-			public void handle(long now)
-			{
-				secondView.drawView(layeredPane.getWidth() / 2,
-														layeredPane.getHeight() / 2);
-				thirdView.drawView(	layeredPane.getWidth() / 2,
-														layeredPane.getHeight() / 2);
-				fourthView.drawView(layeredPane.getWidth() / 2,
-														layeredPane.getHeight() / 2);
-			}
-		};
+		
 
 		layeredPane.getChildren().addAll(	background1Pane,
 																			subScene,
@@ -161,13 +149,9 @@ public class XYZRStageDevicePanel extends BorderPane
 		setTop(createControls(cubeScene));
 		setCenter(layeredPane);
 
-		viewTimer.start();
+
 	}
 
-	public void stop()
-	{
-		viewTimer.stop();
-	}
 
 	private VBox createControls(CubeScene cubeScene)
 	{

@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.timelapse.adaptive;
+package clearcontrol.microscope.timelapse.timer.adaptive;
 
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;

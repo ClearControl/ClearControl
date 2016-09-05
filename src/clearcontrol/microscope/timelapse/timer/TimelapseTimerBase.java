@@ -1,11 +1,11 @@
-package clearcontrol.microscope.lightsheet.timelapse;
+package clearcontrol.microscope.timelapse.timer;
 
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 
-public class TimelapseBase implements
-													TimelapseInterface,
+public class TimelapseTimerBase implements
+													TimelapseTimerInterface,
 													WaitingInterface
 {
 

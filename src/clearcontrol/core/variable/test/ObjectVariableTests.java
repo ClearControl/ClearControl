@@ -1,16 +1,21 @@
 package clearcontrol.core.variable.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 
-public class ObjectVariableTests
+public class ObjectVariableTests implements
+																AsynchronousExecutorServiceAccess
 {
 
 	@Test
-	public void DoubleVariableTest()
+	public void testDoubleVariable()
 	{
 		final Variable<Double> x = new Variable<Double>("x", 0.0);
 		final Variable<Double> y = new Variable<Double>("y", 0.0);
@@ -43,4 +48,73 @@ public class ObjectVariableTests
 
 	}
 
+	@Test
+	public void testWaitForEquals()
+	{
+		final Variable<Double> x = new Variable<Double>("x", 0.0);
+
+		executeAsynchronously(() -> {
+			System.out.println("wating for value");
+			try
+			{
+				assertFalse(x.get().equals(1.0));
+				x.waitForEqualsTo(1.0, 10, TimeUnit.SECONDS);
+				assertTrue(x.get().equals(1.0));
+				System.out.println("value reached");
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+			
+		});
+
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+
+		assertFalse(x.get().equals(1.0));
+		System.out.println("Setting Value");
+		x.set(1.0);
+		assertTrue(x.get().equals(1.0));
+		
+		
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+
+	}
+	
+	@Test
+	public void testWaitForSame()
+	{
+		Double lValue = 0.3;
+		
+		final Variable<Double> x = new Variable<Double>("x", 0.0);
+
+		executeAsynchronously(() -> {
+			System.out.println("wating for value");
+			try
+			{
+				assertFalse(x.get().equals(lValue));
+				assertFalse(x.waitForSameAs(0.0, 1, TimeUnit.MILLISECONDS));
+				assertFalse(x.get().equals(lValue));
+				x.waitForSameAs(lValue, 10, TimeUnit.SECONDS);
+				assertTrue(x.get().equals(lValue));
+				System.out.println("value reached");
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+			
+		});
+
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+
+		assertFalse(x.get().equals(lValue));
+		System.out.println("Setting Value");
+		x.set(lValue);
+		assertTrue(x.get().equals(lValue));
+		
+		
+		ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+
+	}
 }

@@ -236,6 +236,70 @@ public class Variable<O> extends VariableBase<O> implements
 		pObjectVariable.doNotSendUpdatesTo(this);
 	}
 
+	@SuppressWarnings("unchecked")
+	public void increment()
+	{
+		if (mReference instanceof Long)
+		{
+			Long lLong = (Long) mReference;
+			set((O) (new Long(lLong + 1)));
+		}
+		else if (mReference instanceof Integer)
+		{
+			Integer lInteger = (Integer) mReference;
+			set((O) (new Integer(lInteger + 1)));
+		}
+		else if (mReference instanceof Short)
+		{
+			Short lShort = (Short) mReference;
+			set((O) (new Short((short) (lShort + 1))));
+		}
+		else if (mReference instanceof Character)
+		{
+			Character lCharacter = (Character) mReference;
+			set((O) (new Character((char) (lCharacter + 1))));
+		}
+		else if (mReference instanceof Byte)
+		{
+			Byte lByte = (Byte) mReference;
+			set((O) (new Byte((byte) (lByte + 1))));
+		}
+		else
+			throw new UnsupportedOperationException("Can't increment if not of type char, short, int or long");
+	}
+
+	@SuppressWarnings("unchecked")
+	public void decrement()
+	{
+		if (mReference instanceof Long)
+		{
+			Long lLong = (Long) mReference;
+			set((O) (new Long(lLong - 1)));
+		}
+		else if (mReference instanceof Integer)
+		{
+			Integer lInteger = (Integer) mReference;
+			set((O) (new Integer(lInteger - 1)));
+		}
+		else if (mReference instanceof Short)
+		{
+			Short lShort = (Short) mReference;
+			set((O) (new Short((short) (lShort - 1))));
+		}
+		else if (mReference instanceof Character)
+		{
+			Character lCharacter = (Character) mReference;
+			set((O) (new Character((char) (lCharacter - 1))));
+		}
+		else if (mReference instanceof Byte)
+		{
+			Byte lByte = (Byte) mReference;
+			set((O) (new Byte((byte) (lByte - 1))));
+		}
+		else
+			throw new UnsupportedOperationException("Can't increment if not of type char, short, int or long");
+	}
+
 	public boolean isNotNull()
 	{
 		return mReference != null;

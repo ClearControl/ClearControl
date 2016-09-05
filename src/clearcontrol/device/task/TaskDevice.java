@@ -1,5 +1,6 @@
 package clearcontrol.device.task;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -19,8 +20,9 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 {
 
 	private final Variable<Boolean> mIsRunningVariable;
-
 	private final Variable<Throwable> mLastExceptionVariable;
+
+	private volatile CountDownLatch mStartedLatch, mStoppedLatch;
 
 	public TaskDevice(final String pDeviceName)
 	{
@@ -56,22 +58,16 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 		mStopSignal.set(true);
 	}
 
-	public void clearStopped()
-	{
-		mStopSignal.set(false);
-	}
-
-	public boolean isStopped()
-	{
-		return mStopSignal.get();
-	}
-
 	public boolean startTask()
 	{
 
+		mStartedLatch = new CountDownLatch(1);
+		mStoppedLatch = new CountDownLatch(1);
+
 		Runnable lRunnableWrapper = () -> {
-			clearStopped();
-			mIsRunningVariable.set(true);
+			mStopSignal.set(false);
+			mIsRunningVariable.setEdge(false, true);
+			mStartedLatch.countDown();
 			try
 			{
 				run();
@@ -81,22 +77,48 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 				e.printStackTrace();
 				mLastExceptionVariable.set(e);
 			}
-			mIsRunningVariable.set(false);
+			finally
+			{
+				mIsRunningVariable.setEdge(true, false);
+				mStoppedLatch.countDown();
+			}
 		};
 
 		Future<?> lExecuteAsynchronously = executeAsynchronously(lRunnableWrapper);
 		return lExecuteAsynchronously != null;
 	}
 
-	public boolean waitForTaskCompletion(	long pTimeOut,
-																				TimeUnit pTimeUnit)
+	public boolean waitForStarted(long pTimeOut, TimeUnit pTimeUnit)
 	{
 		try
 		{
+			return mStartedLatch.await(pTimeOut, pTimeUnit);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean waitForStopped(int pTimeOut, TimeUnit pTimeUnit)
+	{
+		try
+		{
+			boolean lResult = false;
+			try
+			{
+				lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+
 			boolean lWaitForCompletion = waitForCompletion(	pTimeOut,
 																											pTimeUnit);
-			mIsRunningVariable.set(false);
-			return lWaitForCompletion;
+
+			return lResult && lWaitForCompletion;
 		}
 		catch (ExecutionException e)
 		{
@@ -104,9 +126,10 @@ public abstract class TaskDevice extends SignalStartStopDevice implements
 			severe("Device", lError, e);
 			return false;
 		}
+
 	}
 
-	public Variable<Boolean> getIsStoppedBooleanVariable()
+	public Variable<Boolean> getStopSignalVariable()
 	{
 		return mStopSignal;
 	}
