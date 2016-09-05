@@ -38,13 +38,10 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase	implements
 	private final Variable<SynteticStackTypeEnum> mSyntheticStackTypeVariable = new Variable<SynteticStackTypeEnum>("SyntheticStackType",
 																																																					SynteticStackTypeEnum.Fractal);
 
-<<<<<<< HEAD
-	private AtomicLong mTriggerCounter = new AtomicLong(0);
-	private volatile CountDownLatch mLeftInQueue;
-=======
+
 	private volatile CountDownLatch mStackSent;
 	private final AtomicLong mTriggeCounter = new AtomicLong();
->>>>>>> 128b8fb8c801159fbe542164dd46f5c1c196454e
+
 
 	/**
 	 * Crates a StackCameraDeviceSimulator of a given name. Synthetic Stacks are
