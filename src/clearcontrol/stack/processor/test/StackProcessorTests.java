@@ -55,8 +55,7 @@ public class StackProcessorTests
 		final BasicRecycler<StackInterface, StackRequest> mStartRecycler = new BasicRecycler<StackInterface, StackRequest>(	lOffHeapPlanarStackFactory,
 																																																												cMaximalNumberOfAvailableObjects);
 
-		final StackInterface lStack = mStartRecycler.getOrFail(StackRequest.build(1L,
-																																							10L,
+		final StackInterface lStack = mStartRecycler.getOrFail(StackRequest.build(10L,
 																																							10L,
 																																							10L));
 		assertTrue(lStack.getBytesPerVoxel() == 2);
