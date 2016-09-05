@@ -18,9 +18,9 @@ public class XYZRStageDevicePanelDemo extends Application
 
 		lStageDeviceSimulator.setSimLogging(true);
 
-		lStageDeviceSimulator.addDOF("X", -1, 1);
-		lStageDeviceSimulator.addDOF("Y", -1, 1);
-		lStageDeviceSimulator.addDOF("Z", -1, 1);
+		lStageDeviceSimulator.addDOF( "X", -100, 100 );
+		lStageDeviceSimulator.addDOF( "Y", -100, 100 );
+		lStageDeviceSimulator.addDOF( "Z", -100, 100 );
 		lStageDeviceSimulator.addDOF("R", 0, 360);
 
 		XYZRStageDevicePanel lStageDevicePanel = new XYZRStageDevicePanel(lStageDeviceSimulator);

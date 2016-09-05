@@ -10,15 +10,15 @@ import clearcontrol.hardware.lasers.LaserDeviceInterface;
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.application.Platform;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -41,11 +41,13 @@ public class LaserDevicePanel extends HBox
 	private RadialBargraph mTargetPowerGauge;
 	private RadialBargraph mCurrentPowerGauge;
 	private Marker mTargetPowerMarker;
+	private Label mLaserLabel;
+	private VBox mWavelengthColorBox;
 
 	private VBox properties;
 	private HBox pane;
 
-	private final int mWaveLength;
+	private int mWaveLength;
 
 	public LaserDevicePanel(LaserDeviceInterface pLaserDeviceInterface)
 	{
@@ -55,59 +57,64 @@ public class LaserDevicePanel extends HBox
 		mMaxPower = mLaserDeviceInterface.getMaxPowerInMilliWatt();
 		init();
 
-		// TODO: @HongKee: please complete the code below to establish the link:
-
+		// data -> GUI
+		// CurrentPower update (data -> GUI)
 		mLaserDeviceInterface.getCurrentPowerInMilliWattVariable()
 													.addSetListener((o, n) -> {
-														// o is old value, n is new value
-														// here you change the laser gauge GUI to indicate a
-														// new current power
+														if ( mCurrentPowerGauge.valueProperty().getValue() != n )
+															Platform.runLater( () -> {
+																mCurrentPowerGauge.valueProperty().set( n.doubleValue() );
+															} );
 													});
-
+		// Laser Switch update (data -> GUI)
 		mLaserDeviceInterface.getLaserOnVariable()
 													.addSetListener((o, n) -> {
-														// o is old value, n is new value
-														// here you change the laser gauge GUI to indicate a
-														// new on/off state
+														if ( mLaserOnSwitch.isSelected() != n )
+															Platform.runLater( () -> {
+																mLaserOnSwitch.setSelected( n );
+															} );
 													});
-
+		// Wavelength update (data -> GUI)
 		mLaserDeviceInterface.getWavelengthInNanoMeterVariable()
 													.addSetListener((o, n) -> {
-														// o is old value, n is new value
-														// here you change the laser wavelength displayed
-														// (can happen if the laser has variable wavelength
-														// capability)
+														if ( mWaveLength != n )
+															Platform.runLater( () -> {
+																mWaveLength = n;
+																mWavelengthColorBox.setBackground( new Background( new BackgroundFill( getWebColor( mWaveLength ),
+																		CornerRadii.EMPTY,
+																		Insets.EMPTY ) ) );
+																mLaserLabel.setText( mWaveLength + " nm" );
+															} );
 													});
 
-		// TODO: you also need to change these variables values in response to GUI
-		// events...
-		// Use the demo to check if everything works out, you should get console
-		// output telling you that it works.
+		// GUI -> data
+		// TargetPower update (GUI -> data)
+		mTargetPowerGauge.valueProperty().setValue( mLaserDeviceInterface.getTargetPowerInMilliWatt() );
+		mTargetPowerGauge.setOnMouseReleased( new EventHandler< MouseEvent >()
+		{
+			@Override public void handle( MouseEvent event )
+			{
+				mLaserDeviceInterface.getTargetPowerInMilliWattVariable().setAsync( mTargetPowerGauge.getValue() );
+			}
+		} );
 
-		setBackground(null);
+		// Laser switch update (GUI -> data)
+		mLaserOnSwitch.setSelected( mLaserDeviceInterface.getLaserOnVariable().get() );
+		mLaserOnSwitch.setOnMouseReleased( new EventHandler< MouseEvent >()
+		{
+			@Override public void handle( MouseEvent event )
+			{
+				mLaserDeviceInterface.getLaserOnVariable().setAsync( !mLaserDeviceInterface.getLaserOnVariable().get() );
+			}
+		} );
+
+		setBackground( null );
 		// hBox.setPadding(new Insets(15, 15, 15, 15));
 		setSpacing(10);
 		getChildren().addAll(pane, mTargetPowerGauge, mCurrentPowerGauge);
 		setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;"
 							+ "-fx-border-color: black");
 	}
-
-	public BooleanProperty getLaserOnBooleanProperty()
-	{
-		return mLaserOnSwitch.selectedProperty();
-	}
-
-	public Property<Number> getTargetPowerProperty()
-	{
-		return mTargetPowerMarker.valueProperty();
-	}
-
-	public Property<Number> getCurrentPowerProperty()
-	{
-		return mCurrentPowerGauge.valueProperty();
-	}
-
-	private DoubleProperty fontSize = new SimpleDoubleProperty(22);
 
 	private void init()
 	{
@@ -163,13 +170,13 @@ public class LaserDevicePanel extends HBox
 		properties.setPrefWidth(100);
 		properties.setSpacing(3);
 
-		Label laserLabel = new Label();
+		mLaserLabel = new Label();
 		String fontFamily = "Arial Black";
-		laserLabel.setText(mWaveLength + " nm");
-		laserLabel.setFont(new Font(fontFamily, 24));
+		mLaserLabel.setText( mWaveLength + " nm" );
+		mLaserLabel.setFont( new Font( fontFamily, 24 ) );
 
-		VBox lVBoxForColoredRectangle = new VBox();
-		lVBoxForColoredRectangle.setBackground(new Background(new BackgroundFill(	getWebColor(mWaveLength),
+		mWavelengthColorBox = new VBox();
+		mWavelengthColorBox.setBackground( new Background( new BackgroundFill( getWebColor( mWaveLength ),
 																																							CornerRadii.EMPTY,
 																																							Insets.EMPTY)));
 		Rectangle rectangle = new Rectangle(33, 80, Color.TRANSPARENT);
@@ -182,13 +189,13 @@ public class LaserDevicePanel extends HBox
 																		Number oldValue,
 																		Number newValue)
 								{
-									laserLabel.fontProperty()
+									mLaserLabel.fontProperty()
 														.set(Font.font(	fontFamily,
 																						newValue.doubleValue() / 4.1));
 								}
 							});
 
-		properties.getChildren().add(laserLabel);
+		properties.getChildren().add( mLaserLabel );
 
 		pane = new HBox();
 
@@ -203,7 +210,7 @@ public class LaserDevicePanel extends HBox
 			}
 		});
 
-		lVBoxForColoredRectangle.getChildren().add(rectangle);
+		mWavelengthColorBox.getChildren().add( rectangle );
 
 		VBox vBox = new VBox();
 		// vBox.setPadding(new Insets(10, 10, 10, 10));
@@ -215,7 +222,7 @@ public class LaserDevicePanel extends HBox
 		vBox.setAlignment(Pos.CENTER);
 		vBox.getChildren().addAll(properties, mLaserOnSwitch);
 
-		pane.getChildren().addAll(lVBoxForColoredRectangle, vBox);
+		pane.getChildren().addAll( mWavelengthColorBox, vBox );
 
 	}
 
