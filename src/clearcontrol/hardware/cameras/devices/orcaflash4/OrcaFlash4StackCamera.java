@@ -266,7 +266,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 
 		getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
-		mStackVariable = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
+		mStackReference = mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
 	}
 
@@ -380,16 +380,15 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	{
 		synchronized (mLock)
 		{
-			/*try
+			try
 			{
 				return acquisition(true, false, false);
 			}
 			catch (final Throwable e)
 			{
 				e.printStackTrace();
-				
-			}/**/
-			return true;
+				return false;
+			}
 		}
 	}
 
@@ -398,7 +397,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 	{
 		synchronized (mLock)
 		{
-			/*try
+			try
 			{
 				mDcamAcquisition.stopAcquisition();
 				return true;
@@ -406,7 +405,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase implements
 			catch (final Throwable e)
 			{
 				e.printStackTrace();
-			}/**/
+			}
 		}
 		return false;
 	}

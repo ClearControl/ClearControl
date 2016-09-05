@@ -29,7 +29,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 
 	protected RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
-	protected Variable<StackInterface> mStackVariable;
+	protected Variable<StackInterface> mStackReference;
 
 	private int mMinimalNumberOfAvailableStacks = 6;
 
@@ -83,7 +83,7 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase implements
 	@Override
 	public Variable<StackInterface> getStackVariable()
 	{
-		return mStackVariable;
+		return mStackReference;
 	}
 
 	@Override
