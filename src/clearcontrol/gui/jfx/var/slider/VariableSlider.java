@@ -162,12 +162,12 @@ public class VariableSlider<T extends Number> extends HBox
 		getSlider().valueChangingProperty().addListener((obs, o, n) -> {
 			if (isUpdateIfChanging())
 				return;
-			if (o == true && n == false)
+			if ( o && !n )
 				setVariableValue(getSlider().getValue());
 		});
 
 		mVariable.addSetListener((o, n) -> {
-			if (!n.equals(o) && n != null)
+			if ( n != null && !n.equals( o ) )
 				Platform.runLater(() -> {
 					if (n.equals(getSlider().getValue()) && n.equals(getTextFieldValue()))
 					{
