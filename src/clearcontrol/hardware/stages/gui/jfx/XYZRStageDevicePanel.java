@@ -1,27 +1,29 @@
 package clearcontrol.hardware.stages.gui.jfx;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.VariableSetListener;
+
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.CubeScene;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.SnapshotView;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.View3D;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.controls.CircleIndicator;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
+
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SubScene;
+
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -47,59 +49,79 @@ public class XYZRStageDevicePanel extends BorderPane
 	private SnapshotView secondView = null;
 	private SnapshotView thirdView = null;
 	private SnapshotView fourthView = null;
+	private AnimationTimer viewTimer = null;
 
+	VariableSlider< Double > rotateVariableSlider, xStageVariableSlider, yStageVariableSlider, zStageVariableSlider;
 
-	Slider rotateSlider, xStageSlider, yStageSlider, zStageSlider;
+	VariableSlider< Double > rotateCurSlider, xStageCurSlider, yStageCurSlider, zStageCurSlider;
 
 	public XYZRStageDevicePanel(StageDeviceInterface pStageDeviceInterface)
 	{
 		mStageDeviceInterface = pStageDeviceInterface;
 
-		init();
-
-		// TODO: @HongKee: please connect the variables from the stage to the GUI.
-		// TODO: @Loic: Could you check the Variable listener? When I change the value, it continues to change the values.
-		// TODO:        Maybe double checking needs less granularity.
 		for ( int i = 0; i < mStageDeviceInterface.getNumberOfDOFs(); i++ )
 		{
 			String dof = mStageDeviceInterface.getDOFNameByIndex( i );
-			Slider slider = null;
+			VariableSlider< Double > variableSlider = new VariableSlider<>( dof,
+					mStageDeviceInterface.getTargetPositionVariable( i ),
+					mStageDeviceInterface.getMinPositionVariable( i ),
+					mStageDeviceInterface.getMaxPositionVariable( i ),
+					new Variable<>( "granularity", 1d ), 10d
+			);
+
+			VariableSlider< Double > variableCurSlider = new VariableSlider<>( "",
+					mStageDeviceInterface.getCurrentPositionVariable( i ),
+					mStageDeviceInterface.getMinPositionVariable( i ),
+					mStageDeviceInterface.getMaxPositionVariable( i ),
+					new Variable<>( "granularity", 1d ), 10d
+			);
+			variableCurSlider.getSlider().setDisable( true );
+			variableCurSlider.getTextField().setDisable( true );
 
 			if ( dof.equals( "R" ) )
-				slider = rotateSlider;
+			{
+				rotateVariableSlider = variableSlider;
+				rotateCurSlider = variableCurSlider;
+			}
 			else if ( dof.equals( "X" ) )
-				slider = xStageSlider;
+			{
+				xStageVariableSlider = variableSlider;
+				xStageCurSlider = variableCurSlider;
+			}
 			else if ( dof.equals( "Y" ) )
-				slider = yStageSlider;
+			{
+				yStageVariableSlider = variableSlider;
+				yStageCurSlider = variableCurSlider;
+			}
 			else if ( dof.equals( "Z" ) )
-				slider = zStageSlider;
+			{
+				zStageVariableSlider = variableSlider;
+				zStageCurSlider = variableCurSlider;
+			}
 
-			System.out.println( mStageDeviceInterface.getMaxPositionVariable( i ).get() );
-
-			slider.setMin( mStageDeviceInterface.getMinPositionVariable( i ).get() );
-			slider.setMax( mStageDeviceInterface.getMaxPositionVariable( i ).get() );
-			slider.setValue( mStageDeviceInterface.getCurrentPositionVariable( i ).get() );
-
-			// Data -> GUI
-			final Slider finalSlider = slider;
-			mStageDeviceInterface.getCurrentPositionVariable( i ).addSetListener( ( pCurrentValue, pNewValue ) -> {
-				if ( !pNewValue.equals( finalSlider.getValue() ) )
-					Platform.runLater( new Runnable()
-					{
-						@Override public void run()
-						{
-							finalSlider.setValue( pNewValue );
-						}
-					} );
-			} );
-
-			// GUI -> Data
-			final Variable< Double > curPos = mStageDeviceInterface.getTargetPositionVariable( i );
-			slider.setOnMouseReleased( event -> curPos.set( finalSlider.getValue() ) );
+			//			// Data -> GUI
+			//			final Slider finalSlider = slider;
+			//			mStageDeviceInterface.getCurrentPositionVariable( i ).addSetListener( ( pCurrentValue, pNewValue ) -> {
+			//				if ( !pNewValue.equals( finalSlider.getValue() ) )
+			//					Platform.runLater( new Runnable()
+			//					{
+			//						@Override public void run()
+			//						{
+			//							finalSlider.setValue( pNewValue );
+			//						}
+			//					} );
+			//			} );
+			//
+			//			// GUI -> Data
+			//			final Variable< Double > curPos = mStageDeviceInterface.getTargetPositionVariable( i );
+			//			slider.setOnMouseReleased( event -> curPos.set( finalSlider.getValue() ) );
 		}
 
 		// same scheme as for the others...
 		// TODO: don't forget to check the other issues related to the stage...
+
+		init();
+
 	}
 
 	public void init()
@@ -176,7 +198,19 @@ public class XYZRStageDevicePanel extends BorderPane
 		layeredPane.widthProperty().addListener(sceneBoundsListener);
 		layeredPane.heightProperty().addListener(sceneBoundsListener);
 
-		
+		viewTimer = new AnimationTimer()
+		{
+			@Override
+			public void handle( long now )
+			{
+				secondView.drawView( layeredPane.getWidth() / 2,
+						layeredPane.getHeight() / 2 );
+				thirdView.drawView( layeredPane.getWidth() / 2,
+						layeredPane.getHeight() / 2 );
+				fourthView.drawView( layeredPane.getWidth() / 2,
+						layeredPane.getHeight() / 2 );
+			}
+		};
 
 		layeredPane.getChildren().addAll(	background1Pane,
 																			subScene,
@@ -196,16 +230,27 @@ public class XYZRStageDevicePanel extends BorderPane
 		setTop(createControls(cubeScene));
 		setCenter(layeredPane);
 
-
+		viewTimer.start();
 	}
 
+	public void stop()
+	{
+		viewTimer.stop();
+	}
 
 	private VBox createControls(CubeScene cubeScene)
 	{
 		// R-Stage
 		final Label caption = new Label("Stage R (micro-degree)");
 
-		rotateSlider = new Slider();
+		Slider rotateSlider = rotateVariableSlider.getSlider();
+		rotateSlider.setMin( 0 );
+		rotateSlider.setMax( 360 );
+		rotateSlider.setMajorTickUnit( 90 );
+		rotateSlider.setShowTickMarks( true );
+		rotateSlider.setShowTickLabels( true );
+
+		rotateSlider = rotateCurSlider.getSlider();
 		rotateSlider.setMin( 0 );
 		rotateSlider.setMax( 360 );
 		rotateSlider.setMajorTickUnit( 90 );
@@ -214,17 +259,17 @@ public class XYZRStageDevicePanel extends BorderPane
 
 		final CircleIndicator pi = new CircleIndicator(0);
 
-		rotateSlider.valueProperty()
+		rotateCurSlider.getSlider().valueProperty()
 					.addListener((ObservableValue<? extends Number> ov,
 												Number old_val,
 												Number new_val) -> pi.setProgress(new_val.doubleValue()));
 
-		rotateSlider.valueProperty()
+		rotateCurSlider.getSlider().valueProperty()
 					.bindBidirectional(cubeScene.getCubeCenterGroup()
 																			.rotateProperty());
 
 		final HBox rStage = new HBox(5);
-		rStage.getChildren().addAll( caption, rotateSlider, pi );
+		rStage.getChildren().addAll( caption, rotateVariableSlider, rotateCurSlider, pi );
 		HBox.setHgrow(rStage, Priority.ALWAYS);
 
 		BoundingBox cubeBB = cubeScene.getCubeBoundingBox();
@@ -236,11 +281,9 @@ public class XYZRStageDevicePanel extends BorderPane
 									- cubeBB.getMaxX()
 									* 2.2;
 
-		xStageSlider = createSlider( 0,
-																							100,
-																							"X-axis stage control");
+		double xOffset = xStageCurSlider.getSlider().getMin() * Math.signum( xStageCurSlider.getSlider().getMin() );
 
-		xStageSlider.valueProperty()
+		xStageCurSlider.getSlider().valueProperty()
 								.addListener(new ChangeListener<Number>()
 								{
 									@Override
@@ -249,22 +292,25 @@ public class XYZRStageDevicePanel extends BorderPane
 																			Number newValue)
 									{
 										cubeScene.getCubeCenterGroup()
-															.setTranslateX(newValue.doubleValue() * (xMax - xMin)
-																	/ xStageSlider.getMax()
+												.setTranslateX(
+														( newValue.doubleValue() + xOffset ) * ( xMax - xMin )
+																/
+																( xStageCurSlider.getSlider().getMax() + xOffset )
 																							+ xMin);
 									}
 								});
-		// xStageSlider.valueProperty().bindBidirectional(
-		// cubeScene.getCubeCenterGroup().translateXProperty() );
 
-		final Label xStageValue = new Label(Double.toString(xStageSlider.getValue()));
-		xStageValue.textProperty().bind(xStageSlider.valueProperty()
-																								.asString("%.0f"));
+		cubeScene.getCubeCenterGroup()
+				.setTranslateX(
+						( xStageCurSlider.getSlider().getValue() + xOffset ) * ( xMax - xMin )
+								/
+								( xStageCurSlider.getSlider().getMax() + xOffset )
+								+ xMin );
 
 		final HBox xStage = new HBox(5);
 		xStage.getChildren().addAll(xStageLabel,
-																xStageSlider,
-																xStageValue);
+				xStageVariableSlider,
+				xStageCurSlider );
 		HBox.setHgrow(xStage, Priority.ALWAYS);
 
 		// Y-Stage
@@ -274,35 +320,37 @@ public class XYZRStageDevicePanel extends BorderPane
 		double yMax = cubeScene.getCubeCenterGroup().getTranslateY() + CubeScene.VIEWPORT_SIZE
 									- cubeBB.getMaxY()
 									* 2.2;
-		yStageSlider = createSlider( 0,
-																							100,
-																							"Y-axis stage control");
 
-		yStageSlider.valueProperty()
-								.addListener(new ChangeListener<Number>()
+		double yOffset = yStageCurSlider.getSlider().getMin() * Math.signum( yStageCurSlider.getSlider().getMin() );
+
+		yStageCurSlider.getSlider().valueProperty()
+								.addListener( new ChangeListener< Number >()
 								{
 									@Override
-									public void changed(ObservableValue<? extends Number> observable,
-																			Number oldValue,
-																			Number newValue)
+									public void changed( ObservableValue< ? extends Number > observable,
+											Number oldValue,
+											Number newValue )
 									{
 										cubeScene.getCubeCenterGroup()
-															.setTranslateY(newValue.doubleValue() * (yMax - yMin)
-																	/ yStageSlider.getMax()
-																							+ yMin);
+												.setTranslateY(
+														( newValue.doubleValue() + yOffset ) * ( yMax - yMin )
+																/
+																( yStageCurSlider.getSlider().getMax() + yOffset )
+																+ yMin );
 									}
-								});
-		// yStageSlider.valueProperty().bindBidirectional(
-		// cubeScene.getCubeCenterGroup().translateYProperty() );
+								} );
 
-		final Label yStageValue = new Label(Double.toString(yStageSlider.getValue()));
-		yStageValue.textProperty().bind(yStageSlider.valueProperty()
-																								.asString("%.0f"));
+		cubeScene.getCubeCenterGroup()
+				.setTranslateY(
+						( yStageCurSlider.getSlider().getValue() + yOffset ) * ( yMax - yMin )
+								/
+								( yStageCurSlider.getSlider().getMax() + yOffset )
+								+ yMin );
 
 		final HBox yStage = new HBox(5);
 		yStage.getChildren().addAll(yStageLabel,
-																yStageSlider,
-																yStageValue);
+				yStageVariableSlider,
+				yStageCurSlider );
 		HBox.setHgrow(yStage, Priority.ALWAYS);
 
 		// Z-Stage
@@ -312,11 +360,10 @@ public class XYZRStageDevicePanel extends BorderPane
 		double zMax = cubeScene.getCubeCenterGroup().getTranslateZ() + CubeScene.VIEWPORT_SIZE
 									- cubeBB.getMaxZ()
 									* 2.2;
-		zStageSlider = createSlider( 0,
-																							100,
-																							"Z-axis stage control");
 
-		zStageSlider.valueProperty()
+		double zOffset = zStageCurSlider.getSlider().getMin() * Math.signum( zStageCurSlider.getSlider().getMin() );
+
+		zStageCurSlider.getSlider().valueProperty()
 								.addListener(new ChangeListener<Number>()
 								{
 									@Override
@@ -325,38 +372,41 @@ public class XYZRStageDevicePanel extends BorderPane
 																			Number newValue)
 									{
 										cubeScene.getCubeCenterGroup()
-															.setTranslateZ(newValue.doubleValue() * (zMax - zMin)
-																	/ zStageSlider.getMax()
+												.setTranslateZ(
+														( newValue.doubleValue() + zOffset ) * ( zMax - zMin )
+																/
+																( zStageCurSlider.getSlider().getMax() + zOffset )
 																							+ zMin);
 									}
 								});
-		// zStageSlider.valueProperty().bindBidirectional(
-		// cubeScene.getCubeCenterGroup().translateZProperty() );
 
-		final Label zStageValue = new Label(Double.toString(zStageSlider.getValue()));
-		zStageValue.textProperty().bind(zStageSlider.valueProperty()
-																								.asString("%.0f"));
+		cubeScene.getCubeCenterGroup()
+				.setTranslateZ(
+						( zStageCurSlider.getSlider().getValue() + zOffset ) * ( zMax - zMin )
+								/
+								( zStageCurSlider.getSlider().getMax() + zOffset )
+								+ zMin );
 
 		final HBox zStage = new HBox(5);
 		zStage.getChildren().addAll(zStageLabel,
-																zStageSlider,
-																zStageValue);
+				zStageVariableSlider,
+				zStageCurSlider );
 		HBox.setHgrow(zStage, Priority.ALWAYS);
 
-		CheckBox rotate = new CheckBox("Rotate");
-		rotate.selectedProperty().addListener(observable -> {
-			if (rotate.isSelected())
-			{
-				cubeScene.setRotationSpeed(20);
-			}
-			else
-			{
-				cubeScene.stopCubeRotation();
-			}
-		});
+		//		CheckBox rotate = new CheckBox("Rotate");
+		//		rotate.selectedProperty().addListener(observable -> {
+		//			if (rotate.isSelected())
+		//			{
+		//				cubeScene.setRotationSpeed(20);
+		//			}
+		//			else
+		//			{
+		//				cubeScene.stopCubeRotation();
+		//			}
+		//		});
 
 		VBox controls = new VBox(	10,
-															rotate,
+				//rotate,
 															rStage,
 															xStage,
 															yStage,
