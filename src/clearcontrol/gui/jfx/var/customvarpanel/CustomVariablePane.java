@@ -120,6 +120,22 @@ public class CustomVariablePane extends TabPane
 																																		T pGranularity,
 																																		T pTicks)
 	{
+		return addSliderForVariable(pSliderName,
+																pVariable,
+																new Variable<T>("Min", pMin),
+																new Variable<T>("Max", pMax),
+																new Variable<T>("Granularity",
+																								pGranularity),
+																pTicks);
+	}
+
+	public <T extends Number> VariableSlider<T> addSliderForVariable(	String pSliderName,
+																																		Variable<T> pVariable,
+																																		Variable<T> pMin,
+																																		Variable<T> pMax,
+																																		Variable<T> pGranularity,
+																																		T pTicks)
+	{
 		final VariableSlider<T> lSlider = new VariableSlider<T>(pSliderName,
 																														pVariable,
 																														pMin,

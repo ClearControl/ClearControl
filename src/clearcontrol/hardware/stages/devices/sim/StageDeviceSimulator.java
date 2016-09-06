@@ -1,6 +1,7 @@
 package clearcontrol.hardware.stages.devices.sim;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.signum;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +21,8 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 {
 
-	private static final double cEpsilon = 0;
+	private static final double cEpsilon = 1;
+	private static final double cSpeed = 0.1;
 	private StageType mStageType;
 
 	public StageDeviceSimulator(String pDeviceName, StageType pStageType)
@@ -111,22 +113,32 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 																										pMin));
 		mMaxPositionVariables.add(new Variable<Double>(	"MaxPosition" + pDOFName,
 																										pMax));
+		mGranularityPositionVariables.add(new Variable<Double>(	"GranularityPosition" + pDOFName,
+																														0d));
 
 	}
 
 	private void moveToTarget()
 	{
-		for (int i = 0; i < getNumberOfDOFs(); i++)
+		try
 		{
-			double lTarget = mTargetPositionVariables.get(i).get();
-			double lCurrent = mCurrentPositionVariables.get(i).get();
-			double lError = lTarget - lCurrent;
+			int i=0;
+			//for (int i = 0; i < getNumberOfDOFs(); i++)
+			{
+				double lTarget = mTargetPositionVariables.get(i).get();
+				double lCurrent = mCurrentPositionVariables.get(i).get();
+				double lErrorLinear = lTarget - lCurrent;
 
-			double lNewCurrent = lCurrent + 1.0 * Math.signum( lError );
+				double lNewCurrent = lCurrent + cSpeed*signum(lErrorLinear);
 
-			if (abs(lNewCurrent - lCurrent) > cEpsilon)
-				mCurrentPositionVariables.get(i).set(lNewCurrent);
+				if (abs(lErrorLinear) > cEpsilon)
+					mCurrentPositionVariables.get(i).set(lNewCurrent);
 
+			}
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
 		}
 
 	}

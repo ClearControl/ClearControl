@@ -1,5 +1,7 @@
 package clearcontrol.hardware.stages.gui.jfx;
 
+import org.jetbrains.annotations.ReadOnly;
+
 import clearcontrol.core.variable.Variable;
 
 import clearcontrol.gui.jfx.var.slider.VariableSlider;

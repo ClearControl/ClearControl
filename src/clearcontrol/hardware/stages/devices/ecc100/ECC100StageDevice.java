@@ -8,6 +8,7 @@ import com.google.common.collect.HashBiMap;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 import clearcontrol.hardware.stages.StageDeviceBase;
 import clearcontrol.hardware.stages.StageDeviceInterface;
@@ -126,8 +127,10 @@ public class ECC100StageDevice extends StageDeviceBase implements
 					mMinPositionVariables.add(new MinPositionVariable("MinPosition" + mIndexToNameMap.get(dof),
 																														lEcc100Axis));
 
-					mMinPositionVariables.add(new MaxPositionVariable("MaxPosition" + mIndexToNameMap.get(dof),
+					mMaxPositionVariables.add(new MaxPositionVariable("MaxPosition" + mIndexToNameMap.get(dof),
 																														lEcc100Axis));
+					
+					mGranularityPositionVariables.add(new Variable<Double>("GranularityPosition" + mIndexToNameMap.get(dof),0d));
 				}
 
 				return true;
@@ -178,5 +181,7 @@ public class ECC100StageDevice extends StageDeviceBase implements
 						+ getName()
 						+ "]";
 	}
+
+
 
 }

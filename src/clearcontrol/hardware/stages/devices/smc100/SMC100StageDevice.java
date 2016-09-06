@@ -28,7 +28,7 @@ public class SMC100StageDevice extends SerialDevice	implements
 			mHomingVariable, mStopVariable, mResetVariable;
 	private final Variable<Double> mTargetPositionVariable,
 			mCurrentPositionVariable, mMinPositionVariable,
-			mMaxPositionVariable;
+			mMaxPositionVariable, mGranularityPositionVariable;
 
 	public SMC100StageDevice(String pDeviceName, String pPortName)
 	{
@@ -53,6 +53,9 @@ public class SMC100StageDevice extends SerialDevice	implements
 		final SerialTextDeviceAdapter<Double> lMaxPositionAdapter = new SMC100MaxPositionAdapter();
 		mMaxPositionVariable = addSerialVariable(	pDeviceName + "MaxPosition",
 																							lMaxPositionAdapter);
+
+		mGranularityPositionVariable = new Variable<Double>(pDeviceName + "GranularityPosition",
+																												0d);
 
 		final SerialTextDeviceAdapter<Boolean> lStopAdapter = new SMC100StopAdapter();
 		mStopVariable = addSerialVariable(pDeviceName + "Stop",
@@ -170,6 +173,12 @@ public class SMC100StageDevice extends SerialDevice	implements
 	public Variable<Double> getMaxPositionVariable(int pIndex)
 	{
 		return mMaxPositionVariable;
+	}
+
+	@Override
+	public Variable<Double> getGranularityPositionVariable(int pDOFIndex)
+	{
+		return mGranularityPositionVariable;
 	}
 
 	@Override
