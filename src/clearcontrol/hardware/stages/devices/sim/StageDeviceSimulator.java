@@ -122,7 +122,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 			double lCurrent = mCurrentPositionVariables.get(i).get();
 			double lError = lTarget - lCurrent;
 
-			double lNewCurrent = lCurrent + 0.1 * Math.signum(lError);
+			double lNewCurrent = lCurrent + 1.0 * Math.signum( lError );
 
 			if (abs(lNewCurrent - lCurrent) > cEpsilon)
 				mCurrentPositionVariables.get(i).set(lNewCurrent);
