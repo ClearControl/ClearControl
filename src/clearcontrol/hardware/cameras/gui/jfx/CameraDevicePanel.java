@@ -2,6 +2,7 @@ package clearcontrol.hardware.cameras.gui.jfx;
 
 import java.util.Arrays;
 
+import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -11,17 +12,12 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -62,12 +58,19 @@ public class CameraDevicePanel extends AnchorPane
 	Line mHLine, mVLine;
 	Text mHText, mVText;
 
+	VariableNumberTextField< Long > mWidth, mHeight;
+
 	public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
 	{
 		mCameraDeviceInterface = pCameraDeviceInterface;
 
 		mMaxCameraWidth = mCameraDeviceInterface.getStackMaxWidthVariable().get();
 		mMaxCameraHeight = mCameraDeviceInterface.getStackMaxHeightVariable().get();
+
+		mWidth = new VariableNumberTextField<>( "Width: ", mCameraDeviceInterface.getStackWidthVariable(),
+				0L, mCameraDeviceInterface.getStackMaxWidthVariable().get(), 1L );
+		mHeight = new VariableNumberTextField<>( "Height: ", mCameraDeviceInterface.getStackHeightVariable(),
+				0L, mCameraDeviceInterface.getStackMaxHeightVariable().get(), 1L );
 
 		init();
 
@@ -130,13 +133,6 @@ public class CameraDevicePanel extends AnchorPane
 																mCameraHeightProperty.set(n);
 															});
 													});
-
-		// TODO: HonKee: the binding from CC variables to properties is done above,
-		// now we need to link from the GUI events (clicks and drags) and trigger an
-		// update of the properties from the CC variables. Remember, we must not
-		// listen to properties events!
-		// example: pCameraDeviceInterface.getStackWidthVariable().setAsync(...)
-
 	}
 
 	// GUI -> data
@@ -210,101 +206,14 @@ public class CameraDevicePanel extends AnchorPane
 		HBox widthBox = new HBox(5);
 		widthBox.setPadding(new Insets(30, 10, 10, 10));
 		widthBox.setAlignment(Pos.CENTER);
-		widthBox.getChildren().add(new Label("Width: "));
-		TextField width = new TextField()
-		{
-			@Override
-			public void replaceText(int start, int end, String text)
-			{
-				// If the replaced text would end up being invalid, then simply
-				// ignore this call!
-				if ( text.matches( "[0-9]*" ) )
-				{
-					String replaced;
-					if ( getSelectedText().isEmpty() )
-						replaced = checkNewString( getText(),
-																						start,
-																						end,
-																						text);
-					else
-						replaced = text;
-
-					if (isLessThanMaxValue( mMaxCameraWidth, replaced ))
-						super.replaceText(start, end, text);
-				}
-			}
-
-			@Override
-			public void replaceSelection(String text)
-			{
-				System.out.println( text );
-				if (text.matches("[0-9]*"))
-				{
-					if (isLessThanMaxValue(mMaxCameraWidth, text))
-						super.replaceSelection(text);
-				}
-			}
-		};
-
-		width.setOnKeyPressed( new EventHandler< KeyEvent >()
-		{
-			@Override public void handle( KeyEvent event )
-			{
-				if ( event.getCode() == KeyCode.ENTER )
-					updateWidthHeight( mCameraWidthProperty.get(), mCameraHeightProperty.get() );
-			}
-		} );
-
-		width.setPrefWidth(80);
-		mCameraWidthStringProperty = width.textProperty();
-		widthBox.getChildren().add(width);
+		mCameraWidthStringProperty = mWidth.getTextField().textProperty();
+		widthBox.getChildren().add( mWidth );
 
 		HBox heightBox = new HBox(5);
 		heightBox.setPadding(new Insets(10, 10, 10, 10));
 		heightBox.setAlignment(Pos.CENTER);
-		heightBox.getChildren().add(new Label("Height: "));
-		TextField height = new TextField()
-		{
-			@Override
-			public void replaceText(int start, int end, String text)
-			{
-				// If the replaced text would end up being invalid, then simply
-				// ignore this call!
-				if (text.matches("[0-9]*"))
-				{
-
-					String replaced = checkNewString(	getText(),
-																						start,
-																						end,
-																						text);
-					if (isLessThanMaxValue(mMaxCameraHeight, replaced))
-						super.replaceText(start, end, text);
-				}
-			}
-
-			@Override
-			public void replaceSelection(String text)
-			{
-				if (text.matches("[0-9]*"))
-				{
-					if (isLessThanMaxValue(mMaxCameraHeight, text))
-						super.replaceSelection(text);
-				}
-			}
-		};
-
-		height.setOnKeyPressed( new EventHandler< KeyEvent >()
-		{
-			@Override public void handle( KeyEvent event )
-			{
-				if ( event.getCode() == KeyCode.ENTER )
-					updateWidthHeight( mCameraWidthProperty.get(), mCameraHeightProperty.get() );
-			}
-		} );
-
-		height.setPrefWidth(80);
-		mCameraHeightStringProperty = height.textProperty();
-		heightBox.getChildren().add(height);
+		mCameraHeightStringProperty = mHeight.getTextField().textProperty();
+		heightBox.getChildren().add( mHeight );
 
 		VBox vBox = new VBox(mGridPane, widthBox, heightBox);
 
@@ -388,28 +297,6 @@ public class CameraDevicePanel extends AnchorPane
 																			return 0;
 																	}
 																});
-	}
-
-	private static boolean isLessThanMaxValue(final float max,
-																						final String text)
-	{
-		Float lValue = 0f;
-
-		if ( !text.isEmpty() )
-			lValue = Float.parseFloat( text );
-
-		return lValue <= max;
-	}
-
-	private String checkNewString(String oldText,
-																int start,
-																int end,
-																String text)
-	{
-		String newString = oldText.substring(0, start);
-		newString += text;
-		newString += oldText.substring(start, oldText.length());
-		return newString;
 	}
 
 	private void setDragHandlers(	final Line line,
