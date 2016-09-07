@@ -21,7 +21,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 {
 
-	private static final double cEpsilon = 1;
+	private static final double cEpsilon = 0.01;
 	private static final double cSpeed = 0.1;
 	private StageType mStageType;
 
