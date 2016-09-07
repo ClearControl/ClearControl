@@ -74,6 +74,13 @@ public class Variable<O> extends VariableBase<O> implements
 		set(pBeforeEdge);
 		set(pAfterEdge);
 	}
+	
+	public void setEdgeAsync(O pBeforeEdge, O pAfterEdge)
+	{
+		sAsyncExecutor.execute(() -> {
+			setEdge(pBeforeEdge,pAfterEdge);
+		});
+	}
 
 	@Override
 	public void set(final O pNewReference)

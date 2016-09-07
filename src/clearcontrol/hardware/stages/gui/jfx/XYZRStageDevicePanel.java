@@ -67,61 +67,61 @@ public class XYZRStageDevicePanel extends BorderPane
 		Enable, Ready, Homing, Stop, Reset
 	}
 
-	public XYZRStageDevicePanel( StageDeviceInterface pStageDeviceInterface )
+	public XYZRStageDevicePanel(StageDeviceInterface pStageDeviceInterface)
 	{
 		mStageDeviceInterface = pStageDeviceInterface;
-
 		init();
 	}
 
-	private VariableSlider< Double > createCurrentSlider( Stage pStage )
+	private VariableSlider<Double> createCurrentSlider(Stage pStage)
 	{
-		int lIndex = mStageDeviceInterface.getDOFIndexByName( pStage.name() );
-		VariableSlider< Double > variableCurSlider = new VariableSlider<>( "",
-				mStageDeviceInterface.getCurrentPositionVariable( lIndex ),
-				mStageDeviceInterface.getMinPositionVariable( lIndex ),
-				mStageDeviceInterface.getMaxPositionVariable( lIndex ),
-				new Variable<>( "granularity", 0.1d ), 10d
-		);
-		variableCurSlider.getSlider().setDisable( true );
-		variableCurSlider.getTextField().setDisable( true );
+		int lIndex = mStageDeviceInterface.getDOFIndexByName(pStage.name());
+		VariableSlider<Double> variableCurSlider = new VariableSlider<>("",
+																																		mStageDeviceInterface.getCurrentPositionVariable(lIndex),
+																																		mStageDeviceInterface.getMinPositionVariable(lIndex),
+																																		mStageDeviceInterface.getMaxPositionVariable(lIndex),
+																																		mStageDeviceInterface.getGranularityPositionVariable(lIndex),
+																																		10d);
+		variableCurSlider.getSlider().setDisable(true);
+		variableCurSlider.getTextField().setDisable(true);
 		return variableCurSlider;
 	}
 
-	private VariableSlider< Double > createTargetSlider( Stage pStage )
+	private VariableSlider<Double> createTargetSlider(Stage pStage)
 	{
-		int lIndex = mStageDeviceInterface.getDOFIndexByName( pStage.name() );
-		VariableSlider< Double > variableSlider = new VariableSlider<>( "",
-				mStageDeviceInterface.getTargetPositionVariable( lIndex ),
-				mStageDeviceInterface.getMinPositionVariable( lIndex ),
-				mStageDeviceInterface.getMaxPositionVariable( lIndex ),
-				new Variable<>( "granularity", 0.1d ), 10d
-		);
+		int lIndex = mStageDeviceInterface.getDOFIndexByName(pStage.name());
+		VariableSlider<Double> variableSlider = new VariableSlider<>("",
+																																	mStageDeviceInterface.getTargetPositionVariable(lIndex),
+																																	mStageDeviceInterface.getMinPositionVariable(lIndex),
+																																	mStageDeviceInterface.getMaxPositionVariable(lIndex),
+																																	mStageDeviceInterface.getGranularityPositionVariable(lIndex),
+																																	10d);
 		return variableSlider;
 	}
 
-	private Variable< Boolean > getStageAttribute( Stage pStage, Attribute pAttribute )
+	private Variable<Boolean> getStageAttribute(Stage pStage,
+																							Attribute pAttribute)
 	{
-		Variable< Boolean > variable = null;
-		int lIndex = mStageDeviceInterface.getDOFIndexByName( pStage.name() );
+		Variable<Boolean> variable = null;
+		int lIndex = mStageDeviceInterface.getDOFIndexByName(pStage.name());
 
-		switch ( pAttribute )
+		switch (pAttribute)
 		{
-			case Enable:
-				variable = mStageDeviceInterface.getEnableVariable( lIndex );
-				break;
-			case Ready:
-				variable = mStageDeviceInterface.getReadyVariable( lIndex );
-				break;
-			case Homing:
-				variable = mStageDeviceInterface.getHomingVariable( lIndex );
-				break;
-			case Stop:
-				variable = mStageDeviceInterface.getStopVariable( lIndex );
-				break;
-			case Reset:
-				variable = mStageDeviceInterface.getResetVariable( lIndex );
-				break;
+		case Enable:
+			variable = mStageDeviceInterface.getEnableVariable(lIndex);
+			break;
+		case Ready:
+			variable = mStageDeviceInterface.getReadyVariable(lIndex);
+			break;
+		case Homing:
+			variable = mStageDeviceInterface.getHomingVariable(lIndex);
+			break;
+		case Stop:
+			variable = mStageDeviceInterface.getStopVariable(lIndex);
+			break;
+		case Reset:
+			variable = mStageDeviceInterface.getResetVariable(lIndex);
+			break;
 		}
 
 		return variable;
@@ -135,22 +135,22 @@ public class XYZRStageDevicePanel extends BorderPane
 		cubeScene = new CubeScene();
 		subScene = cubeScene.getSubScene();
 
-		secondView = new SnapshotView( cubeScene.getRoot3D() );
+		secondView = new SnapshotView(cubeScene.getRoot3D());
 		final ImageView secondViewPane = secondView.getViewPane();
-		secondView.setSceneDiameter( cubeScene.getSceneDiameter() );
+		secondView.setSceneDiameter(cubeScene.getSceneDiameter());
 
-		thirdView = new SnapshotView( cubeScene.getRoot3D() );
+		thirdView = new SnapshotView(cubeScene.getRoot3D());
 		final ImageView thirdViewPane = thirdView.getViewPane();
-		thirdView.setSceneDiameter( cubeScene.getSceneDiameter() );
+		thirdView.setSceneDiameter(cubeScene.getSceneDiameter());
 
-		fourthView = new SnapshotView( cubeScene.getRoot3D() );
+		fourthView = new SnapshotView(cubeScene.getRoot3D());
 		final ImageView fourthViewPane = fourthView.getViewPane();
-		fourthView.setSceneDiameter( cubeScene.getSceneDiameter() );
+		fourthView.setSceneDiameter(cubeScene.getSceneDiameter());
 
-		cubeScene.setVantagePoint( View3D.ViewPort.CORNER );
-		secondView.setVantagePoint( View3D.ViewPort.BOTTOM );
-		thirdView.setVantagePoint( View3D.ViewPort.RIGHT );
-		fourthView.setVantagePoint( View3D.ViewPort.FRONT );
+		cubeScene.setVantagePoint(View3D.ViewPort.CORNER);
+		secondView.setVantagePoint(View3D.ViewPort.BOTTOM);
+		thirdView.setVantagePoint(View3D.ViewPort.RIGHT);
+		fourthView.setVantagePoint(View3D.ViewPort.FRONT);
 
 		final Rectangle2D screenRect = Screen.getPrimary().getBounds();
 		final double screenWidth = screenRect.getWidth();
@@ -158,11 +158,11 @@ public class XYZRStageDevicePanel extends BorderPane
 
 		final double startWidth = screenWidth * 0.7;
 		final double startHeight = screenHeight * 0.7;
-		subScene.setWidth( startWidth / 2 );
-		subScene.setHeight( startHeight / 2 );
+		subScene.setWidth(startWidth / 2);
+		subScene.setHeight(startHeight / 2);
 
 		background1Pane = new Pane();
-		background1Pane.setPrefSize( startWidth / 2, startHeight / 2 );
+		background1Pane.setPrefSize(startWidth / 2, startHeight / 2);
 
 		final Pane layeredPane = new Pane()
 		{
@@ -176,62 +176,62 @@ public class XYZRStageDevicePanel extends BorderPane
 				final double width = sceneWidth / 2;
 				final double height = getHeight() / 2;
 
-				background1Pane.setPrefSize( width, height );
+				background1Pane.setPrefSize(width, height);
 				background1Pane.autosize();
-				background1Pane.relocate( 0, 0 );
+				background1Pane.relocate(0, 0);
 
 				// Second view
-				secondViewPane.relocate( width, 0 );
-				thirdViewPane.relocate( 0, height );
-				fourthViewPane.relocate( width, height );
+				secondViewPane.relocate(width, 0);
+				thirdViewPane.relocate(0, height);
+				fourthViewPane.relocate(width, height);
 			}
 		};
 
 		final ChangeListener sceneBoundsListener = new ChangeListener()
 		{
 			@Override
-			public void changed( ObservableValue observable,
-					Object oldXY,
-					Object newXY )
+			public void changed(ObservableValue observable,
+													Object oldXY,
+													Object newXY)
 			{
-				subScene.setWidth( layeredPane.getWidth() / 2 );
-				subScene.setHeight( layeredPane.getHeight() / 2 );
+				subScene.setWidth(layeredPane.getWidth() / 2);
+				subScene.setHeight(layeredPane.getHeight() / 2);
 			}
 		};
-		layeredPane.widthProperty().addListener( sceneBoundsListener );
-		layeredPane.heightProperty().addListener( sceneBoundsListener );
+		layeredPane.widthProperty().addListener(sceneBoundsListener);
+		layeredPane.heightProperty().addListener(sceneBoundsListener);
 
 		viewTimer = new AnimationTimer()
 		{
 			@Override
-			public void handle( long now )
+			public void handle(long now)
 			{
-				secondView.drawView( layeredPane.getWidth() / 2,
-						layeredPane.getHeight() / 2 );
-				thirdView.drawView( layeredPane.getWidth() / 2,
-						layeredPane.getHeight() / 2 );
-				fourthView.drawView( layeredPane.getWidth() / 2,
-						layeredPane.getHeight() / 2 );
+				secondView.drawView(layeredPane.getWidth() / 2,
+														layeredPane.getHeight() / 2);
+				thirdView.drawView(	layeredPane.getWidth() / 2,
+														layeredPane.getHeight() / 2);
+				fourthView.drawView(layeredPane.getWidth() / 2,
+														layeredPane.getHeight() / 2);
 			}
 		};
 
-		layeredPane.getChildren().addAll( background1Pane,
-				subScene,
-				secondViewPane,
-				thirdViewPane,
-				fourthViewPane );
+		layeredPane.getChildren().addAll(	background1Pane,
+																			subScene,
+																			secondViewPane,
+																			thirdViewPane,
+																			fourthViewPane);
 
-		Background black = new Background( new BackgroundFill( Color.BLACK,
-				null,
-				null ) );
+		Background black = new Background(new BackgroundFill(	Color.BLACK,
+																													null,
+																													null));
 
-		background1Pane.setBackground( black ); // initial background
-		secondView.setBackground( Paint.valueOf( "#000000" ) );
-		thirdView.setBackground( Paint.valueOf( "#000000" ) );
-		fourthView.setBackground( Paint.valueOf( "#000000" ) );
+		background1Pane.setBackground(black); // initial background
+		secondView.setBackground(Paint.valueOf("#000000"));
+		thirdView.setBackground(Paint.valueOf("#000000"));
+		fourthView.setBackground(Paint.valueOf("#000000"));
 
-		setTop( createControls() );
-		setCenter( layeredPane );
+		setTop(createControls());
+		setCenter(layeredPane);
 
 		viewTimer.start();
 	}
@@ -241,191 +241,211 @@ public class XYZRStageDevicePanel extends BorderPane
 		viewTimer.stop();
 	}
 
-	private GridPane createFrontControls( Stage pStage, VariableSlider< Double > pSlider )
+	private GridPane createFrontControls(	Stage pStage,
+																				VariableSlider<Double> pSlider)
 	{
 		final IconSwitch lEnableSwitch = new IconSwitch();
-		lEnableSwitch.setSymbolType( SymbolType.POWER );
-		lEnableSwitch.setSymbolColor( Color.web( "#ffffff" ) );
-		lEnableSwitch.setSwitchColor( Color.web( "#34495e" ) );
-		lEnableSwitch.setThumbColor( Color.web( "#ff495e" ) );
+		lEnableSwitch.setSymbolType(SymbolType.POWER);
+		lEnableSwitch.setSymbolColor(Color.web("#ffffff"));
+		lEnableSwitch.setSwitchColor(Color.web("#34495e"));
+		lEnableSwitch.setThumbColor(Color.web("#ff495e"));
 
-		lEnableSwitch.setMaxSize( 60, 30 );
+		lEnableSwitch.setMaxSize(60, 30);
 
 		// Data -> GUI
-		getStageAttribute( pStage, Attribute.Enable ).addSetListener( ( pCurrentValue, pNewValue ) -> {
-			Platform.runLater( () -> {
-				lEnableSwitch.setSelected( pNewValue );
-				pSlider.getSlider().setDisable( !pNewValue );
-				pSlider.getTextField().setDisable( !pNewValue );
-			} );
-		} );
+		getStageAttribute(pStage, Attribute.Enable).addSetListener((pCurrentValue,
+																																pNewValue) -> {
+			Platform.runLater(() -> {
+				lEnableSwitch.setSelected(pNewValue);
+				pSlider.getSlider().setDisable(!pNewValue);
+				pSlider.getTextField().setDisable(!pNewValue);
+			});
+		});
 
 		// Enable, GUI -> Data
-		lEnableSwitch.setOnMouseReleased( event ->
-				getStageAttribute( pStage, Attribute.Enable ).setAsync( !getStageAttribute( pStage, Attribute.Enable ).get() ) );
+		lEnableSwitch.setOnMouseReleased(event -> getStageAttribute(pStage,
+																																Attribute.Enable).setAsync(!getStageAttribute(pStage,
+																																																							Attribute.Enable).get()));
 
 		// Initialize the status at startup
-		pSlider.getSlider().setDisable( !getStageAttribute( pStage, Attribute.Enable ).get() );
-		pSlider.getTextField().setDisable( !getStageAttribute( pStage, Attribute.Enable ).get() );
+		pSlider.getSlider()
+						.setDisable(!getStageAttribute(pStage, Attribute.Enable).get());
+		pSlider.getTextField()
+						.setDisable(!getStageAttribute(pStage, Attribute.Enable).get());
 
 		final SimpleIndicator lIndicator = new SimpleIndicator();
-		lIndicator.setMaxSize( 50, 50 );
-		getStageAttribute( pStage, Attribute.Ready ).addSetListener( ( pCurrentValue, pNewValue ) -> {
-			Platform.runLater( () -> {
-				if ( pNewValue )
-					lIndicator.setIndicatorStyle( SimpleIndicator.IndicatorStyle.GREEN );
+		lIndicator.setMaxSize(50, 50);
+		getStageAttribute(pStage, Attribute.Ready).addSetListener((	pCurrentValue,
+																																pNewValue) -> {
+			Platform.runLater(() -> {
+				if (pNewValue)
+					lIndicator.setIndicatorStyle(SimpleIndicator.IndicatorStyle.GREEN);
 				else
-					lIndicator.setIndicatorStyle( SimpleIndicator.IndicatorStyle.GRAY );
-			} );
-		} );
+					lIndicator.setIndicatorStyle(SimpleIndicator.IndicatorStyle.GRAY);
+			});
+		});
 
-		final Button lHomingButton = new Button( "Homing" );
-		lHomingButton.setOnAction( event -> getStageAttribute( pStage, Attribute.Homing ).setAsync( true ) );
+		if (getStageAttribute(pStage, Attribute.Ready).get())
+			lIndicator.setIndicatorStyle(SimpleIndicator.IndicatorStyle.GREEN);
+		else
+			lIndicator.setIndicatorStyle(SimpleIndicator.IndicatorStyle.GRAY);
 
-		final Button lStopButton = new Button( "Stop" );
-		lStopButton.setOnAction( event -> getStageAttribute( pStage, Attribute.Stop ).setAsync( true ) );
+		final Button lHomingButton = new Button("Homing");
+		lHomingButton.setOnAction(event -> getStageAttribute(	pStage,
+																													Attribute.Homing).setEdgeAsync(	false,
+																																													true));
 
-		final Button lResetButton = new Button( "Reset" );
-		lResetButton.setOnAction( event -> getStageAttribute( pStage, Attribute.Reset ).setAsync( true ) );
+		final Button lStopButton = new Button("Stop");
+		lStopButton.setOnAction(event -> getStageAttribute(	pStage,
+																												Attribute.Stop).setEdgeAsync(	false,
+																																											true));
+
+		final Button lResetButton = new Button("Reset");
+		lResetButton.setOnAction(event -> getStageAttribute(pStage,
+																												Attribute.Reset).setEdgeAsync(false,
+																																											true));
 
 		GridPane lGridPane = new CustomGridPane();
-		lGridPane.add( lIndicator, 0, 0 );
-		GridPane.setRowSpan( lIndicator, 2 );
-		lGridPane.add( lEnableSwitch, 0, 2 );
-		GridPane.setHalignment( lEnableSwitch, HPos.CENTER );
+		lGridPane.add(lIndicator, 0, 0);
+		GridPane.setRowSpan(lIndicator, 2);
+		lGridPane.add(lEnableSwitch, 0, 2);
+		GridPane.setHalignment(lEnableSwitch, HPos.CENTER);
 
-		lGridPane.add( lHomingButton, 1, 0 );
-		lGridPane.add( lStopButton, 1, 1 );
-		lGridPane.add( lResetButton, 1, 2 );
+		lGridPane.add(lHomingButton, 1, 0);
+		lGridPane.add(lStopButton, 1, 1);
+		lGridPane.add(lResetButton, 1, 2);
 
 		return lGridPane;
 	}
 
-	private HBox createStageControl( String pLabelString, Stage pStage )
+	private HBox createStageControl(String pLabelString, Stage pStage)
 	{
 		BoundingBox cubeBB = cubeScene.getCubeBoundingBox();
 
-		final Label lStageLabel = new Label( pLabelString );
+		final Label lStageLabel = new Label(pLabelString);
 
-		final VariableSlider< Double > lTargetSlider = createTargetSlider( pStage );
-		final VariableSlider< Double > lCurrentSlider = createCurrentSlider( pStage );
+		final VariableSlider<Double> lTargetSlider = createTargetSlider(pStage);
+		final VariableSlider<Double> lCurrentSlider = createCurrentSlider(pStage);
 
-		double lOffset = lCurrentSlider.getSlider().getMin() * Math.signum( lCurrentSlider.getSlider().getMin() );
+		double lOffset = lCurrentSlider.getSlider().getMin() * Math.signum(lCurrentSlider.getSlider()
+																																											.getMin());
 
-		switch ( pStage )
+		switch (pStage)
 		{
-			case R:
-				{
-					lCurrentSlider.getSlider().valueProperty()
-							.bindBidirectional( cubeScene.getCubeCenterGroup()
-									.rotateProperty() );
-				}
+		case R:
+		{
+			lCurrentSlider.getSlider()
+										.valueProperty()
+										.bindBidirectional(cubeScene.getCubeCenterGroup()
+																								.rotateProperty());
+		}
 			break;
-			case X:
-			{
-				double min = cubeScene.getCubeCenterGroup().getTranslateX();
-				double max = cubeScene.getCubeCenterGroup().getTranslateX() + CubeScene.VIEWPORT_SIZE
-						- cubeBB.getMaxX()
-						* 2.2;
+		case X:
+		{
+			double min = cubeScene.getCubeCenterGroup().getTranslateX();
+			double max = cubeScene.getCubeCenterGroup().getTranslateX() + CubeScene.VIEWPORT_SIZE
+										- cubeBB.getMaxX()
+										* 2.2;
 
-				lCurrentSlider.getSlider().valueProperty()
-						.addListener( ( observable, oldValue, newValue ) ->
-								cubeScene.getCubeCenterGroup()
-										.setTranslateX(
-												( newValue.doubleValue() + lOffset ) * ( max - min )
-														/
-														( lCurrentSlider.getSlider().getMax() + lOffset )
-														+ min ) );
+			lCurrentSlider.getSlider()
+										.valueProperty()
+										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
+																																							.setTranslateX((newValue.doubleValue() + lOffset) * (max - min)
+																																															/ (lCurrentSlider.getSlider()
+																																																								.getMax() + lOffset)
+																																															+ min));
 
-				cubeScene.getCubeCenterGroup()
-						.setTranslateX(
-								( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
-										/
-										( lCurrentSlider.getSlider().getMax() + lOffset )
-										+ min );
-			}
+			cubeScene.getCubeCenterGroup()
+								.setTranslateX((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
+																/ (lCurrentSlider.getSlider()
+																									.getMax() + lOffset)
+																+ min);
+		}
 			break;
-			case Y:
-			{
-				double min = cubeScene.getCubeCenterGroup().getTranslateY();
-				double max = cubeScene.getCubeCenterGroup().getTranslateY() + CubeScene.VIEWPORT_SIZE
-						- cubeBB.getMaxY()
-						* 2.2;
+		case Y:
+		{
+			double min = cubeScene.getCubeCenterGroup().getTranslateY();
+			double max = cubeScene.getCubeCenterGroup().getTranslateY() + CubeScene.VIEWPORT_SIZE
+										- cubeBB.getMaxY()
+										* 2.2;
 
-				lCurrentSlider.getSlider().valueProperty()
-						.addListener( ( observable, oldValue, newValue ) ->
-								cubeScene.getCubeCenterGroup()
-										.setTranslateY(
-												( newValue.doubleValue() + lOffset ) * ( max - min )
-														/
-														( lCurrentSlider.getSlider().getMax() + lOffset )
-														+ min ) );
+			lCurrentSlider.getSlider()
+										.valueProperty()
+										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
+																																							.setTranslateY((newValue.doubleValue() + lOffset) * (max - min)
+																																															/ (lCurrentSlider.getSlider()
+																																																								.getMax() + lOffset)
+																																															+ min));
 
-				cubeScene.getCubeCenterGroup()
-						.setTranslateY(
-								( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
-										/
-										( lCurrentSlider.getSlider().getMax() + lOffset )
-										+ min );
-			}
+			cubeScene.getCubeCenterGroup()
+								.setTranslateY((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
+																/ (lCurrentSlider.getSlider()
+																									.getMax() + lOffset)
+																+ min);
+		}
 			break;
-			case Z:
-			{
-				double min = cubeScene.getCubeCenterGroup().getTranslateZ();
-				double max = cubeScene.getCubeCenterGroup().getTranslateZ() + CubeScene.VIEWPORT_SIZE
-						- cubeBB.getMaxZ()
-						* 2.2;
+		case Z:
+		{
+			double min = cubeScene.getCubeCenterGroup().getTranslateZ();
+			double max = cubeScene.getCubeCenterGroup().getTranslateZ() + CubeScene.VIEWPORT_SIZE
+										- cubeBB.getMaxZ()
+										* 2.2;
 
-				lCurrentSlider.getSlider().valueProperty()
-						.addListener( ( observable, oldValue, newValue ) ->
-								cubeScene.getCubeCenterGroup()
-										.setTranslateZ(
-												( newValue.doubleValue() + lOffset ) * ( max - min )
-														/
-														( lCurrentSlider.getSlider().getMax() + lOffset )
-														+ min ) );
+			lCurrentSlider.getSlider()
+										.valueProperty()
+										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
+																																							.setTranslateZ((newValue.doubleValue() + lOffset) * (max - min)
+																																															/ (lCurrentSlider.getSlider()
+																																																								.getMax() + lOffset)
+																																															+ min));
 
-				cubeScene.getCubeCenterGroup()
-						.setTranslateZ(
-								( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
-										/
-										( lCurrentSlider.getSlider().getMax() + lOffset )
-										+ min );
+			cubeScene.getCubeCenterGroup()
+								.setTranslateZ((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
+																/ (lCurrentSlider.getSlider()
+																									.getMax() + lOffset)
+																+ min);
 
-			}
+		}
 			break;
 		}
 
-		final HBox lStageBox = new HBox( 5 );
-		lStageBox.getChildren().addAll( new VBox( lStageLabel, createFrontControls( pStage, lTargetSlider ) ),
-				lTargetSlider,
-				lCurrentSlider );
-		HBox.setHgrow( lStageBox, Priority.ALWAYS );
+		final HBox lStageBox = new HBox(5);
+		lStageBox.getChildren()
+							.addAll(new VBox(	lStageLabel,
+																createFrontControls(pStage,
+																										lTargetSlider)),
+											lTargetSlider,
+											lCurrentSlider);
+		HBox.setHgrow(lStageBox, Priority.ALWAYS);
 
 		return lStageBox;
 	}
 
 	private VBox createControls()
 	{
-		//		CheckBox rotate = new CheckBox("Rotate");
-		//		rotate.selectedProperty().addListener(observable -> {
-		//			if (rotate.isSelected())
-		//			{
-		//				cubeScene.setRotationSpeed(20);
-		//			}
-		//			else
-		//			{
-		//				cubeScene.stopCubeRotation();
-		//			}
-		//		});
+		// CheckBox rotate = new CheckBox("Rotate");
+		// rotate.selectedProperty().addListener(observable -> {
+		// if (rotate.isSelected())
+		// {
+		// cubeScene.setRotationSpeed(20);
+		// }
+		// else
+		// {
+		// cubeScene.stopCubeRotation();
+		// }
+		// });
 
-		VBox controls = new VBox( 10,
-				//rotate,
-				createStageControl( "Stage R (micro-degree)", Stage.R ),
-				createStageControl( "Stage X (microns)", Stage.X ),
-				createStageControl( "Stage Y (microns)", Stage.Y ),
-				createStageControl( "Stage Z (microns)", Stage.Z ) );
-		controls.setPadding( new Insets( 10 ) );
+		VBox controls = new VBox(	10,
+															// rotate,
+															createStageControl(	"Stage R (micro-degree)",
+																									Stage.R),
+															createStageControl(	"Stage X (microns)",
+																									Stage.X),
+															createStageControl(	"Stage Y (microns)",
+																									Stage.Y),
+															createStageControl(	"Stage Z (microns)",
+																									Stage.Z));
+		controls.setPadding(new Insets(10));
 		return controls;
 	}
 }
