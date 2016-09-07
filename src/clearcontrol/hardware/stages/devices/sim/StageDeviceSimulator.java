@@ -56,7 +56,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mEnableVariables.add(new Variable<Boolean>(	"Enable" + pDOFName,
 																								false));
-		for (Variable<Boolean> lEnableVariable : mEnableVariables)
+		final Variable< Boolean > lEnableVariable = mEnableVariables.get( lDOFIndex );
 			lEnableVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new enable state: " + n);
@@ -64,7 +64,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mReadyVariables.add(new Variable<Boolean>("Ready" + pDOFName,
 																							false));
-		for (Variable<Boolean> lReadyVariable : mReadyVariables)
+		final Variable< Boolean > lReadyVariable = mReadyVariables.get( lDOFIndex );
 			lReadyVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new ready state: " + n);
@@ -72,14 +72,14 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mHomingVariables.add(new Variable<Boolean>(	"Homing" + pDOFName,
 																								false));
-		for (Variable<Boolean> lHomingVariable : mHomingVariables)
+		final Variable< Boolean > lHomingVariable = mHomingVariables.get( lDOFIndex );
 			lHomingVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new homing state: " + n);
 			});
 
 		mStopVariables.add(new Variable<Boolean>("Stop" + pDOFName, false));
-		for (Variable<Boolean> lStopVariable : mStopVariables)
+		final Variable< Boolean > lStopVariable = mStopVariables.get( lDOFIndex );
 			lStopVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new stop state: " + n);
@@ -87,7 +87,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mResetVariables.add(new Variable<Boolean>("Reset" + pDOFName,
 																							false));
-		for (Variable<Boolean> lResetVariable : mResetVariables)
+		final Variable< Boolean > lResetVariable = mResetVariables.get( lDOFIndex );
 			lResetVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new reset state: " + n);
@@ -95,7 +95,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mTargetPositionVariables.add(new Variable<Double>("TargetPosition" + pDOFName,
 																											0.0));
-		for (Variable<Double> lTargetPositionVariable : mTargetPositionVariables)
+		final Variable< Double > lTargetPositionVariable = mTargetPositionVariables.get( lDOFIndex );
 			lTargetPositionVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new target position: " + n);
@@ -103,7 +103,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mCurrentPositionVariables.add(new Variable<Double>(	"CurrentPosition" + pDOFName,
 																												0.0));
-		for (Variable<Double> lCurrentPositionVariable : mCurrentPositionVariables)
+		final Variable< Double > lCurrentPositionVariable = mCurrentPositionVariables.get( lDOFIndex );
 			lCurrentPositionVariable.addSetListener((o, n) -> {
 				if (isSimLogging())
 					info("new current position: " + n);
@@ -122,8 +122,8 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 	{
 		try
 		{
-			int i=0;
-			//for (int i = 0; i < getNumberOfDOFs(); i++)
+			//int i=0;
+			for ( int i = 0; i < getNumberOfDOFs(); i++ )
 			{
 				double lTarget = mTargetPositionVariables.get(i).get();
 				double lCurrent = mCurrentPositionVariables.get(i).get();
