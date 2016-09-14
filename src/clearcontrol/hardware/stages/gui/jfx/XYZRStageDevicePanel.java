@@ -275,6 +275,7 @@ public class XYZRStageDevicePanel extends BorderPane
 																																																							Attribute.Enable).get()));
 
 		// Initialize the status at startup
+		lEnableSwitch.setSelected( getStageAttribute( pStage, Attribute.Enable ).get() );
 		pSlider.getSlider()
 				.setDisable( !getStageAttribute( pStage, Attribute.Enable ).get() );
 		pSlider.getTextField()
