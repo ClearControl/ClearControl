@@ -22,6 +22,7 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SubScene;
 
@@ -83,7 +84,11 @@ public class XYZRStageDevicePanel extends BorderPane
 																																		mStageDeviceInterface.getGranularityPositionVariable(lIndex),
 																																		10d);
 		variableCurSlider.getSlider().setDisable(true);
+		variableCurSlider.getSlider().setStyle( "-fx-opacity: 1;" );
 		variableCurSlider.getTextField().setDisable(true);
+		variableCurSlider.getTextField().setStyle( "-fx-opacity: 1;" );
+
+		variableCurSlider.setPadding( new Insets( 5, 25, 25, 25 ) );
 		return variableCurSlider;
 	}
 
@@ -96,6 +101,8 @@ public class XYZRStageDevicePanel extends BorderPane
 																																	mStageDeviceInterface.getMaxPositionVariable(lIndex),
 																																	mStageDeviceInterface.getGranularityPositionVariable(lIndex),
 																																	10d);
+		variableSlider.getSlider().setShowTickLabels( false );
+		variableSlider.setPadding( new Insets( 25, 25, 5, 25 ) );
 		return variableSlider;
 	}
 
@@ -269,9 +276,9 @@ public class XYZRStageDevicePanel extends BorderPane
 
 		// Initialize the status at startup
 		pSlider.getSlider()
-						.setDisable(!getStageAttribute(pStage, Attribute.Enable).get());
+				.setDisable( !getStageAttribute( pStage, Attribute.Enable ).get() );
 		pSlider.getTextField()
-						.setDisable(!getStageAttribute(pStage, Attribute.Enable).get());
+				.setDisable( !getStageAttribute( pStage, Attribute.Enable ).get() );
 
 		final SimpleIndicator lIndicator = new SimpleIndicator();
 		lIndicator.setMaxSize(50, 50);
@@ -291,19 +298,25 @@ public class XYZRStageDevicePanel extends BorderPane
 			lIndicator.setIndicatorStyle(SimpleIndicator.IndicatorStyle.GRAY);
 
 		final Button lHomingButton = new Button("Homing");
+		lHomingButton.setAlignment( Pos.BASELINE_LEFT );
+		lHomingButton.setPrefWidth( 70 );
 		lHomingButton.setOnAction(event -> getStageAttribute(	pStage,
-																													Attribute.Homing).setEdgeAsync(	false,
-																																													true));
+				Attribute.Homing ).setEdgeAsync( false,
+				true ) );
 
 		final Button lStopButton = new Button("Stop");
+		lStopButton.setAlignment( Pos.BASELINE_LEFT );
+		lStopButton.setPrefWidth( 70 );
 		lStopButton.setOnAction(event -> getStageAttribute(	pStage,
-																												Attribute.Stop).setEdgeAsync(	false,
-																																											true));
+				Attribute.Stop ).setEdgeAsync( false,
+				true ) );
 
 		final Button lResetButton = new Button("Reset");
+		lResetButton.setAlignment( Pos.BASELINE_LEFT );
+		lResetButton.setPrefWidth( 70 );
 		lResetButton.setOnAction(event -> getStageAttribute(pStage,
-																												Attribute.Reset).setEdgeAsync(false,
-																																											true));
+				Attribute.Reset ).setEdgeAsync( false,
+				true ) );
 
 		GridPane lGridPane = new CustomGridPane();
 		lGridPane.add(lIndicator, 0, 0);
@@ -336,8 +349,8 @@ public class XYZRStageDevicePanel extends BorderPane
 		{
 			lCurrentSlider.getSlider()
 										.valueProperty()
-										.bindBidirectional(cubeScene.getCubeCenterGroup()
-																								.rotateProperty());
+					.bindBidirectional( cubeScene.getCubeCenterGroup()
+							.rotateProperty() );
 		}
 			break;
 		case X:
@@ -349,17 +362,17 @@ public class XYZRStageDevicePanel extends BorderPane
 
 			lCurrentSlider.getSlider()
 										.valueProperty()
-										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
-																																							.setTranslateX((newValue.doubleValue() + lOffset) * (max - min)
-																																															/ (lCurrentSlider.getSlider()
-																																																								.getMax() + lOffset)
-																																															+ min));
+					.addListener( ( observable, oldValue, newValue ) -> cubeScene.getCubeCenterGroup()
+							.setTranslateX( ( newValue.doubleValue() + lOffset ) * ( max - min )
+									/ ( lCurrentSlider.getSlider()
+									.getMax() + lOffset )
+									+ min ) );
 
 			cubeScene.getCubeCenterGroup()
-								.setTranslateX((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
-																/ (lCurrentSlider.getSlider()
-																									.getMax() + lOffset)
-																+ min);
+					.setTranslateX( ( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
+							/ ( lCurrentSlider.getSlider()
+							.getMax() + lOffset )
+							+ min );
 		}
 			break;
 		case Y:
@@ -371,17 +384,17 @@ public class XYZRStageDevicePanel extends BorderPane
 
 			lCurrentSlider.getSlider()
 										.valueProperty()
-										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
-																																							.setTranslateY((newValue.doubleValue() + lOffset) * (max - min)
-																																															/ (lCurrentSlider.getSlider()
-																																																								.getMax() + lOffset)
-																																															+ min));
+					.addListener( ( observable, oldValue, newValue ) -> cubeScene.getCubeCenterGroup()
+							.setTranslateY( ( newValue.doubleValue() + lOffset ) * ( max - min )
+									/ ( lCurrentSlider.getSlider()
+									.getMax() + lOffset )
+									+ min ) );
 
 			cubeScene.getCubeCenterGroup()
-								.setTranslateY((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
-																/ (lCurrentSlider.getSlider()
-																									.getMax() + lOffset)
-																+ min);
+					.setTranslateY( ( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
+							/ ( lCurrentSlider.getSlider()
+							.getMax() + lOffset )
+							+ min );
 		}
 			break;
 		case Z:
@@ -393,29 +406,30 @@ public class XYZRStageDevicePanel extends BorderPane
 
 			lCurrentSlider.getSlider()
 										.valueProperty()
-										.addListener((observable, oldValue, newValue) -> cubeScene.getCubeCenterGroup()
-																																							.setTranslateZ((newValue.doubleValue() + lOffset) * (max - min)
-																																															/ (lCurrentSlider.getSlider()
-																																																								.getMax() + lOffset)
-																																															+ min));
+					.addListener( ( observable, oldValue, newValue ) -> cubeScene.getCubeCenterGroup()
+							.setTranslateZ( ( newValue.doubleValue() + lOffset ) * ( max - min )
+									/ ( lCurrentSlider.getSlider()
+									.getMax() + lOffset )
+									+ min ) );
 
 			cubeScene.getCubeCenterGroup()
-								.setTranslateZ((lCurrentSlider.getSlider().getValue() + lOffset) * (max - min)
-																/ (lCurrentSlider.getSlider()
-																									.getMax() + lOffset)
-																+ min);
+					.setTranslateZ( ( lCurrentSlider.getSlider().getValue() + lOffset ) * ( max - min )
+							/ ( lCurrentSlider.getSlider()
+							.getMax() + lOffset )
+							+ min );
 
 		}
 			break;
 		}
 
 		final HBox lStageBox = new HBox(5);
+		final VBox lSliderBox = new VBox( lTargetSlider, lCurrentSlider );
+
 		lStageBox.getChildren()
 							.addAll(new VBox(	lStageLabel,
 																createFrontControls(pStage,
 																										lTargetSlider)),
-											lTargetSlider,
-											lCurrentSlider);
+									lSliderBox );
 		HBox.setHgrow(lStageBox, Priority.ALWAYS);
 
 		return lStageBox;
