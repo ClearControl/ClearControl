@@ -241,7 +241,18 @@ public interface StageDeviceInterface	extends
 	Variable<Double> getMaxPositionVariable(int pDOFIndex);
 
 	/**
-	 * Returns enable variable for a given DOF's index.
+	 * Returns the Granularity Variable for a given DOF. The granularity is the
+	 * step size. If there is no step size defined, the value is zero.
+	 * 
+	 * @param pDOFIndex
+	 *          DOF's index
+	 * @return
+	 */
+	Variable<Double> getGranularityPositionVariable(int pDOFIndex);
+
+	/**
+	 * Returns enable variable for a given DOF's index. When enabled, a DOF is
+	 * allowed to move when the target position is changed.
 	 * 
 	 * @param pDOFIndex
 	 *          DOF's index
@@ -268,7 +279,9 @@ public interface StageDeviceInterface	extends
 	Variable<Double> getCurrentPositionVariable(int pDOFIndex);
 
 	/**
-	 * Returns the ready variable for a given DOF's index.
+	 * Returns the ready variable for a given DOF's index. The 'ready' variable
+	 * informs on whether the stage is ready to accept new commands, either a new
+	 * target position or a homing command.
 	 * 
 	 * @param pDOFIndex
 	 *          DOF's index
@@ -277,7 +290,10 @@ public interface StageDeviceInterface	extends
 	Variable<Boolean> getReadyVariable(int pDOFIndex);
 
 	/**
-	 * Returns the homing variable for a given DOF's index.
+	 * Returns the homing variable for a given DOF's index. When this variable
+	 * receives an edge from false to true, the homing procedure for this DOF is
+	 * started. The 'ready' variable must be checked since the stage will not
+	 * respond to commands unless it is ready.
 	 * 
 	 * @param pDOFIndex
 	 *          DOF's index
@@ -286,7 +302,8 @@ public interface StageDeviceInterface	extends
 	Variable<Boolean> getHomingVariable(int pDOFIndex);
 
 	/**
-	 * Returns the stop variable for a given DOF's index.
+	 * Returns the stop variable for a given DOF's index. Stops all movement on
+	 * the stage's DOF.
 	 * 
 	 * @param pDOFIndex
 	 *          DOF's index
@@ -295,7 +312,9 @@ public interface StageDeviceInterface	extends
 	Variable<Boolean> getStopVariable(int pDOFIndex);
 
 	/**
-	 * Returns the reset variable for a given DOF's index.
+	 * Returns the reset variable for a given DOF's index. Resets the controller
+	 * into the a state equivalent to the power-on state (as if the DOFs
+	 * controller had been power cycled.)
 	 * 
 	 * @param pIndex
 	 * @return

@@ -80,6 +80,11 @@ public class StageDeviceDOF
 		return mStageDeviceInterface.getMaxPositionVariable(mDOFIndex);
 	}
 
+	public Variable<Double> getGranularityPositionVariable()
+	{
+		return mStageDeviceInterface.getGranularityPositionVariable(mDOFIndex);
+	}
+
 	public Variable<Boolean> getEnableVariable()
 	{
 		return mStageDeviceInterface.getEnableVariable(mDOFIndex);

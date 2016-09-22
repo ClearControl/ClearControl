@@ -1,6 +1,7 @@
 package clearcontrol.hardware.stages.devices.sim;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.signum;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +21,8 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 {
 
-	private static final double cEpsilon = 0;
+	private static final double cEpsilon = 0.5;
+	private static final double cSpeed = 0.05;
 	private StageType mStageType;
 
 	public StageDeviceSimulator(String pDeviceName, StageType pStageType)
@@ -37,7 +39,7 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 			{
 				e.printStackTrace();
 			}
-		}, 50, TimeUnit.MILLISECONDS);
+		}, 1, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -54,79 +56,123 @@ public class StageDeviceSimulator extends StageDeviceBase	implements
 
 		mEnableVariables.add(new Variable<Boolean>(	"Enable" + pDOFName,
 																								false));
-		for (Variable<Boolean> lEnableVariable : mEnableVariables)
-			lEnableVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new enable state: " + n);
-			});
+		final Variable<Boolean> lEnableVariable = mEnableVariables.get(lDOFIndex);
+		lEnableVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new enable state: " + n);
+		});
 
 		mReadyVariables.add(new Variable<Boolean>("Ready" + pDOFName,
-																							false));
-		for (Variable<Boolean> lReadyVariable : mReadyVariables)
-			lReadyVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new ready state: " + n);
-			});
+																							true));
+		final Variable<Boolean> lReadyVariable = mReadyVariables.get(lDOFIndex);
+		lReadyVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new ready state: " + n);
+		});
 
 		mHomingVariables.add(new Variable<Boolean>(	"Homing" + pDOFName,
 																								false));
-		for (Variable<Boolean> lHomingVariable : mHomingVariables)
-			lHomingVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new homing state: " + n);
-			});
+		final Variable<Boolean> lHomingVariable = mHomingVariables.get(lDOFIndex);
+		lHomingVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new homing state: " + n);
+		});
 
 		mStopVariables.add(new Variable<Boolean>("Stop" + pDOFName, false));
-		for (Variable<Boolean> lStopVariable : mStopVariables)
-			lStopVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new stop state: " + n);
-			});
+		final Variable<Boolean> lStopVariable = mStopVariables.get(lDOFIndex);
+		lStopVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new stop state: " + n);
+		});
 
 		mResetVariables.add(new Variable<Boolean>("Reset" + pDOFName,
 																							false));
-		for (Variable<Boolean> lResetVariable : mResetVariables)
-			lResetVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new reset state: " + n);
-			});
+		final Variable<Boolean> lResetVariable = mResetVariables.get(lDOFIndex);
+		lResetVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new reset state: " + n);
+		});
 
 		mTargetPositionVariables.add(new Variable<Double>("TargetPosition" + pDOFName,
 																											0.0));
-		for (Variable<Double> lTargetPositionVariable : mTargetPositionVariables)
-			lTargetPositionVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new target position: " + n);
-			});
+		final Variable<Double> lTargetPositionVariable = mTargetPositionVariables.get(lDOFIndex);
+		lTargetPositionVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new target position: " + n);
+		});
 
 		mCurrentPositionVariables.add(new Variable<Double>(	"CurrentPosition" + pDOFName,
 																												0.0));
-		for (Variable<Double> lCurrentPositionVariable : mCurrentPositionVariables)
-			lCurrentPositionVariable.addSetListener((o, n) -> {
-				if (isSimLogging())
-					info("new current position: " + n);
-			});
+		final Variable<Double> lCurrentPositionVariable = mCurrentPositionVariables.get(lDOFIndex);
+		lCurrentPositionVariable.addSetListener((o, n) -> {
+			if (isSimLogging())
+				info("new current position: " + n);
+		});
 
 		mMinPositionVariables.add(new Variable<Double>(	"MinPosition" + pDOFName,
 																										pMin));
 		mMaxPositionVariables.add(new Variable<Double>(	"MaxPosition" + pDOFName,
 																										pMax));
+		mGranularityPositionVariables.add(new Variable<Double>(	"GranularityPosition" + pDOFName,
+																														0.1*cSpeed));
 
+
+		for (int i = 0; i < getNumberOfDOFs(); i++)
+		{
+			final int fi = i;
+
+			mTargetPositionVariables.get(fi).addSetListener((o, n) -> {
+				mReadyVariables.get(fi).set(false);
+			});
+
+			mHomingVariables.get(fi).addEdgeListener(n -> {
+				if (n && mEnableVariables.get(fi).get() && mReadyVariables.get(fi).get())
+				{
+					mTargetPositionVariables.get(fi).set(0.0);
+					mReadyVariables.get(fi).set(false);
+				}
+			});
+
+			mResetVariables.get(fi).addEdgeListener(n -> {
+				if (n)
+					mReadyVariables.get(fi).set(true);
+			});
+
+			mStopVariables.get(fi).addEdgeListener(n -> {
+				if (n)
+					{
+						mReadyVariables.get(fi).set(true);
+						mTargetPositionVariables.get(fi).set(mCurrentPositionVariables.get(fi).get());
+					}
+			});
+		}
 	}
 
 	private void moveToTarget()
 	{
-		for (int i = 0; i < getNumberOfDOFs(); i++)
+		try
 		{
-			double lTarget = mTargetPositionVariables.get(i).get();
-			double lCurrent = mCurrentPositionVariables.get(i).get();
-			double lError = lTarget - lCurrent;
+			// int i=0;
+			for (int i = 0; i < getNumberOfDOFs(); i++)
+				if (mEnableVariables.get(i).get())
+				{
+					double lTarget = mTargetPositionVariables.get(i).get();
+					double lCurrent = mCurrentPositionVariables.get(i).get();
+					double lErrorLinear = lTarget - lCurrent;
 
-			double lNewCurrent = lCurrent + 0.1 * Math.signum(lError);
+					double lNewCurrent = lCurrent + cSpeed
+																* signum(lErrorLinear);
 
-			if (abs(lNewCurrent - lCurrent) > cEpsilon)
-				mCurrentPositionVariables.get(i).set(lNewCurrent);
+					if (abs(lErrorLinear) > cEpsilon)
+						mCurrentPositionVariables.get(i).set(lNewCurrent);
+					else if (!mReadyVariables.get(i).get())
+						mReadyVariables.get(i).set(true);
 
+				}
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
 		}
 
 	}

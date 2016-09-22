@@ -193,6 +193,12 @@ public class StageDeviceHub extends VirtualDevice	implements
 	{
 		return mDOFList.get(pDOFIndex).getMaxPositionVariable();
 	}
+	
+	@Override
+	public Variable<Double> getGranularityPositionVariable(int pDOFIndex)
+	{
+		return mDOFList.get(pDOFIndex).getGranularityPositionVariable();
+	}
 
 	@Override
 	public Variable<Boolean> getEnableVariable(int pDOFIndex)
@@ -244,5 +250,7 @@ public class StageDeviceHub extends VirtualDevice	implements
 						+ getNumberOfDOFs()
 						+ "]";
 	}
+
+
 
 }
