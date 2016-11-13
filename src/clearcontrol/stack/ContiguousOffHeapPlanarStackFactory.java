@@ -14,7 +14,7 @@ public class ContiguousOffHeapPlanarStackFactory	implements
 	@Override
 	public OffHeapPlanarStack create(StackRequest pStackRequest)
 	{
-		final int lBytesPerVoxel = Size.of(NativeTypeEnum.UnsignedShort);
+		final long lBytesPerVoxel = Size.of(NativeTypeEnum.UnsignedShort);
 		final long lVolume = pStackRequest.getWidth()
 													* pStackRequest.getHeight()
 													* pStackRequest.getDepth();

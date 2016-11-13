@@ -93,7 +93,7 @@ public class Stack3DDisplay extends VirtualDevice	implements
 					final long lHeight = pStack.getHeight();
 					final long lDepth = pStack.getDepth();
 					final NativeTypeEnum lNativeTypeEnum = mClearVolumeRenderer.getNativeType();
-					final int lBytesPerVoxel = Size.of(lNativeTypeEnum);
+					final long lBytesPerVoxel = Size.of(lNativeTypeEnum);
 					final int lChannel = pStack.getChannel() % pNumberOfLayers;
 
 					if (lWidth * lHeight * lDepth * lBytesPerVoxel != lSizeInBytes)
