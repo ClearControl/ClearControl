@@ -735,13 +735,13 @@ public class CircleIndicatorSkin extends
 	{
 		private final List<Double> opacities = new ArrayList<>();
 		private IndicatorPaths pathsG;
-		private boolean spinEnabled = false;
+		private boolean mSpinEnabled = false;
 		private Paint fillOverride = null;
 
 		private IndeterminateSpinner(	boolean spinEnabled,
 																	Paint fillOverride)
 		{
-			this.spinEnabled = spinEnabled;
+			this.mSpinEnabled = spinEnabled;
 			this.fillOverride = fillOverride;
 
 			setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -763,13 +763,13 @@ public class CircleIndicatorSkin extends
 
 		public void setSpinEnabled(boolean spinEnabled)
 		{
-			this.spinEnabled = spinEnabled;
+			this.mSpinEnabled = spinEnabled;
 			rebuildTimeline();
 		}
 
 		private void rebuildTimeline()
 		{
-			if (spinEnabled)
+			if (mSpinEnabled)
 			{
 				if (indeterminateTransition == null)
 				{
