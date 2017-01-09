@@ -21,7 +21,7 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.imglib2.ImageJStackDisplay;
 import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
-import coremem.types.NativeTypeEnum;
+import coremem.enums.NativeTypeEnum;
 
 public class Stack2DDisplay extends VirtualDevice	implements
 																									StackDisplayInterface,

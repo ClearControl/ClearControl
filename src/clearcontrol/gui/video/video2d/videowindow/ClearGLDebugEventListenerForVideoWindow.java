@@ -11,12 +11,13 @@ import cleargl.GLAttribute;
 import cleargl.GLFloatArray;
 import cleargl.GLProgram;
 import cleargl.GLTexture;
+import cleargl.GLTypeEnum;
 import cleargl.GLUniform;
 import cleargl.GLVertexArray;
 import cleargl.GLVertexAttributeArray;
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
-import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
 final class ClearGLDebugEventListenerForVideoWindow	extends
@@ -193,24 +194,24 @@ final class ClearGLDebugEventListenerForVideoWindow	extends
 		if (mTexture != null)
 			mTexture.close();
 
-		NativeTypeEnum lGLType = null;
+		GLTypeEnum lGLType = null;
 
 		if (mVideoWindow.mType == NativeTypeEnum.Byte)
-			lGLType = NativeTypeEnum.Byte;
+			lGLType = GLTypeEnum.Byte;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedByte)
-			lGLType = NativeTypeEnum.UnsignedByte;
+			lGLType = GLTypeEnum.UnsignedByte;
 		else if (mVideoWindow.mType == NativeTypeEnum.Short)
-			lGLType = NativeTypeEnum.Short;
+			lGLType = GLTypeEnum.Short;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedShort)
-			lGLType = NativeTypeEnum.UnsignedShort;
+			lGLType = GLTypeEnum.UnsignedShort;
 		else if (mVideoWindow.mType == NativeTypeEnum.Int)
-			lGLType = NativeTypeEnum.Int;
+			lGLType = GLTypeEnum.Int;
 		else if (mVideoWindow.mType == NativeTypeEnum.UnsignedInt)
-			lGLType = NativeTypeEnum.UnsignedInt;
+			lGLType = GLTypeEnum.UnsignedInt;
 		else if (mVideoWindow.mType == NativeTypeEnum.Float)
-			lGLType = NativeTypeEnum.Float;
+			lGLType = GLTypeEnum.Float;
 		else if (mVideoWindow.mType == NativeTypeEnum.Double)
-			lGLType = NativeTypeEnum.Float;
+			lGLType = GLTypeEnum.Float;
 
 		mTexture = new GLTexture(	mGLProgramVideoRender,
 															lGLType,

@@ -5,10 +5,10 @@ import java.util.concurrent.TimeUnit;
 import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
-import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 import net.imglib2.img.AbstractImg;
 import net.imglib2.img.NativeImg;

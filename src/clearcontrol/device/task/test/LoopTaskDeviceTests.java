@@ -1,6 +1,6 @@
 package clearcontrol.device.task.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.device.task.LoopTaskDevice;
-import clearcontrol.device.task.PeriodicLoopTaskDevice;
 
 public class LoopTaskDeviceTests
 {

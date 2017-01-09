@@ -153,12 +153,11 @@ dependencies
     
     compile 'de.jensd:fontawesomefx:8.9'
    	//compile 'de.jensd:fontawesomefx-fontawesome:4.6.3'
-	//compile 'de.jensd:fontawesomefx-materialdesignfont:1.6.50'
-	//compile 'de.jensd:fontawesomefx-materialicons:2.2.0'
-	//compile 'de.jensd:fontawesomefx-octicons:4.3.0'
-	//compile 'de.jensd:fontawesomefx-icons525:2.6.0'
-	//compile 'de.jensd:fontawesomefx-weathericons:2.0-3'
-
+    //compile 'de.jensd:fontawesomefx-materialdesignfont:1.6.50'
+    //compile 'de.jensd:fontawesomefx-materialicons:2.2.0'
+    //compile 'de.jensd:fontawesomefx-octicons:4.3.0'
+    //compile 'de.jensd:fontawesomefx-icons525:2.6.0'
+    //compile 'de.jensd:fontawesomefx-weathericons:2.0-3'
  
     // MigLayout:
     compile 'com.miglayout:miglayout:3.7.4'
@@ -193,13 +192,13 @@ dependencies
     compile ('net.sqeazy:sqeazy:0.2.1') {transitive= true; changing= true}
 
     // CoreMem:
-    compile ('net.coremem:CoreMem:[0.3.2,)'){transitive= true; changing= true}
+    compile ('net.coremem:CoreMem:[0.3.3,)'){transitive= true; changing= true}
 
     // ClearVolume:
     compile ('net.clearvolume:clearvolume:(,1.10]')  {transitive= true; changing= true}
     compile ('net.clearvolume:cleargl:(1.0.8,1.10]') {transitive= true; changing= true}
-    compile ('net.clearvolume:clearcl:(,1.10]')      {transitive= true; changing= true}
-    compile ('net.clearvolume:clearaudio:(,1.10]')   {transitive= true; changing= true}
+    compile ('net.clearvolume:clearcl:3.23')      {transitive= true; changing= true}
+    compile ('net.clearvolume:clearaudio:1.0.2')   {transitive= true; changing= true}
 
     // AO:
     compile ('net.rtlib:Mirao52J:(,2.0.0]'){transitive=true; changing= true}

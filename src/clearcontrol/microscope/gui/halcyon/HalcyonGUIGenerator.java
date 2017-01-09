@@ -118,14 +118,14 @@ public class HalcyonGUIGenerator implements LoggingInterface
 																													public int getWidth()
 																													{
 																														return lStack3DDisplay.getGLWindow()
-																																									.getWidth();
+																																									.getWindowWidth();
 																													}
 
 																													@Override
 																													public int getHeight()
 																													{
 																														return lStack3DDisplay.getGLWindow()
-																																									.getHeight();
+																																									.getWindowHeight();
 																													}
 
 																													@Override
@@ -199,14 +199,14 @@ public class HalcyonGUIGenerator implements LoggingInterface
 																													public int getWidth()
 																													{
 																														return lStack2DDisplay.getGLWindow()
-																																									.getWidth();
+																																									.getWindowWidth();
 																													}
 
 																													@Override
 																													public int getHeight()
 																													{
 																														return lStack2DDisplay.getGLWindow()
-																																									.getHeight();
+																																									.getWindowHeight();
 																													}
 
 																													@Override

@@ -14,7 +14,7 @@ import clearvolume.renderer.ClearVolumeRendererInterface;
 import clearvolume.renderer.cleargl.ClearGLVolumeRenderer;
 import clearvolume.renderer.factory.ClearVolumeRendererFactory;
 import coremem.ContiguousMemoryInterface;
-import coremem.types.NativeTypeEnum;
+import coremem.enums.NativeTypeEnum;
 import coremem.util.Size;
 
 public class Stack3DDisplay extends VirtualDevice	implements

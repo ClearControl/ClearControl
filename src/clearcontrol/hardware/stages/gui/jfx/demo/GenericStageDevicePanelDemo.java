@@ -3,7 +3,6 @@ package clearcontrol.hardware.stages.gui.jfx.demo;
 import clearcontrol.hardware.stages.StageType;
 import clearcontrol.hardware.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.hardware.stages.gui.jfx.GenericStageDevicePanel;
-import clearcontrol.hardware.stages.gui.jfx.XYZRStageDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

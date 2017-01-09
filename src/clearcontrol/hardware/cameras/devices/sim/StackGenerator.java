@@ -5,7 +5,6 @@ import static java.lang.Math.max;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import clearcontrol.hardware.cameras.CameraDeviceBase;
 import clearcontrol.hardware.cameras.StackCameraDeviceBase;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;

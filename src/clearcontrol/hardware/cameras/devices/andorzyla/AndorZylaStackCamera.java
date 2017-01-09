@@ -1,13 +1,5 @@
 package clearcontrol.hardware.cameras.devices.andorzyla;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.hardware.cameras.StackCameraDeviceBase;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import coremem.ContiguousMemoryInterface;
-
 import static andorsdkj.bindings.util.Buffer16ToArray.toArray;
 import static andorsdkj.bindings.util.SavePNG.savePNG;
 
@@ -17,11 +9,21 @@ import java.util.concurrent.TimeUnit;
 
 import org.bridj.Pointer;
 
-import andorsdkj.*;
+import andorsdkj.AndorCamera;
+import andorsdkj.AndorSdkJ;
+import andorsdkj.AndorSdkJException;
+import andorsdkj.ImageBuffer;
 import andorsdkj.enums.ReadOutRate;
 import andorsdkj.enums.TriggerMode;
 import andorsdkj.sequence.ImageSequence;
 import andorsdkj.sequence.SequenceAcquisition;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.hardware.cameras.StackCameraDeviceBase;
+import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
+import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackRequest;
+import coremem.ContiguousMemoryInterface;
 
 /**
  * AndorZylaStackCamera class provides the opportunity to operate AndorZyla as a

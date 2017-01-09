@@ -1,7 +1,7 @@
 package clearcontrol.hardware.cameras.devices.andorzyla.demo;
 
 
-import org.junit.*;
+import org.junit.Test;
 
 import andorsdkj.AndorSdkJException;
 import andorsdkj.enums.TriggerMode;

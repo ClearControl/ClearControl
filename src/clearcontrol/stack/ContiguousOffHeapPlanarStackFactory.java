@@ -1,9 +1,9 @@
 package clearcontrol.stack;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclableFactoryInterface;
-import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
 public class ContiguousOffHeapPlanarStackFactory	implements

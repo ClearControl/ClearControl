@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
+import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
-import coremem.types.NativeTypeEnum;
 
 public class VideoWindowDemo
 {

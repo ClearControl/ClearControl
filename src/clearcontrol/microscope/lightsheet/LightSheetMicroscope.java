@@ -19,7 +19,6 @@ import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.Timelapse;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
-import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 
 public class LightSheetMicroscope extends MicroscopeBase implements
 																												StateQueueDeviceInterface,

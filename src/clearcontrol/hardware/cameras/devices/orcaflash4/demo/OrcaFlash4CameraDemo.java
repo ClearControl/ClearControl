@@ -15,8 +15,8 @@ import clearcontrol.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
+import coremem.enums.NativeTypeEnum;
 import coremem.recycling.BasicRecycler;
-import coremem.types.NativeTypeEnum;
 
 public class OrcaFlash4CameraDemo
 {

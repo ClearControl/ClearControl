@@ -19,8 +19,8 @@ import clearcontrol.gui.video.util.WindowControl;
 import cleargl.ClearGLDefaultEventListener;
 import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
-import coremem.types.NativeTypeEnum;
 
 public class VideoWindow implements AutoCloseable
 {

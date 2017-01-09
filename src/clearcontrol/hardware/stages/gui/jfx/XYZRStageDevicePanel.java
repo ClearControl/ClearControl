@@ -1,7 +1,6 @@
 package clearcontrol.hardware.stages.gui.jfx;
 
 import clearcontrol.core.variable.Variable;
-
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
@@ -10,26 +9,20 @@ import clearcontrol.hardware.stages.gui.jfx.xyzr3d.CubeScene;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.SnapshotView;
 import clearcontrol.hardware.stages.gui.jfx.xyzr3d.View3D;
 import eu.hansolo.enzo.common.SymbolType;
-
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import javafx.animation.AnimationTimer;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
 import javafx.geometry.BoundingBox;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SubScene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;

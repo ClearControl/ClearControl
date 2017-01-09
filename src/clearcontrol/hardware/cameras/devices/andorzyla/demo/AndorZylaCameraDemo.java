@@ -1,27 +1,13 @@
 package clearcontrol.hardware.cameras.devices.andorzyla.demo;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.junit.Test;
 
+import andorsdkj.AndorSdkJ;
+import andorsdkj.enums.TriggerMode;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.hardware.cameras.devices.andorzyla.AndorZylaStackCamera;
-import clearcontrol.hardware.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
-import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
-import coremem.types.NativeTypeEnum;
-
-import andorsdkj.*;
-import andorsdkj.enums.TriggerMode;
 
 public class AndorZylaCameraDemo
 {
