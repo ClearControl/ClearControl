@@ -58,14 +58,6 @@ sourceCompatibility = 1.8
 group = 'net.clearcontrol'
 version = getVersionName()
 
-/*
-compileJava 
-{
-    options.compilerArgs << '-XDignore.symbol.file'
-    options.fork = true // may not needed on 1.8
-    options.forkOptions.executable = 'javac' // may not needed on 1.8
-}/**/
-
 test 
 {
     testLogging.showStandardStreams = true 
@@ -197,7 +189,7 @@ dependencies
     // ClearVolume:
     compile ('net.clearvolume:clearvolume:[1.3.22,)')  {transitive= true; changing= true}
     compile ('net.clearvolume:cleargl:[2.0.0,)') {transitive= true; changing= true}
-    compile ('net.clearvolume:clearcl:[3.23,)')      {transitive= true; changing= true}
+    compile ('net.clearvolume:clearcl:[0.3.23,)')      {transitive= true; changing= true}
     compile ('net.clearvolume:clearaudio:1.0.2')   {transitive= true; changing= true}
 
     // AO:
