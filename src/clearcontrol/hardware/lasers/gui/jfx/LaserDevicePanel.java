@@ -103,7 +103,7 @@ public class LaserDevicePanel extends HBox
 		{
 			@Override public void handle( MouseEvent event )
 			{
-				mLaserDeviceInterface.getLaserOnVariable().setAsync( !mLaserDeviceInterface.getLaserOnVariable().get() );
+				mLaserDeviceInterface.getLaserOnVariable().setAsync(mLaserOnSwitch.selectedProperty().get());
 			}
 		} );
 

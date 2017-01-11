@@ -5,6 +5,8 @@ import clearcontrol.stack.StackInterface;
 
 public interface StackDisplayInterface
 {
+  
+  Variable<StackInterface> getInputStackVariable();
 
 	Variable<StackInterface> getOutputStackVariable();
 

@@ -10,6 +10,7 @@ import clearcontrol.device.VirtualDevice;
 import clearcontrol.device.change.HasChangeListenerInterface;
 import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
+import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -20,190 +21,207 @@ import coremem.recycling.RecyclerInterface;
  * @author royer
  */
 public interface MicroscopeInterface extends
-																		NameableInterface,
-																		HasChangeListenerInterface<VirtualDevice>,
-																		StateQueueDeviceInterface
+                                     NameableInterface,
+                                     HasChangeListenerInterface<VirtualDevice>,
+                                     StateQueueDeviceInterface
 {
 
-	/**
-	 * Returns the microscopes name.
-	 * 
-	 * @return microscope's name.
-	 */
-	@Override
-	public String getName();
+  /**
+   * Returns the microscopes name.
+   * 
+   * @return microscope's name.
+   */
+  @Override
+  public String getName();
 
-	/**
-	 * Returns whether the microscope is in simulation mode.
-	 * 
-	 * @return true if simulation mode, or false otherwise
-	 */
-	default boolean isSimulation()
-	{
-		return false;
-	};
+  /**
+   * Sets the simulation flag.
+   * 
+   * @param pSimulation
+   *          true if simulation, false otherwise.
+   */
+  void setSimulation(boolean pSimulation);
 
-	/**
-	 * Adds a device of a given type. Devices are uniquely identified by their
-	 * class and index: (class,index) -> device
-	 * 
-	 * @param pDeviceIndex
-	 * @param pDevice
-	 */
-	public <T> void addDevice(int pDeviceIndex, T pDevice);
+  /**
+   * Returns whether the microscope is in simulation mode.
+   * 
+   * @return true if simulation mode, or false otherwise
+   */
+  default boolean isSimulation()
+  {
+    return false;
+  };
 
-	/**
-	 * Returns the number of devices of a given class. Devices are uniquely
-	 * identified by their class and index: (class,index) -> device
-	 * 
-	 * @param pClass
-	 *          class
-	 * @return number of devices of a given type
-	 */
-	public <T> int getNumberOfDevices(Class<T> pClass);
+  /**
+   * Sets the main XYZR stage for the microscope.
+   * 
+   * @param pStageDeviceInterface
+   *          main stage
+   */
+  void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
 
-	/**
-	 * Returns a device for a given type (class) and index. Devices are uniquely
-	 * identified by their class and index: (class,index) -> device
-	 * 
-	 * @param pClass
-	 *          class
-	 * @param pIndex
-	 *          index
-	 * @return device for given pair; (class,index)
-	 */
-	public <T> T getDevice(Class<T> pClass, int pIndex);
+  /**
+   * Adds a device of a given type. Devices are uniquely identified by their
+   * class and index: (class,index) -> device
+   * 
+   * @param pDeviceIndex
+   * @param pDevice
+   */
+  public <T> void addDevice(int pDeviceIndex, T pDevice);
 
-	/**
-	 * Returns all devices for a given type (class). Devices are uniquely
-	 * identified by their class and index: (class,index) -> device
-	 * 
-	 * @param pClass
-	 *          class
-	 * @param pIndex
-	 *          index
-	 * @return device for given pair; (class,index)
-	 */
-	public <T> ArrayList<T> getDevices(Class<T> pClass);
+  /**
+   * Returns the number of devices of a given class. Devices are uniquely
+   * identified by their class and index: (class,index) -> device
+   * 
+   * @param pClass
+   *          class
+   * @return number of devices of a given type
+   */
+  public <T> int getNumberOfDevices(Class<T> pClass);
 
-	/**
-	 * Returns the device list object from which all devices can be queried.
-	 * 
-	 * @return device list object
-	 */
-	public MicroscopeDeviceLists getDeviceLists();
+  /**
+   * Returns a device for a given type (class) and index. Devices are uniquely
+   * identified by their class and index: (class,index) -> device
+   * 
+   * @param pClass
+   *          class
+   * @param pIndex
+   *          index
+   * @return device for given pair; (class,index)
+   */
+  public <T> T getDevice(Class<T> pClass, int pIndex);
 
-	/**
-	 * Sets the recycler that should be used by the stack camera device of given
-	 * id.
-	 * 
-	 * @param pStackCameraDeviceIndex
-	 */
-	public void setRecycler(int pStackCameraDeviceIndex,
-													RecyclerInterface<StackInterface, StackRequest> pRecycler);
+  /**
+   * Returns all devices for a given type (class). Devices are uniquely
+   * identified by their class and index: (class,index) -> device
+   * 
+   * @param pClass
+   *          class
+   * @param pIndex
+   *          index
+   * @return device for given pair; (class,index)
+   */
+  public <T> ArrayList<T> getDevices(Class<T> pClass);
 
-	/**
-	 * Sets the recycler that should be used by _all_ stack camera devices.
-	 * 
-	 * @param pRecycler
-	 */
-	public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
+  /**
+   * Returns the device list object from which all devices can be queried.
+   * 
+   * @return device list object
+   */
+  public MicroscopeDeviceLists getDeviceLists();
 
-	/**
-	 * Returns the recycler currently b the stack camera device of given id.
-	 * 
-	 * @param pStackCameraDeviceIndex
-	 *          stack camera index id.
-	 * @return recycler.
-	 */
-	public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex);
+  /**
+   * Sets the recycler that should be used by the stack camera device of given
+   * id.
+   * 
+   * @param pStackCameraDeviceIndex
+   */
+  public void setRecycler(int pStackCameraDeviceIndex,
+                          RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
-	/**
-	 * Uses a recycler with given parameters. This recycler will be used for all
-	 * subsequent plays. if teh recycler does not exist yet, it is created.
-	 * 
-	 * @param pName
-	 *          recycler name
-	 * @param pMaximumNumberOfAvailableStacks
-	 *          maximum number of available stacks
-	 * @param pMaximumNumberOfLiveStacks
-	 *          maximum number of live stacks
-	 */
-	public void useRecycler(String pName,
-													int pMinimumNumberOfAvailableStacks,
-													int pMaximumNumberOfAvailableStacks,
-													int pMaximumNumberOfLiveStacks);
+  /**
+   * Sets the recycler that should be used by _all_ stack camera devices.
+   * 
+   * @param pRecycler
+   */
+  public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
-	/**
-	 * Clears a given recycler.
-	 * 
-	 * @param pName
-	 */
-	public void clearRecycler(String pName);
+  /**
+   * Returns the recycler currently b the stack camera device of given id.
+   * 
+   * @param pStackCameraDeviceIndex
+   *          stack camera index id.
+   * @return recycler.
+   */
+  public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex);
 
-	/**
-	 * Clears all recyclers.
-	 */
-	public void clearAllRecyclers();
+  /**
+   * Uses a recycler with given parameters. This recycler will be used for all
+   * subsequent plays. if teh recycler does not exist yet, it is created.
+   * 
+   * @param pName
+   *          recycler name
+   * @param pMaximumNumberOfAvailableStacks
+   *          maximum number of available stacks
+   * @param pMaximumNumberOfLiveStacks
+   *          maximum number of live stacks
+   */
+  public void useRecycler(String pName,
+                          int pMinimumNumberOfAvailableStacks,
+                          int pMaximumNumberOfAvailableStacks,
+                          int pMaximumNumberOfLiveStacks);
 
-	/**
-	 * Plays queue for all devices, and waits for playback to finish.
-	 * 
-	 * @param pTimeOut
-	 *          timeout
-	 * @param pTimeUnit
-	 *          time unit for timeout
-	 * @return true if successful
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 * @throws TimeoutException
-	 */
-	public Boolean playQueueAndWait(long pTimeOut, TimeUnit pTimeUnit) throws InterruptedException,
-																																		ExecutionException,
-																																		TimeoutException;
+  /**
+   * Clears a given recycler.
+   * 
+   * @param pName
+   */
+  public void clearRecycler(String pName);
 
-	/**
-	 * Plays queue for all devices, waits for playback to finish as well as waits
-	 * for stacks to be delivered.
-	 * 
-	 * @param pTimeOut
-	 * @param pTimeUnit
-	 * @return
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 * @throws TimeoutException
-	 */
-	public Boolean playQueueAndWaitForStacks(	long pTimeOut,
-																						TimeUnit pTimeUnit)	throws InterruptedException,
-																																ExecutionException,
-																																TimeoutException;
+  /**
+   * Clears all recyclers.
+   */
+  public void clearAllRecyclers();
 
-	/**
-	 * Returns the average timestamp for all stacks acquired during for last
-	 * played queue.
-	 * 
-	 * @return timestamp in nanoseconds
-	 */
-	public long lastAcquiredStacksTimeStampInNS();
+  /**
+   * Plays queue for all devices, and waits for playback to finish.
+   * 
+   * @param pTimeOut
+   *          timeout
+   * @param pTimeUnit
+   *          time unit for timeout
+   * @return true if successful
+   * @throws InterruptedException
+   * @throws ExecutionException
+   * @throws TimeoutException
+   */
+  public Boolean playQueueAndWait(long pTimeOut,
+                                  TimeUnit pTimeUnit) throws InterruptedException,
+                                                      ExecutionException,
+                                                      TimeoutException;
 
-	/**
-	 * Returns Stack Variable for given stack camera index
-	 * 
-	 * @param pIndex
-	 *          stack camera index
-	 * @return Stack Variable
-	 */
-	public Variable<StackInterface> getStackVariable(int pIndex);
+  /**
+   * Plays queue for all devices, waits for playback to finish as well as waits
+   * for stacks to be delivered.
+   * 
+   * @param pTimeOut
+   * @param pTimeUnit
+   * @return
+   * @throws InterruptedException
+   * @throws ExecutionException
+   * @throws TimeoutException
+   */
+  public Boolean playQueueAndWaitForStacks(long pTimeOut,
+                                           TimeUnit pTimeUnit) throws InterruptedException,
+                                                               ExecutionException,
+                                                               TimeoutException;
 
-	/**
-	 * Returns the size in nanometer (anisotropic XY) of a pixel. this is the
-	 * actual physical size in the sample - thus taking into account overall
-	 * magnification. The size is returned wrapped into a Variable.
-	 * 
-	 * @param pCameraIndex
-	 *          camera index
-	 * @return size in nanometer as a Variable
-	 */
-	public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
+  /**
+   * Returns the average timestamp for all stacks acquired during for last
+   * played queue.
+   * 
+   * @return timestamp in nanoseconds
+   */
+  public long lastAcquiredStacksTimeStampInNS();
+
+  /**
+   * Returns Stack Variable for given stack camera index
+   * 
+   * @param pIndex
+   *          stack camera index
+   * @return Stack Variable
+   */
+  public Variable<StackInterface> getStackVariable(int pIndex);
+
+  /**
+   * Returns the size in nanometer (anisotropic XY) of a pixel. this is the
+   * actual physical size in the sample - thus taking into account overall
+   * magnification. The size is returned wrapped into a Variable.
+   * 
+   * @param pCameraIndex
+   *          camera index
+   * @return size in nanometer as a Variable
+   */
+  public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
 
 }

@@ -395,6 +395,7 @@ public class Stack2DDisplay extends VirtualDevice	implements
 		return mMaximumIntensity;
 	}
 
+	@Override
 	public Variable<StackInterface> getInputStackVariable()
 	{
 		return mInputStackVariable;

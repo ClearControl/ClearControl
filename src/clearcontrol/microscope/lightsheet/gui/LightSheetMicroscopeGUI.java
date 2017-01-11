@@ -31,23 +31,23 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 					p2DDisplay,
 					p3DDisplay);
 
-		addHalcyonMappingEntry(	LightSheetInterface.class,
+		addPanelMappingEntry(	LightSheetInterface.class,
 														LightSheetPanel.class,
 														LSMNodeType.LightSheet);
 
-		addHalcyonMappingEntry(	DetectionArmInterface.class,
+		addPanelMappingEntry(	DetectionArmInterface.class,
 														DetectionArmPanel.class,
 														LSMNodeType.DetectionArm);
 
-		addHalcyonMappingEntry(	InteractiveAcquisition.class,
+		addPanelMappingEntry(	InteractiveAcquisition.class,
 														InteractiveAcquisitionPanel.class,
 														MicroscopeNodeType.Acquisition);
 
-		addHalcyonMappingEntry(	AcquisitionStateManager.class,
+		addPanelMappingEntry(	AcquisitionStateManager.class,
 														AcquisitionStateManagerPanel.class,
 														MicroscopeNodeType.Acquisition);
 
-		addHalcyonMappingEntry(	TimelapseTimerInterface.class,
+		addPanelMappingEntry(	TimelapseTimerInterface.class,
 														TimelapsePanel.class,
 														MicroscopeNodeType.Acquisition);
 
@@ -55,43 +55,20 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 														AutoPilotPanel.class,
 														MicroscopeNodeType.Acquisition);/**/
 
+		addToolbarMappingEntry( InteractiveAcquisition.class, InteractiveAcquisitionToolbar.class);
+		
+		addToolbarMappingEntry( Calibrator.class, CalibratorToolbar.class);
+		
+		addToolbarMappingEntry( TimelapseInterface.class, TimelapseToolbar.class);
+		
 	}
 
 	@Override
 	public void generate()
 	{
 		super.generate();
-		setupToolBars();
 	}
 
-	private void setupToolBars()
-	{
-		InteractiveAcquisition lInteractiveAcquisition = getMicroscope().getDevice(	InteractiveAcquisition.class,
-																																								0);
-		if (lInteractiveAcquisition != null)
-		{
-			InteractiveAcquisitionToolbar lInteractiveAcquisitionToolbar = new InteractiveAcquisitionToolbar(lInteractiveAcquisition);
-			getHalcyonFrame().addToolbar(lInteractiveAcquisitionToolbar);
-		}
-
-		Calibrator lCalibrator = getMicroscope().getDevice(	Calibrator.class,
-																												0);
-
-		if (lCalibrator != null)
-		{
-			CalibratorToolbar lCalibratorToolbar = new CalibratorToolbar(lCalibrator);
-			getHalcyonFrame().addToolbar(lCalibratorToolbar);
-		}
-		
-		
-		TimelapseInterface lTimelapseInterface = getMicroscope().getDevice(	TimelapseInterface.class,
-																												0);
-
-		if (lTimelapseInterface != null)
-		{
-			TimelapseToolbar lTimelapseToolbar = new TimelapseToolbar(lTimelapseInterface);
-			getHalcyonFrame().addToolbar(lTimelapseToolbar);
-		}
-	}
+  
 
 }

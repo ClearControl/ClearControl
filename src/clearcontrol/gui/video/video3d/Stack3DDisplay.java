@@ -189,7 +189,8 @@ public class Stack3DDisplay extends VirtualDevice	implements
 		return mVisibleVariable;
 	}
 
-	public Variable<StackInterface> getStackInputVariable()
+	@Override
+	public Variable<StackInterface> getInputStackVariable()
 	{
 		return mInputStackVariable;
 	}

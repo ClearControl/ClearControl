@@ -34,7 +34,7 @@ public class AndorZylaCameraDemo
 			AndorZylaStackCamera lZylaOne = new AndorZylaStackCamera(0, TriggerMode.SOFTWARE);
 			
 			final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
-			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
+			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getInputStackVariable();
 			lVideoFrame3DDisplay.open();
 			
 			StackInterface lStack = lZylaOne.getStackVariable().get();

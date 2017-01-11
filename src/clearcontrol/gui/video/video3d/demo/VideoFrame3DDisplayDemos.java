@@ -43,7 +43,7 @@ public class VideoFrame3DDisplayDemos
 
 		final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
 
-		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
+		final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getInputStackVariable();
 
 		
 		
@@ -102,7 +102,7 @@ public class VideoFrame3DDisplayDemos
 
 			final Stack3DDisplay lVideoFrame3DDisplay = new Stack3DDisplay("Test");
 
-			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getStackInputVariable();
+			final Variable<StackInterface> lFrameReferenceVariable = lVideoFrame3DDisplay.getInputStackVariable();
 
 			lVideoFrame3DDisplay.open();
 			lVideoFrame3DDisplay.setVisible(true);
