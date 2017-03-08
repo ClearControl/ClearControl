@@ -39,4 +39,21 @@ public class StageDeviceSimulatorDemo
 		assertTrue(true);
 
 	}
+
+	@Test
+	public void testDirectionVector() {
+		StageDeviceSimulator sds = new StageDeviceSimulator("demo", StageType.XYZR);
+		sds.setSimLogging(true);
+		sds.addXYZRDOFs();
+		sds.enable(0);
+		sds.enable(1);
+		sds.setTargetPosition(0, 50);
+		sds.setTargetPosition(1,20);
+		//sds.go();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
