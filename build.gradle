@@ -220,7 +220,7 @@ repositories
 
     mavenLocal()
     mavenCentral()
-    maven {url "C:\\Users\\myersadmin\\.m2\\repository"}
+    // maven {url "C:\\Users\\myersadmin\\.m2\\repository"}
     maven { url "http://oss.sonatype.org/content/groups/public"} 
     maven { url "http://mvnrepository.com/artifact" }
 
