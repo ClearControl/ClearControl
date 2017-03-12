@@ -7,8 +7,12 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableEdgeListener;
 import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.hardware.cameras.StackCameraDeviceBase;
+import clearcontrol.hardware.cameras.devices.sim.StackCameraDeviceSimulator;
+import clearcontrol.hardware.cameras.devices.sim.SynteticStackTypeEnum;
+import clearcontrol.simulation.BasicSampleSimulator;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackProvider;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.StackSourceInterface;
 import coremem.ContiguousMemoryInterface;
@@ -22,18 +26,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.lang.Math.max;
 
-public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
-        LoggingInterface,
+/**
+ * Created by dibrov on 12/03/17.
+ */
+public class StackCameraDeviceSimulatorNew extends StackCameraDeviceBase implements LoggingInterface,
         AsynchronousSchedulerServiceAccess,
         AsynchronousExecutorServiceAccess,
         SimulationDeviceInterface {
-    private StackSourceInterface mStackSource;
 
+    private StackProvider mStackProvider;
     protected AtomicLong mCurrentStackIndex = new AtomicLong(0);
-
-    private final Variable<SynteticStackTypeEnum> mSyntheticStackTypeVariable = new Variable<SynteticStackTypeEnum>("SyntheticStackType",
-            SynteticStackTypeEnum.Fractal);
-
     private volatile CountDownLatch mStackSent;
     private final AtomicLong mTriggeCounter = new AtomicLong();
 
@@ -45,7 +47,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
      * @param pDeviceName      camera name
      * @param pTriggerVariable trigger
      */
-    public StackCameraDeviceSimulator(String pDeviceName,
+    public StackCameraDeviceSimulatorNew(String pDeviceName,
                                       Variable<Boolean> pTriggerVariable) {
         this(pDeviceName, null, pTriggerVariable);
     }
@@ -56,14 +58,14 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
      * is sent to the trigger variable (false -> true).
      *
      * @param pDeviceName
-     * @param pStackSource
+     * @param pStackProvider
      * @param pTriggerVariable
      */
-    public StackCameraDeviceSimulator(String pDeviceName,
-                                      StackSourceInterface pStackSource,
+    public StackCameraDeviceSimulatorNew(String pDeviceName,
+                                      StackProvider pStackProvider,
                                       Variable<Boolean> pTriggerVariable) {
         super(pDeviceName);
-        mStackSource = pStackSource;
+        mStackProvider = pStackProvider;
         mTriggerVariable = pTriggerVariable;
 
         mChannelVariable = new Variable<Integer>("Channel", 0);
@@ -141,29 +143,17 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
 
             executeAsynchronously(() -> {
 
-                StackInterface lStack;
-                if (mStackSource != null) {
-                    final long Index = mCurrentStackIndex.get();
-                    lStack = mStackSource.getStack(Index);
-                    mCurrentStackIndex.set((Index + 1) % mStackSource.getNumberOfStacks());
-                } else {
+                StackInterface lStack = null;
+                if (mStackProvider != null) {
                     try {
-                        switch (getSyntheticStackTypeVariable().get()) {
-                            default:
-                            case Fractal:
-                                lStack = generateFractalStack();
-                                break;
-                            case Sinus:
-                                lStack = generateSinusStack();
-                                break;
-                        }
-
-                    } catch (final Throwable e) {
+                        System.out.println("Stack provider not null");
+                        final long Index = mCurrentStackIndex.get();
+                        lStack = mStackProvider.getStack();
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        return;
                     }
-                    mCurrentStackIndex.incrementAndGet();
                 }
+
                 if (lStack == null)
                     severe("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
                 else {
@@ -177,6 +167,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
 
                 if (mStackSent != null)
                     try {
+                        System.out.println("waiting for exposure");
                         Thread.sleep(((long) getExposure() / 1000));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -187,50 +178,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
 
     }
 
-    protected StackInterface generateFractalStack() throws IncompatibleTypeException {
-        if (isSimLogging())
-            info("Generating a Fractal Stack...");
 
-        final long lWidth = max(1, mStackWidthVariable.get());
-        final long lHeight = max(1, mStackHeightVariable.get());
-
-        long lNumberOfKeptImages = sum(mStagingKeepAcquiredImageArray);
-
-        final long lDepth = max(1, lNumberOfKeptImages);
-        final int lChannel = mChannelVariable.get();
-
-        final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
-                .intValue();
-
-        final StackRequest lStackRequest = StackRequest.build(lWidth,
-                lHeight,
-                lDepth);
-
-        final StackInterface lStack = mRecycler.getOrWait(1,
-                TimeUnit.SECONDS,
-                lStackRequest);
-
-        if (lStack != null) {
-            final byte time = (byte) mCurrentStackIndex.get();
-
-            final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
-            final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
-
-            for (int z = 0; z < mStackDepthVariable.get(); z++)
-                if (mStagingKeepAcquiredImageArray.get(z) > 0)
-                    for (int y = 0; y < lHeight; y++)
-                        for (int x = 0; x < lWidth; x++) {
-                            short lValue = (short) (((byte) (x + time) ^ (byte) (y + (lHeight * lChannel) / 3)
-                                    ^ (byte) z ^ (time)));/**/
-                            if (lValue < 32)
-                                lValue = 0;
-                            lContiguousBuffer.writeShort(lValue);
-                        }
-
-        }
-
-        return lStack;
-    }
 
     private long sum(TByteArrayList pArrayList) {
         int lLength = pArrayList.size();
@@ -244,44 +192,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
      * @return
      * @throws IncompatibleTypeException
      */
-    protected StackInterface generateSinusStack() throws IncompatibleTypeException {
-        if (isSimLogging())
-            info("Generating a Sinus Stack...");
 
-        final long lWidth = max(1, mStackWidthVariable.get());
-        final long lHeight = max(1, mStackHeightVariable.get());
-        final long lDepth = max(1, mStackDepthVariable.get());
-        final int lChannel = mChannelVariable.get();
-
-        final int lNumberOfImagesPerPlane = getNumberOfImagesPerPlaneVariable().get()
-                .intValue();
-
-        final StackRequest lStackRequest = StackRequest.build(lWidth,
-                lHeight,
-                lDepth);
-
-        final StackInterface lStack = mRecycler.getOrWait(1,
-                TimeUnit.SECONDS,
-                lStackRequest);
-
-        if (lStack != null) {
-            final byte time = (byte) mCurrentStackIndex.get();
-
-            final ContiguousMemoryInterface lContiguousMemory = lStack.getContiguousMemory();
-            final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lContiguousMemory);
-
-            for (int z = 0; z < lDepth; z++)
-                for (int y = 0; y < lHeight; y++)
-                    for (int x = 0; x < lWidth; x++) {
-                        short lValue = (short) (128 + 128 * Math.sin(((x + time + (lWidth * lChannel) / 3) % lWidth) / 64.0));/**/
-
-                        lContiguousBuffer.writeShort(lValue);
-                    }
-
-        }
-
-        return lStack;
-    }
 
     @Override
     public void reopen() {
@@ -297,7 +208,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
 																												getExposureInMicrosecondsVariable().get()
 																																														.longValue(),
 																												TimeUnit.MICROSECONDS);
-																												
+
 																												/**/
         return true;
     }
@@ -361,8 +272,5 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase implements
         mTriggerVariable.setEdge(false, true);
     }
 
-    public Variable<SynteticStackTypeEnum> getSyntheticStackTypeVariable() {
-        return mSyntheticStackTypeVariable;
-    }
 
 }
