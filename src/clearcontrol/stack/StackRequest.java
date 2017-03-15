@@ -30,7 +30,7 @@ public class StackRequest implements RecyclerRequestInterface
                                    final long pHeight,
                                    final long pDepth)
   {
-    return new StackRequest(pWidth, pWidth, pDepth);
+    return new StackRequest(pWidth, pHeight, pDepth);
   }
 
   public static StackRequest build(final long pWidth,
@@ -39,7 +39,7 @@ public class StackRequest implements RecyclerRequestInterface
                                    final long pMetaDataLength)
   {
     return new StackRequest(pWidth,
-                            pWidth,
+                            pHeight,
                             pDepth,
                             pMetaDataLength,
                             0);
@@ -52,7 +52,7 @@ public class StackRequest implements RecyclerRequestInterface
                                    final long pAlignment)
   {
     return new StackRequest(pWidth,
-                            pWidth,
+                            pHeight,
                             pDepth,
                             pMetaDataLength,
                             pAlignment);

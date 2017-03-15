@@ -41,7 +41,7 @@ public class LocalFileStackTests
   public void testWriteSpeed() throws IOException
   {
 
-    for (int r = 0; r < 10; r++)
+    for (int r = 0; r < 1; r++)
     {
       System.gc();
 

@@ -4,14 +4,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.Test;
+
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.RandomStackSource;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-
-import org.junit.Test;
 
 public class RandomStackSourceTests
 {
