@@ -3,8 +3,6 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import org.dockfx.DockNode;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
@@ -27,7 +25,6 @@ import clearcontrol.hardware.stages.gui.jfx.XYZRStageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
-import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
 import clearcontrol.microscope.sim.SimulationManager;
 import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
@@ -40,6 +37,8 @@ import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
+
+import org.dockfx.DockNode;
 
 public class MicroscopeGUI extends VirtualDevice implements
                            AsynchronousExecutorServiceAccess,

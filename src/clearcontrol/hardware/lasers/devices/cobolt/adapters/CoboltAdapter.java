@@ -4,52 +4,53 @@ import clearcontrol.com.serial.adapters.SerialDeviceAdapterAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
 import clearcontrol.hardware.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 
-public abstract class CoboltAdapter<O>	extends
-																				SerialDeviceAdapterAdapter<O>	implements
-																																			SerialTextDeviceAdapter<O>
+public abstract class CoboltAdapter<O> extends
+                                   SerialDeviceAdapterAdapter<O>
+                                   implements
+                                   SerialTextDeviceAdapter<O>
 {
 
-	@Override
-	public Character getGetValueReturnMessageTerminationCharacter()
-	{
-		return ProtocolCobolt.cMessageTerminationCharacter;
-	}
+  @Override
+  public Character getGetValueReturnMessageTerminationCharacter()
+  {
+    return ProtocolCobolt.cMessageTerminationCharacter;
+  }
 
-	@Override
-	public long getGetValueReturnWaitTimeInMilliseconds()
-	{
-		return ProtocolCobolt.cWaitTimeInMilliSeconds;
-	}
+  @Override
+  public long getGetValueReturnWaitTimeInMilliseconds()
+  {
+    return ProtocolCobolt.cWaitTimeInMilliSeconds;
+  }
 
-	@Override
-	public Character getSetValueReturnMessageTerminationCharacter()
-	{
-		return ProtocolCobolt.cMessageTerminationCharacter;
-	}
+  @Override
+  public Character getSetValueReturnMessageTerminationCharacter()
+  {
+    return ProtocolCobolt.cMessageTerminationCharacter;
+  }
 
-	@Override
-	public long getSetValueReturnWaitTimeInMilliseconds()
-	{
-		return ProtocolCobolt.cWaitTimeInMilliSeconds;
-	}
+  @Override
+  public long getSetValueReturnWaitTimeInMilliseconds()
+  {
+    return ProtocolCobolt.cWaitTimeInMilliSeconds;
+  }
 
-	@Override
-	public boolean checkAcknowledgementSetValueReturnMessage(final byte[] pMessage)
-	{
-		final String lResponseString = new String(pMessage);
-		return lResponseString.contains("OK");
-	}
+  @Override
+  public boolean checkAcknowledgementSetValueReturnMessage(final byte[] pMessage)
+  {
+    final String lResponseString = new String(pMessage);
+    return lResponseString.contains("OK");
+  }
 
-	@Override
-	public boolean hasResponseForSet()
-	{
-		return true;
-	}
+  @Override
+  public boolean hasResponseForSet()
+  {
+    return true;
+  }
 
-	@Override
-	public boolean hasResponseForGet()
-	{
-		return true;
-	}
+  @Override
+  public boolean hasResponseForGet()
+  {
+    return true;
+  }
 
 }

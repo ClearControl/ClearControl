@@ -6,27 +6,27 @@ import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 
 public interface CameraDeviceInterface extends
-																			OpenCloseDeviceInterface,
-																			StartStopDeviceInterface,
-																			StateQueueDeviceInterface
+                                       OpenCloseDeviceInterface,
+                                       StartStopDeviceInterface,
+                                       StateQueueDeviceInterface
 {
 
-	void trigger();
+  void trigger();
 
-	void setExposure(double pExposureInMicroseconds);
+  void setExposure(double pExposureInMicroseconds);
 
-	double getExposure();
+  double getExposure();
 
-	Variable<Double> getLineReadOutTimeInMicrosecondsVariable();
+  Variable<Double> getLineReadOutTimeInMicrosecondsVariable();
 
-	Variable<Double> getExposureInMicrosecondsVariable();
+  Variable<Double> getExposureInMicrosecondsVariable();
 
-	Variable<Double> getPixelSizeInNanometersVariable();
+  Variable<Double> getPixelSizeInNanometersVariable();
 
-	Variable<Boolean> getIsAcquiringVariable();
+  Variable<Boolean> getIsAcquiringVariable();
 
-	Variable<Integer> getChannelVariable();
+  Variable<Integer> getChannelVariable();
 
-	Variable<Boolean> getTriggerVariable();
+  Variable<Boolean> getTriggerVariable();
 
 }

@@ -7,51 +7,55 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.ejml.simple.SimpleMatrix;
-import org.junit.Test;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationData;
+import clearcontrol.microscope.lightsheet.calibrator.LightSheetPositioner;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import clearcontrol.microscope.lightsheet.calibrator.CalibrationData;
-import clearcontrol.microscope.lightsheet.calibrator.LightSheetPositioner;
+import org.ejml.simple.SimpleMatrix;
+import org.junit.Test;
 
 public class CalibrationDataTests
 {
 
-	@Test
-	public void saveload() throws JsonGenerationException,
-												JsonMappingException,
-												IOException
-	{
-		CalibrationData lCalibrationData = new CalibrationData();
+  @Test
+  public void saveload() throws JsonGenerationException,
+                         JsonMappingException,
+                         IOException
+  {
+    CalibrationData lCalibrationData = new CalibrationData();
 
-		SimpleMatrix lMatrix = SimpleMatrix.identity(2);
-		LightSheetPositioner lLightSheetPositioner = new LightSheetPositioner(lMatrix);
-		lCalibrationData.mPositionerMap.put("test", lLightSheetPositioner);
+    SimpleMatrix lMatrix = SimpleMatrix.identity(2);
+    LightSheetPositioner lLightSheetPositioner =
+                                               new LightSheetPositioner(lMatrix);
+    lCalibrationData.mPositionerMap.put("test",
+                                        lLightSheetPositioner);
 
-		File lFile = File.createTempFile(	CalibrationDataTests.class.getSimpleName(),
-																			"saveload");
-		System.out.println(lFile);
+    File lFile =
+               File.createTempFile(CalibrationDataTests.class.getSimpleName(),
+                                   "saveload");
+    System.out.println(lFile);
 
-		lCalibrationData.saveTo(lFile);
+    lCalibrationData.saveTo(lFile);
 
-		assertTrue(lFile.exists());
+    assertTrue(lFile.exists());
 
-		CalibrationData lCalibrationDataRead = CalibrationData.readFrom(lFile);
+    CalibrationData lCalibrationDataRead =
+                                         CalibrationData.readFrom(lFile);
 
-		assertNotNull(lCalibrationDataRead);
+    assertNotNull(lCalibrationDataRead);
 
-		assertEquals(	1,
-									lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	0,
-																																												0),
-									0.001);
+    assertEquals(1,
+                 lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(0,
+                                                                                      0),
+                 0.001);
 
-		assertEquals(	0,
-									lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(	1,
-																																												0),
-									0.001);
+    assertEquals(0,
+                 lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(1,
+                                                                                      0),
+                 0.001);
 
-	}
+  }
 
 }

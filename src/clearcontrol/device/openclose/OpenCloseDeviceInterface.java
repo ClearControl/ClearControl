@@ -2,7 +2,7 @@ package clearcontrol.device.openclose;
 
 public interface OpenCloseDeviceInterface
 {
-	public boolean open();
+  public boolean open();
 
-	public boolean close();
+  public boolean close();
 }

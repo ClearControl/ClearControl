@@ -6,19 +6,19 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 public class DetectionArmPanel extends CustomVariablePane
 {
 
-	public DetectionArmPanel(DetectionArmInterface pDetectionArmInterface)
-	{
-		super();
+  public DetectionArmPanel(DetectionArmInterface pDetectionArmInterface)
+  {
+    super();
 
-		addTab("DOFs");
-		addSliderForVariable(	"Z :",
-													pDetectionArmInterface.getZVariable(),
-													5).setUpdateIfChanging(true);/**/
+    addTab("DOFs");
+    addSliderForVariable("Z :",
+                         pDetectionArmInterface.getZVariable(),
+                         5).setUpdateIfChanging(true);/**/
 
-		addTab("Functions");
+    addTab("Functions");
 
-		addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
+    addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
 
-	}
+  }
 
 }

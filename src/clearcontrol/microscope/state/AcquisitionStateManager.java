@@ -17,96 +17,97 @@ import clearcontrol.microscope.MicroscopeInterface;
  *
  */
 public class AcquisitionStateManager extends VirtualDevice implements
-																													ReadOnlyNameableInterface,
-																													LoggingInterface
+                                     ReadOnlyNameableInterface,
+                                     LoggingInterface
 {
-	private final MicroscopeInterface mMicroscopeInterface;
+  private final MicroscopeInterface mMicroscopeInterface;
 
-	private CopyOnWriteArrayList<AcquisitionStateInterface<?>> mAcquisitionStateList = new CopyOnWriteArrayList<>();
+  private CopyOnWriteArrayList<AcquisitionStateInterface<?>> mAcquisitionStateList =
+                                                                                   new CopyOnWriteArrayList<>();
 
-	private volatile AcquisitionStateInterface<?> mCurrentState;
+  private volatile AcquisitionStateInterface<?> mCurrentState;
 
-	/**
-	 * Constructs an LoggingManager.
-	 */
-	public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
-	{
-		super("AcquisitionStateManager");
-		mMicroscopeInterface = pMicroscopeInterface;
-	}
+  /**
+   * Constructs an LoggingManager.
+   */
+  public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
+  {
+    super("AcquisitionStateManager");
+    mMicroscopeInterface = pMicroscopeInterface;
+  }
 
-	public AcquisitionStateInterface<?> getCurrentState()
-	{
-		return mCurrentState;
-	}
+  public AcquisitionStateInterface<?> getCurrentState()
+  {
+    return mCurrentState;
+  }
 
-	public void setCurrentState(AcquisitionStateInterface<?> pCurrentState)
-	{
-		if (pCurrentState != null)
-		{
-			if (!mAcquisitionStateList.contains(pCurrentState))
-				mAcquisitionStateList.add(pCurrentState);
-			info("setCurrent: " + pCurrentState.getName());
-			mCurrentState = pCurrentState;
-			notifyListeners(this);
-		}
-	}
+  public void setCurrentState(AcquisitionStateInterface<?> pCurrentState)
+  {
+    if (pCurrentState != null)
+    {
+      if (!mAcquisitionStateList.contains(pCurrentState))
+        mAcquisitionStateList.add(pCurrentState);
+      info("setCurrent: " + pCurrentState.getName());
+      mCurrentState = pCurrentState;
+      notifyListeners(this);
+    }
+  }
 
-	/**
-	 * Adds a state.
-	 * 
-	 * @param pState
-	 */
-	public void addState(AcquisitionStateInterface<?> pState)
-	{
-		mAcquisitionStateList.add(pState);
-		notifyListeners(this);
-	}
+  /**
+   * Adds a state.
+   * 
+   * @param pState
+   */
+  public void addState(AcquisitionStateInterface<?> pState)
+  {
+    mAcquisitionStateList.add(pState);
+    notifyListeners(this);
+  }
 
-	/**
-	 * Removes a state
-	 * 
-	 * @param pState
-	 *          state to remove
-	 */
-	public void removeState(AcquisitionStateInterface<?> pState)
-	{
-		mAcquisitionStateList.remove(pState);
-		notifyListeners(this);
-	}
+  /**
+   * Removes a state
+   * 
+   * @param pState
+   *          state to remove
+   */
+  public void removeState(AcquisitionStateInterface<?> pState)
+  {
+    mAcquisitionStateList.remove(pState);
+    notifyListeners(this);
+  }
 
-	/**
-	 * Clears all states
-	 * 
-	 * @param pState
-	 */
-	public void clearStates(AcquisitionStateInterface<?> pState)
-	{
-		mAcquisitionStateList.clear();
-		notifyListeners(this);
-	}
+  /**
+   * Clears all states
+   * 
+   * @param pState
+   */
+  public void clearStates(AcquisitionStateInterface<?> pState)
+  {
+    mAcquisitionStateList.clear();
+    notifyListeners(this);
+  }
 
-	/**
-	 * Returns the state list (unmodifiable).
-	 * 
-	 * @return
-	 * 
-	 * @return
-	 */
-	public List<AcquisitionStateInterface<?>> getStateList()
-	{
-		return Collections.unmodifiableList(mAcquisitionStateList);
-	}
+  /**
+   * Returns the state list (unmodifiable).
+   * 
+   * @return
+   * 
+   * @return
+   */
+  public List<AcquisitionStateInterface<?>> getStateList()
+  {
+    return Collections.unmodifiableList(mAcquisitionStateList);
+  }
 
-	public MicroscopeInterface getMicroscope()
-	{
-		return mMicroscopeInterface;
-	}
+  public MicroscopeInterface getMicroscope()
+  {
+    return mMicroscopeInterface;
+  }
 
-	@Override
-	public String getName()
-	{
-		return "AcquisitionStateManager";
-	}
+  @Override
+  public String getName()
+  {
+    return "AcquisitionStateManager";
+  }
 
 }

@@ -6,12 +6,12 @@ import clearcontrol.microscope.lightsheet.autopilot.AutoPilotInterface;
 public class AutoPilotPanel extends CustomGridPane
 {
 
-	private AutoPilotInterface mAutoPilotInterface;
+  private AutoPilotInterface mAutoPilotInterface;
 
-	public AutoPilotPanel(AutoPilotInterface pAutoPilotInterface)
-	{
-		super();
-		mAutoPilotInterface = pAutoPilotInterface;
+  public AutoPilotPanel(AutoPilotInterface pAutoPilotInterface)
+  {
+    super();
+    mAutoPilotInterface = pAutoPilotInterface;
 
-	}
+  }
 }

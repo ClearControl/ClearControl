@@ -7,18 +7,19 @@ import clearcontrol.microscope.sim.SimulationManager;
 public class SimulationManagerPanel extends CustomVariablePane
 {
 
-	public SimulationManagerPanel(SimulationManager pSimulationManager)
-	{
-		super();
+  public SimulationManagerPanel(SimulationManager pSimulationManager)
+  {
+    super();
 
-		addTab("Logging");
+    addTab("Logging");
 
-		CustomToggleButton lToggleButton = addToggleButton(	"Logging On",
-																												"Logging Off",
-																												pSimulationManager.getLoggingOnVariable());
+    CustomToggleButton lToggleButton =
+                                     addToggleButton("Logging On",
+                                                     "Logging Off",
+                                                     pSimulationManager.getLoggingOnVariable());
 
-		lToggleButton.setMinWidth(250);
+    lToggleButton.setMinWidth(250);
 
-	}
+  }
 
 }

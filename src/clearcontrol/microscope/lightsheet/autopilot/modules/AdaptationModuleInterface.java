@@ -5,24 +5,24 @@ import java.util.function.Function;
 import clearcontrol.microscope.lightsheet.autopilot.AutoPilot;
 
 public interface AdaptationModuleInterface extends
-																					Function<Void, Boolean>
+                                           Function<Void, Boolean>
 {
 
-	void setAdaptator(AutoPilot pLSMAdaptator);
+  void setAdaptator(AutoPilot pLSMAdaptator);
 
-	AutoPilot getAdaptator();
+  AutoPilot getAdaptator();
 
-	void setPriority(int pPriority);
+  void setPriority(int pPriority);
 
-	int getPriority();
+  int getPriority();
 
-	@Override
-	Boolean apply(Void pVoid);
+  @Override
+  Boolean apply(Void pVoid);
 
-	boolean isReady();
+  boolean isReady();
 
-	int getNumberOfSteps();
+  int getNumberOfSteps();
 
-	void reset();
+  void reset();
 
 }

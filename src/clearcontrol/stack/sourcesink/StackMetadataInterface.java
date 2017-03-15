@@ -4,5 +4,5 @@ import clearcontrol.core.variable.bundle.VariableBundle;
 
 public interface StackMetadataInterface
 {
-	public VariableBundle getMetadataBundle();
+  public VariableBundle getMetadataBundle();
 }

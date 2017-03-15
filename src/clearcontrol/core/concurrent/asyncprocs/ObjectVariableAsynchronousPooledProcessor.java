@@ -6,99 +6,102 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 
-public class ObjectVariableAsynchronousPooledProcessor<I, O>	implements
-																															OpenCloseDeviceInterface,
-																															StartStopDeviceInterface
+public class ObjectVariableAsynchronousPooledProcessor<I, O>
+                                                      implements
+                                                      OpenCloseDeviceInterface,
+                                                      StartStopDeviceInterface
 {
-	private static final long cTimeOutInSeconds = 1;
+  private static final long cTimeOutInSeconds = 1;
 
-	private final Variable<I> mInputObjectVariable;
-	private final Variable<O> mOutputObjectVariable;
+  private final Variable<I> mInputObjectVariable;
+  private final Variable<O> mOutputObjectVariable;
 
-	private final AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
+  private final AsynchronousProcessorPool<I, O> mAsynchronousProcessorPool;
 
-	public ObjectVariableAsynchronousPooledProcessor(	final String pName,
-																										final int pMaxQueueSize,
-																										final int pThreadPoolSize,
-																										final ProcessorInterface<I, O> pProcessor,
-																										final boolean pDropIfQueueFull)
-	{
-		super();
+  public ObjectVariableAsynchronousPooledProcessor(final String pName,
+                                                   final int pMaxQueueSize,
+                                                   final int pThreadPoolSize,
+                                                   final ProcessorInterface<I, O> pProcessor,
+                                                   final boolean pDropIfQueueFull)
+  {
+    super();
 
-		mAsynchronousProcessorPool = new AsynchronousProcessorPool<I, O>(	pName,
-																																			pMaxQueueSize,
-																																			pThreadPoolSize,
-																																			pProcessor);
+    mAsynchronousProcessorPool =
+                               new AsynchronousProcessorPool<I, O>(pName,
+                                                                   pMaxQueueSize,
+                                                                   pThreadPoolSize,
+                                                                   pProcessor);
 
-		mOutputObjectVariable = new Variable<O>(pName + "Output");
+    mOutputObjectVariable = new Variable<O>(pName + "Output");
 
-		mInputObjectVariable = new Variable<I>(pName + "Input")
-		{
-			@Override
-			public void set(final I pNewReference)
-			{
-				if (pDropIfQueueFull)
-				{
-					mAsynchronousProcessorPool.passOrFail(pNewReference);
-				}
-				else
-				{
-					mAsynchronousProcessorPool.passOrWait(pNewReference);
-				}
-			}
-		};
+    mInputObjectVariable = new Variable<I>(pName + "Input")
+    {
+      @Override
+      public void set(final I pNewReference)
+      {
+        if (pDropIfQueueFull)
+        {
+          mAsynchronousProcessorPool.passOrFail(pNewReference);
+        }
+        else
+        {
+          mAsynchronousProcessorPool.passOrWait(pNewReference);
+        }
+      }
+    };
 
-		final AsynchronousProcessorBase<O, O> lConnector = new AsynchronousProcessorBase<O, O>(	"AsynchronousProcessorPool->OutputObjectVariable",
-																																														pMaxQueueSize)
-		{
+    final AsynchronousProcessorBase<O, O> lConnector =
+                                                     new AsynchronousProcessorBase<O, O>("AsynchronousProcessorPool->OutputObjectVariable",
+                                                                                         pMaxQueueSize)
+                                                     {
 
-			@Override
-			public O process(final O pInput)
-			{
-				mOutputObjectVariable.set(pInput);
-				return null;
-			}
-		};
+                                                       @Override
+                                                       public O process(final O pInput)
+                                                       {
+                                                         mOutputObjectVariable.set(pInput);
+                                                         return null;
+                                                       }
+                                                     };
 
-		lConnector.start();
-		mAsynchronousProcessorPool.connectToReceiver(lConnector);
+    lConnector.start();
+    mAsynchronousProcessorPool.connectToReceiver(lConnector);
 
-	}
+  }
 
-	public Variable<I> getInputObjectVariable()
-	{
-		return mInputObjectVariable;
-	}
+  public Variable<I> getInputObjectVariable()
+  {
+    return mInputObjectVariable;
+  }
 
-	public Variable<O> getOutputObjectVariable()
-	{
-		return mOutputObjectVariable;
-	}
+  public Variable<O> getOutputObjectVariable()
+  {
+    return mOutputObjectVariable;
+  }
 
-	@Override
-	public boolean open()
-	{
-		return true;
-	}
+  @Override
+  public boolean open()
+  {
+    return true;
+  }
 
-	@Override
-	public boolean start()
-	{
-		return mAsynchronousProcessorPool.start();
-	}
+  @Override
+  public boolean start()
+  {
+    return mAsynchronousProcessorPool.start();
+  }
 
-	@Override
-	public boolean stop()
-	{
-		return mAsynchronousProcessorPool.stop(	cTimeOutInSeconds,
-																						TimeUnit.SECONDS);
-	}
+  @Override
+  public boolean stop()
+  {
+    return mAsynchronousProcessorPool.stop(cTimeOutInSeconds,
+                                           TimeUnit.SECONDS);
+  }
 
-	@Override
-	public boolean close()
-	{
-		mAsynchronousProcessorPool.close();
-		return true;
-	}
+  @Override
+  public boolean close()
+  {
+    mAsynchronousProcessorPool.close();
+    return true;
+  }
 
 }

@@ -2,79 +2,85 @@ package clearcontrol.hardware.signalgen.staves;
 
 import static java.lang.Math.floor;
 
-public abstract class PatternSteppingStave extends StaveAbstract implements
-																																StaveInterface
+public abstract class PatternSteppingStave extends StaveAbstract
+                                           implements StaveInterface
 {
 
-	private volatile float mSyncStart = 0;
-	private volatile float mSyncStop = 1;
-	private volatile int mNumberOfSteps = 1024;
+  private volatile float mSyncStart = 0;
+  private volatile float mSyncStop = 1;
+  private volatile int mNumberOfSteps = 1024;
 
-	public PatternSteppingStave(final String pName)
-	{
-		super(pName);
-	}
+  public PatternSteppingStave(final String pName)
+  {
+    super(pName);
+  }
 
-	public PatternSteppingStave(final String pName,
-															float pSyncStart,
-															float pSyncStop,
-															int pNumberOfSteps)
-	{
-		super(pName);
-		setNumberOfSteps(pNumberOfSteps);
-		setSyncStart(pSyncStart);
-		setSyncStop(pSyncStop);
-	}
+  public PatternSteppingStave(final String pName,
+                              float pSyncStart,
+                              float pSyncStop,
+                              int pNumberOfSteps)
+  {
+    super(pName);
+    setNumberOfSteps(pNumberOfSteps);
+    setSyncStart(pSyncStart);
+    setSyncStop(pSyncStop);
+  }
 
-	@Override
-	public float getValue(float pNormalizedTime)
-	{
-		if (!isEnabled())
-			return 1;
+  @Override
+  public float getValue(float pNormalizedTime)
+  {
+    if (!isEnabled())
+      return 1;
 
-		if (pNormalizedTime < getSyncStart() || pNormalizedTime > getSyncStop())
-			return 0;
+    if (pNormalizedTime < getSyncStart()
+        || pNormalizedTime > getSyncStop())
+      return 0;
 
-		final float lNormalizedRampTime = (pNormalizedTime - getSyncStart()) / (getSyncStop() - getSyncStart());
+    final float lNormalizedRampTime =
+                                    (pNormalizedTime - getSyncStart())
+                                      / (getSyncStop()
+                                         - getSyncStart());
 
-		final int lNormalizedSteppingRampTime = (int) floor(getNumberOfSteps() * lNormalizedRampTime);
+    final int lNormalizedSteppingRampTime =
+                                          (int) floor(getNumberOfSteps()
+                                                      * lNormalizedRampTime);
 
-		return function(lNormalizedSteppingRampTime);
-	}
+    return function(lNormalizedSteppingRampTime);
+  }
 
-	public abstract float function(int pIndex);
+  public abstract float function(int pIndex);
 
-	public float getSyncStart()
-	{
-		return mSyncStart;
-	}
+  public float getSyncStart()
+  {
+    return mSyncStart;
+  }
 
-	public void setSyncStart(float pSyncStart)
-	{
-		mSyncStart = pSyncStart;
-	}
+  public void setSyncStart(float pSyncStart)
+  {
+    mSyncStart = pSyncStart;
+  }
 
-	public float getSyncStop()
-	{
-		return mSyncStop;
-	}
+  public float getSyncStop()
+  {
+    return mSyncStop;
+  }
 
-	public void setSyncStop(float pSyncStop)
-	{
-		mSyncStop = pSyncStop;
-	}
+  public void setSyncStop(float pSyncStop)
+  {
+    mSyncStop = pSyncStop;
+  }
 
-	public int getNumberOfSteps()
-	{
-		return mNumberOfSteps;
-	}
+  public int getNumberOfSteps()
+  {
+    return mNumberOfSteps;
+  }
 
-	public void setNumberOfSteps(int pNumberOfSteps)
-	{
-		mNumberOfSteps = pNumberOfSteps;
-	}
+  public void setNumberOfSteps(int pNumberOfSteps)
+  {
+    mNumberOfSteps = pNumberOfSteps;
+  }
 
-	@Override
-	public abstract StaveInterface copy();
+  @Override
+  public abstract StaveInterface copy();
 
 }

@@ -15,109 +15,110 @@ import clearcontrol.core.variable.Variable;
 
 public class JTextFieldString extends JPanel
 {
-	private JLabel mNameLabel;
-	private JTextField mValueTextField;
+  private JLabel mNameLabel;
+  private JTextField mValueTextField;
 
-	private final JTextFieldString mThis;
-	private final Variable<String> mObjectVariable;
+  private final JTextFieldString mThis;
+  private final Variable<String> mObjectVariable;
 
-	public JTextFieldString(final String pValueName,
-													final String pInicialValue)
-	{
-		super();
+  public JTextFieldString(final String pValueName,
+                          final String pInicialValue)
+  {
+    super();
 
-		mObjectVariable = new Variable<String>(pValueName, pInicialValue)
-		{
-			@Override
-			public String setEventHook(	final String pOldValue,
-																	final String pNewValue)
-			{
+    mObjectVariable = new Variable<String>(pValueName, pInicialValue)
+    {
+      @Override
+      public String setEventHook(final String pOldValue,
+                                 final String pNewValue)
+      {
 
-				if (!pNewValue.equals(mValueTextField.getText()))
-				{
-					EventQueue.invokeLater(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							mValueTextField.setText("" + pNewValue);
-						}
-					});
-				}
+        if (!pNewValue.equals(mValueTextField.getText()))
+        {
+          EventQueue.invokeLater(new Runnable()
+          {
+            @Override
+            public void run()
+            {
+              mValueTextField.setText("" + pNewValue);
+            }
+          });
+        }
 
-				return pNewValue;
-			}
-		};
+        return pNewValue;
+      }
+    };
 
-		setLayout(new BorderLayout(0, 0));
+    setLayout(new BorderLayout(0, 0));
 
-		mNameLabel = new JLabel(pValueName);
-		mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mNameLabel, BorderLayout.NORTH);
+    mNameLabel = new JLabel(pValueName);
+    mNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    add(mNameLabel, BorderLayout.NORTH);
 
-		mValueTextField = new JTextField(pInicialValue);
-		mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		add(mValueTextField, BorderLayout.SOUTH);
+    mValueTextField = new JTextField(pInicialValue);
+    mValueTextField.setHorizontalAlignment(SwingConstants.CENTER);
+    add(mValueTextField, BorderLayout.SOUTH);
 
-		mThis = this;
+    mThis = this;
 
-		mValueTextField.getDocument()
-										.addDocumentListener(new DocumentListener()
-										{
-											@Override
-											public void changedUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+    mValueTextField.getDocument()
+                   .addDocumentListener(new DocumentListener()
+                   {
+                     @Override
+                     public void changedUpdate(final DocumentEvent e)
+                     {
+                       parseDoubleAndNotify();
+                     }
 
-											@Override
-											public void removeUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+                     @Override
+                     public void removeUpdate(final DocumentEvent e)
+                     {
+                       parseDoubleAndNotify();
+                     }
 
-											@Override
-											public void insertUpdate(final DocumentEvent e)
-											{
-												parseDoubleAndNotify();
-											}
+                     @Override
+                     public void insertUpdate(final DocumentEvent e)
+                     {
+                       parseDoubleAndNotify();
+                     }
 
-											public void parseDoubleAndNotify()
-											{
-												final String lTextString = mValueTextField.getText()
-																																	.trim();
+                     public void parseDoubleAndNotify()
+                     {
+                       final String lTextString =
+                                                mValueTextField.getText()
+                                                               .trim();
 
-												try
-												{
-													mObjectVariable.set(lTextString);
+                       try
+                       {
+                         mObjectVariable.set(lTextString);
 
-												}
-												catch (final NumberFormatException e)
-												{
-													JOptionPane.showMessageDialog(null,
-																												"String cannot be parsed as double!",
-																												"Error Message",
-																												JOptionPane.ERROR_MESSAGE);
-													return;
-												}
-											}
-										});
+                       }
+                       catch (final NumberFormatException e)
+                       {
+                         JOptionPane.showMessageDialog(null,
+                                                       "String cannot be parsed as double!",
+                                                       "Error Message",
+                                                       JOptionPane.ERROR_MESSAGE);
+                         return;
+                       }
+                     }
+                   });
 
-	}
+  }
 
-	public Variable<String> getStringVariable()
-	{
-		return mObjectVariable;
-	}
+  public Variable<String> getStringVariable()
+  {
+    return mObjectVariable;
+  }
 
-	public void setColumns(final int pNumberColumns)
-	{
-		mValueTextField.setColumns(pNumberColumns);
-	}
+  public void setColumns(final int pNumberColumns)
+  {
+    mValueTextField.setColumns(pNumberColumns);
+  }
 
-	public void setValue(final double pValue)
-	{
-		mValueTextField.setText("" + pValue);
-	}
+  public void setValue(final double pValue)
+  {
+    mValueTextField.setText("" + pValue);
+  }
 
 }

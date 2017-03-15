@@ -8,15 +8,15 @@ package clearcontrol.core.math.kdtree;
  */
 public interface MinHeap<T>
 {
-	public int size();
+  public int size();
 
-	public void offer(double key, T value);
+  public void offer(double key, T value);
 
-	public void replaceMin(double key, T value);
+  public void replaceMin(double key, T value);
 
-	public void removeMin();
+  public void removeMin();
 
-	public T getMin();
+  public T getMin();
 
-	public double getMinKey();
+  public double getMinKey();
 }

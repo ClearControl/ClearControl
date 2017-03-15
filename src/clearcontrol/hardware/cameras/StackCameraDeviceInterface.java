@@ -6,40 +6,40 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
 
-public interface StackCameraDeviceInterface	extends
-																						CameraDeviceInterface,
-																						NameableInterface
+public interface StackCameraDeviceInterface extends
+                                            CameraDeviceInterface,
+                                            NameableInterface
 {
 
-	void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
+  void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
-	int getMinimalNumberOfAvailableStacks();
+  int getMinimalNumberOfAvailableStacks();
 
-	void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks);
+  void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks);
 
-	RecyclerInterface<StackInterface, StackRequest> getStackRecycler();
+  RecyclerInterface<StackInterface, StackRequest> getStackRecycler();
 
-	Variable<StackInterface> getStackVariable();
+  Variable<StackInterface> getStackVariable();
 
-	@Override
-	void trigger();
+  @Override
+  void trigger();
 
-	Variable<Long> getNumberOfImagesPerPlaneVariable();
+  Variable<Long> getNumberOfImagesPerPlaneVariable();
 
-	Variable<Boolean> getStackModeVariable();
+  Variable<Boolean> getStackModeVariable();
 
-	Variable<Boolean> getKeepPlaneVariable();
+  Variable<Boolean> getKeepPlaneVariable();
 
-	Variable<Long> getStackBytesPerPixelVariable();
+  Variable<Long> getStackBytesPerPixelVariable();
 
-	Variable<Long> getStackWidthVariable();
+  Variable<Long> getStackWidthVariable();
 
-	Variable<Long> getStackHeightVariable();
+  Variable<Long> getStackHeightVariable();
 
-	Variable<Long> getStackDepthVariable();
+  Variable<Long> getStackDepthVariable();
 
-	Variable<Long> getStackMaxWidthVariable();
+  Variable<Long> getStackMaxWidthVariable();
 
-	Variable<Long> getStackMaxHeightVariable();
+  Variable<Long> getStackMaxHeightVariable();
 
 }

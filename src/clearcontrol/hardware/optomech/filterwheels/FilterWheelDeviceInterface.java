@@ -5,16 +5,16 @@ import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.position.PositionDeviceInterface;
 
-public interface FilterWheelDeviceInterface	extends
-																						NameableInterface,
-																						OpenCloseDeviceInterface,
-																						PositionDeviceInterface
+public interface FilterWheelDeviceInterface extends
+                                            NameableInterface,
+                                            OpenCloseDeviceInterface,
+                                            PositionDeviceInterface
 {
 
-	Variable<Integer> getSpeedVariable();
+  Variable<Integer> getSpeedVariable();
 
-	int getSpeed();
+  int getSpeed();
 
-	void setSpeed(int pSpeed);
+  void setSpeed(int pSpeed);
 
 }

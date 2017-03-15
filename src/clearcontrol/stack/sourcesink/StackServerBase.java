@@ -10,25 +10,28 @@ import gnu.trove.map.hash.TLongLongHashMap;
 
 public abstract class StackServerBase implements AutoCloseable
 {
-	protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap = new TLongDoubleHashMap();
-	protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap = new TLongLongHashMap();
-	protected final HashMap<Long, StackRequest> mStackIndexToStackRequestMap = new HashMap<Long, StackRequest>();
+  protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap =
+                                                                        new TLongDoubleHashMap();
+  protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap =
+                                                                      new TLongLongHashMap();
+  protected final HashMap<Long, StackRequest> mStackIndexToStackRequestMap =
+                                                                           new HashMap<Long, StackRequest>();
 
-	public StackServerBase() throws IOException
-	{
-		super();
-	}
+  public StackServerBase() throws IOException
+  {
+    super();
+  }
 
-	public abstract VariableBundle getMetaDataVariableBundle();
+  public abstract VariableBundle getMetaDataVariableBundle();
 
-	public long getNumberOfStacks()
-	{
-		return mStackIndexToTimeStampInSecondsMap.size();
-	}
+  public long getNumberOfStacks()
+  {
+    return mStackIndexToTimeStampInSecondsMap.size();
+  }
 
-	public double getStackTimeStampInSeconds(final long pStackIndex)
-	{
-		return mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
-	}
+  public double getStackTimeStampInSeconds(final long pStackIndex)
+  {
+    return mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
+  }
 
 }

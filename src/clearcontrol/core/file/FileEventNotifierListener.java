@@ -7,8 +7,8 @@ import clearcontrol.core.file.FileEventNotifier.FileEventKind;
 public interface FileEventNotifierListener
 {
 
-	void fileEvent(	FileEventNotifier pThis,
-									File pFile,
-									FileEventKind pEventKind);
+  void fileEvent(FileEventNotifier pThis,
+                 File pFile,
+                 FileEventKind pEventKind);
 
 }

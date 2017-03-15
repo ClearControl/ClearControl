@@ -6,12 +6,12 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
 public class TimelapsePanel extends CustomGridPane
 {
 
-	private TimelapseInterface mTimelapseInterface;
+  private TimelapseInterface mTimelapseInterface;
 
-	public TimelapsePanel(TimelapseInterface pTimelapseInterface)
-	{
-		super();
-		mTimelapseInterface = pTimelapseInterface;
+  public TimelapsePanel(TimelapseInterface pTimelapseInterface)
+  {
+    super();
+    mTimelapseInterface = pTimelapseInterface;
 
-	}
+  }
 }

@@ -6,15 +6,15 @@ import clearcontrol.stack.StackInterface;
 public interface StackSinkInterface
 {
 
-	public boolean appendStack(final StackInterface pStack);
+  public boolean appendStack(final StackInterface pStack);
 
-	public void addMetaData(String pPrefix, double pValue);
+  public void addMetaData(String pPrefix, double pValue);
 
-	public void addMetaDataVariable(final String pPrefix,
-																	final Variable<?> pVariable);
+  public void addMetaDataVariable(final String pPrefix,
+                                  final Variable<?> pVariable);
 
-	public void removeAllMetaDataVariables();
+  public void removeAllMetaDataVariables();
 
-	public void removeMetaDataVariable(Variable<?> pVariable);
+  public void removeMetaDataVariable(Variable<?> pVariable);
 
 }

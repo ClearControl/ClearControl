@@ -12,63 +12,71 @@ import coremem.buffers.ContiguousBuffer;
 public class StackUtils
 {
 
-	public static StackInterface fuse(LightSheetMicroscopeInterface pLSM)
-	{
-		StackInterface lFirstStack = pLSM.getStackVariable(0).get();
+  public static StackInterface fuse(LightSheetMicroscopeInterface pLSM)
+  {
+    StackInterface lFirstStack = pLSM.getStackVariable(0).get();
 
-		StackInterface lFusedStack = lFirstStack.duplicate();
+    StackInterface lFusedStack = lFirstStack.duplicate();
 
-		int lNumberOfStacksToFuse = pLSM.getDeviceLists()
-																		.getNumberOfDevices(DetectionArmInterface.class);
+    int lNumberOfStacksToFuse =
+                              pLSM.getDeviceLists()
+                                  .getNumberOfDevices(DetectionArmInterface.class);
 
-		if (lNumberOfStacksToFuse > 1)
-		{
-			for (int d = 1; d < lNumberOfStacksToFuse; d++)
-			{
-				StackInterface lStack = pLSM.getStackVariable(0).get();
+    if (lNumberOfStacksToFuse > 1)
+    {
+      for (int d = 1; d < lNumberOfStacksToFuse; d++)
+      {
+        StackInterface lStack = pLSM.getStackVariable(0).get();
 
-				maxStack(lFusedStack, lStack);
-			}
-		}
+        maxStack(lFusedStack, lStack);
+      }
+    }
 
-		return lFusedStack;
-	}
+    return lFusedStack;
+  }
 
-	private static void maxStack(	StackInterface pMaxStack,
-																StackInterface pOtherStack)
-	{
-		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
-		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
+  private static void maxStack(StackInterface pMaxStack,
+                               StackInterface pOtherStack)
+  {
+    ContiguousBuffer lMaxBuffer =
+                                ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
+    ContiguousBuffer lOtherBuffer =
+                                  ContiguousBuffer.wrap(pMaxStack.getContiguousMemory());
 
-		while (lMaxBuffer.hasRemainingByte() && lOtherBuffer.hasRemainingByte())
-		{
-			char u = lMaxBuffer.readChar();
-			char v = lOtherBuffer.readChar();
-			char m = (char) max(u, v);
+    while (lMaxBuffer.hasRemainingByte()
+           && lOtherBuffer.hasRemainingByte())
+    {
+      char u = lMaxBuffer.readChar();
+      char v = lOtherBuffer.readChar();
+      char m = (char) max(u, v);
 
-			lMaxBuffer.skipChars(-1);
-			lMaxBuffer.writeChar(m);
-		}
-	}
+      lMaxBuffer.skipChars(-1);
+      lMaxBuffer.writeChar(m);
+    }
+  }
 
-	public static double computeAverageDifference(StackInterface pStack1,
-																								StackInterface pStack2,
-																								int pPower)
-	{
-		ContiguousBuffer lMaxBuffer = ContiguousBuffer.wrap(pStack1.getContiguousMemory());
-		ContiguousBuffer lOtherBuffer = ContiguousBuffer.wrap(pStack2.getContiguousMemory());
+  public static double computeAverageDifference(StackInterface pStack1,
+                                                StackInterface pStack2,
+                                                int pPower)
+  {
+    ContiguousBuffer lMaxBuffer =
+                                ContiguousBuffer.wrap(pStack1.getContiguousMemory());
+    ContiguousBuffer lOtherBuffer =
+                                  ContiguousBuffer.wrap(pStack2.getContiguousMemory());
 
-		double lDifference = 0;
-		while (lMaxBuffer.hasRemainingByte() && lOtherBuffer.hasRemainingByte())
-		{
-			char u = lMaxBuffer.readChar();
-			char v = lOtherBuffer.readChar();
-			lDifference += pow(1.0 * abs(u - v), pPower);
-		}
+    double lDifference = 0;
+    while (lMaxBuffer.hasRemainingByte()
+           && lOtherBuffer.hasRemainingByte())
+    {
+      char u = lMaxBuffer.readChar();
+      char v = lOtherBuffer.readChar();
+      lDifference += pow(1.0 * abs(u - v), pPower);
+    }
 
-		double lAverageDifference = (lDifference) / (lMaxBuffer.getSizeInBytes() / 2);
+    double lAverageDifference = (lDifference)
+                                / (lMaxBuffer.getSizeInBytes() / 2);
 
-		return lAverageDifference;
-	}
+    return lAverageDifference;
+  }
 
 }

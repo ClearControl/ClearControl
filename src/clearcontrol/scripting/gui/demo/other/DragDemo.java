@@ -30,225 +30,227 @@ import java.util.List;
 public class DragDemo
 {
 
-	public static void main(String[] args)
-	{
+  public static void main(String[] args)
+  {
+
+    // Create a frame
+    final Frame frame = new Frame("Example Frame");
+
+    /*
+    
+    * Create a container with a flow layout, which arranges its children
+    
+    * horizontally and center aligned. A container can also be created with
+    
+    * a specific layout using Panel(LayoutManager) constructor, e.g.
+    
+    * Panel(new FlowLayout(FlowLayout.RIGHT)) for right alignment
+    
+    */
+    final Panel panel = new Panel();
+
+    // Add a drop target text area in the center of the frame
+    final Component textArea = new DropTargetTextArea();
+    frame.add(textArea, BorderLayout.CENTER);
 
-		// Create a frame
-		final Frame frame = new Frame("Example Frame");
+    // Add several draggable labels to the container
+    final Label helloLabel = new DraggableLabel("Hello");
+    final Label worldLabel = new DraggableLabel("World");
+    panel.add(helloLabel);
+    panel.add(worldLabel);
 
-		/*
+    // Add the container to the bottom of the frame
+    frame.add(panel, BorderLayout.SOUTH);
 
-		* Create a container with a flow layout, which arranges its children
+    // Display the frame
+    final int frameWidth = 300;
+    final int frameHeight = 300;
+    frame.setSize(frameWidth, frameHeight);
 
-		* horizontally and center aligned. A container can also be created with
+    frame.setVisible(true);
 
-		* a specific layout using Panel(LayoutManager) constructor, e.g.
+  }
 
-		* Panel(new FlowLayout(FlowLayout.RIGHT)) for right alignment
+  // Make a Label draggable; You can use the example to make any component
+  // draggable
+  public static class DraggableLabel extends Label implements
+                                     DragGestureListener,
+                                     DragSourceListener
+  {
+    DragSource dragSource;
 
-		*/
-		final Panel panel = new Panel();
+    public DraggableLabel(String text)
+    {
 
-		// Add a drop target text area in the center of the frame
-		final Component textArea = new DropTargetTextArea();
-		frame.add(textArea, BorderLayout.CENTER);
+      setText(text);
 
-		// Add several draggable labels to the container
-		final Label helloLabel = new DraggableLabel("Hello");
-		final Label worldLabel = new DraggableLabel("World");
-		panel.add(helloLabel);
-		panel.add(worldLabel);
+      dragSource = new DragSource();
 
-		// Add the container to the bottom of the frame
-		frame.add(panel, BorderLayout.SOUTH);
+      dragSource.createDefaultDragGestureRecognizer(this,
+                                                    DnDConstants.ACTION_COPY_OR_MOVE,
+                                                    this);
+    }
 
-		// Display the frame
-		final int frameWidth = 300;
-		final int frameHeight = 300;
-		frame.setSize(frameWidth, frameHeight);
+    @Override
+    public void dragGestureRecognized(DragGestureEvent evt)
+    {
 
-		frame.setVisible(true);
+      final Transferable transferable =
+                                      new StringSelection(getText());
 
-	}
+      dragSource.startDrag(evt,
+                           DragSource.DefaultCopyDrop,
+                           transferable,
+                           this);
+    }
 
-	// Make a Label draggable; You can use the example to make any component
-	// draggable
-	public static class DraggableLabel extends Label implements
-																									DragGestureListener,
-																									DragSourceListener
-	{
-		DragSource dragSource;
+    @Override
+    public void dragEnter(DragSourceDragEvent evt)
+    {
 
-		public DraggableLabel(String text)
-		{
+      // Called when the user is dragging this drag source and enters the
+      // drop
+      // target
 
-			setText(text);
+      System.out.println("Drag enter");
+    }
 
-			dragSource = new DragSource();
+    @Override
+    public void dragOver(DragSourceDragEvent evt)
+    {
 
-			dragSource.createDefaultDragGestureRecognizer(this,
-																										DnDConstants.ACTION_COPY_OR_MOVE,
-																										this);
-		}
+      // Called when the user is dragging this drag source and moves over
+      // the
+      // drop target
 
-		@Override
-		public void dragGestureRecognized(DragGestureEvent evt)
-		{
+      System.out.println("Drag over");
+    }
 
-			final Transferable transferable = new StringSelection(getText());
+    @Override
+    public void dragExit(DragSourceEvent evt)
+    {
 
-			dragSource.startDrag(	evt,
-														DragSource.DefaultCopyDrop,
-														transferable,
-														this);
-		}
+      // Called when the user is dragging this drag source and leaves the
+      // drop
+      // target
 
-		@Override
-		public void dragEnter(DragSourceDragEvent evt)
-		{
+      System.out.println("Drag exit");
+    }
 
-			// Called when the user is dragging this drag source and enters the
-			// drop
-			// target
+    @Override
+    public void dropActionChanged(DragSourceDragEvent evt)
+    {
 
-			System.out.println("Drag enter");
-		}
+      // Called when the user changes the drag action between copy or move
 
-		@Override
-		public void dragOver(DragSourceDragEvent evt)
-		{
+      System.out.println("Drag action changed");
+    }
 
-			// Called when the user is dragging this drag source and moves over
-			// the
-			// drop target
+    @Override
+    public void dragDropEnd(DragSourceDropEvent evt)
+    {
 
-			System.out.println("Drag over");
-		}
+      // Called when the user finishes or cancels the drag operation
 
-		@Override
-		public void dragExit(DragSourceEvent evt)
-		{
+      System.out.println("Drag action End");
+    }
 
-			// Called when the user is dragging this drag source and leaves the
-			// drop
-			// target
+  }
 
-			System.out.println("Drag exit");
-		}
+  // Make a TextArea a drop target; You can use the example to make any
+  // component a drop target
+  public static class DropTargetTextArea extends TextArea
+                                         implements DropTargetListener
+  {
 
-		@Override
-		public void dropActionChanged(DragSourceDragEvent evt)
-		{
+    public DropTargetTextArea()
+    {
 
-			// Called when the user changes the drag action between copy or move
+      new DropTarget(this, this);
+    }
 
-			System.out.println("Drag action changed");
-		}
+    @Override
+    public void dragEnter(DropTargetDragEvent evt)
+    {
 
-		@Override
-		public void dragDropEnd(DragSourceDropEvent evt)
-		{
+      // Called when the user is dragging and enters this drop target
 
-			// Called when the user finishes or cancels the drag operation
+      System.out.println("Drop enter");
+    }
 
-			System.out.println("Drag action End");
-		}
+    @Override
+    public void dragOver(DropTargetDragEvent evt)
+    {
 
-	}
+      // Called when the user is dragging and moves over this drop target
 
-	// Make a TextArea a drop target; You can use the example to make any
-	// component a drop target
-	public static class DropTargetTextArea extends TextArea	implements
-																													DropTargetListener
-	{
+      System.out.println("Drop over");
+    }
 
-		public DropTargetTextArea()
-		{
+    @Override
+    public void dragExit(DropTargetEvent evt)
+    {
 
-			new DropTarget(this, this);
-		}
+      // Called when the user is dragging and leaves this drop target
 
-		@Override
-		public void dragEnter(DropTargetDragEvent evt)
-		{
+      System.out.println("Drop exit");
+    }
 
-			// Called when the user is dragging and enters this drop target
+    @Override
+    public void dropActionChanged(DropTargetDragEvent evt)
+    {
 
-			System.out.println("Drop enter");
-		}
+      // Called when the user changes the drag action between copy or move
 
-		@Override
-		public void dragOver(DropTargetDragEvent evt)
-		{
+      System.out.println("Drop action changed");
+    }
 
-			// Called when the user is dragging and moves over this drop target
+    @Override
+    public void drop(DropTargetDropEvent evt)
+    {
 
-			System.out.println("Drop over");
-		}
+      // Called when the user finishes or cancels the drag operation
 
-		@Override
-		public void dragExit(DropTargetEvent evt)
-		{
+      try
+      {
 
-			// Called when the user is dragging and leaves this drop target
+        final Transferable transferable = evt.getTransferable();
 
-			System.out.println("Drop exit");
-		}
+        if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor))
+        {
 
-		@Override
-		public void dropActionChanged(DropTargetDragEvent evt)
-		{
+          evt.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 
-			// Called when the user changes the drag action between copy or move
+          final List<File> lFileList =
+                                     (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
 
-			System.out.println("Drop action changed");
-		}
+          evt.getDropTargetContext().dropComplete(true);
 
-		@Override
-		public void drop(DropTargetDropEvent evt)
-		{
+          System.out.println(lFileList);
 
-			// Called when the user finishes or cancels the drag operation
+        }
+        else
+        {
 
-			try
-			{
+          evt.rejectDrop();
 
-				final Transferable transferable = evt.getTransferable();
+        }
 
-				if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor))
-				{
+      }
+      catch (final IOException e)
+      {
 
-					evt.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+        evt.rejectDrop();
 
-					final List<File> lFileList = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+      }
+      catch (final UnsupportedFlavorException e)
+      {
 
-					evt.getDropTargetContext().dropComplete(true);
+        evt.rejectDrop();
 
-					System.out.println(lFileList);
+      }
+    }
 
-				}
-				else
-				{
-
-					evt.rejectDrop();
-
-				}
-
-			}
-			catch (final IOException e)
-			{
-
-				evt.rejectDrop();
-
-			}
-			catch (final UnsupportedFlavorException e)
-			{
-
-				evt.rejectDrop();
-
-			}
-		}
-
-	}
+  }
 
 }

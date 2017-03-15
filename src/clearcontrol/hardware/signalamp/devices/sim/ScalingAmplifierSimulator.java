@@ -7,34 +7,35 @@ import clearcontrol.hardware.signalamp.ScalingAmplifierBaseDevice;
 import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
 
 public class ScalingAmplifierSimulator extends
-																			ScalingAmplifierBaseDevice implements
-																																ScalingAmplifierDeviceInterface,
-																																LoggingInterface,
-																																SimulationDeviceInterface
+                                       ScalingAmplifierBaseDevice
+                                       implements
+                                       ScalingAmplifierDeviceInterface,
+                                       LoggingInterface,
+                                       SimulationDeviceInterface
 {
 
-	public ScalingAmplifierSimulator(String pDeviceName)
-	{
-		super(pDeviceName);
+  public ScalingAmplifierSimulator(String pDeviceName)
+  {
+    super(pDeviceName);
 
-		mGainVariable = new Variable<Number>("Gain", 1.0);
-		mGainVariable.addSetListener((o, n) -> {
-			if (isSimLogging())
-				info(getName() + ": new gain: " + n);
-		});
+    mGainVariable = new Variable<Number>("Gain", 1.0);
+    mGainVariable.addSetListener((o, n) -> {
+      if (isSimLogging())
+        info(getName() + ": new gain: " + n);
+    });
 
-		mOffsetVariable = new Variable<Number>("Offset", 0.0);
-		mOffsetVariable.addSetListener((o, n) -> {
-			if (isSimLogging())
-				info(getName() + ": new offset: " + n);
-		});
+    mOffsetVariable = new Variable<Number>("Offset", 0.0);
+    mOffsetVariable.addSetListener((o, n) -> {
+      if (isSimLogging())
+        info(getName() + ": new offset: " + n);
+    });
 
-		mMinGain = -19.9;
-		mMaxGain = 19.9;
+    mMinGain = -19.9;
+    mMaxGain = 19.9;
 
-		mMinOffset = 0;
-		mMaxOffset = 10;
+    mMinOffset = 0;
+    mMaxOffset = 10;
 
-	}
+  }
 
 }

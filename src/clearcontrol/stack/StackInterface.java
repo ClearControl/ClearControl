@@ -1,72 +1,72 @@
 package clearcontrol.stack;
 
-import org.bridj.Pointer;
-
+import net.imglib2.img.NativeImg;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.recycling.RecyclableInterface;
 import coremem.rgc.Freeable;
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
-public interface StackInterface	extends
-																RecyclableInterface<StackInterface, StackRequest>,
-																SizedInBytes,
-																Freeable
+import org.bridj.Pointer;
+
+public interface StackInterface extends
+                                RecyclableInterface<StackInterface, StackRequest>,
+                                SizedInBytes,
+                                Freeable
 {
-	NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage();
+  NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage();
 
-	long getTimeStampInNanoseconds();
+  long getTimeStampInNanoseconds();
 
-	void setTimeStampInNanoseconds(long pUnit2nano);
+  void setTimeStampInNanoseconds(long pUnit2nano);
 
-	long getIndex();
+  long getIndex();
 
-	void setIndex(long pStackIndex);
+  void setIndex(long pStackIndex);
 
-	long getBytesPerVoxel();
+  long getBytesPerVoxel();
 
-	long getNumberOfImagesPerPlane();
+  long getNumberOfImagesPerPlane();
 
-	void setNumberOfImagesPerPlane(long pNumberOfImagesPerPlane);
+  void setNumberOfImagesPerPlane(long pNumberOfImagesPerPlane);
 
-	int getNumberOfDimensions();
+  int getNumberOfDimensions();
 
-	long[] getDimensions();
+  long[] getDimensions();
 
-	long getDimension(int pIndex);
+  long getDimension(int pIndex);
 
-	long getWidth();
+  long getWidth();
 
-	long getHeight();
+  long getHeight();
 
-	long getDepth();
+  long getDepth();
 
-	double getVoxelSizeInRealUnits(int pIndex);
+  double getVoxelSizeInRealUnits(int pIndex);
 
-	void setVoxelSizeInRealUnits(	int pIndex,
-																double pVoxelSizeInRealUnits);
+  void setVoxelSizeInRealUnits(int pIndex,
+                               double pVoxelSizeInRealUnits);
 
-	double[] getVoxelSizeInRealUnits();
+  double[] getVoxelSizeInRealUnits();
 
-	void setChannel(int pChannel);
+  void setChannel(int pChannel);
 
-	int getChannel();
+  int getChannel();
 
-	Pointer<Byte> getPointer(int pPlaneIndex);
+  Pointer<Byte> getPointer(int pPlaneIndex);
 
-	ContiguousMemoryInterface getContiguousMemory();
+  ContiguousMemoryInterface getContiguousMemory();
 
-	ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex);
+  ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex);
 
-	FragmentedMemoryInterface getFragmentedMemory();
+  FragmentedMemoryInterface getFragmentedMemory();
 
-	void copyMetaDataFrom(StackInterface pStack);
+  void copyMetaDataFrom(StackInterface pStack);
 
-	StackInterface allocateSameSize();
+  StackInterface allocateSameSize();
 
-	StackInterface duplicate();
+  StackInterface duplicate();
 
 }

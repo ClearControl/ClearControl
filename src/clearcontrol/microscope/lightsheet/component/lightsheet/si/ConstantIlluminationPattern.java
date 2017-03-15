@@ -4,30 +4,31 @@ import clearcontrol.hardware.signalgen.staves.IntervalStave;
 import clearcontrol.hardware.signalgen.staves.StaveInterface;
 
 public class ConstantIlluminationPattern extends
-																				StructuredIlluminationPatternBase	implements
-																																					StructuredIlluminationPatternInterface
+                                         StructuredIlluminationPatternBase
+                                         implements
+                                         StructuredIlluminationPatternInterface
 {
 
-	private final IntervalStave mStave;
+  private final IntervalStave mStave;
 
-	public ConstantIlluminationPattern()
-	{
-		super();
-		mStave = new IntervalStave("trigger.out.e", 0, 1, 1, 0);
-	}
+  public ConstantIlluminationPattern()
+  {
+    super();
+    mStave = new IntervalStave("trigger.out.e", 0, 1, 1, 0);
+  }
 
-	@Override
-	public StaveInterface getStave(double pMarginTimeRelativeUnits)
-	{
-		mStave.setStart((float) clamp01(pMarginTimeRelativeUnits));
-		mStave.setStop((float) clamp01(1 - pMarginTimeRelativeUnits));
-		return mStave;
-	}
+  @Override
+  public StaveInterface getStave(double pMarginTimeRelativeUnits)
+  {
+    mStave.setStart((float) clamp01(pMarginTimeRelativeUnits));
+    mStave.setStop((float) clamp01(1 - pMarginTimeRelativeUnits));
+    return mStave;
+  }
 
-	@Override
-	public int getNumberOfPhases()
-	{
-		return 1;
-	}
+  @Override
+  public int getNumberOfPhases()
+  {
+    return 1;
+  }
 
 }

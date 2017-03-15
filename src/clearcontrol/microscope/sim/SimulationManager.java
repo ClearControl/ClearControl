@@ -17,53 +17,56 @@ import clearcontrol.microscope.MicroscopeInterface;
  *
  */
 public class SimulationManager extends VirtualDevice implements
-																										ReadOnlyNameableInterface,
-																										LoggingInterface
+                               ReadOnlyNameableInterface,
+                               LoggingInterface
 {
-	private final MicroscopeInterface mMicroscopeInterface;
+  private final MicroscopeInterface mMicroscopeInterface;
 
-	private final Variable<Boolean> mLoggingOnVariable = new Variable<Boolean>("LoggingOn");
+  private final Variable<Boolean> mLoggingOnVariable =
+                                                     new Variable<Boolean>("LoggingOn");
 
-	/**
-	 * Constructs an LoggingManager.
-	 */
-	public SimulationManager(MicroscopeInterface pMicroscopeInterface)
-	{
-		super("SimulationManager");
-		mMicroscopeInterface = pMicroscopeInterface;
+  /**
+   * Constructs an LoggingManager.
+   */
+  public SimulationManager(MicroscopeInterface pMicroscopeInterface)
+  {
+    super("SimulationManager");
+    mMicroscopeInterface = pMicroscopeInterface;
 
-		mLoggingOnVariable.addSetListener((o, n) -> {
+    mLoggingOnVariable.addSetListener((o, n) -> {
 
-			if (o == n)
-				return;
+      if (o == n)
+        return;
 
-			if (mMicroscopeInterface == null)
-			{
-				return;
-			}
+      if (mMicroscopeInterface == null)
+      {
+        return;
+      }
 
-			info("Loggin for simulated devices is turned " + (n	? "on"
-																													: "off"));
+      info("Loggin for simulated devices is turned "
+           + (n ? "on" : "off"));
 
-			ArrayList<Object> lAllDeviceList = mMicroscopeInterface.getDeviceLists()
-																															.getAllDeviceList();
+      ArrayList<Object> lAllDeviceList =
+                                       mMicroscopeInterface.getDeviceLists()
+                                                           .getAllDeviceList();
 
-			for (Object lDevice : lAllDeviceList)
-			{
-				if (lDevice instanceof SimulationDeviceInterface)
-				{
-					SimulationDeviceInterface lSimulationDeviceInterface = (SimulationDeviceInterface) lDevice;
+      for (Object lDevice : lAllDeviceList)
+      {
+        if (lDevice instanceof SimulationDeviceInterface)
+        {
+          SimulationDeviceInterface lSimulationDeviceInterface =
+                                                               (SimulationDeviceInterface) lDevice;
 
-					lSimulationDeviceInterface.getSimLoggingVariable().set(n);
-				}
-			}
-		});
+          lSimulationDeviceInterface.getSimLoggingVariable().set(n);
+        }
+      }
+    });
 
-	}
+  }
 
-	public Variable<Boolean> getLoggingOnVariable()
-	{
-		return mLoggingOnVariable;
-	}
+  public Variable<Boolean> getLoggingOnVariable()
+  {
+    return mLoggingOnVariable;
+  }
 
 }

@@ -17,260 +17,284 @@ import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.util.Size;
 
-public class Stack3DDisplay extends VirtualDevice	implements
-																									StackDisplayInterface
+public class Stack3DDisplay extends VirtualDevice
+                            implements StackDisplayInterface
 {
-	private static final int cDefaultDisplayQueueLength = 2;
-	protected static final long cTimeOutForBufferCopy = 5;
+  private static final int cDefaultDisplayQueueLength = 2;
+  protected static final long cTimeOutForBufferCopy = 5;
 
-	private ClearVolumeRendererInterface mClearVolumeRenderer;
+  private ClearVolumeRendererInterface mClearVolumeRenderer;
 
-	private final Variable<StackInterface> mInputStackVariable;
-	private Variable<StackInterface> mOutputStackVariable;
+  private final Variable<StackInterface> mInputStackVariable;
+  private Variable<StackInterface> mOutputStackVariable;
 
-	private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
+  private AsynchronousProcessorBase<StackInterface, Object> mAsynchronousDisplayUpdater;
 
-	private volatile Variable<Boolean> mVisibleVariable;
-	private volatile Variable<Boolean> mWaitForLastChannel;
+  private volatile Variable<Boolean> mVisibleVariable;
+  private volatile Variable<Boolean> mWaitForLastChannel;
 
-	public Stack3DDisplay(final String pWindowName)
-	{
-		this(pWindowName, 512, 512, 1, cDefaultDisplayQueueLength);
-	}
+  public Stack3DDisplay(final String pWindowName)
+  {
+    this(pWindowName, 512, 512, 1, cDefaultDisplayQueueLength);
+  }
 
-	public Stack3DDisplay(final String pWindowName,
-												final int pWindowWidth,
-												final int pWindowHeight,
-												final int pNumberOfLayers,
-												final int pUpdaterQueueLength)
-	{
-		super(pWindowName);
+  public Stack3DDisplay(final String pWindowName,
+                        final int pWindowWidth,
+                        final int pWindowHeight,
+                        final int pNumberOfLayers,
+                        final int pUpdaterQueueLength)
+  {
+    super(pWindowName);
 
-		NativeTypeEnum lNativeTypeEnum = NativeTypeEnum.UnsignedShort;
+    NativeTypeEnum lNativeTypeEnum = NativeTypeEnum.UnsignedShort;
 
-		mClearVolumeRenderer = ClearVolumeRendererFactory.newBestRenderer(pWindowName,
-																																			pWindowWidth,
-																																			pWindowHeight,
-																																			lNativeTypeEnum,
-																																			2048,
-																																			2048,
-																																			pNumberOfLayers,
-																																			false);
+    mClearVolumeRenderer =
+                         ClearVolumeRendererFactory.newBestRenderer(pWindowName,
+                                                                    pWindowWidth,
+                                                                    pWindowHeight,
+                                                                    lNativeTypeEnum,
+                                                                    2048,
+                                                                    2048,
+                                                                    pNumberOfLayers,
+                                                                    false);
 
-		mVisibleVariable = new Variable<Boolean>("Visible", false);
+    mVisibleVariable = new Variable<Boolean>("Visible", false);
 
-		mVisibleVariable.addSetListener((o, n) -> {
-			mClearVolumeRenderer.setVisible(n);
-		});
+    mVisibleVariable.addSetListener((o, n) -> {
+      mClearVolumeRenderer.setVisible(n);
+    });
 
-		setVisible(false);
+    setVisible(false);
 
-		mClearVolumeRenderer.setAdaptiveLODActive(false);
-		mClearVolumeRenderer.disableClose();
+    mClearVolumeRenderer.setAdaptiveLODActive(false);
+    mClearVolumeRenderer.disableClose();
 
-		if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
-		{
-			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer) mClearVolumeRenderer;
-			ClearGLWindow lClearGLWindow = lClearGLVolumeRenderer.getClearGLWindow();
-			lClearGLWindow.addWindowListener(new WindowControl(lClearGLWindow));
-		}
+    if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+    {
+      ClearGLVolumeRenderer lClearGLVolumeRenderer =
+                                                   (ClearGLVolumeRenderer) mClearVolumeRenderer;
+      ClearGLWindow lClearGLWindow =
+                                   lClearGLVolumeRenderer.getClearGLWindow();
+      lClearGLWindow.addWindowListener(new WindowControl(lClearGLWindow));
+    }
 
-		mAsynchronousDisplayUpdater = new AsynchronousProcessorBase<StackInterface, Object>("AsynchronousDisplayUpdater-" + pWindowName,
-																																												pUpdaterQueueLength)
-		{
-			@Override
-			public Object process(final StackInterface pStack)
-			{
-				if (pStack instanceof EmptyStack)
-					return null;
+    mAsynchronousDisplayUpdater =
+                                new AsynchronousProcessorBase<StackInterface, Object>("AsynchronousDisplayUpdater-"
+                                                                                      + pWindowName,
+                                                                                      pUpdaterQueueLength)
+                                {
+                                  @Override
+                                  public Object process(final StackInterface pStack)
+                                  {
+                                    if (pStack instanceof EmptyStack)
+                                      return null;
 
-				if (mClearVolumeRenderer.isShowing())
-				{
-					info("received stack: " + pStack);
+                                    if (mClearVolumeRenderer.isShowing())
+                                    {
+                                      info("received stack: "
+                                           + pStack);
 
-					final long lSizeInBytes = pStack.getSizeInBytes();
-					final long lWidth = pStack.getWidth();
-					final long lHeight = pStack.getHeight();
-					final long lDepth = pStack.getDepth();
-					final NativeTypeEnum lNativeTypeEnum = mClearVolumeRenderer.getNativeType();
-					final long lBytesPerVoxel = Size.of(lNativeTypeEnum);
-					final int lChannel = pStack.getChannel() % pNumberOfLayers;
+                                      final long lSizeInBytes =
+                                                              pStack.getSizeInBytes();
+                                      final long lWidth =
+                                                        pStack.getWidth();
+                                      final long lHeight =
+                                                         pStack.getHeight();
+                                      final long lDepth =
+                                                        pStack.getDepth();
+                                      final NativeTypeEnum lNativeTypeEnum =
+                                                                           mClearVolumeRenderer.getNativeType();
+                                      final long lBytesPerVoxel =
+                                                                Size.of(lNativeTypeEnum);
+                                      final int lChannel =
+                                                         pStack.getChannel()
+                                                           % pNumberOfLayers;
 
-					if (lWidth * lHeight * lDepth * lBytesPerVoxel != lSizeInBytes)
-					{
-						System.err.println(Stack3DDisplay.class.getSimpleName() + ": receiving wrong pointer size!");
-						return null;
-					}
+                                      if (lWidth * lHeight
+                                          * lDepth
+                                          * lBytesPerVoxel != lSizeInBytes)
+                                      {
+                                        System.err.println(Stack3DDisplay.class.getSimpleName()
+                                                           + ": receiving wrong pointer size!");
+                                        return null;
+                                      }
 
-					final ContiguousMemoryInterface lContiguousMemory = pStack.getContiguousMemory();
+                                      final ContiguousMemoryInterface lContiguousMemory =
+                                                                                        pStack.getContiguousMemory();
 
-					if (lContiguousMemory.isFree())
-					{
-						System.err.println(Stack3DDisplay.class.getSimpleName() + ": buffer released!");
-						return null;
-					}
+                                      if (lContiguousMemory.isFree())
+                                      {
+                                        System.err.println(Stack3DDisplay.class.getSimpleName()
+                                                           + ": buffer released!");
+                                        return null;
+                                      }
 
-					mClearVolumeRenderer.setVolumeDataBuffer(	lChannel,
-																										lContiguousMemory,
-																										lWidth,
-																										lHeight,
-																										lDepth,
-																										1,
-																										1,
-																										5);
+                                      mClearVolumeRenderer.setVolumeDataBuffer(lChannel,
+                                                                               lContiguousMemory,
+                                                                               lWidth,
+                                                                               lHeight,
+                                                                               lDepth,
+                                                                               1,
+                                                                               1,
+                                                                               5);
 
-					// FIXME
-					/*
-					pStack.getVoxelSizeInRealUnits(0),
-					pStack.getVoxelSizeInRealUnits(1),
-					pStack.getVoxelSizeInRealUnits(2)); /**/
+                                      // FIXME
+                                      /*
+                                      pStack.getVoxelSizeInRealUnits(0),
+                                      pStack.getVoxelSizeInRealUnits(1),
+                                      pStack.getVoxelSizeInRealUnits(2)); /**/
 
-					if (mWaitForLastChannel.get() && ((lChannel + 1) % mClearVolumeRenderer.getNumberOfRenderLayers()) == 0)
-					{
-						mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	cTimeOutForBufferCopy,
-																																TimeUnit.SECONDS);/**/
-					}
-					else
-						mClearVolumeRenderer.waitToFinishDataBufferCopy(lChannel,
-																														cTimeOutForBufferCopy,
-																														TimeUnit.SECONDS);/**/
-				}
+                                      if (mWaitForLastChannel.get()
+                                          && ((lChannel + 1)
+                                              % mClearVolumeRenderer.getNumberOfRenderLayers()) == 0)
+                                      {
+                                        mClearVolumeRenderer.waitToFinishAllDataBufferCopy(cTimeOutForBufferCopy,
+                                                                                           TimeUnit.SECONDS);/**/
+                                      }
+                                      else
+                                        mClearVolumeRenderer.waitToFinishDataBufferCopy(lChannel,
+                                                                                        cTimeOutForBufferCopy,
+                                                                                        TimeUnit.SECONDS);/**/
+                                    }
 
-				forwardStack(pStack);
+                                    forwardStack(pStack);
 
-				return null;
-			}
-		};
+                                    return null;
+                                  }
+                                };
 
-		mInputStackVariable = new Variable<StackInterface>("3DStackInput")
-		{
+    mInputStackVariable = new Variable<StackInterface>("3DStackInput")
+    {
 
-			@Override
-			public StackInterface setEventHook(	final StackInterface pOldStack,
-																					final StackInterface pNewStack)
-			{
-				if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
-				{
-					forwardStack(pNewStack);
-				}
+      @Override
+      public StackInterface setEventHook(final StackInterface pOldStack,
+                                         final StackInterface pNewStack)
+      {
+        if (!mAsynchronousDisplayUpdater.passOrFail(pNewStack))
+        {
+          forwardStack(pNewStack);
+        }
 
-				return super.setEventHook(pOldStack, pNewStack);
-			}
+        return super.setEventHook(pOldStack, pNewStack);
+      }
 
-		};
+    };
 
-		mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
-																								false);
+    mWaitForLastChannel = new Variable<Boolean>("WaitForLastChannel",
+                                                false);
 
-	}
+  }
 
-	private void forwardStack(final StackInterface pNewStack)
-	{
-		if (mOutputStackVariable != null)
-			mOutputStackVariable.set(pNewStack);
-		else if (!pNewStack.isReleased())
-			pNewStack.release();
-	}
+  private void forwardStack(final StackInterface pNewStack)
+  {
+    if (mOutputStackVariable != null)
+      mOutputStackVariable.set(pNewStack);
+    else if (!pNewStack.isReleased())
+      pNewStack.release();
+  }
 
-	@Override
-	public Variable<StackInterface> getOutputStackVariable()
-	{
-		return mOutputStackVariable;
-	}
+  @Override
+  public Variable<StackInterface> getOutputStackVariable()
+  {
+    return mOutputStackVariable;
+  }
 
-	@Override
-	public void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable)
-	{
-		mOutputStackVariable = pOutputStackVariable;
-	}
+  @Override
+  public void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable)
+  {
+    mOutputStackVariable = pOutputStackVariable;
+  }
 
-	public Variable<Boolean> getVisibleVariable()
-	{
-		return mVisibleVariable;
-	}
+  public Variable<Boolean> getVisibleVariable()
+  {
+    return mVisibleVariable;
+  }
 
-	@Override
-	public Variable<StackInterface> getInputStackVariable()
-	{
-		return mInputStackVariable;
-	}
+  @Override
+  public Variable<StackInterface> getInputStackVariable()
+  {
+    return mInputStackVariable;
+  }
 
-	public void setVisible(final boolean pIsVisible)
-	{
-		mVisibleVariable.set(pIsVisible);
-	}
+  public void setVisible(final boolean pIsVisible)
+  {
+    mVisibleVariable.set(pIsVisible);
+  }
 
-	@Override
-	public boolean open()
-	{
-		mAsynchronousDisplayUpdater.start();
-		return false;
-	}
+  @Override
+  public boolean open()
+  {
+    mAsynchronousDisplayUpdater.start();
+    return false;
+  }
 
-	@Override
-	public boolean close()
-	{
-		try
-		{
-			mAsynchronousDisplayUpdater.stop();
-			mAsynchronousDisplayUpdater.waitToFinish(1, TimeUnit.SECONDS);
-			mAsynchronousDisplayUpdater.close();
-			mClearVolumeRenderer.waitToFinishAllDataBufferCopy(	1,
-																													TimeUnit.SECONDS);
-			if (mClearVolumeRenderer != null)
-				mClearVolumeRenderer.close();
-			return true;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
+  @Override
+  public boolean close()
+  {
+    try
+    {
+      mAsynchronousDisplayUpdater.stop();
+      mAsynchronousDisplayUpdater.waitToFinish(1, TimeUnit.SECONDS);
+      mAsynchronousDisplayUpdater.close();
+      mClearVolumeRenderer.waitToFinishAllDataBufferCopy(1,
+                                                         TimeUnit.SECONDS);
+      if (mClearVolumeRenderer != null)
+        mClearVolumeRenderer.close();
+      return true;
+    }
+    catch (final Throwable e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean isVisible()
-	{
-		return mClearVolumeRenderer.isShowing();
-	}
+  public boolean isVisible()
+  {
+    return mClearVolumeRenderer.isShowing();
+  }
 
-	public void requestFocus()
-	{
-		if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
-		{
-			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer) mClearVolumeRenderer;
-			ClearGLWindow lClearGLWindow = lClearGLVolumeRenderer.getClearGLWindow();
-			lClearGLWindow.requestFocus();
-		}
-	}
+  public void requestFocus()
+  {
+    if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+    {
+      ClearGLVolumeRenderer lClearGLVolumeRenderer =
+                                                   (ClearGLVolumeRenderer) mClearVolumeRenderer;
+      ClearGLWindow lClearGLWindow =
+                                   lClearGLVolumeRenderer.getClearGLWindow();
+      lClearGLWindow.requestFocus();
+    }
+  }
 
-	public void disableClose()
-	{
-		mClearVolumeRenderer.disableClose();
-	}
+  public void disableClose()
+  {
+    mClearVolumeRenderer.disableClose();
+  }
 
-	public Variable<Boolean> getWaitForLastChannel()
-	{
-		return mWaitForLastChannel;
-	}
+  public Variable<Boolean> getWaitForLastChannel()
+  {
+    return mWaitForLastChannel;
+  }
 
-	public void setWaitForLastChannel(Variable<Boolean> pWaitForLastChannel)
-	{
-		mWaitForLastChannel = pWaitForLastChannel;
-	}
+  public void setWaitForLastChannel(Variable<Boolean> pWaitForLastChannel)
+  {
+    mWaitForLastChannel = pWaitForLastChannel;
+  }
 
-	/**
-	 * Gets GL window for handling size and position.
-	 * 
-	 * @return the GL window
-	 */
-	public ClearGLWindow getGLWindow()
-	{
-		if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
-		{
-			ClearGLVolumeRenderer lClearGLVolumeRenderer = (ClearGLVolumeRenderer) mClearVolumeRenderer;
-			return lClearGLVolumeRenderer.getClearGLWindow();
-		}
-		else
-			return null;
-	}
+  /**
+   * Gets GL window for handling size and position.
+   * 
+   * @return the GL window
+   */
+  public ClearGLWindow getGLWindow()
+  {
+    if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)
+    {
+      ClearGLVolumeRenderer lClearGLVolumeRenderer =
+                                                   (ClearGLVolumeRenderer) mClearVolumeRenderer;
+      return lClearGLVolumeRenderer.getClearGLWindow();
+    }
+    else
+      return null;
+  }
 }

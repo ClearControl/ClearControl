@@ -4,26 +4,26 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.device.name.NameableInterface;
 
 public interface ScalingAmplifierDeviceInterface extends
-																								NameableInterface
+                                                 NameableInterface
 {
-	public double getMinGain();
+  public double getMinGain();
 
-	public double getMaxGain();
+  public double getMaxGain();
 
-	public double getMinOffset();
+  public double getMinOffset();
 
-	public double getMaxOffset();
+  public double getMaxOffset();
 
-	public void setGain(double pGain);
+  public void setGain(double pGain);
 
-	public void setOffset(double pOffset);
+  public void setOffset(double pOffset);
 
-	public double getGain();
+  public double getGain();
 
-	public double getOffset();
+  public double getOffset();
 
-	public Variable<Number> getGainVariable();
+  public Variable<Number> getGainVariable();
 
-	public Variable<Number> getOffsetVariable();
+  public Variable<Number> getOffsetVariable();
 
 }

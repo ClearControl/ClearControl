@@ -7,14 +7,14 @@ import javafx.scene.Group;
  */
 public abstract class Object3D extends Group
 {
-	private static final double MODEL_SCALE_FACTOR = 10;
+  private static final double MODEL_SCALE_FACTOR = 10;
 
-	public Group buildScene()
-	{
-		this.setScaleX(MODEL_SCALE_FACTOR);
-		this.setScaleY(MODEL_SCALE_FACTOR);
-		this.setScaleZ(MODEL_SCALE_FACTOR);
+  public Group buildScene()
+  {
+    this.setScaleX(MODEL_SCALE_FACTOR);
+    this.setScaleY(MODEL_SCALE_FACTOR);
+    this.setScaleZ(MODEL_SCALE_FACTOR);
 
-		return new Group(this);
-	}
+    return new Group(this);
+  }
 }

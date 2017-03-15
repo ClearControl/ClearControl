@@ -1,20 +1,21 @@
 package clearcontrol.core.concurrent.asyncprocs;
 
 public class AsynchronousProcessorToString<I> extends
-																							AsynchronousProcessorBase<I, String> implements
-																																									AsynchronousProcessorInterface<I, String>
+                                          AsynchronousProcessorBase<I, String>
+                                          implements
+                                          AsynchronousProcessorInterface<I, String>
 {
 
-	public AsynchronousProcessorToString()
-	{
-		super("AsynchronousProcessorToString", 100);
-	}
+  public AsynchronousProcessorToString()
+  {
+    super("AsynchronousProcessorToString", 100);
+  }
 
-	@Override
-	public String process(final I pInput)
-	{
-		final String lString = pInput.toString();
-		return lString;
-	}
+  @Override
+  public String process(final I pInput)
+  {
+    final String lString = pInput.toString();
+    return lString;
+  }
 
 }

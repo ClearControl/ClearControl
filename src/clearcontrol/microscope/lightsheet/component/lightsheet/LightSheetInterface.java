@@ -1,7 +1,5 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet;
 
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -11,82 +9,84 @@ import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+
 public interface LightSheetInterface extends
-																		NameableInterface,
-																		OpenCloseDeviceInterface,
-																		HasChangeListenerInterface<VirtualDevice>
+                                     NameableInterface,
+                                     OpenCloseDeviceInterface,
+                                     HasChangeListenerInterface<VirtualDevice>
 {
 
-	// These variables should be synced with camera variables:
+  // These variables should be synced with camera variables:
 
-	public Variable<Long> getImageHeightVariable();
+  public Variable<Long> getImageHeightVariable();
 
-	public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
+  public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
 
-	public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
+  public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
 
-	public BoundedVariable<Double> getOverScanVariable();
+  public BoundedVariable<Double> getOverScanVariable();
 
-	public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
+  public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
 
-	// Below are variables that can be adjusted freely:
+  // Below are variables that can be adjusted freely:
 
-	public BoundedVariable<Double> getXVariable();
+  public BoundedVariable<Double> getXVariable();
 
-	public BoundedVariable<Double> getYVariable();
+  public BoundedVariable<Double> getYVariable();
 
-	public BoundedVariable<Number> getZVariable();
+  public BoundedVariable<Number> getZVariable();
 
-	public BoundedVariable<Double> getAlphaInDegreesVariable();
+  public BoundedVariable<Double> getAlphaInDegreesVariable();
 
-	public BoundedVariable<Double> getBetaInDegreesVariable();
+  public BoundedVariable<Double> getBetaInDegreesVariable();
 
-	public BoundedVariable<Double> getWidthVariable();
+  public BoundedVariable<Double> getWidthVariable();
 
-	public BoundedVariable<Double> getHeightVariable();
+  public BoundedVariable<Double> getHeightVariable();
 
-	public BoundedVariable<Double> getPowerVariable();
+  public BoundedVariable<Double> getPowerVariable();
 
-	public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
+  public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
 
-	public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex);
+  public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex);
 
-	public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex);
+  public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex);
 
-	public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
+  public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
 
-	public Variable<UnivariateAffineFunction> getXFunction();
+  public Variable<UnivariateAffineFunction> getXFunction();
 
-	public Variable<UnivariateAffineFunction> getYFunction();
+  public Variable<UnivariateAffineFunction> getYFunction();
 
-	public Variable<UnivariateAffineFunction> getZFunction();
+  public Variable<UnivariateAffineFunction> getZFunction();
 
-	public Variable<UnivariateAffineFunction> getWidthFunction();
+  public Variable<UnivariateAffineFunction> getWidthFunction();
 
-	public Variable<UnivariateAffineFunction> getHeightFunction();
+  public Variable<UnivariateAffineFunction> getHeightFunction();
 
-	public Variable<UnivariateAffineFunction> getAlphaFunction();
+  public Variable<UnivariateAffineFunction> getAlphaFunction();
 
-	public Variable<UnivariateAffineFunction> getBetaFunction();
+  public Variable<UnivariateAffineFunction> getBetaFunction();
 
-	public Variable<UnivariateAffineFunction> getPowerFunction();
+  public Variable<UnivariateAffineFunction> getPowerFunction();
 
-	public Variable<PolynomialFunction> getWidthPowerFunction();
+  public Variable<PolynomialFunction> getWidthPowerFunction();
 
-	public Variable<PolynomialFunction> getHeightPowerFunction();
+  public Variable<PolynomialFunction> getHeightPowerFunction();
 
-	// Convenience methods:
+  // Convenience methods:
 
-	public int getNumberOfPhases(int pLaserIndex);
+  public int getNumberOfPhases(int pLaserIndex);
 
-	public int getNumberOfLaserDigitalControls();
+  public int getNumberOfLaserDigitalControls();
 
-	// Resetting and updating:
+  // Resetting and updating:
 
-	public void resetFunctions();
+  public void resetFunctions();
 
-	public void resetBounds();
+  public void resetBounds();
 
-	public void update();
+  public void update();
 
 }

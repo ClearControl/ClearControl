@@ -6,5 +6,5 @@ import clearcontrol.device.update.UpdatableInterface;
 
 public interface CompiledScoreInterface extends UpdatableInterface
 {
-	ReentrantLock getLock();
+  ReentrantLock getLock();
 }

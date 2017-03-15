@@ -1,9 +1,9 @@
 package clearcontrol.core.math.regression.linear;
 
-import org.apache.commons.math3.stat.descriptive.rank.Median;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 /**
  * Theil-Sen estimator
@@ -17,8 +17,8 @@ import gnu.trove.list.array.TDoubleArrayList;
  * efficiently, and is insensitive to outliers; it can be significantly more
  * accurate than simple linear regression for skewed and heteroskedastic data,
  * and competes well against simple least squares even for normally distributed
- * data. It has been called
- * "the most popular nonparametric technique for estimating a linear trend" .
+ * data. It has been called "the most popular nonparametric technique for
+ * estimating a linear trend" .
  * 
  * A variation of the Theil-Sen estimator due to Siegel (1982) determines, for
  * each sample point (xi,yi), the median mi of the slopes (yj - yi)/(xj - xi) of
@@ -45,188 +45,188 @@ import gnu.trove.list.array.TDoubleArrayList;
 public class TheilSenEstimator
 {
 
-	TDoubleArrayList lListX = new TDoubleArrayList();
-	TDoubleArrayList lListY = new TDoubleArrayList();
+  TDoubleArrayList lListX = new TDoubleArrayList();
+  TDoubleArrayList lListY = new TDoubleArrayList();
 
-	private UnivariateAffineFunction mLinear1to1;
-	private boolean mOutdated = true;
-	private final boolean mClassicMethod = true;
+  private UnivariateAffineFunction mLinear1to1;
+  private boolean mOutdated = true;
+  private final boolean mClassicMethod = true;
 
-	public final void reset()
-	{
-		lListX.clear();
-		lListY.clear();
-		mOutdated = true;
-	}
+  public final void reset()
+  {
+    lListX.clear();
+    lListY.clear();
+    mOutdated = true;
+  }
 
-	public final void enter(final double pX, final double pY)
-	{
-		lListX.add(pX);
-		lListY.add(pY);
-		mOutdated = true;
-	}
+  public final void enter(final double pX, final double pY)
+  {
+    lListX.add(pX);
+    lListY.add(pY);
+    mOutdated = true;
+  }
 
-	public final UnivariateAffineFunction getModel()
-	{
-		if (mOutdated)
-		{
-			if (mClassicMethod)
-			{
-				classicmethod();
-			}
-			else
-			{
-				newmethod();
-			}
-			mOutdated = false;
-		}
+  public final UnivariateAffineFunction getModel()
+  {
+    if (mOutdated)
+    {
+      if (mClassicMethod)
+      {
+        classicmethod();
+      }
+      else
+      {
+        newmethod();
+      }
+      mOutdated = false;
+    }
 
-		return mLinear1to1;
-	}
+    return mLinear1to1;
+  }
 
-	private void newmethod()
-	{
-		final double[] arrayX = lListX.toArray();
-		final double[] arrayY = lListY.toArray();
-		final int length = arrayX.length;
+  private void newmethod()
+  {
+    final double[] arrayX = lListX.toArray();
+    final double[] arrayY = lListY.toArray();
+    final int length = arrayX.length;
 
-		final Median lMedian = new Median();
+    final Median lMedian = new Median();
 
-		double[] lMedianOfMedianAData = new double[length];
-		double[] lMedianOfMedianBData = new double[length];
+    double[] lMedianOfMedianAData = new double[length];
+    double[] lMedianOfMedianBData = new double[length];
 
-		for (int i = 0; i < length; i++)
-		{
-			final double x1 = arrayX[i];
-			final double y1 = arrayY[i];
+    for (int i = 0; i < length; i++)
+    {
+      final double x1 = arrayX[i];
+      final double y1 = arrayY[i];
 
-			double[] lMedianAData = new double[i];
-			double[] lMedianBData = new double[i];
+      double[] lMedianAData = new double[i];
+      double[] lMedianBData = new double[i];
 
-			for (int j = 0; j < i; j++)
-			{
-				final double x2 = arrayX[j];
-				final double y2 = arrayY[j];
+      for (int j = 0; j < i; j++)
+      {
+        final double x2 = arrayX[j];
+        final double y2 = arrayY[j];
 
-				final double da = x1 - x2;
-				if (da != 0)
-				{
-					final double a = (y1 - y2) / da;
-					final double b = (x1 * y2 - x2 * y1) / da;
-					lMedianAData[j] = a;
-					lMedianBData[j] = b;
-				}
-			}
+        final double da = x1 - x2;
+        if (da != 0)
+        {
+          final double a = (y1 - y2) / da;
+          final double b = (x1 * y2 - x2 * y1) / da;
+          lMedianAData[j] = a;
+          lMedianBData[j] = b;
+        }
+      }
 
-			if (lMedianAData.length > 0 && lMedianBData.length > 0)
-			{
-				final double ma = lMedian.evaluate(lMedianAData);
-				lMedianOfMedianAData[i] = ma;
+      if (lMedianAData.length > 0 && lMedianBData.length > 0)
+      {
+        final double ma = lMedian.evaluate(lMedianAData);
+        lMedianOfMedianAData[i] = ma;
 
-				final double mb = lMedian.evaluate(lMedianBData);
-				lMedianOfMedianBData[i] = mb;
-			}
-		}
+        final double mb = lMedian.evaluate(lMedianBData);
+        lMedianOfMedianBData[i] = mb;
+      }
+    }
 
-		final double a = lMedian.evaluate(lMedianOfMedianAData);
-		final double b = lMedian.evaluate(lMedianOfMedianBData);
+    final double a = lMedian.evaluate(lMedianOfMedianAData);
+    final double b = lMedian.evaluate(lMedianOfMedianBData);
 
-		mLinear1to1 = new UnivariateAffineFunction(a, b);
-	}
+    mLinear1to1 = new UnivariateAffineFunction(a, b);
+  }
 
-	private void classicmethod()
-	{
-		final double[] arrayX = lListX.toArray();
-		final double[] arrayY = lListY.toArray();
-		final int length = arrayX.length;
+  private void classicmethod()
+  {
+    final double[] arrayX = lListX.toArray();
+    final double[] arrayY = lListY.toArray();
+    final int length = arrayX.length;
 
-		final Median lMedian = new Median();
-		final double[] lMedianOfMedianData = new double[length];
+    final Median lMedian = new Median();
+    final double[] lMedianOfMedianData = new double[length];
 
-		for (int i = 0; i < length; i++)
-		{
-			final double x1 = arrayX[i];
-			final double y1 = arrayY[i];
+    for (int i = 0; i < length; i++)
+    {
+      final double x1 = arrayX[i];
+      final double y1 = arrayY[i];
 
-			final double[] lMedianData = new double[i];
+      final double[] lMedianData = new double[i];
 
-			for (int j = 0; j < i; j++)
-			{
-				final double x2 = arrayX[j];
-				final double y2 = arrayY[j];
+      for (int j = 0; j < i; j++)
+      {
+        final double x2 = arrayX[j];
+        final double y2 = arrayY[j];
 
-				final double da = x1 - x2;
-				if (da != 0)
-				{
-					final double a = (y1 - y2) / da;
-					lMedianData[j] = a;
-				}
-			}
+        final double da = x1 - x2;
+        if (da != 0)
+        {
+          final double a = (y1 - y2) / da;
+          lMedianData[j] = a;
+        }
+      }
 
-			if (lMedianData.length > 0)
-			{
-				final double ma = lMedian.evaluate(lMedianData);
-				lMedianOfMedianData[i] = ma;
-			}
-		}
+      if (lMedianData.length > 0)
+      {
+        final double ma = lMedian.evaluate(lMedianData);
+        lMedianOfMedianData[i] = ma;
+      }
+    }
 
-		final double mma = lMedian.evaluate(lMedianOfMedianData);
+    final double mma = lMedian.evaluate(lMedianOfMedianData);
 
-		final double a = mma;
+    final double a = mma;
 
-		final double[] lMedianForBData = new double[length];
-		for (int i = 0; i < length; i++)
-		{
-			final double x = arrayX[i];
-			final double y = arrayY[i];
+    final double[] lMedianForBData = new double[length];
+    for (int i = 0; i < length; i++)
+    {
+      final double x = arrayX[i];
+      final double y = arrayY[i];
 
-			final double b = y - a * x;
-			lMedianForBData[i] = b;
-		}
+      final double b = y - a * x;
+      lMedianForBData[i] = b;
+    }
 
-		final double b = lMedian.evaluate(lMedianForBData);
+    final double b = lMedian.evaluate(lMedianForBData);
 
-		mLinear1to1 = new UnivariateAffineFunction(a, b);
+    mLinear1to1 = new UnivariateAffineFunction(a, b);
 
-	}
+  }
 
-	public final double computeError(final UnivariateAffineFunction pModel)
-	{
-		final double[] arrayX = lListX.toArray();
-		final double[] arrayY = lListY.toArray();
-		final int length = arrayX.length;
+  public final double computeError(final UnivariateAffineFunction pModel)
+  {
+    final double[] arrayX = lListX.toArray();
+    final double[] arrayY = lListY.toArray();
+    final int length = arrayX.length;
 
-		final Median lMedian = new Median();
-		double[] lMedianData = new double[length];
+    final Median lMedian = new Median();
+    double[] lMedianData = new double[length];
 
-		for (int j = 0; j < length; j++)
-		{
-			final double x = arrayX[j];
-			final double y = arrayY[j];
+    for (int j = 0; j < length; j++)
+    {
+      final double x = arrayX[j];
+      final double y = arrayY[j];
 
-			final double ey = pModel.value(x);
+      final double ey = pModel.value(x);
 
-			final double error = Math.abs(y - ey);
-			lMedianData[j] = error;
-		}
+      final double error = Math.abs(y - ey);
+      lMedianData[j] = error;
+    }
 
-		final double stderror = lMedian.evaluate(lMedianData);
-		return stderror;
-	}
+    final double stderror = lMedian.evaluate(lMedianData);
+    return stderror;
+  }
 
-	public final double predict(final double pX)
-	{
-		if (mOutdated)
-		{
-			getModel();
-		}
-		return mLinear1to1.value(pX);
-	}
+  public final double predict(final double pX)
+  {
+    if (mOutdated)
+    {
+      getModel();
+    }
+    return mLinear1to1.value(pX);
+  }
 
-	@Override
-	public String toString()
-	{
-		return String.format(	"TheilSenEstimator [mLinear1to1=%s]",
-													getModel());
-	}
+  @Override
+  public String toString()
+  {
+    return String.format("TheilSenEstimator [mLinear1to1=%s]",
+                         getModel());
+  }
 }

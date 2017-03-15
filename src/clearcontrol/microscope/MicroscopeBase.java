@@ -85,7 +85,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
     }
 
   }
-  
+
   @Override
   public boolean isSimulation()
   {
@@ -576,7 +576,5 @@ public abstract class MicroscopeBase extends VirtualDevice implements
       return lBoolean;
     }
   }
-
-
 
 }

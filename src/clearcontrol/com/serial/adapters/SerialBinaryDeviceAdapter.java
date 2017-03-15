@@ -1,10 +1,10 @@
 package clearcontrol.com.serial.adapters;
 
 public interface SerialBinaryDeviceAdapter<O> extends
-																							SerialDeviceAdapter<O>
+                                          SerialDeviceAdapter<O>
 {
-	public int getGetValueReturnMessageLength();
+  public int getGetValueReturnMessageLength();
 
-	public int getSetValueReturnMessageLength();
+  public int getSetValueReturnMessageLength();
 
 }

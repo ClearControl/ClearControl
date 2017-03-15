@@ -13,19 +13,19 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
 
 {
 
-	private InteractiveAcquisition mInteractiveAcquisition;
+  private InteractiveAcquisition mInteractiveAcquisition;
 
-	public InteractiveAcquisitionPanel(InteractiveAcquisition pInteractiveAcquisition)
-	{
-		super();
-		mInteractiveAcquisition = pInteractiveAcquisition;
+  public InteractiveAcquisitionPanel(InteractiveAcquisition pInteractiveAcquisition)
+  {
+    super();
+    mInteractiveAcquisition = pInteractiveAcquisition;
 
-		addTab("DOFs");
+    addTab("DOFs");
 
-		addSliderForVariable(	"Z :",
-													mInteractiveAcquisition.get2DAcquisitionZVariable(),
-													10.0).setUpdateIfChanging(true);
+    addSliderForVariable("Z :",
+                         mInteractiveAcquisition.get2DAcquisitionZVariable(),
+                         10.0).setUpdateIfChanging(true);
 
-	}
+  }
 
 }

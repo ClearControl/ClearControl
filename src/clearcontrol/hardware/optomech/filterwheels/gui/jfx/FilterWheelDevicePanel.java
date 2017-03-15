@@ -6,9 +6,9 @@ import clearcontrol.device.position.gui.jfx.PositionDevicePanel;
 public class FilterWheelDevicePanel extends PositionDevicePanel
 {
 
-	public FilterWheelDevicePanel(PositionDeviceInterface pPositionDeviceInterface)
-	{
-		super(pPositionDeviceInterface);
-	}
+  public FilterWheelDevicePanel(PositionDeviceInterface pPositionDeviceInterface)
+  {
+    super(pPositionDeviceInterface);
+  }
 
 }

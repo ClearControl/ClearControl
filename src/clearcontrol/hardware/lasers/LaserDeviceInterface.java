@@ -5,30 +5,30 @@ import clearcontrol.device.name.NameableInterface;
 import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.startstop.StartStopDeviceInterface;
 
-public interface LaserDeviceInterface	extends
-																			NameableInterface,
-																			OpenCloseDeviceInterface,
-																			StartStopDeviceInterface
+public interface LaserDeviceInterface extends
+                                      NameableInterface,
+                                      OpenCloseDeviceInterface,
+                                      StartStopDeviceInterface
 {
 
-	public int getWavelengthInNanoMeter();
+  public int getWavelengthInNanoMeter();
 
-	public void setTargetPowerInMilliWatt(double pTargetPowerinMilliWatt);
+  public void setTargetPowerInMilliWatt(double pTargetPowerinMilliWatt);
 
-	public void setTargetPowerInPercent(double pTargetPowerInPercent);
+  public void setTargetPowerInPercent(double pTargetPowerInPercent);
 
-	public double getTargetPowerInMilliWatt();
+  public double getTargetPowerInMilliWatt();
 
-	public double getMaxPowerInMilliWatt();
+  public double getMaxPowerInMilliWatt();
 
-	public double getCurrentPowerInMilliWatt();
+  public double getCurrentPowerInMilliWatt();
 
-	public Variable<Integer> getWavelengthInNanoMeterVariable();
+  public Variable<Integer> getWavelengthInNanoMeterVariable();
 
-	public Variable<Boolean> getLaserOnVariable();
+  public Variable<Boolean> getLaserOnVariable();
 
-	public Variable<Number> getTargetPowerInMilliWattVariable();
+  public Variable<Number> getTargetPowerInMilliWattVariable();
 
-	public Variable<Number> getCurrentPowerInMilliWattVariable();
+  public Variable<Number> getCurrentPowerInMilliWattVariable();
 
 }

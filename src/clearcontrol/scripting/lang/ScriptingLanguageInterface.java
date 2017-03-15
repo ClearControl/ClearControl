@@ -6,21 +6,21 @@ import java.util.Map;
 
 import clearcontrol.device.name.ReadOnlyNameableInterface;
 
-public interface ScriptingLanguageInterface	extends
-																						ReadOnlyNameableInterface
+public interface ScriptingLanguageInterface extends
+                                            ReadOnlyNameableInterface
 {
-	String getPostamble();
+  String getPostamble();
 
-	String getPreamble();
+  String getPreamble();
 
-	void runScript(	String pScriptName,
-									String pPreambleString,
-									String pScriptString,
-									String pPostambleString,
-									Map<String, Object> pMap,
-									OutputStream pOutputStream,
-									boolean pDebugMode) throws IOException;
+  void runScript(String pScriptName,
+                 String pPreambleString,
+                 String pScriptString,
+                 String pPostambleString,
+                 Map<String, Object> pMap,
+                 OutputStream pOutputStream,
+                 boolean pDebugMode) throws IOException;
 
-	String getErrorMessage(Throwable pThrowable);
+  String getErrorMessage(Throwable pThrowable);
 
 }

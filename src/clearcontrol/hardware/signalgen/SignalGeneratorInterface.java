@@ -8,24 +8,24 @@ import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.device.queue.StateQueueDeviceInterface;
 import clearcontrol.hardware.signalgen.score.ScoreInterface;
 
-public interface SignalGeneratorInterface	extends
-																					NameableInterface,
-																					OpenCloseDeviceInterface,
-																					StateQueueDeviceInterface
+public interface SignalGeneratorInterface extends
+                                          NameableInterface,
+                                          OpenCloseDeviceInterface,
+                                          StateQueueDeviceInterface
 {
 
-	public double getTemporalGranularityInMicroseconds();
+  public double getTemporalGranularityInMicroseconds();
 
-	public boolean playScore(ScoreInterface pScore);
+  public boolean playScore(ScoreInterface pScore);
 
-	public ScoreInterface getStagingScore();
+  public ScoreInterface getStagingScore();
 
-	public ScoreInterface getQueuedScore();
+  public ScoreInterface getQueuedScore();
 
-	public Variable<Boolean> getTriggerVariable();
+  public Variable<Boolean> getTriggerVariable();
 
-	public boolean isPlaying();
+  public boolean isPlaying();
 
-	public long estimatePlayTime(TimeUnit pTimeUnit);
+  public long estimatePlayTime(TimeUnit pTimeUnit);
 
 }

@@ -6,79 +6,83 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingPanel;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
 
+import org.junit.Test;
+
 public class ScriptingPanelDemo
 {
 
-	@Test
-	public void testPython() throws InvocationTargetException,
-													InterruptedException
-	{
-		final JFrame lJFrame = new JFrame();
+  @Test
+  public void testPython() throws InvocationTargetException,
+                           InterruptedException
+  {
+    final JFrame lJFrame = new JFrame();
 
-		final JythonScripting lJythonScripting = new JythonScripting();
+    final JythonScripting lJythonScripting = new JythonScripting();
 
-		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lJythonScripting,
-																																	null);
+    final ScriptingEngine lScriptingEngine =
+                                           new ScriptingEngine(lJythonScripting,
+                                                               null);
 
-		final ScriptingPanel lScriptingPanel = new ScriptingPanel("testPython",
-																															lScriptingEngine);
-		lScriptingPanel.loadLastLoadedScriptFile();
-		lJFrame.add(lScriptingPanel);
+    final ScriptingPanel lScriptingPanel =
+                                         new ScriptingPanel("testPython",
+                                                            lScriptingEngine);
+    lScriptingPanel.loadLastLoadedScriptFile();
+    lJFrame.add(lScriptingPanel);
 
-		SwingUtilities.invokeAndWait(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				lJFrame.setSize(512, 512);
-				lJFrame.setVisible(true);
-			}
-		});
+    SwingUtilities.invokeAndWait(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        lJFrame.setSize(512, 512);
+        lJFrame.setVisible(true);
+      }
+    });
 
-		while (lJFrame.isVisible())
-		{
-			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
-		}
-	}
+    while (lJFrame.isVisible())
+    {
+      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+    }
+  }
 
-	@Test
-	public void testGroovy() throws InvocationTargetException,
-													InterruptedException
-	{
-		final JFrame lJFrame = new JFrame();
+  @Test
+  public void testGroovy() throws InvocationTargetException,
+                           InterruptedException
+  {
+    final JFrame lJFrame = new JFrame();
 
-		final GroovyScripting lGroovyScripting = new GroovyScripting();
+    final GroovyScripting lGroovyScripting = new GroovyScripting();
 
-		final ScriptingEngine lScriptingEngine = new ScriptingEngine(	lGroovyScripting,
-																																	null);
+    final ScriptingEngine lScriptingEngine =
+                                           new ScriptingEngine(lGroovyScripting,
+                                                               null);
 
-		final ScriptingPanel lScriptingPanel = new ScriptingPanel("testGroovy",
-																															lScriptingEngine);
-		lScriptingPanel.loadLastLoadedScriptFile();
-		lJFrame.add(lScriptingPanel);
+    final ScriptingPanel lScriptingPanel =
+                                         new ScriptingPanel("testGroovy",
+                                                            lScriptingEngine);
+    lScriptingPanel.loadLastLoadedScriptFile();
+    lJFrame.add(lScriptingPanel);
 
-		SwingUtilities.invokeAndWait(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				lJFrame.setSize(512, 512);
-				lJFrame.setVisible(true);
-			}
-		});
+    SwingUtilities.invokeAndWait(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        lJFrame.setSize(512, 512);
+        lJFrame.setVisible(true);
+      }
+    });
 
-		while (lJFrame.isVisible())
-		{
-			ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
-		}
-	}
+    while (lJFrame.isVisible())
+    {
+      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+    }
+  }
 
 }

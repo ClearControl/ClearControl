@@ -1,12 +1,12 @@
 package clearcontrol.microscope.state.gui.jfx;
 
 import java.util.List;
+import javafx.scene.layout.VBox;
 
 import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import javafx.scene.layout.VBox;
 
 /**
  * AcquisitionStateManagerPanelBase is a GUI element that displays information
@@ -18,30 +18,30 @@ import javafx.scene.layout.VBox;
 public abstract class AcquisitionStateManagerPanelBase extends VBox
 {
 
-	/**
-	 * Constructs a {@link InteractiveAcquisitionPanel} given a
-	 * {@link StackRecyclerManager}.
-	 * 
-	 * @param pStackRecyclerManager
-	 *          {@link StackRecyclerManager} to use.
-	 */
-	public AcquisitionStateManagerPanelBase(AcquisitionStateManager pAcquisitionStateManager)
-	{
-		super();
+  /**
+   * Constructs a {@link InteractiveAcquisitionPanel} given a
+   * {@link StackRecyclerManager}.
+   * 
+   * @param pStackRecyclerManager
+   *          {@link StackRecyclerManager} to use.
+   */
+  public AcquisitionStateManagerPanelBase(AcquisitionStateManager pAcquisitionStateManager)
+  {
+    super();
 
-		pAcquisitionStateManager.addChangeListener((m) -> {
-			updateStateList(((AcquisitionStateManager) m).getStateList());
-		});
+    pAcquisitionStateManager.addChangeListener((m) -> {
+      updateStateList(((AcquisitionStateManager) m).getStateList());
+    });
 
-	}
+  }
 
-	/**
-	 * This private method is responsible to update the list of acquisition
-	 * states. It should be called whenever the list of states in the manager is
-	 * changed.
-	 * 
-	 * @param pList
-	 */
-	protected abstract void updateStateList(List<AcquisitionStateInterface<?>> pList);
+  /**
+   * This private method is responsible to update the list of acquisition
+   * states. It should be called whenever the list of states in the manager is
+   * changed.
+   * 
+   * @param pList
+   */
+  protected abstract void updateStateList(List<AcquisitionStateInterface<?>> pList);
 
 }

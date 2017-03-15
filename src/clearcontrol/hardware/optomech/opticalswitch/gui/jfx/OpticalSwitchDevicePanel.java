@@ -6,9 +6,9 @@ import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface
 public class OpticalSwitchDevicePanel extends SwitchingDevicePanel
 {
 
-	public OpticalSwitchDevicePanel(OpticalSwitchDeviceInterface pOpticalSwitchDeviceInterface)
-	{
-		super(pOpticalSwitchDeviceInterface);
-	}
+  public OpticalSwitchDevicePanel(OpticalSwitchDeviceInterface pOpticalSwitchDeviceInterface)
+  {
+    super(pOpticalSwitchDeviceInterface);
+  }
 
 }

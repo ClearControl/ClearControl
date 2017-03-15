@@ -14,32 +14,32 @@ import clearcontrol.device.openclose.OpenCloseDeviceInterface;
  * @author royer
  */
 public interface DetectionArmInterface extends
-																			NameableInterface,
-																			OpenCloseDeviceInterface,
-																			HasChangeListenerInterface<VirtualDevice>
+                                       NameableInterface,
+                                       OpenCloseDeviceInterface,
+                                       HasChangeListenerInterface<VirtualDevice>
 {
-	/**
-	 * Resets functions
-	 */
-	public void resetFunctions();
+  /**
+   * Resets functions
+   */
+  public void resetFunctions();
 
-	/**
-	 * Resets variable bounds
-	 */
-	public void resetBounds();
+  /**
+   * Resets variable bounds
+   */
+  public void resetBounds();
 
-	/**
-	 * Returns the detection plane Z position variable
-	 * 
-	 * @return Z variable
-	 */
-	public BoundedVariable<Number> getZVariable();
+  /**
+   * Returns the detection plane Z position variable
+   * 
+   * @return Z variable
+   */
+  public BoundedVariable<Number> getZVariable();
 
-	/**
-	 * Returns function that translates Z values into actual control values.
-	 * 
-	 * @return Z function
-	 */
-	public Variable<UnivariateAffineFunction> getZFunction();
+  /**
+   * Returns function that translates Z values into actual control values.
+   * 
+   * @return Z function
+   */
+  public Variable<UnivariateAffineFunction> getZFunction();
 
 }

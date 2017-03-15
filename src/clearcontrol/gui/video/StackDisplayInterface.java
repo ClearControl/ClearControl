@@ -5,11 +5,11 @@ import clearcontrol.stack.StackInterface;
 
 public interface StackDisplayInterface
 {
-  
+
   Variable<StackInterface> getInputStackVariable();
 
-	Variable<StackInterface> getOutputStackVariable();
+  Variable<StackInterface> getOutputStackVariable();
 
-	void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable);
+  void setOutputStackVariable(Variable<StackInterface> pOutputStackVariable);
 
 }

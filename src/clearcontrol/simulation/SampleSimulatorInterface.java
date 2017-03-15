@@ -5,8 +5,10 @@ import clearcontrol.stack.StackProvider;
 /**
  * Created by dibrov on 10/03/17.
  */
-public interface SampleSimulatorInterface {
+public interface SampleSimulatorInterface
+{
 
-    StackProvider getStackProvider(long pIndex);
-    public long[] getDimensions();
+  StackProvider getStackProvider(long pIndex);
+
+  public long[] getDimensions();
 }

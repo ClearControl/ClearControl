@@ -11,121 +11,129 @@ import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
 import clearcontrol.hardware.signalgen.movement.Movement;
 import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class DetectionArm extends VirtualDevice	implements
-																								DetectionArmInterface,
-																								LoggingInterface
+public class DetectionArm extends VirtualDevice implements
+                          DetectionArmInterface,
+                          LoggingInterface
 {
 
-	private StackCameraDeviceInterface mStackCameraDevice;
+  private StackCameraDeviceInterface mStackCameraDevice;
 
-	private final BoundedVariable<Number> mDetectionFocusZ = new BoundedVariable<Number>(	"FocusZ",
-																																												0.0);
+  private final BoundedVariable<Number> mDetectionFocusZ =
+                                                         new BoundedVariable<Number>("FocusZ",
+                                                                                     0.0);
 
-	private final Variable<UnivariateAffineFunction> mZFunction = new Variable<>(	"DetectionZFunction",
-																																								new UnivariateAffineFunction());
+  private final Variable<UnivariateAffineFunction> mZFunction =
+                                                              new Variable<>("DetectionZFunction",
+                                                                             new UnivariateAffineFunction());
 
-	private final ConstantStave mDetectionPathStaveZ = new ConstantStave(	"detection.z",
-																																				0);
+  private final ConstantStave mDetectionPathStaveZ =
+                                                   new ConstantStave("detection.z",
+                                                                     0);
 
-	private final int mStaveIndex;
+  private final int mStaveIndex;
 
-	@SuppressWarnings("unchecked")
-	public DetectionArm(String pName,
-											StackCameraDeviceInterface StackCameraDevice)
-	{
-		super(pName);
-		mStackCameraDevice = StackCameraDevice;
+  @SuppressWarnings("unchecked")
+  public DetectionArm(String pName,
+                      StackCameraDeviceInterface StackCameraDevice)
+  {
+    super(pName);
+    mStackCameraDevice = StackCameraDevice;
 
-		resetFunctions();
-		resetBounds();
+    resetFunctions();
+    resetBounds();
 
-		@SuppressWarnings("rawtypes")
-		final VariableSetListener lVariableListener = (o, n) -> {
-			// System.out.println(getName() + ": new Z value: " + n);
-			update();
-			notifyListeners(this);
-		};
+    @SuppressWarnings("rawtypes")
+    final VariableSetListener lVariableListener = (o, n) -> {
+      // System.out.println(getName() + ": new Z value: " + n);
+      update();
+      notifyListeners(this);
+    };
 
-		mDetectionFocusZ.addSetListener(lVariableListener);
+    mDetectionFocusZ.addSetListener(lVariableListener);
 
-		final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener = (	o,
-																																											n) -> {
-			info("new Z function: " + n);
-			resetBounds();
-			update();
-			notifyListeners(this);
-		};
+    final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener =
+                                                                                  (o,
+                                                                                   n) -> {
+                                                                                    info("new Z function: "
+                                                                                         + n);
+                                                                                    resetBounds();
+                                                                                    update();
+                                                                                    notifyListeners(this);
+                                                                                  };
 
-		mZFunction.addSetListener(lFunctionVariableListener);
+    mZFunction.addSetListener(lFunctionVariableListener);
 
-		int lStaveIndex = MachineConfiguration.getCurrentMachineConfiguration()
-																					.getIntegerProperty("device.lsm.detection." + getName()
-																																	+ ".z.index",
-																															0);
+    int lStaveIndex =
+                    MachineConfiguration.getCurrentMachineConfiguration()
+                                        .getIntegerProperty("device.lsm.detection."
+                                                            + getName()
+                                                            + ".z.index",
+                                                            0);
 
-		mStaveIndex = lStaveIndex;
+    mStaveIndex = lStaveIndex;
 
-		update();
-		notifyListeners(this);
-	}
+    update();
+    notifyListeners(this);
+  }
 
-	@Override
-	public void resetFunctions()
-	{
+  @Override
+  public void resetFunctions()
+  {
 
-	}
+  }
 
-	@Override
-	public void resetBounds()
-	{
+  @Override
+  public void resetBounds()
+  {
 
-		MachineConfiguration.getCurrentMachineConfiguration()
-												.getBoundsForVariable("device.lsm.detection." + getName()
-																									+ ".z.bounds",
-																							mDetectionFocusZ,
-																							mZFunction.get());
+    MachineConfiguration.getCurrentMachineConfiguration()
+                        .getBoundsForVariable("device.lsm.detection."
+                                              + getName()
+                                              + ".z.bounds",
+                                              mDetectionFocusZ,
+                                              mZFunction.get());
 
-	}
+  }
 
-	@Override
-	public BoundedVariable<Number> getZVariable()
-	{
-		return mDetectionFocusZ;
-	}
+  @Override
+  public BoundedVariable<Number> getZVariable()
+  {
+    return mDetectionFocusZ;
+  }
 
-	@Override
-	public Variable<UnivariateAffineFunction> getZFunction()
-	{
-		return mZFunction;
-	}
+  @Override
+  public Variable<UnivariateAffineFunction> getZFunction()
+  {
+    return mZFunction;
+  }
 
-	public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
-	{
-		// Analog outputs before exposure:
-		pBeforeExposureMovement.setStave(	mStaveIndex,
-																			mDetectionPathStaveZ);
-	}
+  public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
+  {
+    // Analog outputs before exposure:
+    pBeforeExposureMovement.setStave(mStaveIndex,
+                                     mDetectionPathStaveZ);
+  }
 
-	public void addStavesToExposureMovement(Movement pExposureMovement)
-	{
-		// Analog outputs at exposure:
-		pExposureMovement.setStave(mStaveIndex, mDetectionPathStaveZ);
-	}
+  public void addStavesToExposureMovement(Movement pExposureMovement)
+  {
+    // Analog outputs at exposure:
+    pExposureMovement.setStave(mStaveIndex, mDetectionPathStaveZ);
+  }
 
-	/**
-	 * Updates underlying signal generation staves and stack camera configuration.
-	 */
-	private void update()
-	{
-		synchronized (this)
-		{
-			info("Updating: " + getName());
+  /**
+   * Updates underlying signal generation staves and stack camera configuration.
+   */
+  private void update()
+  {
+    synchronized (this)
+    {
+      info("Updating: " + getName());
 
-			double lZFocus = mDetectionFocusZ.get().doubleValue();
-			float lZFocusTransformed = (float) mZFunction.get()
-																										.value(lZFocus);
-			mDetectionPathStaveZ.setValue(lZFocusTransformed);
+      double lZFocus = mDetectionFocusZ.get().doubleValue();
+      float lZFocusTransformed = (float) mZFunction.get()
+                                                   .value(lZFocus);
+      mDetectionPathStaveZ.setValue(lZFocusTransformed);
 
-		}
-	}
+    }
+  }
 }

@@ -3,8 +3,8 @@ package clearcontrol.core.variable.persistence;
 public interface StringSerializable
 {
 
-	@Override
-	public String toString();
+  @Override
+  public String toString();
 
-	public void fromString(String pString);
+  public void fromString(String pString);
 }

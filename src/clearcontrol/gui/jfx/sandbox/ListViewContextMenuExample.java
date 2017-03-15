@@ -13,57 +13,57 @@ import javafx.stage.Stage;
 public class ListViewContextMenuExample extends Application
 {
 
-	@Override
-	public void start(Stage primaryStage)
-	{
-		ListView<String> listView = new ListView<>();
-		listView.getItems().addAll("One", "Two", "Three");
+  @Override
+  public void start(Stage primaryStage)
+  {
+    ListView<String> listView = new ListView<>();
+    listView.getItems().addAll("One", "Two", "Three");
 
-		listView.setCellFactory(lv -> {
+    listView.setCellFactory(lv -> {
 
-			ListCell<String> cell = new ListCell<>();
+      ListCell<String> cell = new ListCell<>();
 
-			ContextMenu contextMenu = new ContextMenu();
+      ContextMenu contextMenu = new ContextMenu();
 
-			MenuItem editItem = new MenuItem();
-			editItem.textProperty()
-							.bind(Bindings.format("Edit \"%s\"",
-																		cell.itemProperty()));
-			editItem.setOnAction(event -> {
-				String item = cell.getItem();
-				// code to edit item...
-			});
-			MenuItem deleteItem = new MenuItem();
-			deleteItem.textProperty()
-								.bind(Bindings.format("Delete \"%s\"",
-																			cell.itemProperty()));
-			deleteItem.setOnAction(event -> listView.getItems()
-																							.remove(cell.getItem()));
-			contextMenu.getItems().addAll(editItem, deleteItem);
+      MenuItem editItem = new MenuItem();
+      editItem.textProperty()
+              .bind(Bindings.format("Edit \"%s\"",
+                                    cell.itemProperty()));
+      editItem.setOnAction(event -> {
+        String item = cell.getItem();
+        // code to edit item...
+      });
+      MenuItem deleteItem = new MenuItem();
+      deleteItem.textProperty()
+                .bind(Bindings.format("Delete \"%s\"",
+                                      cell.itemProperty()));
+      deleteItem.setOnAction(event -> listView.getItems()
+                                              .remove(cell.getItem()));
+      contextMenu.getItems().addAll(editItem, deleteItem);
 
-			cell.textProperty().bind(cell.itemProperty());
+      cell.textProperty().bind(cell.itemProperty());
 
-			cell.emptyProperty()
-					.addListener((obs, wasEmpty, isNowEmpty) -> {
-						if (isNowEmpty)
-						{
-							cell.setContextMenu(null);
-						}
-						else
-						{
-							cell.setContextMenu(contextMenu);
-						}
-					});
-			return cell;
-		});
+      cell.emptyProperty()
+          .addListener((obs, wasEmpty, isNowEmpty) -> {
+            if (isNowEmpty)
+            {
+              cell.setContextMenu(null);
+            }
+            else
+            {
+              cell.setContextMenu(contextMenu);
+            }
+          });
+      return cell;
+    });
 
-		BorderPane root = new BorderPane(listView);
-		primaryStage.setScene(new Scene(root, 250, 400));
-		primaryStage.show();
-	}
+    BorderPane root = new BorderPane(listView);
+    primaryStage.setScene(new Scene(root, 250, 400));
+    primaryStage.show();
+  }
 
-	public static void main(String[] args)
-	{
-		launch(args);
-	}
+  public static void main(String[] args)
+  {
+    launch(args);
+  }
 }

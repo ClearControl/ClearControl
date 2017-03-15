@@ -3,6 +3,6 @@ package clearcontrol.stack.sourcesink;
 public interface StackSinkSourceFactoryInterface
 {
 
-	public StackSinkInterface getStackSink();
+  public StackSinkInterface getStackSink();
 
 }

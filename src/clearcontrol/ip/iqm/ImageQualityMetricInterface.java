@@ -6,5 +6,5 @@ import net.imglib2.type.NativeType;
 
 public interface ImageQualityMetricInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
 {
-	double[] computeImageQualityMetric(OffHeapPlanarImg<T, A> pOffHeapPlanarImg);
+  double[] computeImageQualityMetric(OffHeapPlanarImg<T, A> pOffHeapPlanarImg);
 }

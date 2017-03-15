@@ -2,5 +2,5 @@ package clearcontrol.core.variable;
 
 public interface VariableGetListener<O>
 {
-	void getEvent(O pCurrentValue);
+  void getEvent(O pCurrentValue);
 }

@@ -6,6 +6,6 @@ import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 public interface TimelapseInterface
 {
 
-	Variable<TimelapseTimerInterface> getTimelapseTimer();
+  Variable<TimelapseTimerInterface> getTimelapseTimer();
 
 }

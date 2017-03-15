@@ -9,15 +9,15 @@ package clearcontrol.core.math.kdtree;
  */
 public interface MaxHeap<T>
 {
-	public int size();
+  public int size();
 
-	public void offer(double key, T value);
+  public void offer(double key, T value);
 
-	public void replaceMax(double key, T value);
+  public void replaceMax(double key, T value);
 
-	public void removeMax();
+  public void removeMax();
 
-	public T getMax();
+  public T getMax();
 
-	public double getMaxKey();
+  public double getMaxKey();
 }

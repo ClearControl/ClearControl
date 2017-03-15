@@ -8,39 +8,40 @@ import net.imglib2.img.basictypeaccess.IntAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class IntBufferAccess implements
-														IntAccess,
-														ArrayDataAccess<IntBufferAccess>
+                             IntAccess,
+                             ArrayDataAccess<IntBufferAccess>
 {
-	protected IntBuffer data;
+  protected IntBuffer data;
 
-	public IntBufferAccess(final int numEntities)
-	{
-		this.data = ByteBuffer.allocateDirect(numEntities * 4)
-													.order(ByteOrder.nativeOrder())
-													.asIntBuffer();
-	}
+  public IntBufferAccess(final int numEntities)
+  {
+    this.data =
+              ByteBuffer.allocateDirect(numEntities * 4)
+                        .order(ByteOrder.nativeOrder())
+                        .asIntBuffer();
+  }
 
-	@Override
-	public int getValue(final int index)
-	{
-		return data.get(index);
-	}
+  @Override
+  public int getValue(final int index)
+  {
+    return data.get(index);
+  }
 
-	@Override
-	public void setValue(final int index, final int value)
-	{
-		data.put(index, value);
-	}
+  @Override
+  public void setValue(final int index, final int value)
+  {
+    data.put(index, value);
+  }
 
-	@Override
-	public IntBuffer getCurrentStorageArray()
-	{
-		return data;
-	}
+  @Override
+  public IntBuffer getCurrentStorageArray()
+  {
+    return data;
+  }
 
-	@Override
-	public IntBufferAccess createArray(final int numEntities)
-	{
-		return new IntBufferAccess(numEntities);
-	}
+  @Override
+  public IntBufferAccess createArray(final int numEntities)
+  {
+    return new IntBufferAccess(numEntities);
+  }
 }

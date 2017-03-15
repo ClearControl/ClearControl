@@ -8,11 +8,11 @@ package clearcontrol.core.math.kdtree;
  */
 public final class Pair<T>
 {
-	public final T first, second;
+  public final T first, second;
 
-	public Pair(T first, T second)
-	{
-		this.first = first;
-		this.second = second;
-	}
+  public Pair(T first, T second)
+  {
+    this.first = first;
+    this.second = second;
+  }
 }

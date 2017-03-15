@@ -6,26 +6,26 @@ import ecc100.ECC100Axis;
 public class MaxPositionVariable extends Variable<Double>
 {
 
-	private static final double cEpsilon = 5; // nm
-	private final ECC100Axis mECC100Axis;
+  private static final double cEpsilon = 5; // nm
+  private final ECC100Axis mECC100Axis;
 
-	public MaxPositionVariable(	String pVariableName,
-															ECC100Axis pECC100Axis)
-	{
-		super(pVariableName, 0.0);
-		mECC100Axis = pECC100Axis;
-	}
+  public MaxPositionVariable(String pVariableName,
+                             ECC100Axis pECC100Axis)
+  {
+    super(pVariableName, 0.0);
+    mECC100Axis = pECC100Axis;
+  }
 
-	@Override
-	public Double setEventHook(Double pOldValue, Double pNewValue)
-	{
-		final double lValue = super.setEventHook(pOldValue, pNewValue);
-		return lValue;
-	}
+  @Override
+  public Double setEventHook(Double pOldValue, Double pNewValue)
+  {
+    final double lValue = super.setEventHook(pOldValue, pNewValue);
+    return lValue;
+  }
 
-	@Override
-	public Double getEventHook(Double pCurrentValue)
-	{
-		return super.getEventHook(pCurrentValue);
-	}
+  @Override
+  public Double getEventHook(Double pCurrentValue)
+  {
+    return super.getEventHook(pCurrentValue);
+  }
 }

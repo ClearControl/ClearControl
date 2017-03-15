@@ -15,156 +15,172 @@ import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
 public class LocalFileStackSink extends LocalFileStackBase implements
-																													StackSinkInterface,
-																													AutoCloseable
+                                StackSinkInterface,
+                                AutoCloseable
 {
 
-	private static final long cSingleWriteLimit = 64_000_000L;
-	private volatile long mFirstTimePointAbsoluteNanoSeconds;
-	private FileChannel mBinnaryFileChannel;
+  private static final long cSingleWriteLimit = 64_000_000L;
+  private volatile long mFirstTimePointAbsoluteNanoSeconds;
+  private FileChannel mBinnaryFileChannel;
 
-	public LocalFileStackSink(final File pRootFolder, final String pName) throws IOException
-	{
-		super(pRootFolder, pName, false);
+  public LocalFileStackSink(final File pRootFolder,
+                            final String pName) throws IOException
+  {
+    super(pRootFolder, pName, false);
 
-	}
+  }
 
-	@Override
-	public boolean appendStack(final StackInterface pStack)
-	{
+  @Override
+  public boolean appendStack(final StackInterface pStack)
+  {
 
-		try
-		{
-			if (getNumberOfStacks() == 0)
-			{
-				mMetaDataVariableBundleAsFile.write();
-			}
+    try
+    {
+      if (getNumberOfStacks() == 0)
+      {
+        mMetaDataVariableBundleAsFile.write();
+      }
 
-			mStackIndexToBinaryFilePositionMap.put(	mNextFreeStackIndex,
-																							mNextFreeTypePosition);
+      mStackIndexToBinaryFilePositionMap.put(mNextFreeStackIndex,
+                                             mNextFreeTypePosition);
 
-			final StackRequest lStackRequest = StackRequest.buildFrom(pStack);
+      final StackRequest lStackRequest =
+                                       StackRequest.buildFrom(pStack);
 
-			mStackIndexToStackRequestMap.put(	mNextFreeStackIndex,
-																				lStackRequest);
+      mStackIndexToStackRequestMap.put(mNextFreeStackIndex,
+                                       lStackRequest);
 
-			if (mBinnaryFileChannel == null)
-				mBinnaryFileChannel = getFileChannelForBinaryFile(false, true);
+      if (mBinnaryFileChannel == null)
+        mBinnaryFileChannel =
+                            getFileChannelForBinaryFile(false, true);
 
-			long lSizeInBytes = pStack.getSizeInBytes();
+      long lSizeInBytes = pStack.getSizeInBytes();
 
-			FragmentedMemoryInterface lFragmentedMemory = pStack.getFragmentedMemory();
+      FragmentedMemoryInterface lFragmentedMemory =
+                                                  pStack.getFragmentedMemory();
 
-			final long lNewNextFreeTypePosition;
+      final long lNewNextFreeTypePosition;
 
-			if (lSizeInBytes > cSingleWriteLimit)
-			{
-				int lNumberOfFragments = lFragmentedMemory.getNumberOfFragments();
+      if (lSizeInBytes > cSingleWriteLimit)
+      {
+        int lNumberOfFragments =
+                               lFragmentedMemory.getNumberOfFragments();
 
-				long lPosition = mNextFreeTypePosition;
-				for (int i = 0; i < lNumberOfFragments; i++)
-				{
-					// System.out.format("chunk: %d \n", i);
-					ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory.get(i);
+        long lPosition = mNextFreeTypePosition;
+        for (int i = 0; i < lNumberOfFragments; i++)
+        {
+          // System.out.format("chunk: %d \n", i);
+          ContiguousMemoryInterface lContiguousMemoryInterface =
+                                                               lFragmentedMemory.get(i);
 
-					lContiguousMemoryInterface.writeBytesToFileChannel(	mBinnaryFileChannel,
-																															lPosition);
-					mBinnaryFileChannel.force(false);
+          lContiguousMemoryInterface.writeBytesToFileChannel(mBinnaryFileChannel,
+                                                             lPosition);
+          mBinnaryFileChannel.force(false);
 
-					lPosition += lContiguousMemoryInterface.getSizeInBytes();
-				}
+          lPosition += lContiguousMemoryInterface.getSizeInBytes();
+        }
 
-				lNewNextFreeTypePosition = lPosition;
+        lNewNextFreeTypePosition = lPosition;
 
-				mBinnaryFileChannel.force(false);
-			}
-			else
-			{
-				lNewNextFreeTypePosition = lFragmentedMemory.writeBytesToFileChannel(	mBinnaryFileChannel,
-																																							mNextFreeTypePosition);
-				mBinnaryFileChannel.force(false);
-			}
+        mBinnaryFileChannel.force(false);
+      }
+      else
+      {
+        lNewNextFreeTypePosition =
+                                 lFragmentedMemory.writeBytesToFileChannel(mBinnaryFileChannel,
+                                                                           mNextFreeTypePosition);
+        mBinnaryFileChannel.force(false);
+      }
 
-			long[] lDimensions = lStackRequest.getDimensions();
+      long[] lDimensions = lStackRequest.getDimensions();
 
-			final String lDimensionsString = Arrays.toString(lDimensions);
+      final String lDimensionsString = Arrays.toString(lDimensions);
 
-			// the '2, ' part is to be compatible with the old format, that
-			// means 2
-			// bytes per voxel:
-			final String lTruncatedDimensionsString = "2, " + lDimensionsString.substring(1,
-																																										lDimensionsString.length() - 1);
+      // the '2, ' part is to be compatible with the old format, that
+      // means 2
+      // bytes per voxel:
+      final String lTruncatedDimensionsString = "2, "
+                                                + lDimensionsString.substring(1,
+                                                                              lDimensionsString.length()
+                                                                                 - 1);
 
-			final FileChannel lIndexFileChannel = FileChannel.open(	mIndexFile.toPath(),
-																															StandardOpenOption.APPEND,
-																															StandardOpenOption.WRITE,
-																															StandardOpenOption.CREATE);
+      final FileChannel lIndexFileChannel =
+                                          FileChannel.open(mIndexFile.toPath(),
+                                                           StandardOpenOption.APPEND,
+                                                           StandardOpenOption.WRITE,
+                                                           StandardOpenOption.CREATE);
 
-			if (mNextFreeStackIndex == 0)
-			{
-				mFirstTimePointAbsoluteNanoSeconds = pStack.getTimeStampInNanoseconds();
-			}
-			final double lTimeStampInSeconds = Magnitude.nano2unit(pStack.getTimeStampInNanoseconds() - mFirstTimePointAbsoluteNanoSeconds);
+      if (mNextFreeStackIndex == 0)
+      {
+        mFirstTimePointAbsoluteNanoSeconds =
+                                           pStack.getTimeStampInNanoseconds();
+      }
+      final double lTimeStampInSeconds =
+                                       Magnitude.nano2unit(pStack.getTimeStampInNanoseconds()
+                                                           - mFirstTimePointAbsoluteNanoSeconds);
 
-			mStackIndexToTimeStampInSecondsMap.put(	mNextFreeStackIndex,
-																							lTimeStampInSeconds);
+      mStackIndexToTimeStampInSecondsMap.put(mNextFreeStackIndex,
+                                             lTimeStampInSeconds);
 
-			final String lIndexLineString = String.format("%d\t%.4f\t%s\t%d\n",
-																										mNextFreeStackIndex,
-																										lTimeStampInSeconds,
-																										lTruncatedDimensionsString,
-																										mNextFreeTypePosition);
-			final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
-			final ByteBuffer lIndexLineStringByteBuffer = ByteBuffer.wrap(lIndexLineStringBytes);
-			lIndexFileChannel.write(lIndexLineStringByteBuffer);
-			lIndexFileChannel.force(true);
-			lIndexFileChannel.close();
+      final String lIndexLineString =
+                                    String.format("%d\t%.4f\t%s\t%d\n",
+                                                  mNextFreeStackIndex,
+                                                  lTimeStampInSeconds,
+                                                  lTruncatedDimensionsString,
+                                                  mNextFreeTypePosition);
+      final byte[] lIndexLineStringBytes =
+                                         lIndexLineString.getBytes();
+      final ByteBuffer lIndexLineStringByteBuffer =
+                                                  ByteBuffer.wrap(lIndexLineStringBytes);
+      lIndexFileChannel.write(lIndexLineStringByteBuffer);
+      lIndexFileChannel.force(true);
+      lIndexFileChannel.close();
 
-			mNextFreeTypePosition = lNewNextFreeTypePosition;
+      mNextFreeTypePosition = lNewNextFreeTypePosition;
 
-			mNextFreeStackIndex++;
-			return true;
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
+      mNextFreeStackIndex++;
+      return true;
+    }
+    catch (final Throwable e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	@Override
-	public void close() throws IOException
-	{
-		if (mBinnaryFileChannel != null)
-			mBinnaryFileChannel.close();
-		super.close();
-	}
+  @Override
+  public void close() throws IOException
+  {
+    if (mBinnaryFileChannel != null)
+      mBinnaryFileChannel.close();
+    super.close();
+  }
 
-	@Override
-	public void addMetaDataVariable(final String pPrefix,
-																	final Variable<?> pVariable)
-	{
-		mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
-	}
+  @Override
+  public void addMetaDataVariable(final String pPrefix,
+                                  final Variable<?> pVariable)
+  {
+    mMetaDataVariableBundleAsFile.addVariable(pPrefix, pVariable);
+  }
 
-	@Override
-	public void addMetaData(final String pPrefix, final double pValue)
-	{
-		mMetaDataVariableBundleAsFile.addVariable(pPrefix,
-																							new Variable<Double>(	pPrefix,
-																																		pValue));
-	}
+  @Override
+  public void addMetaData(final String pPrefix, final double pValue)
+  {
+    mMetaDataVariableBundleAsFile.addVariable(pPrefix,
+                                              new Variable<Double>(pPrefix,
+                                                                   pValue));
+  }
 
-	@Override
-	public void removeAllMetaDataVariables()
-	{
-		mMetaDataVariableBundleAsFile.removeAllVariables();
-	}
+  @Override
+  public void removeAllMetaDataVariables()
+  {
+    mMetaDataVariableBundleAsFile.removeAllVariables();
+  }
 
-	@Override
-	public void removeMetaDataVariable(final Variable<?> pVariable)
-	{
-		mMetaDataVariableBundleAsFile.removeVariable(pVariable);
-	}
+  @Override
+  public void removeMetaDataVariable(final Variable<?> pVariable)
+  {
+    mMetaDataVariableBundleAsFile.removeVariable(pVariable);
+  }
 
 }

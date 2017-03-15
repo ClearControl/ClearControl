@@ -4,14 +4,14 @@ import java.util.concurrent.Future;
 
 public interface StateQueueDeviceInterface
 {
-	void clearQueue();
+  void clearQueue();
 
-	void addCurrentStateToQueue();
+  void addCurrentStateToQueue();
 
-	void finalizeQueue();
+  void finalizeQueue();
 
-	int getQueueLength();
+  int getQueueLength();
 
-	Future<Boolean> playQueue();
+  Future<Boolean> playQueue();
 
 }

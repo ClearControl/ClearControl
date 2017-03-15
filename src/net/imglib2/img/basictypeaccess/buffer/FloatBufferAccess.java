@@ -8,39 +8,39 @@ import net.imglib2.img.basictypeaccess.FloatAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
 
 public class FloatBufferAccess implements
-															FloatAccess,
-															ArrayDataAccess<FloatBufferAccess>
+                               FloatAccess,
+                               ArrayDataAccess<FloatBufferAccess>
 {
-	protected FloatBuffer data;
+  protected FloatBuffer data;
 
-	public FloatBufferAccess(final int numEntities)
-	{
-		this.data = ByteBuffer.allocateDirect(numEntities * 4)
-													.order(ByteOrder.nativeOrder())
-													.asFloatBuffer();
-	}
+  public FloatBufferAccess(final int numEntities)
+  {
+    this.data = ByteBuffer.allocateDirect(numEntities * 4)
+                          .order(ByteOrder.nativeOrder())
+                          .asFloatBuffer();
+  }
 
-	@Override
-	public float getValue(final int index)
-	{
-		return data.get(index);
-	}
+  @Override
+  public float getValue(final int index)
+  {
+    return data.get(index);
+  }
 
-	@Override
-	public void setValue(final int index, final float value)
-	{
-		data.put(index, value);
-	}
+  @Override
+  public void setValue(final int index, final float value)
+  {
+    data.put(index, value);
+  }
 
-	@Override
-	public FloatBuffer getCurrentStorageArray()
-	{
-		return data;
-	}
+  @Override
+  public FloatBuffer getCurrentStorageArray()
+  {
+    return data;
+  }
 
-	@Override
-	public FloatBufferAccess createArray(final int numEntities)
-	{
-		return new FloatBufferAccess(numEntities);
-	}
+  @Override
+  public FloatBufferAccess createArray(final int numEntities)
+  {
+    return new FloatBufferAccess(numEntities);
+  }
 }

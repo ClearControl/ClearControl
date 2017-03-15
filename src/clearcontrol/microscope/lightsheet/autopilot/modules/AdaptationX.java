@@ -8,86 +8,90 @@ import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionState
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class AdaptationX extends NDIteratorAdaptationModule	implements
-																														AdaptationModuleInterface
+public class AdaptationX extends NDIteratorAdaptationModule
+                         implements AdaptationModuleInterface
 {
 
-	public AdaptationX(	int pNumberOfSamples,
-											double pProbabilityThreshold)
-	{
-		super(pNumberOfSamples, pProbabilityThreshold);
-	}
+  public AdaptationX(int pNumberOfSamples,
+                     double pProbabilityThreshold)
+  {
+    super(pNumberOfSamples, pProbabilityThreshold);
+  }
 
-	@Override
-	public Future<?> atomicStep(int pControlPlaneIndex,
-															int pLightSheetIndex,
-															int pNumberOfSamples)
-	{
-		LightSheetMicroscope lLSM = getAdaptator().getLightSheetMicroscope();
-		LightSheetAcquisitionStateInterface lStackAcquisition = getAdaptator().getStackAcquisitionVariable()
-																																					.get();
+  @Override
+  public Future<?> atomicStep(int pControlPlaneIndex,
+                              int pLightSheetIndex,
+                              int pNumberOfSamples)
+  {
+    LightSheetMicroscope lLSM =
+                              getAdaptator().getLightSheetMicroscope();
+    LightSheetAcquisitionStateInterface lStackAcquisition =
+                                                          getAdaptator().getStackAcquisitionVariable()
+                                                                        .get();
 
-		LightSheetInterface lLightSheetDevice = lLSM.getDeviceLists()
-																								.getDevice(	LightSheetInterface.class,
-																														pLightSheetIndex);
-		double lMinX = lLightSheetDevice.getXVariable().getMin();
-		double lMaxX = lLightSheetDevice.getXVariable().getMax();
-		double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);
+    LightSheetInterface lLightSheetDevice =
+                                          lLSM.getDeviceLists()
+                                              .getDevice(LightSheetInterface.class,
+                                                         pLightSheetIndex);
+    double lMinX = lLightSheetDevice.getXVariable().getMin();
+    double lMaxX = lLightSheetDevice.getXVariable().getMax();
+    double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);
 
-		double lCurrentX = lLSM.getIX(pLightSheetIndex);
+    double lCurrentX = lLSM.getIX(pLightSheetIndex);
 
-		lLSM.clearQueue();
+    lLSM.clearQueue();
 
-		lStackAcquisition.applyStateAtControlPlane(pControlPlaneIndex);
+    lStackAcquisition.applyStateAtControlPlane(pControlPlaneIndex);
 
-		final TDoubleArrayList lIXList = new TDoubleArrayList();
+    final TDoubleArrayList lIXList = new TDoubleArrayList();
 
-		lLSM.setILO(false);
-		lLSM.setC(false);
-		lLSM.setIX(pLightSheetIndex, lMinX);
-		lLSM.setI(pLightSheetIndex);
-		lLSM.addCurrentStateToQueue();
-		lLSM.addCurrentStateToQueue();
+    lLSM.setILO(false);
+    lLSM.setC(false);
+    lLSM.setIX(pLightSheetIndex, lMinX);
+    lLSM.setI(pLightSheetIndex);
+    lLSM.addCurrentStateToQueue();
+    lLSM.addCurrentStateToQueue();
 
-		lLSM.setILO(true);
-		lLSM.setC(true);
-		for (double x = lMinX; x <= lMaxX; x += lStepX)
-		{
-			lIXList.add(x);
-			lLSM.setIX(pLightSheetIndex, x);
-			lLSM.setI(pLightSheetIndex);
-			lLSM.addCurrentStateToQueue();
-		}
+    lLSM.setILO(true);
+    lLSM.setC(true);
+    for (double x = lMinX; x <= lMaxX; x += lStepX)
+    {
+      lIXList.add(x);
+      lLSM.setIX(pLightSheetIndex, x);
+      lLSM.setI(pLightSheetIndex);
+      lLSM.addCurrentStateToQueue();
+    }
 
-		lLSM.setILO(false);
-		lLSM.setC(false);
-		lLSM.setIX(pLightSheetIndex, lCurrentX);
-		lLSM.setI(pLightSheetIndex);
-		lLSM.addCurrentStateToQueue();
+    lLSM.setILO(false);
+    lLSM.setC(false);
+    lLSM.setIX(pLightSheetIndex, lCurrentX);
+    lLSM.setI(pLightSheetIndex);
+    lLSM.addCurrentStateToQueue();
 
-		lLSM.finalizeQueue();
+    lLSM.finalizeQueue();
 
-		return findBestDOFValue(pControlPlaneIndex,
-														pLightSheetIndex,
-														lLSM,
-														lStackAcquisition,
-														lIXList);
+    return findBestDOFValue(pControlPlaneIndex,
+                            pLightSheetIndex,
+                            lLSM,
+                            lStackAcquisition,
+                            lIXList);
 
-	}
+  }
 
-	@Override
-	public void updateNewState(	int pControlPlaneIndex,
-															int pLightSheetIndex,
-															ArrayList<Double> pArgMaxList)
-	{
-		int lBestDetectioArm = getAdaptator().getStackAcquisitionVariable()
-																					.get()
-																					.getBestDetectionArm(pControlPlaneIndex);
+  @Override
+  public void updateNewState(int pControlPlaneIndex,
+                             int pLightSheetIndex,
+                             ArrayList<Double> pArgMaxList)
+  {
+    int lBestDetectioArm =
+                         getAdaptator().getStackAcquisitionVariable()
+                                       .get()
+                                       .getBestDetectionArm(pControlPlaneIndex);
 
-		getAdaptator().getNewAcquisitionState()
-									.setAtControlPlaneIX(	pControlPlaneIndex,
-																				pLightSheetIndex,
-																				pArgMaxList.get(lBestDetectioArm));
-	}
+    getAdaptator().getNewAcquisitionState()
+                  .setAtControlPlaneIX(pControlPlaneIndex,
+                                       pLightSheetIndex,
+                                       pArgMaxList.get(lBestDetectioArm));
+  }
 
 }

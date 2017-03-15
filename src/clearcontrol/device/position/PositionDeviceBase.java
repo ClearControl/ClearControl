@@ -7,82 +7,86 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.device.VirtualDevice;
 
-public abstract class PositionDeviceBase extends VirtualDevice implements
-																															PositionDeviceInterface
+public abstract class PositionDeviceBase extends VirtualDevice
+                                         implements
+                                         PositionDeviceInterface
 {
-	protected Variable<Integer> mPositionVariable = null;
-	protected int[] mValidPositions;
-	private ConcurrentHashMap<Integer, String> mPositionToNameMap;
+  protected Variable<Integer> mPositionVariable = null;
+  protected int[] mValidPositions;
+  private ConcurrentHashMap<Integer, String> mPositionToNameMap;
 
-	public PositionDeviceBase(String pDeviceName, int[] pValidPositions)
-	{
-		super(pDeviceName);
-		mValidPositions = pValidPositions;
-		mPositionVariable = new Variable<Integer>("Position",
-																							pValidPositions[0]);
-		mPositionToNameMap = new ConcurrentHashMap<>();
+  public PositionDeviceBase(String pDeviceName, int[] pValidPositions)
+  {
+    super(pDeviceName);
+    mValidPositions = pValidPositions;
+    mPositionVariable = new Variable<Integer>("Position",
+                                              pValidPositions[0]);
+    mPositionToNameMap = new ConcurrentHashMap<>();
 
-		for (int lPosition : mValidPositions)
-		{
-			mPositionToNameMap.put(lPosition, "" + lPosition);
-		}
-	}
+    for (int lPosition : mValidPositions)
+    {
+      mPositionToNameMap.put(lPosition, "" + lPosition);
+    }
+  }
 
-	public PositionDeviceBase(String pDevicePath,
-														String pDeviceName,
-														int pDeviceindex)
-	{
-		super(pDeviceName);
-		ArrayList<String> lList = MachineConfiguration.getCurrentMachineConfiguration()
-																									.getList(pDevicePath + "."
-																														+ pDeviceName.toLowerCase());
+  public PositionDeviceBase(String pDevicePath,
+                            String pDeviceName,
+                            int pDeviceindex)
+  {
+    super(pDeviceName);
+    ArrayList<String> lList =
+                            MachineConfiguration.getCurrentMachineConfiguration()
+                                                .getList(pDevicePath
+                                                         + "."
+                                                         + pDeviceName.toLowerCase());
 
-		mValidPositions = new int[lList.size()];
-		for (int i = 0; i < mValidPositions.length; i++)
-		{
-			mValidPositions[i] = i;
-			mPositionToNameMap.put(i, lList.get(i));
-		}
+    mValidPositions = new int[lList.size()];
+    for (int i = 0; i < mValidPositions.length; i++)
+    {
+      mValidPositions[i] = i;
+      mPositionToNameMap.put(i, lList.get(i));
+    }
 
-		mPositionVariable = new Variable<Integer>("Position",
-																							mValidPositions[0]);
+    mPositionVariable = new Variable<Integer>("Position",
+                                              mValidPositions[0]);
 
-	}
+  }
 
-	@Override
-	public void setPositionName(int pPositionIndex, String pPositionName)
-	{
-		mPositionToNameMap.put(pPositionIndex, pPositionName);
-	}
+  @Override
+  public void setPositionName(int pPositionIndex,
+                              String pPositionName)
+  {
+    mPositionToNameMap.put(pPositionIndex, pPositionName);
+  }
 
-	@Override
-	public String getPositionName(int pPositionIndex)
-	{
-		return mPositionToNameMap.get(pPositionIndex);
-	}
+  @Override
+  public String getPositionName(int pPositionIndex)
+  {
+    return mPositionToNameMap.get(pPositionIndex);
+  }
 
-	@Override
-	public final Variable<Integer> getPositionVariable()
-	{
-		return mPositionVariable;
-	}
+  @Override
+  public final Variable<Integer> getPositionVariable()
+  {
+    return mPositionVariable;
+  }
 
-	@Override
-	public int getPosition()
-	{
-		return mPositionVariable.get();
-	}
+  @Override
+  public int getPosition()
+  {
+    return mPositionVariable.get();
+  }
 
-	@Override
-	public void setPosition(final int pPosition)
-	{
-		mPositionVariable.set(pPosition);
-	}
+  @Override
+  public void setPosition(final int pPosition)
+  {
+    mPositionVariable.set(pPosition);
+  }
 
-	@Override
-	public int[] getValidPositions()
-	{
-		return mValidPositions;
-	}
+  @Override
+  public int[] getValidPositions()
+  {
+    return mValidPositions;
+  }
 
 }

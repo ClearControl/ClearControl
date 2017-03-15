@@ -22,53 +22,53 @@ import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
 
-	public LightSheetMicroscopeGUI(	LightSheetMicroscope pLightSheetMicroscope,
-																	boolean p2DDisplay,
-																	boolean p3DDisplay)
-	{
-		super(pLightSheetMicroscope,
-					LSMNodeType.values(),
-					p2DDisplay,
-					p3DDisplay);
+  public LightSheetMicroscopeGUI(LightSheetMicroscope pLightSheetMicroscope,
+                                 boolean p2DDisplay,
+                                 boolean p3DDisplay)
+  {
+    super(pLightSheetMicroscope,
+          LSMNodeType.values(),
+          p2DDisplay,
+          p3DDisplay);
 
-		addPanelMappingEntry(	LightSheetInterface.class,
-														LightSheetPanel.class,
-														LSMNodeType.LightSheet);
+    addPanelMappingEntry(LightSheetInterface.class,
+                         LightSheetPanel.class,
+                         LSMNodeType.LightSheet);
 
-		addPanelMappingEntry(	DetectionArmInterface.class,
-														DetectionArmPanel.class,
-														LSMNodeType.DetectionArm);
+    addPanelMappingEntry(DetectionArmInterface.class,
+                         DetectionArmPanel.class,
+                         LSMNodeType.DetectionArm);
 
-		addPanelMappingEntry(	InteractiveAcquisition.class,
-														InteractiveAcquisitionPanel.class,
-														MicroscopeNodeType.Acquisition);
+    addPanelMappingEntry(InteractiveAcquisition.class,
+                         InteractiveAcquisitionPanel.class,
+                         MicroscopeNodeType.Acquisition);
 
-		addPanelMappingEntry(	AcquisitionStateManager.class,
-														AcquisitionStateManagerPanel.class,
-														MicroscopeNodeType.Acquisition);
+    addPanelMappingEntry(AcquisitionStateManager.class,
+                         AcquisitionStateManagerPanel.class,
+                         MicroscopeNodeType.Acquisition);
 
-		addPanelMappingEntry(	TimelapseTimerInterface.class,
-														TimelapsePanel.class,
-														MicroscopeNodeType.Acquisition);
+    addPanelMappingEntry(TimelapseTimerInterface.class,
+                         TimelapsePanel.class,
+                         MicroscopeNodeType.Acquisition);
 
-		/*addHalcyonMappingEntry(	AutoPilotInterface.class,
-														AutoPilotPanel.class,
-														MicroscopeNodeType.Acquisition);/**/
+    /*addHalcyonMappingEntry(	AutoPilotInterface.class,
+    												AutoPilotPanel.class,
+    												MicroscopeNodeType.Acquisition);/**/
 
-		addToolbarMappingEntry( InteractiveAcquisition.class, InteractiveAcquisitionToolbar.class);
-		
-		addToolbarMappingEntry( Calibrator.class, CalibratorToolbar.class);
-		
-		addToolbarMappingEntry( TimelapseInterface.class, TimelapseToolbar.class);
-		
-	}
+    addToolbarMappingEntry(InteractiveAcquisition.class,
+                           InteractiveAcquisitionToolbar.class);
 
-	@Override
-	public void generate()
-	{
-		super.generate();
-	}
+    addToolbarMappingEntry(Calibrator.class, CalibratorToolbar.class);
 
-  
+    addToolbarMappingEntry(TimelapseInterface.class,
+                           TimelapseToolbar.class);
+
+  }
+
+  @Override
+  public void generate()
+  {
+    super.generate();
+  }
 
 }

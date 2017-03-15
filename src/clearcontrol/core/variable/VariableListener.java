@@ -1,7 +1,7 @@
 package clearcontrol.core.variable;
 
-public interface VariableListener<O>	extends
-																			VariableSetListener<O>,
-																			VariableGetListener<O>
+public interface VariableListener<O> extends
+                                 VariableSetListener<O>,
+                                 VariableGetListener<O>
 {
 }

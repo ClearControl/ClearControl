@@ -7,17 +7,17 @@ import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclableFactoryInterface;
 
 public interface StackProcessingPipeline extends
-																				OpenCloseDeviceInterface
+                                         OpenCloseDeviceInterface
 {
 
-	void addStackProcessor(	StackProcessorInterface pStackProcessor,
-													RecyclableFactoryInterface<StackInterface, StackRequest> pStackFactory,
-													int pMaximumNumberOfObjects);
+  void addStackProcessor(StackProcessorInterface pStackProcessor,
+                         RecyclableFactoryInterface<StackInterface, StackRequest> pStackFactory,
+                         int pMaximumNumberOfObjects);
 
-	public void removeStackProcessor(final StackProcessorInterface pStackProcessor);
+  public void removeStackProcessor(final StackProcessorInterface pStackProcessor);
 
-	public Variable<StackInterface> getInputVariable();
+  public Variable<StackInterface> getInputVariable();
 
-	public Variable<StackInterface> getOutputVariable();
+  public Variable<StackInterface> getOutputVariable();
 
 }

@@ -4,14 +4,14 @@ import clearcontrol.core.variable.Variable;
 
 public interface SwitchingDeviceInterface
 {
-	int getNumberOfSwitches();
+  int getNumberOfSwitches();
 
-	default void setSwitch(int pSwitchIndex, boolean pSwitchState)
-	{
-		getSwitchVariable(pSwitchIndex).set(pSwitchState);
-	};
+  default void setSwitch(int pSwitchIndex, boolean pSwitchState)
+  {
+    getSwitchVariable(pSwitchIndex).set(pSwitchState);
+  };
 
-	Variable<Boolean> getSwitchVariable(int pSwitchIndex);
+  Variable<Boolean> getSwitchVariable(int pSwitchIndex);
 
-	String getSwitchName(int pSwitchIndex);
+  String getSwitchName(int pSwitchIndex);
 }

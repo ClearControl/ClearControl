@@ -7,47 +7,48 @@ import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
 public class NormalizingArgMaxFinder implements
-																		ArgMaxFinder1DInterface
+                                     ArgMaxFinder1DInterface
 {
 
-	private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
+  private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-	public NormalizingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
-	{
-		super();
-		mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
-	}
+  public NormalizingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
+  {
+    super();
+    mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
+  }
 
-	@Override
-	public Double argmax(double[] pX, double[] pY)
-	{
-		TDoubleArrayList lNormY = new TDoubleArrayList();
+  @Override
+  public Double argmax(double[] pX, double[] pY)
+  {
+    TDoubleArrayList lNormY = new TDoubleArrayList();
 
-		double lMin = Double.POSITIVE_INFINITY;
-		double lMax = Double.NEGATIVE_INFINITY;
-		for (int i = 0; i < pY.length; i++)
-		{
-			lMin = min(lMin, pY[i]);
-			lMax = max(lMax, pY[i]);
-		}
+    double lMin = Double.POSITIVE_INFINITY;
+    double lMax = Double.NEGATIVE_INFINITY;
+    for (int i = 0; i < pY.length; i++)
+    {
+      lMin = min(lMin, pY[i]);
+      lMax = max(lMax, pY[i]);
+    }
 
-		for (int i = 0; i < pX.length; i++)
-		{
-			final double lScaledValue = (pY[i] - lMin) / (lMax - lMin);
-			lNormY.add(lScaledValue);
-		}
+    for (int i = 0; i < pX.length; i++)
+    {
+      final double lScaledValue = (pY[i] - lMin) / (lMax - lMin);
+      lNormY.add(lScaledValue);
+    }
 
-		final Double lArgmax = mArgMaxFinder1DInterface.argmax(	pX,
-																														lNormY.toArray());
+    final Double lArgmax =
+                         mArgMaxFinder1DInterface.argmax(pX,
+                                                         lNormY.toArray());
 
-		return lArgmax;
-	}
+    return lArgmax;
+  }
 
-	@Override
-	public String toString()
-	{
-		return String.format(	"NormalizingArgMaxFinder [%s]",
-													mArgMaxFinder1DInterface);
-	}
+  @Override
+  public String toString()
+  {
+    return String.format("NormalizingArgMaxFinder [%s]",
+                         mArgMaxFinder1DInterface);
+  }
 
 }

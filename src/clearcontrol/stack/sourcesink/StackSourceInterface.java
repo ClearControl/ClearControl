@@ -9,18 +9,18 @@ import coremem.recycling.RecyclerInterface;
 public interface StackSourceInterface
 {
 
-	public boolean update();
+  public boolean update();
 
-	public long getNumberOfStacks();
+  public long getNumberOfStacks();
 
-	public void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pStackRecycler);
+  public void setStackRecycler(RecyclerInterface<StackInterface, StackRequest> pStackRecycler);
 
-	public StackInterface getStack(long pStackIndex);
+  public StackInterface getStack(long pStackIndex);
 
-	public StackInterface getStack(	final long pStackIndex,
-																	long pTime,
-																	TimeUnit pTimeUnit);
+  public StackInterface getStack(final long pStackIndex,
+                                 long pTime,
+                                 TimeUnit pTimeUnit);
 
-	public double getStackTimeStampInSeconds(final long pStackIndex);
+  public double getStackTimeStampInSeconds(final long pStackIndex);
 
 }

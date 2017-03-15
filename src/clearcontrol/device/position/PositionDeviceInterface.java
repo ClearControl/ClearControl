@@ -4,15 +4,15 @@ import clearcontrol.core.variable.Variable;
 
 public interface PositionDeviceInterface
 {
-	Variable<Integer> getPositionVariable();
+  Variable<Integer> getPositionVariable();
 
-	int getPosition();
+  int getPosition();
 
-	void setPosition(int pPositionIndex);
+  void setPosition(int pPositionIndex);
 
-	int[] getValidPositions();
+  int[] getValidPositions();
 
-	void setPositionName(int pPositionIndex, String pPositionName);
+  void setPositionName(int pPositionIndex, String pPositionName);
 
-	String getPositionName(int pPositionIndex);
+  String getPositionName(int pPositionIndex);
 }

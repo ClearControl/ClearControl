@@ -6,12 +6,12 @@ import clearcontrol.hardware.signalgen.gui.swing.score.ScoreVisualizer;
 public class SignalGeneratorPanel extends ScoreVisualizer
 {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public SignalGeneratorPanel(SignalGeneratorInterface pSignalGeneratorInterface)
-	{
-		super();
+  public SignalGeneratorPanel(SignalGeneratorInterface pSignalGeneratorInterface)
+  {
+    super();
 
-	}
+  }
 
 }
