@@ -1,6 +1,12 @@
 language: java
-script: "gradle build --debug --full-stacktrace"
+script: "gradle build -x findbugsMain -x findbugsTest -x spotlessJava --debug --full-stacktrace"
 jdk:
   - oraclejdk8
-install: gradle assemble --stacktrace
+install: gradle assemble -x findbugsMain -x findbugsTest -x spotlessJava --stacktrace
+
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
