@@ -1,7 +1,6 @@
 package clearcontrol.simulation;
 
 import static clearcontrol.simulation.loaders.SampleSpaceSaveAndLoad.loadUnsignedShortSampleSpaceFromDisk;
-import static coremem.rgc.RessourceGarbageCollector.register;
 import static net.imglib2.img.utils.Copy.copy;
 
 import java.io.File;
@@ -71,7 +70,6 @@ public class BasicSampleSimulator implements SampleSimulatorInterface
                                                                                                  * pDimensions[1]
                                                                                                  * pDimensions[2]);
     cm.copyFrom(arr);
-    register(cm);
 
     OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> imgOH =
                                                                   (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) new OffHeapPlanarImgFactory().createShortInstance(cm,

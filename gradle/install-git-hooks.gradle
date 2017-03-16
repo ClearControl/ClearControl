@@ -1,4 +1,4 @@
-tasks.create(name: 'gitExecutableHooks') << {
+tasks.create(name: 'gitExecutableHooks').doLast {
     Runtime.getRuntime().exec("chmod -R +x .git/hooks/");
 }
 

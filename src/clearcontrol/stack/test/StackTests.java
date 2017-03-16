@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
@@ -158,6 +159,9 @@ public class StackTests
           final byte lByte = lContiguousMemory2.getByteAligned(k);
           assertEquals((byte) k, lByte);
         }
+        ThreadUtils.sleep(5 + (int) (Math.random() * 10),
+                          TimeUnit.MILLISECONDS);
+
         lStack.release();
         // System.out.println("released!");
       };
@@ -166,9 +170,18 @@ public class StackTests
 
       final long lLiveObjectCount =
                                   lRecycler.getNumberOfLiveObjects();
-      /*System.out.format("count=%d mem=%d \n",
-      									lLiveObjectCount,
-      									lLiveMemoryInBytes);/**/
+      final long lLiveMemoryInBytes =
+                                    lRecycler.computeLiveMemorySizeInBytes();
+
+      final long lAvailableObjectCount =
+                                       lRecycler.getNumberOfAvailableObjects();
+      final long lAvailableMemoryInBytes =
+                                         lRecycler.computeAvailableMemorySizeInBytes();
+      /*System.out.format("live count=%d, live mem=%d, avail count=%d, avail mem=%d \n",
+                        lLiveObjectCount,
+                        lLiveMemoryInBytes,
+                        lAvailableObjectCount,
+                        lAvailableMemoryInBytes);/**/
       assertTrue(lLiveObjectCount > 0);
 
       final long lTotalAllocatedMemory =
@@ -177,7 +190,7 @@ public class StackTests
       // lTotalAllocatedMemory);
       assertTrue(lTotalAllocatedMemory > 0);
 
-      Thread.sleep(1);
+      Thread.sleep(10);
 
       System.gc();
       /*
@@ -200,6 +213,9 @@ public class StackTests
 
     final long lEndTotalAllocatedMemory =
                                         OffHeapMemoryAccess.getTotalAllocatedMemory();
+
+    System.gc();
+    Thread.sleep(100);
     assertTrue(lEndTotalAllocatedMemory < lStartTotalAllocatedMemory
                                           + 10);
 

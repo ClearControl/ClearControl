@@ -5,11 +5,11 @@ import net.imglib2.img.basictypeaccess.offheap.AbstractOffHeapAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.util.Fraction;
 import coremem.ContiguousMemoryInterface;
+import coremem.exceptions.FreedException;
 import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
-import coremem.rgc.FreedException;
 
 import org.bridj.Pointer;
 

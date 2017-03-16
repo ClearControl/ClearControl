@@ -23,6 +23,7 @@ import com.jogamp.newt.event.MouseEvent;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
+import coremem.exceptions.FreedException;
 
 public class Stack2DDisplay extends VirtualDevice implements
                             StackDisplayInterface,
@@ -149,7 +150,7 @@ public class Stack2DDisplay extends VirtualDevice implements
                                       }
                                       forwardStack(pStack);
                                     }
-                                    catch (coremem.rgc.FreedException e)
+                                    catch (FreedException e)
                                     {
                                       System.err.println(this.getClass()
                                                              .getSimpleName()

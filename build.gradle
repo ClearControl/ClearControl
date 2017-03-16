@@ -16,7 +16,8 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.diffplug.gradle.spotless'
-apply plugin: 'findbugs'
+//apply plugin: 'findbugs'
+apply plugin: "jacoco"
 
 
 sourceSets {
@@ -147,7 +148,7 @@ dependencies
     compile 'org.jfxtras:jfxtras-labs:8.0-r5'/**/
     compile 'org.controlsfx:controlsfx:8.40.11'
     
-    compile 'de.jensd:fontawesomefx:8.9'
+    compile 'de.jensd:fontawesomefx:8.0.10'
    	//compile 'de.jensd:fontawesomefx-fontawesome:4.6.3'
     //compile 'de.jensd:fontawesomefx-materialdesignfont:1.6.50'
     //compile 'de.jensd:fontawesomefx-materialicons:2.2.0'
@@ -188,7 +189,7 @@ dependencies
     compile ('net.sqeazy:sqeazy:0.2.1') {transitive= true; changing= true}
 
     // CoreMem:
-    compile ('net.coremem:CoreMem:0.3.5'){transitive= true; changing= true}
+    compile ('net.coremem:CoreMem:0.4.1') {transitive= true; changing= true}
 
     // Clear*:
     compile ('net.clearvolume:clearvolume:1.3.23')  {transitive= true; changing= true}
@@ -242,8 +243,8 @@ repositories
     //jfxtras:
     maven { url "https://mvnrepository.com/artifact/org.jfxtras/jfxtras-labs" }
     
-    //FontAwesome:
-    maven { url "https://bintray.com/jerady/maven/FontAwesomeFX/view"}
+    //FontAwesome
+    maven { url  "http://dl.bintray.com/jerady/maven" }
     
     //Sqeazy:
     maven {url  "http://dl.bintray.com/psteinb/maven" }
@@ -318,10 +319,32 @@ spotless {
 //***********************************************************************************
 // FINDBUGS:
 
-tasks.withType(FindBugs) {
+//tasks.withType(FindBugs) {
+//    reports {
+//        xml.enabled false
+//        html.enabled true
+//    }
+//}
+
+
+//***********************************************************************************
+// JACOCO:
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.20
+            }
+        }
+    }
+}
+
+jacocoTestReport {
     reports {
         xml.enabled false
-        html.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/jacoco.html"
     }
 }
 

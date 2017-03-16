@@ -11,12 +11,12 @@ import javafx.stage.Stage;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
+import coremem.exceptions.FreedException;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclableFactoryInterface;
 import coremem.recycling.RecyclableInterface;
 import coremem.recycling.RecyclerInterface;
 import coremem.recycling.RecyclerRequestInterface;
-import coremem.rgc.FreedException;
 
 public class RecyclerPaneDemo extends Application implements
                               AsynchronousExecutorServiceAccess
@@ -163,10 +163,10 @@ public class RecyclerPaneDemo extends Application implements
             // /System.out.println("REQUESTING!");
             DemoRequest lRequest = new DemoRequest("req" + i);
 
-            DemoRecyclable lRecyclable = lRecycler.request(true,
-                                                           1,
-                                                           TimeUnit.SECONDS,
-                                                           lRequest);
+            DemoRecyclable lRecyclable = lRecycler.get(true,
+                                                       1,
+                                                       TimeUnit.SECONDS,
+                                                       lRequest);
 
             if (lRecyclable == null)
             {
