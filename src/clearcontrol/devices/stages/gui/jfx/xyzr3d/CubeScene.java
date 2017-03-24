@@ -1,7 +1,5 @@
 package clearcontrol.devices.stages.gui.jfx.xyzr3d;
 
-import clearcontrol.devices.stages.gui.jfx.xyzr3d.object.Axes;
-import clearcontrol.devices.stages.gui.jfx.xyzr3d.object.Cube;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -17,6 +15,9 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+
+import clearcontrol.devices.stages.gui.jfx.xyzr3d.object.Axes;
+import clearcontrol.devices.stages.gui.jfx.xyzr3d.object.Cube;
 
 /**
  * CubeScene contains a scene of CUBE

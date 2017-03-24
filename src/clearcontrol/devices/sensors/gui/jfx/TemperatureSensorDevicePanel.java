@@ -1,8 +1,9 @@
 package clearcontrol.devices.sensors.gui.jfx;
 
-import clearcontrol.devices.sensors.TemperatureSensorDeviceInterface;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
+
+import clearcontrol.devices.sensors.TemperatureSensorDeviceInterface;
 
 public class TemperatureSensorDevicePanel extends Label
 {

@@ -1,11 +1,12 @@
 package clearcontrol.gui.jfx.custom.singlechecklist;
 
-import clearcontrol.core.device.name.NameableInterface;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
+
+import clearcontrol.core.device.name.NameableInterface;
 
 public class SingleCheckListView<T extends NameableInterface>
                                 extends ListView<T>

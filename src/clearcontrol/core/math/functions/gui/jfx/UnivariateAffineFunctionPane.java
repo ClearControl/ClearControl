@@ -1,14 +1,15 @@
 package clearcontrol.core.math.functions.gui.jfx;
 
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 
 public class UnivariateAffineFunctionPane extends CustomGridPane
 {

@@ -11,9 +11,9 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 
-import com.sun.management.GarbageCollectionNotificationInfo;
-
 import clearcontrol.core.log.LoggingInterface;
+
+import com.sun.management.GarbageCollectionNotificationInfo;
 
 /**
  * GarbageCollector handles programatic triggering of GC and monitoring of GC

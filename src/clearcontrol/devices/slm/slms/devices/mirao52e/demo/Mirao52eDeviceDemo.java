@@ -4,12 +4,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.ejml.data.DenseMatrix64F;
-import org.junit.Test;
-
 import clearcontrol.devices.slm.slms.demo.DeformableMirrorDeviceDemoHelper;
 import clearcontrol.devices.slm.slms.devices.mirao52e.Mirao52eDevice;
 import clearcontrol.devices.slm.zernike.TransformMatrices;
+
+import org.ejml.data.DenseMatrix64F;
+import org.junit.Test;
 
 public class Mirao52eDeviceDemo
 {

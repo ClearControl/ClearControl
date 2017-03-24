@@ -40,14 +40,6 @@ import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.behavior.KeyBinding;
-import com.sun.javafx.scene.control.behavior.OrientedKeyBinding;
-import com.sun.javafx.scene.control.behavior.TwoLevelFocusBehavior;
-import com.sun.javafx.util.Utils;
-
-import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 import javafx.event.EventType;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
@@ -55,6 +47,14 @@ import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+
+import clearcontrol.gui.jfx.var.slider.customslider.Slider;
+
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import com.sun.javafx.scene.control.behavior.OrientedKeyBinding;
+import com.sun.javafx.scene.control.behavior.TwoLevelFocusBehavior;
+import com.sun.javafx.util.Utils;
 
 public class SliderBehavior extends BehaviorBase<Slider>
 {

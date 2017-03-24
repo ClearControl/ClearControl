@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.VariableListener;
 import clearcontrol.gui.swing.JTextFieldDouble;
+
+import org.junit.Test;
 
 public class TextFieldDoubleDemo
 {

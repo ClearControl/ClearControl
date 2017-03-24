@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
+
+import org.junit.Test;
 
 /**
  * Demo of Omicron laser. For this demo you need to connect an omicron laser and

@@ -1,10 +1,10 @@
 package clearcontrol.microscope.lightsheet.calibrator.utils;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Line;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.math.regression.linear.TheilSenEstimator;
+
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class GeometryUtils
 {

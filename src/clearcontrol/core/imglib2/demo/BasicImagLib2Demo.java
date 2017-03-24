@@ -2,12 +2,6 @@ package clearcontrol.core.imglib2.demo;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
-import coremem.fragmented.FragmentedMemory;
-import coremem.offheap.OffHeapMemory;
-import ij.ImageJ;
-import ij.ImagePlus;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessible;
 import net.imglib2.algorithm.gauss3.Gauss3;
@@ -21,6 +15,12 @@ import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
+import coremem.fragmented.FragmentedMemory;
+import coremem.offheap.OffHeapMemory;
+import ij.ImageJ;
+import ij.ImagePlus;
+
+import org.junit.Test;
 
 public class BasicImagLib2Demo
 {

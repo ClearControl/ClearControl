@@ -1,9 +1,9 @@
 package clearcontrol.core.log.demo;
 
-import org.junit.Test;
-
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.log.gui.LogWindowHandler;
+
+import org.junit.Test;
 
 public class LoggingDemo implements LoggingInterface
 {

@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.bridj.Pointer;
-
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessor;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
@@ -27,6 +24,9 @@ import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
 import dcamj.DcamFrame;
 import gnu.trove.list.array.TByteArrayList;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.bridj.Pointer;
 
 /**
  *

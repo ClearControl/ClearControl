@@ -4,9 +4,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.signum;
 
-import org.controlsfx.control.RangeSlider;
-
-import clearcontrol.core.variable.Variable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+
+import clearcontrol.core.variable.Variable;
+
+import org.controlsfx.control.RangeSlider;
 
 public class VariableRangeSlider<T extends Number> extends HBox
 {

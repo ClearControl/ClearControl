@@ -2,9 +2,9 @@ package clearcontrol.devices.lasers.devices.cobolt.demo;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
+
+import org.junit.Test;
 
 /**
  * Cobolt laser demo

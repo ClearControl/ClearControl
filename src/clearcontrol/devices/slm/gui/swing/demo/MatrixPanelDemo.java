@@ -8,13 +8,13 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
-import org.junit.Test;
-
 import clearcontrol.devices.slm.gui.swing.MatrixPanel;
 import clearcontrol.devices.slm.zernike.TransformMatrices;
 import clearcontrol.gui.swing.JSliderDouble;
+
+import org.ejml.data.DenseMatrix64F;
+import org.ejml.ops.CommonOps;
+import org.junit.Test;
 
 public class MatrixPanelDemo
 {

@@ -1,5 +1,10 @@
 package clearcontrol.devices.cameras.gui.jfx.demo;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
@@ -10,10 +15,6 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  *

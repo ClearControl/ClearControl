@@ -3,10 +3,10 @@ package clearcontrol.core.math.interpolation.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import clearcontrol.core.math.interpolation.Row;
 import clearcontrol.core.math.interpolation.SplineInterpolationTable;
+
+import org.junit.Test;
 
 public class InterpolationTableTests
 {

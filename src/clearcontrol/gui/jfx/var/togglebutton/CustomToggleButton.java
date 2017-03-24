@@ -1,9 +1,10 @@
 package clearcontrol.gui.jfx.var.togglebutton;
 
-import clearcontrol.core.variable.Variable;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
+
+import clearcontrol.core.variable.Variable;
 
 public class CustomToggleButton extends ToggleButton
 {

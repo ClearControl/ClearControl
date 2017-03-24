@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.math.plot.Plot2DPanel;
-
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.math.plot.Plot2DPanel;
 
 public class PlotTab
 {

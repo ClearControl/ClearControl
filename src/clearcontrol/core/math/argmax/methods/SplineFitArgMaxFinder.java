@@ -1,13 +1,13 @@
 package clearcontrol.core.math.argmax.methods;
 
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
+
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 public class SplineFitArgMaxFinder extends Fitting1DBase implements
                                    ArgMaxFinder1DInterface,

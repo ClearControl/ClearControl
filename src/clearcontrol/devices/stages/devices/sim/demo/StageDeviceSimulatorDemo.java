@@ -4,11 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
+
+import org.junit.Test;
 
 public class StageDeviceSimulatorDemo
 {

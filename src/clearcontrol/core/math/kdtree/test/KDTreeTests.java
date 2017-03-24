@@ -2,11 +2,11 @@ package clearcontrol.core.math.kdtree.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import clearcontrol.core.math.kdtree.KdTree;
 import clearcontrol.core.math.kdtree.NearestNeighborIterator;
 import clearcontrol.core.math.kdtree.SquareEuclideanDistanceFunction;
+
+import org.junit.Test;
 
 public class KDTreeTests
 {

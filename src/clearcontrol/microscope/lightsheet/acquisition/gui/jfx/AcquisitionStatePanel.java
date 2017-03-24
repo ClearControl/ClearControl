@@ -1,6 +1,11 @@
 package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 
 import java.util.concurrent.ConcurrentHashMap;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.layout.GridPane;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -11,11 +16,6 @@ import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.layout.GridPane;
 
 /**
  * Acquisition state panel

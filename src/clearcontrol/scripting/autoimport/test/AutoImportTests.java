@@ -2,10 +2,10 @@ package clearcontrol.scripting.autoimport.test;
 
 import java.io.IOException;
 
+import clearcontrol.scripting.autoimport.AutoImport;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-
-import clearcontrol.scripting.autoimport.AutoImport;
 
 public class AutoImportTests
 {

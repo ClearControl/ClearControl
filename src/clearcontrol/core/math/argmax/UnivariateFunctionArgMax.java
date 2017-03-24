@@ -1,12 +1,12 @@
 package clearcontrol.core.math.argmax;
 
+import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
+import gnu.trove.list.array.TDoubleArrayList;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
-
-import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
-import gnu.trove.list.array.TDoubleArrayList;
 
 public class UnivariateFunctionArgMax
 {

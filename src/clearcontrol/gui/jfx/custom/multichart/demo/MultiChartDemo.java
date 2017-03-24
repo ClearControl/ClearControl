@@ -1,6 +1,5 @@
 package clearcontrol.gui.jfx.custom.multichart.demo;
 
-import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -10,6 +9,8 @@ import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 
 public class MultiChartDemo extends Application
 {

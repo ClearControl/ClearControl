@@ -3,10 +3,10 @@ package clearcontrol.devices.signalamp.devices.srs.demo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
+
+import org.junit.Test;
 
 public class SIM900MainFrameDeviceDemo
 {

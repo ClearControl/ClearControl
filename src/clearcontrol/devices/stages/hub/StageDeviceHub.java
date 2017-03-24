@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public class StageDeviceHub extends VirtualDevice implements
                             StageDeviceInterface,

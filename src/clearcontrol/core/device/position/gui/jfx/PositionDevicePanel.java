@@ -1,12 +1,12 @@
 package clearcontrol.core.device.position.gui.jfx;
 
 import java.util.ArrayList;
+import javafx.application.Platform;
 
 import clearcontrol.core.device.position.PositionDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
-import javafx.application.Platform;
 
 public class PositionDevicePanel extends CustomGridPane
 {

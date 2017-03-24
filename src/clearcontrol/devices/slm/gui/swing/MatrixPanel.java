@@ -12,11 +12,11 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
+
+import org.ejml.data.DenseMatrix64F;
+import org.ejml.ops.CommonOps;
 
 public class MatrixPanel extends JPanel
 {

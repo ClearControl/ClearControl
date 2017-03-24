@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.VariableListener;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
@@ -15,6 +13,8 @@ import clearcontrol.stack.processor.AsynchronousPoolStackProcessorPipeline;
 import clearcontrol.stack.processor.StackProcessorInterface;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
+
+import org.junit.Test;
 
 public class AsynchronousPoolStackProcessorPipelineTests
 {

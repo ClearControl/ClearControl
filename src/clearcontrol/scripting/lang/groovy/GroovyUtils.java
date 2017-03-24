@@ -6,14 +6,14 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Map;
 
+import clearcontrol.scripting.autoimport.AutoImport;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
 import org.apache.commons.io.IOUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
-import clearcontrol.scripting.autoimport.AutoImport;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 
 public class GroovyUtils
 {

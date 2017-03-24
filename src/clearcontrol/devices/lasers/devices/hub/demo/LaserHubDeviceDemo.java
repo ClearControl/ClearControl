@@ -4,11 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.hub.LasertHubDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
+
+import org.junit.Test;
 
 /**
  * Laser hub demo

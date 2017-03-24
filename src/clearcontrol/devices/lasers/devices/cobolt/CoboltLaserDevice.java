@@ -1,5 +1,6 @@
 package clearcontrol.devices.lasers.devices.cobolt;
 
+import jssc.SerialPortException;
 import clearcontrol.com.serial.SerialDevice;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.variable.Variable;
@@ -11,7 +12,6 @@ import clearcontrol.devices.lasers.devices.cobolt.adapters.GetWorkingHoursAdapte
 import clearcontrol.devices.lasers.devices.cobolt.adapters.SetPowerOnOffAdapter;
 import clearcontrol.devices.lasers.devices.cobolt.adapters.protocol.ProtocolCobolt;
 import clearcontrol.devices.lasers.devices.cobolt.models.CoboltDeviceEnum;
-import jssc.SerialPortException;
 
 /**
  * Cobolt laser device

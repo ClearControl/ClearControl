@@ -2,9 +2,9 @@ package clearcontrol.devices.slm.zernike.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import clearcontrol.devices.slm.zernike.ZernikePolynomials;
+
+import org.junit.Test;
 
 public class ZernikePolynomialsTests
 {

@@ -7,14 +7,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.ejml.simple.SimpleMatrix;
-import org.junit.Test;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationData;
+import clearcontrol.microscope.lightsheet.calibrator.LightSheetPositioner;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import clearcontrol.microscope.lightsheet.calibrator.CalibrationData;
-import clearcontrol.microscope.lightsheet.calibrator.LightSheetPositioner;
+import org.ejml.simple.SimpleMatrix;
+import org.junit.Test;
 
 public class CalibrationDataTests
 {

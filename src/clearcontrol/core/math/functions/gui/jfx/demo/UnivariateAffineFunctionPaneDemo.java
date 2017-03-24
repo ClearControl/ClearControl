@@ -1,12 +1,13 @@
 package clearcontrol.core.math.functions.gui.jfx.demo;
 
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
-import clearcontrol.core.variable.Variable;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
+import clearcontrol.core.variable.Variable;
 
 public class UnivariateAffineFunctionPaneDemo extends Application
 {

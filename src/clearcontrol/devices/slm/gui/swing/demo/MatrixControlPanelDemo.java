@@ -5,12 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.ejml.data.DenseMatrix64F;
-import org.junit.Test;
-
+import net.miginfocom.swing.MigLayout;
 import clearcontrol.devices.slm.gui.swing.MatrixControlPanel;
 import clearcontrol.devices.slm.zernike.TransformMatrices;
-import net.miginfocom.swing.MigLayout;
+
+import org.ejml.data.DenseMatrix64F;
+import org.junit.Test;
 
 public class MatrixControlPanelDemo
 {

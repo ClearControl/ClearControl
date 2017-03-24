@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 /**
  * SplineInterpolationTable provides Spline interpolation for tables. Each

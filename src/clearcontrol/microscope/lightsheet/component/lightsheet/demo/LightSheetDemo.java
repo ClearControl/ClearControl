@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.junit.Test;
-
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
@@ -14,6 +12,8 @@ import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+
+import org.junit.Test;
 
 /**
  * Demo for lightsheet

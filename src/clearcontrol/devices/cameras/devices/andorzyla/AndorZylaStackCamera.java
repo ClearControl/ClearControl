@@ -7,8 +7,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.bridj.Pointer;
-
 import andorsdkj.AndorCamera;
 import andorsdkj.AndorSdkJ;
 import andorsdkj.AndorSdkJException;
@@ -24,6 +22,8 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.ContiguousMemoryInterface;
+
+import org.bridj.Pointer;
 
 /**
  * AndorZylaStackCamera class provides the opportunity to operate AndorZyla as a

@@ -10,13 +10,13 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
-
+import net.miginfocom.swing.MigLayout;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.swing.JSliderDouble;
-import net.miginfocom.swing.MigLayout;
+
+import org.ejml.data.DenseMatrix64F;
+import org.ejml.ops.CommonOps;
 
 public class MatrixControlPanel extends JPanel
 {

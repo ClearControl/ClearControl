@@ -1,10 +1,11 @@
 package clearcontrol.devices.optomech.filterwheels.gui.jfx.demo;
 
-import clearcontrol.devices.optomech.filterwheels.devices.sim.FilterWheelDeviceSimulator;
-import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.devices.optomech.filterwheels.devices.sim.FilterWheelDeviceSimulator;
+import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
 
 /**
  * Filter wheel panel demo

@@ -1,15 +1,15 @@
 package clearcontrol.gui.jfx.var.slider.demo;
 
 import java.util.concurrent.TimeUnit;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 public class VariableSliderDemo extends Application implements
                                 AsynchronousExecutorServiceAccess

@@ -6,11 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
+
+import org.junit.Test;
 
 public class ObjectVariableTests implements
                                  AsynchronousExecutorServiceAccess

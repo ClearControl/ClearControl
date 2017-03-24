@@ -1,17 +1,17 @@
 package net.imglib2.img.planar;
 
-import org.bridj.Pointer;
-
+import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import net.imglib2.img.basictypeaccess.offheap.AbstractOffHeapAccess;
+import net.imglib2.type.NativeType;
+import net.imglib2.util.Fraction;
 import coremem.ContiguousMemoryInterface;
 import coremem.exceptions.FreedException;
 import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.img.basictypeaccess.offheap.AbstractOffHeapAccess;
-import net.imglib2.type.NativeType;
-import net.imglib2.util.Fraction;
+
+import org.bridj.Pointer;
 
 public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess<A>>
                              extends PlanarImg<T, A>

@@ -1,9 +1,9 @@
 package clearcontrol.devices.slm.slms;
 
-import org.ejml.data.DenseMatrix64F;
-
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
+
+import org.ejml.data.DenseMatrix64F;
 
 public abstract class SpatialPhaseModulatorDeviceBase extends
                                                       VirtualDevice

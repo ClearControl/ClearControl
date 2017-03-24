@@ -9,6 +9,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
 import clearcontrol.gui.plots.PlotTab;
@@ -17,9 +20,6 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class AdaptationA extends NDIteratorAdaptationModule
                          implements AdaptationModuleInterface

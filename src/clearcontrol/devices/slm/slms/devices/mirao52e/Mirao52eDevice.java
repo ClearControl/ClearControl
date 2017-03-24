@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.ejml.data.DenseMatrix64F;
-
+import mirao52e.Mirao52eDeformableMirror;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.slm.slms.DeformableMirrorDevice;
-import mirao52e.Mirao52eDeformableMirror;
+
+import org.ejml.data.DenseMatrix64F;
 
 public class Mirao52eDevice extends DeformableMirrorDevice
                             implements LoggingInterface

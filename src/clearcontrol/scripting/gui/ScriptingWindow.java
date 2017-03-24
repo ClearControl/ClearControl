@@ -1,13 +1,13 @@
 package clearcontrol.scripting.gui;
 
 import java.awt.HeadlessException;
-
-import clearcontrol.scripting.engine.ScriptingEngine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+
+import clearcontrol.scripting.engine.ScriptingEngine;
 
 public class ScriptingWindow extends BorderPane
 {

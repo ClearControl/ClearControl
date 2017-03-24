@@ -4,14 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.staves.RampSteppingStave;
 import clearcontrol.devices.signalgen.staves.TriggerStave;
+
+import org.junit.Test;
 
 public class NIRIOScoreCompilerTests
 {

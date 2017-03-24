@@ -6,13 +6,13 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingPanel;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
+
+import org.junit.Test;
 
 public class ScriptingPanelDemo
 {

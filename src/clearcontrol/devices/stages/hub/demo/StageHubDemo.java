@@ -3,11 +3,11 @@ package clearcontrol.devices.stages.hub.demo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import clearcontrol.devices.stages.devices.ecc100.ECC100StageDevice;
 import clearcontrol.devices.stages.devices.smc100.SMC100StageDevice;
 import clearcontrol.devices.stages.hub.StageDeviceHub;
+
+import org.junit.Test;
 
 public class StageHubDemo
 {

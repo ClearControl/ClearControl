@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.devices.stages.devices.smc100.SMC100StageDevice;
+
+import org.junit.Test;
 
 public class SMC100DeviceDemo
 {

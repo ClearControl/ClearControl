@@ -1,12 +1,13 @@
 package clearcontrol.gui.jfx.var.togglebutton.demo;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 
 public class CustomToggleButtonDemo extends Application
 {

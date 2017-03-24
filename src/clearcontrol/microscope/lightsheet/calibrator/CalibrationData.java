@@ -4,18 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import clearcontrol.core.math.functions.PolynomialFunction;
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import clearcontrol.core.math.functions.PolynomialFunction;
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
 public class CalibrationData
 {

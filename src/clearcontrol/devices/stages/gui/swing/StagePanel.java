@@ -2,11 +2,11 @@ package clearcontrol.devices.stages.gui.swing;
 
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import clearcontrol.core.variable.VariableListener;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.gui.swing.JSliderDouble;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-import net.miginfocom.swing.MigLayout;
 
 public class StagePanel extends JPanel
 {

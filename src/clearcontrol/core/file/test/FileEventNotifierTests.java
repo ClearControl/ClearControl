@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Formatter;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.file.FileEventNotifier;
 import clearcontrol.core.file.FileEventNotifier.FileEventKind;
 import clearcontrol.core.file.FileEventNotifierListener;
+
+import org.junit.Test;
 
 public class FileEventNotifierTests
 {

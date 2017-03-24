@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.units.Magnitude;
+
+import org.junit.Test;
 
 public class ThreadUtilsTests
 {

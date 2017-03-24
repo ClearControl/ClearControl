@@ -2,17 +2,17 @@ package clearcontrol.microscope.lightsheet.calibrator.utils;
 
 import static java.lang.Math.max;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.fragmented.FragmentedMemoryInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class ImageAnalysisUtils
 {

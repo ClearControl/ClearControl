@@ -1,10 +1,10 @@
 package clearcontrol.devices.sensors.devices.tc01.demo;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.VariableGetListener;
 import clearcontrol.devices.sensors.devices.tc01.NIThermoCoupleType;
 import clearcontrol.devices.sensors.devices.tc01.TC01;
+
+import org.junit.Test;
 
 public class TC01Demo
 {

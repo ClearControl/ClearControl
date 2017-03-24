@@ -6,10 +6,10 @@ import static java.lang.Math.min;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
-
 import clearcontrol.core.math.argmax.methods.GaussianFitArgMaxFinder;
 import clearcontrol.core.math.argmax.methods.ParabolaFitArgMaxFinder;
+
+import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 
 public class RandomizedDataGaussianFitter
 {

@@ -1,12 +1,5 @@
 package clearcontrol.devices.stages.gui.jfx;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
-import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -20,6 +13,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.stages.StageDeviceInterface;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 
 /**
  * Stage 3D Control

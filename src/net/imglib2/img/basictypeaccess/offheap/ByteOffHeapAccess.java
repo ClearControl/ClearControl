@@ -1,9 +1,9 @@
 package net.imglib2.img.basictypeaccess.offheap;
 
-import coremem.ContiguousMemoryInterface;
-import coremem.offheap.OffHeapMemory;
 import net.imglib2.img.basictypeaccess.ByteAccess;
 import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
+import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 
 public class ByteOffHeapAccess extends AbstractOffHeapAccess
                                implements

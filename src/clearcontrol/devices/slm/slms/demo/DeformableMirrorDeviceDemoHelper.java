@@ -1,9 +1,9 @@
 package clearcontrol.devices.slm.slms.demo;
 
+import clearcontrol.devices.slm.slms.DeformableMirrorDevice;
+
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
-
-import clearcontrol.devices.slm.slms.DeformableMirrorDevice;
 
 public class DeformableMirrorDeviceDemoHelper
 {

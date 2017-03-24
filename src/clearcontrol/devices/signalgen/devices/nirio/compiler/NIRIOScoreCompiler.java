@@ -8,6 +8,7 @@ import static java.lang.Math.toIntExact;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import nirioj.direttore.Direttore;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.movement.MovementInterface;
@@ -17,7 +18,6 @@ import clearcontrol.devices.signalgen.staves.IntervalStave;
 import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.devices.signalgen.staves.ZeroStave;
 import coremem.buffers.ContiguousBuffer;
-import nirioj.direttore.Direttore;
 
 public class NIRIOScoreCompiler implements
                                 AsynchronousExecutorServiceAccess

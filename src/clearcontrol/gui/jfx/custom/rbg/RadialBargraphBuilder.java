@@ -2,9 +2,6 @@ package clearcontrol.gui.jfx.custom.rbg;
 
 import java.util.HashMap;
 import java.util.List;
-
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.Section;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -18,6 +15,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Dimension2D;
 import javafx.scene.paint.Color;
+
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.Section;
 
 /**
  * Created by moon on 1/29/16.

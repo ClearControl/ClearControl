@@ -1,10 +1,10 @@
 package clearcontrol.devices.cameras.devices.andorzyla.demo;
 
-import org.junit.Test;
-
 import andorsdkj.AndorSdkJException;
 import andorsdkj.enums.TriggerMode;
 import clearcontrol.devices.cameras.devices.andorzyla.AndorZylaStackCamera;
+
+import org.junit.Test;
 
 public class AndorZylaStackCameraTests
 {

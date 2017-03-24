@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.log.LoggingInterface;
+
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-
-import clearcontrol.core.log.LoggingInterface;
 
 public class FileEventNotifier implements
                                AutoCloseable,

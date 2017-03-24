@@ -1,10 +1,10 @@
 package clearcontrol.devices.slm.slms;
 
-import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.slm.zernike.TransformMatrices;
+
+import org.ejml.data.DenseMatrix64F;
+import org.ejml.ops.CommonOps;
 
 public class ZernickeSpatialPhaseModulatorDevice extends
                                                  SpatialPhaseModulatorDeviceBase

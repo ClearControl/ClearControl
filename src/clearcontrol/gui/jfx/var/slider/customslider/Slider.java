@@ -28,13 +28,6 @@ package clearcontrol.gui.jfx.var.slider.customslider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.sun.javafx.css.converters.BooleanConverter;
-import com.sun.javafx.css.converters.EnumConverter;
-import com.sun.javafx.css.converters.SizeConverter;
-import com.sun.javafx.util.Utils;
-
-import clearcontrol.gui.jfx.var.slider.customslider.skin.SliderSkin;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
@@ -58,6 +51,13 @@ import javafx.scene.AccessibleRole;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.StringConverter;
+
+import clearcontrol.gui.jfx.var.slider.customslider.skin.SliderSkin;
+
+import com.sun.javafx.css.converters.BooleanConverter;
+import com.sun.javafx.css.converters.EnumConverter;
+import com.sun.javafx.css.converters.SizeConverter;
+import com.sun.javafx.util.Utils;
 
 /**
  * The Slider Control is used to display a continuous or discrete range of valid

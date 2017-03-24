@@ -1,11 +1,11 @@
 package clearcontrol.devices.slm.slms.devices.sim;
 
-import org.ejml.data.DenseMatrix64F;
-
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.slm.slms.SpatialPhaseModulatorDeviceBase;
+
+import org.ejml.data.DenseMatrix64F;
 
 public class SpatialPhaseModulatorDeviceSimulator extends
                                                   SpatialPhaseModulatorDeviceBase

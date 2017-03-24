@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultCaret;
 
-import clearcontrol.core.gui.LineLimitedDocumentFilter;
 import net.miginfocom.swing.MigLayout;
+import clearcontrol.core.gui.LineLimitedDocumentFilter;
 
 class LogPanel extends JPanel
 {

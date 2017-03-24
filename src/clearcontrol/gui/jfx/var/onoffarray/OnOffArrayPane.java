@@ -1,9 +1,5 @@
 package clearcontrol.gui.jfx.var.onoffarray;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
-import eu.hansolo.enzo.common.SymbolType;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
@@ -13,6 +9,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
+import eu.hansolo.enzo.common.SymbolType;
 
 public class OnOffArrayPane extends CustomGridPane
 {

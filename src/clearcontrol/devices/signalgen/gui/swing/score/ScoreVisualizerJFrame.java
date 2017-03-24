@@ -6,9 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
-import net.miginfocom.swing.MigLayout;
 
 public class ScoreVisualizerJFrame extends JFrame
 {

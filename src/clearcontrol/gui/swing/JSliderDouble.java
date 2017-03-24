@@ -21,8 +21,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import clearcontrol.core.variable.Variable;
 import net.miginfocom.swing.MigLayout;
+import clearcontrol.core.variable.Variable;
 
 public class JSliderDouble extends JPanel
 {

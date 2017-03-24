@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.persistence.DoubleVariableAsFile;
 import clearcontrol.core.variable.persistence.ObjectVariableAsFile;
 import clearcontrol.core.variable.persistence.VariableBundleAsFile;
+
+import org.junit.Test;
 
 public class VariableAsFileTests
 {

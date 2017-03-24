@@ -2,9 +2,6 @@ package clearcontrol.devices.stages.devices.ecc100;
 
 import java.util.Collection;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
@@ -22,6 +19,10 @@ import clearcontrol.devices.stages.devices.ecc100.variables.PositionTargetVariab
 import clearcontrol.devices.stages.devices.ecc100.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.ecc100.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.ecc100.variables.StopVariable;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import ecc100.ECC100Axis;
 import ecc100.ECC100Controller;
 

@@ -1,8 +1,8 @@
 language: java
-script: "./gradlew build -x findbugsMain -x findbugsTest -x spotlessJava --debug --full-stacktrace"
+script: "./gradlew build  -x spotlessJava --debug --full-stacktrace"
 jdk:
   - oraclejdk8
-install: ./gradlew assemble -x findbugsMain -x findbugsTest -x spotlessJava --stacktrace
+install: ./gradlew assemble -x spotlessJava --stacktrace
 
 sudo: false
 addons:

@@ -1,12 +1,12 @@
 package clearcontrol.devices.slm.slms.devices.alpao;
 
-import org.ejml.data.DenseMatrix64F;
-
 import asdk.AlpaoDeformableMirror;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.slm.slms.DeformableMirrorDevice;
+
+import org.ejml.data.DenseMatrix64F;
 
 public class AlpaoDMDevice extends DeformableMirrorDevice
                            implements LoggingInterface

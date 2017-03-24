@@ -1,12 +1,13 @@
 package clearcontrol.gui.jfx.var.checkbox;
 
-import clearcontrol.core.variable.Variable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+
+import clearcontrol.core.variable.Variable;
 
 public class VariableCheckBox extends HBox
 {

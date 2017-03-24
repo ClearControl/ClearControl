@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-
-import org.dockfx.DockNode;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Node;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.name.NameableInterface;
@@ -25,8 +25,8 @@ import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.Window;
 import halcyon.view.TreePanel;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Node;
+
+import org.dockfx.DockNode;
 
 public class HalcyonGUIGenerator implements LoggingInterface
 {

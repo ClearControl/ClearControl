@@ -8,15 +8,15 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.junit.Test;
-
+import net.miginfocom.swing.MigLayout;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizer;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.RampContinuousStave;
 import clearcontrol.devices.signalgen.staves.SinusStave;
-import net.miginfocom.swing.MigLayout;
+
+import org.junit.Test;
 
 public class ScoreVisualizerDemo
 {

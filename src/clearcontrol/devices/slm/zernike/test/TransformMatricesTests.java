@@ -2,11 +2,11 @@ package clearcontrol.devices.slm.zernike.test;
 
 import static org.junit.Assert.assertEquals;
 
+import clearcontrol.devices.slm.zernike.TransformMatrices;
+
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 import org.junit.Test;
-
-import clearcontrol.devices.slm.zernike.TransformMatrices;
 
 public class TransformMatricesTests
 {

@@ -1,12 +1,12 @@
 package clearcontrol.stack;
 
-import org.bridj.Pointer;
-
-import coremem.ContiguousMemoryInterface;
-import coremem.fragmented.FragmentedMemoryInterface;
 import net.imglib2.img.NativeImg;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import coremem.ContiguousMemoryInterface;
+import coremem.fragmented.FragmentedMemoryInterface;
+
+import org.bridj.Pointer;
 
 public class EmptyStack extends StackBase implements StackInterface
 {

@@ -1,11 +1,12 @@
 package clearcontrol.devices.stages.gui.jfx.demo;
 
-import clearcontrol.devices.stages.StageType;
-import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
-import clearcontrol.devices.stages.gui.jfx.XYZRStageDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.devices.stages.StageType;
+import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
+import clearcontrol.devices.stages.gui.jfx.XYZRStageDevicePanel;
 
 public class XYZRStageDevicePanelDemo extends Application
 {

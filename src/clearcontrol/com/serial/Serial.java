@@ -5,13 +5,13 @@ import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
-import clearcontrol.core.log.LoggingInterface;
-import gnu.trove.list.array.TByteArrayList;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import clearcontrol.core.log.LoggingInterface;
+import gnu.trove.list.array.TByteArrayList;
 
 public class Serial implements SerialInterface, LoggingInterface
 {

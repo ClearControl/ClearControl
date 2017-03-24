@@ -3,6 +3,10 @@ package clearcontrol.gui.jfx.other.recycler.demo;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
@@ -13,10 +17,6 @@ import coremem.recycling.RecyclableFactoryInterface;
 import coremem.recycling.RecyclableInterface;
 import coremem.recycling.RecyclerInterface;
 import coremem.recycling.RecyclerRequestInterface;
-import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 public class RecyclerPaneDemo extends Application implements
                               AsynchronousExecutorServiceAccess

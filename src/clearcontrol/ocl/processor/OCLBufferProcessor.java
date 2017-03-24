@@ -2,11 +2,11 @@ package clearcontrol.ocl.processor;
 
 import java.nio.ShortBuffer;
 
-import org.bridj.Pointer;
-
 import com.nativelibs4java.opencl.CLBuffer;
 import com.nativelibs4java.opencl.CLEvent;
 import com.nativelibs4java.opencl.CLMem.Usage;
+
+import org.bridj.Pointer;
 
 public class OCLBufferProcessor extends OCLProcessor
 {

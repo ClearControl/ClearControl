@@ -6,12 +6,12 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.queue.InvalidQueueException;
 import clearcontrol.core.variable.queue.QueueingMode;
 import clearcontrol.core.variable.queue.VariableStateQueues;
+
+import org.junit.Test;
 
 /**
  * Variable state queue tests

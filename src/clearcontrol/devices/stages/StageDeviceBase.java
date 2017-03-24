@@ -2,12 +2,12 @@ package clearcontrol.devices.stages;
 
 import java.util.ArrayList;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public abstract class StageDeviceBase extends VirtualDevice implements
                                       StageDeviceInterface,

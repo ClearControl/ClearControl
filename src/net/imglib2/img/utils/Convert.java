@@ -2,10 +2,10 @@ package net.imglib2.img.utils;
 
 import java.io.FileOutputStream;
 
-import io.scif.img.ImgOpener;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import io.scif.img.ImgOpener;
 
 /**
  * Created by dibrov on 11/03/17.

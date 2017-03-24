@@ -1,11 +1,11 @@
 package clearcontrol.devices.slm.slms;
 
-import org.ejml.data.DenseMatrix64F;
-
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
+
+import org.ejml.data.DenseMatrix64F;
 
 public interface SpatialPhaseModulatorDeviceInterface extends
                                                       OpenCloseDeviceInterface,

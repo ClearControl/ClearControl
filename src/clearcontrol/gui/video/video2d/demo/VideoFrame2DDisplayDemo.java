@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.swing.JButtonBoolean;
@@ -20,6 +18,8 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
+
+import org.junit.Test;
 
 public class VideoFrame2DDisplayDemo
 {

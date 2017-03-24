@@ -2,12 +2,12 @@ package clearcontrol.devices.signalgen.devices.nirio;
 
 import static java.lang.Math.toIntExact;
 
+import nirioj.direttore.Direttore;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
-import nirioj.direttore.Direttore;
 
 public class NIRIOSignalGenerator extends SignalGeneratorBase
                                   implements SignalGeneratorInterface

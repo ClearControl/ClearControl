@@ -1,13 +1,13 @@
 package clearcontrol.devices.cameras.devices.andorzyla.demo;
 
-import org.junit.Test;
-
 import andorsdkj.AndorSdkJ;
 import andorsdkj.enums.TriggerMode;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.andorzyla.AndorZylaStackCamera;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.stack.StackInterface;
+
+import org.junit.Test;
 
 public class AndorZylaCameraDemo
 {
