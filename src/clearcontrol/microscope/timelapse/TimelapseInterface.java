@@ -12,9 +12,7 @@ public interface TimelapseInterface
 {
 
   /**
-   * Returns timelapse timer <<<<<<< Updated upstream
-   * 
-   * ======= >>>>>>> Stashed changes
+   * Returns timelapse timer
    * 
    * @return timelapse timer
    */
