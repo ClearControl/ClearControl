@@ -4,12 +4,10 @@ import static java.lang.Math.toIntExact;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.device.queue.StateQueueDeviceInterface;
-import clearcontrol.device.switches.SwitchingDeviceInterface;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.hardware.lasers.LaserDeviceInterface;
-import clearcontrol.hardware.stages.StageDeviceInterface;
+import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.switches.SwitchingDeviceInterface;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -20,6 +18,11 @@ import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.Timelapse;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 
+/**
+ * Lightsheet microscope class
+ *
+ * @author royer
+ */
 public class LightSheetMicroscope extends MicroscopeBase implements
                                   StateQueueDeviceInterface,
                                   LightSheetMicroscopeInterface
@@ -27,13 +30,26 @@ public class LightSheetMicroscope extends MicroscopeBase implements
 
   private SwitchingDeviceInterface mLightSheetOpticalSwitch;
   private AcquisitionStateManager mAcquisitionStateManager;
-  private int mStageXDOFIndex, mStageYDOFIndex, mStageZDOFIndex;
 
+  /**
+   * Instanciates a lightsheet microscope with a given name.
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public LightSheetMicroscope(String pDeviceName)
   {
     super(pDeviceName);
   }
 
+  /**
+   * Adds an interactive acquisition device for a given acquisition state
+   * manager.
+   * 
+   * @param pAcquisitionStateManager
+   *          acquisition state manager
+   * @return interactive acquisition
+   */
   public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager pAcquisitionStateManager)
   {
     InteractiveAcquisition lInteractiveAcquisition =
@@ -45,6 +61,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return lInteractiveAcquisition;
   }
 
+  /**
+   * Add calibrator
+   * 
+   * @return calibrator
+   */
   public Calibrator addCalibrator()
   {
     Calibrator lCalibrator = new Calibrator(this);
@@ -52,6 +73,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return lCalibrator;
   }
 
+  /**
+   * Adds acquisition state manager
+   * 
+   * @return acquisition manager
+   */
   public AcquisitionStateManager addAcquisitionStateManager()
   {
     mAcquisitionStateManager = new AcquisitionStateManager(this);
@@ -59,6 +85,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return mAcquisitionStateManager;
   }
 
+  /**
+   * Adds timelapse
+   * 
+   * @return timelapse
+   */
   public TimelapseInterface addTimelapse()
   {
     TimelapseInterface lTimelapseInterface = new Timelapse();
@@ -75,6 +106,12 @@ public class LightSheetMicroscope extends MicroscopeBase implements
   	return lAutoPilot;
   }/**/
 
+  /**
+   * Sets lightsheet optical switch device
+   * 
+   * @param pLightSheetOpticalSwitch
+   *          lightsheet optical switch device
+   */
   public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)
   {
     mLightSheetOpticalSwitch = pLightSheetOpticalSwitch;
@@ -85,6 +122,9 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return mLightSheetOpticalSwitch;
   }
 
+  /**
+   * Sends stacks to null.
+   */
   public void sendStacksToNull()
   {
     for (int i =
@@ -174,6 +214,9 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return toIntExact(lExposureInProvidedUnit);
   };
 
+  /**
+   * Sets to zero (default) all lightsheet microscope parameters.
+   */
   public void zero()
   {
     for (int i =
@@ -341,7 +384,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getXVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -359,7 +403,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getYVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -395,7 +440,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getAlphaInDegreesVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -413,7 +459,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getBetaInDegreesVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -431,7 +478,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getWidthVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -449,7 +497,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getHeightVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -515,7 +564,8 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return getDeviceLists().getDevice(LightSheetInterface.class,
                                       pLightSheetIndex)
                            .getPowerVariable()
-                           .get();
+                           .get()
+                           .doubleValue();
   }
 
   @Override
@@ -592,6 +642,11 @@ public class LightSheetMicroscope extends MicroscopeBase implements
                            .get();
   }
 
+  /**
+   * Returns the number of degrees of freedom of this lightsheet microscope.
+   * 
+   * @return numebr of DOFs
+   */
   public int getNumberOfDOF()
   {
     final int lNumberOfLightSheetsDOFs =
@@ -609,88 +664,6 @@ public class LightSheetMicroscope extends MicroscopeBase implements
   {
     return String.format("LightSheetMicroscope: \n%s\n",
                          mDeviceLists.toString());
-  }
-
-  @Override
-  public StageDeviceInterface getMainXYZRStage()
-  {
-    return mMainXYZRStage;
-  }
-
-  @Override
-  public void setStageX(double pXValue)
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageXDOFIndex);
-    if (lTargetPositionVariable != null)
-      lTargetPositionVariable.set(pXValue);
-  }
-
-  @Override
-  public void setStageY(double pYValue)
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageYDOFIndex);
-    if (lTargetPositionVariable != null)
-      lTargetPositionVariable.set(pYValue);
-  }
-
-  @Override
-  public void setStageZ(double pZValue)
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageZDOFIndex);
-    if (lTargetPositionVariable != null)
-      lTargetPositionVariable.set(pZValue);
-  }
-
-  @Override
-  public void setStageR(double pZValue)
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageZDOFIndex);
-    if (lTargetPositionVariable != null)
-      lTargetPositionVariable.set(pZValue);
-  }
-
-  @Override
-  public double getStageX()
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageXDOFIndex);
-    if (lTargetPositionVariable != null)
-      return lTargetPositionVariable.get();
-    return 0;
-  }
-
-  @Override
-  public double getStageY()
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageYDOFIndex);
-    if (lTargetPositionVariable != null)
-      return lTargetPositionVariable.get();
-    return 0;
-  }
-
-  @Override
-  public double getStageZ()
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageZDOFIndex);
-    if (lTargetPositionVariable != null)
-      return lTargetPositionVariable.get();
-    return 0;
-  }
-
-  @Override
-  public double getStageR()
-  {
-    Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mStageZDOFIndex);
-    if (lTargetPositionVariable != null)
-      return lTargetPositionVariable.get();
-    return 0;
   }
 
 }

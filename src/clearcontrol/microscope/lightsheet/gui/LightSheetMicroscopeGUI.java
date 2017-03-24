@@ -19,9 +19,25 @@ import clearcontrol.microscope.timelapse.gui.jfx.TimelapsePanel;
 import clearcontrol.microscope.timelapse.gui.jfx.TimelapseToolbar;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 
+/**
+ * Lightsheet microscope Ggraphical User Interface (GUI)
+ *
+ * @author royer
+ */
 public class LightSheetMicroscopeGUI extends MicroscopeGUI
 {
 
+  /**
+   * Instanciates a lightsheet microscope GUI given a lightsheet microscope and
+   * two flags determining whether to setup 2D and 3D displays.
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   * @param p2DDisplay
+   *          true -> setup 2D display
+   * @param p3DDisplay
+   *          true -> setup 3D display
+   */
   public LightSheetMicroscopeGUI(LightSheetMicroscope pLightSheetMicroscope,
                                  boolean p2DDisplay,
                                  boolean p3DDisplay)

@@ -1,13 +1,12 @@
 package clearcontrol.microscope.timelapse.gui.jfx;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
+import org.dockfx.DockNode;
 
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
-
-import org.dockfx.DockNode;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 
 public class TimelapseToolbar extends DockNode
 {

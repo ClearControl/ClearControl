@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet.si;
 
-import clearcontrol.hardware.signalgen.staves.StaveInterface;
+import clearcontrol.devices.signalgen.staves.StaveInterface;
 
 public interface StructuredIlluminationPatternInterface
 {

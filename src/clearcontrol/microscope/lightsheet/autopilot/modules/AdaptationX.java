@@ -33,8 +33,13 @@ public class AdaptationX extends NDIteratorAdaptationModule
                                           lLSM.getDeviceLists()
                                               .getDevice(LightSheetInterface.class,
                                                          pLightSheetIndex);
-    double lMinX = lLightSheetDevice.getXVariable().getMin();
-    double lMaxX = lLightSheetDevice.getXVariable().getMax();
+
+    double lMinX = lLightSheetDevice.getXVariable()
+                                    .getMin()
+                                    .doubleValue();
+    double lMaxX = lLightSheetDevice.getXVariable()
+                                    .getMax()
+                                    .doubleValue();
     double lStepX = (lMaxX - lMinX) / (pNumberOfSamples - 1);
 
     double lCurrentX = lLSM.getIX(pLightSheetIndex);
@@ -88,10 +93,14 @@ public class AdaptationX extends NDIteratorAdaptationModule
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);
 
+    /*
+     * 
+     *    COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
     getAdaptator().getNewAcquisitionState()
                   .setAtControlPlaneIX(pControlPlaneIndex,
                                        pLightSheetIndex,
                                        pArgMaxList.get(lBestDetectioArm));
+    /**/
   }
 
 }

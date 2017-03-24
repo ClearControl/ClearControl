@@ -1,16 +1,22 @@
 package net.imglib2.img.planar;
 
-import net.imglib2.exception.IncompatibleTypeException;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.NativeImgFactory;
-import net.imglib2.img.basictypeaccess.offheap.*;
-import net.imglib2.type.NativeType;
-import net.imglib2.util.Fraction;
 import coremem.ContiguousMemoryInterface;
 import coremem.SafeContiguousMemory;
 import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
+import net.imglib2.exception.IncompatibleTypeException;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.NativeImg;
+import net.imglib2.img.NativeImgFactory;
+import net.imglib2.img.basictypeaccess.offheap.ByteOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.CharOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.DoubleOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.FloatOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.IntOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.LongOffHeapAccess;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.type.NativeType;
+import net.imglib2.util.Fraction;
 
 public class OffHeapPlanarImgFactory<T extends NativeType<T>>
                                     extends NativeImgFactory<T>

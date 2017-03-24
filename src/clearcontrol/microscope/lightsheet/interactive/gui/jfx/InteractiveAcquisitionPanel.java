@@ -15,6 +15,13 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
 
   private InteractiveAcquisition mInteractiveAcquisition;
 
+  /**
+   * Instanciates an interactive acquisition panel for a given interactive
+   * acquisition device
+   * 
+   * @param pInteractiveAcquisition
+   *          interactive acquisition
+   */
   public InteractiveAcquisitionPanel(InteractiveAcquisition pInteractiveAcquisition)
   {
     super();

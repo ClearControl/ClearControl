@@ -4,11 +4,16 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.task.LoopTaskDevice;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 
+/**
+ * Standard Timelapse implementation
+ *
+ * @author royer
+ */
 public class Timelapse extends LoopTaskDevice
                        implements TimelapseInterface
 {
@@ -52,17 +57,27 @@ public class Timelapse extends LoopTaskDevice
                                                    new Variable<Long>("TimePointCounter",
                                                                       1L);
 
+  /**
+   * Instanciates a timelapse with a given timelapse timer
+   * 
+   * @param pTimelapseTimer
+   *          timelapse timer
+   */
   public Timelapse(TimelapseTimerInterface pTimelapseTimer)
   {
     super("Timelapse");
     mTimelapseTimer.set(pTimelapseTimer);
   }
 
+  /**
+   * Instanciates a timelapse with a fixed interval timer
+   */
   public Timelapse()
   {
     this(new FixedIntervalTimelapseTimer());
   }
 
+  @Override
   public Variable<TimelapseTimerInterface> getTimelapseTimer()
   {
     return mTimelapseTimer;

@@ -4,6 +4,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import clearcontrol.core.concurrent.thread.ThreadUtils;
+
+/**
+ *
+ *
+ * @author royer
+ */
 public interface WaitingInterface
 {
 
@@ -11,6 +18,7 @@ public interface WaitingInterface
    * Waits until call to Callable returns true.
    * 
    * @param pCallable
+   *          condition to wait for
    * @return last boolean state returned
    */
   default public Boolean waitFor(Callable<Boolean> pCallable)
@@ -33,33 +41,56 @@ public interface WaitingInterface
                                  TimeUnit pTimeUnit,
                                  Callable<Boolean> pCallable)
   {
-
     synchronized (this)
     {
-      try
+      return waitForStatic(pTimeOut, pTimeUnit, pCallable);
+    }
+  }
+
+  /**
+   * Waits until call to Callable returns true. Static version.
+   * 
+   * @param pCallable
+   *          condition to wait for
+   * @return last boolean state returned
+   */
+  public static Boolean waitForStatic(Callable<Boolean> pCallable)
+  {
+    return waitForStatic(Long.MAX_VALUE, TimeUnit.DAYS, pCallable);
+  }
+
+  /**
+   * Waits until call to Callable returns true. Static version.
+   * 
+   * @param pTimeOut
+   *          time out
+   * @param pTimeUnit
+   *          time out unit
+   * @param pCallable
+   *          callable returning boolean state
+   * @return last boolean state returned
+   */
+  public static Boolean waitForStatic(Long pTimeOut,
+                                      TimeUnit pTimeUnit,
+                                      Callable<Boolean> pCallable)
+  {
+    try
+    {
+      AtomicLong lCounter = new AtomicLong();
+      long lTimeOutInMillis =
+                            pTimeUnit == null ? 0
+                                              : pTimeUnit.toMillis(pTimeOut);
+      while (!pCallable.call()
+             && (pTimeOut == null
+                 || lCounter.incrementAndGet() < lTimeOutInMillis))
       {
-        AtomicLong lCounter = new AtomicLong();
-        long lTimeOutInMillis =
-                              pTimeUnit == null ? 0
-                                                : pTimeUnit.toMillis(pTimeOut);
-        while (!pCallable.call()
-               && (pTimeOut == null
-                   || lCounter.incrementAndGet() < lTimeOutInMillis))
-        {
-          try
-          {
-            wait(1);
-          }
-          catch (InterruptedException e)
-          {
-          }
-        }
-        return pCallable.call();
+        ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
       }
-      catch (Exception e)
-      {
-        throw new RuntimeException(e);
-      }
+      return pCallable.call();
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException(e);
     }
   }
 }

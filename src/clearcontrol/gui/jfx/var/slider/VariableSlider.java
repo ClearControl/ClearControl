@@ -16,6 +16,13 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 
+/**
+ * Variable slider.
+ *
+ * @param <T>
+ *          number type
+ * @author royer
+ */
 public class VariableSlider<T extends Number> extends HBox
 {
 
@@ -28,8 +35,24 @@ public class VariableSlider<T extends Number> extends HBox
   private Variable<T> mMax;
   private Variable<T> mGranularity;
   private boolean mUpdateIfChanging = false;
-  private T mTicks;
+  private double mTicks;
 
+  /**
+   * Instanciates a variable slider
+   * 
+   * @param pSliderName
+   *          slider name
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          number of major ticks
+   */
   public VariableSlider(String pSliderName,
                         Variable<T> pVariable,
                         T pMin,
@@ -70,7 +93,15 @@ public class VariableSlider<T extends Number> extends HBox
     mMin = pMin;
     mMax = pMax;
     mGranularity = pGranularity;
-    mTicks = pTicks;
+
+    if (pTicks == null)
+    {
+      mTicks =
+             abs(mMax.get().doubleValue() - mMin.get().doubleValue())
+               / 10;
+    }
+    else
+      mTicks = pTicks.doubleValue();
 
     setAlignment(Pos.CENTER);
     setPadding(new Insets(25, 25, 25, 25));
@@ -86,10 +117,11 @@ public class VariableSlider<T extends Number> extends HBox
     getTextField().setPrefWidth(7 * 15);
     getSlider().setPrefWidth(14 * 15);
 
-    updateSliderMinMax(pMin, pMax, pTicks);
+    updateSliderMinMax(pMin, pMax);
 
-    getSlider().setMajorTickUnit(pTicks.doubleValue());
-    getSlider().setShowTickMarks(true);
+    getSlider().setMajorTickUnit(mTicks);
+    getSlider().setMinorTickCount(10);
+    getSlider().setShowTickMarks(false);
     getSlider().setShowTickLabels(true);
     if (pGranularity != null && pGranularity.get() != null)
       getSlider().setBlockIncrement(pGranularity.get().doubleValue());
@@ -97,19 +129,19 @@ public class VariableSlider<T extends Number> extends HBox
     pMin.addSetListener((o, n) -> {
       if (!o.equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMin, pMax, pTicks);
+          updateSliderMinMax(pMin, pMax);
         });
     });
 
     pMax.addSetListener((o, n) -> {
       if (!o.equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMin, pMax, pTicks);
+          updateSliderMinMax(pMin, pMax);
         });
     });
 
     Platform.runLater(() -> {
-      updateSliderMinMax(pMin, pMax, pTicks);
+      updateSliderMinMax(pMin, pMax);
     });
 
     getTextField().textProperty().addListener((obs, o, n) -> {
@@ -210,11 +242,10 @@ public class VariableSlider<T extends Number> extends HBox
       setTextFieldLongValue(n);
   }
 
-  private void updateSliderMinMax(Variable<T> pMin,
-                                  Variable<T> pMax,
-                                  T pTicks)
+  private void updateSliderMinMax(Variable<T> pMin, Variable<T> pMax)
   {
-    double lTicksInterval = mTicks.doubleValue();
+
+    double lTicksInterval = mTicks;
     if (lTicksInterval == 0)
     {
       double lRange = abs(pMax.get().doubleValue()
@@ -249,13 +280,13 @@ public class VariableSlider<T extends Number> extends HBox
 
     if (Double.isInfinite(mMin.get().doubleValue())
         || Double.isNaN(mMin.get().doubleValue()))
-      getSlider().setMin(-10 * pTicks.doubleValue());
+      getSlider().setMin(-10 * mTicks);
     else
       getSlider().setMin(lEffectiveSliderMin);
 
     if (Double.isInfinite(mMax.get().doubleValue())
         || Double.isNaN(mMax.get().doubleValue()))
-      getSlider().setMax(10 * pTicks.doubleValue());
+      getSlider().setMax(10 * mTicks);
     else
       getSlider().setMax(lEffectiveSliderMax);
   }

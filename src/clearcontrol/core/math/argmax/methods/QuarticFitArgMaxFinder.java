@@ -1,14 +1,14 @@
 package clearcontrol.core.math.argmax.methods;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
+
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
-
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.fitting.PolynomialCurveFitter;
-import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
 public class QuarticFitArgMaxFinder extends Fitting1DBase implements
                                     ArgMaxFinder1DInterface,

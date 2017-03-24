@@ -1,6 +1,12 @@
 package clearcontrol.gui.jfx.other.recycler;
 
 import java.util.concurrent.CountDownLatch;
+
+import javax.swing.SwingUtilities;
+
+import clearcontrol.core.string.MemorySizeFormat;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import coremem.recycling.RecyclerInterface;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -10,12 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.stage.Stage;
-
-import javax.swing.SwingUtilities;
-
-import clearcontrol.core.string.MemorySizeFormat;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import coremem.recycling.RecyclerInterface;
 
 public class RecyclerPanel extends CustomGridPane
 {

@@ -3,6 +3,13 @@ package clearcontrol.gui.jfx.custom.iconswitch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.sun.javafx.css.converters.PaintConverter;
+
+import clearcontrol.gui.jfx.custom.iconswitch.skin.IconSwitchSkin;
+import eu.hansolo.enzo.common.Symbol;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.onoffswitch.SelectionEvent;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;
 import javafx.beans.property.ObjectProperty;
@@ -22,14 +29,6 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
-import clearcontrol.gui.jfx.custom.iconswitch.skin.IconSwitchSkin;
-
-import com.sun.javafx.css.converters.PaintConverter;
-
-import eu.hansolo.enzo.common.Symbol;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.SelectionEvent;
 
 /**
  * User: hansolo Date: 10.10.13 Time: 08:41

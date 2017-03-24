@@ -9,6 +9,11 @@ import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.stacks.gui.jfx.StackRecyclerManagerPanel;
 
+/**
+ * 
+ *
+ * @author royer
+ */
 public class StackRecyclerManagerPanelDemo extends Application
                                            implements
                                            AsynchronousExecutorServiceAccess
@@ -40,6 +45,12 @@ public class StackRecyclerManagerPanelDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

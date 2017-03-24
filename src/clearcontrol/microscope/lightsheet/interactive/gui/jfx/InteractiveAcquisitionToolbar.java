@@ -19,10 +19,22 @@ import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
 
 import org.dockfx.DockNode;
 
+/**
+ * Interactive acquiistion toolbar
+ *
+ * @author royer
+ */
 public class InteractiveAcquisitionToolbar extends DockNode
 {
   private GridPane mGridPane;
 
+  /**
+   * Instanciates an interactive acquisition toolbar given an interaction
+   * acquisition device
+   * 
+   * @param pInteractiveAcquisition
+   *          interactive acquisition
+   */
   public InteractiveAcquisitionToolbar(InteractiveAcquisition pInteractiveAcquisition)
   {
     super(new CustomGridPane());

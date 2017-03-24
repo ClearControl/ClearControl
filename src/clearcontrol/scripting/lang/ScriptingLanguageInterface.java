@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import clearcontrol.device.name.ReadOnlyNameableInterface;
+import clearcontrol.core.device.name.ReadOnlyNameableInterface;
 
 public interface ScriptingLanguageInterface extends
                                             ReadOnlyNameableInterface

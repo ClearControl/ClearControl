@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.time.StopWatch;
+import org.junit.Test;
+
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.engine.ScriptingEngineListener;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.groovy.GroovyUtils;
-
-import org.apache.commons.lang.time.StopWatch;
-import org.junit.Test;
 
 public class TestGroovyScripting
 {

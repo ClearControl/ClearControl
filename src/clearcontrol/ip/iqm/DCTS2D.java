@@ -2,6 +2,12 @@ package clearcontrol.ip.iqm;
 
 import static java.lang.Math.sqrt;
 
+import org.jtransforms.dct.DoubleDCT_2D;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
+import coremem.ContiguousMemoryInterface;
 import net.imglib2.img.basictypeaccess.offheap.DoubleOffHeapAccess;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
@@ -9,13 +15,6 @@ import net.imglib2.img.planar.OffHeapPlanarImgFactory;
 import net.imglib2.img.planar.PlanarCursor;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-
-import coremem.ContiguousMemoryInterface;
-
-import org.jtransforms.dct.DoubleDCT_2D;
 import pl.edu.icm.jlargearrays.DoubleLargeArray;
 
 public class DCTS2D implements

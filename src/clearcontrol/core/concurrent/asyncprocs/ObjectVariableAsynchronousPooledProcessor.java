@@ -2,9 +2,9 @@ package clearcontrol.core.concurrent.asyncprocs;
 
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.startstop.StartStopDeviceInterface;
 
 public class ObjectVariableAsynchronousPooledProcessor<I, O>
                                                       implements

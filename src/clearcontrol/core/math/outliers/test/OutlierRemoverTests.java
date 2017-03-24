@@ -2,11 +2,11 @@ package clearcontrol.core.math.outliers.test;
 
 import static org.junit.Assert.assertTrue;
 
-import clearcontrol.core.math.outliers.OutlierRemover;
-import gnu.trove.list.array.TDoubleArrayList;
-
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.Test;
+
+import clearcontrol.core.math.outliers.OutlierRemover;
+import gnu.trove.list.array.TDoubleArrayList;
 
 public class OutlierRemoverTests
 {

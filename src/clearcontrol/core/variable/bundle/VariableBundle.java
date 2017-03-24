@@ -1,7 +1,7 @@
 package clearcontrol.core.variable.bundle;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableBase;
@@ -9,8 +9,8 @@ import clearcontrol.core.variable.VariableBase;
 public class VariableBundle extends VariableBase<VariableBundle>
 {
 
-  HashMap<String, Variable<?>> mVariableNameToVariableMap =
-                                                          new HashMap<String, Variable<?>>();
+  private ConcurrentHashMap<String, Variable<?>> mVariableNameToVariableMap =
+                                                                            new ConcurrentHashMap<String, Variable<?>>();
 
   public VariableBundle(final String pBundleName)
   {

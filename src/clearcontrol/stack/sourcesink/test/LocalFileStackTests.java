@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import net.imglib2.Cursor;
-import net.imglib2.img.planar.PlanarCursor;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bundle.VariableBundle;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
@@ -20,9 +20,9 @@ import clearcontrol.stack.sourcesink.LocalFileStackSource;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import net.imglib2.Cursor;
+import net.imglib2.img.planar.PlanarCursor;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class LocalFileStackTests
 {

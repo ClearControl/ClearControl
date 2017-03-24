@@ -1,7 +1,7 @@
 package clearcontrol.stack.processor;
 
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclableFactoryInterface;

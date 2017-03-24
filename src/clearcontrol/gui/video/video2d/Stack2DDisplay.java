@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.gui.video.StackDisplayInterface;
-import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
-import clearcontrol.stack.EmptyStack;
-import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.imglib2.ImageJStackDisplay;
-import cleargl.ClearGLWindow;
-
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseAdapter;
 import com.jogamp.newt.event.MouseEvent;
 
+import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.video.StackDisplayInterface;
+import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
+import clearcontrol.stack.EmptyStack;
+import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.imglib2.ImageJStackDisplay;
+import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.exceptions.FreedException;

@@ -91,10 +91,13 @@ public class AdaptationZ extends NDIteratorAdaptationModule
 
     double lCorrection = -pArgMaxList.get(lBestDetectioArm);
 
+    /*
+     * 
+    COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
     getAdaptator().getNewAcquisitionState()
                   .addAtControlPlaneIZ(pControlPlaneIndex,
                                        pLightSheetIndex,
-                                       lCorrection);
+                                       lCorrection);/**/
   }
 
 }

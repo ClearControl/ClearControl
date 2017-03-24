@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Node;
+
+import org.dockfx.DockNode;
 
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.device.name.NameableInterface;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
@@ -25,8 +25,8 @@ import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.Window;
 import halcyon.view.TreePanel;
-
-import org.dockfx.DockNode;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Node;
 
 public class HalcyonGUIGenerator implements LoggingInterface
 {

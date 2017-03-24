@@ -3,11 +3,11 @@ package clearcontrol.microscope.lightsheet.calibrator;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.simple.SimpleMatrix;
+
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
 public class LightSheetPositioner
 {

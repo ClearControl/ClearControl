@@ -1,11 +1,11 @@
 package clearcontrol.microscope.timelapse.timer.adaptive;
 
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.stack.StackInterface;
 import ij.ImageJ;
 import ij.ImagePlus;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 
 public class AdaptiveAcquisitionTimerVisualizer
 {

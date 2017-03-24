@@ -7,13 +7,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.RandomAccessible;
-import net.imglib2.algorithm.gauss3.Gauss3;
-import net.imglib2.exception.IncompatibleTypeException;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.view.Views;
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.StatUtils;
+import org.ejml.simple.SimpleMatrix;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -24,11 +22,13 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.stat.StatUtils;
-import org.ejml.simple.SimpleMatrix;
+import net.imglib2.RandomAccessible;
+import net.imglib2.algorithm.gauss3.Gauss3;
+import net.imglib2.exception.IncompatibleTypeException;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.view.Views;
 
 public class CalibrationXY
 {
@@ -93,17 +93,17 @@ public class CalibrationXY
 
     if (pDoAxisX)
     {
-      BoundedVariable<Double> lLightSheetXFunction =
+      BoundedVariable<Number> lLightSheetXFunction =
                                                    lLightSheet.getXVariable();
-      lMin = lLightSheetXFunction.getMin();
-      lMax = lLightSheetXFunction.getMax();
+      lMin = lLightSheetXFunction.getMin().doubleValue();
+      lMax = lLightSheetXFunction.getMax().doubleValue();
     }
     else
     {
-      BoundedVariable<Double> lLightSheetYFunction =
+      BoundedVariable<Number> lLightSheetYFunction =
                                                    lLightSheet.getYVariable();
-      lMin = lLightSheetYFunction.getMin();
-      lMax = lLightSheetYFunction.getMax();
+      lMin = lLightSheetYFunction.getMin().doubleValue();
+      lMax = lLightSheetYFunction.getMax().doubleValue();
     }
 
     try
@@ -441,7 +441,7 @@ public class CalibrationXY
                       lFunctionYVariable);
 
     // TODO: use pixel calibration here...
-    BoundedVariable<Double> lHeightVariable =
+    BoundedVariable<Number> lHeightVariable =
                                             lLightSheetDevice.getHeightVariable();
     Variable<UnivariateAffineFunction> lHeightFunctionVariable =
                                                                lLightSheetDevice.getHeightFunction();

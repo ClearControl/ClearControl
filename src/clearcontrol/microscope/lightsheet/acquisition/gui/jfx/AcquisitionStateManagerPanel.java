@@ -2,15 +2,6 @@ package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.VBox;
 
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCell;
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCellManager;
@@ -20,6 +11,15 @@ import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionSta
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
 
 /**
  * Interactive2DAcquisitionPanel is a GUI element that displays information
@@ -39,6 +39,12 @@ public class AcquisitionStateManagerPanel extends
 
   private TitledPane mStateViewTitledPane;
 
+  /**
+   * Instanciates an acquisition state manager panel
+   * 
+   * @param pAcquisitionStateManager
+   *          acquisition state manager
+   */
   public AcquisitionStateManagerPanel(AcquisitionStateManager pAcquisitionStateManager)
   {
     super(pAcquisitionStateManager);
@@ -185,11 +191,23 @@ public class AcquisitionStateManagerPanel extends
       Platform.runLater(lRunnable);
   }
 
+  /**
+   * Sets current acquisition state
+   * 
+   * @param pState
+   *          sate to view
+   */
   public void setCurrentState(AcquisitionStateInterface<?> pState)
   {
     mAcquisitionStateManager.setCurrentState(pState);
   }
 
+  /**
+   * Sets the acquisition state to view.
+   * 
+   * @param pState
+   *          state to view
+   */
   public void setViewedAcquisitionState(AcquisitionStateInterface<?> pState)
   {
     Platform.runLater(() -> {

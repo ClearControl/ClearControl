@@ -1,12 +1,11 @@
 package clearcontrol.gui.jfx.var.checkbox.demo;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 
 public class VariableCheckBoxDemo extends Application
 {

@@ -3,25 +3,27 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.dockfx.DockNode;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.VirtualDevice;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.cameras.gui.jfx.CameraDevicePanel;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
+import clearcontrol.devices.lasers.gui.jfx.LaserDevicePanel;
+import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
+import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
+import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
+import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
+import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
+import clearcontrol.devices.signalamp.gui.jfx.ScalingAmplifierPanel;
+import clearcontrol.devices.stages.StageDeviceInterface;
+import clearcontrol.devices.stages.gui.jfx.XYZRStageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.hardware.cameras.gui.jfx.CameraDevicePanel;
-import clearcontrol.hardware.lasers.LaserDeviceInterface;
-import clearcontrol.hardware.lasers.gui.jfx.LaserDevicePanel;
-import clearcontrol.hardware.optomech.filterwheels.FilterWheelDeviceInterface;
-import clearcontrol.hardware.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
-import clearcontrol.hardware.optomech.opticalswitch.OpticalSwitchDeviceInterface;
-import clearcontrol.hardware.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
-import clearcontrol.hardware.signalamp.ScalingAmplifierDeviceInterface;
-import clearcontrol.hardware.signalamp.gui.jfx.ScalingAmplifierPanel;
-import clearcontrol.hardware.stages.StageDeviceInterface;
-import clearcontrol.hardware.stages.gui.jfx.XYZRStageDevicePanel;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
@@ -37,8 +39,6 @@ import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
-
-import org.dockfx.DockNode;
 
 public class MicroscopeGUI extends VirtualDevice implements
                            AsynchronousExecutorServiceAccess,
@@ -212,7 +212,6 @@ public class MicroscopeGUI extends VirtualDevice implements
 
       CleanupStackVariable lCleanupStackVariable =
                                                  new CleanupStackVariable("CleanupStackVariable",
-                                                                          null,
                                                                           2);
 
       mCleanupStackVariableList.add(lCleanupStackVariable);

@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Random;
 
+import org.junit.Test;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.math.regression.linear.TheilSenEstimator;
-
-import org.junit.Test;
 
 public class TheilSenEstimatorTest
 {

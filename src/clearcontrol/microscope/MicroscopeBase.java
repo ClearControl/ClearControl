@@ -11,20 +11,20 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.active.ActivableDeviceInterface;
+import clearcontrol.core.device.change.ChangeListener;
+import clearcontrol.core.device.change.HasChangeListenerInterface;
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.gc.GarbageCollector;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.active.ActivableDeviceInterface;
-import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.change.HasChangeListenerInterface;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.device.queue.StateQueueDeviceInterface;
-import clearcontrol.device.startstop.StartStopDeviceInterface;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.hardware.signalgen.SignalGeneratorInterface;
-import clearcontrol.hardware.stages.StageDeviceInterface;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.signalgen.SignalGeneratorInterface;
+import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
@@ -32,6 +32,11 @@ import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipeline;
 import coremem.recycling.RecyclerInterface;
 
+/**
+ * Microscope base class providing common fields and methods for all microscopes
+ *
+ * @author royer
+ */
 public abstract class MicroscopeBase extends VirtualDevice implements
                                      MicroscopeInterface,
                                      StartStopDeviceInterface,
@@ -55,11 +60,17 @@ public abstract class MicroscopeBase extends VirtualDevice implements
   private final HashMap<Integer, StackProcessingPipeline> mStackPipelines =
                                                                           new HashMap<>();
 
+  /**
+   * Instanciates the micorsocope base class.
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public MicroscopeBase(String pDeviceName)
   {
     super(pDeviceName);
 
-    mDeviceLists = new MicroscopeDeviceLists(this);
+    mDeviceLists = new MicroscopeDeviceLists();
 
     mStackRecyclerManager = new StackRecyclerManager();
     mDeviceLists.addDevice(0, mStackRecyclerManager);
@@ -105,12 +116,6 @@ public abstract class MicroscopeBase extends VirtualDevice implements
   }
 
   @Override
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface)
-  {
-    mMainXYZRStage = pStageDeviceInterface;
-  }
-
-  @Override
   public MicroscopeDeviceLists getDeviceLists()
   {
     return mDeviceLists;
@@ -148,6 +153,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
     {
       if (lDevice instanceof HasChangeListenerInterface)
       {
+        @SuppressWarnings("unchecked")
         final HasChangeListenerInterface<VirtualDevice> lHasChangeListenersInterface =
                                                                                      (HasChangeListenerInterface<VirtualDevice>) lDevice;
         lHasChangeListenersInterface.addChangeListener(pChangeListener);
@@ -164,6 +170,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
 
       if (lDevice instanceof HasChangeListenerInterface)
       {
+        @SuppressWarnings("unchecked")
         final HasChangeListenerInterface<VirtualDevice> lHasChangeListenersInterface =
                                                                                      (HasChangeListenerInterface<VirtualDevice>) lDevice;
         lHasChangeListenersInterface.removeChangeListener(pChangeListener);
@@ -171,6 +178,14 @@ public abstract class MicroscopeBase extends VirtualDevice implements
     }
   }
 
+  /**
+   * Sets stack processing pipeline for a given stack camera index.
+   * 
+   * @param pIndex
+   *          stack camera index
+   * @param pStackPipeline
+   *          stack processing pipeline
+   */
   public void setStackProcessingPipeline(int pIndex,
                                          StackProcessingPipeline pStackPipeline)
   {
@@ -577,4 +592,91 @@ public abstract class MicroscopeBase extends VirtualDevice implements
     }
   }
 
+  @Override
+  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface)
+  {
+    mMainXYZRStage = pStageDeviceInterface;
+  }
+
+  @Override
+  public StageDeviceInterface getMainXYZRStage()
+  {
+    return mMainXYZRStage;
+  }
+
+  @Override
+  public void setStageX(double pXValue)
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+    if (lTargetPositionVariable != null)
+      lTargetPositionVariable.set(pXValue);
+  }
+
+  @Override
+  public void setStageY(double pYValue)
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+    if (lTargetPositionVariable != null)
+      lTargetPositionVariable.set(pYValue);
+  }
+
+  @Override
+  public void setStageZ(double pZValue)
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+    if (lTargetPositionVariable != null)
+      lTargetPositionVariable.set(pZValue);
+  }
+
+  @Override
+  public void setStageR(double pZValue)
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+    if (lTargetPositionVariable != null)
+      lTargetPositionVariable.set(pZValue);
+  }
+
+  @Override
+  public double getStageX()
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+    if (lTargetPositionVariable != null)
+      return lTargetPositionVariable.get();
+    return 0;
+  }
+
+  @Override
+  public double getStageY()
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+    if (lTargetPositionVariable != null)
+      return lTargetPositionVariable.get();
+    return 0;
+  }
+
+  @Override
+  public double getStageZ()
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+    if (lTargetPositionVariable != null)
+      return lTargetPositionVariable.get();
+    return 0;
+  }
+
+  @Override
+  public double getStageR()
+  {
+    Variable<Double> lTargetPositionVariable =
+                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+    if (lTargetPositionVariable != null)
+      return lTargetPositionVariable.get();
+    return 0;
+  }
 }

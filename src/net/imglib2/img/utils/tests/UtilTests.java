@@ -2,14 +2,14 @@ package net.imglib2.img.utils.tests;
 
 import static net.imglib2.img.utils.Copy.copy;
 
+import org.junit.Test;
+
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.img.planar.OffHeapPlanarImgFactory;
 import net.imglib2.img.planar.PlanarRandomAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.util.Fraction;
-
-import org.junit.Test;
 
 /**
  * Created by dibrov on 10/03/17.

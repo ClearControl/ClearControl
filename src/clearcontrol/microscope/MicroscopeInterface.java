@@ -5,12 +5,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.change.HasChangeListenerInterface;
+import clearcontrol.core.device.name.NameableInterface;
+import clearcontrol.core.device.queue.StateQueueDeviceInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.HasChangeListenerInterface;
-import clearcontrol.device.name.NameableInterface;
-import clearcontrol.device.queue.StateQueueDeviceInterface;
-import clearcontrol.hardware.stages.StageDeviceInterface;
+import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -53,19 +53,13 @@ public interface MicroscopeInterface extends
   };
 
   /**
-   * Sets the main XYZR stage for the microscope.
-   * 
-   * @param pStageDeviceInterface
-   *          main stage
-   */
-  void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
-
-  /**
    * Adds a device of a given type. Devices are uniquely identified by their
    * class and index: (class,index) -> device
    * 
    * @param pDeviceIndex
+   *          device index
    * @param pDevice
+   *          device
    */
   public <T> void addDevice(int pDeviceIndex, T pDevice);
 
@@ -97,8 +91,6 @@ public interface MicroscopeInterface extends
    * 
    * @param pClass
    *          class
-   * @param pIndex
-   *          index
    * @return device for given pair; (class,index)
    */
   public <T> ArrayList<T> getDevices(Class<T> pClass);
@@ -115,6 +107,9 @@ public interface MicroscopeInterface extends
    * id.
    * 
    * @param pStackCameraDeviceIndex
+   *          stack camera device index
+   * @param pRecycler
+   *          recycler
    */
   public void setRecycler(int pStackCameraDeviceIndex,
                           RecyclerInterface<StackInterface, StackRequest> pRecycler);
@@ -123,6 +118,7 @@ public interface MicroscopeInterface extends
    * Sets the recycler that should be used by _all_ stack camera devices.
    * 
    * @param pRecycler
+   *          recyler to be used by all camera devices
    */
   public void setRecycler(RecyclerInterface<StackInterface, StackRequest> pRecycler);
 
@@ -141,6 +137,8 @@ public interface MicroscopeInterface extends
    * 
    * @param pName
    *          recycler name
+   * @param pMinimumNumberOfAvailableStacks
+   *          minimum number of available stacks
    * @param pMaximumNumberOfAvailableStacks
    *          maximum number of available stacks
    * @param pMaximumNumberOfLiveStacks
@@ -155,6 +153,7 @@ public interface MicroscopeInterface extends
    * Clears a given recycler.
    * 
    * @param pName
+   *          recycler name
    */
   public void clearRecycler(String pName);
 
@@ -172,8 +171,11 @@ public interface MicroscopeInterface extends
    *          time unit for timeout
    * @return true if successful
    * @throws InterruptedException
+   *           if interupted
    * @throws ExecutionException
+   *           if execution occured during async execution
    * @throws TimeoutException
+   *           if timeout
    */
   public Boolean playQueueAndWait(long pTimeOut,
                                   TimeUnit pTimeUnit) throws InterruptedException,
@@ -185,11 +187,16 @@ public interface MicroscopeInterface extends
    * for stacks to be delivered.
    * 
    * @param pTimeOut
+   *          timeout time
    * @param pTimeUnit
-   * @return
+   *          timeout unit
+   * @return true if successfull
    * @throws InterruptedException
+   *           if interupted
    * @throws ExecutionException
+   *           if execution occured during async execution
    * @throws TimeoutException
+   *           if timeout
    */
   public Boolean playQueueAndWaitForStacks(long pTimeOut,
                                            TimeUnit pTimeUnit) throws InterruptedException,
@@ -223,5 +230,80 @@ public interface MicroscopeInterface extends
    * @return size in nanometer as a Variable
    */
   public Variable<Double> getCameraPixelSizeInNanometerVariable(int pCameraIndex);
+
+  /**
+   * Sets the main sample stage X position.
+   * 
+   * @param pXValue
+   *          x position value
+   */
+  public void setStageX(double pXValue);
+
+  /**
+   * Sets the main sample stage Y position.
+   * 
+   * @param pYValue
+   *          y position value
+   */
+  public void setStageY(double pYValue);
+
+  /**
+   * Sets the sample's main stage Z position.
+   * 
+   * @param pZValue
+   *          z position value
+   */
+  public void setStageZ(double pZValue);
+
+  /**
+   * Sets the sample's main stage R position.
+   * 
+   * @param pRValue
+   *          r position value
+   */
+  public void setStageR(double pRValue);
+
+  /**
+   * Returns the main sample stage X position.
+   * 
+   * @return x position value
+   */
+  public double getStageX();
+
+  /**
+   * Returns the main sample stage Y position.
+   * 
+   * @return y position value
+   */
+  public double getStageY();
+
+  /**
+   * Returns the sample's main stage Z position.
+   * 
+   * @return z position value
+   */
+  public double getStageZ();
+
+  /**
+   * Returns the sample's main stage R position.
+   * 
+   * @return r position value
+   */
+  public double getStageR();
+
+  /**
+   * Sets the main XYZR stage of this microscope.
+   * 
+   * @param pStageDeviceInterface
+   *          main XYZR stage.
+   */
+  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
+
+  /**
+   * Returns the main XYZR stage of this microscope.
+   * 
+   * @return main XYZR stage
+   */
+  public StageDeviceInterface getMainXYZRStage();
 
 }

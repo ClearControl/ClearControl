@@ -5,16 +5,16 @@ import static java.lang.Math.max;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.exception.OutOfRangeException;
+
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.apache.commons.math3.exception.OutOfRangeException;
 
 public class RandomSplineFitArgMaxFinder extends Fitting1DBase
                                          implements

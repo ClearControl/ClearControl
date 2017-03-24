@@ -4,6 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 
+/**
+ * Base class providing common fields and methods for all timelapse timer
+ * implementations
+ *
+ * @author royer
+ */
 public class TimelapseTimerBase implements
                                 TimelapseTimerInterface,
                                 WaitingInterface
@@ -19,6 +25,14 @@ public class TimelapseTimerBase implements
                              TimeUnit.NANOSECONDS);
   }
 
+  /**
+   * Sets last acquisition time in the given time unit
+   * 
+   * @param pLastAcquisitionTime
+   *          last acquisition time
+   * @param pTimeUnit
+   *          time unit
+   */
   public void setLastAcquisitionTime(long pLastAcquisitionTime,
                                      TimeUnit pTimeUnit)
   {
@@ -27,12 +41,27 @@ public class TimelapseTimerBase implements
                                                           pTimeUnit);
   }
 
+  /**
+   * Returns acquisition interval in the given time unit
+   * 
+   * @param pTimeUnit
+   *          time unit
+   * @return acquisition interval
+   */
   public long getAcquisitionInterval(TimeUnit pTimeUnit)
   {
     return pTimeUnit.convert(mAcquisitionIntervalInNS,
                              TimeUnit.NANOSECONDS);
   }
 
+  /**
+   * Sets acquisistion interval in the given time unit
+   * 
+   * @param pAcquisitionInterval
+   *          acquisition interval
+   * @param pTimeUnit
+   *          time unit
+   */
   public void setAcquisitionInterval(long pAcquisitionInterval,
                                      TimeUnit pTimeUnit)
   {
@@ -53,36 +82,22 @@ public class TimelapseTimerBase implements
   }
 
   @Override
-  public boolean enoughTimeFor(long pTimeNeeded,
-                               long pReservedTime,
-                               TimeUnit pTimeUnit)
-  {
-    if (pTimeNeeded < 0)
-      return false;
-
-    long lTimeNeededInNS = TimeUnit.NANOSECONDS.convert(pTimeNeeded,
-                                                        pTimeUnit);
-    long lReservedTimeInNS =
-                           TimeUnit.NANOSECONDS.convert(pReservedTime,
-                                                        pTimeUnit);
-    long lTimeLeftNoReserveInNS =
-                                timeLeftBeforeNextTimePoint(TimeUnit.NANOSECONDS);
-
-    long lTimeLeftInNS = lTimeLeftNoReserveInNS - lReservedTimeInNS;
-
-    boolean lEnoughTime = lTimeLeftInNS > lTimeNeededInNS;
-
-    return lEnoughTime;
-  }
-
-  @Override
-  public void waitToAcquire(long pTimeOut, TimeUnit pTimeUnit)
+  public boolean waitToAcquire(long pTimeOut, TimeUnit pTimeUnit)
   {
     long lNow = System.nanoTime();
     long lTimeOut = lNow + TimeUnit.NANOSECONDS.convert(pTimeOut,
                                                         pTimeUnit);
+
+    class NowRef
+    {
+      public long now;
+    }
+
+    final NowRef lNowRef = new NowRef();
+
     waitFor(() -> timeLeftBeforeNextTimePoint(TimeUnit.NANOSECONDS) <= 0
-                  || lTimeOut > System.nanoTime());
+                  || (lNowRef.now = System.nanoTime()) > lTimeOut);
+    return lNowRef.now > lTimeOut;
   }
 
   @Override

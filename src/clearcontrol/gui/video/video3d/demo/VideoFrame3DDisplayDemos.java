@@ -2,6 +2,8 @@ package clearcontrol.gui.video.video3d.demo;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
@@ -13,8 +15,6 @@ import coremem.buffers.ContiguousBuffer;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-
-import org.junit.Test;
 
 public class VideoFrame3DDisplayDemos
 {

@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
+import org.junit.Test;
+
 import clearcontrol.core.math.argmax.SmartArgMaxFinder;
 import clearcontrol.core.units.Magnitude;
-
-import org.junit.Test;
 
 public class SmartArgMaxFinderTests
 {

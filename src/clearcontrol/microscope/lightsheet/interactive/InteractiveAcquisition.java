@@ -2,14 +2,14 @@ package clearcontrol.microscope.lightsheet.interactive;
 
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.change.ChangeListener;
+import clearcontrol.core.device.task.PeriodicLoopTaskDevice;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.ChangeListener;
-import clearcontrol.device.task.PeriodicLoopTaskDevice;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
@@ -18,6 +18,11 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 
+/**
+ * Interactive acquisition for lightseet microscope
+ *
+ * @author royer
+ */
 public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                     implements LoggingInterface
 {
@@ -45,6 +50,16 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
   private ChangeListener<VirtualDevice> mChangeListener;
 
+  /**
+   * Instanciates an interactive acquisition for lightsheet microscope
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   * @param pAcquisitionStateManager
+   *          acquisition state manager
+   */
   @SuppressWarnings("unchecked")
   public InteractiveAcquisition(String pDeviceName,
                                 LightSheetMicroscope pLightSheetMicroscope,
@@ -157,7 +172,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
           if (getUseCurrentAcquisitionStateVariable().get())
           {
             info("Building 2D Acquisition queue using the current acquisition state");
-            @SuppressWarnings("unchecked")
+
             InterpolatedAcquisitionState lCurrentState =
                                                        (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
 
@@ -258,6 +273,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     return true;
   }
 
+  /**
+   * Starts 2D acquisition
+   */
   public void start2DAcquisition()
   {
     info("Starting 2D Acquisition...");
@@ -267,6 +285,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     startTask();
   }
 
+  /**
+   * Starts 3D acquisition
+   */
   public void start3DAcquisition()
   {
     info("Starting 3D Acquisition...");
@@ -276,6 +297,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     startTask();
   }
 
+  /**
+   * Stops acquisition
+   */
   public void stopAcquisition()
   {
     info("Stopping Acquisition...");
@@ -283,26 +307,51 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     stopTask();
   }
 
+  /**
+   * Returns the exposure variable
+   * 
+   * @return exposure variable (unit: seconds)
+   */
   public BoundedVariable<Double> getExposureVariable()
   {
     return mExposureVariableInSeconds;
   }
 
+  /**
+   * Returns the trigger-on-change variable
+   * 
+   * @return trigger-on-change variable
+   */
   public Variable<Boolean> getTriggerOnChangeVariable()
   {
     return mTriggerOnChangeVariable;
   }
 
+  /**
+   * Returns the use-current-acquisition-state variable
+   * 
+   * @return use-current-acquisition-state variable
+   */
   public Variable<Boolean> getUseCurrentAcquisitionStateVariable()
   {
     return mUseCurrentAcquisitionStateVariable;
   }
 
+  /**
+   * Returns lightsheet microscope
+   * 
+   * @return lightsheet microscope
+   */
   public LightSheetMicroscopeInterface getLightSheetMicroscope()
   {
     return mLightSheetMicroscope;
   }
 
+  /**
+   * Returns the number of cameras
+   * 
+   * @return number of cameras
+   */
   public int getNumberOfCameras()
   {
     int lNumberOfCameras =
@@ -317,16 +366,33 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     return lNumberOfLightsSheets;
   }
 
+  /**
+   * Returns the active camera variable for a given camera index
+   * 
+   * @param pCameraIndex
+   *          camera index
+   * @return active camera variable
+   */
   public Variable<Boolean> getActiveCameraVariable(int pCameraIndex)
   {
     return mActiveCameraVariableArray[pCameraIndex];
   }
 
+  /**
+   * Returns the 2D acquisition Z variable
+   * 
+   * @return 2D acquisition Z variable
+   */
   public BoundedVariable<Number> get2DAcquisitionZVariable()
   {
     return m2DAcquisitionZVariable;
   }
 
+  /**
+   * Returns the acquisition counter variable
+   * 
+   * @return acquisition counter variable
+   */
   public Variable<Long> getAcquisitionCounterVariable()
   {
     return mAcquisitionCounterVariable;

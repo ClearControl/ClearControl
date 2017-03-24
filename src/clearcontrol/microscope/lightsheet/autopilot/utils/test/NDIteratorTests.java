@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
-import clearcontrol.microscope.lightsheet.autopilot.utils.NDIterator;
-
 import org.junit.Test;
+
+import clearcontrol.microscope.lightsheet.autopilot.utils.NDIterator;
 
 public class NDIteratorTests
 {

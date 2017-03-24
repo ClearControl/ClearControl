@@ -1,22 +1,24 @@
 package clearcontrol.microscope.lightsheet.component.detection;
 
+import java.util.concurrent.Future;
+
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.core.device.QueueableVirtualDevice;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.hardware.cameras.StackCameraDeviceInterface;
-import clearcontrol.hardware.signalgen.movement.Movement;
-import clearcontrol.hardware.signalgen.staves.ConstantStave;
 
-public class DetectionArm extends VirtualDevice implements
+/**
+ * Light sheet microscope detection arm
+ *
+ * @author royer
+ */
+public class DetectionArm extends QueueableVirtualDevice implements
                           DetectionArmInterface,
                           LoggingInterface
 {
-
-  private StackCameraDeviceInterface mStackCameraDevice;
 
   private final BoundedVariable<Number> mDetectionFocusZ =
                                                          new BoundedVariable<Number>("FocusZ",
@@ -26,18 +28,16 @@ public class DetectionArm extends VirtualDevice implements
                                                               new Variable<>("DetectionZFunction",
                                                                              new UnivariateAffineFunction());
 
-  private final ConstantStave mDetectionPathStaveZ =
-                                                   new ConstantStave("detection.z",
-                                                                     0);
-
-  private final int mStaveIndex;
-
+  /**
+   * Instanciates a lightsheet microscope detection arm
+   * 
+   * @param pName
+   *          detection arm name
+   */
   @SuppressWarnings("unchecked")
-  public DetectionArm(String pName,
-                      StackCameraDeviceInterface StackCameraDevice)
+  public DetectionArm(String pName)
   {
     super(pName);
-    mStackCameraDevice = StackCameraDevice;
 
     resetFunctions();
     resetBounds();
@@ -45,10 +45,10 @@ public class DetectionArm extends VirtualDevice implements
     @SuppressWarnings("rawtypes")
     final VariableSetListener lVariableListener = (o, n) -> {
       // System.out.println(getName() + ": new Z value: " + n);
-      update();
       notifyListeners(this);
     };
 
+    getVariableStateQueues().registerVariable(mDetectionFocusZ);
     mDetectionFocusZ.addSetListener(lVariableListener);
 
     final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener =
@@ -57,22 +57,11 @@ public class DetectionArm extends VirtualDevice implements
                                                                                     info("new Z function: "
                                                                                          + n);
                                                                                     resetBounds();
-                                                                                    update();
                                                                                     notifyListeners(this);
                                                                                   };
 
     mZFunction.addSetListener(lFunctionVariableListener);
 
-    int lStaveIndex =
-                    MachineConfiguration.getCurrentMachineConfiguration()
-                                        .getIntegerProperty("device.lsm.detection."
-                                                            + getName()
-                                                            + ".z.index",
-                                                            0);
-
-    mStaveIndex = lStaveIndex;
-
-    update();
     notifyListeners(this);
   }
 
@@ -107,33 +96,9 @@ public class DetectionArm extends VirtualDevice implements
     return mZFunction;
   }
 
-  public void addStavesToBeforeExposureMovement(Movement pBeforeExposureMovement)
+  @Override
+  public Future<Boolean> playQueue()
   {
-    // Analog outputs before exposure:
-    pBeforeExposureMovement.setStave(mStaveIndex,
-                                     mDetectionPathStaveZ);
-  }
-
-  public void addStavesToExposureMovement(Movement pExposureMovement)
-  {
-    // Analog outputs at exposure:
-    pExposureMovement.setStave(mStaveIndex, mDetectionPathStaveZ);
-  }
-
-  /**
-   * Updates underlying signal generation staves and stack camera configuration.
-   */
-  private void update()
-  {
-    synchronized (this)
-    {
-      info("Updating: " + getName());
-
-      double lZFocus = mDetectionFocusZ.get().doubleValue();
-      float lZFocusTransformed = (float) mZFunction.get()
-                                                   .value(lZFocus);
-      mDetectionPathStaveZ.setValue(lZFocusTransformed);
-
-    }
+    return null;
   }
 }

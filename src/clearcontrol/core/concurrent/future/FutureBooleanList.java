@@ -76,20 +76,21 @@ public class FutureBooleanList implements
                                                     TimeoutException
   {
     for (final Future<Boolean> lFuture : mFutureMap.keySet())
-    {
-      try
+      if (lFuture != null)
       {
-        if (!lFuture.get(pTimeout, pUnit))
-          return Boolean.FALSE;
-      }
-      catch (TimeoutException e)
-      {
-        warning("Timeout caused by: %s \n",
-                mFutureMap.get(lFuture).trim());
+        try
+        {
+          if (!lFuture.get(pTimeout, pUnit))
+            return Boolean.FALSE;
+        }
+        catch (TimeoutException e)
+        {
+          warning("Timeout caused by: %s \n",
+                  mFutureMap.get(lFuture).trim());
 
-        throw e;
+          throw e;
+        }
       }
-    }
     return Boolean.TRUE;
   }
 

@@ -8,9 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -27,8 +26,9 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationZ
 {
@@ -437,7 +437,7 @@ public class CalibrationZ
 
       BoundedVariable<Number> lZVariable =
                                          lLightSheetDevice.getZVariable();
-      BoundedVariable<Double> lYVariable =
+      BoundedVariable<Number> lYVariable =
                                          lLightSheetDevice.getYVariable();
 
       lYVariable.setMinMax(lZVariable.getMin().doubleValue(),

@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.swing.JButtonBoolean;
@@ -18,8 +20,6 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
-
-import org.junit.Test;
 
 public class VideoFrame2DDisplayDemo
 {
@@ -61,6 +61,7 @@ public class VideoFrame2DDisplayDemo
     lVideoDisplayDevice.getManualMinMaxIntensityOnVariable()
                        .set(true);
     lVideoDisplayDevice.open();
+    lVideoDisplayDevice.setVisible(true);
 
     final int lSizeX = 256;
     final int lSizeY = lSizeX;
@@ -134,7 +135,7 @@ public class VideoFrame2DDisplayDemo
           lJFrame.setVisible(true);
 
           final JSliderDouble lJSliderDouble =
-                                             new JSliderDouble("gray size");
+                                             new JSliderDouble("gray value");
           mcontentPane.add(lJSliderDouble, BorderLayout.SOUTH);
 
           final JButtonBoolean lJButtonBoolean =
@@ -145,19 +146,11 @@ public class VideoFrame2DDisplayDemo
 
           final Variable<Boolean> lStartStopVariable =
                                                      lJButtonBoolean.getBooleanVariable();
+          lStartStopVariable.set(true);
 
-          lStartStopVariable.sendUpdatesTo(new Variable<Boolean>("StartStopVariableHook",
-                                                                 false)
-          {
-            @Override
-            public Boolean setEventHook(final Boolean pOldValue,
-                                        final Boolean pNewValue)
-            {
-              final boolean lBoolean = pNewValue;
-              sDisplay = lBoolean;
-              System.out.println("sDisplay=" + sDisplay);
-              return super.setEventHook(pOldValue, pNewValue);
-            }
+          lStartStopVariable.addSetListener((o, n) -> {
+            if (!n.equals(o))
+              sDisplay = n;
           });
 
           final Variable<Double> lDoubleVariable =

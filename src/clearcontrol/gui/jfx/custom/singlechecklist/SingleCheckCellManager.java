@@ -1,7 +1,7 @@
 package clearcontrol.gui.jfx.custom.singlechecklist;
 
 import clearcontrol.core.collection.weak.WeakArrayList;
-import clearcontrol.device.name.NameableInterface;
+import clearcontrol.core.device.name.NameableInterface;
 
 public class SingleCheckCellManager<T extends NameableInterface>
 {

@@ -2,7 +2,7 @@ package clearcontrol.microscope.stacks;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import clearcontrol.device.VirtualDevice;
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -74,6 +74,7 @@ public class StackRecyclerManager extends VirtualDevice
    * Clears recyclers with given name.
    * 
    * @param pName
+   *          recycler name
    */
   public void clear(String pName)
   {
@@ -90,6 +91,11 @@ public class StackRecyclerManager extends VirtualDevice
     notifyListeners(this);
   }
 
+  /**
+   * Returns recycler map
+   * 
+   * @return recycler map
+   */
   public ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> getRecyclerMap()
   {
     return mRecyclerMap;

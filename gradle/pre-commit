@@ -2,7 +2,7 @@
 # From gist at https://gist.github.com/chadmaughan/5889802
 
 # stash any unstaged changes
-git stash -q --keep-index
+#git stash -q --keep-index
 
 # run the tests with the gradle wrapper
 ./gradlew spotlessApply 
@@ -13,7 +13,7 @@ git add .
 RESULT=$?
 
 # unstash the unstashed changes
-git stash pop -q
+#git stash pop -q
 
 # return the './gradlew test' exit code
 exit $RESULT

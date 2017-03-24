@@ -1,7 +1,7 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet.si;
 
-import clearcontrol.hardware.signalgen.staves.IntervalStave;
-import clearcontrol.hardware.signalgen.staves.StaveInterface;
+import clearcontrol.devices.signalgen.staves.IntervalStave;
+import clearcontrol.devices.signalgen.staves.StaveInterface;
 
 public class ConstantIlluminationPattern extends
                                          StructuredIlluminationPatternBase

@@ -17,8 +17,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import net.miginfocom.swing.MigLayout;
 import clearcontrol.core.variable.Variable;
+import net.miginfocom.swing.MigLayout;
 
 public class JSliderIndexedStrings extends JPanel
 {

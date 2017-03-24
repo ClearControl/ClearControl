@@ -1,25 +1,34 @@
 package clearcontrol.core.math.functions;
 
-import org.apache.commons.math3.exception.NoDataException;
-import org.apache.commons.math3.exception.NullArgumentException;
-
+/**
+ * Polynomial function.
+ *
+ * @author royer
+ */
 public class PolynomialFunction extends
                                 org.apache.commons.math3.analysis.polynomials.PolynomialFunction
 {
 
   private static final long serialVersionUID = 1L;
 
-  public PolynomialFunction() throws NullArgumentException,
-                              NoDataException
+  /**
+   * Instanciates an identity polynomial function: x
+   */
+  public PolynomialFunction()
   {
     super(new double[]
-    { 0 });
+    { 1, 0 });
   }
 
-  public PolynomialFunction(double[] pC) throws NullArgumentException,
-                                         NoDataException
+  /**
+   * Instanciates a polynomial function given polynomial coefficients.
+   * 
+   * @param pPolynomialCoefficients
+   *          polynomial coefficients
+   */
+  public PolynomialFunction(double[] pPolynomialCoefficients)
   {
-    super(pC);
+    super(pPolynomialCoefficients);
   }
 
 }

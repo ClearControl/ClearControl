@@ -3,11 +3,16 @@ package clearcontrol.com.serial;
 import jssc.SerialPortException;
 import clearcontrol.com.serial.adapters.SerialBinaryDeviceAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bundle.VariableBundle;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 
+/**
+ * Serial communication device
+ *
+ * @author royer
+ */
 public class SerialDevice extends VirtualDevice
                           implements OpenCloseDeviceInterface
 {
@@ -18,6 +23,16 @@ public class SerialDevice extends VirtualDevice
 
   private final Object mDeviceLock = new Object();
 
+  /**
+   * Instanciates a serila communication device
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pPortName
+   *          port name
+   * @param pBaudRate
+   *          baud rate
+   */
   public SerialDevice(final String pDeviceName,
                       final String pPortName,
                       final int pBaudRate)

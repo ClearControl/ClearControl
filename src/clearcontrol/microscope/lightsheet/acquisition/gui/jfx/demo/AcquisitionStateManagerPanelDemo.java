@@ -12,6 +12,11 @@ import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionSta
 import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 
+/**
+ * Acquisition state manager demo
+ *
+ * @author royer
+ */
 public class AcquisitionStateManagerPanelDemo extends Application
                                               implements
                                               AsynchronousExecutorServiceAccess
@@ -76,6 +81,13 @@ public class AcquisitionStateManagerPanelDemo extends Application
 
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   * 
+   */
   public static void main(String[] args)
   {
 

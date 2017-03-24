@@ -35,8 +35,13 @@ public class AdaptationW extends NDIteratorAdaptationModule
                                           lLSM.getDeviceLists()
                                               .getDevice(LightSheetInterface.class,
                                                          pLightSheetIndex);
-    double lMinW = lLightSheetDevice.getWidthVariable().getMin();
-    double lMaxW = lLightSheetDevice.getWidthVariable().getMax();
+
+    double lMinW = lLightSheetDevice.getWidthVariable()
+                                    .getMin()
+                                    .doubleValue();
+    double lMaxW = lLightSheetDevice.getWidthVariable()
+                                    .getMax()
+                                    .doubleValue();
     double lStepW = (lMaxW - lMinW) / (pNumberOfSamples - 1);
 
     double lCurrentW = lLSM.getIW(pLightSheetIndex);
@@ -99,10 +104,13 @@ public class AdaptationW extends NDIteratorAdaptationModule
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);
 
+    /*
+     *     COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
+     
     getAdaptator().getNewAcquisitionState()
                   .setAtControlPlaneIW(pControlPlaneIndex,
                                        pLightSheetIndex,
-                                       pArgMaxList.get(lBestDetectioArm));
+                                       pArgMaxList.get(lBestDetectioArm));/**/
   }
 
 }

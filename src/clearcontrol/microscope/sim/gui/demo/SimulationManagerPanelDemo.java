@@ -1,13 +1,17 @@
 package clearcontrol.microscope.sim.gui.demo;
 
+import clearcontrol.microscope.sim.SimulationManager;
+import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.microscope.sim.SimulationManager;
-import clearcontrol.microscope.sim.gui.SimulationManagerPanel;
-
+/**
+ * Simulation manager demo
+ *
+ * @author royer
+ */
 public class SimulationManagerPanelDemo extends Application
 {
 
@@ -31,6 +35,12 @@ public class SimulationManagerPanelDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

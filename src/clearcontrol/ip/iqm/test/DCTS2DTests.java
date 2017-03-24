@@ -6,10 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.img.planar.OffHeapPlanarImgFactory;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
 import clearcontrol.core.units.Magnitude;
 import clearcontrol.ip.iqm.DCTS2D;
 import coremem.ContiguousMemoryInterface;
@@ -17,9 +16,10 @@ import io.scif.FormatException;
 import io.scif.Plane;
 import io.scif.Reader;
 import io.scif.SCIFIO;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.img.planar.OffHeapPlanarImgFactory;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class DCTS2DTests
 {

@@ -1,12 +1,12 @@
 package clearcontrol.core.math.argmax.methods;
 
-import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
-import clearcontrol.core.math.argmax.Fitting1DBase;
-import gnu.trove.list.array.TDoubleArrayList;
-
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+
+import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
+import clearcontrol.core.math.argmax.Fitting1DBase;
+import gnu.trove.list.array.TDoubleArrayList;
 
 public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase
                                              implements

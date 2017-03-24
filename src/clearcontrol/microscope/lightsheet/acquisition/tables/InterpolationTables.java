@@ -2,12 +2,18 @@ package clearcontrol.microscope.lightsheet.acquisition.tables;
 
 import java.util.ArrayList;
 
+import clearcontrol.core.device.change.ChangeListeningBase;
 import clearcontrol.core.math.interpolation.SplineInterpolationTable;
-import clearcontrol.device.change.ChangeListeningBase;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 
+/**
+ * Interpolation tables
+ *
+ * @author royer
+ */
 public class InterpolationTables extends
                                  ChangeListeningBase<InterpolationTables>
+                                 implements Cloneable
 {
   private final int mNumberOfLightSheetDevices;
   private final int mNumberOfDetectionArmDevices;
@@ -15,6 +21,15 @@ public class InterpolationTables extends
   private ArrayList<SplineInterpolationTable> mInterpolationTableList =
                                                                       new ArrayList<SplineInterpolationTable>();
 
+  /**
+   * Instanciates an interpolation table given a number of detection arms and
+   * lightsheets
+   * 
+   * @param pNumberOfDetectionArmDevices
+   *          number of detection arms
+   * @param pNumberOfLightSheetDevices
+   *          number of lightsheets
+   */
   public InterpolationTables(int pNumberOfDetectionArmDevices,
                              int pNumberOfLightSheetDevices)
   {
@@ -56,19 +71,42 @@ public class InterpolationTables extends
     mInterpolationTableList.add(lInterpolationTableIP);
   }
 
-  public InterpolationTables(InterpolationTables pCurrentAcquisitionState)
+  /**
+   * Instanciate an interpolation table that is a copy of an existing
+   * interpolation table.
+   * 
+   * @param pInterpolationTable
+   *          existing inerpolatio table
+   */
+  public InterpolationTables(InterpolationTables pInterpolationTable)
   {
     mNumberOfDetectionArmDevices =
-                                 pCurrentAcquisitionState.mNumberOfDetectionArmDevices;
+                                 pInterpolationTable.mNumberOfDetectionArmDevices;
     mNumberOfLightSheetDevices =
-                               pCurrentAcquisitionState.mNumberOfLightSheetDevices;
+                               pInterpolationTable.mNumberOfLightSheetDevices;
 
-    mTransitionPlaneZ = pCurrentAcquisitionState.mTransitionPlaneZ;
+    mTransitionPlaneZ = pInterpolationTable.mTransitionPlaneZ;
 
-    mInterpolationTableList =
-                            new ArrayList<>(pCurrentAcquisitionState.mInterpolationTableList);
+    mInterpolationTableList = new ArrayList<>();
+
+    for (SplineInterpolationTable lSplineInterpolationTable : pInterpolationTable.mInterpolationTableList)
+    {
+      mInterpolationTableList.add(lSplineInterpolationTable.clone());
+    }
   }
 
+  @Override
+  public InterpolationTables clone()
+  {
+    return new InterpolationTables(this);
+  }
+
+  /**
+   * Adds a control pnale at a given z position
+   * 
+   * @param pZ
+   *          z position
+   */
   public void addControlPlane(double pZ)
   {
     for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
@@ -76,16 +114,35 @@ public class InterpolationTables extends
     notifyListeners(this);
   }
 
+  /**
+   * Returns the number of control planes
+   * 
+   * @return number of contol planes
+   */
   public int getNumberOfControlPlanes()
   {
     return mInterpolationTableList.get(0).getNumberOfRows();
   }
 
+  /**
+   * Returns the number of devices for a given lightsheet DOF
+   * 
+   * @param pLightSheetDOF
+   *          lightsheet DOF
+   * @return number of devices for a given lightsheet DOF
+   */
   public int getNumberOfDevices(LightSheetDOF pLightSheetDOF)
   {
     return getTable(pLightSheetDOF).getNumberOfColumns();
   }
 
+  /**
+   * Returns the z value for a given control plane index
+   * 
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @return z value
+   */
   public double getZ(int pControlPlaneIndex)
   {
     // we are interested in getting the Z position (X in table) _not_ the DZ
@@ -95,16 +152,37 @@ public class InterpolationTables extends
     return lZ;
   }
 
+  /**
+   * Returns min z value
+   * 
+   * @return min z value
+   */
   public double getMinZ()
   {
     return getTable(LightSheetDOF.DZ).getMinX();
   }
 
+  /**
+   * Returns max z value
+   * 
+   * @return max z value
+   */
   public double getMaxZ()
   {
     return getTable(LightSheetDOF.DZ).getMaxX();
   }
 
+  /**
+   * Returns interpolated value at a given position Z
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pDeviceIndex
+   *          device index
+   * @param pZ
+   *          position at which to sample
+   * @return interpolated value
+   */
   public double getInterpolated(LightSheetDOF pLightSheetDOF,
                                 int pDeviceIndex,
                                 double pZ)
@@ -113,49 +191,102 @@ public class InterpolationTables extends
                                                          pZ);
   }
 
+  /**
+   * Sets the value of a DOF for a given control plane index.
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pDeviceIndex
+   *          device index
+   * @param pValue
+   *          value to set
+   */
   public void set(LightSheetDOF pLightSheetDOF,
                   int pControlPlaneIndex,
                   int pDeviceIndex,
-                  double pZ)
+                  double pValue)
   {
     getTable(pLightSheetDOF).setY(pControlPlaneIndex,
                                   pDeviceIndex,
-                                  pZ);
+                                  pValue);
     notifyListeners(this);
   }
 
+  /**
+   * Adds a delta value for a given DOF, control plane index, and device index.
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pDeviceIndex
+   *          device index
+   * @param pDeltaValue
+   *          delta value
+   */
   public void add(LightSheetDOF pLightSheetDOF,
                   int pControlPlaneIndex,
                   int pDeviceIndex,
-                  double pZ)
+                  double pDeltaValue)
   {
     getTable(pLightSheetDOF).addY(pControlPlaneIndex,
                                   pDeviceIndex,
-                                  pZ);
+                                  pDeltaValue);
     notifyListeners(this);
   }
 
+  /**
+   * Sets the value of a DOF for a given control plane index.
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pValue
+   *          value to set
+   */
   public void set(LightSheetDOF pLightSheetDOF,
                   int pControlPlaneIndex,
-                  double pZ)
+                  double pValue)
   {
-    getTable(pLightSheetDOF).setY(pControlPlaneIndex, pZ);
+    getTable(pLightSheetDOF).setY(pControlPlaneIndex, pValue);
     notifyListeners(this);
   }
 
-  public void set(LightSheetDOF pLightSheetDOF, double pZ)
+  /**
+   * Sets the value for a given DOF uniformely
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pValue
+   *          value
+   */
+  public void set(LightSheetDOF pLightSheetDOF, double pValue)
   {
-    getTable(pLightSheetDOF).setY(pZ);
+    getTable(pLightSheetDOF).setY(pValue);
     notifyListeners(this);
   }
 
-  public void setTransitionPlane(double pZ)
+  /**
+   * Sets z position of transition plane
+   * 
+   * @param pZ
+   *          z position
+   */
+  public void setTransitionPlaneZPosition(double pZ)
   {
     mTransitionPlaneZ = pZ;
     notifyListeners(this);
   }
 
-  public double getTransitionPlane()
+  /**
+   * Returns z position of transition plane
+   * 
+   * @return z position of transition plane
+   */
+  public double getTransitionPlaneZPosition()
   {
     return mTransitionPlaneZ;
   }
@@ -165,203 +296,4 @@ public class InterpolationTables extends
     return mInterpolationTableList.get(pLightSheetDOF.ordinal());
   }
 
-  @Override
-  public void addAtControlPlaneIA(int pControlPlaneIndex,
-                                  int pLightSheetIndex,
-                                  double lCorrection)
-  {
-
-  }
-
-  @Override
-  public void setAtControlPlaneIP(int czi, int l, double v)
-  {
-
-  }
-
-  @Override
-  public double getAtControlPlaneIP(int i, int l)
-  {
-    return 0;
-  }
-
-  @Override
-  public void setAtControlPlaneIW(int pControlPlaneIndex,
-                                  int pLightSheetIndex,
-                                  Double aDouble)
-  {
-
-  }
-
-  @Override
-  public void setAtControlPlaneIX(int pControlPlaneIndex,
-                                  int pLightSheetIndex,
-                                  Double aDouble)
-  {
-
-  }
-
-  @Override
-  public void addAtControlPlaneIZ(int pControlPlaneIndex,
-                                  int pLightSheetIndex,
-                                  double lCorrection)
-  {
-
-  }
-
-  @Override
-  public int getNumberOfDevicesDZ()
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneDZ(int czi, int d)
-  {
-    return 0;
-  }
-
-  @Override
-  public int getNumberOfDevicesIX()
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIX(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIY(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIZ(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIA(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIB(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIW(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public double getAtControlPlaneIH(int czi, int i)
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getDZTable()
-  {
-    return null;
-  }
-
-  @Override
-  public SplineInterpolationTable getIXTable()
-  {
-    return null;
-  }
-
-  @Override
-  public SplineInterpolationTable getIYTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIY()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIZTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIZ()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIATable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIA()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIBTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIB()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIWTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIW()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIHTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIH()
-  {
-    return 0;
-  }
-
-  @Override
-  public SplineInterpolationTable getIPTable()
-  {
-    return null;
-  }
-
-  @Override
-  public int getNumberOfDevicesIP()
-  {
-    return 0;
-  }
 }

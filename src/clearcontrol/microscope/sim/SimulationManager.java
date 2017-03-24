@@ -2,11 +2,11 @@ package clearcontrol.microscope.sim;
 
 import java.util.ArrayList;
 
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.name.ReadOnlyNameableInterface;
+import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.name.ReadOnlyNameableInterface;
-import clearcontrol.device.sim.SimulationDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 
 /**
@@ -27,6 +27,9 @@ public class SimulationManager extends VirtualDevice implements
 
   /**
    * Constructs an LoggingManager.
+   * 
+   * @param pMicroscopeInterface
+   *          microscope
    */
   public SimulationManager(MicroscopeInterface pMicroscopeInterface)
   {
@@ -64,6 +67,11 @@ public class SimulationManager extends VirtualDevice implements
 
   }
 
+  /**
+   * Returns logging-is-on variable
+   * 
+   * @return logging-is-on variable
+   */
   public Variable<Boolean> getLoggingOnVariable()
   {
     return mLoggingOnVariable;

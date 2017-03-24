@@ -1,5 +1,8 @@
 package net.imglib2.img.utils;
 
+import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
+import coremem.offheap.OffHeapMemoryAccess;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
@@ -8,9 +11,6 @@ import net.imglib2.img.planar.OffHeapPlanarImgFactory;
 import net.imglib2.img.planar.PlanarRandomAccess;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.Views;
-import coremem.ContiguousMemoryInterface;
-import coremem.offheap.OffHeapMemory;
-import coremem.offheap.OffHeapMemoryAccess;
 
 /**
  * Created by dibrov on 10/03/17.

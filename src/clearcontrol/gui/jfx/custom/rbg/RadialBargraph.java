@@ -1,8 +1,7 @@
 package clearcontrol.gui.jfx.custom.rbg;
 
-import javafx.scene.control.Skin;
-
 import clearcontrol.gui.jfx.custom.rbg.skin.RadialBargraphSkin;
+import javafx.scene.control.Skin;
 
 /**
  * Created by moon on 1/29/16.

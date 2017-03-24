@@ -1,5 +1,9 @@
 package clearcontrol.gui.jfx.custom.iconswitch.skin;
 
+import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
+import eu.hansolo.enzo.common.Symbol;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.common.Util;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -13,11 +17,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-
-import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
-import eu.hansolo.enzo.common.Symbol;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.common.Util;
 
 /**
  * User: hansolo Date: 10.10.13 Time: 08:46

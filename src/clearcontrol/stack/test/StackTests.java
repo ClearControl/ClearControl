@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
@@ -19,8 +21,6 @@ import coremem.offheap.OffHeapMemoryAccess;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 import coremem.util.Size;
-
-import org.junit.Test;
 
 public class StackTests
 {

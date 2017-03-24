@@ -9,9 +9,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.math3.stat.StatUtils;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
@@ -25,8 +24,9 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.stat.StatUtils;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationW
 {
@@ -94,14 +94,14 @@ public class CalibrationW
                                                                  .getDevice(LightSheetInterface.class,
                                                                             pLightSheetIndex);
 
-      BoundedVariable<Double> lWVariable =
+      BoundedVariable<Number> lWVariable =
                                          lLightSheetDevice.getWidthVariable();
 
       UnivariateAffineFunction lWFunction =
                                           lLightSheetDevice.getWidthFunction()
                                                            .get();
-      double lMinW = lWVariable.getMin();
-      double lMaxW = lWVariable.getMax();
+      double lMinW = lWVariable.getMin().doubleValue();
+      double lMaxW = lWVariable.getMax().doubleValue();
       double lStep = (lMaxW - lMinW) / pNumberOfSamples;
 
       // Building queue start:

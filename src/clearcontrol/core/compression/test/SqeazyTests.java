@@ -2,6 +2,7 @@ package clearcontrol.core.compression.test;
 
 import org.bridj.Pointer;
 import org.junit.Test;
+
 import sqeazy.bindings.SqeazyLibrary;
 
 public class SqeazyTests

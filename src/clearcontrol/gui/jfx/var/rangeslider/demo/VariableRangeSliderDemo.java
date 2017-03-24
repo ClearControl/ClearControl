@@ -1,12 +1,11 @@
 package clearcontrol.gui.jfx.var.rangeslider.demo;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 
 public class VariableRangeSliderDemo extends Application
 {

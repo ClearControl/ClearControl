@@ -4,13 +4,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Scanner;
 
-import jssc.SerialPortException;
+import org.junit.Test;
+
 import clearcontrol.com.serial.Serial;
 import clearcontrol.com.serial.SerialException;
 import clearcontrol.com.serial.SerialInterface;
 import clearcontrol.com.serial.SerialListenerAdapter;
-
-import org.junit.Test;
+import jssc.SerialPortException;
 
 public class SerialDemo
 {

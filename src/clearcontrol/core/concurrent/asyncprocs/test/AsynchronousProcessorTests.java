@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
-
-import org.junit.Test;
 
 public class AsynchronousProcessorTests
 {

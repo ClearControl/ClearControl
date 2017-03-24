@@ -4,9 +4,20 @@ import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
+/**
+ * Light sheet panel
+ *
+ * @author royer
+ */
 public class LightSheetPanel extends CustomVariablePane
 {
 
+  /**
+   * Instanciates a light sheet panel
+   * 
+   * @param pLightSheetInterface
+   *          light sheet
+   */
   public LightSheetPanel(LightSheetInterface pLightSheetInterface)
   {
     super();
@@ -15,35 +26,35 @@ public class LightSheetPanel extends CustomVariablePane
 
     addSliderForVariable("X :",
                          pLightSheetInterface.getXVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Y :",
                          pLightSheetInterface.getYVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Z :",
                          pLightSheetInterface.getZVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Alpha :",
                          pLightSheetInterface.getAlphaInDegreesVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Beta :",
                          pLightSheetInterface.getBetaInDegreesVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Width :",
                          pLightSheetInterface.getWidthVariable(),
-                         0.1).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Height :",
                          pLightSheetInterface.getHeightVariable(),
-                         10.0).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     addSliderForVariable("Power :",
                          pLightSheetInterface.getPowerVariable(),
-                         0.1).setUpdateIfChanging(true);
+                         null).setUpdateIfChanging(true);
 
     OnOffArrayPane lLaserOnOffArray = addOnOffArray("Laser :");
 
@@ -64,12 +75,12 @@ public class LightSheetPanel extends CustomVariablePane
                          1.0,
                          500000.0).setUpdateIfChanging(true);
 
-    addSliderForVariable("LineExposure :",
+    /*addSliderForVariable("LineExposure :",
                          pLightSheetInterface.getLineExposureInMicrosecondsVariable(),
                          1.0,
                          1000000.0,
                          1.0,
-                         500000.0).setUpdateIfChanging(true);
+                         500000.0).setUpdateIfChanging(true);/**/
 
     addSliderForVariable("Overscan :",
                          pLightSheetInterface.getOverScanVariable(),

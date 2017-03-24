@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Random;
 
+import org.junit.Test;
+
 import clearcontrol.core.math.argmax.fitprob.FitQualityEstimator;
 import clearcontrol.core.math.argmax.fitprob.RandomizedDataGaussianFitter;
 import clearcontrol.core.math.argmax.test.ArgMaxTester;
 import clearcontrol.core.units.Magnitude;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.junit.Test;
 
 public class FitQualityEstimatorTests
 {

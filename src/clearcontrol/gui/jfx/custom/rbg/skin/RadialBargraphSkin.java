@@ -686,6 +686,8 @@ public class RadialBargraphSkin extends SkinBase<RadialBargraph>
         touchRotate(point.getX(),
                     point.getY(),
                     getSkinnable().getMarkers().get(SRC));
+
+        ((Marker) SRC).setValue(Double.parseDouble(value.getText()));
       }
       else if (MouseEvent.MOUSE_RELEASED == TYPE)
       {

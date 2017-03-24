@@ -1,8 +1,8 @@
 package clearcontrol.core.math.regression.ewr;
 
-import clearcontrol.core.math.kdtree.KdTree;
-
 import org.apache.commons.math3.analysis.MultivariateFunction;
+
+import clearcontrol.core.math.kdtree.KdTree;
 
 public class CopyOfEnsembleLinearRegressors implements
                                             MultivariateFunction

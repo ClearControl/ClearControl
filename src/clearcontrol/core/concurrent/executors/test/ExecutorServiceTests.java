@@ -10,12 +10,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
-
-import org.junit.Test;
 
 public class ExecutorServiceTests
 {

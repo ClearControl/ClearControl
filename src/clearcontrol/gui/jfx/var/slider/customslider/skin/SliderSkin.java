@@ -1,5 +1,10 @@
 package clearcontrol.gui.jfx.var.slider.customslider.skin;
 
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+
+import clearcontrol.gui.jfx.var.slider.customslider.Slider;
+import clearcontrol.gui.jfx.var.slider.customslider.behavior.SliderBehavior;
+
 /*
  * Copyright (c) 2010, 2014, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -35,11 +40,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-
-import clearcontrol.gui.jfx.var.slider.customslider.Slider;
-import clearcontrol.gui.jfx.var.slider.customslider.behavior.SliderBehavior;
-
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 
 /**
  * Region/css based skin for Slider

@@ -12,7 +12,15 @@ import halcyon.model.node.HalcyonNodeType;
  */
 public enum LSMNodeType implements HalcyonNodeType
 {
- LightSheet, DetectionArm;
+ /**
+  * Lightsheet
+  */
+ LightSheet,
+
+ /**
+  * Detection arm
+  */
+ DetectionArm;
 
   private static Properties mProperties;
   static

@@ -9,10 +9,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
-
 import com.google.common.io.Resources;
 
+import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
 public class ArgMaxTester

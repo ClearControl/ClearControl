@@ -1,5 +1,6 @@
 package clearcontrol.gui.jfx.custom.singlechecklist;
 
+import clearcontrol.core.device.name.NameableInterface;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-
-import clearcontrol.device.name.NameableInterface;
 
 public class SingleCheckCell<T extends NameableInterface>
                             extends ListCell<T>

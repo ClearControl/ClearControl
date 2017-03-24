@@ -3,12 +3,12 @@ package clearcontrol.core.concurrent.asyncprocs.test;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.asyncprocs.ObjectVariableAsynchronousPooledProcessor;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
-
-import org.junit.Test;
 
 public class ObjectVariableProcessorTests
 {

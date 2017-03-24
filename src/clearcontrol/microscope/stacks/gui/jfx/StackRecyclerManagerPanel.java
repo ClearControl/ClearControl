@@ -3,6 +3,12 @@ package clearcontrol.microscope.stacks.gui.jfx;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
+import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -10,12 +16,6 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
-import clearcontrol.microscope.stacks.StackRecyclerManager;
-import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import coremem.recycling.RecyclerInterface;
 
 /**
  * StackRecyclerManagerPanel is a GUI element that displays information about

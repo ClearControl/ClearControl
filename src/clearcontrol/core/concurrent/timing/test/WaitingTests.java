@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import clearcontrol.core.concurrent.timing.WaitingInterface;
-
 import org.junit.Test;
+
+import clearcontrol.core.concurrent.timing.WaitingInterface;
 
 public class WaitingTests
 {

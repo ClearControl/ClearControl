@@ -1,10 +1,10 @@
 package clearcontrol.core.variable.bundle.test;
 
+import org.junit.Test;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableListener;
 import clearcontrol.core.variable.bundle.VariableBundle;
-
-import org.junit.Test;
 
 public class VariableBundleTests
 {

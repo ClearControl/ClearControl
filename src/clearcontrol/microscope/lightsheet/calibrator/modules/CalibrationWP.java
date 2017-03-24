@@ -7,9 +7,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoint;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
+import org.apache.commons.math3.stat.StatUtils;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
@@ -21,13 +25,9 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.fitting.PolynomialCurveFitter;
-import org.apache.commons.math3.fitting.WeightedObservedPoint;
-import org.apache.commons.math3.fitting.WeightedObservedPoints;
-import org.apache.commons.math3.stat.StatUtils;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class CalibrationWP
 {
@@ -71,17 +71,17 @@ public class CalibrationWP
                                                          .getDevice(LightSheetInterface.class,
                                                                     pLightSheetIndex);
 
-    BoundedVariable<Double> lWidthVariable =
+    BoundedVariable<Number> lWidthVariable =
                                            lLightSheet.getWidthVariable();
-    BoundedVariable<Double> lPowerVariable =
+    BoundedVariable<Number> lPowerVariable =
                                            lLightSheet.getWidthVariable();
 
-    double lMinP = lPowerVariable.getMin();
-    double lMaxP = lPowerVariable.getMax();
+    double lMinP = lPowerVariable.getMin().doubleValue();
+    double lMaxP = lPowerVariable.getMax().doubleValue();
     double lReferencePower = (lMaxP - lMinP) / 2;
 
-    double lMinW = lWidthVariable.getMin();
-    double lMaxW = lWidthVariable.getMax();
+    double lMinW = lWidthVariable.getMin().doubleValue();
+    double lMaxW = lWidthVariable.getMax().doubleValue();
     double lStepW = (lMaxW - lMinW) / pNumberOfSamplesW;
     double lReferenceW = (lMaxW - lMinW) / 2;
 

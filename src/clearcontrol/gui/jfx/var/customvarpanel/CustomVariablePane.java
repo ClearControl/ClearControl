@@ -1,5 +1,13 @@
 package clearcontrol.gui.jfx.var.customvarpanel;
 
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,15 +17,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
-import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 
 public class CustomVariablePane extends TabPane
 {

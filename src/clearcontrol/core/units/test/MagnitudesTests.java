@@ -5,9 +5,9 @@ import static clearcontrol.core.units.Magnitude.Milli;
 import static clearcontrol.core.units.Magnitude.Unit;
 import static org.junit.Assert.assertEquals;
 
-import clearcontrol.core.units.Magnitude;
-
 import org.junit.Test;
+
+import clearcontrol.core.units.Magnitude;
 
 public class MagnitudesTests
 {

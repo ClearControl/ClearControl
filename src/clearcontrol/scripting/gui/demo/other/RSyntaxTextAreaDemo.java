@@ -8,12 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
-
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.junit.Test;
+
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 
 public class RSyntaxTextAreaDemo
 {

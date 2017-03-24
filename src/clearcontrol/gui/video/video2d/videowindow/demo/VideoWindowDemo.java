@@ -3,11 +3,11 @@ package clearcontrol.gui.video.video2d.videowindow.demo;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
-
-import org.junit.Test;
 
 public class VideoWindowDemo
 {

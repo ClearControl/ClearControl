@@ -1,12 +1,11 @@
 package clearcontrol.gui.jfx.var.onoffarray.demo;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 
 public class OnOffArrayPaneDemo extends Application
 {

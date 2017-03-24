@@ -1,7 +1,7 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet.si;
 
-import clearcontrol.hardware.signalgen.staves.BinaryPatternSteppingStave;
-import clearcontrol.hardware.signalgen.staves.StaveInterface;
+import clearcontrol.devices.signalgen.staves.BinaryPatternSteppingStave;
+import clearcontrol.devices.signalgen.staves.StaveInterface;
 
 public class BinaryStructuredIlluminationPattern extends
                                                  StructuredIlluminationPatternBase

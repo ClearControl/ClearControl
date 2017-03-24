@@ -1,19 +1,29 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet;
 
+import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.core.device.change.HasChangeListenerInterface;
+import clearcontrol.core.device.name.NameableInterface;
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.core.device.queue.HasVariableStateQueues;
+import clearcontrol.core.device.queue.StateQueueDeviceInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.device.VirtualDevice;
-import clearcontrol.device.change.HasChangeListenerInterface;
-import clearcontrol.device.name.NameableInterface;
-import clearcontrol.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
+/**
+ *
+ *
+ * @author royer
+ */
+@SuppressWarnings("javadoc")
 public interface LightSheetInterface extends
                                      NameableInterface,
                                      OpenCloseDeviceInterface,
+                                     StateQueueDeviceInterface,
+                                     HasVariableStateQueues,
                                      HasChangeListenerInterface<VirtualDevice>
 {
 
@@ -21,31 +31,31 @@ public interface LightSheetInterface extends
 
   public Variable<Long> getImageHeightVariable();
 
-  public BoundedVariable<Double> getEffectiveExposureInMicrosecondsVariable();
+  public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable();
 
-  public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
+  // public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
 
-  public BoundedVariable<Double> getOverScanVariable();
+  public BoundedVariable<Number> getOverScanVariable();
 
-  public BoundedVariable<Double> getReadoutTimeInMicrosecondsPerLineVariable();
+  public BoundedVariable<Number> getReadoutTimeInMicrosecondsPerLineVariable();
 
   // Below are variables that can be adjusted freely:
 
-  public BoundedVariable<Double> getXVariable();
+  public BoundedVariable<Number> getXVariable();
 
-  public BoundedVariable<Double> getYVariable();
+  public BoundedVariable<Number> getYVariable();
 
   public BoundedVariable<Number> getZVariable();
 
-  public BoundedVariable<Double> getAlphaInDegreesVariable();
+  public BoundedVariable<Number> getAlphaInDegreesVariable();
 
-  public BoundedVariable<Double> getBetaInDegreesVariable();
+  public BoundedVariable<Number> getBetaInDegreesVariable();
 
-  public BoundedVariable<Double> getWidthVariable();
+  public BoundedVariable<Number> getWidthVariable();
 
-  public BoundedVariable<Double> getHeightVariable();
+  public BoundedVariable<Number> getHeightVariable();
 
-  public BoundedVariable<Double> getPowerVariable();
+  public BoundedVariable<Number> getPowerVariable();
 
   public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
 

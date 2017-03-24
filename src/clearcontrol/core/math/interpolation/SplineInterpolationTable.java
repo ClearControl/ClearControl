@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 /**
  * SplineInterpolationTable provides Spline interpolation for tables. Each
@@ -22,7 +22,7 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
  * 
  * @author royer
  */
-public class SplineInterpolationTable
+public class SplineInterpolationTable implements Cloneable
 {
   private final TreeSet<Row> mTable;
   private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
@@ -55,6 +55,12 @@ public class SplineInterpolationTable
     for (Row lRow : pInterpolationTable.mTable)
       mTable.add(new Row(lRow));
     mIsUpToDate = false;
+  }
+
+  @Override
+  public SplineInterpolationTable clone()
+  {
+    return new SplineInterpolationTable(this);
   }
 
   /**
@@ -242,8 +248,8 @@ public class SplineInterpolationTable
    *          row index
    * @param pColumnIndex
    *          column index
-   * @param pValue
-   *          value
+   * @param pDeltaValue
+   *          delta value
    */
   public void addY(int pRowIndex,
                    int pColumnIndex,
@@ -259,9 +265,9 @@ public class SplineInterpolationTable
    *          row index
    * @param pColumnIndex
    *          column index
-   * @return
+   * @return y value
    */
-  public double getY(int pRowIndex, int pColumnIndex, double pValue)
+  public double getY(int pRowIndex, int pColumnIndex)
   {
     return getRow(pRowIndex).getY(pColumnIndex);
   }
@@ -413,6 +419,7 @@ public class SplineInterpolationTable
    * Displays a MultiPlot for debug purposes.
    * 
    * @param pMultiPlotName
+   *          multiplot name
    * @return multiplot
    */
   public MultiPlot displayTable(String pMultiPlotName)

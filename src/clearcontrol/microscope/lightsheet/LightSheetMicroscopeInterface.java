@@ -2,10 +2,14 @@ package clearcontrol.microscope.lightsheet;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.hardware.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
+/**
+ * Interface implemented by all lightsheet microscope implementations
+ *
+ * @author royer
+ */
 public interface LightSheetMicroscopeInterface extends
                                                MicroscopeInterface
 
@@ -310,7 +314,7 @@ public interface LightSheetMicroscopeInterface extends
    * @param pHeight
    *          lightsheet's height
    */
-  public void setIH(int pLightSheetIndex, double pLength);
+  public void setIH(int pLightSheetIndex, double pHeight);
 
   /**
    * Returns the lighsheet's height - i.e. its dimension along the scanning
@@ -337,7 +341,7 @@ public interface LightSheetMicroscopeInterface extends
    * lasers)
    * 
    * @param pLightSheetIndex
-   * @return
+   * @return analog laser modulation level
    */
   double getIP(int pLightSheetIndex);
 
@@ -465,84 +469,9 @@ public interface LightSheetMicroscopeInterface extends
    *          lightsheet device index
    * @param pLaserIndex
    *          laser device index
-   * @return
+   * @return illumination SI pattern flag (true or false)
    */
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
-
-  /**
-   * Sets the main sample stage X position.
-   * 
-   * @param pXValue
-   *          x position value
-   */
-  public void setStageX(double pXValue);
-
-  /**
-   * Sets the main sample stage Y position.
-   * 
-   * @param pYValue
-   *          y position value
-   */
-  public void setStageY(double pYValue);
-
-  /**
-   * Sets the sample's main stage Z position.
-   * 
-   * @param pZValue
-   *          z position value
-   */
-  public void setStageZ(double pZValue);
-
-  /**
-   * Sets the sample's main stage R position.
-   * 
-   * @param pRValue
-   *          r position value
-   */
-  public void setStageR(double pRValue);
-
-  /**
-   * Returns the main sample stage X position.
-   * 
-   * @return x position value
-   */
-  public double getStageX();
-
-  /**
-   * Returns the main sample stage Y position.
-   * 
-   * @return y position value
-   */
-  public double getStageY();
-
-  /**
-   * Returns the sample's main stage Z position.
-   * 
-   * @return z position value
-   */
-  public double getStageZ();
-
-  /**
-   * Returns the sample's main stage R position.
-   * 
-   * @return r position value
-   */
-  public double getStageR();
-
-  /**
-   * Sets the main XYZR stage of this microscope.
-   * 
-   * @param pStageDeviceInterface
-   *          main XYZR stage.
-   */
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
-
-  /**
-   * Returns the main XYZR stage of this microscope.
-   * 
-   * @return main XYZR stage
-   */
-  public StageDeviceInterface getMainXYZRStage();
 
 }

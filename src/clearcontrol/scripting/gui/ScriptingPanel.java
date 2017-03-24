@@ -36,7 +36,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultCaret;
 
-import net.miginfocom.swing.MigLayout;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.SystemUtils;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import clearcontrol.core.file.FileEventNotifier;
 import clearcontrol.core.file.FileEventNotifier.FileEventKind;
 import clearcontrol.core.file.FileEventNotifierListener;
@@ -45,12 +50,7 @@ import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.engine.ScriptingEngineListener;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
 import clearcontrol.scripting.lang.jython.JythonScripting;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.SystemUtils;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
+import net.miginfocom.swing.MigLayout;
 
 public class ScriptingPanel extends JPanel implements
                             DropTargetListener,

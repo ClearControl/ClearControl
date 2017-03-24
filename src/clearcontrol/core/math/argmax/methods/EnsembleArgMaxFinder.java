@@ -9,10 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 {

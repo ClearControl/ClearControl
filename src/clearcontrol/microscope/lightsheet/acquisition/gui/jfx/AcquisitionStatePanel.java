@@ -1,11 +1,6 @@
 package clearcontrol.microscope.lightsheet.acquisition.gui.jfx;
 
 import java.util.concurrent.ConcurrentHashMap;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.layout.GridPane;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -14,17 +9,41 @@ import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
+import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.layout.GridPane;
 
+/**
+ * Acquisition state panel
+ *
+ * @author royer
+ */
 public class AcquisitionStatePanel extends CustomGridPane
 {
 
+  /**
+   * Prefered width
+   */
   public static final double cPrefWidth = 0;
+
+  /**
+   * Prefered height
+   */
   public static final double cPrefHeight = 0;
 
   private ConcurrentHashMap<String, ObservableList<Data<Number, Number>>> mNameToDataMap =
                                                                                          new ConcurrentHashMap<>();
 
+  /**
+   * Acquisition state
+   * 
+   * @param pAcquisitionState
+   *          acquisition state
+   */
   public AcquisitionStatePanel(InterpolatedAcquisitionState pAcquisitionState)
   {
     super();
@@ -114,7 +133,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     int lNumberOfDetectionArms =
                                pAcquisitionState.getNumberOfDetectionArms();
     int lNumberOfIlluminationArms =
-                                  pAcquisitionState.getNumberOfIlluminationArms();
+                                  pAcquisitionState.getNumberOfLightSheets();
 
     for (int d = 0; d < lNumberOfDetectionArms; d++)
     {
@@ -192,7 +211,7 @@ public class AcquisitionStatePanel extends CustomGridPane
       int lNumberOfDetectionArms =
                                  pAcquisitionState.getNumberOfDetectionArms();
       int lNumberOfIlluminationArms =
-                                    pAcquisitionState.getNumberOfIlluminationArms();
+                                    pAcquisitionState.getNumberOfLightSheets();
 
       for (int d = 0; d < lNumberOfDetectionArms; d++)
       {
@@ -204,121 +223,31 @@ public class AcquisitionStatePanel extends CustomGridPane
         {
           MultiChart.addData(lData,
                              pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getDZ(zi, d));
+                             pAcquisitionState.get(LightSheetDOF.DZ,
+                                                   zi,
+                                                   d));
         }
       }
 
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IX"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
+      for (LightSheetDOF lLightSheetDOF : LightSheetDOF.values())
+        if (lLightSheetDOF != LightSheetDOF.DZ)
         {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIX(zi, i));
+          for (int i = 0; i < lNumberOfIlluminationArms; i++)
+          {
+            ObservableList<Data<Number, Number>> lData =
+                                                       mNameToDataMap.get(lLightSheetDOF.toString()
+                                                                          + i);
+            lData.clear();
+            for (int zi = 0; zi < lDepth; zi++)
+            {
+              MultiChart.addData(lData,
+                                 pAcquisitionState.getZRamp(zi),
+                                 pAcquisitionState.get(lLightSheetDOF,
+                                                       zi,
+                                                       i));
+            }
+          }
         }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IY"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIY(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IZ"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIZ(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IA"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIA(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IB"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIB(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IH"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIH(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IW"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIW(zi, i));
-        }
-      }
-
-      for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("IP"
-                                                                      + i);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.getIP(zi, i));
-        }
-      }
 
       pMultiChart.updateMinMax();
     }

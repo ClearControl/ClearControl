@@ -1,9 +1,9 @@
 package clearcontrol.core.math.regression.linear;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 /**
  * Theil-Sen estimator

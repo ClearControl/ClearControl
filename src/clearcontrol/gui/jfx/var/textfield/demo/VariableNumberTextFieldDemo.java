@@ -1,12 +1,11 @@
 package clearcontrol.gui.jfx.var.textfield.demo;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 
 public class VariableNumberTextFieldDemo extends Application
 {

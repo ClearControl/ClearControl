@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import clearcontrol.scripting.autoimport.ClassPathResolver;
-
 import org.junit.Test;
+
+import clearcontrol.scripting.autoimport.ClassPathResolver;
 
 public class ClassPathDatabaseTests
 {

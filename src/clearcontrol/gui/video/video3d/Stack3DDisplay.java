@@ -3,8 +3,8 @@ package clearcontrol.gui.video.video3d;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.device.VirtualDevice;
 import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.util.WindowControl;
 import clearcontrol.stack.EmptyStack;
