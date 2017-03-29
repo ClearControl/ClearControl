@@ -1,10 +1,8 @@
 package clearcontrol.devices.signalgen;
 
-import java.util.concurrent.TimeUnit;
-
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
@@ -16,7 +14,7 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
 public interface SignalGeneratorInterface extends
                                           NameableInterface,
                                           OpenCloseDeviceInterface,
-                                          StateQueueDeviceInterface
+                                          RealTimeQueueDeviceInterface<SignalGeneratorRealTimeQueue>
 {
 
   /**
@@ -30,24 +28,18 @@ public interface SignalGeneratorInterface extends
    * Play score
    * 
    * @param pScore
-   *          score
+   *          score to play
    * @return true if played successfully
    */
   public boolean playScore(ScoreInterface pScore);
 
   /**
-   * Returns staging score
+   * Returns the variable that holds the last played score. Listening to this
+   * variable is a convenient way to be notified of played scores.
    * 
-   * @return staging score
+   * @return played score variable
    */
-  public ScoreInterface getStagingScore();
-
-  /**
-   * Returns queued score
-   * 
-   * @return queeud score
-   */
-  public ScoreInterface getQueuedScore();
+  Variable<ScoreInterface> getPlayedScoreVariable();
 
   /**
    * Returns trigger variable
@@ -62,14 +54,5 @@ public interface SignalGeneratorInterface extends
    * @return true if playing
    */
   public boolean isPlaying();
-
-  /**
-   * Estimates the play time in the given time unit.
-   * 
-   * @param pTimeUnit
-   *          time unit
-   * @return play time estimate
-   */
-  public long estimatePlayTime(TimeUnit pTimeUnit);
 
 }

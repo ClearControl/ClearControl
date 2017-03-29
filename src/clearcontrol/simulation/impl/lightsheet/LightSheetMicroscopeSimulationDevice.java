@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.simulation.SampleSimulationDeviceBase;
-import clearcontrol.simulation.SampleSimulatorDeviceInterface;
+import clearcontrol.simulation.SampleSimulationDeviceInterface;
 import simbryo.synthoscopy.microscope.lightsheet.LightSheetMicroscopeSimulator;
 import simbryo.synthoscopy.microscope.parameters.IlluminationParameter;
 import simbryo.synthoscopy.microscope.parameters.StageParameter;
@@ -16,10 +17,10 @@ import simbryo.synthoscopy.microscope.parameters.StageParameter;
  *
  * @author royer
  */
-public class LightSheetMicroscopeSimulatorDevice extends
-                                                 SampleSimulationDeviceBase
-                                                 implements
-                                                 SampleSimulatorDeviceInterface
+public class LightSheetMicroscopeSimulationDevice extends
+                                                  SampleSimulationDeviceBase<LightSheetMicroscopeQueue>
+                                                  implements
+                                                  SampleSimulationDeviceInterface<LightSheetMicroscopeQueue>
 {
 
   private LightSheetMicroscopeSimulator mLightSheetMicroscopeSimulator;
@@ -34,13 +35,13 @@ public class LightSheetMicroscopeSimulatorDevice extends
    *          light sheet microscope simulator (from Simbryo project)
    * 
    */
-  public LightSheetMicroscopeSimulatorDevice(LightSheetMicroscopeSimulator pLightSheetMicroscopeSimulator)
+  public LightSheetMicroscopeSimulationDevice(LightSheetMicroscopeSimulator pLightSheetMicroscopeSimulator)
   {
     super();
     mLightSheetMicroscopeSimulator = pLightSheetMicroscopeSimulator;
-
   }
 
+  // TODO: check this:
   private void setParameterForAllLightSheets(IlluminationParameter pParameter,
                                              Number pValue)
   {
@@ -60,7 +61,7 @@ public class LightSheetMicroscopeSimulatorDevice extends
   }
 
   @Override
-  public void connectTo(MicroscopeInterface pMicroscope)
+  public void connectTo(MicroscopeInterface<LightSheetMicroscopeQueue> pMicroscope)
   {
     if (pMicroscope instanceof LightSheetMicroscopeInterface)
     {

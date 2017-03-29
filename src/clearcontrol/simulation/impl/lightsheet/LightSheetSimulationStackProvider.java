@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import clearcl.ClearCLBuffer;
-import clearcontrol.core.variable.queue.VariableStateQueues;
-import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProviderBase;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationRealTimeQueue;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArmQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetQueue;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import simbryo.synthoscopy.microscope.lightsheet.LightSheetMicroscopeSimulator;
@@ -38,9 +40,9 @@ public class LightSheetSimulationStackProvider extends
   private ArrayList<LightSheetInterface> mLightSheetList =
                                                          new ArrayList<>();
 
-  private VariableStateQueues mDetectionStateQueues;
-  private ConcurrentHashMap<Integer, VariableStateQueues> mLightSheetStateQueuesMap =
-                                                                                    new ConcurrentHashMap<>();
+  private DetectionArmQueue mDetectionStateQueues;
+  private ConcurrentHashMap<Integer, LightSheetQueue> mLightSheetStateQueuesMap =
+                                                                                new ConcurrentHashMap<>();
 
   /**
    * Instanciates a lightsheet simulation stack provider.
@@ -74,7 +76,7 @@ public class LightSheetSimulationStackProvider extends
   }
 
   @Override
-  protected void fillStackData(StackCameraDeviceSimulator pCamera,
+  protected void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
                                ArrayList<Boolean> pKeepPlaneList,
                                long pWidth,
                                long pHeight,
@@ -83,11 +85,8 @@ public class LightSheetSimulationStackProvider extends
                                StackInterface pStack)
   {
 
-    final byte time = (byte) pCamera.getCurrentStackIndex();
-
     int lWidth = (int) pStack.getWidth();
     int lHeight = (int) pStack.getHeight();
-    int lDepth = (int) pStack.getDepth();
 
     mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.ROIWidth,
                                                       mCameraIndex,
@@ -101,12 +100,16 @@ public class LightSheetSimulationStackProvider extends
 
     int lLastZiKept = getLast(pKeepPlaneList);
 
-    int lQueueLength = mLightSheetMicroscope.getQueueLength();
+    int lQueueLength = pQueue.getQueueLength();
 
-    collectDetectionStateQueues();
+    LightSheetMicroscopeQueue lLightSheetMicroscopeQueue =
+                                                         mLightSheetMicroscope.getPlayedQueueVariable()
+                                                                              .get();
+
+    collectDetectionStateQueues(lLightSheetMicroscopeQueue);
 
     for (int l = 0; l < mLightSheetList.size(); l++)
-      collectIluminationStateQueues(l);
+      collectIluminationStateQueues(lLightSheetMicroscopeQueue, l);
     /**/
 
     for (int zi = 0, i = 0; zi < lQueueLength; zi++)
@@ -138,19 +141,19 @@ public class LightSheetSimulationStackProvider extends
 
   }
 
-  private void collectDetectionStateQueues()
+  private void collectDetectionStateQueues(LightSheetMicroscopeQueue pLightSheetMicroscopeQueue)
   {
     mDetectionStateQueues =
-                          mDetectionArmDevice.getVariableStateQueues()
-                                             .clone();
+                          (DetectionArmQueue) pLightSheetMicroscopeQueue.getDeviceQueue(mDetectionArmDevice);
   }
 
-  private void collectIluminationStateQueues(int pLightSheetIndex)
+  private void collectIluminationStateQueues(LightSheetMicroscopeQueue pLightSheetMicroscopeQueue,
+                                             int pLightSheetIndex)
   {
+    LightSheetInterface lLightSheetDevice =
+                                          mLightSheetList.get(pLightSheetIndex);
     mLightSheetStateQueuesMap.put(pLightSheetIndex,
-                                  mLightSheetList.get(pLightSheetIndex)
-                                                 .getVariableStateQueues()
-                                                 .clone());
+                                  (LightSheetQueue) pLightSheetMicroscopeQueue.getDeviceQueue(lLightSheetDevice));
   }
 
   private void passDetectionParameters(int zi)

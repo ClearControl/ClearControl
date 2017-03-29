@@ -9,10 +9,11 @@ import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.units.Magnitude;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceBase;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 import clearcontrol.devices.cameras.devices.orcaflash4.utils.DcamJToVideoFrameConverter;
 import dcamj.DcamAcquisition;
 import dcamj.DcamAcquisition.TriggerType;
-import dcamj.DcamAcquisitionListener;
 import dcamj.DcamFrame;
 import dcamj.DcamProperties;
 import gnu.trove.list.array.TByteArrayList;
@@ -25,39 +26,20 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class OrcaFlash4StackCamera extends StackCameraDeviceBase
                                    implements
+                                   StackCameraDeviceInterface,
                                    OpenCloseDeviceInterface,
                                    AsynchronousExecutorServiceAccess
 {
 
   // declaring instance variables
 
-  /**
-   * 
-   */
-  public static final int cDcamJNumberOfBuffers = 1024;
+  private static final int cDcamJNumberOfBuffers = 1024;
 
-  /**
-   * 
-   */
   private final int mCameraDeviceIndex; // camera id index used in the name and
                                         // passed to the constructor
 
   private final DcamAcquisition mDcamAcquisition; // creating the environment
                                                   // for the camera
-
-  private final Variable<Pair<TByteArrayList, DcamFrame>> mFrameReference =
-                                                                          new Variable<>("DCamJVideoFrame"); // some
-                                                                                                             // weird
-                                                                                                             // hamamatsu
-                                                                                                             // stuff,
-                                                                                                             // not
-                                                                                                             // sure
-                                                                                                             // if
-                                                                                                             // I
-                                                                                                             // need
-                                                                                                             // it
-                                                                                                             // with
-                                                                                                             // Andor
 
   private final DcamJToVideoFrameConverter mDcamJToStackConverterAndProcessing; // hamamtsu
                                                                                 // again
@@ -126,42 +108,7 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase
     mDcamAcquisition = new DcamAcquisition(getCameraDeviceIndex());
     // set trigger type
     mDcamAcquisition.setTriggerType(pTriggerType);
-    // some camera specific listener functional interface with the method
-    // frameArrived
-    mDcamAcquisition.addListener(new DcamAcquisitionListener()
-    {
 
-      @Override
-      public void frameArrived(final DcamAcquisition pDcamAquisition,
-                               final long pAbsoluteFrameIndex,
-                               final long pArrivalTimeStamp,
-                               final long pFrameIndexInBufferList,
-                               final DcamFrame pDcamFrame)
-      {
-        // final long lDepth = pDcamFrame.getDepth();
-        /*System.out.println("frameArrived: hashcode=" + pDcamFrame.hashCode()
-        										+ " index="
-        										+ pDcamFrame.getIndex()
-        										+ " pFrameIndexInBufferList="
-        										+ pFrameIndexInBufferList);/**/
-
-        TByteArrayList lKeepAcquiredImageArray = null;
-        // if (mStackMode.getBooleanValue())
-        {
-          do
-          {
-
-            // System.out.println("lKeepAcquiredImageArray=" +
-            // lKeepAcquiredImageArray);
-          }
-          while (lKeepAcquiredImageArray.size() != pDcamFrame.getDepth());
-        }
-
-        mFrameReference.set(Pair.of(lKeepAcquiredImageArray,
-                                    pDcamFrame));
-      }
-
-    });
     // ----------------------- done with the listener -------- //
 
     // more instance vars
@@ -294,8 +241,8 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase
 
     getNumberOfImagesPerPlaneVariable().sendUpdatesTo(mDcamJToStackConverterAndProcessing.getNumberOfImagesPerPlaneVariable());
 
-    mStackReference =
-                    mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
+    mStackVariable =
+                   mDcamJToStackConverterAndProcessing.getStackReferenceVariable();
 
   }
 
@@ -396,14 +343,12 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase
   }
 
   @Override
-  public Future<Boolean> playQueue()
+  public Future<Boolean> playQueue(StackCameraRealTimeQueue pQueue)
   {
-    super.playQueue();
+    super.playQueue(pQueue);
 
     ArrayList<Boolean> lKeepPlaneList =
-                                      getVariableStateQueues().getVariableQueue(getKeepPlaneVariable());
-
-    acquisition(false, getStackModeVariable().get(), false);
+                                      pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
 
     final Future<Boolean> lFuture =
                                   executeAsynchronously(new Callable<Boolean>()
@@ -412,7 +357,9 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase
                                     public Boolean call() throws Exception
                                     {
                                       // System.out.println("mDcamAcquisition.waitAcquisitionFinishedAndStop();");
-                                      mDcamAcquisition.waitAcquisitionFinishedAndStop();
+                                      acquisition(false,
+                                                  getStackModeVariable().get(),
+                                                  true);
                                       return true;
                                     }
                                   });

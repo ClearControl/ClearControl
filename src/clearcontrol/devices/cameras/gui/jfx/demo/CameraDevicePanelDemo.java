@@ -10,14 +10,9 @@ import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
 import clearcontrol.devices.cameras.gui.jfx.CameraDevicePanel;
-import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
-import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclerInterface;
 
 /**
- *
+ * Camera device demo
  *
  * @author royer
  */
@@ -28,12 +23,6 @@ public class CameraDevicePanelDemo extends Application
   public void start(Stage pPrimaryStage) throws Exception
   {
 
-    final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory =
-                                                                         new ContiguousOffHeapPlanarStackFactory();
-
-    final RecyclerInterface<StackInterface, StackRequest> lRecycler =
-                                                                    new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
-                                                                                                                    10);
     StackCameraSimulationProvider lStackCameraSimulationProvider =
                                                                  new FractalStackProvider();
 
@@ -63,7 +52,10 @@ public class CameraDevicePanelDemo extends Application
   }
 
   /**
+   * Main
+   * 
    * @param args
+   *          NA
    */
   public static void main(String[] args)
   {

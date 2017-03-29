@@ -2,111 +2,157 @@ package clearcontrol.core.variable.bounded;
 
 import clearcontrol.core.variable.Variable;
 
-public class BoundedVariable<T extends Number> extends Variable<T>
+/**
+ * Bounded Variables have min, max and granularity values defined in addition to
+ * the variable value itself. Of course, bounded variables only work for numeric
+ * types.
+ *
+ * @param <N>
+ *          numeric value type
+ * @author royer
+ */
+public class BoundedVariable<N extends Number> extends Variable<N>
 {
 
-  Variable<T> mMin, mMax, mGranularity;
+  Variable<N> mMin, mMax, mGranularity;
 
+  /**
+   * Instanciates a bounded variable with a given variable name and inicial
+   * value
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pReference
+   *          inicial value
+   */
   @SuppressWarnings("unchecked")
-  public BoundedVariable(String pVariableName, T pReference)
+  public BoundedVariable(String pVariableName, N pReference)
   {
     super(pVariableName, pReference);
 
     if (pReference instanceof Double)
     {
       mMin =
-           (Variable<T>) new Variable<Double>(pVariableName + "Min",
+           (Variable<N>) new Variable<Double>(pVariableName + "Min",
                                               Double.NEGATIVE_INFINITY);
       mMax =
-           (Variable<T>) new Variable<Double>(pVariableName + "Max",
+           (Variable<N>) new Variable<Double>(pVariableName + "Max",
                                               Double.POSITIVE_INFINITY);
-      mGranularity = (Variable<T>) new Variable<Double>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Double>(pVariableName
                                                         + "Max", 0.0);
     }
     else if (pReference instanceof Float)
     {
       mMin =
-           (Variable<T>) new Variable<Float>(pVariableName + "Min",
+           (Variable<N>) new Variable<Float>(pVariableName + "Min",
                                              Float.NEGATIVE_INFINITY);
       mMax =
-           (Variable<T>) new Variable<Float>(pVariableName + "Max",
+           (Variable<N>) new Variable<Float>(pVariableName + "Max",
                                              Float.POSITIVE_INFINITY);
-      mGranularity = (Variable<T>) new Variable<Float>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Float>(pVariableName
                                                        + "Max", 0.0f);
     }
     else if (pReference instanceof Long)
     {
-      mMin = (Variable<T>) new Variable<Long>(pVariableName + "Min",
+      mMin = (Variable<N>) new Variable<Long>(pVariableName + "Min",
                                               Long.MIN_VALUE);
-      mMax = (Variable<T>) new Variable<Long>(pVariableName + "Max",
+      mMax = (Variable<N>) new Variable<Long>(pVariableName + "Max",
                                               Long.MAX_VALUE);
-      mGranularity = (Variable<T>) new Variable<Long>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Long>(pVariableName
                                                       + "Max", 0L);
     }
     else if (pReference instanceof Integer)
     {
       mMin =
-           (Variable<T>) new Variable<Integer>(pVariableName + "Min",
+           (Variable<N>) new Variable<Integer>(pVariableName + "Min",
                                                Integer.MIN_VALUE);
       mMax =
-           (Variable<T>) new Variable<Integer>(pVariableName + "Max",
+           (Variable<N>) new Variable<Integer>(pVariableName + "Max",
                                                Integer.MAX_VALUE);
-      mGranularity = (Variable<T>) new Variable<Integer>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Integer>(pVariableName
                                                          + "Max", 0);
     }
     else if (pReference instanceof Short)
     {
-      mMin = (Variable<T>) new Variable<Short>(pVariableName + "Min",
+      mMin = (Variable<N>) new Variable<Short>(pVariableName + "Min",
                                                Short.MIN_VALUE);
-      mMax = (Variable<T>) new Variable<Short>(pVariableName + "Max",
+      mMax = (Variable<N>) new Variable<Short>(pVariableName + "Max",
                                                Short.MAX_VALUE);
-      mGranularity = (Variable<T>) new Variable<Short>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Short>(pVariableName
                                                        + "Max",
                                                        (short) 0);
     }
     else if (pReference instanceof Byte)
     {
-      mMin = (Variable<T>) new Variable<Byte>(pVariableName + "Min",
+      mMin = (Variable<N>) new Variable<Byte>(pVariableName + "Min",
                                               Byte.MIN_VALUE);
-      mMax = (Variable<T>) new Variable<Byte>(pVariableName + "Max",
+      mMax = (Variable<N>) new Variable<Byte>(pVariableName + "Max",
                                               Byte.MAX_VALUE);
-      mGranularity = (Variable<T>) new Variable<Byte>(pVariableName
+      mGranularity = (Variable<N>) new Variable<Byte>(pVariableName
                                                       + "Max",
                                                       (byte) 0);
     }
 
   }
 
+  /**
+   * Instanciates a bounded variable with given variable name, inicial value,
+   * min and max values and a null granularity (not used).
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pReference
+   *          inicial value
+   * @param pMin
+   *          min value
+   * @param pMax
+   *          max value
+   */
   public BoundedVariable(String pVariableName,
-                         T pReference,
-                         T pMin,
-                         T pMax)
+                         N pReference,
+                         N pMin,
+                         N pMax)
   {
     this(pVariableName, pReference, pMin, pMax, null);
   }
 
+  /**
+   * Instanciates a bounded variable with given variable name, inicial value,
+   * min, max and granularity values.
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pReference
+   *          inicial value
+   * @param pMin
+   *          min value
+   * @param pMax
+   *          max value
+   * @param pGranularity
+   *          granularity
+   */
   public BoundedVariable(String pVariableName,
-                         T pReference,
-                         T pMin,
-                         T pMax,
-                         T pGranularity)
+                         N pReference,
+                         N pMin,
+                         N pMax,
+                         N pGranularity)
   {
     super(pVariableName, pReference);
 
-    mMin = new Variable<T>(pVariableName + "Min", pMin);
-    mMax = new Variable<T>(pVariableName + "Max", pMax);
-    mGranularity = new Variable<T>(pVariableName + "Granularity",
+    mMin = new Variable<N>(pVariableName + "Min", pMin);
+    mMax = new Variable<N>(pVariableName + "Max", pMax);
+    mGranularity = new Variable<N>(pVariableName + "Granularity",
                                    pGranularity);
   }
 
   @Override
-  public void set(T pNewReference)
+  public void set(N pNewReference)
   {
     super.set(clampAndSnap(pNewReference));
   }
 
   @SuppressWarnings("unchecked")
-  private T clampAndSnap(T pNewReference)
+  private N clampAndSnap(N pNewReference)
   {
     if (pNewReference == null)
       return null;
@@ -134,9 +180,9 @@ public class BoundedVariable<T extends Number> extends Variable<T>
       else
       {
         if (pNewReference instanceof Double)
-          return (T) new Double(lNewValue);
+          return (N) new Double(lNewValue);
         else if (pNewReference instanceof Float)
-          return (T) new Float(lNewValue);
+          return (N) new Float(lNewValue);
       }
     }
     else if (pNewReference instanceof Long
@@ -164,55 +210,136 @@ public class BoundedVariable<T extends Number> extends Variable<T>
       else
       {
         if (pNewReference instanceof Long)
-          return (T) new Long(lNewValue);
+          return (N) new Long(lNewValue);
         else if (pNewReference instanceof Integer)
-          return (T) new Integer((int) lNewValue);
+          return (N) new Integer((int) lNewValue);
         if (pNewReference instanceof Short)
-          return (T) new Short((short) lNewValue);
+          return (N) new Short((short) lNewValue);
         else if (pNewReference instanceof Byte)
-          return (T) new Byte((byte) lNewValue);
+          return (N) new Byte((byte) lNewValue);
       }
     }
 
     return pNewReference;
   }
 
-  public Variable<T> getMinVariable()
+  /**
+   * Returns the variable holding the min value
+   * 
+   * @return min variable
+   */
+  public Variable<N> getMinVariable()
   {
     return mMin;
   }
 
-  public Variable<T> getMaxVariable()
+  /**
+   * Returns the variable holding the max value
+   * 
+   * @return max variable
+   */
+  public Variable<N> getMaxVariable()
   {
     return mMax;
   }
 
-  public Variable<T> getGranularityVariable()
+  /**
+   * Returns the variable holding the granularity value
+   * 
+   * @return granularity variable
+   */
+  public Variable<N> getGranularityVariable()
   {
     return mGranularity;
   }
 
-  public T getMin()
+  /**
+   * Returns the current min value
+   * 
+   * @return current min value
+   */
+  public N getMin()
   {
     return mMin.get();
   }
 
-  public T getMax()
+  /**
+   * Returns the current max value
+   * 
+   * @return current max value
+   */
+  public N getMax()
   {
     return mMax.get();
   }
 
-  public T getGranularity()
+  /**
+   * Returns the current granularity value
+   * 
+   * @return current granularity value
+   */
+  public N getGranularity()
   {
     return mGranularity.get();
   }
 
-  public void setMinMax(T pMin, T pMax)
+  /**
+   * Sets the value, min, max and granularity of this variable to that of the
+   * given variable.
+   * 
+   * @param pVariable
+   *          variable
+   */
+  public void set(BoundedVariable<N> pVariable)
   {
-    mMin.set(pMin);
-    mMax.set(pMax);
+    set(pVariable.get());
+    mMin.set(pVariable.getMin());
+    mMax.set(pVariable.getMax());
+    mGranularity.set(pVariable.getGranularity());
   }
 
+  /**
+   * Sets the min max value.
+   * 
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   */
+  public void setMinMax(N pMin, N pMax)
+  {
+    if (pMin.doubleValue() <= pMax.doubleValue())
+    {
+      mMin.set(pMin);
+      mMax.set(pMax);
+    }
+    else
+    {
+      mMin.set(pMax);
+      mMax.set(pMin);
+    }
+  }
+
+  /**
+   * Sets the min max value.
+   * 
+   * @param pGranularity
+   *          granularity
+   * 
+   */
+  public void setGranularity(N pGranularity)
+  {
+    mGranularity.set(pGranularity);
+  }
+
+  /**
+   * Sets the min max value (double parameter inputs)
+   * 
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   */
   @SuppressWarnings("unchecked")
   public void setMinMax(double pMin, double pMax)
   {
@@ -221,62 +348,68 @@ public class BoundedVariable<T extends Number> extends Variable<T>
 
     if (mReference instanceof Double)
     {
-      mMin.set((T) new Double(lReordedMin));
-      mMax.set((T) new Double(lReordedlMax));
+      mMin.set((N) new Double(lReordedMin));
+      mMax.set((N) new Double(lReordedlMax));
     }
     else if (mReference instanceof Float)
     {
-      mMin.set((T) new Float(lReordedMin));
-      mMax.set((T) new Float(lReordedlMax));
+      mMin.set((N) new Float(lReordedMin));
+      mMax.set((N) new Float(lReordedlMax));
     }
     else if (mReference instanceof Long)
     {
-      mMin.set((T) new Long((long) lReordedMin));
-      mMax.set((T) new Long((long) lReordedlMax));
+      mMin.set((N) new Long((long) lReordedMin));
+      mMax.set((N) new Long((long) lReordedlMax));
     }
     else if (mReference instanceof Integer)
     {
-      mMin.set((T) new Integer((int) lReordedMin));
-      mMax.set((T) new Integer((int) lReordedlMax));
+      mMin.set((N) new Integer((int) lReordedMin));
+      mMax.set((N) new Integer((int) lReordedlMax));
     }
     else if (mReference instanceof Short)
     {
-      mMin.set((T) new Short((short) lReordedMin));
-      mMax.set((T) new Short((short) lReordedlMax));
+      mMin.set((N) new Short((short) lReordedMin));
+      mMax.set((N) new Short((short) lReordedlMax));
     }
     else if (mReference instanceof Byte)
     {
-      mMin.set((T) new Byte((byte) lReordedMin));
-      mMax.set((T) new Byte((byte) lReordedlMax));
+      mMin.set((N) new Byte((byte) lReordedMin));
+      mMax.set((N) new Byte((byte) lReordedlMax));
     }
   }
 
+  /**
+   * Sets the granularity (double parameter input)
+   * 
+   * @param pGranularity
+   *          granularity
+   */
   @SuppressWarnings("unchecked")
   public void setGranularity(double pGranularity)
   {
     if (mReference instanceof Double)
     {
-      mGranularity.set((T) new Double(pGranularity));
+      mGranularity.set((N) new Double(pGranularity));
     }
     else if (mReference instanceof Float)
     {
-      mGranularity.set((T) new Float(pGranularity));
+      mGranularity.set((N) new Float(pGranularity));
     }
     else if (mReference instanceof Long)
     {
-      mGranularity.set((T) new Long((long) pGranularity));
+      mGranularity.set((N) new Long((long) pGranularity));
     }
     else if (mReference instanceof Integer)
     {
-      mGranularity.set((T) new Integer((int) pGranularity));
+      mGranularity.set((N) new Integer((int) pGranularity));
     }
     else if (mReference instanceof Short)
     {
-      mGranularity.set((T) new Short((short) pGranularity));
+      mGranularity.set((N) new Short((short) pGranularity));
     }
     else if (mReference instanceof Byte)
     {
-      mGranularity.set((T) new Byte((byte) pGranularity));
+      mGranularity.set((N) new Byte((byte) pGranularity));
     }
   }
 

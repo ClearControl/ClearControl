@@ -4,7 +4,7 @@ import static java.lang.Math.toIntExact;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.device.switches.SwitchingDeviceInterface;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
@@ -12,7 +12,7 @@ import clearcontrol.microscope.MicroscopeBase;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
+import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.Timelapse;
@@ -23,11 +23,11 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
  *
  * @author royer
  */
-public class LightSheetMicroscope extends MicroscopeBase implements
-                                  StateQueueDeviceInterface,
+public class LightSheetMicroscope extends
+                                  MicroscopeBase<LightSheetMicroscopeQueue>
+                                  implements
                                   LightSheetMicroscopeInterface
 {
-
   private SwitchingDeviceInterface mLightSheetOpticalSwitch;
   private AcquisitionStateManager mAcquisitionStateManager;
 
@@ -107,19 +107,13 @@ public class LightSheetMicroscope extends MicroscopeBase implements
   }/**/
 
   /**
-   * Sets lightsheet optical switch device
+   * Returns lightsheet switching device
    * 
-   * @param pLightSheetOpticalSwitch
-   *          lightsheet optical switch device
+   * @return lightsheet switching device
    */
-  public void setLightSheetOpticalSwitchDevice(SwitchingDeviceInterface pLightSheetOpticalSwitch)
+  public SwitchingDeviceInterface getLightSheetSwitchingDevice()
   {
-    mLightSheetOpticalSwitch = pLightSheetOpticalSwitch;
-  }
-
-  private SwitchingDeviceInterface getLightSheetSwitchingDevice()
-  {
-    return mLightSheetOpticalSwitch;
+    return getDevice(LightSheetOpticalSwitch.class, 0);
   }
 
   /**
@@ -214,432 +208,36 @@ public class LightSheetMicroscope extends MicroscopeBase implements
     return toIntExact(lExposureInProvidedUnit);
   };
 
-  /**
-   * Sets to zero (default) all lightsheet microscope parameters.
-   */
-  public void zero()
-  {
-    for (int i =
-               0; i < getDeviceLists().getNumberOfDevices(DetectionArmInterface.class); i++)
-    {
-      setDZ(i, 0);
-      setC(i, true);
-    }
-
-    for (int i =
-               0; i < getDeviceLists().getNumberOfDevices(LightSheetInterface.class); i++)
-    {
-      setIX(i, 0);
-      setIY(i, 0);
-      setIZ(i, 0);
-      setIA(i, 0);
-      setIB(i, 0);
-      setIZ(i, 0);
-      setIH(i, 0);
-
-      for (int j =
-                 0; j < getDeviceLists().getNumberOfDevices(LaserDeviceInterface.class); j++)
-      {
-        setIPatternOnOff(i, j, false);
-      }
-    }
-
-  }
-
-  @Override
-  public void setC(int pCameraIndex, boolean pKeepImage)
-  {
-    getDeviceLists().getDevice(StackCameraDeviceInterface.class,
-                               pCameraIndex)
-                    .getKeepPlaneVariable()
-                    .set(pKeepImage);
-  };
-
-  @Override
-  public boolean getC(int pCameraIndex)
-  {
-    return getDeviceLists().getDevice(StackCameraDeviceInterface.class,
-                                      pCameraIndex)
-                           .getKeepPlaneVariable()
-                           .get();
-  }
-
-  @Override
-  public void setC(boolean pKeepImage)
-  {
-    int lNumberOfStackCameraDevices =
-                                    getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
-
-    for (int c = 0; c < lNumberOfStackCameraDevices; c++)
-      getDeviceLists().getDevice(StackCameraDeviceInterface.class, c)
-                      .getKeepPlaneVariable()
-                      .set(pKeepImage);
-
-  }
-
   @Override
   public void setLO(int pLaserIndex, boolean pLaserOnOff)
   {
-    getDeviceLists().getDevice(LaserDeviceInterface.class,
-                               pLaserIndex)
-                    .getLaserOnVariable()
-                    .set(pLaserOnOff);
+    getDevice(LaserDeviceInterface.class,
+              pLaserIndex).getLaserOnVariable().set(pLaserOnOff);
   };
 
   @Override
   public boolean getLO(int pLaserIndex)
   {
-    return getDeviceLists().getDevice(LaserDeviceInterface.class,
-                                      pLaserIndex)
-                           .getLaserOnVariable()
-                           .get();
+    return getDevice(LaserDeviceInterface.class, pLaserIndex)
+                                                             .getLaserOnVariable()
+                                                             .get();
   }
 
   @Override
   public void setLP(int pLaserIndex, double pLaserPowerInmW)
   {
-    getDeviceLists().getDevice(LaserDeviceInterface.class,
-                               pLaserIndex)
-                    .getTargetPowerInMilliWattVariable()
-                    .set(pLaserPowerInmW);
+    getDevice(LaserDeviceInterface.class,
+              pLaserIndex).getTargetPowerInMilliWattVariable()
+                          .set(pLaserPowerInmW);
   };
 
   @Override
   public double getLP(int pLaserIndex)
   {
-    return getDeviceLists().getDevice(LaserDeviceInterface.class,
-                                      pLaserIndex)
-                           .getTargetPowerInMilliWattVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setDZ(int pDetectionArmIndex, double pValue)
-  {
-    getDeviceLists().getDevice(DetectionArmInterface.class,
-                               pDetectionArmIndex)
-                    .getZVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getDZ(int pDetectionArmIndex)
-  {
-    return getDeviceLists().getDevice(DetectionArmInterface.class,
-                                      pDetectionArmIndex)
-                           .getZVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setI(int pLightSheetIndex)
-  {
-    int lNumberOfSwitchableDevices =
-                                   getLightSheetSwitchingDevice().getNumberOfSwitches();
-    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
-      setI(i, i == pLightSheetIndex);
-
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .update();
-  };
-
-  @Override
-  public void setI(int pLightSheetIndex, boolean pOnOff)
-  {
-    getLightSheetSwitchingDevice().getSwitchVariable(pLightSheetIndex)
-                                  .set(pOnOff);
-  };
-
-  @Override
-  public void setI(boolean pOnOff)
-  {
-    int lNumberOfSwitchableDevices =
-                                   getLightSheetSwitchingDevice().getNumberOfSwitches();
-    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
-      setI(i, pOnOff);
-  };
-
-  @Override
-  public boolean getI(int pLightSheetIndex)
-  {
-    return getLightSheetSwitchingDevice().getSwitchVariable(pLightSheetIndex)
-                                         .get();
-  }
-
-  @Override
-  public void setIX(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getXVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIX(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getXVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIY(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getYVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIY(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getYVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIZ(int pIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class, pIndex)
-                    .getZVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIZ(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getZVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIA(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getAlphaInDegreesVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIA(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getAlphaInDegreesVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIB(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getBetaInDegreesVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIB(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getBetaInDegreesVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIW(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getWidthVariable()
-                    .set(pValue);
-  };
-
-  @Override
-  public double getIW(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getWidthVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIH(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getHeightVariable()
-                    .set(pValue);
-  }
-
-  @Override
-  public double getIH(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getHeightVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setILO(boolean pOn)
-  {
-    int lNumberOfLightSheets =
-                             getDeviceLists().getNumberOfDevices(LightSheetInterface.class);
-
-    for (int l = 0; l < lNumberOfLightSheets; l++)
-    {
-      LightSheetInterface lLightSheetDevice =
-                                            getDeviceLists().getDevice(LightSheetInterface.class,
-                                                                       l);
-      for (int i =
-                 0; i < lLightSheetDevice.getNumberOfLaserDigitalControls(); i++)
-        lLightSheetDevice.getLaserOnOffArrayVariable(i).set(pOn);
-    }
-  };
-
-  @Override
-  public void setILO(int pLightSheetIndex, boolean pOn)
-  {
-    LightSheetInterface lLightSheetDevice =
-                                          getDeviceLists().getDevice(LightSheetInterface.class,
-                                                                     pLightSheetIndex);
-    for (int i =
-               0; i < lLightSheetDevice.getNumberOfLaserDigitalControls(); i++)
-      lLightSheetDevice.getLaserOnOffArrayVariable(i).set(pOn);
-  };
-
-  @Override
-  public void setILO(int pLightSheetIndex,
-                     int pLaserIndex,
-                     boolean pOn)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getLaserOnOffArrayVariable(pLaserIndex)
-                    .set(pOn);
-  };
-
-  @Override
-  public boolean getILO(int pLightSheetIndex, int pLaserIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getLaserOnOffArrayVariable(pLaserIndex)
-                           .get();
-  }
-
-  @Override
-  public void setIP(int pLightSheetIndex, double pValue)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getPowerVariable()
-                    .set(pValue);
-  }
-
-  @Override
-  public double getIP(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getPowerVariable()
-                           .get()
-                           .doubleValue();
-  }
-
-  @Override
-  public void setIPA(boolean pAdapt)
-  {
-    int lNumberOfLightSheets =
-                             getDeviceLists().getNumberOfDevices(LightSheetInterface.class);
-
-    for (int i = 0; i < lNumberOfLightSheets; i++)
-      getDeviceLists().getDevice(LightSheetInterface.class, i)
-                      .getAdaptPowerToWidthHeightVariable()
-                      .set(pAdapt);
-
-  }
-
-  @Override
-  public void setIPA(int pLightSheetIndex, boolean pAdapt)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getAdaptPowerToWidthHeightVariable()
-                    .set(pAdapt);
-
-  }
-
-  @Override
-  public boolean getIPA(int pLightSheetIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getAdaptPowerToWidthHeightVariable()
-                           .get();
-  }
-
-  @Override
-  public void setIPatternOnOff(int pLightSheetIndex,
-                               int pLaserIndex,
-                               boolean pOnOff)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getSIPatternOnOffVariable(pLaserIndex)
-                    .set(pOnOff);
-  }
-
-  @Override
-  public boolean getIPatternOnOff(int pLightSheetIndex,
-                                  int pLaserIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getSIPatternOnOffVariable(pLaserIndex)
-                           .get();
-  }
-
-  @Override
-  public void setIPattern(int pLightSheetIndex,
-                          int pLaserIndex,
-                          StructuredIlluminationPatternInterface pPattern)
-  {
-    getDeviceLists().getDevice(LightSheetInterface.class,
-                               pLightSheetIndex)
-                    .getSIPatternVariable(pLaserIndex)
-                    .set(pPattern);
-  }
-
-  @Override
-  public StructuredIlluminationPatternInterface getIPattern(int pLightSheetIndex,
-                                                            int pLaserIndex)
-  {
-    return getDeviceLists().getDevice(LightSheetInterface.class,
-                                      pLightSheetIndex)
-                           .getSIPatternVariable(pLaserIndex)
-                           .get();
+    return getDevice(LaserDeviceInterface.class,
+                     pLaserIndex).getTargetPowerInMilliWattVariable()
+                                 .get()
+                                 .doubleValue();
   }
 
   /**
@@ -664,6 +262,21 @@ public class LightSheetMicroscope extends MicroscopeBase implements
   {
     return String.format("LightSheetMicroscope: \n%s\n",
                          mDeviceLists.toString());
+  }
+
+  @Override
+  public LightSheetMicroscopeQueue requestQueue()
+  {
+    LightSheetMicroscopeQueue lLightSheetMicroscopeQueue =
+                                                         new LightSheetMicroscopeQueue(this);
+
+    return lLightSheetMicroscopeQueue;
+  }
+
+  @Override
+  public FutureBooleanList playQueue(LightSheetMicroscopeQueue pQueue)
+  {
+    return super.playQueue(pQueue);
   }
 
 }

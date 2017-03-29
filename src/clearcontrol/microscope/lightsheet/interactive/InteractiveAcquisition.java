@@ -12,6 +12,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -49,6 +50,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private volatile boolean mUpdate = true;
 
   private ChangeListener<VirtualDevice> mChangeListener;
+  private LightSheetMicroscopeQueue mQueue;
 
   /**
    * Instanciates an interactive acquisition for lightsheet microscope
@@ -136,7 +138,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     }
 
     mChangeListener = (o) -> {
-      info("Received request to update queue.");
+      // info("Received request to update queue.");
       mUpdate = true;
     };
   }
@@ -160,7 +162,11 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   {
     try
     {
-      if (mUpdate || getLightSheetMicroscope().getQueueLength() == 0)
+      // info("begin of loop");
+      final boolean lCachedUpdate = mUpdate;
+
+      if (lCachedUpdate || mQueue == null
+          || mQueue.getQueueLength() == 0)
       {
 
         double lCurrentZ = get2DAcquisitionZVariable().get()
@@ -168,59 +174,56 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
         if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
         {
-          info("Building 2D Acquisition queue");
+          // info("Building 2D Acquisition queue");
           if (getUseCurrentAcquisitionStateVariable().get())
           {
-            info("Building 2D Acquisition queue using the current acquisition state");
+            // info("Building 2D Acquisition queue using the current acquisition
+            // state");
 
             InterpolatedAcquisitionState lCurrentState =
                                                        (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
 
-            lCurrentState.applyAcquisitionStateAtZ(mLightSheetMicroscope,
-                                                   lCurrentZ);
+            lCurrentState.applyAcquisitionStateAtZ(mQueue, lCurrentZ);
           }
           else
           {
-            info("Building 2D Acquisition queue using current devices state");
+            // info("Building 2D Acquisition queue using current devices
+            // state");
             getLightSheetMicroscope().useRecycler("2DInteractive",
                                                   cRecyclerMinimumNumberOfAvailableStacks,
                                                   cRecyclerMaximumNumberOfAvailableStacks,
                                                   cRecyclerMaximumNumberOfLiveStacks);
 
-            getLightSheetMicroscope().clearQueue();
+            mQueue = getLightSheetMicroscope().requestQueue();
+            mQueue.clearQueue();
 
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
-              getLightSheetMicroscope().setC(c,
-                                             mActiveCameraVariableArray[c].get());
+              mQueue.setC(c, mActiveCameraVariableArray[c].get());
 
-              getLightSheetMicroscope().setDZ(c, lCurrentZ);
+              mQueue.setDZ(c, lCurrentZ);
             }
             getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get()
                                                           * 1000000L),
                                                   TimeUnit.MICROSECONDS);
 
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
-              if (getLightSheetMicroscope().getI(l))
+              if (mQueue.getI(l))
               {
-                info("ACTIVATING LIGHTSHEET " + l);
-                getLightSheetMicroscope().getDevice(LightSheet.class,
-                                                    l)
-                                         .update();
 
-                getLightSheetMicroscope().setIZ(l, lCurrentZ);
+                mQueue.setIZ(l, lCurrentZ);
 
                 break;
               }
 
-            getLightSheetMicroscope().addCurrentStateToQueue();
+            mQueue.addCurrentStateToQueue();
 
-            getLightSheetMicroscope().finalizeQueue();
+            mQueue.finalizeQueue();
           }
         }
         else if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
         {
-          info("Building Acquisition3D queue");
+          // info("Building Acquisition3D queue");
           getLightSheetMicroscope().useRecycler("3DInteractive",
                                                 cRecyclerMinimumNumberOfAvailableStacks,
                                                 cRecyclerMaximumNumberOfAvailableStacks,
@@ -233,9 +236,11 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
           lCurrentState.applyAcquisitionState(mLightSheetMicroscope);
         }
 
+        if (lCachedUpdate)
+          mUpdate = false;
       }
 
-      if (getLightSheetMicroscope().getQueueLength() == 0)
+      if (mQueue.getQueueLength() == 0)
       {
         // this leads to a call to stop() which stops the loop
         warning("Queue empty stopping interactive acquisition loop");
@@ -244,24 +249,27 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
       if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
       {
-        if (getTriggerOnChangeVariable().get() && !mUpdate)
+        if (getTriggerOnChangeVariable().get() && !lCachedUpdate)
           return true;
 
+        // info("play queue");
         // play queue
         // info("Playing LightSheetMicroscope Queue...");
         boolean lSuccess =
-                         getLightSheetMicroscope().playQueueAndWaitForStacks(100,
+                         getLightSheetMicroscope().playQueueAndWaitForStacks(mQueue,
+                                                                             100,
                                                                              TimeUnit.SECONDS);
 
         if (lSuccess)
+        {
+          // info("play queue success");
           mAcquisitionCounterVariable.set(mAcquisitionCounterVariable.get()
                                           + 1);
+        }
 
         // info("... done waiting!");
       }
 
-      if (mUpdate)
-        mUpdate = false;
     }
     catch (Throwable e)
     {

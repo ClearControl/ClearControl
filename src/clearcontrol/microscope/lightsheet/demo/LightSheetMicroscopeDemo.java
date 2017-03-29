@@ -12,8 +12,6 @@ import clearcl.backend.ClearCLBackendInterface;
 import clearcl.backend.ClearCLBackends;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
-import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
-import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
@@ -26,11 +24,11 @@ import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetOpticalSwitch;
+import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import clearcontrol.simulation.impl.lightsheet.LightSheetMicroscopeSimulatorDevice;
+import clearcontrol.simulation.impl.lightsheet.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.stack.processor.StackIdentityPipeline;
 
 import org.junit.Test;
@@ -60,8 +58,7 @@ public class LightSheetMicroscopeDemo
     int lNumberOfDetectionArms = 1;
 
     // Setting up sample simulator:
-
-    StackCameraSimulationProvider lStackCameraSimulationProvider =
+    /*StackCameraSimulationProvider lStackCameraSimulationProvider =
                                                                  new FractalStackProvider();/**/
 
     int lPhantomWidth = 320;
@@ -86,8 +83,8 @@ public class LightSheetMicroscopeDemo
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
     lSimulator.openViewerForCameraImage(0);
 
-    LightSheetMicroscopeSimulatorDevice lLightSheetMicroscopeSimulatorDevice =
-                                                                             new LightSheetMicroscopeSimulatorDevice(lSimulator);
+    LightSheetMicroscopeSimulationDevice lLightSheetMicroscopeSimulatorDevice =
+                                                                              new LightSheetMicroscopeSimulationDevice(lSimulator);
 
     final LightSheetMicroscope lLightSheetMicroscope =
                                                      new LightSheetMicroscope("demoscope");
@@ -187,13 +184,19 @@ public class LightSheetMicroscopeDemo
 
     // Signal generator:
 
+    SignalGeneratorSimulatorDevice lSignalGeneratorSimulatorDevice =
+                                                                   new SignalGeneratorSimulatorDevice();
+
+    lLightSheetMicroscope.addDevice(0,
+                                    lSignalGeneratorSimulatorDevice);
+    lSignalGeneratorSimulatorDevice.getTriggerVariable()
+                                   .sendUpdatesTo(lTrigger);/**/
+
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                           LightSheetSignalGeneratorDevice.wrap(new SignalGeneratorSimulatorDevice());
+                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice);
 
     lLightSheetMicroscope.addDevice(0,
                                     lLightSheetSignalGeneratorDevice);
-    lLightSheetSignalGeneratorDevice.getTriggerVariable()
-                                    .sendUpdatesTo(lTrigger);/**/
 
     // setting up staging score visualization:
 
@@ -207,7 +210,6 @@ public class LightSheetMicroscopeDemo
       final DetectionArm lDetectionArm = new DetectionArm("D" + c);
 
       lLightSheetMicroscope.addDevice(c, lDetectionArm);
-      lLightSheetSignalGeneratorDevice.addDetectionArm(lDetectionArm);
     }
 
     // Setting up lightsheets:
@@ -233,8 +235,7 @@ public class LightSheetMicroscopeDemo
                                                      new LightSheetOpticalSwitch("OpticalSwitch",
                                                                                  lNumberOfLightSheet);
 
-    lLightSheetMicroscope.setLightSheetOpticalSwitchDevice(lLightSheetOpticalSwitch);
-    lLightSheetSignalGeneratorDevice.addOpticalSwitch(lLightSheetOpticalSwitch);
+    lLightSheetMicroscope.addDevice(0, lLightSheetOpticalSwitch);
 
     AcquisitionStateManager lAddAcquisitionStateManager =
                                                         lLightSheetMicroscope.addAcquisitionStateManager();

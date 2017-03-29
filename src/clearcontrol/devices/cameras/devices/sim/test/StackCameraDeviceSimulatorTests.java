@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
@@ -72,24 +73,26 @@ public class StackCameraDeviceSimulatorTests
 
     lStackCameraDeviceSimulator.start();
 
-    lStackCameraDeviceSimulator.clearQueue();
+    StackCameraRealTimeQueue lQueue =
+                                    lStackCameraDeviceSimulator.requestQueue();
+
+    lQueue.clearQueue();
 
     int lNumberOfImages = 20;
 
     for (int i = 0; i < lNumberOfImages; i++)
     {
-      lStackCameraDeviceSimulator.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
     }
 
-    lStackCameraDeviceSimulator.finalizeQueue();
+    lQueue.finalizeQueue();
 
     for (int j = 0; j < 10; j++)
     {
       Future<Boolean> lPlayQueue =
-                                 lStackCameraDeviceSimulator.playQueue();
+                                 lStackCameraDeviceSimulator.playQueue(lQueue);
 
-      for (int i =
-                 0; i < lStackCameraDeviceSimulator.getQueueLength(); i++)
+      for (int i = 0; i < lQueue.getQueueLength(); i++)
       {
         lTrigger.setEdge(false, true);
       }

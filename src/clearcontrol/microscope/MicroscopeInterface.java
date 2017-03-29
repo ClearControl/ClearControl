@@ -8,7 +8,8 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.stack.StackInterface;
@@ -19,11 +20,15 @@ import coremem.recycling.RecyclerInterface;
  * MicroscopeInterface is a generic interface for all microscopes types.
  * 
  * @author royer
+ * @param <Q>
+ *          queue type
  */
-public interface MicroscopeInterface extends
-                                     NameableInterface,
-                                     HasChangeListenerInterface<VirtualDevice>,
-                                     StateQueueDeviceInterface
+public interface MicroscopeInterface<Q extends RealTimeQueueInterface>
+                                    extends
+                                    NameableInterface,
+                                    RealTimeQueueDeviceInterface<Q>,
+                                    HasChangeListenerInterface<VirtualDevice>
+
 {
 
   /**
@@ -91,7 +96,7 @@ public interface MicroscopeInterface extends
    * 
    * @param pClass
    *          class
-   * @return device for given pair; (class,index)
+   * @return device for given pair: (class,index)
    */
   public <T> ArrayList<T> getDevices(Class<T> pClass);
 
@@ -165,6 +170,9 @@ public interface MicroscopeInterface extends
   /**
    * Plays queue for all devices, and waits for playback to finish.
    * 
+   * @param pQueue
+   *          queue to play
+   * 
    * @param pTimeOut
    *          timeout
    * @param pTimeUnit
@@ -177,7 +185,8 @@ public interface MicroscopeInterface extends
    * @throws TimeoutException
    *           if timeout
    */
-  public Boolean playQueueAndWait(long pTimeOut,
+  public Boolean playQueueAndWait(Q pQueue,
+                                  long pTimeOut,
                                   TimeUnit pTimeUnit) throws InterruptedException,
                                                       ExecutionException,
                                                       TimeoutException;
@@ -186,6 +195,8 @@ public interface MicroscopeInterface extends
    * Plays queue for all devices, waits for playback to finish as well as waits
    * for stacks to be delivered.
    * 
+   * @param pQueue
+   *          queue to play
    * @param pTimeOut
    *          timeout time
    * @param pTimeUnit
@@ -198,10 +209,18 @@ public interface MicroscopeInterface extends
    * @throws TimeoutException
    *           if timeout
    */
-  public Boolean playQueueAndWaitForStacks(long pTimeOut,
+  public Boolean playQueueAndWaitForStacks(Q pQueue,
+                                           long pTimeOut,
                                            TimeUnit pTimeUnit) throws InterruptedException,
                                                                ExecutionException,
                                                                TimeoutException;
+
+  /**
+   * Returns the variable hlding the last played queue
+   * 
+   * @return last played queue variable
+   */
+  Variable<Q> getPlayedQueueVariable();
 
   /**
    * Returns the average timestamp for all stacks acquired during for last

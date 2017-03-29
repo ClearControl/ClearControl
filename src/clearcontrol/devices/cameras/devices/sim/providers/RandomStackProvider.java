@@ -2,9 +2,9 @@ package clearcontrol.devices.cameras.devices.sim.providers;
 
 import java.util.ArrayList;
 
-import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProviderBase;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationRealTimeQueue;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
@@ -22,7 +22,7 @@ public class RandomStackProvider extends
 {
 
   @Override
-  protected void fillStackData(StackCameraDeviceSimulator pCamera,
+  protected void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
                                ArrayList<Boolean> pKeepPlaneList,
                                final long pWidth,
                                final long pHeight,
@@ -30,7 +30,8 @@ public class RandomStackProvider extends
                                final int pChannel,
                                final StackInterface pStack)
   {
-    final byte time = (byte) pCamera.getCurrentStackIndex();
+    final byte time = (byte) pQueue.getStackCamera()
+                                   .getCurrentStackIndex();
 
     final ContiguousMemoryInterface lContiguousMemory =
                                                       pStack.getContiguousMemory();

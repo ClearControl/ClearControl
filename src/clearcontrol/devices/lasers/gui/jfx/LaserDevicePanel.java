@@ -114,9 +114,9 @@ public class LaserDevicePanel extends HBox
                                              @Override
                                              public void handle(MouseEvent event)
                                              {
-                                               System.out.format("marker=%f, gauge=%f \n",
+                                               /*System.out.format("marker=%f, gauge=%f \n",
                                                                  mTargetPowerMarker.getValue(),
-                                                                 mTargetPowerGauge.getValue());
+                                                                 mTargetPowerGauge.getValue());/**/
                                                mLaserDeviceInterface.getTargetPowerInMilliWattVariable()
                                                                     .setAsync(mTargetPowerGauge.getValue());
                                              }

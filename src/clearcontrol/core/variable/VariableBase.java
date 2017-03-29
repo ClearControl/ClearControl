@@ -4,10 +4,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Base class for variables.
+ *
+ * @param <O>
+ *          reference type
+ * @author royer
+ */
 public abstract class VariableBase<O>
 {
 
-  private String mVariableName;
+  private final String mVariableName;
 
   private final CopyOnWriteArrayList<VariableSetListener<O>> mVariableSetListeners =
                                                                                    new CopyOnWriteArrayList<VariableSetListener<O>>();
@@ -16,12 +23,24 @@ public abstract class VariableBase<O>
   private final CopyOnWriteArrayList<VariableGetListener<O>> mVariableGetListeners =
                                                                                    new CopyOnWriteArrayList<VariableGetListener<O>>();
 
+  /**
+   * Instaciates a variable
+   * 
+   * @param pVariableName
+   *          variable name
+   */
   public VariableBase(final String pVariableName)
   {
     super();
     mVariableName = pVariableName;
   }
 
+  /**
+   * Adds a variable listener
+   * 
+   * @param pVariableListener
+   *          variable listener
+   */
   public void addListener(final VariableListener<O> pVariableListener)
   {
     if (!mVariableSetListeners.contains(pVariableListener))
@@ -30,55 +49,106 @@ public abstract class VariableBase<O>
       mVariableGetListeners.add(pVariableListener);
   }
 
+  /**
+   * Removes a listener
+   * 
+   * @param pVariableListener
+   *          variable listener
+   */
   public void removeListener(final VariableListener<O> pVariableListener)
   {
     mVariableSetListeners.remove(pVariableListener);
     mVariableGetListeners.remove(pVariableListener);
   }
 
+  /**
+   * Adds a set listener
+   * 
+   * @param pVariableSetListener
+   *          set listener
+   */
   public void addSetListener(final VariableSetListener<O> pVariableSetListener)
   {
     if (!mVariableSetListeners.contains(pVariableSetListener))
       mVariableSetListeners.add(pVariableSetListener);
   }
 
+  /**
+   * Adds edge listener
+   * 
+   * @param pVariableEdgeListener
+   *          edge listener
+   */
   public void addEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
   {
     if (!mVariableEdgeListeners.contains(pVariableEdgeListener))
       mVariableEdgeListeners.add(pVariableEdgeListener);
   }
 
+  /**
+   * Adds get listener
+   * 
+   * @param pVariableGetListener
+   *          get listener
+   */
   public void addGetListener(final VariableGetListener<O> pVariableGetListener)
   {
     if (!mVariableGetListeners.contains(pVariableGetListener))
       mVariableGetListeners.add(pVariableGetListener);
   }
 
+  /**
+   * Adds set listener
+   * 
+   * @param pVariableSetListener
+   *          set listener
+   */
   public void removeSetListener(final VariableSetListener<O> pVariableSetListener)
   {
     mVariableSetListeners.remove(pVariableSetListener);
   }
 
+  /**
+   * Adds get listener
+   * 
+   * @param pVariableGetListener
+   *          get listener
+   */
   public void removeGetListener(final VariableGetListener<O> pVariableGetListener)
   {
     mVariableGetListeners.remove(pVariableGetListener);
   }
 
+  /**
+   * Adds edge listener
+   * 
+   * @param pVariableEdgeListener
+   *          edge listener
+   */
   public void removeEdgeListener(final VariableEdgeListener<O> pVariableEdgeListener)
   {
     mVariableEdgeListeners.remove(pVariableEdgeListener);
   }
 
+  /**
+   * Removes all set listeners
+   */
   public void removeAllSetListeners()
   {
     mVariableSetListeners.clear();
   }
 
+  /**
+   * Removes all get listeners
+   */
   public void removeAllGetListeners()
   {
     mVariableGetListeners.clear();
   }
 
+  /**
+   * Removes all listeners
+   */
   public void removeAllListeners()
   {
     mVariableSetListeners.clear();
@@ -86,23 +156,38 @@ public abstract class VariableBase<O>
     mVariableEdgeListeners.clear();
   }
 
-  public CopyOnWriteArrayList<VariableSetListener<O>> getVariableSetListeners()
+  /**
+   * Returns the internal list of set listeners
+   * 
+   * @return set listeners list
+   */
+  protected CopyOnWriteArrayList<VariableSetListener<O>> getVariableSetListeners()
   {
     return mVariableSetListeners;
   }
 
-  public CopyOnWriteArrayList<VariableEdgeListener<O>> getVariableEdgeListeners()
+  /**
+   * Returns the internal list of edge listeners
+   * 
+   * @return edge listeners list
+   */
+  protected CopyOnWriteArrayList<VariableEdgeListener<O>> getVariableEdgeListeners()
   {
     return mVariableEdgeListeners;
   }
 
-  public CopyOnWriteArrayList<VariableGetListener<O>> getVariableGetListeners()
+  /**
+   * Returns the internal list of get listeners
+   * 
+   * @return get listeners list
+   */
+  protected CopyOnWriteArrayList<VariableGetListener<O>> getVariableGetListeners()
   {
     return mVariableGetListeners;
   }
 
-  public void notifyListenersOfSetEvent(final O pCurentValue,
-                                        final O pNewValue)
+  protected void notifyListenersOfSetEvent(final O pCurentValue,
+                                           final O pNewValue)
   {
     for (final VariableSetListener<O> lVariableListener : getVariableSetListeners())
     {
@@ -110,8 +195,8 @@ public abstract class VariableBase<O>
     }
   }
 
-  public void notifyListenersOfEdgeEvent(final O pCurentValue,
-                                         final O pNewValue)
+  protected void notifyListenersOfEdgeEvent(final O pCurentValue,
+                                            final O pNewValue)
   {
     for (final VariableEdgeListener<O> lVariableListener : getVariableEdgeListeners())
     {
@@ -119,7 +204,7 @@ public abstract class VariableBase<O>
     }
   }
 
-  public void notifyListenersOfGetEvent(final O pCurrentValue)
+  protected void notifyListenersOfGetEvent(final O pCurrentValue)
   {
     for (final VariableGetListener<O> lVariableListener : getVariableGetListeners())
     {
@@ -139,6 +224,7 @@ public abstract class VariableBase<O>
    *          timeout
    * @param pTimeUnit
    *          timeout unit
+   * @return true -> success
    */
   public boolean waitForSameAs(final O pValueToWaitFor,
                                final long pTimeOut,
@@ -182,6 +268,7 @@ public abstract class VariableBase<O>
    *          timeout
    * @param pTimeUnit
    *          timeout unit
+   * @return true -> success
    */
   public boolean waitForEqualsTo(final O pValueToWaitFor,
                                  final long pTimeOut,
@@ -216,12 +303,13 @@ public abstract class VariableBase<O>
    * Waits for the an object that equals the given object. This method does not
    * poll, and therefore is the best way to wait for events. (no CPU hogging)
    * 
-   * @param pValueToWaitFor
+   * @param pNewValueToWaitFor
    *          value to wait for
    * @param pTimeOut
    *          timeout
    * @param pTimeUnit
    *          timeout unit
+   * @return true -> success
    */
   public boolean waitForEdge(final O pNewValueToWaitFor,
                              final long pTimeOut,
@@ -252,16 +340,21 @@ public abstract class VariableBase<O>
     return false;
   }
 
+  /**
+   * Returns the variable name
+   * 
+   * @return variable name
+   */
   public String getName()
   {
     return mVariableName;
   }
 
-  public void setVariableName(final String variableName)
-  {
-    mVariableName = variableName;
-  }
-
+  /**
+   * Returns the current value.
+   * 
+   * @return current value
+   */
   public abstract O get();
 
 }

@@ -1,15 +1,19 @@
 package clearcontrol.simulation;
 
+import clearcontrol.core.device.queue.RealTimeQueueInterface;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.microscope.MicroscopeInterface;
-import clearcontrol.simulation.impl.lightsheet.LightSheetSimulationStackProvider;
 
 /**
  * Sample simulation device interface
  *
  * @author royer
+ * @param <Q>
+ *          queue type
  */
-public interface SampleSimulatorDeviceInterface extends
+public interface SampleSimulationDeviceInterface<Q extends RealTimeQueueInterface>
+                                                extends
                                                 SimulationDeviceInterface
 {
 
@@ -20,7 +24,7 @@ public interface SampleSimulatorDeviceInterface extends
    *          index of stack provider
    * @return stack provider
    */
-  LightSheetSimulationStackProvider getStackProvider(int pIndex);
+  StackCameraSimulationProvider getStackProvider(int pIndex);
 
   /**
    * Connects this simulator to all relevant devices of (most logically
@@ -34,6 +38,6 @@ public interface SampleSimulatorDeviceInterface extends
    * @param pMicroscope
    *          microscope
    */
-  void connectTo(MicroscopeInterface pMicroscope);
+  void connectTo(MicroscopeInterface<Q> pMicroscope);
 
 }

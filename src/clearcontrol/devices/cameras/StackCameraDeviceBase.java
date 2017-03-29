@@ -1,11 +1,9 @@
 package clearcontrol.devices.cameras;
 
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicLong;
 
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.queue.VariableStateQueues;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -18,20 +16,19 @@ import coremem.recycling.RecyclerInterface;
 public abstract class StackCameraDeviceBase extends CameraDeviceBase
                                             implements
                                             StackCameraDeviceInterface,
-                                            StateQueueDeviceInterface
+                                            LoggingInterface
+
 {
-  protected Variable<Boolean> mStackMode, mKeepPlane;
+  protected Variable<Boolean> mStackMode;
 
   protected Variable<Long> mNumberOfImagesPerPlaneVariable,
       mStackBytesPerPixelVariable, mStackWidthVariable,
       mStackHeightVariable, mStackMaxWidthVariable,
       mStackMaxHeightVariable, mStackDepthVariable;
 
-  protected final AtomicLong mCurrentStackIndex = new AtomicLong(0);
-
   protected RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
-  protected Variable<StackInterface> mStackReference;
+  protected Variable<StackInterface> mStackVariable;
 
   private int mMinimalNumberOfAvailableStacks = 6;
 
@@ -44,69 +41,50 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
   public StackCameraDeviceBase(String pDeviceName)
   {
     super(pDeviceName);
-    mVariableStateQueues = new VariableStateQueues();
 
     mStackMode = new Variable<Boolean>("StackMode", true);
-    mVariableStateQueues.registerConstantVariable(mStackMode);
-
-    mKeepPlane = new Variable<Boolean>("KeepPlane", true);
-    mVariableStateQueues.registerVariable(mKeepPlane);
 
     mNumberOfImagesPerPlaneVariable =
                                     new Variable<Long>("NumberOfImagesPerPlane",
                                                        1L);
-    mVariableStateQueues.registerConstantVariable(mNumberOfImagesPerPlaneVariable);
 
     mChannelVariable = new Variable<Integer>("Channel", 0);
-    mVariableStateQueues.registerConstantVariable(mChannelVariable);
 
     mLineReadOutTimeInMicrosecondsVariable =
                                            new Variable<Double>("LineReadOutTimeInMicroseconds",
                                                                 1.0);
-    mVariableStateQueues.registerConstantVariable(mLineReadOutTimeInMicrosecondsVariable);
 
     mStackBytesPerPixelVariable =
                                 new Variable<Long>("FrameBytesPerPixel",
                                                    2L);
-    mVariableStateQueues.registerConstantVariable(mStackBytesPerPixelVariable);
 
     mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
-    mVariableStateQueues.registerConstantVariable(mStackWidthVariable);
 
     mStackHeightVariable = new Variable<Long>("FrameHeight", 320L);
-    mVariableStateQueues.registerConstantVariable(mStackHeightVariable);
 
     mStackMaxWidthVariable =
                            new Variable<Long>("FrameMaxWidth", 2048L);
-    mVariableStateQueues.registerConstantVariable(mStackMaxWidthVariable);
 
     mStackMaxHeightVariable = new Variable<Long>("FrameMaxHeight",
                                                  2048L);
-    mVariableStateQueues.registerConstantVariable(mStackMaxHeightVariable);
 
     mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
-    mVariableStateQueues.registerConstantVariable(mStackDepthVariable);
 
     mExposureInMicrosecondsVariable =
                                     new Variable<Double>("ExposureInMicroseconds",
                                                          1000.0);
-    mVariableStateQueues.registerConstantVariable(mExposureInMicrosecondsVariable);
 
     mPixelSizeinNanometersVariable =
                                    new Variable<Double>("PixelSizeinNanometers",
                                                         160.0);
-    mVariableStateQueues.registerConstantVariable(mPixelSizeinNanometersVariable);
 
-    mStackReference = new Variable<>("StackReference");
+    mStackVariable = new Variable<>("StackReference");
   }
 
-  /**
-   * @return
-   */
   @Override
   public long getCurrentStackIndex()
   {
-    return mCurrentStackIndex.get();
+    return getCurrentIndexVariable().get();
   }
 
   @Override
@@ -182,15 +160,9 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
   }
 
   @Override
-  public Variable<Boolean> getKeepPlaneVariable()
-  {
-    return mKeepPlane;
-  }
-
-  @Override
   public Variable<StackInterface> getStackVariable()
   {
-    return mStackReference;
+    return mStackVariable;
   }
 
   @Override
@@ -200,39 +172,20 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
   }
 
   @Override
-  public void clearQueue()
+  public StackCameraRealTimeQueue requestQueue()
   {
-    mVariableStateQueues.clearQueue();
-    mStackDepthVariable.set(0L);
+    return new StackCameraRealTimeQueue();
   }
 
   @Override
-  public void addCurrentStateToQueue()
-  {
-    mVariableStateQueues.addCurrentStateToQueue();
-  }
-
-  @Override
-  public void finalizeQueue()
-  {
-    mVariableStateQueues.finalizeQueue();
-  }
-
-  @Override
-  public int getQueueLength()
-  {
-    return mVariableStateQueues.getQueueLength();
-  }
-
-  @Override
-  public Future<Boolean> playQueue()
+  public Future<Boolean> playQueue(StackCameraRealTimeQueue pQueue)
   {
     if (getStackRecycler() == null)
     {
-      System.err.println("No recycler defined for: " + this);
+      severe("No recycler defined for: " + this);
       return null;
     }
-    mStackDepthVariable.set((long) getQueueLength());
+    mStackDepthVariable.set((long) pQueue.getQueueLength());
     // This method should be called by overriding methods of descendants.
     return null;
   }

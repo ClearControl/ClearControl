@@ -2,13 +2,21 @@ package clearcontrol.devices.signalgen.devices.nirio;
 
 import static java.lang.Math.toIntExact;
 
+import java.util.concurrent.Future;
+
 import nirioj.direttore.Direttore;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
+import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class NIRIOSignalGenerator extends SignalGeneratorBase
                                   implements SignalGeneratorInterface
 
@@ -19,6 +27,9 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
   private final NIRIOCompiledScore mNIRIOCompiledScore =
                                                        new NIRIOCompiledScore();
 
+  /**
+   * 
+   */
   public NIRIOSignalGenerator()
   {
     super("NIRIOSignalGenerator");
@@ -30,6 +41,12 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
   public double getTemporalGranularityInMicroseconds()
   {
     return mDirettore.getTemporalGranularityInMicroseconds();
+  }
+
+  @Override
+  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
+  {
+    return super.playQueue(pSignalGeneratorRealTimeQueue);
   }
 
   @Override
@@ -62,7 +79,7 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
     lCurrentThread.setPriority(lCurrentThreadPriority);
     mTriggerVariable.set(false);
 
-    return lPlayed;
+    return lPlayed && super.playScore(pScore);
   }
 
   @Override

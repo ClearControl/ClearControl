@@ -5,9 +5,10 @@ import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.variable.queue.VariableStateQueues;
+import clearcontrol.core.device.queue.VariableQueueBase;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 
 /**
  *
@@ -19,35 +20,33 @@ public abstract class StackCameraSimulationProviderBase implements
 {
 
   @Override
-  public StackInterface getStack(StackCameraDeviceSimulator pCamera)
+  public StackInterface getStack(RecyclerInterface<StackInterface, StackRequest> pRecycler,
+                                 StackCameraSimulationRealTimeQueue pQueue)
   {
-    VariableStateQueues lVariableStateQueues =
-                                             pCamera.getVariableStateQueues();
+    VariableQueueBase lVariableStateQueues = pQueue;
 
     ArrayList<Boolean> lKeepPlaneList =
-                                      lVariableStateQueues.getVariableQueue(pCamera.getKeepPlaneVariable());
+                                      lVariableStateQueues.getVariableQueue(pQueue.getKeepPlaneVariable());
 
     long lNumberOfKeptImages = sum(lKeepPlaneList);
 
-    final long lWidth = max(1, pCamera.getStackWidthVariable().get());
-    final long lHeight =
-                       max(1, pCamera.getStackHeightVariable().get());
+    final long lWidth = max(1, pQueue.getStackWidth());
+    final long lHeight = max(1, pQueue.getStackHeight());
 
     final long lDepth = max(1, lNumberOfKeptImages);
-    final int lChannel = pCamera.getChannelVariable().get();
+    final int lChannel = pQueue.getChannel();
 
     final StackRequest lStackRequest = StackRequest.build(lWidth,
                                                           lHeight,
                                                           lDepth);
 
-    final StackInterface lStack = pCamera.getStackRecycler()
-                                         .getOrWait(1,
-                                                    TimeUnit.SECONDS,
-                                                    lStackRequest);
+    final StackInterface lStack = pRecycler.getOrWait(1,
+                                                      TimeUnit.SECONDS,
+                                                      lStackRequest);
 
     if (lStack != null)
     {
-      fillStackData(pCamera,
+      fillStackData(pQueue,
                     lKeepPlaneList,
                     lWidth,
                     lHeight,
@@ -59,7 +58,7 @@ public abstract class StackCameraSimulationProviderBase implements
     return lStack;
   }
 
-  protected abstract void fillStackData(StackCameraDeviceSimulator pCamera,
+  protected abstract void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
                                         ArrayList<Boolean> pKeepPlaneList,
                                         long pWidth,
                                         long pHeight,

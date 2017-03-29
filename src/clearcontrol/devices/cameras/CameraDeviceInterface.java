@@ -37,6 +37,13 @@ public interface CameraDeviceInterface extends
   void trigger();
 
   /**
+   * Returns the variable holding the current acquisition index.
+   * 
+   * @return acquisition index variable
+   */
+  Variable<Long> getCurrentIndexVariable();
+
+  /**
    * Returns the variable holding the line readout time in microseconds
    * 
    * @return line readout time variable

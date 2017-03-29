@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 import clearcontrol.devices.cameras.devices.orcaflash4.OrcaFlash4StackCamera;
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
@@ -150,14 +151,18 @@ public class OrcaFlash4CameraDemo
     /*lOrcaFlash4StackCamera.getStackDepthVariable().set(128L);
     lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(128L);/**/
 
-    lOrcaFlash4StackCamera.clearQueue();
+    StackCameraRealTimeQueue lQueue =
+                                    lOrcaFlash4StackCamera.requestQueue();
+
+    lQueue.clearQueue();
 
     for (int i = 0; i < 500; i++)
     {
-      lOrcaFlash4StackCamera.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
     }
 
-    Future<Boolean> lPlayQueue = lOrcaFlash4StackCamera.playQueue();
+    Future<Boolean> lPlayQueue =
+                               lOrcaFlash4StackCamera.playQueue(lQueue);
     lPlayQueue.get();
 
     assertTrue(lOrcaFlash4StackCamera.close());
@@ -265,16 +270,20 @@ public class OrcaFlash4CameraDemo
 
     Thread.sleep(1000);
 
-    lOrcaFlash4StackCamera.clearQueue();
+    StackCameraRealTimeQueue lQueue =
+                                    lOrcaFlash4StackCamera.requestQueue();
+
+    lQueue.clearQueue();
 
     for (int i = 0; i < 500; i++)
     {
-      lOrcaFlash4StackCamera.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
     }
 
     while (lVideoWindow.isVisible())
     {
-      Future<Boolean> lPlayQueue = lOrcaFlash4StackCamera.playQueue();
+      Future<Boolean> lPlayQueue =
+                                 lOrcaFlash4StackCamera.playQueue(lQueue);
       lPlayQueue.get();
       Thread.sleep(100);
     }

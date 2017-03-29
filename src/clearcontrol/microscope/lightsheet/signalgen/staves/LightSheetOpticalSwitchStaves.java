@@ -3,7 +3,8 @@ package clearcontrol.microscope.lightsheet.signalgen.staves;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.staves.ConstantStave;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetOpticalSwitch;
+import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
+import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitchQueue;
 
 /**
  * Light sheet microscope optical switch staves. These staves are used when
@@ -14,7 +15,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetOptical
  */
 public class LightSheetOpticalSwitchStaves
 {
-  private LightSheetOpticalSwitch mLightSheetOpticalSwitch;
+  private LightSheetOpticalSwitchQueue mLightSheetOpticalSwitchQueue;
 
   private final ConstantStave[] mBitStave;
 
@@ -24,18 +25,18 @@ public class LightSheetOpticalSwitchStaves
    * Instanciates given a lightsheet optical switch device and default stave
    * index.
    * 
-   * @param pLightSheetOpticalSwitch
-   *          lightsheet optical switch device
+   * @param pLightSheetOpticalSwitchQueue
+   *          lightsheet optical switch device queue
    * @param pDefaultStaveIndex
    *          default stave index
    */
-  public LightSheetOpticalSwitchStaves(LightSheetOpticalSwitch pLightSheetOpticalSwitch,
+  public LightSheetOpticalSwitchStaves(LightSheetOpticalSwitchQueue pLightSheetOpticalSwitchQueue,
                                        int pDefaultStaveIndex)
   {
     super();
-    mLightSheetOpticalSwitch = pLightSheetOpticalSwitch;
+    mLightSheetOpticalSwitchQueue = pLightSheetOpticalSwitchQueue;
     int lNumberOfBits =
-                      (int) Math.ceil(Math.log(mLightSheetOpticalSwitch.getNumberOfSwitches())
+                      (int) Math.ceil(Math.log(mLightSheetOpticalSwitchQueue.getNumberOfSwitches())
                                       / Math.log(2));
     mBitStave = new ConstantStave[lNumberOfBits];
     mStaveIndex = new int[lNumberOfBits];
@@ -45,13 +46,18 @@ public class LightSheetOpticalSwitchStaves
       mStaveIndex[i] =
                      MachineConfiguration.getCurrentMachineConfiguration()
                                          .getIntegerProperty("device.lsm.switch."
-                                                             + mLightSheetOpticalSwitch.getName()
+                                                             + getLightSheetOpticalSwitch().getName()
                                                              + i
                                                              + ".index",
                                                              pDefaultStaveIndex);
       mBitStave[i] = new ConstantStave("lightsheet.s." + i, 0);
 
     }
+  }
+
+  private LightSheetOpticalSwitch getLightSheetOpticalSwitch()
+  {
+    return mLightSheetOpticalSwitchQueue.getLightSheetOpticalSwitch();
   }
 
   /**
@@ -65,7 +71,6 @@ public class LightSheetOpticalSwitchStaves
   public void addStavesToMovements(Movement pBeforeExposureMovement,
                                    Movement pExposureMovement)
   {
-    // Analog outputs before exposure:
     for (int i = 0; i < mBitStave.length; i++)
     {
       pBeforeExposureMovement.setStave(mStaveIndex[i], mBitStave[i]);
@@ -75,15 +80,22 @@ public class LightSheetOpticalSwitchStaves
 
   /**
    * Updates staves
+   * 
+   * @param pExposureMovement
+   *          exposure movement
+   * @param pBeforeExposureMovement
+   *          before exposure movement
    */
-  public void update()
+  public void update(Movement pBeforeExposureMovement,
+                     Movement pExposureMovement)
   {
     synchronized (this)
     {
       for (int i = 0; i < mBitStave.length; i++)
       {
-        mBitStave[i].setValue(mLightSheetOpticalSwitch.getSwitchVariable(i)
-                                                      .get() ? 1 : 0);
+        mBitStave[i].setValue(getLightSheetOpticalSwitch().getSwitchVariable(i)
+                                                          .get() ? 1
+                                                                 : 0);
       }
     }
   }

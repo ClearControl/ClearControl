@@ -21,6 +21,15 @@ public class LaserDeviceSimulator extends LaserDeviceBase implements
                                   SimulationDeviceInterface
 {
 
+  private static final double cEpsilon = 0.1;
+  private static final double cNoise = 2;
+  private static final long cSimulationPeriod = 50;
+  private static final int cUpdatePeriod = 4; // in unit of simulation period
+
+  private volatile int mTimeCounter = 0;
+
+  private volatile double mCurrentPower = 0;
+
   /**
    * Instanciates a laser device simulator
    * 
@@ -84,9 +93,7 @@ public class LaserDeviceSimulator extends LaserDeviceBase implements
                                                           0.0);
 
     Runnable lRunnable = () -> {
-      double lCurrentValue =
-                           mCurrentPowerInMilliWattVariable.get()
-                                                           .doubleValue();
+
       double lTargetValue =
                           mTargetPowerInMilliWattVariable.get()
                                                          .doubleValue();
@@ -94,15 +101,21 @@ public class LaserDeviceSimulator extends LaserDeviceBase implements
       if (mLaserOnVariable.get()
           && mTargetPowerInMilliWattVariable.get().doubleValue() > 0)
 
-        mCurrentPowerInMilliWattVariable.set(0.8 * lCurrentValue
-                                             + 0.2 * lTargetValue
-                                             + (Math.random() - 0.5)
-                                               * 0.5);
+        mCurrentPower = (1 - cEpsilon) * mCurrentPower
+                        + cEpsilon * lTargetValue
+                        + (Math.random() - 0.5) * cNoise;
       else
-        mCurrentPowerInMilliWattVariable.set(0.8 * lCurrentValue);
+        mCurrentPower = (1 - cEpsilon) * mCurrentPower;
+
+      if ((mTimeCounter++) % cUpdatePeriod == 0)
+      {
+        mCurrentPowerInMilliWattVariable.set(mCurrentPower);
+      }
     };
 
-    scheduleAtFixedRate(lRunnable, 200, TimeUnit.MILLISECONDS);
+    scheduleAtFixedRate(lRunnable,
+                        cSimulationPeriod,
+                        TimeUnit.MILLISECONDS);
 
   }
 

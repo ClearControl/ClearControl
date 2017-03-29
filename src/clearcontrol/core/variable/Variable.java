@@ -8,11 +8,15 @@ import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
 import clearcontrol.core.variable.events.EventPropagator;
 
 /**
- * 
+ * Variable. variable can be used to hold references, listen to changes of these
+ * values, and can be synced with each other among other things. equals and
+ * hascode are determined solely based on the variable name, not the reference
+ * it holds.
  * 
  * @author royer
  *
  * @param <O>
+ *          value type
  */
 public class Variable<O> extends VariableBase<O> implements
                      VariableSyncInterface<O>,
@@ -20,8 +24,9 @@ public class Variable<O> extends VariableBase<O> implements
                      VariableGetInterface<O>
 
 {
-  static CompletingThreadPoolExecutor sAsyncExecutor;
 
+  // The following async executor is used for the async set functions:
+  static CompletingThreadPoolExecutor sAsyncExecutor;
   static
   {
     sAsyncExecutor =
@@ -34,16 +39,33 @@ public class Variable<O> extends VariableBase<O> implements
                                                                        Integer.MAX_VALUE);
   }
 
+  // That where we store the value:
   protected volatile O mReference;
+
+  // list of variable to send updates to:
   protected final CopyOnWriteArrayList<Variable<O>> mVariablesToSendUpdatesTo =
                                                                               new CopyOnWriteArrayList<Variable<O>>();
 
+  /**
+   * Instanciates a variabke witha given name and null reference
+   * 
+   * @param pVariableName
+   *          variale name
+   */
   public Variable(final String pVariableName)
   {
     super(pVariableName);
     mReference = null;
   }
 
+  /**
+   * Instanciates a variable with given name and initial value.
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pReference
+   *          initial value
+   */
   public Variable(final String pVariableName, final O pReference)
   {
     super(pVariableName);
@@ -65,6 +87,12 @@ public class Variable<O> extends VariableBase<O> implements
     set(mReference);
   }
 
+  /**
+   * Sets the reference value asynchronously
+   * 
+   * @param pNewReference
+   *          new value
+   */
   public void setAsync(final O pNewReference)
   {
     sAsyncExecutor.execute(() -> {
@@ -72,12 +100,30 @@ public class Variable<O> extends VariableBase<O> implements
     });
   }
 
+  /**
+   * Sets a edge: first the before-edge value , then immediately the after-edge
+   * value.
+   * 
+   * @param pBeforeEdge
+   *          value before edge
+   * @param pAfterEdge
+   *          value after edge
+   */
   public void setEdge(O pBeforeEdge, O pAfterEdge)
   {
     set(pBeforeEdge);
     set(pAfterEdge);
   }
 
+  /**
+   * Sets a edge asynchronously: first the before-edge value , then immediately
+   * the after-edge value.
+   * 
+   * @param pBeforeEdge
+   *          value before edge
+   * @param pAfterEdge
+   *          value after edge
+   */
   public void setEdgeAsync(O pBeforeEdge, O pAfterEdge)
   {
     sAsyncExecutor.execute(() -> {
@@ -92,6 +138,10 @@ public class Variable<O> extends VariableBase<O> implements
     setReferenceInternal(pNewReference);
   }
 
+  /**
+   * Toggles the value, fou double it simply changes the sign, for boolean
+   * values it toggles between false and true.
+   */
   @SuppressWarnings("unchecked")
   public void toggle()
   {
@@ -105,7 +155,7 @@ public class Variable<O> extends VariableBase<O> implements
     }
   }
 
-  public boolean setReferenceInternal(final O pNewReference)
+  private boolean setReferenceInternal(final O pNewReference)
   {
     if (EventPropagator.hasBeenTraversed(this))
     {
@@ -138,6 +188,16 @@ public class Variable<O> extends VariableBase<O> implements
     return true;
   }
 
+  /**
+   * Sends a new avalue to the variables synced to this variable - this is
+   * normally called internally when setting the value. This should be only used
+   * if you know what you are doing...
+   * 
+   * @param pNewValue
+   *          new value to send
+   * @param pClearEventQueue
+   *          true -> clears event queue
+   */
   public void sync(final O pNewValue, final boolean pClearEventQueue)
   {
     if (pClearEventQueue)
@@ -166,11 +226,29 @@ public class Variable<O> extends VariableBase<O> implements
 
   }
 
-  public O setEventHook(final O pOldValue, final O pNewValue)
+  /**
+   * Set event hook, can be overridden by a derived class to intercept set
+   * eventsand modify teh set value before it is propagated.
+   * 
+   * @param pOldReference
+   *          old value
+   * @param pNewReference
+   *          new value
+   * @return possibly modified new value
+   */
+  public O setEventHook(final O pOldReference, final O pNewReference)
   {
-    return pNewValue;
+    return pNewReference;
   }
 
+  /**
+   * Get event hook, can be overridden by a derived class to intercept set
+   * eventsand modify the set value before it is returned by a call to get.
+   * 
+   * @param pCurrentReference
+   *          current value
+   * @return possibly modified current value
+   */
   public O getEventHook(final O pCurrentReference)
   {
     return pCurrentReference;
@@ -203,6 +281,14 @@ public class Variable<O> extends VariableBase<O> implements
     mVariablesToSendUpdatesTo.clear();
   }
 
+  /**
+   * Removes all synced variable from this variable and sets a new sigle synced
+   * variable
+   * 
+   * @param pObjectVariable
+   *          sole vaiable to sync to.
+   * @return first variable that used to be synced
+   */
   public Variable<O> sendUpdatesToInstead(Variable<O> pObjectVariable)
   {
 
@@ -247,6 +333,9 @@ public class Variable<O> extends VariableBase<O> implements
     pObjectVariable.doNotSendUpdatesTo(this);
   }
 
+  /**
+   * Increments the value by 1 (only works for numeric types)
+   */
   @SuppressWarnings("unchecked")
   public void increment()
   {
@@ -279,6 +368,9 @@ public class Variable<O> extends VariableBase<O> implements
       throw new UnsupportedOperationException("Can't increment if not of type char, short, int or long");
   }
 
+  /**
+   * Decrements the value by 1 (only works for numeric types)
+   */
   @SuppressWarnings("unchecked")
   public void decrement()
   {
@@ -311,11 +403,21 @@ public class Variable<O> extends VariableBase<O> implements
       throw new UnsupportedOperationException("Can't increment if not of type char, short, int or long");
   }
 
+  /**
+   * Returns true if the reference is not null.
+   * 
+   * @return true if not null
+   */
   public boolean isNotNull()
   {
     return mReference != null;
   }
 
+  /**
+   * Returns true if the reference is null
+   * 
+   * @return true if null
+   */
   public boolean isNull()
   {
     return mReference == null;
@@ -334,6 +436,25 @@ public class Variable<O> extends VariableBase<O> implements
     {
       return getName() + "=null";
     }
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return getName().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Variable<?> other = (Variable<?>) obj;
+    return getName().equals(other.getName());
   }
 
 }

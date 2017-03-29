@@ -12,6 +12,7 @@ import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorQueue;
 
 import org.junit.Test;
 
@@ -73,14 +74,14 @@ public class LightSheetDemo
     final LightSheet lLightSheet =
                                  new LightSheet("demo", 9.4, 512, 2);
 
-    pSignalGeneratorDevice.addLightSheet(lLightSheet);
-
     lLightSheet.getHeightVariable().set(100.0);
     lLightSheet.getEffectiveExposureInMicrosecondsVariable()
                .set(5000.0);
 
-    final ScoreInterface lStagingScore =
-                                       pSignalGeneratorDevice.getStagingScore();
+    LightSheetSignalGeneratorQueue lQueue =
+                                          pSignalGeneratorDevice.requestQueue();
+
+    final ScoreInterface lStagingScore = lQueue.getStagingScore();
 
     final ScoreVisualizerJFrame lVisualizer =
                                             ScoreVisualizerJFrame.visualize("LightSheetDemo",
@@ -88,13 +89,14 @@ public class LightSheetDemo
 
     assertTrue(pSignalGeneratorDevice.open());
 
+    lQueue.clearQueue();
     for (int i = 0; i < 100; i++)
-      pSignalGeneratorDevice.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
 
     for (int i = 0; i < 1000000000 && lVisualizer.isVisible(); i++)
     {
       final Future<Boolean> lPlayQueue =
-                                       pSignalGeneratorDevice.playQueue();
+                                       pSignalGeneratorDevice.playQueue(lQueue);
       lPlayQueue.get();
     }
 

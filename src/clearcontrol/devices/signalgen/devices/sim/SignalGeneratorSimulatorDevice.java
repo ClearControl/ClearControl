@@ -6,11 +6,16 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
+import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
+/**
+ * Signal generator device simulator
+ *
+ * @author royer
+ */
 public class SignalGeneratorSimulatorDevice extends
                                             SignalGeneratorBase
                                             implements
@@ -19,6 +24,11 @@ public class SignalGeneratorSimulatorDevice extends
                                             SimulationDeviceInterface
 {
 
+  private volatile int mQueueLength;
+
+  /**
+   * Signal generator device simulator
+   */
   public SignalGeneratorSimulatorDevice()
   {
     super(SignalGeneratorSimulatorDevice.class.getSimpleName());
@@ -42,40 +52,36 @@ public class SignalGeneratorSimulatorDevice extends
   }
 
   @Override
+  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
+  {
+    mQueueLength = pSignalGeneratorRealTimeQueue.getQueueLength();
+    return super.playQueue(pSignalGeneratorRealTimeQueue);
+  }
+
+  @Override
   public boolean playScore(ScoreInterface pScore)
   {
+
     final long lDurationInMilliseconds =
                                        pScore.getDuration(TimeUnit.MILLISECONDS);
 
     long ltriggerPeriodInMilliseconds = lDurationInMilliseconds
-                                        / mEnqueuedStateCounter;
+                                        / mQueueLength;
 
-    for (int i = 0; i < mEnqueuedStateCounter; i++)
+    for (int i = 0; i < mQueueLength; i++)
     {
       mTriggerVariable.setEdge(false, true);
       ThreadUtils.sleep(ltriggerPeriodInMilliseconds,
                         TimeUnit.MILLISECONDS);
     }
 
-    return true;
-  }
-
-  @Override
-  public Future<Boolean> playQueue()
-  {
-    return super.playQueue();
+    return super.playScore(pScore);
   }
 
   @Override
   public double getTemporalGranularityInMicroseconds()
   {
     return 0;
-  }
-
-  @Override
-  public Variable<Boolean> getTriggerVariable()
-  {
-    return mTriggerVariable;
   }
 
 }

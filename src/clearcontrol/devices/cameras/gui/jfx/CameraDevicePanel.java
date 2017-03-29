@@ -61,7 +61,10 @@ public class CameraDevicePanel extends AnchorPane
   VariableNumberTextField<Long> mWidth, mHeight;
 
   /**
+   * Instanciates a camera device panel.
+   * 
    * @param pCameraDeviceInterface
+   *          camera device
    */
   public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
   {

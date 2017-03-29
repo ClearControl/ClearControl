@@ -10,7 +10,6 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.microscope.lightsheet.component.lightsheet.si.BinaryStructuredIlluminationPattern;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -21,7 +20,9 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
  *
  * @author royer
  */
-public class LightSheet extends QueueableVirtualDevice implements
+public class LightSheet extends
+                        QueueableVirtualDevice<LightSheetQueue>
+                        implements
                         LightSheetInterface,
                         AsynchronousExecutorServiceAccess,
                         LoggingInterface
@@ -65,54 +66,7 @@ public class LightSheet extends QueueableVirtualDevice implements
                                                                                  new PolynomialFunction(new double[]
                                                                                  { 1, 0 }));
 
-  private final BoundedVariable<Number> mEffectiveExposureInMicrosecondsVariable =
-                                                                                 new BoundedVariable<Number>("EffectiveExposureInMicroseconds",
-                                                                                                             5000.0);
-
-  private final BoundedVariable<Long> mImageHeightVariable =
-                                                           new BoundedVariable<Long>("ImageHeight",
-                                                                                     2 * 1024L);
-  private final BoundedVariable<Number> mReadoutTimeInMicrosecondsPerLineVariable =
-                                                                                  new BoundedVariable<Number>("ReadoutTimeInMicrosecondsPerLine",
-                                                                                                              9.74);
-  private final BoundedVariable<Number> mOverScanVariable =
-                                                          new BoundedVariable<Number>("OverScan",
-                                                                                      1.3);
-
-  private final BoundedVariable<Number> mXVariable =
-                                                   new BoundedVariable<Number>("LightSheetX",
-                                                                               0.0);
-  private final BoundedVariable<Number> mYVariable =
-                                                   new BoundedVariable<Number>("LightSheetY",
-                                                                               0.0);
-  private final BoundedVariable<Number> mZVariable =
-                                                   new BoundedVariable<Number>("LightSheetZ",
-                                                                               0.0);
-
-  private final BoundedVariable<Number> mAlphaInDegreesVariable =
-                                                                new BoundedVariable<Number>("LightSheetAlphaInDegrees",
-                                                                                            0.0);
-  private final BoundedVariable<Number> mBetaInDegreesVariable =
-                                                               new BoundedVariable<Number>("LightSheetBetaInDegrees",
-                                                                                           0.0);
-  private final BoundedVariable<Number> mWidthVariable =
-                                                       new BoundedVariable<Number>("LightSheetRange",
-                                                                                   0.0);
-  private final BoundedVariable<Number> mHeightVariable =
-                                                        new BoundedVariable<Number>("LightSheetLength",
-                                                                                    0.0);
-  private final BoundedVariable<Number> mPowerVariable =
-                                                       new BoundedVariable<Number>("LightSheetLengthPower",
-                                                                                   1.0);
-  private final Variable<Boolean> mAdaptPowerToWidthHeightVariable =
-                                                                   new Variable<Boolean>("AdaptLightSheetPowerToWidthHeight",
-                                                                                         false);
-
-  private final Variable<Boolean>[] mLaserOnOffVariableArray;
-
-  private final Variable<Boolean>[] mSIPatternOnOffVariableArray;
-
-  private final Variable<StructuredIlluminationPatternInterface>[] mStructuredIlluminationPatternVariableArray;
+  private LightSheetQueue mLightSheetQueueTemplate;
 
   private final int mNumberOfLaserDigitalControls;
 
@@ -135,90 +89,65 @@ public class LightSheet extends QueueableVirtualDevice implements
                     final int pNumberOfLaserDigitalControls)
   {
     super(pName);
-
     mNumberOfLaserDigitalControls = pNumberOfLaserDigitalControls;
+
+    mLightSheetQueueTemplate = new LightSheetQueue(this);
 
     @SuppressWarnings("rawtypes")
     final VariableSetListener lVariableListener = (o, n) -> {
-      // System.out.println(getName() + ": new variable value: " + n);
-      update();
       notifyListeners(this);
+      // System.out.format("LightSheet.java > lightsheet y=%g \n",
+      // mLightSheetQueueTemplate.getYVariable().get().doubleValue());
     };
 
-    mReadoutTimeInMicrosecondsPerLineVariable.set(pReadoutTimeInMicrosecondsPerLine);
-    mImageHeightVariable.set(pNumberOfLines);
-    mOverScanVariable.setMinMax(1.001, 2);
+    mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
+                            .set(pReadoutTimeInMicrosecondsPerLine);
+    mLightSheetQueueTemplate.getImageHeightVariable()
+                            .set(pNumberOfLines);
+    mLightSheetQueueTemplate.getOverScanVariable().setMinMax(1.001,
+                                                             2);
 
-    mReadoutTimeInMicrosecondsPerLineVariable.addSetListener(lVariableListener);
-    mOverScanVariable.addSetListener(lVariableListener);
-    mImageHeightVariable.addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getImageHeightVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getOverScanVariable()
+                            .addSetListener(lVariableListener);
 
-    getVariableStateQueues().registerConstantVariables(mReadoutTimeInMicrosecondsPerLineVariable,
-                                                       mOverScanVariable,
-                                                       mImageHeightVariable);
-
-    mLaserOnOffVariableArray =
-                             new Variable[mNumberOfLaserDigitalControls];
-
-    mSIPatternOnOffVariableArray =
-                                 new Variable[mNumberOfLaserDigitalControls];
-
-    mStructuredIlluminationPatternVariableArray =
-                                                new Variable[mNumberOfLaserDigitalControls];
-
-    for (int i = 0; i < mLaserOnOffVariableArray.length; i++)
+    for (int i = 0; i < mNumberOfLaserDigitalControls; i++)
     {
-      final String lLaserName = "Laser" + i + ".exposure.trig";
-
-      mStructuredIlluminationPatternVariableArray[i] =
-                                                     new Variable<StructuredIlluminationPatternInterface>("StructuredIlluminationPattern",
-                                                                                                          new BinaryStructuredIlluminationPattern());
-
-      mStructuredIlluminationPatternVariableArray[i].addSetListener(lVariableListener);
-
-      mLaserOnOffVariableArray[i] = new Variable<Boolean>(lLaserName,
-                                                          false);
-      mLaserOnOffVariableArray[i].addSetListener(lVariableListener);
-
-      mSIPatternOnOffVariableArray[i] =
-                                      new Variable<Boolean>(lLaserName
-                                                            + "SIPatternOnOff",
-                                                            false);
-      mSIPatternOnOffVariableArray[i].addSetListener(lVariableListener);
-
-      getVariableStateQueues().registerVariables(mStructuredIlluminationPatternVariableArray[i],
-                                                 mLaserOnOffVariableArray[i],
-                                                 mSIPatternOnOffVariableArray[i]);
+      mLightSheetQueueTemplate.getSIPatternVariable(i)
+                              .addSetListener(lVariableListener);
+      mLightSheetQueueTemplate.getLaserOnOffArrayVariable(i)
+                              .addSetListener(lVariableListener);
+      mLightSheetQueueTemplate.getSIPatternOnOffVariable(i)
+                              .addSetListener(lVariableListener);
     }
 
-    mXVariable.addSetListener(lVariableListener);
-    mYVariable.addSetListener(lVariableListener);
-    mZVariable.addSetListener(lVariableListener);
-    mBetaInDegreesVariable.addSetListener(lVariableListener);
-    mAlphaInDegreesVariable.addSetListener(lVariableListener);
-    mHeightVariable.addSetListener(lVariableListener);
-    mWidthVariable.addSetListener(lVariableListener);
-    mPowerVariable.addSetListener(lVariableListener);
-    mOverScanVariable.addSetListener(lVariableListener);
-    mAdaptPowerToWidthHeightVariable.addSetListener(lVariableListener);
-
-    getVariableStateQueues().registerConstantVariables(mXVariable,
-                                                       mYVariable,
-                                                       mZVariable,
-                                                       mBetaInDegreesVariable,
-                                                       mAlphaInDegreesVariable,
-                                                       mHeightVariable,
-                                                       mWidthVariable,
-                                                       mPowerVariable,
-                                                       mOverScanVariable,
-                                                       mAdaptPowerToWidthHeightVariable);
+    mLightSheetQueueTemplate.getXVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getYVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getZVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getBetaInDegreesVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getAlphaInDegreesVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getHeightVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getWidthVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getPowerVariable()
+                            .addSetListener(lVariableListener);
+    mLightSheetQueueTemplate.getAdaptPowerToWidthHeightVariable()
+                            .addSetListener(lVariableListener);
 
     final VariableSetListener<?> lFunctionVariableListener =
                                                            (o, n) -> {
                                                              info("new function: "
                                                                   + n);
                                                              resetBounds();
-                                                             update();
                                                              notifyListeners(this);
                                                            };
 
@@ -238,7 +167,6 @@ public class LightSheet extends QueueableVirtualDevice implements
     mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
     mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
-    update();
     notifyListeners(this);
   }
 
@@ -301,52 +229,52 @@ public class LightSheet extends QueueableVirtualDevice implements
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".x.bounds",
-                                              mXVariable,
+                                              mLightSheetQueueTemplate.getXVariable(),
                                               mXFunction.get());
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".y.bounds",
-                                              mYVariable,
+                                              mLightSheetQueueTemplate.getYVariable(),
                                               mYFunction.get());
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".z.bounds",
-                                              mZVariable,
+                                              mLightSheetQueueTemplate.getZVariable(),
                                               mZFunction.get());
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".w.bounds",
-                                              mWidthVariable,
+                                              mLightSheetQueueTemplate.getWidthVariable(),
                                               mWidthFunction.get());
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".h.bounds",
-                                              mHeightVariable,
+                                              mLightSheetQueueTemplate.getHeightVariable(),
                                               mHeightFunction.get());
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".a.bounds",
-                                              mAlphaInDegreesVariable,
+                                              mLightSheetQueueTemplate.getAlphaInDegreesVariable(),
                                               mAlphaFunction.get());
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".b.bounds",
-                                              mBetaInDegreesVariable,
+                                              mLightSheetQueueTemplate.getBetaInDegreesVariable(),
                                               mBetaFunction.get());
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".p.bounds",
-                                              mPowerVariable,
+                                              mLightSheetQueueTemplate.getPowerVariable(),
                                               mPowerFunction.get());
 
   }
@@ -360,104 +288,103 @@ public class LightSheet extends QueueableVirtualDevice implements
   @Override
   public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable()
   {
-    return mEffectiveExposureInMicrosecondsVariable;
+    return mLightSheetQueueTemplate.getEffectiveExposureInMicrosecondsVariable();
   }
 
   @Override
   public BoundedVariable<Long> getImageHeightVariable()
   {
-    return mImageHeightVariable;
+    return mLightSheetQueueTemplate.getImageHeightVariable();
   }
 
   @Override
   public BoundedVariable<Number> getOverScanVariable()
   {
-    return mOverScanVariable;
+    return mLightSheetQueueTemplate.getOverScanVariable();
   }
 
   @Override
   public BoundedVariable<Number> getReadoutTimeInMicrosecondsPerLineVariable()
   {
-    return mReadoutTimeInMicrosecondsPerLineVariable;
+    return mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable();
   }
 
   @Override
   public BoundedVariable<Number> getXVariable()
   {
-    return mXVariable;
+    return mLightSheetQueueTemplate.getXVariable();
   }
 
   @Override
   public BoundedVariable<Number> getYVariable()
   {
-    return mYVariable;
+    return mLightSheetQueueTemplate.getYVariable();
   }
 
   @Override
   public BoundedVariable<Number> getZVariable()
   {
-    return mZVariable;
+    return mLightSheetQueueTemplate.getZVariable();
   }
 
   @Override
   public BoundedVariable<Number> getAlphaInDegreesVariable()
   {
-    return mAlphaInDegreesVariable;
+    return mLightSheetQueueTemplate.getAlphaInDegreesVariable();
   }
 
   @Override
   public BoundedVariable<Number> getBetaInDegreesVariable()
   {
-    return mBetaInDegreesVariable;
+    return mLightSheetQueueTemplate.getBetaInDegreesVariable();
   }
 
   @Override
   public BoundedVariable<Number> getWidthVariable()
   {
-    return mWidthVariable;
+    return mLightSheetQueueTemplate.getWidthVariable();
   }
 
   @Override
   public BoundedVariable<Number> getHeightVariable()
   {
-    return mHeightVariable;
+    return mLightSheetQueueTemplate.getHeightVariable();
   }
 
   @Override
   public BoundedVariable<Number> getPowerVariable()
   {
-    return mPowerVariable;
+    return mLightSheetQueueTemplate.getPowerVariable();
   }
 
   @Override
   public Variable<Boolean> getAdaptPowerToWidthHeightVariable()
   {
-    return mAdaptPowerToWidthHeightVariable;
+    return mLightSheetQueueTemplate.getAdaptPowerToWidthHeightVariable();
   }
 
   @Override
   public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex)
   {
-    return mStructuredIlluminationPatternVariableArray[pLaserIndex];
+    return mLightSheetQueueTemplate.getSIPatternVariable(pLaserIndex);
   }
 
   @Override
   public int getNumberOfPhases(int pLaserIndex)
   {
-    return mStructuredIlluminationPatternVariableArray[pLaserIndex].get()
-                                                                   .getNumberOfPhases();
+    return mLightSheetQueueTemplate.getNumberOfPhases(pLaserIndex);
   }
 
   @Override
   public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex)
   {
-    return mSIPatternOnOffVariableArray[pLaserIndex];
+    return mLightSheetQueueTemplate.getSIPatternOnOffVariable(pLaserIndex);
   }
 
   @Override
   public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex)
   {
-    return mLaserOnOffVariableArray[pLaserIndex];
+    return mLightSheetQueueTemplate.getLaserOnOffArrayVariable(pLaserIndex);
   }
 
   @Override
@@ -521,17 +448,16 @@ public class LightSheet extends QueueableVirtualDevice implements
   }
 
   @Override
-  public Future<Boolean> playQueue()
+  public LightSheetQueue requestQueue()
   {
-    // Nothing to play here
-    return null;
+    return new LightSheetQueue(mLightSheetQueueTemplate);
   }
 
   @Override
-  public void update()
+  public Future<Boolean> playQueue(LightSheetQueue pLightSheetQueue)
   {
-    // TODO Auto-generated method stub
-
+    // Nothing to play here
+    return null;
   }
 
 }

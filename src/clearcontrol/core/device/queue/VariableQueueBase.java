@@ -1,70 +1,65 @@
-package clearcontrol.core.variable.queue;
+package clearcontrol.core.device.queue;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import clearcontrol.core.device.queue.StateQueueInterface;
 import clearcontrol.core.variable.Variable;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
  * The state of variables register to instances of this class can be recorded
- * into queues. This is practical for implementinig queable devices.
+ * into queues.
  *
  * @author royer
  */
-public class VariableStateQueues implements
-                                 StateQueueInterface,
-                                 Cloneable
+public class VariableQueueBase implements
+                               RealTimeQueueInterface,
+                               Cloneable
 {
-  private ConcurrentHashMap<Variable<?>, Pair<QueueingMode, ArrayList<Object>>> mVariablesToQueueListsMap =
-                                                                                                          new ConcurrentHashMap<>();
+  private ConcurrentHashMap<Variable<?>, ArrayList<Object>> mVariablesToQueueListsMap =
+                                                                                      new ConcurrentHashMap<>();
 
   private Object mLock = new Object();
 
   /**
    * Instanciates.
    */
-  public VariableStateQueues()
+  public VariableQueueBase()
   {
     super();
   }
 
   /**
-   * Instanciates a copy of this variable state queues object.
+   * Instanciates a copy of this variable state queue object.
    * 
    * @param pVariableStateQueues
    *          state queues object to copy.
    */
-  public VariableStateQueues(VariableStateQueues pVariableStateQueues)
+  public VariableQueueBase(VariableQueueBase pVariableStateQueues)
   {
     super();
 
     synchronized (pVariableStateQueues.mLock)
     {
-      for (Entry<Variable<?>, Pair<QueueingMode, ArrayList<Object>>> lEntrySet : pVariableStateQueues.mVariablesToQueueListsMap.entrySet())
+      for (Entry<Variable<?>, ArrayList<Object>> lEntrySet : pVariableStateQueues.mVariablesToQueueListsMap.entrySet())
       {
         Variable<?> lVariable = lEntrySet.getKey();
-        QueueingMode lQueueingMode = lEntrySet.getValue().getLeft();
-        ArrayList<Object> lQueueStatesList =
-                                           new ArrayList<>(lEntrySet.getValue()
-                                                                    .getRight());
 
-        mVariablesToQueueListsMap.put(lVariable,
-                                      Pair.of(lQueueingMode,
-                                              lQueueStatesList));
+        ArrayList<Object> lQueueStatesList =
+                                           new ArrayList<>(lEntrySet.getValue());
+
+        mVariablesToQueueListsMap.put(lVariable, lQueueStatesList);
       }
     }
 
   }
 
   @Override
-  public VariableStateQueues clone()
+  public VariableQueueBase clone()
   {
-    return new VariableStateQueues(this);
+    return new VariableQueueBase(this);
   }
 
   /**
@@ -82,59 +77,18 @@ public class VariableStateQueues implements
   }
 
   /**
-   * Register a list of variables with constant queueing mode.
-   * 
-   * @param pVariables
-   *          pVariables var arg list of variables to register
-   */
-  public void registerConstantVariables(Variable<?>... pVariables)
-  {
-    for (Variable<?> lVariable : pVariables)
-    {
-      registerConstantVariable(lVariable);
-    }
-  }
-
-  /**
-   * Register a variable with normal queueing mode.
-   * 
-   * @param pQueueingMode
-   *          queueing mode
-   * @param pVariable
-   *          variable
-   */
-  public <T> void registerVariable(QueueingMode pQueueingMode,
-                                   Variable<T> pVariable)
-  {
-    synchronized (mLock)
-    {
-      Pair<QueueingMode, ArrayList<Object>> lPair =
-                                                  Pair.of(pQueueingMode,
-                                                          new ArrayList<Object>());
-      mVariablesToQueueListsMap.put(pVariable, lPair);
-    }
-  }
-
-  /**
-   * Register a variable with normal queueing mode.
+   * Register a variable.
    * 
    * @param pVariable
    *          variable
    */
   public <T> void registerVariable(Variable<T> pVariable)
   {
-    registerVariable(QueueingMode.Normal, pVariable);
-  }
-
-  /**
-   * Register a variable with constant queueing mode.
-   * 
-   * @param pVariable
-   *          variable
-   */
-  public <T> void registerConstantVariable(Variable<T> pVariable)
-  {
-    registerVariable(QueueingMode.Constant, pVariable);
+    synchronized (mLock)
+    {
+      ArrayList<Object> lPair = new ArrayList<Object>();
+      mVariablesToQueueListsMap.put(pVariable, lPair);
+    }
   }
 
   /**
@@ -152,7 +106,6 @@ public class VariableStateQueues implements
   {
     Number lValue =
                   (Number) mVariablesToQueueListsMap.get(pVariable)
-                                                    .getValue()
                                                     .get(pQueuePositionIndex);
     return lValue;
   }
@@ -192,8 +145,7 @@ public class VariableStateQueues implements
   {
     @SuppressWarnings("unchecked")
     ArrayList<T> lArrayList =
-                            (ArrayList<T>) new ArrayList<>(mVariablesToQueueListsMap.get(pVariable)
-                                                                                    .getRight());
+                            (ArrayList<T>) new ArrayList<>(mVariablesToQueueListsMap.get(pVariable));
     return lArrayList;
   }
 
@@ -203,7 +155,7 @@ public class VariableStateQueues implements
    * actual copy of the original list of states, this means that it is not
    * altered by subsequent clearing or modifications of the state queue.
    * 
-   * @param pFunctions
+   * @param pFunction
    *          function to apply to each enqueued state value
    * @param pValueVariable
    *          variable
@@ -215,8 +167,7 @@ public class VariableStateQueues implements
     ArrayList<Number> lTransformedValueList = new ArrayList<Number>();
 
     ArrayList<Object> lStateList =
-                                 mVariablesToQueueListsMap.get(pValueVariable)
-                                                          .getRight();
+                                 mVariablesToQueueListsMap.get(pValueVariable);
 
     if (lStateList.size() == 0)
       return lTransformedValueList;
@@ -240,9 +191,9 @@ public class VariableStateQueues implements
   {
     synchronized (mLock)
     {
-      for (Pair<QueueingMode, ArrayList<Object>> lStateList : mVariablesToQueueListsMap.values())
+      for (ArrayList<Object> lStateList : mVariablesToQueueListsMap.values())
       {
-        lStateList.getRight().clear();
+        lStateList.clear();
       }
     }
   }
@@ -252,25 +203,14 @@ public class VariableStateQueues implements
   {
     synchronized (mLock)
     {
-      for (Entry<Variable<?>, Pair<QueueingMode, ArrayList<Object>>> lEntrySet : mVariablesToQueueListsMap.entrySet())
+      for (Entry<Variable<?>, ArrayList<Object>> lEntrySet : mVariablesToQueueListsMap.entrySet())
       {
         Variable<?> lVariable = lEntrySet.getKey();
         Object lCurrentValue = lVariable.get();
-        QueueingMode lQueueingMode = lEntrySet.getValue().getLeft();
-        ArrayList<Object> lStateList =
-                                     lEntrySet.getValue().getRight();
 
-        if (lQueueingMode == QueueingMode.Constant
-            && lStateList.size() >= 1)
-        {
-          if (lStateList.get(0).equals(lCurrentValue))
-            lStateList.add(lCurrentValue);
-          else
-            throw new InvalidQueueException(String.format("Variable should be constant in queue: %s",
-                                                          lVariable));
-        }
-        else
-          lStateList.add(lCurrentValue);
+        ArrayList<Object> lStateList = lEntrySet.getValue();
+
+        lStateList.add(lCurrentValue);
       }
     }
   }
@@ -289,7 +229,6 @@ public class VariableStateQueues implements
       return mVariablesToQueueListsMap.values()
                                       .iterator()
                                       .next()
-                                      .getRight()
                                       .size();
     }
   }

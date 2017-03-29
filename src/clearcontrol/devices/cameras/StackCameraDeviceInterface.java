@@ -1,7 +1,7 @@
 package clearcontrol.devices.cameras;
 
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -16,7 +16,7 @@ import coremem.recycling.RecyclerInterface;
  */
 public interface StackCameraDeviceInterface extends
                                             CameraDeviceInterface,
-                                            StateQueueDeviceInterface,
+                                            RealTimeQueueDeviceInterface<StackCameraRealTimeQueue>,
                                             NameableInterface
 {
 
@@ -83,16 +83,6 @@ public interface StackCameraDeviceInterface extends
    * @return stack mode variable
    */
   Variable<Boolean> getStackModeVariable();
-
-  /**
-   * Returns the variable holding the flag that indicates whether to keep this
-   * image. This is for sttqe queing purposes, and allows to discard images
-   * within an acquired stack. This can be used for discarding images at the
-   * beginning or end of a stack.
-   * 
-   * @return keep plane flag variable
-   */
-  Variable<Boolean> getKeepPlaneVariable();
 
   /**
    * Returns the variable holding the number of bytes per pixel/voxel.

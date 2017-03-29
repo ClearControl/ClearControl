@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
@@ -154,11 +155,14 @@ public class InteractiveAcquisitionToolbar extends DockNode
     mGridPane.add(lTriggerOnChangeToggleButton, 0, 9);
 
     Label lInteractiveAcquisitionStatusLabel = new Label();
+    lInteractiveAcquisitionStatusLabel.setFont(Font.font("Monospaced",
+                                                         lInteractiveAcquisitionStatusLabel.getFont()
+                                                                                           .getSize()));
     lInteractiveAcquisitionStatusLabel.setAlignment(Pos.CENTER);
-    lInteractiveAcquisitionStatusLabel.setMinWidth(300);
-    lInteractiveAcquisitionStatusLabel.setMaxWidth(Double.POSITIVE_INFINITY);
+    lInteractiveAcquisitionStatusLabel.setMinWidth(400);
+    lInteractiveAcquisitionStatusLabel.setMaxWidth(400);
     GridPane.setHgrow(lInteractiveAcquisitionStatusLabel,
-                      Priority.ALWAYS);
+                      Priority.SOMETIMES);
     GridPane.setColumnSpan(lInteractiveAcquisitionStatusLabel, 3);
     GridPane.setValignment(lInteractiveAcquisitionStatusLabel,
                            VPos.CENTER);
@@ -175,10 +179,10 @@ public class InteractiveAcquisitionToolbar extends DockNode
                                                     lAcquisitionCounter
                                                       * lNumberOfCameras;
                                String lStatus =
-                                              String.format("Number of stacks acquired: %d stacks = %d cam. x %d acqu.",
-                                                            lNumberofStacks,
-                                                            lNumberOfCameras,
-                                                            lAcquisitionCounter);
+                                              String.format("Acquired: %5s stacks = %s cam. x %5s acqu.",
+                                                            "" + lNumberofStacks,
+                                                            "" + lNumberOfCameras,
+                                                            "" + lAcquisitionCounter);
                                lInteractiveAcquisitionStatusLabel.setText(lStatus);
                              });
 

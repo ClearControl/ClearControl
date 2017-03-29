@@ -4,12 +4,9 @@ import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.HasVariableStateQueues;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
@@ -22,48 +19,12 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 public interface LightSheetInterface extends
                                      NameableInterface,
                                      OpenCloseDeviceInterface,
-                                     StateQueueDeviceInterface,
-                                     HasVariableStateQueues,
-                                     HasChangeListenerInterface<VirtualDevice>
+                                     RealTimeQueueDeviceInterface<LightSheetQueue>,
+                                     HasChangeListenerInterface<VirtualDevice>,
+                                     LightSheetParameterInterface
 {
 
-  // These variables should be synced with camera variables:
-
-  public Variable<Long> getImageHeightVariable();
-
-  public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable();
-
-  // public BoundedVariable<Double> getLineExposureInMicrosecondsVariable();
-
-  public BoundedVariable<Number> getOverScanVariable();
-
-  public BoundedVariable<Number> getReadoutTimeInMicrosecondsPerLineVariable();
-
-  // Below are variables that can be adjusted freely:
-
-  public BoundedVariable<Number> getXVariable();
-
-  public BoundedVariable<Number> getYVariable();
-
-  public BoundedVariable<Number> getZVariable();
-
-  public BoundedVariable<Number> getAlphaInDegreesVariable();
-
-  public BoundedVariable<Number> getBetaInDegreesVariable();
-
-  public BoundedVariable<Number> getWidthVariable();
-
-  public BoundedVariable<Number> getHeightVariable();
-
-  public BoundedVariable<Number> getPowerVariable();
-
-  public Variable<Boolean> getAdaptPowerToWidthHeightVariable();
-
-  public Variable<Boolean> getLaserOnOffArrayVariable(int pLaserIndex);
-
-  public Variable<Boolean> getSIPatternOnOffVariable(int pLaserIndex);
-
-  public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
+  // Below are function variables:
 
   public Variable<UnivariateAffineFunction> getXFunction();
 
@@ -96,7 +57,5 @@ public interface LightSheetInterface extends
   public void resetFunctions();
 
   public void resetBounds();
-
-  public void update();
 
 }

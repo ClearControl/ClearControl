@@ -2,7 +2,7 @@ package clearcontrol.devices.cameras;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import clearcontrol.core.device.QueueableVirtualDevice;
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -10,7 +10,7 @@ import clearcontrol.core.variable.Variable;
  *
  * @author royer
  */
-public abstract class CameraDeviceBase extends QueueableVirtualDevice
+public abstract class CameraDeviceBase extends VirtualDevice
                                        implements
                                        CameraDeviceInterface
 {
@@ -18,6 +18,8 @@ public abstract class CameraDeviceBase extends QueueableVirtualDevice
   protected Variable<Double> mExposureInMicrosecondsVariable,
       mPixelSizeinNanometersVariable,
       mLineReadOutTimeInMicrosecondsVariable;
+
+  protected Variable<Long> mCurrentIndexVariable;
 
   protected Variable<Boolean> mTriggerVariable;
 
@@ -37,6 +39,8 @@ public abstract class CameraDeviceBase extends QueueableVirtualDevice
   public CameraDeviceBase(final String pDeviceName)
   {
     super(pDeviceName);
+
+    mCurrentIndexVariable = new Variable<Long>("CurrentIndex", 2048L);
   }
 
   @Override
@@ -77,6 +81,12 @@ public abstract class CameraDeviceBase extends QueueableVirtualDevice
 
   @Override
   public abstract void reopen();
+
+  @Override
+  public Variable<Long> getCurrentIndexVariable()
+  {
+    return mCurrentIndexVariable;
+  }
 
   @Override
   public Variable<Integer> getChannelVariable()

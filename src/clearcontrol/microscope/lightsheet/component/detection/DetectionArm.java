@@ -15,18 +15,18 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
  *
  * @author royer
  */
-public class DetectionArm extends QueueableVirtualDevice implements
+public class DetectionArm extends
+                          QueueableVirtualDevice<DetectionArmQueue>
+                          implements
                           DetectionArmInterface,
                           LoggingInterface
 {
 
-  private final BoundedVariable<Number> mDetectionFocusZ =
-                                                         new BoundedVariable<Number>("FocusZ",
-                                                                                     0.0);
-
   private final Variable<UnivariateAffineFunction> mZFunction =
                                                               new Variable<>("DetectionZFunction",
                                                                              new UnivariateAffineFunction());
+
+  DetectionArmQueue mTemplateQueue;
 
   /**
    * Instanciates a lightsheet microscope detection arm
@@ -39,17 +39,17 @@ public class DetectionArm extends QueueableVirtualDevice implements
   {
     super(pName);
 
+    mTemplateQueue = new DetectionArmQueue(this);
+
     resetFunctions();
     resetBounds();
 
     @SuppressWarnings("rawtypes")
     final VariableSetListener lVariableListener = (o, n) -> {
-      // System.out.println(getName() + ": new Z value: " + n);
       notifyListeners(this);
     };
 
-    getVariableStateQueues().registerVariable(mDetectionFocusZ);
-    mDetectionFocusZ.addSetListener(lVariableListener);
+    mTemplateQueue.getZVariable().addSetListener(lVariableListener);
 
     final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener =
                                                                                   (o,
@@ -66,28 +66,27 @@ public class DetectionArm extends QueueableVirtualDevice implements
   }
 
   @Override
-  public void resetFunctions()
-  {
-
-  }
-
-  @Override
   public void resetBounds()
   {
-
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.detection."
                                               + getName()
                                               + ".z.bounds",
-                                              mDetectionFocusZ,
-                                              mZFunction.get());
+                                              mTemplateQueue.getZVariable(),
+                                              getZFunction().get());
+  }
+
+  @Override
+  public void resetFunctions()
+  {
+    // TODO Auto-generated method stub
 
   }
 
   @Override
   public BoundedVariable<Number> getZVariable()
   {
-    return mDetectionFocusZ;
+    return mTemplateQueue.getZVariable();
   }
 
   @Override
@@ -97,8 +96,16 @@ public class DetectionArm extends QueueableVirtualDevice implements
   }
 
   @Override
-  public Future<Boolean> playQueue()
+  public DetectionArmQueue requestQueue()
   {
+    return new DetectionArmQueue(mTemplateQueue);
+  }
+
+  @Override
+  public Future<Boolean> playQueue(DetectionArmQueue pDetectionArmQueue)
+  {
+    // do nothing
     return null;
   }
+
 }

@@ -2,24 +2,22 @@ package clearcontrol.core.device;
 
 import java.util.concurrent.Future;
 
-import clearcontrol.core.device.queue.HasVariableStateQueues;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
-import clearcontrol.core.variable.queue.VariableStateQueues;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueInterface;
 
 /**
  * Queuable virtual device base class. Devices deriving from this base class
  * have the built-in machinery to handle state queues for variables
  *
  * @author royer
+ * @param <Q>
+ *          queue type
  */
-public abstract class QueueableVirtualDevice extends VirtualDevice
-                                             implements
-                                             StateQueueDeviceInterface,
-                                             HasVariableStateQueues
+public abstract class QueueableVirtualDevice<Q extends RealTimeQueueInterface>
+                                            extends VirtualDevice
+                                            implements
+                                            RealTimeQueueDeviceInterface<Q>
 {
-
-  protected VariableStateQueues mVariableStateQueues =
-                                                     new VariableStateQueues();
 
   /**
    * Instanciates a queueable virtual device given a name.
@@ -45,35 +43,8 @@ public abstract class QueueableVirtualDevice extends VirtualDevice
   }
 
   @Override
-  public VariableStateQueues getVariableStateQueues()
-  {
-    return mVariableStateQueues;
-  }
+  public abstract Q requestQueue();
 
   @Override
-  public void clearQueue()
-  {
-    mVariableStateQueues.clearQueue();
-  }
-
-  @Override
-  public void addCurrentStateToQueue()
-  {
-    mVariableStateQueues.addCurrentStateToQueue();
-  }
-
-  @Override
-  public void finalizeQueue()
-  {
-    mVariableStateQueues.finalizeQueue();
-  }
-
-  @Override
-  public int getQueueLength()
-  {
-    return mVariableStateQueues.getQueueLength();
-  }
-
-  @Override
-  public abstract Future<Boolean> playQueue();
+  public abstract Future<Boolean> playQueue(Q pQueue);
 }

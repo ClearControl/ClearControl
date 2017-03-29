@@ -219,8 +219,8 @@ public class MicroscopeGUI extends VirtualDevice implements
       if (m2DDisplay)
       {
         final StackCameraDeviceInterface lStackCameraDevice =
-                                                            mMicroscope.getDevice(StackCameraDeviceInterface.class,
-                                                                                  i);
+                                                            (StackCameraDeviceInterface) mMicroscope.getDevice(StackCameraDeviceInterface.class,
+                                                                                                               i);
 
         final Stack2DDisplay lStack2DDisplay =
                                              new Stack2DDisplay("Video 2D - "

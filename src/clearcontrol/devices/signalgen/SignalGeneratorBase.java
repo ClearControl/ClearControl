@@ -2,36 +2,42 @@ package clearcontrol.devices.signalgen;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
-import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public abstract class SignalGeneratorBase extends VirtualDevice
                                           implements
                                           SignalGeneratorInterface,
                                           AsynchronousExecutorServiceAccess
 {
 
-  protected final ScoreInterface mStagingScore;
-  protected final ScoreInterface mQueuedScore;
-
-  protected volatile int mEnqueuedStateCounter = 0;
-
   protected final Variable<Boolean> mTriggerVariable =
                                                      new Variable<Boolean>("Trigger",
                                                                            false);
+
+  private final Variable<ScoreInterface> mPlayedScoreVariable =
+                                                              new Variable<>("PlayedScore",
+                                                                             null);
+
   protected volatile boolean mIsPlaying;
 
+  /**
+   * Instanciates a signal generator.
+   * 
+   * @param pDeviceName
+   *          signal generator name
+   */
   public SignalGeneratorBase(String pDeviceName)
   {
     super(pDeviceName);
-    mQueuedScore = new Score(pDeviceName + ".queuedscore");
-    mStagingScore = new Score(pDeviceName + ".stagingscore");
   }
 
   @Override
@@ -41,45 +47,15 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   }
 
   @Override
-  public ScoreInterface getStagingScore()
+  public SignalGeneratorRealTimeQueue requestQueue()
   {
-    return mStagingScore;
+    SignalGeneratorRealTimeQueue lQueue =
+                                        new SignalGeneratorRealTimeQueue();
+    return lQueue;
   }
 
   @Override
-  public ScoreInterface getQueuedScore()
-  {
-    return mQueuedScore;
-  }
-
-  @Override
-  public void clearQueue()
-  {
-    mEnqueuedStateCounter = 0;
-    mQueuedScore.clear();
-  }
-
-  @Override
-  public void addCurrentStateToQueue()
-  {
-    mQueuedScore.addScoreCopy(mStagingScore);
-    mEnqueuedStateCounter++;
-  }
-
-  @Override
-  public void finalizeQueue()
-  {
-
-  }
-
-  @Override
-  public int getQueueLength()
-  {
-    return mEnqueuedStateCounter;
-  }
-
-  @Override
-  public Future<Boolean> playQueue()
+  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
   {
     final Callable<Boolean> lCall = () -> {
       final Thread lCurrentThread = Thread.currentThread();
@@ -87,7 +63,8 @@ public abstract class SignalGeneratorBase extends VirtualDevice
       lCurrentThread.setPriority(Thread.MAX_PRIORITY);
       mIsPlaying = true;
       // System.out.println("Symphony: playQueue() begin");
-      final boolean lPlayed = playScore(getQueuedScore());
+      final boolean lPlayed =
+                            playScore(pSignalGeneratorRealTimeQueue.getQueuedScore());
       // System.out.println("Symphony: playQueue() end");
       mIsPlaying = false;
       lCurrentThread.setPriority(lCurrentThreadPriority);
@@ -97,22 +74,22 @@ public abstract class SignalGeneratorBase extends VirtualDevice
     return lFuture;
   }
 
-  @Override
-  public long estimatePlayTime(TimeUnit pTimeUnit)
+  public boolean playScore(ScoreInterface pScore)
   {
-    long lDuration = 0;
-    for (final MovementInterface lMovement : mQueuedScore.getMovements())
-    {
-      lDuration += lMovement.getDuration(pTimeUnit);
-    }
-    lDuration *= mQueuedScore.getNumberOfMovements();
-    return lDuration;
+    mPlayedScoreVariable.set(pScore);
+    return true;
   }
 
   @Override
   public boolean isPlaying()
   {
     return mIsPlaying;
+  }
+
+  @Override
+  public Variable<ScoreInterface> getPlayedScoreVariable()
+  {
+    return mPlayedScoreVariable;
   }
 
 }

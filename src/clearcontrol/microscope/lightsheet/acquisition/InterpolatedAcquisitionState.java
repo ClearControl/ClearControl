@@ -11,6 +11,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
@@ -69,6 +70,8 @@ public class InterpolatedAcquisitionState extends
                                                                            1000);
 
   private final InterpolationTables mInterpolationTables;
+
+  private LightSheetMicroscopeQueue mQueue;
 
   /**
    * Instanciates an interpolated acquisition state
@@ -243,17 +246,18 @@ public class InterpolatedAcquisitionState extends
   @Override
   public void applyAcquisitionState(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
   {
-    // addStackMargin();
-    pLightSheetMicroscopeInterface.clearQueue();
+    if (mQueue == null)
+      mQueue = pLightSheetMicroscopeInterface.requestQueue();
+
+    mQueue.clearQueue();
     applyStagePosition(pLightSheetMicroscopeInterface);
-    pLightSheetMicroscopeInterface.clearQueue();
+    mQueue.clearQueue();
     for (int lIndex = 0; lIndex < getStackDepth(); lIndex++)
     {
-      applyAcquisitionStateAtStackPlane(pLightSheetMicroscopeInterface,
-                                        lIndex);
-      pLightSheetMicroscopeInterface.addCurrentStateToQueue();
+      applyAcquisitionStateAtStackPlane(mQueue, lIndex);
+      mQueue.addCurrentStateToQueue();
     }
-    pLightSheetMicroscopeInterface.finalizeQueue();
+    mQueue.finalizeQueue();
     // addStackMargin();
   }
 
@@ -280,95 +284,64 @@ public class InterpolatedAcquisitionState extends
   /**
    * Applies acquisition state at a given z position
    * 
-   * @param pLightSheetMicroscopeInterface
-   *          lightsheet microscope
+   * @param pQueue
+   *          lightsheet microscope queue
    * @param pZ
    *          z position
    */
-  public void applyAcquisitionStateAtZ(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+  public void applyAcquisitionStateAtZ(LightSheetMicroscopeQueue pQueue,
                                        double pZ)
   {
     int lPlaneIndexForZRamp = getPlaneIndexForZRamp(pZ);
 
-    applyAcquisitionStateAtStackPlane(pLightSheetMicroscopeInterface,
-                                      lPlaneIndexForZRamp);
+    applyAcquisitionStateAtStackPlane(pQueue, lPlaneIndexForZRamp);
   }
 
   /**
    * Applies acquisition state at a given stack plane
    * 
-   * @param pLightSheetMicroscopeInterface
+   * @param pQueue
    *          lightsheet microscope
    * @param pPlaneIndex
    *          stack plane index
    */
-  public void applyAcquisitionStateAtStackPlane(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+  public void applyAcquisitionStateAtStackPlane(LightSheetMicroscopeQueue pQueue,
                                                 int pPlaneIndex)
   {
     final int lNumberOfDetectionPathDevices =
-                                            pLightSheetMicroscopeInterface.getDeviceLists()
-                                                                          .getNumberOfDevices(DetectionArmInterface.class);
+                                            pQueue.getMicroscope()
+                                                  .getNumberOfDevices(DetectionArmInterface.class);
 
     for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
     {
-      pLightSheetMicroscopeInterface.setDZ(d,
-                                           get(LightSheetDOF.DZ,
-                                               pPlaneIndex,
-                                               d));
+      pQueue.setDZ(d, get(LightSheetDOF.DZ, pPlaneIndex, d));
     }
 
     final int lNumberOfLightsheetDevices =
-                                         pLightSheetMicroscopeInterface.getDeviceLists()
-                                                                       .getNumberOfDevices(LightSheetInterface.class);
+                                         pQueue.getMicroscope()
+                                               .getNumberOfDevices(LightSheetInterface.class);
 
     for (int l = 0; l < lNumberOfLightsheetDevices; l++)
     {
 
-      pLightSheetMicroscopeInterface.setIX(l,
-                                           get(LightSheetDOF.IX,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIY(l,
-                                           get(LightSheetDOF.IY,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIZ(l,
-                                           get(LightSheetDOF.IZ,
-                                               pPlaneIndex,
-                                               l));
+      pQueue.setIX(l, get(LightSheetDOF.IX, pPlaneIndex, l));
+      pQueue.setIY(l, get(LightSheetDOF.IY, pPlaneIndex, l));
+      pQueue.setIZ(l, get(LightSheetDOF.IZ, pPlaneIndex, l));
 
-      pLightSheetMicroscopeInterface.setIA(l,
-                                           get(LightSheetDOF.IA,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIB(l,
-                                           get(LightSheetDOF.IB,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIW(l,
-                                           get(LightSheetDOF.IW,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIH(l,
-                                           get(LightSheetDOF.IH,
-                                               pPlaneIndex,
-                                               l));
-      pLightSheetMicroscopeInterface.setIP(l,
-                                           get(LightSheetDOF.IP,
-                                               pPlaneIndex,
-                                               l));
+      pQueue.setIA(l, get(LightSheetDOF.IA, pPlaneIndex, l));
+      pQueue.setIB(l, get(LightSheetDOF.IB, pPlaneIndex, l));
+      pQueue.setIW(l, get(LightSheetDOF.IW, pPlaneIndex, l));
+      pQueue.setIH(l, get(LightSheetDOF.IH, pPlaneIndex, l));
+      pQueue.setIP(l, get(LightSheetDOF.IP, pPlaneIndex, l));
     }
 
     final int lNumberOfLaserDevices =
-                                    pLightSheetMicroscopeInterface.getDeviceLists()
-                                                                  .getNumberOfDevices(LaserDeviceInterface.class);
+                                    pQueue.getMicroscope()
+                                          .getNumberOfDevices(LaserDeviceInterface.class);
 
     for (int i = 0; i < lNumberOfLaserDevices; i++)
     {
-      pLightSheetMicroscopeInterface.setIP(i,
-                                           get(LightSheetDOF.IP,
-                                               pPlaneIndex,
-                                               i));
+      pQueue.setIP(i, get(LightSheetDOF.IP, pPlaneIndex, i));
     }
 
   }
@@ -376,57 +349,53 @@ public class InterpolatedAcquisitionState extends
   /**
    * Applies state from a given control plane
    * 
-   * @param pLightSheetMicroscopeInterface
-   *          lightsheet microscope
+   * @param pQueue
+   *          lightsheet microscope queue
    * @param pControlPlaneIndex
    *          control plane index
    */
-  public void applyStateAtControlPlane(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+  public void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
                                        int pControlPlaneIndex)
   {
     double lControlPlaneZ = getControlPlaneZ(pControlPlaneIndex);
     int lStackPlaneIndex = getPlaneIndexForZRamp(lControlPlaneZ);
-    applyAcquisitionStateAtStackPlane(pLightSheetMicroscopeInterface,
-                                      lStackPlaneIndex);
+    applyAcquisitionStateAtStackPlane(pQueue, lStackPlaneIndex);
   }
 
   /**
    * Adds stack margins to the current queue.
    * 
-   * @param pLightSheetMicroscopeInterface
-   *          lightsheet microscope
+   * @param pQueue
+   *          lightsheet microscope queue
    * @param pNumberOfMarginPlanesToAdd
    *          number of margins to add
    */
-  public void addStackMargin(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+  public void addStackMargin(LightSheetMicroscopeQueue pQueue,
                              int pNumberOfMarginPlanesToAdd)
   {
-    addStackMargin(pLightSheetMicroscopeInterface,
-                   0,
-                   pNumberOfMarginPlanesToAdd);
+    addStackMargin(pQueue, 0, pNumberOfMarginPlanesToAdd);
   }
 
   /**
    * Adds stack margins to the current queue using a given plane index as
    * template
    * 
-   * @param pLightSheetMicroscopeInterface
-   *          lightsheet microscope
+   * @param pQueue
+   *          lightsheet microscope queue
    * @param pStackPlaneIndex
    *          stack plane index to use as template
    * @param pNumberOfMarginPlanesToAdd
    *          number of margin planes to add
    */
-  public void addStackMargin(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface,
+  public void addStackMargin(LightSheetMicroscopeQueue pQueue,
                              int pStackPlaneIndex,
                              int pNumberOfMarginPlanesToAdd)
   {
-    applyAcquisitionStateAtStackPlane(pLightSheetMicroscopeInterface,
-                                      pStackPlaneIndex);
-    pLightSheetMicroscopeInterface.setC(false);
-    pLightSheetMicroscopeInterface.setILO(false);
+    applyAcquisitionStateAtStackPlane(pQueue, pStackPlaneIndex);
+    pQueue.setC(false);
+    pQueue.setILO(false);
     for (int i = 0; i < pNumberOfMarginPlanesToAdd; i++)
-      pLightSheetMicroscopeInterface.addCurrentStateToQueue();
+      mQueue.addCurrentStateToQueue();
   }
 
   /**

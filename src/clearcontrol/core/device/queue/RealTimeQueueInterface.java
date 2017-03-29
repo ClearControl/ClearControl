@@ -1,11 +1,11 @@
 package clearcontrol.core.device.queue;
 
 /**
- * Interface for al classes that support some form of state queue.
+ *
  *
  * @author royer
  */
-public interface StateQueueInterface
+public interface RealTimeQueueInterface
 {
   /**
    * Clears the queue

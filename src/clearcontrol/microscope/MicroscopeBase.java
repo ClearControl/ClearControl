@@ -16,14 +16,14 @@ import clearcontrol.core.device.active.ActivableDeviceInterface;
 import clearcontrol.core.device.change.ChangeListener;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.StateQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.RealTimeQueueInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.gc.GarbageCollector;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
-import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
@@ -36,27 +36,36 @@ import coremem.recycling.RecyclerInterface;
  * Microscope base class providing common fields and methods for all microscopes
  *
  * @author royer
+ * @param <Q>
+ *          queue type
  */
-public abstract class MicroscopeBase extends VirtualDevice implements
-                                     MicroscopeInterface,
-                                     StartStopDeviceInterface,
-                                     AsynchronousSchedulerServiceAccess,
-                                     LoggingInterface
+public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
+                                    extends VirtualDevice implements
+                                    MicroscopeInterface<Q>,
+                                    StartStopDeviceInterface,
+                                    AsynchronousSchedulerServiceAccess,
+                                    LoggingInterface
 {
 
   protected final StackRecyclerManager mStackRecyclerManager;
   protected final MicroscopeDeviceLists mDeviceLists;
   protected StageDeviceInterface mMainXYZRStage;
-  protected volatile int mNumberOfEnqueuedStates;
+
   protected volatile long mAverageTimeInNS;
   private volatile boolean mSimulation;
 
-  final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList =
-                                                                            new ArrayList<>();
+  private final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList =
+                                                                                    new ArrayList<>();
+
+  // Played queuevariable:
+  private final Variable<Q> mPlayedQueueVariable =
+                                                 new Variable<Q>("LastPlayedQueue",
+                                                                 null);
 
   // Lock:
   protected Object mAcquisitionLock = new Object();
 
+  // Stack Pipelines:
   private final HashMap<Integer, StackProcessingPipeline> mStackPipelines =
                                                                           new HashMap<>();
 
@@ -326,69 +335,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
     }
   }
 
-  @Override
-  public void clearQueue()
-  {
-    synchronized (mAcquisitionLock)
-    {
-      for (final Object lDevice : mDeviceLists.getAllDeviceList())
-      {
-        if (lDevice instanceof StateQueueDeviceInterface)
-          if (isActiveDevice(lDevice))
-          {
-            final StateQueueDeviceInterface lStateQueueDeviceInterface =
-                                                                       (StateQueueDeviceInterface) lDevice;
-            lStateQueueDeviceInterface.clearQueue();
-          }
-      }
-      mNumberOfEnqueuedStates = 0;
-    }
-  }
-
-  @Override
-  public void addCurrentStateToQueue()
-  {
-    synchronized (mAcquisitionLock)
-    {
-      for (final Object lDevice : mDeviceLists.getAllDeviceList())
-      {
-        if (lDevice instanceof StateQueueDeviceInterface)
-          if (isActiveDevice(lDevice))
-          {
-            final StateQueueDeviceInterface lStateQueueDeviceInterface =
-                                                                       (StateQueueDeviceInterface) lDevice;
-            lStateQueueDeviceInterface.addCurrentStateToQueue();
-          }
-
-      }
-      mNumberOfEnqueuedStates++;
-    }
-  }
-
-  @Override
-  public void finalizeQueue()
-  {
-    synchronized (mAcquisitionLock)
-    {
-      // TODO: this should be put in a subclass specific to the way that we
-      // trigger cameras...
-      mDeviceLists.getDevice(SignalGeneratorInterface.class, 0)
-                  .addCurrentStateToQueue();
-
-      for (final Object lDevice : mDeviceLists.getAllDeviceList())
-      {
-        if (lDevice instanceof StateQueueDeviceInterface)
-          if (isActiveDevice(lDevice))
-          {
-            final StateQueueDeviceInterface lStateQueueDeviceInterface =
-                                                                       (StateQueueDeviceInterface) lDevice;
-            lStateQueueDeviceInterface.finalizeQueue();
-          }
-      }
-    }
-  }
-
-  private boolean isActiveDevice(final Object lDevice)
+  boolean isActiveDevice(final Object lDevice)
   {
     boolean lIsActive = true;
     if (lDevice instanceof ActivableDeviceInterface)
@@ -404,6 +351,12 @@ public abstract class MicroscopeBase extends VirtualDevice implements
   public long lastAcquiredStacksTimeStampInNS()
   {
     return mAverageTimeInNS;
+  }
+
+  @Override
+  public Variable<Q> getPlayedQueueVariable()
+  {
+    return mPlayedQueueVariable;
   }
 
   @Override
@@ -479,33 +432,40 @@ public abstract class MicroscopeBase extends VirtualDevice implements
   }
 
   @Override
-  public int getQueueLength()
-  {
-    return mNumberOfEnqueuedStates;
-  }
+  public abstract Q requestQueue();
 
   @Override
-  public FutureBooleanList playQueue()
+  public FutureBooleanList playQueue(Q pQueue)
   {
     synchronized (mAcquisitionLock)
     {
       GarbageCollector.trigger();
+
+      getPlayedQueueVariable().set(pQueue);
+
       final FutureBooleanList lFutureBooleanList =
                                                  new FutureBooleanList();
 
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
 
-        if (lDevice instanceof StateQueueDeviceInterface)
+        if (lDevice instanceof RealTimeQueueDeviceInterface)
         {
           /*info("playQueue() on device: %s \n",
           									lDevice);/**/
-          final StateQueueDeviceInterface lStateQueueDeviceInterface =
-                                                                     (StateQueueDeviceInterface) lDevice;
+          @SuppressWarnings("unchecked")
+          final RealTimeQueueDeviceInterface<RealTimeQueueInterface> lStateQueueDeviceInterface =
+                                                                                                (RealTimeQueueDeviceInterface<RealTimeQueueInterface>) lDevice;
+
+          RealTimeQueueInterface lDeviceQueue =
+                                              (RealTimeQueueInterface) pQueue.getDeviceQueue(lStateQueueDeviceInterface);
+
           final Future<Boolean> lPlayQueueFuture =
-                                                 lStateQueueDeviceInterface.playQueue();
-          lFutureBooleanList.addFuture(lDevice.toString(),
-                                       lPlayQueueFuture);
+                                                 lStateQueueDeviceInterface.playQueue(lDeviceQueue);
+
+          if (lPlayQueueFuture != null)
+            lFutureBooleanList.addFuture(lDevice.toString(),
+                                         lPlayQueueFuture);
         }
       }
 
@@ -514,20 +474,22 @@ public abstract class MicroscopeBase extends VirtualDevice implements
   }
 
   @Override
-  public Boolean playQueueAndWait(long pTimeOut,
+  public Boolean playQueueAndWait(Q pQueue,
+                                  long pTimeOut,
                                   TimeUnit pTimeUnit) throws InterruptedException,
                                                       ExecutionException,
                                                       TimeoutException
   {
     synchronized (mAcquisitionLock)
     {
-      final FutureBooleanList lPlayQueue = playQueue();
+      final FutureBooleanList lPlayQueue = playQueue(pQueue);
       return lPlayQueue.get(pTimeOut, pTimeUnit);
     }
   }
 
   @Override
-  public Boolean playQueueAndWaitForStacks(long pTimeOut,
+  public Boolean playQueueAndWaitForStacks(Q pQueue,
+                                           long pTimeOut,
                                            TimeUnit pTimeUnit) throws InterruptedException,
                                                                ExecutionException,
                                                                TimeoutException
@@ -570,7 +532,7 @@ public abstract class MicroscopeBase extends VirtualDevice implements
       }
 
       // info("Playing queue of length: " + getQueueLength());
-      final FutureBooleanList lPlayQueue = playQueue();
+      final FutureBooleanList lPlayQueue = playQueue(pQueue);
 
       Boolean lBoolean = lPlayQueue.get(pTimeOut, pTimeUnit);
 
@@ -679,4 +641,5 @@ public abstract class MicroscopeBase extends VirtualDevice implements
       return lTargetPositionVariable.get();
     return 0;
   }
+
 }

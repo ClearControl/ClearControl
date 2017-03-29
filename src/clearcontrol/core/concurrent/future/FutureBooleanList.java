@@ -8,6 +8,11 @@ import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.log.LoggingInterface;
 
+/**
+ * Set of Futures that return booleans.
+ *
+ * @author royer
+ */
 public class FutureBooleanList implements
                                Future<Boolean>,
                                LoggingInterface
@@ -16,11 +21,22 @@ public class FutureBooleanList implements
   LinkedHashMap<Future<Boolean>, String> mFutureMap =
                                                     new LinkedHashMap<Future<Boolean>, String>();
 
+  /**
+   * Instanciates a future boolean list
+   */
   public FutureBooleanList()
   {
     super();
   }
 
+  /**
+   * Adds a future with a given string id
+   * 
+   * @param pString
+   *          string id
+   * @param pFuture
+   *          future
+   */
   public void addFuture(String pString, Future<Boolean> pFuture)
   {
     mFutureMap.put(pFuture, pString);
