@@ -59,12 +59,16 @@ public class StageDeviceSimulator extends StageDeviceBase implements
   public void go()
   {
     info("go");
-    schedule(() -> {
+//    schedule(() -> {
       setDirectionVector();
 
-      boolean flag = true;
+      boolean flag = false;
+      boolean[] flags = new boolean[getNumberOfDOFs()];
+      for (int i = 0; i < getNumberOfDOFs(); i++) {
+          flags[i] = false;
+      }
       info("inside go");
-      while (flag)
+      while (!flag)
       {
         for (int i = 0; i < getNumberOfDOFs(); i++)
         {
@@ -83,7 +87,7 @@ public class StageDeviceSimulator extends StageDeviceBase implements
             else if (!mReadyVariables.get(i).get())
             {
               mReadyVariables.get(i).set(true);
-              flag = false;
+              flag = true;
             }
             try
             {
@@ -96,9 +100,13 @@ public class StageDeviceSimulator extends StageDeviceBase implements
 
           }
         }
+//        flag = true;
+//        for (int j = 0; j < getNumberOfDOFs(); j++) {
+//            flag = flag & flags[j];
+//        }
       }
 
-    }, 1, TimeUnit.MILLISECONDS);
+//    }, 1, TimeUnit.MILLISECONDS);
   }
 
   private void setDirectionVector()
