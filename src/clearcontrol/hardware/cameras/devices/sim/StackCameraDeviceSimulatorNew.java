@@ -52,6 +52,11 @@ public class StackCameraDeviceSimulatorNew extends StackCameraDeviceBase impleme
         this(pDeviceName, null, pTriggerVariable);
     }
 
+    @Override
+    public void setSimLogging(boolean pSimulationLoggingOnFlag) {
+        getSimLoggingVariable().setAsync(true);
+    }
+
     /**
      * Crates a StackCameraDeviceSimulator of a given name. Stacks from the given
      * StackSourceInterface are sent to the output variable when a positive edge
@@ -61,6 +66,8 @@ public class StackCameraDeviceSimulatorNew extends StackCameraDeviceBase impleme
      * @param pStackProvider
      * @param pTriggerVariable
      */
+
+
     public StackCameraDeviceSimulatorNew(String pDeviceName,
                                       StackProvider pStackProvider,
                                       Variable<Boolean> pTriggerVariable) {

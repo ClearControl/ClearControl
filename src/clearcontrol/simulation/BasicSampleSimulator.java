@@ -28,6 +28,8 @@ public class BasicSampleSimulator implements SampleSimulatorInterface, LoggingIn
     private long[] mCurrentPosition = {0, 0, 0};
     private long[] mCurrentDimensions = {10, 10, 10};
     private long mCurrentTimeStep = 0;
+    private double mCurrentLaserPower = 0.0;
+    private double mCurrentExposureTime = 0.0;
 
     private long mNumberOfTimeSteps;
     private long[] mDimensions = {0, 0, 0};
@@ -102,6 +104,16 @@ public class BasicSampleSimulator implements SampleSimulatorInterface, LoggingIn
         return getSubstack(mCurrentPosition, mCurrentDimensions, mCurrentTimeStep);
     }
 
+    public void setCurrentLaserPower(double pCurrentLaserPower) {
+//        info("Current laser power: " + pCurrentLaserPower + " mW.");
+        this.mCurrentLaserPower = pCurrentLaserPower;
+    }
+
+    public void setCurrentExposureTime(double pCurrentExposureTime) {
+//        info("Current exposure time: " + pCurrentExposureTime + " ms.");
+        this.mCurrentExposureTime = pCurrentExposureTime;
+    }
+
     private StackInterface getSubstack(long[] pPosition, long[] pDimensions, long pTimeStep) {
         if (pTimeStep > mNumberOfTimeSteps) {
             throw new ArrayIndexOutOfBoundsException("The simulated timelapse is " + mNumberOfTimeSteps + " " +
@@ -128,7 +140,7 @@ public class BasicSampleSimulator implements SampleSimulatorInterface, LoggingIn
         }
 
         OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> imgOut = copy(mTimeLapse.get(0), pPosition,
-                pDimensions);
+                pDimensions, (mCurrentLaserPower*mCurrentExposureTime/(5000)), 300);
 
 
         OffHeapPlanarStack ops = new OffHeapPlanarStack(0, 0, imgOut);

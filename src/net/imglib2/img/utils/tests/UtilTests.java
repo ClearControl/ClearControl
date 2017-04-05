@@ -61,7 +61,7 @@ public class UtilTests
     UnsignedShortType ust1 = new UnsignedShortType(img1);
     img1.setLinkedType(ust1);
 
-    img1 = copy(img, loc, dimstocopy);
+    img1 = copy(img, loc, dimstocopy, 1, 1);
 
     PlanarRandomAccess<UnsignedShortType> prao = img1.randomAccess();
     System.out.println("new img");

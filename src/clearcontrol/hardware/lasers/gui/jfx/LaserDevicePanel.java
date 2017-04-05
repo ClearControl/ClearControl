@@ -67,6 +67,16 @@ public class LaserDevicePanel extends HBox
                                                  .set(n.doubleValue());
                              });
                          });
+    mLaserDeviceInterface.getTargetPowerInMilliWattVariable()
+              .addSetListener((o, n) -> {
+                  if (mTargetPowerGauge.valueProperty()
+                          .getValue() != n)
+                      Platform.runLater(() -> {
+                          mTargetPowerGauge.valueProperty()
+                                  .set(n.doubleValue());
+//                          mTargetPowerMarker.valueProperty().set(n.doubleValue());
+                      });
+              });
     // Laser Switch update (data -> GUI)
     mLaserDeviceInterface.getLaserOnVariable()
                          .addSetListener((o, n) -> {
