@@ -78,7 +78,7 @@ public class OrcaFlash4CameraDemo
 
     lOrcaFlash4StackCamera.getStackDepthVariable().set(1L);
     lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
-                          .set(100.0);
+                          .addAll(100.0);
     lOrcaFlash4StackCamera.ensureEnough2DFramesAreAvailable(100);
 
     Thread.sleep(1000);
@@ -145,7 +145,7 @@ public class OrcaFlash4CameraDemo
 
     lOrcaFlash4StackCamera.getStackModeVariable().set(true);
     lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
-                          .set(500.0);
+                          .addAll(500.0);
     lOrcaFlash4StackCamera.getStackWidthVariable().set(1024L);
     lOrcaFlash4StackCamera.getStackHeightVariable().set(1024L);
     /*lOrcaFlash4StackCamera.getStackDepthVariable().set(128L);
@@ -261,7 +261,7 @@ public class OrcaFlash4CameraDemo
     lOrcaFlash4StackCamera.setBinning(2);
 
     lOrcaFlash4StackCamera.getExposureInMicrosecondsVariable()
-                          .set(500.0);
+                          .addAll(500.0);
     lOrcaFlash4StackCamera.getStackWidthVariable().set((long) lWidth);
     lOrcaFlash4StackCamera.getStackHeightVariable()
                           .set((long) lHeight);

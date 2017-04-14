@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import clearcontrol.core.variable.bundle.VariableBundle;
-import clearcontrol.core.variable.persistence.VariableBundleAsFile;
+import clearcontrol.stack.sourcesink.server.StackServerBase;
 
+/**
+ * Base class providing common fields and methods for a local file stack sinks
+ * and sources
+ *
+ * @author royer
+ */
 public abstract class LocalFileStackBase extends StackServerBase
                                          implements AutoCloseable
 {
@@ -19,8 +24,19 @@ public abstract class LocalFileStackBase extends StackServerBase
 
   protected final File mIndexFile;
   protected final File mMetaDataFile;
-  protected final VariableBundleAsFile mMetaDataVariableBundleAsFile;
 
+  /**
+   * Instanciates a local file stack source or sink.
+   * 
+   * @param pRootFolder
+   *          root folder
+   * @param pName
+   *          dataset name
+   * @param pReadOnly
+   *          true -> read-only
+   * @throws IOException
+   *           thrown if there is an IO problem
+   */
   public LocalFileStackBase(final File pRootFolder,
                             final String pName,
                             final boolean pReadOnly) throws IOException
@@ -56,10 +72,6 @@ public abstract class LocalFileStackBase extends StackServerBase
       mMetaDataFile.getParentFile().mkdirs();
     }
 
-    mMetaDataVariableBundleAsFile = new VariableBundleAsFile(pName
-                                                             + "MetaData",
-                                                             mMetaDataFile,
-                                                             false);
   }
 
   protected FileChannel getFileChannelForBinaryFile(final boolean pReadOnly,
@@ -99,17 +111,21 @@ public abstract class LocalFileStackBase extends StackServerBase
     return lFileChannel;
   }
 
-  @Override
-  public VariableBundle getMetaDataVariableBundle()
-  {
-    return mMetaDataVariableBundleAsFile;
-  }
-
+  /**
+   * Returns data folder
+   * 
+   * @return data folder
+   */
   public File getDataFolder()
   {
     return mDataFolder;
   }
 
+  /**
+   * Returns folder
+   * 
+   * @return folder
+   */
   public File getFolder()
   {
     return mFolder;
@@ -118,7 +134,6 @@ public abstract class LocalFileStackBase extends StackServerBase
   @Override
   public void close() throws IOException
   {
-    mMetaDataVariableBundleAsFile.close();
   }
 
 }

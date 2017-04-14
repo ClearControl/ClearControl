@@ -13,11 +13,16 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
+import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
-import clearcontrol.microscope.state.AcquisitionStateInterface;
+import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
+import clearcontrol.microscope.stacks.metadata.MetaDataView;
+import clearcontrol.microscope.stacks.metadata.MetaDataViewFlags;
 import clearcontrol.microscope.state.AcquisitionStateManager;
+import clearcontrol.stack.metadata.StackMetaData;
 
 /**
  * Interactive acquisition for lightseet microscope
@@ -35,7 +40,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private static final int cRecyclerMaximumNumberOfLiveStacks = 60;
 
   private final LightSheetMicroscopeInterface mLightSheetMicroscope;
-  private final AcquisitionStateManager mAcquisitionStateManager;
+  private final AcquisitionStateManager<LightSheetAcquisitionStateInterface> mAcquisitionStateManager;
 
   private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode =
                                                                        InteractiveAcquisitionModes.None;
@@ -65,7 +70,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   @SuppressWarnings("unchecked")
   public InteractiveAcquisition(String pDeviceName,
                                 LightSheetMicroscope pLightSheetMicroscope,
-                                AcquisitionStateManager pAcquisitionStateManager)
+                                AcquisitionStateManager<LightSheetAcquisitionStateInterface> pAcquisitionStateManager)
   {
     super(pDeviceName, 1, TimeUnit.SECONDS);
     mLightSheetMicroscope = pLightSheetMicroscope;
@@ -138,7 +143,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     }
 
     mChangeListener = (o) -> {
-      // info("Received request to update queue.");
+      // info("Received request to update queue from:"+o.toString());
       mUpdate = true;
     };
   }
@@ -183,7 +188,16 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             InterpolatedAcquisitionState lCurrentState =
                                                        (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
 
+            lCurrentState.applyStagePosition();
+            mQueue = getLightSheetMicroscope().requestQueue();
+
+            mQueue.clearQueue();
+            mQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 1);
+
             lCurrentState.applyAcquisitionStateAtZ(mQueue, lCurrentZ);
+            mQueue.addCurrentStateToQueue();
+            mQueue.finalizeQueue();
+
           }
           else
           {
@@ -196,29 +210,26 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
             mQueue = getLightSheetMicroscope().requestQueue();
             mQueue.clearQueue();
-
+            mQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 1);
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
               mQueue.setC(c, mActiveCameraVariableArray[c].get());
-
               mQueue.setDZ(c, lCurrentZ);
             }
-            getLightSheetMicroscope().setExposure((long) (mExposureVariableInSeconds.get()
-                                                          * 1000000L),
-                                                  TimeUnit.MICROSECONDS);
+            getLightSheetMicroscope().setExposure(mExposureVariableInSeconds.get()
+                                                                            .doubleValue());
 
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
-              if (mQueue.getI(l))
-              {
-
+            {
+              boolean lIsOn = mQueue.getI(l);
+              if (lIsOn)
                 mQueue.setIZ(l, lCurrentZ);
-
-                break;
-              }
+            }
 
             mQueue.addCurrentStateToQueue();
 
             mQueue.finalizeQueue();
+
           }
         }
         else if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
@@ -229,11 +240,15 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                 cRecyclerMaximumNumberOfAvailableStacks,
                                                 cRecyclerMaximumNumberOfLiveStacks);
 
-          @SuppressWarnings("unchecked")
-          AcquisitionStateInterface<LightSheetMicroscopeInterface> lCurrentState =
-                                                                                 (AcquisitionStateInterface<LightSheetMicroscopeInterface>) mAcquisitionStateManager.getCurrentState();
+          LightSheetAcquisitionStateInterface lCurrentState =
+                                                            (LightSheetAcquisitionStateInterface) mAcquisitionStateManager.getCurrentState();
 
-          lCurrentState.applyAcquisitionState(mLightSheetMicroscope);
+          if (lCurrentState != null)
+          {
+            lCurrentState.applyStagePosition();
+            lCurrentState.updateQueue(mLightSheetMicroscope);
+            mQueue = lCurrentState.getQueue();
+          }
         }
 
         if (lCachedUpdate)
@@ -245,6 +260,23 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
         // this leads to a call to stop() which stops the loop
         warning("Queue empty stopping interactive acquisition loop");
         return false;
+      }
+
+      // Setting meta-data:
+      for (int c = 0; c < getNumberOfCameras(); c++)
+      {
+        StackMetaData lMetaData = mQueue.getCameraDeviceQueue(c)
+                                        .getMetaDataVariable()
+                                        .get();
+
+        lMetaData.addEntry(MetaDataView.Camera, c);
+
+        for (int l = 0; l < getNumberOfLightsSheets(); l++)
+          lMetaData.addEntry(MetaDataViewFlags.getLightSheet(l),
+                             mQueue.getI(l));
+
+        lMetaData.addEntry(MetaDataAcquisitionType.AcquisitionType,
+                           AcquisitionType.Interactive);
       }
 
       if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
@@ -287,6 +319,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   public void start2DAcquisition()
   {
     info("Starting 2D Acquisition...");
+    if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.Acquisition2D)
+      mUpdate = true;
     mCurrentAcquisitionMode =
                             InteractiveAcquisitionModes.Acquisition2D;
     mAcquisitionCounterVariable.set(0L);
@@ -299,6 +333,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   public void start3DAcquisition()
   {
     info("Starting 3D Acquisition...");
+    if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.Acquisition3D)
+      mUpdate = true;
     mCurrentAcquisitionMode =
                             InteractiveAcquisitionModes.Acquisition3D;
     mAcquisitionCounterVariable.set(0L);

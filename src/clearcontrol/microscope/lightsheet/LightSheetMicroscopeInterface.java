@@ -1,8 +1,8 @@
 package clearcontrol.microscope.lightsheet;
 
-import java.util.concurrent.TimeUnit;
-
 import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
 /**
  * Interface implemented by all lightsheet microscope implementations
@@ -13,6 +13,45 @@ public interface LightSheetMicroscopeInterface extends
                                                MicroscopeInterface<LightSheetMicroscopeQueue>
 
 {
+
+  /**
+   * Returns the number of detection arms
+   * 
+   * @return number of detection arms
+   */
+  public int getNumberOfDetectionArms();
+
+  /**
+   * Returns the number of lightsheets
+   * 
+   * @return number of lightsheets
+   */
+  public int getNumberOfLightSheets();
+
+  /**
+   * Returns the number of lightsheets
+   * 
+   * @return number of lightsheets
+   */
+  public int getNumberOfLaserLines();
+
+  /**
+   * Returns the detection arm given its index
+   * 
+   * @param pDeviceIndex
+   *          detection arm index
+   * @return detection arm for index
+   */
+  public DetectionArmInterface getDetectionArm(int pDeviceIndex);
+
+  /**
+   * Returns the lightsheet given its index
+   * 
+   * @param pDeviceIndex
+   *          lightsheet index
+   * @return lightsheet for index
+   */
+  public LightSheetInterface getLightSheet(int pDeviceIndex);
 
   /**
    * Sets with and height of camera image
@@ -43,26 +82,21 @@ public interface LightSheetMicroscopeInterface extends
   int getCameraHeight(int pCameraDeviceIndex);
 
   /**
-   * Sets image acquisition exposure in
+   * Sets image acquisition exposure in seconds
    * 
-   * @param pValue
-   *          time
-   * @param pTimeUnit
-   *          time unit
-   * 
+   * @param pExposureInSeconds
+   *          exposure in seconds
    */
-  public void setExposure(long pValue, TimeUnit pTimeUnit);
+  public void setExposure(double pExposureInSeconds);
 
   /**
-   * Returns the camera exposure time.
+   * Returns the camera exposure time in seconds.
    * 
    * @param pCameraDeviceIndex
    *          camera device index
-   * @param pTimeUnit
-   *          time unit in which to return the exposure
-   * @return camera exposure time in the given unit
+   * @return camera exposure time in seconds
    */
-  long getExposure(int pCameraDeviceIndex, TimeUnit pTimeUnit);
+  double getExposure(int pCameraDeviceIndex);
 
   /**
    * Switches on/off a given laser.

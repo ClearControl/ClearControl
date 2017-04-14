@@ -467,9 +467,10 @@ public class LightSheetStaves implements LoggingInterface
 
   public long getExposureMovementDuration(TimeUnit pTimeUnit)
   {
-    return pTimeUnit.convert(mLightSheetQueue.getEffectiveExposureInMicrosecondsVariable()
-                                             .get()
-                                             .longValue(),
+    return pTimeUnit.convert((long) (mLightSheetQueue.getEffectiveExposureInSecondsVariable()
+                                                     .get()
+                                                     .doubleValue()
+                                     * 1e6),
                              TimeUnit.MICROSECONDS);
   }
 

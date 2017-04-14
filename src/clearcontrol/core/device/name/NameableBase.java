@@ -1,5 +1,10 @@
 package clearcontrol.core.device.name;
 
+/**
+ * Base class for all classes that require a name
+ *
+ * @author royer
+ */
 public abstract class NameableBase implements NameableInterface
 {
   private String mName;
@@ -10,24 +15,24 @@ public abstract class NameableBase implements NameableInterface
     super();
   }
 
+  /**
+   * Instanciates an object given a name
+   * 
+   * @param pName
+   *          name
+   */
   public NameableBase(final String pName)
   {
     super();
     mName = pName;
   }
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.NameableInterface#getName()
-   */
   @Override
   public String getName()
   {
     return mName;
   }
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.NameableInterface#setName(java.lang.String)
-   */
   @Override
   public void setName(final String name)
   {
@@ -37,6 +42,6 @@ public abstract class NameableBase implements NameableInterface
   @Override
   public String toString()
   {
-    return String.format("NameableAbstract [mName=%s]", mName);
+    return mName;
   }
 }

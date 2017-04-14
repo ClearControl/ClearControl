@@ -34,10 +34,10 @@ public class DetectionArmQueue extends VariableQueueBase implements
   }
 
   /**
-   * Copy constuctor
+   * Instanciates a new queue by copying the given queue current state.
    * 
    * @param pTemplateQueue
-   *          template queue to copy
+   *          template queue to copy (without history)
    */
   public DetectionArmQueue(DetectionArmQueue pTemplateQueue)
   {

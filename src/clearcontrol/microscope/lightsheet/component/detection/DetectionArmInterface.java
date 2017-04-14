@@ -44,4 +44,11 @@ public interface DetectionArmInterface extends
    */
   public Variable<UnivariateAffineFunction> getZFunction();
 
+  /**
+   * Returns the variable holding the pixel size in micrometers.
+   * 
+   * @return variable holding the pixel size in micrometers.
+   */
+  public Variable<Double> getPixelSizeInMicrometerVariable();
+
 }

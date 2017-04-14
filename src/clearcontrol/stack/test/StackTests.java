@@ -22,6 +22,11 @@ import coremem.util.Size;
 
 import org.junit.Test;
 
+/**
+ * Stack tests
+ *
+ * @author royer
+ */
 public class StackTests
 {
 
@@ -39,6 +44,9 @@ public class StackTests
                                              * cSizeZ
                                              * cBytesPerPixel;
 
+  /**
+   * Test stack life-cycle
+   */
   @Test
   public void testLifeCycle()
   {
@@ -53,18 +61,27 @@ public class StackTests
                                                                    cSizeY,
                                                                    cSizeZ);
 
-    assertEquals(1, lStack.getVoxelSizeInRealUnits(0), 0);
+    assertNotNull(lStack);
 
-    lStack.setVoxelSizeInRealUnits(1, 0.5);
-    lStack.setVoxelSizeInRealUnits(2, 1);
-    lStack.setVoxelSizeInRealUnits(3, 3);
+    assertNotNull(lStack.getMetaData());
 
-    assertEquals(0.5, lStack.getVoxelSizeInRealUnits(1), 0);
-    assertEquals(1, lStack.getVoxelSizeInRealUnits(2), 0);
-    assertEquals(3, lStack.getVoxelSizeInRealUnits(3), 0);
+    assertEquals(null, lStack.getMetaData().getVoxelDimX());
 
-    assertEquals(0, lStack.getIndex());
-    assertEquals(0, lStack.getTimeStampInNanoseconds());
+    lStack.getMetaData().setVoxelDimX(0.5);
+    lStack.getMetaData().setVoxelDimY(1);
+    lStack.getMetaData().setVoxelDimZ(3);
+
+    assertEquals(0.5, lStack.getMetaData().getVoxelDimX(), 0);
+    assertEquals(1, lStack.getMetaData().getVoxelDimY(), 0);
+    assertEquals(3, lStack.getMetaData().getVoxelDimZ(), 0);
+
+    lStack.getMetaData().setIndex(17);
+    lStack.getMetaData().setTimeStampInNanoseconds(42);
+
+    assertEquals(17, (long) lStack.getMetaData().getIndex());
+    assertEquals(42,
+                 (long) lStack.getMetaData()
+                              .getTimeStampInNanoseconds());
 
     assertEquals(cLengthInBytes, lStack.getSizeInBytes());
 
@@ -89,6 +106,12 @@ public class StackTests
 
   }
 
+  /**
+   * Tests recycling
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void testRecycling() throws InterruptedException
   {
@@ -112,7 +135,7 @@ public class StackTests
     for (int i = 0; i < 100; i++)
     {
       // System.out.println(i);
-      final StackInterface lStack;
+      final OffHeapPlanarStack lStack;
       if ((i % 100) < 50)
       {
 

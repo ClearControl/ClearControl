@@ -8,9 +8,20 @@ import java.nio.channels.FileChannel;
 
 import org.junit.Test;
 
+/**
+ * Raw NIO write speed tests
+ *
+ * @author royer
+ */
 public class RawNIOWriteSpeedTests
 {
 
+  /**
+   * Test NIO write speed
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void test() throws IOException
   {

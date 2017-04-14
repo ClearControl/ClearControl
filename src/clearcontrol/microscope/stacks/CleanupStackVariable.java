@@ -2,6 +2,7 @@ package clearcontrol.microscope.stacks;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 
@@ -12,6 +13,7 @@ import clearcontrol.stack.StackInterface;
  * @author royer
  */
 public class CleanupStackVariable extends Variable<StackInterface>
+                                  implements LoggingInterface
 {
   private ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue =
                                                                       new ConcurrentLinkedQueue<>();
@@ -42,7 +44,7 @@ public class CleanupStackVariable extends Variable<StackInterface>
     while (mKeepStacksAliveQueue.size() > mNumberOfStacksToKeepAlive)
     {
       StackInterface lStackToRelease = mKeepStacksAliveQueue.remove();
-      // System.out.println("RELEASING:" + lStackToRelease);
+      // info("Releasing stack: '%s'.",lStackToRelease);
       lStackToRelease.release();
     }
 

@@ -1,5 +1,7 @@
 package clearcontrol.microscope.timelapse.timer.fixed;
 
+import java.util.concurrent.TimeUnit;
+
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerBase;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 
@@ -18,7 +20,7 @@ public class FixedIntervalTimelapseTimer extends TimelapseTimerBase
    */
   public FixedIntervalTimelapseTimer()
   {
-    super();
+    super(1, TimeUnit.SECONDS);
   }
 
 }

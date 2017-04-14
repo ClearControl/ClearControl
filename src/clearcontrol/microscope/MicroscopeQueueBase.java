@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 
 import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
 import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 
 /**
  * Base class providing common fields and methods for all microscope queues
@@ -72,6 +74,20 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
   public ArrayList<RealTimeQueueDeviceInterface<?>> getDeviceList()
   {
     return mDeviceList;
+  }
+
+  /**
+   * Returns the queue for a given stacj camera device.
+   * 
+   * @param pCameraIndex
+   *          device index
+   * @return queue
+   */
+  public StackCameraRealTimeQueue getCameraDeviceQueue(int pCameraIndex)
+  {
+    return (StackCameraRealTimeQueue) getDeviceQueue(StackCameraDeviceInterface.class,
+                                                     pCameraIndex);
+
   }
 
   /**

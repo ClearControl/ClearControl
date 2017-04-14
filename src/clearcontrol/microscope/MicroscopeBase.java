@@ -1,7 +1,6 @@
 package clearcontrol.microscope;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -26,10 +25,14 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.processor.StackProcessingPipeline;
+import clearcontrol.stack.processor.AsynchronousPoolStackProcessorPipeline;
+import clearcontrol.stack.processor.AsynchronousStackProcessorPipeline;
+import clearcontrol.stack.processor.StackProcessingPipelineInterface;
+import clearcontrol.stack.processor.StackProcessorInterface;
 import coremem.recycling.RecyclerInterface;
 
 /**
@@ -65,17 +68,22 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
   // Lock:
   protected Object mAcquisitionLock = new Object();
 
-  // Stack Pipelines:
-  private final HashMap<Integer, StackProcessingPipeline> mStackPipelines =
-                                                                          new HashMap<>();
+  // Stack processing pipeline:
+  protected volatile StackProcessingPipelineInterface mStackProcessingPipeline;
 
   /**
    * Instanciates the micorsocope base class.
    * 
    * @param pDeviceName
    *          device name
+   * @param pMaxStackProcessingQueueLength
+   *          max stack processing queue lengths
+   * @param pThreadPoolSize
+   *          number of threads in execution pool
    */
-  public MicroscopeBase(String pDeviceName)
+  public MicroscopeBase(String pDeviceName,
+                        int pMaxStackProcessingQueueLength,
+                        int pThreadPoolSize)
   {
     super(pDeviceName);
 
@@ -104,6 +112,37 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
       mCameraPixelSizeInNanometerVariableList.add(lPixelSizeInNanometersVariable);
     }
 
+    if (pThreadPoolSize <= 1)
+      mStackProcessingPipeline =
+                               new AsynchronousStackProcessorPipeline("Stack Pipeline",
+                                                                      mStackRecyclerManager,
+                                                                      pMaxStackProcessingQueueLength);
+    else
+      mStackProcessingPipeline =
+                               new AsynchronousPoolStackProcessorPipeline("Stack Pipeline",
+                                                                          mStackRecyclerManager,
+                                                                          pMaxStackProcessingQueueLength,
+                                                                          pThreadPoolSize);
+
+    CleanupStackVariable lCleanupStackVariable =
+                                               new CleanupStackVariable("CleanupStackVariable",
+                                                                        3);
+    mStackProcessingPipeline.getOutputVariable()
+                            .sendUpdatesTo(lCleanupStackVariable);
+
+    /*
+    mStackProcessingPipeline.getInputVariable()
+                            .addSetListener((o, n) -> {
+                              System.out.println("pipeline input:"
+                                                 + n);
+                            });
+    mStackProcessingPipeline.getOutputVariable()
+                            .addSetListener((o, n) -> {
+                              System.out.println("pipeline output:"
+                                                 + n);
+                            });/**/
+
+    addDevice(0, mStackProcessingPipeline);
   }
 
   @Override
@@ -187,33 +226,40 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
     }
   }
 
-  /**
-   * Sets stack processing pipeline for a given stack camera index.
-   * 
-   * @param pIndex
-   *          stack camera index
-   * @param pStackPipeline
-   *          stack processing pipeline
-   */
-  public void setStackProcessingPipeline(int pIndex,
-                                         StackProcessingPipeline pStackPipeline)
+  @Override
+  public void addStackProcessor(StackProcessorInterface pStackProcessor,
+                                String pRecyclerName,
+                                int pMaximumNumberOfLiveObjects,
+                                int pMaximumNumberOfAvailableObjects)
   {
-    StackCameraDeviceInterface lDevice =
-                                       mDeviceLists.getDevice(StackCameraDeviceInterface.class,
-                                                              pIndex);
-    StackProcessingPipeline lStackProcessingPipeline =
-                                                     mStackPipelines.get(pIndex);
+    mStackProcessingPipeline.addStackProcessor(pStackProcessor,
+                                               pRecyclerName,
+                                               pMaximumNumberOfLiveObjects,
+                                               pMaximumNumberOfAvailableObjects);
+  }
 
-    if (lStackProcessingPipeline != null)
-    {
-      lDevice.getStackVariable()
-             .doNotSendUpdatesTo(lStackProcessingPipeline.getInputVariable());
-    }
+  @Override
+  public StackProcessingPipelineInterface getStackProcesssingPipeline()
+  {
+    return mStackProcessingPipeline;
+  }
 
-    lDevice.getStackVariable()
-           .sendUpdatesTo(pStackPipeline.getInputVariable());
+  @Override
+  public void removeStackProcessor(StackProcessorInterface pStackProcessor)
+  {
+    mStackProcessingPipeline.removeStackProcessor(pStackProcessor);
+  }
 
-    mStackPipelines.put(pIndex, pStackPipeline);
+  @Override
+  public StackProcessorInterface getStackProcessor(int pProcessorIndex)
+  {
+    return mStackProcessingPipeline.getStackProcessor(pProcessorIndex);
+  }
+
+  @Override
+  public Variable<StackInterface> getPipelineStackVariable()
+  {
+    return mStackProcessingPipeline.getOutputVariable();
   }
 
   @Override
@@ -360,16 +406,12 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
   }
 
   @Override
-  public Variable<StackInterface> getStackVariable(int pIndex)
+  public Variable<StackInterface> getCameraStackVariable(int pIndex)
   {
-    StackProcessingPipeline lStackProcessingPipeline =
-                                                     mStackPipelines.get(pIndex);
-    if (lStackProcessingPipeline != null)
-      return lStackProcessingPipeline.getOutputVariable();
-    else
-      return mDeviceLists.getDevice(StackCameraDeviceInterface.class,
-                                    pIndex)
-                         .getStackVariable();
+    return mDeviceLists.getDevice(StackCameraDeviceInterface.class,
+                                  pIndex)
+                       .getStackVariable();
+
   }
 
   @Override
@@ -386,9 +428,9 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
                                                                                                        * pMaximumNumberOfAvailableObjects,
                                                                                                 lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
 
-    for (int i = 0; i < lNumberOfStackCameraDevices; i++)
-      getDevice(StackCameraDeviceInterface.class,
-                i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
+    // for (int i = 0; i < lNumberOfStackCameraDevices; i++)
+    // getDevice(StackCameraDeviceInterface.class,
+    // i).setMinimalNumberOfAvailableStacks(pMinimumNumberOfAvailableStacks);
 
     setRecycler(lRecycler);
   }
@@ -519,16 +561,20 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
                                                                    public void setEvent(StackInterface pCurrentValue,
                                                                                         StackInterface pNewValue)
                                                                    {
+                                                                     /*System.out.println("Received: "
+                                                                                        + pNewValue);/**/
                                                                      lStacksReceivedLatches[fi].countDown();
                                                                      mAverageTimeInNS +=
-                                                                                      pNewValue.getTimeStampInNanoseconds()
+                                                                                      pNewValue.getMetaData()
+                                                                                               .getTimeStampInNanoseconds()
                                                                                          / lNumberOfDetectionArmDevices;
                                                                    }
                                                                  };
 
         lListenerList.add(lVariableSetListener);
 
-        getStackVariable(i).addSetListener(lVariableSetListener);
+        getCameraStackVariable(i).addSetListener(lVariableSetListener);
+
       }
 
       // info("Playing queue of length: " + getQueueLength());
@@ -547,7 +593,7 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
       for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
         for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         {
-          getStackVariable(i).removeSetListener(lVariableSetListener);
+          getCameraStackVariable(i).removeSetListener(lVariableSetListener);
         }
 
       return lBoolean;

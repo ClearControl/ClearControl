@@ -1,16 +1,19 @@
 package clearcontrol.stack;
 
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
-import org.bridj.Pointer;
-
+/**
+ * Emtpy stack of null dimensions
+ *
+ * @author royer
+ */
 public class EmptyStack extends StackBase implements StackInterface
 {
 
+  /**
+   * Instanciates an empty stack
+   */
   public EmptyStack()
   {
     super();
@@ -44,12 +47,6 @@ public class EmptyStack extends StackBase implements StackInterface
   public boolean isFree()
   {
     return false;
-  }
-
-  @Override
-  public NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage()
-  {
-    return null;
   }
 
   @Override
@@ -95,9 +92,9 @@ public class EmptyStack extends StackBase implements StackInterface
   }
 
   @Override
-  public Pointer<Byte> getPointer(int pPlaneIndex)
+  public long getVolume()
   {
-    return null;
+    return 0;
   }
 
   @Override
@@ -119,9 +116,15 @@ public class EmptyStack extends StackBase implements StackInterface
   }
 
   @Override
-  public StackInterface allocateSameSize()
+  public Object getImage()
   {
     return null;
+  }
+
+  @Override
+  public StackInterface allocateSameSize()
+  {
+    return new EmptyStack();
   }
 
   @Override

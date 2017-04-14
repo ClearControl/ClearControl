@@ -24,10 +24,9 @@ public class DetectionArmPanel extends CustomVariablePane
     addTab("DOFs");
     addSliderForVariable("Z :",
                          pDetectionArmInterface.getZVariable(),
-                         5).setUpdateIfChanging(true);/**/
+                         null).setUpdateIfChanging(true);/**/
 
     addTab("Functions");
-
     addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
 
   }

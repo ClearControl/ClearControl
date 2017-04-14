@@ -176,9 +176,9 @@ public class OrcaFlash4StackCamera extends StackCameraDeviceBase
     mStackMaxHeightVariable = new Variable<Long>("FrameMaxHeight",
                                                  2048L);
 
-    mPixelSizeinNanometersVariable =
-                                   new Variable<Double>("PixelSizeInNanometers",
-                                                        160.0);
+    mPixelSizeInMicrometersVariable =
+                                    new Variable<Double>("PixelSizeInNanometers",
+                                                         160.0);
 
     mExposureInMicrosecondsVariable =
                                     new Variable<Double>("ExposureInMicroseconds",

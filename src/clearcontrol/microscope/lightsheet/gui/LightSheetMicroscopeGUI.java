@@ -9,14 +9,14 @@ import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-import clearcontrol.microscope.lightsheet.component.lightsheet.gui.jfx.LightSheetPanel;
+import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
-import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionPanel;
-import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
+import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
+import clearcontrol.microscope.lightsheet.timelapse.gui.LightSheetTimelapseToolbar;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import clearcontrol.microscope.timelapse.TimelapseInterface;
-import clearcontrol.microscope.timelapse.gui.jfx.TimelapsePanel;
-import clearcontrol.microscope.timelapse.gui.jfx.TimelapseToolbar;
+import clearcontrol.microscope.timelapse.gui.TimelapsePanel;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 
 /**
@@ -76,15 +76,15 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
     addToolbarMappingEntry(Calibrator.class, CalibratorToolbar.class);
 
-    addToolbarMappingEntry(TimelapseInterface.class,
-                           TimelapseToolbar.class);
+    addToolbarMappingEntry(LightSheetTimelapse.class,
+                           LightSheetTimelapseToolbar.class);
 
   }
 
   @Override
-  public void generate()
+  public void setup()
   {
-    super.generate();
+    super.setup();
   }
 
 }

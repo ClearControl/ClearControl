@@ -6,15 +6,15 @@ import static java.lang.Math.round;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.NameableWithChangeListener;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.devices.lasers.LaserDeviceInterface;
+import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
@@ -23,45 +23,28 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
  * @author royer
  */
 public class InterpolatedAcquisitionState extends
-                                          NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface>>
+                                          NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
                                           implements
-                                          AcquisitionStateInterface<LightSheetMicroscopeInterface>
+                                          LightSheetAcquisitionStateInterface
 {
 
-  private int mNumberOfDetectionArms, mNumberOfLightSheets;
+  private int mNumberOfDetectionArms, mNumberOfLightSheets,
+      mNumberOfLaserLines;
 
   private BoundedVariable<Number> mStageX =
                                           new BoundedVariable<Number>("StageX",
-                                                                      25.0);
+                                                                      0.0);
 
   private BoundedVariable<Number> mStageY =
                                           new BoundedVariable<Number>("StageY",
-                                                                      25.0);
+                                                                      0.0);
 
   private BoundedVariable<Number> mStageZ =
                                           new BoundedVariable<Number>("StageZ",
-                                                                      25.0);
+                                                                      0.0);
 
-  private final BoundedVariable<Number> mXLow =
-                                              new BoundedVariable<Number>("LowX",
-                                                                          25.0);
-  private final BoundedVariable<Number> mXHigh =
-                                               new BoundedVariable<Number>("HighX",
-                                                                           75.0);
-
-  private final BoundedVariable<Number> mYLow =
-                                              new BoundedVariable<Number>("LowY",
-                                                                          25.0);
-  private final BoundedVariable<Number> mYHigh =
-                                               new BoundedVariable<Number>("HighY",
-                                                                           75.0);
-
-  private final BoundedVariable<Number> mZLow =
-                                              new BoundedVariable<Number>("LowZ",
-                                                                          25.0);
-  private final BoundedVariable<Number> mZHigh =
-                                               new BoundedVariable<Number>("HighZ",
-                                                                           75.0);
+  private BoundedVariable<Number> mZLow;
+  private BoundedVariable<Number> mZHigh;
 
   private final BoundedVariable<Number> mZStep =
                                                new BoundedVariable<Number>("ZStep",
@@ -69,31 +52,86 @@ public class InterpolatedAcquisitionState extends
                                                                            0,
                                                                            1000);
 
+  private final Variable<Boolean>[] mLightSheetOnOff;
+
   private final InterpolationTables mInterpolationTables;
 
   private LightSheetMicroscopeQueue mQueue;
+
+  private LightSheetMicroscopeInterface mLightSheetMicroscope;
 
   /**
    * Instanciates an interpolated acquisition state
    * 
    * @param pName
    *          acquisition state name
-   * @param pNumberOfDetectionArmDevices
-   *          number of detection arms
-   * @param pNumberOfLightSheetDevices
-   *          number of lightsheets
+   * @param pNumberOfDetectionArms
+   *          number of detectin arms
+   * @param pNumberOfLightSheets
+   *          number of lighsheets
+   * @param pNumberOfLaserLines
+   *          number of laser lines
    */
+  @SuppressWarnings("unchecked")
   public InterpolatedAcquisitionState(String pName,
-                                      int pNumberOfDetectionArmDevices,
-                                      int pNumberOfLightSheetDevices)
+                                      int pNumberOfDetectionArms,
+                                      int pNumberOfLightSheets,
+                                      int pNumberOfLaserLines)
   {
     super(pName);
-    mNumberOfDetectionArms = pNumberOfDetectionArmDevices;
-    mNumberOfLightSheets = pNumberOfLightSheetDevices;
+    mLightSheetMicroscope = null;
+    mNumberOfDetectionArms = pNumberOfDetectionArms;
+    mNumberOfLightSheets = pNumberOfLightSheets;
+    mNumberOfLaserLines = pNumberOfLaserLines;
 
     mInterpolationTables =
-                         new InterpolationTables(pNumberOfDetectionArmDevices,
-                                                 pNumberOfLightSheetDevices);
+                         new InterpolationTables(mNumberOfDetectionArms,
+                                                 mNumberOfLightSheets);
+
+    mLightSheetOnOff = new Variable[mNumberOfLightSheets];
+
+    for (int i = 0; i < mLightSheetOnOff.length; i++)
+      mLightSheetOnOff[i] = new Variable<Boolean>(
+                                                  String.format("LightSheet%dOnOff",
+                                                                i),
+                                                  false);
+
+    mZLow = new BoundedVariable<Number>("LowZ", 0.0);
+    mZHigh = new BoundedVariable<Number>("HighZ", 0.0);
+  }
+
+  /**
+   * Instanciates an interpolated acquisition state
+   * 
+   * @param pName
+   *          acquisition state name
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   */
+  public InterpolatedAcquisitionState(String pName,
+                                      LightSheetMicroscopeInterface pLightSheetMicroscope)
+  {
+    this(pName,
+         pLightSheetMicroscope.getNumberOfDetectionArms(),
+         pLightSheetMicroscope.getNumberOfLightSheets(),
+         pLightSheetMicroscope.getNumberOfLaserLines());
+    mLightSheetMicroscope = pLightSheetMicroscope;
+
+    DetectionArmInterface lDetectionArm =
+                                        mLightSheetMicroscope.getDetectionArm(0);
+
+    mZLow = new BoundedVariable<Number>("LowZ",
+                                        25.0,
+                                        lDetectionArm.getZVariable()
+                                                     .getMin(),
+                                        lDetectionArm.getZVariable()
+                                                     .getMax());
+    mZHigh = new BoundedVariable<Number>("HighZ",
+                                         75.0,
+                                         lDetectionArm.getZVariable()
+                                                      .getMin(),
+                                         lDetectionArm.getZVariable()
+                                                      .getMax());
 
     mInterpolationTables.addChangeListener((e) -> {
       notifyListeners(this);
@@ -106,37 +144,29 @@ public class InterpolatedAcquisitionState extends
     getStackZHighVariable().addSetListener(lVariableSetListener);
     getStackZStepVariable().addSetListener(lVariableSetListener);
 
+    StageDeviceInterface lMainXYZRStage =
+                                        getLightSheetMicroscope().getMainXYZRStage();
+
+    getStageXVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(0)
+                                                .get(),
+                                  lMainXYZRStage.getMaxPositionVariable(0)
+                                                .get());
+
+    getStageYVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(1)
+                                                .get(),
+                                  lMainXYZRStage.getMaxPositionVariable(1)
+                                                .get());
+
+    getStageZVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(2)
+                                                .get(),
+                                  lMainXYZRStage.getMaxPositionVariable(2)
+                                                .get());
+
     resetBounds();
   }
 
   /**
-   * Instanciates an interpolated acquisition state for a given lightsheet
-   * microscope
-   * 
-   * @param pName
-   *          interpolated acquisition state name
-   * @param pMicroscope
-   *          lightsheet microscope
-   */
-  public InterpolatedAcquisitionState(String pName,
-                                      LightSheetMicroscopeInterface pMicroscope)
-  {
-    this(pName, 2, 4);
-
-    if (pMicroscope != null)
-    {
-      mNumberOfDetectionArms =
-                             pMicroscope.getDeviceLists()
-                                        .getNumberOfDevices(DetectionArmInterface.class);
-      mNumberOfLightSheets =
-                           pMicroscope.getDeviceLists()
-                                      .getNumberOfDevices(LightSheetInterface.class);
-    }
-  }
-
-  /**
-   * Instanciates an interpolated acquisition state for agiven lightsheet
-   * microscope
+   * Copy constructor
    * 
    * @param pName
    *          interpolated acquisition state name
@@ -148,8 +178,7 @@ public class InterpolatedAcquisitionState extends
                                       InterpolatedAcquisitionState pInterpolatedAcquisitionState)
   {
     this(pName,
-         pInterpolatedAcquisitionState.getNumberOfDetectionArms(),
-         pInterpolatedAcquisitionState.getNumberOfLightSheets());
+         pInterpolatedAcquisitionState.getLightSheetMicroscope());
   }
 
   /**
@@ -165,7 +194,26 @@ public class InterpolatedAcquisitionState extends
    */
   public void setupDefault()
   {
-    setup(-100, 0, 100, 1, 20, 10);
+    setup(-120, 0, 120, 4, 20, 10);
+
+    int lNumberOfControlPlanes =
+                               getInterpolationTables().getNumberOfControlPlanes();
+
+    Number lMaxHeight = getLightSheetMicroscope().getLightSheet(0)
+                                                 .getHeightVariable()
+                                                 .getMax();
+
+    for (int zpi = 0; zpi < lNumberOfControlPlanes; zpi++)
+    {
+      double z = getInterpolationTables().getZ(zpi);
+      // System.out.format("z=%g \n", z);
+      getInterpolationTables().set(LightSheetDOF.IZ, zpi, z);
+      getInterpolationTables().set(LightSheetDOF.IH,
+                                   zpi,
+                                   lMaxHeight.doubleValue());
+      getInterpolationTables().set(LightSheetDOF.IP, zpi, 1);
+    }
+
   }
 
   /**
@@ -207,6 +255,16 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
+   * Returns lightsheet microscope parent
+   * 
+   * @return light sheet microscope
+   */
+  public LightSheetMicroscopeInterface getLightSheetMicroscope()
+  {
+    return mLightSheetMicroscope;
+  }
+
+  /**
    * Returns stack depth in microns
    * 
    * @return stack depth in microns
@@ -244,13 +302,15 @@ public class InterpolatedAcquisitionState extends
   }
 
   @Override
-  public void applyAcquisitionState(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
+  public void updateQueue(LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
-    if (mQueue == null)
-      mQueue = pLightSheetMicroscopeInterface.requestQueue();
+    mQueue = pLightSheetMicroscope.requestQueue();
 
-    mQueue.clearQueue();
-    applyStagePosition(pLightSheetMicroscopeInterface);
+    double lVoxelDepthInMicrons = getZDepth() / getStackDepth();
+    mQueue.addVoxelDimMetaData(pLightSheetMicroscope,
+                               lVoxelDepthInMicrons);
+
+    applyStagePosition();
     mQueue.clearQueue();
     for (int lIndex = 0; lIndex < getStackDepth(); lIndex++)
     {
@@ -258,27 +318,28 @@ public class InterpolatedAcquisitionState extends
       mQueue.addCurrentStateToQueue();
     }
     mQueue.finalizeQueue();
-    // addStackMargin();
   }
 
-  /**
-   * Applies stage position
-   * 
-   * @param pLightSheetMicroscopeInterface
-   *          lightsheet microscope
-   */
-  public void applyStagePosition(LightSheetMicroscopeInterface pLightSheetMicroscopeInterface)
+  @Override
+  public LightSheetMicroscopeQueue getQueue()
   {
+    return mQueue;
+  }
+
+  @Override
+  public void applyStagePosition()
+  {
+    getLightSheetMicroscope().getMainXYZRStage().enable();
+
     double lStageX = getStageXVariable().get().doubleValue();
     double lStageY = getStageYVariable().get().doubleValue();
     double lStageZ = getStageZVariable().get().doubleValue();
 
-    pLightSheetMicroscopeInterface.setStageX(lStageX);
-    pLightSheetMicroscopeInterface.setStageY(lStageY);
-    pLightSheetMicroscopeInterface.setStageZ(lStageZ);
-    pLightSheetMicroscopeInterface.getMainXYZRStage()
-                                  .waitToBeReady(10,
-                                                 TimeUnit.SECONDS);
+    getLightSheetMicroscope().setStageX(lStageX);
+    getLightSheetMicroscope().setStageY(lStageY);
+    getLightSheetMicroscope().setStageZ(lStageZ);
+    getLightSheetMicroscope().getMainXYZRStage()
+                             .waitToBeReady(10, TimeUnit.SECONDS);
   }
 
   /**
@@ -308,21 +369,15 @@ public class InterpolatedAcquisitionState extends
   public void applyAcquisitionStateAtStackPlane(LightSheetMicroscopeQueue pQueue,
                                                 int pPlaneIndex)
   {
-    final int lNumberOfDetectionPathDevices =
-                                            pQueue.getMicroscope()
-                                                  .getNumberOfDevices(DetectionArmInterface.class);
 
-    for (int d = 0; d < lNumberOfDetectionPathDevices; d++)
+    for (int d = 0; d < mNumberOfDetectionArms; d++)
     {
       pQueue.setDZ(d, get(LightSheetDOF.DZ, pPlaneIndex, d));
     }
 
-    final int lNumberOfLightsheetDevices =
-                                         pQueue.getMicroscope()
-                                               .getNumberOfDevices(LightSheetInterface.class);
-
-    for (int l = 0; l < lNumberOfLightsheetDevices; l++)
+    for (int l = 0; l < mNumberOfLightSheets; l++)
     {
+      pQueue.setI(l, mLightSheetOnOff[l].get());
 
       pQueue.setIX(l, get(LightSheetDOF.IX, pPlaneIndex, l));
       pQueue.setIY(l, get(LightSheetDOF.IY, pPlaneIndex, l));
@@ -332,16 +387,8 @@ public class InterpolatedAcquisitionState extends
       pQueue.setIB(l, get(LightSheetDOF.IB, pPlaneIndex, l));
       pQueue.setIW(l, get(LightSheetDOF.IW, pPlaneIndex, l));
       pQueue.setIH(l, get(LightSheetDOF.IH, pPlaneIndex, l));
+
       pQueue.setIP(l, get(LightSheetDOF.IP, pPlaneIndex, l));
-    }
-
-    final int lNumberOfLaserDevices =
-                                    pQueue.getMicroscope()
-                                          .getNumberOfDevices(LaserDeviceInterface.class);
-
-    for (int i = 0; i < lNumberOfLaserDevices; i++)
-    {
-      pQueue.setIP(i, get(LightSheetDOF.IP, pPlaneIndex, i));
     }
 
   }
@@ -354,6 +401,7 @@ public class InterpolatedAcquisitionState extends
    * @param pControlPlaneIndex
    *          control plane index
    */
+  @Override
   public void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
                                        int pControlPlaneIndex)
   {
@@ -490,43 +538,56 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
-   * Returns stack low z variable
+   * Returns the z depth in length units.
    * 
-   * @return stack low z
+   * @return z depth in length units
    */
-  public BoundedVariable<Number> getStackXLowVariable()
+  public double getZDepth()
   {
-    return mXLow;
+    double lHighZ = getStackZHighVariable().get().doubleValue();
+    double lLowZ = getStackZLowVariable().get().doubleValue();
+    double lZDepth = lHighZ - lLowZ;
+    return lZDepth;
   }
 
   /**
-   * Returns stack high x variable
+   * Returns the number of detection arms
    * 
-   * @return stack high x
+   * @return number of detection arms
    */
-  public BoundedVariable<Number> getStackXHighVariable()
+  public int getNumberOfDetectionArms()
   {
-    return mXHigh;
+    return mNumberOfDetectionArms;
   }
 
   /**
-   * Returns stack low y variable
+   * returns the number of lightsheets
    * 
-   * @return stack low y
+   * @return number of lightsheets
    */
-  public BoundedVariable<Number> getStackYLowVariable()
+  public int getNumberOfLightSheets()
   {
-    return mYLow;
+    return mNumberOfLightSheets;
   }
 
   /**
-   * Returns stack high y variable
+   * returns the number of lightsheets
    * 
-   * @return stack high y
+   * @return number of lightsheets
    */
-  public BoundedVariable<Number> getStackYHighVariable()
+  public int getNumberOfLaserLines()
   {
-    return mYHigh;
+    return mNumberOfLaserLines;
+  }
+
+  /**
+   * Returns the interpolation tables
+   * 
+   * @return interpolation tables
+   */
+  public InterpolationTables getInterpolationTables()
+  {
+    return mInterpolationTables;
   }
 
   /**
@@ -569,64 +630,28 @@ public class InterpolatedAcquisitionState extends
     return mInterpolationTables.getNumberOfControlPlanes();
   }
 
-  /**
-   * Returns state variable x
-   * 
-   * @return stage variable x
-   */
+  @Override
   public BoundedVariable<Number> getStageXVariable()
   {
     return mStageX;
   }
 
-  /**
-   * Returns state variable y
-   * 
-   * @return stage variable y
-   */
+  @Override
   public BoundedVariable<Number> getStageYVariable()
   {
     return mStageY;
   }
 
-  /**
-   * Returns state variable z
-   * 
-   * @return stage variable z
-   */
+  @Override
   public BoundedVariable<Number> getStageZVariable()
   {
     return mStageZ;
   }
 
-  /**
-   * Returns the number of detection arms
-   * 
-   * @return number of detection arms
-   */
-  public int getNumberOfDetectionArms()
+  @Override
+  public Variable<Boolean> getLightSheetOnOffVariable(int pLightSheetIndex)
   {
-    return mNumberOfDetectionArms;
-  }
-
-  /**
-   * returns the number of lightsheets
-   * 
-   * @return number of lightsheets
-   */
-  public int getNumberOfLightSheets()
-  {
-    return mNumberOfLightSheets;
-  }
-
-  /**
-   * Returns the interpolation tables
-   * 
-   * @return interpolation tables
-   */
-  public InterpolationTables getInterpolationTables()
-  {
-    return mInterpolationTables;
+    return mLightSheetOnOff[pLightSheetIndex];
   }
 
 }

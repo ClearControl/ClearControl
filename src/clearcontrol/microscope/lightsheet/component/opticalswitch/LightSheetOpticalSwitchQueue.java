@@ -43,6 +43,25 @@ public class LightSheetOpticalSwitchQueue extends VariableQueueBase
   }
 
   /**
+   * Instanciates a lightsheet optical switch queue given a template queue
+   * current state.
+   * 
+   * @param pLightSheetOpticalSwitchQueue
+   *          template queue
+   */
+  public LightSheetOpticalSwitchQueue(LightSheetOpticalSwitchQueue pLightSheetOpticalSwitchQueue)
+  {
+    this(pLightSheetOpticalSwitchQueue.getLightSheetOpticalSwitch());
+
+    for (int i = 0; i < mLightSheetOnOff.length; i++)
+    {
+      Variable<Boolean> lSwitchVariable =
+                                        pLightSheetOpticalSwitchQueue.getSwitchVariable(i);
+      mLightSheetOnOff[i].set(lSwitchVariable.get());
+    }
+  }
+
+  /**
    * Returns the parent lightsheet optical switch
    * 
    * @return parent lightsheet optical switch

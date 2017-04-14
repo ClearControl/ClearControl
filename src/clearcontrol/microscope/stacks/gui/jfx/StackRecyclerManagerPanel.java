@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
@@ -65,8 +66,8 @@ public class StackRecyclerManagerPanel extends VBox
       lMainVBox.getChildren().add(lScrollPane);
       VBox.setVgrow(lScrollPane, Priority.ALWAYS);
 
-      VBox lVBox = new VBox();
-      lScrollPane.setContent(lVBox);
+      VBox lScrollingBox = new VBox();
+      lScrollPane.setContent(lScrollingBox);
 
       Set<Entry<String, RecyclerInterface<StackInterface, StackRequest>>> lEntrySet =
                                                                                     pMap.entrySet();
@@ -76,11 +77,17 @@ public class StackRecyclerManagerPanel extends VBox
         RecyclerInterface<StackInterface, StackRequest> lRecycler =
                                                                   lEntry.getValue();
 
-        Label lLabel = new Label(lRecyclerName);
+        Label lLabel = new Label(lRecyclerName + ":");
+        VBox lLabelVBox = new VBox(lLabel);
+        lLabelVBox.setPadding(new Insets(10, 10, 0, 10));
+
         RecyclerPanel lRecyclerPane = new RecyclerPanel(lRecycler);
         lRecyclerPane.setPadding(10);
+
         Separator lSeparator = new Separator();
-        lVBox.getChildren().addAll(lLabel, lRecyclerPane, lSeparator);
+        lScrollingBox.getChildren().addAll(lLabelVBox,
+                                           lRecyclerPane,
+                                           lSeparator);
 
       }
 

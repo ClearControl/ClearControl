@@ -9,12 +9,24 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.stack.StackInterface;
 import coremem.buffers.ContiguousBuffer;
 
+/**
+ * Stack Utils
+ *
+ * @author royer
+ */
 public class StackUtils
 {
 
+  /**
+   * Fuse stacks
+   * 
+   * @param pLSM
+   *          light sheet microscope
+   * @return stack
+   */
   public static StackInterface fuse(LightSheetMicroscopeInterface pLSM)
   {
-    StackInterface lFirstStack = pLSM.getStackVariable(0).get();
+    StackInterface lFirstStack = pLSM.getCameraStackVariable(0).get();
 
     StackInterface lFusedStack = lFirstStack.duplicate();
 
@@ -26,7 +38,7 @@ public class StackUtils
     {
       for (int d = 1; d < lNumberOfStacksToFuse; d++)
       {
-        StackInterface lStack = pLSM.getStackVariable(0).get();
+        StackInterface lStack = pLSM.getCameraStackVariable(0).get();
 
         maxStack(lFusedStack, lStack);
       }
@@ -55,6 +67,17 @@ public class StackUtils
     }
   }
 
+  /**
+   * Compute average difference between stacks
+   * 
+   * @param pStack1
+   *          stack1
+   * @param pStack2
+   *          stack2
+   * @param pPower
+   *          power
+   * @return avg diff
+   */
   public static double computeAverageDifference(StackInterface pStack1,
                                                 StackInterface pStack2,
                                                 int pPower)

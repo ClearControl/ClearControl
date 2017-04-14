@@ -6,7 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -18,6 +18,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
+import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
@@ -25,7 +26,7 @@ import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 /**
  * Stage 3D Control
  */
-public class XYZRStageDevicePanel extends BorderPane
+public class XYZRStageDevicePanel extends ScrollPane
 {
 
   private StageDeviceInterface mStageDeviceInterface;
@@ -50,23 +51,28 @@ public class XYZRStageDevicePanel extends BorderPane
 
   public void init()
   {
-    setTop(createControls());
+    setPrefSize(RecyclerPanel.cPrefWidth,
+                RecyclerPanel.cPrefHeight * 1.5);
+    setVbarPolicy(ScrollBarPolicy.ALWAYS);
+    setVmax(RecyclerPanel.cPrefHeight * 1.5);
+    VBox.setVgrow(this, Priority.ALWAYS);
+
+    setContent(createControls());
   }
 
   private VBox createControls()
   {
 
-    VBox controls =
-                  new VBox(10,
-                           // rotate,
-                           createStageControl("Stage R (micro-degree)",
-                                              Stage.R),
-                           createStageControl("Stage X (microns)",
-                                              Stage.X),
-                           createStageControl("Stage Y (microns)",
-                                              Stage.Y),
-                           createStageControl("Stage Z (microns)",
-                                              Stage.Z));
+    VBox controls = new VBox(10,
+                             createStageControl("Stage R (micro-degree)",
+                                                Stage.R),
+                             createStageControl("Stage X (microns)",
+                                                Stage.X),
+                             createStageControl("Stage Y (microns)",
+                                                Stage.Y),
+                             createStageControl("Stage Z (microns)",
+                                                Stage.Z));
+
     controls.setPadding(new Insets(10));
     return controls;
   }

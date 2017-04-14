@@ -32,9 +32,9 @@ public class AcquisitionStateManagerPanel extends
 {
   private AcquisitionStateManager mAcquisitionStateManager;
 
-  private SingleCheckListView<AcquisitionStateInterface<?>> mStateListView;
-  private ObservableList<AcquisitionStateInterface<?>> mObservableStateList =
-                                                                            FXCollections.observableArrayList();
+  private SingleCheckListView<AcquisitionStateInterface<?, ?>> mStateListView;
+  private ObservableList<AcquisitionStateInterface<?, ?>> mObservableStateList =
+                                                                               FXCollections.observableArrayList();
   private VBox mStateViewVBox;
 
   private TitledPane mStateViewTitledPane;
@@ -51,33 +51,33 @@ public class AcquisitionStateManagerPanel extends
     mAcquisitionStateManager = pAcquisitionStateManager;
     AcquisitionStateManagerPanel lAcquisitionStateManagerPanel = this;
 
-    SingleCheckCellManager<AcquisitionStateInterface<?>> lSingleCheckCellManager =
-                                                                                 new SingleCheckCellManager<AcquisitionStateInterface<?>>()
-                                                                                 {
-                                                                                   @Override
-                                                                                   public void checkOnlyCell(SingleCheckCell<AcquisitionStateInterface<?>> pSelectedCell)
-                                                                                   {
-                                                                                     super.checkOnlyCell(pSelectedCell);
-                                                                                     AcquisitionStateInterface<?> lState =
-                                                                                                                         pSelectedCell.getItem();
-                                                                                     lAcquisitionStateManagerPanel.setCurrentState(lState);
-                                                                                   }
-                                                                                 };
+    SingleCheckCellManager<AcquisitionStateInterface<?, ?>> lSingleCheckCellManager =
+                                                                                    new SingleCheckCellManager<AcquisitionStateInterface<?, ?>>()
+                                                                                    {
+                                                                                      @Override
+                                                                                      public void checkOnlyCell(SingleCheckCell<AcquisitionStateInterface<?, ?>> pSelectedCell)
+                                                                                      {
+                                                                                        super.checkOnlyCell(pSelectedCell);
+                                                                                        AcquisitionStateInterface<?, ?> lState =
+                                                                                                                               pSelectedCell.getItem();
+                                                                                        lAcquisitionStateManagerPanel.setCurrentState(lState);
+                                                                                      }
+                                                                                    };
 
     mStateListView =
-                   new SingleCheckListView<AcquisitionStateInterface<?>>(lSingleCheckCellManager,
-                                                                         mObservableStateList);
+                   new SingleCheckListView<AcquisitionStateInterface<?, ?>>(lSingleCheckCellManager,
+                                                                            mObservableStateList);
 
     mStateListView.getSelectionModel()
                   .getSelectedItems()
-                  .addListener(new ListChangeListener<AcquisitionStateInterface<?>>()
+                  .addListener(new ListChangeListener<AcquisitionStateInterface<?, ?>>()
                   {
                     @Override
-                    public void onChanged(ListChangeListener.Change<? extends AcquisitionStateInterface<?>> change)
+                    public void onChanged(ListChangeListener.Change<? extends AcquisitionStateInterface<?, ?>> change)
                     {
-                      AcquisitionStateInterface<?> lAcquisitionStateInterface =
-                                                                              change.getList()
-                                                                                    .get(0);
+                      AcquisitionStateInterface<?, ?> lAcquisitionStateInterface =
+                                                                                 change.getList()
+                                                                                       .get(0);
                       setViewedAcquisitionState(lAcquisitionStateInterface);
                     }
 
@@ -121,9 +121,9 @@ public class AcquisitionStateManagerPanel extends
 
     lDuplicateItem.setOnAction((e) -> {
 
-      AcquisitionStateInterface<?> lSelectedItem =
-                                                 mStateListView.getSelectionModel()
-                                                               .getSelectedItem();
+      AcquisitionStateInterface<?, ?> lSelectedItem =
+                                                    mStateListView.getSelectionModel()
+                                                                  .getSelectedItem();
 
       if (lSelectedItem instanceof InterpolatedAcquisitionState)
       {
@@ -140,9 +140,9 @@ public class AcquisitionStateManagerPanel extends
 
     lDeleteItem.setOnAction((e) -> {
 
-      AcquisitionStateInterface<?> lSelectedItem =
-                                                 mStateListView.getSelectionModel()
-                                                               .getSelectedItem();
+      AcquisitionStateInterface<?, ?> lSelectedItem =
+                                                    mStateListView.getSelectionModel()
+                                                                  .getSelectedItem();
       pAcquisitionStateManager.removeState(lSelectedItem);
     });
 
@@ -162,10 +162,10 @@ public class AcquisitionStateManagerPanel extends
   }
 
   @Override
-  protected void updateStateList(List<AcquisitionStateInterface<?>> pStateList)
+  protected void updateStateList(List<AcquisitionStateInterface<?, ?>> pStateList)
   {
     Runnable lRunnable = () -> {
-      for (AcquisitionStateInterface<?> lState : pStateList)
+      for (AcquisitionStateInterface<?, ?> lState : pStateList)
       {
         if (!mObservableStateList.contains(lState))
         {
@@ -173,9 +173,9 @@ public class AcquisitionStateManagerPanel extends
         }
       }
 
-      ArrayList<AcquisitionStateInterface<?>> lRemovalList =
-                                                           new ArrayList<>();
-      for (AcquisitionStateInterface<?> lAcquisitionState : mObservableStateList)
+      ArrayList<AcquisitionStateInterface<?, ?>> lRemovalList =
+                                                              new ArrayList<>();
+      for (AcquisitionStateInterface<?, ?> lAcquisitionState : mObservableStateList)
       {
         if (!pStateList.contains(lAcquisitionState))
         {
@@ -197,7 +197,7 @@ public class AcquisitionStateManagerPanel extends
    * @param pState
    *          sate to view
    */
-  public void setCurrentState(AcquisitionStateInterface<?> pState)
+  public void setCurrentState(AcquisitionStateInterface<?, ?> pState)
   {
     mAcquisitionStateManager.setCurrentState(pState);
   }
@@ -208,7 +208,7 @@ public class AcquisitionStateManagerPanel extends
    * @param pState
    *          state to view
    */
-  public void setViewedAcquisitionState(AcquisitionStateInterface<?> pState)
+  public void setViewedAcquisitionState(AcquisitionStateInterface<?, ?> pState)
   {
     Platform.runLater(() -> {
 

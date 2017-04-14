@@ -42,7 +42,6 @@ public class LightSheetOpticalSwitch extends
     final VariableSetListener<Boolean> lBooleanVariableListener =
                                                                 (u,
                                                                  v) -> {
-
                                                                   if (u != v)
                                                                   {
                                                                     notifyListeners(this);
@@ -55,6 +54,7 @@ public class LightSheetOpticalSwitch extends
                                            .addSetListener(lBooleanVariableListener);
     }
 
+    notifyListeners(this);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class LightSheetOpticalSwitch extends
   @Override
   public LightSheetOpticalSwitchQueue requestQueue()
   {
-    return new LightSheetOpticalSwitchQueue(this);
+    return new LightSheetOpticalSwitchQueue(mLightSheetOpticalSwitchQueueTemplate);
   }
 
   @Override

@@ -92,6 +92,26 @@ public class VariableQueueBase implements
   }
 
   /**
+   * Returns the boolean value of a given variable at a given position of the
+   * queue.
+   * 
+   * @param pVariable
+   *          variable
+   * @param pQueuePositionIndex
+   *          position in queue
+   * @return boolean value
+   */
+  public Boolean getQueuedBooleanValue(Variable<Boolean> pVariable,
+                                       int pQueuePositionIndex)
+
+  {
+    Boolean lValue =
+                   (Boolean) mVariablesToQueueListsMap.get(pVariable)
+                                                      .get(pQueuePositionIndex);
+    return lValue;
+  }
+
+  /**
    * Returns the value of a given variable at a given position of the queue.
    * 
    * @param pVariable

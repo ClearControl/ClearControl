@@ -73,7 +73,7 @@ public class VariableNumberTextField<T extends Number> extends HBox
     mGranularity = pGranularity;
 
     setAlignment(Pos.CENTER);
-    setPadding(new Insets(25, 25, 25, 25));
+    setPadding(new Insets(10, 10, 10, 10));
 
     mLabel = new Label(pSliderName);
     mLabel.setAlignment(Pos.CENTER);

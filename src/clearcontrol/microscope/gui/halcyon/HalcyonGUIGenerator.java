@@ -28,9 +28,15 @@ import halcyon.view.TreePanel;
 
 import org.dockfx.DockNode;
 
+/**
+ * Halcyon GUI generator. Uses the Halcyon library (based on DockFX) to build a
+ * GUI.
+ *
+ * @author royer
+ */
 public class HalcyonGUIGenerator implements LoggingInterface
 {
-  private MicroscopeInterface mMicroscopeInterface;
+  private MicroscopeInterface<?> mMicroscopeInterface;
   private HalcyonFrame mHalcyonFrame;
   private MicroscopeGUI mMicroscopeGUI;
   private HashMap<Class<?>, Class<?>> mDeviceClassToPanelMap =
@@ -40,19 +46,30 @@ public class HalcyonGUIGenerator implements LoggingInterface
   private HashMap<Class<?>, Class<?>> mDeviceClassToToolbarMap =
                                                                new HashMap<>();
 
-  public HalcyonGUIGenerator(MicroscopeInterface pMicroscopeInterface,
+  /**
+   * Instanciates a Halcyon GUI generator from a given microscope, microscope
+   * parent GUI, and a collection of halcyon node types.
+   * 
+   * @param pMicroscopeInterface
+   *          micrscope
+   * @param pMicroscopeGUI
+   *          microscope GUI (parent of this generator)
+   * @param pNodeTypeCollection
+   *          node type list
+   */
+  public HalcyonGUIGenerator(MicroscopeInterface<?> pMicroscopeInterface,
                              MicroscopeGUI pMicroscopeGUI,
-                             Collection<HalcyonNodeType> pNodeTypeNamesList)
+                             Collection<HalcyonNodeType> pNodeTypeCollection)
   {
     mMicroscopeInterface = pMicroscopeInterface;
     mMicroscopeGUI = pMicroscopeGUI;
     initJavaFX();
 
-    TreePanel lTreePanel = new TreePanel("component tree",
-                                         "Hardware",
+    TreePanel lTreePanel = new TreePanel("Device tree",
+                                         "Devices",
                                          this.getClass()
                                              .getResourceAsStream("./icons/folder_16.png"),
-                                         pNodeTypeNamesList);
+                                         pNodeTypeCollection);
 
     mHalcyonFrame = new HalcyonFrame(pMicroscopeInterface.getName());
 
@@ -60,6 +77,16 @@ public class HalcyonGUIGenerator implements LoggingInterface
 
   }
 
+  /**
+   * Adds a mapping between a device class, panel class and node type.
+   * 
+   * @param pDeviceClass
+   *          device class
+   * @param pPanelClass
+   *          panel class
+   * @param pNodeType
+   *          node type
+   */
   public <U, V> void addPanelMappingEntry(Class<U> pDeviceClass,
                                           Class<V> pPanelClass,
                                           HalcyonNodeType pNodeType)
@@ -68,17 +95,44 @@ public class HalcyonGUIGenerator implements LoggingInterface
     mDeviceClassToHalcyonTypeMap.put(pDeviceClass, pNodeType);
   }
 
-  public <U, V> void addToolbarEntry(Class<U> pDeviceClass,
-                                     Class<V> pToolbarClass)
+  /**
+   * Adds a toolbar mapping entry
+   * 
+   * @param pDeviceClass
+   *          device class
+   * @param pToolbarClass
+   *          toolbar class
+   */
+  public <U, V> void addToolbarMappingEntry(Class<U> pDeviceClass,
+                                            Class<V> pToolbarClass)
   {
     mDeviceClassToToolbarMap.put(pDeviceClass, pToolbarClass);
   }
 
+  /**
+   * Returns the halcyon frame used internally
+   * 
+   * @return halcyon frame
+   */
   public HalcyonFrame getHalcyonFrame()
   {
     return mHalcyonFrame;
   }
 
+  /**
+   * Returns true if the halcyon frame (the window that this object handles) is
+   * visible.
+   * 
+   * @return true if visible
+   */
+  public boolean isVisible()
+  {
+    return mHalcyonFrame.isVisible();
+  }
+
+  /**
+   * Setup device GUIs (panels and toolbars) based on the defined mappings.
+   */
   public void setupDeviceGUIs()
   {
 
@@ -130,11 +184,14 @@ public class HalcyonGUIGenerator implements LoggingInterface
     }
   }
 
+  /**
+   * Sets up required 3D displays in halcyon.
+   */
   private void setup3DDisplays()
   {
     info("Setting up 3D displays");
 
-    for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DStackDisplayList())
+    for (Stack3DDisplay lStack3DDisplay : mMicroscopeGUI.get3DDisplayDeviceList())
     {
       info("Setting up %s", lStack3DDisplay);
       HalcyonNodeInterface node =
@@ -211,11 +268,14 @@ public class HalcyonGUIGenerator implements LoggingInterface
     }
   }
 
+  /**
+   * Sets up 2D displays in halcyon.
+   */
   private void setup2DDisplays()
   {
     info("Setting up 2D displays");
 
-    for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DStackDisplayList())
+    for (Stack2DDisplay lStack2DDisplay : mMicroscopeGUI.get2DDisplayDeviceList())
     {
       info("Setting up %s", lStack2DDisplay);
 
@@ -293,7 +353,7 @@ public class HalcyonGUIGenerator implements LoggingInterface
     }
   }
 
-  private void setupScriptEngines(MicroscopeInterface pMicroscopeInterface)
+  private void setupScriptEngines(MicroscopeInterface<?> pMicroscopeInterface)
   {
     info("Setting up scripting engines");
     // Script Engines:
@@ -410,9 +470,17 @@ public class HalcyonGUIGenerator implements LoggingInterface
                                       pGUIElementClass.getConstructor(pClass);
 
           Object lToolbarAsObject = lConstructor.newInstance(lDevice);
-          DockNode lToolbarAsDocPane = (DockNode) lToolbarAsObject;
+          Node lToolbarAsNode = (Node) lToolbarAsObject;
+          DockNode lDockNode = new DockNode(lToolbarAsNode);
 
-          mHalcyonFrame.addToolbar(lToolbarAsDocPane);
+          if (lDevice instanceof NameableInterface)
+          {
+            NameableInterface lNameableInterface =
+                                                 (NameableInterface) lDevice;
+            lDockNode.setTitle(lNameableInterface.getName());
+          }
+
+          mHalcyonFrame.addToolbar(lDockNode);
         }
         catch (NoSuchMethodException | SecurityException
             | InstantiationException | IllegalAccessException
@@ -428,11 +496,6 @@ public class HalcyonGUIGenerator implements LoggingInterface
       e.printStackTrace();
     }
 
-  }
-
-  public boolean isVisible()
-  {
-    return mHalcyonFrame.isVisible();
   }
 
 }

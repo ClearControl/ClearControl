@@ -6,6 +6,11 @@ import java.util.Map;
 
 import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 
+/**
+ * Groovy scripting language interface
+ *
+ * @author royer
+ */
 public class GroovyScripting implements ScriptingLanguageInterface
 {
 

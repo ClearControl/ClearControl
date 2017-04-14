@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.variable.VariableListener;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -16,14 +17,30 @@ import coremem.recycling.RecyclerInterface;
 
 import org.junit.Test;
 
+/**
+ * Asynchronous pipeline tests
+ *
+ * @author royer
+ */
 public class AsynchronousPoolStackProcessorPipelineTests
 {
 
+  /**
+   * Test
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void test() throws InterruptedException
   {
+
+    StackRecyclerManager lStackRecyclerManager =
+                                               new StackRecyclerManager();
+
     final AsynchronousPoolStackProcessorPipeline lAsynchronousPoolStackProcessorPipeline =
                                                                                          new AsynchronousPoolStackProcessorPipeline("Test",
+                                                                                                                                    lStackRecyclerManager,
                                                                                                                                     10,
                                                                                                                                     4);
 
@@ -106,16 +123,16 @@ public class AsynchronousPoolStackProcessorPipelineTests
                                                    };
 
     lAsynchronousPoolStackProcessorPipeline.addStackProcessor(lStackProcessor1,
-                                                              lOffHeapPlanarStackFactory,
+                                                              "recycler",
+                                                              10,
                                                               10);
 
     lAsynchronousPoolStackProcessorPipeline.addStackProcessor(lStackProcessor2,
-                                                              lOffHeapPlanarStackFactory,
+                                                              "recycler",
+                                                              10,
                                                               10);
 
     assertTrue(lAsynchronousPoolStackProcessorPipeline.open());
-
-    assertTrue(lAsynchronousPoolStackProcessorPipeline.start());
 
     lAsynchronousPoolStackProcessorPipeline.getOutputVariable()
                                            .addListener(new VariableListener<StackInterface>()
@@ -156,8 +173,6 @@ public class AsynchronousPoolStackProcessorPipelineTests
 
       Thread.sleep(1);
     }
-
-    assertTrue(lAsynchronousPoolStackProcessorPipeline.stop());
 
     assertTrue(lAsynchronousPoolStackProcessorPipeline.close());
 

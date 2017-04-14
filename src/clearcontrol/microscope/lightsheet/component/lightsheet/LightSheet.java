@@ -76,7 +76,7 @@ public class LightSheet extends
    * @param pName
    *          light sheet name
    * @param pReadoutTimeInMicrosecondsPerLine
-   *          readout tie in microseconds per line
+   *          readout time in microseconds per line
    * @param pNumberOfLines
    *          number of lines
    * @param pNumberOfLaserDigitalControls
@@ -230,52 +230,71 @@ public class LightSheet extends
                                               + getName()
                                               + ".x.bounds",
                                               mLightSheetQueueTemplate.getXVariable(),
-                                              mXFunction.get());
+                                              mXFunction.get(),
+                                              -200,
+                                              200);
+
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".y.bounds",
                                               mLightSheetQueueTemplate.getYVariable(),
-                                              mYFunction.get());
+                                              mYFunction.get(),
+                                              -400,
+                                              400);
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".z.bounds",
                                               mLightSheetQueueTemplate.getZVariable(),
-                                              mZFunction.get());
+                                              mZFunction.get(),
+                                              -200,
+                                              200);
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".w.bounds",
                                               mLightSheetQueueTemplate.getWidthVariable(),
-                                              mWidthFunction.get());
+                                              mWidthFunction.get(),
+                                              0,
+                                              100);
+
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".h.bounds",
                                               mLightSheetQueueTemplate.getHeightVariable(),
-                                              mHeightFunction.get());
+                                              mHeightFunction.get(),
+                                              0,
+                                              800);
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".a.bounds",
                                               mLightSheetQueueTemplate.getAlphaInDegreesVariable(),
-                                              mAlphaFunction.get());
+                                              mAlphaFunction.get(),
+                                              -20,
+                                              20);
+
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".b.bounds",
                                               mLightSheetQueueTemplate.getBetaInDegreesVariable(),
-                                              mBetaFunction.get());
+                                              mBetaFunction.get(),
+                                              -20,
+                                              20);
 
     MachineConfiguration.getCurrentMachineConfiguration()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".p.bounds",
                                               mLightSheetQueueTemplate.getPowerVariable(),
-                                              mPowerFunction.get());
+                                              mPowerFunction.get(),
+                                              0,
+                                              1);
 
   }
 
@@ -286,9 +305,9 @@ public class LightSheet extends
   }
 
   @Override
-  public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable()
+  public BoundedVariable<Number> getEffectiveExposureInSecondsVariable()
   {
-    return mLightSheetQueueTemplate.getEffectiveExposureInMicrosecondsVariable();
+    return mLightSheetQueueTemplate.getEffectiveExposureInSecondsVariable();
   }
 
   @Override

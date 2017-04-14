@@ -7,15 +7,26 @@ import java.io.IOException;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.sourcesink.RandomStackSource;
+import clearcontrol.stack.sourcesink.synthetic.RandomStackSource;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
 import org.junit.Test;
 
+/**
+ * Random stack source tests
+ *
+ * @author royer
+ */
 public class RandomStackSourceTests
 {
 
+  /**
+   * Tests
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void test() throws IOException
   {

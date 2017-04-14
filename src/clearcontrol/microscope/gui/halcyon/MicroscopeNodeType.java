@@ -5,6 +5,7 @@ import halcyon.model.node.HalcyonNodeType;
 /**
  * HalcyonNode Type enumeration
  */
+@SuppressWarnings("javadoc")
 public enum MicroscopeNodeType implements HalcyonNodeType
 {
  Camera,
@@ -20,5 +21,4 @@ public enum MicroscopeNodeType implements HalcyonNodeType
  StackDisplay2D,
  StackDisplay3D,
  Other;
-
 }

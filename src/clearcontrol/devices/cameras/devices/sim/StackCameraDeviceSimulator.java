@@ -6,6 +6,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
@@ -22,11 +24,13 @@ import coremem.recycling.BasicRecycler;
  *
  * @author royer
  */
-public class StackCameraDeviceSimulator extends StackCameraDeviceBase
+public class StackCameraDeviceSimulator extends
+                                        StackCameraDeviceBase<StackCameraSimulationRealTimeQueue>
                                         implements
                                         LoggingInterface,
-
-                                        SimulationDeviceInterface
+                                        SimulationDeviceInterface,
+                                        AsynchronousSchedulerServiceAccess,
+                                        AsynchronousExecutorServiceAccess
 {
   private StackCameraSimulationProvider mStackCameraSimulationProvider;
 
@@ -65,35 +69,30 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
                                     StackCameraSimulationProvider pStackCameraSimulationProvider,
                                     Variable<Boolean> pTriggerVariable)
   {
-    super(pDeviceName);
+    super(pDeviceName,
+          pTriggerVariable,
+          new StackCameraSimulationRealTimeQueue());
+
+    mTemplateQueue.setStackCamera(this);
+
     setStackCameraSimulationProvider(pStackCameraSimulationProvider);
-    mTriggerVariable = pTriggerVariable;
 
-    if (mTriggerVariable == null)
-    {
-      severe("cameras",
-             "Cannot instantiate "
-                        + StackCameraDeviceSimulator.class.getSimpleName()
-                        + " because trigger variable is null!");
-      return;
-    }
-
-    mStackWidthVariable.addSetListener((o, n) -> {
+    getStackWidthVariable().addSetListener((o, n) -> {
       if (isSimLogging())
         info(getName() + ": New camera width: " + n);
     });
 
-    mStackHeightVariable.addSetListener((o, n) -> {
+    getStackHeightVariable().addSetListener((o, n) -> {
       if (isSimLogging())
         info(getName() + ": New camera height: " + n);
     });
 
-    mStackDepthVariable.addSetListener((o, n) -> {
+    getStackDepthVariable().addSetListener((o, n) -> {
       if (isSimLogging())
         info(getName() + ": New camera stack depth: " + n);
     });
 
-    mExposureInMicrosecondsVariable.addSetListener((o, n) -> {
+    getExposureInSecondsVariable().addSetListener((o, n) -> {
       if (isSimLogging())
         info(getName() + ": New camera exposure: " + n);
     });
@@ -151,7 +150,7 @@ public class StackCameraDeviceSimulator extends StackCameraDeviceBase
   @Override
   public StackCameraRealTimeQueue requestQueue()
   {
-    return new StackCameraSimulationRealTimeQueue(this);
+    return new StackCameraSimulationRealTimeQueue(mTemplateQueue);
   }
 
   @Override

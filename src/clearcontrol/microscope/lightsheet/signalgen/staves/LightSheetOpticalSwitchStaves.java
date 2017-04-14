@@ -51,7 +51,6 @@ public class LightSheetOpticalSwitchStaves
                                                              + ".index",
                                                              pDefaultStaveIndex);
       mBitStave[i] = new ConstantStave("lightsheet.s." + i, 0);
-
     }
   }
 

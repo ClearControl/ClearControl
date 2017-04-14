@@ -17,12 +17,30 @@ import clearcontrol.core.string.MemorySizeFormat;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import coremem.recycling.RecyclerInterface;
 
+/**
+ * Recycler panel
+ *
+ * @author royer
+ */
 public class RecyclerPanel extends CustomGridPane
 {
 
+  /**
+   * Prefered panel width
+   */
   public static final double cPrefWidth = 500;
+
+  /**
+   * Preferred panel height
+   */
   public static final double cPrefHeight = 100;
 
+  /**
+   * Instanciates a recycler panel given a recycler
+   * 
+   * @param pRecycler
+   *          recycler
+   */
   public RecyclerPanel(RecyclerInterface<?, ?> pRecycler)
   {
     super(0, CustomGridPane.cStandardGap);
@@ -139,6 +157,14 @@ public class RecyclerPanel extends CustomGridPane
 
   }
 
+  /**
+   * Opens panel in separate window
+   * 
+   * @param pWindowTitle
+   *          window
+   * @param pRecycler
+   *          recycler
+   */
   public static void openPaneInWindow(String pWindowTitle,
                                       RecyclerInterface<?, ?> pRecycler)
   {

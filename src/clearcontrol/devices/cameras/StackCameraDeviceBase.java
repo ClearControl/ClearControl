@@ -4,6 +4,7 @@ import java.util.concurrent.Future;
 
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.RecyclerInterface;
@@ -12,97 +13,68 @@ import coremem.recycling.RecyclerInterface;
  * Base class providing common fields and methods for all stack camera devices.
  *
  * @author royer
+ * @param <Q>
+ *          queue type
  */
-public abstract class StackCameraDeviceBase extends CameraDeviceBase
-                                            implements
-                                            StackCameraDeviceInterface,
-                                            LoggingInterface
+public abstract class StackCameraDeviceBase<Q extends StackCameraRealTimeQueue>
+                                           extends CameraDeviceBase
+                                           implements
+                                           StackCameraDeviceInterface,
+                                           LoggingInterface
 
 {
   protected Variable<Boolean> mStackMode;
-
-  protected Variable<Long> mNumberOfImagesPerPlaneVariable,
-      mStackBytesPerPixelVariable, mStackWidthVariable,
-      mStackHeightVariable, mStackMaxWidthVariable,
-      mStackMaxHeightVariable, mStackDepthVariable;
 
   protected RecyclerInterface<StackInterface, StackRequest> mRecycler;
 
   protected Variable<StackInterface> mStackVariable;
 
-  private int mMinimalNumberOfAvailableStacks = 6;
+  protected Q mTemplateQueue;
 
   /**
    * Instanciates a stack cemra device with a given name
    * 
    * @param pDeviceName
    *          device name
+   * @param pTriggerVariable
+   *          trigger variable
+   * @param pTemplateQueue
+   *          template queue
    */
-  public StackCameraDeviceBase(String pDeviceName)
+  @SuppressWarnings("unchecked")
+  public StackCameraDeviceBase(String pDeviceName,
+                               Variable<Boolean> pTriggerVariable,
+                               Q pTemplateQueue)
   {
-    super(pDeviceName);
+    super(pDeviceName, pTriggerVariable);
 
     mStackMode = new Variable<Boolean>("StackMode", true);
 
-    mNumberOfImagesPerPlaneVariable =
-                                    new Variable<Long>("NumberOfImagesPerPlane",
-                                                       1L);
-
-    mChannelVariable = new Variable<Integer>("Channel", 0);
-
-    mLineReadOutTimeInMicrosecondsVariable =
-                                           new Variable<Double>("LineReadOutTimeInMicroseconds",
-                                                                1.0);
-
-    mStackBytesPerPixelVariable =
-                                new Variable<Long>("FrameBytesPerPixel",
-                                                   2L);
-
-    mStackWidthVariable = new Variable<Long>("FrameWidth", 320L);
-
-    mStackHeightVariable = new Variable<Long>("FrameHeight", 320L);
-
-    mStackMaxWidthVariable =
-                           new Variable<Long>("FrameMaxWidth", 2048L);
-
-    mStackMaxHeightVariable = new Variable<Long>("FrameMaxHeight",
-                                                 2048L);
-
-    mStackDepthVariable = new Variable<Long>("FrameDepth", 100L);
-
-    mExposureInMicrosecondsVariable =
-                                    new Variable<Double>("ExposureInMicroseconds",
-                                                         1000.0);
-
-    mPixelSizeinNanometersVariable =
-                                   new Variable<Double>("PixelSizeinNanometers",
-                                                        160.0);
-
     mStackVariable = new Variable<>("StackReference");
+
+    @SuppressWarnings("rawtypes")
+    final VariableSetListener lVariableListener = (o, n) -> {
+      if (o != n)
+        notifyListeners(this);
+    };
+
+    mTemplateQueue = pTemplateQueue;
+
+    mTemplateQueue.getStackWidthVariable()
+                  .addSetListener(lVariableListener);
+    mTemplateQueue.getStackHeightVariable()
+                  .addSetListener(lVariableListener);
+    mTemplateQueue.getStackDepthVariable()
+                  .addSetListener(lVariableListener);
+    mTemplateQueue.getExposureInSecondsVariable()
+                  .addSetListener(lVariableListener);
+
   }
 
   @Override
   public long getCurrentStackIndex()
   {
     return getCurrentIndexVariable().get();
-  }
-
-  @Override
-  public int getMinimalNumberOfAvailableStacks()
-  {
-    return mMinimalNumberOfAvailableStacks;
-  }
-
-  @Override
-  public void setMinimalNumberOfAvailableStacks(int pMinimalNumberOfAvailableStacks)
-  {
-    mMinimalNumberOfAvailableStacks = pMinimalNumberOfAvailableStacks;
-  }
-
-  @Override
-  public Variable<Long> getNumberOfImagesPerPlaneVariable()
-  {
-    return mNumberOfImagesPerPlaneVariable;
   }
 
   @Override
@@ -118,45 +90,33 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
   }
 
   @Override
-  public Variable<Long> getStackBytesPerPixelVariable()
+  public Variable<Boolean> getStackModeVariable()
   {
-    return mStackBytesPerPixelVariable;
+    return mStackMode;
+  }
+
+  @Override
+  public Variable<Number> getExposureInSecondsVariable()
+  {
+    return mTemplateQueue.getExposureInSecondsVariable();
   }
 
   @Override
   public Variable<Long> getStackWidthVariable()
   {
-    return mStackWidthVariable;
+    return mTemplateQueue.getStackWidthVariable();
   }
 
   @Override
   public Variable<Long> getStackHeightVariable()
   {
-    return mStackHeightVariable;
+    return mTemplateQueue.getStackHeightVariable();
   }
 
   @Override
   public Variable<Long> getStackDepthVariable()
   {
-    return mStackDepthVariable;
-  }
-
-  @Override
-  public Variable<Long> getStackMaxWidthVariable()
-  {
-    return mStackMaxWidthVariable;
-  }
-
-  @Override
-  public Variable<Long> getStackMaxHeightVariable()
-  {
-    return mStackMaxHeightVariable;
-  }
-
-  @Override
-  public Variable<Boolean> getStackModeVariable()
-  {
-    return mStackMode;
+    return mTemplateQueue.getStackDepthVariable();
   }
 
   @Override
@@ -168,13 +128,13 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
   @Override
   public void trigger()
   {
-    mTriggerVariable.setEdge(false, true);
+    getTriggerVariable().setEdge(false, true);
   }
 
   @Override
   public StackCameraRealTimeQueue requestQueue()
   {
-    return new StackCameraRealTimeQueue();
+    return new StackCameraRealTimeQueue(mTemplateQueue);
   }
 
   @Override
@@ -185,8 +145,6 @@ public abstract class StackCameraDeviceBase extends CameraDeviceBase
       severe("No recycler defined for: " + this);
       return null;
     }
-    mStackDepthVariable.set((long) pQueue.getQueueLength());
-    // This method should be called by overriding methods of descendants.
     return null;
   }
 

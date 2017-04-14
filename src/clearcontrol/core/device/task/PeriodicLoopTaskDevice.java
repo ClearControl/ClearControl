@@ -7,6 +7,11 @@ import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
+/**
+ * Base class for periodic loop task device
+ *
+ * @author royer
+ */
 public abstract class PeriodicLoopTaskDevice extends TaskDevice
                                              implements
                                              LoggingInterface,
@@ -18,11 +23,28 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
 
   private volatile long mDeadline = Long.MIN_VALUE;
 
+  /**
+   * Instanciates a periodic loop task device given a device name
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public PeriodicLoopTaskDevice(final String pDeviceName)
   {
     this(pDeviceName, 0d, TimeUnit.MILLISECONDS);
   }
 
+  /**
+   * Instanciates a periodic loop device given a devicebname, period, and time
+   * unit.
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pPeriod
+   *          period
+   * @param pTimeUnit
+   *          time-unit
+   */
   public PeriodicLoopTaskDevice(final String pDeviceName,
                                 double pPeriod,
                                 TimeUnit pTimeUnit)
@@ -38,6 +60,16 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
                                                       Double.POSITIVE_INFINITY,
                                                       0.0);
 
+  }
+
+  /**
+   * Returns loop period
+   * 
+   * @return loop period variable
+   */
+  public BoundedVariable<Double> getLoopPeriodVariable()
+  {
+    return mLoopPeriodVariable;
   }
 
   @Override
@@ -66,11 +98,11 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
     }
   };
 
+  /**
+   * Loop to execute
+   * 
+   * @return true -> continue loping, false -> stop loop
+   */
   public abstract boolean loop();
-
-  public BoundedVariable<Double> getLoopPeriodVariable()
-  {
-    return mLoopPeriodVariable;
-  }
 
 }

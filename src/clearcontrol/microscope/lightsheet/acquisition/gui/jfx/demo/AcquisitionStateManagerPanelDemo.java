@@ -34,11 +34,13 @@ public class AcquisitionStateManagerPanelDemo extends Application
     InterpolatedAcquisitionState lState1 =
                                          new InterpolatedAcquisitionState("State1",
                                                                           2,
-                                                                          4);
+                                                                          4,
+                                                                          1);
     InterpolatedAcquisitionState lState2 =
                                          new InterpolatedAcquisitionState("State2",
                                                                           2,
-                                                                          4);
+                                                                          4,
+                                                                          1);
 
     lState1.setup(0, 50, 100, 1, 5, 5);
     lState2.setup(-100, 50, 100, 2, 5, 5);
@@ -56,7 +58,8 @@ public class AcquisitionStateManagerPanelDemo extends Application
             InterpolatedAcquisitionState lStateK =
                                                  new InterpolatedAcquisitionState("State2",
                                                                                   2,
-                                                                                  4);
+                                                                                  4,
+                                                                                  1);
             lStateK.setup(-100 + i, 50 + i, 100 + i, 2, 5, 5);
             lAcquisitionStateManager.addState(lStateK);
           }

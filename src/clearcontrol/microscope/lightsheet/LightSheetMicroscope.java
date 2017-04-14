@@ -1,21 +1,20 @@
 package clearcontrol.microscope.lightsheet;
 
-import static java.lang.Math.toIntExact;
-
-import java.util.concurrent.TimeUnit;
-
+import clearcl.ClearCLContext;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.device.switches.SwitchingDeviceInterface;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
+import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
+import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
+import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import clearcontrol.microscope.timelapse.Timelapse;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 
 /**
@@ -28,18 +27,84 @@ public class LightSheetMicroscope extends
                                   implements
                                   LightSheetMicroscopeInterface
 {
-  private SwitchingDeviceInterface mLightSheetOpticalSwitch;
-  private AcquisitionStateManager mAcquisitionStateManager;
+  private AcquisitionStateManager<LightSheetAcquisitionStateInterface> mAcquisitionStateManager;
+  private LightSheetFastFusionProcessor mStackProcessor;
 
   /**
    * Instanciates a lightsheet microscope with a given name.
    * 
    * @param pDeviceName
    *          device name
+   * @param pContext
+   *          ClearCL context
+   * @param pMaxStackProcessingQueueLength
+   *          max stack processing queue length
+   * @param pThreadPoolSize
+   *          thread pool size for stack processing pipeline
    */
-  public LightSheetMicroscope(String pDeviceName)
+  public LightSheetMicroscope(String pDeviceName,
+                              ClearCLContext pContext,
+                              int pMaxStackProcessingQueueLength,
+                              int pThreadPoolSize)
   {
-    super(pDeviceName);
+    super(pDeviceName,
+          pMaxStackProcessingQueueLength,
+          pThreadPoolSize);
+
+    mStackProcessor =
+                    new LightSheetFastFusionProcessor("Stack Processor",
+                                                      this,
+                                                      pContext);
+
+    mStackProcessingPipeline.addStackProcessor(mStackProcessor,
+                                               "fused stacks",
+                                               32,
+                                               32);
+
+  }
+
+  @Override
+  public int getNumberOfDetectionArms()
+  {
+    return getNumberOfDevices(DetectionArmInterface.class);
+  }
+
+  @Override
+  public int getNumberOfLightSheets()
+  {
+    return getNumberOfDevices(LightSheetInterface.class);
+  }
+
+  @Override
+  public int getNumberOfLaserLines()
+  {
+    return getNumberOfDevices(LaserDeviceInterface.class);
+  }
+
+  @Override
+  public DetectionArmInterface getDetectionArm(int pDeviceIndex)
+  {
+    return getDevice(DetectionArmInterface.class, pDeviceIndex);
+  }
+
+  @Override
+  public LightSheetInterface getLightSheet(int pDeviceIndex)
+  {
+    return getDevice(LightSheetInterface.class, pDeviceIndex);
+  }
+
+  @Override
+  public <T> void addDevice(int pDeviceIndex, T pDevice)
+  {
+    super.addDevice(pDeviceIndex, pDevice);
+
+    if (pDevice instanceof StackCameraDeviceInterface)
+    {
+      StackCameraDeviceInterface lStackCameraDevice =
+                                                    (StackCameraDeviceInterface) pDevice;
+      lStackCameraDevice.getStackVariable()
+                        .sendUpdatesTo(getStackProcesssingPipeline().getInputVariable());
+    }
   }
 
   /**
@@ -50,11 +115,10 @@ public class LightSheetMicroscope extends
    *          acquisition state manager
    * @return interactive acquisition
    */
-  public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager pAcquisitionStateManager)
+  public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager<LightSheetAcquisitionStateInterface> pAcquisitionStateManager)
   {
     InteractiveAcquisition lInteractiveAcquisition =
-                                                   new InteractiveAcquisition(getName()
-                                                                              + "InteractiveAcquisition",
+                                                   new InteractiveAcquisition("Interactive Acquisition",
                                                                               this,
                                                                               pAcquisitionStateManager);
     addDevice(0, lInteractiveAcquisition);
@@ -78,9 +142,9 @@ public class LightSheetMicroscope extends
    * 
    * @return acquisition manager
    */
-  public AcquisitionStateManager addAcquisitionStateManager()
+  public AcquisitionStateManager<LightSheetAcquisitionStateInterface> addAcquisitionStateManager()
   {
-    mAcquisitionStateManager = new AcquisitionStateManager(this);
+    mAcquisitionStateManager = new AcquisitionStateManager<>(this);
     addDevice(0, mAcquisitionStateManager);
     return mAcquisitionStateManager;
   }
@@ -92,7 +156,8 @@ public class LightSheetMicroscope extends
    */
   public TimelapseInterface addTimelapse()
   {
-    TimelapseInterface lTimelapseInterface = new Timelapse();
+    TimelapseInterface lTimelapseInterface =
+                                           new LightSheetTimelapse(this);
     addDevice(0, lTimelapseInterface);
     return lTimelapseInterface;
   }
@@ -119,17 +184,12 @@ public class LightSheetMicroscope extends
   /**
    * Sends stacks to null.
    */
-  public void sendStacksToNull()
+  public void sendPipelineStacksToNull()
   {
-    for (int i =
-               0; i < getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class); i++)
-    {
-      getStackVariable(i).addSetListener((pCurrentValue,
-                                          pNewValue) -> {
-        pNewValue.release();
-      });
-
-    }
+    getPipelineStackVariable().addSetListener((pCurrentValue,
+                                               pNewValue) -> {
+      pNewValue.release();
+    });
   }
 
   @Override
@@ -175,37 +235,30 @@ public class LightSheetMicroscope extends
   };
 
   @Override
-  public void setExposure(long pValue, TimeUnit pTimeUnit)
+  public void setExposure(double pExposureInSeconds)
   {
-    final double lExposureTimeInMicroseconds =
-                                             TimeUnit.MICROSECONDS.convert(pValue,
-                                                                           pTimeUnit);
 
     for (StackCameraDeviceInterface lStackCamera : getDeviceLists().getDevices(StackCameraDeviceInterface.class))
-      lStackCamera.getExposureInMicrosecondsVariable()
-                  .set(lExposureTimeInMicroseconds);
+      lStackCamera.getExposureInSecondsVariable()
+                  .set(pExposureInSeconds);
 
     for (LightSheetInterface lLightSheet : getDeviceLists().getDevices(LightSheetInterface.class))
-      lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-                 .set(lExposureTimeInMicroseconds);
+      lLightSheet.getEffectiveExposureInSecondsVariable()
+                 .set(pExposureInSeconds);
   };
 
   @Override
-  public long getExposure(int pCameraDeviceIndex, TimeUnit pTimeUnit)
+  public double getExposure(int pCameraDeviceIndex)
   {
 
-    long lExposureInMicroseconds = getDeviceLists()
-                                                   .getDevice(StackCameraDeviceInterface.class,
-                                                              pCameraDeviceIndex)
-                                                   .getExposureInMicrosecondsVariable()
-                                                   .get()
-                                                   .longValue();
+    double lExposureInSeconds = getDeviceLists()
+                                                .getDevice(StackCameraDeviceInterface.class,
+                                                           pCameraDeviceIndex)
+                                                .getExposureInSecondsVariable()
+                                                .get()
+                                                .doubleValue();
 
-    long lExposureInProvidedUnit =
-                                 pTimeUnit.convert(lExposureInMicroseconds,
-                                                   TimeUnit.MICROSECONDS);
-
-    return toIntExact(lExposureInProvidedUnit);
+    return lExposureInSeconds;
   };
 
   @Override

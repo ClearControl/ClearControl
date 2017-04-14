@@ -26,6 +26,14 @@ public class DetectionArm extends
                                                               new Variable<>("DetectionZFunction",
                                                                              new UnivariateAffineFunction());
 
+  private final Variable<Double> mPixelSizeInMicrometerVariable =
+                                                                new Variable<>("PixelSizeInMicrometers",
+                                                                               MachineConfiguration.getCurrentMachineConfiguration()
+                                                                                                   .getDoubleProperty("device.lsm.detection."
+                                                                                                                      + getName()
+                                                                                                                      + ".pixelsize",
+                                                                                                                      0.406));
+
   DetectionArmQueue mTemplateQueue;
 
   /**
@@ -73,7 +81,9 @@ public class DetectionArm extends
                                               + getName()
                                               + ".z.bounds",
                                               mTemplateQueue.getZVariable(),
-                                              getZFunction().get());
+                                              getZFunction().get(),
+                                              -200,
+                                              200);
   }
 
   @Override
@@ -93,6 +103,12 @@ public class DetectionArm extends
   public Variable<UnivariateAffineFunction> getZFunction()
   {
     return mZFunction;
+  }
+
+  @Override
+  public Variable<Double> getPixelSizeInMicrometerVariable()
+  {
+    return mPixelSizeInMicrometerVariable;
   }
 
   @Override

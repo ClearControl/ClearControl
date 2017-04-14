@@ -19,9 +19,9 @@ public class LightSheetQueue extends VariableQueueBase implements
 
   private LightSheet mLightSheet;
 
-  private final BoundedVariable<Number> mEffectiveExposureInMicrosecondsVariable =
-                                                                                 new BoundedVariable<Number>("EffectiveExposureInMicroseconds",
-                                                                                                             5000.0);
+  private final BoundedVariable<Number> mEffectiveExposureInSecondsVariable =
+                                                                            new BoundedVariable<Number>("EffectiveExposureInSeconds",
+                                                                                                        0.005);
 
   private final BoundedVariable<Long> mImageHeightVariable =
                                                            new BoundedVariable<Long>("ImageHeight",
@@ -56,7 +56,7 @@ public class LightSheetQueue extends VariableQueueBase implements
                                                         new BoundedVariable<Number>("LightSheetLength",
                                                                                     0.0);
   private final BoundedVariable<Number> mPowerVariable =
-                                                       new BoundedVariable<Number>("LightSheetLengthPower",
+                                                       new BoundedVariable<Number>("LightSheetPower",
                                                                                    1.0);
   private final Variable<Boolean> mAdaptPowerToWidthHeightVariable =
                                                                    new Variable<Boolean>("AdaptLightSheetPowerToWidthHeight",
@@ -201,9 +201,9 @@ public class LightSheetQueue extends VariableQueueBase implements
                                                .getNumberOfPhases();
   }
 
-  public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable()
+  public BoundedVariable<Number> getEffectiveExposureInSecondsVariable()
   {
-    return mEffectiveExposureInMicrosecondsVariable;
+    return mEffectiveExposureInSecondsVariable;
   }
 
   public BoundedVariable<Long> getImageHeightVariable()

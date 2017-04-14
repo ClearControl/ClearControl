@@ -78,12 +78,22 @@ public interface StageDeviceInterface extends
   /**
    * Enables a given DOF.
    * 
-   * @param pDOFIndex
+   * @param pIndex
    *          DOF's index
    */
   public default void enable(int pIndex)
   {
     getEnableVariable(pIndex).setEdge(false, true);
+  }
+
+  /**
+   * Enables all DOFs
+   */
+  public default void enable()
+  {
+    int lNumberOfDOFs = getNumberOfDOFs();
+    for (int i = 0; i < lNumberOfDOFs; i++)
+      enable(i);
   }
 
   /**
@@ -118,9 +128,9 @@ public interface StageDeviceInterface extends
    *          DOF index
    * @return current position
    */
-  public default double getCurrentPosition(int pIndex)
+  public default double getCurrentPosition(int pDOFIndex)
   {
-    return getCurrentPositionVariable(pIndex).get();
+    return getCurrentPositionVariable(pDOFIndex).get();
   }
 
   /**
@@ -134,13 +144,13 @@ public interface StageDeviceInterface extends
    *          timeout unit
    * @return true if finished before timeout
    */
-  public default Boolean waitToBeReady(int pIndex,
+  public default Boolean waitToBeReady(int pDOFIndex,
                                        long pTimeOut,
                                        TimeUnit pTimeUnit)
   {
     return waitFor(pTimeOut,
                    pTimeUnit,
-                   () -> getReadyVariable(pIndex).get());
+                   () -> getReadyVariable(pDOFIndex).get());
   }
 
   /**
@@ -148,9 +158,9 @@ public interface StageDeviceInterface extends
    * 
    * @param pTimeOut
    *          timeout time
-   * @param pSeconds
+   * @param pTimeUnit
    *          timeout unit
-   * @return
+   * @return true if ready before timeout
    */
   public default Boolean waitToBeReady(long pTimeOut,
                                        TimeUnit pTimeUnit)

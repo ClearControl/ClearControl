@@ -1,72 +1,145 @@
 package clearcontrol.stack;
 
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import clearcontrol.stack.metadata.StackMetaData;
 import coremem.ContiguousMemoryInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.recycling.RecyclableInterface;
 import coremem.rgc.Freeable;
 
-import org.bridj.Pointer;
-
+/**
+ * Stack interface
+ *
+ * @author royer
+ */
 public interface StackInterface extends
                                 RecyclableInterface<StackInterface, StackRequest>,
                                 SizedInBytes,
                                 Freeable
 {
-  NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage();
 
-  long getTimeStampInNanoseconds();
-
-  void setTimeStampInNanoseconds(long pUnit2nano);
-
-  long getIndex();
-
-  void setIndex(long pStackIndex);
-
-  long getBytesPerVoxel();
-
-  long getNumberOfImagesPerPlane();
-
-  void setNumberOfImagesPerPlane(long pNumberOfImagesPerPlane);
-
+  /**
+   * Returns the number of dimensions
+   * 
+   * @return number of dimensions
+   */
   int getNumberOfDimensions();
 
+  /**
+   * Returns the dimensions array
+   * 
+   * @return dimensions array
+   */
   long[] getDimensions();
 
+  /**
+   * Returns the dimension for agiven index
+   * 
+   * @param pIndex
+   *          index
+   * @return dimension (0 -> width, 1 -> height, 2 -> depth, ... )
+   */
   long getDimension(int pIndex);
 
+  /**
+   * Returns the stacks 'volume' - that is the total number of voxels
+   * 
+   * @return total number of voxels
+   */
+  long getVolume();
+
+  /**
+   * Returns stack width
+   * 
+   * @return stack width
+   */
   long getWidth();
 
+  /**
+   * Returns the stack height
+   * 
+   * @return stack height
+   */
   long getHeight();
 
+  /**
+   * Returns the stack depth
+   * 
+   * @return stack depth
+   */
   long getDepth();
 
-  double getVoxelSizeInRealUnits(int pIndex);
+  /**
+   * Returns the number of bytes per voxel
+   * 
+   * @return number of bytes per voxel
+   */
+  long getBytesPerVoxel();
 
-  void setVoxelSizeInRealUnits(int pIndex,
-                               double pVoxelSizeInRealUnits);
+  /**
+   * Sets metadata
+   * 
+   * @param pMetaData
+   *          metadata
+   */
+  void setMetaData(StackMetaData pMetaData);
 
-  double[] getVoxelSizeInRealUnits();
+  /**
+   * Returns the metadata object.
+   * 
+   * @return stack meta data interface
+   */
+  public StackMetaData getMetaData();
 
-  void setChannel(int pChannel);
-
-  int getChannel();
-
-  Pointer<Byte> getPointer(int pPlaneIndex);
-
-  ContiguousMemoryInterface getContiguousMemory();
-
-  ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex);
-
-  FragmentedMemoryInterface getFragmentedMemory();
-
+  /**
+   * Copies the meta data from the given stack
+   * 
+   * @param pStack
+   */
   void copyMetaDataFrom(StackInterface pStack);
 
-  StackInterface allocateSameSize();
+  /**
+   * Returns the contiguous memory object
+   * 
+   * @return contiguous memory
+   */
+  ContiguousMemoryInterface getContiguousMemory();
 
+  /**
+   * Returns the contiguous memory object for a given plane index
+   * 
+   * @param pPlaneIndex
+   *          plane index
+   * @return corresponding memory for plane
+   */
+  ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex);
+
+  /**
+   * Retunrns a fragmented memory object - one fragment per plane
+   * 
+   * @return fragmented memory object
+   */
+  FragmentedMemoryInterface getFragmentedMemory();
+
+  /**
+   * Returns internal data representation object
+   * 
+   * @return internal image object
+   */
+  Object getImage();
+
+  /**
+   * Returns a duplicate of this stack
+   * 
+   * @return duplicate stack
+   */
   StackInterface duplicate();
+
+  /**
+   * Allocates a stack with identical dimensions and storage.
+   * 
+   * @return stack of same size
+   */
+  StackInterface allocateSameSize();
 
 }

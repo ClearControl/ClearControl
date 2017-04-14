@@ -46,7 +46,7 @@ public class AutoPilot implements
     mStackAcquisitionVariable.set(pStackAcquisition);
     mNewAcquisitionState =
                          new InterpolationTables(mStackAcquisitionVariable.get()
-                                                                          .getCurrentState());
+                                                                          .getInterpolationTables());
 
     double lCPULoadRatio =
                          MachineConfiguration.getCurrentMachineConfiguration()
@@ -178,9 +178,9 @@ public class AutoPilot implements
     {
       System.out.format("Modules all ready! \n");
       getStackAcquisitionVariable().get()
-                                   .setCurrentState(getNewAcquisitionState());
+                                   .setInterpolationTables(getNewAcquisitionState());
       setNewAcquisitionState(new InterpolationTables(getStackAcquisitionVariable().get()
-                                                                                  .getCurrentState()));
+                                                                                  .getInterpolationTables()));
       reset();
       return false;
     }

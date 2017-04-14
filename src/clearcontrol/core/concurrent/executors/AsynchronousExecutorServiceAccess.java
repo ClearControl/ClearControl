@@ -105,6 +105,7 @@ public interface AsynchronousExecutorServiceAccess
   {
     ThreadPoolExecutor lThreadPoolExecutor =
                                            ClearControlExecutors.getThreadPoolExecutor(this);
+
     if (lThreadPoolExecutor == null)
       lThreadPoolExecutor = initializeDefaultExecutor();
 

@@ -13,6 +13,15 @@ import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.log.LoggingInterface;
 
+/**
+ * Asynchronous processor base
+ *
+ * @param <I>
+ *          input type
+ * @param <O>
+ *          output type
+ * @author royer
+ */
 public abstract class AsynchronousProcessorBase<I, O> implements
                                                AsynchronousProcessorInterface<I, O>,
                                                AsynchronousExecutorServiceAccess,
@@ -29,6 +38,14 @@ public abstract class AsynchronousProcessorBase<I, O> implements
   private final AtomicBoolean mIsProcessing =
                                             new AtomicBoolean(false);
 
+  /**
+   * Instanciates a processor given a name and max input queue size.
+   * 
+   * @param pName
+   *          name
+   * @param pMaxQueueSize
+   *          max input queue size
+   */
   public AsynchronousProcessorBase(final String pName,
                                    final int pMaxQueueSize)
   {
@@ -194,6 +211,11 @@ public abstract class AsynchronousProcessorBase<I, O> implements
     }
   }
 
+  protected BlockingQueue<I> getInputQueue()
+  {
+    return mInputQueue;
+  }
+
   @Override
   public int getInputQueueLength()
   {
@@ -206,9 +228,14 @@ public abstract class AsynchronousProcessorBase<I, O> implements
     return mInputQueue.remainingCapacity();
   }
 
-  public BlockingQueue<I> getInputQueue()
+  @Override
+  public String toString()
   {
-    return mInputQueue;
+    return String.format("AsynchronousProcessorBase [mName=%s, mReceiver=%s, mIsProcessing=%s, getInputQueueLength()=%s]",
+                         mName,
+                         mReceiver,
+                         mIsProcessing,
+                         getInputQueueLength());
   }
 
 }

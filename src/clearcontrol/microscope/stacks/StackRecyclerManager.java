@@ -24,6 +24,8 @@ public class StackRecyclerManager extends VirtualDevice
   final private ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> mRecyclerMap =
                                                                                                         new ConcurrentHashMap<>();
 
+  private boolean mAutoFree = false;
+
   /**
    * Creates StackRecyclerManager
    */
@@ -53,19 +55,19 @@ public class StackRecyclerManager extends VirtualDevice
                                                               getRecyclerMap().get(pName);
 
     if (lRecycler == null
-        || lRecycler.getNumberOfAvailableObjects() != pMaximumNumberOfAvailableObjects
-        || lRecycler.getNumberOfLiveObjects() != pMaximumNumberOfLiveObjects)
+        || lRecycler.getMaxNumberOfAvailableObjects() != pMaximumNumberOfAvailableObjects
+        || lRecycler.getMaxNumberOfLiveObjects() != pMaximumNumberOfLiveObjects)
     {
       lRecycler = new BasicRecycler<>(mOffHeapPlanarStackFactory,
                                       pMaximumNumberOfLiveObjects,
                                       pMaximumNumberOfAvailableObjects,
-                                      true);
+                                      mAutoFree);
       getRecyclerMap().put(pName, lRecycler);
       notifyListeners(this);
     }
 
-    if (lRecycler != null)
-      lRecycler.clearReleased();
+    // if (lRecycler != null)
+    // lRecycler.clearReleased();
 
     return lRecycler;
   }
@@ -99,6 +101,16 @@ public class StackRecyclerManager extends VirtualDevice
   public ConcurrentHashMap<String, RecyclerInterface<StackInterface, StackRequest>> getRecyclerMap()
   {
     return mRecyclerMap;
+  }
+
+  /**
+   * Returns underlying stack factory
+   * 
+   * @return stack factory
+   */
+  public ContiguousOffHeapPlanarStackFactory getStackFactory()
+  {
+    return mOffHeapPlanarStackFactory;
   }
 
 }

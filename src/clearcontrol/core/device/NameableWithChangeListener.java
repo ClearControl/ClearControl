@@ -7,18 +7,33 @@ import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.device.name.NameableInterface;
 
-public class NameableWithChangeListener<E> extends NameableBase
-                                       implements
-                                       HasChangeListenerInterface<E>,
-                                       NameableInterface
+/**
+ * Base class extended by classes that need both name and change listener
+ * functionality
+ *
+ * @param <E>
+ *          event type
+ * @author royer
+ */
+public abstract class NameableWithChangeListener<E>
+                                                extends NameableBase
+                                                implements
+                                                HasChangeListenerInterface<E>,
+                                                NameableInterface
 {
 
   private CopyOnWriteArrayList<ChangeListener<E>> mChangeListenerList =
                                                                       new CopyOnWriteArrayList<>();
 
-  public NameableWithChangeListener(final String pDeviceName)
+  /**
+   * Instanciates with given name
+   * 
+   * @param pName
+   *          name
+   */
+  public NameableWithChangeListener(final String pName)
   {
-    super(pDeviceName);
+    super(pName);
   }
 
   @Override

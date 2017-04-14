@@ -75,8 +75,7 @@ public class LightSheetDemo
                                  new LightSheet("demo", 9.4, 512, 2);
 
     lLightSheet.getHeightVariable().set(100.0);
-    lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-               .set(5000.0);
+    lLightSheet.getEffectiveExposureInSecondsVariable().set(0.005);
 
     LightSheetSignalGeneratorQueue lQueue =
                                           pSignalGeneratorDevice.requestQueue();

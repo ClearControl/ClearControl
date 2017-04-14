@@ -27,7 +27,6 @@ public class RandomStackProvider extends
                                final long pWidth,
                                final long pHeight,
                                final long pDepth,
-                               final int pChannel,
                                final StackInterface pStack)
   {
     final byte time = (byte) pQueue.getStackCamera()

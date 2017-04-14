@@ -99,7 +99,7 @@ public abstract class NDIteratorAdaptationModule extends
                                                                         .get();
 
     int lNumberOfControlPlanes =
-                               lStackAcquisition.getCurrentState()
+                               lStackAcquisition.getInterpolationTables()
                                                 .getNumberOfControlPlanes();
 
     int lNumberOfLighSheets =

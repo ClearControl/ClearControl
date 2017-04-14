@@ -12,6 +12,8 @@ import clearcl.backend.ClearCLBackendInterface;
 import clearcl.backend.ClearCLBackends;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
+import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
@@ -22,14 +24,16 @@ import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import clearcontrol.simulation.impl.lightsheet.LightSheetMicroscopeSimulationDevice;
-import clearcontrol.stack.processor.StackIdentityPipeline;
 
 import org.junit.Test;
 
@@ -53,15 +57,21 @@ public class LightSheetMicroscopeDemo
   @Test
   public void demoSimulatedScope() throws Exception
   {
+    boolean lDummySimulation = false;
 
-    int lNumberOfLightSheet = 1;
+    boolean l2DDisplayFlag = true;
+    boolean l3DDisplayFlag = true;
+
+    int lMaxNumberOfStacks = 32;
+
+    int lMaxCameraResolution = 1024;
+
+    int lNumberOfLightSheets = 2;
     int lNumberOfDetectionArms = 1;
 
-    // Setting up sample simulator:
-    /*StackCameraSimulationProvider lStackCameraSimulationProvider =
-                                                                 new FractalStackProvider();/**/
+    float lDivisionTime = 11f;
 
-    int lPhantomWidth = 320;
+    int lPhantomWidth = 256;
     int lPhantomHeight = lPhantomWidth;
     int lPhantomDepth = lPhantomWidth;
 
@@ -71,23 +81,28 @@ public class LightSheetMicroscopeDemo
     ClearCL lClearCL = new ClearCL(lBestBackend);
     ClearCLDevice lFastestGPUDevice = lClearCL.getDeviceByName("HD");
     ClearCLContext lContext = lFastestGPUDevice.createContext();
+
     LightSheetMicroscopeSimulatorDrosophila lSimulator =
                                                        new LightSheetMicroscopeSimulatorDrosophila(lContext,
-                                                                                                   1,
-                                                                                                   1,
-                                                                                                   1024,
-                                                                                                   11f,
+                                                                                                   lNumberOfDetectionArms,
+                                                                                                   lNumberOfLightSheets,
+                                                                                                   lMaxCameraResolution,
+                                                                                                   lDivisionTime,
                                                                                                    lPhantomWidth,
                                                                                                    lPhantomHeight,
                                                                                                    lPhantomDepth);
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
-    lSimulator.openViewerForCameraImage(0);
+    // lSimulator.openViewerForCameraImage(0);
+    lSimulator.openViewerForAllLightMaps();
 
     LightSheetMicroscopeSimulationDevice lLightSheetMicroscopeSimulatorDevice =
                                                                               new LightSheetMicroscopeSimulationDevice(lSimulator);
 
     final LightSheetMicroscope lLightSheetMicroscope =
-                                                     new LightSheetMicroscope("demoscope");
+                                                     new LightSheetMicroscope("SimulatedMicroscopeDemo",
+                                                                              lFastestGPUDevice.createContext(),
+                                                                              lMaxNumberOfStacks,
+                                                                              2);
 
     // Setting up lasers:
 
@@ -96,13 +111,11 @@ public class LightSheetMicroscopeDemo
     ArrayList<LaserDeviceInterface> lLaserList = new ArrayList<>();
     for (int l = 0; l < 3; l++)
     {
-      LaserDeviceInterface lLaser =
-                                  new LaserDeviceSimulator("Laser"
-                                                           + l,
-                                                           l,
-                                                           lLaserWavelengths[l],
-                                                           100 + 10
-                                                                 * l);
+      LaserDeviceInterface lLaser = new LaserDeviceSimulator("Laser "
+                                                             + lLaserWavelengths[l],
+                                                             l,
+                                                             lLaserWavelengths[l],
+                                                             100);
       lLaserList.add(lLaser);
       lLightSheetMicroscope.addDevice(l, lLaser);
     }
@@ -111,8 +124,10 @@ public class LightSheetMicroscopeDemo
 
     StageDeviceSimulator lStageDeviceSimulator =
                                                new StageDeviceSimulator("Stage",
-                                                                        StageType.XYZR);
+                                                                        StageType.XYZR,
+                                                                        true);
     lStageDeviceSimulator.addXYZRDOFs();
+    lStageDeviceSimulator.setSpeed(0.8);
 
     lLightSheetMicroscope.addDevice(0, lStageDeviceSimulator);
     lLightSheetMicroscope.setMainXYZRStage(lStageDeviceSimulator);
@@ -148,29 +163,19 @@ public class LightSheetMicroscopeDemo
                                                                               + c,
                                                                               lTrigger);
 
-      final StackIdentityPipeline lStackIdentityPipeline =
-                                                         new StackIdentityPipeline();
-
-      lStackIdentityPipeline.getOutputVariable()
-                            .addSetListener((pCurrentValue,
-                                             pNewValue) -> {
-                              /*System.out.println("StackIdentityPipeline"
-                                                 + lCamera.getName()
-                                                 + "->"
-                                                 + pNewValue);/**/
-
-                            });
-
       lCamera.getStackWidthVariable().set(cImageResolution);
       lCamera.getStackHeightVariable().set(cImageResolution);
-      lCamera.getExposureInMicrosecondsVariable().set(5000.0);
+      lCamera.getExposureInSecondsVariable().set(0.010);
+
+      // lCamera.getStackVariable().addSetListener((o,n)->
+      // {System.out.println("camera output:"+n);} );
 
       lLightSheetMicroscope.addDevice(c, lCamera);
 
-      lLightSheetMicroscope.setStackProcessingPipeline(c,
-                                                       lStackIdentityPipeline);
       lCameraList.add(lCamera);
     }
+
+    // lLightSheetMicroscope.sendPipelineStacksToNull();
 
     // Scaling Amplifier:
 
@@ -208,13 +213,15 @@ public class LightSheetMicroscopeDemo
     for (int c = 0; c < lNumberOfDetectionArms; c++)
     {
       final DetectionArm lDetectionArm = new DetectionArm("D" + c);
+      lDetectionArm.getPixelSizeInMicrometerVariable()
+                   .set(lSimulator.getPixelWidth(c));
 
       lLightSheetMicroscope.addDevice(c, lDetectionArm);
     }
 
     // Setting up lightsheets:
 
-    for (int l = 0; l < lNumberOfLightSheet; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       final LightSheet lLightSheet = new LightSheet("I" + l,
                                                     9.4,
@@ -223,8 +230,7 @@ public class LightSheetMicroscopeDemo
       lLightSheetMicroscope.addDevice(l, lLightSheet);
 
       lLightSheet.getHeightVariable().set(100.0);
-      lLightSheet.getEffectiveExposureInMicrosecondsVariable()
-                 .set(5000.0);
+      lLightSheet.getEffectiveExposureInSecondsVariable().set(0.010);
 
       lLightSheet.getImageHeightVariable().set(cImageResolution);
     }
@@ -233,15 +239,28 @@ public class LightSheetMicroscopeDemo
 
     LightSheetOpticalSwitch lLightSheetOpticalSwitch =
                                                      new LightSheetOpticalSwitch("OpticalSwitch",
-                                                                                 lNumberOfLightSheet);
+                                                                                 lNumberOfLightSheets);
 
     lLightSheetMicroscope.addDevice(0, lLightSheetOpticalSwitch);
 
-    AcquisitionStateManager lAddAcquisitionStateManager =
-                                                        lLightSheetMicroscope.addAcquisitionStateManager();
+    // Setting up acquisition state manager
+    AcquisitionStateManager<LightSheetAcquisitionStateInterface> lAcquisitionStateManager =
+                                                                                          lLightSheetMicroscope.addAcquisitionStateManager();
+    InterpolatedAcquisitionState lAcquisitionState =
+                                                   new InterpolatedAcquisitionState("default",
+                                                                                    lLightSheetMicroscope);
+    lAcquisitionState.setupDefault();
+    lAcquisitionStateManager.setCurrentState(lAcquisitionState);
+    lLightSheetMicroscope.addInteractiveAcquisition(lAcquisitionStateManager);
 
-    lLightSheetMicroscope.addInteractiveAcquisition(lAddAcquisitionStateManager);
-    lLightSheetMicroscope.addCalibrator();
+    // Adding calibrator:
+
+    Calibrator lCalibrator = lLightSheetMicroscope.addCalibrator();
+    lCalibrator.load();
+
+    // Adding timelapse device:
+
+    lLightSheetMicroscope.addTimelapse();
 
     // Now that the microscope has been setup, we can connect the simulator to
     // it:
@@ -253,24 +272,30 @@ public class LightSheetMicroscopeDemo
     // second, we make sure that the simulator is used as provider for the
     // simulated cameras:
     for (int c = 0; c < lNumberOfDetectionArms; c++)
+    {
+      StackCameraSimulationProvider lStackProvider;
+      if (lDummySimulation)
+        lStackProvider = new FractalStackProvider();
+      else
+        lStackProvider =
+                       lLightSheetMicroscopeSimulatorDevice.getStackProvider(c);
       lCameraList.get(c)
-                 .setStackCameraSimulationProvider(lLightSheetMicroscopeSimulatorDevice.getStackProvider(c));
+                 .setStackCameraSimulationProvider(lStackProvider);
+    }
 
     // setting up scope GUI:
 
     LightSheetMicroscopeGUI lMicroscopeGUI =
                                            new LightSheetMicroscopeGUI(lLightSheetMicroscope,
-                                                                       true,
-                                                                       true);
+                                                                       l2DDisplayFlag,
+                                                                       l3DDisplayFlag);
     // lMicroscopeGUI.addGroovyScripting("lsm");
     // lMicroscopeGUI.addJythonScripting("lsm");
 
-    lMicroscopeGUI.generate();
+    lMicroscopeGUI.setup();
 
     if (lMicroscopeGUI != null)
       assertTrue(lMicroscopeGUI.open());
-    else
-      lLightSheetMicroscope.sendStacksToNull();
 
     assertTrue(lLightSheetMicroscope.open());
     Thread.sleep(1000);

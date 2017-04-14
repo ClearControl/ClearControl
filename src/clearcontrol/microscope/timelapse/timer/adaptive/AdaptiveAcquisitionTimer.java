@@ -39,7 +39,7 @@ public class AdaptiveAcquisitionTimer extends TimelapseTimerBase
   public AdaptiveAcquisitionTimer(InterpolatedAcquisitionState pStackAcquisition,
                                   double pPValueThreshold)
   {
-    super();
+    super(0, TimeUnit.NANOSECONDS);
     mStackAcquisition = pStackAcquisition;
     setProbabilityThreshold(pPValueThreshold);
   }

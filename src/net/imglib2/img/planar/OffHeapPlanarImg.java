@@ -59,6 +59,8 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
   @Override
   public long getSizeInBytes()
   {
+    if (isFree())
+      return 0;
     long lSizeInBytes = 0;
     for (int i = 0; i < numSlices(); i++)
       lSizeInBytes += getPlaneContiguousMemory(i).getSizeInBytes();

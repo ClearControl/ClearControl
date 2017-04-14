@@ -30,17 +30,22 @@ public abstract class StackCameraSimulationProviderBase implements
 
     long lNumberOfKeptImages = sum(lKeepPlaneList);
 
-    final long lWidth = max(1, pQueue.getStackWidth());
-    final long lHeight = max(1, pQueue.getStackHeight());
+    final long lWidth = max(1,
+                            pQueue.getStackWidthVariable()
+                                  .get()
+                                  .longValue());
+    final long lHeight = max(1,
+                             pQueue.getStackHeightVariable()
+                                   .get()
+                                   .longValue());
 
     final long lDepth = max(1, lNumberOfKeptImages);
-    final int lChannel = pQueue.getChannel();
 
     final StackRequest lStackRequest = StackRequest.build(lWidth,
                                                           lHeight,
                                                           lDepth);
 
-    final StackInterface lStack = pRecycler.getOrWait(1,
+    final StackInterface lStack = pRecycler.getOrWait(10,
                                                       TimeUnit.SECONDS,
                                                       lStackRequest);
 
@@ -51,7 +56,6 @@ public abstract class StackCameraSimulationProviderBase implements
                     lWidth,
                     lHeight,
                     lDepth,
-                    lChannel,
                     lStack);
     }
 
@@ -63,7 +67,6 @@ public abstract class StackCameraSimulationProviderBase implements
                                         long pWidth,
                                         long pHeight,
                                         long pDepth,
-                                        int pChannel,
                                         StackInterface pStack);
 
   /**

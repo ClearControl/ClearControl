@@ -36,6 +36,9 @@ public class CameraDevicePanelDemo extends Application
                                                                                           lTrigger);
     lStackCameraDeviceSimulator.setSimLogging(true);
 
+    lStackCameraDeviceSimulator.getStackWidthVariable().set(316L);
+    lStackCameraDeviceSimulator.getStackHeightVariable().set(632L);
+
     CameraDevicePanel lCameraDevicePanel =
                                          new CameraDevicePanel(lStackCameraDeviceSimulator);
 

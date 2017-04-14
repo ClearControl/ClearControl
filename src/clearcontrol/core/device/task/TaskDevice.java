@@ -9,12 +9,20 @@ import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.startstop.SignalStartStopDevice;
+import clearcontrol.core.device.startstop.StartStopSignalVariablesInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 
+/**
+ * Base class for task devices
+ *
+ * @author royer
+ */
 public abstract class TaskDevice extends SignalStartStopDevice
                                  implements
                                  Runnable,
+                                 StartStopSignalVariablesInterface,
+                                 IsRunningTaskInterface,
                                  OpenCloseDeviceInterface,
                                  AsynchronousExecutorServiceAccess,
                                  LoggingInterface
@@ -24,12 +32,28 @@ public abstract class TaskDevice extends SignalStartStopDevice
   private final Variable<Throwable> mLastExceptionVariable;
 
   private volatile CountDownLatch mStartedLatch, mStoppedLatch;
+  private volatile Runnable mRunnableWrapper;
+  private volatile Future<?> mTaskFuture;
 
+  /**
+   * Instanciates a task device given a device name
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public TaskDevice(final String pDeviceName)
   {
     this(pDeviceName, Thread.NORM_PRIORITY);
   }
 
+  /**
+   * Instanciates a task device given a device name and thread priority.
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pThreadPriority
+   *          thread priority
+   */
   public TaskDevice(final String pDeviceName, int pThreadPriority)
   {
     super(pDeviceName);
@@ -50,23 +74,42 @@ public abstract class TaskDevice extends SignalStartStopDevice
                                                         Integer.MAX_VALUE);
   }
 
+  /**
+   * Returns the boolean variable that indicates whether the task is currently
+   * running.
+   * 
+   * @return is-running variable
+   */
+  @Override
   public Variable<Boolean> getIsRunningVariable()
   {
     return mIsRunningVariable;
   }
 
-  public void stopTask()
+  /**
+   * Returns stop signal variable
+   * 
+   * @return stop signal variable
+   */
+  public Variable<Boolean> getStopSignalVariable()
   {
-    mStopSignal.set(true);
+    return mStopSignal;
   }
 
+  /**
+   * Starts this task
+   * 
+   * @return true if succeeded
+   */
   public boolean startTask()
   {
+    if (mTaskFuture != null && !mTaskFuture.isDone())
+      return false;
 
     mStartedLatch = new CountDownLatch(1);
     mStoppedLatch = new CountDownLatch(1);
 
-    Runnable lRunnableWrapper = () -> {
+    mRunnableWrapper = () -> {
       mStopSignal.set(false);
       mIsRunningVariable.setEdge(false, true);
       mStartedLatch.countDown();
@@ -86,16 +129,33 @@ public abstract class TaskDevice extends SignalStartStopDevice
       }
     };
 
-    Future<?> lExecuteAsynchronously =
-                                     executeAsynchronously(lRunnableWrapper);
-    return lExecuteAsynchronously != null;
+    mTaskFuture = executeAsynchronously(mRunnableWrapper);
+    return mTaskFuture != null;
   }
 
+  /**
+   * Stops this task
+   */
+  public void stopTask()
+  {
+    mStopSignal.set(true);
+  }
+
+  /**
+   * Waits for task to start
+   * 
+   * @param pTimeOut
+   *          time out
+   * @param pTimeUnit
+   *          time unit
+   * @return true -> success, false -> timeout
+   */
   public boolean waitForStarted(long pTimeOut, TimeUnit pTimeUnit)
   {
     try
     {
-      return mStartedLatch.await(pTimeOut, pTimeUnit);
+      if (mStartedLatch != null)
+        return mStartedLatch.await(pTimeOut, pTimeUnit);
     }
     catch (InterruptedException e)
     {
@@ -104,6 +164,15 @@ public abstract class TaskDevice extends SignalStartStopDevice
     return false;
   }
 
+  /**
+   * Waits for task to stop
+   * 
+   * @param pTimeOut
+   *          time out
+   * @param pTimeUnit
+   *          time unit
+   * @return true -> success, false -> timeout
+   */
   public boolean waitForStopped(int pTimeOut, TimeUnit pTimeUnit)
   {
     try
@@ -111,7 +180,10 @@ public abstract class TaskDevice extends SignalStartStopDevice
       boolean lResult = false;
       try
       {
-        lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
+        if (mStoppedLatch != null)
+          lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
+        else
+          lResult = true;
       }
       catch (InterruptedException e)
       {
@@ -133,9 +205,16 @@ public abstract class TaskDevice extends SignalStartStopDevice
 
   }
 
-  public Variable<Boolean> getStopSignalVariable()
+  public boolean open()
   {
-    return mStopSignal;
+    // nothing to do
+    return true;
+  }
+
+  public boolean close()
+  {
+    stopTask();
+    return waitForStopped(100, TimeUnit.SECONDS);
   }
 
 }

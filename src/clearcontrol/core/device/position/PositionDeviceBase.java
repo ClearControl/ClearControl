@@ -7,6 +7,11 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 
+/**
+ * Base class for position devices
+ *
+ * @author royer
+ */
 public abstract class PositionDeviceBase extends VirtualDevice
                                          implements
                                          PositionDeviceInterface
@@ -15,6 +20,14 @@ public abstract class PositionDeviceBase extends VirtualDevice
   protected int[] mValidPositions;
   private ConcurrentHashMap<Integer, String> mPositionToNameMap;
 
+  /**
+   * Instanciates a position device given a device name and valid positions
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pValidPositions
+   *          valid position
+   */
   public PositionDeviceBase(String pDeviceName, int[] pValidPositions)
   {
     super(pDeviceName);
@@ -29,9 +42,19 @@ public abstract class PositionDeviceBase extends VirtualDevice
     }
   }
 
+  /**
+   * Instanciates a position device given a device path, name and index.
+   * 
+   * @param pDevicePath
+   *          device path
+   * @param pDeviceName
+   *          device name
+   * @param pDeviceIndex
+   *          device index
+   */
   public PositionDeviceBase(String pDevicePath,
                             String pDeviceName,
-                            int pDeviceindex)
+                            int pDeviceIndex)
   {
     super(pDeviceName);
     ArrayList<String> lList =

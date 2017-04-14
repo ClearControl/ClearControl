@@ -2,6 +2,9 @@ package clearcontrol.microscope.timelapse.timer;
 
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
+
 /**
  * Interface implemented by all timelapse timers
  *
@@ -55,7 +58,7 @@ public interface TimelapseTimerInterface
   }
 
   /**
-   * Waits until next acquisition is due, with a tiemout.
+   * Waits until next acquisition is due, with a timeout.
    * 
    * @param pTimeout
    *          timeout
@@ -75,8 +78,47 @@ public interface TimelapseTimerInterface
   public long getLastAcquisitionTime(TimeUnit pTimeUnit);
 
   /**
-   * Notifies of acquisition
+   * Notifies of acquisition. This must be called _just_ before the acquistion
+   * starts (not after!).
    */
   void notifyAcquisition();
+
+  /**
+   * Returns the current acquisition interval in the given time unit
+   * 
+   * @param pTimeUnit
+   *          time unit
+   * @return acquisition interval
+   */
+  long getAcquisitionInterval(TimeUnit pTimeUnit);
+
+  /**
+   * Returns acquisition interval variable
+   * 
+   * @return acquisition interval variable
+   */
+  Variable<Long> getAcquisitionIntervalVariable();
+
+  /**
+   * Returns actual acquisition interval variable This the last measured
+   * interval between the last acquired time point and the one before that.
+   * 
+   * @return actual acquisition interval variable
+   */
+  Variable<Long> getActualAcquisitionIntervalVariable();
+
+  /**
+   * Returns acquisition interval unit variable
+   * 
+   * @return acquisition interval unit variable
+   */
+  public Variable<TimeUnitEnum> getAcquisitionIntervalUnitVariable();
+
+  /**
+   * Returns actual acquisition interval unit variable
+   * 
+   * @return actual acquisition interval unit variable
+   */
+  public Variable<TimeUnitEnum> getActualAcquisitionIntervalUnitVariable();
 
 }

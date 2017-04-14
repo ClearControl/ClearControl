@@ -27,6 +27,11 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  * 
  * @author royer
  */
+/**
+ *
+ *
+ * @author royer
+ */
 public class MachineConfiguration implements LoggingInterface
 {
   private static final String cComments =
@@ -47,7 +52,7 @@ public class MachineConfiguration implements LoggingInterface
 
   private Properties mProperties;
 
-  private File mRTLibFolder;
+  private File mClearControlFolder;
   private File mPersistentVariablesFolder;
 
   /**
@@ -61,11 +66,12 @@ public class MachineConfiguration implements LoggingInterface
     {
       final String lUserHome = System.getProperty("user.home");
       final File lUserHomeFolder = new File(lUserHome);
-      mRTLibFolder = new File(lUserHomeFolder, "RTlib/");
-      mRTLibFolder.mkdirs();
+      mClearControlFolder =
+                          new File(lUserHomeFolder, ".clearcontrol/");
+      mClearControlFolder.mkdirs();
       mPersistentVariablesFolder = getFolder("PersistentVariables");
 
-      final File lConfigurationFile = new File(mRTLibFolder,
+      final File lConfigurationFile = new File(mClearControlFolder,
                                                "configuration.txt");
 
       if (!lConfigurationFile.exists())
@@ -87,7 +93,9 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
-   * @return
+   * Return properties used internally.
+   * 
+   * @return properties object
    */
   public Properties getProperties()
   {
@@ -95,8 +103,11 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns true if the properties contain a given key
+   * 
    * @param pKey
-   * @return
+   *          key
+   * @return true if contains key
    */
   public boolean containsKey(String pKey)
   {
@@ -106,9 +117,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a string property for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultValue
-   * @return
+   *          default string property
+   * @return string property
    */
   public String getStringProperty(String pKey, String pDefaultValue)
   {
@@ -118,9 +133,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns an integer property for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultValue
-   * @return
+   *          default integer property
+   * @return interger property
    */
   public Integer getIntegerProperty(String pKey,
                                     Integer pDefaultValue)
@@ -135,9 +154,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a long property for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultValue
-   * @return
+   *          default long property
+   * @return long property
    */
   public Long getLongProperty(String pKey, Long pDefaultValue)
   {
@@ -151,9 +174,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns double property for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultValue
-   * @return
+   *          default double value
+   * @return double property
    */
   public Double getDoubleProperty(String pKey, Double pDefaultValue)
   {
@@ -167,9 +194,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns boolean proprty for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultValue
-   * @return
+   *          default boolean value
+   * @return boolean property
    */
   public boolean getBooleanProperty(String pKey,
                                     Boolean pDefaultValue)
@@ -188,9 +219,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns file property for a given key
+   * 
    * @param pKey
+   *          key
    * @param pDefaultFile
-   * @return
+   *          default file
+   * @return file property
    */
   public File getFileProperty(String pKey, File pDefaultFile)
   {
@@ -200,10 +235,15 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns serial device port for a given device name and device index
+   * 
    * @param pDeviceName
+   *          device name
    * @param pDeviceIndex
+   *          device index
    * @param pDefaultPort
-   * @return
+   *          default port
+   * @return serial device port
    */
   public String getSerialDevicePort(String pDeviceName,
                                     int pDeviceIndex,
@@ -217,10 +257,16 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a networ device host name and port for a given device name and
+   * index
+   * 
    * @param pDeviceName
+   *          device name
    * @param pDeviceIndex
+   *          device index
    * @param pDefaultHostNameAndPort
-   * @return
+   *          default host name amd port
+   * @return hostname and port
    */
   public String[] getNetworkDeviceHostnameAndPort(String pDeviceName,
                                                   int pDeviceIndex,
@@ -236,9 +282,13 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns IO device port for given device name
+   * 
    * @param pDeviceName
+   *          device name
    * @param pDefaultPort
-   * @return
+   *          default IO port
+   * @return IO device port
    */
   public Integer getIODevicePort(String pDeviceName,
                                  Integer pDefaultPort)
@@ -248,6 +298,15 @@ public class MachineConfiguration implements LoggingInterface
     return lPort;
   }
 
+  /**
+   * Returns true if the given device is present
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pDeviceIndex
+   *          device index
+   * @return true if device present
+   */
   public boolean getIsDevicePresent(String pDeviceName,
                                     int pDeviceIndex)
   {
@@ -258,8 +317,12 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a list of values given a prefix key. Keys have the format:
+   * prefix.0, prefix.1, prefix.2, ... prefix.n
+   * 
    * @param pPrefix
-   * @return
+   *          prefix
+   * @return list of values (strings)
    */
   public ArrayList<String> getList(String pPrefix)
   {
@@ -276,18 +339,24 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a folder with the clearcontrol folder (.clearcontrol), and creates
+   * it if it does not exist yet
+   * 
    * @param pFolderName
-   * @return
+   *          folder name
+   * @return folder
    */
   public File getFolder(String pFolderName)
   {
-    File lFolder = new File(mRTLibFolder, pFolderName);
+    File lFolder = new File(mClearControlFolder, pFolderName);
     lFolder.mkdirs();
     return lFolder;
   }
 
   /**
-   * @return
+   * Returns the folder holding any persistency information
+   * 
+   * @return persistency folder
    */
   public File getPersistencyFolder()
   {
@@ -295,8 +364,11 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns the file for persisting a variable with given name
+   * 
    * @param pVariableName
-   * @return
+   *          variable name
+   * @return file
    */
   public File getPersistentVariableFile(String pVariableName)
   {
@@ -304,8 +376,11 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Returns a univariate affine function given a function name
+   * 
    * @param pFunctionName
-   * @return
+   *          function name
+   * @return affine function
    */
   public UnivariateAffineFunction getUnivariateAffineFunction(String pFunctionName)
   {
@@ -349,8 +424,12 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Return bounds for variable
+   * 
    * @param pBoundsName
+   *          bounds name
    * @param pVariable
+   *          variable
    */
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
                                                                                     BoundedVariable<T> pVariable)
@@ -359,13 +438,46 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
+   * Sets the bounds for a given variable.
+   * 
    * @param pBoundsName
+   *          bounds name
    * @param pVariable
+   *          variable
    * @param pFunction
+   *          function to use
    */
+  @SuppressWarnings("unchecked")
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
                                                                                     BoundedVariable<T> pVariable,
                                                                                     InvertibleFunction<F> pFunction)
+  {
+    getBoundsForVariable(pBoundsName,
+                         pVariable,
+                         pFunction,
+                         (T) new Double(-100),
+                         (T) new Double(100));
+  }
+
+  /**
+   * Sets the bounds for a given variable.
+   * 
+   * @param pBoundsName
+   *          bounds name
+   * @param pVariable
+   *          variable
+   * @param pFunction
+   *          function to use
+   * @param pDefaultMin
+   *          default min
+   * @param pDefaultNax
+   *          default max
+   */
+  public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
+                                                                                    BoundedVariable<T> pVariable,
+                                                                                    InvertibleFunction<F> pFunction,
+                                                                                    T pDefaultMin,
+                                                                                    T pDefaultNax)
   {
     String lAffineFunctionString =
                                  getStringProperty(pBoundsName, null);
@@ -374,7 +486,7 @@ public class MachineConfiguration implements LoggingInterface
     {
       warning("Cannot find following bounds def in configuration file: "
               + pBoundsName);
-      pVariable.setMinMax(-100.0, 100.0);
+      pVariable.setMinMax(pDefaultMin, pDefaultNax);
 
       return;
     }

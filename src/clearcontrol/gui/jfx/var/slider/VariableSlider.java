@@ -172,11 +172,13 @@ public class VariableSlider<T extends Number> extends HBox
     getChildren().add(getSlider());
     getChildren().add(getTextField());
 
-    if (pMin.get() instanceof Double || pMin.get() instanceof Float)
+    if (mVariable.get() instanceof Double
+        || mVariable.get() instanceof Float)
     {
       setTextFieldDouble(mVariable.get());
     }
-    if (pMin.get() instanceof Integer || pMin.get() instanceof Long)
+    if (mVariable.get() instanceof Integer
+        || mVariable.get() instanceof Long)
     {
       setTextFieldLongValue(mVariable.get());
     }
@@ -210,8 +212,8 @@ public class VariableSlider<T extends Number> extends HBox
             return;
           }
 
-          if (pMin.get() instanceof Double
-              || pMin.get() instanceof Float)
+          if (mVariable.get() instanceof Double
+              || mVariable.get() instanceof Float)
             setTextFieldDouble(n);
           else
             setTextFieldLongValue(n);
@@ -224,7 +226,8 @@ public class VariableSlider<T extends Number> extends HBox
     Platform.runLater(() -> {
       setSliderValue(mVariable.get().doubleValue());
 
-      if (pMin.get() instanceof Double || pMin.get() instanceof Float)
+      if (mVariable.get() instanceof Double
+          || mVariable.get() instanceof Float)
         setTextFieldDouble(mVariable.get().doubleValue());
       else
         setTextFieldLongValue(mVariable.get().longValue());
@@ -234,11 +237,12 @@ public class VariableSlider<T extends Number> extends HBox
 
   private void setTextFieldValue(Number n)
   {
-    if (mMin.get() instanceof Double || mMin.get() instanceof Float)
+    if (mVariable.get() instanceof Double
+        || mVariable.get() instanceof Float)
       setTextFieldDouble(n);
 
-    else if (mMin.get() instanceof Integer
-             || mMin.get() instanceof Long)
+    else if (mVariable.get() instanceof Integer
+             || mVariable.get() instanceof Long)
       setTextFieldLongValue(n);
   }
 
@@ -300,17 +304,17 @@ public class VariableSlider<T extends Number> extends HBox
                                    correctValueDouble(pNewValue.doubleValue());
       long lCorrectedValueLong =
                                correctValueLong(pNewValue.longValue());
-      if (mMin.get() instanceof Double)
+      if (mVariable.get() instanceof Double)
         mVariable.set((T) new Double(lCorrectedValueDouble));
-      else if (mMin.get() instanceof Float)
+      else if (mVariable.get() instanceof Float)
         mVariable.set((T) new Float(lCorrectedValueDouble));
-      else if (mMin.get() instanceof Long)
+      else if (mVariable.get() instanceof Long)
         mVariable.set((T) new Long(lCorrectedValueLong));
-      else if (mMin.get() instanceof Integer)
+      else if (mVariable.get() instanceof Integer)
         mVariable.set((T) new Integer((int) lCorrectedValueLong));
-      else if (mMin.get() instanceof Short)
+      else if (mVariable.get() instanceof Short)
         mVariable.set((T) new Short((short) lCorrectedValueLong));
-      else if (mMin.get() instanceof Byte)
+      else if (mVariable.get() instanceof Byte)
         mVariable.set((T) new Byte((byte) lCorrectedValueLong));
     }
   }

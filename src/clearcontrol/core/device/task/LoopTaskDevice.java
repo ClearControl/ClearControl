@@ -3,11 +3,22 @@ package clearcontrol.core.device.task;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.log.LoggingInterface;
 
+/**
+ * Base class for loop task devices
+ *
+ * @author royer
+ */
 public abstract class LoopTaskDevice extends TaskDevice implements
                                      LoggingInterface,
                                      WaitingInterface
 {
 
+  /**
+   * Instanciates a loop task device
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public LoopTaskDevice(final String pDeviceName)
   {
     super(pDeviceName);
@@ -18,7 +29,6 @@ public abstract class LoopTaskDevice extends TaskDevice implements
   {
     while (!getStopSignalBooleanVariable().get())
     {
-
       boolean lResult = loop();
 
       if (!lResult)
@@ -26,6 +36,11 @@ public abstract class LoopTaskDevice extends TaskDevice implements
     }
   };
 
+  /**
+   * loop to execute
+   * 
+   * @return true -> continue looping, false -> stop loop
+   */
   public abstract boolean loop();
 
 }

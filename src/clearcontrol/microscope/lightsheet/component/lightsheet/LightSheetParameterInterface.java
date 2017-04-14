@@ -21,11 +21,11 @@ public interface LightSheetParameterInterface
   public Variable<Long> getImageHeightVariable();
 
   /**
-   * Returns thevariable holding the effective exposure in microseconds
+   * Returns thevariable holding the effective exposure in seconds
    * 
-   * @return effective exposure in microseconds variable
+   * @return effective exposure in seconds variable
    */
-  public BoundedVariable<Number> getEffectiveExposureInMicrosecondsVariable();
+  public BoundedVariable<Number> getEffectiveExposureInSecondsVariable();
 
   /**
    * Returns the variable holding the overscan value

@@ -72,16 +72,6 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     // Collecting variables:
 
-    BoundedVariable<Number> lXLow =
-                                  pAcquisitionState.getStackXLowVariable();
-    BoundedVariable<Number> lXHigh =
-                                   pAcquisitionState.getStackXHighVariable();
-
-    BoundedVariable<Number> lYLow =
-                                  pAcquisitionState.getStackYLowVariable();
-    BoundedVariable<Number> lYHigh =
-                                   pAcquisitionState.getStackYHighVariable();
-
     BoundedVariable<Number> lZLow =
                                   pAcquisitionState.getStackZLowVariable();
     BoundedVariable<Number> lZHigh =
@@ -91,24 +81,6 @@ public class AcquisitionStatePanel extends CustomGridPane
                             pAcquisitionState.getStackZStepVariable();
 
     // Creating elements:
-
-    VariableRangeSlider<Number> lXRangeSlider =
-                                              new VariableRangeSlider<>("X-range",
-                                                                        lXLow,
-                                                                        lXHigh,
-                                                                        lXLow.getMinVariable(),
-                                                                        lXHigh.getMaxVariable(),
-                                                                        0,
-                                                                        5);
-
-    VariableRangeSlider<Number> lYRangeSlider =
-                                              new VariableRangeSlider<>("Y-range",
-                                                                        lYLow,
-                                                                        lYHigh,
-                                                                        lYLow.getMinVariable(),
-                                                                        lYHigh.getMaxVariable(),
-                                                                        0,
-                                                                        5);
 
     VariableRangeSlider<Number> lZRangeSlider =
                                               new VariableRangeSlider<>("Z-range",
@@ -168,24 +140,14 @@ public class AcquisitionStatePanel extends CustomGridPane
     add(lStageZSlider.getTextField(), 1, 2);
     add(lStageZSlider.getSlider(), 2, 2);
 
-    add(lXRangeSlider.getLabel(), 0, 3);
-    add(lXRangeSlider.getLowTextField(), 1, 3);
-    add(lXRangeSlider.getRangeSlider(), 2, 3);
-    add(lXRangeSlider.getHighTextField(), 3, 3);
+    add(lZRangeSlider.getLabel(), 0, 3);
+    add(lZRangeSlider.getLowTextField(), 1, 3);
+    add(lZRangeSlider.getRangeSlider(), 2, 3);
+    add(lZRangeSlider.getHighTextField(), 3, 3);
     add(lZStepTextField.getLabel(), 5, 3);
     add(lZStepTextField.getTextField(), 6, 3);
 
-    add(lYRangeSlider.getLabel(), 0, 4);
-    add(lYRangeSlider.getLowTextField(), 1, 4);
-    add(lYRangeSlider.getRangeSlider(), 2, 4);
-    add(lYRangeSlider.getHighTextField(), 3, 4);
-
-    add(lZRangeSlider.getLabel(), 0, 5);
-    add(lZRangeSlider.getLowTextField(), 1, 5);
-    add(lZRangeSlider.getRangeSlider(), 2, 5);
-    add(lZRangeSlider.getHighTextField(), 3, 5);
-
-    add(lMultiChart, 0, 6);
+    add(lMultiChart, 0, 4);
     GridPane.setColumnSpan(lMultiChart, 8);
 
     // Update events:

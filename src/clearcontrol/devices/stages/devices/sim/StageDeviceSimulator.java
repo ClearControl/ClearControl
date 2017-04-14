@@ -1,6 +1,6 @@
 package clearcontrol.devices.stages.devices.sim;
 
-import static clearcontrol.core.math.vectors.VectorTransforms.normalize;
+import static clearcontrol.core.math.vectors.VectorArrays.normalize;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
@@ -14,6 +14,11 @@ import clearcontrol.devices.stages.StageDeviceBase;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
 
+/**
+ * Stage simulator device
+ *
+ * @author royer
+ */
 public class StageDeviceSimulator extends StageDeviceBase implements
                                   StageDeviceInterface,
                                   SimulationDeviceInterface,
@@ -21,60 +26,73 @@ public class StageDeviceSimulator extends StageDeviceBase implements
                                   LoggingInterface
 
 {
+  private static final int cSimulationPeriodInMilliseconds = 10;
 
+  private boolean mConstantSpeed;
   private double mEpsilon = 0.5;
   private double mSpeed = 0.05;
-  private double[] mDirectionVector =
-  { 1.0, 1.0, 1.0, 1.0 };
+  private final double[] mDirectionVector = new double[4];
 
   private StageType mStageType;
 
+  /**
+   * Instanciates a stage simulator device
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pStageType
+   *          stage type
+   */
   public StageDeviceSimulator(String pDeviceName,
                               StageType pStageType)
   {
+    this(pDeviceName, pStageType, false);
+
+  }
+
+  /**
+   * Instanciates a stage simulator device with given device name, stage type,
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pStageType
+   *          stage type
+   * @param pConstantSpeed
+   *          true-> waits for
+   */
+  public StageDeviceSimulator(String pDeviceName,
+                              StageType pStageType,
+                              boolean pConstantSpeed)
+  {
     super(pDeviceName);
     mStageType = pStageType;
+    mConstantSpeed = pConstantSpeed;
 
+    if (mConstantSpeed)
+    {
+      goConstantSpeed();
+    }
+    else
+    {
+      goDynamicSpeed();
+    }
+
+  }
+
+  private void goConstantSpeed()
+  {
     scheduleAtFixedRate(() -> {
       try
       {
-        moveToTarget();
-      }
-      catch (Throwable e)
-      {
-        e.printStackTrace();
-      }
-    }, 1, TimeUnit.MILLISECONDS);
-  }
+        computeDirectionVector();
 
-  public StageDeviceSimulator(String pDeviceName,
-                              StageType pStageType,
-                              boolean pFirstSetThenGo)
-  {
-    super(pDeviceName);
-    mStageType = pStageType;
-
-  }
-
-  public void go()
-  {
-    info("go");
-    schedule(() -> {
-      setDirectionVector();
-
-      boolean flag = true;
-      info("inside go");
-      while (flag)
-      {
         for (int i = 0; i < getNumberOfDOFs(); i++)
-        {
           if (mEnableVariables.get(i).get())
           {
             double lTarget = mTargetPositionVariables.get(i).get();
             double lCurrent = mCurrentPositionVariables.get(i).get();
             double lErrorLinear = lTarget - lCurrent;
 
-            //
             double lNewCurrent = lCurrent
                                  + mSpeed * mDirectionVector[i];
 
@@ -83,74 +101,93 @@ public class StageDeviceSimulator extends StageDeviceBase implements
             else if (!mReadyVariables.get(i).get())
             {
               mReadyVariables.get(i).set(true);
-              flag = false;
             }
-            try
-            {
-              Thread.sleep(1);
-            }
-            catch (InterruptedException e)
-            {
-              e.printStackTrace();
-            }
-
           }
-        }
+
+      }
+      catch (Throwable e)
+      {
+        e.printStackTrace();
       }
 
-    }, 1, TimeUnit.MILLISECONDS);
+    }, cSimulationPeriodInMilliseconds, TimeUnit.MILLISECONDS);
   }
 
-  private void setDirectionVector()
+  private void goDynamicSpeed()
   {
-    System.out.println("Setting the direction vector for the stage...");
-    int n = getNumberOfDOFs();
-    info("Number of DOF: " + n);
-    this.mDirectionVector = new double[n];
-    int indRot = -1;
-    for (int i = 0; i < n; i++)
-    {
 
+    scheduleAtFixedRate(() -> {
+      try
+      {
+
+        for (int i = 0; i < getNumberOfDOFs(); i++)
+          if (mEnableVariables.get(i).get())
+          {
+            double lTarget = mTargetPositionVariables.get(i).get();
+            double lCurrent = mCurrentPositionVariables.get(i).get();
+            double lErrorLinear = lTarget - lCurrent;
+
+            double lNewCurrent = lCurrent
+                                 + mSpeed * signum(lErrorLinear);
+            // double lNewCurrent = lCurrent + mSpeed*mDirectionVector[i];
+
+            if (abs(lErrorLinear) > mEpsilon)
+              mCurrentPositionVariables.get(i).set(lNewCurrent);
+            else if (!mReadyVariables.get(i).get())
+              mReadyVariables.get(i).set(true);
+
+          }
+      }
+      catch (Throwable e)
+      {
+        e.printStackTrace();
+      }
+    }, cSimulationPeriodInMilliseconds, TimeUnit.MILLISECONDS);
+
+  }
+
+  private void computeDirectionVector()
+  {
+    int n = getNumberOfDOFs();
+    if (n == 0)
+      return;
+
+    for (int i = 0; i < n; i++)
       if (mEnableVariables.get(i).get())
       {
-        if (getDOFNameByIndex(i) != "R")
-        {
+        if (isSimLogging())
           info("DOF " + i + ", " + getDOFNameByIndex(i));
-          mDirectionVector[i] = mTargetPositionVariables.get(i).get()
-                                - mCurrentPositionVariables.get(i)
-                                                           .get();
+        mDirectionVector[i] = mTargetPositionVariables.get(i).get()
+                              - mCurrentPositionVariables.get(i)
+                                                         .get();
+        if (isSimLogging())
+        {
           info("curr pos: " + mCurrentPositionVariables.get(i).get());
           info("target pos: "
                + mTargetPositionVariables.get(i).get());
         }
-        else
-        {
-          info("DOF " + i + ", " + getDOFNameByIndex(i));
-          mDirectionVector[i] = 0.0;
-          indRot = i;
-        }
       }
-    }
+    normalize(mDirectionVector);
 
-    // info("before norm Direction vector is: " + mDirectionVector[0] + " " +
-    // mDirectionVector[1] + " " + mDirectionVector[2] + " " +
-    // mDirectionVector[3]);
-    mDirectionVector = normalize(mDirectionVector);
-    if (indRot != -1)
-    {
-      mDirectionVector[indRot] = 1.0;
-    }
-
-    // info("Direction vector is: " + mDirectionVector[0] + " " +
-    // mDirectionVector[1] + " " + mDirectionVector[2] + " " +
-    // mDirectionVector[3]);
   }
 
+  /**
+   * Sets positioning precision
+   * 
+   * @param pEpsilon
+   *          epsilon
+   */
   public void setPositioningPrecision(double pEpsilon)
   {
     this.mEpsilon = pEpsilon;
   }
 
+  /**
+   * Sets speed
+   * 
+   * @param pSpeed
+   *          speed
+   */
   public void setSpeed(double pSpeed)
   {
     this.mSpeed = pSpeed;
@@ -162,6 +199,16 @@ public class StageDeviceSimulator extends StageDeviceBase implements
     return mStageType;
   }
 
+  /**
+   * Adds a DOF with given name, min and max
+   * 
+   * @param pDOFName
+   *          dof name
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   */
   public void addDOF(String pDOFName, double pMin, double pMax)
   {
     final int lDOFIndex = mIndexToNameMap.size();
@@ -275,41 +322,30 @@ public class StageDeviceSimulator extends StageDeviceBase implements
     }
   }
 
-  private void moveToTarget()
-  {
-    try
-    {
-
-      for (int i = 0; i < getNumberOfDOFs(); i++)
-        if (mEnableVariables.get(i).get())
-        {
-          double lTarget = mTargetPositionVariables.get(i).get();
-          double lCurrent = mCurrentPositionVariables.get(i).get();
-          double lErrorLinear = lTarget - lCurrent;
-
-          double lNewCurrent =
-                             lCurrent + mSpeed * signum(lErrorLinear);
-          // double lNewCurrent = lCurrent + mSpeed*mDirectionVector[i];
-
-          if (abs(lErrorLinear) > mEpsilon)
-            mCurrentPositionVariables.get(i).set(lNewCurrent);
-          else if (!mReadyVariables.get(i).get())
-            mReadyVariables.get(i).set(true);
-
-        }
-    }
-    catch (Throwable e)
-    {
-      e.printStackTrace();
-    }
-
-  }
-
+  /**
+   * Adds XYZR DOFs
+   */
   public void addXYZRDOFs()
   {
-    addDOF("X", -100, 100);
-    addDOF("Y", -110, 110);
-    addDOF("Z", -120, 120);
+    addXYZRDOFs(100, 100, 100);
+  }
+
+  /**
+   * Adds XYZR DOFs
+   * 
+   * @param pRanges
+   *          range to use, i.e. (100,100,100) -> -100<x<100, -100<y<100,
+   *          -100<z<100,
+   */
+  public void addXYZRDOFs(double... pRanges)
+  {
+    double lRangeX = pRanges[0];
+    double lRangeY = pRanges[1];
+    double lRangeZ = pRanges[2];
+
+    addDOF("X", -lRangeX, lRangeX);
+    addDOF("Y", -lRangeY, lRangeY);
+    addDOF("Z", -lRangeZ, lRangeZ);
     addDOF("R", 0, 360);
   }
 

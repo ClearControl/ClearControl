@@ -14,27 +14,31 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 
-import org.dockfx.DockNode;
-
-public class CalibratorToolbar extends DockNode
+/**
+ * Calibrator toolbar
+ *
+ * @author royer
+ */
+public class CalibratorToolbar extends CustomGridPane
 {
-  private GridPane mGridPane;
 
+  /**
+   * Instanciates a calibrator toolbar
+   * 
+   * @param pCalibrator
+   *          calubrator
+   */
   public CalibratorToolbar(Calibrator pCalibrator)
   {
-    super(new CustomGridPane());
-    mGridPane = (GridPane) getContents();
-
+    super();
     // this.setStyle("-fx-background-color: yellow;");
     // mGridPane.setStyle("-fx-border-color: blue;");
-
-    setTitle("Calibrator");
 
     for (int i = 0; i < 3; i++)
     {
       ColumnConstraints lColumnConstraints = new ColumnConstraints();
       lColumnConstraints.setPercentWidth(33);
-      mGridPane.getColumnConstraints().add(lColumnConstraints);
+      getColumnConstraints().add(lColumnConstraints);
     }
 
     Button lStartCalibration = new Button("Calibrate");
@@ -45,7 +49,7 @@ public class CalibratorToolbar extends DockNode
     });
     GridPane.setColumnSpan(lStartCalibration, 2);
     GridPane.setHgrow(lStartCalibration, Priority.ALWAYS);
-    mGridPane.add(lStartCalibration, 0, 0);
+    add(lStartCalibration, 0, 0);
 
     Button lStopCalibration = new Button("Stop");
     lStopCalibration.setAlignment(Pos.CENTER);
@@ -55,14 +59,14 @@ public class CalibratorToolbar extends DockNode
     });
     GridPane.setColumnSpan(lStopCalibration, 2);
     GridPane.setHgrow(lStopCalibration, Priority.ALWAYS);
-    mGridPane.add(lStopCalibration, 0, 1);
+    add(lStopCalibration, 0, 1);
 
     ProgressIndicator lCalibrationProgressIndicator =
                                                     new ProgressIndicator(0.0);
     lCalibrationProgressIndicator.setMaxWidth(Double.MAX_VALUE);
     lCalibrationProgressIndicator.setStyle(".percentage { visibility: hidden; }");
     GridPane.setRowSpan(lCalibrationProgressIndicator, 2);
-    mGridPane.add(lCalibrationProgressIndicator, 2, 0);
+    add(lCalibrationProgressIndicator, 2, 0);
 
     pCalibrator.getProgressVariable().addEdgeListener((n) -> {
       Platform.runLater(() -> {
@@ -103,7 +107,7 @@ public class CalibratorToolbar extends DockNode
     GridPane.setColumnSpan(lCalibrationDataNameTextField, 3);
     GridPane.setFillWidth(lCalibrationDataNameTextField, true);
     GridPane.setHgrow(lCalibrationDataNameTextField, Priority.ALWAYS);
-    mGridPane.add(lCalibrationDataNameTextField, 0, 4);
+    add(lCalibrationDataNameTextField, 0, 4);
 
     Button lSaveCalibration = new Button("Save");
     lSaveCalibration.setAlignment(Pos.CENTER);
@@ -119,7 +123,7 @@ public class CalibratorToolbar extends DockNode
       }
     });
     GridPane.setColumnSpan(lSaveCalibration, 1);
-    mGridPane.add(lSaveCalibration, 0, 5);
+    add(lSaveCalibration, 0, 5);
 
     Button lLoadCalibration = new Button("Load");
     lLoadCalibration.setAlignment(Pos.CENTER);
@@ -135,7 +139,7 @@ public class CalibratorToolbar extends DockNode
       }
     });
     GridPane.setColumnSpan(lLoadCalibration, 1);
-    mGridPane.add(lLoadCalibration, 1, 5);
+    add(lLoadCalibration, 1, 5);
 
     Button lResetCalibration = new Button("Reset");
     lResetCalibration.setAlignment(Pos.CENTER);
@@ -144,7 +148,7 @@ public class CalibratorToolbar extends DockNode
       pCalibrator.reset();
     });
     GridPane.setColumnSpan(lResetCalibration, 1);
-    mGridPane.add(lResetCalibration, 2, 5);
+    add(lResetCalibration, 2, 5);
 
   }
 
@@ -170,7 +174,7 @@ public class CalibratorToolbar extends DockNode
 
     lGroupGridPane.setMaxWidth(Double.MAX_VALUE);
 
-    mGridPane.add(lGroupGridPane, pColumn, pRow);
+    add(lGroupGridPane, pColumn, pRow);
 
     lCalibrateVariable.setCurrent();
   }

@@ -11,6 +11,15 @@ import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
 import clearcontrol.core.log.LoggingInterface;
 
+/**
+ * Asynchronous processor pool
+ *
+ * @param <I>
+ *          input type
+ * @param <O>
+ *          output type
+ * @author royer
+ */
 public class AsynchronousProcessorPool<I, O> extends
                                       AsynchronousProcessorBase<I, O>
                                       implements
@@ -23,6 +32,19 @@ public class AsynchronousProcessorPool<I, O> extends
   private final ProcessorInterface<I, O> mProcessor;
   private CompletingThreadPoolExecutor mThreadPoolExecutor;
 
+  /**
+   * Instanciates an asynchronous processor pool given a name, max input queue
+   * size, thread pool size, and processor.
+   * 
+   * @param pName
+   *          processor pool name
+   * @param pMaxQueueSize
+   *          max input queue size
+   * @param pThreadPoolSize
+   *          thread pool size
+   * @param pProcessor
+   *          processor
+   */
   public AsynchronousProcessorPool(final String pName,
                                    final int pMaxQueueSize,
                                    final int pThreadPoolSize,
@@ -39,6 +61,17 @@ public class AsynchronousProcessorPool<I, O> extends
     mProcessor = pProcessor;
   }
 
+  /**
+   * Instanciates an asynchronous processor pool given a name, max queue size,
+   * and processor.
+   * 
+   * @param pName
+   *          processor pool name
+   * @param pMaxQueueSize
+   *          max queue size
+   * @param pProcessor
+   *          processors
+   */
   public AsynchronousProcessorPool(final String pName,
                                    final int pMaxQueueSize,
                                    final ProcessorInterface<I, O> pProcessor)

@@ -14,18 +14,20 @@ import clearcontrol.microscope.MicroscopeInterface;
  * These states are used for acquisition purposes.
  * 
  * @author royer
- *
+ * @param <S>
+ *          state
  */
-public class AcquisitionStateManager extends VirtualDevice implements
-                                     ReadOnlyNameableInterface,
-                                     LoggingInterface
+public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
+                                    extends VirtualDevice implements
+                                    ReadOnlyNameableInterface,
+                                    LoggingInterface
 {
-  private final MicroscopeInterface mMicroscopeInterface;
+  private final MicroscopeInterface<?> mMicroscopeInterface;
 
-  private CopyOnWriteArrayList<AcquisitionStateInterface<?>> mAcquisitionStateList =
-                                                                                   new CopyOnWriteArrayList<>();
+  private CopyOnWriteArrayList<S> mAcquisitionStateList =
+                                                        new CopyOnWriteArrayList<>();
 
-  private volatile AcquisitionStateInterface<?> mCurrentState;
+  private volatile S mCurrentState;
 
   /**
    * Constructs an LoggingManager.
@@ -33,9 +35,9 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * @param pMicroscopeInterface
    *          microscope interface
    */
-  public AcquisitionStateManager(MicroscopeInterface pMicroscopeInterface)
+  public AcquisitionStateManager(MicroscopeInterface<?> pMicroscopeInterface)
   {
-    super("AcquisitionStateManager");
+    super("Acquisition State Manager");
     mMicroscopeInterface = pMicroscopeInterface;
   }
 
@@ -44,15 +46,9 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * 
    * @return microscope
    */
-  public MicroscopeInterface getMicroscope()
+  public MicroscopeInterface<?> getMicroscope()
   {
     return mMicroscopeInterface;
-  }
-
-  @Override
-  public String getName()
-  {
-    return "AcquisitionStateManager";
   }
 
   /**
@@ -60,7 +56,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * 
    * @return current state
    */
-  public AcquisitionStateInterface<?> getCurrentState()
+  public S getCurrentState()
   {
     return mCurrentState;
   }
@@ -71,7 +67,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * @param pCurrentState
    *          new current state
    */
-  public void setCurrentState(AcquisitionStateInterface<?> pCurrentState)
+  public void setCurrentState(S pCurrentState)
   {
     if (pCurrentState != null)
     {
@@ -89,7 +85,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * @param pState
    *          stet to add
    */
-  public void addState(AcquisitionStateInterface<?> pState)
+  public void addState(S pState)
   {
     mAcquisitionStateList.add(pState);
     notifyListeners(this);
@@ -101,7 +97,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * @param pState
    *          state to remove
    */
-  public void removeState(AcquisitionStateInterface<?> pState)
+  public void removeState(S pState)
   {
     mAcquisitionStateList.remove(pState);
     notifyListeners(this);
@@ -113,7 +109,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * @param pState
    *          state to clear
    */
-  public void clearStates(AcquisitionStateInterface<?> pState)
+  public void clearStates(S pState)
   {
     mAcquisitionStateList.clear();
     notifyListeners(this);
@@ -124,7 +120,7 @@ public class AcquisitionStateManager extends VirtualDevice implements
    * 
    * @return unmodifiable state list
    */
-  public List<AcquisitionStateInterface<?>> getStateList()
+  public List<S> getStateList()
   {
     return Collections.unmodifiableList(mAcquisitionStateList);
   }

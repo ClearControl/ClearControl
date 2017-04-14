@@ -66,8 +66,8 @@ public class StackCameraDeviceSimulatorTests
       pNewStack.release();
     });
 
-    lStackCameraDeviceSimulator.getExposureInMicrosecondsVariable()
-                               .set((double) 1000);
+    lStackCameraDeviceSimulator.getExposureInSecondsVariable()
+                               .set((double) 0.001);
 
     lStackCameraDeviceSimulator.open();
 

@@ -1,176 +1,99 @@
 package clearcontrol.stack.processor;
 
-import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
-import clearcontrol.core.device.startstop.StartStopDeviceInterface;
-import clearcontrol.core.variable.Variable;
+import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
+import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
-import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclableFactoryInterface;
-import coremem.recycling.RecyclerInterface;
 
-public class AsynchronousPoolStackProcessorPipeline implements
-                                                    StackProcessingPipeline,
-                                                    StartStopDeviceInterface
+/**
+ * Asynchronous thread pool stack processor pipeline. A stack processing
+ * pipeline that uses a pool of threads to distribute the work load.
+ *
+ * @author royer
+ */
+public class AsynchronousPoolStackProcessorPipeline extends
+                                                    StackProcessorPipelineBase
+                                                    implements
+                                                    StackProcessingPipelineInterface,
+                                                    OpenCloseDeviceInterface
 {
 
-  private final CopyOnWriteArrayList<StackProcessorInterface> mProcessorList =
-                                                                             new CopyOnWriteArrayList<StackProcessorInterface>();
-  private final CopyOnWriteArrayList<RecyclerInterface<StackInterface, StackRequest>> mRecyclerList =
-                                                                                                    new CopyOnWriteArrayList<RecyclerInterface<StackInterface, StackRequest>>();
-  private AsynchronousProcessorPool<StackInterface, StackInterface> mAsynchronousProcessorPool;
+  private AsynchronousProcessorPool<StackInterface, StackInterface> mAsynchStackProcessorPool;
 
-  private Variable<StackInterface> mInputVariable;
-  private Variable<StackInterface> mOutputVariable;
-  private AsynchronousProcessorInterface<StackInterface, StackInterface> mReceiver;
-
+  /**
+   * Instanciates an asynchronous thread pool stack processing pipeline
+   * 
+   * @param pName
+   *          pipline name
+   * @param pStackRecyclerManager
+   *          stack recycler manager
+   * @param pMaxQueueSize
+   *          max queue size
+   * @param pThreadPoolSize
+   *          thread pool size.
+   */
   public AsynchronousPoolStackProcessorPipeline(String pName,
+                                                StackRecyclerManager pStackRecyclerManager,
                                                 final int pMaxQueueSize,
                                                 final int pThreadPoolSize)
   {
-    super();
+    super(pStackRecyclerManager);
 
-    mInputVariable = new Variable<StackInterface>("InputVariable")
+    getInputVariable().addSetListener((o,
+                                       n) -> mAsynchStackProcessorPool.passOrWait(n));
+
+    class Processor extends
+                    AsynchronousProcessorBase<StackInterface, StackInterface>
     {
 
-      @Override
-      public StackInterface setEventHook(StackInterface pOldValue,
-                                         StackInterface pNewValue)
+      public Processor(String pName, int pMaxQueueSize)
       {
-        mAsynchronousProcessorPool.passOrWait(pNewValue);
-        return super.setEventHook(pOldValue, pNewValue);
+        super(pName, pMaxQueueSize);
       }
 
-    };
-
-    mOutputVariable = new Variable<StackInterface>("OutputVariable");
+      @Override
+      public StackInterface process(StackInterface pInput)
+      {
+        try
+        {
+          StackInterface lProcessedStack = doProcess(pInput);
+          if (lProcessedStack != null)
+            getOutputVariable().set(lProcessedStack);
+          return lProcessedStack;
+        }
+        catch (Throwable e)
+        {
+          e.printStackTrace();
+          pInput.release();
+          return null;
+        }
+      }
+    }
 
     final ProcessorInterface<StackInterface, StackInterface> lProcessor =
-                                                                        new ProcessorInterface<StackInterface, StackInterface>()
-                                                                        {
+                                                                        new Processor(pName,
+                                                                                      pMaxQueueSize);
 
-                                                                          @Override
-                                                                          public StackInterface process(StackInterface pInput)
-                                                                          {
-                                                                            StackInterface lStack =
-                                                                                                  pInput;
-                                                                            for (int i =
-                                                                                       0; i < mProcessorList.size(); i++)
-                                                                            {
-                                                                              final StackProcessorInterface lProcessor =
-                                                                                                                       mProcessorList.get(i);
-                                                                              if (lProcessor.isActive())
-                                                                              {
-                                                                                // System.out.println("lProcessor="
-                                                                                // +
-                                                                                // lProcessor);
-                                                                                // System.out.println("lStack
-                                                                                // input="
-                                                                                // +
-                                                                                // lStack);
-                                                                                final RecyclerInterface<StackInterface, StackRequest> lRecycler =
-                                                                                                                                                mRecyclerList.get(i);
-                                                                                lStack =
-                                                                                       lProcessor.process(lStack,
-                                                                                                          lRecycler);
-                                                                                // System.out.println("lStack
-                                                                                // output="
-                                                                                // +
-                                                                                // lStack);
-                                                                              }
-                                                                            }
-                                                                            return lStack;
-                                                                          }
+    mAsynchStackProcessorPool =
+                              new AsynchronousProcessorPool<>(pName,
+                                                              pMaxQueueSize,
+                                                              pThreadPoolSize,
+                                                              lProcessor);
 
-                                                                          @Override
-                                                                          public void close() throws IOException
-                                                                          {
-
-                                                                          }
-                                                                        };
-
-    mAsynchronousProcessorPool =
-                               new AsynchronousProcessorPool<>(pName,
-                                                               pMaxQueueSize,
-                                                               pThreadPoolSize,
-                                                               lProcessor);
-
-    mReceiver =
-              new AsynchronousProcessorBase<StackInterface, StackInterface>("Receiver",
-                                                                            10)
-              {
-                @Override
-                public StackInterface process(final StackInterface pInput)
-                {
-                  mOutputVariable.set(pInput);
-                  return pInput;
-                }
-              };
-
-    mAsynchronousProcessorPool.connectToReceiver(mReceiver);
-
-  }
-
-  @Override
-  public void addStackProcessor(StackProcessorInterface pStackProcessor,
-                                RecyclableFactoryInterface<StackInterface, StackRequest> pStackFactory,
-                                int pMaximumNumberOfObjects)
-  {
-    final RecyclerInterface<StackInterface, StackRequest> lStackRecycler =
-                                                                         new BasicRecycler<StackInterface, StackRequest>(pStackFactory,
-                                                                                                                         pMaximumNumberOfObjects);
-    mRecyclerList.add(lStackRecycler);
-    mProcessorList.add(pStackProcessor);
-  }
-
-  @Override
-  public void removeStackProcessor(StackProcessorInterface pStackProcessor)
-  {
-    final int lIndex = mProcessorList.indexOf(pStackProcessor);
-    mProcessorList.remove(pStackProcessor);
-    mRecyclerList.remove(lIndex);
-  }
-
-  @Override
-  public Variable<StackInterface> getInputVariable()
-  {
-    return mInputVariable;
-  }
-
-  @Override
-  public Variable<StackInterface> getOutputVariable()
-  {
-    return mOutputVariable;
   }
 
   @Override
   public boolean open()
   {
-    return true;
-  }
-
-  @Override
-  public boolean start()
-  {
-    return mReceiver.start() && mAsynchronousProcessorPool.start();
-  }
-
-  @Override
-  public boolean stop()
-  {
-    return mAsynchronousProcessorPool.stop() && mReceiver.stop();
+    return mAsynchStackProcessorPool.start();
   }
 
   @Override
   public boolean close()
   {
-    return true;
+    return mAsynchStackProcessorPool.stop();
   }
 
 }

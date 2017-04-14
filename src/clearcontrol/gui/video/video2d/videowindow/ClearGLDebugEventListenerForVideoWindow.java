@@ -364,6 +364,9 @@ final class ClearGLDebugEventListenerForVideoWindow extends
         mGLProgramVideoRender.use(lGL);
         mTexture.bind(mGLProgramVideoRender);
         // System.out.println("DRAW");
+        lGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        lGL.glClear(GL.GL_COLOR_BUFFER_BIT);
+
         mQuadVertexArray.draw(GL.GL_TRIANGLES);
 
         if (mVideoWindow.isDisplayLines())

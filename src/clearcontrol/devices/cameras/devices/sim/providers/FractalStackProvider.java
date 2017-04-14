@@ -26,7 +26,6 @@ public class FractalStackProvider extends
                                final long pWidth,
                                final long pHeight,
                                final long pDepth,
-                               final int pChannel,
                                final StackInterface pStack)
   {
     final byte time = (byte) pQueue.getStackCamera()
@@ -42,12 +41,10 @@ public class FractalStackProvider extends
         for (int y = 0; y < pHeight; y++)
           for (int x = 0; x < pWidth; x++)
           {
-            short lValue =
-                         (short) (((byte) (x + time)
-                                   ^ (byte) (y + (pHeight * pChannel)
-                                                 / 3)
-                                   ^ (byte) z
-                                   ^ (time)));/**/
+            short lValue = (short) (((byte) (x + time)
+                                     ^ (byte) (y + (pHeight) / 3)
+                                     ^ (byte) z
+                                     ^ (time)));/**/
             if (lValue < 32)
               lValue = 0;
             lContiguousBuffer.writeShort(lValue);

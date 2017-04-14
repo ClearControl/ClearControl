@@ -6,11 +6,15 @@ import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclableFactoryInterface;
 import coremem.util.Size;
 
+/**
+ * Stack factory that returns contiguous off-heap memory backed stacks
+ *
+ * @author royer
+ */
 public class ContiguousOffHeapPlanarStackFactory implements
                                                  RecyclableFactoryInterface<StackInterface, StackRequest>
 {
 
-  @SuppressWarnings("unchecked")
   @Override
   public OffHeapPlanarStack create(StackRequest pStackRequest)
   {

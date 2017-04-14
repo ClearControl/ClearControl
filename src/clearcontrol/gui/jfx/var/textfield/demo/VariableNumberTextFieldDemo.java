@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
 
+/**
+ * Number text field demo
+ *
+ * @author royer
+ */
 public class VariableNumberTextFieldDemo extends Application
 {
 
@@ -27,14 +32,14 @@ public class VariableNumberTextFieldDemo extends Application
       System.out.println("double: " + n);
     });
 
-    VariableNumberTextField<Number> lVariableDoubleSlider =
-                                                          new VariableNumberTextField<Number>("a double value: ",
-                                                                                              lDoubleVariable,
-                                                                                              -1.0,
-                                                                                              2.0,
-                                                                                              0.1);
+    VariableNumberTextField<Number> lVariableDoubleTextField =
+                                                             new VariableNumberTextField<Number>("a double value: ",
+                                                                                                 lDoubleVariable,
+                                                                                                 -1.0,
+                                                                                                 2.0,
+                                                                                                 0.1);
 
-    root.add(lVariableDoubleSlider, 0, 1);
+    root.add(lVariableDoubleTextField, 0, 1);
 
     Variable<Number> lIntVariable = new Variable<Number>("DemoIntVar",
                                                          0.0);
@@ -42,14 +47,14 @@ public class VariableNumberTextFieldDemo extends Application
       System.out.println("int: " + n);
     });
 
-    VariableNumberTextField<Number> lVariableIntSlider =
-                                                       new VariableNumberTextField<Number>("an int value: ",
-                                                                                           lIntVariable,
-                                                                                           -10,
-                                                                                           20,
-                                                                                           1);
+    VariableNumberTextField<Number> lVariableIntTextField =
+                                                          new VariableNumberTextField<Number>("an int value: ",
+                                                                                              lIntVariable,
+                                                                                              -10,
+                                                                                              20,
+                                                                                              1);
 
-    root.add(lVariableIntSlider, 0, 2);
+    root.add(lVariableIntTextField, 0, 2);
 
     stage.show();
   }

@@ -17,7 +17,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -54,11 +53,11 @@ public class CameraDevicePanel extends AnchorPane
 
   private GridPane mGridPane;
 
-  Rectangle mRect = createDraggableRectangle(37.5, 37.5);
+  Rectangle mRectangle = createDraggableRectangle(37.5, 37.5);
   Line mHLine, mVLine;
   Text mHText, mVText;
 
-  VariableNumberTextField<Long> mWidth, mHeight;
+  VariableNumberTextField<Long> mWidthTextField, mHeightTextField;
 
   /**
    * Instanciates a camera device panel.
@@ -69,88 +68,99 @@ public class CameraDevicePanel extends AnchorPane
   public CameraDevicePanel(StackCameraDeviceInterface pCameraDeviceInterface)
   {
     mCameraDeviceInterface = pCameraDeviceInterface;
+    try
+    {
 
-    mMaxCameraWidth =
-                    mCameraDeviceInterface.getStackMaxWidthVariable()
-                                          .get();
-    mMaxCameraHeight =
-                     mCameraDeviceInterface.getStackMaxHeightVariable()
-                                           .get();
+      mMaxCameraWidth = mCameraDeviceInterface.getMaxWidthVariable()
+                                              .get();
+      mMaxCameraHeight = mCameraDeviceInterface.getMaxHeightVariable()
+                                               .get();
 
-    mWidth = new VariableNumberTextField<>("Width: ",
-                                           mCameraDeviceInterface.getStackWidthVariable(),
-                                           0L,
-                                           mCameraDeviceInterface.getStackMaxWidthVariable()
-                                                                 .get(),
-                                           1L);
-    mHeight = new VariableNumberTextField<>("Height: ",
-                                            mCameraDeviceInterface.getStackHeightVariable(),
-                                            0L,
-                                            mCameraDeviceInterface.getStackMaxHeightVariable()
-                                                                  .get(),
-                                            1L);
+      mWidthTextField = new VariableNumberTextField<>("Width: ",
+                                                      mCameraDeviceInterface.getStackWidthVariable(),
+                                                      0L,
+                                                      mCameraDeviceInterface.getMaxWidthVariable()
+                                                                            .get(),
+                                                      1L);
+      mHeightTextField = new VariableNumberTextField<>("Height: ",
+                                                       mCameraDeviceInterface.getStackHeightVariable(),
+                                                       0L,
+                                                       mCameraDeviceInterface.getMaxHeightVariable()
+                                                                             .get(),
+                                                       1L);
 
-    init();
+      mCameraWidthStringProperty = mWidthTextField.getTextField()
+                                                  .textProperty();
+      mCameraHeightStringProperty = mHeightTextField.getTextField()
+                                                    .textProperty();
 
-    Bindings.bindBidirectional(mCameraWidthStringProperty,
-                               mCameraWidthProperty,
-                               new StringConverter<Number>()
-                               {
-                                 @Override
-                                 public String toString(Number object)
+      init(mCameraDeviceInterface.getStackWidthVariable().get(),
+           mCameraDeviceInterface.getStackHeightVariable().get());
+
+      Bindings.bindBidirectional(mCameraWidthStringProperty,
+                                 mCameraWidthProperty,
+                                 new StringConverter<Number>()
                                  {
-                                   return Long.toString(object.longValue());
-                                 }
+                                   @Override
+                                   public String toString(Number object)
+                                   {
+                                     return Long.toString(object.longValue());
+                                   }
 
-                                 @Override
-                                 public Number fromString(String string)
+                                   @Override
+                                   public Number fromString(String string)
+                                   {
+                                     if (!string.isEmpty())
+                                       return Long.parseLong(string);
+                                     else
+                                       return 0;
+                                   }
+                                 });
+
+      Bindings.bindBidirectional(mCameraHeightStringProperty,
+                                 mCameraHeightProperty,
+                                 new StringConverter<Number>()
                                  {
-                                   if (!string.isEmpty())
-                                     return Long.parseLong(string);
-                                   else
-                                     return 0;
-                                 }
-                               });
+                                   @Override
+                                   public String toString(Number object)
+                                   {
+                                     return Long.toString(object.longValue());
+                                   }
 
-    Bindings.bindBidirectional(mCameraHeightStringProperty,
-                               mCameraHeightProperty,
-                               new StringConverter<Number>()
-                               {
-                                 @Override
-                                 public String toString(Number object)
-                                 {
-                                   return Long.toString(object.longValue());
-                                 }
+                                   @Override
+                                   public Number fromString(String string)
+                                   {
+                                     if (!string.isEmpty())
+                                       return Long.parseLong(string);
+                                     else
+                                       return 0;
+                                   }
+                                 });
 
-                                 @Override
-                                 public Number fromString(String string)
-                                 {
-                                   if (!string.isEmpty())
-                                     return Long.parseLong(string);
-                                   else
-                                     return 0;
-                                 }
-                               });
+      // data -> GUI
+      // StackWidth update (data -> GUI)
+      mCameraDeviceInterface.getStackWidthVariable()
+                            .addSetListener((o, n) -> {
 
-    // data -> GUI
-    // StackWidth update (data -> GUI)
-    mCameraDeviceInterface.getStackWidthVariable()
-                          .addSetListener((o, n) -> {
+                              if (mCameraWidthProperty.get() != n)
+                                Platform.runLater(() -> {
+                                  mCameraWidthProperty.set(n);
+                                });
 
-                            if (mCameraWidthProperty.get() != n)
-                              Platform.runLater(() -> {
-                                mCameraWidthProperty.set(n);
-                              });
-
-                          });
-    // StackHeight update (data -> GUI)
-    mCameraDeviceInterface.getStackHeightVariable()
-                          .addSetListener((o, n) -> {
-                            if (mCameraHeightProperty.get() != n)
-                              Platform.runLater(() -> {
-                                mCameraHeightProperty.set(n);
-                              });
-                          });
+                            });
+      // StackHeight update (data -> GUI)
+      mCameraDeviceInterface.getStackHeightVariable()
+                            .addSetListener((o, n) -> {
+                              if (mCameraHeightProperty.get() != n)
+                                Platform.runLater(() -> {
+                                  mCameraHeightProperty.set(n);
+                                });
+                            });
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+    }
   }
 
   // GUI -> data
@@ -171,14 +181,14 @@ public class CameraDevicePanel extends AnchorPane
                             .setAsync(nHeight);
   }
 
-  private void init()
+  private void init(long pWidth, long pHeight)
   {
     // Setting up the double properties with 256x256
-    mRectangleWidthProperty = new SimpleDoubleProperty(37.5);
-    mRectangleHeightProperty = new SimpleDoubleProperty(37.5);
+    mRectangleWidthProperty = new SimpleDoubleProperty(0);
+    mRectangleHeightProperty = new SimpleDoubleProperty(0);
 
-    mCameraWidthProperty = new SimpleLongProperty(256L);
-    mCameraHeightProperty = new SimpleLongProperty(256L);
+    mCameraWidthProperty = new SimpleLongProperty(pWidth);
+    mCameraHeightProperty = new SimpleLongProperty(pHeight);
 
     mGridPane = new GridPane();
 
@@ -189,13 +199,10 @@ public class CameraDevicePanel extends AnchorPane
         int width = 2 << x;
         int height = 2 << y;
 
-        Button button = new Button(height + "\n" + width);
+        Button button = new Button(width + "\n" + height);
         button.setMaxWidth(Double.MAX_VALUE);
         button.setOnAction(event -> {
-          mRectangleWidthProperty.set(width * mMainRectangleSize
-                                      / mMaxCameraWidth);
-          mRectangleHeightProperty.set(height * mMainRectangleSize
-                                       / mMaxCameraHeight);
+          setRectangleProperties(width, height);
 
           mCameraWidthStringProperty.set(Integer.toString(width));
           mCameraHeightStringProperty.set(Integer.toString(height));
@@ -226,29 +233,22 @@ public class CameraDevicePanel extends AnchorPane
                     mMainRectangleSize / 2);
     canvas.getChildren().add(line);
 
-    canvas.getChildren().addAll(mRect);
+    canvas.getChildren().addAll(mRectangle);
 
-    HBox widthBox = new HBox(5);
-    widthBox.setPadding(new Insets(30, 10, 10, 10));
-    widthBox.setAlignment(Pos.CENTER);
-    mCameraWidthStringProperty = mWidth.getTextField().textProperty();
-    widthBox.getChildren().add(mWidth);
+    VBox lVBoxTextFields =
+                         new VBox(mWidthTextField, mHeightTextField);
+    lVBoxTextFields.setAlignment(Pos.CENTER);
+    lVBoxTextFields.setMinHeight(125);
 
-    HBox heightBox = new HBox(5);
-    heightBox.setPadding(new Insets(10, 10, 10, 10));
-    heightBox.setAlignment(Pos.CENTER);
-    mCameraHeightStringProperty =
-                                mHeight.getTextField().textProperty();
-    heightBox.getChildren().add(mHeight);
-
-    VBox vBox = new VBox(mGridPane, widthBox, heightBox);
+    VBox lVBoxLeftSide = new VBox(mGridPane, lVBoxTextFields);
+    lVBoxLeftSide.setAlignment(Pos.CENTER);
 
     setBackground(null);
-    setPadding(new Insets(15, 15, 15, 15));
-    getChildren().addAll(vBox, canvas);
+    setPadding(new Insets(10, 10, 10, 10));
+    getChildren().addAll(lVBoxLeftSide, canvas);
 
-    AnchorPane.setLeftAnchor(vBox, 3d);
-    AnchorPane.setTopAnchor(vBox, 10d);
+    AnchorPane.setLeftAnchor(lVBoxLeftSide, 3d);
+    AnchorPane.setTopAnchor(lVBoxLeftSide, 10d);
 
     AnchorPane.setLeftAnchor(canvas, 220d);
     AnchorPane.setTopAnchor(canvas, 10d);
@@ -263,7 +263,7 @@ public class CameraDevicePanel extends AnchorPane
                           Number oldValue,
                           Number newValue)
       {
-        mRect.widthProperty().set(newValue.doubleValue());
+        mRectangle.widthProperty().set(newValue.doubleValue());
       }
     });
 
@@ -274,7 +274,7 @@ public class CameraDevicePanel extends AnchorPane
                           Number oldValue,
                           Number newValue)
       {
-        mRect.heightProperty().set(newValue.doubleValue());
+        mRectangle.heightProperty().set(newValue.doubleValue());
       }
     });
     // mRectangleWidthProperty.bind( mRect.widthProperty() );
@@ -327,6 +327,16 @@ public class CameraDevicePanel extends AnchorPane
                                      return 0;
                                  }
                                });
+
+    setRectangleProperties(pWidth, pHeight);
+  }
+
+  private void setRectangleProperties(long width, long height)
+  {
+    mRectangleWidthProperty.set(width * mMainRectangleSize
+                                / mMaxCameraWidth);
+    mRectangleHeightProperty.set(height * mMainRectangleSize
+                                 / mMaxCameraHeight);
   }
 
   private void setDragHandlers(final Line line,
@@ -352,8 +362,8 @@ public class CameraDevicePanel extends AnchorPane
                                                                     event.getSceneY()));
 
     line.setOnMouseReleased(event -> {
-      mRectangleHeightProperty.set(mRect.heightProperty().get());
-      mRectangleWidthProperty.set(mRect.widthProperty().get());
+      mRectangleHeightProperty.set(mRectangle.heightProperty().get());
+      mRectangleWidthProperty.set(mRectangle.widthProperty().get());
       mouseLocation.value = null;
       line.setCursor(Cursor.NONE);
 

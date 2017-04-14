@@ -375,10 +375,12 @@ public class Stack2DDisplay extends VirtualDevice implements
 
   private void forwardStack(final StackInterface pStack)
   {
-    if (mOutputStackVariable != null)
-      mOutputStackVariable.set(pStack);
-    else if (!pStack.isReleased())
+    if (mOutputStackVariable == null && !pStack.isReleased())
+    {
       pStack.release();
+      return;
+    }
+    mOutputStackVariable.set(pStack);
   }
 
   @Override

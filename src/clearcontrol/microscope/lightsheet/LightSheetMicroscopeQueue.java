@@ -6,6 +6,7 @@ import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeQueueBase;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetQueue;
@@ -14,6 +15,9 @@ import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpti
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitchQueue;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorQueue;
+import clearcontrol.stack.metadata.MetaDataEntryInterface;
+import clearcontrol.stack.metadata.MetaDataVoxelDim;
+import clearcontrol.stack.metadata.StackMetaData;
 
 /**
  * Lightsheet microscope queue
@@ -98,6 +102,63 @@ public class LightSheetMicroscopeQueue extends
   {
     return (LightSheetOpticalSwitchQueue) getDeviceQueue(LightSheetOpticalSwitch.class,
                                                          0);
+  }
+
+  /**
+   * Adds metadata entries that specify the voxel dimensions
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   * @param pVoxelDepthInMicrons
+   *          voxel depth in microns
+   */
+  public void addVoxelDimMetaData(LightSheetMicroscopeInterface pLightSheetMicroscope,
+                                  double pVoxelDepthInMicrons)
+  {
+    int lNumberOfDetectionArms =
+                               pLightSheetMicroscope.getNumberOfDetectionArms();
+    for (int c = 0; c < lNumberOfDetectionArms; c++)
+    {
+      StackCameraRealTimeQueue lCameraQueue =
+                                            this.getCameraDeviceQueue(c);
+
+      StackMetaData lMetaData = lCameraQueue.getMetaDataVariable()
+                                            .get();
+
+      DetectionArmInterface lDetectionArm =
+                                          pLightSheetMicroscope.getDetectionArm(c);
+
+      double lPixelSizeInMicrons =
+                                 lDetectionArm.getPixelSizeInMicrometerVariable()
+                                              .get();
+
+      lMetaData.addEntry(MetaDataVoxelDim.VoxelDimX,
+                         lPixelSizeInMicrons);
+      lMetaData.addEntry(MetaDataVoxelDim.VoxelDimY,
+                         lPixelSizeInMicrons);
+      lMetaData.addEntry(MetaDataVoxelDim.VoxelDimZ,
+                         pVoxelDepthInMicrons);
+    }
+  }
+
+  /**
+   * Adds the given metadata entry to all stack cameras
+   * 
+   * @param pEntryKey
+   *          entry
+   * @param pValue
+   *          value
+   */
+  public <T> void addMetaDataEntry(MetaDataEntryInterface<T> pEntryKey,
+                                   T pValue)
+  {
+    for (int c = 0; c < getNumberOfDetectionArms(); c++)
+    {
+      StackMetaData lMetaData =
+                              getCameraDeviceQueue(c).getMetaDataVariable()
+                                                     .get();
+      lMetaData.addEntry(pEntryKey, pValue);
+    }
   }
 
   @Override

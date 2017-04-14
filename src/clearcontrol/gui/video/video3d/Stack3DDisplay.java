@@ -9,6 +9,7 @@ import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.util.WindowControl;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.metadata.MetaDataOrdinals;
 import cleargl.ClearGLWindow;
 import clearvolume.renderer.ClearVolumeRendererInterface;
 import clearvolume.renderer.cleargl.ClearGLVolumeRenderer;
@@ -78,90 +79,105 @@ public class Stack3DDisplay extends VirtualDevice
       lClearGLWindow.addWindowListener(new WindowControl(lClearGLWindow));
     }
 
+    class Aynchronous3DStackDisplayUpdater extends
+                                           AsynchronousProcessorBase<StackInterface, Object>
+    {
+      public Aynchronous3DStackDisplayUpdater(String pName,
+                                              int pMaxQueueSize)
+      {
+        super(pName, pMaxQueueSize);
+      }
+
+      @Override
+      public Object process(final StackInterface pStack)
+      {
+        if (pStack instanceof EmptyStack)
+          return null;
+
+        if (mClearVolumeRenderer.isShowing() && pStack.getDepth() > 1)
+        {
+          // info("received stack: " + pStack);
+
+          final long lSizeInBytes = pStack.getSizeInBytes();
+          final long lWidth = pStack.getWidth();
+          final long lHeight = pStack.getHeight();
+          final long lDepth = pStack.getDepth();
+
+          final NativeTypeEnum lNativeTypeEnum =
+                                               mClearVolumeRenderer.getNativeType();
+          final long lBytesPerVoxel = Size.of(lNativeTypeEnum);
+
+          int lChannel = 0;
+          Long lChannelObj =
+                           pStack.getMetaData()
+                                 .getValue(MetaDataOrdinals.Channel);
+          if (lChannelObj != null)
+            lChannel = lChannelObj.intValue() % pNumberOfLayers;
+
+          if (lWidth * lHeight
+              * lDepth
+              * lBytesPerVoxel != lSizeInBytes)
+          {
+            System.err.println(Stack3DDisplay.class.getSimpleName()
+                               + ": receiving wrong pointer size!");
+            return null;
+          }
+
+          final ContiguousMemoryInterface lContiguousMemory =
+                                                            pStack.getContiguousMemory();
+
+          if (lContiguousMemory.isFree())
+          {
+            System.err.println(Stack3DDisplay.class.getSimpleName()
+                               + ": buffer released!");
+            return null;
+          }
+
+          final Double lVoxelWidth = pStack.getMetaData()
+                                           .getVoxelDimX();
+          final Double lVoxelHeight = pStack.getMetaData()
+                                            .getVoxelDimY();
+          final Double lVoxelDepth = pStack.getMetaData()
+                                           .getVoxelDimZ();
+
+          mClearVolumeRenderer.setVolumeDataBuffer(lChannel,
+                                                   lContiguousMemory,
+                                                   lWidth,
+                                                   lHeight,
+                                                   lDepth,
+                                                   lVoxelWidth,
+                                                   lVoxelHeight,
+                                                   lVoxelDepth);
+
+          // FIXME
+          /*
+          pStack.getVoxelSizeInRealUnits(0),
+          pStack.getVoxelSizeInRealUnits(1),
+          pStack.getVoxelSizeInRealUnits(2)); /**/
+
+          if (mWaitForLastChannel.get()
+              && ((lChannel + 1)
+                  % mClearVolumeRenderer.getNumberOfRenderLayers()) == 0)
+          {
+            mClearVolumeRenderer.waitToFinishAllDataBufferCopy(cTimeOutForBufferCopy,
+                                                               TimeUnit.SECONDS);/**/
+          }
+          else
+            mClearVolumeRenderer.waitToFinishDataBufferCopy(lChannel,
+                                                            cTimeOutForBufferCopy,
+                                                            TimeUnit.SECONDS);/**/
+        }
+
+        forwardStack(pStack);
+
+        return null;
+      }
+    }
+
     mAsynchronousDisplayUpdater =
-                                new AsynchronousProcessorBase<StackInterface, Object>("AsynchronousDisplayUpdater-"
-                                                                                      + pWindowName,
-                                                                                      pUpdaterQueueLength)
-                                {
-                                  @Override
-                                  public Object process(final StackInterface pStack)
-                                  {
-                                    if (pStack instanceof EmptyStack)
-                                      return null;
-
-                                    if (mClearVolumeRenderer.isShowing())
-                                    {
-                                      info("received stack: "
-                                           + pStack);
-
-                                      final long lSizeInBytes =
-                                                              pStack.getSizeInBytes();
-                                      final long lWidth =
-                                                        pStack.getWidth();
-                                      final long lHeight =
-                                                         pStack.getHeight();
-                                      final long lDepth =
-                                                        pStack.getDepth();
-                                      final NativeTypeEnum lNativeTypeEnum =
-                                                                           mClearVolumeRenderer.getNativeType();
-                                      final long lBytesPerVoxel =
-                                                                Size.of(lNativeTypeEnum);
-                                      final int lChannel =
-                                                         pStack.getChannel()
-                                                           % pNumberOfLayers;
-
-                                      if (lWidth * lHeight
-                                          * lDepth
-                                          * lBytesPerVoxel != lSizeInBytes)
-                                      {
-                                        System.err.println(Stack3DDisplay.class.getSimpleName()
-                                                           + ": receiving wrong pointer size!");
-                                        return null;
-                                      }
-
-                                      final ContiguousMemoryInterface lContiguousMemory =
-                                                                                        pStack.getContiguousMemory();
-
-                                      if (lContiguousMemory.isFree())
-                                      {
-                                        System.err.println(Stack3DDisplay.class.getSimpleName()
-                                                           + ": buffer released!");
-                                        return null;
-                                      }
-
-                                      mClearVolumeRenderer.setVolumeDataBuffer(lChannel,
-                                                                               lContiguousMemory,
-                                                                               lWidth,
-                                                                               lHeight,
-                                                                               lDepth,
-                                                                               1,
-                                                                               1,
-                                                                               5);
-
-                                      // FIXME
-                                      /*
-                                      pStack.getVoxelSizeInRealUnits(0),
-                                      pStack.getVoxelSizeInRealUnits(1),
-                                      pStack.getVoxelSizeInRealUnits(2)); /**/
-
-                                      if (mWaitForLastChannel.get()
-                                          && ((lChannel + 1)
-                                              % mClearVolumeRenderer.getNumberOfRenderLayers()) == 0)
-                                      {
-                                        mClearVolumeRenderer.waitToFinishAllDataBufferCopy(cTimeOutForBufferCopy,
-                                                                                           TimeUnit.SECONDS);/**/
-                                      }
-                                      else
-                                        mClearVolumeRenderer.waitToFinishDataBufferCopy(lChannel,
-                                                                                        cTimeOutForBufferCopy,
-                                                                                        TimeUnit.SECONDS);/**/
-                                    }
-
-                                    forwardStack(pStack);
-
-                                    return null;
-                                  }
-                                };
+                                new Aynchronous3DStackDisplayUpdater("AsynchronousDisplayUpdater-"
+                                                                     + pWindowName,
+                                                                     pUpdaterQueueLength);
 
     mInputStackVariable = new Variable<StackInterface>("3DStackInput")
     {

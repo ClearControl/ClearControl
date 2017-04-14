@@ -102,7 +102,7 @@ public class InterpolationTables extends
   }
 
   /**
-   * Adds a control pnale at a given z position
+   * Adds a control plane at a given z position
    * 
    * @param pZ
    *          z position

@@ -3,7 +3,7 @@ package clearcontrol.microscope.state.gui.jfx;
 import java.util.List;
 import javafx.scene.layout.VBox;
 
-import clearcontrol.microscope.lightsheet.interactive.gui.jfx.InteractiveAcquisitionPanel;
+import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
@@ -42,6 +42,6 @@ public abstract class AcquisitionStateManagerPanelBase extends VBox
    * 
    * @param pList
    */
-  protected abstract void updateStateList(List<AcquisitionStateInterface<?>> pList);
+  protected abstract void updateStateList(List<AcquisitionStateInterface<?, ?>> pList);
 
 }
