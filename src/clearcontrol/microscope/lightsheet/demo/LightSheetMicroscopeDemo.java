@@ -66,8 +66,8 @@ public class LightSheetMicroscopeDemo
 
     int lMaxCameraResolution = 1024;
 
-    int lNumberOfLightSheets = 2;
-    int lNumberOfDetectionArms = 1;
+    int lNumberOfLightSheets = 4;
+    int lNumberOfDetectionArms = 2;
 
     float lDivisionTime = 11f;
 
@@ -93,7 +93,7 @@ public class LightSheetMicroscopeDemo
                                                                                                    lPhantomDepth);
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
     // lSimulator.openViewerForCameraImage(0);
-    lSimulator.openViewerForAllLightMaps();
+    // lSimulator.openViewerForAllLightMaps();
 
     LightSheetMicroscopeSimulationDevice lLightSheetMicroscopeSimulatorDevice =
                                                                               new LightSheetMicroscopeSimulationDevice(lSimulator);

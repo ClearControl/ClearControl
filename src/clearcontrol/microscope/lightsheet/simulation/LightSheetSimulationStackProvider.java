@@ -94,82 +94,84 @@ public class LightSheetSimulationStackProvider extends
                                long pDepth,
                                StackInterface pStack)
   {
-
-    int lWidth = (int) pStack.getWidth();
-    int lHeight = (int) pStack.getHeight();
-
-    float lExposureInSeconds = pQueue.getExposureInSecondsVariable()
-                                     .get()
-                                     .floatValue();
-
-    mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.Exposure,
-                                                      mCameraIndex,
-                                                      lExposureInSeconds);
-
-    mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.ROIWidth,
-                                                      mCameraIndex,
-                                                      lWidth);
-    mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.ROIHeight,
-                                                      mCameraIndex,
-                                                      lHeight);
-
-    final ContiguousMemoryInterface lContiguousMemory =
-                                                      pStack.getContiguousMemory();
-
-    int lLastZiKept = getLast(pKeepPlaneList);
-
-    int lQueueLength = pQueue.getQueueLength();
-
-    LightSheetMicroscopeQueue lLightSheetMicroscopeQueue =
-                                                         mLightSheetMicroscope.getPlayedQueueVariable()
-                                                                              .get();
-
-    collectDetectionStateQueues(lLightSheetMicroscopeQueue);
-
-    collectOpticalSwitchStateQueues(lLightSheetMicroscopeQueue);
-
-    for (int l = 0; l < mLightSheetList.size(); l++)
-      collectIluminationStateQueues(lLightSheetMicroscopeQueue, l);
-    /**/
-
-    for (int zi = 0, i = 0; zi < lQueueLength; zi++)
+    synchronized (mLightSheetMicroscopeSimulator)
     {
 
-      passDetectionParameters(zi);
+      int lWidth = (int) pStack.getWidth();
+      int lHeight = (int) pStack.getHeight();
+
+      float lExposureInSeconds = pQueue.getExposureInSecondsVariable()
+                                       .get()
+                                       .floatValue();
+
+      mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.Exposure,
+                                                        mCameraIndex,
+                                                        lExposureInSeconds);
+
+      mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.ROIWidth,
+                                                        mCameraIndex,
+                                                        lWidth);
+      mLightSheetMicroscopeSimulator.setNumberParameter(CameraParameter.ROIHeight,
+                                                        mCameraIndex,
+                                                        lHeight);
+
+      final ContiguousMemoryInterface lContiguousMemory =
+                                                        pStack.getContiguousMemory();
+
+      int lLastZiKept = getLast(pKeepPlaneList);
+
+      int lQueueLength = pQueue.getQueueLength();
+
+      LightSheetMicroscopeQueue lLightSheetMicroscopeQueue =
+                                                           mLightSheetMicroscope.getPlayedQueueVariable()
+                                                                                .get();
+
+      collectDetectionStateQueues(lLightSheetMicroscopeQueue);
+
+      collectOpticalSwitchStateQueues(lLightSheetMicroscopeQueue);
 
       for (int l = 0; l < mLightSheetList.size(); l++)
+        collectIluminationStateQueues(lLightSheetMicroscopeQueue, l);
+      /**/
+
+      for (int zi = 0, i = 0; zi < lQueueLength; zi++)
       {
-        passIlluminationParameters(l, zi);
-      } /**/
 
-      @SuppressWarnings("unused")
-      double lMilliseconds =
-                           ElapsedTime.measure("!!renderplane",
-                                               () -> mLightSheetMicroscopeSimulator.render(mCameraIndex,
-                                                                                           true));
-      // info("Rendering plane %d in %g ms \n",zi,lMilliseconds);
+        passDetectionParameters(zi);
 
-      if (pKeepPlaneList.get(zi))
-      {
-        ClearCLBuffer lCameraImageBuffer =
-                                         mLightSheetMicroscopeSimulator.getCameraImageBuffer(mCameraIndex);
+        for (int l = 0; l < mLightSheetList.size(); l++)
+        {
+          passIlluminationParameters(l, zi);
+        } /**/
 
-        long lOffset = i++ * lCameraImageBuffer.getSizeInBytes();
+        @SuppressWarnings("unused")
+        double lMilliseconds =
+                             ElapsedTime.measure("!!renderplane",
+                                                 () -> mLightSheetMicroscopeSimulator.render(mCameraIndex,
+                                                                                             true));
+        // info("Rendering plane %d in %g ms \n",zi,lMilliseconds);
 
-        ContiguousMemoryInterface lImagePlane =
-                                              lContiguousMemory.subRegion(lOffset,
-                                                                          lCameraImageBuffer.getSizeInBytes());
+        if (pKeepPlaneList.get(zi))
+        {
+          ClearCLBuffer lCameraImageBuffer =
+                                           mLightSheetMicroscopeSimulator.getCameraImageBuffer(mCameraIndex);
 
-        final int fzi = zi;
-        lMilliseconds =
-                      ElapsedTime.measure("!!copyplane",
-                                          () -> lCameraImageBuffer.writeTo(lImagePlane,
-                                                                           fzi == lLastZiKept)); //
-        // info("Copying plane %d in %g ms \n",zi,lMilliseconds);
+          long lOffset = i++ * lCameraImageBuffer.getSizeInBytes();
 
+          ContiguousMemoryInterface lImagePlane =
+                                                lContiguousMemory.subRegion(lOffset,
+                                                                            lCameraImageBuffer.getSizeInBytes());
+
+          final int fzi = zi;
+          lMilliseconds =
+                        ElapsedTime.measure("!!copyplane",
+                                            () -> lCameraImageBuffer.writeTo(lImagePlane,
+                                                                             fzi == lLastZiKept)); //
+          // info("Copying plane %d in %g ms \n",zi,lMilliseconds);
+
+        }
       }
     }
-
   }
 
   private void collectDetectionStateQueues(LightSheetMicroscopeQueue pLightSheetMicroscopeQueue)
