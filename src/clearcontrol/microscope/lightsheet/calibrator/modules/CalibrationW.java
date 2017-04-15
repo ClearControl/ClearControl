@@ -17,6 +17,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -105,47 +106,50 @@ public class CalibrationW
       double lStep = (lMaxW - lMinW) / pNumberOfSamples;
 
       // Building queue start:
-      mLightSheetMicroscope.clearQueue();
-      mLightSheetMicroscope.zero();
+      LightSheetMicroscopeQueue lQueue =
+                                       mLightSheetMicroscope.requestQueue();
+      lQueue.clearQueue();
+      lQueue.zero();
 
-      mLightSheetMicroscope.setI(pLightSheetIndex);
-      mLightSheetMicroscope.setIX(pLightSheetIndex, 0);
-      mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
-      mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
-      mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
+      lQueue.setI(pLightSheetIndex);
+      lQueue.setIX(pLightSheetIndex, 0);
+      lQueue.setIY(pLightSheetIndex, 0);
+      lQueue.setIZ(pLightSheetIndex, 0);
+      lQueue.setIH(pLightSheetIndex, 0);
 
-      mLightSheetMicroscope.setDZ(pDetectionArmIndex, 0);
-      mLightSheetMicroscope.setC(pDetectionArmIndex, false);
+      lQueue.setDZ(pDetectionArmIndex, 0);
+      lQueue.setC(pDetectionArmIndex, false);
 
-      mLightSheetMicroscope.setIZ(pLightSheetIndex, lMinW);
-      mLightSheetMicroscope.addCurrentStateToQueue();
+      lQueue.setIZ(pLightSheetIndex, lMinW);
+      lQueue.addCurrentStateToQueue();
 
       mWList.clear();
       for (double w = lMinW; w <= lMaxW; w += lStep)
       {
         mWList.add(w);
-        mLightSheetMicroscope.setIZ(pLightSheetIndex, w);
+        lQueue.setIZ(pLightSheetIndex, w);
 
-        mLightSheetMicroscope.setC(pDetectionArmIndex, false);
+        lQueue.setC(pDetectionArmIndex, false);
         for (int i = 0; i < 10; i++)
-          mLightSheetMicroscope.addCurrentStateToQueue();
+          lQueue.addCurrentStateToQueue();
 
-        mLightSheetMicroscope.setC(pDetectionArmIndex, true);
-        mLightSheetMicroscope.addCurrentStateToQueue();
+        lQueue.setC(pDetectionArmIndex, true);
+        lQueue.addCurrentStateToQueue();
       }
-      mLightSheetMicroscope.finalizeQueue();
+      lQueue.finalizeQueue();
       // Building queue end.
 
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+                                      mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
+                                                                                      lQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
 
       final StackInterface lStackInterface =
-                                           mLightSheetMicroscope.getStackVariable(pDetectionArmIndex)
+                                           mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
                                                                 .get();
 
       OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =

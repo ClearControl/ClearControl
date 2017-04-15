@@ -13,8 +13,11 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
  * @author royer
  */
 public interface LightSheetAcquisitionStateInterface extends
-                                                     AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>
+                                                     AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>,
+                                                     Cloneable
 {
+  
+  
   /**
    * Returns curent interpolationtables
    * 

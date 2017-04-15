@@ -40,7 +40,7 @@ public class AdaptationP extends AdaptationModuleBase
     LightSheetMicroscope lLSM =
                               getAdaptator().getLightSheetMicroscope();
     LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
+                                                          getAdaptator().getCurrentAcquisitionStateVariable()
                                                                         .get();
 
     int lNumberOfControlPlanes =
@@ -117,7 +117,7 @@ public class AdaptationP extends AdaptationModuleBase
         for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
         {
           int lBestDetectionArm =
-                                getAdaptator().getStackAcquisitionVariable()
+                                getAdaptator().getCurrentAcquisitionStateVariable()
                                               .get()
                                               .getBestDetectionArm(czi);
 

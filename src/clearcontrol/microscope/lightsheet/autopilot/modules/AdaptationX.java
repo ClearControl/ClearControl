@@ -26,7 +26,7 @@ public class AdaptationX extends NDIteratorAdaptationModule
     LightSheetMicroscope lLSM =
                               getAdaptator().getLightSheetMicroscope();
     LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
+                                                          getAdaptator().getCurrentAcquisitionStateVariable()
                                                                         .get();
 
     LightSheetInterface lLightSheetDevice =
@@ -89,7 +89,7 @@ public class AdaptationX extends NDIteratorAdaptationModule
                              ArrayList<Double> pArgMaxList)
   {
     int lBestDetectioArm =
-                         getAdaptator().getStackAcquisitionVariable()
+                         getAdaptator().getCurrentAcquisitionStateVariable()
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);
 

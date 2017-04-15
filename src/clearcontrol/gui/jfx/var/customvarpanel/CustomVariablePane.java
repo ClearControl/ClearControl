@@ -15,10 +15,16 @@ import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
 
+/**
+ * Custom variable pane
+ *
+ * @author royer
+ */
 public class CustomVariablePane extends TabPane
 {
 
@@ -29,12 +35,14 @@ public class CustomVariablePane extends TabPane
 
   private CustomGridPane mCurrentTabGridPane;
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Instanciates a custom variable pane
+   */
   public CustomVariablePane()
   {
     this(cDefaultWidth);
 
-    getTabs().addListener((ListChangeListener) change -> {
+    getTabs().addListener((ListChangeListener<Tab>) change -> {
       final StackPane header =
                              (StackPane) this.lookup(".tab-header-area");
 
@@ -53,12 +61,24 @@ public class CustomVariablePane extends TabPane
 
   }
 
+  /**
+   * Instanciates a custom variable pane with a given width for sliders
+   * 
+   * @param pSliderWidth
+   *          slider width
+   */
   public CustomVariablePane(double pSliderWidth)
   {
     super();
     mSliderWidth = pSliderWidth;
   }
 
+  /**
+   * Adds a tab
+   * 
+   * @param pName
+   *          tab name
+   */
   public void addTab(String pName)
   {
     Tab lTab = new Tab(pName);
@@ -85,13 +105,50 @@ public class CustomVariablePane extends TabPane
     mCursor = 0;
   }
 
+  /**
+   * Adds a check box for a given variable
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pBooleanVariable
+   *          boolean variable
+   * @return check box
+   */
+  public VariableCheckBox addCheckBoxForVariable(String pLabelText,
+                                                 Variable<Boolean> pBooleanVariable)
+  {
+    VariableCheckBox lVariableCheckBox =
+                                       new VariableCheckBox(pLabelText,
+                                                            pBooleanVariable);
+
+    int lCursor = mCursor++;
+    mCurrentTabGridPane.add(lVariableCheckBox.getLabel(), 0, lCursor);
+    mCurrentTabGridPane.add(lVariableCheckBox.getCheckBox(),
+                            1,
+                            lCursor);
+
+    return lVariableCheckBox;
+  }
+
+  /**
+   * Adds a custom toggle button given the selected and unselected text and
+   * corresponding variable.
+   * 
+   * @param pSelectedText
+   *          selected text
+   * @param pUnselectedText
+   *          unselected text
+   * @param pBooleanVariable
+   *          boolean variable
+   * @return custom toggle button
+   */
   public CustomToggleButton addToggleButton(String pSelectedText,
-                                            String pDeselectedText,
+                                            String pUnselectedText,
                                             Variable<Boolean> pBooleanVariable)
   {
     final CustomToggleButton lToggleButton =
                                            new CustomToggleButton(pSelectedText,
-                                                                  pDeselectedText,
+                                                                  pUnselectedText,
                                                                   pBooleanVariable);
 
     int lCursor = mCursor++;
@@ -102,6 +159,21 @@ public class CustomVariablePane extends TabPane
     return lToggleButton;
   }
 
+  /**
+   * Adds a slider for a given variable, min, max, granularity, and tick spacing
+   * 
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          tick spacing
+   * @return slider
+   */
   public <T extends Number> VariableSlider<T> addSliderForVariable(Variable<T> pVariable,
                                                                    T pMin,
                                                                    T pMax,
@@ -116,6 +188,24 @@ public class CustomVariablePane extends TabPane
                                 pTicks);
   }
 
+  /**
+   * Adds a slider with a given slider name, for a given variable, min, max,
+   * granularity and tick spacing.
+   * 
+   * @param pSliderName
+   *          slider name
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          tick spacing
+   * @return slider
+   */
   public <T extends Number> VariableSlider<T> addSliderForVariable(String pSliderName,
                                                                    Variable<T> pVariable,
                                                                    T pMin,
@@ -132,6 +222,24 @@ public class CustomVariablePane extends TabPane
                                 pTicks);
   }
 
+  /**
+   * Adds aslider for a given slider name, variable, min, max, granularity and
+   * tick spacing
+   * 
+   * @param pSliderName
+   *          slider name
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          tick spacing
+   * @return slider
+   */
   public <T extends Number> VariableSlider<T> addSliderForVariable(String pSliderName,
                                                                    Variable<T> pVariable,
                                                                    Variable<T> pMin,
@@ -160,6 +268,15 @@ public class CustomVariablePane extends TabPane
     return lSlider;
   }
 
+  /**
+   * Adds a slider for agiven variable and tick spacing
+   * 
+   * @param pVariable
+   *          variable
+   * @param pTicks
+   *          tick spacing
+   * @return slider
+   */
   public <T extends Number> VariableSlider<T> addSliderForVariable(BoundedVariable<T> pVariable,
                                                                    T pTicks)
   {
@@ -168,6 +285,17 @@ public class CustomVariablePane extends TabPane
                                 pTicks);
   }
 
+  /**
+   * Adds a slider for a given slider name, variable, and tick spacing.
+   * 
+   * @param pSliderName
+   *          slider name
+   * @param pVariable
+   *          variable
+   * @param pTicks
+   *          tick spacing
+   * @return slider
+   */
   public <T extends Number> VariableSlider<T> addSliderForVariable(String pSliderName,
                                                                    BoundedVariable<T> pVariable,
                                                                    T pTicks)
@@ -190,6 +318,13 @@ public class CustomVariablePane extends TabPane
     return lSlider;
   }
 
+  /**
+   * Adds a on/off array pane
+   * 
+   * @param pOnOffArrayPaneName
+   *          on/off array pane name
+   * @return on/off array pane
+   */
   public <T extends Number> OnOffArrayPane addOnOffArray(String pOnOffArrayPaneName)
   {
 
@@ -212,6 +347,14 @@ public class CustomVariablePane extends TabPane
     return lOnOffArrayPane;
   }
 
+  /**
+   * Adds a function pane
+   * 
+   * @param pName
+   *          name
+   * @param pFunction
+   *          function
+   */
   public void addFunctionPane(String pName,
                               Variable<UnivariateAffineFunction> pFunction)
   {

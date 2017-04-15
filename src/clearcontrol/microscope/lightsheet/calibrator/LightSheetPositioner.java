@@ -9,19 +9,33 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * Lightsheet positioner
+ *
+ * @author royer
+ */
 public class LightSheetPositioner
 {
 
-  public DenseMatrix64F mTransformMatrix, mInverseTransformMatrix;
+  private DenseMatrix64F mTransformMatrix, mInverseTransformMatrix;
 
+  /**
+   * Instanciates a lightsheet positioner
+   */
   public LightSheetPositioner()
   {
   }
 
+  /**
+   * Instanciates a lightsheet positioner given a transform matrix
+   * 
+   * @param pTransformMatrix
+   *          transform matrix
+   */
   public LightSheetPositioner(SimpleMatrix pTransformMatrix)
   {
-    mTransformMatrix = pTransformMatrix.getMatrix();
-    mInverseTransformMatrix = pTransformMatrix.invert().getMatrix();
+    setTransformMatrix(pTransformMatrix.getMatrix());
+    setInverseTransformMatrix(pTransformMatrix.invert().getMatrix());
   }
 
   public void setAt(LightSheetMicroscope pLightSheetMicroscope,
@@ -103,9 +117,29 @@ public class LightSheetPositioner
     lVector.set(1, 0, pPixelY);
 
     SimpleMatrix lControlVector =
-                                SimpleMatrix.wrap(mInverseTransformMatrix)
+                                SimpleMatrix.wrap(getInverseTransformMatrix())
                                             .mult(lVector);
     return lControlVector;
+  }
+
+  public DenseMatrix64F getTransformMatrix()
+  {
+    return mTransformMatrix;
+  }
+
+  public void setTransformMatrix(DenseMatrix64F pTransformMatrix)
+  {
+    mTransformMatrix = pTransformMatrix;
+  }
+
+  public DenseMatrix64F getInverseTransformMatrix()
+  {
+    return mInverseTransformMatrix;
+  }
+
+  public void setInverseTransformMatrix(DenseMatrix64F pInverseTransformMatrix)
+  {
+    mInverseTransformMatrix = pInverseTransformMatrix;
   }
 
 }

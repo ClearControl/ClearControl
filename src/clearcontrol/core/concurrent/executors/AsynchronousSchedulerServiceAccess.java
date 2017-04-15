@@ -3,10 +3,21 @@ package clearcontrol.core.concurrent.executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Asynchronous scheduler service. Provides methods for starting scheduled tasks
+ * 
+ *
+ * @author royer
+ */
 public interface AsynchronousSchedulerServiceAccess
 {
 
-  public default ScheduledThreadPoolExecutor initializeScheduledExecutors()
+  /**
+   * Initializes a scheduled executor
+   * 
+   * @return scheduled thread pool executor
+   */
+  public default ScheduledThreadPoolExecutor initializeScheduledThreadPoolExecutors()
   {
     return ClearControlExecutors.getOrCreateScheduledThreadPoolExecutor(this,
                                                                         Thread.NORM_PRIORITY,
@@ -15,6 +26,17 @@ public interface AsynchronousSchedulerServiceAccess
 
   }
 
+  /**
+   * Schedules a runnable to execute after a given delay
+   * 
+   * @param pRunnable
+   *          runnable
+   * @param pDelay
+   *          delay
+   * @param pUnit
+   *          delay unit
+   * @return future
+   */
   @SuppressWarnings(
   { "unchecked", "rawtypes" })
   public default WaitingScheduledFuture<?> schedule(Runnable pRunnable,
@@ -24,13 +46,25 @@ public interface AsynchronousSchedulerServiceAccess
     ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor =
                                                              ClearControlExecutors.getScheduledThreadPoolExecutor(this);
     if (lScheduledThreadPoolExecutor == null)
-      lScheduledThreadPoolExecutor = initializeScheduledExecutors();
+      lScheduledThreadPoolExecutor =
+                                   initializeScheduledThreadPoolExecutors();
 
     return new WaitingScheduledFuture(lScheduledThreadPoolExecutor.schedule(pRunnable,
                                                                             pDelay,
                                                                             pUnit));
   }
 
+  /**
+   * Schedules a runnable to execute at fixed rate with a given period
+   * 
+   * @param pRunnable
+   *          runnable
+   * @param pPeriod
+   *          period
+   * @param pUnit
+   *          period unit
+   * @return future
+   */
   public default WaitingScheduledFuture<?> scheduleAtFixedRate(Runnable pRunnable,
                                                                long pPeriod,
                                                                TimeUnit pUnit)
@@ -38,6 +72,20 @@ public interface AsynchronousSchedulerServiceAccess
     return scheduleAtFixedRate(pRunnable, 0, pPeriod, pUnit);
   }
 
+  /**
+   * Schedules a runnable to execute at fixed rate, with a given inicial delay,
+   * period, and time unit.
+   * 
+   * @param pRunnable
+   *          runnable
+   * @param pInitialDelay
+   *          initial delay
+   * @param pPeriod
+   *          period
+   * @param pTimeUnit
+   *          period unit
+   * @return future
+   */
   @SuppressWarnings(
   { "unchecked", "rawtypes" })
   public default WaitingScheduledFuture<?> scheduleAtFixedRate(Runnable pRunnable,
@@ -48,7 +96,8 @@ public interface AsynchronousSchedulerServiceAccess
     ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor =
                                                              ClearControlExecutors.getScheduledThreadPoolExecutor(this);
     if (lScheduledThreadPoolExecutor == null)
-      lScheduledThreadPoolExecutor = initializeScheduledExecutors();
+      lScheduledThreadPoolExecutor =
+                                   initializeScheduledThreadPoolExecutors();
 
     return new WaitingScheduledFuture(lScheduledThreadPoolExecutor.scheduleAtFixedRate(pRunnable,
                                                                                        pInitialDelay,
@@ -56,6 +105,20 @@ public interface AsynchronousSchedulerServiceAccess
                                                                                        pTimeUnit));
   }
 
+  /**
+   * Schedules the execution of a given runnable for a fixed number of times and
+   * period
+   * 
+   * @param pRunnable
+   *          runnable
+   * @param pTimes
+   *          number of times to execute runnable
+   * @param pPeriod
+   *          period
+   * @param pTimeUnit
+   *          time unit
+   * @return future
+   */
   public default WaitingScheduledFuture<?> scheduleNTimesAtFixedRate(Runnable pRunnable,
                                                                      long pTimes,
                                                                      long pPeriod,
@@ -68,6 +131,22 @@ public interface AsynchronousSchedulerServiceAccess
                                      pTimeUnit);
   }
 
+  /**
+   * Schedules the execution of a runnable for a fixed number of times, after an
+   * initial delay and with a given period.
+   * 
+   * @param pRunnable
+   *          runnable
+   * @param pTimes
+   *          number of times to execute runnable
+   * @param pInitialDelay
+   *          initial delay
+   * @param pPeriod
+   *          period
+   * @param pTimeUnit
+   *          time unit
+   * @return future
+   */
   @SuppressWarnings(
   { "unchecked", "rawtypes" })
   public default WaitingScheduledFuture<?> scheduleNTimesAtFixedRate(Runnable pRunnable,
@@ -83,7 +162,8 @@ public interface AsynchronousSchedulerServiceAccess
     ScheduledThreadPoolExecutor lScheduledThreadPoolExecutor =
                                                              ClearControlExecutors.getScheduledThreadPoolExecutor(this);
     if (lScheduledThreadPoolExecutor == null)
-      lScheduledThreadPoolExecutor = initializeScheduledExecutors();
+      lScheduledThreadPoolExecutor =
+                                   initializeScheduledThreadPoolExecutors();
 
     return new WaitingScheduledFuture(lLimitedExecutionsRunnable.runNTimes(lScheduledThreadPoolExecutor,
                                                                            pInitialDelay,

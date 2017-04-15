@@ -3,8 +3,13 @@ package clearcontrol.microscope.lightsheet.autopilot.modules;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilot;
+import clearcontrol.microscope.lightsheet.autopilot.Adaptator;
 
+/**
+ * Base class providing common fields and methods for all adaptation modules
+ *
+ * @author royer
+ */
 public abstract class AdaptationModuleBase implements
                                            AdaptationModuleInterface
 {
@@ -13,18 +18,18 @@ public abstract class AdaptationModuleBase implements
   protected ArrayList<Future<?>> mListOfFuturTasks =
                                                    new ArrayList<>();
 
-  private AutoPilot mLSMAdaptator;
+  private Adaptator mAdaptator;
 
   @Override
-  public void setAdaptator(AutoPilot pLSMAdaptator)
+  public void setAdaptator(Adaptator pAdaptator)
   {
-    mLSMAdaptator = pLSMAdaptator;
+    mAdaptator = pAdaptator;
   }
 
   @Override
-  public AutoPilot getAdaptator()
+  public Adaptator getAdaptator()
   {
-    return mLSMAdaptator;
+    return mAdaptator;
   }
 
   @Override
@@ -59,11 +64,6 @@ public abstract class AdaptationModuleBase implements
     mListOfFuturTasks.clear();
   }
 
-  /**
-   * Interface method implementation
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString()
   {
@@ -73,7 +73,7 @@ public abstract class AdaptationModuleBase implements
     lBuilder.append(", mListOfFuturTasks=");
     lBuilder.append(mListOfFuturTasks);
     lBuilder.append(", mLSMAdaptator=");
-    lBuilder.append(mLSMAdaptator);
+    lBuilder.append(mAdaptator);
     lBuilder.append(", isReady()=");
     lBuilder.append(isReady());
     lBuilder.append("]");

@@ -47,12 +47,12 @@ public class CalibrationDataTests
     assertNotNull(lCalibrationDataRead);
 
     assertEquals(1,
-                 lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(0,
+                 lCalibrationDataRead.mPositionerMap.get("test").getTransformMatrix().get(0,
                                                                                       0),
                  0.001);
 
     assertEquals(0,
-                 lCalibrationDataRead.mPositionerMap.get("test").mTransformMatrix.get(1,
+                 lCalibrationDataRead.mPositionerMap.get("test").getTransformMatrix().get(1,
                                                                                       0),
                  0.001);
 

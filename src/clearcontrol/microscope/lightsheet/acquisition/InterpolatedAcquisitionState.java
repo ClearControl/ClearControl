@@ -25,7 +25,9 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
 public class InterpolatedAcquisitionState extends
                                           NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
                                           implements
-                                          LightSheetAcquisitionStateInterface
+                                          LightSheetAcquisitionStateInterface,
+                                          Cloneable
+
 {
 
   private int mNumberOfDetectionArms, mNumberOfLightSheets,
@@ -96,8 +98,9 @@ public class InterpolatedAcquisitionState extends
                                                                 i),
                                                   false);
 
-    mZLow = new BoundedVariable<Number>("LowZ", 0.0);
-    mZHigh = new BoundedVariable<Number>("HighZ", 0.0);
+    mZLow = new BoundedVariable<Number>("LowZ", -100.0);
+    mZHigh = new BoundedVariable<Number>("HighZ", 100.0);
+
   }
 
   /**
@@ -181,6 +184,12 @@ public class InterpolatedAcquisitionState extends
          pInterpolatedAcquisitionState.getLightSheetMicroscope());
   }
 
+  @Override
+  public Object clone()
+  {
+    return new InterpolatedAcquisitionState(getName(), this);
+  }
+
   /**
    * resets the bounds
    */
@@ -190,18 +199,26 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
-   * Setup defaults
+   * Setup defaults given a lightsheet microscope
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
    */
-  public void setupDefault()
+  public void setupDefault(LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
     setup(-120, 0, 120, 4, 20, 10);
 
     int lNumberOfControlPlanes =
                                getInterpolationTables().getNumberOfControlPlanes();
 
-    Number lMaxHeight = getLightSheetMicroscope().getLightSheet(0)
-                                                 .getHeightVariable()
-                                                 .getMax();
+    Number lMaxHeight = new Double(1);
+
+    if (pLightSheetMicroscope != null)
+    {
+      lMaxHeight = pLightSheetMicroscope.getLightSheet(0)
+                                        .getHeightVariable()
+                                        .getMax();
+    }
 
     for (int zpi = 0; zpi < lNumberOfControlPlanes; zpi++)
     {

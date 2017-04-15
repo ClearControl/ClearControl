@@ -9,9 +9,17 @@ import clearcontrol.microscope.lightsheet.autopilot.utils.NDIterator;
 
 import org.junit.Test;
 
+/**
+ * n-dimensionsl iterator tests
+ *
+ * @author royer
+ */
 public class NDIteratorTests
 {
 
+  /**
+   * Tests
+   */
   @Test
   public void test()
   {

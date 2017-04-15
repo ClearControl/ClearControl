@@ -20,6 +20,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -210,13 +211,14 @@ public class CalibrationZ
 
       double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
-      mLightSheetMicroscope.clearQueue();
-      mLightSheetMicroscope.zero();
+      LightSheetMicroscopeQueue lQueue = mLightSheetMicroscope.requestQueue();
+      lQueue.clearQueue();
+      lQueue.zero();
 
-      mLightSheetMicroscope.setI(pLightSheetIndex);
-      mLightSheetMicroscope.setIX(pLightSheetIndex, 0);
-      mLightSheetMicroscope.setIY(pLightSheetIndex, 0);
-      mLightSheetMicroscope.setIZ(pLightSheetIndex, 0);
+      lQueue.setI(pLightSheetIndex);
+      lQueue.setIX(pLightSheetIndex, 0);
+      lQueue.setIY(pLightSheetIndex, 0);
+      lQueue.setIZ(pLightSheetIndex, 0);
 
       final double[] dz = new double[mNumberOfDetectionArmDevices];
 
@@ -224,11 +226,11 @@ public class CalibrationZ
 
       for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
       {
-        mLightSheetMicroscope.setIZ(pLightSheetIndex, lMinDZ);
-        mLightSheetMicroscope.setDZ(d, lMinDZ);
-        mLightSheetMicroscope.setC(d, false);
+        lQueue.setIZ(pLightSheetIndex, lMinDZ);
+        lQueue.setDZ(d, lMinDZ);
+        lQueue.setC(d, false);
       }
-      mLightSheetMicroscope.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
 
       for (double z = lMinDZ; z <= lMaxDZ; z += lStep)
       {
@@ -236,24 +238,24 @@ public class CalibrationZ
 
         for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
         {
-          mLightSheetMicroscope.setDZ(d, z);
-          mLightSheetMicroscope.setC(d, true);
+          lQueue.setDZ(d, z);
+          lQueue.setC(d, true);
         }
 
-        mLightSheetMicroscope.setIH(pLightSheetIndex, 0);
-        mLightSheetMicroscope.setIZ(pLightSheetIndex, pIZ);
+        lQueue.setIH(pLightSheetIndex, 0);
+        lQueue.setIZ(pLightSheetIndex, pIZ);
 
-        mLightSheetMicroscope.addCurrentStateToQueue();
+        lQueue.addCurrentStateToQueue();
       }
 
       for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
       {
-        mLightSheetMicroscope.setDZ(d, lMinDZ);
-        mLightSheetMicroscope.setC(d, false);
+        lQueue.setDZ(d, lMinDZ);
+        lQueue.setC(d, false);
       }
-      mLightSheetMicroscope.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
 
-      mLightSheetMicroscope.finalizeQueue();
+      lQueue.finalizeQueue();
 
       /*ScoreVisualizerJFrame.visualize("queuedscore",
       																mLightSheetMicroscope.getDeviceLists()
@@ -262,14 +264,15 @@ public class CalibrationZ
 
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      mLightSheetMicroscope.playQueueAndWaitForStacks(mLightSheetMicroscope.getQueueLength(),
+                                      mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
+                                                                                      lQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)
         for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
         {
           final StackInterface lStackInterface =
-                                               mLightSheetMicroscope.getStackVariable(i)
+                                               mLightSheetMicroscope.getCameraStackVariable(i)
                                                                     .get();
 
           OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =

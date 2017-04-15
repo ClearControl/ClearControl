@@ -43,11 +43,11 @@ public class AdaptationA extends NDIteratorAdaptationModule
     LightSheetMicroscope lLSM =
                               getAdaptator().getLightSheetMicroscope();
     LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
+                                                          getAdaptator().getCurrentAcquisitionStateVariable()
                                                                         .get();
 
     int lBestDetectionArm =
-                          getAdaptator().getStackAcquisitionVariable()
+                          getAdaptator().getCurrentAcquisitionStateVariable()
                                         .get()
                                         .getBestDetectionArm(pControlPlaneIndex);
 
@@ -97,7 +97,7 @@ public class AdaptationA extends NDIteratorAdaptationModule
                                double pIY)
   {
     int lBestDetectionArm =
-                          getAdaptator().getStackAcquisitionVariable()
+                          getAdaptator().getCurrentAcquisitionStateVariable()
                                         .get()
                                         .getBestDetectionArm(pControlPlaneIndex);
 
@@ -155,7 +155,7 @@ public class AdaptationA extends NDIteratorAdaptationModule
         return null;
 
       final int lBestDetectioArm =
-                                 getAdaptator().getStackAcquisitionVariable()
+                                 getAdaptator().getCurrentAcquisitionStateVariable()
                                                .get()
                                                .getBestDetectionArm(pControlPlaneIndex);
 

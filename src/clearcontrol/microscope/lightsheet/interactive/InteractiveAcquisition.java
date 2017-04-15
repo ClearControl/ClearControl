@@ -48,6 +48,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final BoundedVariable<Double> mExposureVariableInSeconds;
   private final Variable<Boolean> mTriggerOnChangeVariable,
       mUseCurrentAcquisitionStateVariable;
+  private final Variable<Boolean> mZLockingVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
   private final Variable<Boolean>[] mActiveCameraVariableArray;
   private final Variable<Long> mAcquisitionCounterVariable;
@@ -109,6 +110,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                                   0)
                                                        .getZVariable()
                                                        .getMaxVariable();
+
+    mZLockingVariable = new Variable<Boolean>("ZLocking", false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
@@ -214,7 +217,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
               mQueue.setC(c, mActiveCameraVariableArray[c].get());
-              mQueue.setDZ(c, lCurrentZ);
+              if (mZLockingVariable.get())
+                mQueue.setDZ(c, lCurrentZ);
             }
             getLightSheetMicroscope().setExposure(mExposureVariableInSeconds.get()
                                                                             .doubleValue());
@@ -222,7 +226,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
             {
               boolean lIsOn = mQueue.getI(l);
-              if (lIsOn)
+              if (lIsOn && mZLockingVariable.get())
                 mQueue.setIZ(l, lCurrentZ);
             }
 
@@ -420,6 +424,17 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   public Variable<Boolean> getActiveCameraVariable(int pCameraIndex)
   {
     return mActiveCameraVariableArray[pCameraIndex];
+  }
+
+  /**
+   * Returns the variable that holds the flag that decides whether to lock the Z
+   * variable of the lightsheets together with the detection Z
+   * 
+   * @return z-locking variable
+   */
+  public Variable<Boolean> getZLockingVariable()
+  {
+    return mZLockingVariable;
   }
 
   /**

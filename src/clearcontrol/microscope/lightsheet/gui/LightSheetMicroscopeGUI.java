@@ -5,7 +5,7 @@ import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
-import clearcontrol.microscope.lightsheet.calibrator.gui.jfx.CalibratorToolbar;
+import clearcontrol.microscope.lightsheet.calibrator.gui.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;

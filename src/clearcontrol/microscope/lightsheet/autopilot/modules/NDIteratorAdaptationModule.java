@@ -7,9 +7,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.FitProbabilityInterface;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -17,6 +14,7 @@ import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.autopilot.utils.NDIterator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -24,8 +22,15 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-import ij.ImageJ;
+import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
+import net.imglib2.img.planar.OffHeapPlanarImg;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 
+/**
+ * ND iterator adaptation module
+ *
+ * @author royer
+ */
 public abstract class NDIteratorAdaptationModule extends
                                                  AdaptationModuleBase
 {
@@ -34,8 +39,15 @@ public abstract class NDIteratorAdaptationModule extends
   private double mProbabilityThreshold;
   private NDIterator mNDIterator;
   protected MultiPlot mMultiPlotZFocusCurves;
-  private ImageJ mImageJ;
 
+  /**
+   * Instanciates a ND iterator adaptation module
+   * 
+   * @param pNumberOfSamples
+   *          numbe rof samples
+   * @param pProbabilityThreshold
+   *          probability threshold
+   */
   public NDIteratorAdaptationModule(int pNumberOfSamples,
                                     double pProbabilityThreshold)
   {
@@ -51,11 +63,22 @@ public abstract class NDIteratorAdaptationModule extends
 
   }
 
+  /**
+   * Returns ND iterator
+   * 
+   * @return ND iterator
+   */
   public NDIterator getNDIterator()
   {
     return mNDIterator;
   }
 
+  /**
+   * Sets the ND iterator
+   * 
+   * @param pNDIterator
+   *          ND iterator
+   */
   public void setNDIterator(NDIterator pNDIterator)
   {
     mNDIterator = pNDIterator;
@@ -67,21 +90,43 @@ public abstract class NDIteratorAdaptationModule extends
     return mNDIterator.getNumberOfIterations();
   };
 
+  /**
+   * Returns the probability threshold
+   * 
+   * @return probability threshold
+   */
   public double getProbabilityThreshold()
   {
     return mProbabilityThreshold;
   }
 
+  /**
+   * Sets the probability threshold
+   * 
+   * @param pProbabilityThreshold
+   *          probability threshold
+   */
   public void setProbabilityThreshold(double pProbabilityThreshold)
   {
     mProbabilityThreshold = pProbabilityThreshold;
   }
 
+  /**
+   * Returns the number of samples
+   * 
+   * @return number of samples
+   */
   public int getNumberOfSamples()
   {
     return mNumberOfSamples;
   }
 
+  /**
+   * Sets the number of samples
+   * 
+   * @param pNumberOfSamples
+   *          number of samples
+   */
   public void setNumberOfSamples(int pNumberOfSamples)
   {
     mNumberOfSamples = pNumberOfSamples;
@@ -94,12 +139,12 @@ public abstract class NDIteratorAdaptationModule extends
 
     LightSheetMicroscope lLightSheetMicroscope =
                                                getAdaptator().getLightSheetMicroscope();
-    LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
+    LightSheetAcquisitionStateInterface lAcquisitionState =
+                                                          getAdaptator().getCurrentAcquisitionStateVariable()
                                                                         .get();
 
     int lNumberOfControlPlanes =
-                               lStackAcquisition.getInterpolationTables()
+                               lAcquisitionState.getInterpolationTables()
                                                 .getNumberOfControlPlanes();
 
     int lNumberOfLighSheets =
@@ -144,40 +189,53 @@ public abstract class NDIteratorAdaptationModule extends
     return getNDIterator().hasNext();
   }
 
+  /**
+   * Performs an atomic step
+   * 
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return future
+   */
   public abstract Future<?> atomicStep(int pControlPlaneIndex,
                                        int pLightSheetIndex,
                                        int pNumberOfSamples);
 
   protected Future<?> findBestDOFValue(int pControlPlaneIndex,
                                        int pLightSheetIndex,
-                                       LightSheetMicroscope pLSM,
+                                       LightSheetMicroscopeQueue pQueue,
                                        LightSheetAcquisitionStateInterface lStackAcquisition,
                                        final TDoubleArrayList lDOFValueList)
   {
 
     try
     {
-      pLSM.useRecycler("adaptation", 1, 4, 4);
+      LightSheetMicroscope lLightSheetMicroscope =
+                                                 getAdaptator().getLightSheetMicroscope();
+
+      lLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      pLSM.playQueueAndWaitForStacks(10
-                                                                     + pLSM.getQueueLength(),
-                                                                     TimeUnit.SECONDS);
+                                      lLightSheetMicroscope.playQueueAndWaitForStacks(pQueue,
+                                                                                      10 + pQueue.getQueueLength(),
+                                                                                      TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
 
       final int lNumberOfDetectionArmDevices =
-                                             pLSM.getDeviceLists()
-                                                 .getNumberOfDevices(DetectionArmInterface.class);
+                                             lLightSheetMicroscope.getDeviceLists()
+                                                                  .getNumberOfDevices(DetectionArmInterface.class);
 
-      @SuppressWarnings("unchecked")
       ArrayList<StackInterface> lStacks = new ArrayList<>();
       for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
         if (isRelevantDetectionArm(pControlPlaneIndex, d))
         {
           final StackInterface lStackInterface =
-                                               pLSM.getStackVariable(d)
-                                                   .get();
+                                               lLightSheetMicroscope.getCameraStackVariable(d)
+                                                                    .get();
           lStacks.add(lStackInterface.duplicate());
 
         }
@@ -280,11 +338,21 @@ public abstract class NDIteratorAdaptationModule extends
     return null;
   }
 
+  /**
+   * Returns true if the given detection arm index is relevant at this control
+   * plane index
+   * 
+   * @param pControlPlaneIndex
+   *          control plane idnex
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @return true if relevant
+   */
   public boolean isRelevantDetectionArm(int pControlPlaneIndex,
                                         int pDetectionArmIndex)
   {
     int lBestDetectionArm =
-                          getAdaptator().getStackAcquisitionVariable()
+                          getAdaptator().getCurrentAcquisitionStateVariable()
                                         .get()
                                         .getBestDetectionArm(pControlPlaneIndex);
     return (lBestDetectionArm == pDetectionArmIndex);
@@ -299,6 +367,7 @@ public abstract class NDIteratorAdaptationModule extends
 
     DCTS2D lDCTS2D = new DCTS2D();
 
+    @SuppressWarnings("unchecked")
     OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =
                                                                    (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lDuplicatedStack.getImage();
 
@@ -339,11 +408,20 @@ public abstract class NDIteratorAdaptationModule extends
     return lMetricArray;
   }
 
-  public void updateNewState(int pControlPlaneIndex,
-                             int pLightSheetIndex,
-                             ArrayList<Double> pArgMaxList)
-  {
-  }
+  /**
+   * Updates new state for a given control plane index, lightsheet index and
+   * given the argmax list
+   * 
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pArgMaxList
+   *          argmax list
+   */
+  public abstract void updateNewState(int pControlPlaneIndex,
+                                      int pLightSheetIndex,
+                                      ArrayList<Double> pArgMaxList);
 
   @Override
   public boolean isReady()

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
+import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -26,14 +28,15 @@ public class AdaptationZ extends NDIteratorAdaptationModule
                               int pLightSheetIndex,
                               int pNumberOfSamples)
   {
-    LightSheetMicroscope lLSM =
-                              getAdaptator().getLightSheetMicroscope();
-    LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
-                                                                        .get();
-    double lCurrentIZ = lLSM.getIZ(pLightSheetIndex);
+    LightSheetMicroscopeQueue lQueue =
+                                     getAdaptator().getLightSheetMicroscope()
+                                                   .requestQueue();
+    InterpolatedAcquisitionState lAcquisitionState =
+                                                   getAdaptator().getCurrentAcquisitionStateVariable()
+                                                                 .get();
+    double lCurrentIZ = lQueue.getIZ(pLightSheetIndex);
     int lBestDetectionArm =
-                          getAdaptator().getStackAcquisitionVariable()
+                          getAdaptator().getCurrentAcquisitionStateVariable()
                                         .get()
                                         .getBestDetectionArm(pControlPlaneIndex);
 
@@ -43,38 +46,38 @@ public class AdaptationZ extends NDIteratorAdaptationModule
 
     final TDoubleArrayList lDZList = new TDoubleArrayList();
 
-    lLSM.clearQueue();
+    lQueue.clearQueue();
 
-    lStackAcquisition.applyStateAtControlPlane(pControlPlaneIndex);
-    double lCurrentDZ = lLSM.getDZ(lBestDetectionArm);
+    lAcquisitionState.applyStateAtControlPlane(lQueue,pControlPlaneIndex);
+    double lCurrentDZ = lQueue.getDZ(lBestDetectionArm);
 
-    lLSM.setILO(false);
-    lLSM.setC(false);
-    lLSM.setDZ(lBestDetectionArm, lCurrentDZ + lMinZ);
-    lLSM.addCurrentStateToQueue();
-    lLSM.addCurrentStateToQueue();
+    lQueue.setILO(false);
+    lQueue.setC(false);
+    lQueue.setDZ(lBestDetectionArm, lCurrentDZ + lMinZ);
+    lQueue.addCurrentStateToQueue();
+    lQueue.addCurrentStateToQueue();
 
-    lLSM.setILO(true);
-    lLSM.setC(true);
+    lQueue.setILO(true);
+    lQueue.setC(true);
     for (double z = lMinZ; z <= lMaxZ; z += mDeltaZ)
     {
       lDZList.add(z);
-      lLSM.setDZ(lBestDetectionArm, lCurrentDZ + z);
-      lLSM.setI(pLightSheetIndex);
-      lLSM.addCurrentStateToQueue();
+      lQueue.setDZ(lBestDetectionArm, lCurrentDZ + z);
+      lQueue.setI(pLightSheetIndex);
+      lQueue.addCurrentStateToQueue();
     }
 
-    lLSM.setILO(false);
-    lLSM.setC(false);
-    lLSM.setDZ(lBestDetectionArm, lCurrentDZ);
-    lLSM.addCurrentStateToQueue();
+    lQueue.setILO(false);
+    lQueue.setC(false);
+    lQueue.setDZ(lBestDetectionArm, lCurrentDZ);
+    lQueue.addCurrentStateToQueue();
 
-    lLSM.finalizeQueue();
+    lQueue.finalizeQueue();
 
     return findBestDOFValue(pControlPlaneIndex,
                             pLightSheetIndex,
-                            lLSM,
-                            lStackAcquisition,
+                            lQueue,
+                            lAcquisitionState,
                             lDZList);
 
   }
@@ -85,7 +88,7 @@ public class AdaptationZ extends NDIteratorAdaptationModule
                              ArrayList<Double> pArgMaxList)
   {
     int lBestDetectioArm =
-                         getAdaptator().getStackAcquisitionVariable()
+                         getAdaptator().getCurrentAcquisitionStateVariable()
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);
 

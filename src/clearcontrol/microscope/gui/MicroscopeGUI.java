@@ -232,7 +232,7 @@ public class MicroscopeGUI extends VirtualDevice implements
    */
   public void setup()
   {
-    setup2Dand3DDisplays();
+    setup2Dand3DDisplays(2, 1);
     setupHalcyonWindow();
   }
 
@@ -288,19 +288,32 @@ public class MicroscopeGUI extends VirtualDevice implements
 
   /**
    * Sets up 2D and 3D displays.
+   * 
+   * @param pNumberOf2DDisplays
+   *          number of 2D displays
+   * @param pNumberOf3DDisplays
+   *          number of 3D displays
    */
-  public void setup2Dand3DDisplays()
+  public void setup2Dand3DDisplays(int pNumberOf2DDisplays,
+                                   int pNumberOf3DDisplays)
   {
 
     if (m2DDisplay)
     {
 
-      final Stack2DDisplay lStack2DDisplay =
-                                           new Stack2DDisplay("Video 2D",
-                                                              cDefaultWindowWidth,
-                                                              cDefaultWindowHeight);
-      lStack2DDisplay.setVisible(false);
-      mStack2DDisplayList.add(lStack2DDisplay);
+      int lNumberOfCameras =
+                           getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
+
+      for (int c = 0; c < lNumberOfCameras; c++)
+      {
+        final Stack2DDisplay lStack2DDisplay =
+                                             new Stack2DDisplay(String.format("Video 2D for camera %d",
+                                                                              c),
+                                                                cDefaultWindowWidth,
+                                                                cDefaultWindowHeight);
+        lStack2DDisplay.setVisible(false);
+        mStack2DDisplayList.add(lStack2DDisplay);
+      }
     }
 
     if (m3DDisplay)
@@ -396,40 +409,115 @@ public class MicroscopeGUI extends VirtualDevice implements
   }
 
   /**
-   * Connects Stack camera of given index to 2D display of given idex.
+   * Connects Stack cameras to 2D display.
    * 
+   * @param p2DDisplayIndex
+   *          2D display index
    */
-  public void connectPipelineTo2D()
+  public void connectPipelineTo2D(int p2DDisplayIndex)
   {
-    Stack2DDisplay lStack2dDisplay = mStack2DDisplayList.get(0);
+    Stack2DDisplay lStack2dDisplay =
+                                   mStack2DDisplayList.get(p2DDisplayIndex);
 
     mMicroscope.getPipelineStackVariable()
                .sendUpdatesTo(lStack2dDisplay.getInputStackVariable());
 
     lStack2dDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
+  }
 
+  /**
+   * Connects Stack cameras to 3D display.
+   * 
+   * @param p3DDisplayIndex
+   *          3D display index
+   */
+  public void connectPipelineTo3D(int p3DDisplayIndex)
+  {
+    Stack3DDisplay lStack3DDisplay =
+                                   mStack3DDisplayList.get(p3DDisplayIndex);
+
+    mMicroscope.getPipelineStackVariable()
+               .sendUpdatesTo(lStack3DDisplay.getInputStackVariable());
+
+    lStack3DDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
+  }
+
+  /**
+   * Connects Stack cameras of given index to 2D display of given idex.
+   * 
+   */
+  public void connectCamerasTo2D()
+  {
+
+    int lNumberOfCameras =
+                         getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
+
+    for (int c = 0; c < lNumberOfCameras; c++)
+    {
+      Stack2DDisplay lStack2dDisplay = mStack2DDisplayList.get(c);
+
+      mMicroscope.getCameraStackVariable(c)
+                 .sendUpdatesTo(lStack2dDisplay.getInputStackVariable());
+
+      lStack2dDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
+    }
   }
 
   /**
    * Disconnects variable of given index.
    * 
+   * @param pCameraIndex
+   *          camera index
+   * @param p2DDisplayIndex
+   *          2D display index
+   * 
    */
-  public void disconnectCamera()
+  public void disconnectCamera(int pCameraIndex, int p2DDisplayIndex)
   {
-    Stack2DDisplay lStack2dDisplay = mStack2DDisplayList.get(0);
-    mMicroscope.getPipelineStackVariable()
+    Stack2DDisplay lStack2dDisplay =
+                                   mStack2DDisplayList.get(p2DDisplayIndex);
+    mMicroscope.getCameraStackVariable(pCameraIndex)
                .doNotSendUpdatesTo(lStack2dDisplay.getInputStackVariable());
+
+  }
+
+  /**
+   * Disconnects all cameras from all displays
+   * 
+   */
+  public void disconnectAllCameras()
+  {
+    int lNumberOfCameras =
+                         getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
+
+    for (int c = 0; c < lNumberOfCameras; c++)
+    {
+      for (Stack2DDisplay lStack2DDisplay : mStack2DDisplayList)
+        mMicroscope.getPipelineStackVariable()
+                   .doNotSendUpdatesTo(lStack2DDisplay.getInputStackVariable());
+
+      for (Stack3DDisplay lStack3DDisplay : mStack3DDisplayList)
+        mMicroscope.getPipelineStackVariable()
+                   .doNotSendUpdatesTo(lStack3DDisplay.getInputStackVariable());
+    }
 
   }
 
   /**
    * Connects 2D and 3D display variables.
    * 
+   * @param p2DDisplayIndex
+   *          2D display index
+   * @param p3DDisplayIndex
+   *          3D display index
+   * 
    */
-  public void connect2DTo3D()
+  public void connect2DTo3D(int p2DDisplayIndex, int p3DDisplayIndex)
   {
-    Stack2DDisplay lStack2dDisplay = mStack2DDisplayList.get(0);
-    Stack3DDisplay lStack3dDisplay = mStack3DDisplayList.get(0);
+    Stack2DDisplay lStack2dDisplay =
+                                   mStack2DDisplayList.get(p2DDisplayIndex);
+    Stack3DDisplay lStack3dDisplay =
+                                   mStack3DDisplayList.get(p3DDisplayIndex);
 
     lStack2dDisplay.setOutputStackVariable(lStack3dDisplay.getInputStackVariable());
 
@@ -437,15 +525,25 @@ public class MicroscopeGUI extends VirtualDevice implements
   }
 
   /**
-   * Disconnects 2D to 3D display variables.
-   * 
-   * 
+   * Disconnects 2D output variables
    */
-  public void disconnect2DTo3D()
+  public void disconnectAll2DOutputs()
   {
-    Stack2DDisplay lStack2DDisplay = mStack2DDisplayList.get(0);
+    for (Stack2DDisplay lStack2DDisplay : mStack2DDisplayList)
+    {
+      lStack2DDisplay.setOutputStackVariable(null);
+    }
+  }
 
-    lStack2DDisplay.setOutputStackVariable(null);
+  /**
+   * Disconnects 3D output variables
+   */
+  public void disconnectAll3DOutputs()
+  {
+    for (Stack3DDisplay lStack3DDisplay : mStack3DDisplayList)
+    {
+      lStack3DDisplay.setOutputStackVariable(null);
+    }
   }
 
   /**
@@ -456,10 +554,10 @@ public class MicroscopeGUI extends VirtualDevice implements
 
     if (m2DDisplay)
     {
-      connectPipelineTo2D();
+      connectCamerasTo2D();
 
       if (m3DDisplay)
-        connect2DTo3D();
+        connectPipelineTo3D(0);
     }
 
   }
@@ -469,18 +567,9 @@ public class MicroscopeGUI extends VirtualDevice implements
    */
   public void disconnectGUI()
   {
-    if (m2DDisplay)
-    {
-      disconnectCamera();
-
-      if (m3DDisplay)
-      {
-        disconnect2DTo3D();
-      }
-      else
-        mStack2DDisplayList.get(0).setOutputStackVariable(null);
-
-    }
+    disconnectAllCameras();
+    disconnectAll2DOutputs();
+    disconnectAll3DOutputs();
   }
 
   /**

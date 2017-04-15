@@ -10,6 +10,7 @@ import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
 import clearcl.backend.ClearCLBackendInterface;
 import clearcl.backend.ClearCLBackends;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
@@ -37,6 +38,9 @@ import clearcontrol.microscope.state.AcquisitionStateManager;
 
 import org.junit.Test;
 
+import simbryo.synthoscopy.microscope.aberration.DetectionMisalignment;
+import simbryo.synthoscopy.microscope.aberration.IlluminationMisalignment;
+import simbryo.synthoscopy.microscope.aberration.SampleDrift;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
 
@@ -45,7 +49,8 @@ import simbryo.synthoscopy.microscope.parameters.UnitConversion;
  *
  * @author royer
  */
-public class LightSheetMicroscopeDemo
+public class LightSheetMicroscopeDemo implements
+                                      AsynchronousSchedulerServiceAccess
 {
 
   private static final long cImageResolution = 1024;
@@ -91,7 +96,18 @@ public class LightSheetMicroscopeDemo
                                                                                                    lPhantomWidth,
                                                                                                    lPhantomHeight,
                                                                                                    lPhantomDepth);
+    //lSimulator.openViewerForControls();
+    lSimulator.setFreezedEmbryo(true);
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
+
+    lSimulator.addAbberation(new SampleDrift());
+    lSimulator.addAbberation(new IlluminationMisalignment());
+    lSimulator.addAbberation(new DetectionMisalignment());
+
+    scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),
+                        10,
+                        TimeUnit.MILLISECONDS);
+
     // lSimulator.openViewerForCameraImage(0);
     // lSimulator.openViewerForAllLightMaps();
 
@@ -249,7 +265,7 @@ public class LightSheetMicroscopeDemo
     InterpolatedAcquisitionState lAcquisitionState =
                                                    new InterpolatedAcquisitionState("default",
                                                                                     lLightSheetMicroscope);
-    lAcquisitionState.setupDefault();
+    lAcquisitionState.setupDefault(lLightSheetMicroscope);
     lAcquisitionStateManager.setCurrentState(lAcquisitionState);
     lLightSheetMicroscope.addInteractiveAcquisition(lAcquisitionStateManager);
 

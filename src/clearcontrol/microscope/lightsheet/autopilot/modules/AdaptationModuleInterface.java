@@ -2,15 +2,15 @@ package clearcontrol.microscope.lightsheet.autopilot.modules;
 
 import java.util.function.Function;
 
-import clearcontrol.microscope.lightsheet.autopilot.AutoPilot;
+import clearcontrol.microscope.lightsheet.autopilot.Adaptator;
 
 public interface AdaptationModuleInterface extends
                                            Function<Void, Boolean>
 {
 
-  void setAdaptator(AutoPilot pLSMAdaptator);
+  void setAdaptator(Adaptator pLSMAdaptator);
 
-  AutoPilot getAdaptator();
+  Adaptator getAdaptator();
 
   void setPriority(int pPriority);
 

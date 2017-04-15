@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.gui.jfx;
+package clearcontrol.microscope.lightsheet.calibrator.gui;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;

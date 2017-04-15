@@ -28,7 +28,7 @@ public class AdaptationW extends NDIteratorAdaptationModule
     LightSheetMicroscope lLSM =
                               getAdaptator().getLightSheetMicroscope();
     LightSheetAcquisitionStateInterface lStackAcquisition =
-                                                          getAdaptator().getStackAcquisitionVariable()
+                                                          getAdaptator().getCurrentAcquisitionStateVariable()
                                                                         .get();
 
     LightSheetInterface lLightSheetDevice =
@@ -100,7 +100,7 @@ public class AdaptationW extends NDIteratorAdaptationModule
   {
 
     int lBestDetectioArm =
-                         getAdaptator().getStackAcquisitionVariable()
+                         getAdaptator().getCurrentAcquisitionStateVariable()
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);
 
