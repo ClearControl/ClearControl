@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.junit.Test;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCameraQueue;
@@ -14,10 +16,8 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
 
-import org.junit.Test;
-
 /**
- *
+ * Hamamatsu stack camera demo
  *
  * @author royer
  */
@@ -60,9 +60,7 @@ public class HamStackCameraDemo
                             public StackInterface setEventHook(final StackInterface pOldStack,
                                                                final StackInterface pNewStack)
                             {
-                              /*System.out.println("testbody: hashcode=" + pNewStack.hashCode()
-                              										+ " index="
-                              										+ pNewStack.getIndex());/**/
+
                               System.out.println(pNewStack);
                               mFrameIndex.incrementAndGet();
                               return super.setEventHook(pOldStack,
@@ -76,7 +74,11 @@ public class HamStackCameraDemo
 
     lQueue.clearQueue();
 
-    for (int i = 0; i < 500; i++)
+    lQueue.getExposureInSecondsVariable().set(0.01);
+    lOrcaFlash4StackCamera.getStackWidthVariable().set(512L);
+    lOrcaFlash4StackCamera.getStackHeightVariable().set(512L);
+
+    for (int i = 0; i < 10; i++)
     {
       lQueue.addCurrentStateToQueue();
     }

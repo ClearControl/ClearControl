@@ -12,19 +12,14 @@ public class HamStackCameraQueue extends
                                  StackCameraQueue<HamStackCameraQueue>
 
 {
-  private HamStackCamera mHamStackCamera;
-
   /**
    * Instantiates a queue given a stack camera simulator
    * 
-   * @param pHamStackCamera
-   *          parent stack camera
    * 
    */
-  public HamStackCameraQueue(HamStackCamera pHamStackCamera)
+  public HamStackCameraQueue()
   {
     super();
-    mHamStackCamera = pHamStackCamera;
 
     mStackWidthVariable = new Variable<Long>("FrameWidth", 2048L)
     {
@@ -33,9 +28,10 @@ public class HamStackCameraQueue extends
                                final Long pNewValue)
       {
 
-        long lAdjustedValue = mHamStackCamera.getDcamDevice()
-                                             .adjustWidthHeight(pNewValue,
-                                                                4);
+        long lAdjustedValue =
+                            ((HamStackCamera) getStackCamera()).getDcamDevice()
+                                                               .adjustWidthHeight(pNewValue,
+                                                                                  4);
 
         return super.setEventHook(pOldValue, lAdjustedValue);
       }
@@ -48,9 +44,10 @@ public class HamStackCameraQueue extends
       public Long setEventHook(final Long pOldValue,
                                final Long pNewValue)
       {
-        long lAdjustedValue = mHamStackCamera.getDcamDevice()
-                                             .adjustWidthHeight(pNewValue,
-                                                                4);
+        long lAdjustedValue =
+                            ((HamStackCamera) getStackCamera()).getDcamDevice()
+                                                               .adjustWidthHeight(pNewValue,
+                                                                                  4);
 
         return super.setEventHook(pOldValue, lAdjustedValue);
       }
@@ -67,7 +64,7 @@ public class HamStackCameraQueue extends
   public HamStackCameraQueue(HamStackCameraQueue pHamStackCameraQueue)
   {
     super(pHamStackCameraQueue);
-    mHamStackCamera = pHamStackCameraQueue.mHamStackCamera;
+    setStackCamera(pHamStackCameraQueue.getStackCamera());
   }
 
 }
