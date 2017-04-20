@@ -1,7 +1,8 @@
 package clearcontrol.microscope.lightsheet.calibrator;
 
+import static java.lang.Math.pow;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import clearcontrol.core.configuration.MachineConfiguration;
@@ -20,12 +21,13 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * Calibrator
+ *
+ * @author royer
+ */
 public class Calibrator extends TaskDevice implements LoggingInterface
 {
 
@@ -47,6 +49,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   private HashMap<String, LightSheetPositioner> mPositionersMap =
                                                                 new HashMap<>();
 
+  @SuppressWarnings("unused")
   private int mNumberOfDetectionArmDevices;
   private int mNumberOfLightSheetDevices;
 
@@ -79,9 +82,15 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   private final Variable<Double> mProgressVariable;
 
+  /**
+   * Instanciates a calibrator, given a lightsheet microscope
+   * 
+   * @param pLightSheetMicroscope
+   *          lighthseet microscope
+   */
   public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
   {
-    super(pLightSheetMicroscope.getName() + "Calibrator");
+    super("Calibrator");
 
     mLightSheetMicroscope = pLightSheetMicroscope;
     mCalibrationZ = new CalibrationZ(this);
@@ -105,6 +114,11 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
+  /**
+   * Returns a lightsheet microscope
+   * 
+   * @return lightsheet microscope
+   */
   public LightSheetMicroscope getLightSheetMicroscope()
   {
     return mLightSheetMicroscope;
@@ -120,16 +134,22 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
+  /**
+   * Performs calibration
+   * 
+   * @return true if foinished normally, false if calibration was canceled or
+   *         failed
+   */
   public boolean calibrate()
   {
 
-    if (getCalibrateZVariable().get() && !calibrateZ(32))
+    if (getCalibrateZVariable().get() && !calibrateZ(13))
       return false;
 
     if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
       return false;/**/
 
-    if (getCalibrateAVariable().get() && !calibrateA(32))
+    if (getCalibrateAVariable().get() && !calibrateA(32, 4))
       return false;
 
     if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
@@ -165,6 +185,13 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
+  /**
+   * Calibrates the lightsheet and detection arm Z positions.
+   * 
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return true when succeeded
+   */
   public boolean calibrateZ(int pNumberOfSamples)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
@@ -173,7 +200,13 @@ public class Calibrator extends TaskDevice implements LoggingInterface
       double lError = Double.POSITIVE_INFINITY;
       do
       {
-        lError = calibrateZ(l, pNumberOfSamples, l == 0);
+        double lSearchAmplitude = 1.0 / (pow(2, lIteration));
+        lError =
+               calibrateZ(l,
+                          pNumberOfSamples,
+                          pNumberOfSamples,
+                          lSearchAmplitude,
+                          l == 0);
         System.out.println("############################################## Error = "
                            + lError);
         if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
@@ -187,7 +220,14 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
-  public boolean calibrateA(int pNumberOfAngles)
+  /**
+   * Calibrates the alpha angle.
+   * 
+   * @param pNumberOfAngles
+   *          number of angles
+   * @return true when succeeded
+   */
+  public boolean calibrateA(int pNumberOfAngles, int pNumberOfRepeats)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
     {
@@ -195,7 +235,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
       double lError = Double.POSITIVE_INFINITY;
       do
       {
-        lError = calibrateA(l, pNumberOfAngles);
+        lError = calibrateA(l, pNumberOfAngles, pNumberOfRepeats);
         System.out.println("############################################## Error = "
                            + lError);
         if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
@@ -209,6 +249,13 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
+  /**
+   * Calibrates X and Y lighthseet positions
+   * 
+   * @param pNumberOfPoints
+   *          number of points
+   * @return true when succeeded
+   */
   public boolean calibrateXY(int pNumberOfPoints)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
@@ -232,6 +279,9 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
+  /**
+   * @return true when succeeded
+   */
   public boolean calibrateP()
   {
     mCalibrationP.reset();
@@ -255,6 +305,15 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
+  /**
+   * Calibrates the lighthseet laser power versus its height
+   * 
+   * @param pNumberOfSamplesH
+   *          number of samples for the height
+   * @param pNumberOfSamplesP
+   *          number of samples for the laser power
+   * @return true when succeeded
+   */
   public boolean calibrateHP(int pNumberOfSamplesH,
                              int pNumberOfSamplesP)
   {
@@ -267,6 +326,13 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return true;
   }
 
+  /**
+   * Calibrates the width (beam NA) of the lighthsheet
+   * 
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return true when succeeded
+   */
   public boolean calibrateW(int pNumberOfSamples)
   {
     calibrateW(0, pNumberOfSamples);
@@ -275,22 +341,66 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   // /***************************************************************/ //
 
+  /**
+   * Calibrates the lightsheet and detection arms Z positions.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pNumberOfDSamples
+   *          number of detection Z samples
+   * @param pNumberOfISamples
+   *          number of illumination Z samples
+   * @param pSearchAmplitude
+   *          search amplitude (within [0,1])
+   * @param pAdjustDetectionZ
+   *          true -> adjust detection Z
+   * @return true when succeeded
+   */
   public double calibrateZ(int pLightSheetIndex,
-                           int pNumberOfSamples,
+                           int pNumberOfDSamples,
+                           int pNumberOfISamples,
+                           double pSearchAmplitude,
                            boolean pAdjustDetectionZ)
   {
-    mCalibrationZ.calibrate(pLightSheetIndex, pNumberOfSamples, 9);
+    mCalibrationZ.calibrate(pLightSheetIndex,
+                            pNumberOfDSamples,
+                            pNumberOfISamples,
+                            pSearchAmplitude);
 
     return mCalibrationZ.apply(pLightSheetIndex, pAdjustDetectionZ);
   }
 
-  public double calibrateA(int pLightSheetIndex, int pNumberOfAngles)
+  /**
+   * Calibrates the lightsheet alpha angles.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pNumberOfAngles
+   *          number of angles
+   * @return true when succeeded
+   */
+  public double calibrateA(int pLightSheetIndex,
+                           int pNumberOfAngles,
+                           int pNumberOfRepeats)
   {
-    mCalibrationA.calibrate(pLightSheetIndex, pNumberOfAngles);
+    mCalibrationA.calibrate(pLightSheetIndex,
+                            pNumberOfAngles,
+                            pNumberOfRepeats);
 
     return mCalibrationA.apply(pLightSheetIndex);
   }
 
+  /**
+   * Calibrates the XY position of the lighthsheets
+   * 
+   * @param pLightSheetIndex
+   *          lightshet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfPoints
+   *          number of points
+   * @return true when succeeded
+   */
   public double calibrateXY(int pLightSheetIndex,
                             int pDetectionArmIndex,
                             int pNumberOfPoints)
@@ -302,6 +412,15 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return mCalibrationXY.apply(pLightSheetIndex, pDetectionArmIndex);
   }
 
+  /**
+   * Calibrates and the lightsheet width
+   * 
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return true when succeeded
+   */
   public double calibrateW(int pDetectionArmIndex,
                            int pNumberOfSamples)
   {
@@ -310,6 +429,19 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return mCalibrationW.apply();
   }
 
+  /**
+   * Calibrates the lightsheet laser power versus its width
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfSamplesW
+   *          number of samples for the width
+   * @param pNumberOfSamplesP
+   *          number of samples for the laser power
+   * @return true when succeeded
+   */
   public double calibrateWP(int pLightSheetIndex,
                             int pDetectionArmIndex,
                             int pNumberOfSamplesW,
@@ -323,6 +455,19 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return mCalibrationWP.apply(pLightSheetIndex, pDetectionArmIndex);
   }
 
+  /**
+   * Calibrates the lightsheet power versus its height
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfSamplesH
+   *          number of samples for the height
+   * @param pNumberOfSamplesP
+   *          number of samples for the laser power
+   * @return true when succeeded
+   */
   public double calibrateHP(int pLightSheetIndex,
                             int pDetectionArmIndex,
                             int pNumberOfSamplesH,
@@ -336,6 +481,9 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return mCalibrationHP.apply(pLightSheetIndex, pDetectionArmIndex);
   }
 
+  /**
+   * Resets the calibration information
+   */
   public void reset()
   {
     mCalibrationZ.reset();
@@ -374,6 +522,9 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     }
   }
 
+  /**
+   * 
+   */
   public void positioners()
   {
 
@@ -404,6 +555,16 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
+  /**
+   * Sets the positioner to use for a given lightsheet and detection arm
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pLightSheetPositioner
+   *          lightsheet positioner
+   */
   public void setPositioner(int pLightSheetIndex,
                             int pDetectionArmIndex,
                             LightSheetPositioner pLightSheetPositioner)
@@ -415,6 +576,16 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
+  /**
+   * Returns the lightsheet positioner for a given lightsheet index and
+   * detection arm index
+   * 
+   * @param pLightSheetIndex
+   *          light sheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @return positioner
+   */
   public LightSheetPositioner getPositioner(int pLightSheetIndex,
                                             int pDetectionArmIndex)
   {
@@ -424,23 +595,31 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
-  public void save() throws JsonGenerationException,
-                     JsonMappingException,
-                     IOException
+  /**
+   * Saves the calibration information to a file.
+   */
+  public void save()
   {
     save(mCalibrationDataName.get());
   }
 
-  public boolean load() throws JsonGenerationException,
-                        JsonMappingException,
-                        IOException
+  /**
+   * Loads the calibration from a file
+   * 
+   * @return true -> success
+   */
+  public boolean load()
   {
     return load(mCalibrationDataName.get());
   }
 
-  public void save(String pName) throws JsonGenerationException,
-                                 JsonMappingException,
-                                 IOException
+  /**
+   * Saves this calibration to a file of given name.
+   * 
+   * @param pName
+   *          calibration name
+   */
+  public void save(String pName)
   {
     CalibrationData lCalibrationData =
                                      new CalibrationData(mLightSheetMicroscope);
@@ -453,9 +632,14 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
   }
 
-  public boolean load(String pName) throws JsonParseException,
-                                    JsonMappingException,
-                                    IOException
+  /**
+   * Loads calibration from a file of given name
+   * 
+   * @param pName
+   *          name
+   * @return true -> success
+   */
+  public boolean load(String pName)
   {
     File lFile = getFile(pName);
 
@@ -467,7 +651,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
     lCalibrationData.applyTo(mLightSheetMicroscope);
 
-    lCalibrationData.applyTo(mPositionersMap);
+    lCalibrationData.copyTo(mPositionersMap);
 
     return true;
   }
@@ -477,51 +661,101 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     return new File(mCalibrationFolder, pName + ".json");
   }
 
+  /**
+   * Returns the variable holding the 'calibrate Z' boolean flag.
+   * 
+   * @return calibrate Z variable
+   */
   public Variable<Boolean> getCalibrateZVariable()
   {
     return mCalibrateZVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate A' boolean flag.
+   * 
+   * @return calibrate A variable
+   */
   public Variable<Boolean> getCalibrateAVariable()
   {
     return mCalibrateAVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate XY' boolean flag.
+   * 
+   * @return calibrate XY variable
+   */
   public Variable<Boolean> getCalibrateXYVariable()
   {
     return mCalibrateXYVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate P' boolean flag.
+   * 
+   * @return calibrate P variable
+   */
   public Variable<Boolean> getCalibratePVariable()
   {
     return mCalibratePVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate W' boolean flag.
+   * 
+   * @return calibrate W variable
+   */
   public Variable<Boolean> getCalibrateWVariable()
   {
     return mCalibrateWVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate WP' boolean flag.
+   * 
+   * @return calibrate WP variable
+   */
   public Variable<Boolean> getCalibrateWPVariable()
   {
     return mCalibrateWPVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate HP' boolean flag.
+   * 
+   * @return calibrate HP variable
+   */
   public Variable<Boolean> getCalibrateHPVariable()
   {
     return mCalibrateHPVariable;
   }
 
+  /**
+   * Returns the variable holding the 'calibrate W' boolean flag.
+   * 
+   * @return calibrate W variable
+   */
   public Variable<Double> getProgressVariable()
   {
     return mProgressVariable;
   }
 
+  /**
+   * Returns the calibration data name variable
+   * 
+   * @return calibration data name variable
+   */
   public Variable<String> getCalibrationDataNameVariable()
   {
     return mCalibrationDataName;
   }
 
+  /**
+   * Returns the variable holding the 'is-running' flag.
+   * 
+   * @return is-running variable
+   */
   public boolean isRunning()
   {
     return getIsRunningVariable().get();

@@ -2,7 +2,6 @@ package clearcontrol.devices.cameras;
 
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.openclose.ReOpenDeviceInterface;
-import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -12,7 +11,6 @@ import clearcontrol.core.variable.Variable;
  */
 public interface CameraDeviceInterface extends
                                        OpenCloseDeviceInterface,
-                                       StartStopDeviceInterface,
                                        ReOpenDeviceInterface
 {
 

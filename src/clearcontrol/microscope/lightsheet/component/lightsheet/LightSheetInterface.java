@@ -4,7 +4,7 @@ import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 
@@ -19,7 +19,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 public interface LightSheetInterface extends
                                      NameableInterface,
                                      OpenCloseDeviceInterface,
-                                     RealTimeQueueDeviceInterface<LightSheetQueue>,
+                                     QueueDeviceInterface<LightSheetQueue>,
                                      HasChangeListenerInterface<VirtualDevice>,
                                      LightSheetParameterInterface
 {

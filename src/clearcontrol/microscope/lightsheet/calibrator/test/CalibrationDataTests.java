@@ -16,9 +16,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Test;
 
+/**
+ * Calibration data tests
+ *
+ * @author royer
+ */
 public class CalibrationDataTests
 {
 
+  /**
+   * tests save and loading of calibration data
+   * 
+   * @throws JsonGenerationException
+   *           NA
+   * @throws JsonMappingException
+   *           NA
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void saveload() throws JsonGenerationException,
                          JsonMappingException,
@@ -47,13 +62,15 @@ public class CalibrationDataTests
     assertNotNull(lCalibrationDataRead);
 
     assertEquals(1,
-                 lCalibrationDataRead.mPositionerMap.get("test").getTransformMatrix().get(0,
-                                                                                      0),
+                 lCalibrationDataRead.mPositionerMap.get("test")
+                                                    .getTransformMatrix()
+                                                    .get(0, 0),
                  0.001);
 
     assertEquals(0,
-                 lCalibrationDataRead.mPositionerMap.get("test").getTransformMatrix().get(1,
-                                                                                      0),
+                 lCalibrationDataRead.mPositionerMap.get("test")
+                                                    .getTransformMatrix()
+                                                    .get(1, 0),
                  0.001);
 
   }

@@ -8,8 +8,8 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.stack.StackInterface;
@@ -25,10 +25,9 @@ import coremem.recycling.RecyclerInterface;
  * @param <Q>
  *          queue type
  */
-public interface MicroscopeInterface<Q extends RealTimeQueueInterface>
-                                    extends
+public interface MicroscopeInterface<Q extends QueueInterface> extends
                                     NameableInterface,
-                                    RealTimeQueueDeviceInterface<Q>,
+                                    QueueDeviceInterface<Q>,
                                     HasChangeListenerInterface<VirtualDevice>
 
 {

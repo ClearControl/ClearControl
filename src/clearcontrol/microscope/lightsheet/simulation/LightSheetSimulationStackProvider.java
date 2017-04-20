@@ -8,7 +8,7 @@ import clearcl.util.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProviderBase;
-import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationRealTimeQueue;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationQueue;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
@@ -87,7 +87,7 @@ public class LightSheetSimulationStackProvider extends
   }
 
   @Override
-  protected void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
+  protected void fillStackData(StackCameraSimulationQueue pQueue,
                                ArrayList<Boolean> pKeepPlaneList,
                                long pWidth,
                                long pHeight,

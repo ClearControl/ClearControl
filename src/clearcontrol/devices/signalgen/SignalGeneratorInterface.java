@@ -2,7 +2,7 @@ package clearcontrol.devices.signalgen;
 
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
@@ -14,7 +14,7 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
 public interface SignalGeneratorInterface extends
                                           NameableInterface,
                                           OpenCloseDeviceInterface,
-                                          RealTimeQueueDeviceInterface<SignalGeneratorRealTimeQueue>
+                                          QueueDeviceInterface<SignalGeneratorRealTimeQueue>
 {
 
   /**

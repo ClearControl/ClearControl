@@ -3,7 +3,7 @@ package clearcontrol.microscope.lightsheet.signalgen;
 import java.util.concurrent.Future;
 
 import clearcontrol.core.device.VirtualDevice;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 
@@ -15,7 +15,7 @@ import clearcontrol.devices.signalgen.SignalGeneratorInterface;
  */
 public class LightSheetSignalGeneratorDevice extends VirtualDevice
                                              implements
-                                             RealTimeQueueDeviceInterface<LightSheetSignalGeneratorQueue>,
+                                             QueueDeviceInterface<LightSheetSignalGeneratorQueue>,
                                              LoggingInterface
 {
 

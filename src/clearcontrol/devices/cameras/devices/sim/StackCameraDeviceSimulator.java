@@ -12,7 +12,6 @@ import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceBase;
-import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
 import clearcontrol.devices.cameras.devices.sim.providers.RandomStackProvider;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
@@ -25,7 +24,7 @@ import coremem.recycling.BasicRecycler;
  * @author royer
  */
 public class StackCameraDeviceSimulator extends
-                                        StackCameraDeviceBase<StackCameraSimulationRealTimeQueue>
+                                        StackCameraDeviceBase<StackCameraSimulationQueue>
                                         implements
                                         LoggingInterface,
                                         SimulationDeviceInterface,
@@ -71,7 +70,7 @@ public class StackCameraDeviceSimulator extends
   {
     super(pDeviceName,
           pTriggerVariable,
-          new StackCameraSimulationRealTimeQueue());
+          new StackCameraSimulationQueue());
 
     mTemplateQueue.setStackCamera(this);
 
@@ -134,35 +133,18 @@ public class StackCameraDeviceSimulator extends
   }
 
   @Override
-  public boolean start()
+  public StackCameraSimulationQueue requestQueue()
   {
-
-    return true;
+    return new StackCameraSimulationQueue(mTemplateQueue);
   }
 
   @Override
-  public boolean stop()
-  {
-
-    return true;
-  }
-
-  @Override
-  public StackCameraRealTimeQueue requestQueue()
-  {
-    return new StackCameraSimulationRealTimeQueue(mTemplateQueue);
-  }
-
-  @Override
-  public Future<Boolean> playQueue(StackCameraRealTimeQueue pQueue)
+  public Future<Boolean> playQueue(StackCameraSimulationQueue pQueue)
   {
     if (isSimLogging())
       info("Playing queue...");
 
-    StackCameraSimulationRealTimeQueue lQueue =
-                                              (StackCameraSimulationRealTimeQueue) pQueue;
-
-    final CountDownLatch lLatch = lQueue.startAcquisition();
+    final CountDownLatch lLatch = pQueue.startAcquisition();
 
     super.playQueue(pQueue);
 

@@ -22,7 +22,7 @@ public class LaserDeviceSimulator extends LaserDeviceBase implements
 {
 
   private static final double cEpsilon = 0.1;
-  private static final double cNoise = 2;
+  private static final double cNoise = 0.1;
   private static final long cSimulationPeriod = 50;
   private static final int cUpdatePeriod = 4; // in unit of simulation period
 

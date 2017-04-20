@@ -1,6 +1,6 @@
 package clearcontrol.simulation;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.microscope.MicroscopeInterface;
@@ -12,7 +12,7 @@ import clearcontrol.microscope.MicroscopeInterface;
  * @param <Q>
  *          queue type
  */
-public interface SampleSimulationDeviceInterface<Q extends RealTimeQueueInterface>
+public interface SampleSimulationDeviceInterface<Q extends QueueInterface>
                                                 extends
                                                 SimulationDeviceInterface
 {

@@ -258,7 +258,8 @@ public class CalibrationXY
                                                        TimeoutException
   {
     // Building queue start:
-    LightSheetMicroscopeQueue lQueue = mLightSheetMicroscope.requestQueue();
+    LightSheetMicroscopeQueue lQueue =
+                                     mLightSheetMicroscope.requestQueue();
     lQueue.clearQueue();
     lQueue.zero();
 

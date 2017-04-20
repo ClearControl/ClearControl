@@ -4,33 +4,64 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Custom grid pane
+ *
+ * @author royer
+ */
 public class CustomGridPane extends GridPane
 {
 
+  /**
+   * Standard custom grid pane gap
+   */
   public static final int cStandardGap = 5;
+  /**
+   * Standard custom grid pane padding
+   */
   public static final int cStandardPadding = 10;
 
+  /**
+   * Instanciates a custom grid pane
+   */
   public CustomGridPane()
   {
     this(cStandardPadding, cStandardGap);
   }
 
-  public CustomGridPane(int pAddPading, int pGaps)
+  /**
+   * Instanciates a custom grid pane with given padding and gaps
+   * 
+   * @param pPadding
+   *          padding
+   * @param pGaps
+   *          gaps
+   */
+  public CustomGridPane(int pPadding, int pGaps)
   {
     super();
     setAlignment(Pos.CENTER);
     setGap(pGaps);
-    setPadding(pAddPading);
+    setPadding(pPadding);
   }
 
-  public void setPadding(double pAddPading)
+  /**
+   * Sets pading
+   * 
+   * @param pPadding
+   *          padding
+   */
+  public void setPadding(double pPadding)
   {
-    setPadding(new Insets(pAddPading,
-                          pAddPading,
-                          pAddPading,
-                          pAddPading));
+    setPadding(new Insets(pPadding, pPadding, pPadding, pPadding));
   }
 
+  /**
+   * Sets gap
+   * 
+   * @param pGap
+   *          gap
+   */
   public void setGap(double pGap)
   {
     setHgap(pGap);

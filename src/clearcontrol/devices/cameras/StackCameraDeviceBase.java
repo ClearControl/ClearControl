@@ -16,10 +16,10 @@ import coremem.recycling.RecyclerInterface;
  * @param <Q>
  *          queue type
  */
-public abstract class StackCameraDeviceBase<Q extends StackCameraRealTimeQueue>
+public abstract class StackCameraDeviceBase<Q extends StackCameraQueue<Q>>
                                            extends CameraDeviceBase
                                            implements
-                                           StackCameraDeviceInterface,
+                                           StackCameraDeviceInterface<Q>,
                                            LoggingInterface
 
 {
@@ -32,7 +32,7 @@ public abstract class StackCameraDeviceBase<Q extends StackCameraRealTimeQueue>
   protected Q mTemplateQueue;
 
   /**
-   * Instanciates a stack cemra device with a given name
+   * Instantiates a stack camera device with a given name
    * 
    * @param pDeviceName
    *          device name
@@ -132,13 +132,10 @@ public abstract class StackCameraDeviceBase<Q extends StackCameraRealTimeQueue>
   }
 
   @Override
-  public StackCameraRealTimeQueue requestQueue()
-  {
-    return new StackCameraRealTimeQueue(mTemplateQueue);
-  }
+  abstract public Q requestQueue();
 
   @Override
-  public Future<Boolean> playQueue(StackCameraRealTimeQueue pQueue)
+  public Future<Boolean> playQueue(Q pQueue)
   {
     if (getStackRecycler() == null)
     {

@@ -1,30 +1,26 @@
 package clearcontrol.ip.iqm;
 
 import static java.lang.Math.sqrt;
+import static java.lang.Math.toIntExact;
 
-import net.imglib2.img.basictypeaccess.offheap.DoubleOffHeapAccess;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.img.planar.OffHeapPlanarImgFactory;
-import net.imglib2.img.planar.PlanarCursor;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.DoubleType;
+import clearcontrol.stack.OffHeapPlanarStack;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
+import coremem.util.Size;
 
 import org.jtransforms.dct.DoubleDCT_2D;
 import pl.edu.icm.jlargearrays.DoubleLargeArray;
 
-public class DCTS2D implements
-                    ImageQualityMetricInterface<UnsignedShortType, ShortOffHeapAccess>
+public class DCTS2D implements ImageQualityMetricInterface
 {
+  private ContiguousBuffer mWorkingBuffer;
+
   private final Table<Long, Long, DoubleDCT_2D> mDoubleDCT2DCache =
                                                                   HashBasedTable.create();
-
-  private OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess> mDoubleWorkingStack;
 
   private double mPSFSupportRadius = 3;
 
@@ -57,58 +53,42 @@ public class DCTS2D implements
 
   @SuppressWarnings("unchecked")
   @Override
-  public final double[] computeImageQualityMetric(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pOffHeapPlanarImg)
+  public final double[] computeImageQualityMetric(OffHeapPlanarStack pStack)
   {
-    final int lWidth = (int) pOffHeapPlanarImg.dimension(0);
-    final int lHeight = (int) pOffHeapPlanarImg.dimension(1);
-    final int lDepth = (int) pOffHeapPlanarImg.dimension(2);
+    long lWidth = pStack.getWidth();
+    long lHeight = pStack.getHeight();
+    long lDepth = pStack.getDepth();
 
-    if (mDoubleWorkingStack != null)
-    {
-      final boolean lWrongDimensions =
-                                     mDoubleWorkingStack.dimension(0) != lWidth
-                                       || mDoubleWorkingStack.dimension(1) != lHeight
-                                       || mDoubleWorkingStack.dimension(2) != lDepth;
-      if (lWrongDimensions)
-      {
-        mDoubleWorkingStack.free();
-        mDoubleWorkingStack = null;
-      }
-    }
-
-    if (mDoubleWorkingStack == null)
-    {
-      final OffHeapPlanarImgFactory<DoubleType> lOffHeapPlanarImgFactory =
-                                                                         new OffHeapPlanarImgFactory<DoubleType>();
-      final int[] lDimensions = new int[]
-      { lWidth, lHeight, lDepth };
-      mDoubleWorkingStack =
-                          (OffHeapPlanarImg<DoubleType, DoubleOffHeapAccess>) lOffHeapPlanarImgFactory.create(lDimensions,
-                                                                                                              new DoubleType());
-    }
-
-    final PlanarCursor<UnsignedShortType> lCursorShort =
-                                                       pOffHeapPlanarImg.cursor();
-    final PlanarCursor<DoubleType> lCursorDouble =
-                                                 mDoubleWorkingStack.cursor();
-
-    while (lCursorShort.hasNext())
-    {
-      final int lValue = lCursorShort.next().get();
-      lCursorDouble.next().set(lValue);
-    }
-
-    final double[] lDCTSArray = new double[lDepth];
+    final double[] lDCTSArray = new double[toIntExact(lDepth)];
     for (int z = 0; z < lDepth; z++)
     {
+      long lNumberOfPixelsPerPlane = lWidth * lHeight;
       final ContiguousMemoryInterface lPlaneContiguousMemory =
-                                                             mDoubleWorkingStack.getPlaneContiguousMemory(z);
-      final long lAddress = lPlaneContiguousMemory.getAddress();
-      final long lLengthInElements = lWidth * lHeight;
+                                                             pStack.getContiguousMemory(z);
+
+      if (mWorkingBuffer == null
+          || mWorkingBuffer.getSizeInBytes() != lNumberOfPixelsPerPlane
+                                                * Size.DOUBLE)
+      {
+        mWorkingBuffer =
+                       ContiguousBuffer.allocate(lNumberOfPixelsPerPlane
+                                                 * Size.DOUBLE);
+      }
+
+      mWorkingBuffer.rewind();
+      for (int i = 0; i < lNumberOfPixelsPerPlane; i++)
+      {
+        double lValue =
+                      (double) lPlaneContiguousMemory.getCharAligned(i);
+        mWorkingBuffer.writeDouble(lValue);
+      }
+
+      final long lAddress = mWorkingBuffer.getContiguousMemory()
+                                          .getAddress();
       final DoubleLargeArray lDoubleLargeArray =
-                                               new DoubleLargeArray(mDoubleWorkingStack,
+                                               new DoubleLargeArray(pStack,
                                                                     lAddress,
-                                                                    lLengthInElements);
+                                                                    lNumberOfPixelsPerPlane);
 
       final double lDCTS =
                          computeDCTSForSinglePlane(lDoubleLargeArray,

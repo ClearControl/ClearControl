@@ -2,8 +2,8 @@ package clearcontrol.core.device;
 
 import java.util.concurrent.Future;
 
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 
 /**
  * Queuable virtual device base class. Devices deriving from this base class
@@ -13,10 +13,10 @@ import clearcontrol.core.device.queue.RealTimeQueueInterface;
  * @param <Q>
  *          queue type
  */
-public abstract class QueueableVirtualDevice<Q extends RealTimeQueueInterface>
+public abstract class QueueableVirtualDevice<Q extends QueueInterface>
                                             extends VirtualDevice
                                             implements
-                                            RealTimeQueueDeviceInterface<Q>
+                                            QueueDeviceInterface<Q>
 {
 
   /**

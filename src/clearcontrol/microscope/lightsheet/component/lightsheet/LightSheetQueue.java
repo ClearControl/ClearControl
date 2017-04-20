@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.component.lightsheet;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.queue.VariableQueueBase;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -13,7 +13,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIllu
  * @author royer
  */
 public class LightSheetQueue extends VariableQueueBase implements
-                             RealTimeQueueInterface,
+                             QueueInterface,
                              LightSheetParameterInterface
 {
 

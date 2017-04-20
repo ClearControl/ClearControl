@@ -1,7 +1,7 @@
 package clearcontrol.devices.cameras;
 
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -11,13 +11,17 @@ import coremem.recycling.RecyclerInterface;
  * Interface implemented by all stack cameras. Stack cameras are cameras that in
  * addition to be able to acquire single images can acquire a sequence of images
  * as a stack.
- *
+ * 
+ * @param <Q>
+ *          queue type
  * @author royer
+ * 
  */
-public interface StackCameraDeviceInterface extends
-                                            CameraDeviceInterface,
-                                            RealTimeQueueDeviceInterface<StackCameraRealTimeQueue>,
-                                            NameableInterface
+public interface StackCameraDeviceInterface<Q extends StackCameraQueue<Q>>
+                                           extends
+                                           CameraDeviceInterface,
+                                           QueueDeviceInterface<Q>,
+                                           NameableInterface
 {
 
   @Override

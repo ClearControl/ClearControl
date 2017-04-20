@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.component.opticalswitch;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.queue.VariableQueueBase;
 import clearcontrol.core.variable.Variable;
 
@@ -10,8 +10,7 @@ import clearcontrol.core.variable.Variable;
  * @author royer
  */
 public class LightSheetOpticalSwitchQueue extends VariableQueueBase
-                                          implements
-                                          RealTimeQueueInterface
+                                          implements QueueInterface
 {
   private final LightSheetOpticalSwitch mLightSheetOpticalSwitch;
 

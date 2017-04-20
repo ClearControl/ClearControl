@@ -38,6 +38,18 @@ public class LightSheetPositioner
     setInverseTransformMatrix(pTransformMatrix.invert().getMatrix());
   }
 
+  /**
+   * Sets the center (X,Y) in pixel coordinates of a given lightsheet
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pPixelX
+   *          pixel X coordinate
+   * @param pPixelY
+   *          pixel Y coordinate
+   */
   public void setAt(LightSheetMicroscope pLightSheetMicroscope,
                     int pLightSheetIndex,
                     double pPixelX,
@@ -51,6 +63,16 @@ public class LightSheetPositioner
     setAt(lLightSheetDevice, pPixelX, pPixelY);
   }
 
+  /**
+   * Sets the center (X,Y) in pixel coordinates of a given lightsheet
+   * 
+   * @param pLightSheetDevice
+   *          lightsheet device
+   * @param pPixelX
+   *          pixel X coordinate
+   * @param pPixelY
+   *          pixel Y coordinate
+   */
   public void setAt(LightSheetInterface pLightSheetDevice,
                     double pPixelX,
                     double pPixelY)
@@ -65,6 +87,20 @@ public class LightSheetPositioner
     pLightSheetDevice.getYVariable().set(lLightSheetY);
   }
 
+  /**
+   * Illuminates a given box in pixel coordiantes [[minx,miny],[maxx,maxy]]
+   * 
+   * @param pLightSheetDevice
+   *          lightsheet device
+   * @param pMinX
+   *          min x
+   * @param pMinY
+   *          min y
+   * @param pMaxX
+   *          max x
+   * @param pMaxY
+   *          max y
+   */
   public void illuminateBox(LightSheetInterface pLightSheetDevice,
                             double pMinX,
                             double pMinY,
@@ -122,21 +158,43 @@ public class LightSheetPositioner
     return lControlVector;
   }
 
+  /**
+   * Returns transform matrix
+   * 
+   * @return transform matrix
+   */
   public DenseMatrix64F getTransformMatrix()
   {
     return mTransformMatrix;
   }
 
+  /**
+   * Sets transform matrix
+   * 
+   * @param pTransformMatrix
+   *          transform
+   */
   public void setTransformMatrix(DenseMatrix64F pTransformMatrix)
   {
     mTransformMatrix = pTransformMatrix;
   }
 
+  /**
+   * Returns the inverse trasnform matrix
+   * 
+   * @return inverse transform matrix
+   */
   public DenseMatrix64F getInverseTransformMatrix()
   {
     return mInverseTransformMatrix;
   }
 
+  /**
+   * Sets the inverse transform matrix
+   * 
+   * @param pInverseTransformMatrix
+   *          inverse transform matrix
+   */
   public void setInverseTransformMatrix(DenseMatrix64F pInverseTransformMatrix)
   {
     mInverseTransformMatrix = pInverseTransformMatrix;

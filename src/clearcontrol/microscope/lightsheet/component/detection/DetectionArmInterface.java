@@ -4,7 +4,7 @@ import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -17,7 +17,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 public interface DetectionArmInterface extends
                                        NameableInterface,
                                        OpenCloseDeviceInterface,
-                                       RealTimeQueueDeviceInterface<DetectionArmQueue>,
+                                       QueueDeviceInterface<DetectionArmQueue>,
                                        HasChangeListenerInterface<VirtualDevice>
 {
   /**

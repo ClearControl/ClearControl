@@ -23,11 +23,11 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
  * @author royer
  */
 public class LightSheetMicroscope extends
-                                  MicroscopeBase<LightSheetMicroscopeQueue>
+                                  MicroscopeBase<LightSheetMicroscope, LightSheetMicroscopeQueue>
                                   implements
                                   LightSheetMicroscopeInterface
 {
-  private AcquisitionStateManager<LightSheetAcquisitionStateInterface> mAcquisitionStateManager;
+  private AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> mAcquisitionStateManager;
   private LightSheetFastFusionProcessor mStackProcessor;
 
   /**
@@ -115,10 +115,10 @@ public class LightSheetMicroscope extends
    *          acquisition state manager
    * @return interactive acquisition
    */
-  public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager<LightSheetAcquisitionStateInterface> pAcquisitionStateManager)
+  public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> pAcquisitionStateManager)
   {
     InteractiveAcquisition lInteractiveAcquisition =
-                                                   new InteractiveAcquisition("Interactive Acquisition",
+                                                   new InteractiveAcquisition("Interactive",
                                                                               this,
                                                                               pAcquisitionStateManager);
     addDevice(0, lInteractiveAcquisition);
@@ -142,7 +142,7 @@ public class LightSheetMicroscope extends
    * 
    * @return acquisition manager
    */
-  public AcquisitionStateManager<LightSheetAcquisitionStateInterface> addAcquisitionStateManager()
+  public AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> addAcquisitionStateManager()
   {
     mAcquisitionStateManager = new AcquisitionStateManager<>(this);
     addDevice(0, mAcquisitionStateManager);

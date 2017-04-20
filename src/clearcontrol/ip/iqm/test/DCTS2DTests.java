@@ -6,12 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.img.planar.OffHeapPlanarImgFactory;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.core.units.Magnitude;
 import clearcontrol.ip.iqm.DCTS2D;
+import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
 import io.scif.FormatException;
 import io.scif.Plane;
@@ -35,7 +32,15 @@ public class DCTS2DTests
     FileUtils.copyInputStreamToFile(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
                                     lTempFile);
 
-    final SCIFIO lSCIFIO = new SCIFIO();
+    SCIFIO lSCIFIO = null;
+    try
+    {
+      lSCIFIO = new SCIFIO();
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+    }
     final Reader lReader =
                          lSCIFIO.initializer()
                                 .initializeReader(lTempFile.getAbsolutePath());
@@ -50,26 +55,20 @@ public class DCTS2DTests
 
     final int repeats = 30;
 
-    final OffHeapPlanarImgFactory<UnsignedShortType> lOffHeapPlanarImgFactory =
-                                                                              new OffHeapPlanarImgFactory<UnsignedShortType>();
-
-    final int[] lDim = new int[]
-    { lWidth, lHeight, lDepth };
-    @SuppressWarnings("unchecked")
-    final OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =
-                                                                         (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lOffHeapPlanarImgFactory.create(lDim,
-                                                                                                                                                                   new UnsignedShortType());
+    OffHeapPlanarStack lStack =
+                              OffHeapPlanarStack.createStack(lWidth,
+                                                             lHeight,
+                                                             lDepth);
 
     for (int z = 0; z < lDepth; z++)
     {
       final ContiguousMemoryInterface lPlaneContiguousMemory =
-                                                             lImage.getPlaneContiguousMemory(z);
+                                                             lStack.getContiguousMemory(z);
 
       final Plane lPlane = lReader.openPlane(0, z);
       final byte[] lBytes = lPlane.getBytes();
 
-      for (int i = 0; i < lBytes.length; i++)
-        lPlaneContiguousMemory.setByteAligned(i, lBytes[i]);
+      lPlaneContiguousMemory.copyFrom(lBytes);
     }
 
     // new ImageJ();
@@ -79,7 +78,7 @@ public class DCTS2DTests
 
     final long lStartTimeInNs = System.nanoTime();
     for (int r = 0; r < repeats; r++)
-      lComputeDCTS = lDCTS2D.computeImageQualityMetric(lImage);
+      lComputeDCTS = lDCTS2D.computeImageQualityMetric(lStack);
     final long lStopTimeInNs = System.nanoTime();
 
     final double lElapsedTimeInMs = Magnitude.nano2milli(

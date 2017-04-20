@@ -46,7 +46,7 @@ public class TaskDeviceTests
 
     assertFalse(lTestTaskDevice.getIsRunningVariable().get());
 
-    lTestTaskDevice.getStartSignalBooleanVariable().set(true);
+    lTestTaskDevice.getStartSignalVariable().set(true);
     System.out.println("sent start");
     assertTrue(lTestTaskDevice.waitForStarted(1, TimeUnit.SECONDS));
     System.out.println("started");

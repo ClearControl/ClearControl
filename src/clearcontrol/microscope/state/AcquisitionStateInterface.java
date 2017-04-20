@@ -2,9 +2,8 @@ package clearcontrol.microscope.state;
 
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.microscope.MicroscopeInterface;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 
 /**
  * Acquisition state interface
@@ -16,7 +15,7 @@ import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionSta
  * @author royer
  * 
  */
-public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q extends RealTimeQueueInterface>
+public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q extends QueueInterface>
                                           extends
                                           NameableInterface,
                                           HasChangeListenerInterface<AcquisitionStateInterface<M, Q>>
@@ -38,6 +37,5 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q e
    * @return queue
    */
   Q getQueue();
-
 
 }

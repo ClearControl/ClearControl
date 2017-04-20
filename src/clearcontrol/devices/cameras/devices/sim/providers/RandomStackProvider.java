@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProviderBase;
-import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationRealTimeQueue;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationQueue;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
@@ -22,7 +22,7 @@ public class RandomStackProvider extends
 {
 
   @Override
-  protected void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
+  protected void fillStackData(StackCameraSimulationQueue pQueue,
                                ArrayList<Boolean> pKeepPlaneList,
                                final long pWidth,
                                final long pHeight,

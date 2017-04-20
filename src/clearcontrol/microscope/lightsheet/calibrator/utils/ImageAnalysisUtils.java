@@ -92,10 +92,10 @@ public class ImageAnalysisUtils
       while (lBuffer.hasRemainingByte())
       {
         float lValue = 1.0f * lBuffer.readChar();
-        float lSquareValue = lValue * lValue;
-        float lQuarticValue = lSquareValue * lSquareValue;
-        float lOcticValue = lQuarticValue * lQuarticValue;
-        lSumOfPowers += lOcticValue;
+        lValue = lValue * lValue;
+        lValue = lValue * lValue;
+        // lValue = lValue * lValue;
+        lSumOfPowers += lValue;
         lCount++;
       }
       lIntensityArray[p] = lSumOfPowers / lCount;

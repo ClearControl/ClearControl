@@ -84,28 +84,42 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
    */
   public void passStack(boolean pWaitToFinish, StackInterface pStack)
   {
-    StackMetaData lStackMetaData = pStack.getMetaData();
+    try
+    {
+      StackMetaData lStackMetaData = pStack.getMetaData();
 
-    Integer lCameraIndex =
-                         lStackMetaData.getValue(MetaDataView.Camera);
-    Integer lLightSheetIndex =
-                             lStackMetaData.getValue(MetaDataView.LightSheet);
-    String lKey = getKey(lCameraIndex, lLightSheetIndex);
+      Integer lCameraIndex =
+                           lStackMetaData.getValue(MetaDataView.Camera);
+      Integer lLightSheetIndex =
+                               lStackMetaData.getValue(MetaDataView.LightSheet);
 
-    Runnable lRunnable = () -> {
-      passImage(lKey,
-                pStack.getContiguousMemory(),
-                pStack.getDimensions());
+      if (lCameraIndex == null || lLightSheetIndex == null)
+      {
+        pStack.release();
+        return;
+      }
 
-      fuseMetaData(pStack);
+      String lKey = getKey(lCameraIndex, lLightSheetIndex);
 
-      pStack.release();
-    };
+      Runnable lRunnable = () -> {
+        passImage(lKey,
+                  pStack.getContiguousMemory(),
+                  pStack.getDimensions());
 
-    if (pWaitToFinish)
-      lRunnable.run();
-    else
-      executeAsynchronously(lRunnable);
+        fuseMetaData(pStack);
+
+        pStack.release();
+      };
+
+      if (pWaitToFinish)
+        lRunnable.run();
+      else
+        executeAsynchronously(lRunnable);
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+    }
 
   }
 

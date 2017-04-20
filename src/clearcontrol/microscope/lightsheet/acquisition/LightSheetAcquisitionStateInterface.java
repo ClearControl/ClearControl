@@ -11,13 +11,21 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
  * Lightsheet acquisition state interface
  *
  * @author royer
+ * @param <S>
+ *          reflexive state type
  */
-public interface LightSheetAcquisitionStateInterface extends
-                                                     AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>,
-                                                     Cloneable
+public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisitionStateInterface<S>>
+                                                    extends
+                                                    AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>,
+                                                    Cloneable
 {
-  
-  
+
+  /**
+   * @param pName
+   * @return copy of this state
+   */
+  S copy(String pName);
+
   /**
    * Returns curent interpolationtables
    * 

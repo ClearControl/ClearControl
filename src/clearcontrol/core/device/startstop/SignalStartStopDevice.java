@@ -57,13 +57,13 @@ public abstract class SignalStartStopDevice extends VirtualDevice
   }
 
   @Override
-  public Variable<Boolean> getStartSignalBooleanVariable()
+  public Variable<Boolean> getStartSignalVariable()
   {
     return mStartSignal;
   }
 
   @Override
-  public Variable<Boolean> getStopSignalBooleanVariable()
+  public Variable<Boolean> getStopSignalVariable()
   {
     return mStopSignal;
   }

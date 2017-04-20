@@ -15,13 +15,13 @@ public interface StartStopSignalVariablesInterface
    * 
    * @return start signal variable
    */
-  Variable<Boolean> getStartSignalBooleanVariable();
+  Variable<Boolean> getStartSignalVariable();
 
   /**
    * Returns stop signal variable
    * 
    * @return stop signal variable
    */
-  Variable<Boolean> getStopSignalBooleanVariable();
+  Variable<Boolean> getStopSignalVariable();
 
 }

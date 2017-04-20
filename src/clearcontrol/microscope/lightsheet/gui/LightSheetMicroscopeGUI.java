@@ -3,7 +3,7 @@ package clearcontrol.microscope.lightsheet.gui;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.gui.jfx.AcquisitionStateManagerPanel;
+import clearcontrol.microscope.lightsheet.acquisition.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;

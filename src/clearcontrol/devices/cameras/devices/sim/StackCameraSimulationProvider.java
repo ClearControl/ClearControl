@@ -8,7 +8,7 @@ import clearcontrol.stack.StackProviderInterface;
  * @author royer
  */
 public interface StackCameraSimulationProvider extends
-                                               StackProviderInterface<StackCameraSimulationRealTimeQueue>
+                                               StackProviderInterface<StackCameraSimulationQueue>
 {
 
 }

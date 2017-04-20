@@ -40,7 +40,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private static final int cRecyclerMaximumNumberOfLiveStacks = 60;
 
   private final LightSheetMicroscopeInterface mLightSheetMicroscope;
-  private final AcquisitionStateManager<LightSheetAcquisitionStateInterface> mAcquisitionStateManager;
+  private final AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> mAcquisitionStateManager;
 
   private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode =
                                                                        InteractiveAcquisitionModes.None;
@@ -48,7 +48,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final BoundedVariable<Double> mExposureVariableInSeconds;
   private final Variable<Boolean> mTriggerOnChangeVariable,
       mUseCurrentAcquisitionStateVariable;
-  private final Variable<Boolean> mZLockingVariable;
+  private final Variable<Boolean> mControlIlluminationVariable,
+      mControlDetectionVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
   private final Variable<Boolean>[] mActiveCameraVariableArray;
   private final Variable<Long> mAcquisitionCounterVariable;
@@ -71,7 +72,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   @SuppressWarnings("unchecked")
   public InteractiveAcquisition(String pDeviceName,
                                 LightSheetMicroscope pLightSheetMicroscope,
-                                AcquisitionStateManager<LightSheetAcquisitionStateInterface> pAcquisitionStateManager)
+                                AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> pAcquisitionStateManager)
   {
     super(pDeviceName, 1, TimeUnit.SECONDS);
     mLightSheetMicroscope = pLightSheetMicroscope;
@@ -111,7 +112,12 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                        .getZVariable()
                                                        .getMaxVariable();
 
-    mZLockingVariable = new Variable<Boolean>("ZLocking", false);
+    mControlDetectionVariable =
+                              new Variable<Boolean>("Control Illumination",
+                                                    false);
+    mControlIlluminationVariable =
+                                 new Variable<Boolean>("Control Detection",
+                                                       false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
@@ -217,7 +223,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
               mQueue.setC(c, mActiveCameraVariableArray[c].get());
-              if (mZLockingVariable.get())
+              if (mControlDetectionVariable.get())
                 mQueue.setDZ(c, lCurrentZ);
             }
             getLightSheetMicroscope().setExposure(mExposureVariableInSeconds.get()
@@ -226,7 +232,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
             {
               boolean lIsOn = mQueue.getI(l);
-              if (lIsOn && mZLockingVariable.get())
+              if (lIsOn && mControlIlluminationVariable.get())
                 mQueue.setIZ(l, lCurrentZ);
             }
 
@@ -244,8 +250,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                 cRecyclerMaximumNumberOfAvailableStacks,
                                                 cRecyclerMaximumNumberOfLiveStacks);
 
-          LightSheetAcquisitionStateInterface lCurrentState =
-                                                            (LightSheetAcquisitionStateInterface) mAcquisitionStateManager.getCurrentState();
+          LightSheetAcquisitionStateInterface<?> lCurrentState =
+                                                               (LightSheetAcquisitionStateInterface<?>) mAcquisitionStateManager.getCurrentState();
 
           if (lCurrentState != null)
           {
@@ -427,14 +433,27 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   }
 
   /**
-   * Returns the variable that holds the flag that decides whether to lock the Z
-   * variable of the lightsheets together with the detection Z
+   * Returns the variable that holds the flag that decides whether to control
+   * the detection z focus using the z value from this interactive acquisition
+   * device.
    * 
-   * @return z-locking variable
+   * @return control illumination variable
    */
-  public Variable<Boolean> getZLockingVariable()
+  public Variable<Boolean> getControlDetectionVariable()
   {
-    return mZLockingVariable;
+    return mControlDetectionVariable;
+  }
+
+  /**
+   * Returns the variable that holds the flag that decides whether to control
+   * the illumination z focus using the z value from this interactive
+   * acquisition device, or not :-)
+   * 
+   * @return control illumination variable
+   */
+  public Variable<Boolean> getControlIlluminationVariable()
+  {
+    return mControlIlluminationVariable;
   }
 
   /**

@@ -25,7 +25,7 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
 public class InterpolatedAcquisitionState extends
                                           NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
                                           implements
-                                          LightSheetAcquisitionStateInterface,
+                                          LightSheetAcquisitionStateInterface<InterpolatedAcquisitionState>,
                                           Cloneable
 
 {
@@ -185,9 +185,9 @@ public class InterpolatedAcquisitionState extends
   }
 
   @Override
-  public Object clone()
+  public InterpolatedAcquisitionState copy(String pName)
   {
-    return new InterpolatedAcquisitionState(getName(), this);
+    return new InterpolatedAcquisitionState(pName, this);
   }
 
   /**

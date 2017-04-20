@@ -1,6 +1,6 @@
 package clearcontrol.simulation;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 
 /**
  * base class for all sample simulation devices
@@ -9,7 +9,7 @@ import clearcontrol.core.device.queue.RealTimeQueueInterface;
  * @param <Q>
  *          queue type
  */
-public abstract class SampleSimulationDeviceBase<Q extends RealTimeQueueInterface>
+public abstract class SampleSimulationDeviceBase<Q extends QueueInterface>
                                                 implements
                                                 SampleSimulationDeviceInterface<Q>
 

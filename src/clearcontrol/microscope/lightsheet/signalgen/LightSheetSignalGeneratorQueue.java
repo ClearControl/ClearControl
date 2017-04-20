@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
 import clearcontrol.devices.signalgen.movement.Movement;
@@ -27,7 +27,7 @@ import clearcontrol.microscope.lightsheet.signalgen.staves.LightSheetStaves;
 public class LightSheetSignalGeneratorQueue extends
                                             SignalGeneratorRealTimeQueue
                                             implements
-                                            RealTimeQueueInterface,
+                                            QueueInterface,
                                             LoggingInterface
 
 {

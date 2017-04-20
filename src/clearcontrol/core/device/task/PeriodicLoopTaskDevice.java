@@ -75,7 +75,7 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
   @Override
   public void run()
   {
-    while (!getStopSignalBooleanVariable().get())
+    while (!getStopSignalVariable().get())
     {
       final long lNow = System.nanoTime();
       final long lFactor = TimeUnit.NANOSECONDS.convert(1, mTimeUnit);

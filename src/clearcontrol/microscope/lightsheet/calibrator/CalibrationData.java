@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.calibrator;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import clearcontrol.core.math.functions.PolynomialFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
@@ -10,13 +11,15 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * Calibration data
+ *
+ * @author royer
+ */
 public class CalibrationData
 {
 
@@ -41,11 +44,20 @@ public class CalibrationData
   public HashMap<String, LightSheetPositioner> mPositionerMap =
                                                               new HashMap<>();
 
+  /**
+   * Instanciates a calibration data object
+   */
   public CalibrationData()
   {
 
   }
 
+  /**
+   * Instanciates a calibration data object for a given lightsheet microscope
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   */
   public CalibrationData(LightSheetMicroscope pLightSheetMicroscope)
   {
     super();
@@ -83,6 +95,12 @@ public class CalibrationData
                             new UnivariateAffineFunction[lNumberOfDetectioArms];
   }
 
+  /**
+   * Aplies this calibration data to a given lightsheet microscope
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   */
   public void applyTo(LightSheetMicroscope pLightSheetMicroscope)
   {
 
@@ -128,6 +146,13 @@ public class CalibrationData
 
   }
 
+  /**
+   * Sets this calibration data to the current calibration of a given lightsheet
+   * microscope
+   * 
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
+   */
   public void copyFrom(LightSheetMicroscope pLightSheetMicroscope)
   {
 
@@ -185,30 +210,68 @@ public class CalibrationData
     }
   }
 
-  public void copyFrom(HashMap<String, LightSheetPositioner> pPositionerMap)
+  /**
+   * Adds the provided list of positioners into this
+   * 
+   * @param pPositionerMap
+   *          positioner map
+   */
+  public void copyFrom(Map<String, LightSheetPositioner> pPositionerMap)
   {
     mPositionerMap.clear();
     mPositionerMap.putAll(pPositionerMap);
   }
 
-  public void applyTo(HashMap<String, LightSheetPositioner> pPositionersMap)
+  /**
+   * Adds the list of positioners in this calibration to the provided map
+   * 
+   * @param pPositionersMap
+   *          positioner map
+   */
+  public void copyTo(Map<String, LightSheetPositioner> pPositionersMap)
   {
     pPositionersMap.clear();
     pPositionersMap.putAll(mPositionerMap);
   }
 
-  public void saveTo(File pFile) throws JsonGenerationException,
-                                 JsonMappingException,
-                                 IOException
+  /**
+   * Writes this calibration data to a gievn file
+   * 
+   * @param pFile
+   *          file
+   */
+  public void saveTo(File pFile)
   {
-    sObjectMapper.writeValue(pFile, this);
+    try
+    {
+      sObjectMapper.writeValue(pFile, this);
+    }
+    catch (IOException e)
+    {
+      throw new RuntimeException("Problem while writing calibration information to file: "
+                                 + pFile.getAbsolutePath(), e);
+    }
   }
 
-  public static CalibrationData readFrom(File pFile) throws JsonParseException,
-                                                     JsonMappingException,
-                                                     IOException
+  /**
+   * Reads this calibration data from a given file
+   * 
+   * @param pFile
+   *          file
+   * @return calibration data
+   */
+  public static CalibrationData readFrom(File pFile)
   {
-    return sObjectMapper.readValue(pFile, CalibrationData.class);
+    try
+    {
+      return sObjectMapper.readValue(pFile, CalibrationData.class);
+    }
+    catch (IOException e)
+    {
+      throw new RuntimeException("Problem while reading calibration information to file: "
+                                 + pFile.getAbsolutePath(), e);
+    }
+
   }
 
 }

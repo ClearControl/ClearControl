@@ -1,10 +1,20 @@
 package clearcontrol.ip.iqm;
 
-import net.imglib2.img.basictypeaccess.array.ArrayDataAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.NativeType;
+import clearcontrol.stack.OffHeapPlanarStack;
 
-public interface ImageQualityMetricInterface<T extends NativeType<T>, A extends ArrayDataAccess<A>>
+/**
+ * Interface for all image quality metrics
+ *
+ * @author royer
+ */
+public interface ImageQualityMetricInterface
 {
-  double[] computeImageQualityMetric(OffHeapPlanarImg<T, A> pOffHeapPlanarImg);
+  /**
+   * Computes the metric per plane
+   * 
+   * @param pStack
+   *          stack
+   * @return array of metric values
+   */
+  double[] computeImageQualityMetric(OffHeapPlanarStack pStack);
 }

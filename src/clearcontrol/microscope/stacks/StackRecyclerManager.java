@@ -31,7 +31,7 @@ public class StackRecyclerManager extends VirtualDevice
    */
   public StackRecyclerManager()
   {
-    super("StackRecyclerManager");
+    super("Stack Recycler Manager");
   }
 
   /**

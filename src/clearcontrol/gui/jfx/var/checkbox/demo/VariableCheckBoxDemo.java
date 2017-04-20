@@ -9,7 +9,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 
 /**
- *
+ * VariableCheckBox Demo
  *
  * @author royer
  */
@@ -39,6 +39,12 @@ public class VariableCheckBoxDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

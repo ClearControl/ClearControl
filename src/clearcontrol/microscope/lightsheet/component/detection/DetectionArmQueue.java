@@ -1,6 +1,6 @@
 package clearcontrol.microscope.lightsheet.component.detection;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.queue.VariableQueueBase;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -11,7 +11,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
  * @author royer
  */
 public class DetectionArmQueue extends VariableQueueBase implements
-                               RealTimeQueueInterface,
+                               QueueInterface,
                                LoggingInterface
 {
   private DetectionArm mDetectionArm;

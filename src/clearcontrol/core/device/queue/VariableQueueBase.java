@@ -14,9 +14,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author royer
  */
-public class VariableQueueBase implements
-                               RealTimeQueueInterface,
-                               Cloneable
+public class VariableQueueBase implements QueueInterface, Cloneable
 {
   private ConcurrentHashMap<Variable<?>, ArrayList<Object>> mVariablesToQueueListsMap =
                                                                                       new ConcurrentHashMap<>();

@@ -8,8 +8,10 @@ import java.util.concurrent.TimeUnit;
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
+import clearcl.ClearCLImage;
 import clearcl.backend.ClearCLBackendInterface;
 import clearcl.backend.ClearCLBackends;
+import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
@@ -38,11 +40,11 @@ import clearcontrol.microscope.state.AcquisitionStateManager;
 
 import org.junit.Test;
 
-import simbryo.synthoscopy.microscope.aberration.DetectionMisalignment;
 import simbryo.synthoscopy.microscope.aberration.IlluminationMisalignment;
-import simbryo.synthoscopy.microscope.aberration.SampleDrift;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
+import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
+import simbryo.textures.noise.UniformNoise;
 
 /**
  * Simulated lightSheet microscope demo
@@ -63,6 +65,7 @@ public class LightSheetMicroscopeDemo implements
   public void demoSimulatedScope() throws Exception
   {
     boolean lDummySimulation = false;
+    boolean lUniformFluorescence = false;
 
     boolean l2DDisplayFlag = true;
     boolean l3DDisplayFlag = true;
@@ -71,8 +74,8 @@ public class LightSheetMicroscopeDemo implements
 
     int lMaxCameraResolution = 1024;
 
-    int lNumberOfLightSheets = 4;
-    int lNumberOfDetectionArms = 2;
+    int lNumberOfLightSheets = 2;
+    int lNumberOfDetectionArms = 1;
 
     float lDivisionTime = 11f;
 
@@ -96,20 +99,65 @@ public class LightSheetMicroscopeDemo implements
                                                                                                    lPhantomWidth,
                                                                                                    lPhantomHeight,
                                                                                                    lPhantomDepth);
-    //lSimulator.openViewerForControls();
+    // lSimulator.openViewerForControls();
     lSimulator.setFreezedEmbryo(true);
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
 
-    lSimulator.addAbberation(new SampleDrift());
+    // lSimulator.addAbberation(new SampleDrift());
     lSimulator.addAbberation(new IlluminationMisalignment());
-    lSimulator.addAbberation(new DetectionMisalignment());
+    // lSimulator.addAbberation(new DetectionMisalignment());
 
-    scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),
+    /*scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),
                         10,
-                        TimeUnit.MILLISECONDS);
+                        TimeUnit.MILLISECONDS);/**/
+
+    if (lUniformFluorescence)
+    {
+      long lEffPhantomWidth = lSimulator.getWidth();
+      long lEffPhantomHeight = lSimulator.getHeight();
+      long lEffPhantomDepth = lSimulator.getDepth();
+
+      ClearCLImage lFluoPhantomImage =
+                                     lContext.createSingleChannelImage(ImageChannelDataType.Float,
+                                                                       lEffPhantomWidth,
+                                                                       lEffPhantomHeight,
+                                                                       lEffPhantomDepth);
+
+      ClearCLImage lScatterPhantomImage =
+                                        lContext.createSingleChannelImage(ImageChannelDataType.Float,
+                                                                          lEffPhantomWidth / 2,
+                                                                          lEffPhantomHeight / 2,
+                                                                          lEffPhantomDepth / 2);
+
+      UniformNoise lUniformNoise = new UniformNoise(3);
+      lUniformNoise.setNormalizeTexture(false);
+      lUniformNoise.setMin(0.25f);
+      lUniformNoise.setMax(0.75f);
+      lFluoPhantomImage.readFrom(lUniformNoise.generateTexture(lEffPhantomWidth,
+                                                               lEffPhantomHeight,
+                                                               lEffPhantomDepth),
+                                 true);
+
+      lUniformNoise.setMin(0.0001f);
+      lUniformNoise.setMax(0.001f);
+      lScatterPhantomImage.readFrom(lUniformNoise.generateTexture(lEffPhantomWidth
+                                                                  / 2,
+                                                                  lEffPhantomHeight
+                                                                       / 2,
+                                                                  lEffPhantomDepth
+                                                                            / 2),
+                                    true);
+
+      lSimulator.setPhantomParameter(PhantomParameter.Fluorescence,
+                                     lFluoPhantomImage);
+
+      lSimulator.setPhantomParameter(PhantomParameter.Scattering,
+                                     lScatterPhantomImage);
+    }
 
     // lSimulator.openViewerForCameraImage(0);
     // lSimulator.openViewerForAllLightMaps();
+    // lSimulator.openViewerForScatteringPhantom();
 
     LightSheetMicroscopeSimulationDevice lLightSheetMicroscopeSimulatorDevice =
                                                                               new LightSheetMicroscopeSimulationDevice(lSimulator);
@@ -123,9 +171,9 @@ public class LightSheetMicroscopeDemo implements
     // Setting up lasers:
 
     int[] lLaserWavelengths = new int[]
-    { 405, 488, 561, 594 };
+    { 488, 594 };
     ArrayList<LaserDeviceInterface> lLaserList = new ArrayList<>();
-    for (int l = 0; l < 3; l++)
+    for (int l = 0; l < lLaserWavelengths.length; l++)
     {
       LaserDeviceInterface lLaser = new LaserDeviceSimulator("Laser "
                                                              + lLaserWavelengths[l],
@@ -260,8 +308,8 @@ public class LightSheetMicroscopeDemo implements
     lLightSheetMicroscope.addDevice(0, lLightSheetOpticalSwitch);
 
     // Setting up acquisition state manager
-    AcquisitionStateManager<LightSheetAcquisitionStateInterface> lAcquisitionStateManager =
-                                                                                          lLightSheetMicroscope.addAcquisitionStateManager();
+    AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager =
+                                                                                             lLightSheetMicroscope.addAcquisitionStateManager();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    new InterpolatedAcquisitionState("default",
                                                                                     lLightSheetMicroscope);

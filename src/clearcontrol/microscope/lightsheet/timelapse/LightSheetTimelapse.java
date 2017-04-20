@@ -66,12 +66,12 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                         cMaximumNumberOfLiveStacks);
 
       @SuppressWarnings("unchecked")
-      AcquisitionStateManager<LightSheetAcquisitionStateInterface> lAcquisitionStateManager =
-                                                                                            mLightSheetMicroscope.getDevice(AcquisitionStateManager.class,
-                                                                                                                            0);
+      AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager =
+                                                                                               mLightSheetMicroscope.getDevice(AcquisitionStateManager.class,
+                                                                                                                               0);
 
-      LightSheetAcquisitionStateInterface lCurrentState =
-                                                        lAcquisitionStateManager.getCurrentState();
+      LightSheetAcquisitionStateInterface<?> lCurrentState =
+                                                           lAcquisitionStateManager.getCurrentState();
 
       if (getInterleavedAcquisitionVariable().get())
         interleavedAcquisition(lCurrentState);
@@ -88,15 +88,15 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
   }
 
-  private void interleavedAcquisition(LightSheetAcquisitionStateInterface pCurrentState)
+  private void interleavedAcquisition(LightSheetAcquisitionStateInterface<?> pCurrentState)
   {
     // TODO not supported for now
 
   }
 
-  private void sequentialAcquisition(LightSheetAcquisitionStateInterface pCurrentState) throws InterruptedException,
-                                                                                        ExecutionException,
-                                                                                        TimeoutException
+  private void sequentialAcquisition(LightSheetAcquisitionStateInterface<?> pCurrentState) throws InterruptedException,
+                                                                                           ExecutionException,
+                                                                                           TimeoutException
   {
 
     int lNumberOfDetectionArms =
@@ -145,7 +145,7 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
   }
 
-  protected LightSheetMicroscopeQueue getQueueForSingleLightSheet(LightSheetAcquisitionStateInterface pCurrentState,
+  protected LightSheetMicroscopeQueue getQueueForSingleLightSheet(LightSheetAcquisitionStateInterface<?> pCurrentState,
                                                                   int pLightSheetIndex)
   {
     int lNumberOfLightSheets =

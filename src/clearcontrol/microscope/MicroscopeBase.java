@@ -15,8 +15,8 @@ import clearcontrol.core.device.active.ActivableDeviceInterface;
 import clearcontrol.core.device.change.ChangeListener;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.gc.GarbageCollector;
 import clearcontrol.core.log.LoggingInterface;
@@ -39,10 +39,12 @@ import coremem.recycling.RecyclerInterface;
  * Microscope base class providing common fields and methods for all microscopes
  *
  * @author royer
+ * @param <M>
+ *          microscope type
  * @param <Q>
  *          queue type
  */
-public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
+public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends MicroscopeQueueBase<M, Q>>
                                     extends VirtualDevice implements
                                     MicroscopeInterface<Q>,
                                     StartStopDeviceInterface,
@@ -491,16 +493,16 @@ public abstract class MicroscopeBase<Q extends MicroscopeQueueBase<Q>>
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
 
-        if (lDevice instanceof RealTimeQueueDeviceInterface)
+        if (lDevice instanceof QueueDeviceInterface)
         {
           /*info("playQueue() on device: %s \n",
           									lDevice);/**/
           @SuppressWarnings("unchecked")
-          final RealTimeQueueDeviceInterface<RealTimeQueueInterface> lStateQueueDeviceInterface =
-                                                                                                (RealTimeQueueDeviceInterface<RealTimeQueueInterface>) lDevice;
+          final QueueDeviceInterface<QueueInterface> lStateQueueDeviceInterface =
+                                                                                (QueueDeviceInterface<QueueInterface>) lDevice;
 
-          RealTimeQueueInterface lDeviceQueue =
-                                              (RealTimeQueueInterface) pQueue.getDeviceQueue(lStateQueueDeviceInterface);
+          QueueInterface lDeviceQueue =
+                                      (QueueInterface) pQueue.getDeviceQueue(lStateQueueDeviceInterface);
 
           final Future<Boolean> lPlayQueueFuture =
                                                  lStateQueueDeviceInterface.playQueue(lDeviceQueue);

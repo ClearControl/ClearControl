@@ -60,7 +60,9 @@ public class CalibrationA
     mModels = new HashMap<>();
   }
 
-  public void calibrate(int pLightSheetIndex, int pNumberOfAngles)
+  public void calibrate(int pLightSheetIndex,
+                        int pNumberOfAngles,
+                        int pNumberOfRepeats)
   {
     mArgMaxFinder = new SmartArgMaxFinder();
 
@@ -87,6 +89,7 @@ public class CalibrationA
 
     double y = 0.5 * min(abs(lMinY), abs(lMaxY));
 
+    for (int r = 0; r < pNumberOfRepeats; r++)
     {
       System.out.format("Searching for optimal alpha angles for lighsheet at y=+/-%g \n",
                         y);

@@ -32,10 +32,11 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
     addSliderForVariable("Z :",
                          mInteractiveAcquisition.get2DAcquisitionZVariable(),
                          null).setUpdateIfChanging(true);
-    addCheckBoxForVariable("Locking:",pInteractiveAcquisition.getZLockingVariable());
+    addCheckBoxForVariable("Control detection:",
+                           pInteractiveAcquisition.getControlDetectionVariable());
+    addCheckBoxForVariable("Control illumination:",
+                           pInteractiveAcquisition.getControlIlluminationVariable());
 
   }
-
- 
 
 }

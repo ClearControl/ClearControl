@@ -21,7 +21,7 @@ public abstract class StackCameraSimulationProviderBase implements
 
   @Override
   public StackInterface getStack(RecyclerInterface<StackInterface, StackRequest> pRecycler,
-                                 StackCameraSimulationRealTimeQueue pQueue)
+                                 StackCameraSimulationQueue pQueue)
   {
     VariableQueueBase lVariableStateQueues = pQueue;
 
@@ -62,7 +62,7 @@ public abstract class StackCameraSimulationProviderBase implements
     return lStack;
   }
 
-  protected abstract void fillStackData(StackCameraSimulationRealTimeQueue pQueue,
+  protected abstract void fillStackData(StackCameraSimulationQueue pQueue,
                                         ArrayList<Boolean> pKeepPlaneList,
                                         long pWidth,
                                         long pHeight,

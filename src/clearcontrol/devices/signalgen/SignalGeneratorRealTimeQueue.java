@@ -2,7 +2,7 @@ package clearcontrol.devices.signalgen;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.devices.signalgen.movement.MovementInterface;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
@@ -12,8 +12,7 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
  *
  * @author royer
  */
-public class SignalGeneratorRealTimeQueue implements
-                                          RealTimeQueueInterface
+public class SignalGeneratorRealTimeQueue implements QueueInterface
 {
   protected volatile int mEnqueuedStateCounter = 0;
   protected final ScoreInterface mQueuedScore;

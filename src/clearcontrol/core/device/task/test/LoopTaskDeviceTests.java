@@ -44,12 +44,12 @@ public class LoopTaskDeviceTests
     TestLoopTaskDevice lTestLoopTaskDevice = new TestLoopTaskDevice();
 
     mCounter = 0;
-    lTestLoopTaskDevice.getStartSignalBooleanVariable().set(true);
+    lTestLoopTaskDevice.getStartSignalVariable().set(true);
     System.out.println("Waiting to start");
     assertTrue(lTestLoopTaskDevice.waitForStarted(1,
                                                   TimeUnit.SECONDS));
     ThreadUtils.sleep(1, TimeUnit.SECONDS);
-    lTestLoopTaskDevice.getStopSignalBooleanVariable().set(true);
+    lTestLoopTaskDevice.getStopSignalVariable().set(true);
 
     assertTrue(lTestLoopTaskDevice.waitForStopped(10,
                                                   TimeUnit.SECONDS));

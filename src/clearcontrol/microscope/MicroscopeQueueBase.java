@@ -4,30 +4,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import clearcontrol.core.device.queue.RealTimeQueueDeviceInterface;
-import clearcontrol.core.device.queue.RealTimeQueueInterface;
+import clearcontrol.core.device.queue.QueueDeviceInterface;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
-import clearcontrol.devices.cameras.StackCameraRealTimeQueue;
+import clearcontrol.devices.cameras.StackCameraQueue;
 
 /**
  * Base class providing common fields and methods for all microscope queues
- *
+ * 
+ * @param <M>
+ *          microscope type
  * @param <Q>
  *          queue type
  * @author royer
+ * 
  */
-public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
-                                implements RealTimeQueueInterface
+public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends MicroscopeQueueBase<M, Q>>
+                                implements QueueInterface
 {
 
-  private MicroscopeBase<Q> mMicroscope;
+  private M mMicroscope;
 
   private volatile int mNumberOfEnqueuedStates;
 
-  private ArrayList<RealTimeQueueDeviceInterface<?>> mDeviceList =
-                                                                 new ArrayList<>();
-  private HashMap<RealTimeQueueDeviceInterface<?>, RealTimeQueueInterface> mDeviceToQueueMap =
-                                                                                             new HashMap<>();
+  private ArrayList<QueueDeviceInterface<?>> mDeviceList =
+                                                         new ArrayList<>();
+  private HashMap<QueueDeviceInterface<?>, QueueInterface> mDeviceToQueueMap =
+                                                                             new HashMap<>();
 
   /**
    * Instanciates a microscope queue
@@ -35,20 +38,19 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    * @param pMicroscope
    *          parent microscope
    */
-  public MicroscopeQueueBase(MicroscopeBase<Q> pMicroscope)
+  public MicroscopeQueueBase(M pMicroscope)
   {
     super();
     mMicroscope = pMicroscope;
 
     @SuppressWarnings("rawtypes")
-    ArrayList<RealTimeQueueDeviceInterface> lQueueableDevices =
-                                                              mMicroscope.getDeviceLists()
-                                                                         .getDevices(RealTimeQueueDeviceInterface.class);
+    ArrayList<QueueDeviceInterface> lQueueableDevices =
+                                                      mMicroscope.getDeviceLists()
+                                                                 .getDevices(QueueDeviceInterface.class);
 
-    for (RealTimeQueueDeviceInterface<?> lQueueableDevice : lQueueableDevices)
+    for (QueueDeviceInterface<?> lQueueableDevice : lQueueableDevices)
     {
-      RealTimeQueueInterface lRequestQueue =
-                                           lQueueableDevice.requestQueue();
+      QueueInterface lRequestQueue = lQueueableDevice.requestQueue();
 
       mDeviceList.add(lQueueableDevice);
       mDeviceToQueueMap.put(lQueueableDevice, lRequestQueue);
@@ -61,7 +63,7 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    * 
    * @return parent microscope.
    */
-  public MicroscopeBase<Q> getMicroscope()
+  public M getMicroscope()
   {
     return mMicroscope;
   }
@@ -71,7 +73,7 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    * 
    * @return device list
    */
-  public ArrayList<RealTimeQueueDeviceInterface<?>> getDeviceList()
+  public ArrayList<QueueDeviceInterface<?>> getDeviceList()
   {
     return mDeviceList;
   }
@@ -83,10 +85,10 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    *          device index
    * @return queue
    */
-  public StackCameraRealTimeQueue getCameraDeviceQueue(int pCameraIndex)
+  public StackCameraQueue getCameraDeviceQueue(int pCameraIndex)
   {
-    return (StackCameraRealTimeQueue) getDeviceQueue(StackCameraDeviceInterface.class,
-                                                     pCameraIndex);
+    return (StackCameraQueue) getDeviceQueue(StackCameraDeviceInterface.class,
+                                             pCameraIndex);
 
   }
 
@@ -99,22 +101,21 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    *          device index
    * @return queue
    */
-  public RealTimeQueueInterface getDeviceQueue(Class<?> pClass,
-                                               int pDeviceIndex)
+  public QueueInterface getDeviceQueue(Class<?> pClass,
+                                       int pDeviceIndex)
   {
     Object lDevice = getMicroscope().getDevice(pClass, pDeviceIndex);
     if (lDevice == null)
       throw new IllegalArgumentException("Device not found for class: "
                                          + pClass.getSimpleName());
 
-    if (!(lDevice instanceof RealTimeQueueDeviceInterface))
+    if (!(lDevice instanceof QueueDeviceInterface))
       throw new IllegalArgumentException("Should be an instance of "
-                                         + RealTimeQueueDeviceInterface.class.getSimpleName());
+                                         + QueueDeviceInterface.class.getSimpleName());
     @SuppressWarnings("rawtypes")
-    RealTimeQueueDeviceInterface<?> lQueueableDevice =
-                                                     (RealTimeQueueDeviceInterface) lDevice;
-    RealTimeQueueInterface lDeviceQueue =
-                                        getDeviceQueue(lQueueableDevice);
+    QueueDeviceInterface<?> lQueueableDevice =
+                                             (QueueDeviceInterface) lDevice;
+    QueueInterface lDeviceQueue = getDeviceQueue(lQueueableDevice);
     return lDeviceQueue;
 
   }
@@ -126,7 +127,7 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
    *          device
    * @return corresponding queue
    */
-  public RealTimeQueueInterface getDeviceQueue(RealTimeQueueDeviceInterface<?> pDevice)
+  public QueueInterface getDeviceQueue(QueueDeviceInterface<?> pDevice)
   {
     return mDeviceToQueueMap.get(pDevice);
   }
@@ -135,12 +136,12 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
   public void clearQueue()
   {
 
-    for (final Entry<RealTimeQueueDeviceInterface<?>, RealTimeQueueInterface> lEntry : mDeviceToQueueMap.entrySet())
+    for (final Entry<QueueDeviceInterface<?>, QueueInterface> lEntry : mDeviceToQueueMap.entrySet())
     {
-      RealTimeQueueDeviceInterface<?> lDevice = lEntry.getKey();
-      RealTimeQueueInterface lQueue = lEntry.getValue();
+      QueueDeviceInterface<?> lDevice = lEntry.getKey();
+      QueueInterface lQueue = lEntry.getValue();
 
-      if (lDevice instanceof RealTimeQueueDeviceInterface)
+      if (lDevice instanceof QueueDeviceInterface)
         if (mMicroscope.isActiveDevice(lDevice))
         {
           lQueue.clearQueue();
@@ -154,12 +155,12 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
   public void addCurrentStateToQueue()
   {
 
-    for (final Entry<RealTimeQueueDeviceInterface<?>, RealTimeQueueInterface> lEntry : mDeviceToQueueMap.entrySet())
+    for (final Entry<QueueDeviceInterface<?>, QueueInterface> lEntry : mDeviceToQueueMap.entrySet())
     {
-      RealTimeQueueDeviceInterface<?> lDevice = lEntry.getKey();
-      RealTimeQueueInterface lQueue = lEntry.getValue();
+      QueueDeviceInterface<?> lDevice = lEntry.getKey();
+      QueueInterface lQueue = lEntry.getValue();
 
-      if (lDevice instanceof RealTimeQueueDeviceInterface)
+      if (lDevice instanceof QueueDeviceInterface)
         if (mMicroscope.isActiveDevice(lDevice))
         {
           lQueue.addCurrentStateToQueue();
@@ -173,12 +174,12 @@ public class MicroscopeQueueBase<Q extends MicroscopeQueueBase<Q>>
   public void finalizeQueue()
   {
 
-    for (final Entry<RealTimeQueueDeviceInterface<?>, RealTimeQueueInterface> lEntry : mDeviceToQueueMap.entrySet())
+    for (final Entry<QueueDeviceInterface<?>, QueueInterface> lEntry : mDeviceToQueueMap.entrySet())
     {
-      RealTimeQueueDeviceInterface<?> lDevice = lEntry.getKey();
-      RealTimeQueueInterface lQueue = lEntry.getValue();
+      QueueDeviceInterface<?> lDevice = lEntry.getKey();
+      QueueInterface lQueue = lEntry.getValue();
 
-      if (lDevice instanceof RealTimeQueueDeviceInterface)
+      if (lDevice instanceof QueueDeviceInterface)
         if (mMicroscope.isActiveDevice(lDevice))
         {
           lQueue.finalizeQueue();

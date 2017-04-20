@@ -165,7 +165,8 @@ public class CalibrationWP
   {
     try
     {
-      LightSheetMicroscopeQueue lQueue = mLightSheetMicroscope.requestQueue();
+      LightSheetMicroscopeQueue lQueue =
+                                       mLightSheetMicroscope.requestQueue();
       lQueue.clearQueue();
       lQueue.zero();
 

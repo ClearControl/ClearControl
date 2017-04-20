@@ -1,8 +1,6 @@
 package clearcontrol.gui.jfx.var.customvarpanel;
 
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -11,11 +9,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.math.functions.gui.jfx.UnivariateAffineFunctionPane;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
@@ -86,11 +84,6 @@ public class CustomVariablePane extends TabPane
     getTabs().add(lTab);
 
     CustomGridPane lGridPane = new CustomGridPane();
-    lGridPane.setAlignment(Pos.CENTER);
-    lGridPane.setHgap(10);
-    lGridPane.setVgap(10);
-    lGridPane.setPadding(new Insets(25, 25, 25, 25));
-
     lTab.setContent(lGridPane);
 
     mCurrentTabGridPane = lGridPane;

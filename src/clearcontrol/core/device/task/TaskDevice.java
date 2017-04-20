@@ -87,16 +87,6 @@ public abstract class TaskDevice extends SignalStartStopDevice
   }
 
   /**
-   * Returns stop signal variable
-   * 
-   * @return stop signal variable
-   */
-  public Variable<Boolean> getStopSignalVariable()
-  {
-    return mStopSignal;
-  }
-
-  /**
    * Starts this task
    * 
    * @return true if succeeded

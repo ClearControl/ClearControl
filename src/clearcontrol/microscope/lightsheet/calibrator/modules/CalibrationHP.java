@@ -28,6 +28,11 @@ import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.StatUtils;
 
+/**
+ * Calibrates the lighthseet power versus its height
+ *
+ * @author royer
+ */
 public class CalibrationHP
 {
 
