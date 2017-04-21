@@ -197,8 +197,8 @@ dependencies
     //compile ('net.clearvolume:clearcl:0.3.40')         {transitive= true; changing= true}
     compile ('net.clearvolume:clearaudio:1.0.2')         {transitive= true; changing= true}
     
-    
-    compile ('net.clearcontrol:Simbryo:0.5.0')           {transitive= true; changing= true}
+    // Symbrio:
+    compile ('net.clearcontrol:Simbryo:0.6.0')           {transitive= true; changing= true}
 
     // AO:
     compile ('net.rtlib:Mirao52J:(,2.0.0]')              {transitive=true; changing= true}
