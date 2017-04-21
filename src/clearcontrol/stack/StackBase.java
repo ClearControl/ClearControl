@@ -59,9 +59,7 @@ public abstract class StackBase extends FreeableBase
   public void release()
   {
     if (mStackRecycler != null)
-    {
       mStackRecycler.release(this);
-    }
   }
 
   @Override

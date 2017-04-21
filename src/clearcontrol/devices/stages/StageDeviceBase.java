@@ -9,6 +9,11 @@ import clearcontrol.core.variable.Variable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+/**
+ * Base class providing common fields and methods for all stage device interface implementations
+ *
+ * @author royer
+ */
 public abstract class StageDeviceBase extends VirtualDevice implements
                                       StageDeviceInterface,
                                       WaitingInterface
@@ -23,6 +28,10 @@ public abstract class StageDeviceBase extends VirtualDevice implements
   protected final BiMap<Integer, String> mIndexToNameMap =
                                                          HashBiMap.create();
 
+  /**
+   * Instantiates a stage device given a device name
+   * @param pDeviceName device name
+   */
   public StageDeviceBase(String pDeviceName)
   {
     super(pDeviceName);

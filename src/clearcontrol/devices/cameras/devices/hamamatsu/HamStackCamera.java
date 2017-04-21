@@ -16,9 +16,9 @@ import clearcontrol.devices.cameras.TriggerTypeInterface;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import dcamj2.DcamDevice;
-import dcamj2.DcamImageSequence;
 import dcamj2.DcamLibrary;
 import dcamj2.DcamSequenceAcquisition;
+import dcamj2.imgseq.DcamImageSequence;
 
 /**
  * 

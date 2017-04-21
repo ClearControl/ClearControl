@@ -18,6 +18,11 @@ import coremem.recycling.RecyclableInterface;
 import coremem.recycling.RecyclerInterface;
 import coremem.recycling.RecyclerRequestInterface;
 
+/**
+ * Recycler panel demo
+ *
+ * @author royer
+ */
 public class RecyclerPaneDemo extends Application implements
                               AsynchronousExecutorServiceAccess
 {
@@ -193,6 +198,12 @@ public class RecyclerPaneDemo extends Application implements
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

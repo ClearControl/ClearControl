@@ -59,9 +59,9 @@ public interface StageDeviceInterface extends
    * @param pDOFIndex
    *          DOF's index
    */
-  public default void reset(int pIndex)
+  public default void reset(int pDOFIndex)
   {
-    getResetVariable(pIndex).setEdge(false, true);
+    getResetVariable(pDOFIndex).setEdge(false, true);
   }
 
   /**
@@ -70,9 +70,9 @@ public interface StageDeviceInterface extends
    * @param pDOFIndex
    *          DOF's index
    */
-  public default void home(int pIndex)
+  public default void home(int pDOFIndex)
   {
-    getHomingVariable(pIndex).setEdge(false, true);
+    getHomingVariable(pDOFIndex).setEdge(false, true);
   }
 
   /**
@@ -250,12 +250,12 @@ public interface StageDeviceInterface extends
   Variable<Double> getMaxPositionVariable(int pDOFIndex);
 
   /**
-   * Returns the Granularity Variable for a given DOF. The granularity is the
+   * Returns the granularity variable for a given DOF. The granularity is the
    * step size. If there is no step size defined, the value is zero.
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return granularity variable
    */
   Variable<Double> getGranularityPositionVariable(int pDOFIndex);
 
@@ -265,7 +265,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return enable variable
    */
   Variable<Boolean> getEnableVariable(int pDOFIndex);
 
@@ -274,7 +274,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return target position variable
    */
   Variable<Double> getTargetPositionVariable(int pDOFIndex);
 
@@ -283,7 +283,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return current position variable
    */
   Variable<Double> getCurrentPositionVariable(int pDOFIndex);
 
@@ -294,7 +294,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return ready variable
    */
   Variable<Boolean> getReadyVariable(int pDOFIndex);
 
@@ -306,7 +306,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return homing variable
    */
   Variable<Boolean> getHomingVariable(int pDOFIndex);
 
@@ -316,7 +316,7 @@ public interface StageDeviceInterface extends
    * 
    * @param pDOFIndex
    *          DOF's index
-   * @return
+   * @return stop variable
    */
   Variable<Boolean> getStopVariable(int pDOFIndex);
 
@@ -326,7 +326,7 @@ public interface StageDeviceInterface extends
    * controller had been power cycled.)
    * 
    * @param pIndex
-   * @return
+   * @return reset variable
    */
   Variable<Boolean> getResetVariable(int pIndex);
 
