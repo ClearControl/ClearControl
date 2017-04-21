@@ -74,6 +74,8 @@ public class MachineConfiguration implements LoggingInterface
       final File lConfigurationFile = new File(mClearControlFolder,
                                                "configuration.txt");
 
+      mProperties = new Properties();
+
       if (!lConfigurationFile.exists())
       {
         final Writer lWriter = new FileWriter(lConfigurationFile);
@@ -81,7 +83,7 @@ public class MachineConfiguration implements LoggingInterface
       }
       final FileInputStream lFileInputStream =
                                              new FileInputStream(lConfigurationFile);
-      mProperties = new Properties();
+
       mProperties.load(lFileInputStream);
     }
 

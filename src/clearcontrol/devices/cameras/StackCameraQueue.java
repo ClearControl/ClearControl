@@ -172,12 +172,14 @@ public abstract class StackCameraQueue<Q extends StackCameraQueue<Q>>
   @Override
   public void clearQueue()
   {
+    getStackDepthVariable().set(0L);
     super.clearQueue();
   }
 
   @Override
   public void addCurrentStateToQueue()
   {
+    getStackDepthVariable().increment();
     super.addCurrentStateToQueue();
   }
 

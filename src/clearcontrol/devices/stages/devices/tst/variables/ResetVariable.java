@@ -12,8 +12,11 @@ public class ResetVariable extends TSTBooleanVariableBase
 
   /**
    * Instantiates a reset variable
-   * @param pVariableName variable name
-   * @param pAPTJDevice APTJ device
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pAPTJDevice
+   *          APTJ device
    */
   public ResetVariable(String pVariableName, APTJDevice pAPTJDevice)
   {

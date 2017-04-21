@@ -13,8 +13,11 @@ public class PositionCurrentVariable extends TSTDoubleVariableBase
 
   /**
    * Instantiates a current position variable
-   * @param pVariableName variable name
-   * @param pAPTJDevice APTJ device
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pAPTJDevice
+   *          APTJ device
    */
   public PositionCurrentVariable(String pVariableName,
                                  APTJDevice pAPTJDevice)
@@ -22,19 +25,19 @@ public class PositionCurrentVariable extends TSTDoubleVariableBase
     super(pVariableName, pAPTJDevice);
   }
 
-
-
   @Override
   public Double getEventHook(Double pCurrentValue)
   {
     try
     {
-      final double lCurrentPosition = mAPTJDevice.getCurrentPosition();
+      final double lCurrentPosition =
+                                    mAPTJDevice.getCurrentPosition();
       return super.getEventHook(lCurrentPosition);
     }
     catch (APTJExeption e)
     {
-      severe("Error while querying the current position of device: %s",mAPTJDevice);
+      severe("Error while querying the current position of device: %s",
+             mAPTJDevice);
       e.printStackTrace();
     }
     return super.getEventHook(pCurrentValue);

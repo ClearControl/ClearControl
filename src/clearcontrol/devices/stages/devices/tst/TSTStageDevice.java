@@ -1,8 +1,5 @@
 package clearcontrol.devices.stages.devices.tst;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
@@ -24,6 +21,9 @@ import clearcontrol.devices.stages.devices.tst.variables.PositionTargetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.StopVariable;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * TST001 stage device

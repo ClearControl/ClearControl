@@ -10,7 +10,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 /**
- * Base class providing common fields and methods for all stage device interface implementations
+ * Base class providing common fields and methods for all stage device interface
+ * implementations
  *
  * @author royer
  */
@@ -30,7 +31,9 @@ public abstract class StageDeviceBase extends VirtualDevice implements
 
   /**
    * Instantiates a stage device given a device name
-   * @param pDeviceName device name
+   * 
+   * @param pDeviceName
+   *          device name
    */
   public StageDeviceBase(String pDeviceName)
   {

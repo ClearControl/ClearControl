@@ -1,10 +1,11 @@
 package clearcontrol.devices.stages.devices.tst.demo;
 
-import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
-import clearcontrol.devices.stages.gui.jfx.GenericStageDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
+import clearcontrol.devices.stages.gui.jfx.GenericStageDevicePanel;
 
 /**
  * TST001 stage device interactive demo
@@ -19,21 +20,29 @@ public class TSTStageDeviceInteractiveDemo extends Application
   {
     TSTStageDevice lTSTStageDevice = new TSTStageDevice();
 
-    GenericStageDevicePanel lGenericStageDevicePanel =
-                                                     new GenericStageDevicePanel(lTSTStageDevice);
+    if (lTSTStageDevice.open())
+    {
 
-    Scene scene = new Scene(lGenericStageDevicePanel,
-                            javafx.scene.paint.Color.WHITE);
+      GenericStageDevicePanel lGenericStageDevicePanel =
+                                                       new GenericStageDevicePanel(lTSTStageDevice);
 
-    pPrimaryStage.setTitle(this.getClass().getSimpleName());
-    pPrimaryStage.setScene(scene);
-    pPrimaryStage.show();
+      Scene scene = new Scene(lGenericStageDevicePanel,
+                              javafx.scene.paint.Color.WHITE);
+
+      pPrimaryStage.setTitle(this.getClass().getSimpleName());
+      pPrimaryStage.setScene(scene);
+      pPrimaryStage.show();
+    }
+    else
+      System.err.println("Could not open stage device");
 
   }
 
   /**
    * Main
-   * @param args NA
+   * 
+   * @param args
+   *          NA
    */
   public static void main(String[] args)
   {

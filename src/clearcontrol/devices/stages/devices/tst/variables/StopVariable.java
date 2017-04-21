@@ -11,11 +11,13 @@ import aptj.APTJExeption;
 public class StopVariable extends TSTBooleanVariableBase
 {
 
-
   /**
    * Instantiates a stop variable
-   * @param pVariableName variable name
-   * @param pAPTJDevice APTJ device
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pAPTJDevice
+   *          APTJ device
    */
   public StopVariable(String pVariableName, APTJDevice pAPTJDevice)
   {
@@ -32,7 +34,7 @@ public class StopVariable extends TSTBooleanVariableBase
     }
     catch (APTJExeption e)
     {
-      severe("Error while stopping device: %s",mAPTJDevice);
+      severe("Error while stopping device: %s", mAPTJDevice);
       e.printStackTrace();
     }
     return lValue;

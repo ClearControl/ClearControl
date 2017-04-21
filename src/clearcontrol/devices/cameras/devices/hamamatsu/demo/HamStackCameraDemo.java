@@ -1,5 +1,6 @@
 package clearcontrol.devices.cameras.devices.hamamatsu.demo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,12 @@ public class HamStackCameraDemo
   public void testAcquireStack() throws InterruptedException,
                                  ExecutionException
   {
+    long lWidth = 768;
+    long lHeight = 768;
+    long lDepth = 17;
+
+    int lRepeats = 13;
+
     mFrameIndex.set(0);
     final HamStackCamera lOrcaFlash4StackCamera =
                                                 HamStackCamera.buildWithInternalTriggering(0);
@@ -60,38 +67,52 @@ public class HamStackCameraDemo
                             public StackInterface setEventHook(final StackInterface pOldStack,
                                                                final StackInterface pNewStack)
                             {
-
-                              System.out.println(pNewStack);
                               mFrameIndex.incrementAndGet();
+                              System.out.println(pNewStack);
+
+                              assertEquals(lWidth,
+                                           pNewStack.getWidth());
+                              assertEquals(lHeight,
+                                           pNewStack.getHeight());
+                              assertEquals(lDepth,
+                                           pNewStack.getDepth());
+
+                              pNewStack.release();
                               return super.setEventHook(pOldStack,
                                                         pNewStack);
                             }
 
                           });
 
+    lOrcaFlash4StackCamera.getExposureInSecondsVariable().set(0.01);
+    lOrcaFlash4StackCamera.getStackWidthVariable().set(lWidth);
+    lOrcaFlash4StackCamera.getStackHeightVariable().set(lHeight);
+
     HamStackCameraQueue lQueue =
                                lOrcaFlash4StackCamera.requestQueue();
 
     lQueue.clearQueue();
 
-    lQueue.getExposureInSecondsVariable().set(0.01);
-    lOrcaFlash4StackCamera.getStackWidthVariable().set(512L);
-    lOrcaFlash4StackCamera.getStackHeightVariable().set(512L);
-
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < lDepth; i++)
     {
       lQueue.addCurrentStateToQueue();
     }
 
-    Future<Boolean> lPlayQueue =
-                               lOrcaFlash4StackCamera.playQueue(lQueue);
-    lPlayQueue.get();
+    lQueue.finalizeQueue();
+
+    for (int r = 0; r < lRepeats; r++)
+    {
+
+      Future<Boolean> lPlayQueue =
+                                 lOrcaFlash4StackCamera.playQueue(lQueue);
+      lPlayQueue.get();
+    }
 
     assertTrue(lOrcaFlash4StackCamera.close());
 
     System.out.println(mFrameIndex.get());
 
-    assertTrue(mFrameIndex.get() == 1);
+    assertTrue(mFrameIndex.get() == lRepeats);
   }
 
   /**/

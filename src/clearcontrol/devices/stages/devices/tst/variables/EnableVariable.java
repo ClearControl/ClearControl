@@ -12,8 +12,11 @@ public class EnableVariable extends TSTBooleanVariableBase
 
   /**
    * Instantiates an enable variable
-   * @param pVariableName variable name
-   * @param pAPTJDevice APTJ device
+   * 
+   * @param pVariableName
+   *          variable name
+   * @param pAPTJDevice
+   *          APTJ device
    */
   public EnableVariable(String pVariableName, APTJDevice pAPTJDevice)
   {
@@ -24,7 +27,7 @@ public class EnableVariable extends TSTBooleanVariableBase
   public Boolean setEventHook(Boolean pOldValue, Boolean pNewValue)
   {
     final Boolean lValue = super.setEventHook(pOldValue, pNewValue);
-    //nothing to do, stage is always enabld
+    // nothing to do, stage is always enabld
     return lValue;
   }
 

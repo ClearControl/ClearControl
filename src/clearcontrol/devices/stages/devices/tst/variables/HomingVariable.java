@@ -34,7 +34,7 @@ public class HomingVariable extends TSTBooleanVariableBase
     }
     catch (APTJExeption e)
     {
-      severe("Error  while homing device: %s",mAPTJDevice);
+      severe("Error  while homing device: %s", mAPTJDevice);
       e.printStackTrace();
     }
     return lValue;

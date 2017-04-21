@@ -226,6 +226,9 @@ public class HamStackCamera extends
                                                            TimeUnit.MILLISECONDS,
                                                            lRecyclerRequest);
 
+        if (lStack == null)
+          return false;
+
         ArrayList<Boolean> lKeepPlaneList =
                                           pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
 
@@ -237,7 +240,7 @@ public class HamStackCamera extends
       }
       catch (Throwable e)
       {
-        severe("Exception while acquiring stack: $s", e);
+        severe("Exception while acquiring stack: %s", e);
         e.printStackTrace();
         return false;
       }
