@@ -1,11 +1,11 @@
 package clearcontrol.devices.stages.devices.tst.demo;
 
+import aptj.APTJExeption;
+import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
-import clearcontrol.devices.stages.gui.StageDevicePanel;
 
 /**
  * TST001 stage device interactive demo
@@ -15,18 +15,35 @@ import clearcontrol.devices.stages.gui.StageDevicePanel;
 public class TSTStageDeviceInteractiveDemo extends Application
 {
 
+  TSTStageDevice mTSTStageDevice;
+
+  /**
+   * Instantiates this demo app
+   */
+  public TSTStageDeviceInteractiveDemo()
+  {
+    super();
+    try
+    {
+      mTSTStageDevice = new TSTStageDevice();
+    }
+    catch (APTJExeption e)
+    {
+      e.printStackTrace();
+    }
+  }
+
   @Override
   public void start(Stage pPrimaryStage) throws Exception
   {
-    TSTStageDevice lTSTStageDevice = new TSTStageDevice();
 
-    if (lTSTStageDevice.open())
+    if (mTSTStageDevice.open())
     {
 
-      StageDevicePanel lGenericStageDevicePanel =
-                                                new StageDevicePanel(lTSTStageDevice);
+      StageDevicePanel lStageDevicePanel =
+                                         new StageDevicePanel(mTSTStageDevice);
 
-      Scene scene = new Scene(lGenericStageDevicePanel,
+      Scene scene = new Scene(lStageDevicePanel,
                               javafx.scene.paint.Color.WHITE);
 
       pPrimaryStage.setTitle(this.getClass().getSimpleName());
@@ -36,6 +53,12 @@ public class TSTStageDeviceInteractiveDemo extends Application
     else
       System.err.println("Could not open stage device");
 
+  }
+
+  @Override
+  public void stop()
+  {
+    mTSTStageDevice.close();
   }
 
   /**

@@ -30,7 +30,8 @@ public class StopVariable extends TSTBooleanVariableBase
     final Boolean lValue = super.setEventHook(pOldValue, pNewValue);
     try
     {
-      mAPTJDevice.stop();
+      if (lValue && !pOldValue)
+        mAPTJDevice.stop();
     }
     catch (APTJExeption e)
     {

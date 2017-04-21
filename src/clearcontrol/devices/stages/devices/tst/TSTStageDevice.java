@@ -1,9 +1,16 @@
 package clearcontrol.devices.stages.devices.tst;
 
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
 import aptj.APTJExeption;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
@@ -16,14 +23,10 @@ import clearcontrol.devices.stages.devices.tst.variables.EnableVariable;
 import clearcontrol.devices.stages.devices.tst.variables.HomingVariable;
 import clearcontrol.devices.stages.devices.tst.variables.MaxPositionVariable;
 import clearcontrol.devices.stages.devices.tst.variables.MinPositionVariable;
-import clearcontrol.devices.stages.devices.tst.variables.PositionCurrentVariable;
 import clearcontrol.devices.stages.devices.tst.variables.PositionTargetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.StopVariable;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 /**
  * TST001 stage device
@@ -34,7 +37,8 @@ public class TSTStageDevice extends StageDeviceBase implements
                             StageDeviceInterface,
                             StartStopDeviceInterface,
                             WaitingInterface,
-                            LoggingInterface
+                            LoggingInterface,
+                            AsynchronousSchedulerServiceAccess
 {
 
   final APTJDeviceFactory mAPTJDeviceFactory;
@@ -42,8 +46,11 @@ public class TSTStageDevice extends StageDeviceBase implements
   private final BiMap<Integer, APTJDevice> mIndexToDeviceMap =
                                                              HashBiMap.create();
 
+  private WaitingScheduledFuture<?> mScheduleAtFixedRate;
+  private volatile boolean mOpen = false;
+
   /**
-   * Instantiates an APTJ exception
+   * Instantiates an APTJ stage device
    * 
    * @throws APTJExeption
    *           exception
@@ -52,7 +59,6 @@ public class TSTStageDevice extends StageDeviceBase implements
   {
     super("TST001");
     mAPTJDeviceFactory = new APTJDeviceFactory(APTJDeviceType.TST001);
-
   }
 
   @Override
@@ -83,18 +89,19 @@ public class TSTStageDevice extends StageDeviceBase implements
         final APTJDevice lDevice =
                                  mAPTJDeviceFactory.createDeviceFromIndex(lDOFIndex);
 
+        info("Adding DOF %d: %s \n", lDOFIndex, lDevice);
+
         mIndexToDeviceMap.put(lDOFIndex, lDevice);
 
         final String lDeviceConfigString = "device.stage.tst001."
                                            + lDevice.getSerialNumber();
 
-        info("Found device: " + lDeviceConfigString);
         final String lDeviceName =
                                  lCurrentMachineConfiguration.getStringProperty(lDeviceConfigString,
                                                                                 "");
         if (!lDeviceName.isEmpty())
         {
-          info("DOF index: %d, serial number: %sdevice name: %s",
+          info("Found device in config: DOF index= %d, serial number= %sdevice name= %s",
                lDOFIndex,
                lDevice.getSerialNumber(),
                lDeviceName);
@@ -132,9 +139,9 @@ public class TSTStageDevice extends StageDeviceBase implements
                                                                 + mIndexToNameMap.get(lDOFIndex),
                                                                 lAPTJDevice));
 
-        mCurrentPositionVariables.add(new PositionCurrentVariable("CurrentPosition"
-                                                                  + mIndexToNameMap.get(lDOFIndex),
-                                                                  lAPTJDevice));
+        mCurrentPositionVariables.add(new Variable<Double>("CurrentPosition"
+                                                           + mIndexToNameMap.get(lDOFIndex),
+                                                           0.0));
 
         mMinPositionVariables.add(new MinPositionVariable("MinPosition"
                                                           + mIndexToNameMap.get(lDOFIndex),
@@ -148,6 +155,31 @@ public class TSTStageDevice extends StageDeviceBase implements
                                                                + mIndexToNameMap.get(lDOFIndex),
                                                                0d));
       }
+
+      mOpen = true;
+
+      Runnable lPolling = () -> {
+        if (mOpen)
+          for (int lDOFIndex =
+                             0; lDOFIndex < lNumberOfDevices; lDOFIndex++)
+          {
+            try
+            {
+              APTJDevice lAPTJDevice =
+                                     mIndexToDeviceMap.get(lDOFIndex);
+              getCurrentPositionVariable(lDOFIndex).set(lAPTJDevice.getCurrentPosition());
+            }
+            catch (APTJExeption e)
+            {
+              e.printStackTrace();
+            }
+          }
+      };
+
+      mScheduleAtFixedRate =
+                           scheduleAtFixedRate(lPolling,
+                                               100,
+                                               TimeUnit.MILLISECONDS);
 
       return true;
     }
@@ -177,6 +209,7 @@ public class TSTStageDevice extends StageDeviceBase implements
   {
     try
     {
+      mOpen = false;
       mAPTJDeviceFactory.close();
       return true;
     }
