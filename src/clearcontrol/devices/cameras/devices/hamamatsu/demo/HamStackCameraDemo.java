@@ -6,8 +6,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Test;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCameraQueue;
@@ -15,6 +13,8 @@ import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.recycling.BasicRecycler;
+
+import org.junit.Test;
 
 /**
  * Hamamatsu stack camera demo
