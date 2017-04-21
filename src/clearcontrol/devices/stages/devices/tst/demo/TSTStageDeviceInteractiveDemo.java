@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
-import clearcontrol.devices.stages.gui.jfx.GenericStageDevicePanel;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 
 /**
  * TST001 stage device interactive demo
@@ -23,8 +23,8 @@ public class TSTStageDeviceInteractiveDemo extends Application
     if (lTSTStageDevice.open())
     {
 
-      GenericStageDevicePanel lGenericStageDevicePanel =
-                                                       new GenericStageDevicePanel(lTSTStageDevice);
+      StageDevicePanel lGenericStageDevicePanel =
+                                                new StageDevicePanel(lTSTStageDevice);
 
       Scene scene = new Scene(lGenericStageDevicePanel,
                               javafx.scene.paint.Color.WHITE);

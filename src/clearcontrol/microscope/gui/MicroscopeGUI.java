@@ -19,7 +19,7 @@ import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePa
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.gui.jfx.ScalingAmplifierPanel;
 import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.devices.stages.gui.jfx.XYZRStageDevicePanel;
+import clearcontrol.devices.stages.gui.XYZRStageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;

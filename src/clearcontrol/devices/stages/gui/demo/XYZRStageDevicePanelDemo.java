@@ -1,4 +1,4 @@
-package clearcontrol.devices.stages.gui.jfx.demo;
+package clearcontrol.devices.stages.gui.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -6,8 +6,13 @@ import javafx.stage.Stage;
 
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
-import clearcontrol.devices.stages.gui.jfx.XYZRStageDevicePanel;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 
+/**
+ * XYZR stage device panel demo
+ *
+ * @author royer
+ */
 public class XYZRStageDevicePanelDemo extends Application
 {
 
@@ -25,8 +30,8 @@ public class XYZRStageDevicePanelDemo extends Application
     lStageDeviceSimulator.addDOF("Z", -100, 100);
     lStageDeviceSimulator.addDOF("R", 0, 360);
 
-    XYZRStageDevicePanel lStageDevicePanel =
-                                           new XYZRStageDevicePanel(lStageDeviceSimulator);
+    StageDevicePanel lStageDevicePanel =
+                                       new StageDevicePanel(lStageDeviceSimulator);
 
     Scene scene = new Scene(lStageDevicePanel,
                             javafx.scene.paint.Color.WHITE);
@@ -37,6 +42,12 @@ public class XYZRStageDevicePanelDemo extends Application
 
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     Application.launch(XYZRStageDevicePanelDemo.class);

@@ -1,4 +1,4 @@
-package clearcontrol.devices.stages.gui.jfx.demo;
+package clearcontrol.devices.stages.gui.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -6,8 +6,13 @@ import javafx.stage.Stage;
 
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
-import clearcontrol.devices.stages.gui.jfx.GenericStageDevicePanel;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 
+/**
+ * generic stage panel demo
+ *
+ * @author royer
+ */
 public class GenericStageDevicePanelDemo extends Application
 {
 
@@ -16,17 +21,17 @@ public class GenericStageDevicePanelDemo extends Application
   {
     StageDeviceSimulator lStageDeviceSimulator =
                                                new StageDeviceSimulator("demostage",
-                                                                        StageType.XYZR);
+                                                                        StageType.Multi);
 
     lStageDeviceSimulator.setSimLogging(true);
 
-    lStageDeviceSimulator.addDOF("X", -100, 100);
-    lStageDeviceSimulator.addDOF("Y", -100, 100);
-    lStageDeviceSimulator.addDOF("Z", -100, 100);
-    lStageDeviceSimulator.addDOF("R", 0, 360);
+    for (int i = 0; i < 6; i++)
+      lStageDeviceSimulator.addDOF("Stage" + i,
+                                   -100 + 10 * i,
+                                   100 - 10 * i);
 
-    GenericStageDevicePanel lGenericStageDevicePanel =
-                                                     new GenericStageDevicePanel(lStageDeviceSimulator);
+    StageDevicePanel lGenericStageDevicePanel =
+                                              new StageDevicePanel(lStageDeviceSimulator);
 
     Scene scene = new Scene(lGenericStageDevicePanel,
                             javafx.scene.paint.Color.WHITE);
@@ -37,6 +42,12 @@ public class GenericStageDevicePanelDemo extends Application
 
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     Application.launch(GenericStageDevicePanelDemo.class);

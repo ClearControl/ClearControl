@@ -5,13 +5,21 @@ import static org.junit.Assert.assertTrue;
 
 import clearcontrol.devices.stages.devices.ecc100.ECC100StageDevice;
 import clearcontrol.devices.stages.devices.smc100.SMC100StageDevice;
-import clearcontrol.devices.stages.hub.StageDeviceHub;
+import clearcontrol.devices.stages.hub.StageHubDevice;
 
 import org.junit.Test;
 
+/**
+ * Stage hub demo
+ *
+ * @author royer
+ */
 public class StageHubDemo
 {
 
+  /**
+   * Test
+   */
   @Test
   public void test()
   {
@@ -20,7 +28,7 @@ public class StageHubDemo
                                          new SMC100StageDevice("SMC100",
                                                                "COM1");
 
-    StageDeviceHub lStageHub = new StageDeviceHub("Hub");
+    StageHubDevice lStageHub = new StageHubDevice("Hub");
 
     lStageHub.addDOF(lECC100StageDevice, 1);
     lStageHub.addDOF(lSMC100StageDevice, 0);
