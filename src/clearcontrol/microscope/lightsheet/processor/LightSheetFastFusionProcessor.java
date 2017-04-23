@@ -98,8 +98,8 @@ public class LightSheetFastFusionProcessor extends
   private boolean isPassThrough(StackInterface pStack)
   {
     AcquisitionType lAcquisitionType =
-                                     (AcquisitionType) pStack.getMetaData()
-                                                             .getValue(MetaDataAcquisitionType.AcquisitionType);
+                                     pStack.getMetaData()
+                                           .getValue(MetaDataAcquisitionType.AcquisitionType);
     return lAcquisitionType == AcquisitionType.Interactive;
   }
 

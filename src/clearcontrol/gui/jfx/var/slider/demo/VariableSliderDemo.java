@@ -11,6 +11,11 @@ import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 
+/**
+ * Variable slider demo
+ *
+ * @author royer
+ */
 public class VariableSliderDemo extends Application implements
                                 AsynchronousExecutorServiceAccess
 {
@@ -19,6 +24,8 @@ public class VariableSliderDemo extends Application implements
   public void start(Stage stage)
   {
     GridPane root = new GridPane();
+    root.setMaxWidth(Double.MAX_VALUE);
+
     Scene scene = new Scene(root, 600, 400);
     stage.setScene(scene);
     stage.setTitle("Slider Sample");
@@ -87,6 +94,12 @@ public class VariableSliderDemo extends Application implements
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

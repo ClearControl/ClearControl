@@ -28,13 +28,13 @@ import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
  * @author royer
  */
 public class AcquisitionStateManagerPanel extends
-                                          AcquisitionStateManagerPanelBase
+                                          AcquisitionStateManagerPanelBase<InterpolatedAcquisitionState>
 {
-  private AcquisitionStateManager mAcquisitionStateManager;
+  private AcquisitionStateManager<InterpolatedAcquisitionState> mAcquisitionStateManager;
 
-  private SingleCheckListView<AcquisitionStateInterface<?, ?>> mStateListView;
-  private ObservableList<AcquisitionStateInterface<?, ?>> mObservableStateList =
-                                                                               FXCollections.observableArrayList();
+  private SingleCheckListView<InterpolatedAcquisitionState> mStateListView;
+  private ObservableList<InterpolatedAcquisitionState> mObservableStateList =
+                                                                            FXCollections.observableArrayList();
   private VBox mStateViewVBox;
 
   private TitledPane mStateViewTitledPane;
@@ -45,28 +45,28 @@ public class AcquisitionStateManagerPanel extends
    * @param pAcquisitionStateManager
    *          acquisition state manager
    */
-  public AcquisitionStateManagerPanel(AcquisitionStateManager pAcquisitionStateManager)
+  public AcquisitionStateManagerPanel(AcquisitionStateManager<InterpolatedAcquisitionState> pAcquisitionStateManager)
   {
     super(pAcquisitionStateManager);
     mAcquisitionStateManager = pAcquisitionStateManager;
     AcquisitionStateManagerPanel lAcquisitionStateManagerPanel = this;
 
-    SingleCheckCellManager<AcquisitionStateInterface<?, ?>> lSingleCheckCellManager =
-                                                                                    new SingleCheckCellManager<AcquisitionStateInterface<?, ?>>()
-                                                                                    {
-                                                                                      @Override
-                                                                                      public void checkOnlyCell(SingleCheckCell<AcquisitionStateInterface<?, ?>> pSelectedCell)
-                                                                                      {
-                                                                                        super.checkOnlyCell(pSelectedCell);
-                                                                                        AcquisitionStateInterface<?, ?> lState =
-                                                                                                                               pSelectedCell.getItem();
-                                                                                        lAcquisitionStateManagerPanel.setCurrentState(lState);
-                                                                                      }
-                                                                                    };
+    SingleCheckCellManager<InterpolatedAcquisitionState> lSingleCheckCellManager =
+                                                                                 new SingleCheckCellManager<InterpolatedAcquisitionState>()
+                                                                                 {
+                                                                                   @Override
+                                                                                   public void checkOnlyCell(SingleCheckCell<InterpolatedAcquisitionState> pSelectedCell)
+                                                                                   {
+                                                                                     super.checkOnlyCell(pSelectedCell);
+                                                                                     InterpolatedAcquisitionState lState =
+                                                                                                                         pSelectedCell.getItem();
+                                                                                     lAcquisitionStateManagerPanel.setCurrentState(lState);
+                                                                                   }
+                                                                                 };
 
     mStateListView =
-                   new SingleCheckListView<AcquisitionStateInterface<?, ?>>(lSingleCheckCellManager,
-                                                                            mObservableStateList);
+                   new SingleCheckListView<>(lSingleCheckCellManager,
+                                             mObservableStateList);
 
     mStateListView.getSelectionModel()
                   .getSelectedItems()
@@ -121,9 +121,9 @@ public class AcquisitionStateManagerPanel extends
 
     lDuplicateItem.setOnAction((e) -> {
 
-      AcquisitionStateInterface<?, ?> lSelectedItem =
-                                                    mStateListView.getSelectionModel()
-                                                                  .getSelectedItem();
+      InterpolatedAcquisitionState lSelectedItem =
+                                                 mStateListView.getSelectionModel()
+                                                               .getSelectedItem();
 
       if (lSelectedItem instanceof InterpolatedAcquisitionState)
       {
@@ -140,9 +140,9 @@ public class AcquisitionStateManagerPanel extends
 
     lDeleteItem.setOnAction((e) -> {
 
-      AcquisitionStateInterface<?, ?> lSelectedItem =
-                                                    mStateListView.getSelectionModel()
-                                                                  .getSelectedItem();
+      InterpolatedAcquisitionState lSelectedItem =
+                                                 mStateListView.getSelectionModel()
+                                                               .getSelectedItem();
       pAcquisitionStateManager.removeState(lSelectedItem);
     });
 
@@ -162,10 +162,10 @@ public class AcquisitionStateManagerPanel extends
   }
 
   @Override
-  protected void updateStateList(List<AcquisitionStateInterface<?, ?>> pStateList)
+  protected void updateStateList(List<InterpolatedAcquisitionState> pStateList)
   {
     Runnable lRunnable = () -> {
-      for (AcquisitionStateInterface<?, ?> lState : pStateList)
+      for (InterpolatedAcquisitionState lState : pStateList)
       {
         if (!mObservableStateList.contains(lState))
         {
@@ -197,7 +197,7 @@ public class AcquisitionStateManagerPanel extends
    * @param pState
    *          sate to view
    */
-  public void setCurrentState(AcquisitionStateInterface<?, ?> pState)
+  public void setCurrentState(InterpolatedAcquisitionState pState)
   {
     mAcquisitionStateManager.setCurrentState(pState);
   }

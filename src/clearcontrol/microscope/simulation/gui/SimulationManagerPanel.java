@@ -1,7 +1,7 @@
 package clearcontrol.microscope.simulation.gui;
 
 import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 import clearcontrol.microscope.simulation.SimulationManager;
 
 /**
@@ -24,10 +24,10 @@ public class SimulationManagerPanel extends CustomVariablePane
 
     addTab("Logging");
 
-    CustomToggleButton lToggleButton =
-                                     addToggleButton("Logging On",
-                                                     "Logging Off",
-                                                     pSimulationManager.getLoggingOnVariable());
+    VariableToggleButton lToggleButton =
+                                       addToggleButton("Logging On",
+                                                       "Logging Off",
+                                                       pSimulationManager.getLoggingOnVariable());
 
     lToggleButton.setMinWidth(250);
 

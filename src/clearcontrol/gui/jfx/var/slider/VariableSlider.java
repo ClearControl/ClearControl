@@ -10,14 +10,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 
 /**
- * Variable slider.
+ * Slider that syncs its value to a variable
  *
  * @param <T>
  *          number type
@@ -38,10 +40,10 @@ public class VariableSlider<T extends Number> extends HBox
   private double mTicks;
 
   /**
-   * Instanciates a variable slider
+   * Instantiates a variable slider
    * 
-   * @param pSliderName
-   *          slider name
+   * @param pSliderLabelText
+   *          slider label text
    * @param pVariable
    *          variable
    * @param pMin
@@ -51,16 +53,17 @@ public class VariableSlider<T extends Number> extends HBox
    * @param pGranularity
    *          granularity
    * @param pTicks
-   *          number of major ticks
+   *          number of major ticks (if set to null the best tick value will be
+   *          determined)
    */
-  public VariableSlider(String pSliderName,
+  public VariableSlider(String pSliderLabelText,
                         Variable<T> pVariable,
                         T pMin,
                         T pMax,
                         T pGranularity,
                         T pTicks)
   {
-    this(pSliderName,
+    this(pSliderLabelText,
          pVariable,
          new Variable<T>("min", pMin),
          new Variable<T>("max", pMax),
@@ -69,11 +72,22 @@ public class VariableSlider<T extends Number> extends HBox
 
   }
 
-  public VariableSlider(String pSliderName,
+  /**
+   * Instantiates a variable slider
+   * 
+   * @param pSliderLabelText
+   *          Slider label text
+   * @param pBoundedVariable
+   *          bounded variable
+   * @param pTicks
+   *          number of major ticks (if set to null the best tick value will be
+   *          determined)
+   */
+  public VariableSlider(String pSliderLabelText,
                         BoundedVariable<T> pBoundedVariable,
                         T pTicks)
   {
-    this(pSliderName,
+    this(pSliderLabelText,
          pBoundedVariable,
          pBoundedVariable.getMinVariable(),
          pBoundedVariable.getMaxVariable(),
@@ -81,7 +95,24 @@ public class VariableSlider<T extends Number> extends HBox
          pTicks);
   }
 
-  public VariableSlider(String pSliderName,
+  /**
+   * Instantiates a variable slider
+   * 
+   * @param pSliderLabelText
+   *          Slider label text
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min variable
+   * @param pMax
+   *          max variable
+   * @param pGranularity
+   *          granularity variable
+   * @param pTicks
+   *          number of major ticks (if set to null the best tick value will be
+   *          determined)
+   */
+  public VariableSlider(String pSliderLabelText,
                         Variable<T> pVariable,
                         Variable<T> pMin,
                         Variable<T> pMax,
@@ -103,19 +134,25 @@ public class VariableSlider<T extends Number> extends HBox
     else
       mTicks = pTicks.doubleValue();
 
+    setMaxWidth(Double.MAX_VALUE);
     setAlignment(Pos.CENTER);
-    setPadding(new Insets(25, 25, 25, 25));
+    setPadding(new Insets(10, 10, 10, 10));
 
-    mLabel = new Label(pSliderName);
+    mLabel = new Label(pSliderLabelText);
     mLabel.setAlignment(Pos.CENTER);
 
     mSlider = new Slider();
+    mSlider.setMaxWidth(Double.MAX_VALUE);
+    GridPane.setHgrow(mSlider, Priority.ALWAYS);
+    HBox.setHgrow(mSlider, Priority.ALWAYS);
 
     mTextField = new TextField();
     mTextField.setAlignment(Pos.CENTER);
+    mTextField.setPrefWidth(7 * 15);
 
-    getTextField().setPrefWidth(7 * 15);
-    getSlider().setPrefWidth(14 * 15);
+    getChildren().add(getLabel());
+    getChildren().add(getSlider());
+    getChildren().add(getTextField());
 
     updateSliderMinMax(pMin, pMax);
 
@@ -167,10 +204,6 @@ public class VariableSlider<T extends Number> extends HBox
       }
       ;
     });
-
-    getChildren().add(getLabel());
-    getChildren().add(getSlider());
-    getChildren().add(getTextField());
 
     if (mVariable.get() instanceof Double
         || mVariable.get() instanceof Float)
@@ -319,7 +352,6 @@ public class VariableSlider<T extends Number> extends HBox
     }
   }
 
-  @SuppressWarnings("unchecked")
   private double correctValueDouble(double pValue)
   {
     if (pValue < mMin.get().doubleValue())
@@ -343,7 +375,6 @@ public class VariableSlider<T extends Number> extends HBox
     return pValue;
   }
 
-  @SuppressWarnings("unchecked")
   private long correctValueLong(long pValue)
   {
     if (pValue < mMin.get().longValue())
@@ -401,12 +432,6 @@ public class VariableSlider<T extends Number> extends HBox
     getTextField().setStyle("-fx-text-fill: orange");
   }
 
-  private void setVariableValueFromTextField()
-  {
-    double lNewValue = getTextFieldValue();
-    setVariableValue(lNewValue);
-  }
-
   private double getTextFieldValue()
   {
     Double lDoubleValue = Double.parseDouble(mTextField.getText());
@@ -422,26 +447,53 @@ public class VariableSlider<T extends Number> extends HBox
     getTextField().setStyle("-fx-text-fill: black");
   }
 
+  /**
+   * Returns label
+   * 
+   * @return label
+   */
   public Label getLabel()
   {
     return mLabel;
   }
 
+  /**
+   * Returns slider
+   * 
+   * @return slider
+   */
   public Slider getSlider()
   {
     return mSlider;
   }
 
+  /**
+   * Returns text field
+   * 
+   * @return text field
+   */
   public TextField getTextField()
   {
     return mTextField;
   }
 
+  /**
+   * Returns if the variable value should b updated while the slider is dragged.
+   * 
+   * @return true -> update while changing
+   */
   public boolean isUpdateIfChanging()
   {
     return mUpdateIfChanging;
   }
 
+  /**
+   * Sets whether the variable value should b updated while the slider is
+   * dragged.
+   * 
+   * @param pUpdateIfChanging
+   *          true -> update while changing
+   */
   public void setUpdateIfChanging(boolean pUpdateIfChanging)
   {
     mUpdateIfChanging = pUpdateIfChanging;

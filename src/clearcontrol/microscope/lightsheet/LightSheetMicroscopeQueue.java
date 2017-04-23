@@ -79,10 +79,10 @@ public class LightSheetMicroscopeQueue extends
     return getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
   }
 
-  private StackCameraQueue getStackCameraQueue(int pCameraIndex)
+  private StackCameraQueue<?> getStackCameraQueue(int pCameraIndex)
   {
-    return (StackCameraQueue) getDeviceQueue(StackCameraDeviceInterface.class,
-                                             pCameraIndex);
+    return (StackCameraQueue<?>) getDeviceQueue(StackCameraDeviceInterface.class,
+                                                pCameraIndex);
   }
 
   private DetectionArmQueue getDetectionArmDeviceQueue(int pDetectionArmIndex)
@@ -118,7 +118,7 @@ public class LightSheetMicroscopeQueue extends
                                pLightSheetMicroscope.getNumberOfDetectionArms();
     for (int c = 0; c < lNumberOfDetectionArms; c++)
     {
-      StackCameraQueue lCameraQueue = this.getCameraDeviceQueue(c);
+      StackCameraQueue<?> lCameraQueue = this.getCameraDeviceQueue(c);
 
       StackMetaData lMetaData = lCameraQueue.getMetaDataVariable()
                                             .get();

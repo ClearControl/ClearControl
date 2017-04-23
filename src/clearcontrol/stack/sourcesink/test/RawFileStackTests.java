@@ -12,8 +12,8 @@ import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import clearcontrol.stack.sourcesink.sink.LocalFileStackSink;
-import clearcontrol.stack.sourcesink.source.LocalFileStackSource;
+import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
+import clearcontrol.stack.sourcesink.source.RawFileStackSource;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.recycling.BasicRecycler;
@@ -22,11 +22,11 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 /**
- * Local file stack tests
+ * Raw file stack tests
  *
  * @author royer
  */
-public class LocalFileStackTests
+public class RawFileStackTests
 {
 
   private static final long cDiv = 4;
@@ -62,9 +62,9 @@ public class LocalFileStackTests
       lRootFolder.mkdirs();
       System.out.println(lRootFolder);
 
-      final LocalFileStackSink lLocalFileStackSink =
-                                                   new LocalFileStackSink(lRootFolder,
-                                                                          "testSink");
+      final RawFileStackSink lLocalFileStackSink =
+                                                 new RawFileStackSink();
+      lLocalFileStackSink.setLocation(lRootFolder, "testSink");
 
       final OffHeapPlanarStack lStack =
                                       OffHeapPlanarStack.createStack(cSizeX,
@@ -149,9 +149,9 @@ public class LocalFileStackTests
     System.out.println(lRootFolder);
 
     {
-      final LocalFileStackSink lLocalFileStackSink =
-                                                   new LocalFileStackSink(lRootFolder,
-                                                                          "testSink");
+      final RawFileStackSink lLocalFileStackSink =
+                                                 new RawFileStackSink();
+      lLocalFileStackSink.setLocation(lRootFolder, "testSink");
 
       final OffHeapPlanarStack lStack =
                                       OffHeapPlanarStack.createStack(cSizeX,
@@ -210,10 +210,10 @@ public class LocalFileStackTests
                                                                        new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
                                                                                                                        cMaximalNumberOfAvailableStacks);
 
-      final LocalFileStackSource lLocalFileStackSource =
-                                                       new LocalFileStackSource(lStackRecycler,
-                                                                                lRootFolder,
-                                                                                "testSink");
+      final RawFileStackSource lLocalFileStackSource =
+                                                     new RawFileStackSource(lStackRecycler);
+
+      lLocalFileStackSource.setLocation(lRootFolder, "testSink");
 
       // StackInterface lStack;
 

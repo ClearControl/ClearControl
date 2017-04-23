@@ -9,7 +9,9 @@ import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
+import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
 import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseBase;
@@ -48,8 +50,9 @@ public class LightSheetTimelapse extends TimelapseBase implements
    */
   public LightSheetTimelapse(LightSheetMicroscope pLightSheetMicroscope)
   {
-    super();
+    super(pLightSheetMicroscope);
     mLightSheetMicroscope = pLightSheetMicroscope;
+
   }
 
   @Override
@@ -133,6 +136,8 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                              .getMetaDataVariable()
                                              .get();
 
+        lMetaData.addEntry(MetaDataAcquisitionType.AcquisitionType,
+                           AcquisitionType.TimeLapse);
         lMetaData.addEntry(MetaDataView.Camera, c);
         lMetaData.addEntry(MetaDataView.LightSheet, l);
       }

@@ -6,7 +6,7 @@ import javafx.application.Platform;
 import clearcontrol.core.device.position.PositionDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 
 public class PositionDevicePanel extends CustomGridPane
 {
@@ -21,15 +21,15 @@ public class PositionDevicePanel extends CustomGridPane
     Variable<Integer> lPositionVariable =
                                         pPositionDeviceInterface.getPositionVariable();
 
-    ArrayList<CustomToggleButton> lToggleButtonList =
-                                                    new ArrayList<>();
+    ArrayList<VariableToggleButton> lToggleButtonList =
+                                                      new ArrayList<>();
 
     for (int i = 0; i < lValidPositions.length; i++)
     {
       String lPositionName =
                            pPositionDeviceInterface.getPositionName(i);
-      CustomToggleButton lToggleButton =
-                                       new CustomToggleButton(lPositionName);
+      VariableToggleButton lToggleButton =
+                                         new VariableToggleButton(lPositionName);
       add(lToggleButton, 0, i);
       lToggleButtonList.add(lToggleButton);
 
@@ -45,7 +45,7 @@ public class PositionDevicePanel extends CustomGridPane
       if (n != o)
         Platform.runLater(() -> {
           int i = 0;
-          for (CustomToggleButton lCustomToggleButton : lToggleButtonList)
+          for (VariableToggleButton lCustomToggleButton : lToggleButtonList)
           {
             lCustomToggleButton.setSelected(i == n);
             i++;

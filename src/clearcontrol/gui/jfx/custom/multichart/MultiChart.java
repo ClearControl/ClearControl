@@ -17,6 +17,7 @@ import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.shape.Path;
 
 import org.controlsfx.control.CheckListView;
@@ -47,6 +48,8 @@ public class MultiChart extends HBox
   public MultiChart(Class<?> pChartClass)
   {
     super();
+
+    setMaxWidth(Double.MAX_VALUE);
 
     mMultiChartItemList = FXCollections.observableArrayList();
     mCheckListView = new CheckListView<>(mMultiChartItemList);
@@ -168,8 +171,28 @@ public class MultiChart extends HBox
     // -fx-padding: 5px;}");
 
     // tabB.setStyle("-fx-border-color:red; -fx-background-color: blue;");
-
+    HBox.setHgrow(mXYChart, Priority.ALWAYS);
     getChildren().addAll(mCheckListView, mXYChart);
+  }
+
+  /**
+   * Returns the check list view (list of chart series)
+   * 
+   * @return check list view
+   */
+  public CheckListView<MultiChartListItem> getCheckListView()
+  {
+    return mCheckListView;
+  }
+
+  /**
+   * Returns the XY chart
+   * 
+   * @return XY chart
+   */
+  public XYChart<Number, Number> getXYChart()
+  {
+    return mXYChart;
   }
 
   /**
@@ -232,6 +255,7 @@ public class MultiChart extends HBox
    * Sets y axis display side.
    * 
    * @param pAxisSide
+   *          on which side to display Y axis
    */
   public void setYAxisSide(Side pAxisSide)
   {

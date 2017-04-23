@@ -14,6 +14,11 @@ public interface TimelapseTimerInterface
 {
 
   /**
+   * Resets the timer
+   */
+  public void reset();
+
+  /**
    * Returns the time left in the given unit until next time point is due.
    * 
    * @param pTimeUnit

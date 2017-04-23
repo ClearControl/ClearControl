@@ -15,7 +15,7 @@ public interface StackSourceInterface
 {
 
   /**
-   * Updates the information avalable to this source about the number of stacks
+   * Updates the information available to this source about the number of stacks
    * available, etc..
    * 
    * @return true -> success

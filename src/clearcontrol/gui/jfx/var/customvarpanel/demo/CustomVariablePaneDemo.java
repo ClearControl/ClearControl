@@ -12,6 +12,11 @@ import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 
+/**
+ * Custom var panel
+ *
+ * @author royer
+ */
 public class CustomVariablePaneDemo extends Application
 {
 
@@ -75,9 +80,8 @@ public class CustomVariablePaneDemo extends Application
     lBoundedVariable.addSetListener((o, n) -> {
       System.out.println("boundeddouble: " + n);
     });
-    VariableSlider<Number> lBoundedVariableSlider =
-                                                  lCustomVariablePane.addSliderForVariable(lBoundedVariable,
-                                                                                           5.0);
+
+    lCustomVariablePane.addSliderForVariable(lBoundedVariable, 5.0);
 
     OnOffArrayPane lAddOnOffArray =
                                   lCustomVariablePane.addOnOffArray("onoff");
@@ -125,6 +129,12 @@ public class CustomVariablePaneDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

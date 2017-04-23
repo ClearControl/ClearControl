@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 
+/**
+ * On/Off array demo
+ *
+ * @author royer
+ */
 public class OnOffArrayPaneDemo extends Application
 {
 
@@ -41,6 +46,12 @@ public class OnOffArrayPaneDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

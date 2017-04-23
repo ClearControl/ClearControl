@@ -78,8 +78,7 @@ public class DCTS2D implements ImageQualityMetricInterface
       mWorkingBuffer.rewind();
       for (int i = 0; i < lNumberOfPixelsPerPlane; i++)
       {
-        double lValue =
-                      (double) lPlaneContiguousMemory.getCharAligned(i);
+        double lValue = lPlaneContiguousMemory.getCharAligned(i);
         mWorkingBuffer.writeDouble(lValue);
       }
 

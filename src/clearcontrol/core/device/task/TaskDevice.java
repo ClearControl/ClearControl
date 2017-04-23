@@ -195,12 +195,14 @@ public abstract class TaskDevice extends SignalStartStopDevice
 
   }
 
+  @Override
   public boolean open()
   {
     // nothing to do
     return true;
   }
 
+  @Override
   public boolean close()
   {
     stopTask();

@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import clearcontrol.stack.StackRequest;
 import gnu.trove.map.hash.TLongDoubleHashMap;
-import gnu.trove.map.hash.TLongLongHashMap;
 
 /**
  * Stack server base
@@ -15,13 +14,12 @@ public abstract class StackServerBase implements AutoCloseable
 {
   protected final TLongDoubleHashMap mStackIndexToTimeStampInSecondsMap =
                                                                         new TLongDoubleHashMap();
-  protected final TLongLongHashMap mStackIndexToBinaryFilePositionMap =
-                                                                      new TLongLongHashMap();
+
   protected final HashMap<Long, StackRequest> mStackIndexToStackRequestMap =
                                                                            new HashMap<Long, StackRequest>();
 
   /**
-   * Instanciates a stack server base
+   * Instantiates a stack server base
    */
   public StackServerBase()
   {

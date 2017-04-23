@@ -56,6 +56,8 @@ import com.sun.javafx.scene.control.behavior.OrientedKeyBinding;
 import com.sun.javafx.scene.control.behavior.TwoLevelFocusBehavior;
 import com.sun.javafx.util.Utils;
 
+@SuppressWarnings(
+{ "javadoc", "restriction" })
 public class SliderBehavior extends BehaviorBase<Slider>
 {
   /**************************************************************************

@@ -11,6 +11,7 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
 public class TimelapsePanel extends CustomGridPane
 {
 
+  @SuppressWarnings("unused")
   private TimelapseInterface mTimelapseInterface;
 
   /**

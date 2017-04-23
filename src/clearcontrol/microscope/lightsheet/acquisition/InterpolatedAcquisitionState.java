@@ -54,6 +54,10 @@ public class InterpolatedAcquisitionState extends
                                                                            0,
                                                                            1000);
 
+  private final Variable<Number> mZPlanes =
+                                          new Variable<Number>("ZPlanes",
+                                                               1);
+
   private final Variable<Boolean>[] mLightSheetOnOff;
 
   private final InterpolationTables mInterpolationTables;
@@ -100,6 +104,33 @@ public class InterpolatedAcquisitionState extends
 
     mZLow = new BoundedVariable<Number>("LowZ", -100.0);
     mZHigh = new BoundedVariable<Number>("HighZ", 100.0);
+
+    mZStep.addSetListener((o, n) -> {
+      if (n != null && !n.equals(o))
+      {
+        long lZPlanes = (long) floor(getStackDepthInMicrons()
+                                     / n.doubleValue());
+
+        if (mZPlanes.get().longValue() != lZPlanes)
+        {
+          mZPlanes.set(lZPlanes);
+
+          getStackZHighVariable().set(getStackZLowVariable().get()
+                                                            .doubleValue()
+                                      + lZPlanes * n.doubleValue());
+        }
+      }
+    });
+
+    mZPlanes.addSetListener((o, n) -> {
+      if (n != null && !n.equals(o))
+      {
+        double lStepZ =
+                      (getStackDepthInMicrons() / (n.doubleValue()));
+        if (mZStep.get().doubleValue() != lStepZ)
+          mZStep.set(lStepZ);
+      }
+    });
 
   }
 
@@ -281,55 +312,23 @@ public class InterpolatedAcquisitionState extends
     return mLightSheetMicroscope;
   }
 
-  /**
-   * Returns stack depth in microns
-   * 
-   * @return stack depth in microns
-   */
-  public double getStackDepthInMicrons()
-  {
-    return (mZHigh.get().doubleValue() - mZLow.get().doubleValue());
-  }
-
-  /**
-   * Sets stack depth
-   * 
-   * @param pNumberOfPlanes
-   *          number of planes
-   */
-  public void setStackDepth(int pNumberOfPlanes)
-  {
-    double lStepZ = (getStackDepthInMicrons() / (pNumberOfPlanes));
-
-    getStackZHighVariable().set(getStackZLowVariable().get()
-                                                      .doubleValue()
-                                + pNumberOfPlanes * lStepZ);
-    getStackZStepVariable().set(lStepZ);
-  }
-
-  /**
-   * Returns stack depth
-   * 
-   * @return stack depth
-   */
-  public int getStackDepth()
-  {
-    return (int) floor(getStackDepthInMicrons()
-                       / mZStep.get().doubleValue());
-  }
-
   @Override
   public void updateQueue(LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
     mQueue = pLightSheetMicroscope.requestQueue();
 
-    double lVoxelDepthInMicrons = getZDepth() / getStackDepth();
+    long lStackDepthInPlanes =
+                             getStackDepthInPlanesVariable().get()
+                                                            .longValue();
+
+    double lVoxelDepthInMicrons = getStackDepthInMicrons()
+                                  / lStackDepthInPlanes;
     mQueue.addVoxelDimMetaData(pLightSheetMicroscope,
                                lVoxelDepthInMicrons);
 
     applyStagePosition();
     mQueue.clearQueue();
-    for (int lIndex = 0; lIndex < getStackDepth(); lIndex++)
+    for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
     {
       applyAcquisitionStateAtStackPlane(mQueue, lIndex);
       mQueue.addCurrentStateToQueue();
@@ -539,6 +538,7 @@ public class InterpolatedAcquisitionState extends
    *          plane index
    * @return best detection arm index, -1 if something is wrong.
    */
+  @Override
   public int getBestDetectionArm(int pPlaneIndex)
   {
 
@@ -552,19 +552,6 @@ public class InterpolatedAcquisitionState extends
 
     return -1;
 
-  }
-
-  /**
-   * Returns the z depth in length units.
-   * 
-   * @return z depth in length units
-   */
-  public double getZDepth()
-  {
-    double lHighZ = getStackZHighVariable().get().doubleValue();
-    double lLowZ = getStackZLowVariable().get().doubleValue();
-    double lZDepth = lHighZ - lLowZ;
-    return lZDepth;
   }
 
   /**
@@ -602,6 +589,7 @@ public class InterpolatedAcquisitionState extends
    * 
    * @return interpolation tables
    */
+  @Override
   public InterpolationTables getInterpolationTables()
   {
     return mInterpolationTables;
@@ -635,6 +623,26 @@ public class InterpolatedAcquisitionState extends
   public BoundedVariable<Number> getStackZStepVariable()
   {
     return mZStep;
+  }
+
+  /**
+   * Returns the variable holding the stack depth in number of image planes
+   * 
+   * @return stack depth in number of image planes variable
+   */
+  public Variable<Number> getStackDepthInPlanesVariable()
+  {
+    return mZPlanes;
+  }
+
+  /**
+   * Returns stack depth in microns
+   * 
+   * @return stack depth in microns
+   */
+  public double getStackDepthInMicrons()
+  {
+    return (mZHigh.get().doubleValue() - mZLow.get().doubleValue());
   }
 
   /**

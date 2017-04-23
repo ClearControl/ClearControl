@@ -11,6 +11,7 @@ import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.timelapse.TimelapseBase;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.microscope.timelapse.gui.TimelapseToolbar;
+import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
 
 /**
  * Timelapse toolbar demo
@@ -25,12 +26,12 @@ public class TimeLapseToolBarDemo extends Application
   {
     HBox root = new HBox();
     root.setAlignment(Pos.CENTER);
-    Scene scene = new Scene(root, 600, 400);
+    Scene scene = new Scene(root, 800, 600);
     stage.setScene(scene);
     stage.setTitle(this.getClass().getSimpleName());
     // scene.setFill(Color.BLACK);
 
-    TimelapseInterface lTimelapse = new TimelapseBase()
+    TimelapseInterface lTimelapse = new TimelapseBase(null)
     {
 
       @Override
@@ -38,10 +39,12 @@ public class TimeLapseToolBarDemo extends Application
       {
         System.out.println("acquire time point: "
                            + getTimePointCounterVariable().get());
-        ThreadUtils.sleep(300, TimeUnit.MILLISECONDS);
+        ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
       }
 
     };
+
+    lTimelapse.addFileStackSinkType(RawFileStackSink.class);
 
     TimelapseToolbar lTimelapseToolbar =
                                        new TimelapseToolbar(lTimelapse);

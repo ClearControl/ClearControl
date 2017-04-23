@@ -74,6 +74,7 @@ public abstract class SignalGeneratorBase extends VirtualDevice
     return lFuture;
   }
 
+  @Override
   public boolean playScore(ScoreInterface pScore)
   {
     mPlayedScoreVariable.set(pScore);

@@ -6,14 +6,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 
 /**
  * Number text field demo
  *
  * @author royer
  */
-public class VariableNumberTextFieldDemo extends Application
+public class NumberVariableTextFieldDemo extends Application
 {
 
   @Override
@@ -32,8 +32,8 @@ public class VariableNumberTextFieldDemo extends Application
       System.out.println("double: " + n);
     });
 
-    VariableNumberTextField<Number> lVariableDoubleTextField =
-                                                             new VariableNumberTextField<Number>("a double value: ",
+    NumberVariableTextField<Number> lVariableDoubleTextField =
+                                                             new NumberVariableTextField<Number>("a double value: ",
                                                                                                  lDoubleVariable,
                                                                                                  -1.0,
                                                                                                  2.0,
@@ -47,8 +47,8 @@ public class VariableNumberTextFieldDemo extends Application
       System.out.println("int: " + n);
     });
 
-    VariableNumberTextField<Number> lVariableIntTextField =
-                                                          new VariableNumberTextField<Number>("an int value: ",
+    NumberVariableTextField<Number> lVariableIntTextField =
+                                                          new NumberVariableTextField<Number>("an int value: ",
                                                                                               lIntVariable,
                                                                                               -10,
                                                                                               20,
@@ -59,6 +59,12 @@ public class VariableNumberTextFieldDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

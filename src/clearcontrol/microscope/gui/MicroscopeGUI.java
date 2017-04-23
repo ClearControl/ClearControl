@@ -19,7 +19,7 @@ import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePa
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.gui.jfx.ScalingAmplifierPanel;
 import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.devices.stages.gui.XYZRStageDevicePanel;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
@@ -121,7 +121,7 @@ public class MicroscopeGUI extends VirtualDevice implements
                          MicroscopeNodeType.ScalingAmplifier);
 
     addPanelMappingEntry(StageDeviceInterface.class,
-                         XYZRStageDevicePanel.class,
+                         StageDevicePanel.class,
                          MicroscopeNodeType.Stage);
 
     addPanelMappingEntry(StackRecyclerManager.class,

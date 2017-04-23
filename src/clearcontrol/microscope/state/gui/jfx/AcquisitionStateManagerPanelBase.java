@@ -14,8 +14,11 @@ import clearcontrol.microscope.state.AcquisitionStateManager;
  * class offering the basic functionality for derived classes.
  * 
  * @author royer
+ * @param <S>
+ *          acquisition state type
  */
-public abstract class AcquisitionStateManagerPanelBase extends VBox
+public abstract class AcquisitionStateManagerPanelBase<S extends AcquisitionStateInterface<?, ?>>
+                                                      extends VBox
 {
 
   /**
@@ -25,12 +28,13 @@ public abstract class AcquisitionStateManagerPanelBase extends VBox
    * @param pAcquisitionStateManager
    *          {@link StackRecyclerManager} to use.
    */
-  public AcquisitionStateManagerPanelBase(AcquisitionStateManager pAcquisitionStateManager)
+  @SuppressWarnings("unchecked")
+  public AcquisitionStateManagerPanelBase(AcquisitionStateManager<S> pAcquisitionStateManager)
   {
     super();
 
     pAcquisitionStateManager.addChangeListener((m) -> {
-      updateStateList(((AcquisitionStateManager) m).getStateList());
+      updateStateList(((AcquisitionStateManager<S>) m).getStateList());
     });
 
   }
@@ -42,6 +46,6 @@ public abstract class AcquisitionStateManagerPanelBase extends VBox
    * 
    * @param pList
    */
-  protected abstract void updateStateList(List<AcquisitionStateInterface<?, ?>> pList);
+  protected abstract void updateStateList(List<S> pList);
 
 }

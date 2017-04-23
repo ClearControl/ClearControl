@@ -37,6 +37,8 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.state.AcquisitionStateManager;
+import clearcontrol.microscope.timelapse.TimelapseInterface;
+import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
 
 import org.junit.Test;
 
@@ -324,7 +326,10 @@ public class LightSheetMicroscopeDemo implements
 
     // Adding timelapse device:
 
-    lLightSheetMicroscope.addTimelapse();
+    TimelapseInterface lTimelapse =
+                                  lLightSheetMicroscope.addTimelapse();
+
+    lTimelapse.addFileStackSinkType(RawFileStackSink.class);
 
     // Now that the microscope has been setup, we can connect the simulator to
     // it:

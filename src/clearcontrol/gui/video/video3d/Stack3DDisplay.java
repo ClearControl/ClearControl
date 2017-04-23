@@ -67,7 +67,7 @@ public class Stack3DDisplay extends VirtualDevice
 
     setVisible(false);
 
-    mClearVolumeRenderer.setAdaptiveLODActive(false);
+    mClearVolumeRenderer.setAdaptiveLODActive(true);
     mClearVolumeRenderer.disableClose();
 
     if (mClearVolumeRenderer instanceof ClearGLVolumeRenderer)

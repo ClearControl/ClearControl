@@ -7,5 +7,13 @@ package clearcontrol.microscope.lightsheet.acquisition;
  */
 public enum AcquisitionType
 {
- Interactive, TimeLapse
+ /**
+  * Interactive acquisition stack
+  */
+ Interactive,
+
+ /**
+  * Tiemlapse stack
+  */
+ TimeLapse
 }

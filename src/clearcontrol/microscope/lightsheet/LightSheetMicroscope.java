@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet;
 import clearcl.ClearCLContext;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.device.switches.SwitchingDeviceInterface;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
@@ -100,8 +101,8 @@ public class LightSheetMicroscope extends
 
     if (pDevice instanceof StackCameraDeviceInterface)
     {
-      StackCameraDeviceInterface lStackCameraDevice =
-                                                    (StackCameraDeviceInterface) pDevice;
+      StackCameraDeviceInterface<?> lStackCameraDevice =
+                                                       (StackCameraDeviceInterface<?>) pDevice;
       lStackCameraDevice.getStackVariable()
                         .sendUpdatesTo(getStackProcesssingPipeline().getInputVariable());
     }
@@ -198,9 +199,9 @@ public class LightSheetMicroscope extends
     for (int i =
                0; i < getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class); i++)
     {
-      StackCameraDeviceInterface lDevice =
-                                         getDeviceLists().getDevice(StackCameraDeviceInterface.class,
-                                                                    i);
+      StackCameraDeviceInterface<?> lDevice =
+                                            getDeviceLists().getDevice(StackCameraDeviceInterface.class,
+                                                                       i);
       lDevice.getStackWidthVariable().set(pWidth);
       lDevice.getStackHeightVariable().set(pHeight);
     }
@@ -217,28 +218,32 @@ public class LightSheetMicroscope extends
   @Override
   public int getCameraWidth(int pCameraDeviceIndex)
   {
-    return getDeviceLists().getDevice(StackCameraDeviceInterface.class,
-                                      pCameraDeviceIndex)
-                           .getStackWidthVariable()
-                           .get()
-                           .intValue();
+    @SuppressWarnings("unchecked")
+    Variable<Long> lStackWidthVariable =
+                                       getDeviceLists().getDevice(StackCameraDeviceInterface.class,
+                                                                  pCameraDeviceIndex)
+                                                       .getStackWidthVariable();
+
+    return lStackWidthVariable.get().intValue();
   };
 
   @Override
   public int getCameraHeight(int pCameraDeviceIndex)
   {
-    return getDeviceLists().getDevice(StackCameraDeviceInterface.class,
-                                      pCameraDeviceIndex)
-                           .getStackHeightVariable()
-                           .get()
-                           .intValue();
+    @SuppressWarnings("unchecked")
+    Variable<Long> lStackHeightVariable =
+                                        getDeviceLists().getDevice(StackCameraDeviceInterface.class,
+                                                                   pCameraDeviceIndex)
+                                                        .getStackHeightVariable();
+
+    return lStackHeightVariable.get().intValue();
   };
 
   @Override
   public void setExposure(double pExposureInSeconds)
   {
 
-    for (StackCameraDeviceInterface lStackCamera : getDeviceLists().getDevices(StackCameraDeviceInterface.class))
+    for (StackCameraDeviceInterface<?> lStackCamera : getDeviceLists().getDevices(StackCameraDeviceInterface.class))
       lStackCamera.getExposureInSecondsVariable()
                   .set(pExposureInSeconds);
 

@@ -26,7 +26,7 @@ import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
-import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 
 /**
  * CameraDeviceGUI
@@ -57,7 +57,7 @@ public class CameraDevicePanel extends AnchorPane
   Line mHLine, mVLine;
   Text mHText, mVText;
 
-  VariableNumberTextField<Long> mWidthTextField, mHeightTextField;
+  NumberVariableTextField<Long> mWidthTextField, mHeightTextField;
 
   /**
    * Instantiates a camera device panel.
@@ -76,13 +76,13 @@ public class CameraDevicePanel extends AnchorPane
       mMaxCameraHeight = mCameraDeviceInterface.getMaxHeightVariable()
                                                .get();
 
-      mWidthTextField = new VariableNumberTextField<>("Width: ",
+      mWidthTextField = new NumberVariableTextField<>("Width: ",
                                                       mCameraDeviceInterface.getStackWidthVariable(),
                                                       0L,
                                                       mCameraDeviceInterface.getMaxWidthVariable()
                                                                             .get(),
                                                       1L);
-      mHeightTextField = new VariableNumberTextField<>("Height: ",
+      mHeightTextField = new NumberVariableTextField<>("Height: ",
                                                        mCameraDeviceInterface.getStackHeightVariable(),
                                                        0L,
                                                        mCameraDeviceInterface.getMaxHeightVariable()

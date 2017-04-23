@@ -19,6 +19,8 @@ import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 /**
  * Region/css based skin for Slider
  */
+@SuppressWarnings(
+{ "javadoc", "restriction" })
 public class SliderSkin extends
                         BehaviorSkinBase<Slider, SliderBehavior>
 {

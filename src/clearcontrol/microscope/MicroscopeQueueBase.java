@@ -59,7 +59,7 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
   }
 
   /**
-   * Returns parent microcope.
+   * Returns parent microscope.
    * 
    * @return parent microscope.
    */
@@ -85,10 +85,10 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
    *          device index
    * @return queue
    */
-  public StackCameraQueue getCameraDeviceQueue(int pCameraIndex)
+  public StackCameraQueue<?> getCameraDeviceQueue(int pCameraIndex)
   {
-    return (StackCameraQueue) getDeviceQueue(StackCameraDeviceInterface.class,
-                                             pCameraIndex);
+    return (StackCameraQueue<?>) getDeviceQueue(StackCameraDeviceInterface.class,
+                                                pCameraIndex);
 
   }
 

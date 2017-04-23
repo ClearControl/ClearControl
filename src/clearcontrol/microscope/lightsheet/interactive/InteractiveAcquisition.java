@@ -251,7 +251,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                 cRecyclerMaximumNumberOfLiveStacks);
 
           LightSheetAcquisitionStateInterface<?> lCurrentState =
-                                                               (LightSheetAcquisitionStateInterface<?>) mAcquisitionStateManager.getCurrentState();
+                                                               mAcquisitionStateManager.getCurrentState();
 
           if (lCurrentState != null)
           {

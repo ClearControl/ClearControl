@@ -16,7 +16,7 @@ import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 
 /**
  * Custom variable pane
@@ -34,7 +34,7 @@ public class CustomVariablePane extends TabPane
   private CustomGridPane mCurrentTabGridPane;
 
   /**
-   * Instanciates a custom variable pane
+   * Instantiates a custom variable pane
    */
   public CustomVariablePane()
   {
@@ -56,11 +56,12 @@ public class CustomVariablePane extends TabPane
     setStyle("-fx-tab-max-height: 0 ;");
     // final StackPane header = (StackPane) lookup(".tab-header-area");
     // header.setStyle("visibility: hidden ;");
+    setMaxWidth(Double.MAX_VALUE);
 
   }
 
   /**
-   * Instanciates a custom variable pane with a given width for sliders
+   * Instantiates a custom variable pane with a given width for sliders
    * 
    * @param pSliderWidth
    *          slider width
@@ -81,6 +82,7 @@ public class CustomVariablePane extends TabPane
   {
     Tab lTab = new Tab(pName);
     lTab.setClosable(false);
+
     getTabs().add(lTab);
 
     CustomGridPane lGridPane = new CustomGridPane();
@@ -115,6 +117,7 @@ public class CustomVariablePane extends TabPane
                                                             pBooleanVariable);
 
     int lCursor = mCursor++;
+    GridPane.setHgrow(lVariableCheckBox, Priority.ALWAYS);
     mCurrentTabGridPane.add(lVariableCheckBox.getLabel(), 0, lCursor);
     mCurrentTabGridPane.add(lVariableCheckBox.getCheckBox(),
                             1,
@@ -135,14 +138,14 @@ public class CustomVariablePane extends TabPane
    *          boolean variable
    * @return custom toggle button
    */
-  public CustomToggleButton addToggleButton(String pSelectedText,
-                                            String pUnselectedText,
-                                            Variable<Boolean> pBooleanVariable)
+  public VariableToggleButton addToggleButton(String pSelectedText,
+                                              String pUnselectedText,
+                                              Variable<Boolean> pBooleanVariable)
   {
-    final CustomToggleButton lToggleButton =
-                                           new CustomToggleButton(pSelectedText,
-                                                                  pUnselectedText,
-                                                                  pBooleanVariable);
+    final VariableToggleButton lToggleButton =
+                                             new VariableToggleButton(pSelectedText,
+                                                                      pUnselectedText,
+                                                                      pBooleanVariable);
 
     int lCursor = mCursor++;
     mCurrentTabGridPane.add(lToggleButton, 0, lCursor);
@@ -299,11 +302,9 @@ public class CustomVariablePane extends TabPane
                                                           pTicks);
     lSlider.setPrefWidth(mSliderWidth);
     lSlider.setMinWidth(mSliderWidth / 4);
-    lSlider.setMaxWidth(Double.MAX_VALUE);
-
-    GridPane.setHgrow(lSlider.getSlider(), Priority.ALWAYS);
 
     int lCursor = mCursor++;
+    GridPane.setHgrow(lSlider.getSlider(), Priority.ALWAYS);
     mCurrentTabGridPane.add(lSlider.getLabel(), 0, lCursor);
     mCurrentTabGridPane.add(lSlider.getSlider(), 1, lCursor);
     mCurrentTabGridPane.add(lSlider.getTextField(), 2, lCursor);
@@ -358,6 +359,7 @@ public class CustomVariablePane extends TabPane
     int lCursor = mCursor++;
     mCurrentTabGridPane.add(lLabel, 0, lCursor);
     mCurrentTabGridPane.add(lFunctionPane, 1, lCursor);
+    GridPane.setHgrow(lFunctionPane, Priority.ALWAYS);
     GridPane.setColumnSpan(lFunctionPane, 2);
   }
 

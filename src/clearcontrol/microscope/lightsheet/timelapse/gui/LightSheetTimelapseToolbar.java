@@ -1,6 +1,8 @@
 package clearcontrol.microscope.lightsheet.timelapse.gui;
 
+import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
@@ -23,6 +25,14 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
   public LightSheetTimelapseToolbar(LightSheetTimelapse pLightSheetTimelapse)
   {
     super(pLightSheetTimelapse);
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, mRow);
+      mRow++;
+    }
 
     {
       VariableCheckBox lInterleavedAcquisition =

@@ -127,8 +127,14 @@ public class TimelapseTimerBase implements
     return mActualAcquisitionIntervalUnitVariable;
   }
 
+  @Override
+  public void reset()
+  {
+    mLastAcquisitionTimeInNS = -1;
+  }
+
   /**
-   * Sets acquisistion interval in the given time unit
+   * Sets acquisition interval in the given time unit
    * 
    * @param pAcquisitionInterval
    *          acquisition interval

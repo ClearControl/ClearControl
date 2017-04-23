@@ -13,7 +13,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
@@ -42,10 +42,10 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
     Variable<Boolean> lUseAcqStateVariable =
                                            pInteractiveAcquisition.getUseCurrentAcquisitionStateVariable();
 
-    CustomToggleButton lUseAcqStateToggleButton =
-                                                new CustomToggleButton("Using current Acquisition State",
-                                                                       "Not using current Acquisition State",
-                                                                       lUseAcqStateVariable);
+    VariableToggleButton lUseAcqStateToggleButton =
+                                                  new VariableToggleButton("Using current Acquisition State",
+                                                                           "Not using current Acquisition State",
+                                                                           lUseAcqStateVariable);
     // lUseAcqStateToggleButton.setMinWidth(250);
     lUseAcqStateToggleButton.setMaxWidth(Double.MAX_VALUE);
     GridPane.setHgrow(lUseAcqStateToggleButton, Priority.ALWAYS);
@@ -139,10 +139,10 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
     Variable<Boolean> lTriggerOnChangeVariable =
                                                pInteractiveAcquisition.getTriggerOnChangeVariable();
 
-    CustomToggleButton lTriggerOnChangeToggleButton =
-                                                    new CustomToggleButton("Trigger-on-change active",
-                                                                           "Trigger-on-change inactive",
-                                                                           lTriggerOnChangeVariable);
+    VariableToggleButton lTriggerOnChangeToggleButton =
+                                                      new VariableToggleButton("Trigger-on-change active",
+                                                                               "Trigger-on-change inactive",
+                                                                               lTriggerOnChangeVariable);
     lTriggerOnChangeToggleButton.setMaxWidth(Double.MAX_VALUE);
     GridPane.setHgrow(lTriggerOnChangeToggleButton, Priority.ALWAYS);
     GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);

@@ -7,8 +7,13 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.var.togglebutton.CustomToggleButton;
+import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 
+/**
+ * Custom toggle button demo
+ *
+ * @author royer
+ */
 public class CustomToggleButtonDemo extends Application
 {
 
@@ -28,16 +33,22 @@ public class CustomToggleButtonDemo extends Application
       System.out.println("bool: " + n);
     });
 
-    CustomToggleButton lCustomToggleButton =
-                                           new CustomToggleButton("ON",
-                                                                  "OFF",
-                                                                  lVariable);
+    VariableToggleButton lCustomToggleButton =
+                                             new VariableToggleButton("ON",
+                                                                      "OFF",
+                                                                      lVariable);
 
     root.getChildren().add(lCustomToggleButton);
 
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

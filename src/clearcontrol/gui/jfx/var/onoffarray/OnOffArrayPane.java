@@ -15,6 +15,11 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.iconswitch.IconSwitch;
 import eu.hansolo.enzo.common.SymbolType;
 
+/**
+ * Horizontal array of on/off switches
+ *
+ * @author royer
+ */
 public class OnOffArrayPane extends CustomGridPane
 {
 
@@ -22,17 +27,39 @@ public class OnOffArrayPane extends CustomGridPane
   private boolean mFancyStyle = false;
   private int mCursor = 0;
 
+  /**
+   * Instantiates an On/Off array
+   */
   public OnOffArrayPane()
   {
     super(0, CustomGridPane.cStandardGap);
   }
 
-  public void addSwitch(String pName, Variable<Boolean> pVariable)
+  /**
+   * Adds a given switch.
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pVariable
+   *          boolean variable for switch
+   */
+  public void addSwitch(String pLabelText,
+                        Variable<Boolean> pVariable)
   {
-    addSwitch(pName, pVariable, true);
+    addSwitch(pLabelText, pVariable, true);
   }
 
-  public void addSwitch(String pName,
+  /**
+   * Adds a given switch.
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pVariable
+   *          boolean variable for switch
+   * @param pBidirectional
+   *          bidirectional synchronization
+   */
+  public void addSwitch(String pLabelText,
                         Variable<Boolean> pVariable,
                         boolean pBidirectional)
   {
@@ -63,7 +90,7 @@ public class OnOffArrayPane extends CustomGridPane
         pVariable.setAsync(lValue);
     });
 
-    Label lSwitchName = new Label(pName);
+    Label lSwitchName = new Label(pLabelText);
     lSwitchName.setFont(new Font(16.0));
 
     HBox lHBox = new HBox(lSwitchName, lControl);
@@ -87,21 +114,43 @@ public class OnOffArrayPane extends CustomGridPane
     });
   }
 
+  /**
+   * Returns true if this array is vertical
+   * 
+   * @return true -> vertical
+   */
   public boolean isVertical()
   {
     return mVertical;
   }
 
+  /**
+   * Sets whether this array should be vertical
+   * 
+   * @param pVertical
+   *          true -> vertical
+   */
   public void setVertical(boolean pVertical)
   {
     mVertical = pVertical;
   }
 
+  /**
+   * Returns true if this array has the 'fancy style'
+   * 
+   * @return true -> fancy style
+   */
   public boolean isFancyStyle()
   {
     return mFancyStyle;
   }
 
+  /**
+   * Sets whether this array should be 'fancy'
+   * 
+   * @param pFancyStyle
+   *          true -> fancy style
+   */
   public void setFancyStyle(boolean pFancyStyle)
   {
     mFancyStyle = pFancyStyle;

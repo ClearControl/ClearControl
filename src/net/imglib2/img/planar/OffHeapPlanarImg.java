@@ -13,6 +13,15 @@ import coremem.rgc.Freeable;
 
 import org.bridj.Pointer;
 
+/**
+ * Off heap planar image
+ *
+ * @param <T>
+ *          data type
+ * @param <A>
+ *          access type
+ * @author royer
+ */
 public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess<A>>
                              extends PlanarImg<T, A>
                              implements Freeable, SizedInBytes
@@ -20,11 +29,29 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
 
   private ContiguousMemoryInterface mContiguousMemory;
 
+  /**
+   * Off heap planar image
+   * 
+   * @param pDim
+   *          dimension
+   * @param pEntitiesPerPixel
+   *          entities per pixel
+   */
   public OffHeapPlanarImg(long[] pDim, Fraction pEntitiesPerPixel)
   {
     super(null, pDim, pEntitiesPerPixel);
   }
 
+  /**
+   * Off heap planar image
+   * 
+   * @param pCreator
+   *          creator
+   * @param pDim
+   *          dimension
+   * @param pEntitiesPerPixel
+   *          entities per pixel
+   */
   public OffHeapPlanarImg(A pCreator,
                           long[] pDim,
                           Fraction pEntitiesPerPixel)
@@ -67,6 +94,13 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
     return lSizeInBytes;
   }
 
+  /**
+   * Returns the pointer for a given plane
+   * 
+   * @param pPlaneIndex
+   *          plane index
+   * @return plane pointer
+   */
   public Pointer<Byte> getPlanePointer(int pPlaneIndex)
   {
     final ContiguousMemoryInterface lContiguousMemory =
@@ -76,6 +110,13 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
     return lBridJPointer;
   }
 
+  /**
+   * Returns the contiguous memory for a given plane
+   * 
+   * @param pPlaneIndex
+   *          plane index
+   * @return contiguous memory
+   */
   public ContiguousMemoryInterface getPlaneContiguousMemory(int pPlaneIndex)
   {
     final ContiguousMemoryInterface lContiguousMemory =
@@ -83,6 +124,11 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
     return lContiguousMemory;
   }
 
+  /**
+   * Returns a fragmented memory object for this image
+   * 
+   * @return fragmented memory
+   */
   public FragmentedMemoryInterface getFragmentedMemory()
   {
     final FragmentedMemoryInterface lFragmentedMemory =
@@ -93,11 +139,22 @@ public class OffHeapPlanarImg<T extends NativeType<T>, A extends ArrayDataAccess
     return lFragmentedMemory;
   }
 
+  /**
+   * Returns the contiguous memory
+   * 
+   * @return contiguous memory
+   */
   public ContiguousMemoryInterface getContiguousMemory()
   {
     return mContiguousMemory;
   }
 
+  /**
+   * Sets the contiguous memory for this image
+   * 
+   * @param pContiguousMemory
+   *          contiguous memory
+   */
   public void setContiguousMemory(ContiguousMemoryInterface pContiguousMemory)
   {
     mContiguousMemory = pContiguousMemory;

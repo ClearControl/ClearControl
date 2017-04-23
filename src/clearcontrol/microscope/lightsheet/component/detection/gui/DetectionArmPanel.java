@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.component.detection.gui.jfx;
+package clearcontrol.microscope.lightsheet.component.detection.gui;
 
 import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;

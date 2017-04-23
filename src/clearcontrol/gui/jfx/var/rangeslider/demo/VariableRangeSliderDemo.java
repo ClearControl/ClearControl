@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 
+/**
+ * Variable range slider demo
+ *
+ * @author royer
+ */
 public class VariableRangeSliderDemo extends Application
 {
 
@@ -48,6 +53,12 @@ public class VariableRangeSliderDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

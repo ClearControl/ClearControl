@@ -26,8 +26,8 @@ public class AcquisitionStateManagerPanelDemo extends Application
   public void start(Stage stage)
   {
 
-    final AcquisitionStateManager lAcquisitionStateManager =
-                                                           new AcquisitionStateManager(null);
+    final AcquisitionStateManager<InterpolatedAcquisitionState> lAcquisitionStateManager =
+                                                                                         new AcquisitionStateManager<>(null);
     AcquisitionStateManagerPanel lAcquisitionStateManagerPanel =
                                                                new AcquisitionStateManagerPanel(lAcquisitionStateManager);
 

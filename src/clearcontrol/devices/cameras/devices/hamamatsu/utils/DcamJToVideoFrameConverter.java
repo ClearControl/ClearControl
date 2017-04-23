@@ -22,7 +22,6 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
-import dcamj.DcamFrame;
 import gnu.trove.list.array.TByteArrayList;
 
 import org.apache.commons.lang3.tuple.Pair;

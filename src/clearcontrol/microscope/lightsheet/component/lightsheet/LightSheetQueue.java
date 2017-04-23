@@ -201,21 +201,25 @@ public class LightSheetQueue extends VariableQueueBase implements
                                                .getNumberOfPhases();
   }
 
+  @Override
   public BoundedVariable<Number> getEffectiveExposureInSecondsVariable()
   {
     return mEffectiveExposureInSecondsVariable;
   }
 
+  @Override
   public BoundedVariable<Long> getImageHeightVariable()
   {
     return mImageHeightVariable;
   }
 
+  @Override
   public BoundedVariable<Number> getOverScanVariable()
   {
     return mOverScanVariable;
   }
 
+  @Override
   public BoundedVariable<Number> getReadoutTimeInMicrosecondsPerLineVariable()
   {
     return mReadoutTimeInMicrosecondsPerLineVariable;

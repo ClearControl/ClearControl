@@ -33,6 +33,7 @@ public class DateTimePicker extends DatePicker
   private ObjectProperty<String> mDateAndTimeFormat =
                                                     new SimpleObjectProperty<String>()
                                                     {
+                                                      @Override
                                                       public void set(String newValue)
                                                       {
                                                         super.set(newValue);
@@ -170,12 +171,14 @@ public class DateTimePicker extends DatePicker
 
   private class InternalConverter extends StringConverter<LocalDate>
   {
+    @Override
     public String toString(LocalDate object)
     {
       LocalDateTime value = getDateTimeValue();
       return (value != null) ? value.format(formatter) : "";
     }
 
+    @Override
     public LocalDate fromString(String value)
     {
       if (value == null)

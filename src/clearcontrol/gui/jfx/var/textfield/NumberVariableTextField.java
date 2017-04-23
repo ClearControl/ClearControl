@@ -1,7 +1,6 @@
 package clearcontrol.gui.jfx.var.textfield;
 
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -11,60 +10,117 @@ import javafx.scene.layout.HBox;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
-public class VariableNumberTextField<T extends Number> extends HBox
+/**
+ * Text field that is synced to a Number
+ *
+ * @param <N>
+ *          number
+ * @author royer
+ */
+public class NumberVariableTextField<N extends Number> extends HBox
 {
 
   private final Label mLabel;
   private final TextField mTextField;
 
-  private Variable<T> mVariable;
-  private Variable<T> mMin;
-  private Variable<T> mMax;
-  private Variable<T> mGranularity;
+  private Variable<N> mVariable;
+  private Variable<N> mMin;
+  private Variable<N> mMax;
+  private Variable<N> mGranularity;
 
-  public VariableNumberTextField(String pSliderName,
-                                 Variable<T> pVariable,
-                                 T pMin,
-                                 T pMax,
-                                 T pGranularity)
+  /**
+   * Instantiates a number variable text field.
+   * 
+   * @param pTextFieldLabel
+   *          text field label
+   * @param pVariable
+   *          variable to sync with
+   * @param pMin
+   *          min value
+   * @param pMax
+   *          max value
+   * @param pGranularity
+   *          granularity
+   */
+  public NumberVariableTextField(String pTextFieldLabel,
+                                 Variable<N> pVariable,
+                                 N pMin,
+                                 N pMax,
+                                 N pGranularity)
   {
-    this(pSliderName,
+    this(pTextFieldLabel,
          pVariable,
-         new Variable<T>("min", pMin),
-         new Variable<T>("max", pMax),
-         new Variable<T>("granularity", pGranularity));
+         new Variable<N>("min", pMin),
+         new Variable<N>("max", pMax),
+         new Variable<N>("granularity", pGranularity));
 
   }
 
-  public VariableNumberTextField(String pSliderName,
-                                 BoundedVariable<T> pBoundedVariable)
+  /**
+   * Instantiates a number variable text field.
+   * 
+   * @param pTextFieldLabel
+   *          text field label
+   * @param pBoundedVariable
+   *          bounded variable to sync with
+   */
+  public NumberVariableTextField(String pTextFieldLabel,
+                                 BoundedVariable<N> pBoundedVariable)
   {
-    this(pSliderName,
+    this(pTextFieldLabel,
          pBoundedVariable,
          pBoundedVariable.getMinVariable(),
          pBoundedVariable.getMaxVariable(),
          pBoundedVariable.getGranularityVariable());
   }
 
-  public VariableNumberTextField(String pSliderName,
-                                 Variable<T> pVariable,
-                                 Variable<T> pMin,
-                                 Variable<T> pMax,
-                                 T pGranularity)
+  /**
+   * Instantiates a number variable text field.
+   * 
+   * @param pTextFieldLabel
+   *          text field
+   * @param pVariable
+   *          variable to sync with
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   */
+  public NumberVariableTextField(String pTextFieldLabel,
+                                 Variable<N> pVariable,
+                                 Variable<N> pMin,
+                                 Variable<N> pMax,
+                                 N pGranularity)
   {
-    this(pSliderName,
+    this(pTextFieldLabel,
          pVariable,
          pMin,
          pMax,
-         new Variable<T>("granularity", pGranularity));
+         new Variable<N>("granularity", pGranularity));
 
   }
 
-  public VariableNumberTextField(String pSliderName,
-                                 Variable<T> pVariable,
-                                 Variable<T> pMin,
-                                 Variable<T> pMax,
-                                 Variable<T> pGranularity)
+  /**
+   * Instantiates a number variable text field.
+   * 
+   * @param pTextFieldLabel
+   *          text field
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   */
+  public NumberVariableTextField(String pTextFieldLabel,
+                                 Variable<N> pVariable,
+                                 Variable<N> pMin,
+                                 Variable<N> pMax,
+                                 Variable<N> pGranularity)
   {
     super();
     mVariable = pVariable;
@@ -73,9 +129,9 @@ public class VariableNumberTextField<T extends Number> extends HBox
     mGranularity = pGranularity;
 
     setAlignment(Pos.CENTER);
-    setPadding(new Insets(10, 10, 10, 10));
+    // setPadding(new Insets(10, 10, 10, 10));
 
-    mLabel = new Label(pSliderName);
+    mLabel = new Label(pTextFieldLabel);
     mLabel.setAlignment(Pos.CENTER);
 
     mTextField = new TextField();
@@ -154,21 +210,20 @@ public class VariableNumberTextField<T extends Number> extends HBox
       long lCorrectedValueLong =
                                correctValueLong(pNewValue.longValue());
       if (mMin.get() instanceof Double)
-        mVariable.setAsync((T) new Double(lCorrectedValueDouble));
+        mVariable.setAsync((N) new Double(lCorrectedValueDouble));
       if (mMin.get() instanceof Float)
-        mVariable.setAsync((T) new Float(lCorrectedValueDouble));
+        mVariable.setAsync((N) new Float(lCorrectedValueDouble));
       if (mMin.get() instanceof Long)
-        mVariable.setAsync((T) new Long(lCorrectedValueLong));
+        mVariable.setAsync((N) new Long(lCorrectedValueLong));
       if (mMin.get() instanceof Integer)
-        mVariable.setAsync((T) new Integer((int) lCorrectedValueLong));
+        mVariable.setAsync((N) new Integer((int) lCorrectedValueLong));
       if (mMin.get() instanceof Short)
-        mVariable.setAsync((T) new Short((short) lCorrectedValueLong));
+        mVariable.setAsync((N) new Short((short) lCorrectedValueLong));
       if (mMin.get() instanceof Byte)
-        mVariable.setAsync((T) new Byte((byte) lCorrectedValueLong));
+        mVariable.setAsync((N) new Byte((byte) lCorrectedValueLong));
     }
   }
 
-  @SuppressWarnings("unchecked")
   private double correctValueDouble(double pValue)
   {
     if (pValue < mMin.get().doubleValue())
@@ -192,7 +247,6 @@ public class VariableNumberTextField<T extends Number> extends HBox
     return pValue;
   }
 
-  @SuppressWarnings("unchecked")
   private long correctValueLong(long pValue)
   {
     if (pValue < mMin.get().longValue())
@@ -260,11 +314,21 @@ public class VariableNumberTextField<T extends Number> extends HBox
     return lCorrectedValue;
   }
 
+  /**
+   * Returns the label
+   * 
+   * @return label
+   */
   public Label getLabel()
   {
     return mLabel;
   }
 
+  /**
+   * Returns the text field
+   * 
+   * @return text field
+   */
   public TextField getTextField()
   {
     return mTextField;

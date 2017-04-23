@@ -111,6 +111,7 @@ public class StackMetaData
    * @return cloned meta data
    */
 
+  @Override
   public StackMetaData clone()
   {
     return new StackMetaData(this);

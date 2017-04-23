@@ -1,16 +1,21 @@
 package clearcontrol.microscope.timelapse;
 
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import clearcontrol.core.device.startstop.StartStopSignalVariablesInterface;
 import clearcontrol.core.device.task.IsRunningTaskInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
+import clearcontrol.stack.sourcesink.sink.FileStackSinkInterface;
 
 /**
  * Interface implemented by all timelapse devices.
  *
+ * 
+ * 
  * @author royer
  */
 public interface TimelapseInterface extends
@@ -23,6 +28,21 @@ public interface TimelapseInterface extends
    * Acquires a single timepoint
    */
   void acquire();
+
+  /**
+   * Adds a file stack sink type to use to save a time-lapse
+   * 
+   * @param pFileStackSinkType
+   *          file stack sink type
+   */
+  void addFileStackSinkType(Class<?> pFileStackSinkType);
+
+  /**
+   * Returns file stack sink type list
+   * 
+   * @return file stack sink type list
+   */
+  ArrayList<Class<? extends FileStackSinkInterface>> getFileStackSinkTypeList();
 
   /**
    * Returns the timelapse timer variable
@@ -93,5 +113,33 @@ public interface TimelapseInterface extends
    * @return time point counter variable
    */
   Variable<Long> getTimePointCounterVariable();
+
+  /**
+   * Returns the variable holding the current file stack sink type.
+   * 
+   * @return current file stack sink type variable
+   */
+  Variable<Class<? extends FileStackSinkInterface>> getCurrentFileStackSinkTypeVariable();
+
+  /**
+   * Returns the variable holding the current file stack sink
+   * 
+   * @return current file stack sink
+   */
+  Variable<? extends FileStackSinkInterface> getCurrentFileStackSinkVariable();
+
+  /**
+   * Returns the variable holding the root folder
+   * 
+   * @return root folder variable
+   */
+  Variable<File> getRootFolderVariable();
+
+  /**
+   * Returns the variable holding the dataset name postfix.
+   * 
+   * @return dataset name postfix
+   */
+  Variable<String> getDataSetNamePostfixVariable();
 
 }

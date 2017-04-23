@@ -7,7 +7,7 @@ import clearcontrol.microscope.lightsheet.acquisition.gui.AcquisitionStateManage
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
-import clearcontrol.microscope.lightsheet.component.detection.gui.jfx.DetectionArmPanel;
+import clearcontrol.microscope.lightsheet.component.detection.gui.DetectionArmPanel;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;

@@ -11,11 +11,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 import clearcontrol.core.variable.Variable;
 
 import org.controlsfx.control.RangeSlider;
 
+/**
+ * Range slider that syncs a low and high value to two variables
+ *
+ * @param <T>
+ *          number type
+ * @author royer
+ */
 public class VariableRangeSlider<T extends Number> extends HBox
 {
 
@@ -27,17 +35,35 @@ public class VariableRangeSlider<T extends Number> extends HBox
   private boolean mUpdateIfChanging = false;
   private T mTicks;
 
-  public VariableRangeSlider(String pSliderName,
-                             Variable<T> pLow,
-                             Variable<T> pHigh,
+  /**
+   * Instantiates the range slider
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pLowVar
+   *          low value
+   * @param pHighVar
+   *          high value
+   * @param pMin
+   *          min value
+   * @param pMax
+   *          max value
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          ticks
+   */
+  public VariableRangeSlider(String pLabelText,
+                             Variable<T> pLowVar,
+                             Variable<T> pHighVar,
                              T pMin,
                              T pMax,
                              T pGranularity,
                              T pTicks)
   {
-    this(pSliderName,
-         pLow,
-         pHigh,
+    this(pLabelText,
+         pLowVar,
+         pHighVar,
          new Variable<T>("min", pMin),
          new Variable<T>("max", pMax),
          new Variable<T>("granularity", pGranularity),
@@ -45,44 +71,81 @@ public class VariableRangeSlider<T extends Number> extends HBox
 
   }
 
-  public VariableRangeSlider(String pSliderName,
-                             Variable<T> pLow,
-                             Variable<T> pHigh,
-                             Variable<T> pMin,
-                             Variable<T> pMax,
+  /**
+   * Instantiates the range slider
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pLowVar
+   *          low value
+   * @param pHighVar
+   *          high value
+   * @param pMinVar
+   *          min value
+   * @param pMaxVar
+   *          max value
+   * @param pGranularity
+   *          granularity
+   * @param pTicks
+   *          ticks
+   */
+  public VariableRangeSlider(String pLabelText,
+                             Variable<T> pLowVar,
+                             Variable<T> pHighVar,
+                             Variable<T> pMinVar,
+                             Variable<T> pMaxVar,
                              T pGranularity,
                              T pTicks)
   {
-    this(pSliderName,
-         pLow,
-         pHigh,
-         pMin,
-         pMax,
+    this(pLabelText,
+         pLowVar,
+         pHighVar,
+         pMinVar,
+         pMaxVar,
          new Variable<T>("granularity", pGranularity),
          pTicks);
 
   }
 
-  public VariableRangeSlider(String pSliderName,
-                             Variable<T> pLow,
-                             Variable<T> pHigh,
-                             Variable<T> pMin,
-                             Variable<T> pMax,
-                             Variable<T> pGranularity,
+  /**
+   * Instantiates the range slider
+   * 
+   * @param pLabelText
+   *          label text
+   * @param pLowVar
+   *          low value
+   * @param pHighVar
+   *          high value
+   * @param pMinVar
+   *          min value
+   * @param pMaxVar
+   *          max value
+   * @param pGranularityVar
+   *          granularity
+   * @param pTicks
+   *          ticks
+   */
+  public VariableRangeSlider(String pLabelText,
+                             Variable<T> pLowVar,
+                             Variable<T> pHighVar,
+                             Variable<T> pMinVar,
+                             Variable<T> pMaxVar,
+                             Variable<T> pGranularityVar,
                              T pTicks)
   {
     super();
-    mLow = pLow;
-    mHigh = pHigh;
-    mMin = pMin;
-    mMax = pMax;
-    mGranularity = pGranularity;
+    mLow = pLowVar;
+    mHigh = pHighVar;
+    mMin = pMinVar;
+    mMax = pMaxVar;
+    mGranularity = pGranularityVar;
     mTicks = pTicks;
 
+    setMaxWidth(Double.MAX_VALUE);
     setAlignment(Pos.CENTER);
-    setPadding(new Insets(25, 25, 25, 25));
+    setPadding(new Insets(10, 10, 10, 10));
 
-    mLabel = new Label(pSliderName);
+    mLabel = new Label(pLabelText);
     mLabel.setAlignment(Pos.CENTER);
 
     mRangeSlider = new RangeSlider(mMin.get().doubleValue(),
@@ -91,41 +154,44 @@ public class VariableRangeSlider<T extends Number> extends HBox
                                    mHigh.get().doubleValue());
 
     mLowTextField = new TextField();
+    mLowTextField.setAlignment(Pos.CENTER);
+    mLowTextField.setPrefWidth(7 * 15);
+
     mHighTextField = new TextField();
+    mHighTextField.setAlignment(Pos.CENTER);
+    mHighTextField.setPrefWidth(7 * 15);
 
-    getRangeSlider().setPrefWidth(14 * 15);
+    HBox.setHgrow(mRangeSlider, Priority.ALWAYS);
+    getChildren().add(mLabel);
+    getChildren().add(mLowTextField);
+    getChildren().add(mRangeSlider);
+    getChildren().add(mHighTextField);
 
-    getLowTextField().setAlignment(Pos.CENTER);
-    getLowTextField().setPrefWidth(7 * 15);
-
-    getHighTextField().setAlignment(Pos.CENTER);
-    getHighTextField().setPrefWidth(7 * 15);
-
-    updateSliderMinMax(pMin, pMax, pTicks);
+    updateSliderMinMax(pMinVar, pMaxVar, pTicks);
 
     getRangeSlider().setMajorTickUnit(pTicks.doubleValue());
     getRangeSlider().setShowTickMarks(true);
     getRangeSlider().setShowTickLabels(true);
-    if (pGranularity != null && pGranularity.get() != null)
-      getRangeSlider().setBlockIncrement(pGranularity.get()
-                                                     .doubleValue());
+    if (pGranularityVar != null && pGranularityVar.get() != null)
+      getRangeSlider().setBlockIncrement(pGranularityVar.get()
+                                                        .doubleValue());
 
-    pMin.addSetListener((o, n) -> {
-      if (!pMin.get().equals(n) && n != null)
+    pMinVar.addSetListener((o, n) -> {
+      if (!pMinVar.get().equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMin, pMax, pTicks);
+          updateSliderMinMax(pMinVar, pMaxVar, pTicks);
         });
     });
 
-    pMax.addSetListener((o, n) -> {
-      if (!pMax.get().equals(n) && n != null)
+    pMaxVar.addSetListener((o, n) -> {
+      if (!pMaxVar.get().equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMin, pMax, pTicks);
+          updateSliderMinMax(pMinVar, pMaxVar, pTicks);
         });
     });
 
     Platform.runLater(() -> {
-      updateSliderMinMax(pMin, pMax, pTicks);
+      updateSliderMinMax(pMinVar, pMaxVar, pTicks);
     });
 
     getRangeSlider().setOnMouseDragged((e) -> {
@@ -208,17 +274,14 @@ public class VariableRangeSlider<T extends Number> extends HBox
       ;
     });
 
-    getChildren().add(getLabel());
-    getChildren().add(getLowTextField());
-    getChildren().add(getRangeSlider());
-    getChildren().add(getHighTextField());
-
-    if (pMin.get() instanceof Double || pMin.get() instanceof Float)
+    if (pMinVar.get() instanceof Double
+        || pMinVar.get() instanceof Float)
     {
       setLowTextFieldDouble(mLow.get());
       setHighTextFieldDouble(mHigh.get());
     }
-    if (pMin.get() instanceof Integer || pMin.get() instanceof Long)
+    if (pMinVar.get() instanceof Integer
+        || pMinVar.get() instanceof Long)
     {
       setLowTextFieldLongValue(mLow.get());
       setHighTextFieldLongValue(mHigh.get());
@@ -251,8 +314,8 @@ public class VariableRangeSlider<T extends Number> extends HBox
               && n.equals(getLowTextFieldValue()))
             return;
 
-          if (pMin.get() instanceof Double
-              || pMin.get() instanceof Float)
+          if (pMinVar.get() instanceof Double
+              || pMinVar.get() instanceof Float)
             setLowTextFieldDouble(n);
           else
             setLowTextFieldLongValue(n);
@@ -267,8 +330,8 @@ public class VariableRangeSlider<T extends Number> extends HBox
               && n.equals(getHighTextFieldValue()))
             return;
 
-          if (pMin.get() instanceof Double
-              || pMin.get() instanceof Float)
+          if (pMinVar.get() instanceof Double
+              || pMinVar.get() instanceof Float)
             setHighTextFieldDouble(n);
           else
             setHighTextFieldLongValue(n);
@@ -382,7 +445,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
     }
   }
 
-  @SuppressWarnings("unchecked")
   private double correctLowValueDouble(double pValue)
   {
     if (pValue < mMin.get().doubleValue())
@@ -406,7 +468,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
     return pValue;
   }
 
-  @SuppressWarnings("unchecked")
   private double correctHighValueDouble(double pValue)
   {
     if (pValue < getRangeSlider().getLowValue())
@@ -430,7 +491,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
     return pValue;
   }
 
-  @SuppressWarnings("unchecked")
   private long correctLowValueLong(long pValue)
   {
     if (pValue < mMin.get().longValue())
@@ -454,7 +514,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
     return pValue;
   }
 
-  @SuppressWarnings("unchecked")
   private long correctHighValueLong(long pValue)
   {
     if (pValue < getRangeSlider().getLowValue())
@@ -545,18 +604,6 @@ public class VariableRangeSlider<T extends Number> extends HBox
     getHighTextField().setStyle("-fx-text-fill: orange");
   }
 
-  private void setVariableLowValueFromTextField()
-  {
-    double lNewValue = getLowTextFieldValue();
-    setVariableValue(mLow, true, lNewValue);
-  }
-
-  private void setVariableHighValueFromTextField()
-  {
-    double lNewValue = getHighTextFieldValue();
-    setVariableValue(mHigh, false, lNewValue);
-  }
-
   private double getLowTextFieldValue()
   {
     Double lDoubleValue = Double.parseDouble(mLowTextField.getText());
@@ -588,31 +635,65 @@ public class VariableRangeSlider<T extends Number> extends HBox
     getHighTextField().setStyle("-fx-text-fill: black");
   }
 
+  /**
+   * Returns label
+   * 
+   * @return label
+   */
   public Label getLabel()
   {
     return mLabel;
   }
 
+  /**
+   * Returns range slider
+   * 
+   * @return range slider
+   */
   public RangeSlider getRangeSlider()
   {
     return mRangeSlider;
   }
 
+  /**
+   * Returns low value text field
+   * 
+   * @return low value text field
+   */
   public TextField getLowTextField()
   {
     return mLowTextField;
   }
 
+  /**
+   * Returns high value text field
+   * 
+   * @return high value text field
+   */
   public TextField getHighTextField()
   {
     return mHighTextField;
   }
 
+  /**
+   * Returns true if the variable value should be changed when the slider is
+   * dragged.
+   * 
+   * @return true -> update while dragging
+   */
   public boolean isUpdateIfChanging()
   {
     return mUpdateIfChanging;
   }
 
+  /**
+   * Sets the boolean flag that decides whether the variable value should be
+   * changed when the slider is dragged.
+   * 
+   * @param pUpdateIfChanging
+   *          true -> update while dragging
+   * 
+   */
   public void setUpdateIfChanging(boolean pUpdateIfChanging)
   {
     mUpdateIfChanging = pUpdateIfChanging;

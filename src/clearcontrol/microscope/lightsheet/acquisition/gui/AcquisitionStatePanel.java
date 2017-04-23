@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -13,7 +14,7 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.textfield.VariableNumberTextField;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
 
@@ -80,6 +81,9 @@ public class AcquisitionStatePanel extends CustomGridPane
     Variable<Number> lZStep =
                             pAcquisitionState.getStackZStepVariable();
 
+    Variable<Number> lNumberOfPlanes =
+                                     pAcquisitionState.getStackDepthInPlanesVariable();
+
     // Creating elements:
 
     VariableRangeSlider<Number> lZRangeSlider =
@@ -91,16 +95,27 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                         lZStep,
                                                                         5);
 
-    VariableNumberTextField<Number> lZStepTextField =
-                                                    new VariableNumberTextField<Number>("Z-step",
+    NumberVariableTextField<Number> lZStepTextField =
+                                                    new NumberVariableTextField<Number>("Z-step:",
                                                                                         lZStep,
                                                                                         0,
                                                                                         Double.POSITIVE_INFINITY,
                                                                                         0);
     lZStepTextField.getTextField().setPrefWidth(50);
 
+    NumberVariableTextField<Number> lNumberOfPlanesTextField =
+                                                             new NumberVariableTextField<Number>("Number of planes:",
+                                                                                                 lNumberOfPlanes,
+                                                                                                 0,
+                                                                                                 Double.POSITIVE_INFINITY,
+                                                                                                 0);
+
+    lZStepTextField.getTextField().setPrefWidth(50);
+
     MultiChart lMultiChart = new MultiChart(LineChart.class);
     lMultiChart.setLegendVisible(false);
+    lMultiChart.setMaxWidth(Double.MAX_VALUE);
+    lMultiChart.setMaxHeight(Double.MAX_VALUE);
 
     int lNumberOfDetectionArms =
                                pAcquisitionState.getNumberOfDetectionArms();
@@ -144,10 +159,15 @@ public class AcquisitionStatePanel extends CustomGridPane
     add(lZRangeSlider.getLowTextField(), 1, 3);
     add(lZRangeSlider.getRangeSlider(), 2, 3);
     add(lZRangeSlider.getHighTextField(), 3, 3);
-    add(lZStepTextField.getLabel(), 5, 3);
-    add(lZStepTextField.getTextField(), 6, 3);
+
+    add(lZStepTextField.getLabel(), 0, 4);
+    add(lZStepTextField.getTextField(), 1, 4);
+    add(lNumberOfPlanesTextField.getLabel(), 3, 4);
+    add(lNumberOfPlanesTextField.getTextField(), 4, 4);
 
     add(lMultiChart, 0, 4);
+    GridPane.setVgrow(lMultiChart, Priority.ALWAYS);
+    GridPane.setHgrow(lMultiChart, Priority.ALWAYS);
     GridPane.setColumnSpan(lMultiChart, 8);
 
     // Update events:
@@ -169,7 +189,9 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     try
     {
-      int lDepth = pAcquisitionState.getStackDepth();
+      int lDepth = pAcquisitionState.getStackDepthInPlanesVariable()
+                                    .get()
+                                    .intValue();
       int lNumberOfDetectionArms =
                                  pAcquisitionState.getNumberOfDetectionArms();
       int lNumberOfIlluminationArms =

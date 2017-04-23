@@ -49,6 +49,7 @@ public class StageDOFPanel extends HBox
     mStageDevice = pStageDevice;
     mDOFIndex = pDOFIndex;
     createStageControl(pLabelString);
+    setMaxWidth(Double.MAX_VALUE);
   }
 
   private void createStageControl(String pLabelString)
@@ -65,11 +66,12 @@ public class StageDOFPanel extends HBox
 
     final VBox lSliderBox = new VBox(lTargetSlider, lCurrentSlider);
 
-    getChildren().addAll(new VBox(lStageLabel,
-                                  createFrontControls(lTargetSlider)),
-                         lSliderBox);
+    lSliderBox.setMaxWidth(Double.MAX_VALUE);
+    HBox.setHgrow(lSliderBox, Priority.ALWAYS);
 
-    HBox.setHgrow(this, Priority.ALWAYS);
+    getChildren().addAll(new VBox(lStageLabel,
+                                  createFrontControls(lTargetSlider)), /**/
+                         lSliderBox);
 
   }
 
@@ -88,20 +90,21 @@ public class StageDOFPanel extends HBox
     variableCurSlider.getTextField().setDisable(true);
     variableCurSlider.getTextField().setStyle("-fx-opacity: 1;");
 
-    variableCurSlider.setPadding(new Insets(5, 25, 25, 25));
+    variableCurSlider.setPadding(new Insets(5, 10, 10, 10));
     return variableCurSlider;
   }
 
   private VariableSlider<Double> createTargetSlider()
   {
-    VariableSlider<Double> variableSlider = new VariableSlider<>("",
-                                                                 mStageDevice.getTargetPositionVariable(mDOFIndex),
-                                                                 mStageDevice.getMinPositionVariable(mDOFIndex),
-                                                                 mStageDevice.getMaxPositionVariable(mDOFIndex),
-                                                                 mStageDevice.getGranularityPositionVariable(mDOFIndex),
-                                                                 10d);
+    VariableSlider<Double> variableSlider =
+                                          new VariableSlider<>("",
+                                                               mStageDevice.getTargetPositionVariable(mDOFIndex),
+                                                               mStageDevice.getMinPositionVariable(mDOFIndex),
+                                                               mStageDevice.getMaxPositionVariable(mDOFIndex),
+                                                               mStageDevice.getGranularityPositionVariable(mDOFIndex),
+                                                               null);
     variableSlider.getSlider().setShowTickLabels(false);
-    variableSlider.setPadding(new Insets(25, 25, 5, 25));
+    variableSlider.setPadding(new Insets(10, 10, 5, 10));
     return variableSlider;
   }
 

@@ -53,6 +53,12 @@ public class UnivariateAffineFunctionPaneDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          NA
+   */
   public static void main(String[] args)
   {
     launch(args);

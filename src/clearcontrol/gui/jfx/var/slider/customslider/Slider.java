@@ -99,6 +99,8 @@ import com.sun.javafx.util.Utils;
  * 
  * @since JavaFX 2.0
  */
+@SuppressWarnings(
+{ "javadoc", "restriction", "unchecked" })
 public class Slider extends Control
 {
 

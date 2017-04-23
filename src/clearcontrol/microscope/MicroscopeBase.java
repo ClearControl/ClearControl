@@ -407,6 +407,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
     return mPlayedQueueVariable;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Variable<StackInterface> getCameraStackVariable(int pIndex)
   {
@@ -446,6 +447,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       setRecycler(i, pRecycler);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setRecycler(int pStackCameraDeviceIndex,
                           RecyclerInterface<StackInterface, StackRequest> pRecycler)
@@ -455,6 +457,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                     .setStackRecycler(pRecycler);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public RecyclerInterface<StackInterface, StackRequest> getRecycler(int pStackCameraDeviceIndex)
   {
@@ -502,7 +505,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                                                 (QueueDeviceInterface<QueueInterface>) lDevice;
 
           QueueInterface lDeviceQueue =
-                                      (QueueInterface) pQueue.getDeviceQueue(lStateQueueDeviceInterface);
+                                      pQueue.getDeviceQueue(lStateQueueDeviceInterface);
 
           final Future<Boolean> lPlayQueueFuture =
                                                  lStateQueueDeviceInterface.playQueue(lDeviceQueue);

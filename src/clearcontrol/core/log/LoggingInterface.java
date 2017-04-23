@@ -81,7 +81,7 @@ public interface LoggingInterface
    */
   public default void info(String pMessage)
   {
-    getLoggerStatic().info(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().info(getClassName(this) + ": "
                            + pMessage.trim());
   }
 
@@ -95,7 +95,7 @@ public interface LoggingInterface
    */
   public default void info(String pFormat, Object... args)
   {
-    getLoggerStatic().info(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().info(getClassName(this) + ": "
                            + String.format(pFormat, args).trim());
   }
 
@@ -107,7 +107,7 @@ public interface LoggingInterface
    */
   public default void warning(String pMessage)
   {
-    getLoggerStatic().warning(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().warning(getClassName(this) + ": "
                               + pMessage.trim());
   }
 
@@ -121,7 +121,7 @@ public interface LoggingInterface
    */
   public default void warning(String pFormat, Object... args)
   {
-    getLoggerStatic().warning(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().warning(getClassName(this) + ": "
                               + String.format(pFormat, args).trim());
   }
 
@@ -133,7 +133,7 @@ public interface LoggingInterface
    */
   public default void severe(String pMessage)
   {
-    getLoggerStatic().severe(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().severe(getClassName(this) + ": "
                              + pMessage.trim());
   }
 
@@ -147,8 +147,29 @@ public interface LoggingInterface
    */
   public default void severe(String pFormat, Object... args)
   {
-    getLoggerStatic().severe(this.getClass().getSimpleName() + ": "
+    getLoggerStatic().severe(getClassName(this) + ": "
                              + String.format(pFormat, args).trim());
+  }
+
+  /**
+   * Utility method to return the class name for a given object
+   * 
+   * @param pObject
+   *          object
+   * @return object's class name
+   */
+  public default String getClassName(Object pObject)
+  {
+    String lSimpleName = pObject.getClass().getSimpleName();
+
+    if (lSimpleName == null || lSimpleName.trim().isEmpty())
+    {
+      lSimpleName = pObject.getClass()
+                           .getEnclosingClass()
+                           .getSimpleName();
+    }
+
+    return lSimpleName;
   }
 
   /**

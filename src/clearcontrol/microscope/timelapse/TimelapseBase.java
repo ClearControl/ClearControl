@@ -1,27 +1,41 @@
 package clearcontrol.microscope.timelapse;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
+import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
+import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
+import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.sourcesink.sink.FileStackSinkInterface;
 
 /**
  * Base implementation providing common fields and methods for all Timelapse
- * implementations
- *
+ * implementations ? extends FileStackSinkInterface
+ * 
  * @author royer
  */
 public abstract class TimelapseBase extends LoopTaskDevice
                                     implements TimelapseInterface
 {
-  private final Variable<TimelapseTimerInterface> mTimelapseTimer =
-                                                                  new Variable<>("TimelapseTimer",
-                                                                                 null);
+  private static final DateTimeFormatter sDateTimeFormatter =
+                                                            DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SS");
+
+  private final MicroscopeInterface<?> mMicroscope;
+
+  private final Variable<TimelapseTimerInterface> mTimelapseTimerVariable =
+                                                                          new Variable<>("TimelapseTimer",
+                                                                                         null);
 
   private final Variable<Boolean> mEnforceMaxNumberOfTimePointsVariable =
                                                                         new Variable<>("LimitNumberOfTimePoints",
@@ -59,40 +73,189 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                          new Variable<Long>("TimePointCounter",
                                                                             1L);
 
+  private final ArrayList<Class<? extends FileStackSinkInterface>> mFileStackSinkTypesList =
+                                                                                           new ArrayList<>();
+
+  private final Variable<Class<? extends FileStackSinkInterface>> mCurrentFileStackSinkTypeVariable =
+                                                                                                    new Variable<>("CurrentFileStackSinkTypeVariable",
+                                                                                                                   null);
+
+  private final Variable<FileStackSinkInterface> mCurrentFileStackSinkVariable =
+                                                                               new Variable<>("CurrentFileStackSink",
+                                                                                              null);
+
+  private final Variable<File> mRootFolderVariable =
+                                                   new Variable<>("RootFolder",
+                                                                  null);
+
+  private final Variable<String> mDataSetNamePostfixVariable =
+                                                             new Variable<>("DataSetNamePrefix",
+                                                                            null);
+
+  private final VariableSetListener<StackInterface> mStackListener;
+
   /**
-   * Instanciates a timelapse with a given timelapse timer
+   * Instantiates a timelapse with a given timelapse timer
+   * 
+   * @param pMicroscope
+   *          microscope
    * 
    * @param pTimelapseTimer
    *          timelapse timer
    */
-  public TimelapseBase(TimelapseTimerInterface pTimelapseTimer)
+  public TimelapseBase(MicroscopeInterface<?> pMicroscope,
+                       TimelapseTimerInterface pTimelapseTimer)
   {
     super("Timelapse");
+    mMicroscope = pMicroscope;
     getTimelapseTimerVariable().set(pTimelapseTimer);
+
+    getDataSetNamePostfixVariable().addSetListener((o, n) -> info(
+                                                                  "New dataset name: %s \n",
+                                                                  n));
+
+    mStackListener = (o, n) -> {
+      Variable<FileStackSinkInterface> lStackSinkVariable =
+                                                          getCurrentFileStackSinkVariable();
+      if (lStackSinkVariable != null && n != null
+          && n.getMetaData()
+              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse)
+      {
+        info("Appending new stack %s to the file sink %s",
+             n,
+             lStackSinkVariable);
+        lStackSinkVariable.get().appendStack(n);
+      }
+    };
   }
 
   /**
-   * Instanciates a timelapse with a fixed interval timer
+   * Instantiates a timelapse with a fixed interval timer
+   * 
+   * @param pMicroscope
+   *          microscope
    */
-  public TimelapseBase()
+  public TimelapseBase(MicroscopeInterface<?> pMicroscope)
   {
-    this(new FixedIntervalTimelapseTimer());
+    this(pMicroscope, new FixedIntervalTimelapseTimer());
+  }
+
+  /**
+   * Returns the stack sink type list
+   * 
+   * @return stack sink type list
+   */
+  @Override
+  public ArrayList<Class<? extends FileStackSinkInterface>> getFileStackSinkTypeList()
+  {
+    return mFileStackSinkTypesList;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void addFileStackSinkType(Class<?> pFileStackSinkType)
+  {
+    /*if (!pFileStackSinkType.toGenericString()
+                           .contains(FileStackSinkInterface.class.getSimpleName()))
+    {
+      severe("Cannot add files stack sink type: %s must be of type Class<%s>. ",
+             pFileStackSinkType.toGenericString(),
+             FileStackSinkInterface.class.getSimpleName());
+      return;
+    }/**/
+
+    mFileStackSinkTypesList.add((Class<? extends FileStackSinkInterface>) pFileStackSinkType);
   }
 
   @Override
   public void run()
   {
-    super.run();
-  }
 
-  @Override
-  public boolean startTask()
-  {
     if (!getIsRunningVariable().get())
     {
       getTimePointCounterVariable().set(0L);
       getStartDateTimeVariable().set(LocalDateTime.now());
     }
+
+    if (getCurrentFileStackSinkTypeVariable().get() == null)
+    {
+      warning("No stack sink type defined!");
+
+      if (getFileStackSinkTypeList().isEmpty())
+      {
+        severe("No stack sink types available! aborting timelapse acquisition!");
+        return;
+      }
+      Class<? extends FileStackSinkInterface> lDefaultStackSink =
+                                                                getFileStackSinkTypeList().get(0);
+      warning("Using the first stack sink available: %s !",
+              lDefaultStackSink);
+
+      getCurrentFileStackSinkTypeVariable().set(lDefaultStackSink);
+    }
+
+    try
+    {
+      FileStackSinkInterface lStackSink =
+                                        getCurrentFileStackSinkTypeVariable().get()
+                                                                             .newInstance();
+
+      if (mRootFolderVariable.get() == null)
+      {
+        severe("Root folder not defined.");
+        return;
+      }
+
+      if (getDataSetNamePostfixVariable().get() == null)
+        getDataSetNamePostfixVariable().set("");
+
+      String lNowDateTimeString =
+                                sDateTimeFormatter.format(LocalDateTime.now());
+
+      lStackSink.setLocation(mRootFolderVariable.get(),
+                             lNowDateTimeString + "-"
+                                                        + getDataSetNamePostfixVariable().get());
+
+      mCurrentFileStackSinkVariable.set(lStackSink);
+
+      getTimePointCounterVariable().set(0L);
+      getTimelapseTimerVariable().get().reset();
+
+      // This is where we actually start the loop, and we make sure to listen to
+      // changes
+
+      Variable<StackInterface> lPipelineStackVariable = null;
+      if (mMicroscope != null)
+      {
+        lPipelineStackVariable =
+                               mMicroscope.getPipelineStackVariable();
+        lPipelineStackVariable.addSetListener(mStackListener);
+      }
+      super.run();
+      if (mMicroscope != null)
+        lPipelineStackVariable.removeSetListener(mStackListener);
+    }
+    catch (InstantiationException e)
+    {
+      severe("Cannot instanciate class %s (%s)",
+             mCurrentFileStackSinkTypeVariable.get(),
+             e.getMessage());
+      return;
+    }
+    catch (IllegalAccessException e)
+    {
+      severe("Cannot access class %s (%s)",
+             mCurrentFileStackSinkTypeVariable.get(),
+             e.getMessage());
+      return;
+    }
+
+  }
+
+  @Override
+  public boolean startTask()
+  {
+
     return super.startTask();
   }
 
@@ -170,7 +333,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
   @Override
   public Variable<TimelapseTimerInterface> getTimelapseTimerVariable()
   {
-    return mTimelapseTimer;
+    return mTimelapseTimerVariable;
   }
 
   @Override
@@ -225,6 +388,30 @@ public abstract class TimelapseBase extends LoopTaskDevice
   public Variable<Long> getTimePointCounterVariable()
   {
     return mTimePointCounterVariable;
+  }
+
+  @Override
+  public Variable<Class<? extends FileStackSinkInterface>> getCurrentFileStackSinkTypeVariable()
+  {
+    return mCurrentFileStackSinkTypeVariable;
+  }
+
+  @Override
+  public Variable<FileStackSinkInterface> getCurrentFileStackSinkVariable()
+  {
+    return mCurrentFileStackSinkVariable;
+  }
+
+  @Override
+  public Variable<File> getRootFolderVariable()
+  {
+    return mRootFolderVariable;
+  }
+
+  @Override
+  public Variable<String> getDataSetNamePostfixVariable()
+  {
+    return mDataSetNamePostfixVariable;
   }
 
 }
