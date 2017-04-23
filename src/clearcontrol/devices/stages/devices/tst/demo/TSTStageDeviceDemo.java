@@ -1,16 +1,20 @@
 package clearcontrol.devices.stages.devices.tst.demo;
 
-import aptj.APTJExeption;
-import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+
+import aptj.APTJExeption;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.timing.WaitingInterface;
+import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 
 /**
  * TST001 stage device demo
  *
  * @author royer
  */
-public class TSTStageDeviceDemo
+public class TSTStageDeviceDemo implements WaitingInterface
 {
 
   /**
@@ -26,7 +30,23 @@ public class TSTStageDeviceDemo
   {
     TSTStageDevice lTSTStageDevice = new TSTStageDevice();
 
-    lTSTStageDevice.getHomingVariable(0).setEdge(false, true);
+    lTSTStageDevice.open();
+
+    int lNumberOfDOFs = lTSTStageDevice.getNumberOfDOFs();
+    System.out.println("lNumberOfDOFs=" + lNumberOfDOFs);
+
+    System.out.println("Homing");
+    for (int i = 0; i < lNumberOfDOFs; i++)
+      lTSTStageDevice.getHomingVariable(i).setEdge(false, true);
+
+    ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+
+    System.out.print("Waiting...");
+    lTSTStageDevice.waitToBeReady(30, TimeUnit.SECONDS);
+    System.out.println(" ...done!");
+
+    System.out.println("Closing.");
+    lTSTStageDevice.close();
   }
 
 }

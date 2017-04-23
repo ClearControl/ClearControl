@@ -30,7 +30,8 @@ public class HomingVariable extends TSTBooleanVariableBase
     final Boolean lValue = super.setEventHook(pOldValue, pNewValue);
     try
     {
-      mAPTJDevice.home();
+      if (lValue && !pOldValue)
+        mAPTJDevice.home();
     }
     catch (APTJExeption e)
     {
