@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
+import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
@@ -25,14 +25,14 @@ import clearcontrol.microscope.lightsheet.signalgen.staves.LightSheetStaves;
  * @author royer
  */
 public class LightSheetSignalGeneratorQueue extends
-                                            SignalGeneratorRealTimeQueue
+                                            SignalGeneratorQueue
                                             implements
                                             QueueInterface,
                                             LoggingInterface
 
 {
 
-  private SignalGeneratorRealTimeQueue mDelegatedQueue;
+  private SignalGeneratorQueue mDelegatedQueue;
   private LightSheetSignalGeneratorDevice mLightSheetSignalGeneratorDevice;
 
   private Movement mBeforeExposureMovement, mExposureMovement;
@@ -46,7 +46,7 @@ public class LightSheetSignalGeneratorQueue extends
                                                                                                             new ConcurrentHashMap<>();
 
   /**
-   * Instanciates a lightsheet signal generator queue device
+   * Instantiates a lightsheet signal generator queue device
    * 
    * @param pLightSheetSignalGeneratorDevice
    *          lightsheet signal generator parent
@@ -54,13 +54,23 @@ public class LightSheetSignalGeneratorQueue extends
    *          delegated signal generator queue
    */
   public LightSheetSignalGeneratorQueue(LightSheetSignalGeneratorDevice pLightSheetSignalGeneratorDevice,
-                                        SignalGeneratorRealTimeQueue pDelegatedQueue)
+                                        SignalGeneratorQueue pDelegatedQueue)
   {
     mLightSheetSignalGeneratorDevice =
                                      pLightSheetSignalGeneratorDevice;
     mDelegatedQueue = pDelegatedQueue;
 
     setupStagingScore();
+  }
+
+  /**
+   * Returns the delegated queue
+   * 
+   * @return delegated queue
+   */
+  public SignalGeneratorQueue getDelegatedQueue()
+  {
+    return mDelegatedQueue;
   }
 
   /**
@@ -74,8 +84,8 @@ public class LightSheetSignalGeneratorQueue extends
   }
 
   /**
-   * Setting up the two movements that are nescessary for one image acquisition
-   * and corresponding lightshet scanning.
+   * Setting up the two movements that are necessary for one image acquisition
+   * and corresponding lightsheet scanning.
    */
   private void setupStagingScore()
   {
@@ -164,7 +174,7 @@ public class LightSheetSignalGeneratorQueue extends
     // first we make sure that the staging score is up-to-date given all the
     // detection and illumination parameters.f
     update();
-    // then add teh current state to the queue which corresponds to adding teh
+    // then add the current state to the queue which corresponds to adding the
     // staging score to the actual movement that represents the queue.
     mDelegatedQueue.addCurrentStateToQueue();
   }

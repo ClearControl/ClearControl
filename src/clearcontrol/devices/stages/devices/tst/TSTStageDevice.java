@@ -2,6 +2,9 @@ package clearcontrol.devices.stages.devices.tst;
 
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
@@ -24,9 +27,6 @@ import clearcontrol.devices.stages.devices.tst.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.StopVariable;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 /**
  * TST001 stage device
  *
@@ -40,7 +40,7 @@ public class TSTStageDevice extends StageDeviceBase implements
                             AsynchronousSchedulerServiceAccess
 {
 
-  APTJDeviceFactory mAPTJDeviceFactory;
+  private final APTJDeviceFactory mAPTJDeviceFactory;
 
   private final BiMap<Integer, APTJDevice> mIndexToDeviceMap =
                                                              HashBiMap.create();
@@ -54,6 +54,17 @@ public class TSTStageDevice extends StageDeviceBase implements
   public TSTStageDevice()
   {
     super("TST001", StageType.Multi);
+    try
+    {
+      mAPTJDeviceFactory =
+                         new APTJDeviceFactory(APTJDeviceType.TST001);
+    }
+    catch (APTJExeption e)
+    {
+      severe("Could not initialize APTJ library!");
+      throw new RuntimeException("Could not initialize APTJ library",
+                                 e);
+    }
   }
 
   @Override
@@ -67,9 +78,6 @@ public class TSTStageDevice extends StageDeviceBase implements
   {
     try
     {
-      if (mAPTJDeviceFactory == null)
-        mAPTJDeviceFactory =
-                           new APTJDeviceFactory(APTJDeviceType.TST001);
 
       final MachineConfiguration lCurrentMachineConfiguration =
                                                               MachineConfiguration.getCurrentMachineConfiguration();

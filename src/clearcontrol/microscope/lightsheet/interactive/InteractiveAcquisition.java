@@ -237,6 +237,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             }
 
             mQueue.addCurrentStateToQueue();
+            mQueue.addCurrentStateToQueue();
 
             mQueue.finalizeQueue();
 

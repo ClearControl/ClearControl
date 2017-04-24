@@ -1,5 +1,7 @@
 package clearcontrol.microscope;
 
+import static java.lang.Math.max;
+
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -427,9 +429,12 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                     getNumberOfDevices(StackCameraDeviceInterface.class);
     RecyclerInterface<StackInterface, StackRequest> lRecycler =
                                                               mStackRecyclerManager.getRecycler(pName,
-                                                                                                lNumberOfStackCameraDevices
-                                                                                                       * pMaximumNumberOfAvailableObjects,
-                                                                                                lNumberOfStackCameraDevices * pMaximumNumberOfLiveObjects);
+                                                                                                max(1,
+                                                                                                    lNumberOfStackCameraDevices
+                                                                                                       * pMaximumNumberOfAvailableObjects),
+                                                                                                max(1,
+                                                                                                    1 + lNumberOfStackCameraDevices
+                                                                                                        * pMaximumNumberOfLiveObjects));
 
     // for (int i = 0; i < lNumberOfStackCameraDevices; i++)
     // getDevice(StackCameraDeviceInterface.class,
@@ -498,8 +503,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
         if (lDevice instanceof QueueDeviceInterface)
         {
-          /*info("playQueue() on device: %s \n",
-          									lDevice);/**/
+          info("playQueue() on device: %s \n", lDevice);/**/
           @SuppressWarnings("unchecked")
           final QueueDeviceInterface<QueueInterface> lStateQueueDeviceInterface =
                                                                                 (QueueDeviceInterface<QueueInterface>) lDevice;

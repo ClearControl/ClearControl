@@ -118,7 +118,18 @@ public class LightSheetMicroscopeQueue extends
                                pLightSheetMicroscope.getNumberOfDetectionArms();
     for (int c = 0; c < lNumberOfDetectionArms; c++)
     {
-      StackCameraQueue<?> lCameraQueue = this.getCameraDeviceQueue(c);
+      StackCameraQueue<?> lCameraQueue;
+      try
+      {
+        lCameraQueue = this.getCameraDeviceQueue(c);
+      }
+      catch (IllegalArgumentException e)
+      {
+        e.printStackTrace();
+        continue;
+      }
+      if (lCameraQueue == null)
+        continue;
 
       StackMetaData lMetaData = lCameraQueue.getMetaDataVariable()
                                             .get();

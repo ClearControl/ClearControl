@@ -12,17 +12,17 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
  *
  * @author royer
  */
-public class SignalGeneratorRealTimeQueue implements QueueInterface
+public class SignalGeneratorQueue implements QueueInterface
 {
   protected volatile int mEnqueuedStateCounter = 0;
   protected final ScoreInterface mQueuedScore;
   protected final ScoreInterface mStagingScore;
 
   /**
-   * Instanciates a real-time signal generator queue
+   * Instantiates a real-time signal generator queue
    * 
    */
-  public SignalGeneratorRealTimeQueue()
+  public SignalGeneratorQueue()
   {
     super();
     mQueuedScore = new Score("queuedscore");
@@ -42,7 +42,7 @@ public class SignalGeneratorRealTimeQueue implements QueueInterface
   /**
    * Returns queued score
    * 
-   * @return queeud score
+   * @return queued score
    */
   public ScoreInterface getQueuedScore()
   {

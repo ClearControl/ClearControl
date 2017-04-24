@@ -7,7 +7,7 @@ import java.util.concurrent.Future;
 import nirioj.direttore.Direttore;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
-import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
+import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
@@ -44,9 +44,9 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
   }
 
   @Override
-  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
+  public Future<Boolean> playQueue(SignalGeneratorQueue pSignalGeneratorQueue)
   {
-    return super.playQueue(pSignalGeneratorRealTimeQueue);
+    return super.playQueue(pSignalGeneratorQueue);
   }
 
   @Override

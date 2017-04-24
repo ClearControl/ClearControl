@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
@@ -14,9 +16,6 @@ import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
-
-import org.junit.Test;
-
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -49,8 +48,8 @@ public class SimulatedLightSheetMicroscopeDemo
 
     int lMaxCameraResolution = 1024;
 
-    int lNumberOfLightSheets = 1;
-    int lNumberOfDetectionArms = 1;
+    int lNumberOfLightSheets = 4;
+    int lNumberOfDetectionArms = 2;
 
     float lDivisionTime = 11f;
 
@@ -65,11 +64,11 @@ public class SimulatedLightSheetMicroscopeDemo
 
     ClearCLContext lSimulationContext =
                                       getClearCLDeviceByName(lClearCL,
-                                                             "HD");
+                                                             "NVIDIA");
 
     ClearCLContext lMicroscopeContext =
                                       getClearCLDeviceByName(lClearCL,
-                                                             "HD");
+                                                             "NVIDIA");
 
     LightSheetMicroscopeSimulationDevice lSimulatorDevice =
                                                           getSimulatorDevice(lSimulationContext,
@@ -129,7 +128,7 @@ public class SimulatedLightSheetMicroscopeDemo
                                                   String lDeviceName)
   {
     ClearCLDevice lSimulationGPUDevice =
-                                       pClearCL.getDeviceByName(lDeviceName);
+                                       pClearCL.getFastestGPUDeviceForImages(); // (lDeviceName);
     ClearCLContext lSimulationContext =
                                       lSimulationGPUDevice.createContext();
     return lSimulationContext;

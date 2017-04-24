@@ -1,12 +1,13 @@
 package clearcontrol.devices.stages.gui;
 
-import javafx.geometry.Insets;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 /**
  * Stage 3D Control
@@ -74,18 +75,15 @@ public class StageDevicePanel extends ScrollPane
   private VBox createXYZRControls()
   {
 
-    StageDOFPanel lStageControlX =
-                                 createStageControl(Stage.X,
-                                                    "Stage X (microns)");
-    StageDOFPanel lStageControlY =
-                                 createStageControl(Stage.Y,
-                                                    "Stage Y (microns)");
-    StageDOFPanel lStageControlZ =
-                                 createStageControl(Stage.Z,
-                                                    "Stage Z (microns)");
-    StageDOFPanel lStageControlR =
-                                 createStageControl(Stage.R,
-                                                    "Stage R (micro-degree)");
+    Node lStageControlX = createStageControl(Stage.X,
+                                             "Stage X (microns)");
+    Node lStageControlY = createStageControl(Stage.Y,
+                                             "Stage Y (microns)");
+    Node lStageControlZ = createStageControl(Stage.Z,
+                                             "Stage Z (microns)");
+    Node lStageControlR =
+                        createStageControl(Stage.R,
+                                           "Stage R (micro-degree)");
 
     VBox lStageDOFsPanel = new VBox(10,
                                     lStageControlX,
@@ -97,17 +95,18 @@ public class StageDevicePanel extends ScrollPane
     return lStageDOFsPanel;
   }
 
-  private StageDOFPanel createStageControl(Stage pStage,
-                                           String pLabelString)
+  private Node createStageControl(Stage pStage, String pLabelString)
   {
 
     int lDOFIndex =
                   mStageDeviceInterface.getDOFIndexByName(pStage.name());
 
-    StageDOFPanel lStageDOFPanel =
-                                 new StageDOFPanel(mStageDeviceInterface,
-                                                   lDOFIndex,
-                                                   pLabelString);
+    if (lDOFIndex < 0)
+      return new HBox();
+
+    Node lStageDOFPanel = new StageDOFPanel(mStageDeviceInterface,
+                                            lDOFIndex,
+                                            pLabelString);
 
     return lStageDOFPanel;
   }

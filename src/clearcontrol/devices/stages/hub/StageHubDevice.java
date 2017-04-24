@@ -2,9 +2,13 @@ package clearcontrol.devices.stages.hub;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.device.VirtualDevice;
@@ -12,9 +16,6 @@ import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 /**
  * Stage hub device
@@ -125,7 +126,7 @@ public class StageHubDevice extends VirtualDevice implements
   public boolean open()
   {
     boolean lOpen = true;
-    for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+    for (final StageDeviceInterface lStageDeviceInterface : new HashSet<>(mStageDeviceInterfaceList))
       lOpen &= lStageDeviceInterface.open();
     return lOpen;
   }
@@ -134,7 +135,7 @@ public class StageHubDevice extends VirtualDevice implements
   public boolean start()
   {
     boolean lStart = true;
-    for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+    for (final StageDeviceInterface lStageDeviceInterface : new HashSet<>(mStageDeviceInterfaceList))
       if (lStageDeviceInterface instanceof StartStopDeviceInterface)
       {
         final StartStopDeviceInterface lStartStopDevice =
@@ -148,7 +149,7 @@ public class StageHubDevice extends VirtualDevice implements
   public boolean stop()
   {
     boolean lStop = true;
-    for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+    for (final StageDeviceInterface lStageDeviceInterface : new HashSet<>(mStageDeviceInterfaceList))
       if (lStageDeviceInterface instanceof StartStopDeviceInterface)
       {
         final StartStopDeviceInterface lStartStopDevice =
@@ -162,7 +163,7 @@ public class StageHubDevice extends VirtualDevice implements
   public boolean close()
   {
     boolean lClose = true;
-    for (final StageDeviceInterface lStageDeviceInterface : mStageDeviceInterfaceList)
+    for (final StageDeviceInterface lStageDeviceInterface : new HashSet<>(mStageDeviceInterfaceList))
       lClose &= lStageDeviceInterface.close();
     return lClose;
   }

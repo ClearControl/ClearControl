@@ -181,20 +181,27 @@ public class InterpolatedAcquisitionState extends
     StageDeviceInterface lMainXYZRStage =
                                         getLightSheetMicroscope().getMainXYZRStage();
 
+    /*
     getStageXVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(0)
                                                 .get(),
                                   lMainXYZRStage.getMaxPositionVariable(0)
                                                 .get());
-
+    
     getStageYVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(1)
                                                 .get(),
                                   lMainXYZRStage.getMaxPositionVariable(1)
                                                 .get());
-
+    
     getStageZVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(2)
                                                 .get(),
                                   lMainXYZRStage.getMaxPositionVariable(2)
-                                                .get());
+                                                .get());/**/
+
+    getStageXVariable().setMinMax(-100, 100);
+
+    getStageYVariable().setMinMax(-100, 100);
+
+    getStageZVariable().setMinMax(-100, 100);
 
     resetBounds();
   }
@@ -345,7 +352,12 @@ public class InterpolatedAcquisitionState extends
   @Override
   public void applyStagePosition()
   {
-    getLightSheetMicroscope().getMainXYZRStage().enable();
+    StageDeviceInterface lMainXYZRStage =
+                                        getLightSheetMicroscope().getMainXYZRStage();
+    if (lMainXYZRStage == null)
+      return;
+
+    lMainXYZRStage.enable();
 
     double lStageX = getStageXVariable().get().doubleValue();
     double lStageY = getStageYVariable().get().doubleValue();

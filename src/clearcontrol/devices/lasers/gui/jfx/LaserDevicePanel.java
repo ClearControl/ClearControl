@@ -2,6 +2,14 @@ package clearcontrol.devices.lasers.gui.jfx;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import clearcontrol.core.physics.WavelengthToRGB;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
+import clearcontrol.gui.jfx.custom.rbg.RadialBargraph;
+import clearcontrol.gui.jfx.custom.rbg.RadialBargraphBuilder;
+import eu.hansolo.enzo.common.Marker;
+import eu.hansolo.enzo.common.SymbolType;
+import eu.hansolo.enzo.onoffswitch.IconSwitch;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,14 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-
-import clearcontrol.core.physics.WavelengthToRGB;
-import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.gui.jfx.custom.rbg.RadialBargraph;
-import clearcontrol.gui.jfx.custom.rbg.RadialBargraphBuilder;
-import eu.hansolo.enzo.common.Marker;
-import eu.hansolo.enzo.common.SymbolType;
-import eu.hansolo.enzo.onoffswitch.IconSwitch;
 
 /**
  * Laser device GUI panel
@@ -126,8 +126,9 @@ public class LaserDevicePanel extends HBox
     mTargetPowerGauge.setOnMouseClicked(lEventHandler);
 
     // Laser switch update (GUI -> data)
-    mLaserOnSwitch.setSelected(mLaserDeviceInterface.getLaserOnVariable()
-                                                    .get());
+    Boolean lLaserOn =
+                     mLaserDeviceInterface.getLaserOnVariable().get();
+    mLaserOnSwitch.setSelected(lLaserOn == null ? false : lLaserOn);
 
     mLaserOnSwitch.setOnMouseClicked(new EventHandler<MouseEvent>()
     {

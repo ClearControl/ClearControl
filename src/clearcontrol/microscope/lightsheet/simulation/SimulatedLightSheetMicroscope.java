@@ -176,7 +176,7 @@ public class SimulatedLightSheetMicroscope extends
       SignalGeneratorSimulatorDevice lSignalGeneratorSimulatorDevice =
                                                                      new SignalGeneratorSimulatorDevice();
 
-      addDevice(0, lSignalGeneratorSimulatorDevice);
+      // addDevice(0, lSignalGeneratorSimulatorDevice);
       lSignalGeneratorSimulatorDevice.getTriggerVariable()
                                      .sendUpdatesTo(lTrigger);/**/
 

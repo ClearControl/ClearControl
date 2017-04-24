@@ -8,7 +8,7 @@ import clearcontrol.core.device.sim.SimulationDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
-import clearcontrol.devices.signalgen.SignalGeneratorRealTimeQueue;
+import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
 /**
@@ -52,7 +52,7 @@ public class SignalGeneratorSimulatorDevice extends
   }
 
   @Override
-  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
+  public Future<Boolean> playQueue(SignalGeneratorQueue pSignalGeneratorRealTimeQueue)
   {
     mQueueLength = pSignalGeneratorRealTimeQueue.getQueueLength();
     return super.playQueue(pSignalGeneratorRealTimeQueue);

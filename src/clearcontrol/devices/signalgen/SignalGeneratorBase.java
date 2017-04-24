@@ -47,15 +47,15 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   }
 
   @Override
-  public SignalGeneratorRealTimeQueue requestQueue()
+  public SignalGeneratorQueue requestQueue()
   {
-    SignalGeneratorRealTimeQueue lQueue =
-                                        new SignalGeneratorRealTimeQueue();
+    SignalGeneratorQueue lQueue =
+                                        new SignalGeneratorQueue();
     return lQueue;
   }
 
   @Override
-  public Future<Boolean> playQueue(SignalGeneratorRealTimeQueue pSignalGeneratorRealTimeQueue)
+  public Future<Boolean> playQueue(SignalGeneratorQueue pSignalGeneratorRealTimeQueue)
   {
     final Callable<Boolean> lCall = () -> {
       final Thread lCurrentThread = Thread.currentThread();

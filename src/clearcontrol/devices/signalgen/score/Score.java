@@ -8,12 +8,23 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.devices.signalgen.movement.MovementInterface;
 
+/**
+ * Score
+ *
+ * @author royer
+ */
 public class Score extends NameableBase implements ScoreInterface
 {
 
   private final ArrayList<MovementInterface> mMovementList =
                                                            new ArrayList<MovementInterface>();
 
+  /**
+   * Instantiates a score of given name
+   * 
+   * @param pName
+   *          score name
+   */
   public Score(final String pName)
   {
     super(pName);
@@ -116,7 +127,11 @@ public class Score extends NameableBase implements ScoreInterface
   @Override
   public String toString()
   {
-    return String.format("Score-%s", getName());
+    return String.format("Score[name=%s, duration=%g sec, #movements=%d, #staves=%d]",
+                         getName(),
+                         getDuration(TimeUnit.MICROSECONDS) * 1e-6,
+                         getNumberOfMovements(),
+                         getMaxNumberOfStaves());
   }
 
 }

@@ -1,5 +1,7 @@
 package clearcontrol.devices.lasers.devices.omicron.adapters.protocol;
 
+import java.nio.charset.StandardCharsets;
+
 import clearcontrol.com.serial.Serial;
 
 /**
@@ -44,7 +46,7 @@ public class ProtocolOmicron
 
   public static final char cMessageTerminationCharacter = '\r';
 
-  public static final String cParagraphCode = "\\xA7";
+  public static final String cParagraphCode = "\u00A7";
 
   private static final int cAdGocModeMask = 1 << 13;
 
@@ -79,7 +81,8 @@ public class ProtocolOmicron
   public static final String[] splitMessage(String pPrefix,
                                             final byte[] pMessage)
   {
-    String lMessageString = new String(pMessage);
+    String lMessageString = new String(pMessage,
+                                       StandardCharsets.ISO_8859_1);
     int lIndex = lMessageString.indexOf(pPrefix) + pPrefix.length();
     lMessageString = lMessageString.substring(lIndex);
     final String[] lSplittedMessageString =
@@ -155,7 +158,9 @@ public class ProtocolOmicron
       pSerial.write(lNewOperatingModeCommand.getBytes());
       final byte[] lReadTextMessage2 = pSerial.readTextMessage();
 
-      lSuccess = new String(lReadTextMessage2).startsWith("!SOM");
+      lSuccess =
+               new String(lReadTextMessage2,
+                          StandardCharsets.ISO_8859_1).startsWith("!SOM");
 
       if (lSuccess)
       {

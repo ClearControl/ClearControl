@@ -7,6 +7,7 @@ package clearcontrol.core.device.queue;
  */
 public interface QueueInterface
 {
+
   /**
    * Clears the queue
    */

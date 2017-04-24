@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.movement.Movement;
@@ -11,18 +13,27 @@ import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.SinusStave;
 
-import org.junit.Test;
-
+/**
+ * NIRIO signal generator demos
+ *
+ * @author royer
+ */
 public class NIRIOSignalGeneratorDemo
 {
 
+  /**
+   * Plays back a simple sample harmonic signals
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void demo1() throws InterruptedException
   {
-    // final NIRIOSignalGenerator lNIRIOSignalGenerator = new
-    // NIRIOSignalGenerator();
+    final NIRIOSignalGenerator lNIRIOSignalGenerator =
+                                                     new NIRIOSignalGenerator();
 
-    // assertTrue(lNIRIOSignalGenerator.open());
+    assertTrue(lNIRIOSignalGenerator.open());
 
     final ScoreInterface lScore = buildScore();
 
@@ -32,16 +43,22 @@ public class NIRIOSignalGeneratorDemo
 
     for (int i = 0; i < 1000000000 && lVisualize.isVisible(); i++)
     {
-      // lNIRIOSignalGenerator.playScore(lScore);
+      lNIRIOSignalGenerator.playScore(lScore);
       System.out.println(i);
     }
 
     lVisualize.dispose();
 
-    // assertTrue(lNIRIOSignalGenerator.close());
+    assertTrue(lNIRIOSignalGenerator.close());
 
   }
 
+  /**
+   * More complex demo
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void demo2() throws InterruptedException
   {

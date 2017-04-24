@@ -6,6 +6,7 @@ import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
+import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 
 /**
  * This device knows how to generate the signals for a light sheet microscope
@@ -51,6 +52,18 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
   }
 
   @Override
+  public boolean open()
+  {
+    return super.open() && mDelegatedSignalGenerator.open();
+  }
+
+  @Override
+  public boolean close()
+  {
+    return mDelegatedSignalGenerator.close() && super.close();
+  }
+
+  @Override
   public LightSheetSignalGeneratorQueue requestQueue()
   {
     return new LightSheetSignalGeneratorQueue(this,
@@ -60,8 +73,8 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
   @Override
   public Future<Boolean> playQueue(LightSheetSignalGeneratorQueue pQueue)
   {
-    // do nothing because the delegated signal generator will do the job
-    return null;
+    SignalGeneratorQueue lDelegatedQueue = pQueue.getDelegatedQueue();
+    return mDelegatedSignalGenerator.playQueue(lDelegatedQueue);
   }
 
 }

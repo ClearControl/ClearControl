@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
@@ -39,9 +41,6 @@ import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulat
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
-
-import org.junit.Test;
-
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -88,7 +87,7 @@ public class LightSheetMicroscopeDemo implements
 
     ClearCL lClearCL = new ClearCL(lBestBackend);
     ClearCLDevice lSimulationGPUDevice =
-                                       lClearCL.getDeviceByName("HD");
+                                       lClearCL.getDeviceByName("TITAN");
     ClearCLContext lContext = lSimulationGPUDevice.createContext();
 
     LightSheetMicroscopeSimulatorDrosophila lSimulator =
@@ -257,10 +256,10 @@ public class LightSheetMicroscopeDemo implements
     SignalGeneratorSimulatorDevice lSignalGeneratorSimulatorDevice =
                                                                    new SignalGeneratorSimulatorDevice();
 
-    lLightSheetMicroscope.addDevice(0,
-                                    lSignalGeneratorSimulatorDevice);
+    /*lLightSheetMicroscope.addDevice(0,
+                                    lSignalGeneratorSimulatorDevice);/**/
     lSignalGeneratorSimulatorDevice.getTriggerVariable()
-                                   .sendUpdatesTo(lTrigger);/**/
+                                   .sendUpdatesTo(lTrigger);
 
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
                                                                            LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice);

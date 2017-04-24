@@ -14,7 +14,7 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
 public interface SignalGeneratorInterface extends
                                           NameableInterface,
                                           OpenCloseDeviceInterface,
-                                          QueueDeviceInterface<SignalGeneratorRealTimeQueue>
+                                          QueueDeviceInterface<SignalGeneratorQueue>
 {
 
   /**
