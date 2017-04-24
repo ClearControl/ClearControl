@@ -2,15 +2,11 @@ package clearcontrol.devices.stages.devices.tst;
 
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
 import aptj.APTJExeption;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
@@ -28,6 +24,9 @@ import clearcontrol.devices.stages.devices.tst.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.StopVariable;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 /**
  * TST001 stage device
  *
@@ -41,24 +40,20 @@ public class TSTStageDevice extends StageDeviceBase implements
                             AsynchronousSchedulerServiceAccess
 {
 
-  final APTJDeviceFactory mAPTJDeviceFactory;
+  APTJDeviceFactory mAPTJDeviceFactory;
 
   private final BiMap<Integer, APTJDevice> mIndexToDeviceMap =
                                                              HashBiMap.create();
 
-  private WaitingScheduledFuture<?> mScheduleAtFixedRate;
   private volatile boolean mOpen = false;
 
   /**
    * Instantiates an APTJ stage device
    * 
-   * @throws APTJExeption
-   *           exception
    */
-  public TSTStageDevice() throws APTJExeption
+  public TSTStageDevice()
   {
-    super("TST001");
-    mAPTJDeviceFactory = new APTJDeviceFactory(APTJDeviceType.TST001);
+    super("TST001", StageType.Multi);
   }
 
   @Override
@@ -72,6 +67,9 @@ public class TSTStageDevice extends StageDeviceBase implements
   {
     try
     {
+      if (mAPTJDeviceFactory == null)
+        mAPTJDeviceFactory =
+                           new APTJDeviceFactory(APTJDeviceType.TST001);
 
       final MachineConfiguration lCurrentMachineConfiguration =
                                                               MachineConfiguration.getCurrentMachineConfiguration();
@@ -176,10 +174,7 @@ public class TSTStageDevice extends StageDeviceBase implements
           }
       };
 
-      mScheduleAtFixedRate =
-                           scheduleAtFixedRate(lPolling,
-                                               100,
-                                               TimeUnit.MILLISECONDS);
+      scheduleAtFixedRate(lPolling, 100, TimeUnit.MILLISECONDS);
 
       return true;
     }

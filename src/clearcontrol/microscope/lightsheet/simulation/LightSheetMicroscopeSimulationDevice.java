@@ -9,7 +9,6 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.simulation.SampleSimulationDeviceBase;
 import clearcontrol.simulation.SampleSimulationDeviceInterface;
 import simbryo.synthoscopy.microscope.lightsheet.LightSheetMicroscopeSimulator;
-import simbryo.synthoscopy.microscope.parameters.IlluminationParameter;
 import simbryo.synthoscopy.microscope.parameters.StageParameter;
 
 /**
@@ -29,7 +28,7 @@ public class LightSheetMicroscopeSimulationDevice extends
                                                                                               new ArrayList<>();
 
   /**
-   * Instanciates a light sheet microscope simulator device
+   * Instantiates a light sheet microscope simulator device
    * 
    * @param pLightSheetMicroscopeSimulator
    *          light sheet microscope simulator (from Simbryo project)
@@ -41,17 +40,14 @@ public class LightSheetMicroscopeSimulationDevice extends
     mLightSheetMicroscopeSimulator = pLightSheetMicroscopeSimulator;
   }
 
-  // TODO: check this:
-  private void setParameterForAllLightSheets(IlluminationParameter pParameter,
-                                             Number pValue)
+  /**
+   * Returns the underlying simulator.
+   * 
+   * @return simulator
+   */
+  public LightSheetMicroscopeSimulator getSimulator()
   {
-    int lNumberOfLightSheets =
-                             mLightSheetMicroscopeSimulator.getNumberOfLightSheets();
-
-    for (int l = 0; l < lNumberOfLightSheets; l++)
-      mLightSheetMicroscopeSimulator.setNumberParameter(pParameter,
-                                                        l,
-                                                        pValue);
+    return mLightSheetMicroscopeSimulator;
   }
 
   @Override
@@ -97,7 +93,7 @@ public class LightSheetMicroscopeSimulationDevice extends
                                                                                            n));
 
     int lNumberOfCameras =
-                         mLightSheetMicroscopeSimulator.getNumberOfDetectionPaths();
+                         mLightSheetMicroscopeSimulator.getNumberOfDetectionArms();
     for (int i = 0; i < lNumberOfCameras; i++)
     {
       LightSheetSimulationStackProvider lLightSheetSimulationStackProvider =

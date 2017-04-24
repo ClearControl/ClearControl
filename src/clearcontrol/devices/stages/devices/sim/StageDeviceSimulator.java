@@ -33,8 +33,6 @@ public class StageDeviceSimulator extends StageDeviceBase implements
   private double mSpeed = 0.05;
   private final double[] mDirectionVector = new double[4];
 
-  private StageType mStageType;
-
   /**
    * Instanciates a stage simulator device
    * 
@@ -64,8 +62,7 @@ public class StageDeviceSimulator extends StageDeviceBase implements
                               StageType pStageType,
                               boolean pConstantSpeed)
   {
-    super(pDeviceName);
-    mStageType = pStageType;
+    super(pDeviceName, pStageType);
     mConstantSpeed = pConstantSpeed;
 
     if (mConstantSpeed)
@@ -191,12 +188,6 @@ public class StageDeviceSimulator extends StageDeviceBase implements
   public void setSpeed(double pSpeed)
   {
     this.mSpeed = pSpeed;
-  }
-
-  @Override
-  public StageType getStageType()
-  {
-    return mStageType;
   }
 
   /**

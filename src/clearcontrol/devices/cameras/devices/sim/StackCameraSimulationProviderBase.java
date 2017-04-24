@@ -18,6 +18,27 @@ import coremem.recycling.RecyclerInterface;
 public abstract class StackCameraSimulationProviderBase implements
                                                         StackCameraSimulationProvider
 {
+  private final long mGetStackTimeOutInSeconds;
+
+  /**
+   * Instantiates a stack camera simulation provider
+   */
+  public StackCameraSimulationProviderBase()
+  {
+    this(Long.MAX_VALUE);
+  }
+
+  /**
+   * Instantiates a stack camera simulation provider
+   * 
+   * @param pGetStackTimeOut
+   *          timeout in seconds
+   */
+  public StackCameraSimulationProviderBase(long pGetStackTimeOut)
+  {
+    super();
+    mGetStackTimeOutInSeconds = pGetStackTimeOut;
+  }
 
   @Override
   public StackInterface getStack(RecyclerInterface<StackInterface, StackRequest> pRecycler,
@@ -45,9 +66,10 @@ public abstract class StackCameraSimulationProviderBase implements
                                                           lHeight,
                                                           lDepth);
 
-    final StackInterface lStack = pRecycler.getOrWait(10,
-                                                      TimeUnit.SECONDS,
-                                                      lStackRequest);
+    final StackInterface lStack =
+                                pRecycler.getOrWait(mGetStackTimeOutInSeconds,
+                                                    TimeUnit.SECONDS,
+                                                    lStackRequest);
 
     if (lStack != null)
     {

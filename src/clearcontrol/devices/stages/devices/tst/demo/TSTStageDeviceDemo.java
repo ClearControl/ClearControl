@@ -2,12 +2,12 @@ package clearcontrol.devices.stages.devices.tst.demo;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import aptj.APTJExeption;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
+
+import org.junit.Test;
 
 /**
  * TST001 stage device demo

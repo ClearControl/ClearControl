@@ -2,6 +2,7 @@ package clearcontrol.devices.stages.hub;
 
 import java.util.concurrent.TimeUnit;
 
+import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
 
@@ -10,7 +11,7 @@ import clearcontrol.devices.stages.StageDeviceInterface;
  *
  * @author royer
  */
-public class StageDOF
+public class StageDOF extends NameableBase
 {
   private final StageDeviceInterface mStageDevice;
   private final int mDOFIndex;
@@ -18,14 +19,18 @@ public class StageDOF
   /**
    * Instantiates a stage DOF
    * 
+   * @param pDOFName
+   *          DOF name
    * @param pStageDevice
    *          stage device
    * @param pDOFIndex
    *          DOF index
    */
-  public StageDOF(StageDeviceInterface pStageDevice, int pDOFIndex)
+  public StageDOF(String pDOFName,
+                  StageDeviceInterface pStageDevice,
+                  int pDOFIndex)
   {
-    super();
+    super(pDOFName);
     mStageDevice = pStageDevice;
     mDOFIndex = pDOFIndex;
   }
@@ -48,16 +53,6 @@ public class StageDOF
   public int getDOFIndex()
   {
     return mDOFIndex;
-  }
-
-  /**
-   * Returns DOF name
-   * 
-   * @return DOF name
-   */
-  public String getName()
-  {
-    return mStageDevice.getDOFNameByIndex(mDOFIndex);
   }
 
   /**
@@ -211,10 +206,10 @@ public class StageDOF
   @Override
   public String toString()
   {
-    return "StageDeviceDOF [mStageDeviceInterface=" + mStageDevice
-           + ", mDOFIndex="
-           + mDOFIndex
-           + "]";
+    return String.format("StageDeviceDOF [name=%s,  device=%s, DOF index=%d]",
+                         getName(),
+                         mStageDevice,
+                         mDOFIndex);
   }
 
 }

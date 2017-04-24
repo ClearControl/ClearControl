@@ -46,53 +46,63 @@ public interface FastFusionEngineInterface extends
   /**
    * Returns the image for the given key
    * 
-   * @param pImageKey
-   *          key
+   * @param pSlotKey
+   *          slot key
    * @return image
    */
-  ClearCLImage getImage(String pImageKey);
+  ClearCLImage getImage(String pSlotKey);
 
   /**
-   * An image is available for computation once its data has been sucessfully
+   * An image is available for computation once its data has been successfully
    * transfered
    * 
-   * @param pImageKey
-   *          image key
+   * @param pSlotKey
+   *          slot key
    * @return true -> available for computation
    */
-  boolean isImageAvailable(String pImageKey);
+  boolean isImageAvailable(String pSlotKey);
 
   /**
-   * Set of keys for available images
+   * Set of slot keys for available (ready and already processed) images
    * 
    * @return available images
    */
-  Set<String> getAvailableImagesKeys();
+  Set<String> getAvailableImagesSlotKeys();
 
   /**
-   * Ensures allocation for the image of given key. If the image is already
+   * Ensures allocation for the image of given slot key. If the image is already
    * allocated and of the right dimensions, it is reused.
    * 
-   * @param pImageKey
-   *          image key
+   * @param pSlotKey
+   *          slot key
    * @param pDimensions
    *          image dimensions
    * @return (available flag, image (already or newly) allocated)
    */
-  MutablePair<Boolean, ClearCLImage> ensureImageAllocated(String pImageKey,
+  MutablePair<Boolean, ClearCLImage> ensureImageAllocated(String pSlotKey,
                                                           long... pDimensions);
+
+  /**
+   * This method is used for identity tasks that do not change the image and
+   * simply copy the image reference from one slot to another.
+   * 
+   * @param pSrcSlotKey
+   * @param pDstSlotKey
+   */
+  void assignImageToAnotherSlotKey(String pSrcSlotKey,
+                                   String pDstSlotKey);
 
   /**
    * Passes image data for a given key
    * 
-   * @param pKey
+   * @param pSlotKey
    *          image key
    * @param pImageData
    *          image data
    * @param pDimensions
    *          corresponding dimensions
    */
-  void passImage(String pKey,
+  void passImage(String pSlotKey,
                  ContiguousMemoryInterface pImageData,
                  long... pDimensions);
 

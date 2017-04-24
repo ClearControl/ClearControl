@@ -17,8 +17,8 @@ import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngineInter
 public abstract class FusionTaskBase implements FusionTaskInterface
 {
 
-  private final HashSet<String> mRequiredImagesKeysSet =
-                                                       new HashSet<>();
+  private final HashSet<String> mRequiredImagesSlotKeysSet =
+                                                           new HashSet<>();
 
   private Class<AverageTask> mClass;
   private String mSourceFile;
@@ -27,16 +27,16 @@ public abstract class FusionTaskBase implements FusionTaskInterface
   private ClearCLKernel mKernel;
 
   /**
-   * Instanciates a fusion task given the keys of required images
+   * Instantiates a fusion task given the keys of required images
    * 
-   * @param pKeys
-   *          list of keys
+   * @param pSlotKeys
+   *          list of slot keys
    */
-  public FusionTaskBase(String... pKeys)
+  public FusionTaskBase(String... pSlotKeys)
   {
     super();
-    for (String lKey : pKeys)
-      mRequiredImagesKeysSet.add(lKey);
+    for (String lSlotKey : pSlotKeys)
+      mRequiredImagesSlotKeysSet.add(lSlotKey);
   }
 
   protected void setupProgramAndKernel(Class<AverageTask> pClass,
@@ -60,10 +60,10 @@ public abstract class FusionTaskBase implements FusionTaskInterface
   }
 
   @Override
-  public boolean checkIfRequiredImagesAvailable(Set<String> pAvailableImagesKeys)
+  public boolean checkIfRequiredImagesAvailable(Set<String> pAvailableImagesSlotKeys)
   {
     boolean lAllRequiredImagesAvailable =
-                                        pAvailableImagesKeys.containsAll(mRequiredImagesKeysSet);
+                                        pAvailableImagesSlotKeys.containsAll(mRequiredImagesSlotKeysSet);
 
     return lAllRequiredImagesAvailable;
   }
@@ -75,9 +75,9 @@ public abstract class FusionTaskBase implements FusionTaskInterface
   @Override
   public String toString()
   {
-    return String.format("FusionTaskBase [mKernelName=%s, mRequiredImagesKeysSet=%s]",
+    return String.format("FusionTaskBase [mKernelName=%s, mRequiredImagesSlotKeysSet=%s]",
                          mKernelName,
-                         mRequiredImagesKeysSet);
+                         mRequiredImagesSlotKeysSet);
   }
 
 }

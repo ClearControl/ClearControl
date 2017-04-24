@@ -17,7 +17,7 @@ import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
-import clearcontrol.devices.signalamp.gui.jfx.ScalingAmplifierPanel;
+import clearcontrol.devices.signalamp.gui.ScalingAmplifierPanel;
 import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.gui.StageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;

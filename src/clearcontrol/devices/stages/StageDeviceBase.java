@@ -19,6 +19,8 @@ public abstract class StageDeviceBase extends VirtualDevice implements
                                       StageDeviceInterface,
                                       WaitingInterface
 {
+  private final StageType mStageType;
+
   protected ArrayList<Variable<Boolean>> mEnableVariables,
       mReadyVariables, mHomingVariables, mStopVariables,
       mResetVariables;
@@ -34,10 +36,14 @@ public abstract class StageDeviceBase extends VirtualDevice implements
    * 
    * @param pDeviceName
    *          device name
+   * @param pStageType
+   *          stage type
    */
-  public StageDeviceBase(String pDeviceName)
+  public StageDeviceBase(String pDeviceName, StageType pStageType)
   {
     super(pDeviceName);
+    mStageType = pStageType;
+
     mEnableVariables = new ArrayList<>();
     mReadyVariables = new ArrayList<>();
     mHomingVariables = new ArrayList<>();
@@ -52,7 +58,10 @@ public abstract class StageDeviceBase extends VirtualDevice implements
   }
 
   @Override
-  public abstract StageType getStageType();
+  public StageType getStageType()
+  {
+    return mStageType;
+  }
 
   @Override
   public int getNumberOfDOFs()

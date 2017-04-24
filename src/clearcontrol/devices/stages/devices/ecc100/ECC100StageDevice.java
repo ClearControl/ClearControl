@@ -26,6 +26,11 @@ import com.google.common.collect.HashBiMap;
 import ecc100.ECC100Axis;
 import ecc100.ECC100Controller;
 
+/**
+ * ECC100 stage device
+ *
+ * @author royer
+ */
 public class ECC100StageDevice extends StageDeviceBase implements
                                StageDeviceInterface,
                                StartStopDeviceInterface,
@@ -39,9 +44,12 @@ public class ECC100StageDevice extends StageDeviceBase implements
   private final BiMap<String, ECC100Axis> mNameToAxisMap =
                                                          HashBiMap.create();
 
+  /**
+   * Instantiates an ECC100 stage device
+   */
   public ECC100StageDevice()
   {
-    super("ECC100");
+    super("ECC100", StageType.Multi);
     mECC100Controller = new ECC100Controller();
   }
 

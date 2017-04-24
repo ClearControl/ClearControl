@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import clearcl.util.ElapsedTime;
 import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -124,7 +125,11 @@ public abstract class TimelapseBase extends LoopTaskDevice
         info("Appending new stack %s to the file sink %s",
              n,
              lStackSinkVariable);
-        lStackSinkVariable.get().appendStack(n);
+
+        ElapsedTime.measureForceOutput("TimeLapse stack saving",
+                                       () -> lStackSinkVariable.get()
+                                                               .appendStack(n));
+
       }
     };
   }

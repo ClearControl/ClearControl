@@ -19,75 +19,81 @@ import org.apache.commons.lang3.tuple.MutablePair;
 public class AverageTask extends FusionTaskBase
                          implements FusionTaskInterface
 {
-  private final String[] mInputImagesKeys;
-  private final String mDestImageKey;
+  private final String[] mInputImagesSlotKeys;
+  private final String mDestImageSlotKey;
   private ClearCLImageViewer mViewA, mViewB, mViewFused;
   private volatile boolean mDebugDisplay = false;
 
   /**
-   * Instanciates an average fusion task given the keys for two input images and
+   * Instantiates an average fusion task given the keys for two input images and
    * destination image
    * 
-   * @param pImageAKey
-   *          image A key
-   * @param pImageBKey
-   *          image B key
+   * @param pImageASlotKey
+   *          image A slot key
+   * @param pImageBSlotKey
+   *          image B slot key
    * @param pDestImageKey
    *          destination image key
    */
-  public AverageTask(String pImageAKey,
-                     String pImageBKey,
+  public AverageTask(String pImageASlotKey,
+                     String pImageBSlotKey,
                      String pDestImageKey)
   {
-    super(pImageAKey, pImageBKey);
+    super(pImageASlotKey, pImageBSlotKey);
     setupProgramAndKernel(AverageTask.class,
                           "./kernels/fuseavg.cl",
                           "fuseavg2");
-    mInputImagesKeys = new String[]
-    { pImageAKey, pImageBKey };
-    mDestImageKey = pDestImageKey;
+    mInputImagesSlotKeys = new String[]
+    { pImageASlotKey, pImageBSlotKey };
+    mDestImageSlotKey = pDestImageKey;
   }
 
   /**
-   * Instanciates an avreage fusion task given the keys for the two input images
-   * and destination image
+   * Instantiates an average fusion task given the keys for the two input images
+   * and destination image.
    * 
-   * @param pImageAKey
+   * @param pImageASlotKey
    *          image A key
-   * @param pImageBKey
+   * @param pImageBSlotKey
    *          image B key
-   * @param pImageCKey
+   * @param pImageCSlotKey
    *          image C key
-   * @param pImageDKey
+   * @param pImageDSlotKey
    *          image D key
-   * @param pDestImageKey
+   * @param pDestImageSlotKey
    *          destination image key
    */
-  public AverageTask(String pImageAKey,
-                     String pImageBKey,
-                     String pImageCKey,
-                     String pImageDKey,
-                     String pDestImageKey)
+  public AverageTask(String pImageASlotKey,
+                     String pImageBSlotKey,
+                     String pImageCSlotKey,
+                     String pImageDSlotKey,
+                     String pDestImageSlotKey)
   {
-    super(pImageAKey, pImageBKey, pImageCKey, pImageDKey);
+    super(pImageASlotKey,
+          pImageBSlotKey,
+          pImageCSlotKey,
+          pImageDSlotKey);
     setupProgramAndKernel(AverageTask.class,
                           "./kernels/fuseavg.cl",
                           "fuseavg4");
-    mInputImagesKeys = new String[]
-    { pImageAKey, pImageBKey, pImageCKey, pImageDKey };
-    mDestImageKey = pDestImageKey;
+    mInputImagesSlotKeys = new String[]
+    { pImageASlotKey,
+      pImageBSlotKey,
+      pImageCSlotKey,
+      pImageDSlotKey };
+    mDestImageSlotKey = pDestImageSlotKey;
   }
 
   @Override
-  public boolean enqueue(FastFusionEngineInterface pStackFuser,
+  public boolean enqueue(FastFusionEngineInterface pStackFusionEngine,
                          boolean pWaitToFinish)
   {
     try
     {
       ClearCLImage lImageA, lImageB, lImageC = null, lImageD = null;
 
-      lImageA = pStackFuser.getImage(mInputImagesKeys[0]);
-      lImageB = pStackFuser.getImage(mInputImagesKeys[1]);
+      lImageA = pStackFusionEngine.getImage(mInputImagesSlotKeys[0]);
+      lImageB = pStackFusionEngine.getImage(mInputImagesSlotKeys[1]);
 
       if (lImageA == null || lImageB == null)
         throw new FastFusionException("Fusion task %s received a null image",
@@ -100,10 +106,12 @@ public class AverageTask extends FusionTaskBase
                                       Arrays.toString(lImageA.getDimensions()),
                                       Arrays.toString(lImageB.getDimensions()));
 
-      if (mInputImagesKeys.length == 4)
+      if (mInputImagesSlotKeys.length == 4)
       {
-        lImageC = pStackFuser.getImage(mInputImagesKeys[2]);
-        lImageD = pStackFuser.getImage(mInputImagesKeys[3]);
+        lImageC =
+                pStackFusionEngine.getImage(mInputImagesSlotKeys[2]);
+        lImageD =
+                pStackFusionEngine.getImage(mInputImagesSlotKeys[3]);
 
         if (lImageC == null || lImageD == null)
           throw new FastFusionException("Fusion task %s received a null image",
@@ -125,8 +133,8 @@ public class AverageTask extends FusionTaskBase
       }
 
       MutablePair<Boolean, ClearCLImage> lPair =
-                                               pStackFuser.ensureImageAllocated(mDestImageKey,
-                                                                                lImageA.getDimensions());
+                                               pStackFusionEngine.ensureImageAllocated(mDestImageSlotKey,
+                                                                                       lImageA.getDimensions());
 
       ClearCLImage lImageFused = lPair.getRight();
 
@@ -134,7 +142,7 @@ public class AverageTask extends FusionTaskBase
 
       lKernel.setArgument("imagea", lImageA);
       lKernel.setArgument("imageb", lImageB);
-      if (mInputImagesKeys.length == 4)
+      if (mInputImagesSlotKeys.length == 4)
       {
         lKernel.setArgument("imagec", lImageC);
         lKernel.setArgument("imaged", lImageD);
@@ -156,21 +164,21 @@ public class AverageTask extends FusionTaskBase
 
           mViewA = ClearCLImageViewer.view(lImageA,
                                            lWindowTitlePrefix
-                                                    + mInputImagesKeys[0],
+                                                    + mInputImagesSlotKeys[0],
                                            512,
                                            512);
         }
         if (mViewB == null)
           mViewB = ClearCLImageViewer.view(lImageB,
                                            lWindowTitlePrefix
-                                                    + mInputImagesKeys[1],
+                                                    + mInputImagesSlotKeys[1],
                                            512,
                                            512);
         if (mViewFused == null)
           mViewFused =
                      ClearCLImageViewer.view(lImageFused,
                                              lWindowTitlePrefix + ":"
-                                                          + mDestImageKey,
+                                                          + mDestImageSlotKey,
                                              512,
                                              512);
 

@@ -1,10 +1,10 @@
 package clearcontrol.microscope.lightsheet.processor;
 
 import clearcl.ClearCLContext;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngine;
 import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngineInterface;
 import clearcontrol.microscope.lightsheet.processor.fusion.tasks.AverageTask;
+import clearcontrol.microscope.lightsheet.processor.fusion.tasks.IdentityTask;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
@@ -22,27 +22,70 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   private StackMetaData mFusedStackMetaData = new StackMetaData();
 
   /**
-   * Instanciates a lightsheet fast fusion engine
+   * Instantiates a lightsheet fast fusion engine
    * 
    * @param pContext
    *          ClearCL context
-   * @param pLightSheetMicroscope
-   *          lightsheet microscope
+   * @param pNumberOfLightSheets
+   *          number of lightsheets
+   * @param pNumberOfDetectionArms
+   *          number of detection arms
    */
   public LightSheetFastFusionEngine(ClearCLContext pContext,
-                                    LightSheetMicroscope pLightSheetMicroscope)
+                                    int pNumberOfLightSheets,
+                                    int pNumberOfDetectionArms)
   {
     super(pContext);
 
-    // int lNumberOfLightSheets =
-    // pLightSheetMicroscope.getNumberOfLightSheets();
-    // int lNumberOfDetectionArms =
-    // pLightSheetMicroscope.getNumberOfDetectionArms();
-
-    // TODO: automatic configuration for different number of lightsheets and
-    // detection arms:
-
-    addTask(new AverageTask("C0L0", "C0L1", "fused"));
+    if (pNumberOfLightSheets == 1)
+    {
+      if (pNumberOfDetectionArms == 1)
+      {
+        addTask(new IdentityTask("C0L0", "fused"));
+      }
+      else if (pNumberOfDetectionArms == 2)
+      {
+        addTask(new AverageTask("C0L0", "C1L0", "fused"));
+      }
+    }
+    else if (pNumberOfLightSheets == 2)
+    {
+      if (pNumberOfDetectionArms == 1)
+      {
+        addTask(new AverageTask("C0L0", "C0L1", "fused"));
+      }
+      else if (pNumberOfDetectionArms == 2)
+      {
+        addTask(new AverageTask("C0L0", "C0L1", "C0"));
+        addTask(new AverageTask("C1L0", "C1L1", "C1"));
+        addTask(new AverageTask("C0", "C1", "fused"));
+      }
+    }
+    else if (pNumberOfLightSheets == 4)
+    {
+      if (pNumberOfDetectionArms == 1)
+      {
+        addTask(new AverageTask("C0L0",
+                                "C0L1",
+                                "C0L2",
+                                "C0L3",
+                                "fused"));
+      }
+      else if (pNumberOfDetectionArms == 2)
+      {
+        addTask(new AverageTask("C0L0",
+                                "C0L1",
+                                "C0L2",
+                                "C0L3",
+                                "C0"));
+        addTask(new AverageTask("C1L0",
+                                "C1L1",
+                                "C1L2",
+                                "C1L3",
+                                "C1"));
+        addTask(new AverageTask("C0", "C1", "fused"));
+      }
+    }
 
   }
 
@@ -68,11 +111,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
    * 
    * @return true -> ready to fuse
    */
-  public boolean isReady()
+  /*public boolean isReady()
   {
-    return getAvailableImagesKeys().contains("C0L0")
-           && getAvailableImagesKeys().contains("C0L1");
-  }
+    return getAvailableImagesSlotKeys().contains("C0L0")
+           && getAvailableImagesSlotKeys().contains("C0L1");
+  }/**/
 
   /**
    * Passes a stack to this Fast Fusion engine.

@@ -1,11 +1,12 @@
 package clearcontrol.devices.stages.devices.tst.demo;
 
-import aptj.APTJExeption;
-import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
-import clearcontrol.devices.stages.gui.StageDevicePanel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import aptj.APTJExeption;
+import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
+import clearcontrol.devices.stages.gui.StageDevicePanel;
 
 /**
  * TST001 stage device interactive demo

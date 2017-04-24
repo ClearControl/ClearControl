@@ -27,6 +27,8 @@ public class StageHubDevice extends VirtualDevice implements
                             WaitingInterface
 {
 
+  private final StageType mStageType;
+
   private final ArrayList<StageDeviceInterface> mStageDeviceInterfaceList =
                                                                           new ArrayList<StageDeviceInterface>();
   private final ArrayList<StageDOF> mDOFList =
@@ -42,13 +44,27 @@ public class StageHubDevice extends VirtualDevice implements
    */
   public StageHubDevice(String pDeviceName)
   {
+    this(pDeviceName, StageType.Hub);
+  }
+
+  /**
+   * Instantiates a stage hub device with given name and stage type
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pStageType
+   *          stage type
+   */
+  public StageHubDevice(String pDeviceName, StageType pStageType)
+  {
     super(pDeviceName);
+    mStageType = pStageType;
   }
 
   @Override
   public StageType getStageType()
   {
-    return StageType.Hub;
+    return mStageType;
   }
 
   /**
@@ -63,12 +79,33 @@ public class StageHubDevice extends VirtualDevice implements
   public String addDOF(StageDeviceInterface pStageDeviceInterface,
                        int pDOFIndex)
   {
+    return addDOF(null, pStageDeviceInterface, pDOFIndex);
+  }
+
+  /**
+   * Adds a stage device DOF to this hub, a new name for the DOF can be
+   * provided.
+   * 
+   * @param pDOFName
+   *          new DOF name, if null the original DOF name is used
+   * @param pStageDeviceInterface
+   *          stage device
+   * @param pDOFIndex
+   *          DOF index
+   * @return DOF name (either original name or provided one)
+   */
+  public String addDOF(String pDOFName,
+                       StageDeviceInterface pStageDeviceInterface,
+                       int pDOFIndex)
+  {
     mStageDeviceInterfaceList.add(pStageDeviceInterface);
     final String lDOFName =
-                          pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
-    final StageDOF lStageDeviceDOF =
-                                   new StageDOF(pStageDeviceInterface,
-                                                pDOFIndex);
+                          pDOFName != null ? pDOFName
+                                           : pStageDeviceInterface.getDOFNameByIndex(pDOFIndex);
+    final StageDOF lStageDeviceDOF = new StageDOF(lDOFName,
+                                                  pStageDeviceInterface,
+                                                  pDOFIndex);
+
     mDOFList.add(lStageDeviceDOF);
     mNameToStageDeviceDOFMap.put(lDOFName, lStageDeviceDOF);
     return lDOFName;

@@ -1,4 +1,4 @@
-package clearcontrol.devices.signalamp.gui.jfx;
+package clearcontrol.devices.signalamp.gui;
 
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;

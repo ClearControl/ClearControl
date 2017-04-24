@@ -15,14 +15,14 @@ public interface FusionTaskInterface
   /**
    * Checks if required images are available
    * 
-   * @param pAvailableImagesKeys
-   *          set of available keys
+   * @param pAvailableImagesSlotKeys
+   *          set of available slot keys
    * @return true if all required images are available
    */
-  public boolean checkIfRequiredImagesAvailable(Set<String> pAvailableImagesKeys);
+  public boolean checkIfRequiredImagesAvailable(Set<String> pAvailableImagesSlotKeys);
 
   /**
-   * Enqueues the computation nescessary to perform this task
+   * Enqueues the computation necessary to perform this task
    * 
    * @param pFastFusionEngine
    *          fast fusion engines

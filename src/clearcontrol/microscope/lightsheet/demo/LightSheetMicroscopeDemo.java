@@ -42,7 +42,6 @@ import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
 
 import org.junit.Test;
 
-import simbryo.synthoscopy.microscope.aberration.IlluminationMisalignment;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -56,8 +55,6 @@ import simbryo.textures.noise.UniformNoise;
 public class LightSheetMicroscopeDemo implements
                                       AsynchronousSchedulerServiceAccess
 {
-
-  private static final long cImageResolution = 1024;
 
   /**
    * @throws Exception
@@ -75,8 +72,9 @@ public class LightSheetMicroscopeDemo implements
     int lMaxNumberOfStacks = 32;
 
     int lMaxCameraResolution = 1024;
+    long lImageResolution = 1024;
 
-    int lNumberOfLightSheets = 2;
+    int lNumberOfLightSheets = 1;
     int lNumberOfDetectionArms = 1;
 
     float lDivisionTime = 11f;
@@ -89,8 +87,9 @@ public class LightSheetMicroscopeDemo implements
                                          ClearCLBackends.getBestBackend();
 
     ClearCL lClearCL = new ClearCL(lBestBackend);
-    ClearCLDevice lFastestGPUDevice = lClearCL.getDeviceByName("HD");
-    ClearCLContext lContext = lFastestGPUDevice.createContext();
+    ClearCLDevice lSimulationGPUDevice =
+                                       lClearCL.getDeviceByName("HD");
+    ClearCLContext lContext = lSimulationGPUDevice.createContext();
 
     LightSheetMicroscopeSimulatorDrosophila lSimulator =
                                                        new LightSheetMicroscopeSimulatorDrosophila(lContext,
@@ -106,7 +105,7 @@ public class LightSheetMicroscopeDemo implements
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
 
     // lSimulator.addAbberation(new SampleDrift());
-    lSimulator.addAbberation(new IlluminationMisalignment());
+    // lSimulator.addAbberation(new IlluminationMisalignment());
     // lSimulator.addAbberation(new DetectionMisalignment());
 
     /*scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),
@@ -166,9 +165,9 @@ public class LightSheetMicroscopeDemo implements
 
     final LightSheetMicroscope lLightSheetMicroscope =
                                                      new LightSheetMicroscope("SimulatedMicroscopeDemo",
-                                                                              lFastestGPUDevice.createContext(),
+                                                                              lSimulationGPUDevice.createContext(),
                                                                               lMaxNumberOfStacks,
-                                                                              2);
+                                                                              1);
 
     // Setting up lasers:
 
@@ -229,8 +228,8 @@ public class LightSheetMicroscopeDemo implements
                                                                               + c,
                                                                               lTrigger);
 
-      lCamera.getStackWidthVariable().set(cImageResolution);
-      lCamera.getStackHeightVariable().set(cImageResolution);
+      lCamera.getStackWidthVariable().set(lImageResolution);
+      lCamera.getStackHeightVariable().set(lImageResolution);
       lCamera.getExposureInSecondsVariable().set(0.010);
 
       // lCamera.getStackVariable().addSetListener((o,n)->
@@ -298,7 +297,7 @@ public class LightSheetMicroscopeDemo implements
       lLightSheet.getHeightVariable().set(100.0);
       lLightSheet.getEffectiveExposureInSecondsVariable().set(0.010);
 
-      lLightSheet.getImageHeightVariable().set(cImageResolution);
+      lLightSheet.getImageHeightVariable().set(lImageResolution);
     }
 
     // Setting up lightsheets selector

@@ -1,11 +1,11 @@
-package clearcontrol.devices.signalamp.gui.jfx.demo;
+package clearcontrol.devices.signalamp.gui.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
-import clearcontrol.devices.signalamp.gui.jfx.ScalingAmplifierPanel;
+import clearcontrol.devices.signalamp.gui.ScalingAmplifierPanel;
 
 public class ScalingAmplifierPanelDemo extends Application
 {

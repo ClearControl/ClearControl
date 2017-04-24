@@ -36,7 +36,7 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
   }
 
   /**
-   * Instanciates a lightsheet signal generator that delegates to another signal
+   * Instantiates a lightsheet signal generator that delegates to another signal
    * generator for the actual signal generation. This signal generator simply
    * adds a layer that translate detection arm and lightsheet parameters to
    * actual signals.

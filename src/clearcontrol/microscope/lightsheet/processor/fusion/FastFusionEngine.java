@@ -39,7 +39,7 @@ public class FastFusionEngine implements FastFusionEngineInterface
                                                                   new HashSet<>();
 
   /**
-   * Instanciates a StackFusion object given a CLearCL context
+   * Instantiates a StackFusion object given a CLearCL context
    * 
    * @param pContext
    *          ClearCL context
@@ -51,7 +51,8 @@ public class FastFusionEngine implements FastFusionEngineInterface
   }
 
   /**
-   * Instanciates a fast fusion engine given a
+   * Instantiates a fast fusion engine given an existing engine - all tasks are
+   * copied over
    * 
    * @param pFastFusionEngine
    *          fast fusion engine
@@ -91,12 +92,12 @@ public class FastFusionEngine implements FastFusionEngineInterface
   }
 
   @Override
-  public void passImage(String pImageKey,
+  public void passImage(String pSlotKey,
                         ContiguousMemoryInterface pImageData,
                         long... pDimensions)
   {
     MutablePair<Boolean, ClearCLImage> lPair =
-                                             ensureImageAllocated(pImageKey,
+                                             ensureImageAllocated(pSlotKey,
                                                                   pDimensions);
 
     lPair.getRight().readFrom(pImageData, true);
@@ -104,18 +105,18 @@ public class FastFusionEngine implements FastFusionEngineInterface
   }
 
   @Override
-  public MutablePair<Boolean, ClearCLImage> ensureImageAllocated(final String pImageKey,
+  public MutablePair<Boolean, ClearCLImage> ensureImageAllocated(final String pSlotKey,
                                                                  final long... pDimensions)
   {
 
     MutablePair<Boolean, ClearCLImage> lPair =
-                                             getImageSlotsMap().get(pImageKey);
+                                             getImageSlotsMap().get(pSlotKey);
 
     if (lPair == null)
     {
       lPair = MutablePair.of(true, (ClearCLImage) null);
 
-      getImageSlotsMap().put(pImageKey, lPair);
+      getImageSlotsMap().put(pSlotKey, lPair);
     }
 
     ClearCLImage lImage = lPair.getRight();
@@ -140,23 +141,44 @@ public class FastFusionEngine implements FastFusionEngineInterface
   }
 
   @Override
-  public ClearCLImage getImage(String pImageKey)
+  public void assignImageToAnotherSlotKey(final String pSrcSlotKey,
+                                          final String pDstSlotKey)
   {
-    return getImageSlotsMap().get(pImageKey).getRight();
+    MutablePair<Boolean, ClearCLImage> lDstPair =
+                                                getImageSlotsMap().get(pDstSlotKey);
+
+    if (lDstPair == null)
+    {
+      lDstPair = MutablePair.of(true, (ClearCLImage) null);
+      getImageSlotsMap().put(pDstSlotKey, lDstPair);
+    }
+
+    MutablePair<Boolean, ClearCLImage> lSrcPair =
+                                                getImageSlotsMap().get(pSrcSlotKey);
+
+    lDstPair.setRight(lSrcPair.getRight());
+    lDstPair.setLeft(true);
+
   }
 
   @Override
-  public boolean isImageAvailable(String pImageKey)
+  public ClearCLImage getImage(String pSlotKey)
+  {
+    return getImageSlotsMap().get(pSlotKey).getRight();
+  }
+
+  @Override
+  public boolean isImageAvailable(String pSlotKey)
   {
     MutablePair<Boolean, ClearCLImage> lMutablePair =
-                                                    getImageSlotsMap().get(pImageKey);
+                                                    getImageSlotsMap().get(pSlotKey);
     if (lMutablePair == null)
       return false;
     return lMutablePair.getLeft();
   }
 
   @Override
-  public Set<String> getAvailableImagesKeys()
+  public Set<String> getAvailableImagesSlotKeys()
   {
     HashSet<String> lAvailableImagesKeys = new HashSet<String>();
     for (Entry<String, MutablePair<Boolean, ClearCLImage>> lEntry : mImageSlotsMap.entrySet())
@@ -180,7 +202,7 @@ public class FastFusionEngine implements FastFusionEngineInterface
   {
     ArrayList<FusionTaskInterface> lReadyTasks = new ArrayList<>();
 
-    Set<String> lAvailableImageKeys = getAvailableImagesKeys();
+    Set<String> lAvailableImageKeys = getAvailableImagesSlotKeys();
 
     for (FusionTaskInterface lFusionTask : mFusionTasks)
       if (!mExecutedFusionTasks.contains(lFusionTask))

@@ -25,11 +25,13 @@ public class LightSheetFastFusionProcessor extends
                                            StackProcessorInterface,
                                            LoggingInterface
 {
+  private final LightSheetMicroscope mLightSheetMicroscope;
+  private LightSheetFastFusionEngine mEngine;
 
-  LightSheetFastFusionEngine mEngine;
+  private volatile StackInterface mFusedStack;
 
   /**
-   * Instanciates a lightsheet stack processor
+   * Instantiates a lightsheet stack processor
    * 
    * @param pProcessorName
    *          processor name
@@ -43,9 +45,7 @@ public class LightSheetFastFusionProcessor extends
                                        ClearCLContext pContext)
   {
     super(pProcessorName, pContext);
-
-    mEngine = new LightSheetFastFusionEngine(pContext,
-                                             pLightSheetMicroscope);
+    mLightSheetMicroscope = pLightSheetMicroscope;
 
   }
 
@@ -53,6 +53,13 @@ public class LightSheetFastFusionProcessor extends
   public StackInterface process(StackInterface pStack,
                                 RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
   {
+
+    if (mEngine == null)
+      mEngine =
+              new LightSheetFastFusionEngine(getContext(),
+                                             mLightSheetMicroscope.getNumberOfLightSheets(),
+                                             mLightSheetMicroscope.getNumberOfDetectionArms());
+
     // info("received stack for processing: %s", pStack);
 
     if (isPassThrough(pStack))
@@ -64,32 +71,30 @@ public class LightSheetFastFusionProcessor extends
 
     mEngine.passStack(true, pStack);
 
-    if (mEngine.isReady())
+    // if (mEngine.isReady())
     {
       int lNumberOfTasksExecuted = mEngine.executeAllTasks();
-      /*System.out.println("lNumberOfTasksExecuted="
-                         + lNumberOfTasksExecuted);/**/
-
+      info("executed %d fusion tasks", lNumberOfTasksExecuted);/**/
     }
 
     if (mEngine.isDone())
     {
       ClearCLImage lFusedImage = mEngine.getImage("fused");
 
-      StackInterface lFusedStack =
-                                 pStackRecycler.getOrWait(100,
-                                                          TimeUnit.SECONDS,
-                                                          StackRequest.build(lFusedImage.getDimensions()));
+      mFusedStack =
+                  pStackRecycler.getOrWait(1000,
+                                           TimeUnit.SECONDS,
+                                           StackRequest.build(lFusedImage.getDimensions()));
 
-      lFusedStack.setMetaData(mEngine.getFusedMetaData());
+      mFusedStack.setMetaData(mEngine.getFusedMetaData());
 
-      System.out.println("fused:" + lFusedStack.getMetaData());
+      System.out.println("fused:" + mFusedStack.getMetaData());
 
-      lFusedImage.writeTo(lFusedStack.getContiguousMemory(), true);
+      lFusedImage.writeTo(mFusedStack.getContiguousMemory(), true);
 
       mEngine.reset(false);
 
-      return lFusedStack;
+      return mFusedStack;
     }
 
     return null;

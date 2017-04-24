@@ -32,19 +32,19 @@ public class LightSheetMicroscope extends
   private LightSheetFastFusionProcessor mStackProcessor;
 
   /**
-   * Instanciates a lightsheet microscope with a given name.
+   * Instantiates a lightsheet microscope with a given name.
    * 
    * @param pDeviceName
    *          device name
-   * @param pContext
-   *          ClearCL context
+   * @param pStackFusionContext
+   *          ClearCL context for stack fusion
    * @param pMaxStackProcessingQueueLength
    *          max stack processing queue length
    * @param pThreadPoolSize
    *          thread pool size for stack processing pipeline
    */
   public LightSheetMicroscope(String pDeviceName,
-                              ClearCLContext pContext,
+                              ClearCLContext pStackFusionContext,
                               int pMaxStackProcessingQueueLength,
                               int pThreadPoolSize)
   {
@@ -55,7 +55,7 @@ public class LightSheetMicroscope extends
     mStackProcessor =
                     new LightSheetFastFusionProcessor("Stack Processor",
                                                       this,
-                                                      pContext);
+                                                      pStackFusionContext);
 
     mStackProcessingPipeline.addStackProcessor(mStackProcessor,
                                                "fused stacks",
