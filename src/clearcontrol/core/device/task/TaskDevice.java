@@ -1,7 +1,6 @@
 package clearcontrol.core.device.task;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -128,7 +127,7 @@ public abstract class TaskDevice extends SignalStartStopDevice
    */
   public void stopTask()
   {
-    mStopSignal.set(true);
+    mStopSignal.setEdge(false, true);
   }
 
   /**
@@ -168,24 +167,14 @@ public abstract class TaskDevice extends SignalStartStopDevice
     try
     {
       boolean lResult = false;
-      try
-      {
-        if (mStoppedLatch != null)
-          lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
-        else
-          lResult = true;
-      }
-      catch (InterruptedException e)
-      {
-        e.printStackTrace();
-      }
+      if (mStoppedLatch != null)
+        lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
+      else
+        lResult = true;
 
-      boolean lWaitForCompletion = waitForCompletion(pTimeOut,
-                                                     pTimeUnit);
-
-      return lResult && lWaitForCompletion;
+      return lResult;
     }
-    catch (ExecutionException e)
+    catch (Throwable e)
     {
       String lError =
                     "Error during previous execution of loop function!";

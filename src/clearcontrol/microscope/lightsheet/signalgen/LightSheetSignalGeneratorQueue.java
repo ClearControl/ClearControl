@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.signalgen;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
@@ -24,9 +25,7 @@ import clearcontrol.microscope.lightsheet.signalgen.staves.LightSheetStaves;
  *
  * @author royer
  */
-public class LightSheetSignalGeneratorQueue extends
-                                            SignalGeneratorQueue
-                                            implements
+public class LightSheetSignalGeneratorQueue implements
                                             QueueInterface,
                                             LoggingInterface
 
@@ -35,7 +34,8 @@ public class LightSheetSignalGeneratorQueue extends
   private SignalGeneratorQueue mDelegatedQueue;
   private LightSheetSignalGeneratorDevice mLightSheetSignalGeneratorDevice;
 
-  private Movement mBeforeExposureMovement, mExposureMovement;
+  private Movement mBeforeExposureMovement, mExposureMovement,
+      mFinalMovement;
 
   final ConcurrentHashMap<DetectionArm, DetectionArmStaves> mDetectionArmToStavesMap =
                                                                                      new ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public class LightSheetSignalGeneratorQueue extends
                                      pLightSheetSignalGeneratorDevice;
     mDelegatedQueue = pDelegatedQueue;
 
-    setupStagingScore();
+    setupStagingAndFinalizsationScores();
   }
 
   /**
@@ -87,15 +87,32 @@ public class LightSheetSignalGeneratorQueue extends
    * Setting up the two movements that are necessary for one image acquisition
    * and corresponding lightsheet scanning.
    */
-  private void setupStagingScore()
+  private void setupStagingAndFinalizsationScores()
   {
     mBeforeExposureMovement = new Movement("BeforeExposure");
     mExposureMovement = new Movement("Exposure");
+    mFinalMovement = new Movement("Final");
+    mFinalMovement.setDuration(10, TimeUnit.MICROSECONDS);
 
     ScoreInterface lStagingScore = mDelegatedQueue.getStagingScore();
 
     lStagingScore.addMovement(mBeforeExposureMovement);
     lStagingScore.addMovement(mExposureMovement);
+
+    ScoreInterface lFinalisationScore =
+                                      mDelegatedQueue.getFinalizationScore();
+
+    lFinalisationScore.addMovement(mFinalMovement);
+  }
+
+  /**
+   * Returns the staging score
+   * 
+   * @return staging score
+   */
+  public ScoreInterface getStagingScore()
+  {
+    return mDelegatedQueue.getStagingScore();
   }
 
   /**
@@ -138,7 +155,8 @@ public class LightSheetSignalGeneratorQueue extends
                                lLightSheetStaves);
 
     lLightSheetStaves.addStavesToMovements(mBeforeExposureMovement,
-                                           mExposureMovement);
+                                           mExposureMovement,
+                                           mFinalMovement);
 
   }
 
@@ -174,6 +192,10 @@ public class LightSheetSignalGeneratorQueue extends
     // first we make sure that the staging score is up-to-date given all the
     // detection and illumination parameters.f
     update();
+
+    /* ScoreVisualizerJFrame.visualize("StagingScore",
+                                    mDelegatedQueue.getStagingScore());/**/
+
     // then add the current state to the queue which corresponds to adding the
     // staging score to the actual movement that represents the queue.
     mDelegatedQueue.addCurrentStateToQueue();
@@ -217,6 +239,7 @@ public class LightSheetSignalGeneratorQueue extends
   @Override
   public void finalizeQueue()
   {
+    // mDelegatedQueue.addCurrentStateToQueue();
     mDelegatedQueue.finalizeQueue();
   }
 

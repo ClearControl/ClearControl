@@ -31,6 +31,7 @@ import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
+import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.processor.AsynchronousPoolStackProcessorPipeline;
 import clearcontrol.stack.processor.AsynchronousStackProcessorPipeline;
 import clearcontrol.stack.processor.StackProcessingPipelineInterface;
@@ -503,7 +504,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
         if (lDevice instanceof QueueDeviceInterface)
         {
-          info("playQueue() on device: %s \n", lDevice);/**/
+          // info("playQueue() on device: %s \n", lDevice);/**/
           @SuppressWarnings("unchecked")
           final QueueDeviceInterface<QueueInterface> lStateQueueDeviceInterface =
                                                                                 (QueueDeviceInterface<QueueInterface>) lDevice;
@@ -573,10 +574,18 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                                      /*System.out.println("Received: "
                                                                                         + pNewValue);/**/
                                                                      lStacksReceivedLatches[fi].countDown();
+                                                                     if (pNewValue == null)
+                                                                       return;
+                                                                     StackMetaData lMetaData =
+                                                                                             pNewValue.getMetaData();
+                                                                     if (lMetaData == null
+                                                                         || lMetaData.getTimeStampInNanoseconds() == null)
+                                                                       return;
+
                                                                      mAverageTimeInNS +=
-                                                                                      pNewValue.getMetaData()
-                                                                                               .getTimeStampInNanoseconds()
+                                                                                      lMetaData.getTimeStampInNanoseconds()
                                                                                          / lNumberOfDetectionArmDevices;
+
                                                                    }
                                                                  };
 

@@ -224,6 +224,22 @@ public class LightSheetMicroscopeQueue extends
   }
 
   @Override
+  public void setExp(double pExpsoureISeconds)
+  {
+    int lNumberOfSwitchableDevices =
+                                   getLightSheetOpticalSwitchQueue().getNumberOfSwitches();
+    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
+      getLightSheetDeviceQueue(i).getEffectiveExposureInSecondsVariable()
+                                 .set(pExpsoureISeconds);
+
+    int lNumberOfStackCameraDevices = getNumberOfStackCameras();
+
+    for (int c = 0; c < lNumberOfStackCameraDevices; c++)
+      getStackCameraQueue(c).getExposureInSecondsVariable()
+                            .set(pExpsoureISeconds);
+  };
+
+  @Override
   public void setC(int pCameraIndex, boolean pKeepImage)
   {
     getStackCameraQueue(pCameraIndex).getKeepPlaneVariable()

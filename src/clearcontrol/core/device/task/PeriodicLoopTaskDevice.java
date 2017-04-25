@@ -75,7 +75,7 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
   @Override
   public void run()
   {
-    while (!getStopSignalVariable().get())
+    while (getStopSignalVariable().get() == false)
     {
       final long lNow = System.nanoTime();
       final long lFactor = TimeUnit.NANOSECONDS.convert(1, mTimeUnit);
@@ -87,7 +87,8 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
       final long lStopTime = System.nanoTime();
 
       if (lStopTime < mDeadline)
-        while (System.nanoTime() < mDeadline)
+        while (System.nanoTime() < mDeadline
+               && getStopSignalVariable().get() == false)
         {
           ThreadUtils.sleep((mDeadline - System.nanoTime()) / 4,
                             TimeUnit.NANOSECONDS);
@@ -101,7 +102,7 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
   /**
    * Loop to execute
    * 
-   * @return true -> continue loping, false -> stop loop
+   * @return true -> continue looping, false -> stop loop
    */
   public abstract boolean loop();
 

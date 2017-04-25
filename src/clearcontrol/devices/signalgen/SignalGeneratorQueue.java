@@ -17,6 +17,7 @@ public class SignalGeneratorQueue implements QueueInterface
   protected volatile int mEnqueuedStateCounter = 0;
   protected final ScoreInterface mQueuedScore;
   protected final ScoreInterface mStagingScore;
+  protected final ScoreInterface mFinalizationScore;
 
   /**
    * Instantiates a real-time signal generator queue
@@ -27,6 +28,7 @@ public class SignalGeneratorQueue implements QueueInterface
     super();
     mQueuedScore = new Score("queuedscore");
     mStagingScore = new Score("stagingscore");
+    mFinalizationScore = new Score("finalizationscore");
   }
 
   /**
@@ -37,6 +39,16 @@ public class SignalGeneratorQueue implements QueueInterface
   public ScoreInterface getStagingScore()
   {
     return mStagingScore;
+  }
+
+  /**
+   * Returns finalisation score
+   * 
+   * @return finalisation score
+   */
+  public ScoreInterface getFinalizationScore()
+  {
+    return mFinalizationScore;
   }
 
   /**
@@ -84,7 +96,7 @@ public class SignalGeneratorQueue implements QueueInterface
   @Override
   public void finalizeQueue()
   {
-
+    mQueuedScore.addScoreCopy(mFinalizationScore);
   }
 
   @Override

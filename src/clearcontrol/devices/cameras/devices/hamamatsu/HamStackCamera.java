@@ -167,84 +167,82 @@ public class HamStackCamera extends
   @Override
   public Future<Boolean> playQueue(HamStackCameraQueue pQueue)
   {
-    super.playQueue(pQueue);
-
-    final Future<Boolean> lFuture =
-                                  executeAsynchronously(new Callable<Boolean>()
-                                  {
-                                    @Override
-                                    public Boolean call() throws Exception
-                                    {
-                                      return acquisition(pQueue);
-                                    }
-                                  });
-
-    return lFuture;
-  }
-
-  protected Boolean acquisition(HamStackCameraQueue pQueue)
-  {
     synchronized (mLock)
     {
-      try
-      {
-        double lExposureInSeconds =
-                                  pQueue.getExposureInSecondsVariable()
-                                        .get()
-                                        .doubleValue();
-        long lWidth =
-                    mDcamDevice.adjustWidthHeight(pQueue.getStackWidthVariable()
-                                                        .get(),
-                                                  4);
-        long lHeight =
-                     mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
-                                                         .get(),
-                                                   4);
-        long lDepth = pQueue.getStackDepthVariable().get();
+      super.playQueue(pQueue);
 
-        if (mSequence == null || mSequence.getWidth() != lWidth
-            || mSequence.getHeight() != lHeight
-            || mSequence.getDepth() != lDepth)
-          mSequence =
-                    new DcamImageSequence(mDcamDevice,
+      double lExposureInSeconds =
+                                pQueue.getExposureInSecondsVariable()
+                                      .get()
+                                      .doubleValue();
+      long lWidth =
+                  mDcamDevice.adjustWidthHeight(pQueue.getStackWidthVariable()
+                                                      .get(),
+                                                4);
+      long lHeight =
+                   mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
+                                                       .get(),
+                                                 4);
+      long lDepth = pQueue.getStackDepthVariable().get();
+
+      if (mSequence == null || mSequence.getWidth() != lWidth
+          || mSequence.getHeight() != lHeight
+          || mSequence.getDepth() != lDepth)
+        mSequence = new DcamImageSequence(mDcamDevice,
                                           2,
                                           lWidth,
                                           lHeight,
                                           lDepth);
 
-        boolean lAcquisitionResult =
-                                   mDcamSequenceAcquisition.acquireSequence(lExposureInSeconds,
-                                                                            mSequence);
-        if (!lAcquisitionResult)
-          return false;
+      final Future<Boolean> lFuture = acquisition(pQueue,
+                                                  lExposureInSeconds,
+                                                  lWidth,
+                                                  lHeight,
+                                                  lDepth);
 
-        StackRequest lRecyclerRequest = StackRequest.build(lWidth,
-                                                           lHeight,
-                                                           lDepth);
-        StackInterface lStack =
-                              getStackRecycler().getOrWait(cWaitTime,
-                                                           TimeUnit.MILLISECONDS,
-                                                           lRecyclerRequest);
-
-        if (lStack == null)
-          return false;
-
-        ArrayList<Boolean> lKeepPlaneList =
-                                          pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
-
-        mSequence.consolidateTo(lKeepPlaneList,
-                                lStack.getContiguousMemory());
-
-        getStackVariable().setAsync(lStack);
-        return true;
-      }
-      catch (Throwable e)
-      {
-        severe("Exception while acquiring stack: %s", e);
-        e.printStackTrace();
-        return false;
-      }
+      return lFuture;
     }
+
+  }
+
+  private Future<Boolean> acquisition(HamStackCameraQueue pQueue,
+                                      double lExposureInSeconds,
+                                      long lWidth,
+                                      long lHeight,
+                                      long lDepth)
+  {
+    Future<Boolean> lAcquisitionResult =
+                                       mDcamSequenceAcquisition.acquireSequenceAsync(lExposureInSeconds,
+                                                                                     mSequence);
+
+    Callable<Boolean> lCallable = () -> {
+      if (!lAcquisitionResult.get())
+        return false;
+
+      StackRequest lRecyclerRequest = StackRequest.build(lWidth,
+                                                         lHeight,
+                                                         lDepth);
+      StackInterface lStack =
+                            getStackRecycler().getOrWait(cWaitTime,
+                                                         TimeUnit.MILLISECONDS,
+                                                         lRecyclerRequest);
+
+      if (lStack == null)
+        return false;
+
+      ArrayList<Boolean> lKeepPlaneList =
+                                        pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
+
+      mSequence.consolidateTo(lKeepPlaneList,
+                              lStack.getContiguousMemory());
+
+      getStackVariable().setAsync(lStack);
+      return true;
+    };
+
+    final Future<Boolean> lFuture = executeAsynchronously(lCallable);
+
+    return lFuture;
   }
 
   @Override

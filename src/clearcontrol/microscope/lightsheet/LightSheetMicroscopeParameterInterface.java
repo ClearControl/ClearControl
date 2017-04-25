@@ -10,6 +10,15 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIllu
  */
 public interface LightSheetMicroscopeParameterInterface
 {
+
+  /**
+   * Sets exposure in seconds
+   * 
+   * @param pExposureISeconds
+   *          exposure in seconds
+   */
+  void setExp(double pExposureISeconds);
+
   /**
    * Selects _one_ light sheet to direct light to:
    * 
