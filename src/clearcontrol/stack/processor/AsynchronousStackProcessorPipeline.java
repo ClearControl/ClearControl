@@ -35,7 +35,7 @@ public class AsynchronousStackProcessorPipeline extends
                                             StackRecyclerManager pStackRecyclerManager,
                                             int pMaxQueueSize)
   {
-    super(pStackRecyclerManager);
+    super(pName, pStackRecyclerManager);
 
     getInputVariable().addSetListener((o,
                                        n) -> mAsyncStackProcessor.passOrWait(n));

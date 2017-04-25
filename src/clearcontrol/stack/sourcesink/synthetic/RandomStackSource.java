@@ -65,7 +65,14 @@ public class RandomStackSource implements StackSourceInterface
   }
 
   @Override
-  public double getStackTimeStampInSeconds(long pStackIndex)
+  public Double getStackTimeStampInSeconds(long pStackIndex)
+  {
+    return getStackTimeStampInSeconds(cDefaultChannel, pStackIndex);
+  }
+
+  @Override
+  public Double getStackTimeStampInSeconds(String pChannel,
+                                           long pStackIndex)
   {
     return Magnitude.nano2unit(System.nanoTime());
   }
@@ -73,11 +80,21 @@ public class RandomStackSource implements StackSourceInterface
   @Override
   public StackInterface getStack(final long pStackIndex)
   {
-    return getStack(pStackIndex, 0, TimeUnit.NANOSECONDS);
+    return getStack(cDefaultChannel,
+                    pStackIndex,
+                    0,
+                    TimeUnit.NANOSECONDS);
   }
 
   @Override
-  public StackInterface getStack(final long pStackIndex,
+  public StackInterface getStack(String pChannel, long pStackIndex)
+  {
+    return getStack(pChannel,pStackIndex, 1, TimeUnit.NANOSECONDS);
+  }
+
+  @Override
+  public StackInterface getStack(String pChannel,
+                                 final long pStackIndex,
                                  long pTime,
                                  TimeUnit pTimeUnit)
   {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,12 @@ public class RawFileStackSource extends FileStackBase implements
   {
     super(true);
     mStackRecycler = pStackRecycler;
+  }
+
+  @Override
+  public void setLocation(File pRootFolder, String pName)
+  {
+    super.setLocation(pRootFolder, pName);
     update();
   }
 
@@ -55,15 +62,23 @@ public class RawFileStackSource extends FileStackBase implements
   }
 
   @Override
-  public StackInterface getStack(final long pStackIndex)
+  public StackInterface getStack(long pStackIndex)
   {
-    return getStack(pStackIndex, 1, TimeUnit.NANOSECONDS);
+    return getStack(cDefaultChannel, pStackIndex);
   }
 
   @Override
-  public StackInterface getStack(final long pStackIndex,
-                                 long pTime,
-                                 TimeUnit pTimeUnit)
+  public StackInterface getStack(final String pChannel,
+                                 final long pStackIndex)
+  {
+    return getStack(pChannel, pStackIndex, 1, TimeUnit.NANOSECONDS);
+  }
+
+  @Override
+  public StackInterface getStack(final String pChannel,
+                                 final long pStackIndex,
+                                 final long pTime,
+                                 final TimeUnit pTimeUnit)
   {
     if (mStackRecycler == null)
     {
@@ -72,8 +87,8 @@ public class RawFileStackSource extends FileStackBase implements
     try
     {
 
-      final StackRequest lStackRequest =
-                                       mStackIndexToStackRequestMap.get(pStackIndex);
+      final StackRequest lStackRequest = getStackRequest(pChannel,
+                                                         pStackIndex);
 
       final StackInterface lStack =
                                   mStackRecycler.getOrWait(pTime,
@@ -100,7 +115,8 @@ public class RawFileStackSource extends FileStackBase implements
                                         lStack.getSizeInBytes());
 
       final double lTimeStampInSeconds =
-                                       mStackIndexToTimeStampInSecondsMap.get(pStackIndex);
+                                       getStackTimeStampInSeconds(pChannel,
+                                                                  pStackIndex);
       lStack.getMetaData()
             .setTimeStampInNanoseconds((long) Magnitude.unit2nano(lTimeStampInSeconds));
       lStack.getMetaData().setIndex(pStackIndex);
@@ -120,35 +136,45 @@ public class RawFileStackSource extends FileStackBase implements
   {
     try
     {
+      ArrayList<String> lChannelList = getCurrentChannelList();
 
-      final Scanner lIndexFileScanner = new Scanner(mIndexFile);
-
-      while (lIndexFileScanner.hasNextLine())
+      for (String lChannel : lChannelList)
       {
-        final String lLine = lIndexFileScanner.nextLine();
-        final String[] lSplittedLine = lLine.split("\t", -1);
-        final long lStackIndex =
-                               Long.parseLong(lSplittedLine[0].trim());
-        final double lTimeStampInSeconds =
-                                         Double.parseDouble(lSplittedLine[1].trim());
-        final String[] lDimensionsStringArray =
-                                              lSplittedLine[2].split(", ");
+        final Scanner lIndexFileScanner =
+                                        new Scanner(getIndexFile(lChannel));
 
-        final long lWidth = Long.parseLong(lDimensionsStringArray[0]);
-        final long lHeight =
-                           Long.parseLong(lDimensionsStringArray[1]);
-        final long lDepth = Long.parseLong(lDimensionsStringArray[2]);
+        while (lIndexFileScanner.hasNextLine())
+        {
+          final String lLine = lIndexFileScanner.nextLine();
+          final String[] lSplittedLine = lLine.split("\t", -1);
+          final long lStackIndex =
+                                 Long.parseLong(lSplittedLine[0].trim());
+          final double lTimeStampInSeconds =
+                                           Double.parseDouble(lSplittedLine[1].trim());
+          final String[] lDimensionsStringArray =
+                                                lSplittedLine[2].split(", ");
 
-        final StackRequest lStackRequest = StackRequest.build(lWidth,
+          final long lWidth =
+                            Long.parseLong(lDimensionsStringArray[0]);
+          final long lHeight =
+                             Long.parseLong(lDimensionsStringArray[1]);
+          final long lDepth =
+                            Long.parseLong(lDimensionsStringArray[2]);
+
+          final StackRequest lStackRequest =
+                                           StackRequest.build(lWidth,
                                                               lHeight,
                                                               lDepth);
 
-        mStackIndexToTimeStampInSecondsMap.put(lStackIndex,
-                                               lTimeStampInSeconds);
-        mStackIndexToStackRequestMap.put(lStackIndex, lStackRequest);
+          setStackTimeStampInSeconds(lChannel,
+                                     lStackIndex,
+                                     lTimeStampInSeconds);
+          setStackRequest(lChannel, lStackIndex, lStackRequest);
+        }
+
+        lIndexFileScanner.close();
       }
 
-      lIndexFileScanner.close();
       return true;
     }
     catch (final FileNotFoundException e)
