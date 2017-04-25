@@ -6,6 +6,7 @@ import static java.lang.Math.round;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.NameableWithChangeListener;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -26,6 +27,7 @@ public class InterpolatedAcquisitionState extends
                                           NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
                                           implements
                                           LightSheetAcquisitionStateInterface<InterpolatedAcquisitionState>,
+                                          LoggingInterface,
                                           Cloneable
 
 {
@@ -181,27 +183,34 @@ public class InterpolatedAcquisitionState extends
     StageDeviceInterface lMainXYZRStage =
                                         getLightSheetMicroscope().getMainXYZRStage();
 
-    /*
-    getStageXVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(0)
-                                                .get(),
-                                  lMainXYZRStage.getMaxPositionVariable(0)
-                                                .get());
-    
-    getStageYVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(1)
-                                                .get(),
-                                  lMainXYZRStage.getMaxPositionVariable(1)
-                                                .get());
-    
-    getStageZVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(2)
-                                                .get(),
-                                  lMainXYZRStage.getMaxPositionVariable(2)
-                                                .get());/**/
+    if (lMainXYZRStage != null)
+    {
 
-    getStageXVariable().setMinMax(-100, 100);
+      getStageXVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(0)
+                                                  .get(),
+                                    lMainXYZRStage.getMaxPositionVariable(0)
+                                                  .get());
 
-    getStageYVariable().setMinMax(-100, 100);
+      getStageYVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(1)
+                                                  .get(),
+                                    lMainXYZRStage.getMaxPositionVariable(1)
+                                                  .get());
 
-    getStageZVariable().setMinMax(-100, 100);
+      getStageZVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(2)
+                                                  .get(),
+                                    lMainXYZRStage.getMaxPositionVariable(2)
+                                                  .get());/**/
+    }
+    else
+    {
+      warning("No main stage defined, using generic range for X,Y and Z");
+
+      getStageXVariable().setMinMax(-100, 100);
+
+      getStageYVariable().setMinMax(-100, 100);
+
+      getStageZVariable().setMinMax(-100, 100);
+    }
 
     resetBounds();
   }

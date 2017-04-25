@@ -226,8 +226,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
               if (mControlDetectionVariable.get())
                 mQueue.setDZ(c, lCurrentZ);
             }
-            getLightSheetMicroscope().setExposure(mExposureVariableInSeconds.get()
-                                                                            .doubleValue());
+            mQueue.setExp(mExposureVariableInSeconds.get()
+                                                    .doubleValue());
 
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
             {
@@ -236,7 +236,6 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                 mQueue.setIZ(l, lCurrentZ);
             }
 
-            mQueue.addCurrentStateToQueue();
             mQueue.addCurrentStateToQueue();
 
             mQueue.finalizeQueue();

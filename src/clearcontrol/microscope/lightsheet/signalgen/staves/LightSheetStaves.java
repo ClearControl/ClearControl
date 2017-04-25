@@ -42,7 +42,8 @@ public class LightSheetStaves implements LoggingInterface
       mExposureWStave, mBeforeExposureLAStave, mExposureLAStave;
   private IntervalStave mNonSIIluminationLaserTriggerStave;
 
-  private EdgeStave mBeforeExposureTStave, mExposureTStave;
+  private EdgeStave mBeforeExposureTStave, mExposureTStave,
+      mFinalTStave;
 
   public LightSheetStaves(LightSheetQueue pLightSheetQueue)
   {
@@ -67,6 +68,8 @@ public class LightSheetStaves implements LoggingInterface
     mExposureWStave = new ConstantStave("lightsheet.r.e", 0);
     mExposureTStave = new EdgeStave("trigger.out.e", 1, 0, 0);
 
+    mFinalTStave = new EdgeStave("trigger.out.f", 0.5f, 1, 0);
+
     mNonSIIluminationLaserTriggerStave =
                                        new IntervalStave("trigger.out",
                                                          0,
@@ -82,10 +85,12 @@ public class LightSheetStaves implements LoggingInterface
   }
 
   public void addStavesToMovements(Movement pBeforeExposureMovement,
-                                   Movement pExposureMovement)
+                                   Movement pExposureMovement,
+                                   Movement pFinalMovement)
   {
     ensureStavesAddedToBeforeExposureMovement(pBeforeExposureMovement);
     ensureStavesAddedToExposureMovement(pExposureMovement);
+    ensureStavesAddedToFinalMovement(pFinalMovement);
   }
 
   public void ensureStavesAddedToBeforeExposureMovement(Movement pBeforeExposureMovement)
@@ -221,6 +226,21 @@ public class LightSheetStaves implements LoggingInterface
                                          setLaserDigitalTriggerStave(pExposureMovement,
                                                                      i,
                                                                      mNonSIIluminationLaserTriggerStave);/**/
+
+  }
+
+  public void ensureStavesAddedToFinalMovement(Movement pFinalMovement)
+  {
+    final MachineConfiguration lCurrentMachineConfiguration =
+                                                            MachineConfiguration.getCurrentMachineConfiguration();
+
+    mBeforeExposureTStave =
+                          pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                                        + getLightSheet().getName()
+                                                                                                                         .toLowerCase()
+                                                                                                        + ".t.index",
+                                                                                                        8 + 7),
+                                                        mFinalTStave);
 
   }
 
