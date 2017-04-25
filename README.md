@@ -5,32 +5,28 @@
 ### RTlib - Real-Time and High-Performance Control Library ###
 
 
-RTlib philosophy is that it is possible to design control software in
+ClearControl philosophy is that it is possible to design control software in
 Java for high-performance microscopes with a minimum of native code by
 leveraging the best Java practices and libraries available. 
-
-Current version: 1.0
 
 
 ### How to build the project? ###
 
-* Building RTlib
-To build RTlib you need Gradle build tool - http://www.gradle.org/overview
-Tip: Make sure that the gradle executable is in your path.
+* Building ClearControl:
 
 to build the project:
 
-    gradle build
+    ./gradlew build
 
 To generate eclipse project files:
 
-    gradle eclipse
+    ./gradlew eclipse
 
 To clean-up modified eclipse project files:
 
-    gradle cleanEclipse
+    ./gradlew cleanEclipse
 
-That's it, now you can import all RTlib projects in Eclipse. 
+That's it, now you can import the ClearControl project in Eclipse. 
 
 
 * Dependencies
@@ -42,7 +38,7 @@ Currently the maturity of the code in the different packages can be estimated by
 Documentation will follow after code has stabilised.
 
 ---------------------------------------------------
-NOTE: This version of RTlib is still in the early stages
+NOTE: This version of ClearControl is still in the early stages
 ---------------------------------------------------
 
 ### Author(s) ###
