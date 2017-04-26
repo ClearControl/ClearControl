@@ -66,14 +66,17 @@ public class LightSheetOpticalSwitchStaves
    *          before exposure movement
    * @param pExposureMovement
    *          exposure movement
+   * @param pFinalMovement
    */
   public void addStavesToMovements(Movement pBeforeExposureMovement,
-                                   Movement pExposureMovement)
+                                   Movement pExposureMovement,
+                                   Movement pFinalMovement)
   {
     for (int i = 0; i < mBitStave.length; i++)
     {
       pBeforeExposureMovement.setStave(mStaveIndex[i], mBitStave[i]);
       pExposureMovement.setStave(mStaveIndex[i], mBitStave[i]);
+      pFinalMovement.setStave(mStaveIndex[i], mBitStave[i]);
     }
   }
 

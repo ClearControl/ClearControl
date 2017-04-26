@@ -14,6 +14,7 @@ import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.staves.ConstantStave;
 import clearcontrol.devices.signalgen.staves.EdgeStave;
 import clearcontrol.devices.signalgen.staves.IntervalStave;
+import clearcontrol.devices.signalgen.staves.RampContinuousStave;
 import clearcontrol.devices.signalgen.staves.RampSteppingStave;
 import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -36,6 +37,8 @@ public class LightSheetStaves implements LoggingInterface
 
   private RampSteppingStave mBeforeExposureZStave,
       mBeforeExposureYStave, mExposureYStave, mExposureZStave;
+
+  private RampContinuousStave mFinalYStave;
 
   private ConstantStave mBeforeExposureXStave, mExposureXStave,
       mBeforeExposureBStave, mExposureBStave, mBeforeExposureWStave,
@@ -69,6 +72,7 @@ public class LightSheetStaves implements LoggingInterface
     mExposureTStave = new EdgeStave("trigger.out.e", 1, 0, 0);
 
     mFinalTStave = new EdgeStave("trigger.out.f", 0.5f, 1, 0);
+    mFinalYStave = new RampContinuousStave("lightsheet.y.f");
 
     mNonSIIluminationLaserTriggerStave =
                                        new IntervalStave("trigger.out",
@@ -234,13 +238,56 @@ public class LightSheetStaves implements LoggingInterface
     final MachineConfiguration lCurrentMachineConfiguration =
                                                             MachineConfiguration.getCurrentMachineConfiguration();
 
-    mBeforeExposureTStave =
-                          pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                                                        + getLightSheet().getName()
-                                                                                                                         .toLowerCase()
-                                                                                                        + ".t.index",
-                                                                                                        8 + 7),
-                                                        mFinalTStave);
+    pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                  + getLightSheet().getName()
+                                                                                                   .toLowerCase()
+                                                                                  + ".x.index",
+                                                                                  2),
+                                  mBeforeExposureXStave);
+
+    mFinalYStave = pFinalMovement.ensureSetStave(
+                                                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                                 + getLightSheet().getName()
+                                                                                                                  .toLowerCase()
+                                                                                                 + ".y.index",
+                                                                                                 3),
+                                                 mFinalYStave);
+
+    pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                  + getLightSheet().getName()
+                                                                                                   .toLowerCase()
+                                                                                  + ".z.index",
+                                                                                  4),
+                                  mBeforeExposureZStave);
+
+    pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                  + getLightSheet().getName()
+                                                                                                   .toLowerCase()
+                                                                                  + ".b.index",
+                                                                                  5),
+                                  mBeforeExposureBStave);
+
+    pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                  + getLightSheet().getName()
+                                                                                                   .toLowerCase()
+                                                                                  + ".w.index",
+                                                                                  6),
+                                  mBeforeExposureWStave);
+
+    pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                  + getLightSheet().getName()
+                                                                                                   .toLowerCase()
+                                                                                  + ".la.index",
+                                                                                  7),
+                                  mBeforeExposureLAStave);
+
+    mFinalTStave = pFinalMovement.ensureSetStave(
+                                                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
+                                                                                                 + getLightSheet().getName()
+                                                                                                                  .toLowerCase()
+                                                                                                 + ".t.index",
+                                                                                                 8 + 7),
+                                                 mFinalTStave);
 
   }
 
@@ -324,7 +371,7 @@ public class LightSheetStaves implements LoggingInterface
       mBeforeExposureYStave.setSyncStop(1);
       mBeforeExposureYStave.setStartValue((float) lGalvoYHighValue);
       mBeforeExposureYStave.setStopValue((float) lGalvoYLowValue);
-      mBeforeExposureYStave.setExponent(0.2f);
+      mBeforeExposureYStave.setExponent(0.1f);
 
       mBeforeExposureZStave.setSyncStart(0);
       mBeforeExposureZStave.setSyncStop(1);
@@ -344,6 +391,13 @@ public class LightSheetStaves implements LoggingInterface
       mExposureZStave.setStopValue((float) lGalvoZHighValue);
       mExposureZStave.setOutsideValue((float) lGalvoZHighValue);
       mExposureZStave.setNoJump(true);
+
+      mFinalYStave.setSyncStart(0);
+      mFinalYStave.setSyncStop(1);
+      mFinalYStave.setStartValue((float) lGalvoYHighValue);
+      mFinalYStave.setStopValue((float) lGalvoYHighValue + 0.00f);
+      mFinalYStave.setOutsideValue((float) lGalvoYHighValue);
+      mFinalYStave.setNoJump(true);
 
       mBeforeExposureXStave.setValue((float) getLightSheet().getXFunction()
                                                             .get()

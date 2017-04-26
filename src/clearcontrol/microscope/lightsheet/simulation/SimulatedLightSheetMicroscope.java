@@ -103,7 +103,7 @@ public class SimulatedLightSheetMicroscope extends
     }
 
     // Setting up Stage:
-    if(pXYZRStage)
+    if (pXYZRStage)
     {
       StageDeviceSimulator lStageDeviceSimulator =
                                                  new StageDeviceSimulator("Stage",
@@ -266,6 +266,13 @@ public class SimulatedLightSheetMicroscope extends
    */
   public void addStandardDevices()
   {
+
+    // Adding calibrator:
+    {
+      Calibrator lCalibrator = addCalibrator();
+      lCalibrator.load();
+    }
+
     // Setting up acquisition state manager:
     {
       AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager =
@@ -276,12 +283,6 @@ public class SimulatedLightSheetMicroscope extends
       lAcquisitionState.setupDefault(this);
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
       addInteractiveAcquisition(lAcquisitionStateManager);
-    }
-
-    // Adding calibrator:
-    {
-      Calibrator lCalibrator = addCalibrator();
-      lCalibrator.load();
     }
 
     // Adding timelapse device:

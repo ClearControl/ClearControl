@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.math.functions.InvertibleFunction;
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.variable.bounded.BoundedVariable;
+import org.apache.commons.math3.analysis.UnivariateFunction;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.math.functions.InvertibleFunction;
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 
 /**
  * MachineConfiguration is a singleton that can be accessed to query infromation
@@ -130,7 +130,12 @@ public class MachineConfiguration implements LoggingInterface
   public String getStringProperty(String pKey, String pDefaultValue)
   {
     if (mProperties == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
     return mProperties.getProperty(pKey, pDefaultValue);
   }
 
@@ -150,7 +155,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %d\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Integer.parseInt(lProperty);
   }
@@ -170,7 +180,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %d\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Long.parseLong(lProperty);
   }
@@ -190,7 +205,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %g\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Double.parseDouble(lProperty);
   }
@@ -211,7 +231,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultValue ? "true" : "false");
       return pDefaultValue;
+    }
 
     return Boolean.parseBoolean(lProperty.toLowerCase())
            || lProperty.trim().equals("1")
@@ -231,9 +256,17 @@ public class MachineConfiguration implements LoggingInterface
    */
   public File getFileProperty(String pKey, File pDefaultFile)
   {
-    return new File(getStringProperty(pKey,
-                                      pDefaultFile == null ? null
-                                                           : pDefaultFile.getPath()));
+    String lStringProperty = getStringProperty(pKey, null);
+
+    if (lStringProperty == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultFile.getAbsolutePath());
+      return pDefaultFile;
+    }
+
+    return new File(lStringProperty);
   }
 
   /**

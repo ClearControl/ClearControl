@@ -92,7 +92,7 @@ public class LightSheetSignalGeneratorQueue implements
     mBeforeExposureMovement = new Movement("BeforeExposure");
     mExposureMovement = new Movement("Exposure");
     mFinalMovement = new Movement("Final");
-    mFinalMovement.setDuration(10, TimeUnit.MICROSECONDS);
+    mFinalMovement.setDuration(5, TimeUnit.MILLISECONDS);
 
     ScoreInterface lStagingScore = mDelegatedQueue.getStagingScore();
 
@@ -130,7 +130,8 @@ public class LightSheetSignalGeneratorQueue implements
                                  lDetectionArmStaves);
 
     lDetectionArmStaves.addStavesToMovements(mBeforeExposureMovement,
-                                             mExposureMovement);
+                                             mExposureMovement,
+                                             mFinalMovement);
 
     /*
     pDetectionArm.getZVariable().addSetListener((o, n) -> {
@@ -176,7 +177,8 @@ public class LightSheetSignalGeneratorQueue implements
                                   lLightSheetOpticalSwitchStaves);
 
     lLightSheetOpticalSwitchStaves.addStavesToMovements(mBeforeExposureMovement,
-                                                        mExposureMovement);
+                                                        mExposureMovement,
+                                                        mFinalMovement);
 
   }
 

@@ -61,15 +61,21 @@ public class DetectionArmStaves
    *          before exp movement
    * @param pExposureMovement
    *          exposure movement
+   * @param pFinalMovement
+   *          final movement
    */
   public void addStavesToMovements(Movement pBeforeExposureMovement,
-                                   Movement pExposureMovement)
+                                   Movement pExposureMovement,
+                                   Movement pFinalMovement)
   {
     // Analog outputs before exposure:
     pBeforeExposureMovement.setStave(mStaveIndex, mDetectionZStave);
 
     // Analog outputs at exposure:
     pExposureMovement.setStave(mStaveIndex, mDetectionZStave);
+
+    // Analog outputs at final movement:
+    pFinalMovement.setStave(mStaveIndex, mDetectionZStave);
   }
 
   /**
