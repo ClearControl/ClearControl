@@ -49,8 +49,8 @@ public class SimulatedLightSheetMicroscopeDemo
 
     int lMaxCameraResolution = 1024;
 
-    int lNumberOfLightSheets = 4;
-    int lNumberOfDetectionArms = 2;
+    int lNumberOfLightSheets = 2;
+    int lNumberOfDetectionArms = 1;
 
     float lDivisionTime = 11f;
 
@@ -88,6 +88,7 @@ public class SimulatedLightSheetMicroscopeDemo
                                                                                 lMaxNumberOfStacks,
                                                                                 1);
     lMicroscope.addSimulatedDevices(lDummySimulation,
+                                    true,
                                     lSimulatorDevice);
 
     lMicroscope.addStandardDevices();

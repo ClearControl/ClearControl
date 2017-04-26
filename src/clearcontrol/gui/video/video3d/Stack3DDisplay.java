@@ -110,7 +110,7 @@ public class Stack3DDisplay extends VirtualDevice
           int lChannel = 0;
           Long lChannelObj =
                            pStack.getMetaData()
-                                 .getValue(MetaDataOrdinals.Channel);
+                                 .getValue(MetaDataOrdinals.DisplayChannel);
           if (lChannelObj != null)
             lChannel = lChannelObj.intValue() % pNumberOfLayers;
 

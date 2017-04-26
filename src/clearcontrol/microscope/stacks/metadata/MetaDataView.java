@@ -1,6 +1,7 @@
 package clearcontrol.microscope.stacks.metadata;
 
 import clearcontrol.stack.metadata.MetaDataEntryInterface;
+import clearcontrol.stack.metadata.StackMetaData;
 
 /**
  * Basic stack meta data entries
@@ -26,4 +27,21 @@ public enum MetaDataView implements MetaDataEntryInterface<Integer>
     return mClass;
   }
 
+  public static final String getCxLyString(StackMetaData pStackMetaData)
+  {
+    Integer lCameraIndex =
+                         pStackMetaData.getValue(MetaDataView.Camera);
+    Integer lLightSheetIndex =
+                             pStackMetaData.getValue(MetaDataView.LightSheet);
+
+    if (lCameraIndex == null || lLightSheetIndex == null)
+      return null;
+
+    String lKey = String.format("C%dL%d",
+                                (int) lCameraIndex,
+                                (int) lLightSheetIndex);
+    return lKey;
+  }
+
+  
 }

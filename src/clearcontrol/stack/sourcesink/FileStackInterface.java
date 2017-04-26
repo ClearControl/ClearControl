@@ -7,7 +7,7 @@ import java.io.File;
  *
  * @author royer
  */
-public interface FileStackInterface
+public interface FileStackInterface extends AutoCloseable
 {
 
   /**

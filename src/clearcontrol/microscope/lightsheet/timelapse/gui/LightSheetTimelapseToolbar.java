@@ -1,5 +1,6 @@
 package clearcontrol.microscope.lightsheet.timelapse.gui;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -42,12 +43,33 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
       Label lInterleavedAcquisitionLabel =
                                          new Label("Interleaved acquisition");
 
+      GridPane.setHalignment(lInterleavedAcquisition.getCheckBox(),
+                             HPos.RIGHT);
       GridPane.setColumnSpan(lInterleavedAcquisition.getCheckBox(),
                              1);
       GridPane.setColumnSpan(lInterleavedAcquisitionLabel, 3);
 
       add(lInterleavedAcquisition.getCheckBox(), 0, mRow);
       add(lInterleavedAcquisitionLabel, 1, mRow);
+      mRow++;
+    }
+    
+    {
+      VariableCheckBox lEnforceMaxDateTimeCheckBox =
+                                                   new VariableCheckBox("Fuse Stacks",
+                                                                        pLightSheetTimelapse.getFuseStacksVariable());
+
+      GridPane.setHalignment(lEnforceMaxDateTimeCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+      GridPane.setColumnSpan(lEnforceMaxDateTimeCheckBox.getLabel(),
+                             1);
+      GridPane.setColumnSpan(lEnforceMaxDateTimeCheckBox.getCheckBox(),
+                             1);
+
+      
+      add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
+      add(lEnforceMaxDateTimeCheckBox.getLabel(), 1, mRow);
+
       mRow++;
     }
 

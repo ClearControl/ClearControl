@@ -14,10 +14,14 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
+import clearcontrol.microscope.lightsheet.processor.MetaDataFusion;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
+import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.metadata.MetaDataChannel;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import clearcontrol.stack.sourcesink.sink.FileStackSinkInterface;
 
 /**
@@ -126,9 +130,18 @@ public abstract class TimelapseBase extends LoopTaskDevice
              n,
              lStackSinkVariable);
 
+        String lChannelInMetaData =
+                                  n.getMetaData()
+                                   .getValue(MetaDataChannel.Channel);
+
+        final String lChannel =
+                              lChannelInMetaData != null ? lChannelInMetaData
+                                                         : StackSinkSourceInterface.cDefaultChannel;
+
         ElapsedTime.measureForceOutput("TimeLapse stack saving",
                                        () -> lStackSinkVariable.get()
-                                                               .appendStack(n));
+                                                               .appendStack(lChannel,
+                                                                            n));
 
       }
     };
@@ -221,7 +234,18 @@ public abstract class TimelapseBase extends LoopTaskDevice
                              lNowDateTimeString + "-"
                                                         + getDataSetNamePostfixVariable().get());
 
-      mCurrentFileStackSinkVariable.set(lStackSink);
+      if (getCurrentFileStackSinkVariable().get() != null)
+        try
+        {
+          getCurrentFileStackSinkVariable().get().close();
+        }
+        catch (Exception e)
+        {
+          severe("Error occured while closing stack sink: %s", e);
+          e.printStackTrace();
+        }
+
+      getCurrentFileStackSinkVariable().set(lStackSink);
 
       getTimePointCounterVariable().set(0L);
       getTimelapseTimerVariable().get().reset();

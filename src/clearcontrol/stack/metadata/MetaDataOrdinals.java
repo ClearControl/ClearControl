@@ -11,7 +11,7 @@ public enum MetaDataOrdinals implements MetaDataEntryInterface<Long>
  TimeStampInNanoSeconds(Long.class),
  Index(Long.class),
  TimePoint(Long.class),
- Channel(Long.class);
+ DisplayChannel(Long.class);
 
   private final Class<Long> mClass;
 

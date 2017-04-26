@@ -142,7 +142,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
         return;
       }
 
-      String lKey = getKey(lCameraIndex, lLightSheetIndex);
+      String lKey = MetaDataView.getCxLyString(lStackMetaData);
 
       Runnable lRunnable = () -> {
         passImage(lKey,
@@ -174,14 +174,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     System.out.println("passed:" + lMetaData);
   }
 
-  protected String getKey(final int pCameraIndex,
-                          final int pLightSheetIndex)
-  {
-    String lKey = String.format("C%dL%d",
-                                pCameraIndex,
-                                pLightSheetIndex);
-    return lKey;
-  }
+  
 
   /**
    * Returns true if the fusion is done

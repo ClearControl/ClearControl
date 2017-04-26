@@ -16,8 +16,7 @@ import clearcontrol.stack.sourcesink.server.StackServerBase;
  * @author royer
  */
 public abstract class FileStackBase extends StackServerBase implements
-                                    FileStackInterface,
-                                    AutoCloseable
+                                    FileStackInterface
 {
   private boolean mReadOnly;
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import clearcontrol.core.units.Magnitude;
@@ -26,7 +27,8 @@ public class RawFileStackSink extends FileStackBase implements
 
   private final AtomicLong mFirstTimePointAbsoluteNanoSeconds =
                                                               new AtomicLong();
-  private final AtomicLong mNextFreeStackIndex = new AtomicLong();
+  private final ConcurrentHashMap<String, AtomicLong> mNextFreeStackIndexMap =
+                                                                             new ConcurrentHashMap<>();
 
   /**
    * Instantiates a raw file stack sink given a root folder and dataset name.
@@ -52,15 +54,18 @@ public class RawFileStackSink extends FileStackBase implements
 
     try
     {
+      AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
 
-      writeStackData(pChannel, pStack);
-      writeIndexFileEntry(pChannel, pStack);
+      writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
+      writeIndexFileEntry(lNextFreeStackIndex.get(),
+                          pChannel,
+                          pStack);
       writeMetaDataFileEntry(pChannel, pStack);
 
       setStackRequest(pChannel,
-                      mNextFreeStackIndex.get(),
+                      lNextFreeStackIndex.get(),
                       StackRequest.buildFrom(pStack));
-      mNextFreeStackIndex.incrementAndGet();
+      lNextFreeStackIndex.incrementAndGet();
       return true;
     }
     catch (final Throwable e)
@@ -70,11 +75,23 @@ public class RawFileStackSink extends FileStackBase implements
     }
   }
 
-  protected void writeStackData(String pChannel,
+  protected AtomicLong getIndexForChannel(String pChannel)
+  {
+    AtomicLong lNextFreeStackIndex =
+                                   mNextFreeStackIndexMap.get(pChannel);
+    if (lNextFreeStackIndex == null)
+    {
+      lNextFreeStackIndex = new AtomicLong(0);
+      mNextFreeStackIndexMap.put(pChannel, lNextFreeStackIndex);
+    }
+    return lNextFreeStackIndex;
+  }
+
+  protected void writeStackData(long pIndex,
+                                String pChannel,
                                 final StackInterface pStack) throws IOException
   {
-    String lFileName = String.format("tp%d.raw",
-                                     mNextFreeStackIndex.get());
+    String lFileName = String.format("tp%d.raw", pIndex);
     File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
     FragmentedMemoryInterface lFragmentedMemory =
@@ -86,7 +103,8 @@ public class RawFileStackSink extends FileStackBase implements
     lBinnaryFileChannel.close();
   }
 
-  protected void writeIndexFileEntry(String pChannel,
+  protected void writeIndexFileEntry(long pIndex,
+                                     String pChannel,
                                      final StackInterface pStack) throws IOException
   {
     long[] lDimensions = pStack.getDimensions();
@@ -97,7 +115,7 @@ public class RawFileStackSink extends FileStackBase implements
                                         getFileChannel(getIndexFile(pChannel),
                                                        false);
 
-    if (mNextFreeStackIndex.get() == 0)
+    if (pIndex == 0)
     {
       mFirstTimePointAbsoluteNanoSeconds.set(pStack.getMetaData()
                                                    .getTimeStampInNanoseconds());
@@ -107,13 +125,11 @@ public class RawFileStackSink extends FileStackBase implements
                                                                .getTimeStampInNanoseconds()
                                                          - mFirstTimePointAbsoluteNanoSeconds.get());
 
-    setStackTimeStampInSeconds(pChannel,
-                               mNextFreeStackIndex.get(),
-                               lTimeStampInSeconds);
+    setStackTimeStampInSeconds(pChannel, pIndex, lTimeStampInSeconds);
 
     final String lIndexLineString =
                                   String.format("%d\t%.4f\t%s\n",
-                                                mNextFreeStackIndex.get(),
+                                                pIndex,
                                                 lTimeStampInSeconds,
                                                 lDimensionsString.substring(1,
                                                                             lDimensionsString.length()

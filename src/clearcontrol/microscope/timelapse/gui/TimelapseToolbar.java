@@ -346,13 +346,7 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 4);
-      add(lSeparator, 0, mRow);
-      mRow++;
-    }
+
 
   }
 

@@ -87,6 +87,7 @@ public class LightSheetFastFusionProcessor extends
                                            StackRequest.build(lFusedImage.getDimensions()));
 
       mFusedStack.setMetaData(mEngine.getFusedMetaData());
+      mFusedStack.getMetaData().addEntry(MetaDataFusion.Fused, true);
 
       System.out.println("fused:" + mFusedStack.getMetaData());
 
@@ -105,7 +106,9 @@ public class LightSheetFastFusionProcessor extends
     AcquisitionType lAcquisitionType =
                                      pStack.getMetaData()
                                            .getValue(MetaDataAcquisitionType.AcquisitionType);
-    return lAcquisitionType == AcquisitionType.Interactive;
+    return lAcquisitionType == AcquisitionType.Interactive
+           || !pStack.getMetaData()
+                     .hasEntry(MetaDataFusion.RequestFuse);
   }
 
 }

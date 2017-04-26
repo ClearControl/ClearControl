@@ -2,6 +2,8 @@ package clearcontrol.stack.metadata;
 
 import java.util.HashMap;
 
+import clearcontrol.microscope.lightsheet.processor.MetaDataFusion;
+
 /**
  * Stack meta data
  *
@@ -64,6 +66,26 @@ public class StackMetaData
     mMetaDataMap.remove(pEntryKey);
   }
 
+  /**
+   * Returns true if this metadata object contains the given entry key
+   * @param pEntryKey entry 
+   * @return true -> entry(key) present
+   */
+  public <T> boolean hasEntry(MetaDataEntryInterface<T> pEntryKey)
+  {
+    return mMetaDataMap.containsKey(pEntryKey);
+  }
+  
+  /**
+   * Returns true if this metadata object contains the given value
+   * @param pValue value 
+   * @return true -> value present
+   */
+  public <T> boolean hasValue(Object pValue)
+  {
+    return mMetaDataMap.containsValue(pValue);
+  }
+  
   /**
    * Returns a given meta data entry
    * 
@@ -238,5 +260,7 @@ public class StackMetaData
   {
     return mMetaDataMap.toString();
   }
+
+
 
 }

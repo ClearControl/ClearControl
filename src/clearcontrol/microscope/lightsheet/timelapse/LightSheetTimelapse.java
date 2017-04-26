@@ -11,13 +11,16 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
 import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.lightsheet.processor.MetaDataFusion;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseBase;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
+import clearcontrol.stack.metadata.MetaDataChannel;
 import clearcontrol.stack.metadata.MetaDataOrdinals;
 import clearcontrol.stack.metadata.StackMetaData;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 
 /**
  * Standard Timelapse implementation
@@ -40,6 +43,10 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                                new Variable<Long>("TimePointIndex",
                                                                   0L);
 
+  private final Variable<Boolean> mFuseStacksVariable =
+                                                      new Variable<Boolean>("FuseStacks",
+                                                                            true);
+
   private final Variable<Boolean> mInterleavedAcquisitionVariable =
                                                                   new Variable<Boolean>("InterleavedAcquisition",
                                                                                         false);
@@ -52,6 +59,14 @@ public class LightSheetTimelapse extends TimelapseBase implements
   {
     super(pLightSheetMicroscope);
     mLightSheetMicroscope = pLightSheetMicroscope;
+
+    /*
+    boolean lFuseStacks = getFuseStacksVariable().get()
+                          && n.getMetaData()
+                              .hasValue(MetaDataFusion.Fused);
+    
+    
+    /**/
 
   }
 
@@ -140,6 +155,15 @@ public class LightSheetTimelapse extends TimelapseBase implements
                            AcquisitionType.TimeLapse);
         lMetaData.addEntry(MetaDataView.Camera, c);
         lMetaData.addEntry(MetaDataView.LightSheet, l);
+        
+
+        if (getFuseStacksVariable().get())
+          lMetaData.addEntry(MetaDataFusion.RequestFuse, true);
+        else
+        {
+          String lCxLyString = MetaDataView.getCxLyString(lMetaData);
+          lMetaData.addEntry(MetaDataChannel.Channel,lCxLyString);
+        }
       }
 
       mLightSheetMicroscope.playQueueAndWait(lQueueForView,
@@ -180,6 +204,17 @@ public class LightSheetTimelapse extends TimelapseBase implements
   public Variable<Boolean> getInterleavedAcquisitionVariable()
   {
     return mInterleavedAcquisitionVariable;
+  }
+
+  /**
+   * Returns the variable holding the boolean flag that decides whether stacks
+   * should or should not be fused.
+   * 
+   * @return fuse stacks variable
+   */
+  public Variable<Boolean> getFuseStacksVariable()
+  {
+    return mFuseStacksVariable;
   }
 
 }
