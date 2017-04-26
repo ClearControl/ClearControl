@@ -284,7 +284,7 @@ public class MachineConfiguration implements LoggingInterface
                                     int pDeviceIndex,
                                     String pDefaultPort)
   {
-    final String lKey = "device.serial." + pDeviceName.toLowerCase()
+    final String lKey = "device.serial." + pDeviceName
                         + "."
                         + pDeviceIndex;
     final String lPort = getStringProperty(lKey, pDefaultPort);
@@ -307,7 +307,7 @@ public class MachineConfiguration implements LoggingInterface
                                                   int pDeviceIndex,
                                                   String pDefaultHostNameAndPort)
   {
-    final String lKey = "device.network." + pDeviceName.toLowerCase()
+    final String lKey = "device.network." + pDeviceName
                         + "."
                         + pDeviceIndex;
     final String lHostnameAndPort =
@@ -328,7 +328,7 @@ public class MachineConfiguration implements LoggingInterface
   public Integer getIODevicePort(String pDeviceName,
                                  Integer pDefaultPort)
   {
-    final String lKey = "device." + pDeviceName.toLowerCase();
+    final String lKey = "device." + pDeviceName;
     final Integer lPort = getIntegerProperty(lKey, pDefaultPort);
     return lPort;
   }
@@ -345,9 +345,7 @@ public class MachineConfiguration implements LoggingInterface
   public boolean getIsDevicePresent(String pDeviceName,
                                     int pDeviceIndex)
   {
-    final String lKey = "device." + pDeviceName.toLowerCase()
-                        + "."
-                        + pDeviceIndex;
+    final String lKey = "device." + pDeviceName + "." + pDeviceIndex;
     return getBooleanProperty(lKey, false);
   }
 

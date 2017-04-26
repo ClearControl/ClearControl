@@ -222,21 +222,30 @@ public class HamStackCamera extends
       StackRequest lRecyclerRequest = StackRequest.build(lWidth,
                                                          lHeight,
                                                          lDepth);
-      StackInterface lStack =
-                            getStackRecycler().getOrWait(cWaitTime,
-                                                         TimeUnit.MILLISECONDS,
-                                                         lRecyclerRequest);
+      StackInterface lAcquiredStack =
+                                    getStackRecycler().getOrWait(cWaitTime,
+                                                                 TimeUnit.MILLISECONDS,
+                                                                 lRecyclerRequest);
 
-      if (lStack == null)
+      if (lAcquiredStack == null)
         return false;
+
+      lAcquiredStack.setMetaData(pQueue.getMetaDataVariable()
+                                       .get()
+                                       .clone());
+
+      lAcquiredStack.getMetaData()
+                    .setTimeStampInNanoseconds(System.nanoTime());
+      lAcquiredStack.getMetaData()
+                    .setIndex(getCurrentIndexVariable().get());
 
       ArrayList<Boolean> lKeepPlaneList =
                                         pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
 
       mSequence.consolidateTo(lKeepPlaneList,
-                              lStack.getContiguousMemory());
+                              lAcquiredStack.getContiguousMemory());
 
-      getStackVariable().setAsync(lStack);
+      getStackVariable().setAsync(lAcquiredStack);
       return true;
     };
 
