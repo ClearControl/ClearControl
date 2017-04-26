@@ -106,7 +106,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureXStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".x.index",
                                                                                                                  2),
                                                                  mBeforeExposureXStave);
@@ -114,7 +113,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureYStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".y.index",
                                                                                                                  3),
                                                                  mBeforeExposureYStave);
@@ -122,7 +120,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureZStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".z.index",
                                                                                                                  4),
                                                                  mBeforeExposureZStave);
@@ -130,7 +127,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureBStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".b.index",
                                                                                                                  5),
                                                                  mBeforeExposureBStave);
@@ -138,7 +134,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureWStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".w.index",
                                                                                                                  6),
                                                                  mBeforeExposureWStave);
@@ -146,7 +141,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureLAStave =
                            pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                   + getLightSheet().getName()
-                                                                                                                                   .toLowerCase()
                                                                                                                   + ".la.index",
                                                                                                                   7),
                                                                   mBeforeExposureLAStave);
@@ -154,7 +148,6 @@ public class LightSheetStaves implements LoggingInterface
     mBeforeExposureTStave =
                           pBeforeExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                                  + getLightSheet().getName()
-                                                                                                                                  .toLowerCase()
                                                                                                                  + ".t.index",
                                                                                                                  8 + 7),
                                                                  mBeforeExposureTStave);
@@ -171,7 +164,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureXStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".x.index",
                                                                                                      2),
                                                      mExposureXStave);
@@ -179,7 +171,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureYStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".y.index",
                                                                                                      3),
                                                      mExposureYStave);
@@ -187,7 +178,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureZStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".z.index",
                                                                                                      4),
                                                      mExposureZStave);
@@ -195,7 +185,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureBStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".b.index",
                                                                                                      5),
                                                      mExposureBStave);
@@ -203,7 +192,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureWStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".w.index",
                                                                                                      6),
                                                      mExposureWStave);
@@ -211,7 +199,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureLAStave =
                      pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                       + getLightSheet().getName()
-                                                                                                                       .toLowerCase()
                                                                                                       + ".la.index",
                                                                                                       7),
                                                       mExposureLAStave);
@@ -219,7 +206,6 @@ public class LightSheetStaves implements LoggingInterface
     mExposureTStave =
                     pExposureMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                      + getLightSheet().getName()
-                                                                                                                      .toLowerCase()
                                                                                                      + ".t.index",
                                                                                                      8 + 7),
                                                      mExposureTStave);
@@ -240,7 +226,6 @@ public class LightSheetStaves implements LoggingInterface
 
     pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                   + getLightSheet().getName()
-                                                                                                   .toLowerCase()
                                                                                   + ".x.index",
                                                                                   2),
                                   mBeforeExposureXStave);
@@ -248,35 +233,30 @@ public class LightSheetStaves implements LoggingInterface
     mFinalYStave = pFinalMovement.ensureSetStave(
                                                  lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                  + getLightSheet().getName()
-                                                                                                                  .toLowerCase()
                                                                                                  + ".y.index",
                                                                                                  3),
                                                  mFinalYStave);
 
     pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                   + getLightSheet().getName()
-                                                                                                   .toLowerCase()
                                                                                   + ".z.index",
                                                                                   4),
                                   mBeforeExposureZStave);
 
     pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                   + getLightSheet().getName()
-                                                                                                   .toLowerCase()
                                                                                   + ".b.index",
                                                                                   5),
                                   mBeforeExposureBStave);
 
     pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                   + getLightSheet().getName()
-                                                                                                   .toLowerCase()
                                                                                   + ".w.index",
                                                                                   6),
                                   mBeforeExposureWStave);
 
     pFinalMovement.ensureSetStave(lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                   + getLightSheet().getName()
-                                                                                                   .toLowerCase()
                                                                                   + ".la.index",
                                                                                   7),
                                   mBeforeExposureLAStave);
@@ -284,7 +264,6 @@ public class LightSheetStaves implements LoggingInterface
     mFinalTStave = pFinalMovement.ensureSetStave(
                                                  lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
                                                                                                  + getLightSheet().getName()
-                                                                                                                  .toLowerCase()
                                                                                                  + ".t.index",
                                                                                                  8 + 7),
                                                  mFinalTStave);
@@ -395,7 +374,7 @@ public class LightSheetStaves implements LoggingInterface
       mFinalYStave.setSyncStart(0);
       mFinalYStave.setSyncStop(1);
       mFinalYStave.setStartValue((float) lGalvoYHighValue);
-      mFinalYStave.setStopValue((float) lGalvoYHighValue + 0.00f);
+      mFinalYStave.setStopValue((float) lGalvoYHighValue);
       mFinalYStave.setOutsideValue((float) lGalvoYHighValue);
       mFinalYStave.setNoJump(true);
 
@@ -531,9 +510,9 @@ public class LightSheetStaves implements LoggingInterface
                                      MachineConfiguration.getCurrentMachineConfiguration()
                                                          .getIntegerProperty("device.lsm.lightsheet."
                                                                              + getLightSheet().getName()
-                                                                                              .toLowerCase()
-                                                                             + ".ld.index"
-                                                                             + i,
+                                                                             + ".ld"
+                                                                             + i
+                                                                             + ".index",
                                                                              8 + i);
     return pExposureMovement.ensureSetStave(lLaserDigitalLineIndex,
                                             pStave);

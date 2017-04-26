@@ -35,11 +35,10 @@ public class LightSheetOpticalSwitchStaves
   {
     super();
     mLightSheetOpticalSwitchQueue = pLightSheetOpticalSwitchQueue;
-    int lNumberOfBits =
-                      (int) Math.ceil(Math.log(mLightSheetOpticalSwitchQueue.getNumberOfSwitches())
-                                      / Math.log(2));
-    mBitStave = new ConstantStave[lNumberOfBits];
-    mStaveIndex = new int[lNumberOfBits];
+    int lNumberOfSwitches =
+                          mLightSheetOpticalSwitchQueue.getNumberOfSwitches();
+    mBitStave = new ConstantStave[lNumberOfSwitches];
+    mStaveIndex = new int[lNumberOfSwitches];
 
     for (int i = 0; i < mBitStave.length; i++)
     {
