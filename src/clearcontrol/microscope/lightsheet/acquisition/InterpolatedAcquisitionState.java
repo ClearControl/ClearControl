@@ -157,13 +157,17 @@ public class InterpolatedAcquisitionState extends
                                         mLightSheetMicroscope.getDetectionArm(0);
 
     mZLow = new BoundedVariable<Number>("LowZ",
-                                        25.0,
+                                        lDetectionArm.getZVariable()
+                                                     .getMin()
+                                                     .doubleValue(),
                                         lDetectionArm.getZVariable()
                                                      .getMin(),
                                         lDetectionArm.getZVariable()
                                                      .getMax());
     mZHigh = new BoundedVariable<Number>("HighZ",
-                                         75.0,
+                                         lDetectionArm.getZVariable()
+                                                      .getMax()
+                                                      .doubleValue(),
                                          lDetectionArm.getZVariable()
                                                       .getMin(),
                                          lDetectionArm.getZVariable()

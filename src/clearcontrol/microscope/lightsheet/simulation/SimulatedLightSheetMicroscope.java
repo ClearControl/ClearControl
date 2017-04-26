@@ -70,6 +70,7 @@ public class SimulatedLightSheetMicroscope extends
    *          simulator device
    */
   public void addSimulatedDevices(boolean pDummySimulation,
+                                  boolean pXYZRStage,
                                   LightSheetMicroscopeSimulationDevice pSimulatorDevice)
   {
 
@@ -102,6 +103,7 @@ public class SimulatedLightSheetMicroscope extends
     }
 
     // Setting up Stage:
+    if(pXYZRStage)
     {
       StageDeviceSimulator lStageDeviceSimulator =
                                                  new StageDeviceSimulator("Stage",

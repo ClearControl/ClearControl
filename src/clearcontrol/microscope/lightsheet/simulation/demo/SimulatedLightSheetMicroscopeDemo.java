@@ -16,6 +16,7 @@ import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -71,15 +72,15 @@ public class SimulatedLightSheetMicroscopeDemo
                                                              "NVIDIA");
 
     LightSheetMicroscopeSimulationDevice lSimulatorDevice =
-                                                          getSimulatorDevice(lSimulationContext,
-                                                                             lNumberOfDetectionArms,
-                                                                             lNumberOfLightSheets,
-                                                                             lMaxCameraResolution,
-                                                                             lDivisionTime,
-                                                                             lPhantomWidth,
-                                                                             lPhantomHeight,
-                                                                             lPhantomDepth,
-                                                                             lUniformFluorescence);
+                                                          SimulationUtils.getSimulatorDevice(lSimulationContext,
+                                                                                             lNumberOfDetectionArms,
+                                                                                             lNumberOfLightSheets,
+                                                                                             lMaxCameraResolution,
+                                                                                             lDivisionTime,
+                                                                                             lPhantomWidth,
+                                                                                             lPhantomHeight,
+                                                                                             lPhantomDepth,
+                                                                                             lUniformFluorescence);
 
     SimulatedLightSheetMicroscope lMicroscope =
                                               new SimulatedLightSheetMicroscope("SimulatedLightSheetMicroscope",
@@ -132,107 +133,6 @@ public class SimulatedLightSheetMicroscopeDemo
     ClearCLContext lSimulationContext =
                                       lSimulationGPUDevice.createContext();
     return lSimulationContext;
-  }
-
-  /**
-   * Returns a simulator device
-   * 
-   * @param pSimulationContext
-   * @param pNumberOfDetectionArms
-   * @param pNumberOfLightSheets
-   * @param pMaxCameraResolution
-   * @param pDivisionTime
-   * @param pPhantomWidth
-   * @param pPhantomHeight
-   * @param pPhantomDepth
-   * @param pUniformFluorescence
-   * @return
-   */
-  @SuppressWarnings("javadoc")
-  public LightSheetMicroscopeSimulationDevice getSimulatorDevice(ClearCLContext pSimulationContext,
-                                                                 int pNumberOfDetectionArms,
-                                                                 int pNumberOfLightSheets,
-                                                                 int pMaxCameraResolution,
-                                                                 float pDivisionTime,
-                                                                 int pPhantomWidth,
-                                                                 int pPhantomHeight,
-                                                                 int pPhantomDepth,
-                                                                 boolean pUniformFluorescence)
-  {
-
-    LightSheetMicroscopeSimulatorDrosophila lSimulator =
-                                                       new LightSheetMicroscopeSimulatorDrosophila(pSimulationContext,
-                                                                                                   pNumberOfDetectionArms,
-                                                                                                   pNumberOfLightSheets,
-                                                                                                   pMaxCameraResolution,
-                                                                                                   pDivisionTime,
-                                                                                                   pPhantomWidth,
-                                                                                                   pPhantomHeight,
-                                                                                                   pPhantomDepth);
-    // lSimulator.openViewerForControls();
-    lSimulator.setFreezedEmbryo(true);
-    lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
-
-    // lSimulator.addAbberation(new SampleDrift());
-    // lSimulator.addAbberation(new IlluminationMisalignment());
-    // lSimulator.addAbberation(new DetectionMisalignment());
-
-    /*scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),
-    10,
-    TimeUnit.MILLISECONDS);/**/
-
-    if (pUniformFluorescence)
-    {
-      long lEffPhantomWidth = lSimulator.getWidth();
-      long lEffPhantomHeight = lSimulator.getHeight();
-      long lEffPhantomDepth = lSimulator.getDepth();
-
-      ClearCLImage lFluoPhantomImage =
-                                     pSimulationContext.createSingleChannelImage(ImageChannelDataType.Float,
-                                                                                 lEffPhantomWidth,
-                                                                                 lEffPhantomHeight,
-                                                                                 lEffPhantomDepth);
-
-      ClearCLImage lScatterPhantomImage =
-                                        pSimulationContext.createSingleChannelImage(ImageChannelDataType.Float,
-                                                                                    lEffPhantomWidth / 2,
-                                                                                    lEffPhantomHeight / 2,
-                                                                                    lEffPhantomDepth / 2);
-
-      UniformNoise lUniformNoise = new UniformNoise(3);
-      lUniformNoise.setNormalizeTexture(false);
-      lUniformNoise.setMin(0.25f);
-      lUniformNoise.setMax(0.75f);
-      lFluoPhantomImage.readFrom(lUniformNoise.generateTexture(lEffPhantomWidth,
-                                                               lEffPhantomHeight,
-                                                               lEffPhantomDepth),
-                                 true);
-
-      lUniformNoise.setMin(0.0001f);
-      lUniformNoise.setMax(0.001f);
-      lScatterPhantomImage.readFrom(lUniformNoise.generateTexture(lEffPhantomWidth
-                                                                  / 2,
-                                                                  lEffPhantomHeight
-                                                                       / 2,
-                                                                  lEffPhantomDepth
-                                                                            / 2),
-                                    true);
-
-      lSimulator.setPhantomParameter(PhantomParameter.Fluorescence,
-                                     lFluoPhantomImage);
-
-      lSimulator.setPhantomParameter(PhantomParameter.Scattering,
-                                     lScatterPhantomImage);
-    }
-
-    // lSimulator.openViewerForCameraImage(0);
-    // lSimulator.openViewerForAllLightMaps();
-    // lSimulator.openViewerForScatteringPhantom();
-
-    LightSheetMicroscopeSimulationDevice lLightSheetMicroscopeSimulatorDevice =
-                                                                              new LightSheetMicroscopeSimulationDevice(lSimulator);
-
-    return lLightSheetMicroscopeSimulatorDevice;
   }
 
 }

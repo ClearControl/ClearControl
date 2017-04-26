@@ -68,29 +68,33 @@ public class LightSheetMicroscopeSimulationDevice extends
     StageDeviceInterface lMainXYZRStage =
                                         lLightSheetMicroscope.getMainXYZRStage();
 
-    lMainXYZRStage.getCurrentPositionVariable(0)
-                  .addSetListener((o,
-                                   n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageX,
-                                                                                           0,
-                                                                                           n));
+    if (lMainXYZRStage != null)
+    {
 
-    lMainXYZRStage.getCurrentPositionVariable(1)
-                  .addSetListener((o,
-                                   n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageY,
-                                                                                           0,
-                                                                                           n));
+      lMainXYZRStage.getCurrentPositionVariable(0)
+                    .addSetListener((o,
+                                     n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageX,
+                                                                                             0,
+                                                                                             n));
 
-    lMainXYZRStage.getCurrentPositionVariable(2)
-                  .addSetListener((o,
-                                   n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageZ,
-                                                                                           0,
-                                                                                           n));
+      lMainXYZRStage.getCurrentPositionVariable(1)
+                    .addSetListener((o,
+                                     n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageY,
+                                                                                             0,
+                                                                                             n));
 
-    lMainXYZRStage.getCurrentPositionVariable(3)
-                  .addSetListener((o,
-                                   n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageRY,
-                                                                                           0,
-                                                                                           n));
+      lMainXYZRStage.getCurrentPositionVariable(2)
+                    .addSetListener((o,
+                                     n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageZ,
+                                                                                             0,
+                                                                                             n));
+
+      lMainXYZRStage.getCurrentPositionVariable(3)
+                    .addSetListener((o,
+                                     n) -> mLightSheetMicroscopeSimulator.setNumberParameter(StageParameter.StageRY,
+                                                                                             0,
+                                                                                             n));
+    }
 
     int lNumberOfCameras =
                          mLightSheetMicroscopeSimulator.getNumberOfDetectionArms();
