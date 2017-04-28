@@ -183,7 +183,8 @@ public class HamStackCamera extends
                    mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
                                                        .get(),
                                                  4);
-      long lDepth = pQueue.getStackDepthVariable().get();
+      long lDepth =
+                  countKeptPlanes(pQueue.getVariableQueue(pQueue.getKeepPlaneVariable()));
 
       if (mSequence == null || mSequence.getWidth() != lWidth
           || mSequence.getHeight() != lHeight
@@ -207,9 +208,9 @@ public class HamStackCamera extends
 
   private Future<Boolean> acquisition(HamStackCameraQueue pQueue,
                                       double lExposureInSeconds,
-                                      long lWidth,
-                                      long lHeight,
-                                      long lDepth)
+                                      long pWidth,
+                                      long pHeight,
+                                      long pDepth)
   {
     Future<Boolean> lAcquisitionResult =
                                        mDcamSequenceAcquisition.acquireSequenceAsync(lExposureInSeconds,
@@ -219,9 +220,9 @@ public class HamStackCamera extends
       if (!lAcquisitionResult.get())
         return false;
 
-      StackRequest lRecyclerRequest = StackRequest.build(lWidth,
-                                                         lHeight,
-                                                         lDepth);
+      StackRequest lRecyclerRequest = StackRequest.build(pWidth,
+                                                         pHeight,
+                                                         pDepth);
       StackInterface lAcquiredStack =
                                     getStackRecycler().getOrWait(cWaitTime,
                                                                  TimeUnit.MILLISECONDS,
@@ -282,6 +283,15 @@ public class HamStackCamera extends
   public Variable<Double> getLineReadOutTimeInMicrosecondsVariable()
   {
     return mLineReadOutTimeInMicrosecondsVariable;
+  }
+
+  private long countKeptPlanes(ArrayList<Boolean> pKeptPlanesList)
+  {
+    long lKeptPlanes = 0;
+    for (Boolean lKeptPlane : pKeptPlanesList)
+      if (lKeptPlane)
+        lKeptPlanes++;
+    return lKeptPlanes;
   }
 
 }

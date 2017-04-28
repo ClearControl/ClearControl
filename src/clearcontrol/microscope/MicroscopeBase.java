@@ -548,6 +548,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   {
     synchronized (mAcquisitionLock)
     {
+
       int lNumberOfDetectionArmDevices =
                                        getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
       CountDownLatch[] lStacksReceivedLatches =

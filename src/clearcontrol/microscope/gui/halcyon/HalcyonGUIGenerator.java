@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Node;
+
+import org.dockfx.DockNode;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.name.NameableInterface;
@@ -25,8 +25,8 @@ import halcyon.model.node.HalcyonNodeType;
 import halcyon.model.node.HalcyonOtherNode;
 import halcyon.model.node.Window;
 import halcyon.view.TreePanel;
-
-import org.dockfx.DockNode;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Node;
 
 /**
  * Halcyon GUI generator. Uses the Halcyon library (based on DockFX) to build a
@@ -418,9 +418,10 @@ public class HalcyonGUIGenerator implements LoggingInterface
           {
             NameableInterface lNameableDevice =
                                               (NameableInterface) lDevice;
-            node = new HalcyonNode(lNameableDevice.getName(),
-                                   lNodeType,
-                                   lPanelAsNode);
+            node =
+                 new HalcyonNode(lNameableDevice.getName() + " Panel",
+                                 lNodeType,
+                                 lPanelAsNode);
           }
           else
           {
