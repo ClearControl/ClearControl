@@ -20,7 +20,6 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.metadata.MetaDataChannel;
 import clearcontrol.stack.metadata.MetaDataOrdinals;
 import clearcontrol.stack.metadata.StackMetaData;
-import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 
 /**
  * Standard Timelapse implementation
@@ -155,14 +154,13 @@ public class LightSheetTimelapse extends TimelapseBase implements
                            AcquisitionType.TimeLapse);
         lMetaData.addEntry(MetaDataView.Camera, c);
         lMetaData.addEntry(MetaDataView.LightSheet, l);
-        
 
         if (getFuseStacksVariable().get())
           lMetaData.addEntry(MetaDataFusion.RequestFuse, true);
         else
         {
           String lCxLyString = MetaDataView.getCxLyString(lMetaData);
-          lMetaData.addEntry(MetaDataChannel.Channel,lCxLyString);
+          lMetaData.addEntry(MetaDataChannel.Channel, lCxLyString);
         }
       }
 

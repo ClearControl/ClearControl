@@ -55,13 +55,12 @@ public class StackRAMServer extends StackServerBase implements
     return getStack(pStackIndex);
   }
 
-
   @Override
   public StackInterface getStack(long pStackIndex)
   {
-    return getStack(cDefaultChannel,pStackIndex);
+    return getStack(cDefaultChannel, pStackIndex);
   }
-  
+
   @Override
   public StackInterface getStack(String pChannel, long pStackIndex)
   {
@@ -116,7 +115,5 @@ public class StackRAMServer extends StackServerBase implements
   {
     // do nothing
   }
-
-
 
 }

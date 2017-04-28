@@ -346,8 +346,6 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-
-
   }
 
 }

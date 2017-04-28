@@ -4,23 +4,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
-import clearcl.ClearCLImage;
 import clearcl.backend.ClearCLBackends;
-import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
-import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
-import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
-import simbryo.synthoscopy.microscope.parameters.UnitConversion;
-import simbryo.textures.noise.UniformNoise;
+
+import org.junit.Test;
 
 /**
  * Simulated lightsheet microscope demo

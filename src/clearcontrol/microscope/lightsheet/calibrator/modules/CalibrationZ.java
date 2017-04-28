@@ -8,8 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -28,6 +26,8 @@ import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms

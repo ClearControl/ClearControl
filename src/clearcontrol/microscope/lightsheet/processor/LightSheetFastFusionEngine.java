@@ -174,8 +174,6 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     System.out.println("passed:" + lMetaData);
   }
 
-  
-
   /**
    * Returns true if the fusion is done
    * 

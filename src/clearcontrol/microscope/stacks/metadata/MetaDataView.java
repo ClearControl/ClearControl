@@ -43,5 +43,4 @@ public enum MetaDataView implements MetaDataEntryInterface<Integer>
     return lKey;
   }
 
-  
 }

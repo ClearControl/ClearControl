@@ -4,11 +4,11 @@ import static java.lang.Math.toIntExact;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Stack server base
