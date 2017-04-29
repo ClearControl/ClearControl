@@ -5,8 +5,8 @@ import java.util.function.Function;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * Interface implemented by all adaptation modules

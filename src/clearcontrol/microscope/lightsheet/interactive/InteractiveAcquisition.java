@@ -13,14 +13,15 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
+import clearcontrol.microscope.lightsheet.state.AcquisitionType;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.stacks.metadata.MetaDataViewFlags;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.metadata.StackMetaData;
 
@@ -56,7 +57,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
   private volatile boolean mUpdate = true;
 
-  private ChangeListener<VirtualDevice> mChangeListener;
+  private ChangeListener<VirtualDevice> mMicroscopeChangeListener;
+  private ChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface,LightSheetMicroscopeQueue>> mAcquisitionStateChangeListener;
   private LightSheetMicroscopeQueue mQueue;
 
   /**
@@ -151,7 +153,11 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
       mActiveCameraVariableArray[c].addSetListener(lListener);
     }
 
-    mChangeListener = (o) -> {
+    mMicroscopeChangeListener = (o) -> {
+      // info("Received request to update queue from:"+o.toString());
+      mUpdate = true;
+    };
+    mAcquisitionStateChangeListener = (o) -> {
       // info("Received request to update queue from:"+o.toString());
       mUpdate = true;
     };
@@ -160,14 +166,14 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   @Override
   public boolean open()
   {
-    getLightSheetMicroscope().addChangeListener(mChangeListener);
+    getLightSheetMicroscope().addChangeListener(mMicroscopeChangeListener);
     return super.open();
   }
 
   @Override
   public boolean close()
   {
-    getLightSheetMicroscope().removeChangeListener(mChangeListener);
+    getLightSheetMicroscope().removeChangeListener(mMicroscopeChangeListener);
     return super.close();
   }
 
@@ -178,6 +184,16 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     {
       // info("begin of loop");
       final boolean lCachedUpdate = mUpdate;
+
+      InterpolatedAcquisitionState lCurrentState =
+                                                 (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
+      
+      if(getUseCurrentAcquisitionStateVariable().get())
+      {
+        if(!lCurrentState.isChangeListener(mAcquisitionStateChangeListener))
+          lCurrentState.addChangeListener(mAcquisitionStateChangeListener);
+      }
+      
 
       if (lCachedUpdate || mQueue == null
           || mQueue.getQueueLength() == 0)
@@ -194,10 +210,6 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             // info("Building 2D Acquisition queue using the current acquisition
             // state");
 
-            InterpolatedAcquisitionState lCurrentState =
-                                                       (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
-
-            lCurrentState.applyStagePosition();
             mQueue = getLightSheetMicroscope().requestQueue();
 
             mQueue.clearQueue();
@@ -250,13 +262,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                 cRecyclerMaximumNumberOfAvailableStacks,
                                                 cRecyclerMaximumNumberOfLiveStacks);
 
-          LightSheetAcquisitionStateInterface<?> lCurrentState =
-                                                               mAcquisitionStateManager.getCurrentState();
-
           if (lCurrentState != null)
           {
-            lCurrentState.applyStagePosition();
-            lCurrentState.updateQueue(mLightSheetMicroscope);
             mQueue = lCurrentState.getQueue();
           }
         }
@@ -294,6 +301,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
         if (getTriggerOnChangeVariable().get() && !lCachedUpdate)
           return true;
 
+        if (getUseCurrentAcquisitionStateVariable().get())
+          lCurrentState.prepareAcquisition(100, TimeUnit.SECONDS);
+        
         // info("play queue");
         // play queue
         // info("Playing LightSheetMicroscope Queue...");
@@ -305,8 +315,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
         if (lSuccess)
         {
           // info("play queue success");
-          mAcquisitionCounterVariable.set(mAcquisitionCounterVariable.get()
-                                          + 1);
+          mAcquisitionCounterVariable.increment();
         }
 
         // info("... done waiting!");

@@ -3,8 +3,8 @@ package clearcontrol.microscope.lightsheet.adaptor.modules;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.adaptor.utils.NDIterator;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * ND iterator adaptation module

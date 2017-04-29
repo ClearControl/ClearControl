@@ -3,7 +3,6 @@ package clearcontrol.microscope.lightsheet.gui;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -13,6 +12,7 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPan
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
 import clearcontrol.microscope.lightsheet.timelapse.gui.LightSheetTimelapseToolbar;
 import clearcontrol.microscope.state.AcquisitionStateManager;

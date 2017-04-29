@@ -16,7 +16,7 @@ import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;

@@ -5,8 +5,8 @@ import java.util.concurrent.Future;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.adaptor.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * Interface implemented by all adaptators

@@ -6,6 +6,7 @@ import clearcontrol.core.device.change.ChangeListener;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.device.name.NameableInterface;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * Base class extended by classes that need both name and change listener
@@ -40,6 +41,12 @@ public abstract class NameableWithChangeListener<E>
   public void addChangeListener(ChangeListener<E> pChangeListener)
   {
     mChangeListenerList.add(pChangeListener);
+  }
+
+  @Override
+  public boolean isChangeListener(ChangeListener<E> pChangeListener)
+  {
+    return mChangeListenerList.contains(pChangeListener);
   }
 
   @Override

@@ -1,6 +1,5 @@
-package clearcontrol.microscope.lightsheet.acquisition;
+package clearcontrol.microscope.lightsheet.state;
 
-import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
 import java.util.concurrent.TimeUnit;
@@ -14,8 +13,8 @@ import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.lightsheet.state.tables.InterpolationTables;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
@@ -27,6 +26,7 @@ public class InterpolatedAcquisitionState extends
                                           NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
                                           implements
                                           LightSheetAcquisitionStateInterface<InterpolatedAcquisitionState>,
+
                                           LoggingInterface,
                                           Cloneable
 
@@ -60,66 +60,147 @@ public class InterpolatedAcquisitionState extends
                                           new Variable<Number>("ZPlanes",
                                                                1);
 
-  private final Variable<Boolean>[] mLightSheetOnOff;
-
-  private final InterpolationTables mInterpolationTables;
-
-  private LightSheetMicroscopeQueue mQueue;
+  private final Variable<Boolean>[] mCameraOnOff, mLightSheetOnOff,
+      mLaserOnOff;
 
   private LightSheetMicroscopeInterface mLightSheetMicroscope;
 
+  private LightSheetMicroscopeQueue mQueue;
+
+  private final InterpolationTables mInterpolationTables;
+
+  private volatile boolean mQueueUpdateNeeded = true;
+
   /**
-   * Instanciates an interpolated acquisition state
+   * Instantiates an interpolated acquisition state
    * 
    * @param pName
    *          acquisition state name
-   * @param pNumberOfDetectionArms
-   *          number of detectin arms
-   * @param pNumberOfLightSheets
-   *          number of lighsheets
-   * @param pNumberOfLaserLines
-   *          number of laser lines
+   * @param pLightSheetMicroscope
+   *          lightsheet microscope
    */
   @SuppressWarnings("unchecked")
   public InterpolatedAcquisitionState(String pName,
-                                      int pNumberOfDetectionArms,
-                                      int pNumberOfLightSheets,
-                                      int pNumberOfLaserLines)
+                                      LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
     super(pName);
-    mLightSheetMicroscope = null;
-    mNumberOfDetectionArms = pNumberOfDetectionArms;
-    mNumberOfLightSheets = pNumberOfLightSheets;
-    mNumberOfLaserLines = pNumberOfLaserLines;
+
+    mLightSheetMicroscope = pLightSheetMicroscope;
+
+    mNumberOfDetectionArms =
+                           mLightSheetMicroscope.getNumberOfDetectionArms();
+    mNumberOfLightSheets =
+                         mLightSheetMicroscope.getNumberOfLightSheets();
+    mNumberOfLaserLines =
+                        mLightSheetMicroscope.getNumberOfLaserLines();
+
+    @SuppressWarnings("rawtypes")
+    final VariableSetListener lChangeListener = (o, n) -> {
+      info("State changed!");
+      mQueueUpdateNeeded = true;
+      notifyListeners(this);
+    };
+
+    DetectionArmInterface lDetectionArm =
+                                        mLightSheetMicroscope.getDetectionArm(0);
+
+    if (lDetectionArm == null)
+    {
+      mZLow = new BoundedVariable<Number>("LowZ", -117);
+      mZHigh = new BoundedVariable<Number>("HighZ", +117);
+    }
+    else
+    {
+
+      mZLow = new BoundedVariable<Number>("LowZ",
+                                          lDetectionArm.getZVariable()
+                                                       .getMin()
+                                                       .doubleValue(),
+                                          lDetectionArm.getZVariable()
+                                                       .getMin(),
+                                          lDetectionArm.getZVariable()
+                                                       .getMax());
+      mZHigh = new BoundedVariable<Number>("HighZ",
+                                           lDetectionArm.getZVariable()
+                                                        .getMax()
+                                                        .doubleValue(),
+                                           lDetectionArm.getZVariable()
+                                                        .getMin(),
+                                           lDetectionArm.getZVariable()
+                                                        .getMax());
+    }
 
     mInterpolationTables =
                          new InterpolationTables(mNumberOfDetectionArms,
                                                  mNumberOfLightSheets);
+    mInterpolationTables.addChangeListener((e) -> {
+      notifyListeners(this);
+    });
+
+    mCameraOnOff = new Variable[mNumberOfDetectionArms];
+
+    for (int i = 0; i < mCameraOnOff.length; i++)
+    {
+      mCameraOnOff[i] = new Variable<Boolean>(
+                                              String.format("Camera%dOnOff",
+                                                            i),
+                                              false);
+      mCameraOnOff[i].addSetListener(lChangeListener);
+    }
 
     mLightSheetOnOff = new Variable[mNumberOfLightSheets];
 
     for (int i = 0; i < mLightSheetOnOff.length; i++)
+    {
       mLightSheetOnOff[i] = new Variable<Boolean>(
                                                   String.format("LightSheet%dOnOff",
                                                                 i),
                                                   false);
+      mLightSheetOnOff[i].addSetListener(lChangeListener);
+    }
+
+    mLaserOnOff = new Variable[mNumberOfLaserLines];
+
+    for (int i = 0; i < mLaserOnOff.length; i++)
+    {
+      mLaserOnOff[i] =
+                     new Variable<Boolean>(String.format("Laser%dOnOff",
+                                                         i),
+                                           false);
+
+      mLaserOnOff[i].addSetListener(lChangeListener);
+    }
 
     mZLow = new BoundedVariable<Number>("LowZ", -100.0);
     mZHigh = new BoundedVariable<Number>("HighZ", 100.0);
 
+    VariableSetListener<Number> lRangeListener = (o, n) -> {
+      if (n != null && !n.equals(o))
+      {
+        long lZPlanes = (long) round(getStackDepthInMicrons()
+                                     / mZStep.get().doubleValue());
+
+        if (mZPlanes.get().longValue() != lZPlanes)
+          mZPlanes.set(lZPlanes);
+
+      }
+    };
+
+    mZLow.addSetListener(lRangeListener);
+    mZHigh.addSetListener(lRangeListener);
     mZStep.addSetListener((o, n) -> {
       if (n != null && !n.equals(o))
       {
-        long lZPlanes = (long) floor(getStackDepthInMicrons()
+        long lZPlanes = (long) round(getStackDepthInMicrons()
                                      / n.doubleValue());
 
         if (mZPlanes.get().longValue() != lZPlanes)
         {
           mZPlanes.set(lZPlanes);
 
-          getStackZHighVariable().set(getStackZLowVariable().get()
+          /*getStackZHighVariable().set(getStackZLowVariable().get()
                                                             .doubleValue()
-                                      + lZPlanes * n.doubleValue());
+                                      + lZPlanes * n.doubleValue());/**/
         }
       }
     });
@@ -134,55 +215,10 @@ public class InterpolatedAcquisitionState extends
       }
     });
 
-  }
-
-  /**
-   * Instanciates an interpolated acquisition state
-   * 
-   * @param pName
-   *          acquisition state name
-   * @param pLightSheetMicroscope
-   *          lightsheet microscope
-   */
-  public InterpolatedAcquisitionState(String pName,
-                                      LightSheetMicroscopeInterface pLightSheetMicroscope)
-  {
-    this(pName,
-         pLightSheetMicroscope.getNumberOfDetectionArms(),
-         pLightSheetMicroscope.getNumberOfLightSheets(),
-         pLightSheetMicroscope.getNumberOfLaserLines());
-    mLightSheetMicroscope = pLightSheetMicroscope;
-
-    DetectionArmInterface lDetectionArm =
-                                        mLightSheetMicroscope.getDetectionArm(0);
-
-    mZLow = new BoundedVariable<Number>("LowZ",
-                                        lDetectionArm.getZVariable()
-                                                     .getMin()
-                                                     .doubleValue(),
-                                        lDetectionArm.getZVariable()
-                                                     .getMin(),
-                                        lDetectionArm.getZVariable()
-                                                     .getMax());
-    mZHigh = new BoundedVariable<Number>("HighZ",
-                                         lDetectionArm.getZVariable()
-                                                      .getMax()
-                                                      .doubleValue(),
-                                         lDetectionArm.getZVariable()
-                                                      .getMin(),
-                                         lDetectionArm.getZVariable()
-                                                      .getMax());
-
-    mInterpolationTables.addChangeListener((e) -> {
-      notifyListeners(this);
-    });
-
-    VariableSetListener<Number> lVariableSetListener = (o, n) -> {
-      notifyListeners(this);
-    };
-    getStackZLowVariable().addSetListener(lVariableSetListener);
-    getStackZHighVariable().addSetListener(lVariableSetListener);
-    getStackZStepVariable().addSetListener(lVariableSetListener);
+    mZLow.addSetListener(lChangeListener);
+    mZHigh.addSetListener(lChangeListener);
+    mZStep.addSetListener(lChangeListener);
+    mZPlanes.addSetListener(lChangeListener);
 
     StageDeviceInterface lMainXYZRStage =
                                         getLightSheetMicroscope().getMainXYZRStage();
@@ -332,38 +368,51 @@ public class InterpolatedAcquisitionState extends
     return mLightSheetMicroscope;
   }
 
-  @Override
-  public void updateQueue(LightSheetMicroscopeInterface pLightSheetMicroscope)
+  /**
+   * Updated the queue
+   */
+  public void updateQueue()
   {
-    mQueue = pLightSheetMicroscope.requestQueue();
-
-    long lStackDepthInPlanes =
-                             getStackDepthInPlanesVariable().get()
-                                                            .longValue();
-
-    double lVoxelDepthInMicrons = getStackDepthInMicrons()
-                                  / lStackDepthInPlanes;
-    mQueue.addVoxelDimMetaData(pLightSheetMicroscope,
-                               lVoxelDepthInMicrons);
-
-    applyStagePosition();
-    mQueue.clearQueue();
-    for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
+    if (mQueueUpdateNeeded)
     {
-      applyAcquisitionStateAtStackPlane(mQueue, lIndex);
-      mQueue.addCurrentStateToQueue();
+      mQueue = mLightSheetMicroscope.requestQueue();
+
+      long lStackDepthInPlanes =
+                               getStackDepthInPlanesVariable().get()
+                                                              .longValue();
+
+      double lVoxelDepthInMicrons = getStackDepthInMicrons()
+                                    / lStackDepthInPlanes;
+      mQueue.addVoxelDimMetaData(mLightSheetMicroscope,
+                                 lVoxelDepthInMicrons);
+
+      prepareAcquisition(100, TimeUnit.SECONDS);
+      mQueue.clearQueue();
+      for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
+      {
+        applyAcquisitionStateAtStackPlane(mQueue, lIndex);
+        mQueue.addCurrentStateToQueue();
+      }
+      mQueue.finalizeQueue();
     }
-    mQueue.finalizeQueue();
+    mQueueUpdateNeeded = false;
   }
 
   @Override
   public LightSheetMicroscopeQueue getQueue()
   {
+    if (mQueueUpdateNeeded)
+      updateQueue();
     return mQueue;
   }
 
   @Override
-  public void applyStagePosition()
+  public void prepareAcquisition(long pTimeOut, TimeUnit pTimeUnit)
+  {
+    applyStagePosition(pTimeOut, pTimeUnit);
+  }
+
+  protected void applyStagePosition(long pTimeOut, TimeUnit pTimeUnit)
   {
     StageDeviceInterface lMainXYZRStage =
                                         getLightSheetMicroscope().getMainXYZRStage();
@@ -379,8 +428,9 @@ public class InterpolatedAcquisitionState extends
     getLightSheetMicroscope().setStageX(lStageX);
     getLightSheetMicroscope().setStageY(lStageY);
     getLightSheetMicroscope().setStageZ(lStageZ);
+
     getLightSheetMicroscope().getMainXYZRStage()
-                             .waitToBeReady(10, TimeUnit.SECONDS);
+                             .waitToBeReady(pTimeOut, pTimeUnit);
   }
 
   /**
@@ -414,6 +464,7 @@ public class InterpolatedAcquisitionState extends
     for (int d = 0; d < mNumberOfDetectionArms; d++)
     {
       pQueue.setDZ(d, get(LightSheetDOF.DZ, pPlaneIndex, d));
+      pQueue.setC(d, mCameraOnOff[d].get());
     }
 
     for (int l = 0; l < mNumberOfLightSheets; l++)
@@ -430,6 +481,14 @@ public class InterpolatedAcquisitionState extends
       pQueue.setIH(l, get(LightSheetDOF.IH, pPlaneIndex, l));
 
       pQueue.setIP(l, get(LightSheetDOF.IP, pPlaneIndex, l));
+
+      for (int la = 0; la < mNumberOfLaserLines; la++)
+      {
+        pQueue.setILO(l,
+                      la,
+                      mLightSheetOnOff[l].get()
+                          && mLaserOnOff[la].get());
+      }
     }
 
   }
@@ -557,7 +616,7 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
-   * Returns best detction arm for given plane index
+   * Returns best detection arm for given plane index
    * 
    * @param pPlaneIndex
    *          plane index
@@ -699,9 +758,23 @@ public class InterpolatedAcquisitionState extends
   }
 
   @Override
+  public Variable<Boolean> getCameraOnOffVariable(int pLightSheetIndex)
+  {
+    return mCameraOnOff[pLightSheetIndex];
+  }
+
+  @Override
   public Variable<Boolean> getLightSheetOnOffVariable(int pLightSheetIndex)
   {
     return mLightSheetOnOff[pLightSheetIndex];
   }
+
+  @Override
+  public Variable<Boolean> getLaserOnOffVariable(int pLightSheetIndex)
+  {
+    return mLaserOnOff[pLightSheetIndex];
+  }
+
+
 
 }

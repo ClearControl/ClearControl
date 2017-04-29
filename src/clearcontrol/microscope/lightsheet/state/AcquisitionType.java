@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition;
+package clearcontrol.microscope.lightsheet.state;
 
 /**
  * Acquisition type

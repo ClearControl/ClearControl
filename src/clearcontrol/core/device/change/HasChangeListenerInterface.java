@@ -27,10 +27,20 @@ public interface HasChangeListenerInterface<E>
   public void removeChangeListener(ChangeListener<E> pChangeListener);
 
   /**
+   * Returns true if the given listener is already added.
+   * 
+   * @param pChangeListener
+   *          change listener to check for
+   * @return true if already added.
+   */
+  public boolean isChangeListener(ChangeListener<E> pChangeListener);
+
+  /**
    * Notify listeners of a change by passing an event object
    * 
    * @param pEvent
    *          event
    */
   public void notifyListeners(E pEvent);
+
 }

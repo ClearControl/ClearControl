@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition.test;
+package clearcontrol.microscope.lightsheet.state.test;
 
 import org.junit.Test;
 

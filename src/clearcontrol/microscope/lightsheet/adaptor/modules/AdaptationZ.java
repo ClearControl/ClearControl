@@ -3,7 +3,7 @@ package clearcontrol.microscope.lightsheet.adaptor.modules;
 import java.util.concurrent.Future;
 
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**

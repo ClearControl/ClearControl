@@ -2,7 +2,7 @@ package clearcontrol.microscope.timelapse.timer.adaptive;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerBase;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.stack.StackInterface;

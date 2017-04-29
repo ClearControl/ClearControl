@@ -39,6 +39,12 @@ public abstract class ChangeListeningBase<E> implements
     mListenersList.add(pListener);
   }
 
+  @Override
+  public boolean isChangeListener(ChangeListener<E> pChangeListener)
+  {
+    return mListenersList.contains(pChangeListener);
+  }
+
   /**
    * Notifies listeners of changes .
    */

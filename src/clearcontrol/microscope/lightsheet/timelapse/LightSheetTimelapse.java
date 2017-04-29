@@ -9,9 +9,9 @@ import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.processor.MetaDataFusion;
+import clearcontrol.microscope.lightsheet.state.AcquisitionType;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.state.AcquisitionStateManager;
@@ -20,7 +20,6 @@ import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.metadata.MetaDataChannel;
 import clearcontrol.stack.metadata.MetaDataOrdinals;
 import clearcontrol.stack.metadata.StackMetaData;
-import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 
 /**
  * Standard Timelapse implementation
@@ -128,49 +127,53 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
     // preparing queues:
     for (int l = 0; l < lNumberOfLightSheets; l++)
-    {
-      LightSheetMicroscopeQueue lQueueForView =
-                                              getQueueForSingleLightSheet(pCurrentState,
-                                                                          l);
+      if (pCurrentState.getLightSheetOnOffVariable(l).get())
+      {
+        LightSheetMicroscopeQueue lQueueForView =
+                                                getQueueForSingleLightSheet(pCurrentState,
+                                                                            l);
 
-      lViewToQueueMap.put(l, lQueueForView);
-    }
+        lViewToQueueMap.put(l, lQueueForView);
+      }
 
     // playing the queues in sequence:
 
     for (int l = 0; l < lNumberOfLightSheets; l++)
-    {
-      LightSheetMicroscopeQueue lQueueForView =
-                                              lViewToQueueMap.get(l);
-
-      for (int c = 0; c < lNumberOfDetectionArms; c++)
+      if (pCurrentState.getLightSheetOnOffVariable(l).get())
       {
+        LightSheetMicroscopeQueue lQueueForView =
+                                                lViewToQueueMap.get(l);
 
-        StackMetaData lMetaData =
-                                lQueueForView.getCameraDeviceQueue(c)
-                                             .getMetaDataVariable()
-                                             .get();
+        for (int c = 0; c < lNumberOfDetectionArms; c++)
+          if (pCurrentState.getCameraOnOffVariable(l).get())
+          {
 
-        lMetaData.addEntry(MetaDataAcquisitionType.AcquisitionType,
-                           AcquisitionType.TimeLapse);
-        lMetaData.addEntry(MetaDataView.Camera, c);
-        lMetaData.addEntry(MetaDataView.LightSheet, l);
-        
+            StackMetaData lMetaData =
+                                    lQueueForView.getCameraDeviceQueue(c)
+                                                 .getMetaDataVariable()
+                                                 .get();
 
-        if (getFuseStacksVariable().get())
-          lMetaData.addEntry(MetaDataFusion.RequestFuse, true);
-        else
-        {
-          String lCxLyString = MetaDataView.getCxLyString(lMetaData);
-          lMetaData.addEntry(MetaDataChannel.Channel,lCxLyString);
-        }
+            lMetaData.addEntry(MetaDataAcquisitionType.AcquisitionType,
+                               AcquisitionType.TimeLapse);
+            lMetaData.addEntry(MetaDataView.Camera, c);
+            lMetaData.addEntry(MetaDataView.LightSheet, l);
+
+            if (getFuseStacksVariable().get())
+              lMetaData.addEntry(MetaDataFusion.RequestFuse, true);
+            else
+            {
+              String lCxLyString =
+                                 MetaDataView.getCxLyString(lMetaData);
+              lMetaData.addEntry(MetaDataChannel.Channel,
+                                 lCxLyString);
+            }
+          }
+
+        mLightSheetMicroscope.playQueueAndWait(lQueueForView,
+                                               cTimeOut,
+                                               TimeUnit.SECONDS);
+
       }
-
-      mLightSheetMicroscope.playQueueAndWait(lQueueForView,
-                                             cTimeOut,
-                                             TimeUnit.SECONDS);
-
-    }
 
   }
 
@@ -188,7 +191,6 @@ public class LightSheetTimelapse extends TimelapseBase implements
       pCurrentState.getLightSheetOnOffVariable(i)
                    .set(i == pLightSheetIndex);
 
-    pCurrentState.updateQueue(mLightSheetMicroscope);
     LightSheetMicroscopeQueue lQueue = pCurrentState.getQueue();
     lQueue.addMetaDataEntry(MetaDataOrdinals.TimePoint,
                             mTimePointIndex.get());

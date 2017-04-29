@@ -6,8 +6,8 @@ import java.util.concurrent.Future;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * Base class providing common fields and methods for all adaptation modules

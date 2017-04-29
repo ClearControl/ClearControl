@@ -18,9 +18,18 @@ import coremem.offheap.OffHeapMemory;
 
 import org.junit.Test;
 
+/**
+ * fast fusion tests
+ *
+ * @author royer
+ */
 public class FastFusionTests
 {
 
+  /**
+   * test
+   * @throws Exception NA
+   */
   @Test
   public void test() throws Exception
   {

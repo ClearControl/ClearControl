@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition.tables;
+package clearcontrol.microscope.lightsheet.state.tables;
 
 import java.util.ArrayList;
 

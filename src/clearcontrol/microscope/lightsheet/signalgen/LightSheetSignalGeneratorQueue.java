@@ -1,5 +1,6 @@
 package clearcontrol.microscope.lightsheet.signalgen;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
@@ -39,6 +41,9 @@ public class LightSheetSignalGeneratorQueue implements
 
   final ConcurrentHashMap<DetectionArm, DetectionArmStaves> mDetectionArmToStavesMap =
                                                                                      new ConcurrentHashMap<>();
+
+  final ArrayList<LightSheet> mLightSheetList =
+                                              new ArrayList<LightSheet>();
 
   final ConcurrentHashMap<LightSheet, LightSheetStaves> mLightSheetToStavesMap =
                                                                                new ConcurrentHashMap<>();
@@ -152,6 +157,8 @@ public class LightSheetSignalGeneratorQueue implements
     LightSheetStaves lLightSheetStaves =
                                        new LightSheetStaves(pLightSheetQueue);
 
+    mLightSheetList.add(pLightSheetQueue.getLightSheet());
+
     mLightSheetToStavesMap.put(pLightSheetQueue.getLightSheet(),
                                lLightSheetStaves);
 
@@ -220,12 +227,32 @@ public class LightSheetSignalGeneratorQueue implements
                                 mExposureMovement);
       }
 
-      for (Map.Entry<LightSheet, LightSheetStaves> lEntry : mLightSheetToStavesMap.entrySet())
+      Variable<Boolean> lIsSharedLightSheetControl =
+                                                   mLightSheetSignalGeneratorDevice.getIsSharedLightSheetControlVariable();
+
+      if (lIsSharedLightSheetControl.get())
       {
-        LightSheetStaves lLightSheetStaves = lEntry.getValue();
+        int lSelectedLightSheetIndex =
+                                     mLightSheetSignalGeneratorDevice.getIsSelectedLightSheetIndexVariable()
+                                                                     .get();
+
+        LightSheet lSelectedLightSheet =
+                                       mLightSheetList.get(lSelectedLightSheetIndex);
+
+        LightSheetStaves lLightSheetStaves =
+                                           mLightSheetToStavesMap.get(lSelectedLightSheet);
+
         lLightSheetStaves.update(mBeforeExposureMovement,
                                  mExposureMovement);
+
       }
+      else
+        for (Map.Entry<LightSheet, LightSheetStaves> lEntry : mLightSheetToStavesMap.entrySet())
+        {
+          LightSheetStaves lLightSheetStaves = lEntry.getValue();
+          lLightSheetStaves.update(mBeforeExposureMovement,
+                                   mExposureMovement);
+        }
 
       for (Entry<LightSheetOpticalSwitch, LightSheetOpticalSwitchStaves> lEntry : mOpticalSwitchToStavesMap.entrySet())
       {

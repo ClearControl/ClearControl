@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 
@@ -21,6 +22,13 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
 {
 
   private final SignalGeneratorInterface mDelegatedSignalGenerator;
+
+  private Variable<Boolean> mIsSharedLightSheetControlVariable =
+                                                               new Variable<Boolean>("IsSharedLightSheetControl",
+                                                                                     true);
+  private Variable<Integer> mIsSelectedLightSheetIndexVariable =
+                                                               new Variable<Integer>("IsSelectedLightSheetIndex",
+                                                                                     0);
 
   /**
    * Wraps a signal generator with a lightsheet signal generation. This
@@ -75,6 +83,30 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
   {
     SignalGeneratorQueue lDelegatedQueue = pQueue.getDelegatedQueue();
     return mDelegatedSignalGenerator.playQueue(lDelegatedQueue);
+  }
+
+  /**
+   * Returns the variable that holds the 'is-shared-lightsheet-control'. When
+   * all lightsheets share the same digital/control lines, one needs to decide
+   * which lightsheet will be used for generating the control signals.
+   * 
+   * @return is-shared-lightsheet-control variable
+   */
+  public Variable<Boolean> getIsSharedLightSheetControlVariable()
+  {
+    return mIsSharedLightSheetControlVariable;
+  }
+
+  /**
+   * In the case that we are in a shared lightsheet control situation, this
+   * variable holds the index of the lightsheet to use to generate the control
+   * signals.
+   * 
+   * @return  is-selected-lightsheet variable
+   */
+  public Variable<Integer> getIsSelectedLightSheetIndexVariable()
+  {
+    return mIsSelectedLightSheetIndexVariable;
   }
 
 }

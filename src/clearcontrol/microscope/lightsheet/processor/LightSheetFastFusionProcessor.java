@@ -6,7 +6,7 @@ import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
+import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;

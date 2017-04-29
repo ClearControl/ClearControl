@@ -1,10 +1,10 @@
-package clearcontrol.microscope.lightsheet.acquisition;
+package clearcontrol.microscope.lightsheet.state;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
+import clearcontrol.microscope.lightsheet.state.tables.InterpolationTables;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
@@ -27,7 +27,7 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
   S copy(String pName);
 
   /**
-   * Returns curent interpolationtables
+   * Returns current interpolation tables
    * 
    * @return current Interpolation tables
    */
@@ -53,12 +53,6 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
   void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
                                 int pControlPlaneIndex);
 
-  /**
-   * Applies new stage position
-   * 
-   * @param pLightSheetMicroscopeInterface
-   */
-  void applyStagePosition();
 
   /**
    * Returns state variable x
@@ -82,6 +76,15 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
   BoundedVariable<Number> getStageZVariable();
 
   /**
+   * Returns the On/Off variable for a given camera index
+   * 
+   * @param pCameraIndex
+   *          camera index
+   * @return on/off variable.
+   */
+  Variable<Boolean> getCameraOnOffVariable(int pCameraIndex);
+  
+  /**
    * Returns the On/Off variable for a given lightsheet index
    * 
    * @param pLightSheetIndex
@@ -89,5 +92,16 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    * @return on/off variable.
    */
   Variable<Boolean> getLightSheetOnOffVariable(int pLightSheetIndex);
+
+  /**
+   * Returns the On/Off variable for a given laser index
+   * 
+   * @param pLaserLineIndex
+   *          laser line index
+   * @return on/off variable.
+   */
+  Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex);
+
+
 
 }

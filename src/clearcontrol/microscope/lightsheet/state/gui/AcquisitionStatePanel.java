@@ -1,22 +1,26 @@
-package clearcontrol.microscope.lightsheet.acquisition.gui;
+package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.multichart.MultiChart;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 /**
  * Acquisition state panel
@@ -92,16 +96,16 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                         lZHigh,
                                                                         lZLow.getMinVariable(),
                                                                         lZHigh.getMaxVariable(),
-                                                                        lZStep,
-                                                                        5);
+                                                                        0.01d,
+                                                                        5d);
 
     NumberVariableTextField<Number> lZStepTextField =
                                                     new NumberVariableTextField<Number>("Z-step:",
                                                                                         lZStep,
-                                                                                        0,
+                                                                                        0d,
                                                                                         Double.POSITIVE_INFINITY,
-                                                                                        0);
-    lZStepTextField.getTextField().setPrefWidth(50);
+                                                                                        0d);
+    lZStepTextField.getTextField().setPrefWidth(100);
 
     NumberVariableTextField<Number> lNumberOfPlanesTextField =
                                                              new NumberVariableTextField<Number>("Number of planes:",
@@ -110,7 +114,34 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                                                  Double.POSITIVE_INFINITY,
                                                                                                  0);
 
-    lZStepTextField.getTextField().setPrefWidth(50);
+    lNumberOfPlanesTextField.getTextField().setPrefWidth(100);
+
+    OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();
+
+    for (int i =
+               0; i < pAcquisitionState.getNumberOfDetectionArms(); i++)
+    {
+      lCameraOnOffArray.addSwitch("Camera " + i,
+                                      pAcquisitionState.getCameraOnOffVariable(i));
+    }
+    
+    OnOffArrayPane lLightSheetOnOffArray = new OnOffArrayPane();
+
+    for (int i =
+               0; i < pAcquisitionState.getNumberOfLightSheets(); i++)
+    {
+      lLightSheetOnOffArray.addSwitch("Lightsheet " + i,
+                                      pAcquisitionState.getLightSheetOnOffVariable(i));
+    }
+
+    OnOffArrayPane lLaserOnOffArray = new OnOffArrayPane();
+
+    for (int i =
+               0; i < pAcquisitionState.getNumberOfLaserLines(); i++)
+    {
+      lLaserOnOffArray.addSwitch("Laser " + i,
+                                 pAcquisitionState.getLaserOnOffVariable(i));
+    }
 
     MultiChart lMultiChart = new MultiChart(LineChart.class);
     lMultiChart.setLegendVisible(false);
@@ -160,15 +191,41 @@ public class AcquisitionStatePanel extends CustomGridPane
     add(lZRangeSlider.getRangeSlider(), 2, 3);
     add(lZRangeSlider.getHighTextField(), 3, 3);
 
-    add(lZStepTextField.getLabel(), 0, 4);
-    add(lZStepTextField.getTextField(), 1, 4);
-    add(lNumberOfPlanesTextField.getLabel(), 3, 4);
-    add(lNumberOfPlanesTextField.getTextField(), 4, 4);
+    //setGridLinesVisible(true);
+    GridPane lGridPane = new GridPane();
+    lGridPane.setHgap(10);
+    lGridPane.add(lZStepTextField.getLabel(), 0, 0);
+    lGridPane.add(lZStepTextField.getTextField(), 1, 0);
+    lGridPane.add(lNumberOfPlanesTextField.getLabel(), 2, 0);
+    lGridPane.add(lNumberOfPlanesTextField.getTextField(), 3, 0);
 
-    add(lMultiChart, 0, 4);
+    lGridPane.setAlignment(Pos.BASELINE_LEFT);
+    GridPane.setColumnSpan(lGridPane, 8);
+    add(lGridPane, 0, 4);
+    
+    lCameraOnOffArray.setAlignment(Pos.BASELINE_LEFT);
+    GridPane.setHalignment(lCameraOnOffArray, HPos.LEFT);
+    GridPane.setColumnSpan(lCameraOnOffArray, 7);
+    add(new Label("Camera on/off: "), 0, 5);
+    add(lCameraOnOffArray, 1, 5);
+
+    lLightSheetOnOffArray.setAlignment(Pos.BASELINE_LEFT);
+    GridPane.setHalignment(lLightSheetOnOffArray, HPos.LEFT);
+    GridPane.setColumnSpan(lLightSheetOnOffArray, 7);
+    add(new Label("LightSheet on/off: "), 0, 6);
+    add(lLightSheetOnOffArray, 1, 6);
+
+    lLaserOnOffArray.setAlignment(Pos.BASELINE_LEFT);
+    GridPane.setHalignment(lLaserOnOffArray, HPos.LEFT);
+    GridPane.setColumnSpan(lLaserOnOffArray, 7);
+    add(new Label("Laser on/off: "), 0, 7);
+    add(lLaserOnOffArray, 1, 7);
+
     GridPane.setVgrow(lMultiChart, Priority.ALWAYS);
     GridPane.setHgrow(lMultiChart, Priority.ALWAYS);
     GridPane.setColumnSpan(lMultiChart, 8);
+    add(lMultiChart, 0, 8);
+
 
     // Update events:
 

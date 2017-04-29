@@ -4,6 +4,11 @@ import java.util.Set;
 
 import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngineInterface;
 
+/**
+ * Registered fusion task
+ *
+ * @author royer
+ */
 public class RegisterFuseTask implements FusionTaskInterface
 {
 

@@ -29,8 +29,6 @@ import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -38,6 +36,8 @@ import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpti
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
@@ -73,8 +73,8 @@ public class LightSheetMicroscopeDemo implements
     int lMaxCameraResolution = 1024;
     long lImageResolution = 1024;
 
-    int lNumberOfLightSheets = 1;
-    int lNumberOfDetectionArms = 1;
+    int lNumberOfLightSheets = 2;
+    int lNumberOfDetectionArms = 2;
 
     float lDivisionTime = 11f;
 

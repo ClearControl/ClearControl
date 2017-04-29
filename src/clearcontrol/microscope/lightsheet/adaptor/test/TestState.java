@@ -5,8 +5,8 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
-import clearcontrol.microscope.lightsheet.acquisition.tables.InterpolationTables;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.lightsheet.state.tables.InterpolationTables;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**

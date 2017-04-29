@@ -66,6 +66,7 @@ public class LightSheetOpticalSwitchStaves
    * @param pExposureMovement
    *          exposure movement
    * @param pFinalMovement
+   *          final movement
    */
   public void addStavesToMovements(Movement pBeforeExposureMovement,
                                    Movement pExposureMovement,

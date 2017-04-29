@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.acquisition.gui;
+package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCell;
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCellManager;
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckListView;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;

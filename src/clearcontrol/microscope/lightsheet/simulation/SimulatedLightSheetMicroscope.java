@@ -17,13 +17,13 @@ import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.acquisition.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.acquisition.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
@@ -66,6 +66,8 @@ public class SimulatedLightSheetMicroscope extends
    * 
    * @param pDummySimulation
    *          true-> uses a dummy simulation instead of the embryo
+   * @param pXYZRStage
+   *          XYZR Stage
    * @param pSimulatorDevice
    *          simulator device
    */

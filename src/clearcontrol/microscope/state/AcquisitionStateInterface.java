@@ -1,5 +1,7 @@
 package clearcontrol.microscope.state;
 
+import java.util.concurrent.TimeUnit;
+
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.queue.QueueInterface;
@@ -23,13 +25,16 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q e
 {
 
   /**
-   * Updates the queue for this state using the current microscope settings and
-   * state details
+   * Executes (asynchronously) any actions that cannot be queue and that needs
+   * to happen before an acquisition (such as moving the stage, ...)
    * 
-   * @param pMicroscope
-   *          microscope
+   * @param pTimeOut
+   *          timeout
+   * @param pTimeUnit
+   *          time unit.
+   * 
    */
-  void updateQueue(M pMicroscope);
+  void prepareAcquisition(long pTimeOut, TimeUnit pTimeUnit);
 
   /**
    * Returns the microscope queue for this state
