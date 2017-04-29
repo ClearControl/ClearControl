@@ -53,7 +53,7 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
       add(lInterleavedAcquisitionLabel, 1, mRow);
       mRow++;
     }
-    
+
     {
       VariableCheckBox lEnforceMaxDateTimeCheckBox =
                                                    new VariableCheckBox("Fuse Stacks",
@@ -66,7 +66,6 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
       GridPane.setColumnSpan(lEnforceMaxDateTimeCheckBox.getCheckBox(),
                              1);
 
-      
       add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
       add(lEnforceMaxDateTimeCheckBox.getLabel(), 1, mRow);
 

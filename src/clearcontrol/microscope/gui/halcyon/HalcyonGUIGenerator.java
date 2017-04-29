@@ -418,9 +418,10 @@ public class HalcyonGUIGenerator implements LoggingInterface
           {
             NameableInterface lNameableDevice =
                                               (NameableInterface) lDevice;
-            node = new HalcyonNode(lNameableDevice.getName(),
-                                   lNodeType,
-                                   lPanelAsNode);
+            node =
+                 new HalcyonNode(lNameableDevice.getName() + " Panel",
+                                 lNodeType,
+                                 lPanelAsNode);
           }
           else
           {

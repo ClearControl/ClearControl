@@ -15,8 +15,8 @@ import clearcontrol.stack.sourcesink.server.StackServerBase;
  *
  * @author royer
  */
-public abstract class FileStackBase extends StackServerBase implements
-                                    FileStackInterface
+public abstract class FileStackBase extends StackServerBase
+                                    implements FileStackInterface
 {
   private boolean mReadOnly;
 
@@ -55,7 +55,6 @@ public abstract class FileStackBase extends StackServerBase implements
       mStacksFolder.mkdirs();
     }
   }
- 
 
   protected ArrayList<String> getCurrentChannelList()
   {

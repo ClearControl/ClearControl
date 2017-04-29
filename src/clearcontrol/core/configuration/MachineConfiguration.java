@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.functions.InvertibleFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
  * MachineConfiguration is a singleton that can be accessed to query infromation

@@ -2,11 +2,11 @@ package clearcontrol.stack.sourcesink.sink;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Asynchronous stack sink adapter. This sink adapter can wrap anotehr sink an

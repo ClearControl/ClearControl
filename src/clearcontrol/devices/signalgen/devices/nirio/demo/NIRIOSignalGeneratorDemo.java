@@ -4,14 +4,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.SinusStave;
+
+import org.junit.Test;
 
 /**
  * NIRIO signal generator demos

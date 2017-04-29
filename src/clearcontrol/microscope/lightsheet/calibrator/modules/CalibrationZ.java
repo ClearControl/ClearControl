@@ -139,8 +139,8 @@ public class CalibrationZ
 
     double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
-    double lMinZ = Double.NEGATIVE_INFINITY;
-    double lMaxZ = Double.POSITIVE_INFINITY;
+    double lMinDZ = Double.NEGATIVE_INFINITY;
+    double lMaxDZ = Double.POSITIVE_INFINITY;
 
     double lAmplitudeZ = 0.5 * pSearchAmplitude * (lMaxIZ - lMinIZ);
     System.out.println("lAmplitudeZ=" + lAmplitudeZ);
@@ -151,13 +151,14 @@ public class CalibrationZ
       final double lPerturbedIZ = iz + 0.1 * lStepIZ
                                        * (2 * Math.random() - 1);
 
-      lMinZ = lPerturbedIZ - lAmplitudeZ;
-      lMaxZ = lPerturbedIZ + lAmplitudeZ;
+      // TODO: this does not work when the calibration is really off:
+      lMinDZ = lPerturbedIZ - lAmplitudeZ;
+      lMaxDZ = lPerturbedIZ + lAmplitudeZ;
 
       final double[] dz = focusZ(pLightSheetIndex,
                                  pNumberOfDSamples,
-                                 lMinZ,
-                                 lMaxZ,
+                                 lMinDZ,
+                                 lMaxDZ,
                                  lPerturbedIZ);
 
       if (dz == null)
@@ -194,8 +195,8 @@ public class CalibrationZ
                                                                                        d)
                                                                             .getZVariable();
 
-      double lMinDZ = lDetectionFocusZVariable.getMin().doubleValue();
-      double lMaxDZ = lDetectionFocusZVariable.getMax().doubleValue();
+      lMinDZ = lDetectionFocusZVariable.getMin().doubleValue();
+      lMaxDZ = lDetectionFocusZVariable.getMax().doubleValue();
       double lStepDZ = (lMaxDZ - lMinDZ) / 1000;
 
       for (double z = lMinDZ; z <= lMaxDZ; z += lStepDZ)
@@ -213,16 +214,16 @@ public class CalibrationZ
 
   private double[] focusZ(int pLightSheetIndex,
                           int pNumberOfDSamples,
-                          double pMinZ,
-                          double pMaxZ,
+                          double pMinDZ,
+                          double pMaxDZ,
                           double pIZ)
   {
 
     try
     {
 
-      double lMinDZ = pMinZ;
-      double lMaxDZ = pMaxZ;
+      double lMinDZ = pMinDZ;
+      double lMaxDZ = pMaxDZ;
 
       for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
       {
@@ -284,6 +285,8 @@ public class CalibrationZ
         lQueue.addCurrentStateToQueue();
       }
 
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
       for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
       {
         lQueue.setDZ(d, lMinDZ);
@@ -301,7 +304,7 @@ public class CalibrationZ
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
                                       mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
+                                                                                      1 + lQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)
@@ -329,7 +332,7 @@ public class CalibrationZ
           lPlot.setScatterPlot("samples");
 
           // System.out.format("metric array: \n");
-          for (int j = 0; j < lMetricArray.length; j++)
+          for (int j = 0; j < lDZList.size(); j++)
           {
             lPlot.addPoint("samples",
                            lDZList.get(j),

@@ -49,8 +49,7 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   @Override
   public SignalGeneratorQueue requestQueue()
   {
-    SignalGeneratorQueue lQueue =
-                                        new SignalGeneratorQueue();
+    SignalGeneratorQueue lQueue = new SignalGeneratorQueue();
     return lQueue;
   }
 

@@ -89,7 +89,7 @@ public class RandomStackSource implements StackSourceInterface
   @Override
   public StackInterface getStack(String pChannel, long pStackIndex)
   {
-    return getStack(pChannel,pStackIndex, 1, TimeUnit.NANOSECONDS);
+    return getStack(pChannel, pStackIndex, 1, TimeUnit.NANOSECONDS);
   }
 
   @Override

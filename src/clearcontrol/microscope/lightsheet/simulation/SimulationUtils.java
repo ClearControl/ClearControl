@@ -31,14 +31,14 @@ public class SimulationUtils
    */
   @SuppressWarnings("javadoc")
   public static LightSheetMicroscopeSimulationDevice getSimulatorDevice(ClearCLContext pSimulationContext,
-                                                                 int pNumberOfDetectionArms,
-                                                                 int pNumberOfLightSheets,
-                                                                 int pMaxCameraResolution,
-                                                                 float pDivisionTime,
-                                                                 int pPhantomWidth,
-                                                                 int pPhantomHeight,
-                                                                 int pPhantomDepth,
-                                                                 boolean pUniformFluorescence)
+                                                                        int pNumberOfDetectionArms,
+                                                                        int pNumberOfLightSheets,
+                                                                        int pMaxCameraResolution,
+                                                                        float pDivisionTime,
+                                                                        int pPhantomWidth,
+                                                                        int pPhantomHeight,
+                                                                        int pPhantomDepth,
+                                                                        boolean pUniformFluorescence)
   {
 
     LightSheetMicroscopeSimulatorDrosophila lSimulator =

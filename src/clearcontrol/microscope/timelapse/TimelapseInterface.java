@@ -142,6 +142,4 @@ public interface TimelapseInterface extends
    */
   Variable<String> getDataSetNamePostfixVariable();
 
-
-
 }
