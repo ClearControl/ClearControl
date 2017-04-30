@@ -37,7 +37,7 @@ public class DetectionArm extends
   DetectionArmQueue mTemplateQueue;
 
   /**
-   * Instanciates a lightsheet microscope detection arm
+   * Instantiates a lightsheet microscope detection arm
    * 
    * @param pName
    *          detection arm name
@@ -52,12 +52,8 @@ public class DetectionArm extends
     resetFunctions();
     resetBounds();
 
-    @SuppressWarnings("rawtypes")
-    final VariableSetListener lVariableListener = (o, n) -> {
-      notifyListeners(this);
-    };
-
-    mTemplateQueue.getZVariable().addSetListener(lVariableListener);
+    mTemplateQueue.getZVariable()
+                  .addSetListener((o, n) -> notifyListeners(this));
 
     final VariableSetListener<UnivariateAffineFunction> lFunctionVariableListener =
                                                                                   (o,

@@ -12,6 +12,8 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPan
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.signalgen.gui.LightSheetSignalGeneratorPanel;
 import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
 import clearcontrol.microscope.lightsheet.timelapse.gui.LightSheetTimelapseToolbar;
@@ -66,6 +68,10 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
     addPanelMappingEntry(TimelapseTimerInterface.class,
                          TimelapsePanel.class,
                          MicroscopeNodeType.Acquisition);
+    
+    addPanelMappingEntry(LightSheetSignalGeneratorDevice.class,
+                         LightSheetSignalGeneratorPanel.class,
+                         MicroscopeNodeType.Other);
 
     /*addHalcyonMappingEntry(	AutoPilotInterface.class,
     												AutoPilotPanel.class,
@@ -78,6 +84,7 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
     addToolbarMappingEntry(LightSheetTimelapse.class,
                            LightSheetTimelapseToolbar.class);
+    
 
   }
 

@@ -1,13 +1,14 @@
 package clearcontrol.microscope.lightsheet.processor;
 
 import clearcl.ClearCLContext;
-import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngine;
-import clearcontrol.microscope.lightsheet.processor.fusion.FastFusionEngineInterface;
-import clearcontrol.microscope.lightsheet.processor.fusion.tasks.AverageTask;
-import clearcontrol.microscope.lightsheet.processor.fusion.tasks.IdentityTask;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
+import fastfuse.FastFusionEngine;
+import fastfuse.FastFusionEngineInterface;
+import fastfuse.tasks.AverageTask;
+import fastfuse.tasks.IdentityTask;
 
 /**
  * Lightsheet fast fusion engine
@@ -16,7 +17,8 @@ import clearcontrol.stack.metadata.StackMetaData;
  */
 public class LightSheetFastFusionEngine extends FastFusionEngine
                                         implements
-                                        FastFusionEngineInterface
+                                        FastFusionEngineInterface,
+                                        AsynchronousExecutorServiceAccess
 {
 
   private StackMetaData mFusedStackMetaData = new StackMetaData();

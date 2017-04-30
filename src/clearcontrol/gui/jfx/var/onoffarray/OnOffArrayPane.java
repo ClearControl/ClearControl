@@ -91,9 +91,7 @@ public class OnOffArrayPane extends CustomGridPane
     });
 
     Label lSwitchName = new Label(pLabelText);
-    // 
-    
-    lSwitchName.setFont(new Font(16.0));
+    //lSwitchName.setFont(new Font(16.0));
 
     HBox lHBox = new HBox(lSwitchName, lControl);
     lHBox.setSpacing(8);

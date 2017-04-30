@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
@@ -12,7 +13,9 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.bounds.BoundedVariablePane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.combo.IntComboBoxVariable;
 import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
@@ -361,6 +364,64 @@ public class CustomVariablePane extends TabPane
     mCurrentTabGridPane.add(lFunctionPane, 1, lCursor);
     GridPane.setHgrow(lFunctionPane, Priority.ALWAYS);
     GridPane.setColumnSpan(lFunctionPane, 2);
+  }
+
+  /**
+   * Adds a bounded variable pane
+   * 
+   * @param pName
+   *          name
+   * @param pBoundedVariable
+   *          bounded variable
+   */
+  public void addBoundedVariable(String pName,
+                                     BoundedVariable<Number> pBoundedVariable)
+  {
+
+    BoundedVariablePane lBoundedVariablePane =
+                                             new BoundedVariablePane(null,
+                                                                     pBoundedVariable);
+
+    Label lLabel = new Label(pName);
+
+    int lCursor = mCursor++;
+    mCurrentTabGridPane.add(lLabel,
+                            0,
+                            lCursor);
+    mCurrentTabGridPane.add(lBoundedVariablePane,
+                            1,
+                            lCursor);
+    GridPane.setHgrow(lBoundedVariablePane, Priority.ALWAYS);
+    GridPane.setColumnSpan(lBoundedVariablePane, 2);
+  }
+  
+  
+  /**
+   * Adds a int combo box pane
+   * 
+   * @param pName
+   *          name
+   * @param pBoundedVariable
+   *          bounded variable
+   */
+  public void addIntComboBox(String pName,
+                                     Variable<Integer> pBoundedVariable, int pMin, int pMax)
+  {
+
+    IntComboBoxVariable lIntComboBoxVariable =
+                                             new IntComboBoxVariable(pBoundedVariable,pMin,pMax);
+
+    Label lLabel = new Label(pName);
+
+    int lCursor = mCursor++;
+    mCurrentTabGridPane.add(lLabel,
+                            0,
+                            lCursor);
+    mCurrentTabGridPane.add(lIntComboBoxVariable,
+                            1,
+                            lCursor);
+    GridPane.setHgrow(lIntComboBoxVariable, Priority.ALWAYS);
+    GridPane.setColumnSpan(lIntComboBoxVariable, 2);
   }
 
 }

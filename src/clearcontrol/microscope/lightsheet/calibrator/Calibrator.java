@@ -1,5 +1,6 @@
 package clearcontrol.microscope.lightsheet.calibrator;
 
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
 import java.io.File;
@@ -200,13 +201,14 @@ public class Calibrator extends TaskDevice implements LoggingInterface
       double lError = Double.POSITIVE_INFINITY;
       do
       {
-        double lSearchAmplitude = 1.0 / (pow(2, lIteration));
-        lError =
-               calibrateZ(l,
-                          pNumberOfSamples,
-                          pNumberOfSamples,
-                          lSearchAmplitude,
-                          l == 0);
+        double lSearchAmplitude = 1.0
+                                  / (pow(2, max(0, lIteration - 1)));
+        lError = calibrateZ(l,
+                            pNumberOfSamples,
+                            pNumberOfSamples,
+                            lIteration > 0,
+                            lSearchAmplitude,
+                            l == 0);
         System.out.println("############################################## Error = "
                            + lError);
         if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
@@ -225,6 +227,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    * 
    * @param pNumberOfAngles
    *          number of angles
+   * @param pNumberOfRepeats
+   *          number of repeats
    * @return true when succeeded
    */
   public boolean calibrateA(int pNumberOfAngles, int pNumberOfRepeats)
@@ -350,6 +354,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    *          number of detection Z samples
    * @param pNumberOfISamples
    *          number of illumination Z samples
+   * @param pRestrictedSearch
+   *          true-> restrict search, false -> not
    * @param pSearchAmplitude
    *          search amplitude (within [0,1])
    * @param pAdjustDetectionZ
@@ -359,12 +365,14 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public double calibrateZ(int pLightSheetIndex,
                            int pNumberOfDSamples,
                            int pNumberOfISamples,
+                           boolean pRestrictedSearch,
                            double pSearchAmplitude,
                            boolean pAdjustDetectionZ)
   {
     mCalibrationZ.calibrate(pLightSheetIndex,
                             pNumberOfDSamples,
                             pNumberOfISamples,
+                            pRestrictedSearch,
                             pSearchAmplitude);
 
     return mCalibrationZ.apply(pLightSheetIndex, pAdjustDetectionZ);
@@ -377,6 +385,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    *          lightsheet index
    * @param pNumberOfAngles
    *          number of angles
+   * @param pNumberOfRepeats
+   *          number of repeats
    * @return true when succeeded
    */
   public double calibrateA(int pLightSheetIndex,

@@ -68,11 +68,13 @@ public class SimulatedLightSheetMicroscope extends
    *          true-> uses a dummy simulation instead of the embryo
    * @param pXYZRStage
    *          XYZR Stage
+   * @param pSharedLightSheetControl true -> shared lightsheet control
    * @param pSimulatorDevice
    *          simulator device
    */
   public void addSimulatedDevices(boolean pDummySimulation,
                                   boolean pXYZRStage,
+                                  boolean pSharedLightSheetControl,
                                   LightSheetMicroscopeSimulationDevice pSimulatorDevice)
   {
 
@@ -185,7 +187,8 @@ public class SimulatedLightSheetMicroscope extends
                                      .sendUpdatesTo(lTrigger);/**/
 
       final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                             LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice);
+                                                                             LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice,
+                                                                                                                  pSharedLightSheetControl);
 
       addDevice(0, lLightSheetSignalGeneratorDevice);
     }

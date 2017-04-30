@@ -79,28 +79,65 @@ public class LightSheetMicroscopeQueue extends
     return getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
   }
 
-  private StackCameraQueue<?> getStackCameraQueue(int pCameraIndex)
+  /**
+   * Returns the stack camera queue for a given index
+   * 
+   * @param pCameraIndex
+   *          camera index
+   * @return stack camera queue
+   */
+  public StackCameraQueue<?> getStackCameraDeviceQueue(int pCameraIndex)
   {
     return (StackCameraQueue<?>) getDeviceQueue(StackCameraDeviceInterface.class,
                                                 pCameraIndex);
   }
 
-  private DetectionArmQueue getDetectionArmDeviceQueue(int pDetectionArmIndex)
+  /**
+   * Returns the detection arm device queue for a given index
+   * 
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @return detection arm queue
+   */
+  public DetectionArmQueue getDetectionArmDeviceQueue(int pDetectionArmIndex)
   {
     return (DetectionArmQueue) getDeviceQueue(DetectionArm.class,
                                               pDetectionArmIndex);
   }
 
-  private LightSheetQueue getLightSheetDeviceQueue(int pLightSheetIndex)
+  /**
+   * Returns the lightsheet device queue for a given index
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @return lightsheet device queue
+   */
+  public LightSheetQueue getLightSheetDeviceQueue(int pLightSheetIndex)
   {
     return (LightSheetQueue) getDeviceQueue(LightSheet.class,
                                             pLightSheetIndex);
   }
 
-  private LightSheetOpticalSwitchQueue getLightSheetOpticalSwitchQueue()
+  /**
+   * Returns the lightsheet optical switch queue
+   * 
+   * @return lightsheet optical switch queue
+   */
+  public LightSheetOpticalSwitchQueue getLightSheetOpticalSwitchQueue()
   {
     return (LightSheetOpticalSwitchQueue) getDeviceQueue(LightSheetOpticalSwitch.class,
                                                          0);
+  }
+
+  /**
+   * Returns the lightsheet signal generator queue
+   * 
+   * @return lightsheet signal generator queue
+   */
+  public LightSheetSignalGeneratorQueue getLightSheetSignalGeneratorQueue()
+  {
+    return (LightSheetSignalGeneratorQueue) getDeviceQueue(LightSheetSignalGeneratorDevice.class,
+                                                           0);
   }
 
   /**
@@ -235,22 +272,22 @@ public class LightSheetMicroscopeQueue extends
     int lNumberOfStackCameraDevices = getNumberOfStackCameras();
 
     for (int c = 0; c < lNumberOfStackCameraDevices; c++)
-      getStackCameraQueue(c).getExposureInSecondsVariable()
-                            .set(pExpsoureISeconds);
+      getStackCameraDeviceQueue(c).getExposureInSecondsVariable()
+                                  .set(pExpsoureISeconds);
   };
 
   @Override
   public void setC(int pCameraIndex, boolean pKeepImage)
   {
-    getStackCameraQueue(pCameraIndex).getKeepPlaneVariable()
-                                     .set(pKeepImage);
+    getStackCameraDeviceQueue(pCameraIndex).getKeepPlaneVariable()
+                                           .set(pKeepImage);
   };
 
   @Override
   public boolean getC(int pCameraIndex)
   {
-    return getStackCameraQueue(pCameraIndex).getKeepPlaneVariable()
-                                            .get();
+    return getStackCameraDeviceQueue(pCameraIndex).getKeepPlaneVariable()
+                                                  .get();
   }
 
   @Override
@@ -259,7 +296,8 @@ public class LightSheetMicroscopeQueue extends
     int lNumberOfStackCameraDevices = getNumberOfStackCameras();
 
     for (int c = 0; c < lNumberOfStackCameraDevices; c++)
-      getStackCameraQueue(c).getKeepPlaneVariable().set(pKeepImage);
+      getStackCameraDeviceQueue(c).getKeepPlaneVariable()
+                                  .set(pKeepImage);
 
   }
 
@@ -285,7 +323,8 @@ public class LightSheetMicroscopeQueue extends
                                    getLightSheetOpticalSwitchQueue().getNumberOfSwitches();
     for (int i = 0; i < lNumberOfSwitchableDevices; i++)
       setI(i, i == pLightSheetIndex);
-
+    getLightSheetSignalGeneratorQueue().getSelectedLightSheetIndexVariable()
+                                       .set(pLightSheetIndex);
   };
 
   @Override
@@ -293,6 +332,9 @@ public class LightSheetMicroscopeQueue extends
   {
     getLightSheetOpticalSwitchQueue().getSwitchVariable(pLightSheetIndex)
                                      .set(pOnOff);
+    if (pOnOff)
+      getLightSheetSignalGeneratorQueue().getSelectedLightSheetIndexVariable()
+                                         .set(pLightSheetIndex);
   };
 
   @Override

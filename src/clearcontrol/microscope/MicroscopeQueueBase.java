@@ -27,13 +27,13 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
 
   private volatile int mNumberOfEnqueuedStates;
 
-  private ArrayList<QueueDeviceInterface<?>> mDeviceList =
+  ArrayList<QueueDeviceInterface<?>> mDeviceList =
                                                          new ArrayList<>();
-  private HashMap<QueueDeviceInterface<?>, QueueInterface> mDeviceToQueueMap =
+  HashMap<QueueDeviceInterface<?>, QueueInterface> mDeviceToQueueMap =
                                                                              new HashMap<>();
 
   /**
-   * Instanciates a microscope queue
+   * Instantiates a microscope queue
    * 
    * @param pMicroscope
    *          parent microscope
@@ -57,6 +57,7 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
     }
 
   }
+  
 
   /**
    * Returns parent microscope.

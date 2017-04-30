@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcl.util.ElapsedTime;
+import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
@@ -112,6 +113,14 @@ public abstract class TimelapseBase extends LoopTaskDevice
     super("Timelapse");
     mMicroscope = pMicroscope;
     getTimelapseTimerVariable().set(pTimelapseTimer);
+
+    MachineConfiguration lMachineConfiguration =
+                                               MachineConfiguration.getCurrentMachineConfiguration();
+    File lDefaultRootFolder =
+                            lMachineConfiguration.getFileProperty("timelapse.rootfolder",
+                                                                  new File(System.getProperty("user.home")
+                                                                           + "/Desktop"));
+    getRootFolderVariable().set(lDefaultRootFolder);
 
     getDataSetNamePostfixVariable().addSetListener((o, n) -> info(
                                                                   "New dataset name: %s \n",

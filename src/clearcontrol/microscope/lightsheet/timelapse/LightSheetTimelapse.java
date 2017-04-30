@@ -145,7 +145,7 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                                 lViewToQueueMap.get(l);
 
         for (int c = 0; c < lNumberOfDetectionArms; c++)
-          if (pCurrentState.getCameraOnOffVariable(l).get())
+          if (pCurrentState.getCameraOnOffVariable(c).get())
           {
 
             StackMetaData lMetaData =
@@ -173,9 +173,6 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                                cTimeOut,
                                                TimeUnit.SECONDS);
 
-
- 
-
       }
 
   }
@@ -183,18 +180,23 @@ public class LightSheetTimelapse extends TimelapseBase implements
   protected LightSheetMicroscopeQueue getQueueForSingleLightSheet(LightSheetAcquisitionStateInterface<?> pCurrentState,
                                                                   int pLightSheetIndex)
   {
-    int lNumberOfLightSheets =
-                             mLightSheetMicroscope.getNumberOfLightSheets();
-
-    @SuppressWarnings("unused")
     int lNumberOfDetectionArms =
                                mLightSheetMicroscope.getNumberOfDetectionArms();
 
-    for (int i = 0; i < lNumberOfLightSheets; i++)
-      pCurrentState.getLightSheetOnOffVariable(i)
-                   .set(i == pLightSheetIndex);
+    @SuppressWarnings("unused")
+    int lNumberOfLightSheets =
+                             mLightSheetMicroscope.getNumberOfLightSheets();
 
-    LightSheetMicroscopeQueue lQueue = pCurrentState.getQueue();
+    int lNumberOfLaserLines =
+                            mLightSheetMicroscope.getNumberOfLaserLines();
+
+    LightSheetMicroscopeQueue lQueue =
+                                     pCurrentState.getQueue(0,
+                                                            lNumberOfDetectionArms,
+                                                            pLightSheetIndex,
+                                                            pLightSheetIndex+1,
+                                                            0,
+                                                            lNumberOfLaserLines);
     lQueue.addMetaDataEntry(MetaDataOrdinals.TimePoint,
                             mTimePointIndex.get());
 
@@ -202,9 +204,9 @@ public class LightSheetTimelapse extends TimelapseBase implements
   }
 
   /**
-   * Returns the variable holding the flag ointerleaved-acquisition
+   * Returns the variable holding the flag interleaved-acquisition
    * 
-   * @return variable holding the flag ointerleaved-acquisition
+   * @return variable holding the flag interleaved-acquisition
    */
   public Variable<Boolean> getInterleavedAcquisitionVariable()
   {

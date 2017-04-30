@@ -23,12 +23,9 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
 
   private final SignalGeneratorInterface mDelegatedSignalGenerator;
 
-  private Variable<Boolean> mIsSharedLightSheetControlVariable =
-                                                               new Variable<Boolean>("IsSharedLightSheetControl",
-                                                                                     true);
-  private Variable<Integer> mIsSelectedLightSheetIndexVariable =
-                                                               new Variable<Integer>("IsSelectedLightSheetIndex",
-                                                                                     0);
+  private final LightSheetSignalGeneratorQueue mTemplateQueue;
+
+  private final Variable<Boolean> mIsSharedLightSheetControlVariable;
 
   /**
    * Wraps a signal generator with a lightsheet signal generation. This
@@ -37,11 +34,15 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
    * 
    * @param pSignalGeneratorInterface
    *          delegated signal generator
+   * @param pSharedLightSheetControl
+   *          true -> lightsheet conrol shared, false otherwise
    * @return lightsheet signal generator
    */
-  public static LightSheetSignalGeneratorDevice wrap(SignalGeneratorInterface pSignalGeneratorInterface)
+  public static LightSheetSignalGeneratorDevice wrap(SignalGeneratorInterface pSignalGeneratorInterface,
+                                                           boolean pSharedLightSheetControl)
   {
-    return new LightSheetSignalGeneratorDevice(pSignalGeneratorInterface);
+    return new LightSheetSignalGeneratorDevice(pSignalGeneratorInterface,
+                                               pSharedLightSheetControl);
   }
 
   /**
@@ -52,37 +53,61 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
    * 
    * @param pSignalGeneratorInterface
    *          delegated signal generator
+   * @param pSharedLightSheetControl
+   *          true -> lightsheet conrol shared, false otherwise
    */
-  public LightSheetSignalGeneratorDevice(SignalGeneratorInterface pSignalGeneratorInterface)
+
+  public LightSheetSignalGeneratorDevice(SignalGeneratorInterface pSignalGeneratorInterface,
+                                         boolean pSharedLightSheetControl)
   {
-    super("LightSheet" + pSignalGeneratorInterface.getName());
+    super(String.format("Lightsheet signal generator (%s)",
+                        pSignalGeneratorInterface.getName()));
     mDelegatedSignalGenerator = pSignalGeneratorInterface;
+    mTemplateQueue = new LightSheetSignalGeneratorQueue(this);
+
+    mIsSharedLightSheetControlVariable =
+                                       new Variable<Boolean>("IsSharedLightSheetControl",
+                                                             pSharedLightSheetControl);
+
+    getIsSharedLightSheetControlVariable().addSetListener((o,
+                                                           n) -> notifyListeners(this));
+    getSelectedLightSheetIndexVariable().addSetListener((o,
+                                                         n) -> notifyListeners(this));
+  }
+
+  /**
+   * Returns the delegated signal generator.
+   * 
+   * @return delegated signal generator
+   */
+  public SignalGeneratorInterface getDelegatedSignalGenerator()
+  {
+    return mDelegatedSignalGenerator;
   }
 
   @Override
   public boolean open()
   {
-    return super.open() && mDelegatedSignalGenerator.open();
+    return super.open() && getDelegatedSignalGenerator().open();
   }
 
   @Override
   public boolean close()
   {
-    return mDelegatedSignalGenerator.close() && super.close();
+    return getDelegatedSignalGenerator().close() && super.close();
   }
 
   @Override
   public LightSheetSignalGeneratorQueue requestQueue()
   {
-    return new LightSheetSignalGeneratorQueue(this,
-                                              mDelegatedSignalGenerator.requestQueue());
+    return new LightSheetSignalGeneratorQueue(mTemplateQueue);
   }
 
   @Override
   public Future<Boolean> playQueue(LightSheetSignalGeneratorQueue pQueue)
   {
     SignalGeneratorQueue lDelegatedQueue = pQueue.getDelegatedQueue();
-    return mDelegatedSignalGenerator.playQueue(lDelegatedQueue);
+    return getDelegatedSignalGenerator().playQueue(lDelegatedQueue);
   }
 
   /**
@@ -102,11 +127,11 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
    * variable holds the index of the lightsheet to use to generate the control
    * signals.
    * 
-   * @return  is-selected-lightsheet variable
+   * @return selected lightsheet variable
    */
-  public Variable<Integer> getIsSelectedLightSheetIndexVariable()
+  public Variable<Integer> getSelectedLightSheetIndexVariable()
   {
-    return mIsSelectedLightSheetIndexVariable;
+    return mTemplateQueue.getSelectedLightSheetIndexVariable();
   }
 
 }

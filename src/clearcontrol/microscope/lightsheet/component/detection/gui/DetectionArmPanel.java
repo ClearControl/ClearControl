@@ -28,6 +28,9 @@ public class DetectionArmPanel extends CustomVariablePane
 
     addTab("Functions");
     addFunctionPane("Z: ", pDetectionArmInterface.getZFunction());/**/
+    
+    addTab("Bounds");
+    addBoundedVariable("Z: ", pDetectionArmInterface.getZVariable());/**/
 
   }
 

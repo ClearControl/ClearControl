@@ -31,4 +31,5 @@ public interface QueueInterface
    * @return current state queue length
    */
   int getQueueLength();
+
 }

@@ -13,6 +13,7 @@ import clearcontrol.devices.cameras.StackCameraDeviceBase;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.StandardTriggerType;
 import clearcontrol.devices.cameras.TriggerTypeInterface;
+import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import dcamj2.DcamDevice;
@@ -212,24 +213,44 @@ public class HamStackCamera extends
                                       long pHeight,
                                       long pDepth)
   {
+
     Future<Boolean> lAcquisitionResult =
                                        mDcamSequenceAcquisition.acquireSequenceAsync(lExposureInSeconds,
                                                                                      mSequence);
 
     Callable<Boolean> lCallable = () -> {
-      if (!lAcquisitionResult.get())
-        return false;
+      Boolean lResult = lAcquisitionResult.get();
 
-      StackRequest lRecyclerRequest = StackRequest.build(pWidth,
-                                                         pHeight,
-                                                         pDepth);
-      StackInterface lAcquiredStack =
-                                    getStackRecycler().getOrWait(cWaitTime,
-                                                                 TimeUnit.MILLISECONDS,
-                                                                 lRecyclerRequest);
+      StackInterface lAcquiredStack;
 
-      if (lAcquiredStack == null)
-        return false;
+      if (lResult == null && pDepth == 0)
+      {
+        lAcquiredStack = new EmptyStack();
+        return true;
+      }
+      else
+      {
+
+        if (!lResult)
+          return false;
+
+        StackRequest lRecyclerRequest = StackRequest.build(pWidth,
+                                                           pHeight,
+                                                           pDepth);
+        lAcquiredStack =
+                       getStackRecycler().getOrWait(cWaitTime,
+                                                    TimeUnit.MILLISECONDS,
+                                                    lRecyclerRequest);
+
+        if (lAcquiredStack == null)
+          return false;
+
+        ArrayList<Boolean> lKeepPlaneList =
+                                          pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
+
+        mSequence.consolidateTo(lKeepPlaneList,
+                                lAcquiredStack.getContiguousMemory());
+      }
 
       lAcquiredStack.setMetaData(pQueue.getMetaDataVariable()
                                        .get()
@@ -239,12 +260,6 @@ public class HamStackCamera extends
                     .setTimeStampInNanoseconds(System.nanoTime());
       lAcquiredStack.getMetaData()
                     .setIndex(getCurrentIndexVariable().get());
-
-      ArrayList<Boolean> lKeepPlaneList =
-                                        pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
-
-      mSequence.consolidateTo(lKeepPlaneList,
-                              lAcquiredStack.getContiguousMemory());
 
       getStackVariable().setAsync(lAcquiredStack);
       return true;

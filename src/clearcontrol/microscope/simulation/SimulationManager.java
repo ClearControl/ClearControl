@@ -20,7 +20,7 @@ public class SimulationManager extends VirtualDevice implements
                                ReadOnlyNameableInterface,
                                LoggingInterface
 {
-  private final MicroscopeInterface mMicroscopeInterface;
+  private final MicroscopeInterface<?> mMicroscopeInterface;
 
   private final Variable<Boolean> mLoggingOnVariable =
                                                      new Variable<Boolean>("LoggingOn");
@@ -31,7 +31,7 @@ public class SimulationManager extends VirtualDevice implements
    * @param pMicroscopeInterface
    *          microscope
    */
-  public SimulationManager(MicroscopeInterface pMicroscopeInterface)
+  public SimulationManager(MicroscopeInterface<?> pMicroscopeInterface)
   {
     super("Simulation Manager");
     mMicroscopeInterface = pMicroscopeInterface;

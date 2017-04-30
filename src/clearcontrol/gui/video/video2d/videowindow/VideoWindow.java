@@ -97,6 +97,7 @@ public class VideoWindow implements AutoCloseable
                                        pWindowHeight,
                                        mClearGLDebugEventListener);
     mClearGLDebugEventListener.setClearGLWindow(mClearGLWindow);
+    mClearGLWindow.setFPS(30);
 
     final MouseControl lMouseControl = new MouseControl(this);
     mClearGLWindow.addMouseListener(lMouseControl);
@@ -110,7 +111,7 @@ public class VideoWindow implements AutoCloseable
     getGLWindow().setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 
   }
-
+  
   public void setWindowSize(int pWindowWidth, int pWindowHeigth)
   {
     mClearGLWindow.setSize(pWindowWidth, pWindowWidth);
@@ -395,7 +396,7 @@ public class VideoWindow implements AutoCloseable
     this.mSampledMaxIntensity = (1 - VideoWindow.cEpsilon)
                                 * this.mSampledMaxIntensity
                                 + VideoWindow.cEpsilon * lMax;
-
+    
     // System.out.println("mSampledMinIntensity=" +
     // mSampledMinIntensity);
     // System.out.println("mSampledMaxIntensity=" +

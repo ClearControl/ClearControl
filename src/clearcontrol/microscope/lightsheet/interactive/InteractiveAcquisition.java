@@ -52,13 +52,13 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final Variable<Boolean> mControlIlluminationVariable,
       mControlDetectionVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
-  private final Variable<Boolean>[] mActiveCameraVariableArray;
+
   private final Variable<Long> mAcquisitionCounterVariable;
 
   private volatile boolean mUpdate = true;
 
   private ChangeListener<VirtualDevice> mMicroscopeChangeListener;
-  private ChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface,LightSheetMicroscopeQueue>> mAcquisitionStateChangeListener;
+  private ChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>> mAcquisitionStateChangeListener;
   private LightSheetMicroscopeQueue mQueue;
 
   /**
@@ -123,7 +123,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
-                                                        0,
+                                                        0.0,
                                                         lMinVariable.get(),
                                                         lMaxVariable.get());
 
@@ -142,23 +142,14 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     getLoopPeriodVariable().set(1.0);
     getExposureVariable().set(0.010);
 
-    int lNumberOfCameras = getNumberOfCameras();
-    mActiveCameraVariableArray = new Variable[lNumberOfCameras];
-    for (int c = 0; c < lNumberOfCameras; c++)
-    {
-      mActiveCameraVariableArray[c] =
-                                    new Variable<Boolean>("ActiveCamera"
-                                                          + c, true);
-
-      mActiveCameraVariableArray[c].addSetListener(lListener);
-    }
-
+    
     mMicroscopeChangeListener = (o) -> {
-      // info("Received request to update queue from:"+o.toString());
+      info("Received request to update queue from:" + o.toString());
+
       mUpdate = true;
     };
     mAcquisitionStateChangeListener = (o) -> {
-      // info("Received request to update queue from:"+o.toString());
+      info("Received request to update queue from:" + o.toString());
       mUpdate = true;
     };
   }
@@ -187,13 +178,13 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
       InterpolatedAcquisitionState lCurrentState =
                                                  (InterpolatedAcquisitionState) mAcquisitionStateManager.getCurrentState();
-      
-      if(getUseCurrentAcquisitionStateVariable().get())
+
+      if (getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D
+          || getUseCurrentAcquisitionStateVariable().get())
       {
-        if(!lCurrentState.isChangeListener(mAcquisitionStateChangeListener))
+        if (!lCurrentState.isChangeListener(mAcquisitionStateChangeListener))
           lCurrentState.addChangeListener(mAcquisitionStateChangeListener);
       }
-      
 
       if (lCachedUpdate || mQueue == null
           || mQueue.getQueueLength() == 0)
@@ -202,7 +193,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
         double lCurrentZ = get2DAcquisitionZVariable().get()
                                                       .doubleValue();
 
-        if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition2D)
+        if (getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition2D)
         {
           // info("Building 2D Acquisition queue");
           if (getUseCurrentAcquisitionStateVariable().get())
@@ -234,7 +225,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             mQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 1);
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
-              mQueue.setC(c, mActiveCameraVariableArray[c].get());
+              mQueue.setC(c, true);
               if (mControlDetectionVariable.get())
                 mQueue.setDZ(c, lCurrentZ);
             }
@@ -254,7 +245,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
           }
         }
-        else if (mCurrentAcquisitionMode == InteractiveAcquisitionModes.Acquisition3D)
+        else if (getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D)
         {
           // info("Building Acquisition3D queue");
           getLightSheetMicroscope().useRecycler("3DInteractive",
@@ -264,6 +255,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
           if (lCurrentState != null)
           {
+            lCurrentState.updateQueue(true);
             mQueue = lCurrentState.getQueue();
           }
         }
@@ -296,20 +288,21 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                            AcquisitionType.Interactive);
       }
 
-      if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.None)
+      if (getCurrentAcquisitionMode() != InteractiveAcquisitionModes.None)
       {
         if (getTriggerOnChangeVariable().get() && !lCachedUpdate)
           return true;
 
-        if (getUseCurrentAcquisitionStateVariable().get())
+        if (getUseCurrentAcquisitionStateVariable().get()
+            || getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D)
           lCurrentState.prepareAcquisition(100, TimeUnit.SECONDS);
-        
+
         // info("play queue");
         // play queue
         // info("Playing LightSheetMicroscope Queue...");
         boolean lSuccess =
                          getLightSheetMicroscope().playQueueAndWaitForStacks(mQueue,
-                                                                             100,
+                                                                             30,
                                                                              TimeUnit.SECONDS);
 
         if (lSuccess)
@@ -337,12 +330,22 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    */
   public void start2DAcquisition()
   {
+    if (getIsRunningVariable().get()
+        && getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D)
+    {
+      warning("Please stop 3D acquisition first!");
+      return;
+    }
+    if (getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition2D)
+    {
+      warning("Already doing 2D acquisition!");
+      return;
+    }
+
     info("Starting 2D Acquisition...");
-    if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.Acquisition2D)
-      mUpdate = true;
-    mCurrentAcquisitionMode =
-                            InteractiveAcquisitionModes.Acquisition2D;
+    setCurrentAcquisitionMode(InteractiveAcquisitionModes.Acquisition2D);
     mAcquisitionCounterVariable.set(0L);
+    mUpdate = true;
     startTask();
   }
 
@@ -351,12 +354,23 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    */
   public void start3DAcquisition()
   {
+    if (getIsRunningVariable().get()
+        && getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition2D)
+    {
+      warning("Please stop 2D acquisition first!");
+      return;
+    }
+    if (getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D)
+    {
+      warning("Already doing 3D acquisition!");
+      return;
+    }
+
     info("Starting 3D Acquisition...");
-    if (mCurrentAcquisitionMode != InteractiveAcquisitionModes.Acquisition3D)
-      mUpdate = true;
-    mCurrentAcquisitionMode =
-                            InteractiveAcquisitionModes.Acquisition3D;
+    setCurrentAcquisitionMode(InteractiveAcquisitionModes.Acquisition3D);
     mAcquisitionCounterVariable.set(0L);
+    mUpdate = true;
+
     startTask();
   }
 
@@ -366,7 +380,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   public void stopAcquisition()
   {
     info("Stopping Acquisition...");
-    mCurrentAcquisitionMode = InteractiveAcquisitionModes.None;
+    setCurrentAcquisitionMode(InteractiveAcquisitionModes.None);
     stopTask();
   }
 
@@ -429,18 +443,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     return lNumberOfLightsSheets;
   }
 
-  /**
-   * Returns the active camera variable for a given camera index
-   * 
-   * @param pCameraIndex
-   *          camera index
-   * @return active camera variable
-   */
-  public Variable<Boolean> getActiveCameraVariable(int pCameraIndex)
-  {
-    return mActiveCameraVariableArray[pCameraIndex];
-  }
-
+ 
   /**
    * Returns the variable that holds the flag that decides whether to control
    * the detection z focus using the z value from this interactive acquisition
@@ -484,6 +487,24 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   {
     return mAcquisitionCounterVariable;
 
+  }
+
+  /**
+   * Returns current acquisition mode
+   * @return current acquisition mode
+   */
+  public InteractiveAcquisitionModes getCurrentAcquisitionMode()
+  {
+    return mCurrentAcquisitionMode;
+  }
+
+  /**
+   * Sets current acquisition mode
+   * @param pNewAcquisitionMode  new acquisition mode
+   */
+  public void setCurrentAcquisitionMode(InteractiveAcquisitionModes pNewAcquisitionMode)
+  {
+    mCurrentAcquisitionMode = pNewAcquisitionMode;
   }
 
 }

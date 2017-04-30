@@ -144,7 +144,7 @@ public class InterpolatedAcquisitionState extends
       mCameraOnOff[i] = new Variable<Boolean>(
                                               String.format("Camera%dOnOff",
                                                             i),
-                                              false);
+                                              i == 0);
       mCameraOnOff[i].addSetListener(lChangeListener);
     }
 
@@ -155,7 +155,7 @@ public class InterpolatedAcquisitionState extends
       mLightSheetOnOff[i] = new Variable<Boolean>(
                                                   String.format("LightSheet%dOnOff",
                                                                 i),
-                                                  false);
+                                                  i == 0);
       mLightSheetOnOff[i].addSetListener(lChangeListener);
     }
 
@@ -163,62 +163,62 @@ public class InterpolatedAcquisitionState extends
 
     for (int i = 0; i < mLaserOnOff.length; i++)
     {
-      mLaserOnOff[i] =
-                     new Variable<Boolean>(String.format("Laser%dOnOff",
-                                                         i),
-                                           false);
+      mLaserOnOff[i] = new Variable<Boolean>(
+                                             String.format("Laser%dOnOff",
+                                                           i),
+                                             i == 0);
 
       mLaserOnOff[i].addSetListener(lChangeListener);
     }
 
-    mZLow = new BoundedVariable<Number>("LowZ", -100.0);
-    mZHigh = new BoundedVariable<Number>("HighZ", 100.0);
-
-    VariableSetListener<Number> lRangeListener = (o, n) -> {
-      if (n != null && !n.equals(o))
-      {
-        long lZPlanes = (long) round(getStackDepthInMicrons()
-                                     / mZStep.get().doubleValue());
-
-        if (mZPlanes.get().longValue() != lZPlanes)
-          mZPlanes.set(lZPlanes);
-
-      }
-    };
-
-    mZLow.addSetListener(lRangeListener);
-    mZHigh.addSetListener(lRangeListener);
-    mZStep.addSetListener((o, n) -> {
-      if (n != null && !n.equals(o))
-      {
-        long lZPlanes = (long) round(getStackDepthInMicrons()
-                                     / n.doubleValue());
-
-        if (mZPlanes.get().longValue() != lZPlanes)
+    // Range listener and adjustement of the
+    {
+      VariableSetListener<Number> lRangeListener = (o, n) -> {
+        if (n != null && !n.equals(o))
         {
-          mZPlanes.set(lZPlanes);
+          long lZPlanes = (long) round(getStackDepthInMicrons()
+                                       / mZStep.get().doubleValue());
 
-          /*getStackZHighVariable().set(getStackZLowVariable().get()
+          if (mZPlanes.get().longValue() != lZPlanes)
+            mZPlanes.set(lZPlanes);
+
+        }
+      };
+
+      mZLow.addSetListener(lRangeListener);
+      mZHigh.addSetListener(lRangeListener);
+      mZStep.addSetListener((o, n) -> {
+        if (n != null && !n.equals(o))
+        {
+          long lZPlanes = (long) round(getStackDepthInMicrons()
+                                       / n.doubleValue());
+
+          if (mZPlanes.get().longValue() != lZPlanes)
+          {
+            mZPlanes.set(lZPlanes);
+
+            /*getStackZHighVariable().set(getStackZLowVariable().get()
                                                             .doubleValue()
                                       + lZPlanes * n.doubleValue());/**/
+          }
         }
-      }
-    });
+      });
 
-    mZPlanes.addSetListener((o, n) -> {
-      if (n != null && !n.equals(o))
-      {
-        double lStepZ =
-                      (getStackDepthInMicrons() / (n.doubleValue()));
-        if (mZStep.get().doubleValue() != lStepZ)
-          mZStep.set(lStepZ);
-      }
-    });
+      mZPlanes.addSetListener((o, n) -> {
+        if (n != null && !n.equals(o))
+        {
+          double lStepZ = (getStackDepthInMicrons()
+                           / (n.doubleValue()));
+          if (mZStep.get().doubleValue() != lStepZ)
+            mZStep.set(lStepZ);
+        }
+      });
 
-    mZLow.addSetListener(lChangeListener);
-    mZHigh.addSetListener(lChangeListener);
-    mZStep.addSetListener(lChangeListener);
-    mZPlanes.addSetListener(lChangeListener);
+      mZLow.addSetListener(lChangeListener);
+      mZHigh.addSetListener(lChangeListener);
+      mZStep.addSetListener(lChangeListener);
+      mZPlanes.addSetListener(lChangeListener);
+    }
 
     StageDeviceInterface lMainXYZRStage =
                                         getLightSheetMicroscope().getMainXYZRStage();
@@ -368,44 +368,6 @@ public class InterpolatedAcquisitionState extends
     return mLightSheetMicroscope;
   }
 
-  /**
-   * Updated the queue
-   */
-  public void updateQueue()
-  {
-    if (mQueueUpdateNeeded)
-    {
-      mQueue = mLightSheetMicroscope.requestQueue();
-
-      long lStackDepthInPlanes =
-                               getStackDepthInPlanesVariable().get()
-                                                              .longValue();
-
-      double lVoxelDepthInMicrons = getStackDepthInMicrons()
-                                    / lStackDepthInPlanes;
-      mQueue.addVoxelDimMetaData(mLightSheetMicroscope,
-                                 lVoxelDepthInMicrons);
-
-      prepareAcquisition(100, TimeUnit.SECONDS);
-      mQueue.clearQueue();
-      for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
-      {
-        applyAcquisitionStateAtStackPlane(mQueue, lIndex);
-        mQueue.addCurrentStateToQueue();
-      }
-      mQueue.finalizeQueue();
-    }
-    mQueueUpdateNeeded = false;
-  }
-
-  @Override
-  public LightSheetMicroscopeQueue getQueue()
-  {
-    if (mQueueUpdateNeeded)
-      updateQueue();
-    return mQueue;
-  }
-
   @Override
   public void prepareAcquisition(long pTimeOut, TimeUnit pTimeUnit)
   {
@@ -434,6 +396,71 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
+   * Updated the queue
+   * 
+   * @param pForceUpdate
+   *          forces update of the queue
+   */
+  public void updateQueue(boolean pForceUpdate)
+  {
+    if (mQueueUpdateNeeded || pForceUpdate)
+    {
+      mQueue = getQueue(0,
+                        mNumberOfDetectionArms,
+                        0,
+                        mNumberOfLightSheets,
+                        0,
+                        mNumberOfLaserLines);
+    }
+    mQueueUpdateNeeded = false;
+  }
+
+  @Override
+  public LightSheetMicroscopeQueue getQueue(int pCameraIndexMin,
+                                            int pCameraIndexMax,
+                                            int pLightSheetIndexMin,
+                                            int pLightSheetIndexMax,
+                                            int pLaserLineIndexMin,
+                                            int pLaserLineIndexMax)
+  {
+    LightSheetMicroscopeQueue lQueue =
+                                     mLightSheetMicroscope.requestQueue();
+
+    long lStackDepthInPlanes =
+                             getStackDepthInPlanesVariable().get()
+                                                            .longValue();
+
+    double lVoxelDepthInMicrons = getStackDepthInMicrons()
+                                  / lStackDepthInPlanes;
+    lQueue.addVoxelDimMetaData(mLightSheetMicroscope,
+                               lVoxelDepthInMicrons);
+
+    lQueue.clearQueue();
+    for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
+    {
+      applyAcquisitionStateAtStackPlane(lQueue,
+                                        lIndex,
+                                        pCameraIndexMin,
+                                        pCameraIndexMax,
+                                        pLightSheetIndexMin,
+                                        pLightSheetIndexMax,
+                                        pLaserLineIndexMin,
+                                        pLaserLineIndexMax);
+      lQueue.addCurrentStateToQueue();
+    }
+    lQueue.finalizeQueue();
+    return lQueue;
+  }
+
+  @Override
+  public LightSheetMicroscopeQueue getQueue()
+  {
+    if (mQueueUpdateNeeded)
+      updateQueue(false);
+    return mQueue;
+  }
+
+  /**
    * Applies acquisition state at a given z position
    * 
    * @param pQueue
@@ -450,6 +477,54 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
+   * Applies acquisition state at a given stack plane and lightsheet and camera
+   * index ranges
+   * 
+   * @param pQueue
+   *          lightsheet microscope
+   * @param pPlaneIndex
+   *          stack plane index
+   * @param pCameraIndexMin
+   *          lower camera index (inclusive)
+   * @param pCameraIndexMax
+   *          higher camera index (exclusive)
+   * @param pLightSheetIndexMin
+   *          lower lightsheet index (inclusive)
+   * @param pLightSheetIndexMax
+   *          higher lightsheet index (exclusive)
+   * @param pLaserLineIndexMin
+   *          lower laser line index (inclusive)
+   * @param pLaserLineIndexMax
+   *          higher laser line index (exclusive)
+   */
+  public void applyAcquisitionStateAtStackPlane(LightSheetMicroscopeQueue pQueue,
+                                                int pPlaneIndex,
+                                                int pCameraIndexMin,
+                                                int pCameraIndexMax,
+                                                int pLightSheetIndexMin,
+                                                int pLightSheetIndexMax,
+                                                int pLaserLineIndexMin,
+                                                int pLaserLineIndexMax)
+  {
+
+    for (int d = pCameraIndexMin; d < pCameraIndexMax; d++)
+    {
+      applyAcquisitionStateAtStackPlaneAndForCamera(pQueue,
+                                                    pPlaneIndex,
+                                                    d);
+    }
+
+    for (int l = pLightSheetIndexMin; l < pLightSheetIndexMax; l++)
+    {
+      applyAcquisitionStateAtStackPlaneAndLightSheet(pQueue,
+                                                     pPlaneIndex,
+                                                     l,
+                                                     pLaserLineIndexMin,
+                                                     pLaserLineIndexMax);
+    }
+  }
+
+  /**
    * Applies acquisition state at a given stack plane
    * 
    * @param pQueue
@@ -463,34 +538,80 @@ public class InterpolatedAcquisitionState extends
 
     for (int d = 0; d < mNumberOfDetectionArms; d++)
     {
-      pQueue.setDZ(d, get(LightSheetDOF.DZ, pPlaneIndex, d));
-      pQueue.setC(d, mCameraOnOff[d].get());
+      applyAcquisitionStateAtStackPlaneAndForCamera(pQueue,
+                                                    pPlaneIndex,
+                                                    d);
     }
 
     for (int l = 0; l < mNumberOfLightSheets; l++)
     {
-      pQueue.setI(l, mLightSheetOnOff[l].get());
-
-      pQueue.setIX(l, get(LightSheetDOF.IX, pPlaneIndex, l));
-      pQueue.setIY(l, get(LightSheetDOF.IY, pPlaneIndex, l));
-      pQueue.setIZ(l, get(LightSheetDOF.IZ, pPlaneIndex, l));
-
-      pQueue.setIA(l, get(LightSheetDOF.IA, pPlaneIndex, l));
-      pQueue.setIB(l, get(LightSheetDOF.IB, pPlaneIndex, l));
-      pQueue.setIW(l, get(LightSheetDOF.IW, pPlaneIndex, l));
-      pQueue.setIH(l, get(LightSheetDOF.IH, pPlaneIndex, l));
-
-      pQueue.setIP(l, get(LightSheetDOF.IP, pPlaneIndex, l));
-
-      for (int la = 0; la < mNumberOfLaserLines; la++)
-      {
-        pQueue.setILO(l,
-                      la,
-                      mLightSheetOnOff[l].get()
-                          && mLaserOnOff[la].get());
-      }
+      applyAcquisitionStateAtStackPlaneAndLightSheet(pQueue,
+                                                     pPlaneIndex,
+                                                     l,
+                                                     0,
+                                                     mNumberOfLaserLines);
     }
+  }
 
+  private void applyAcquisitionStateAtStackPlaneAndForCamera(LightSheetMicroscopeQueue pQueue,
+                                                             int pPlaneIndex,
+                                                             int d)
+  {
+    pQueue.setDZ(d, get(LightSheetDOF.DZ, pPlaneIndex, d));
+    pQueue.setC(d, mCameraOnOff[d].get());
+  }
+
+  private void applyAcquisitionStateAtStackPlaneAndLightSheet(LightSheetMicroscopeQueue pQueue,
+                                                              int pPlaneIndex,
+                                                              int pLightSheetIndex,
+                                                              int pLaserLineIndexMin,
+                                                              int pLaserLineIndexMax)
+  {
+    pQueue.setI(pLightSheetIndex,
+                mLightSheetOnOff[pLightSheetIndex].get());
+
+    pQueue.setIX(pLightSheetIndex,
+                 get(LightSheetDOF.IX,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+    pQueue.setIY(pLightSheetIndex,
+                 get(LightSheetDOF.IY,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+    pQueue.setIZ(pLightSheetIndex,
+                 get(LightSheetDOF.IZ,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+
+    pQueue.setIA(pLightSheetIndex,
+                 get(LightSheetDOF.IA,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+    pQueue.setIB(pLightSheetIndex,
+                 get(LightSheetDOF.IB,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+    pQueue.setIW(pLightSheetIndex,
+                 get(LightSheetDOF.IW,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+    pQueue.setIH(pLightSheetIndex,
+                 get(LightSheetDOF.IH,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+
+    pQueue.setIP(pLightSheetIndex,
+                 get(LightSheetDOF.IP,
+                     pPlaneIndex,
+                     pLightSheetIndex));
+
+    for (int la = pLaserLineIndexMin; la < pLaserLineIndexMax; la++)
+    {
+      pQueue.setILO(pLightSheetIndex,
+                    la,
+                    mLightSheetOnOff[pLightSheetIndex].get()
+                        && mLaserOnOff[la].get());
+    }
   }
 
   /**
@@ -774,7 +895,5 @@ public class InterpolatedAcquisitionState extends
   {
     return mLaserOnOff[pLightSheetIndex];
   }
-
-
 
 }

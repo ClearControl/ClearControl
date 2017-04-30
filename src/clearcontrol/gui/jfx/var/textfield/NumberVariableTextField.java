@@ -157,11 +157,11 @@ public class NumberVariableTextField<N extends Number> extends HBox
     getChildren().add(getLabel());
     getChildren().add(getTextField());
 
-    if (pMin.get() instanceof Double || pMin.get() instanceof Float)
+    if (mMin.get() instanceof Double || mMin.get() instanceof Float)
     {
       setTextFieldDouble(pVariable.get());
     }
-    if (pMin.get() instanceof Integer || pMin.get() instanceof Long)
+    if (mMin.get() instanceof Integer || mMin.get() instanceof Long)
     {
       setTextFieldLongValue(pVariable.get());
     }
@@ -172,8 +172,8 @@ public class NumberVariableTextField<N extends Number> extends HBox
           if (n.equals(getTextFieldValue()))
             return;
 
-          if (pMin.get() instanceof Double
-              || pMin.get() instanceof Float)
+          if (mMin.get() instanceof Double
+              || mMin.get() instanceof Float)
             setTextFieldDouble(n);
           else
             setTextFieldLongValue(n);
@@ -182,7 +182,7 @@ public class NumberVariableTextField<N extends Number> extends HBox
     });
 
     Platform.runLater(() -> {
-      if (pMin.get() instanceof Double || pMin.get() instanceof Float)
+      if (mMin.get() instanceof Double || mMin.get() instanceof Float)
         setTextFieldDouble(mVariable.get().doubleValue());
       else
         setTextFieldLongValue(mVariable.get().longValue());

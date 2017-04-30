@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
@@ -45,6 +47,8 @@ public class RecyclerPanel extends CustomGridPane
   {
     super(0, CustomGridPane.cStandardGap);
 
+    setMaxWidth(Double.POSITIVE_INFINITY);
+
     Label lLiveObjectsLabel = new Label("Live Objects: ");
     Label lAvailableObjectsLabel = new Label("Available Objects: ");
     Label lFailedRequestsLabel = new Label("Failed Requests: ");
@@ -70,6 +74,11 @@ public class RecyclerPanel extends CustomGridPane
     ProgressBar lFillFactorBarAvailableObjectsBar =
                                                   new ProgressBar(0);
     ProgressBar lFailedRequestsBar = new ProgressBar(0);
+
+    lFillFactorBarLiveObjectsBar.setMaxWidth(Double.MAX_VALUE);
+    lFillFactorBarAvailableObjectsBar.setMaxWidth(Double.MAX_VALUE);
+    lFailedRequestsBar.setMaxWidth(Double.MAX_VALUE);
+
     lFailedRequestsBar.setStyle("-fx-accent: red");
 
     Label lLiveMemorySizeLabel = new Label("0");
@@ -93,7 +102,17 @@ public class RecyclerPanel extends CustomGridPane
     ColumnConstraints col3 = new ColumnConstraints();
     ColumnConstraints col4 = new ColumnConstraints(70);
     ColumnConstraints col5 = new ColumnConstraints();
+
+    col3.setFillWidth(true);
+    col3.setHgrow(Priority.ALWAYS);
+    col3.setMaxWidth(Double.POSITIVE_INFINITY);
+
     getColumnConstraints().addAll(col1, col2, col3, col4, col5);
+
+    GridPane.setHgrow(lFillFactorBarLiveObjectsBar, Priority.ALWAYS);
+    GridPane.setHgrow(lFillFactorBarAvailableObjectsBar,
+                      Priority.ALWAYS);
+    GridPane.setHgrow(lFailedRequestsBar, Priority.ALWAYS);
 
     add(lLiveObjectsLabel, 0, 0);
     add(lNumberLiveObjectsLabel, 1, 0);

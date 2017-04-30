@@ -108,12 +108,13 @@ public class BoundedVariable<N extends Number> extends Variable<N>
    * @param pMax
    *          max value
    */
+  @SuppressWarnings("unchecked")
   public BoundedVariable(String pVariableName,
                          N pReference,
                          N pMin,
                          N pMax)
   {
-    this(pVariableName, pReference, pMin, pMax, null);
+    this(pVariableName, pReference, pMin, pMax, (N)(new Double(0)));
   }
 
   /**

@@ -48,7 +48,7 @@ public class CalibrationZ
   private DCTS2D mDCTS2D;
 
   /**
-   * Instanciates a Z calibrator module given calibrator
+   * Instantiates a Z calibrator module given calibrator
    * 
    * @param pCalibrator
    *          calibrator
@@ -91,11 +91,15 @@ public class CalibrationZ
    *          number of detection Z samples
    * @param pNumberOfISamples
    *          number of illumination Z samples
+   * @param pRestrictedSearch true -> restrict search to an interval, false not.
+   * @param pSearchAmplitude
+   *          search amplitude.
    * @return true -> success
    */
   public boolean calibrate(int pLightSheetIndex,
                            int pNumberOfDSamples,
                            int pNumberOfISamples,
+                           boolean pRestrictedSearch,
                            double pSearchAmplitude)
   {
     mArgMaxFinder = new ModeArgMaxFinder();
@@ -139,6 +143,8 @@ public class CalibrationZ
 
     double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
+    System.out.format("miniz=%g, maxiz=%g, stepiz=%g \n",lMinIZ,lMaxIZ,lStepIZ);
+    
     double lMinDZ = Double.NEGATIVE_INFINITY;
     double lMaxDZ = Double.POSITIVE_INFINITY;
 
@@ -152,8 +158,11 @@ public class CalibrationZ
                                        * (2 * Math.random() - 1);
 
       // TODO: this does not work when the calibration is really off:
-      lMinDZ = lPerturbedIZ - lAmplitudeZ;
-      lMaxDZ = lPerturbedIZ + lAmplitudeZ;
+      if (pRestrictedSearch)
+      {
+        lMinDZ = lPerturbedIZ - lAmplitudeZ;
+        lMaxDZ = lPerturbedIZ + lAmplitudeZ;
+      }
 
       final double[] dz = focusZ(pLightSheetIndex,
                                  pNumberOfDSamples,
@@ -332,7 +341,7 @@ public class CalibrationZ
           lPlot.setScatterPlot("samples");
 
           // System.out.format("metric array: \n");
-          for (int j = 0; j < lDZList.size(); j++)
+          for (int j = 0; j < lMetricArray.length; j++)
           {
             lPlot.addPoint("samples",
                            lDZList.get(j),

@@ -372,8 +372,8 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
-   * Returns a folder with the clearcontrol folder (.clearcontrol), and creates
-   * it if it does not exist yet
+   * Returns a folder within the clearcontrol folder (.clearcontrol). The folder
+   * is created if it does not exist.
    * 
    * @param pFolderName
    *          folder name

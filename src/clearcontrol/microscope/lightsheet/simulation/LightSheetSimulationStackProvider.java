@@ -126,6 +126,17 @@ public class LightSheetSimulationStackProvider extends
                                                            mLightSheetMicroscope.getPlayedQueueVariable()
                                                                                 .get();
 
+      boolean lIsSharedLightSheetControl =
+                                         lLightSheetMicroscopeQueue.getLightSheetSignalGeneratorQueue()
+                                                                   .getLightSheetSignalGeneratorDevice()
+                                                                   .getIsSharedLightSheetControlVariable()
+                                                                   .get();
+
+      int lSelectedLightSheet =
+                              lLightSheetMicroscopeQueue.getLightSheetSignalGeneratorQueue()
+                                                        .getSelectedLightSheetIndexVariable()
+                                                        .get();
+
       collectDetectionStateQueues(lLightSheetMicroscopeQueue);
 
       collectOpticalSwitchStateQueues(lLightSheetMicroscopeQueue);
@@ -140,9 +151,13 @@ public class LightSheetSimulationStackProvider extends
         passDetectionParameters(zi);
 
         for (int l = 0; l < mLightSheetList.size(); l++)
-        {
-          passIlluminationParameters(l, zi);
-        } /**/
+          if (lIsSharedLightSheetControl)
+            passIlluminationParameters(lSelectedLightSheet
+                                       % mLightSheetMicroscope.getNumberOfLightSheets(),
+                                       l,
+                                       zi);
+          else
+            passIlluminationParameters(l, l, zi);
 
         @SuppressWarnings("unused")
         double lMilliseconds =
@@ -211,14 +226,15 @@ public class LightSheetSimulationStackProvider extends
 
   }
 
-  private void passIlluminationParameters(int pLightSheetIndex,
+  private void passIlluminationParameters(int pLightSheetIndexSelected,
+                                          int pLightSheetIndex,
                                           int zi)
   {
     LightSheetInterface lLightSheet =
-                                    mLightSheetList.get(pLightSheetIndex);
+                                    mLightSheetList.get(pLightSheetIndexSelected);
 
     float x =
-            mLightSheetStateQueuesMap.get(pLightSheetIndex)
+            mLightSheetStateQueuesMap.get(pLightSheetIndexSelected)
                                      .getQueuedValue(lLightSheet.getXFunction()
                                                                 .get(),
                                                      lLightSheet.getXVariable(),
@@ -230,7 +246,7 @@ public class LightSheetSimulationStackProvider extends
                                                       x);
 
     float y =
-            mLightSheetStateQueuesMap.get(pLightSheetIndex)
+            mLightSheetStateQueuesMap.get(pLightSheetIndexSelected)
                                      .getQueuedValue(lLightSheet.getYFunction()
                                                                 .get(),
                                                      lLightSheet.getYVariable(),
@@ -242,7 +258,7 @@ public class LightSheetSimulationStackProvider extends
                                                       y);
 
     float z =
-            mLightSheetStateQueuesMap.get(pLightSheetIndex)
+            mLightSheetStateQueuesMap.get(pLightSheetIndexSelected)
                                      .getQueuedValue(lLightSheet.getZFunction()
                                                                 .get(),
                                                      lLightSheet.getZVariable(),
@@ -277,13 +293,14 @@ public class LightSheetSimulationStackProvider extends
                                                       pLightSheetIndex,
                                                       beta);
 
-    float height = mLightSheetStateQueuesMap.get(pLightSheetIndex)
+    float height =
+                 mLightSheetStateQueuesMap.get(pLightSheetIndexSelected)
 
-                                            .getQueuedValue(lLightSheet.getHeightFunction()
-                                                                       .get(),
-                                                            lLightSheet.getHeightVariable(),
-                                                            zi)
-                                            .floatValue();
+                                          .getQueuedValue(lLightSheet.getHeightFunction()
+                                                                     .get(),
+                                                          lLightSheet.getHeightVariable(),
+                                                          zi)
+                                          .floatValue();
 
     mLightSheetMicroscopeSimulator.setNumberParameter(IlluminationParameter.Height,
                                                       pLightSheetIndex,

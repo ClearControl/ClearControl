@@ -42,6 +42,7 @@ import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
 
 import org.junit.Test;
 
+import simbryo.synthoscopy.microscope.aberration.Miscalibration;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -104,6 +105,7 @@ public class LightSheetMicroscopeDemo implements
     lSimulator.setFreezedEmbryo(true);
     lSimulator.setNumberParameter(UnitConversion.Length, 0, 700f);
 
+    lSimulator.addAbberation(new Miscalibration());
     // lSimulator.addAbberation(new SampleDrift());
     // lSimulator.addAbberation(new IlluminationMisalignment());
     // lSimulator.addAbberation(new DetectionMisalignment());
@@ -263,7 +265,7 @@ public class LightSheetMicroscopeDemo implements
                                    .sendUpdatesTo(lTrigger);
 
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice);
+                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice,false);
 
     lLightSheetMicroscope.addDevice(0,
                                     lLightSheetSignalGeneratorDevice);

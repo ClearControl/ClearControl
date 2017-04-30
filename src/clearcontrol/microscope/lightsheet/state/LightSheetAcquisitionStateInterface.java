@@ -102,6 +102,30 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    */
   Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex);
 
+  /**
+   * Returns a queue with a given range of cameras, lightsheets and laser lines.
+   * 
+   * @param pCameraIndexMin
+   *          lower camera index (inclusive)
+   * @param pCameraIndexMax
+   *          higher camera index (exclusive)
+   * @param pLightSheetIndexMin
+   *          lower lightsheet index (inclusive)
+   * @param pLightSheetIndexMax
+   *          higher lightsheet index (exclusive)
+   * @param pLaserLineIndexMin
+   *          lower laser line index (inclusive)
+   * @param pLaserLineIndexMax
+   *          higher laser line index (exclusive)
+   * @return queue
+   */
+  LightSheetMicroscopeQueue getQueue(int pCameraIndexMin,
+                                     int pCameraIndexMax,
+                                     int pLightSheetIndexMin,
+                                     int pLightSheetIndexMax,
+                                     int pLaserLineIndexMin,
+                                     int pLaserLineIndexMax);
+
 
 
 }

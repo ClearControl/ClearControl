@@ -118,6 +118,32 @@ public class LightSheetPanel extends CustomVariablePane
     addFunctionPane("Power function",
                     pLightSheetInterface.getPowerFunction());
 
+    addTab("Bounds");
+
+    addBoundedVariable("X :",
+                           pLightSheetInterface.getXVariable());
+
+    addBoundedVariable("Y :",
+                           pLightSheetInterface.getYVariable());
+
+    addBoundedVariable("Z :",
+                           pLightSheetInterface.getZVariable());
+
+    addBoundedVariable("Alpha :",
+                           pLightSheetInterface.getAlphaInDegreesVariable());
+
+    addBoundedVariable("Beta :",
+                           pLightSheetInterface.getBetaInDegreesVariable());
+
+    addBoundedVariable("Width :",
+                           pLightSheetInterface.getWidthVariable());
+
+    addBoundedVariable("Height :",
+                           pLightSheetInterface.getHeightVariable());
+
+    addBoundedVariable("Power :",
+                           pLightSheetInterface.getPowerVariable());
+
   }
 
 }

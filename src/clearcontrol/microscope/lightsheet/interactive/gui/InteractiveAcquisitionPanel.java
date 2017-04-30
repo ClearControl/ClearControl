@@ -37,6 +37,11 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
     addCheckBoxForVariable("Control illumination:",
                            pInteractiveAcquisition.getControlIlluminationVariable());
 
+    addTab("Bounds");
+
+    addBoundedVariable("Z :",
+                           mInteractiveAcquisition.get2DAcquisitionZVariable());
+
   }
 
 }

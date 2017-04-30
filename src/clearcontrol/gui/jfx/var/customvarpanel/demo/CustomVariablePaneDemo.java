@@ -124,6 +124,26 @@ public class CustomVariablePaneDemo extends Application
                                              0.1,
                                              0.1);/**/
 
+    BoundedVariable<Number> lVariable =
+                                      new BoundedVariable<Number>("var",
+                                                                  0.0,
+                                                                  -1.0,
+                                                                  1.0);
+    lVariable.addSetListener((o, n) -> {
+      System.out.println("change to value:" + n);
+    });
+    lVariable.getMinVariable().addSetListener((o, n) -> {
+      System.out.println("change to min:" + n);
+    });
+    lVariable.getMaxVariable().addSetListener((o, n) -> {
+      System.out.println("change to max:" + n);
+    });
+    lVariable.getGranularityVariable().addSetListener((o, n) -> {
+      System.out.println("change to granularity:" + n);
+    });
+
+    lCustomVariablePane.addBoundedVariable("var", lVariable);
+
     root.getChildren().add(lCustomVariablePane);
 
     stage.show();

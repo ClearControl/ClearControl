@@ -36,6 +36,10 @@ public class LightSheetSignalGeneratorQueue implements
   private SignalGeneratorQueue mDelegatedQueue;
   private LightSheetSignalGeneratorDevice mLightSheetSignalGeneratorDevice;
 
+  private Variable<Integer> mSelectedLightSheetIndexVariable =
+                                                             new Variable<Integer>("SelectedLightSheetIndex",
+                                                                                   0);
+
   private Movement mBeforeExposureMovement, mExposureMovement,
       mFinalMovement;
 
@@ -55,15 +59,35 @@ public class LightSheetSignalGeneratorQueue implements
    * 
    * @param pLightSheetSignalGeneratorDevice
    *          lightsheet signal generator parent
-   * @param pDelegatedQueue
-   *          delegated signal generator queue
    */
-  public LightSheetSignalGeneratorQueue(LightSheetSignalGeneratorDevice pLightSheetSignalGeneratorDevice,
-                                        SignalGeneratorQueue pDelegatedQueue)
+  public LightSheetSignalGeneratorQueue(LightSheetSignalGeneratorDevice pLightSheetSignalGeneratorDevice)
   {
     mLightSheetSignalGeneratorDevice =
                                      pLightSheetSignalGeneratorDevice;
-    mDelegatedQueue = pDelegatedQueue;
+    mDelegatedQueue =
+                    pLightSheetSignalGeneratorDevice.getDelegatedSignalGenerator()
+                                                    .requestQueue();
+
+    setupStagingAndFinalizsationScores();
+  }
+
+  /**
+   * Copy constructors that instantiates a lightsheet signal generator queue
+   * from a template.
+   * 
+   * @param pTemplateQueue
+   *          queue template
+   */
+  public LightSheetSignalGeneratorQueue(LightSheetSignalGeneratorQueue pTemplateQueue)
+  {
+    mLightSheetSignalGeneratorDevice =
+                                     pTemplateQueue.getLightSheetSignalGeneratorDevice();
+    mDelegatedQueue =
+                    getLightSheetSignalGeneratorDevice().getDelegatedSignalGenerator()
+                                                        .requestQueue();
+
+    getSelectedLightSheetIndexVariable().set(pTemplateQueue.getSelectedLightSheetIndexVariable()
+                                                           .get());
 
     setupStagingAndFinalizsationScores();
   }
@@ -137,12 +161,6 @@ public class LightSheetSignalGeneratorQueue implements
     lDetectionArmStaves.addStavesToMovements(mBeforeExposureMovement,
                                              mExposureMovement,
                                              mFinalMovement);
-
-    /*
-    pDetectionArm.getZVariable().addSetListener((o, n) -> {
-      if (!o.equals(n))
-        update();
-    });/**/
 
   }
 
@@ -228,13 +246,20 @@ public class LightSheetSignalGeneratorQueue implements
       }
 
       Variable<Boolean> lIsSharedLightSheetControl =
-                                                   mLightSheetSignalGeneratorDevice.getIsSharedLightSheetControlVariable();
+                                                   getLightSheetSignalGeneratorDevice().getIsSharedLightSheetControlVariable();
 
       if (lIsSharedLightSheetControl.get())
       {
         int lSelectedLightSheetIndex =
-                                     mLightSheetSignalGeneratorDevice.getIsSelectedLightSheetIndexVariable()
-                                                                     .get();
+                                     getSelectedLightSheetIndexVariable().get();
+
+        if (lSelectedLightSheetIndex < 0
+            || lSelectedLightSheetIndex >= mLightSheetList.size())
+        {
+          warning("Selected lightsheet is not valid: %d, using 0 instead",
+                  lSelectedLightSheetIndex);
+          lSelectedLightSheetIndex = 0;
+        }
 
         LightSheet lSelectedLightSheet =
                                        mLightSheetList.get(lSelectedLightSheetIndex);
@@ -276,6 +301,18 @@ public class LightSheetSignalGeneratorQueue implements
   public int getQueueLength()
   {
     return mDelegatedQueue.getQueueLength();
+  }
+
+  /**
+   * In the case that we are in a shared lightsheet control situation, this
+   * variable holds the index of the lightsheet to use to generate the control
+   * signals.
+   * 
+   * @return selected lightsheet variable
+   */
+  public Variable<Integer> getSelectedLightSheetIndexVariable()
+  {
+    return mSelectedLightSheetIndexVariable;
   }
 
 }

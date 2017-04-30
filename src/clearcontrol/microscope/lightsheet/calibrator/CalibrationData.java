@@ -32,20 +32,23 @@ public class CalibrationData
                             false);
   }
 
+  @SuppressWarnings("javadoc")
   public UnivariateAffineFunction[] mLightSheetXFunctions,
       mLightSheetYFunctions, mLightSheetZFunctions,
       mLightSheetWidthFunctions, mLightSheetHeightFunctions,
       mLightSheetAlphaFunctions, mLightSheetBetaFunctions,
       mLightSheetPowerFunctions, mDetectionArmZFunctions;
 
+  @SuppressWarnings("javadoc")
   public PolynomialFunction[] mLightSheetWidthPowerFunctions,
       mLightSheetHeightPowerFunctions;
 
+  @SuppressWarnings("javadoc")
   public HashMap<String, LightSheetPositioner> mPositionerMap =
                                                               new HashMap<>();
 
   /**
-   * Instanciates a calibration data object
+   * Instantiates a calibration data object
    */
   public CalibrationData()
   {
