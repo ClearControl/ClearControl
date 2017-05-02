@@ -2,6 +2,8 @@ package clearcontrol.microscope.lightsheet.component.lightsheet;
 
 import java.util.concurrent.Future;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.QueueableVirtualDevice;
@@ -11,8 +13,6 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
-
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 /**
  * Light sheet device. This device abstracts the parameters of a light sheet
@@ -147,7 +147,6 @@ public class LightSheet extends
                                                            (o, n) -> {
                                                              info("new function: "
                                                                   + n);
-                                                             resetBounds();
                                                              notifyListeners(this);
                                                            };
 
@@ -230,7 +229,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".x.bounds",
                                               mLightSheetQueueTemplate.getXVariable(),
-                                              mXFunction.get(),
                                               -200,
                                               200);
 
@@ -239,7 +237,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".y.bounds",
                                               mLightSheetQueueTemplate.getYVariable(),
-                                              mYFunction.get(),
                                               -400,
                                               400);
     MachineConfiguration.getCurrentMachineConfiguration()
@@ -247,7 +244,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".z.bounds",
                                               mLightSheetQueueTemplate.getZVariable(),
-                                              mZFunction.get(),
                                               -200,
                                               200);
 
@@ -256,7 +252,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".w.bounds",
                                               mLightSheetQueueTemplate.getWidthVariable(),
-                                              mWidthFunction.get(),
                                               0,
                                               100);
 
@@ -265,7 +260,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".h.bounds",
                                               mLightSheetQueueTemplate.getHeightVariable(),
-                                              mHeightFunction.get(),
                                               0,
                                               800);
 
@@ -274,7 +268,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".a.bounds",
                                               mLightSheetQueueTemplate.getAlphaInDegreesVariable(),
-                                              mAlphaFunction.get(),
                                               -20,
                                               20);
 
@@ -283,7 +276,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".b.bounds",
                                               mLightSheetQueueTemplate.getBetaInDegreesVariable(),
-                                              mBetaFunction.get(),
                                               -20,
                                               20);
 
@@ -292,7 +284,6 @@ public class LightSheet extends
                                               + getName()
                                               + ".p.bounds",
                                               mLightSheetQueueTemplate.getPowerVariable(),
-                                              mPowerFunction.get(),
                                               0,
                                               1);
 

@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.math.functions.InvertibleFunction;
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.variable.bounded.BoundedVariable;
+import org.apache.commons.math3.analysis.UnivariateFunction;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 
 /**
  * MachineConfiguration is a singleton that can be accessed to query infromation
@@ -457,37 +456,20 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
-   * Return bounds for variable
-   * 
-   * @param pBoundsName
-   *          bounds name
-   * @param pVariable
-   *          variable
-   */
-  public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
-                                                                                    BoundedVariable<T> pVariable)
-  {
-    getBoundsForVariable(pBoundsName, pVariable, null);
-  }
-
-  /**
    * Sets the bounds for a given variable.
    * 
    * @param pBoundsName
    *          bounds name
    * @param pVariable
    *          variable
-   * @param pFunction
-   *          function to use
+   * 
    */
   @SuppressWarnings("unchecked")
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
-                                                                                    BoundedVariable<T> pVariable,
-                                                                                    InvertibleFunction<F> pFunction)
+                                                                                    BoundedVariable<T> pVariable)
   {
     getBoundsForVariable(pBoundsName,
                          pVariable,
-                         pFunction,
                          (T) new Double(-100),
                          (T) new Double(100));
   }
@@ -499,8 +481,6 @@ public class MachineConfiguration implements LoggingInterface
    *          bounds name
    * @param pVariable
    *          variable
-   * @param pFunction
-   *          function to use
    * @param pDefaultMin
    *          default min
    * @param pDefaultNax
@@ -508,7 +488,6 @@ public class MachineConfiguration implements LoggingInterface
    */
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
                                                                                     BoundedVariable<T> pVariable,
-                                                                                    InvertibleFunction<F> pFunction,
                                                                                     T pDefaultMin,
                                                                                     T pDefaultNax)
   {
@@ -546,20 +525,7 @@ public class MachineConfiguration implements LoggingInterface
         return;
       }
 
-      if (pFunction == null)
-      {
-        warning("Function provided for setting bounds of %s is null! \n",
-                pBoundsName);
-        pVariable.setMinMax(-100.0, 100.0);
-        return;
-      }
-
-      UnivariateFunction lInverse = pFunction.inverse();
-
-      double lDomainMin = lInverse.value(lMin);
-      double lDomainMax = lInverse.value(lMax);
-
-      pVariable.setMinMax(lDomainMin, lDomainMax);
+      pVariable.setMinMax(lMin, lMax);
 
       Double lGranularity = lMap.get("granularity");
       if (lGranularity == null)

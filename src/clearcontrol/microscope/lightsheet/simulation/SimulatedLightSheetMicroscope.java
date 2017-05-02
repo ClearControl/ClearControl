@@ -68,7 +68,8 @@ public class SimulatedLightSheetMicroscope extends
    *          true-> uses a dummy simulation instead of the embryo
    * @param pXYZRStage
    *          XYZR Stage
-   * @param pSharedLightSheetControl true -> shared lightsheet control
+   * @param pSharedLightSheetControl
+   *          true -> shared lightsheet control
    * @param pSimulatorDevice
    *          simulator device
    */
@@ -275,7 +276,7 @@ public class SimulatedLightSheetMicroscope extends
     // Adding calibrator:
     {
       Calibrator lCalibrator = addCalibrator();
-      lCalibrator.load();
+      // lCalibrator.load();
     }
 
     // Setting up acquisition state manager:

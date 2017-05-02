@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -26,8 +28,6 @@ import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms
@@ -91,7 +91,8 @@ public class CalibrationZ
    *          number of detection Z samples
    * @param pNumberOfISamples
    *          number of illumination Z samples
-   * @param pRestrictedSearch true -> restrict search to an interval, false not.
+   * @param pRestrictedSearch
+   *          true -> restrict search to an interval, false not.
    * @param pSearchAmplitude
    *          search amplitude.
    * @return true -> success
@@ -143,8 +144,11 @@ public class CalibrationZ
 
     double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
-    System.out.format("miniz=%g, maxiz=%g, stepiz=%g \n",lMinIZ,lMaxIZ,lStepIZ);
-    
+    System.out.format("miniz=%g, maxiz=%g, stepiz=%g \n",
+                      lMinIZ,
+                      lMaxIZ,
+                      lStepIZ);
+
     double lMinDZ = Double.NEGATIVE_INFINITY;
     double lMaxDZ = Double.POSITIVE_INFINITY;
 
@@ -261,6 +265,8 @@ public class CalibrationZ
       lQueue.clearQueue();
       lQueue.zero();
 
+      lQueue.setExp(0.01);
+
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
@@ -313,7 +319,7 @@ public class CalibrationZ
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
                                       mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
-                                                                                      1 + lQueue.getQueueLength(),
+                                                                                      100 + lQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)

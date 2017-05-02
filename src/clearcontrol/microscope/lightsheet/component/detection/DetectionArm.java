@@ -42,7 +42,6 @@ public class DetectionArm extends
    * @param pName
    *          detection arm name
    */
-  @SuppressWarnings("unchecked")
   public DetectionArm(String pName)
   {
     super(pName);
@@ -60,7 +59,6 @@ public class DetectionArm extends
                                                                                    n) -> {
                                                                                     info("new Z function: "
                                                                                          + n);
-                                                                                    resetBounds();
                                                                                     notifyListeners(this);
                                                                                   };
 
@@ -76,8 +74,7 @@ public class DetectionArm extends
                         .getBoundsForVariable("device.lsm.detection."
                                               + getName()
                                               + ".z.bounds",
-                                              mTemplateQueue.getZVariable(),
-                                              getZFunction().get(),
+                                              getZVariable(),
                                               -200,
                                               200);
   }
@@ -85,7 +82,11 @@ public class DetectionArm extends
   @Override
   public void resetFunctions()
   {
-    // TODO Auto-generated method stub
+
+    mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+                                       .getUnivariateAffineFunction("device.lsm.detection."
+                                                                    + getName()
+                                                                    + ".z.f"));
 
   }
 
