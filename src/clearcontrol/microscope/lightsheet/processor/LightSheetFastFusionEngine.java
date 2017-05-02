@@ -1,6 +1,7 @@
 package clearcontrol.microscope.lightsheet.processor;
 
 import clearcl.ClearCLContext;
+import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.stack.StackInterface;
@@ -149,6 +150,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       Runnable lRunnable = () -> {
         passImage(lKey,
                   pStack.getContiguousMemory(),
+                  ImageChannelDataType.UnsignedInt16,
                   pStack.getDimensions());
 
         fuseMetaData(pStack);

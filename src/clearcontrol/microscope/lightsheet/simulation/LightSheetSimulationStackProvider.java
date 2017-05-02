@@ -3,7 +3,7 @@ package clearcontrol.microscope.lightsheet.simulation;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-import clearcl.ClearCLBuffer;
+import clearcl.ClearCLImage;
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
@@ -168,19 +168,19 @@ public class LightSheetSimulationStackProvider extends
 
         if (pKeepPlaneList.get(zi))
         {
-          ClearCLBuffer lCameraImageBuffer =
-                                           mLightSheetMicroscopeSimulator.getCameraImageBuffer(mCameraIndex);
+          ClearCLImage lCameraImage =
+                                           mLightSheetMicroscopeSimulator.getCameraImage(mCameraIndex);
 
-          long lOffset = i++ * lCameraImageBuffer.getSizeInBytes();
+          long lOffset = i++ * lCameraImage.getSizeInBytes();
 
           ContiguousMemoryInterface lImagePlane =
                                                 lContiguousMemory.subRegion(lOffset,
-                                                                            lCameraImageBuffer.getSizeInBytes());
+                                                                            lCameraImage.getSizeInBytes());
 
           final int fzi = zi;
           lMilliseconds =
                         ElapsedTime.measure("!!copyplane",
-                                            () -> lCameraImageBuffer.writeTo(lImagePlane,
+                                            () -> lCameraImage.writeTo(lImagePlane,
                                                                              fzi == lLastZiKept)); //
           // info("Copying plane %d in %g ms \n",zi,lMilliseconds);
 
