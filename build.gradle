@@ -196,7 +196,7 @@ dependencies
     compile ('net.clearvolume:clearaudio:1.0.2')         {transitive= true; changing= true}
     
     // Symbrio:
-    compile ('net.clearcontrol:Simbryo:0.6.1')           {transitive= true; changing= true}
+    compile ('net.clearcontrol:Simbryo:0.6.2')           {transitive= true; changing= true}
     
     // fastFuse:
     compile ('net.clearcontrol:FastFuse:0.0.2')           {transitive= true; changing= true}
