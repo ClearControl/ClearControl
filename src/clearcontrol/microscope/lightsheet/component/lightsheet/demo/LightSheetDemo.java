@@ -73,10 +73,10 @@ public class LightSheetDemo
   private void runDemoWith(final LightSheetSignalGeneratorDevice pSignalGeneratorDevice) throws InterruptedException,
                                                                                          ExecutionException
   {
-    final LightSheet lLightSheet =
-                                 new LightSheet("demo", 9.4, 512, 2);
+    final LightSheet lLightSheet = new LightSheet("demo", 9.4, 2);
 
     lLightSheet.getHeightVariable().set(100.0);
+    lLightSheet.getImageHeightVariable().set(512L);
     lLightSheet.getEffectiveExposureInSecondsVariable().set(0.005);
 
     LightSheetSignalGeneratorQueue lQueue =

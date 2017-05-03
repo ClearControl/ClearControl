@@ -8,6 +8,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
+import clearcontrol.core.concurrent.timing.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
@@ -29,8 +32,6 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 /**
  * Calibration module for the Z position of lightsheets and detection arms
  *
@@ -50,6 +51,7 @@ public class CalibrationZ implements LoggingInterface
 
   private boolean mUseDCTS = false;
   private DCTS2D mDCTS2D;
+  private double[] mMetricArray;
 
   /**
    * Instantiates a Z calibrator module given calibrator
@@ -275,14 +277,14 @@ public class CalibrationZ implements LoggingInterface
       LightSheetMicroscopeQueue lQueue =
                                        mLightSheetMicroscope.requestQueue();
       lQueue.clearQueue();
-      lQueue.zero();
+      // lQueue.zero();
 
       lQueue.setExp(0.05);
 
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
-      lQueue.setIZ(pLightSheetIndex, 0);
+      lQueue.setIZ(pLightSheetIndex, lMinDZ);
 
       final double[] dz = new double[mNumberOfDetectionArmDevices];
 
@@ -323,10 +325,10 @@ public class CalibrationZ implements LoggingInterface
 
       lQueue.finalizeQueue();
 
-      /*ScoreVisualizerJFrame.visualize("queuedscore",
+      /* ScoreVisualizerJFrame.visualize("queuedscore",
       																mLightSheetMicroscope.getDeviceLists()
-      																											.getSignalGeneratorDevice(0)
-      																											.getQueuedScore());/**/
+      																											.getDevice(NIRIOSignalGenerator.class, 0)
+      																											.get());/**/
 
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
@@ -344,18 +346,20 @@ public class CalibrationZ implements LoggingInterface
           if (lStack == null)
             continue;
 
-          if (mDCTS2D == null)
-            mDCTS2D = new DCTS2D();
+          ElapsedTime.measure("compute metric", () -> {
+            if (mUseDCTS)
+            {
+              if (mDCTS2D == null)
+                mDCTS2D = new DCTS2D();
 
-          final double[] lMetricArray;
-
-          if (mUseDCTS)
-            lMetricArray =
-                         mDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lStack);
-          else
-            lMetricArray =
-                         ImageAnalysisUtils.computeAveragePowerVariationPerPlane((OffHeapPlanarStack) lStack,
-                                                                                 4);/**/
+              mMetricArray =
+                           mDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lStack);
+            }
+            else
+              mMetricArray =
+                           ImageAnalysisUtils.computeAveragePowerVariationPerPlane((OffHeapPlanarStack) lStack,
+                                                                                   4);/**/
+          });
 
           PlotTab lPlot =
                         mMultiPlotZFocusCurves.getPlot(String.format("D=%d, I=%d, Iz=%g",
@@ -364,12 +368,15 @@ public class CalibrationZ implements LoggingInterface
                                                                      pIZ));
           lPlot.setScatterPlot("samples");
 
+          if (lDZList.size() != mMetricArray.length)
+            severe("Z position list and metric list have different lengths!");
+
           // System.out.format("metric array: \n");
           for (int j = 0; j < lDZList.size(); j++)
           {
             lPlot.addPoint("samples",
                            lDZList.get(j),
-                           lMetricArray[j]);
+                           mMetricArray[j]);
             /*System.out.format(	"%d,%d\t%g\t%g\n",
             					i,
             					j,
@@ -380,12 +387,12 @@ public class CalibrationZ implements LoggingInterface
 
           final Double lArgMax =
                                mArgMaxFinder.argmax(lDZList.toArray(),
-                                                    lMetricArray);
+                                                    mMetricArray);
 
           if (lArgMax != null)
           {
             TDoubleArrayList lDCTSList =
-                                       new TDoubleArrayList(lMetricArray);
+                                       new TDoubleArrayList(mMetricArray);
 
             double lAmplitudeRatio =
                                    (lDCTSList.max() - lDCTSList.min())
@@ -511,12 +518,12 @@ public class CalibrationZ implements LoggingInterface
     System.out.println("before: getYFunction()="
                        + lLightSheetDevice.getYFunction());/**/
 
-    adjustYFunctionScaleAndMinMax(lLightSheetDevice);
+    adjustYFunctionScaleAnd(lLightSheetDevice);
 
     if (mNumberOfDetectionArmDevices == 2 && pAdjustDetectionZ)
       applyDetectionZ(pLightSheetIndex);
 
-    double lError = (abs(1 - lSlope) + abs(lOffset));
+    double lError = abs(1 - lSlope) + abs(lOffset);
 
     info("Error=" + lError);
 
@@ -524,24 +531,13 @@ public class CalibrationZ implements LoggingInterface
 
   }
 
-  protected void adjustYFunctionScaleAndMinMax(final LightSheetInterface lLightSheetDevice)
+  protected void adjustYFunctionScaleAnd(final LightSheetInterface lLightSheetDevice)
   {
     lLightSheetDevice.getYFunction()
                      .set(UnivariateAffineFunction.axplusb(lLightSheetDevice.getZFunction()
                                                                             .get()
                                                                             .getSlope(),
                                                            0));
-
-    BoundedVariable<Number> lZVariable =
-                                       lLightSheetDevice.getZVariable();
-    BoundedVariable<Number> lYVariable =
-                                       lLightSheetDevice.getYVariable();
-
-    lYVariable.setMinMax(lZVariable.getMin().doubleValue(),
-                         lZVariable.getMax().doubleValue());
-
-    System.out.println("after: getYFunction()="
-                       + lLightSheetDevice.getYFunction());
   }
 
   protected void applyDetectionZ(int pLightSheetIndex)
