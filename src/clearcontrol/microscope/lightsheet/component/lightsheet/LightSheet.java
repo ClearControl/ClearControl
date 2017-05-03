@@ -101,8 +101,7 @@ public class LightSheet extends
 
     mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
                             .set(pReadoutTimeInMicrosecondsPerLine);
-    mLightSheetQueueTemplate.getImageHeightVariable()
-                            .set(2048L);
+    mLightSheetQueueTemplate.getImageHeightVariable().set(2048L);
     mLightSheetQueueTemplate.getOverScanVariable().setMinMax(1.001,
                                                              2);
 

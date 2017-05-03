@@ -291,10 +291,10 @@ public class LightSheetMicroscopeDemo implements
 
     for (int l = 0; l < lNumberOfLightSheets; l++)
     {
-      final LightSheet lLightSheet = new LightSheet("I" + l,
-                                                    9.4,
-                                                    512,
-                                                    2);
+      final LightSheet lLightSheet =
+                                   new LightSheet("I" + l,
+                                                  9.4,
+                                                  lLightSheetMicroscope.getNumberOfLaserLines());
       lLightSheetMicroscope.addDevice(l, lLightSheet);
 
       lLightSheet.getHeightVariable().set(100.0);
