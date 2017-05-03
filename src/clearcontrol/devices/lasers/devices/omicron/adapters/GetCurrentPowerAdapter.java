@@ -1,6 +1,7 @@
 package clearcontrol.devices.lasers.devices.omicron.adapters;
 
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.devices.lasers.devices.omicron.adapters.protocol.ProtocolOmicron;
 
 /**
@@ -10,7 +11,8 @@ import clearcontrol.devices.lasers.devices.omicron.adapters.protocol.ProtocolOmi
  */
 public class GetCurrentPowerAdapter extends OmicronAdapter<Number>
                                     implements
-                                    SerialTextDeviceAdapter<Number>
+                                    SerialTextDeviceAdapter<Number>,
+                                    LoggingInterface
 {
   private static final double cCurrentPowerFilteringAlpha = 0.1;
 
@@ -42,10 +44,10 @@ public class GetCurrentPowerAdapter extends OmicronAdapter<Number>
     }
     catch (Throwable e)
     {
-      System.err.printf("%s-%s: Problem while parsing current power level (received:'%s') \n",
-                        GetCurrentPowerAdapter.class.getSimpleName(),
-                        this.toString(),
-                        new String(pMessage));
+      severe("%s-%s: Problem while parsing current power level (received:'%s') \n",
+             GetCurrentPowerAdapter.class.getSimpleName(),
+             this.toString(),
+             new String(pMessage));
     }
 
     return mCurrentPowerInMilliwatts;

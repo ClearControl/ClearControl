@@ -28,6 +28,7 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
   private volatile int mNumberOfEnqueuedStates;
 
   ArrayList<QueueDeviceInterface<?>> mDeviceList = new ArrayList<>();
+  ArrayList<QueueInterface> mQueueList = new ArrayList<>();
   HashMap<QueueDeviceInterface<?>, QueueInterface> mDeviceToQueueMap =
                                                                      new HashMap<>();
 
@@ -49,10 +50,12 @@ public class MicroscopeQueueBase<M extends MicroscopeBase<M, Q>, Q extends Micro
 
     for (QueueDeviceInterface<?> lQueueableDevice : lQueueableDevices)
     {
-      QueueInterface lRequestQueue = lQueueableDevice.requestQueue();
+      QueueInterface lRequestedQueue =
+                                     lQueueableDevice.requestQueue();
 
       mDeviceList.add(lQueueableDevice);
-      mDeviceToQueueMap.put(lQueueableDevice, lRequestQueue);
+      mQueueList.add(lRequestedQueue);
+      mDeviceToQueueMap.put(lQueueableDevice, lRequestedQueue);
     }
 
   }

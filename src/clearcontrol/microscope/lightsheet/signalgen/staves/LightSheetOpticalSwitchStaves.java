@@ -95,9 +95,9 @@ public class LightSheetOpticalSwitchStaves
     {
       for (int i = 0; i < mBitStave.length; i++)
       {
-        mBitStave[i].setValue(getLightSheetOpticalSwitch().getSwitchVariable(i)
-                                                          .get() ? 1
-                                                                 : 0);
+        mBitStave[i].setValue(mLightSheetOpticalSwitchQueue.getSwitchVariable(i)
+                                                           .get() ? 1
+                                                                  : 0);
       }
     }
   }

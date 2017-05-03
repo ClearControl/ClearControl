@@ -74,8 +74,8 @@ public class LaserDeviceBase extends VirtualDevice
             final double lNewPowerValue =
                                         mCurrentPowerInMilliWattVariable.get()
                                                                         .doubleValue();
-            mCurrentPowerInMilliWattVariable.sync(lNewPowerValue,
-                                                  true);
+            // info("Current laser power: " + lNewPowerValue);
+            mCurrentPowerInMilliWattVariable.set(lNewPowerValue);
           }
           catch (final Throwable e)
           {
