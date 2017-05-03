@@ -34,7 +34,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 public class MachineConfiguration implements LoggingInterface
 {
   private static final String cComments =
-                                        "RTlib machine configuration file";
+                                        "ClearControl machine configuration file";
   private static final MachineConfiguration sConfiguration =
                                                            new MachineConfiguration();
   private static ObjectMapper sObjectMapper = new ObjectMapper();
