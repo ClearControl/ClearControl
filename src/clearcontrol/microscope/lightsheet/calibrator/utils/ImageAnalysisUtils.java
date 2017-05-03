@@ -6,18 +6,15 @@ import static java.lang.Math.pow;
 
 import java.util.stream.IntStream;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.fragmented.FragmentedMemoryInterface;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  * Image analysis utils
@@ -151,22 +148,22 @@ public class ImageAnalysisUtils
 
       int lNumberOfPixelsPerPlane = (int) (pStack.getWidth()
                                            * pStack.getHeight());
-      double lInverseNumberOfPixelsPerPlane = 1.0
-                                              / lNumberOfPixelsPerPlane;
+      float lInverseNumberOfPixelsPerPlane = 1.0f
+                                             / lNumberOfPixelsPerPlane;
 
-      double lPreviousValue =
-                            lContiguousMemoryInterface.getCharAligned(0);
+      float lPreviousValue =
+                           lContiguousMemoryInterface.getCharAligned(0);
 
-      double lSumOfPowers = 0;
+      float lSumOfPowers = 0;
 
       while (lBuffer.hasRemainingByte())
       {
-        double lValue = lBuffer.readChar();
-        double lVariation = abs(lValue - lPreviousValue);
-        lSumOfPowers += lInverseNumberOfPixelsPerPlane
-                        * pow(lVariation, pPower);
+        float lValue = lBuffer.readChar();
+        float lVariation = abs(lValue - lPreviousValue);
+        lSumOfPowers += lInverseNumberOfPixelsPerPlane * lVariation
+                        * lVariation;
 
-        lPreviousValue = 0.9 * lPreviousValue + 0.1 * lValue;
+        lPreviousValue = 0.9f * lPreviousValue + 0.1f * lValue;
       }
       lIntensityArray[p] = lSumOfPowers;
 

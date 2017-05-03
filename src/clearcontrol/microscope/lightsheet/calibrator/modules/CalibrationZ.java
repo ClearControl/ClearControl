@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.collections4.map.MultiKeyMap;
 
-import clearcontrol.core.concurrent.timing.ElapsedTime;
+import clearcl.util.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
@@ -27,7 +27,6 @@ import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
@@ -273,6 +272,7 @@ public class CalibrationZ implements LoggingInterface
 
       double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
+      // info("Begin building queue");
       LightSheetMicroscopeQueue lQueue =
                                        mLightSheetMicroscope.requestQueue();
       lQueue.clearQueue();
@@ -324,17 +324,20 @@ public class CalibrationZ implements LoggingInterface
       lQueue.addCurrentStateToQueue();
 
       lQueue.finalizeQueue();
+      // info("End building queue");
 
       /* ScoreVisualizerJFrame.visualize("queuedscore",
       																mLightSheetMicroscope.getDeviceLists()
       																											.getDevice(NIRIOSignalGenerator.class, 0)
       																											.get());/**/
 
+      // info("Begin play queue");
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
                                       mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
                                                                                       100 + lQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
+      // info("End play queue");
 
       if (lPlayQueueAndWait)
         for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
@@ -346,7 +349,8 @@ public class CalibrationZ implements LoggingInterface
           if (lStack == null)
             continue;
 
-          ElapsedTime.measure("compute metric", () -> {
+          // info("Begin compute metric");
+          ElapsedTime.measureForceOutput("compute metric", () -> {
             if (mUseDCTS)
             {
               if (mDCTS2D == null)
@@ -360,6 +364,7 @@ public class CalibrationZ implements LoggingInterface
                            ImageAnalysisUtils.computeAveragePowerVariationPerPlane((OffHeapPlanarStack) lStack,
                                                                                    4);/**/
           });
+          // info("Begin compute metric");
 
           PlotTab lPlot =
                         mMultiPlotZFocusCurves.getPlot(String.format("D=%d, I=%d, Iz=%g",
@@ -385,9 +390,11 @@ public class CalibrationZ implements LoggingInterface
           }
           lPlot.ensureUpToDate();
 
+          // info("Begin argmax");
           final Double lArgMax =
                                mArgMaxFinder.argmax(lDZList.toArray(),
                                                     mMetricArray);
+          // info("End argmax");
 
           if (lArgMax != null)
           {
