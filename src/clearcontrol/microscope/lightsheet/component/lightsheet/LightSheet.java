@@ -85,7 +85,6 @@ public class LightSheet extends
   @SuppressWarnings("unchecked")
   public LightSheet(String pName,
                     final double pReadoutTimeInMicrosecondsPerLine,
-                    final long pNumberOfLines,
                     final int pNumberOfLaserDigitalControls)
   {
     super(pName);
@@ -103,7 +102,7 @@ public class LightSheet extends
     mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
                             .set(pReadoutTimeInMicrosecondsPerLine);
     mLightSheetQueueTemplate.getImageHeightVariable()
-                            .set(pNumberOfLines);
+                            .set(2048L);
     mLightSheetQueueTemplate.getOverScanVariable().setMinMax(1.001,
                                                              2);
 

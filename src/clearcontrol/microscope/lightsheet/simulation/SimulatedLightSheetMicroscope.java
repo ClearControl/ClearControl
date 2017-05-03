@@ -219,8 +219,7 @@ public class SimulatedLightSheetMicroscope extends
       {
         final LightSheet lLightSheet = new LightSheet("I" + l,
                                                       9.4,
-                                                      512,
-                                                      2);
+                                                      getNumberOfLaserLines());
         addDevice(l, lLightSheet);
 
         lLightSheet.getHeightVariable().set(100.0);
