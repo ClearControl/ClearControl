@@ -35,6 +35,8 @@ public class VariableSlider<T extends Number> extends HBox
   private Variable<T> mGranularity;
   private boolean mUpdateIfChanging = false;
   private double mTicks;
+  
+  private int mPrecision = 6;
 
   /**
    * Instantiates a variable slider
@@ -377,7 +379,7 @@ public class VariableSlider<T extends Number> extends HBox
   {
     double lCorrectedValue =
                            correctValueDouble(pDoubleValue.doubleValue());
-    getTextField().setText(String.format("%.3f", lCorrectedValue));
+    getTextField().setText(String.format("%."+mPrecision+"g", lCorrectedValue));
     getTextField().setStyle("-fx-text-fill: black");
   }
 

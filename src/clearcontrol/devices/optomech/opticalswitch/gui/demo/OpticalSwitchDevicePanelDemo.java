@@ -1,11 +1,11 @@
-package clearcontrol.devices.optomech.opticalswitch.gui.jfx.demo;
+package clearcontrol.devices.optomech.opticalswitch.gui.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import clearcontrol.devices.optomech.opticalswitch.devices.sim.OpticalSwitchDeviceSimulator;
-import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
+import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
 
 /**
  * Optical Switch device panel demo

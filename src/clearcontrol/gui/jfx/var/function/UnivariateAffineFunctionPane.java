@@ -20,12 +20,13 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
  */
 public class UnivariateAffineFunctionPane extends CustomGridPane
 {
-  // number of decimals after comma:
-  int mPrecision = 3;
   private Variable<UnivariateAffineFunction> mFunctionVariable;
 
   private TextField mSlopeTextField, mConstantTextField;
   private int mCursor = 0;
+  
+  // number of decimals after comma:
+  private int mPrecision = 6;
 
   /**
    * Instantiates a univariate function pane
@@ -152,7 +153,7 @@ public class UnivariateAffineFunctionPane extends CustomGridPane
     Platform.runLater(() -> {
       mSlopeTextField.textProperty()
                      .set(String.format("%." + mPrecision
-                                        + "f",
+                                        + "g",
                                         pFunction.getSlope()));
       mConstantTextField.textProperty()
                         .set(String.format("%." + mPrecision

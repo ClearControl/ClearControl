@@ -9,6 +9,11 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.optomech.OptoMechDeviceInterface;
 import clearcontrol.devices.optomech.opticalswitch.devices.optojena.adapters.FiberSwitchPositionAdapter;
 
+/**
+ * OptoJena fiber switch device
+ *
+ * @author royer
+ */
 public class OptoJenaFiberSwitchDevice extends SerialDevice implements
                                        PositionDeviceInterface,
                                        OptoMechDeviceInterface
@@ -17,6 +22,10 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice implements
   private Variable<Integer> mPositionVariable;
   private ConcurrentHashMap<Integer, String> mFilterPositionToNameMap;
 
+  /**
+   * OptoJena switch device
+   * @param pDeviceIndex device index
+   */
   public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
   {
     this(MachineConfiguration.getCurrentMachineConfiguration()
@@ -27,6 +36,10 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice implements
     mPositionVariable = new Variable<Integer>("SwitchPosition", 0);
   }
 
+  /**
+   * OptoJena fiber switch device
+   * @param pPortName port name
+   */
   public OptoJenaFiberSwitchDevice(final String pPortName)
   {
     super("OptoJenaFiberSwitch", pPortName, 76800);

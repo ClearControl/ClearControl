@@ -20,6 +20,7 @@ import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -219,17 +220,13 @@ public class CalibrationWP
 
       if (lPlayQueueAndWait)
       {
-        final StackInterface lStackInterface =
-                                             mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
-                                                                  .get();
+        final OffHeapPlanarStack lStack =
+                                        (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
+                             .get();
 
-        OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =
-                                                                       (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
-
-        // final double[] lDCTSArray =
-        // mDCTS2D.computeImageQualityMetric(lImage);
         final double[] lAvgIntensityArray =
-                                          ImageAnalysisUtils.computeAveragePowerIntensityPerPlane(lImage);
+                                          ImageAnalysisUtils.computeAveragePowerVariationPerPlane(lStack,
+                                                                                                  4);
 
         smooth(lAvgIntensityArray, 1);
 

@@ -51,7 +51,7 @@ public class CameraDevicePanel extends AnchorPane
   private SimpleLongProperty mCameraWidthProperty,
       mCameraHeightProperty;
 
-  private GridPane mGridPane;
+  private CameraResolutionGrid mGridPane;
 
   Rectangle mRectangle = createDraggableRectangle(37.5, 37.5);
   Line mHLine, mVLine;
@@ -190,31 +190,21 @@ public class CameraDevicePanel extends AnchorPane
     mCameraWidthProperty = new SimpleLongProperty(pWidth);
     mCameraHeightProperty = new SimpleLongProperty(pHeight);
 
-    mGridPane = new GridPane();
-
-    for (int x = 7; x < 11; x++)
+    CameraResolutionGrid.ButtonEventHandler lButtonHandler = (w,h) ->
     {
-      for (int y = 7; y < 11; y++)
-      {
-        int width = 2 << x;
-        int height = 2 << y;
+      return event -> {
+        setRectangleProperties(w, h);
 
-        Button button = new Button(width + "\n" + height);
-        button.setMaxWidth(Double.MAX_VALUE);
-        button.setOnAction(event -> {
-          setRectangleProperties(width, height);
+        mCameraWidthStringProperty.set(Integer.toString(w));
+        mCameraHeightStringProperty.set(Integer.toString(h));
 
-          mCameraWidthStringProperty.set(Integer.toString(width));
-          mCameraHeightStringProperty.set(Integer.toString(height));
+        updateWidthHeight((long) w, (long) h);
+        // System.out.println( "Set width/height: " + width + "/" + height );
+      };
+    };
+        
+    mGridPane = new CameraResolutionGrid(lButtonHandler,7,11);
 
-          updateWidthHeight((long) width, (long) height);
-          // System.out.println( "Set width/height: " + width + "/" + height );
-        });
-
-        // Place the button on the GridPane
-        mGridPane.add(button, x, y);
-      }
-    }
 
     Pane canvas = new Pane();
     canvas.setStyle("-fx-background-color: green;");

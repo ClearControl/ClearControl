@@ -33,9 +33,9 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
                          mInteractiveAcquisition.get2DAcquisitionZVariable(),
                          null).setUpdateIfChanging(true);
     addCheckBoxForVariable("Control detection:",
-                           pInteractiveAcquisition.getControlDetectionVariable());
+                           pInteractiveAcquisition.getControlDetectionZVariable());
     addCheckBoxForVariable("Control illumination:",
-                           pInteractiveAcquisition.getControlIlluminationVariable());
+                           pInteractiveAcquisition.getControlIlluminationZVariable());
 
     addTab("Bounds");
 
