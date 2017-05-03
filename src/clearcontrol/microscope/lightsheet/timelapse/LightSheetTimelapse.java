@@ -194,7 +194,7 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                      pCurrentState.getQueue(0,
                                                             lNumberOfDetectionArms,
                                                             pLightSheetIndex,
-                                                            pLightSheetIndex+1,
+                                                            pLightSheetIndex + 1,
                                                             0,
                                                             lNumberOfLaserLines);
     lQueue.addMetaDataEntry(MetaDataOrdinals.TimePoint,

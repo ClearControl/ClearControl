@@ -1,13 +1,14 @@
 package clearcontrol.microscope.lightsheet.signalgen.gui.demo;
 
-import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
-import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
-import clearcontrol.microscope.lightsheet.signalgen.gui.LightSheetSignalGeneratorPanel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
+import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.signalgen.gui.LightSheetSignalGeneratorPanel;
 
 /**
  * Timelapse panel demo
@@ -31,7 +32,8 @@ public class LightSheetSignalGeneratorPanelDemo extends Application
                                                                    new SignalGeneratorSimulatorDevice();
 
     LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                     new LightSheetSignalGeneratorDevice(lSignalGeneratorSimulatorDevice,true);
+                                                                     new LightSheetSignalGeneratorDevice(lSignalGeneratorSimulatorDevice,
+                                                                                                         true);
 
     LightSheetSignalGeneratorPanel lLightSheetSignalGeneratorPanel =
                                                                    new LightSheetSignalGeneratorPanel(lLightSheetSignalGeneratorDevice);

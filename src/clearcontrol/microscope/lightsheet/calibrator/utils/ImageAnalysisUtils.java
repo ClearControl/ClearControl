@@ -7,6 +7,7 @@ import static java.lang.Math.pow;
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.fragmented.FragmentedMemoryInterface;
@@ -15,8 +16,6 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
-import clearcontrol.stack.OffHeapPlanarStack;
 
 public class ImageAnalysisUtils
 {
@@ -82,7 +81,8 @@ public class ImageAnalysisUtils
    * 
    * @param pStack
    *          stack
-   * @param pPower power
+   * @param pPower
+   *          power
    * @return array of metrics
    */
   public static double[] computeAveragePowerIntensityPerPlane(OffHeapPlanarStack pStack,
@@ -103,26 +103,28 @@ public class ImageAnalysisUtils
                                            * pStack.getHeight());
       double lInverseNumberOfPixelsPerPlane = 1.0
                                               / lNumberOfPixelsPerPlane;
-      
+
       double lSumOfPowers = 0;
 
       while (lBuffer.hasRemainingByte())
       {
         double lValue = lBuffer.readChar();
-        lSumOfPowers += lInverseNumberOfPixelsPerPlane*pow(lValue, pPower);
+        lSumOfPowers += lInverseNumberOfPixelsPerPlane
+                        * pow(lValue, pPower);
       }
       lIntensityArray[p] = lSumOfPowers;
     }
 
     return lIntensityArray;
   }
-  
+
   /**
    * Computes the average intensity elevated to a given power per plane
    * 
    * @param pStack
    *          stack
-   * @param pPower power
+   * @param pPower
+   *          power
    * @return array of metrics
    */
   public static double[] computeAveragePowerVariationPerPlane(OffHeapPlanarStack pStack,
@@ -143,18 +145,20 @@ public class ImageAnalysisUtils
                                            * pStack.getHeight());
       double lInverseNumberOfPixelsPerPlane = 1.0
                                               / lNumberOfPixelsPerPlane;
-      
-      double lPreviousValue = lContiguousMemoryInterface.getCharAligned(0);
-      
+
+      double lPreviousValue =
+                            lContiguousMemoryInterface.getCharAligned(0);
+
       double lSumOfPowers = 0;
 
       while (lBuffer.hasRemainingByte())
       {
         double lValue = lBuffer.readChar();
-        double lVariation = abs(lValue-lPreviousValue);
-        lSumOfPowers += lInverseNumberOfPixelsPerPlane*pow(lVariation, pPower);
-        
-        lPreviousValue = 0.9*lPreviousValue+0.1*lValue;
+        double lVariation = abs(lValue - lPreviousValue);
+        lSumOfPowers += lInverseNumberOfPixelsPerPlane
+                        * pow(lVariation, pPower);
+
+        lPreviousValue = 0.9 * lPreviousValue + 0.1 * lValue;
       }
       lIntensityArray[p] = lSumOfPowers;
     }

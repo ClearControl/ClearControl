@@ -27,18 +27,19 @@ public class CameraResolutionGrid extends GridPane
      * @param y
      * @return
      */
-    EventHandler<ActionEvent> getHandler(int pWidth,
-                                         int pheight);
+    EventHandler<ActionEvent> getHandler(int pWidth, int pheight);
   }
 
   /**
-   * @param pButtonEventHandler 
+   * @param pButtonEventHandler
    * @param pEventHandler
    */
-  public CameraResolutionGrid(ButtonEventHandler pButtonEventHandler, int pPowerMin, int pPowerMax)
+  public CameraResolutionGrid(ButtonEventHandler pButtonEventHandler,
+                              int pPowerMin,
+                              int pPowerMax)
   {
     super();
-    
+
     setGridLinesVisible(true);
 
     for (int x = pPowerMin; x < pPowerMax; x++)
@@ -50,7 +51,8 @@ public class CameraResolutionGrid extends GridPane
 
         Button button = new Button(width + "\n" + height);
         button.setMaxWidth(Double.MAX_VALUE);
-        button.setOnAction(pButtonEventHandler.getHandler(width, height));
+        button.setOnAction(pButtonEventHandler.getHandler(width,
+                                                          height));
 
         // Place the button on the GridPane
         add(button, x, y);

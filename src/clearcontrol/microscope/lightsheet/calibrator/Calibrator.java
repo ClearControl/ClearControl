@@ -1,6 +1,5 @@
 package clearcontrol.microscope.lightsheet.calibrator;
 
-import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
 import java.io.File;
@@ -223,7 +222,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
                             lSearchAmplitude,
                             l == 0);
           info("############################################## Error = "
-                             + lError);
+               + lError);
           if (ScriptingEngine.isCancelRequestedStatic()
               || !isRunning())
             return false;
@@ -256,7 +255,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
         {
           lError = calibrateA(l, pNumberOfAngles, pNumberOfRepeats);
           info("############################################## Error = "
-                             + lError);
+               + lError);
           if (ScriptingEngine.isCancelRequestedStatic()
               || !isRunning())
             return false;
@@ -287,7 +286,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
         {
           lError = calibrateXY(l, 0, pNumberOfPoints);
           info("############################################## Error = "
-                             + lError);
+               + lError);
           if (ScriptingEngine.isCancelRequestedStatic()
               || !isRunning())
             return false;
@@ -315,7 +314,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
       lError = mCalibrationP.apply();
 
       info("############################################## Error = "
-                         + lError);
+           + lError);
       if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
         return false;
 

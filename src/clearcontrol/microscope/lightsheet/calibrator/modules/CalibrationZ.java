@@ -8,8 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
@@ -30,6 +28,8 @@ import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms
@@ -157,7 +157,8 @@ public class CalibrationZ implements LoggingInterface
     double lMinDZ = Double.NEGATIVE_INFINITY;
     double lMaxDZ = Double.POSITIVE_INFINITY;
 
-    double lDZSearchRadius = 0.5 * pSearchAmplitude * (lMaxIZ - lMinIZ);
+    double lDZSearchRadius =
+                           0.5 * pSearchAmplitude * (lMaxIZ - lMinIZ);
 
     info("Range for Iz values: [%g,%g] with a step size of %g, Dz search radius is %g \n",
          lMinIZ,
@@ -206,7 +207,7 @@ public class CalibrationZ implements LoggingInterface
       final UnivariateAffineFunction lModel =
                                             lTheilSenEstimators[d].getModel();
 
-      //System.out.println("lModel=" + lModel);
+      // System.out.println("lModel=" + lModel);
 
       mModels.put(pLightSheetIndex,
                   d,
@@ -241,7 +242,6 @@ public class CalibrationZ implements LoggingInterface
                           double pMaxDZ,
                           double pIZ)
   {
-    
 
     try
     {
@@ -269,8 +269,7 @@ public class CalibrationZ implements LoggingInterface
            pNumberOfDSamples,
            pMinDZ,
            pMaxDZ);
-      
-      
+
       double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
       LightSheetMicroscopeQueue lQueue =
@@ -504,11 +503,11 @@ public class CalibrationZ implements LoggingInterface
     }
     else
       warning("slope too low: " + abs(lSlope));
-   
+
     /*
     System.out.println("after: getZFunction()="
                        + lLightSheetDevice.getZFunction());
-
+    
     System.out.println("before: getYFunction()="
                        + lLightSheetDevice.getYFunction());/**/
 

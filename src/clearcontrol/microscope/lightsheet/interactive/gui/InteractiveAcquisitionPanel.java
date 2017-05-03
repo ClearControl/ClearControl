@@ -40,7 +40,7 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
     addTab("Bounds");
 
     addBoundedVariable("Z :",
-                           mInteractiveAcquisition.get2DAcquisitionZVariable());
+                       mInteractiveAcquisition.get2DAcquisitionZVariable());
 
   }
 

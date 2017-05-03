@@ -41,7 +41,8 @@ public class LightSheetDemo
                                                           new SignalGeneratorSimulatorDevice();
 
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorDevice,false);
+                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorDevice,
+                                                                                                                false);
 
     runDemoWith(lLightSheetSignalGeneratorDevice);
   }
@@ -63,7 +64,8 @@ public class LightSheetDemo
                                                           new NIRIOSignalGenerator();
 
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorDevice,false);
+                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorDevice,
+                                                                                                                false);
 
     runDemoWith(lLightSheetSignalGeneratorDevice);
   }

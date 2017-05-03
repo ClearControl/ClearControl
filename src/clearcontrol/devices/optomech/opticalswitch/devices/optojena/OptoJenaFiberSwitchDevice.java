@@ -24,7 +24,9 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice implements
 
   /**
    * OptoJena switch device
-   * @param pDeviceIndex device index
+   * 
+   * @param pDeviceIndex
+   *          device index
    */
   public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
   {
@@ -38,7 +40,9 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice implements
 
   /**
    * OptoJena fiber switch device
-   * @param pPortName port name
+   * 
+   * @param pPortName
+   *          port name
    */
   public OptoJenaFiberSwitchDevice(final String pPortName)
   {

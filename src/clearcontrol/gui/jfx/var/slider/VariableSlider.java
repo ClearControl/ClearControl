@@ -2,9 +2,6 @@ package clearcontrol.gui.jfx.var.slider;
 
 import static java.lang.Math.abs;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +11,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.var.slider.customslider.Slider;
 
 /**
  * Slider that syncs its value to a variable
@@ -35,7 +36,7 @@ public class VariableSlider<T extends Number> extends HBox
   private Variable<T> mGranularity;
   private boolean mUpdateIfChanging = false;
   private double mTicks;
-  
+
   private int mPrecision = 6;
 
   /**
@@ -379,7 +380,9 @@ public class VariableSlider<T extends Number> extends HBox
   {
     double lCorrectedValue =
                            correctValueDouble(pDoubleValue.doubleValue());
-    getTextField().setText(String.format("%."+mPrecision+"g", lCorrectedValue));
+    getTextField().setText(String.format("%." + mPrecision
+                                         + "g",
+                                         lCorrectedValue));
     getTextField().setStyle("-fx-text-fill: black");
   }
 

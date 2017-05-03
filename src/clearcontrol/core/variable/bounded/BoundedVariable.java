@@ -114,7 +114,7 @@ public class BoundedVariable<N extends Number> extends Variable<N>
                          N pMin,
                          N pMax)
   {
-    this(pVariableName, pReference, pMin, pMax, (N)(new Double(0)));
+    this(pVariableName, pReference, pMin, pMax, (N) (new Double(0)));
   }
 
   /**

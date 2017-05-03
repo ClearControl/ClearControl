@@ -14,9 +14,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -190,21 +188,27 @@ public class CameraDevicePanel extends AnchorPane
     mCameraWidthProperty = new SimpleLongProperty(pWidth);
     mCameraHeightProperty = new SimpleLongProperty(pHeight);
 
-    CameraResolutionGrid.ButtonEventHandler lButtonHandler = (w,h) ->
-    {
-      return event -> {
-        setRectangleProperties(w, h);
+    CameraResolutionGrid.ButtonEventHandler lButtonHandler =
+                                                           (w, h) -> {
+                                                             return event -> {
+                                                               setRectangleProperties(w,
+                                                                                      h);
 
-        mCameraWidthStringProperty.set(Integer.toString(w));
-        mCameraHeightStringProperty.set(Integer.toString(h));
+                                                               mCameraWidthStringProperty.set(Integer.toString(w));
+                                                               mCameraHeightStringProperty.set(Integer.toString(h));
 
-        updateWidthHeight((long) w, (long) h);
-        // System.out.println( "Set width/height: " + width + "/" + height );
-      };
-    };
-        
-    mGridPane = new CameraResolutionGrid(lButtonHandler,7,11);
+                                                               updateWidthHeight((long) w,
+                                                                                 (long) h);
+                                                               // System.out.println(
+                                                               // "Set
+                                                               // width/height:
+                                                               // " + width +
+                                                               // "/" + height
+                                                               // );
+                                                             };
+                                                           };
 
+    mGridPane = new CameraResolutionGrid(lButtonHandler, 7, 11);
 
     Pane canvas = new Pane();
     canvas.setStyle("-fx-background-color: green;");

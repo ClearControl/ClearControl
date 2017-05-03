@@ -119,7 +119,7 @@ public class CalibratorToolbar extends CustomGridPane
 
       lRow += 2;
     }
-    
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);

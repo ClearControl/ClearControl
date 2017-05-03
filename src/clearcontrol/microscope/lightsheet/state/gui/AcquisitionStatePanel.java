@@ -1,6 +1,15 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -12,15 +21,6 @@ import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 /**
  * Acquisition state panel
@@ -122,9 +122,9 @@ public class AcquisitionStatePanel extends CustomGridPane
                0; i < pAcquisitionState.getNumberOfDetectionArms(); i++)
     {
       lCameraOnOffArray.addSwitch("Camera " + i,
-                                      pAcquisitionState.getCameraOnOffVariable(i));
+                                  pAcquisitionState.getCameraOnOffVariable(i));
     }
-    
+
     OnOffArrayPane lLightSheetOnOffArray = new OnOffArrayPane();
 
     for (int i =
@@ -191,7 +191,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     add(lZRangeSlider.getRangeSlider(), 2, 3);
     add(lZRangeSlider.getHighTextField(), 3, 3);
 
-    //setGridLinesVisible(true);
+    // setGridLinesVisible(true);
     GridPane lGridPane = new GridPane();
     lGridPane.setHgap(10);
     lGridPane.add(lZStepTextField.getLabel(), 0, 0);
@@ -202,7 +202,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     lGridPane.setAlignment(Pos.BASELINE_LEFT);
     GridPane.setColumnSpan(lGridPane, 8);
     add(lGridPane, 0, 4);
-    
+
     lCameraOnOffArray.setAlignment(Pos.BASELINE_LEFT);
     GridPane.setHalignment(lCameraOnOffArray, HPos.LEFT);
     GridPane.setColumnSpan(lCameraOnOffArray, 7);
@@ -225,7 +225,6 @@ public class AcquisitionStatePanel extends CustomGridPane
     GridPane.setHgrow(lMultiChart, Priority.ALWAYS);
     GridPane.setColumnSpan(lMultiChart, 8);
     add(lMultiChart, 0, 8);
-
 
     // Update events:
 

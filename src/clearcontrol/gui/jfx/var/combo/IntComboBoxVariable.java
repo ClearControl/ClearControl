@@ -1,11 +1,11 @@
 package clearcontrol.gui.jfx.var.combo;
 
 import java.util.ArrayList;
-
-import clearcontrol.core.variable.Variable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
+
+import clearcontrol.core.variable.Variable;
 
 /**
  * Combo box that takes enum elements

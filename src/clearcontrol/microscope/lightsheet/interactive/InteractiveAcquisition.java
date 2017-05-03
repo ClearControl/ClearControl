@@ -115,11 +115,11 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                        .getMaxVariable();
 
     mControlDetectionZVariable =
-                              new Variable<Boolean>("Control Illumination",
-                                                    false);
+                               new Variable<Boolean>("Control Illumination",
+                                                     false);
     mControlIlluminationZVariable =
-                                 new Variable<Boolean>("Control Detection",
-                                                       false);
+                                  new Variable<Boolean>("Control Detection",
+                                                        false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",

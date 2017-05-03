@@ -17,7 +17,9 @@ public class FiberSwitchPositionAdapter extends
 
   /**
    * Instantiates an OptoJena fiber switch position adapter
-   * @param pOptoJenaFiberSwitchDevice OptoJena fiber switch device
+   * 
+   * @param pOptoJenaFiberSwitchDevice
+   *          OptoJena fiber switch device
    */
   public FiberSwitchPositionAdapter(final OptoJenaFiberSwitchDevice pOptoJenaFiberSwitchDevice)
   {

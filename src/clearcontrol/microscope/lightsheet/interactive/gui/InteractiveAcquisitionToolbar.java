@@ -1,5 +1,16 @@
 package clearcontrol.microscope.lightsheet.interactive.gui;
 
+import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.gui.CameraResolutionGrid;
 import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
@@ -14,16 +25,6 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
-import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 /**
  * Interactive acquiistion toolbar
@@ -48,14 +49,15 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
 
     setPrefSize(400, 200);
 
-    int[] lPercent = new int[]{20,40,40}; 
+    int[] lPercent = new int[]
+    { 20, 40, 40 };
     for (int i = 0; i < 3; i++)
     {
       ColumnConstraints lColumnConstraints = new ColumnConstraints();
       lColumnConstraints.setPercentWidth(lPercent[i]);
       getColumnConstraints().add(lColumnConstraints);
-    }/**/
-    
+    } /**/
+
     int lRow = 0;
 
     {
@@ -161,7 +163,7 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
       add(lVariableLCD, 2, 0);
 
     }
-    
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
@@ -260,7 +262,7 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
       add(lExposureTextField.getTextField(), 2, lRow);
       lRow++;
     }
-    
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
@@ -302,7 +304,7 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
 
       lRow++;
     }
-    
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
@@ -332,21 +334,25 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
       GridPane.setHgrow(lGridPane, Priority.ALWAYS);
       GridPane.setColumnSpan(lGridPane, 3);
       add(lGridPane, 0, lRow);
-      
-      //setGridLinesVisible(true);
+
+      // setGridLinesVisible(true);
 
       lRow++;
     }
 
-    
     {
-      LightSheetOpticalSwitch lDevice = pInteractiveAcquisition.getLightSheetMicroscope().getDevice(LightSheetOpticalSwitch.class, 0);
-      
-      OpticalSwitchDevicePanel lLightSheetOpticalSwitchPanel = new OpticalSwitchDevicePanel(lDevice);
-      
-      
-      GridPane.setHalignment(lLightSheetOpticalSwitchPanel, HPos.CENTER);
-      GridPane.setHgrow(lLightSheetOpticalSwitchPanel, Priority.ALWAYS);
+      LightSheetOpticalSwitch lDevice =
+                                      pInteractiveAcquisition.getLightSheetMicroscope()
+                                                             .getDevice(LightSheetOpticalSwitch.class,
+                                                                        0);
+
+      OpticalSwitchDevicePanel lLightSheetOpticalSwitchPanel =
+                                                             new OpticalSwitchDevicePanel(lDevice);
+
+      GridPane.setHalignment(lLightSheetOpticalSwitchPanel,
+                             HPos.CENTER);
+      GridPane.setHgrow(lLightSheetOpticalSwitchPanel,
+                        Priority.ALWAYS);
       GridPane.setColumnSpan(lLightSheetOpticalSwitchPanel, 3);
       add(lLightSheetOpticalSwitchPanel, 0, lRow);
 

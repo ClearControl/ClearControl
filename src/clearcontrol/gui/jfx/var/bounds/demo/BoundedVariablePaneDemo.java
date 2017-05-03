@@ -1,12 +1,13 @@
 package clearcontrol.gui.jfx.var.bounds.demo;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.var.bounds.BoundedVariablePane;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.var.bounds.BoundedVariablePane;
 
 /**
  * Univariate affine function pane demo
@@ -27,9 +28,9 @@ public class BoundedVariablePaneDemo extends Application implements
 
     BoundedVariable<Number> lVariable =
                                       new BoundedVariable<Number>("var",
-                                                            0.0,
-                                                            -1.0,
-                                                            1.0);
+                                                                  0.0,
+                                                                  -1.0,
+                                                                  1.0);
     lVariable.addSetListener((o, n) -> {
       System.out.println("change to value:" + n);
     });
@@ -48,7 +49,6 @@ public class BoundedVariablePaneDemo extends Application implements
                                                                      lVariable);
 
     root.getChildren().add(lBoundedVariablePane);
-
 
     stage.show();
   }

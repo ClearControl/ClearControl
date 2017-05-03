@@ -24,7 +24,7 @@ public class UnivariateAffineFunctionPane extends CustomGridPane
 
   private TextField mSlopeTextField, mConstantTextField;
   private int mCursor = 0;
-  
+
   // number of decimals after comma:
   private int mPrecision = 6;
 

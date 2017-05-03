@@ -265,7 +265,8 @@ public class LightSheetMicroscopeDemo implements
                                    .sendUpdatesTo(lTrigger);
 
     final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
-                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice,false);
+                                                                           LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice,
+                                                                                                                false);
 
     lLightSheetMicroscope.addDevice(0,
                                     lLightSheetSignalGeneratorDevice);

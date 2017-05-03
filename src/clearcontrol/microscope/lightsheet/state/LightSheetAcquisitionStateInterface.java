@@ -53,7 +53,6 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
   void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
                                 int pControlPlaneIndex);
 
-
   /**
    * Returns state variable x
    * 
@@ -83,7 +82,7 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    * @return on/off variable.
    */
   Variable<Boolean> getCameraOnOffVariable(int pCameraIndex);
-  
+
   /**
    * Returns the On/Off variable for a given lightsheet index
    * 
@@ -125,7 +124,5 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
                                      int pLightSheetIndexMax,
                                      int pLaserLineIndexMin,
                                      int pLaserLineIndexMax);
-
-
 
 }

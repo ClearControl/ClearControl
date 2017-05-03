@@ -24,8 +24,11 @@ public class OpticalSwitchDeviceSimulator extends VirtualDevice
 
   /**
    * Instantiates an optical switch device simulator
-   * @param pDeviceName device name
-   * @param pNumberOfSwitches number of switches
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pNumberOfSwitches
+   *          number of switches
    */
   @SuppressWarnings("unchecked")
   public OpticalSwitchDeviceSimulator(String pDeviceName,

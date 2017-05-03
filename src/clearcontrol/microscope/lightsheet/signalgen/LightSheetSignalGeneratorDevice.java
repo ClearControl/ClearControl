@@ -39,7 +39,7 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
    * @return lightsheet signal generator
    */
   public static LightSheetSignalGeneratorDevice wrap(SignalGeneratorInterface pSignalGeneratorInterface,
-                                                           boolean pSharedLightSheetControl)
+                                                     boolean pSharedLightSheetControl)
   {
     return new LightSheetSignalGeneratorDevice(pSignalGeneratorInterface,
                                                pSharedLightSheetControl);

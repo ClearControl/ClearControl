@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.variable.bounded.BoundedVariable;
+import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
  * MachineConfiguration is a singleton that can be accessed to query infromation
@@ -34,7 +34,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 public class MachineConfiguration implements LoggingInterface
 {
   private static final String cComments =
-                                        "RTlib machine configuration file";
+                                        "ClearControl machine configuration file";
   private static final MachineConfiguration sConfiguration =
                                                            new MachineConfiguration();
   private static ObjectMapper sObjectMapper = new ObjectMapper();
