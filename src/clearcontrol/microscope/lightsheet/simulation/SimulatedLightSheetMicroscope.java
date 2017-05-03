@@ -223,8 +223,6 @@ public class SimulatedLightSheetMicroscope extends
         addDevice(l, lLightSheet);
 
         lLightSheet.getHeightVariable().set(100.0);
-        lLightSheet.getEffectiveExposureInSecondsVariable()
-                   .set(0.010);
 
         lLightSheet.getImageHeightVariable().set(lDefaultStackHeight);
       }
