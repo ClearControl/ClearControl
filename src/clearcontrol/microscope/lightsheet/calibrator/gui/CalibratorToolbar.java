@@ -136,7 +136,7 @@ public class CalibratorToolbar extends CustomGridPane
                                             .getNumberOfLightSheets();
       for (int l = 0; l < lNumberOfLightSheets; l++)
       {
-        lCalibrateLightSheetOnOffPane.addSwitch("Lightsheet " + l,
+        lCalibrateLightSheetOnOffPane.addSwitch("LS" + l,
                                                 pCalibrator.getCalibrateLightSheetOnOff(l));
       }
 

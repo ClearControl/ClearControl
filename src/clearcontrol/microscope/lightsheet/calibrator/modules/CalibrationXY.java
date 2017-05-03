@@ -23,6 +23,7 @@ import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -291,43 +292,16 @@ public class CalibrationXY
     if (!lPlayQueueAndWait)
       return null;
 
-    final StackInterface lStackInterface =
-                                         mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
-                                                              .get();
+    final OffHeapPlanarStack lStack =
+                                    (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
+                                                                              .get();
 
-    OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =
-                                                                   (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
+    int lWidth = (int) lStack.getWidth();
+    int lHeight = (int) lStack.getHeight();
 
-    System.out.println("lImage=" + lImage);
-
-    long lWidth = lImage.dimension(0);
-    long lHeight = lImage.dimension(1);
-
-    System.out.format("image: width=%d, height=%d \n",
-                      lWidth,
-                      lHeight);
-
-    // ImagePlus lShow = ImageJFunctions.show(lImage);
-    // lShow.setDisplayRange(0, 150);
-    try
-    {
-      final RandomAccessible<UnsignedShortType> infiniteImg =
-                                                            Views.extendValue(lImage,
-                                                                              new UnsignedShortType());
-      Gauss3.gauss(1, infiniteImg, lImage);
-      // ImagePlus lShow = ImageJFunctions.show(lImage);
-      // lShow.setDisplayRange(-100, 100);
-      // lShow.setDisplayRange(-100, 100);
-    }
-    catch (IncompatibleTypeException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    ImageAnalysisUtils.cleanWithMin(lImage);
+    ImageAnalysisUtils.cleanWithMin(lStack);
     Vector2D lPoint =
-                    ImageAnalysisUtils.findCOMOfBrightestPointsForEachPlane(lImage)[0];
+                    ImageAnalysisUtils.findCOMOfBrightestPointsForEachPlane(lStack)[0];
 
     lPoint =
            lPoint.subtract(new Vector2D(0.5 * lWidth, 0.5 * lHeight));

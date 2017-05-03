@@ -62,7 +62,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private LightSheetMicroscopeQueue mQueue;
 
   /**
-   * Instanciates an interactive acquisition for lightsheet microscope
+   * Instantiates an interactive acquisition for lightsheet microscope
    * 
    * @param pDeviceName
    *          device name
@@ -167,6 +167,19 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   {
     getLightSheetMicroscope().removeChangeListener(mMicroscopeChangeListener);
     return super.close();
+  }
+
+  @Override
+  public void run()
+  {
+    try
+    {
+      super.run();
+    }
+    finally
+    {
+      getLightSheetMicroscope().getCurrentTask().set(null);
+    }
   }
 
   @Override
@@ -331,6 +344,15 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    */
   public void start2DAcquisition()
   {
+    if (getLightSheetMicroscope().getCurrentTask().get() != null)
+    {
+      warning("Another task (%s) is already running, please stop it first.",
+              getLightSheetMicroscope().getCurrentTask());
+      return;
+    }
+    
+    getLightSheetMicroscope().getCurrentTask().set(this);
+
     if (getIsRunningVariable().get()
         && getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition3D)
     {
@@ -355,6 +377,13 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    */
   public void start3DAcquisition()
   {
+    if (getLightSheetMicroscope().getCurrentTask().get() != null)
+    {
+      warning("Another task (%s) is already running, please stop it first.",
+              getLightSheetMicroscope().getCurrentTask());
+      return;
+    }
+
     if (getIsRunningVariable().get()
         && getCurrentAcquisitionMode() == InteractiveAcquisitionModes.Acquisition2D)
     {
@@ -383,6 +412,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     info("Stopping Acquisition...");
     setCurrentAcquisitionMode(InteractiveAcquisitionModes.None);
     stopTask();
+
   }
 
   /**

@@ -153,6 +153,8 @@ public class SimulatedLightSheetMicroscope extends
                                                                                 + c,
                                                                                 lTrigger);
 
+        lCamera.getMaxWidthVariable().set(pSimulatorDevice.getSimulator().getCameraRenderer(c).getMaxWidth());
+        lCamera.getMaxHeightVariable().set(pSimulatorDevice.getSimulator().getCameraRenderer(c).getMaxHeight());
         lCamera.getStackWidthVariable().set(lDefaultStackWidth);
         lCamera.getStackHeightVariable().set(lDefaultStackHeight);
         lCamera.getExposureInSecondsVariable().set(0.010);

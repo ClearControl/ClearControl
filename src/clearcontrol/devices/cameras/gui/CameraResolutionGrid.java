@@ -51,6 +51,8 @@ public class CameraResolutionGrid extends GridPane
 
         Button button = new Button(width + "\n" + height);
         button.setMaxWidth(Double.MAX_VALUE);
+        button.setMinWidth(45);
+        button.setMinHeight(45);
         button.setOnAction(pButtonEventHandler.getHandler(width,
                                                           height));
 

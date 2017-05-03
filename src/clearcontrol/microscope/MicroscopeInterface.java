@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
@@ -39,6 +41,23 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
    */
   @Override
   public String getName();
+
+  /**
+   * Returns the master lock, which can be used to make sure that opening,
+   * closing, playing queues don't overlapp.
+   * 
+   * @return master lock
+   */
+  ReentrantLock getMasterLock();
+
+  /**
+   * Current task. This is used to prevent multiple tasks executions don't
+   * overlap, for example, starting an acquisition while some other task is
+   * already running...
+   * 
+   * @return current task atomic reference
+   */
+  AtomicReference<Object> getCurrentTask();
 
   /**
    * Sets the simulation flag.

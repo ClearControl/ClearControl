@@ -193,6 +193,26 @@ public abstract class TimelapseBase extends LoopTaskDevice
   }
 
   @Override
+  public void startTimelapse()
+  {
+    if (mMicroscope.getCurrentTask().get() != null)
+    {
+      warning("Another task (%s) is already running, please stop it first.",
+              mMicroscope.getCurrentTask());
+      return;
+    }
+    
+
+    getStartSignalVariable().setEdgeAsync(false, true);
+  }
+
+  @Override
+  public void stopTimelapse()
+  {
+    getStopSignalVariable().setEdgeAsync(false, true);
+  }
+
+  @Override
   public void run()
   {
 
@@ -285,13 +305,17 @@ public abstract class TimelapseBase extends LoopTaskDevice
              e.getMessage());
       return;
     }
+    finally
+    {
+      mMicroscope.getCurrentTask().set(null);
+    }
 
   }
 
   @Override
   public boolean startTask()
   {
-
+    mMicroscope.getCurrentTask().set(this);
     return super.startTask();
   }
 

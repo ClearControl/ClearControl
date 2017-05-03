@@ -11,6 +11,7 @@ import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.signalgen.movement.Movement;
+import clearcontrol.devices.signalgen.staves.BezierStave;
 import clearcontrol.devices.signalgen.staves.ConstantStave;
 import clearcontrol.devices.signalgen.staves.EdgeStave;
 import clearcontrol.devices.signalgen.staves.IntervalStave;
@@ -36,8 +37,9 @@ public class LightSheetStaves implements LoggingInterface
                                                                             new BoundedVariable<Double>("LineExposureInMicroseconds",
                                                                                                         10.0);
 
-  private RampSteppingStave mBeforeExposureZStave,
-      mBeforeExposureYStave, mExposureYStave, mExposureZStave;
+  private BezierStave mBeforeExposureYStave, mBeforeExposureZStave;
+
+  private RampSteppingStave mExposureYStave, mExposureZStave;
 
   private RampContinuousStave mFinalYStave;
 
@@ -62,8 +64,8 @@ public class LightSheetStaves implements LoggingInterface
     mExposureLAStave = new ConstantStave("laser.exposure.am", 0);
 
     mBeforeExposureXStave = new ConstantStave("lightsheet.x.be", 0);
-    mBeforeExposureYStave = new RampSteppingStave("lightsheet.y.be");
-    mBeforeExposureZStave = new RampSteppingStave("lightsheet.z.be");
+    mBeforeExposureYStave = new BezierStave("lightsheet.y.be", 0);
+    mBeforeExposureZStave = new BezierStave("lightsheet.z.be", 0);
     mBeforeExposureBStave = new ConstantStave("lightsheet.b.be", 0);
     mBeforeExposureWStave = new ConstantStave("lightsheet.r.be", 0);
     mBeforeExposureTStave = new EdgeStave("trigger.out.be", 1, 1, 0);
@@ -324,16 +326,18 @@ public class LightSheetStaves implements LoggingInterface
                                                    .value(lGalvoZOffset
                                                           + lGalvoAmplitudeZ);
 
-      mBeforeExposureYStave.setSyncStart(0);
-      mBeforeExposureYStave.setSyncStop(1);
+
       mBeforeExposureYStave.setStartValue((float) lGalvoYHighValue);
       mBeforeExposureYStave.setStopValue((float) lGalvoYLowValue);
-      mBeforeExposureYStave.setExponent(0.1f);
+      mBeforeExposureYStave.setStartSlope((float) (lGalvoYHighValue-lGalvoYLowValue));
+      mBeforeExposureYStave.setStopSlope((float) (lGalvoYHighValue-lGalvoYLowValue));
+      mBeforeExposureYStave.setSmoothness(0.33f);
 
-      mBeforeExposureZStave.setSyncStart(0);
-      mBeforeExposureZStave.setSyncStop(1);
       mBeforeExposureZStave.setStartValue((float) lGalvoZHighValue);
       mBeforeExposureZStave.setStopValue((float) lGalvoZLowValue);
+      mBeforeExposureZStave.setStartSlope((float) (lGalvoZHighValue-lGalvoZLowValue));
+      mBeforeExposureZStave.setStopSlope((float) (lGalvoZHighValue-lGalvoZLowValue));
+      mBeforeExposureZStave.setSmoothness(0.33f);
 
       mExposureYStave.setSyncStart(0);
       mExposureYStave.setSyncStop(1);
@@ -411,9 +415,7 @@ public class LightSheetStaves implements LoggingInterface
         lIsStepping &= mLightSheetQueue.getSIPatternOnOffVariable(i)
                                        .get();
 
-      mBeforeExposureYStave.setStepping(lIsStepping);
       mExposureYStave.setStepping(lIsStepping);
-      mBeforeExposureZStave.setStepping(lIsStepping);
       mExposureZStave.setStepping(lIsStepping);
 
       for (int i =
@@ -480,7 +482,7 @@ public class LightSheetStaves implements LoggingInterface
   }
 
   private <O extends StaveInterface> O setLaserDigitalTriggerStave(Movement pExposureMovement,
-                                                                   int i,
+                                                                   int pLaserLineIndex,
                                                                    O pStave)
   {
 
@@ -489,9 +491,9 @@ public class LightSheetStaves implements LoggingInterface
                                                          .getIntegerProperty("device.lsm.lightsheet."
                                                                              + getLightSheet().getName()
                                                                              + ".ld"
-                                                                             + i
+                                                                             + pLaserLineIndex
                                                                              + ".index",
-                                                                             8 + i);
+                                                                             8 + pLaserLineIndex);
     return pExposureMovement.ensureSetStave(lLaserDigitalLineIndex,
                                             pStave);
   }
@@ -545,12 +547,12 @@ public class LightSheetStaves implements LoggingInterface
     return pSubTime / pTotalTime;
   }
 
-  public RampSteppingStave getGalvoScannerStaveBeforeExposureZ()
+  public BezierStave getGalvoScannerStaveBeforeExposureZ()
   {
     return mBeforeExposureZStave;
   }
 
-  public RampSteppingStave getGalvoScannerStaveBeforeExposureY()
+  public BezierStave getGalvoScannerStaveBeforeExposureY()
   {
     return mBeforeExposureYStave;
   }

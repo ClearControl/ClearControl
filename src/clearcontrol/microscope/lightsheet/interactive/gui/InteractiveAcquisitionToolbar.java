@@ -6,11 +6,13 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-
+import clearcontrol.core.device.switches.gui.SwitchingDevicePanel;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.gui.CameraResolutionGrid;
 import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
@@ -339,6 +341,14 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
 
       lRow++;
     }
+    
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
 
     {
       LightSheetOpticalSwitch lDevice =
@@ -346,15 +356,24 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
                                                              .getDevice(LightSheetOpticalSwitch.class,
                                                                         0);
 
-      OpticalSwitchDevicePanel lLightSheetOpticalSwitchPanel =
-                                                             new OpticalSwitchDevicePanel(lDevice);
+      Label lLabel = new Label("Lightsheets: ");
 
-      GridPane.setHalignment(lLightSheetOpticalSwitchPanel,
+      String[] lNames = new String[lDevice.getNumberOfSwitches()];
+      for (int i = 0; i < lNames.length; i++)
+        lNames[i] = "LS" + i;
+
+      SwitchingDevicePanel lLightSheetOpticalSwitchPanel =
+                                                         new SwitchingDevicePanel(lDevice,
+                                                                                  lNames);
+
+      HBox lHBox = new HBox(lLabel,lLightSheetOpticalSwitchPanel);
+      
+      GridPane.setHalignment(lHBox,
                              HPos.CENTER);
-      GridPane.setHgrow(lLightSheetOpticalSwitchPanel,
+      GridPane.setHgrow(lHBox,
                         Priority.ALWAYS);
-      GridPane.setColumnSpan(lLightSheetOpticalSwitchPanel, 3);
-      add(lLightSheetOpticalSwitchPanel, 0, lRow);
+      GridPane.setColumnSpan(lHBox, 3);
+      add(lHBox, 0, lRow);
 
       lRow++;
     }

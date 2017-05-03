@@ -3,11 +3,14 @@ package clearcontrol.microscope;
 import static java.lang.Math.max;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
@@ -65,19 +68,24 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   private final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList =
                                                                                     new ArrayList<>();
 
-  // Played queuevariable:
+  // Played queue variable:
   private final Variable<Q> mPlayedQueueVariable =
                                                  new Variable<Q>("LastPlayedQueue",
                                                                  null);
 
-  // Lock:
-  protected Object mAcquisitionLock = new Object();
 
   // Stack processing pipeline:
   protected volatile StackProcessingPipelineInterface mStackProcessingPipeline;
+  
+  
+  // Lock:
+  protected ReentrantLock mMasterLock = new ReentrantLock();
+  
+  // 
+  protected AtomicReference<Object> mCurrentTask= new AtomicReference<>();
 
   /**
-   * Instanciates the micorsocope base class.
+   * Instantiates the microscope base class.
    * 
    * @param pDeviceName
    *          device name
@@ -148,6 +156,45 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                             });/**/
 
     addDevice(0, mStackProcessingPipeline);
+  }
+
+  @Override
+  public ReentrantLock getMasterLock()
+  {
+    return mMasterLock;
+  }
+  
+  @Override
+  public AtomicReference<Object> getCurrentTask()
+  {
+    return mCurrentTask;
+  }
+
+  /**
+   * Executes a portion of code while holding the master lock.
+   * 
+   * @param pCallable
+   *          callable to execute
+   * @return return of the callable
+   */
+  public <R> R lock(Callable<R> pCallable)
+  {
+    getMasterLock().lock();
+    try
+    {
+      return pCallable.call();
+    }
+    catch (Exception e)
+    {
+      String lMessage = "Exception wile executing locked code";
+      severe(lMessage);
+      throw new RuntimeException(lMessage, e);
+    }
+    finally
+    {
+      if (getMasterLock().isHeldByCurrentThread())
+        getMasterLock().unlock();
+    }
   }
 
   @Override
@@ -270,8 +317,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   @Override
   public boolean open()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsOpen = true;
 
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
@@ -294,14 +340,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsOpen;
-    }
+    });
   }
 
   @Override
   public boolean close()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsClosed = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -325,14 +370,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       mStackRecyclerManager.clearAll();
 
       return lIsClosed;
-    }
+    });
   }
 
   @Override
   public boolean start()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsStarted = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -354,14 +398,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsStarted;
-    }
+    });
   }
 
   @Override
   public boolean stop()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsStopped = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -383,7 +426,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsStopped;
-    }
+    });
   }
 
   boolean isActiveDevice(final Object lDevice)
@@ -490,8 +533,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   @Override
   public FutureBooleanList playQueue(Q pQueue)
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       GarbageCollector.trigger();
 
       getPlayedQueueVariable().set(pQueue);
@@ -522,7 +564,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lFutureBooleanList;
-    }
+    });
   }
 
   @Override
@@ -532,11 +574,10 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                       ExecutionException,
                                                       TimeoutException
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       final FutureBooleanList lPlayQueue = playQueue(pQueue);
       return lPlayQueue.get(pTimeOut, pTimeUnit);
-    }
+    });
   }
 
   @Override
@@ -546,8 +587,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                                ExecutionException,
                                                                TimeoutException
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
 
       int lNumberOfDetectionArmDevices =
                                        getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
@@ -616,7 +656,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
         }
 
       return lBoolean;
-    }
+    });
   }
 
   @Override

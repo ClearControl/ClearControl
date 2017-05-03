@@ -137,13 +137,32 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   }
 
   @Override
+  public boolean startTask()
+  {
+    if (getLightSheetMicroscope().getCurrentTask().get() != null)
+    {
+      warning("Another task (%s) is already running, please stop it first.",
+              getLightSheetMicroscope().getCurrentTask());
+      return false;
+    }
+    getLightSheetMicroscope().getCurrentTask().set(this);
+    return super.startTask();
+  }
+
+  @Override
   public void run()
   {
-    mProgressVariable.set(0.0);
-    calibrate();
-    mProgressVariable.set(1.0);
-    info("############################################## Calibration done");
-
+    try
+    {
+      mProgressVariable.set(0.0);
+      calibrate();
+      mProgressVariable.set(1.0);
+      info("############################################## Calibration done");
+    }
+    finally
+    {
+      getLightSheetMicroscope().getCurrentTask().set(null);
+    }
   }
 
   /**
@@ -158,25 +177,25 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     if (getCalibrateZVariable().get() && !calibrateZ(13))
       return false;
 
-    if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+    if (isStopRequested())
       return false;/**/
 
     if (getCalibrateAVariable().get() && !calibrateA(32, 4))
       return false;
 
-    if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+    if (isStopRequested())
       return false;/**/
 
     if (getCalibrateXYVariable().get() && !calibrateXY(3))
       return false;
 
-    if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+    if (isStopRequested())
       return false;/**/
 
     if (getCalibratePVariable().get() && !calibrateP())
       return false;
 
-    if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+    if (isStopRequested())
       return false;/**/
 
     /*if (!calibrateW(32))
@@ -187,14 +206,25 @@ public class Calibrator extends TaskDevice implements LoggingInterface
         && getCalibrateZVariable().get() && !calibrateZ(64))
       return false;
 
-    if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+    if (isStopRequested())
       return false;/**/
 
     if (getCalibratePVariable().get() && !calibrateP())
-      if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
+      if (isStopRequested())
         return false;/**/
 
     return true;
+  }
+
+  /**
+   * Returns true if calibration should be stopped immediately.
+   * 
+   * @return true for stopping, false otherwise.
+   */
+  public boolean isStopRequested()
+  {
+    return ScriptingEngine.isCancelRequestedStatic() || !isRunning()
+           || getStopSignalVariable().get();
   }
 
   /**
@@ -206,7 +236,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    */
   public boolean calibrateZ(int pNumberOfSamples)
   {
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < mNumberOfLightSheetDevices
+                    && !isStopRequested(); l++)
       if (getCalibrateLightSheetOnOff(l).get())
       {
         int lIteration = 0;
@@ -228,7 +259,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
             return false;
 
         }
-        while (lError >= 0.02 && lIteration++ < cMaxIterations);
+        while (lError >= 0.02 && lIteration++ < cMaxIterations
+               && !isStopRequested());
         info("############################################## Done ");
         mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
@@ -246,7 +278,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    */
   public boolean calibrateA(int pNumberOfAngles, int pNumberOfRepeats)
   {
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < mNumberOfLightSheetDevices
+                    && !isStopRequested(); l++)
       if (getCalibrateLightSheetOnOff(l).get())
       {
         int lIteration = 0;
@@ -261,7 +294,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
             return false;
 
         }
-        while (lError >= 0.5 && lIteration++ < cMaxIterations);
+        while (lError >= 0.5 && lIteration++ < cMaxIterations
+               && !isStopRequested());
         info("############################################## Done ");
         mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
@@ -277,7 +311,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    */
   public boolean calibrateXY(int pNumberOfPoints)
   {
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < mNumberOfLightSheetDevices
+                    && !isStopRequested(); l++)
       if (getCalibrateLightSheetOnOff(l).get())
       {
         int lIteration = 0;
@@ -292,7 +327,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
             return false;
 
         }
-        while (lError >= 0.05 && lIteration++ < cMaxIterations);
+        while (lError >= 0.05 && lIteration++ < cMaxIterations
+               && !isStopRequested());
         info("############################################## Done ");
         mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
@@ -320,7 +356,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
       mProgressVariable.set((1.0 * lIteration) / cMaxIterations);
     }
-    while (lError >= 0.04 && lIteration++ < cMaxIterations);
+    while (lError >= 0.04 && lIteration++ < cMaxIterations
+           && !isStopRequested());
     info("############################################## Done ");
 
     return true;
@@ -338,7 +375,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public boolean calibrateHP(int pNumberOfSamplesH,
                              int pNumberOfSamplesP)
   {
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < mNumberOfLightSheetDevices
+                    && !isStopRequested(); l++)
       if (getCalibrateLightSheetOnOff(l).get())
       {
         calibrateHP(l, 0, pNumberOfSamplesH, pNumberOfSamplesP);

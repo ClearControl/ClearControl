@@ -78,9 +78,11 @@ public class LightSheetDemo
     lLightSheet.getHeightVariable().set(100.0);
     lLightSheet.getImageHeightVariable().set(512L);
     lLightSheet.getEffectiveExposureInSecondsVariable().set(0.005);
+    
 
     LightSheetSignalGeneratorQueue lQueue =
                                           pSignalGeneratorDevice.requestQueue();
+    lQueue.addLightSheetQueue(lLightSheet.requestQueue());
 
     final ScoreInterface lStagingScore = lQueue.getStagingScore();
 

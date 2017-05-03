@@ -1,6 +1,6 @@
 package clearcontrol.devices.optomech.opticalswitch.gui;
 
-import clearcontrol.core.device.switches.gui.jfx.SwitchingDevicePanel;
+import clearcontrol.core.device.switches.gui.SwitchingDevicePanel;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 
 /**

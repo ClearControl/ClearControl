@@ -198,8 +198,7 @@ public class CalibrationZ implements LoggingInterface
           lPlots[d].ensureUpToDate();
         }
 
-      if (ScriptingEngine.isCancelRequestedStatic()
-          || !mCalibrator.isRunning())
+      if (mCalibrator.isStopRequested())
         return false;
 
     }
@@ -279,6 +278,7 @@ public class CalibrationZ implements LoggingInterface
       lQueue.clearQueue();
       // lQueue.zero();
 
+      lQueue.setFullROI();
       lQueue.setExp(0.05);
 
       lQueue.setI(pLightSheetIndex);
@@ -480,6 +480,8 @@ public class CalibrationZ implements LoggingInterface
    */
   public double apply(int pLightSheetIndex, boolean pAdjustDetectionZ)
   {
+    if (mCalibrator.isStopRequested())
+      return Double.NaN;
 
     double lSlope = 0, lOffset = 0;
 

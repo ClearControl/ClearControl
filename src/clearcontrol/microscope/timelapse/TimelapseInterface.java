@@ -25,6 +25,16 @@ public interface TimelapseInterface extends
 {
 
   /**
+   * Starts timelapse
+   */
+  void startTimelapse();
+
+  /**
+   * Stops timelapse
+   */
+  void stopTimelapse();
+  
+  /**
    * Acquires a single timepoint
    */
   void acquire();
@@ -141,5 +151,7 @@ public interface TimelapseInterface extends
    * @return dataset name postfix
    */
   Variable<String> getDataSetNamePostfixVariable();
+
+
 
 }

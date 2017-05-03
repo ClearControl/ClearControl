@@ -24,6 +24,7 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
+import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -148,24 +149,19 @@ public class CalibrationW
       if (!lPlayQueueAndWait)
         return null;
 
-      final StackInterface lStackInterface =
-                                           mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
-                                                                .get();
+      final OffHeapPlanarStack lStack =
+                                      (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
+                                                                                .get();
 
-      OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> lImage =
-                                                                     (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStackInterface.getImage();
-
-      System.out.println("Image: " + lImage);
-
-      long lWidth = lImage.dimension(0);
-      long lHeight = lImage.dimension(1);
+      long lWidth = lStack.getWidth();
+      long lHeight = lStack.getHeight();
 
       System.out.format("Image: width=%d, height=%d \n",
                         lWidth,
                         lHeight);
 
       double[] lAverageIntensities =
-                                   ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lImage);
+                                   ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lStack);
 
       System.out.format("Image: average intensities: \n");
 

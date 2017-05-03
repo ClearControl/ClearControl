@@ -63,8 +63,8 @@ public class TimelapseToolbar extends CustomGridPane
       lStartTimelapse.setMaxWidth(Double.MAX_VALUE);
       GridPane.setColumnSpan(lStartTimelapse, 2);
       lStartTimelapse.setOnAction((e) -> {
-        pTimelapseInterface.getStartSignalVariable()
-                           .setEdgeAsync(false, true);
+        pTimelapseInterface.startTimelapse();
+        
       });
 
       Button lStopTimelapse = new Button("Stop Timelapse");
@@ -72,8 +72,7 @@ public class TimelapseToolbar extends CustomGridPane
       lStopTimelapse.setMaxWidth(Double.MAX_VALUE);
       GridPane.setColumnSpan(lStopTimelapse, 2);
       lStopTimelapse.setOnAction((e) -> {
-        pTimelapseInterface.getStopSignalVariable()
-                           .setEdgeAsync(false, true);
+        pTimelapseInterface.stopTimelapse();
       });
 
       Lcd lTimeLapseLcdDisplay =

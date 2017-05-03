@@ -12,6 +12,21 @@ public interface LightSheetMicroscopeParameterInterface
 {
 
   /**
+   * Sets full ROI for all cameras.
+   */
+  void setFullROI();
+
+  /**
+   * Sets the image centered ROI for all cameras.
+   * 
+   * @param pWidth
+   *          width
+   * @param pHeight
+   *          height
+   */
+  void setCenteredROI(int pWidth, int pHeight);
+
+  /**
    * Sets exposure in seconds
    * 
    * @param pExposureISeconds

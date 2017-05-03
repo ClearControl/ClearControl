@@ -261,6 +261,40 @@ public class LightSheetMicroscopeQueue extends
   }
 
   @Override
+  public void setFullROI()
+  {
+
+    int lNumberOfStackCameraDevices = getNumberOfStackCameras();
+
+    for (int c = 0; c < lNumberOfStackCameraDevices; c++)
+    {
+      getStackCameraDeviceQueue(c).getStackWidthVariable()
+                                  .set(getStackCameraDeviceQueue(c).getStackCamera()
+                                                                   .getMaxWidthVariable()
+                                                                   .get());
+      getStackCameraDeviceQueue(c).getStackHeightVariable()
+                                  .set(getStackCameraDeviceQueue(c).getStackCamera()
+                                                                   .getMaxHeightVariable()
+                                                                   .get());
+    }
+  };
+
+  @Override
+  public void setCenteredROI(int pWidth, int pHeight)
+  {
+
+    int lNumberOfStackCameraDevices = getNumberOfStackCameras();
+
+    for (int c = 0; c < lNumberOfStackCameraDevices; c++)
+    {
+      getStackCameraDeviceQueue(c).getStackWidthVariable()
+                                  .set((long) pWidth);
+      getStackCameraDeviceQueue(c).getStackHeightVariable()
+                                  .set((long) pHeight);
+    }
+  };
+
+  @Override
   public void setExp(double pExpsoureISeconds)
   {
     int lNumberOfSwitchableDevices =

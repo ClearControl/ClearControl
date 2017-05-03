@@ -4,6 +4,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
+import java.util.stream.IntStream;
+
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -17,15 +19,20 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+/**
+ * Image analysis utils
+ *
+ * @author royer
+ */
 public class ImageAnalysisUtils
 {
 
-  public static double[] computePercentileIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage,
+  public static double[] computePercentileIntensityPerPlane(OffHeapPlanarStack pStack,
                                                             int pPercentile)
   {
-    int lNumberOfPlanes = pImage.numSlices();
+    int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
     DescriptiveStatistics lDescriptiveStatistics =
                                                  new DescriptiveStatistics();
     double[] lPercentileArray = new double[lNumberOfPlanes];
@@ -49,11 +56,11 @@ public class ImageAnalysisUtils
     return lPercentileArray;
   }
 
-  public static double[] computeImageAverageIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+  public static double[] computeImageAverageIntensityPerPlane(OffHeapPlanarStack pStack)
   {
-    int lNumberOfPlanes = pImage.numSlices();
+    int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
     double[] lIntensityArray = new double[lNumberOfPlanes];
     for (int p = 0; p < lNumberOfPlanes; p++)
     {
@@ -134,8 +141,9 @@ public class ImageAnalysisUtils
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
     double[] lIntensityArray = new double[lNumberOfPlanes];
-    for (int p = 0; p < lNumberOfPlanes; p++)
-    {
+
+    IntStream.range(0, lNumberOfPlanes).parallel().forEach((p) -> {
+
       ContiguousMemoryInterface lContiguousMemoryInterface =
                                                            lFragmentedMemory.get(p);
       ContiguousBuffer lBuffer =
@@ -161,16 +169,17 @@ public class ImageAnalysisUtils
         lPreviousValue = 0.9 * lPreviousValue + 0.1 * lValue;
       }
       lIntensityArray[p] = lSumOfPowers;
-    }
+
+    });
 
     return lIntensityArray;
   }
 
-  public static double computeImageSumIntensity(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+  public static double computeImageSumIntensity(OffHeapPlanarStack pStack)
   {
-    int lNumberOfPlanes = pImage.numSlices();
+    int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
     double lSumIntensity = 0;
     for (int p = 0; p < lNumberOfPlanes; p++)
     {
@@ -188,15 +197,15 @@ public class ImageAnalysisUtils
     return lSumIntensity;
   }
 
-  public static void cleanWithMin(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+  public static void cleanWithMin(OffHeapPlanarStack pStack)
   {
-    int lNumberOfPlanes = pImage.numSlices();
-    int lWidth = (int) pImage.max(0);
-    int lHeight = (int) pImage.max(1);
+    int lNumberOfPlanes = (int) pStack.getDepth();
+    int lWidth = (int) (int) pStack.getWidth();
+    int lHeight = (int) (int) pStack.getHeight();
     int lLength = lWidth * lHeight;
 
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
     for (int p = 0; p < lNumberOfPlanes; p++)
     {
       ContiguousMemoryInterface lBuffer = lFragmentedMemory.get(p);
@@ -224,17 +233,17 @@ public class ImageAnalysisUtils
     return (pA > pB) ? pB : pA;
   }
 
-  public static Vector2D[] findCOMOfBrightestPointsForEachPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+  public static Vector2D[] findCOMOfBrightestPointsForEachPlane(OffHeapPlanarStack pStack)
   {
-    int lNumberOfPlanes = pImage.numSlices();
+    int lNumberOfPlanes = (int) pStack.getDepth();
 
     Vector2D[] lPoints = new Vector2D[lNumberOfPlanes];
 
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
 
-    long lWidth = pImage.dimension(0);
-    long lHeight = pImage.dimension(1);
+    int lWidth = (int) (int) pStack.getWidth();
+    int lHeight = (int) (int) pStack.getHeight();
 
     TDoubleArrayList lXList = new TDoubleArrayList();
     TDoubleArrayList lYList = new TDoubleArrayList();
