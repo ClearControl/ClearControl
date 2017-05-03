@@ -49,8 +49,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final BoundedVariable<Double> mExposureVariableInSeconds;
   private final Variable<Boolean> mTriggerOnChangeVariable,
       mUseCurrentAcquisitionStateVariable;
-  private final Variable<Boolean> mControlIlluminationVariable,
-      mControlDetectionVariable;
+  private final Variable<Boolean> mControlIlluminationZVariable,
+      mControlDetectionZVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
 
   private final Variable<Long> mAcquisitionCounterVariable;
@@ -82,7 +82,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
     @SuppressWarnings("rawtypes")
     VariableSetListener lListener = (o, n) -> {
-      if (!o.equals(n))
+      if (o != n || (o == null && n != null) || !o.equals(n))
         mUpdate = true;
     };
 
@@ -114,12 +114,12 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                        .getZVariable()
                                                        .getMaxVariable();
 
-    mControlDetectionVariable =
-                              new Variable<Boolean>("Control Illumination",
-                                                    false);
-    mControlIlluminationVariable =
-                                 new Variable<Boolean>("Control Detection",
-                                                       false);
+    mControlDetectionZVariable =
+                               new Variable<Boolean>("Control Illumination",
+                                                     false);
+    mControlIlluminationZVariable =
+                                  new Variable<Boolean>("Control Detection",
+                                                        false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
@@ -134,22 +134,23 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     lMinVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMinVariable());
     lMaxVariable.sendUpdatesTo(m2DAcquisitionZVariable.getMaxVariable());
 
-    mExposureVariableInSeconds.addSetListener(lListener);
-    mTriggerOnChangeVariable.addSetListener(lListener);
+    getExposureVariable().addSetListener(lListener);
+    getTriggerOnChangeVariable().addSetListener(lListener);
     getLoopPeriodVariable().addSetListener(lListener);
-    m2DAcquisitionZVariable.addSetListener(lListener);
+    get2DAcquisitionZVariable().addSetListener(lListener);
+    getControlDetectionZVariable().addSetListener(lListener);
+    getControlIlluminationZVariable().addSetListener(lListener);
 
     getLoopPeriodVariable().set(1.0);
     getExposureVariable().set(0.010);
 
-    
     mMicroscopeChangeListener = (o) -> {
-      info("Received request to update queue from:" + o.toString());
+      // info("Received request to update queue from:" + o.toString());
 
       mUpdate = true;
     };
     mAcquisitionStateChangeListener = (o) -> {
-      info("Received request to update queue from:" + o.toString());
+      // info("Received request to update queue from:" + o.toString());
       mUpdate = true;
     };
   }
@@ -226,7 +227,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
               mQueue.setC(c, true);
-              if (mControlDetectionVariable.get())
+              if (mControlDetectionZVariable.get())
                 mQueue.setDZ(c, lCurrentZ);
             }
             mQueue.setExp(mExposureVariableInSeconds.get()
@@ -235,7 +236,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int l = 0; l < getNumberOfLightsSheets(); l++)
             {
               boolean lIsOn = mQueue.getI(l);
-              if (lIsOn && mControlIlluminationVariable.get())
+              if (lIsOn && mControlIlluminationZVariable.get())
                 mQueue.setIZ(l, lCurrentZ);
             }
 
@@ -443,7 +444,6 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     return lNumberOfLightsSheets;
   }
 
- 
   /**
    * Returns the variable that holds the flag that decides whether to control
    * the detection z focus using the z value from this interactive acquisition
@@ -451,9 +451,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    * 
    * @return control illumination variable
    */
-  public Variable<Boolean> getControlDetectionVariable()
+  public Variable<Boolean> getControlDetectionZVariable()
   {
-    return mControlDetectionVariable;
+    return mControlDetectionZVariable;
   }
 
   /**
@@ -463,9 +463,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    * 
    * @return control illumination variable
    */
-  public Variable<Boolean> getControlIlluminationVariable()
+  public Variable<Boolean> getControlIlluminationZVariable()
   {
-    return mControlIlluminationVariable;
+    return mControlIlluminationZVariable;
   }
 
   /**
@@ -491,6 +491,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
   /**
    * Returns current acquisition mode
+   * 
    * @return current acquisition mode
    */
   public InteractiveAcquisitionModes getCurrentAcquisitionMode()
@@ -500,7 +501,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
   /**
    * Sets current acquisition mode
-   * @param pNewAcquisitionMode  new acquisition mode
+   * 
+   * @param pNewAcquisitionMode
+   *          new acquisition mode
    */
   public void setCurrentAcquisitionMode(InteractiveAcquisitionModes pNewAcquisitionMode)
   {

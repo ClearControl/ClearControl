@@ -22,127 +22,132 @@ public class LightSheetPanel extends CustomVariablePane
   {
     super();
 
-    addTab("DOFs");
-
-    addSliderForVariable("X :",
-                         pLightSheetInterface.getXVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Y :",
-                         pLightSheetInterface.getYVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Z :",
-                         pLightSheetInterface.getZVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Alpha :",
-                         pLightSheetInterface.getAlphaInDegreesVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Beta :",
-                         pLightSheetInterface.getBetaInDegreesVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Width :",
-                         pLightSheetInterface.getWidthVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Height :",
-                         pLightSheetInterface.getHeightVariable(),
-                         null).setUpdateIfChanging(true);
-
-    addSliderForVariable("Power :",
-                         pLightSheetInterface.getPowerVariable(),
-                         null).setUpdateIfChanging(true);
-
-    OnOffArrayPane lLaserOnOffArray = addOnOffArray("Laser :");
-
-    int lNumberOfLaserDigitalControls =
-                                      pLightSheetInterface.getNumberOfLaserDigitalControls();
-    for (int l = 0; l < lNumberOfLaserDigitalControls; l++)
     {
-      lLaserOnOffArray.addSwitch("L" + l,
-                                 pLightSheetInterface.getLaserOnOffArrayVariable(l));
+      addTab("DOFs");
+
+      addSliderForVariable("X :",
+                           pLightSheetInterface.getXVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Y :",
+                           pLightSheetInterface.getYVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Z :",
+                           pLightSheetInterface.getZVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Alpha :",
+                           pLightSheetInterface.getAlphaInDegreesVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Beta :",
+                           pLightSheetInterface.getBetaInDegreesVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Width :",
+                           pLightSheetInterface.getWidthVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Height :",
+                           pLightSheetInterface.getHeightVariable(),
+                           null).setUpdateIfChanging(true);
+
+      addSliderForVariable("Power :",
+                           pLightSheetInterface.getPowerVariable(),
+                           null).setUpdateIfChanging(true);
+
+      OnOffArrayPane lLaserOnOffArray = addOnOffArray("Laser :");
+
+      int lNumberOfLaserDigitalControls =
+                                        pLightSheetInterface.getNumberOfLaserDigitalControls();
+      for (int l = 0; l < lNumberOfLaserDigitalControls; l++)
+      {
+        lLaserOnOffArray.addSwitch("L" + l,
+                                   pLightSheetInterface.getLaserOnOffArrayVariable(l));
+      }
     }
 
-    addTab("Advanced");
+    {
+      addTab("Functions");
 
-    addSliderForVariable("EffectiveExposure :",
-                         pLightSheetInterface.getEffectiveExposureInSecondsVariable(),
-                         1e-6,
-                         1,
-                         0.001,
-                         0.1).setUpdateIfChanging(true);
+      addFunctionPane("X function",
+                      pLightSheetInterface.getXFunction());
+      addFunctionPane("Y function",
+                      pLightSheetInterface.getYFunction());
+      addFunctionPane("Z function",
+                      pLightSheetInterface.getZFunction());
 
-    /*addSliderForVariable("LineExposure :",
-                         pLightSheetInterface.getLineExposureInMicrosecondsVariable(),
-                         1.0,
-                         1000000.0,
-                         1.0,
-                         500000.0).setUpdateIfChanging(true);/**/
+      addFunctionPane("Alpha function",
+                      pLightSheetInterface.getAlphaFunction());
+      addFunctionPane("Beta function",
+                      pLightSheetInterface.getBetaFunction());
 
-    addSliderForVariable("Overscan :",
-                         pLightSheetInterface.getOverScanVariable(),
-                         0.0,
-                         2.0,
-                         0.01,
-                         0.1).setUpdateIfChanging(true);
+      addFunctionPane("Width function",
+                      pLightSheetInterface.getWidthFunction());
+      addFunctionPane("Height function",
+                      pLightSheetInterface.getHeightFunction());
 
-    addSliderForVariable("Readout Time :",
-                         pLightSheetInterface.getReadoutTimeInMicrosecondsPerLineVariable(),
-                         0.0,
-                         10.0,
-                         0.0,
-                         1.0).setUpdateIfChanging(true);
+      addFunctionPane("Power function",
+                      pLightSheetInterface.getPowerFunction());
+    }
 
-    addTab("Functions");
+    {
+      addTab("Bounds");
 
-    addFunctionPane("X function",
-                    pLightSheetInterface.getXFunction());
-    addFunctionPane("Y function",
-                    pLightSheetInterface.getYFunction());
-    addFunctionPane("Z function",
-                    pLightSheetInterface.getZFunction());
+      addBoundedVariable("X :", pLightSheetInterface.getXVariable());
 
-    addFunctionPane("Alpha function",
-                    pLightSheetInterface.getAlphaFunction());
-    addFunctionPane("Beta function",
-                    pLightSheetInterface.getBetaFunction());
+      addBoundedVariable("Y :", pLightSheetInterface.getYVariable());
 
-    addFunctionPane("Width function",
-                    pLightSheetInterface.getWidthFunction());
-    addFunctionPane("Height function",
-                    pLightSheetInterface.getHeightFunction());
+      addBoundedVariable("Z :", pLightSheetInterface.getZVariable());
 
-    addFunctionPane("Power function",
-                    pLightSheetInterface.getPowerFunction());
+      addBoundedVariable("Alpha :",
+                         pLightSheetInterface.getAlphaInDegreesVariable());
 
-    addTab("Bounds");
+      addBoundedVariable("Beta :",
+                         pLightSheetInterface.getBetaInDegreesVariable());
 
-    addBoundedVariable("X :",
-                           pLightSheetInterface.getXVariable());
+      addBoundedVariable("Width :",
+                         pLightSheetInterface.getWidthVariable());
 
-    addBoundedVariable("Y :",
-                           pLightSheetInterface.getYVariable());
+      addBoundedVariable("Height :",
+                         pLightSheetInterface.getHeightVariable());
 
-    addBoundedVariable("Z :",
-                           pLightSheetInterface.getZVariable());
+      addBoundedVariable("Power :",
+                         pLightSheetInterface.getPowerVariable());
+    }
 
-    addBoundedVariable("Alpha :",
-                           pLightSheetInterface.getAlphaInDegreesVariable());
+    {
+      addTab("Advanced");
 
-    addBoundedVariable("Beta :",
-                           pLightSheetInterface.getBetaInDegreesVariable());
+      addSliderForVariable("EffectiveExposure :",
+                           pLightSheetInterface.getEffectiveExposureInSecondsVariable(),
+                           1e-6,
+                           1,
+                           0.001,
+                           0.1).setUpdateIfChanging(true);
 
-    addBoundedVariable("Width :",
-                           pLightSheetInterface.getWidthVariable());
+      /*addSliderForVariable("LineExposure :",
+                           pLightSheetInterface.getLineExposureInMicrosecondsVariable(),
+                           1.0,
+                           1000000.0,
+                           1.0,
+                           500000.0).setUpdateIfChanging(true);/**/
 
-    addBoundedVariable("Height :",
-                           pLightSheetInterface.getHeightVariable());
+      addSliderForVariable("Overscan :",
+                           pLightSheetInterface.getOverScanVariable(),
+                           0.0,
+                           2.0,
+                           0.01,
+                           0.1).setUpdateIfChanging(true);
 
-    addBoundedVariable("Power :",
-                           pLightSheetInterface.getPowerVariable());
+      addSliderForVariable("Readout Time :",
+                           pLightSheetInterface.getReadoutTimeInMicrosecondsPerLineVariable(),
+                           0.0,
+                           10.0,
+                           0.0,
+                           1.0).setUpdateIfChanging(true);
+    }
 
   }
 

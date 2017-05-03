@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
@@ -16,6 +14,8 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
+
+import org.junit.Test;
 
 /**
  * Simulated lightsheet microscope demo
@@ -58,15 +58,18 @@ public class SimulatedLightSheetMicroscopeDemo
     for (ClearCLDevice lClearCLDevice : lClearCL.getAllDevices())
       System.out.println(lClearCLDevice.getName());
 
-    MachineConfiguration lMachineConfiguration = MachineConfiguration.getCurrentMachineConfiguration();
-    
+    MachineConfiguration lMachineConfiguration =
+                                               MachineConfiguration.getCurrentMachineConfiguration();
+
     ClearCLContext lSimulationContext =
                                       getClearCLDeviceByName(lClearCL,
-                                                             lMachineConfiguration.getStringProperty("clearcl.device.simulation", "HD"));
+                                                             lMachineConfiguration.getStringProperty("clearcl.device.simulation",
+                                                                                                     "HD"));
 
     ClearCLContext lMicroscopeContext =
                                       getClearCLDeviceByName(lClearCL,
-                                                             lMachineConfiguration.getStringProperty("clearcl.device.fusion", "HD"));
+                                                             lMachineConfiguration.getStringProperty("clearcl.device.fusion",
+                                                                                                     "HD"));
 
     LightSheetMicroscopeSimulationDevice lSimulatorDevice =
                                                           SimulationUtils.getSimulatorDevice(lSimulationContext,
@@ -84,9 +87,7 @@ public class SimulatedLightSheetMicroscopeDemo
                                                                                 lMicroscopeContext,
                                                                                 lMaxNumberOfStacks,
                                                                                 1);
-    
-   
-    
+
     lMicroscope.addSimulatedDevices(lDummySimulation,
                                     true,
                                     true,

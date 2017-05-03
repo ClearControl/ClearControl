@@ -6,7 +6,6 @@ import clearcontrol.core.device.change.ChangeListener;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
  * Base class extended by classes that need both name and change listener

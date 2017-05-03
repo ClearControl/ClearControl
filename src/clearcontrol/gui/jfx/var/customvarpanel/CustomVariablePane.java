@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
@@ -19,6 +18,7 @@ import clearcontrol.gui.jfx.var.combo.IntComboBoxVariable;
 import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
 
 /**
@@ -159,6 +159,31 @@ public class CustomVariablePane extends TabPane
   }
 
   /**
+   * Adds a number text field for the given variable
+   * 
+   * @param pTextFieldLabel
+   *          text field label
+   * @param pVariable
+   *          variable
+   * @return number text field
+   */
+  public <T extends Number> NumberVariableTextField<T> addNumberTextFieldForVariable(String pTextFieldLabel,
+                                                                                     BoundedVariable<T> pVariable)
+  {
+    final NumberVariableTextField<T> lNumberTextField =
+                                                      new NumberVariableTextField<T>(pTextFieldLabel,
+                                                                                     pVariable);
+
+    int lCursor = mCursor++;
+    mCurrentTabGridPane.add(lNumberTextField.getLabel(), 0, lCursor);
+    mCurrentTabGridPane.add(lNumberTextField.getTextField(),
+                            1,
+                            lCursor);
+
+    return lNumberTextField;
+  }
+
+  /**
    * Adds a slider for a given variable, min, max, granularity, and tick spacing
    * 
    * @param pVariable
@@ -222,7 +247,7 @@ public class CustomVariablePane extends TabPane
   }
 
   /**
-   * Adds aslider for a given slider name, variable, min, max, granularity and
+   * Adds a slider for a given slider name, variable, min, max, granularity and
    * tick spacing
    * 
    * @param pSliderName
@@ -375,7 +400,7 @@ public class CustomVariablePane extends TabPane
    *          bounded variable
    */
   public void addBoundedVariable(String pName,
-                                     BoundedVariable<Number> pBoundedVariable)
+                                 BoundedVariable<Number> pBoundedVariable)
   {
 
     BoundedVariablePane lBoundedVariablePane =
@@ -385,17 +410,12 @@ public class CustomVariablePane extends TabPane
     Label lLabel = new Label(pName);
 
     int lCursor = mCursor++;
-    mCurrentTabGridPane.add(lLabel,
-                            0,
-                            lCursor);
-    mCurrentTabGridPane.add(lBoundedVariablePane,
-                            1,
-                            lCursor);
+    mCurrentTabGridPane.add(lLabel, 0, lCursor);
+    mCurrentTabGridPane.add(lBoundedVariablePane, 1, lCursor);
     GridPane.setHgrow(lBoundedVariablePane, Priority.ALWAYS);
     GridPane.setColumnSpan(lBoundedVariablePane, 2);
   }
-  
-  
+
   /**
    * Adds a int combo box pane
    * 
@@ -405,21 +425,21 @@ public class CustomVariablePane extends TabPane
    *          bounded variable
    */
   public void addIntComboBox(String pName,
-                                     Variable<Integer> pBoundedVariable, int pMin, int pMax)
+                             Variable<Integer> pBoundedVariable,
+                             int pMin,
+                             int pMax)
   {
 
     IntComboBoxVariable lIntComboBoxVariable =
-                                             new IntComboBoxVariable(pBoundedVariable,pMin,pMax);
+                                             new IntComboBoxVariable(pBoundedVariable,
+                                                                     pMin,
+                                                                     pMax);
 
     Label lLabel = new Label(pName);
 
     int lCursor = mCursor++;
-    mCurrentTabGridPane.add(lLabel,
-                            0,
-                            lCursor);
-    mCurrentTabGridPane.add(lIntComboBoxVariable,
-                            1,
-                            lCursor);
+    mCurrentTabGridPane.add(lLabel, 0, lCursor);
+    mCurrentTabGridPane.add(lIntComboBoxVariable, 1, lCursor);
     GridPane.setHgrow(lIntComboBoxVariable, Priority.ALWAYS);
     GridPane.setColumnSpan(lIntComboBoxVariable, 2);
   }

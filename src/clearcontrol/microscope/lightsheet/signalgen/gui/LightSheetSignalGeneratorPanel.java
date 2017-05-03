@@ -1,8 +1,9 @@
 package clearcontrol.microscope.lightsheet.signalgen.gui;
 
+import javafx.scene.control.CheckBox;
+
 import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
-import javafx.scene.control.CheckBox;
 
 /**
  * Lightsheet signal generator panel

@@ -1,6 +1,5 @@
 package clearcontrol.microscope.lightsheet.calibrator;
 
-import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
 import java.io.File;
@@ -32,7 +31,7 @@ import org.ejml.simple.SimpleMatrix;
 public class Calibrator extends TaskDevice implements LoggingInterface
 {
 
-  private static final int cMaxIterations = 5;
+  private static final int cMaxIterations = 3;
 
   private File mCalibrationFolder =
                                   MachineConfiguration.getCurrentMachineConfiguration()
@@ -53,6 +52,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   @SuppressWarnings("unused")
   private int mNumberOfDetectionArmDevices;
   private int mNumberOfLightSheetDevices;
+
+  private final Variable<Boolean>[] mCalibrateLightSheetOnOff;
 
   private final Variable<Boolean> mCalibrateZVariable =
                                                       new Variable<Boolean>("CalibrateZ",
@@ -89,6 +90,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
    * @param pLightSheetMicroscope
    *          lighthseet microscope
    */
+  @SuppressWarnings("unchecked")
   public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
   {
     super("Calibrator");
@@ -113,6 +115,15 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     mProgressVariable = new Variable<Double>(getName() + "Progress",
                                              0.0);
 
+    mCalibrateLightSheetOnOff =
+                              new Variable[mNumberOfLightSheetDevices];
+    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    {
+      mCalibrateLightSheetOnOff[l] =
+                                   new Variable<Boolean>("CalibrateLightSheet"
+                                                         + l, true);
+    }
+
   }
 
   /**
@@ -131,7 +142,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
     mProgressVariable.set(0.0);
     calibrate();
     mProgressVariable.set(1.0);
-    System.out.println("############################################## Calibration done");
+    info("############################################## Calibration done");
 
   }
 
@@ -196,29 +207,31 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public boolean calibrateZ(int pNumberOfSamples)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
-    {
-      int lIteration = 0;
-      double lError = Double.POSITIVE_INFINITY;
-      do
+      if (getCalibrateLightSheetOnOff(l).get())
       {
-        double lSearchAmplitude = 1.0
-                                  / (pow(2, max(0, lIteration - 1)));
-        lError = calibrateZ(l,
+        int lIteration = 0;
+        double lError = Double.POSITIVE_INFINITY;
+        do
+        {
+          double lSearchAmplitude = 1.0 / (pow(2, 1 + lIteration));
+          lError =
+                 calibrateZ(l,
                             pNumberOfSamples,
                             pNumberOfSamples,
                             lIteration > 0,
                             lSearchAmplitude,
                             l == 0);
-        System.out.println("############################################## Error = "
-                           + lError);
-        if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
-          return false;
+          info("############################################## Error = "
+               + lError);
+          if (ScriptingEngine.isCancelRequestedStatic()
+              || !isRunning())
+            return false;
 
+        }
+        while (lError >= 0.02 && lIteration++ < cMaxIterations);
+        info("############################################## Done ");
+        mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
-      while (lError >= 0.02 && lIteration++ < cMaxIterations);
-      System.out.println("############################################## Done ");
-      mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
-    }
     return true;
   }
 
@@ -234,22 +247,24 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public boolean calibrateA(int pNumberOfAngles, int pNumberOfRepeats)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
-    {
-      int lIteration = 0;
-      double lError = Double.POSITIVE_INFINITY;
-      do
+      if (getCalibrateLightSheetOnOff(l).get())
       {
-        lError = calibrateA(l, pNumberOfAngles, pNumberOfRepeats);
-        System.out.println("############################################## Error = "
-                           + lError);
-        if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
-          return false;
+        int lIteration = 0;
+        double lError = Double.POSITIVE_INFINITY;
+        do
+        {
+          lError = calibrateA(l, pNumberOfAngles, pNumberOfRepeats);
+          info("############################################## Error = "
+               + lError);
+          if (ScriptingEngine.isCancelRequestedStatic()
+              || !isRunning())
+            return false;
 
+        }
+        while (lError >= 0.5 && lIteration++ < cMaxIterations);
+        info("############################################## Done ");
+        mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
-      while (lError >= 0.5 && lIteration++ < cMaxIterations);
-      System.out.println("############################################## Done ");
-      mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
-    }
     return true;
   }
 
@@ -263,22 +278,24 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public boolean calibrateXY(int pNumberOfPoints)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
-    {
-      int lIteration = 0;
-      double lError = Double.POSITIVE_INFINITY;
-      do
+      if (getCalibrateLightSheetOnOff(l).get())
       {
-        lError = calibrateXY(l, 0, pNumberOfPoints);
-        System.out.println("############################################## Error = "
-                           + lError);
-        if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
-          return false;
+        int lIteration = 0;
+        double lError = Double.POSITIVE_INFINITY;
+        do
+        {
+          lError = calibrateXY(l, 0, pNumberOfPoints);
+          info("############################################## Error = "
+               + lError);
+          if (ScriptingEngine.isCancelRequestedStatic()
+              || !isRunning())
+            return false;
 
+        }
+        while (lError >= 0.05 && lIteration++ < cMaxIterations);
+        info("############################################## Done ");
+        mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
       }
-      while (lError >= 0.05 && lIteration++ < cMaxIterations);
-      System.out.println("############################################## Done ");
-      mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
-    }
 
     return true;
   }
@@ -296,15 +313,15 @@ public class Calibrator extends TaskDevice implements LoggingInterface
       mCalibrationP.calibrate();
       lError = mCalibrationP.apply();
 
-      System.out.println("############################################## Error = "
-                         + lError);
+      info("############################################## Error = "
+           + lError);
       if (ScriptingEngine.isCancelRequestedStatic() || !isRunning())
         return false;
 
       mProgressVariable.set((1.0 * lIteration) / cMaxIterations);
     }
     while (lError >= 0.04 && lIteration++ < cMaxIterations);
-    System.out.println("############################################## Done ");
+    info("############################################## Done ");
 
     return true;
   }
@@ -322,11 +339,12 @@ public class Calibrator extends TaskDevice implements LoggingInterface
                              int pNumberOfSamplesP)
   {
     for (int l = 0; l < mNumberOfLightSheetDevices; l++)
-    {
-      calibrateHP(l, 0, pNumberOfSamplesH, pNumberOfSamplesP);
-      System.out.println("############################################## Done ");
-      mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
-    }
+      if (getCalibrateLightSheetOnOff(l).get())
+      {
+        calibrateHP(l, 0, pNumberOfSamplesH, pNumberOfSamplesP);
+        info("############################################## Done ");
+        mProgressVariable.set((1.0 * l) / mNumberOfLightSheetDevices);
+      }
     return true;
   }
 
@@ -759,6 +777,20 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public Variable<String> getCalibrationDataNameVariable()
   {
     return mCalibrationDataName;
+  }
+
+  /**
+   * Returns the variable holding the calibrate on/off flag. This flag decides
+   * whether the lightsheet should be calibrated.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * 
+   * @return calibrate lightsheet variable
+   */
+  public Variable<Boolean> getCalibrateLightSheetOnOff(int pLightSheetIndex)
+  {
+    return mCalibrateLightSheetOnOff[pLightSheetIndex];
   }
 
   /**

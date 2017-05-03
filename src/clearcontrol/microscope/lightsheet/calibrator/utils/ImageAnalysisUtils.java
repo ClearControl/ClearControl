@@ -1,10 +1,13 @@
 package clearcontrol.microscope.lightsheet.calibrator.utils;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.lang.Math.pow;
 
 import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
 import net.imglib2.img.planar.OffHeapPlanarImg;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
 import coremem.fragmented.FragmentedMemoryInterface;
@@ -73,11 +76,21 @@ public class ImageAnalysisUtils
     return lIntensityArray;
   }
 
-  public static double[] computeAveragePowerIntensityPerPlane(OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pImage)
+  /**
+   * Computes the average intensity elevated to a given power per plane
+   * 
+   * @param pStack
+   *          stack
+   * @param pPower
+   *          power
+   * @return array of metrics
+   */
+  public static double[] computeAveragePowerIntensityPerPlane(OffHeapPlanarStack pStack,
+                                                              int pPower)
   {
-    int lNumberOfPlanes = pImage.numSlices();
+    int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
-                                                pImage.getFragmentedMemory();
+                                                pStack.getFragmentedMemory();
     double[] lIntensityArray = new double[lNumberOfPlanes];
     for (int p = 0; p < lNumberOfPlanes; p++)
     {
@@ -86,19 +99,68 @@ public class ImageAnalysisUtils
       ContiguousBuffer lBuffer =
                                ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
+      int lNumberOfPixelsPerPlane = (int) (pStack.getWidth()
+                                           * pStack.getHeight());
+      double lInverseNumberOfPixelsPerPlane = 1.0
+                                              / lNumberOfPixelsPerPlane;
+
       double lSumOfPowers = 0;
-      long lCount = 0;
 
       while (lBuffer.hasRemainingByte())
       {
-        float lValue = 1.0f * lBuffer.readChar();
-        lValue = lValue * lValue;
-        lValue = lValue * lValue;
-        // lValue = lValue * lValue;
-        lSumOfPowers += lValue;
-        lCount++;
+        double lValue = lBuffer.readChar();
+        lSumOfPowers += lInverseNumberOfPixelsPerPlane
+                        * pow(lValue, pPower);
       }
-      lIntensityArray[p] = lSumOfPowers / lCount;
+      lIntensityArray[p] = lSumOfPowers;
+    }
+
+    return lIntensityArray;
+  }
+
+  /**
+   * Computes the average intensity elevated to a given power per plane
+   * 
+   * @param pStack
+   *          stack
+   * @param pPower
+   *          power
+   * @return array of metrics
+   */
+  public static double[] computeAveragePowerVariationPerPlane(OffHeapPlanarStack pStack,
+                                                              int pPower)
+  {
+    int lNumberOfPlanes = (int) pStack.getDepth();
+    FragmentedMemoryInterface lFragmentedMemory =
+                                                pStack.getFragmentedMemory();
+    double[] lIntensityArray = new double[lNumberOfPlanes];
+    for (int p = 0; p < lNumberOfPlanes; p++)
+    {
+      ContiguousMemoryInterface lContiguousMemoryInterface =
+                                                           lFragmentedMemory.get(p);
+      ContiguousBuffer lBuffer =
+                               ContiguousBuffer.wrap(lContiguousMemoryInterface);
+
+      int lNumberOfPixelsPerPlane = (int) (pStack.getWidth()
+                                           * pStack.getHeight());
+      double lInverseNumberOfPixelsPerPlane = 1.0
+                                              / lNumberOfPixelsPerPlane;
+
+      double lPreviousValue =
+                            lContiguousMemoryInterface.getCharAligned(0);
+
+      double lSumOfPowers = 0;
+
+      while (lBuffer.hasRemainingByte())
+      {
+        double lValue = lBuffer.readChar();
+        double lVariation = abs(lValue - lPreviousValue);
+        lSumOfPowers += lInverseNumberOfPixelsPerPlane
+                        * pow(lVariation, pPower);
+
+        lPreviousValue = 0.9 * lPreviousValue + 0.1 * lValue;
+      }
+      lIntensityArray[p] = lSumOfPowers;
     }
 
     return lIntensityArray;

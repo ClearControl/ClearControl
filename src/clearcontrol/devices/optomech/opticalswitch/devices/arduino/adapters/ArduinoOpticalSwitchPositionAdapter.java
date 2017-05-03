@@ -4,12 +4,23 @@ import clearcontrol.com.serial.adapters.SerialDeviceAdapterAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
 import clearcontrol.devices.optomech.opticalswitch.devices.arduino.ArduinoOpticalSwitchDevice;
 
+/**
+ * Arduino Optical switch position adapter
+ *
+ * @author royer
+ */
 public class ArduinoOpticalSwitchPositionAdapter extends
                                                  SerialDeviceAdapterAdapter<Long>
                                                  implements
                                                  SerialTextDeviceAdapter<Long>
 {
 
+  /**
+   * Instantiates an Arduino optical switch position adapter
+   * 
+   * @param pArduinoOpticalSwitchDevice
+   *          arduino optical switch device
+   */
   public ArduinoOpticalSwitchPositionAdapter(final ArduinoOpticalSwitchDevice pArduinoOpticalSwitchDevice)
   {
 

@@ -1,9 +1,11 @@
 package clearcontrol.microscope.lightsheet.calibrator.gui;
 
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -12,6 +14,7 @@ import javafx.scene.layout.Priority;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 
 /**
@@ -41,114 +44,182 @@ public class CalibratorToolbar extends CustomGridPane
       getColumnConstraints().add(lColumnConstraints);
     }
 
-    Button lStartCalibration = new Button("Calibrate");
-    lStartCalibration.setAlignment(Pos.CENTER);
-    lStartCalibration.setMaxWidth(Double.MAX_VALUE);
-    lStartCalibration.setOnAction((e) -> {
-      pCalibrator.startTask();
-    });
-    GridPane.setColumnSpan(lStartCalibration, 2);
-    GridPane.setHgrow(lStartCalibration, Priority.ALWAYS);
-    add(lStartCalibration, 0, 0);
+    int lRow = 0;
 
-    Button lStopCalibration = new Button("Stop");
-    lStopCalibration.setAlignment(Pos.CENTER);
-    lStopCalibration.setMaxWidth(Double.MAX_VALUE);
-    lStopCalibration.setOnAction((e) -> {
-      pCalibrator.stopTask();
-    });
-    GridPane.setColumnSpan(lStopCalibration, 2);
-    GridPane.setHgrow(lStopCalibration, Priority.ALWAYS);
-    add(lStopCalibration, 0, 1);
-
-    ProgressIndicator lCalibrationProgressIndicator =
-                                                    new ProgressIndicator(0.0);
-    lCalibrationProgressIndicator.setMaxWidth(Double.MAX_VALUE);
-    lCalibrationProgressIndicator.setStyle(".percentage { visibility: hidden; }");
-    GridPane.setRowSpan(lCalibrationProgressIndicator, 2);
-    add(lCalibrationProgressIndicator, 2, 0);
-
-    pCalibrator.getProgressVariable().addEdgeListener((n) -> {
-      Platform.runLater(() -> {
-        lCalibrationProgressIndicator.setProgress(pCalibrator.getProgressVariable()
-                                                             .get());
+    {
+      Button lStartCalibration = new Button("Calibrate");
+      lStartCalibration.setAlignment(Pos.CENTER);
+      lStartCalibration.setMaxWidth(Double.MAX_VALUE);
+      lStartCalibration.setOnAction((e) -> {
+        pCalibrator.startTask();
       });
-    });
+      GridPane.setColumnSpan(lStartCalibration, 2);
+      GridPane.setHgrow(lStartCalibration, Priority.ALWAYS);
+      add(lStartCalibration, 0, lRow);
 
-    addCheckBoxForCalibrationModule("Z ",
-                                    pCalibrator.getCalibrateZVariable(),
-                                    0,
-                                    2);
-    addCheckBoxForCalibrationModule("XY",
-                                    pCalibrator.getCalibrateXYVariable(),
-                                    0,
-                                    3);
-    addCheckBoxForCalibrationModule("A ",
-                                    pCalibrator.getCalibrateAVariable(),
-                                    1,
-                                    2);
-    addCheckBoxForCalibrationModule("P ",
-                                    pCalibrator.getCalibratePVariable(),
-                                    1,
-                                    3);
+      lRow++;
+    }
 
-    TextField lCalibrationDataNameTextField =
-                                            new TextField(pCalibrator.getCalibrationDataNameVariable()
-                                                                     .get());
-    lCalibrationDataNameTextField.setMaxWidth(Double.MAX_VALUE);
-    lCalibrationDataNameTextField.textProperty()
-                                 .addListener((obs, o, n) -> {
-                                   String lName = n.trim();
-                                   if (!lName.isEmpty())
-                                     pCalibrator.getCalibrationDataNameVariable()
-                                                .set(lName);
+    {
+      Button lStopCalibration = new Button("Stop");
+      lStopCalibration.setAlignment(Pos.CENTER);
+      lStopCalibration.setMaxWidth(Double.MAX_VALUE);
+      lStopCalibration.setOnAction((e) -> {
+        pCalibrator.stopTask();
+      });
+      GridPane.setColumnSpan(lStopCalibration, 2);
+      GridPane.setHgrow(lStopCalibration, Priority.ALWAYS);
+      add(lStopCalibration, 0, lRow);
 
-                                 });
-    GridPane.setColumnSpan(lCalibrationDataNameTextField, 3);
-    GridPane.setFillWidth(lCalibrationDataNameTextField, true);
-    GridPane.setHgrow(lCalibrationDataNameTextField, Priority.ALWAYS);
-    add(lCalibrationDataNameTextField, 0, 4);
+      lRow++;
+    }
 
-    Button lSaveCalibration = new Button("Save");
-    lSaveCalibration.setAlignment(Pos.CENTER);
-    lSaveCalibration.setMaxWidth(Double.MAX_VALUE);
-    lSaveCalibration.setOnAction((e) -> {
-      try
+    {
+      ProgressIndicator lCalibrationProgressIndicator =
+                                                      new ProgressIndicator(0.0);
+      lCalibrationProgressIndicator.setMaxWidth(Double.MAX_VALUE);
+      lCalibrationProgressIndicator.setStyle(".percentage { visibility: hidden; }");
+      GridPane.setRowSpan(lCalibrationProgressIndicator, 2);
+      add(lCalibrationProgressIndicator, 2, 0);
+
+      pCalibrator.getProgressVariable().addEdgeListener((n) -> {
+        Platform.runLater(() -> {
+          lCalibrationProgressIndicator.setProgress(pCalibrator.getProgressVariable()
+                                                               .get());
+        });
+      });
+
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+      addCheckBoxForCalibrationModule("Z ",
+                                      pCalibrator.getCalibrateZVariable(),
+                                      0,
+                                      lRow);
+      addCheckBoxForCalibrationModule("XY",
+                                      pCalibrator.getCalibrateXYVariable(),
+                                      0,
+                                      lRow + 1);
+      addCheckBoxForCalibrationModule("A ",
+                                      pCalibrator.getCalibrateAVariable(),
+                                      1,
+                                      lRow);
+      addCheckBoxForCalibrationModule("P ",
+                                      pCalibrator.getCalibratePVariable(),
+                                      1,
+                                      lRow + 1);
+
+      lRow += 2;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+      OnOffArrayPane lCalibrateLightSheetOnOffPane =
+                                                   new OnOffArrayPane();
+
+      int lNumberOfLightSheets = pCalibrator.getLightSheetMicroscope()
+                                            .getNumberOfLightSheets();
+      for (int l = 0; l < lNumberOfLightSheets; l++)
       {
-        pCalibrator.save();
+        lCalibrateLightSheetOnOffPane.addSwitch("Lightsheet " + l,
+                                                pCalibrator.getCalibrateLightSheetOnOff(l));
       }
-      catch (Exception e1)
-      {
-        e1.printStackTrace();
-      }
-    });
-    GridPane.setColumnSpan(lSaveCalibration, 1);
-    add(lSaveCalibration, 0, 5);
 
-    Button lLoadCalibration = new Button("Load");
-    lLoadCalibration.setAlignment(Pos.CENTER);
-    lLoadCalibration.setMaxWidth(Double.MAX_VALUE);
-    lLoadCalibration.setOnAction((e) -> {
-      try
-      {
-        pCalibrator.load();
-      }
-      catch (Exception e1)
-      {
-        e1.printStackTrace();
-      }
-    });
-    GridPane.setColumnSpan(lLoadCalibration, 1);
-    add(lLoadCalibration, 1, 5);
+      GridPane.setColumnSpan(lCalibrateLightSheetOnOffPane, 3);
+      add(lCalibrateLightSheetOnOffPane, 0, lRow);
 
-    Button lResetCalibration = new Button("Reset");
-    lResetCalibration.setAlignment(Pos.CENTER);
-    lResetCalibration.setMaxWidth(Double.MAX_VALUE);
-    lResetCalibration.setOnAction((e) -> {
-      pCalibrator.reset();
-    });
-    GridPane.setColumnSpan(lResetCalibration, 1);
-    add(lResetCalibration, 2, 5);
+      lRow++;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+      TextField lCalibrationDataNameTextField =
+                                              new TextField(pCalibrator.getCalibrationDataNameVariable()
+                                                                       .get());
+      lCalibrationDataNameTextField.setMaxWidth(Double.MAX_VALUE);
+      lCalibrationDataNameTextField.textProperty()
+                                   .addListener((obs, o, n) -> {
+                                     String lName = n.trim();
+                                     if (!lName.isEmpty())
+                                       pCalibrator.getCalibrationDataNameVariable()
+                                                  .set(lName);
+
+                                   });
+      GridPane.setColumnSpan(lCalibrationDataNameTextField, 3);
+      GridPane.setFillWidth(lCalibrationDataNameTextField, true);
+      GridPane.setHgrow(lCalibrationDataNameTextField,
+                        Priority.ALWAYS);
+      add(lCalibrationDataNameTextField, 0, lRow);
+
+      lRow++;
+    }
+
+    {
+      Button lSaveCalibration = new Button("Save");
+      lSaveCalibration.setAlignment(Pos.CENTER);
+      lSaveCalibration.setMaxWidth(Double.MAX_VALUE);
+      lSaveCalibration.setOnAction((e) -> {
+        try
+        {
+          pCalibrator.save();
+        }
+        catch (Exception e1)
+        {
+          e1.printStackTrace();
+        }
+      });
+      GridPane.setColumnSpan(lSaveCalibration, 1);
+      add(lSaveCalibration, 0, lRow);
+
+      Button lLoadCalibration = new Button("Load");
+      lLoadCalibration.setAlignment(Pos.CENTER);
+      lLoadCalibration.setMaxWidth(Double.MAX_VALUE);
+      lLoadCalibration.setOnAction((e) -> {
+        try
+        {
+          pCalibrator.load();
+        }
+        catch (Exception e1)
+        {
+          e1.printStackTrace();
+        }
+      });
+      GridPane.setColumnSpan(lLoadCalibration, 1);
+      add(lLoadCalibration, 1, lRow);
+
+      Button lResetCalibration = new Button("Reset");
+      lResetCalibration.setAlignment(Pos.CENTER);
+      lResetCalibration.setMaxWidth(Double.MAX_VALUE);
+      lResetCalibration.setOnAction((e) -> {
+        pCalibrator.reset();
+      });
+      GridPane.setColumnSpan(lResetCalibration, 1);
+      add(lResetCalibration, 2, lRow);
+
+      lRow++;
+    }
 
   }
 

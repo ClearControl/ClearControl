@@ -28,6 +28,8 @@ public class NumberVariableTextField<N extends Number> extends HBox
   private Variable<N> mMax;
   private Variable<N> mGranularity;
 
+  private int mPrecision = 6;
+
   /**
    * Instantiates a number variable text field.
    * 
@@ -274,7 +276,9 @@ public class NumberVariableTextField<N extends Number> extends HBox
   {
     double lCorrectedValue =
                            correctValueDouble(pDoubleValue.doubleValue());
-    getTextField().setText(String.format("%.3f", lCorrectedValue));
+    getTextField().setText(String.format("%." + mPrecision
+                                         + "g",
+                                         lCorrectedValue)); // f
     getTextField().setStyle("-fx-text-fill: black");
   }
 

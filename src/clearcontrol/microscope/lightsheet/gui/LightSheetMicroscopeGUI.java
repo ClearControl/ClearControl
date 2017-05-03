@@ -68,7 +68,7 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
     addPanelMappingEntry(TimelapseTimerInterface.class,
                          TimelapsePanel.class,
                          MicroscopeNodeType.Acquisition);
-    
+
     addPanelMappingEntry(LightSheetSignalGeneratorDevice.class,
                          LightSheetSignalGeneratorPanel.class,
                          MicroscopeNodeType.Other);
@@ -84,7 +84,6 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
     addToolbarMappingEntry(LightSheetTimelapse.class,
                            LightSheetTimelapseToolbar.class);
-    
 
   }
 

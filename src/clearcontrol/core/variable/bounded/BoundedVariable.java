@@ -114,7 +114,7 @@ public class BoundedVariable<N extends Number> extends Variable<N>
                          N pMin,
                          N pMax)
   {
-    this(pVariableName, pReference, pMin, pMax, (N)(new Double(0)));
+    this(pVariableName, pReference, pMin, pMax, (N) (new Double(0)));
   }
 
   /**
@@ -293,10 +293,10 @@ public class BoundedVariable<N extends Number> extends Variable<N>
    */
   public void set(BoundedVariable<N> pVariable)
   {
-    set(pVariable.get());
     mMin.set(pVariable.getMin());
     mMax.set(pVariable.getMax());
     mGranularity.set(pVariable.getGranularity());
+    set(pVariable.get());
   }
 
   /**

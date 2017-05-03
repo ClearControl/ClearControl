@@ -169,7 +169,7 @@ public class LightSheetSimulationStackProvider extends
         if (pKeepPlaneList.get(zi))
         {
           ClearCLImage lCameraImage =
-                                           mLightSheetMicroscopeSimulator.getCameraImage(mCameraIndex);
+                                    mLightSheetMicroscopeSimulator.getCameraImage(mCameraIndex);
 
           long lOffset = i++ * lCameraImage.getSizeInBytes();
 
@@ -181,7 +181,7 @@ public class LightSheetSimulationStackProvider extends
           lMilliseconds =
                         ElapsedTime.measure("!!copyplane",
                                             () -> lCameraImage.writeTo(lImagePlane,
-                                                                             fzi == lLastZiKept)); //
+                                                                       fzi == lLastZiKept)); //
           // info("Copying plane %d in %g ms \n",zi,lMilliseconds);
 
         }

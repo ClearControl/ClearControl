@@ -8,7 +8,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
@@ -91,7 +90,7 @@ public class OnOffArrayPane extends CustomGridPane
     });
 
     Label lSwitchName = new Label(pLabelText);
-    //lSwitchName.setFont(new Font(16.0));
+    // lSwitchName.setFont(new Font(16.0));
 
     HBox lHBox = new HBox(lSwitchName, lControl);
     lHBox.setSpacing(8);

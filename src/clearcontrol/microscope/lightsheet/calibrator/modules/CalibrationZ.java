@@ -8,8 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
+import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -22,6 +21,7 @@ import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
@@ -29,12 +29,14 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 /**
  * Calibration module for the Z position of lightsheets and detection arms
  *
  * @author royer
  */
-public class CalibrationZ
+public class CalibrationZ implements LoggingInterface
 {
 
   private final Calibrator mCalibrator;
@@ -45,6 +47,8 @@ public class CalibrationZ
   private int mNumberOfDetectionArmDevices;
   private int mNumberOfLightSheetDevices;
   private int mIteration;
+
+  private boolean mUseDCTS = false;
   private DCTS2D mDCTS2D;
 
   /**
@@ -103,6 +107,12 @@ public class CalibrationZ
                            boolean pRestrictedSearch,
                            double pSearchAmplitude)
   {
+    info("Starting to calibrate Z for lightsheet %d, with %d D samples, %d I samples, and a search amplitude of %g ",
+         pLightSheetIndex,
+         pNumberOfDSamples,
+         pNumberOfISamples,
+         pSearchAmplitude);
+
     mArgMaxFinder = new ModeArgMaxFinder();
 
     mMultiPlotZFocusCurves.clear();
@@ -144,16 +154,17 @@ public class CalibrationZ
 
     double lStepIZ = (lMaxIZ - lMinIZ) / (pNumberOfISamples - 1);
 
-    System.out.format("miniz=%g, maxiz=%g, stepiz=%g \n",
-                      lMinIZ,
-                      lMaxIZ,
-                      lStepIZ);
-
     double lMinDZ = Double.NEGATIVE_INFINITY;
     double lMaxDZ = Double.POSITIVE_INFINITY;
 
-    double lAmplitudeZ = 0.5 * pSearchAmplitude * (lMaxIZ - lMinIZ);
-    System.out.println("lAmplitudeZ=" + lAmplitudeZ);
+    double lDZSearchRadius =
+                           0.5 * pSearchAmplitude * (lMaxIZ - lMinIZ);
+
+    info("Range for Iz values: [%g,%g] with a step size of %g, Dz search radius is %g \n",
+         lMinIZ,
+         lMaxIZ,
+         lStepIZ,
+         lDZSearchRadius);
 
     for (double iz = lMinIZ; iz <= lMaxIZ; iz += lStepIZ)
     {
@@ -164,8 +175,8 @@ public class CalibrationZ
       // TODO: this does not work when the calibration is really off:
       if (pRestrictedSearch)
       {
-        lMinDZ = lPerturbedIZ - lAmplitudeZ;
-        lMaxDZ = lPerturbedIZ + lAmplitudeZ;
+        lMinDZ = lPerturbedIZ - lDZSearchRadius;
+        lMaxDZ = lPerturbedIZ + lDZSearchRadius;
       }
 
       final double[] dz = focusZ(pLightSheetIndex,
@@ -196,7 +207,7 @@ public class CalibrationZ
       final UnivariateAffineFunction lModel =
                                             lTheilSenEstimators[d].getModel();
 
-      System.out.println("lModel=" + lModel);
+      // System.out.println("lModel=" + lModel);
 
       mModels.put(pLightSheetIndex,
                   d,
@@ -252,11 +263,12 @@ public class CalibrationZ
                      lDetectionFocusZVariable.getMax().doubleValue());
       }
 
-      System.out.format("Focus: LightSheet=%d, Iz=%g, minDZ=%g, maxDZ=%g \n",
-                        pLightSheetIndex,
-                        pIZ,
-                        lMinDZ,
-                        lMaxDZ);
+      info("Focussing for lightsheet %d at %g, with %d D samples, with Dz values within [%g,%g] \n",
+           pLightSheetIndex,
+           pIZ,
+           pNumberOfDSamples,
+           pMinDZ,
+           pMaxDZ);
 
       double lStep = (lMaxDZ - lMinDZ) / (pNumberOfDSamples - 1);
 
@@ -265,7 +277,7 @@ public class CalibrationZ
       lQueue.clearQueue();
       lQueue.zero();
 
-      lQueue.setExp(0.01);
+      lQueue.setExp(0.05);
 
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
@@ -325,19 +337,25 @@ public class CalibrationZ
       if (lPlayQueueAndWait)
         for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
         {
-          final StackInterface lStackInterface =
-                                               mLightSheetMicroscope.getCameraStackVariable(d)
-                                                                    .get();
+          final StackInterface lStack =
+                                      mLightSheetMicroscope.getCameraStackVariable(d)
+                                                           .get();
 
-          if (lStackInterface == null)
+          if (lStack == null)
             continue;
 
           if (mDCTS2D == null)
             mDCTS2D = new DCTS2D();
-          final double[] lMetricArray =
-                                      mDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lStackInterface);
-          /*final double[] lMetricArray =
-                                      ImageAnalysisUtils.computeAveragePowerIntensityPerPlane(lImage);/**/
+
+          final double[] lMetricArray;
+
+          if (mUseDCTS)
+            lMetricArray =
+                         mDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lStack);
+          else
+            lMetricArray =
+                         ImageAnalysisUtils.computeAveragePowerVariationPerPlane((OffHeapPlanarStack) lStack,
+                                                                                 4);/**/
 
           PlotTab lPlot =
                         mMultiPlotZFocusCurves.getPlot(String.format("D=%d, I=%d, Iz=%g",
@@ -347,7 +365,7 @@ public class CalibrationZ
           lPlot.setScatterPlot("samples");
 
           // System.out.format("metric array: \n");
-          for (int j = 0; j < lMetricArray.length; j++)
+          for (int j = 0; j < lDZList.size(); j++)
           {
             lPlot.addPoint("samples",
                            lDZList.get(j),
@@ -373,9 +391,9 @@ public class CalibrationZ
                                    (lDCTSList.max() - lDCTSList.min())
                                      / lDCTSList.max();
 
-            System.out.format("argmax=%s amplratio=%s \n",
+            /*System.out.format("argmax=%s amplratio=%s \n",
                               lArgMax.toString(),
-                              lAmplitudeRatio);
+                              lAmplitudeRatio);/**/
 
             lPlot.setScatterPlot("argmax");
             lPlot.addPoint("argmax", lArgMax, 0);
@@ -419,7 +437,7 @@ public class CalibrationZ
           else
           {
             dz[d] = Double.NaN;
-            System.out.println("Argmax is NULL!");
+            severe("Argmax is NULL!");
           }
         }
 
@@ -472,8 +490,8 @@ public class CalibrationZ
                                                                      .getDevice(LightSheetInterface.class,
                                                                                 pLightSheetIndex);
 
-    System.out.println("before: getZFunction()="
-                       + lLightSheetDevice.getZFunction());
+    /*System.out.println("before: getZFunction()="
+                       + lLightSheetDevice.getZFunction());/**/
 
     if (abs(lSlope) > 0.00001)
     {
@@ -484,12 +502,14 @@ public class CalibrationZ
       lLightSheetDevice.getZFunction().setCurrent();
     }
     else
-      System.out.println("slope too low: " + abs(lSlope));
+      warning("slope too low: " + abs(lSlope));
+
+    /*
     System.out.println("after: getZFunction()="
                        + lLightSheetDevice.getZFunction());
-
+    
     System.out.println("before: getYFunction()="
-                       + lLightSheetDevice.getYFunction());
+                       + lLightSheetDevice.getYFunction());/**/
 
     adjustYFunctionScaleAndMinMax(lLightSheetDevice);
 
@@ -498,7 +518,7 @@ public class CalibrationZ
 
     double lError = (abs(1 - lSlope) + abs(lOffset));
 
-    System.out.println("lError=" + lError);
+    info("Error=" + lError);
 
     return lError;
 

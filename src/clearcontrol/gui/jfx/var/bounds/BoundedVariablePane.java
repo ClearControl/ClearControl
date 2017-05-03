@@ -1,11 +1,12 @@
 package clearcontrol.gui.jfx.var.bounds;
 
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 
 /**
  * Univariate function pane
@@ -43,12 +44,11 @@ public class BoundedVariablePane extends CustomGridPane
     else
       mLabel = null;
 
-    mValueTextField =
-                    new NumberVariableTextField<Number>("value:",
-                                                        pBoundedVariable,
-                                                        Double.NEGATIVE_INFINITY,
-                                                        Double.POSITIVE_INFINITY,
-                                                        0.0);
+    mValueTextField = new NumberVariableTextField<Number>("value:",
+                                                          pBoundedVariable,
+                                                          Double.NEGATIVE_INFINITY,
+                                                          Double.POSITIVE_INFINITY,
+                                                          0.0);
 
     mMinTextField = new NumberVariableTextField<Number>("min:",
                                                         pBoundedVariable.getMinVariable(),

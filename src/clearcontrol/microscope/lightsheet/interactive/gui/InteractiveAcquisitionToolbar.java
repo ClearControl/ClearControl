@@ -1,21 +1,30 @@
 package clearcontrol.microscope.lightsheet.interactive.gui;
 
+import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.cameras.gui.CameraResolutionGrid;
+import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.lcd.VariableLCD;
-import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
+import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisitionModes;
 import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 /**
  * Interactive acquiistion toolbar
@@ -28,7 +37,7 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
   private VariableToggleButton mUseAcqStateToggleButton;
 
   /**
-   * Instanciates an interactive acquisition toolbar given an interaction
+   * Instantiates an interactive acquisition toolbar given an interaction
    * acquisition device
    * 
    * @param pInteractiveAcquisition
@@ -38,7 +47,16 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
   {
     super();
 
-    setPrefSize(300, 200);
+    setPrefSize(400, 200);
+
+    int[] lPercent = new int[]
+    { 20, 40, 40 };
+    for (int i = 0; i < 3; i++)
+    {
+      ColumnConstraints lColumnConstraints = new ColumnConstraints();
+      lColumnConstraints.setPercentWidth(lPercent[i]);
+      getColumnConstraints().add(lColumnConstraints);
+    } /**/
 
     int lRow = 0;
 
@@ -147,34 +165,109 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
     }
 
     {
-      VariableSlider<Double> lIntervalSlider =
-                                             new VariableSlider<Double>("Period (s)",
-                                                                        pInteractiveAcquisition.getLoopPeriodVariable(),
-                                                                        0.0,
-                                                                        1000.0,
-                                                                        0.001,
-                                                                        100.0);
-      lIntervalSlider.setAlignment(Pos.BASELINE_CENTER);
-      GridPane.setHgrow(lIntervalSlider.getSlider(), Priority.ALWAYS);
-      add(lIntervalSlider.getLabel(), 0, lRow);
-      add(lIntervalSlider.getSlider(), 1, lRow);
-      add(lIntervalSlider.getTextField(), 2, lRow);
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
       lRow++;
     }
 
     {
-      VariableSlider<Double> lExposureSlider =
-                                             new VariableSlider<Double>("Exp (s)",
-                                                                        pInteractiveAcquisition.getExposureVariable(),
-                                                                        0.0,
-                                                                        1.0,
-                                                                        0.001,
-                                                                        0.1);
-      lExposureSlider.setAlignment(Pos.BASELINE_CENTER);
-      GridPane.setHgrow(lExposureSlider.getSlider(), Priority.ALWAYS);
-      add(lExposureSlider.getLabel(), 0, lRow);
-      add(lExposureSlider.getSlider(), 1, lRow);
-      add(lExposureSlider.getTextField(), 2, lRow);
+      NumberVariableTextField<Double> lIntervalTextField =
+                                                         new NumberVariableTextField<Double>("Period (s)",
+                                                                                             pInteractiveAcquisition.getLoopPeriodVariable(),
+                                                                                             0.001,
+                                                                                             10.0,
+                                                                                             0.001);
+
+      ComboBox<Double> lTypicalIntervalComboBox =
+                                                new ComboBox<>(FXCollections.observableArrayList(0.001,
+                                                                                                 0.010,
+                                                                                                 0.050,
+                                                                                                 0.100,
+                                                                                                 0.200,
+                                                                                                 0.500,
+                                                                                                 1.0,
+                                                                                                 2.0,
+                                                                                                 5.0,
+                                                                                                 10.0,
+                                                                                                 20.0,
+                                                                                                 30.0));
+
+      lTypicalIntervalComboBox.valueProperty()
+                              .addListener((c, o, n) -> {
+                                if (n != null)
+                                  pInteractiveAcquisition.getLoopPeriodVariable()
+                                                         .setAsync(n);
+                              });
+
+      lIntervalTextField.getTextField()
+                        .textProperty()
+                        .addListener((c, o, n) -> {
+                          if (o != null && !o.equals(n))
+                            lTypicalIntervalComboBox.getSelectionModel()
+                                                    .clearSelection();
+                        });
+
+      lIntervalTextField.setAlignment(Pos.BASELINE_CENTER);
+      add(lIntervalTextField.getLabel(), 0, lRow);
+      add(lTypicalIntervalComboBox, 1, lRow);
+      add(lIntervalTextField.getTextField(), 2, lRow);
+      lRow++;
+    }
+
+    {
+      NumberVariableTextField<Double> lExposureTextField =
+                                                         new NumberVariableTextField<Double>("Exp (s)",
+                                                                                             pInteractiveAcquisition.getExposureVariable(),
+                                                                                             0.0,
+                                                                                             1.0,
+                                                                                             0.001);
+
+      ComboBox<Double> lTypicalExposuresComboBox =
+                                                 new ComboBox<>(FXCollections.observableArrayList(0.001,
+                                                                                                  0.005,
+                                                                                                  0.010,
+                                                                                                  0.015,
+                                                                                                  0.020,
+                                                                                                  0.025,
+                                                                                                  0.030,
+                                                                                                  0.050,
+                                                                                                  0.100,
+                                                                                                  0.200,
+                                                                                                  0.500,
+                                                                                                  1.0,
+                                                                                                  2.0,
+                                                                                                  5.0,
+                                                                                                  10.0));
+
+      lTypicalExposuresComboBox.valueProperty()
+                               .addListener((c, o, n) -> {
+                                 if (n != null)
+                                   pInteractiveAcquisition.getExposureVariable()
+                                                          .setAsync(n);
+                               });
+
+      lExposureTextField.getTextField()
+                        .textProperty()
+                        .addListener((c, o, n) -> {
+                          if (o != null && !o.equals(n))
+                            lTypicalExposuresComboBox.getSelectionModel()
+                                                     .clearSelection();
+                        });
+
+      lExposureTextField.setAlignment(Pos.BASELINE_CENTER);
+      add(lExposureTextField.getLabel(), 0, lRow);
+      add(lTypicalExposuresComboBox, 1, lRow);
+      add(lExposureTextField.getTextField(), 2, lRow);
+      lRow++;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
       lRow++;
     }
 
@@ -208,6 +301,60 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
                         Priority.ALWAYS);
       GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);
       add(lTriggerOnChangeToggleButton, 0, lRow);
+
+      lRow++;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+
+      CameraResolutionGrid.ButtonEventHandler lButtonHandler =
+                                                             (w,
+                                                              h) -> {
+                                                               return event -> {
+                                                                 pInteractiveAcquisition.getLightSheetMicroscope()
+                                                                                        .setCameraWidthHeight(w,
+                                                                                                              h);
+                                                               };
+                                                             };
+
+      CameraResolutionGrid lGridPane =
+                                     new CameraResolutionGrid(lButtonHandler,
+                                                              7,
+                                                              11);
+      lGridPane.setAlignment(Pos.BASELINE_CENTER);
+      GridPane.setHalignment(lGridPane, HPos.CENTER);
+      GridPane.setHgrow(lGridPane, Priority.ALWAYS);
+      GridPane.setColumnSpan(lGridPane, 3);
+      add(lGridPane, 0, lRow);
+
+      // setGridLinesVisible(true);
+
+      lRow++;
+    }
+
+    {
+      LightSheetOpticalSwitch lDevice =
+                                      pInteractiveAcquisition.getLightSheetMicroscope()
+                                                             .getDevice(LightSheetOpticalSwitch.class,
+                                                                        0);
+
+      OpticalSwitchDevicePanel lLightSheetOpticalSwitchPanel =
+                                                             new OpticalSwitchDevicePanel(lDevice);
+
+      GridPane.setHalignment(lLightSheetOpticalSwitchPanel,
+                             HPos.CENTER);
+      GridPane.setHgrow(lLightSheetOpticalSwitchPanel,
+                        Priority.ALWAYS);
+      GridPane.setColumnSpan(lLightSheetOpticalSwitchPanel, 3);
+      add(lLightSheetOpticalSwitchPanel, 0, lRow);
 
       lRow++;
     }
