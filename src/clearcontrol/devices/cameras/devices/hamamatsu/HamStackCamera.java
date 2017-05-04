@@ -219,18 +219,17 @@ public class HamStackCamera extends
                                                                                      mSequence);
 
     Callable<Boolean> lCallable = () -> {
-      Boolean lResult = lAcquisitionResult.get();
 
       StackInterface lAcquiredStack;
 
-      if (lResult == null && pDepth == 0)
+      if (lAcquisitionResult == null && pDepth == 0)
       {
         lAcquiredStack = new EmptyStack();
         return true;
       }
       else
       {
-
+        Boolean lResult = lAcquisitionResult.get();
         if (!lResult)
           return false;
 

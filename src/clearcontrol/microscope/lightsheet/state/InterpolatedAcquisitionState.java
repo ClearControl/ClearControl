@@ -177,7 +177,7 @@ public class InterpolatedAcquisitionState extends
         if (n != null && !n.equals(o))
         {
           long lZPlanes = round(getStackDepthInMicrons()
-                                       / mZStep.get().doubleValue());
+                                / mZStep.get().doubleValue());
 
           if (mZPlanes.get().longValue() != lZPlanes)
             mZPlanes.set(lZPlanes);
@@ -191,7 +191,7 @@ public class InterpolatedAcquisitionState extends
         if (n != null && !n.equals(o))
         {
           long lZPlanes = round(getStackDepthInMicrons()
-                                       / n.doubleValue());
+                                / n.doubleValue());
 
           if (mZPlanes.get().longValue() != lZPlanes)
           {
@@ -448,6 +448,7 @@ public class InterpolatedAcquisitionState extends
                                         pLaserLineIndexMax);
       lQueue.addCurrentStateToQueue();
     }
+
     lQueue.finalizeQueue();
     return lQueue;
   }
@@ -567,6 +568,9 @@ public class InterpolatedAcquisitionState extends
                                                               int pLaserLineIndexMin,
                                                               int pLaserLineIndexMax)
   {
+    for (int l = 0; l < mNumberOfLightSheets; l++)
+      pQueue.setI(l, false);
+
     pQueue.setI(pLightSheetIndex,
                 mLightSheetOnOff[pLightSheetIndex].get());
 
