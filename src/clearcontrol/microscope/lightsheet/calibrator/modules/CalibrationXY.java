@@ -7,13 +7,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.RandomAccessible;
-import net.imglib2.algorithm.gauss3.Gauss3;
-import net.imglib2.exception.IncompatibleTypeException;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.view.Views;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -24,7 +17,6 @@ import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
-import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import org.apache.commons.collections4.map.MultiKeyMap;

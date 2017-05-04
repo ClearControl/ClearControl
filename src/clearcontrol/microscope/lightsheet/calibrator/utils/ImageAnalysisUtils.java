@@ -197,8 +197,8 @@ public class ImageAnalysisUtils
   public static void cleanWithMin(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
-    int lWidth = (int) (int) pStack.getWidth();
-    int lHeight = (int) (int) pStack.getHeight();
+    int lWidth = (int) pStack.getWidth();
+    int lHeight = (int) pStack.getHeight();
     int lLength = lWidth * lHeight;
 
     FragmentedMemoryInterface lFragmentedMemory =
@@ -239,8 +239,8 @@ public class ImageAnalysisUtils
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
 
-    int lWidth = (int) (int) pStack.getWidth();
-    int lHeight = (int) (int) pStack.getHeight();
+    int lWidth = (int) pStack.getWidth();
+    int lHeight = (int) pStack.getHeight();
 
     TDoubleArrayList lXList = new TDoubleArrayList();
     TDoubleArrayList lYList = new TDoubleArrayList();

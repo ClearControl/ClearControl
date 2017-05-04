@@ -15,6 +15,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
@@ -49,8 +50,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final BoundedVariable<Double> mExposureVariableInSeconds;
   private final Variable<Boolean> mTriggerOnChangeVariable,
       mUseCurrentAcquisitionStateVariable;
-  private final Variable<Boolean> mControlIlluminationZVariable,
-      mControlDetectionZVariable;
+  private final Variable<Boolean> mSyncZVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
 
   private final Variable<Long> mAcquisitionCounterVariable;
@@ -114,12 +114,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                        .getZVariable()
                                                        .getMaxVariable();
 
-    mControlDetectionZVariable =
-                               new Variable<Boolean>("Control Illumination",
-                                                     false);
-    mControlIlluminationZVariable =
-                                  new Variable<Boolean>("Control Detection",
-                                                        false);
+    mSyncZVariable = new Variable<Boolean>("Sync Z", false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
@@ -138,8 +133,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     getTriggerOnChangeVariable().addSetListener(lListener);
     getLoopPeriodVariable().addSetListener(lListener);
     get2DAcquisitionZVariable().addSetListener(lListener);
-    getControlDetectionZVariable().addSetListener(lListener);
-    getControlIlluminationZVariable().addSetListener(lListener);
+    getSyncZVariable().addSetListener(lListener);
 
     getLoopPeriodVariable().set(1.0);
     getExposureVariable().set(0.010);
@@ -153,6 +147,45 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
       // info("Received request to update queue from:" + o.toString());
       mUpdate = true;
     };
+
+    getSyncZVariable().addSetListener((o, n) -> {
+      if (o != n)
+        syncZ(n);
+    });
+  }
+
+  private void syncZ(Boolean pSync)
+  {
+    int lNumberOfLightSheets =
+                             getLightSheetMicroscope().getNumberOfLightSheets();
+    int lNumberOfDetectionArms =
+                               getLightSheetMicroscope().getNumberOfDetectionArms();
+
+    DetectionArmInterface lFirstDetectionArm =
+                                             getLightSheetMicroscope().getDetectionArm(0);
+
+    for (int d = 0; d < lNumberOfDetectionArms; d++)
+      for (int l = 0; l < lNumberOfLightSheets; l++)
+      {
+        DetectionArmInterface lDetectionArm =
+                                            getLightSheetMicroscope().getDetectionArm(d);
+        LightSheetInterface lLightSheet =
+                                        getLightSheetMicroscope().getLightSheet(l);
+
+        if (pSync)
+        {
+          lDetectionArm.getZVariable()
+                       .syncWith(lLightSheet.getZVariable());
+          lDetectionArm.getZVariable()
+                       .set(lFirstDetectionArm.getZVariable().get());
+          lLightSheet.getZVariable()
+                     .set(lFirstDetectionArm.getZVariable().get());
+        }
+        else
+          lDetectionArm.getZVariable()
+                       .doNotSyncWith(lLightSheet.getZVariable());
+      }
+
   }
 
   @Override
@@ -240,18 +273,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             for (int c = 0; c < getNumberOfCameras(); c++)
             {
               mQueue.setC(c, true);
-              if (mControlDetectionZVariable.get())
-                mQueue.setDZ(c, lCurrentZ);
             }
             mQueue.setExp(mExposureVariableInSeconds.get()
                                                     .doubleValue());
-
-            for (int l = 0; l < getNumberOfLightsSheets(); l++)
-            {
-              boolean lIsOn = mQueue.getI(l);
-              if (lIsOn && mControlIlluminationZVariable.get())
-                mQueue.setIZ(l, lCurrentZ);
-            }
 
             mQueue.addCurrentStateToQueue();
 
@@ -350,7 +374,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
               getLightSheetMicroscope().getCurrentTask());
       return;
     }
-    
+
     getLightSheetMicroscope().getCurrentTask().set(this);
 
     if (getIsRunningVariable().get()
@@ -481,21 +505,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    * 
    * @return control illumination variable
    */
-  public Variable<Boolean> getControlDetectionZVariable()
+  public Variable<Boolean> getSyncZVariable()
   {
-    return mControlDetectionZVariable;
-  }
-
-  /**
-   * Returns the variable that holds the flag that decides whether to control
-   * the illumination z focus using the z value from this interactive
-   * acquisition device, or not :-)
-   * 
-   * @return control illumination variable
-   */
-  public Variable<Boolean> getControlIlluminationZVariable()
-  {
-    return mControlIlluminationZVariable;
+    return mSyncZVariable;
   }
 
   /**

@@ -176,7 +176,7 @@ public class InterpolatedAcquisitionState extends
       VariableSetListener<Number> lRangeListener = (o, n) -> {
         if (n != null && !n.equals(o))
         {
-          long lZPlanes = (long) round(getStackDepthInMicrons()
+          long lZPlanes = round(getStackDepthInMicrons()
                                        / mZStep.get().doubleValue());
 
           if (mZPlanes.get().longValue() != lZPlanes)
@@ -190,7 +190,7 @@ public class InterpolatedAcquisitionState extends
       mZStep.addSetListener((o, n) -> {
         if (n != null && !n.equals(o))
         {
-          long lZPlanes = (long) round(getStackDepthInMicrons()
+          long lZPlanes = round(getStackDepthInMicrons()
                                        / n.doubleValue());
 
           if (mZPlanes.get().longValue() != lZPlanes)

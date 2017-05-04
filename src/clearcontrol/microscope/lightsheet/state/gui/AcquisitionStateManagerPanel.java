@@ -129,7 +129,7 @@ public class AcquisitionStateManagerPanel extends
       {
         String lNewName = lSelectedItem.getName() + "’";
         InterpolatedAcquisitionState lOriginalState =
-                                                    (InterpolatedAcquisitionState) lSelectedItem;
+                                                    lSelectedItem;
         InterpolatedAcquisitionState lInterpolatedAcquisitionState =
                                                                    new InterpolatedAcquisitionState(lNewName,
                                                                                                     lOriginalState);

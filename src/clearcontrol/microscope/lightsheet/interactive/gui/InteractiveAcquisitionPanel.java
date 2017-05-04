@@ -27,8 +27,9 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
     super();
     mInteractiveAcquisition = pInteractiveAcquisition;
 
+    /*
     addTab("DOFs");
-
+    
     addSliderForVariable("Z :",
                          mInteractiveAcquisition.get2DAcquisitionZVariable(),
                          null).setUpdateIfChanging(true);
@@ -36,11 +37,12 @@ public class InteractiveAcquisitionPanel extends CustomVariablePane
                            pInteractiveAcquisition.getControlDetectionZVariable());
     addCheckBoxForVariable("Control illumination:",
                            pInteractiveAcquisition.getControlIlluminationZVariable());
-
+    
     addTab("Bounds");
-
+    
     addBoundedVariable("Z :",
                        mInteractiveAcquisition.get2DAcquisitionZVariable());
+                       /**/
 
   }
 

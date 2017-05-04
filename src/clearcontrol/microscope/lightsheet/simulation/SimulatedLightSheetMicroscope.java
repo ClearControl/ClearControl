@@ -276,7 +276,7 @@ public class SimulatedLightSheetMicroscope extends
     // Adding calibrator:
     {
       Calibrator lCalibrator = addCalibrator();
-      // lCalibrator.load();
+      lCalibrator.load();
     }
 
     // Setting up acquisition state manager:

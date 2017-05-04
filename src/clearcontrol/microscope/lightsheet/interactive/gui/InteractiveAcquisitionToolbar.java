@@ -15,7 +15,6 @@ import javafx.scene.layout.Priority;
 import clearcontrol.core.device.switches.gui.SwitchingDevicePanel;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.gui.CameraResolutionGrid;
-import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.lcd.VariableLCD;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
@@ -303,6 +302,23 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
                         Priority.ALWAYS);
       GridPane.setColumnSpan(lTriggerOnChangeToggleButton, 3);
       add(lTriggerOnChangeToggleButton, 0, lRow);
+
+      lRow++;
+    }
+    
+    {
+      Variable<Boolean> lSyncZVariable =
+                                                 pInteractiveAcquisition.getSyncZVariable();
+
+      VariableToggleButton lSyncZToggleButton =
+                                                        new VariableToggleButton("Lightsheet and detection synced",
+                                                                                 "Lightsheet and detection not synced",
+                                                                                 lSyncZVariable);
+      lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setHgrow(lSyncZToggleButton,
+                        Priority.ALWAYS);
+      GridPane.setColumnSpan(lSyncZToggleButton, 3);
+      add(lSyncZToggleButton, 0, lRow);
 
       lRow++;
     }
