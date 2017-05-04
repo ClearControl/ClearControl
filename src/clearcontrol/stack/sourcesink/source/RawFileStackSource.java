@@ -12,6 +12,7 @@ import clearcontrol.core.units.Magnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.FileStackBase;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
@@ -95,13 +96,13 @@ public class RawFileStackSource extends FileStackBase implements
                                                            pTimeUnit,
                                                            lStackRequest);
 
-      String lFileName = String.format("tp%d.raw", pStackIndex);
-      File lFile = new File(mStacksFolder, lFileName);
+      String lFileName = String.format(StackSinkSourceInterface.cFormat, pStackIndex);
+      File lFile = new File(getChannelFolder(pChannel), lFileName);
 
       if (!lFile.exists())
         return null;
 
-      FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
+      FileChannel lBinnaryFileChannel = getFileChannel(lFile, true);
 
       if (lStack.getContiguousMemory() != null)
         lStack.getContiguousMemory()
@@ -136,6 +137,8 @@ public class RawFileStackSource extends FileStackBase implements
   {
     try
     {
+      clear();
+      
       ArrayList<String> lChannelList = getCurrentChannelList();
 
       for (String lChannel : lChannelList)

@@ -16,12 +16,10 @@ public class DetectionArmQueue extends VariableQueueBase implements
 {
   private DetectionArm mDetectionArm;
 
-  private final BoundedVariable<Number> mDetectionFocusZ =
-                                                         new BoundedVariable<Number>("FocusZ",
-                                                                                     0.0);
+  private final BoundedVariable<Number> mDetectionFocusZ;
 
   /**
-   * Instanciates detection arm queue
+   * Instantiates detection arm queue
    * 
    * @param pDetectionArm
    *          parent detection arm
@@ -30,11 +28,16 @@ public class DetectionArmQueue extends VariableQueueBase implements
   {
     super();
     mDetectionArm = pDetectionArm;
+
+    mDetectionFocusZ =
+                     new BoundedVariable<Number>(mDetectionArm.getName()
+                                                 + "-DetectionFocusZ",
+                                                 0.0);
     registerVariable(mDetectionFocusZ);
   }
 
   /**
-   * Instanciates a new queue by copying the given queue current state.
+   * Instantiates a new queue by copying the given queue current state.
    * 
    * @param pTemplateQueue
    *          template queue to copy (without history)

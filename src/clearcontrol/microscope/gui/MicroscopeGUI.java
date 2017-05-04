@@ -310,7 +310,8 @@ public class MicroscopeGUI extends VirtualDevice implements
                                              new Stack2DDisplay(String.format("Video 2D for camera %d",
                                                                               c),
                                                                 cDefaultWindowWidth,
-                                                                cDefaultWindowHeight);
+                                                                cDefaultWindowHeight,
+                                                                c % 2 == 1);
         lStack2DDisplay.setVisible(false);
         mStack2DDisplayList.add(lStack2DDisplay);
       }

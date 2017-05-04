@@ -305,18 +305,49 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
 
       lRow++;
     }
-    
+
     {
       Variable<Boolean> lSyncZVariable =
-                                                 pInteractiveAcquisition.getSyncZVariable();
+                                       pInteractiveAcquisition.getSyncDetectionArmsVariable();
 
       VariableToggleButton lSyncZToggleButton =
-                                                        new VariableToggleButton("Lightsheet and detection synced",
-                                                                                 "Lightsheet and detection not synced",
-                                                                                 lSyncZVariable);
+                                              new VariableToggleButton("Detection arms synced",
+                                                                       "Detection arms not synced",
+                                                                       lSyncZVariable);
       lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setHgrow(lSyncZToggleButton,
-                        Priority.ALWAYS);
+      GridPane.setHgrow(lSyncZToggleButton, Priority.ALWAYS);
+      GridPane.setColumnSpan(lSyncZToggleButton, 3);
+      add(lSyncZToggleButton, 0, lRow);
+
+      lRow++;
+    }
+
+    {
+      Variable<Boolean> lSyncZVariable =
+                                       pInteractiveAcquisition.getSyncLightSheetsVariable();
+
+      VariableToggleButton lSyncZToggleButton =
+                                              new VariableToggleButton("Lightsheets synced",
+                                                                       "Lightsheets not synced",
+                                                                       lSyncZVariable);
+      lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setHgrow(lSyncZToggleButton, Priority.ALWAYS);
+      GridPane.setColumnSpan(lSyncZToggleButton, 3);
+      add(lSyncZToggleButton, 0, lRow);
+
+      lRow++;
+    }
+
+    {
+      Variable<Boolean> lSyncZVariable =
+                                       pInteractiveAcquisition.getSyncLightSheetsAndDetectionArmsVariable();
+
+      VariableToggleButton lSyncZToggleButton =
+                                              new VariableToggleButton("Lightsheets and detection arms synced",
+                                                                       "Lightsheets and detection arms synced",
+                                                                       lSyncZVariable);
+      lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setHgrow(lSyncZToggleButton, Priority.ALWAYS);
       GridPane.setColumnSpan(lSyncZToggleButton, 3);
       add(lSyncZToggleButton, 0, lRow);
 
@@ -357,7 +388,7 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
 
       lRow++;
     }
-    
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
@@ -382,12 +413,10 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
                                                          new SwitchingDevicePanel(lDevice,
                                                                                   lNames);
 
-      HBox lHBox = new HBox(lLabel,lLightSheetOpticalSwitchPanel);
-      
-      GridPane.setHalignment(lHBox,
-                             HPos.CENTER);
-      GridPane.setHgrow(lHBox,
-                        Priority.ALWAYS);
+      HBox lHBox = new HBox(lLabel, lLightSheetOpticalSwitchPanel);
+
+      GridPane.setHalignment(lHBox, HPos.CENTER);
+      GridPane.setHgrow(lHBox, Priority.ALWAYS);
       GridPane.setColumnSpan(lHBox, 3);
       add(lHBox, 0, lRow);
 

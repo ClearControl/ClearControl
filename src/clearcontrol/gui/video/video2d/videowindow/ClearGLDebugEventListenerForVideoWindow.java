@@ -53,15 +53,17 @@ final class ClearGLDebugEventListenerForVideoWindow extends
    * 
    */
   private final VideoWindow mVideoWindow;
+  private boolean mFlipX;
 
   /**
    * Constructs an instance of the ClearGLDebugEventListenerForVideoWindow class
    * 
    * @param pVideoWindow
    */
-  ClearGLDebugEventListenerForVideoWindow(VideoWindow pVideoWindow)
+  ClearGLDebugEventListenerForVideoWindow(VideoWindow pVideoWindow, final boolean pFlipX)
   {
     mVideoWindow = pVideoWindow;
+    mFlipX = pFlipX;
   }
 
   @Override
@@ -127,12 +129,12 @@ final class ClearGLDebugEventListenerForVideoWindow extends
                                                          2);
 
       final GLFloatArray lTexCoordFloatArray = new GLFloatArray(6, 2);
-      lTexCoordFloatArray.add(0, 0);
-      lTexCoordFloatArray.add(1, 0);
-      lTexCoordFloatArray.add(1, 1);
-      lTexCoordFloatArray.add(0, 0);
-      lTexCoordFloatArray.add(1, 1);
-      lTexCoordFloatArray.add(0, 1);
+      lTexCoordFloatArray.add(mFlipX?1:0, 0);
+      lTexCoordFloatArray.add(mFlipX?0:1, 0);
+      lTexCoordFloatArray.add(mFlipX?0:1, 1);
+      lTexCoordFloatArray.add(mFlipX?1:0, 0);
+      lTexCoordFloatArray.add(mFlipX?0:1, 1);
+      lTexCoordFloatArray.add(mFlipX?1:0, 1);
 
       initializeTexture(mVideoWindow.mVideoWidth,
                         mVideoWindow.mVideoHeight);

@@ -13,6 +13,7 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
 /**
@@ -91,7 +92,7 @@ public class RawFileStackSink extends FileStackBase implements
                                 String pChannel,
                                 final StackInterface pStack) throws IOException
   {
-    String lFileName = String.format("tp%d.raw", pIndex);
+    String lFileName = String.format(StackSinkSourceInterface.cFormat, pIndex);
     File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
     FragmentedMemoryInterface lFragmentedMemory =
@@ -133,7 +134,7 @@ public class RawFileStackSink extends FileStackBase implements
                                                 lTimeStampInSeconds,
                                                 lDimensionsString.substring(1,
                                                                             lDimensionsString.length()
-                                                                               - 2));
+                                                                               - 1));
     final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
     final ByteBuffer lIndexLineStringByteBuffer =
                                                 ByteBuffer.wrap(lIndexLineStringBytes);

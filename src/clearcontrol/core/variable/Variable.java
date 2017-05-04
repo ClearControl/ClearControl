@@ -136,6 +136,7 @@ public class Variable<O> extends VariableBase<O> implements
   {
     EventPropagator.clear();
     setReferenceInternal(pNewReference);
+    EventPropagator.clear();
   }
 
   /**
@@ -189,7 +190,7 @@ public class Variable<O> extends VariableBase<O> implements
   }
 
   /**
-   * Sends a new avalue to the variables synced to this variable - this is
+   * Sends a new value to the variables synced to this variable - this is
    * normally called internally when setting the value. This should be only used
    * if you know what you are doing...
    * 
@@ -436,25 +437,6 @@ public class Variable<O> extends VariableBase<O> implements
     {
       return getName() + "=null";
     }
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return getName().hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Variable<?> other = (Variable<?>) obj;
-    return getName().equals(other.getName());
   }
 
 }
