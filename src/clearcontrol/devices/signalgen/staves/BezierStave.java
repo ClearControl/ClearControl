@@ -69,18 +69,40 @@ public class BezierStave extends StaveAbstract
   public float getValue(float pNormalizedTime)
   {
 
-    float lControlValueStart = getValueStart()
-                               + getSlopeStart() * getSmoothness();
-    float lControlValueEnd = getValueEnd()
-                             - getSlopeEnd() * getSmoothness();
+    float lMargin = 0.2f;
+    float lValue = 0;
 
-    final float lBezierValue = (float) Bezier.bezier(getValueStart(),
-                                                     lControlValueStart,
-                                                     lControlValueEnd,
-                                                     getValueEnd(),
-                                                     pNormalizedTime);
+    if (pNormalizedTime < lMargin)
+    {
+      lValue = getValueStart() + getSlopeStart() * pNormalizedTime;
+    }
+    else if (pNormalizedTime > 1 - lMargin)
+    {
+      lValue = (float) (getValueStop()
+                        - getSlopeEnd() * (1 - pNormalizedTime));
+    }
+    else
+    {
+      float lBezierTime = (pNormalizedTime - lMargin)
+                          / (1 - 2 * lMargin);
+      float lBezierValueStart = getValueStart()
+                                + getSlopeStart() * lMargin;
+      float lBezierValueStop = getValueStop()
+                               - getSlopeEnd() * (lMargin);
 
-    return lBezierValue;
+      float lControlValueStart = lBezierValueStart
+                                 + getSlopeStart() * getSmoothness();
+      float lControlValueEnd = lBezierValueStop
+                               - getSlopeEnd() * getSmoothness();
+
+      lValue = (float) Bezier.bezier(lBezierValueStart,
+                                     lControlValueStart,
+                                     lControlValueEnd,
+                                     lBezierValueStop,
+                                     lBezierTime);
+    }
+
+    return lValue;
   }
 
   @Override
@@ -88,7 +110,7 @@ public class BezierStave extends StaveAbstract
   {
     return new BezierStave(getName(),
                            getValueStart(),
-                           getValueEnd(),
+                           getValueStop(),
                            getSlopeStart(),
                            getSlopeEnd(),
                            getSmoothness());
@@ -104,7 +126,7 @@ public class BezierStave extends StaveAbstract
     mStartValue = pValueStart;
   }
 
-  public float getValueEnd()
+  public float getValueStop()
   {
     return mStopValue;
   }

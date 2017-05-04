@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
 import clearcl.util.ElapsedTime;
+import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
@@ -527,7 +528,7 @@ public class CalibrationZ implements LoggingInterface
     System.out.println("before: getYFunction()="
                        + lLightSheetDevice.getYFunction());/**/
 
-    adjustYFunctionScaleAnd(lLightSheetDevice);
+    adjustYFunctionScale(lLightSheetDevice);
 
     if (mNumberOfDetectionArmDevices == 2 && pAdjustDetectionZ)
       applyDetectionZ(pLightSheetIndex);
@@ -540,12 +541,20 @@ public class CalibrationZ implements LoggingInterface
 
   }
 
-  protected void adjustYFunctionScaleAnd(final LightSheetInterface lLightSheetDevice)
+  protected void adjustYFunctionScale(final LightSheetInterface lLightSheetDevice)
   {
+    MachineConfiguration lMachineConfiguration =
+                                               MachineConfiguration.getCurrentMachineConfiguration();
+
+    Double lXYRatio =
+                    lMachineConfiguration.getDoubleProperty("device.lsm.lighsheet.yzratio",
+                                                            1.0);
+
     lLightSheetDevice.getYFunction()
                      .set(UnivariateAffineFunction.axplusb(lLightSheetDevice.getZFunction()
                                                                             .get()
-                                                                            .getSlope(),
+                                                                            .getSlope()
+                                                           * lXYRatio,
                                                            0));
   }
 
