@@ -58,13 +58,15 @@ public class VideoWindow implements AutoCloseable
 
   volatile boolean mMinMaxFixed = false;
 
-  private volatile boolean mIsDisplayLines = false;
+  volatile boolean mIsDisplayLines = false;
 
   volatile double mMinIntensity = 0;
 
   volatile double mMaxIntensity = 1;
 
   volatile double mGamma = 1;
+  
+  volatile boolean mFlipX=false;
 
   final ReentrantLock mSendBufferLock = new ReentrantLock();
 
@@ -74,12 +76,15 @@ public class VideoWindow implements AutoCloseable
 
   private ClearGLDefaultEventListener mClearGLDebugEventListener;
 
+
+
   // private GLPixelBufferObject mPixelBufferObject;
 
   public VideoWindow(final String pWindowName,
                      final NativeTypeEnum pType,
                      final int pWindowWidth,
-                     final int pWindowHeight) throws GLException
+                     final int pWindowHeight,
+                     final boolean pFlipX) throws GLException
   {
     mType = pType;
     mVideoWidth = pWindowWidth;
@@ -88,9 +93,10 @@ public class VideoWindow implements AutoCloseable
     // this is a guess until we get the actual values:
     mEffectiveWindowWidth = pWindowWidth;
     mEffectiveWindowHeight = pWindowHeight;
+    mFlipX = pFlipX;
 
     mClearGLDebugEventListener =
-                               new ClearGLDebugEventListenerForVideoWindow(this);
+                               new ClearGLDebugEventListenerForVideoWindow(this,mFlipX);
 
     mClearGLWindow = new ClearGLWindow(pWindowName,
                                        pWindowWidth,

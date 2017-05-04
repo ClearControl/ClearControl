@@ -19,48 +19,14 @@ public class LightSheetQueue extends VariableQueueBase implements
 
   private LightSheet mLightSheet;
 
-  private final BoundedVariable<Number> mEffectiveExposureInSecondsVariable =
-                                                                            new BoundedVariable<Number>("EffectiveExposureInSeconds",
-                                                                                                        0.005);
+  private final BoundedVariable<Long> mImageHeightVariable;
+  private final BoundedVariable<Number> mEffectiveExposureInSecondsVariable,
+      mReadoutTimeInMicrosecondsPerLineVariable, mOverScanVariable,
+      mXVariable, mYVariable, mZVariable, mAlphaInDegreesVariable,
+      mBetaInDegreesVariable, mWidthVariable, mHeightVariable,
+      mPowerVariable;
 
-  private final BoundedVariable<Long> mImageHeightVariable =
-                                                           new BoundedVariable<Long>("ImageHeight",
-                                                                                     2 * 1024L);
-  private final BoundedVariable<Number> mReadoutTimeInMicrosecondsPerLineVariable =
-                                                                                  new BoundedVariable<Number>("ReadoutTimeInMicrosecondsPerLine",
-                                                                                                              9.74);
-  private final BoundedVariable<Number> mOverScanVariable =
-                                                          new BoundedVariable<Number>("OverScan",
-                                                                                      1.3);
-
-  private final BoundedVariable<Number> mXVariable =
-                                                   new BoundedVariable<Number>("LightSheetX",
-                                                                               0.0);
-  private final BoundedVariable<Number> mYVariable =
-                                                   new BoundedVariable<Number>("LightSheetY",
-                                                                               0.0);
-  private final BoundedVariable<Number> mZVariable =
-                                                   new BoundedVariable<Number>("LightSheetZ",
-                                                                               0.0);
-
-  private final BoundedVariable<Number> mAlphaInDegreesVariable =
-                                                                new BoundedVariable<Number>("LightSheetAlphaInDegrees",
-                                                                                            0.0);
-  private final BoundedVariable<Number> mBetaInDegreesVariable =
-                                                               new BoundedVariable<Number>("LightSheetBetaInDegrees",
-                                                                                           0.0);
-  private final BoundedVariable<Number> mWidthVariable =
-                                                       new BoundedVariable<Number>("LightSheetRange",
-                                                                                   0.0);
-  private final BoundedVariable<Number> mHeightVariable =
-                                                        new BoundedVariable<Number>("LightSheetLength",
-                                                                                    0.0);
-  private final BoundedVariable<Number> mPowerVariable =
-                                                       new BoundedVariable<Number>("LightSheetPower",
-                                                                                   1.0);
-  private final Variable<Boolean> mAdaptPowerToWidthHeightVariable =
-                                                                   new Variable<Boolean>("AdaptLightSheetPowerToWidthHeight",
-                                                                                         false);
+  private final Variable<Boolean> mAdaptPowerToWidthHeightVariable;
 
   private final Variable<Boolean>[] mLaserOnOffVariableArray;
 
@@ -82,6 +48,55 @@ public class LightSheetQueue extends VariableQueueBase implements
     mLightSheet = pLightSheet;
     mNumberOfLaserDigitalControls =
                                   mLightSheet.getNumberOfLaserDigitalControls();
+
+    String lNamePrefix = mLightSheet.getName();
+    
+    mEffectiveExposureInSecondsVariable =
+                                        new BoundedVariable<Number>(lNamePrefix
+                                                                    + "-EffectiveExposureInSeconds",
+                                                                    0.005);
+
+    mImageHeightVariable =
+                         new BoundedVariable<Long>(lNamePrefix
+                                                   + "-ImageHeight",
+                                                   2 * 1024L);
+    mReadoutTimeInMicrosecondsPerLineVariable =
+                                              new BoundedVariable<Number>(lNamePrefix
+                                                                          + "-ReadoutTimeInMicrosecondsPerLine",
+                                                                          9.74);
+    mOverScanVariable =
+                      new BoundedVariable<Number>(lNamePrefix
+                                                  + "-OverScan", 1.3);
+
+    mXVariable = new BoundedVariable<Number>(lNamePrefix
+                                             + "-LightSheetX", 0.0);
+    mYVariable = new BoundedVariable<Number>(lNamePrefix
+                                             + "-LightSheetY", 0.0);
+    mZVariable = new BoundedVariable<Number>(lNamePrefix
+                                             + "-LightSheetZ", 0.0);
+
+    mAlphaInDegreesVariable =
+                            new BoundedVariable<Number>(lNamePrefix
+                                                        + "-LightSheetAlphaInDegrees",
+                                                        0.0);
+    mBetaInDegreesVariable =
+                           new BoundedVariable<Number>(lNamePrefix
+                                                       + "-LightSheetBetaInDegrees",
+                                                       0.0);
+    mWidthVariable = new BoundedVariable<Number>(lNamePrefix
+                                                 + "-LightSheetRange",
+                                                 0.0);
+    mHeightVariable =
+                    new BoundedVariable<Number>(lNamePrefix
+                                                + "-LightSheetLength",
+                                                0.0);
+    mPowerVariable = new BoundedVariable<Number>(lNamePrefix
+                                                 + "-LightSheetPower",
+                                                 1.0);
+    mAdaptPowerToWidthHeightVariable =
+                                     new Variable<Boolean>(lNamePrefix
+                                                           + "-AdaptLightSheetPowerToWidthHeight",
+                                                           false);
 
     registerVariables(mReadoutTimeInMicrosecondsPerLineVariable,
                       mOverScanVariable,
@@ -108,7 +123,9 @@ public class LightSheetQueue extends VariableQueueBase implements
 
     for (int i = 0; i < mNumberOfLaserDigitalControls; i++)
     {
-      final String lLaserName = "Laser" + i + ".exposure.trig";
+      final String lLaserName = lNamePrefix + "-Laser"
+                                + i
+                                + ".exposure.trig";
 
       mSIPatternVariableArray[i] =
                                  new Variable<StructuredIlluminationPatternInterface>("StructuredIlluminationPattern",

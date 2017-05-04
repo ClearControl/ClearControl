@@ -32,6 +32,12 @@ public abstract class StackServerBase implements
   {
     super();
   }
+  
+  protected void clear()
+  {
+    mChannelIndexToTimeStampInSecondsMap.clear();
+    mChannelIndexToStackRequestMap.clear();
+  }
 
   /**
    * Returns the number of stacks for the default channel

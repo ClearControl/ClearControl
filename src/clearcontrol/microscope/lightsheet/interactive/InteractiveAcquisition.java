@@ -50,7 +50,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private final BoundedVariable<Double> mExposureVariableInSeconds;
   private final Variable<Boolean> mTriggerOnChangeVariable,
       mUseCurrentAcquisitionStateVariable;
-  private final Variable<Boolean> mSyncZVariable;
+  private final Variable<Boolean> mSyncDetectionArmsVariable,
+      mSyncLightSheetsVariable,
+      mSyncLightSheetsAndDetectionArmsVariable;
   private final BoundedVariable<Number> m2DAcquisitionZVariable;
 
   private final Variable<Long> mAcquisitionCounterVariable;
@@ -114,7 +116,17 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                        .getZVariable()
                                                        .getMaxVariable();
 
-    mSyncZVariable = new Variable<Boolean>("Sync Z", false);
+    mSyncDetectionArmsVariable =
+                               new Variable<Boolean>("Sync detection arms",
+                                                     false);
+
+    mSyncLightSheetsVariable =
+                             new Variable<Boolean>("Sync lightsheets",
+                                                   false);
+
+    mSyncLightSheetsAndDetectionArmsVariable =
+                                             new Variable<Boolean>("Sync lightsheets and detection arms",
+                                                                   false);
 
     m2DAcquisitionZVariable =
                             new BoundedVariable<Number>("2DAcquisitionZ",
@@ -133,7 +145,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     getTriggerOnChangeVariable().addSetListener(lListener);
     getLoopPeriodVariable().addSetListener(lListener);
     get2DAcquisitionZVariable().addSetListener(lListener);
-    getSyncZVariable().addSetListener(lListener);
+    getSyncDetectionArmsVariable().addSetListener(lListener);
+    getSyncLightSheetsAndDetectionArmsVariable().addSetListener(lListener);
 
     getLoopPeriodVariable().set(1.0);
     getExposureVariable().set(0.010);
@@ -148,13 +161,79 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
       mUpdate = true;
     };
 
-    getSyncZVariable().addSetListener((o, n) -> {
+    getSyncDetectionArmsVariable().addSetListener((o, n) -> {
       if (o != n)
-        syncZ(n);
+        syncDetectionArms(n);
+    });
+
+    getSyncLightSheetsVariable().addSetListener((o, n) -> {
+      if (o != n)
+        syncLightSheets(n);
+    });
+
+    getSyncLightSheetsAndDetectionArmsVariable().addSetListener((o,
+                                                                 n) -> {
+      if (o != n)
+        syncLightSheetsAndDetectionArms(n);
     });
   }
 
-  private void syncZ(Boolean pSync)
+  private void syncDetectionArms(Boolean pSync)
+  {
+
+    DetectionArmInterface lFirstDetectionArm =
+                                             getLightSheetMicroscope().getDetectionArm(0);
+
+    int lNumberOfDetectionArms =
+                               getLightSheetMicroscope().getNumberOfDetectionArms();
+    for (int d = 0; d < lNumberOfDetectionArms; d++)
+      if (d != 0)
+      {
+        DetectionArmInterface lDetectionArm =
+                                            getLightSheetMicroscope().getDetectionArm(d);
+        if (pSync)
+        {
+          lDetectionArm.getZVariable()
+                       .syncWith(lFirstDetectionArm.getZVariable());
+          lDetectionArm.getZVariable()
+                       .set(lFirstDetectionArm.getZVariable().get());
+        }
+        else
+          lDetectionArm.getZVariable()
+                       .doNotSyncWith(lFirstDetectionArm.getZVariable());
+      }
+
+  }
+
+  private void syncLightSheets(Boolean pSync)
+  {
+
+    LightSheetInterface lFirstLightSheet =
+                                         getLightSheetMicroscope().getLightSheet(0);
+
+    int lNumberOfLightSheets =
+                             getLightSheetMicroscope().getNumberOfLightSheets();
+    for (int l = 0; l < lNumberOfLightSheets; l++)
+      if (l != 0)
+      {
+        LightSheetInterface lLightSheet =
+                                        getLightSheetMicroscope().getLightSheet(l);
+
+        if (pSync)
+        {
+          lLightSheet.getZVariable()
+                     .syncWith(lFirstLightSheet.getZVariable());
+          lLightSheet.getZVariable()
+                     .set(lFirstLightSheet.getZVariable().get());
+        }
+        else
+          lLightSheet.getZVariable()
+                     .doNotSyncWith(lFirstLightSheet.getZVariable());
+      }
+
+  }
+
+  private void syncLightSheetsAndDetectionArms(Boolean pSync)
   {
     int lNumberOfLightSheets =
                              getLightSheetMicroscope().getNumberOfLightSheets();
@@ -499,15 +578,33 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   }
 
   /**
-   * Returns the variable that holds the flag that decides whether to control
-   * the detection z focus using the z value from this interactive acquisition
-   * device.
+   * Returns the sync detection arms variable
    * 
-   * @return control illumination variable
+   * @return sync detection arms variable
    */
-  public Variable<Boolean> getSyncZVariable()
+  public Variable<Boolean> getSyncDetectionArmsVariable()
   {
-    return mSyncZVariable;
+    return mSyncDetectionArmsVariable;
+  }
+
+  /**
+   * Returns the sync lightsheets variable
+   * 
+   * @return sync lightsheets variable
+   */
+  public Variable<Boolean> getSyncLightSheetsVariable()
+  {
+    return mSyncLightSheetsVariable;
+  }
+
+  /**
+   * Returns the sync lightsheets and detection arms variable
+   * 
+   * @return sync lightsheets and detection arms variable
+   */
+  public Variable<Boolean> getSyncLightSheetsAndDetectionArmsVariable()
+  {
+    return mSyncLightSheetsAndDetectionArmsVariable;
   }
 
   /**
