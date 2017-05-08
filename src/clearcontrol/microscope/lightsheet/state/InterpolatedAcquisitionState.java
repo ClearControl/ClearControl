@@ -106,8 +106,17 @@ public class InterpolatedAcquisitionState extends
 
     if (lDetectionArm == null)
     {
-      mZLow = new BoundedVariable<Number>("LowZ", -117);
-      mZHigh = new BoundedVariable<Number>("HighZ", +117);
+      mZLow = new BoundedVariable<Number>("LowZ",
+                                          -117.0,
+                                          -200.0,
+                                          200.0,
+                                          1.0);
+      mZHigh =
+             new BoundedVariable<Number>("HighZ",
+                                         +117.0,
+                                         -200.0,
+                                         200.0,
+                                         1.0);
     }
     else
     {
@@ -134,6 +143,7 @@ public class InterpolatedAcquisitionState extends
                          new InterpolationTables(mNumberOfDetectionArms,
                                                  mNumberOfLightSheets);
     mInterpolationTables.addChangeListener((e) -> {
+      info("Interpolation table changed!");
       notifyListeners(this);
     });
 
@@ -353,7 +363,7 @@ public class InterpolatedAcquisitionState extends
                                      - pMarginZ; z +=
                                                    pControlPlaneStepZ)
     {
-      mInterpolationTables.addControlPlane(z);
+      addControlPlane(z);
     }
     notifyListeners(this);
   }
@@ -515,6 +525,9 @@ public class InterpolatedAcquisitionState extends
                                                     d);
     }
 
+    for (int l = 0; l < mNumberOfLightSheets; l++)
+      pQueue.setI(l, false);
+
     for (int l = pLightSheetIndexMin; l < pLightSheetIndexMax; l++)
     {
       applyAcquisitionStateAtStackPlaneAndLightSheet(pQueue,
@@ -545,6 +558,9 @@ public class InterpolatedAcquisitionState extends
     }
 
     for (int l = 0; l < mNumberOfLightSheets; l++)
+      pQueue.setI(l, false);
+
+    for (int l = 0; l < mNumberOfLightSheets; l++)
     {
       applyAcquisitionStateAtStackPlaneAndLightSheet(pQueue,
                                                      pPlaneIndex,
@@ -568,8 +584,6 @@ public class InterpolatedAcquisitionState extends
                                                               int pLaserLineIndexMin,
                                                               int pLaserLineIndexMax)
   {
-    for (int l = 0; l < mNumberOfLightSheets; l++)
-      pQueue.setI(l, false);
 
     pQueue.setI(pLightSheetIndex,
                 mLightSheetOnOff[pLightSheetIndex].get());
@@ -669,6 +683,42 @@ public class InterpolatedAcquisitionState extends
     pQueue.setILO(false);
     for (int i = 0; i < pNumberOfMarginPlanesToAdd; i++)
       mQueue.addCurrentStateToQueue();
+  }
+
+  /**
+   * Adds a control plane for a given z value
+   * 
+   * @param z
+   *          value
+   */
+  public void addControlPlane(double z)
+  {
+    mInterpolationTables.addControlPlane(z);
+  }
+
+  /**
+   * Removes the nearest control plane for a given z value
+   * 
+   * @param z
+   *          value
+   */
+  public void removeControlPlane(double z)
+  {
+    mInterpolationTables.removeControlPlane(z);
+  }
+
+  /**
+   * Changes the nearest control plane for a given z value to a new value
+   * 
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pNewZ
+   *          new z value for control plane
+   */
+  public void changeControlPlane(int pControlPlaneIndex, double pNewZ)
+  {
+    mInterpolationTables.changeControlPlane(pControlPlaneIndex,
+                                            pNewZ);
   }
 
   /**

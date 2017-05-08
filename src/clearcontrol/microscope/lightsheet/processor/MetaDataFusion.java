@@ -10,7 +10,9 @@ import clearcontrol.stack.metadata.MetaDataEntryInterface;
 @SuppressWarnings("javadoc")
 public enum MetaDataFusion implements MetaDataEntryInterface<Boolean>
 {
- RequestFuse(Boolean.class), Fused(Boolean.class);
+ RequestFullFusion(Boolean.class),
+ RequestPerCameraFusion(Boolean.class),
+ Fused(Boolean.class);
 
   private final Class<Boolean> mClass;
 

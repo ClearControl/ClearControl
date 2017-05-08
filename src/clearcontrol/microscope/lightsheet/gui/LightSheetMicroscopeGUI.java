@@ -10,7 +10,6 @@ import clearcontrol.microscope.lightsheet.component.detection.gui.DetectionArmPa
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
-import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionToolbar;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.signalgen.gui.LightSheetSignalGeneratorPanel;
@@ -57,9 +56,9 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
                          DetectionArmPanel.class,
                          LSMNodeType.DetectionArm);
 
-    addPanelMappingEntry(InteractiveAcquisition.class,
+    /*addPanelMappingEntry(InteractiveAcquisition.class,
                          InteractiveAcquisitionPanel.class,
-                         MicroscopeNodeType.Acquisition);
+                         MicroscopeNodeType.Acquisition);/**/
 
     addPanelMappingEntry(AcquisitionStateManager.class,
                          AcquisitionStateManagerPanel.class,

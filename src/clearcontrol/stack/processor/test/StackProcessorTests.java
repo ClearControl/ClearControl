@@ -15,11 +15,19 @@ import coremem.recycling.RecyclerInterface;
 
 import org.junit.Test;
 
+/**
+ * Stack processsor tests
+ *
+ * @author royer
+ */
 public class StackProcessorTests
 {
 
   private static final int cMaximalNumberOfAvailableObjects = 10;
 
+  /**
+   * Test
+   */
   @Test
   public void test()
   {

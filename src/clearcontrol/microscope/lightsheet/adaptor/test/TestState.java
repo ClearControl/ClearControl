@@ -1,5 +1,7 @@
 package clearcontrol.microscope.lightsheet.adaptor.test;
 
+import java.util.concurrent.TimeUnit;
+
 import clearcontrol.core.device.NameableWithChangeListener;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -36,12 +38,24 @@ public class TestState extends
   {
     return new TestState(pName);
   }
-
+  
   @Override
-  public void updateQueue(LightSheetMicroscopeInterface pMicroscope)
+  public void prepareAcquisition(long pTimeOut, TimeUnit pTimeUnit)
   {
     // TODO Auto-generated method stub
+    
+  }
 
+  @Override
+  public LightSheetMicroscopeQueue getQueue(int pCameraIndexMin,
+                                            int pCameraIndexMax,
+                                            int pLightSheetIndexMin,
+                                            int pLightSheetIndexMax,
+                                            int pLaserLineIndexMin,
+                                            int pLaserLineIndexMax)
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -73,12 +87,6 @@ public class TestState extends
 
   }
 
-  @Override
-  public void applyStagePosition()
-  {
-    // TODO Auto-generated method stub
-
-  }
 
   @Override
   public BoundedVariable<Number> getStageXVariable()
@@ -103,6 +111,22 @@ public class TestState extends
 
   @Override
   public Variable<Boolean> getLightSheetOnOffVariable(int pLightSheetIndex)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+
+  @Override
+  public Variable<Boolean> getCameraOnOffVariable(int pCameraIndex)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex)
   {
     // TODO Auto-generated method stub
     return null;

@@ -24,6 +24,8 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
  */
 public class SplineInterpolationTable implements Cloneable
 {
+  private static final double cEpsilon = 1e-9;
+
   private final TreeSet<Row> mTable;
   private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
   private final int mNumberOfColumns;
@@ -157,6 +159,60 @@ public class SplineInterpolationTable implements Cloneable
     mTable.add(lRow);
     mIsUpToDate = false;
     return lRow;
+  }
+
+  /**
+   * Adds a row after a given X value
+   * 
+   * @param pX
+   *          X
+   */
+  public void addRowAfter(double pX)
+  {
+    Row lNextRow = getCeilRow(pX + cEpsilon);
+
+    double lX;
+
+    if (lNextRow != null)
+      lX = (pX + lNextRow.x) / 2;
+    else
+      lX = pX + 1;
+
+    addRow(lX);
+  }
+
+  /**
+   * Removes the nearest row for a given X value
+   * 
+   * @param pX
+   *          X
+   * @return remove row
+   */
+  public Row removeRow(double pX)
+  {
+    Row lNearestRow = getNearestRow(pX);
+    mTable.remove(lNearestRow);
+    mIsUpToDate = false;
+    return lNearestRow;
+  }
+
+  /**
+   * Moves a row of given index to a new value
+   * 
+   * @param pRowIndex
+   *          row index
+   * @param pNewX
+   *          new value
+   * @return new row
+   */
+  public Row moveRow(int pRowIndex, double pNewX)
+  {
+    Row lOldRow = getRow(pRowIndex);
+    mTable.remove(lOldRow);
+    Row lNewRow = new Row(lOldRow, pNewX);
+    mTable.add(lNewRow);
+    mIsUpToDate = false;
+    return lNewRow;
   }
 
   /**

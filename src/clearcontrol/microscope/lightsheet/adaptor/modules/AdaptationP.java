@@ -5,15 +5,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
@@ -118,12 +115,12 @@ public class AdaptationP extends
       ArrayList<double[]> lAvgIntensities = new ArrayList<>();
       for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
       {
-        final StackInterface lStack =
-                                    getAdaptator().getLightSheetMicroscope()
-                                                  .getCameraStackVariable(d)
-                                                  .get();
+        final OffHeapPlanarStack lStack =
+                                        (OffHeapPlanarStack) getAdaptator().getLightSheetMicroscope()
+                                                                           .getCameraStackVariable(d)
+                                                                           .get();
         double[] lImageSumIntensity =
-                                    ImageAnalysisUtils.computeImageAverageIntensityPerPlane((OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lStack.getImage());
+                                    ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lStack);
         lAvgIntensities.add(lImageSumIntensity);
       }
 
@@ -258,6 +255,13 @@ public class AdaptationP extends
   {
     // TODO: change this
     return 1;
+  }
+
+  @Override
+  public void updateNewState()
+  {
+    // TODO Auto-generated method stub
+
   }
 
 }

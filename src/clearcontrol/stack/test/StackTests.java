@@ -31,6 +31,7 @@ public class StackTests
 {
 
   private static final int cMaximumNumberOfObjects = 1024;
+  @SuppressWarnings("unused")
   private static final long cMaximumLiveMemoryInBytes = 2L * 1024L
                                                         * 1024L
                                                         * 1024L;
@@ -193,14 +194,14 @@ public class StackTests
 
       final long lLiveObjectCount =
                                   lRecycler.getNumberOfLiveObjects();
-      final long lLiveMemoryInBytes =
+      /*final long lLiveMemoryInBytes =
                                     lRecycler.computeLiveMemorySizeInBytes();
-
+      
       final long lAvailableObjectCount =
                                        lRecycler.getNumberOfAvailableObjects();
       final long lAvailableMemoryInBytes =
                                          lRecycler.computeAvailableMemorySizeInBytes();
-      /*System.out.format("live count=%d, live mem=%d, avail count=%d, avail mem=%d \n",
+      System.out.format("live count=%d, live mem=%d, avail count=%d, avail mem=%d \n",
                         lLiveObjectCount,
                         lLiveMemoryInBytes,
                         lAvailableObjectCount,

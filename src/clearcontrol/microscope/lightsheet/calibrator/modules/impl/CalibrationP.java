@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.modules;
+package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
@@ -10,43 +10,49 @@ import java.util.concurrent.TimeoutException;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class CalibrationP
+/**
+ * Lightsheets power calibration module
+ *
+ * @author royer
+ */
+public class CalibrationP extends CalibrationBase
+                          implements CalibrationModuleInterface
 {
 
-  private final LightSheetMicroscope mLightSheetMicroscope;
-  private int mNumberOfDetectionArmDevices;
-  private int mNumberOfLightSheetDevices;
   private TDoubleArrayList mRatioList;
 
+  /**
+   * Instantiates a lightsheets power calibration module
+   * 
+   * @param pCalibrator
+   *          parent calibrator
+   */
   public CalibrationP(Calibrator pCalibrator)
   {
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
-
-    mNumberOfDetectionArmDevices =
-                                 mLightSheetMicroscope.getDeviceLists()
-                                                      .getNumberOfDevices(DetectionArmInterface.class);
-
-    mNumberOfLightSheetDevices =
-                               mLightSheetMicroscope.getDeviceLists()
-                                                    .getNumberOfDevices(LightSheetInterface.class);
-
+    super(pCalibrator);
   }
 
+  /**
+   * Calibrates the lightsheets power
+   * 
+   * @return true for success
+   */
   public boolean calibrate()
   {
+    int lNumberOfLightSheets = getNumberOfLightSheets();
 
     TDoubleArrayList lAverageIntensityList = new TDoubleArrayList();
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       Double lValue = calibrate(l, 0, 6);
       if (lValue == null)
@@ -66,7 +72,7 @@ public class CalibrationP
                       lWeakestLightSheetIntensity);
 
     mRatioList = new TDoubleArrayList();
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
       mRatioList.add(lWeakestLightSheetIntensity
                      / lAverageIntensityList.get(l));
 
@@ -75,12 +81,25 @@ public class CalibrationP
     return true;
   }
 
+  /**
+   * Calibrates the power of a given lightsheet usinga given detection arm
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return average intensity
+   */
   public Double calibrate(int pLightSheetIndex,
                           int pDetectionArmIndex,
-                          int pN)
+                          int pNumberOfSamples)
   {
     try
     {
+      int lNumberOfDetectionArms = getNumberOfDetectionArms();
+
       LightSheetMicroscopeQueue lQueue =
                                        mLightSheetMicroscope.requestQueue();
       lQueue.setI(pLightSheetIndex);
@@ -97,13 +116,13 @@ public class CalibrationP
       lQueue.setIZ(pLightSheetIndex, 0);
       lQueue.setIP(pLightSheetIndex, 1);
 
-      for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfDetectionArms; i++)
         lQueue.setDZ(i, 0);
 
-      for (int i = 1; i <= pN; i++)
+      for (int i = 1; i <= pNumberOfSamples; i++)
       {
-        for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
-          lQueue.setC(d, i == pN);
+        for (int d = 0; d < lNumberOfDetectionArms; d++)
+          lQueue.setC(d, i == pNumberOfSamples);
         lQueue.addCurrentStateToQueue();
       }
       lQueue.finalizeQueue();
@@ -146,11 +165,18 @@ public class CalibrationP
 
   }
 
+  /**
+   * Applies correction to the lighsheets power settings
+   * 
+   * @return residual error
+   */
   public double apply()
   {
+    int lNumberOfLightSheets = getNumberOfLightSheets();
+    
     double lError = 0;
 
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       System.out.format("Light sheet index: %d \n", l);
 
@@ -189,6 +215,9 @@ public class CalibrationP
     return lError;
   }
 
+  /**
+   * Resets calibration
+   */
   public void reset()
   {
 

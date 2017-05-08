@@ -208,7 +208,18 @@ public class CameraDevicePanel extends AnchorPane
                                                              };
                                                            };
 
-    mGridPane = new CameraResolutionGrid(lButtonHandler, 7, 11);
+    final int lMaxCameraWidth =
+                              mCameraDeviceInterface.getMaxWidthVariable()
+                                                    .get()
+                                                    .intValue();
+    final int lMaxCameraHeight =
+                               mCameraDeviceInterface.getMaxHeightVariable()
+                                                     .get()
+                                                     .intValue();
+
+    mGridPane = new CameraResolutionGrid(lButtonHandler,
+                                         lMaxCameraWidth,
+                                         lMaxCameraHeight);
 
     Pane canvas = new Pane();
     canvas.setStyle("-fx-background-color: green;");

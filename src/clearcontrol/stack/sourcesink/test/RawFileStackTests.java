@@ -215,18 +215,17 @@ public class RawFileStackTests
 
       lLocalFileStackSource.setLocation(lRootFolder, "testSink");
 
-      StackInterface lStack;
-
-      
       lLocalFileStackSource.update();
 
       assertEquals(cNumberOfStacks,
                    lLocalFileStackSource.getNumberOfStacks());
-      
-      assertEquals(cSizeX,lLocalFileStackSource.getStack(0).getWidth());
-      assertEquals(cSizeY,lLocalFileStackSource.getStack(0).getHeight());
-      assertEquals(cSizeZ,lLocalFileStackSource.getStack(0).getDepth());
-      
+
+      assertEquals(cSizeX,
+                   lLocalFileStackSource.getStack(0).getWidth());
+      assertEquals(cSizeY,
+                   lLocalFileStackSource.getStack(0).getHeight());
+      assertEquals(cSizeZ,
+                   lLocalFileStackSource.getStack(0).getDepth());
 
       lLocalFileStackSource.close();
     }

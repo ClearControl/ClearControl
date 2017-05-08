@@ -75,7 +75,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   private final Variable<Long> mTimePointCounterVariable =
                                                          new Variable<Long>("TimePointCounter",
-                                                                            1L);
+                                                                            0L);
 
   private final ArrayList<Class<? extends FileStackSinkInterface>> mFileStackSinkTypesList =
                                                                                            new ArrayList<>();

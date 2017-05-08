@@ -6,8 +6,19 @@ import clearcontrol.core.math.regression.linear.TheilSenEstimator;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+/**
+ * Geometry utils
+ *
+ * @author royer
+ */
 public class GeometryUtils
 {
+  /**
+   * Computes Y line on image
+   * @param lWidth width
+   * @param lPoints points
+   * @return line
+   */
   public static Line computeYLineOnImage(long lWidth,
                                          final Vector2D[] lPoints)
   {

@@ -423,6 +423,10 @@ public class CustomVariablePane extends TabPane
    *          name
    * @param pBoundedVariable
    *          bounded variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
    */
   public void addIntComboBox(String pName,
                              Variable<Integer> pBoundedVariable,

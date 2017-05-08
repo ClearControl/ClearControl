@@ -29,7 +29,7 @@ public class LightSheetMicroscope extends
                                   LightSheetMicroscopeInterface
 {
   private AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> mAcquisitionStateManager;
-  private LightSheetFastFusionProcessor mStackProcessor;
+  private LightSheetFastFusionProcessor mStackFusionProcessor;
 
   /**
    * Instantiates a lightsheet microscope with a given name.
@@ -52,13 +52,13 @@ public class LightSheetMicroscope extends
           pMaxStackProcessingQueueLength,
           pThreadPoolSize);
 
-    mStackProcessor =
+    mStackFusionProcessor =
                     new LightSheetFastFusionProcessor("Stack Processor",
                                                       this,
                                                       pStackFusionContext);
 
-    mStackProcessingPipeline.addStackProcessor(mStackProcessor,
-                                               "fused stacks",
+    mStackProcessingPipeline.addStackProcessor(mStackFusionProcessor,
+                                               "StackFusion",
                                                32,
                                                32);
 

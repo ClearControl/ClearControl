@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
 /**
- *
+ * Camera resolution grid
  *
  * @author royer
  */
@@ -14,37 +14,47 @@ public class CameraResolutionGrid extends GridPane
 {
 
   /**
-   *
+   * Camera resolution grid event button handler
    *
    * @author royer
    */
   public interface ButtonEventHandler
   {
     /**
+     * Returns an event handler for the button of corresponding image width and
+     * height
+     * 
      * @param pWidth
      * @param pheight
-     * @param x
-     * @param y
-     * @return
+     * @return handler
      */
     EventHandler<ActionEvent> getHandler(int pWidth, int pheight);
   }
 
   /**
+   * Instantiates a camera resolution grid
+   * 
    * @param pButtonEventHandler
-   * @param pEventHandler
+   *          button handler
+   * @param pMaxWidth
+   *          max width
+   * @param pMaxHeight
+   *          max height
    */
   public CameraResolutionGrid(ButtonEventHandler pButtonEventHandler,
-                              int pPowerMin,
-                              int pPowerMax)
+                              int pMaxWidth,
+                              int pMaxHeight)
   {
     super();
 
     setGridLinesVisible(true);
 
-    for (int x = pPowerMin; x < pPowerMax; x++)
+    int lMaxPowerWidth = log2(pMaxWidth);
+    int lMaxPowerHeight = log2(pMaxHeight);
+
+    for (int x = 7; x < lMaxPowerWidth; x++)
     {
-      for (int y = pPowerMin; y < pPowerMax; y++)
+      for (int y = 7; y < lMaxPowerHeight; y++)
       {
         int width = 2 << x;
         int height = 2 << y;
@@ -60,6 +70,13 @@ public class CameraResolutionGrid extends GridPane
         add(button, x, y);
       }
     }
+  }
+
+  private static int log2(int n)
+  {
+    if (n <= 0)
+      throw new IllegalArgumentException();
+    return 31 - Integer.numberOfLeadingZeros(n);
   }
 
 }

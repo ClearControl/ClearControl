@@ -77,8 +77,6 @@ public class LightSheet extends
    *          light sheet name
    * @param pReadoutTimeInMicrosecondsPerLine
    *          readout time in microseconds per line
-   * @param pNumberOfLines
-   *          number of lines
    * @param pNumberOfLaserDigitalControls
    *          number of digital controls
    */

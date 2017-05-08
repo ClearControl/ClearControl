@@ -10,10 +10,10 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.processor.MetaDataFusion;
+import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
-import clearcontrol.microscope.stacks.metadata.MetaDataView;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseBase;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
@@ -38,17 +38,18 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
   private final LightSheetMicroscope mLightSheetMicroscope;
 
-  private final Variable<Long> mTimePointIndex =
-                                               new Variable<Long>("TimePointIndex",
-                                                                  0L);
-
   private final Variable<Boolean> mFuseStacksVariable =
                                                       new Variable<Boolean>("FuseStacks",
                                                                             true);
 
+  private final Variable<Boolean> mFuseStacksPerCameraVariable =
+                                                               new Variable<Boolean>("FuseStacksPerCamera",
+                                                                                     true);
+
   private final Variable<Boolean> mInterleavedAcquisitionVariable =
                                                                   new Variable<Boolean>("InterleavedAcquisition",
                                                                                         false);
+
 
   /**
    * @param pLightSheetMicroscope
@@ -94,8 +95,6 @@ public class LightSheetTimelapse extends TimelapseBase implements
         interleavedAcquisition(lCurrentState);
       else
         sequentialAcquisition(lCurrentState);
-
-      mTimePointIndex.increment();
 
     }
     catch (Throwable e)
@@ -159,7 +158,15 @@ public class LightSheetTimelapse extends TimelapseBase implements
             lMetaData.addEntry(MetaDataView.LightSheet, l);
 
             if (getFuseStacksVariable().get())
-              lMetaData.addEntry(MetaDataFusion.RequestFuse, true);
+            {
+              if (getFuseStacksPerCameraVariable().get())
+                lMetaData.addEntry(MetaDataFusion.RequestPerCameraFusion,
+                                   true);
+              else
+                lMetaData.addEntry(MetaDataFusion.RequestFullFusion,
+                                   true);
+
+            }
             else
             {
               String lCxLyString =
@@ -198,7 +205,7 @@ public class LightSheetTimelapse extends TimelapseBase implements
                                                             0,
                                                             lNumberOfLaserLines);
     lQueue.addMetaDataEntry(MetaDataOrdinals.TimePoint,
-                            mTimePointIndex.get());
+                            getTimePointCounterVariable().get());
 
     return lQueue;
   }
@@ -223,5 +230,20 @@ public class LightSheetTimelapse extends TimelapseBase implements
   {
     return mFuseStacksVariable;
   }
+
+  /**
+   * Returns the variable holding the boolean flag that decides whether stacks
+   * should or should not be fused.
+   * 
+   * @return fuse stacks variable
+   */
+  public Variable<Boolean> getFuseStacksPerCameraVariable()
+  {
+    return mFuseStacksPerCameraVariable;
+  }
+  
+
+  
+  
 
 }

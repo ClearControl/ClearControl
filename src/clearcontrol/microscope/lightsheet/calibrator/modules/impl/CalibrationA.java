@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.modules;
+package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
@@ -16,47 +16,57 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
 
-public class CalibrationA
+/**
+ * Lightsheet A angle calibration module
+ *
+ * @author royer
+ */
+public class CalibrationA extends CalibrationBase
+                          implements CalibrationModuleInterface
 {
 
-  private final LightSheetMicroscope mLightSheetMicroscope;
   private ArgMaxFinder1DInterface mArgMaxFinder;
   private MultiPlot mMultiPlotAFocusCurves;
   private HashMap<Integer, UnivariateAffineFunction> mModels;
   private int mNumberOfDetectionArmDevices;
-  private int mNumberOfLightSheetDevices;
 
+  /**
+   * Lightsheet Alpha angle calibration module
+   * 
+   * @param pCalibrator
+   *          parent calibrator
+   */
   public CalibrationA(Calibrator pCalibrator)
   {
-    super();
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
-
+    super(pCalibrator);
     mMultiPlotAFocusCurves =
                            MultiPlot.getMultiPlot(this.getClass()
                                                       .getSimpleName()
                                                   + " calibration: focus curves");
     mMultiPlotAFocusCurves.setVisible(false);
-
-    mNumberOfDetectionArmDevices =
-                                 mLightSheetMicroscope.getDeviceLists()
-                                                      .getNumberOfDevices(DetectionArmInterface.class);
-
-    mNumberOfLightSheetDevices =
-                               mLightSheetMicroscope.getDeviceLists()
-                                                    .getNumberOfDevices(LightSheetInterface.class);
-
     mModels = new HashMap<>();
   }
 
+  /**
+   * Calibrates the Alpha angle for a given lightsheet, number of angles and
+   * number of repeats.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pNumberOfAngles
+   *          numbe rof angles
+   * @param pNumberOfRepeats
+   *          number of repeats.
+   */
   public void calibrate(int pLightSheetIndex,
                         int pNumberOfAngles,
                         int pNumberOfRepeats)
@@ -226,8 +236,7 @@ public class CalibrationA
                                                                                     .get();
 
           final double[] lAvgIntensityArray =
-                                            ImageAnalysisUtils.computeAveragePowerVariationPerPlane(lStack,
-                                                                                                    4);
+                                            ImageAnalysisUtils.computeAverageSquareVariationPerPlane(lStack);
 
           smooth(lAvgIntensityArray, 10);
 
@@ -342,6 +351,13 @@ public class CalibrationA
 
   }
 
+  /**
+   * Applies the Alpha angle calibration correction to a given lightsheet
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @return residual error
+   */
   public double apply(int pLightSheetIndex)
   {
     System.out.println("LightSheet index: " + pLightSheetIndex);
@@ -380,6 +396,9 @@ public class CalibrationA
     return lError;
   }
 
+  /**
+   * Resets the Alpha angle calibration
+   */
   public void reset()
   {
     mMultiPlotAFocusCurves.clear();

@@ -1,6 +1,5 @@
 package clearcontrol.microscope.lightsheet.adaptor.modules;
 
-import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
@@ -106,12 +105,20 @@ public class AdaptationX extends
   }
 
   @Override
+  public void updateNewState()
+  {
+    // TODO Auto-generated method stub
+    
+  }
+  
+  /*
+  @Override
   public void updateNewState(int pControlPlaneIndex,
                              int pLightSheetIndex,
                              ArrayList<Double> pArgMaxList)
   {
     info("CORRECTIONS HAPPEN HERE");
-    /*int lBestDetectioArm =
+    int lBestDetectioArm =
                          getAdaptator().getCurrentAcquisitionStateVariable()
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);/**/
@@ -123,7 +130,9 @@ public class AdaptationX extends
                   .setAtControlPlaneIX(pControlPlaneIndex,
                                        pLightSheetIndex,
                                        pArgMaxList.get(lBestDetectioArm));
-    /**/
-  }
+  
+  }  /**/
+
+
 
 }

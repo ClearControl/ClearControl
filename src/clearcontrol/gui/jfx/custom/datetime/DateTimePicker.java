@@ -1,4 +1,4 @@
-package clearcontrol.gui.jfx.datetime;
+package clearcontrol.gui.jfx.custom.datetime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class DateTimePicker extends DatePicker
 {
 
   /**
-   * Default date and tim format.
+   * Default date and time format.
    */
   public static final String DefaultFormat = "yyyy-MM-dd HH:mm";
 

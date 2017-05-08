@@ -55,19 +55,39 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
     }
 
     {
-      VariableCheckBox lEnforceMaxDateTimeCheckBox =
-                                                   new VariableCheckBox("Fuse Stacks",
+      VariableCheckBox lFuseStacksCheckBox =
+                                                   new VariableCheckBox("Fuse stacks",
                                                                         pLightSheetTimelapse.getFuseStacksVariable());
 
-      GridPane.setHalignment(lEnforceMaxDateTimeCheckBox.getCheckBox(),
+      GridPane.setHalignment(lFuseStacksCheckBox.getCheckBox(),
                              HPos.RIGHT);
-      GridPane.setColumnSpan(lEnforceMaxDateTimeCheckBox.getLabel(),
+      GridPane.setColumnSpan(lFuseStacksCheckBox.getLabel(),
                              1);
-      GridPane.setColumnSpan(lEnforceMaxDateTimeCheckBox.getCheckBox(),
+      GridPane.setColumnSpan(lFuseStacksCheckBox.getCheckBox(),
                              1);
 
-      add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
-      add(lEnforceMaxDateTimeCheckBox.getLabel(), 1, mRow);
+      GridPane.setColumnSpan(lFuseStacksCheckBox.getLabel(), 3);
+      add(lFuseStacksCheckBox.getCheckBox(), 0, mRow);
+      add(lFuseStacksCheckBox.getLabel(), 1, mRow);
+
+      mRow++;
+    }
+    
+    {
+      VariableCheckBox lFuseStacksPerCameraOnlyCheckBox =
+                                                   new VariableCheckBox("Fuse stacks per camera only",
+                                                                        pLightSheetTimelapse.getFuseStacksPerCameraVariable());
+
+      GridPane.setHalignment(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+      GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getLabel(),
+                             1);
+      GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(),
+                             1);
+
+      GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getLabel(), 3);
+      add(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(), 0, mRow);
+      add(lFuseStacksPerCameraOnlyCheckBox.getLabel(), 1, mRow);
 
       mRow++;
     }

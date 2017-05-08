@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.modules;
+package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
@@ -7,50 +7,48 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
-import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
-import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-import clearcontrol.stack.OffHeapPlanarStack;
-import gnu.trove.list.array.TDoubleArrayList;
-
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
 import org.ejml.simple.SimpleMatrix;
 
-public class CalibrationXY
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
+import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
+import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+import clearcontrol.stack.OffHeapPlanarStack;
+import gnu.trove.list.array.TDoubleArrayList;
+
+/**
+ * Calibrates lightsheet position in the XY plane
+ *
+ * @author royer
+ */
+public class CalibrationXY extends CalibrationBase implements CalibrationModuleInterface
 {
 
-  private final LightSheetMicroscope mLightSheetMicroscope;
-
   private int mNumberOfDetectionArmDevices;
-  private int mNumberOfLightSheetDevices;
 
   private MultiKeyMap<Integer, Vector2D> mOriginFromX,
       mUnitVectorFromX, mOriginFromY, mUnitVectorFromY;
 
   private MultiKeyMap<Integer, SimpleMatrix> mTransformMatrices;
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Instantiates a XY calibration module given a parent calibrator.
+   * 
+   * @param pCalibrator
+   *          parent calibrator
+   */
   public CalibrationXY(Calibrator pCalibrator)
   {
-    super();
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
-
-    mNumberOfDetectionArmDevices =
-                                 mLightSheetMicroscope.getDeviceLists()
-                                                      .getNumberOfDevices(DetectionArmInterface.class);
-
-    mNumberOfLightSheetDevices =
-                               mLightSheetMicroscope.getDeviceLists()
-                                                    .getNumberOfDevices(LightSheetInterface.class);
-
+    super(pCalibrator);
+     
     mOriginFromX = new MultiKeyMap<>();
     mUnitVectorFromX = new MultiKeyMap<>();
     mOriginFromY = new MultiKeyMap<>();
@@ -59,6 +57,17 @@ public class CalibrationXY
     mTransformMatrices = new MultiKeyMap<>();
   }
 
+  /**
+   * Calibrates
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfPoints
+   *          number of points
+   * @return true for success
+   */
   public boolean calibrate(int pLightSheetIndex,
                            int pDetectionArmIndex,
                            int pNumberOfPoints)
@@ -312,6 +321,15 @@ public class CalibrationXY
     return lNormalizedPoint;
   }
 
+  /**
+   * Applies correction for the given lightsheet and detection arm
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm imdex
+   * @return residual error
+   */
   public double apply(int pLightSheetIndex, int pDetectionArmIndex)
   {
     System.out.format("Light sheet index: %d, detection arm index: %d \n",
@@ -435,11 +453,23 @@ public class CalibrationXY
     return lError;
   }
 
+  /**
+   * Resets calibration here
+   */
   public void reset()
   {
-
+    // check if there is nothing to do here
   }
 
+  /**
+   * Returns the transformation matrix for a given ligthsheet and detection arm.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm
+   * @return transformation matrix
+   */
   public SimpleMatrix getTransformMatrix(int pLightSheetIndex,
                                          int pDetectionArmIndex)
   {

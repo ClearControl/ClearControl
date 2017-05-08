@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import clearcontrol.core.device.switches.gui.SwitchingDevicePanel;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.gui.CameraResolutionGrid;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.lcd.VariableLCD;
@@ -307,33 +308,38 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
     }
 
     {
-      Variable<Boolean> lSyncZVariable =
-                                       pInteractiveAcquisition.getSyncDetectionArmsVariable();
+      Variable<Boolean> lSyncDetectionVariable =
+                                               pInteractiveAcquisition.getSyncDetectionArmsVariable();
 
-      VariableToggleButton lSyncZToggleButton =
-                                              new VariableToggleButton("Detection arms synced",
-                                                                       "Detection arms not synced",
-                                                                       lSyncZVariable);
-      lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setHgrow(lSyncZToggleButton, Priority.ALWAYS);
-      GridPane.setColumnSpan(lSyncZToggleButton, 3);
-      add(lSyncZToggleButton, 0, lRow);
+      VariableToggleButton lSyncDetectionToggleButton =
+                                                      new VariableToggleButton("Detection arms synced",
+                                                                               "Detection arms not synced",
+                                                                               lSyncDetectionVariable);
 
-      lRow++;
-    }
+      Variable<Boolean> lSyncLightsheetVariable =
+                                                pInteractiveAcquisition.getSyncLightSheetsVariable();
 
-    {
-      Variable<Boolean> lSyncZVariable =
-                                       pInteractiveAcquisition.getSyncLightSheetsVariable();
+      VariableToggleButton lSyncLightSheetToggleButton =
+                                                       new VariableToggleButton("Lightsheets synced",
+                                                                                "Lightsheets not synced",
+                                                                                lSyncLightsheetVariable);
+      lSyncDetectionToggleButton.setMaxWidth(Double.MAX_VALUE);
+      lSyncLightSheetToggleButton.setMaxWidth(Double.MAX_VALUE);
+      HBox.setHgrow(lSyncDetectionToggleButton, Priority.SOMETIMES);
+      HBox.setHgrow(lSyncLightSheetToggleButton, Priority.SOMETIMES);
 
-      VariableToggleButton lSyncZToggleButton =
-                                              new VariableToggleButton("Lightsheets synced",
-                                                                       "Lightsheets not synced",
-                                                                       lSyncZVariable);
-      lSyncZToggleButton.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setHgrow(lSyncZToggleButton, Priority.ALWAYS);
-      GridPane.setColumnSpan(lSyncZToggleButton, 3);
-      add(lSyncZToggleButton, 0, lRow);
+      GridPane lGridPane = new GridPane();
+
+      ColumnConstraints lColumnConstraints = new ColumnConstraints();
+      lColumnConstraints.setPercentWidth(50);
+      lGridPane.getColumnConstraints().add(lColumnConstraints);
+      lGridPane.getColumnConstraints().add(lColumnConstraints);
+
+      lGridPane.add(lSyncDetectionToggleButton, 0, 0);
+      lGridPane.add(lSyncLightSheetToggleButton, 1, 0);
+
+      GridPane.setColumnSpan(lGridPane, 3);
+      add(lGridPane, 0, lRow);
 
       lRow++;
     }
@@ -374,10 +380,25 @@ public class InteractiveAcquisitionToolbar extends CustomGridPane
                                                                };
                                                              };
 
+      final int lMaxCameraWidth =
+                                pInteractiveAcquisition.getLightSheetMicroscope()
+                                                       .getDevice(StackCameraDeviceInterface.class,
+                                                                  0)
+                                                       .getMaxWidthVariable()
+                                                       .get()
+                                                       .intValue();
+      final int lMaxCameraHeight =
+                                 pInteractiveAcquisition.getLightSheetMicroscope()
+                                                        .getDevice(StackCameraDeviceInterface.class,
+                                                                   0)
+                                                        .getMaxHeightVariable()
+                                                        .get()
+                                                        .intValue();
+
       CameraResolutionGrid lGridPane =
                                      new CameraResolutionGrid(lButtonHandler,
-                                                              7,
-                                                              11);
+                                                              lMaxCameraWidth,
+                                                              lMaxCameraHeight);
       lGridPane.setAlignment(Pos.BASELINE_CENTER);
       GridPane.setHalignment(lGridPane, HPos.CENTER);
       GridPane.setHgrow(lGridPane, Priority.ALWAYS);

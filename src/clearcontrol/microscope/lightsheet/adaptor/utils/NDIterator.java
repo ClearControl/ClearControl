@@ -127,6 +127,10 @@ public class NDIterator implements Iterator<int[]>
     return lLastCursorCoordinates;
   }
 
+  /**
+   * Returns index
+   * @return index
+   */
   public int getIndex()
   {
     return getIndex(mCursor);

@@ -12,14 +12,23 @@ public class MultiChartListItem
   private final String mName;
   private final Series<Number, Number> mSeries;
 
+  /**
+   * Instantiates a chart series
+   * @param pName series name
+   * @param pSeries series
+   */
   public MultiChartListItem(String pName,
-                            Series<Number, Number> pItem)
+                            Series<Number, Number> pSeries)
   {
     super();
     mName = pName;
-    mSeries = pItem;
+    mSeries = pSeries;
   }
 
+  /**
+   * Returns series
+   * @return series
+   */
   public Series<Number, Number> getSeries()
   {
     return mSeries;

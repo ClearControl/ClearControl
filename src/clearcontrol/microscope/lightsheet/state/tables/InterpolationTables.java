@@ -113,6 +113,46 @@ public class InterpolationTables extends
       lSplineInterpolationTable.addRow(pZ);
     notifyListeners(this);
   }
+  
+  /**
+   * Adds a control plane after a given z poistion (but before the next one)
+   * @param pZ z position
+   */
+  public void addControlPlaneAfter(double pZ)
+  {
+    for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
+      lSplineInterpolationTable.addRowAfter(pZ);
+    notifyListeners(this);
+  }
+
+
+  /**
+   * Removes the nearest control plane to a given Z value.
+   * 
+   * @param pZ
+   *          Z value
+   */
+  public void removeControlPlane(double pZ)
+  {
+    for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
+      lSplineInterpolationTable.removeRow(pZ);
+    notifyListeners(this);
+  }
+
+  /**
+   * Changes the Z value of a given control plane
+   * 
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pNewZ
+   *          new z value
+   */
+  public void changeControlPlane(int pControlPlaneIndex, double pNewZ)
+  {
+    for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
+      lSplineInterpolationTable.moveRow(pControlPlaneIndex, pNewZ);
+    notifyListeners(this);
+  }
 
   /**
    * Returns the number of control planes
@@ -189,6 +229,26 @@ public class InterpolationTables extends
   {
     return getTable(pLightSheetDOF).getInterpolatedValue(pDeviceIndex,
                                                          pZ);
+  }
+
+  /**
+   * Returns the value at a given control plane for a given device index
+   * 
+   * @param pLightSheetDOF
+   *          DOF
+   * @param pControlPlaneIndex
+   *          control plane index
+   * @param pDeviceIndex
+   *          device index
+   * 
+   * @return interpolated value
+   */
+  public double get(LightSheetDOF pLightSheetDOF,
+                    int pControlPlaneIndex,
+                    int pDeviceIndex)
+  {
+    return getTable(pLightSheetDOF).getY(pControlPlaneIndex,
+                                         pDeviceIndex);
   }
 
   /**
@@ -295,5 +355,6 @@ public class InterpolationTables extends
   {
     return mInterpolationTableList.get(pLightSheetDOF.ordinal());
   }
+
 
 }

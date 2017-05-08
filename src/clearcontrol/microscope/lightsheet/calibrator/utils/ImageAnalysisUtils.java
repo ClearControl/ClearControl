@@ -1,6 +1,5 @@
 package clearcontrol.microscope.lightsheet.calibrator.utils;
 
-import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
@@ -24,6 +23,15 @@ import gnu.trove.list.array.TDoubleArrayList;
 public class ImageAnalysisUtils
 {
 
+  /**
+   * Computes a given percentile intensity for each plane of a given stack.
+   * 
+   * @param pStack
+   *          stack
+   * @param pPercentile
+   *          percentile
+   * @return percentile for each plane
+   */
   public static double[] computePercentileIntensityPerPlane(OffHeapPlanarStack pStack,
                                                             int pPercentile)
   {
@@ -53,9 +61,18 @@ public class ImageAnalysisUtils
     return lPercentileArray;
   }
 
+  /**
+   * Computes the average intensity of each plane of a given stack
+   * 
+   * @param pStack
+   *          stack
+   * @return average intensity per plane
+   */
   public static double[] computeImageAverageIntensityPerPlane(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
+    long lNumberOfPixelsPerPlane = pStack.getWidth()
+                                   * pStack.getHeight();
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
     double[] lIntensityArray = new double[lNumberOfPlanes];
@@ -66,22 +83,20 @@ public class ImageAnalysisUtils
       ContiguousBuffer lBuffer =
                                ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
-      double lSum = 0;
-      long lCount = 0;
-
+      float lSum = 0;
       while (lBuffer.hasRemainingByte())
       {
         lSum += lBuffer.readChar();
-        lCount++;
       }
-      lIntensityArray[p] = lSum / lCount;
+      lIntensityArray[p] = lSum / lNumberOfPixelsPerPlane;
     }
 
     return lIntensityArray;
   }
 
   /**
-   * Computes the average intensity elevated to a given power per plane
+   * Computes the average intensity elevated to a given power per plane of a
+   * given stack
    * 
    * @param pStack
    *          stack
@@ -93,6 +108,9 @@ public class ImageAnalysisUtils
                                                               int pPower)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
+    int lNumberOfPixelsPerPlane = (int) (pStack.getWidth()
+                                         * pStack.getHeight());
+
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
     double[] lIntensityArray = new double[lNumberOfPlanes];
@@ -103,36 +121,27 @@ public class ImageAnalysisUtils
       ContiguousBuffer lBuffer =
                                ContiguousBuffer.wrap(lContiguousMemoryInterface);
 
-      int lNumberOfPixelsPerPlane = (int) (pStack.getWidth()
-                                           * pStack.getHeight());
-      double lInverseNumberOfPixelsPerPlane = 1.0
-                                              / lNumberOfPixelsPerPlane;
-
-      double lSumOfPowers = 0;
+      float lSumOfPowers = 0;
 
       while (lBuffer.hasRemainingByte())
       {
-        double lValue = lBuffer.readChar();
-        lSumOfPowers += lInverseNumberOfPixelsPerPlane
-                        * pow(lValue, pPower);
+        float lValue = lBuffer.readChar();
+        lSumOfPowers += pow(lValue, pPower);
       }
-      lIntensityArray[p] = lSumOfPowers;
+      lIntensityArray[p] = lSumOfPowers / lNumberOfPixelsPerPlane;
     }
 
     return lIntensityArray;
   }
 
   /**
-   * Computes the average intensity elevated to a given power per plane
+   * Computes the average squared intensity variation per plane
    * 
    * @param pStack
    *          stack
-   * @param pPower
-   *          power
    * @return array of metrics
    */
-  public static double[] computeAveragePowerVariationPerPlane(OffHeapPlanarStack pStack,
-                                                              int pPower)
+  public static double[] computeAverageSquareVariationPerPlane(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
@@ -159,7 +168,7 @@ public class ImageAnalysisUtils
       while (lBuffer.hasRemainingByte())
       {
         float lValue = lBuffer.readChar();
-        float lVariation = abs(lValue - lPreviousValue);
+        float lVariation = lValue - lPreviousValue;
         lSumOfPowers += lInverseNumberOfPixelsPerPlane * lVariation
                         * lVariation;
 
@@ -172,12 +181,19 @@ public class ImageAnalysisUtils
     return lIntensityArray;
   }
 
+  /**
+   * Returns the sum of all stack voxel intensities.
+   * 
+   * @param pStack
+   *          stack
+   * @return intensity integral
+   */
   public static double computeImageSumIntensity(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
-    double lSumIntensity = 0;
+    float lSumIntensity = 0;
     for (int p = 0; p < lNumberOfPlanes; p++)
     {
       ContiguousMemoryInterface lContiguousMemoryInterface =
@@ -194,6 +210,12 @@ public class ImageAnalysisUtils
     return lSumIntensity;
   }
 
+  /**
+   * Removes noise from the stack
+   * 
+   * @param pStack
+   *          stack
+   */
   public static void cleanWithMin(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();
@@ -230,6 +252,14 @@ public class ImageAnalysisUtils
     return (pA > pB) ? pB : pA;
   }
 
+  /**
+   * Returns the center-of-mass of the brightest voxels per image plane for a
+   * given stack.
+   * 
+   * @param pStack
+   *          stack
+   * @return array of 2D points, one for each plane.
+   */
   public static Vector2D[] findCOMOfBrightestPointsForEachPlane(OffHeapPlanarStack pStack)
   {
     int lNumberOfPlanes = (int) pStack.getDepth();

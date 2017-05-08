@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.modules;
+package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
@@ -12,7 +12,6 @@ import org.apache.commons.collections4.map.MultiKeyMap;
 
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
@@ -22,14 +21,14 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
-import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
@@ -37,16 +36,13 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author royer
  */
-public class CalibrationZ implements LoggingInterface
+public class CalibrationZ extends CalibrationBase implements CalibrationModuleInterface
 {
 
-  private final Calibrator mCalibrator;
-  private final LightSheetMicroscope mLightSheetMicroscope;
   private ArgMaxFinder1DInterface mArgMaxFinder;
   private MultiPlot mMultiPlotZFocusCurves, mMultiPlotZModels;
   private MultiKeyMap<Integer, UnivariateAffineFunction> mModels;
   private int mNumberOfDetectionArmDevices;
-  private int mNumberOfLightSheetDevices;
   private int mIteration;
 
   private boolean mUseDCTS = false;
@@ -61,9 +57,7 @@ public class CalibrationZ implements LoggingInterface
    */
   public CalibrationZ(Calibrator pCalibrator)
   {
-    super();
-    mCalibrator = pCalibrator;
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
+    super(pCalibrator);
 
     mMultiPlotZFocusCurves =
                            MultiPlot.getMultiPlot(this.getClass()
@@ -81,15 +75,12 @@ public class CalibrationZ implements LoggingInterface
                                  mLightSheetMicroscope.getDeviceLists()
                                                       .getNumberOfDevices(DetectionArmInterface.class);
 
-    mNumberOfLightSheetDevices =
-                               mLightSheetMicroscope.getDeviceLists()
-                                                    .getNumberOfDevices(LightSheetInterface.class);
-
+ 
     mModels = new MultiKeyMap<>();
   }
 
   /**
-   * Performs calibrationfor a given lightsheet index
+   * Performs calibration for a given lightsheet index
    * 
    * @param pLightSheetIndex
    *          lightsheet index
@@ -205,8 +196,8 @@ public class CalibrationZ implements LoggingInterface
 
     for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
     {
-      final UnivariateAffineFunction lModel =
-                                            lTheilSenEstimators[d].getModel();
+      /*final UnivariateAffineFunction lModel =
+                                            lTheilSenEstimators[d].getModel();/**/
 
       // System.out.println("lModel=" + lModel);
 
@@ -343,9 +334,9 @@ public class CalibrationZ implements LoggingInterface
       if (lPlayQueueAndWait)
         for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
         {
-          final StackInterface lStack =
-                                      mLightSheetMicroscope.getCameraStackVariable(d)
-                                                           .get();
+          final OffHeapPlanarStack lStack =
+                                          (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(d)
+                                                                                    .get();
 
           if (lStack == null)
             continue;
@@ -358,12 +349,11 @@ public class CalibrationZ implements LoggingInterface
                 mDCTS2D = new DCTS2D();
 
               mMetricArray =
-                           mDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lStack);
+                           mDCTS2D.computeImageQualityMetric(lStack);
             }
             else
               mMetricArray =
-                           ImageAnalysisUtils.computeAveragePowerVariationPerPlane((OffHeapPlanarStack) lStack,
-                                                                                   4);/**/
+                           ImageAnalysisUtils.computeAverageSquareVariationPerPlane(lStack);/**/
           });
           // info("Begin compute metric");
 
@@ -620,9 +610,8 @@ public class CalibrationZ implements LoggingInterface
                        + lDetectionArmDevice1.getZFunction());
   }
 
-  /**
-   * Resets this module
-   */
+
+  @Override
   public void reset()
   {
     mMultiPlotZFocusCurves.clear();

@@ -117,7 +117,7 @@ public class HamStackCamera extends
       getDcamDevice().setInputTriggerToExternalLevel();
 
     getDcamDevice().setOutputTriggerToExposure();
-    getDcamDevice().setDefectCorectionMode(false);
+    getDcamDevice().setDefectCorectionMode(true);
 
     // ----------------------- done with the listener -------- //
 

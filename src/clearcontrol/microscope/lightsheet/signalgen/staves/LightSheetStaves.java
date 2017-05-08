@@ -329,7 +329,8 @@ public class LightSheetStaves implements LoggingInterface
                                                    - lGalvoYLowValue));
       mBeforeExposureYStave.setStopSlope((float) (lGalvoYHighValue
                                                   - lGalvoYLowValue));
-      mBeforeExposureYStave.setSmoothness(0.60f);
+      mBeforeExposureYStave.setSmoothness(0.50f);
+      mBeforeExposureYStave.setMargin(0.1f);
 
       mBeforeExposureZStave.setStartValue((float) lGalvoZHighValue);
       mBeforeExposureZStave.setStopValue((float) lGalvoZLowValue);
@@ -337,7 +338,8 @@ public class LightSheetStaves implements LoggingInterface
                                                    - lGalvoZLowValue));
       mBeforeExposureZStave.setStopSlope((float) (lGalvoZHighValue
                                                   - lGalvoZLowValue));
-      mBeforeExposureZStave.setSmoothness(0.60f);
+      mBeforeExposureZStave.setSmoothness(0.50f);
+      mBeforeExposureZStave.setMargin(0.1f);
 
       mExposureYStave.setSyncStart(0);
       mExposureYStave.setSyncStop(1);

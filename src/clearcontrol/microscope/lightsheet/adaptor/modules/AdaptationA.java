@@ -3,7 +3,6 @@ package clearcontrol.microscope.lightsheet.adaptor.modules;
 import static java.lang.Math.atan;
 import static java.lang.Math.toDegrees;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -334,19 +333,27 @@ public class AdaptationA extends
     return lMetricArray;
   }
 
+  @Override
+  public void updateNewState()
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  /*
   public void updateNewState(int pControlPlaneIndex,
                              int pLightSheetIndex,
                              ArrayList<Double> pArgMaxList)
   {
-
+  
     info("CORRECTIONS HAPPEN HERE");
     // double lCorrection = -pObservedAngle;
-    /*     COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
+         COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
     getAdaptator().getNewAcquisitionState()
                   .addAtControlPlaneIA(pControlPlaneIndex,
                                        pLightSheetIndex,
-                                       lCorrection); /**/
-  }
+                                       lCorrection); 
+  }/**/
 
   private void smooth(double[] pMetricArray, int pIterations)
   {

@@ -100,6 +100,13 @@ public class AdaptationZ extends
 
   }
 
+  @Override
+  public void updateNewState()
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
   /*
   @Override
   public void updateNewState(int pControlPlaneIndex,

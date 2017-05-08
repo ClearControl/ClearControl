@@ -12,6 +12,11 @@ import javafx.stage.Stage;
 
 import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 
+/**
+ * Mulichart demo
+ *
+ * @author royer
+ */
 public class MultiChartDemo extends Application
 {
 
@@ -143,6 +148,10 @@ public class MultiChartDemo extends Application
     stage.show();
   }
 
+  /**
+   * Main 
+   * @param args NA
+   */
   public static void main(String[] args)
   {
     launch(args);

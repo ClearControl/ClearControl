@@ -62,8 +62,9 @@ public class VariableLCDDemo extends Application
 
                                 .build();
 
-    VariableLCD lVarLCD =
-                        new VariableLCD(lLCDDisplay, lNumberVariable);
+    VariableLCD<Number> lVarLCD =
+                                new VariableLCD<Number>(lLCDDisplay,
+                                                        lNumberVariable);
 
     root.getChildren().add(lVarLCD);
 

@@ -17,10 +17,26 @@ public class Row implements Comparable<Row>
    * Constructs a copy of a row.
    * 
    * @param pRow
+   *          row to copy
    */
   public Row(Row pRow)
   {
     x = pRow.x;
+    y = new TDoubleArrayList(pRow.y);
+    mIsUpToDate = false;
+  }
+
+  /**
+   * Constructs a copy of a row, but for a different x
+   * 
+   * @param pRow
+   *          row to copy
+   * @param pX
+   *          new x value
+   */
+  public Row(Row pRow, double pX)
+  {
+    x = pX;
     y = new TDoubleArrayList(pRow.y);
     mIsUpToDate = false;
   }

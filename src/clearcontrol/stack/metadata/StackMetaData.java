@@ -1,6 +1,8 @@
 package clearcontrol.stack.metadata;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Stack meta data
@@ -50,6 +52,22 @@ public class StackMetaData
                                                        pEntryKey.getMetaDataClass()));
 
     mMetaDataMap.put(pEntryKey, pValue);
+  }
+
+  /**
+   * Removes all meta data entries of a given type
+   * 
+   * @param pEntriesClass
+   *          type of entries to remove
+   */
+  public <T> void removeAllEntries(Class<T> pEntriesClass)
+  {
+
+    for (Entry<MetaDataEntryInterface<?>, Object> lEntry : new ArrayList<>(mMetaDataMap.entrySet()))
+    {
+      if (pEntriesClass.isInstance(lEntry.getKey()))
+        mMetaDataMap.remove(lEntry.getKey());
+    }
   }
 
   /**

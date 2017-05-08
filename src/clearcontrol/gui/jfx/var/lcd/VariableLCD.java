@@ -7,9 +7,11 @@ import clearcontrol.core.variable.Variable;
 import eu.hansolo.enzo.lcd.Lcd;
 
 /**
- * This LCD class syncs a lcd panel with a number variable
+ * This LCD class syncs a LCD panel with a number variable
  *
  * @author royer
+ * @param <T>
+ *          lcd number type
  */
 public class VariableLCD<T extends Number> extends HBox
 {

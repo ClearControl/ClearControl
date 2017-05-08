@@ -1,26 +1,21 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
-import java.util.concurrent.ConcurrentHashMap;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 /**
  * Acquisition state panel
@@ -29,19 +24,6 @@ import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
  */
 public class AcquisitionStatePanel extends CustomGridPane
 {
-
-  /**
-   * Prefered width
-   */
-  public static final double cPrefWidth = 0;
-
-  /**
-   * Prefered height
-   */
-  public static final double cPrefHeight = 0;
-
-  private ConcurrentHashMap<String, ObservableList<Data<Number, Number>>> mNameToDataMap =
-                                                                                         new ConcurrentHashMap<>();
 
   /**
    * Acquisition state
@@ -97,7 +79,7 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                         lZLow.getMinVariable(),
                                                                         lZHigh.getMaxVariable(),
                                                                         0.01d,
-                                                                        5d);
+                                                                        null);
 
     NumberVariableTextField<Number> lZStepTextField =
                                                     new NumberVariableTextField<Number>("Z-step:",
@@ -143,34 +125,11 @@ public class AcquisitionStatePanel extends CustomGridPane
                                  pAcquisitionState.getLaserOnOffVariable(i));
     }
 
-    MultiChart lMultiChart = new MultiChart(LineChart.class);
-    lMultiChart.setLegendVisible(false);
-    lMultiChart.setMaxWidth(Double.MAX_VALUE);
-    lMultiChart.setMaxHeight(Double.MAX_VALUE);
+    AcquistionStateMultiChart lMultiChart =
+                                          new AcquistionStateMultiChart(pAcquisitionState);
 
-    int lNumberOfDetectionArms =
-                               pAcquisitionState.getNumberOfDetectionArms();
-    int lNumberOfIlluminationArms =
-                                  pAcquisitionState.getNumberOfLightSheets();
-
-    for (int d = 0; d < lNumberOfDetectionArms; d++)
-    {
-      mNameToDataMap.put("DZ" + d, lMultiChart.addSeries("DZ" + d));
-    }
-
-    for (int i = 0; i < lNumberOfIlluminationArms; i++)
-    {
-      mNameToDataMap.put("IX" + i, lMultiChart.addSeries("IX" + i));
-      mNameToDataMap.put("IY" + i, lMultiChart.addSeries("IY" + i));
-      mNameToDataMap.put("IZ" + i, lMultiChart.addSeries("IZ" + i));
-      mNameToDataMap.put("IA" + i, lMultiChart.addSeries("IA" + i));
-      mNameToDataMap.put("IB" + i, lMultiChart.addSeries("IB" + i));
-      mNameToDataMap.put("IH" + i, lMultiChart.addSeries("IH" + i));
-      mNameToDataMap.put("IW" + i, lMultiChart.addSeries("IW" + i));
-      mNameToDataMap.put("IP" + i, lMultiChart.addSeries("IP" + i));
-    }
-
-    updateChart(pAcquisitionState, lMultiChart);
+    AcquistionStateTableView lTableView =
+                                        new AcquistionStateTableView(pAcquisitionState);
 
     // Laying out components:
 
@@ -221,10 +180,18 @@ public class AcquisitionStatePanel extends CustomGridPane
     add(new Label("Laser on/off: "), 0, 7);
     add(lLaserOnOffArray, 1, 7);
 
-    GridPane.setVgrow(lMultiChart, Priority.ALWAYS);
-    GridPane.setHgrow(lMultiChart, Priority.ALWAYS);
-    GridPane.setColumnSpan(lMultiChart, 8);
-    add(lMultiChart, 0, 8);
+    TabPane lTabPane = new TabPane();
+    Tab lChartTab = new Tab("Chart");
+    Tab lTableTab = new Tab("Table");
+    lTabPane.getTabs().addAll(lChartTab, lTableTab);
+
+    lChartTab.setContent(lMultiChart);
+    lTableTab.setContent(lTableView);
+
+    GridPane.setVgrow(lTabPane, Priority.ALWAYS);
+    GridPane.setHgrow(lTabPane, Priority.ALWAYS);
+    GridPane.setColumnSpan(lTabPane, 8);
+    add(lTabPane, 0, 8);
 
     // Update events:
 
@@ -232,69 +199,14 @@ public class AcquisitionStatePanel extends CustomGridPane
       if (isVisible())
       {
         Platform.runLater(() -> {
-          updateChart(pAcquisitionState, lMultiChart);
+          lMultiChart.updateChart(pAcquisitionState);
+        });
+        Platform.runLater(() -> {
+          lTableView.updateTable(pAcquisitionState);
         });
       }
 
     });
   }
 
-  private void updateChart(InterpolatedAcquisitionState pAcquisitionState,
-                           MultiChart pMultiChart)
-  {
-
-    try
-    {
-      int lDepth = pAcquisitionState.getStackDepthInPlanesVariable()
-                                    .get()
-                                    .intValue();
-      int lNumberOfDetectionArms =
-                                 pAcquisitionState.getNumberOfDetectionArms();
-      int lNumberOfIlluminationArms =
-                                    pAcquisitionState.getNumberOfLightSheets();
-
-      for (int d = 0; d < lNumberOfDetectionArms; d++)
-      {
-        ObservableList<Data<Number, Number>> lData =
-                                                   mNameToDataMap.get("DZ"
-                                                                      + d);
-        lData.clear();
-        for (int zi = 0; zi < lDepth; zi++)
-        {
-          MultiChart.addData(lData,
-                             pAcquisitionState.getZRamp(zi),
-                             pAcquisitionState.get(LightSheetDOF.DZ,
-                                                   zi,
-                                                   d));
-        }
-      }
-
-      for (LightSheetDOF lLightSheetDOF : LightSheetDOF.values())
-        if (lLightSheetDOF != LightSheetDOF.DZ)
-        {
-          for (int i = 0; i < lNumberOfIlluminationArms; i++)
-          {
-            ObservableList<Data<Number, Number>> lData =
-                                                       mNameToDataMap.get(lLightSheetDOF.toString()
-                                                                          + i);
-            lData.clear();
-            for (int zi = 0; zi < lDepth; zi++)
-            {
-              MultiChart.addData(lData,
-                                 pAcquisitionState.getZRamp(zi),
-                                 pAcquisitionState.get(lLightSheetDOF,
-                                                       zi,
-                                                       i));
-            }
-          }
-        }
-
-      pMultiChart.updateMinMax();
-    }
-    catch (Throwable e)
-    {
-      e.printStackTrace();
-    }
-
-  }
 }

@@ -1,4 +1,4 @@
-package clearcontrol.microscope.stacks.metadata;
+package clearcontrol.microscope.lightsheet.stacks;
 
 import clearcontrol.stack.metadata.MetaDataEntryInterface;
 

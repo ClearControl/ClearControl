@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.calibrator.modules;
+package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
@@ -9,44 +9,45 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.math3.stat.StatUtils;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
+import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
 
-import org.apache.commons.math3.stat.StatUtils;
-
-public class CalibrationW
+/**
+ * Lightsheet width calibration module
+ *
+ * @author royer
+ */
+public class CalibrationW extends CalibrationBase
+                          implements CalibrationModuleInterface
 {
 
-  private final LightSheetMicroscope mLightSheetMicroscope;
-  private int mNumberOfDetectionArmDevices;
-  private int mNumberOfLightSheetDevices;
   private HashMap<Integer, TDoubleArrayList> mIntensityLists;
   private TDoubleArrayList mWList = new TDoubleArrayList();
   private MultiPlot mAverageIntensityCurves;
 
+  /**
+   * Instantiates a lightsheet width calibration module
+   * 
+   * @param pCalibrator
+   *          parent calibrator
+   */
   public CalibrationW(Calibrator pCalibrator)
   {
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
-
-    mNumberOfDetectionArmDevices =
-                                 mLightSheetMicroscope.getDeviceLists()
-                                                      .getNumberOfDevices(DetectionArmInterface.class);
-
-    mNumberOfLightSheetDevices =
-                               mLightSheetMicroscope.getDeviceLists()
-                                                    .getNumberOfDevices(LightSheetInterface.class);
+    super(pCalibrator);
 
     mAverageIntensityCurves =
                             MultiPlot.getMultiPlot(this.getClass()
@@ -56,11 +57,21 @@ public class CalibrationW
 
   }
 
+  /**
+   * Instantiates a lightsheet width calibration module
+   * 
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return true for success
+   */
   public boolean calibrate(int pDetectionArmIndex,
                            int pNumberOfSamples)
   {
     mIntensityLists.clear();
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    int lNumberOfLightSheets = getNumberOfLightSheets();
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       double[] lAverageIntensities = calibrate(l,
                                                pDetectionArmIndex,
@@ -78,6 +89,18 @@ public class CalibrationW
     return true;
   }
 
+  /**
+   * Calibrates the lightsheet width for a given lightsheet, detection arm, and
+   * number of samples.
+   * 
+   * @param pLightSheetIndex
+   *          lightsheet index
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pNumberOfSamples
+   *          number of samples
+   * @return metric value per plane.
+   */
   public double[] calibrate(int pLightSheetIndex,
                             int pDetectionArmIndex,
                             int pNumberOfSamples)
@@ -95,6 +118,7 @@ public class CalibrationW
       BoundedVariable<Number> lWVariable =
                                          lLightSheetDevice.getWidthVariable();
 
+      @SuppressWarnings("unused")
       UnivariateAffineFunction lWFunction =
                                           lLightSheetDevice.getWidthFunction()
                                                            .get();
@@ -189,15 +213,22 @@ public class CalibrationW
 
   }
 
+  /**
+   * Applies the lighsheet width calibration corrections
+   * 
+   * @return residual error
+   */
   public double apply()
   {
+    int lNumberOfLightSheets = getNumberOfLightSheets();
+
     double lError = 0;
 
     double lIntensityMin = Double.POSITIVE_INFINITY;
     double lIntensityMax = Double.NEGATIVE_INFINITY;
 
     TDoubleArrayList lSums = new TDoubleArrayList();
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       TDoubleArrayList lIntensityList = mIntensityLists.get(l);
       lSums.add(lIntensityList.sum());
@@ -208,7 +239,7 @@ public class CalibrationW
 
     double lLargestSum = Double.NEGATIVE_INFINITY;
     int lIndexOfLargestSum = -1;
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       double lSum = lSums.get(l);
       if (lSum > lLargestSum)
@@ -222,8 +253,8 @@ public class CalibrationW
                                              mIntensityLists.get(lIndexOfLargestSum);
 
     TDoubleArrayList[] lOffsetsLists =
-                                     new TDoubleArrayList[mNumberOfLightSheetDevices];
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+                                     new TDoubleArrayList[lNumberOfLightSheets];
+    for (int l = 0; l < lNumberOfLightSheets; l++)
       lOffsetsLists[l] = new TDoubleArrayList();
 
     double lStep = (lIntensityMax - lIntensityMin)
@@ -231,7 +262,7 @@ public class CalibrationW
 
     for (double i = lIntensityMin; i <= lIntensityMax; i += lStep)
     {
-      for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+      for (int l = 0; l < lNumberOfLightSheets; l++)
       {
 
         int lReferenceIndex =
@@ -252,7 +283,7 @@ public class CalibrationW
     }
 
     TDoubleArrayList lMedianOffsets = new TDoubleArrayList();
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       double lMedianOffset =
                            StatUtils.percentile(lOffsetsLists[l].toArray(),
@@ -260,7 +291,7 @@ public class CalibrationW
       lMedianOffsets.add(lMedianOffset);
     }
 
-    for (int l = 0; l < mNumberOfLightSheetDevices; l++)
+    for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       LightSheetInterface lLightSheetDevice =
                                             mLightSheetMicroscope.getDeviceLists()
@@ -302,6 +333,9 @@ public class CalibrationW
     return lSize - 1;
   }
 
+  /**
+   * Resets calibration
+   */
   public void reset()
   {
     mAverageIntensityCurves.clear();

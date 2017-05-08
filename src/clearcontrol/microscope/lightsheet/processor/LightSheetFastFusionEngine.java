@@ -3,7 +3,7 @@ package clearcontrol.microscope.lightsheet.processor;
 import clearcl.ClearCLContext;
 import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.microscope.stacks.metadata.MetaDataView;
+import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
 import fastfuse.FastFusionEngine;
@@ -175,7 +175,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     StackMetaData lMetaData = pStack.getMetaData();
 
     mFusedStackMetaData.addAll(lMetaData);
-    System.out.println("passed:" + lMetaData);
+    //System.out.println("passed:" + lMetaData);
   }
 
   /**
