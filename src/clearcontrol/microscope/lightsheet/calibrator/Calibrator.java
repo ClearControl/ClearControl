@@ -5,6 +5,8 @@ import static java.lang.Math.pow;
 import java.io.File;
 import java.util.HashMap;
 
+import org.ejml.simple.SimpleMatrix;
+
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingInterface;
@@ -20,8 +22,6 @@ import clearcontrol.microscope.lightsheet.calibrator.modules.impl.CalibrationZ;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
-
-import org.ejml.simple.SimpleMatrix;
 
 /**
  * Calibrator
@@ -174,7 +174,10 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   public boolean calibrate()
   {
 
-    if (getCalibrateZVariable().get() && !calibrateZ(13))
+    int lNumberOfSamplesZ = 13;
+
+    if (getCalibrateZVariable().get()
+        && !calibrateZ(lNumberOfSamplesZ))
       return false;
 
     if (isStopRequested())
@@ -203,7 +206,8 @@ public class Calibrator extends TaskDevice implements LoggingInterface
 
     if ((getCalibrateAVariable().get()
          || getCalibrateXYVariable().get())
-        && getCalibrateZVariable().get() && !calibrateZ(64))
+        && getCalibrateZVariable().get()
+        && !calibrateZ(lNumberOfSamplesZ))
       return false;
 
     if (isStopRequested())

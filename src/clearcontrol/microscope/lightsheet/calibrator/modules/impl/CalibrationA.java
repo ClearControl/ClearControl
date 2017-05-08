@@ -1,6 +1,7 @@
 package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.min;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,8 +86,8 @@ public class CalibrationA extends CalibrationBase
     System.out.println("Current Alpha function: "
                        + lLightSheet.getAlphaFunction());
 
-    double lMinA = -25;
-    double lMaxA = 25;
+    double lMinA = -7;
+    double lMaxA = 7;
 
     double lMinIY = lLightSheet.getYVariable().getMin().doubleValue();
     double lMaxIY = lLightSheet.getYVariable().getMax().doubleValue();
@@ -97,7 +98,7 @@ public class CalibrationA extends CalibrationBase
     double[] angles = new double[lNumberOfDetectionArmDevices];
     int lCount = 0;
 
-    double y = 0; // 0.5 * min(abs(lMinIY), abs(lMaxIY));
+    double y = 0.5 * min(abs(lMinIY), abs(lMaxIY));
     double z = 0.5 * (lMaxZ + lMinZ);
 
     for (int r = 0; r < pNumberOfRepeats; r++)

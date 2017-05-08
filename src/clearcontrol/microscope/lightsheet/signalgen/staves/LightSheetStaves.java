@@ -257,18 +257,6 @@ public class LightSheetStaves implements LoggingInterface
     synchronized (this)
     {
 
-      UnivariateAffineFunction lYFunction =
-                                          getLightSheet().getYFunction()
-                                                         .get();
-
-      UnivariateAffineFunction lZFunction =
-                                          getLightSheet().getZFunction()
-                                                         .get();
-
-      UnivariateAffineFunction lHeightFunction =
-                                               getLightSheet().getHeightFunction()
-                                                              .get();
-
       // info("Updating: " + getLightSheet().getName());
 
       final double lReadoutTimeInMicroseconds =
@@ -287,29 +275,51 @@ public class LightSheetStaves implements LoggingInterface
                                                      + lExposureMovementTimeInMicroseconds;
       mLineExposureInMicrosecondsVariable.set(lLineExposureTimeInMicroseconds);
 
-      final double lY = mLightSheetQueue.getYVariable()
-                                        .get()
-                                        .doubleValue();
+      UnivariateAffineFunction lYFunction =
+                                          getLightSheet().getYFunction()
+                                                         .get();
 
-      final double lZ = mLightSheetQueue.getZVariable()
-                                        .get()
-                                        .doubleValue();
+      UnivariateAffineFunction lZFunction =
+                                          getLightSheet().getZFunction()
+                                                         .get();
 
-      final double lHeight = mLightSheetQueue.getHeightVariable()
-                                             .get()
+      UnivariateAffineFunction lHeightFunction =
+                                               getLightSheet().getHeightFunction()
+                                                              .get();
+
+      final double lYBF = mLightSheetQueue.getYVariable()
+                                          .get()
+                                          .doubleValue();
+
+      final double lZBF = mLightSheetQueue.getZVariable()
+                                          .get()
+                                          .doubleValue();
+      final double lZminBF = mLightSheetQueue.getZVariable()
+                                             .getMin()
+                                             .doubleValue();
+      final double lZmaxBF = mLightSheetQueue.getZVariable()
+                                             .getMax()
                                              .doubleValue();
 
-      final double lGalvoYOffsetBeforeRotation = lYFunction.value(lY);
-      final double lGalvoZOffsetBeforeRotation = lYFunction.value(lZ);
+      final double lZCenter = (lZmaxBF - lZminBF) / 2;
+
+      final double lGalvoYOffsetBeforeRotation = lYBF;
+      final double lGalvoZOffsetBeforeRotation = lZBF;
+
+      final double lHeightBF = mLightSheetQueue.getHeightVariable()
+                                               .get()
+                                               .doubleValue();
+
+      final double lLightSheetHeight =
+                                     lHeightFunction.value(lHeightBF);
 
       final double lGalvoYOffset =
                                  galvoRotateY(lGalvoYOffsetBeforeRotation,
-                                              lGalvoZOffsetBeforeRotation);
+                                              lGalvoZOffsetBeforeRotation - lZCenter);
       final double lGalvoZOffset =
                                  galvoRotateZ(lGalvoYOffsetBeforeRotation,
                                               lGalvoZOffsetBeforeRotation);
 
-      final double lLightSheetHeight = lHeightFunction.value(lHeight);
       final double lGalvoAmplitudeY = galvoRotateY(lLightSheetHeight,
                                                    0);
       final double lGalvoAmplitudeZ = galvoRotateZ(lLightSheetHeight,
