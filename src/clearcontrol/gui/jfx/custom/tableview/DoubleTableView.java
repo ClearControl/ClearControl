@@ -74,6 +74,7 @@ public class DoubleTableView extends TableView<DoubleRow>
     TableColumn<DoubleRow, Double> lColumn =
                                            new TableColumn<>(pColumnHeader);
     lColumn.setMinWidth(mMinColumnWidth);
+    lColumn.setMaxWidth(mMinColumnWidth);
     lColumn.setResizable(pIsRezisable);
 
     final int lColumnIndex = getColumns().size();
@@ -91,6 +92,7 @@ public class DoubleTableView extends TableView<DoubleRow>
          
           return new EditableTableCell(DoubleTableView.this,
                                        lColumnIndex,
+                                       mMinColumnWidth,
                                        pMenuItemSpecifications);
         }
       });

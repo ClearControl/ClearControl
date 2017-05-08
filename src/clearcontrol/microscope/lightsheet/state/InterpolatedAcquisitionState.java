@@ -96,7 +96,7 @@ public class InterpolatedAcquisitionState extends
 
     @SuppressWarnings("rawtypes")
     final VariableSetListener lChangeListener = (o, n) -> {
-      info("State changed!");
+      //info("State changed!");
       mQueueUpdateNeeded = true;
       notifyListeners(this);
     };
@@ -303,7 +303,7 @@ public class InterpolatedAcquisitionState extends
    */
   public void setupDefault(LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
-    setup(-120, 0, 120, 4, 20, 10);
+    setup(-120, 0, 120, 4, 50, 10);
 
     int lNumberOfControlPlanes =
                                getInterpolationTables().getNumberOfControlPlanes();

@@ -183,7 +183,7 @@ dependencies
     compile ('org.scream3r:jssc:2.8.0')                  {transitive= true; changing= true}
    
     // Halcyon:
-    compile ('net.halcyon:Halcyon:0.3.6')                {transitive=true;  changing= true}
+    compile ('net.halcyon:Halcyon:0.3.7')                {transitive=true;  changing= true}
 
     // Sqeazy:
     compile ('net.sqeazy:sqeazy:0.2.1')                  {transitive= true; changing= true}

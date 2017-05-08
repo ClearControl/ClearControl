@@ -28,12 +28,14 @@ public class EditableTableCell extends TableCell<DoubleRow, Double>
    *          parent table view
    * @param pColumnIndex
    *          column index
+   * @param pMinColumnWidth min column width
    * @param pMenuItemSpecifications
    *          vararg list of context menu item specifications
    */
   @SafeVarargs
   public EditableTableCell(DoubleTableView pDoubleTableView,
                            int pColumnIndex,
+                           int pMinColumnWidth,
                            Pair<String, EditableTableCellHandler>... pMenuItemSpecifications)
   {
     final ContextMenu lContextMenu = new ContextMenu();
@@ -59,7 +61,8 @@ public class EditableTableCell extends TableCell<DoubleRow, Double>
     }
     setContextMenu(lContextMenu);
 
-    setMinWidth(70);
+    setMinWidth(pMinColumnWidth);
+    setMaxWidth(pMinColumnWidth);
 
   }
 

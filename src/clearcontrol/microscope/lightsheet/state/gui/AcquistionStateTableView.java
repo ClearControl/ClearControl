@@ -31,7 +31,7 @@ public class AcquistionStateTableView extends DoubleTableView
    */
   public AcquistionStateTableView(final InterpolatedAcquisitionState pAcquisitionState)
   {
-    super(20);
+    super(60);
 
     setMaxWidth(Double.MAX_VALUE);
     setMaxHeight(Double.MAX_VALUE);
