@@ -96,7 +96,7 @@ public class InterpolatedAcquisitionState extends
 
     @SuppressWarnings("rawtypes")
     final VariableSetListener lChangeListener = (o, n) -> {
-      //info("State changed!");
+      // info("State changed!");
       mQueueUpdateNeeded = true;
       notifyListeners(this);
     };
@@ -146,6 +146,13 @@ public class InterpolatedAcquisitionState extends
       info("Interpolation table changed!");
       notifyListeners(this);
     });
+
+    {
+      addControlPlane(mZLow.get().doubleValue());
+      addControlPlane(mZHigh.get().doubleValue());
+
+      setupDefaultValues();
+    }
 
     mCameraOnOff = new Variable[mNumberOfDetectionArms];
 
@@ -304,30 +311,6 @@ public class InterpolatedAcquisitionState extends
   public void setupDefault(LightSheetMicroscopeInterface pLightSheetMicroscope)
   {
     setup(-120, 0, 120, 4, 50, 10);
-
-    int lNumberOfControlPlanes =
-                               getInterpolationTables().getNumberOfControlPlanes();
-
-    Number lMaxHeight = new Double(1);
-
-    if (pLightSheetMicroscope != null)
-    {
-      lMaxHeight = pLightSheetMicroscope.getLightSheet(0)
-                                        .getHeightVariable()
-                                        .getMax();
-    }
-
-    for (int zpi = 0; zpi < lNumberOfControlPlanes; zpi++)
-    {
-      double z = getInterpolationTables().getZ(zpi);
-      // System.out.format("z=%g \n", z);
-      getInterpolationTables().set(LightSheetDOF.IZ, zpi, z);
-      getInterpolationTables().set(LightSheetDOF.IH,
-                                   zpi,
-                                   lMaxHeight.doubleValue());
-      getInterpolationTables().set(LightSheetDOF.IP, zpi, 1);
-    }
-
   }
 
   /**
@@ -365,8 +348,49 @@ public class InterpolatedAcquisitionState extends
     {
       addControlPlane(z);
     }
+    setupDefaultValues();
+
     notifyListeners(this);
   }
+
+  protected void setupDefaultValues()
+  {
+    Number lMaxHeight = new Double(1);
+
+    if (getLightSheetMicroscope() != null)
+    {
+      lMaxHeight = getLightSheetMicroscope().getLightSheet(0)
+                                            .getHeightVariable()
+                                            .getMax();
+    }
+
+    for (int zpi =
+                 0; zpi < getInterpolationTables().getNumberOfControlPlanes(); zpi++)
+    {
+      getInterpolationTables().set(LightSheetDOF.IH,
+                                   zpi,
+                                   lMaxHeight.doubleValue());
+      getInterpolationTables().set(LightSheetDOF.IP, zpi, 1);
+    }
+  }
+
+  /*
+  public void copyCurrentMicroscopeSettings()
+  {
+    int lNumberOfControlPlanes = getNumberOfControlPlanes();
+    
+    for(int cpi=0; cpi<lNumberOfControlPlanes; cpi++)
+    {
+    for(int l=0; l<mNumberOfLightSheets; l++)
+    {
+      
+      
+      mInterpolationTables.set(LightSheetDOF.IA, mLightSheetMicroscope.getTemplateQueue());
+    }
+    }
+    
+    return null;
+  }/**/
 
   /**
    * Returns lightsheet microscope parent
@@ -785,6 +809,8 @@ public class InterpolatedAcquisitionState extends
                                                                          lRamp);
 
     if (pDOF == LightSheetDOF.DZ)
+      return lRamp + lInterpolatedValue;
+    else if (pDOF == LightSheetDOF.IZ)
       return lRamp + lInterpolatedValue;
     else
       return lInterpolatedValue;

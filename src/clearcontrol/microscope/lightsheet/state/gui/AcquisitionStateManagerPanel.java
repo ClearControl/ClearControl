@@ -116,6 +116,7 @@ public class AcquisitionStateManagerPanel extends
                                                                  new InterpolatedAcquisitionState("new",
                                                                                                   lMicroscope);
       pAcquisitionStateManager.addState(lInterpolatedAcquisitionState);
+      //lInterpolatedAcquisitionState.setupDefault(lMicroscope);
 
     });
 

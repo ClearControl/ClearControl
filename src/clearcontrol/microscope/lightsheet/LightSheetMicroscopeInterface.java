@@ -14,6 +14,7 @@ public interface LightSheetMicroscopeInterface extends
 
 {
 
+  
   /**
    * Returns the number of detection arms
    * 

@@ -11,10 +11,12 @@ import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 /**
@@ -103,7 +105,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     for (int i =
                0; i < pAcquisitionState.getNumberOfDetectionArms(); i++)
     {
-      lCameraOnOffArray.addSwitch("Camera " + i,
+      lCameraOnOffArray.addSwitch("C" + i,
                                   pAcquisitionState.getCameraOnOffVariable(i));
     }
 
@@ -112,7 +114,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     for (int i =
                0; i < pAcquisitionState.getNumberOfLightSheets(); i++)
     {
-      lLightSheetOnOffArray.addSwitch("Lightsheet " + i,
+      lLightSheetOnOffArray.addSwitch("L" + i,
                                       pAcquisitionState.getLightSheetOnOffVariable(i));
     }
 
@@ -121,7 +123,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     for (int i =
                0; i < pAcquisitionState.getNumberOfLaserLines(); i++)
     {
-      lLaserOnOffArray.addSwitch("Laser " + i,
+      lLaserOnOffArray.addSwitch("La" + i,
                                  pAcquisitionState.getLaserOnOffVariable(i));
     }
 
@@ -133,65 +135,77 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     // Laying out components:
 
-    add(lStageXSlider.getLabel(), 0, 0);
-    add(lStageXSlider.getTextField(), 1, 0);
-    add(lStageXSlider.getSlider(), 2, 0);
+    int lRow = 0;
 
-    add(lStageYSlider.getLabel(), 0, 1);
-    add(lStageYSlider.getTextField(), 1, 1);
-    add(lStageYSlider.getSlider(), 2, 1);
+    {
+      add(lStageXSlider.getLabel(), 0, lRow);
+      add(lStageXSlider.getTextField(), 1, lRow);
+      add(lStageXSlider.getSlider(), 2, lRow);
+      lRow++;
+    }
 
-    add(lStageZSlider.getLabel(), 0, 2);
-    add(lStageZSlider.getTextField(), 1, 2);
-    add(lStageZSlider.getSlider(), 2, 2);
+    {
+      add(lStageYSlider.getLabel(), 0, lRow);
+      add(lStageYSlider.getTextField(), 1, lRow);
+      add(lStageYSlider.getSlider(), 2, lRow);
+      lRow++;
+    }
 
-    add(lZRangeSlider.getLabel(), 0, 3);
-    add(lZRangeSlider.getLowTextField(), 1, 3);
-    add(lZRangeSlider.getRangeSlider(), 2, 3);
-    add(lZRangeSlider.getHighTextField(), 3, 3);
+    {
+      add(lStageZSlider.getLabel(), 0, lRow);
+      add(lStageZSlider.getTextField(), 1, lRow);
+      add(lStageZSlider.getSlider(), 2, lRow);
+      lRow++;
+    }
 
-    // setGridLinesVisible(true);
-    GridPane lGridPane = new GridPane();
-    lGridPane.setHgap(10);
-    lGridPane.add(lZStepTextField.getLabel(), 0, 0);
-    lGridPane.add(lZStepTextField.getTextField(), 1, 0);
-    lGridPane.add(lNumberOfPlanesTextField.getLabel(), 2, 0);
-    lGridPane.add(lNumberOfPlanesTextField.getTextField(), 3, 0);
+    {
+      add(lZRangeSlider.getLabel(), 0, lRow);
+      add(lZRangeSlider.getLowTextField(), 1, lRow);
+      add(lZRangeSlider.getRangeSlider(), 2, lRow);
+      add(lZRangeSlider.getHighTextField(), 3, lRow);
+      lRow++;
+    }
 
-    lGridPane.setAlignment(Pos.BASELINE_LEFT);
-    GridPane.setColumnSpan(lGridPane, 8);
-    add(lGridPane, 0, 4);
+    {
+      HBox lHBox = new HBox(new Label("Z-step: "),
+                            lZStepTextField.getTextField(),
+                            new Label("      Nb of planes: "),
+                            lNumberOfPlanesTextField.getTextField(),
+                            new Label("      Cameras: "),
+                            lCameraOnOffArray,
+                            new Label("      Lightsheets: "),
+                            lLightSheetOnOffArray,
+                            new Label("      Lasers: "),
+                            lLaserOnOffArray);
+      lHBox.setAlignment(Pos.CENTER_LEFT);
+      GridPane.setColumnSpan(lHBox, 8);
+      add(lHBox, 0, lRow);
+      lRow++;
+    }
+    
+   /* {
+      Button lCopySettingsButton = new Button("Copy current microscope settings to this state");
+      lCopySettingsButton.setOnAction((e)-> pAcquisitionState.copyCurrentMicroscopeSettings());
+      GridPane.setColumnSpan(lCopySettingsButton, 8);
+      add(lCopySettingsButton, 0, lRow);
+      lRow++;
+    }/**/
 
-    lCameraOnOffArray.setAlignment(Pos.BASELINE_LEFT);
-    GridPane.setHalignment(lCameraOnOffArray, HPos.LEFT);
-    GridPane.setColumnSpan(lCameraOnOffArray, 7);
-    add(new Label("Camera on/off: "), 0, 5);
-    add(lCameraOnOffArray, 1, 5);
+    {
+      TabPane lTabPane = new TabPane();
+      Tab lChartTab = new Tab("Chart");
+      Tab lTableTab = new Tab("Table");
+      lTabPane.getTabs().addAll(lChartTab, lTableTab);
 
-    lLightSheetOnOffArray.setAlignment(Pos.BASELINE_LEFT);
-    GridPane.setHalignment(lLightSheetOnOffArray, HPos.LEFT);
-    GridPane.setColumnSpan(lLightSheetOnOffArray, 7);
-    add(new Label("LightSheet on/off: "), 0, 6);
-    add(lLightSheetOnOffArray, 1, 6);
+      lChartTab.setContent(lMultiChart);
+      lTableTab.setContent(lTableView);
 
-    lLaserOnOffArray.setAlignment(Pos.BASELINE_LEFT);
-    GridPane.setHalignment(lLaserOnOffArray, HPos.LEFT);
-    GridPane.setColumnSpan(lLaserOnOffArray, 7);
-    add(new Label("Laser on/off: "), 0, 7);
-    add(lLaserOnOffArray, 1, 7);
-
-    TabPane lTabPane = new TabPane();
-    Tab lChartTab = new Tab("Chart");
-    Tab lTableTab = new Tab("Table");
-    lTabPane.getTabs().addAll(lChartTab, lTableTab);
-
-    lChartTab.setContent(lMultiChart);
-    lTableTab.setContent(lTableView);
-
-    GridPane.setVgrow(lTabPane, Priority.ALWAYS);
-    GridPane.setHgrow(lTabPane, Priority.ALWAYS);
-    GridPane.setColumnSpan(lTabPane, 8);
-    add(lTabPane, 0, 8);
+      GridPane.setVgrow(lTabPane, Priority.ALWAYS);
+      GridPane.setHgrow(lTabPane, Priority.ALWAYS);
+      GridPane.setColumnSpan(lTabPane, 8);
+      add(lTabPane, 0, lRow);
+      lRow++;
+    }
 
     // Update events:
 
