@@ -125,6 +125,9 @@ public class CalibrationP extends CalibrationBase
           lQueue.setC(d, i == pNumberOfSamples);
         lQueue.addCurrentStateToQueue();
       }
+
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
       lQueue.finalizeQueue();
       // Building queue end.
 
@@ -173,7 +176,7 @@ public class CalibrationP extends CalibrationBase
   public double apply()
   {
     int lNumberOfLightSheets = getNumberOfLightSheets();
-    
+
     double lError = 0;
 
     for (int l = 0; l < lNumberOfLightSheets; l++)

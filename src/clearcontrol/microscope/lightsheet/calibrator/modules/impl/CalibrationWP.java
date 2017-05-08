@@ -223,6 +223,8 @@ public class CalibrationWP extends CalibrationBase
       }
       lQueue.addCurrentStateToQueue();
 
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
       lQueue.finalizeQueue();
 
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);

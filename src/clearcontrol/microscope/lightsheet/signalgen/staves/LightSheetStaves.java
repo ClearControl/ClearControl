@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.signalgen.movement.Movement;
@@ -255,6 +256,19 @@ public class LightSheetStaves implements LoggingInterface
   {
     synchronized (this)
     {
+
+      UnivariateAffineFunction lYFunction =
+                                          getLightSheet().getYFunction()
+                                                         .get();
+
+      UnivariateAffineFunction lZFunction =
+                                          getLightSheet().getZFunction()
+                                                         .get();
+
+      UnivariateAffineFunction lHeightFunction =
+                                               getLightSheet().getHeightFunction()
+                                                              .get();
+
       // info("Updating: " + getLightSheet().getName());
 
       final double lReadoutTimeInMicroseconds =
@@ -273,14 +287,20 @@ public class LightSheetStaves implements LoggingInterface
                                                      + lExposureMovementTimeInMicroseconds;
       mLineExposureInMicrosecondsVariable.set(lLineExposureTimeInMicroseconds);
 
-      final double lGalvoYOffsetBeforeRotation =
-                                               mLightSheetQueue.getYVariable()
-                                                               .get()
-                                                               .doubleValue();
-      final double lGalvoZOffsetBeforeRotation =
-                                               mLightSheetQueue.getZVariable()
-                                                               .get()
-                                                               .doubleValue();
+      final double lY = mLightSheetQueue.getYVariable()
+                                        .get()
+                                        .doubleValue();
+
+      final double lZ = mLightSheetQueue.getZVariable()
+                                        .get()
+                                        .doubleValue();
+
+      final double lHeight = mLightSheetQueue.getHeightVariable()
+                                             .get()
+                                             .doubleValue();
+
+      final double lGalvoYOffsetBeforeRotation = lYFunction.value(lY);
+      final double lGalvoZOffsetBeforeRotation = lYFunction.value(lZ);
 
       final double lGalvoYOffset =
                                  galvoRotateY(lGalvoYOffsetBeforeRotation,
@@ -289,39 +309,25 @@ public class LightSheetStaves implements LoggingInterface
                                  galvoRotateZ(lGalvoYOffsetBeforeRotation,
                                               lGalvoZOffsetBeforeRotation);
 
-      final double lLightSheetHeight =
-                                     getLightSheet().getHeightFunction()
-                                                    .get()
-                                                    .value(mLightSheetQueue.getHeightVariable()
-
-                                                                           .get()
-                                                                           .doubleValue());
+      final double lLightSheetHeight = lHeightFunction.value(lHeight);
       final double lGalvoAmplitudeY = galvoRotateY(lLightSheetHeight,
                                                    0);
       final double lGalvoAmplitudeZ = galvoRotateZ(lLightSheetHeight,
                                                    0);
 
       final double lGalvoYLowValue =
-                                   getLightSheet().getYFunction()
-                                                  .get()
-                                                  .value(lGalvoYOffset
-                                                         - lGalvoAmplitudeY);
+                                   lYFunction.value(lGalvoYOffset
+                                                    - lGalvoAmplitudeY);
       final double lGalvoYHighValue =
-                                    getLightSheet().getYFunction()
-                                                   .get()
-                                                   .value(lGalvoYOffset
-                                                          + lGalvoAmplitudeY);
+                                    lYFunction.value(lGalvoYOffset
+                                                     + lGalvoAmplitudeY);
 
       final double lGalvoZLowValue =
-                                   getLightSheet().getZFunction()
-                                                  .get()
-                                                  .value(lGalvoZOffset
-                                                         - lGalvoAmplitudeZ);
+                                   lZFunction.value(lGalvoZOffset
+                                                    - lGalvoAmplitudeZ);
       final double lGalvoZHighValue =
-                                    getLightSheet().getZFunction()
-                                                   .get()
-                                                   .value(lGalvoZOffset
-                                                          + lGalvoAmplitudeZ);
+                                    lZFunction.value(lGalvoZOffset
+                                                     + lGalvoAmplitudeZ);
 
       mBeforeExposureYStave.setStartValue((float) lGalvoYHighValue);
       mBeforeExposureYStave.setStopValue((float) lGalvoYLowValue);
@@ -523,23 +529,31 @@ public class LightSheetStaves implements LoggingInterface
 
   private double galvoRotateY(double pY, double pZ)
   {
+    UnivariateAffineFunction lAlphaFunction =
+                                            getLightSheet().getAlphaFunction()
+                                                           .get();
+    double lAlphaDegrees =
+                         mLightSheetQueue.getAlphaInDegreesVariable()
+                                         .get()
+                                         .doubleValue();
     final double lAlpha =
-                        Math.toRadians(getLightSheet().getAlphaFunction()
-                                                      .get()
-                                                      .value(mLightSheetQueue.getAlphaInDegreesVariable()
-                                                                             .get()
-                                                                             .doubleValue()));
+                        Math.toRadians(lAlphaFunction.value(lAlphaDegrees));
     return pY * cos(lAlpha) - pZ * sin(lAlpha);
   }
 
   private double galvoRotateZ(double pY, double pZ)
   {
+    UnivariateAffineFunction lAlphaFunction =
+                                            getLightSheet().getAlphaFunction()
+                                                           .get();
+
+    double lAlphaDegrees =
+                         mLightSheetQueue.getAlphaInDegreesVariable()
+                                         .get()
+                                         .doubleValue();
+
     final double lAlpha =
-                        Math.toRadians(getLightSheet().getAlphaFunction()
-                                                      .get()
-                                                      .value(mLightSheetQueue.getAlphaInDegreesVariable()
-                                                                             .get()
-                                                                             .doubleValue()));
+                        Math.toRadians(lAlphaFunction.value(lAlphaDegrees));
     return pY * sin(lAlpha) + pZ * cos(lAlpha);
   }
 

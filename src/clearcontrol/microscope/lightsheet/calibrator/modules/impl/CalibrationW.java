@@ -157,6 +157,9 @@ public class CalibrationW extends CalibrationBase
         lQueue.setC(pDetectionArmIndex, true);
         lQueue.addCurrentStateToQueue();
       }
+
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
       lQueue.finalizeQueue();
       // Building queue end.
 

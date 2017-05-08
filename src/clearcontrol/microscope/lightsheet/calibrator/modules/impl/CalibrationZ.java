@@ -36,7 +36,8 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author royer
  */
-public class CalibrationZ extends CalibrationBase implements CalibrationModuleInterface
+public class CalibrationZ extends CalibrationBase
+                          implements CalibrationModuleInterface
 {
 
   private ArgMaxFinder1DInterface mArgMaxFinder;
@@ -75,7 +76,6 @@ public class CalibrationZ extends CalibrationBase implements CalibrationModuleIn
                                  mLightSheetMicroscope.getDeviceLists()
                                                       .getNumberOfDevices(DetectionArmInterface.class);
 
- 
     mModels = new MultiKeyMap<>();
   }
 
@@ -277,6 +277,7 @@ public class CalibrationZ extends CalibrationBase implements CalibrationModuleIn
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
       lQueue.setIZ(pLightSheetIndex, lMinDZ);
+      lQueue.setIH(pLightSheetIndex, 0);
 
       final double[] dz = new double[mNumberOfDetectionArmDevices];
 
@@ -300,7 +301,6 @@ public class CalibrationZ extends CalibrationBase implements CalibrationModuleIn
           lQueue.setC(d, true);
         }
 
-        lQueue.setIH(pLightSheetIndex, 0);
         lQueue.setIZ(pLightSheetIndex, pIZ);
 
         lQueue.addCurrentStateToQueue();
@@ -609,7 +609,6 @@ public class CalibrationZ extends CalibrationBase implements CalibrationModuleIn
     System.out.println("After: lDetectionArmDevice1.getDetectionFocusZFunction()="
                        + lDetectionArmDevice1.getZFunction());
   }
-
 
   @Override
   public void reset()

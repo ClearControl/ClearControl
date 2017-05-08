@@ -1,7 +1,6 @@
 package clearcontrol.microscope.lightsheet.calibrator.modules.impl;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.min;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ public class CalibrationA extends CalibrationBase
   private ArgMaxFinder1DInterface mArgMaxFinder;
   private MultiPlot mMultiPlotAFocusCurves;
   private HashMap<Integer, UnivariateAffineFunction> mModels;
-  private int mNumberOfDetectionArmDevices;
 
   /**
    * Lightsheet Alpha angle calibration module
@@ -71,6 +69,8 @@ public class CalibrationA extends CalibrationBase
                         int pNumberOfAngles,
                         int pNumberOfRepeats)
   {
+    int lNumberOfDetectionArmDevices = getNumberOfDetectionArms();
+
     mArgMaxFinder = new SmartArgMaxFinder();
 
     mMultiPlotAFocusCurves.clear();
@@ -88,13 +88,17 @@ public class CalibrationA extends CalibrationBase
     double lMinA = -25;
     double lMaxA = 25;
 
-    double lMinY = lLightSheet.getYVariable().getMin().doubleValue();
-    double lMaxY = lLightSheet.getYVariable().getMax().doubleValue();
+    double lMinIY = lLightSheet.getYVariable().getMin().doubleValue();
+    double lMaxIY = lLightSheet.getYVariable().getMax().doubleValue();
 
-    double[] angles = new double[mNumberOfDetectionArmDevices];
+    double lMinZ = lLightSheet.getZVariable().getMin().doubleValue();
+    double lMaxZ = lLightSheet.getZVariable().getMax().doubleValue();
+
+    double[] angles = new double[lNumberOfDetectionArmDevices];
     int lCount = 0;
 
-    double y = 0.5 * min(abs(lMinY), abs(lMaxY));
+    double y = 0; // 0.5 * min(abs(lMinIY), abs(lMaxIY));
+    double z = 0.5 * (lMaxZ + lMinZ);
 
     for (int r = 0; r < pNumberOfRepeats; r++)
     {
@@ -106,14 +110,16 @@ public class CalibrationA extends CalibrationBase
                                       lMaxA,
                                       (lMaxA - lMinA)
                                              / (pNumberOfAngles - 1),
-                                      -y);
+                                      -y,
+                                      z);
 
       final double[] anglesP = focusA(pLightSheetIndex,
                                       lMinA,
                                       lMaxA,
                                       (lMaxA - lMinA)
                                              / (pNumberOfAngles - 1),
-                                      +y);
+                                      +y,
+                                      z);
 
       System.out.format("Optimal alpha angles for lighsheet at y=%g: %s \n",
                         -y,
@@ -124,14 +130,14 @@ public class CalibrationA extends CalibrationBase
 
       boolean lValid = true;
 
-      for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         lValid &=
                !Double.isNaN(anglesM[i]) && !Double.isNaN(anglesM[i]);
 
       if (lValid)
       {
         System.out.format("Angle values are valid, we proceed... \n");
-        for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         {
           angles[i] += 0.5 * (anglesM[i] + anglesP[i]);
         }
@@ -145,16 +151,16 @@ public class CalibrationA extends CalibrationBase
     if (lCount == 0)
       return;
 
-    for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+    for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
       angles[i] = angles[i] / lCount;
 
     System.out.format("Averaged alpha angles: %s \n",
                       Arrays.toString(angles));
 
     double angle = 0;
-    for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+    for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
       angle += angles[i];
-    angle /= mNumberOfDetectionArmDevices;
+    angle /= lNumberOfDetectionArmDevices;
 
     System.out.format("Average alpha angle for all detection arms (assumes that the cameras are well aligned): %s \n",
                       angle);
@@ -173,52 +179,57 @@ public class CalibrationA extends CalibrationBase
                           double pMinA,
                           double pMaxA,
                           double pStep,
-                          double pY)
+                          double pY,
+                          double pZ)
   {
     try
     {
+      int lNumberOfDetectionArmDevices = getNumberOfDetectionArms();
+
       LightSheetMicroscopeQueue lQueue =
                                        mLightSheetMicroscope.requestQueue();
-      lQueue.clearQueue();
-      lQueue.zero();
-
-      lQueue.setI(pLightSheetIndex);
 
       final TDoubleArrayList lAList = new TDoubleArrayList();
-      double[] angles = new double[mNumberOfDetectionArmDevices];
+      double[] angles = new double[lNumberOfDetectionArmDevices];
 
-      lQueue.setIY(pLightSheetIndex, 0);
+      lQueue.clearQueue();
+      // lQueue.zero();
+
+      lQueue.setFullROI();
+      lQueue.setExp(0.05);
+
+      lQueue.setI(pLightSheetIndex);
+      lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, pY);
-      lQueue.setIZ(pLightSheetIndex, 0);
-      lQueue.setIZ(pLightSheetIndex, 0);
+      lQueue.setIZ(pLightSheetIndex, pZ);
       lQueue.setIH(pLightSheetIndex, 0);
       lQueue.setIA(pLightSheetIndex, pMinA);
-      for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+
+      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
       {
-        lQueue.setDZ(i, 0);
+        lQueue.setDZ(i, pZ);
         lQueue.setC(i, false);
       }
       lQueue.addCurrentStateToQueue();
 
-      for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         lQueue.setC(i, true);
 
       for (double a = pMinA; a <= pMaxA; a += pStep)
       {
         lAList.add(a);
-
         lQueue.setIA(pLightSheetIndex, a);
-
         lQueue.addCurrentStateToQueue();
       }
 
       lQueue.setIA(pLightSheetIndex, pMinA);
-      for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
       {
-        lQueue.setDZ(i, 0);
         lQueue.setC(i, false);
       }
       lQueue.addCurrentStateToQueue();
+
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
 
       lQueue.finalizeQueue();
 
@@ -229,7 +240,7 @@ public class CalibrationA extends CalibrationBase
                                                                                       TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)
-        for (int i = 0; i < mNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         {
           final OffHeapPlanarStack lStack =
                                           (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(i)

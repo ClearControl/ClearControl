@@ -216,6 +216,8 @@ public class CalibrationHP extends CalibrationBase
       lQueue.setC(false);
       lQueue.addCurrentStateToQueue();
 
+      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
       lQueue.finalizeQueue();
 
       mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);

@@ -29,7 +29,8 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author royer
  */
-public class CalibrationXY extends CalibrationBase implements CalibrationModuleInterface
+public class CalibrationXY extends CalibrationBase
+                           implements CalibrationModuleInterface
 {
 
   private int mNumberOfDetectionArmDevices;
@@ -48,7 +49,7 @@ public class CalibrationXY extends CalibrationBase implements CalibrationModuleI
   public CalibrationXY(Calibrator pCalibrator)
   {
     super(pCalibrator);
-     
+
     mOriginFromX = new MultiKeyMap<>();
     mUnitVectorFromX = new MultiKeyMap<>();
     mOriginFromY = new MultiKeyMap<>();
@@ -281,6 +282,9 @@ public class CalibrationXY extends CalibrationBase implements CalibrationModuleI
         lQueue.setC(d, i == pN);
       lQueue.addCurrentStateToQueue();
     }
+
+    lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+
     lQueue.finalizeQueue();
     // Building queue end.
 
