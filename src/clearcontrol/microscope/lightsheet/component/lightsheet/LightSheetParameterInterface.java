@@ -21,11 +21,18 @@ public interface LightSheetParameterInterface
   public Variable<Long> getImageHeightVariable();
 
   /**
-   * Returns thevariable holding the effective exposure in seconds
+   * Returns the variable holding the effective exposure in seconds
    * 
    * @return effective exposure in seconds variable
    */
   public BoundedVariable<Number> getEffectiveExposureInSecondsVariable();
+
+  /**
+   * Returns the variable holding the finalisation time in seconds
+   * 
+   * @return effective exposure in seconds variable
+   */
+  public BoundedVariable<Number> getFinalisationTimeInSecondsVariable();
 
   /**
    * Returns the variable holding the overscan value
@@ -133,4 +140,5 @@ public interface LightSheetParameterInterface
    * @return SI pattern variable
    */
   public Variable<StructuredIlluminationPatternInterface> getSIPatternVariable(int pLaserIndex);
+
 }

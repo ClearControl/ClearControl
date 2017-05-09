@@ -252,7 +252,8 @@ public class LightSheetStaves implements LoggingInterface
   }
 
   public void update(Movement pBeforeExposureMovement,
-                     Movement pExposureMovement)
+                     Movement pExposureMovement,
+                     Movement pFinalMovement)
   {
     synchronized (this)
     {
@@ -264,11 +265,17 @@ public class LightSheetStaves implements LoggingInterface
       final double lExposureMovementTimeInMicroseconds =
                                                        getExposureMovementDuration(TimeUnit.MICROSECONDS);
 
+      final double lFinalMovementTimeInMicroseconds =
+                                                    getFinalMovementDuration(TimeUnit.MICROSECONDS);
+
       pBeforeExposureMovement.setDuration(round(lReadoutTimeInMicroseconds),
                                           TimeUnit.MICROSECONDS);
 
       pExposureMovement.setDuration(round(lExposureMovementTimeInMicroseconds),
                                     TimeUnit.MICROSECONDS);
+
+      pFinalMovement.setDuration(round(lFinalMovementTimeInMicroseconds),
+                                 TimeUnit.MICROSECONDS);
 
       final double lLineExposureTimeInMicroseconds =
                                                    lReadoutTimeInMicroseconds
@@ -516,15 +523,6 @@ public class LightSheetStaves implements LoggingInterface
                                             pStave);
   }
 
-  public long getExposureMovementDuration(TimeUnit pTimeUnit)
-  {
-    return pTimeUnit.convert((long) (mLightSheetQueue.getEffectiveExposureInSecondsVariable()
-                                                     .get()
-                                                     .doubleValue()
-                                     * 1e6),
-                             TimeUnit.MICROSECONDS);
-  }
-
   public long getBeforeExposureMovementDuration(TimeUnit pTimeUnit)
   {
     return pTimeUnit.convert((long) (mLightSheetQueue.getReadoutTimeInMicrosecondsPerLineVariable()
@@ -534,6 +532,24 @@ public class LightSheetStaves implements LoggingInterface
                                                        .get()
                                                        .doubleValue()
                                      / 2),
+                             TimeUnit.MICROSECONDS);
+  }
+
+  public long getExposureMovementDuration(TimeUnit pTimeUnit)
+  {
+    return pTimeUnit.convert((long) (mLightSheetQueue.getEffectiveExposureInSecondsVariable()
+                                                     .get()
+                                                     .doubleValue()
+                                     * 1e6),
+                             TimeUnit.MICROSECONDS);
+  }
+
+  public long getFinalMovementDuration(TimeUnit pTimeUnit)
+  {
+    return pTimeUnit.convert((long) (mLightSheetQueue.getFinalisationTimeInSecondsVariable()
+                                                     .get()
+                                                     .doubleValue()
+                                     * 1e6),
                              TimeUnit.MICROSECONDS);
   }
 

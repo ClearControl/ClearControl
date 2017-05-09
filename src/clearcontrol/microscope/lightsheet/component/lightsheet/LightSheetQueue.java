@@ -21,6 +21,7 @@ public class LightSheetQueue extends VariableQueueBase implements
 
   private final BoundedVariable<Long> mImageHeightVariable;
   private final BoundedVariable<Number> mEffectiveExposureInSecondsVariable,
+      mFinalisationTimeInSecondsVariable,
       mReadoutTimeInMicrosecondsPerLineVariable, mOverScanVariable,
       mXVariable, mYVariable, mZVariable, mAlphaInDegreesVariable,
       mBetaInDegreesVariable, mWidthVariable, mHeightVariable,
@@ -50,16 +51,20 @@ public class LightSheetQueue extends VariableQueueBase implements
                                   mLightSheet.getNumberOfLaserDigitalControls();
 
     String lNamePrefix = mLightSheet.getName();
-    
+
     mEffectiveExposureInSecondsVariable =
                                         new BoundedVariable<Number>(lNamePrefix
                                                                     + "-EffectiveExposureInSeconds",
                                                                     0.005);
 
-    mImageHeightVariable =
-                         new BoundedVariable<Long>(lNamePrefix
-                                                   + "-ImageHeight",
-                                                   2 * 1024L);
+    mFinalisationTimeInSecondsVariable =
+                                       new BoundedVariable<Number>(lNamePrefix
+                                                                   + "-FinalizationTimeInSeconds",
+                                                                   0.000005);
+
+    mImageHeightVariable = new BoundedVariable<Long>(lNamePrefix
+                                                     + "-ImageHeight",
+                                                     2 * 1024L);
     mReadoutTimeInMicrosecondsPerLineVariable =
                                               new BoundedVariable<Number>(lNamePrefix
                                                                           + "-ReadoutTimeInMicrosecondsPerLine",
@@ -75,21 +80,18 @@ public class LightSheetQueue extends VariableQueueBase implements
     mZVariable = new BoundedVariable<Number>(lNamePrefix
                                              + "-LightSheetZ", 0.0);
 
-    mAlphaInDegreesVariable =
-                            new BoundedVariable<Number>(lNamePrefix
-                                                        + "-LightSheetAlphaInDegrees",
-                                                        0.0);
-    mBetaInDegreesVariable =
-                           new BoundedVariable<Number>(lNamePrefix
-                                                       + "-LightSheetBetaInDegrees",
-                                                       0.0);
+    mAlphaInDegreesVariable = new BoundedVariable<Number>(lNamePrefix
+                                                          + "-LightSheetAlphaInDegrees",
+                                                          0.0);
+    mBetaInDegreesVariable = new BoundedVariable<Number>(lNamePrefix
+                                                         + "-LightSheetBetaInDegrees",
+                                                         0.0);
     mWidthVariable = new BoundedVariable<Number>(lNamePrefix
                                                  + "-LightSheetRange",
                                                  0.0);
-    mHeightVariable =
-                    new BoundedVariable<Number>(lNamePrefix
-                                                + "-LightSheetLength",
-                                                0.0);
+    mHeightVariable = new BoundedVariable<Number>(lNamePrefix
+                                                  + "-LightSheetLength",
+                                                  0.0);
     mPowerVariable = new BoundedVariable<Number>(lNamePrefix
                                                  + "-LightSheetPower",
                                                  1.0);
@@ -152,6 +154,9 @@ public class LightSheetQueue extends VariableQueueBase implements
   public LightSheetQueue(LightSheetQueue pLightSheetQueueTemplate)
   {
     this(pLightSheetQueueTemplate.getLightSheet());
+
+    getEffectiveExposureInSecondsVariable().set(pLightSheetQueueTemplate.getEffectiveExposureInSecondsVariable());
+    getFinalisationTimeInSecondsVariable().set(pLightSheetQueueTemplate.getFinalisationTimeInSecondsVariable());
 
     getOverScanVariable().set(pLightSheetQueueTemplate.getOverScanVariable());
     getReadoutTimeInMicrosecondsPerLineVariable().set(pLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable());
@@ -222,6 +227,12 @@ public class LightSheetQueue extends VariableQueueBase implements
   public BoundedVariable<Number> getEffectiveExposureInSecondsVariable()
   {
     return mEffectiveExposureInSecondsVariable;
+  }
+
+  @Override
+  public BoundedVariable<Number> getFinalisationTimeInSecondsVariable()
+  {
+    return mFinalisationTimeInSecondsVariable;
   }
 
   @Override

@@ -125,7 +125,7 @@ public class InterpolatedAcquisitionState extends
                          new InterpolationTables(mNumberOfDetectionArms,
                                                  mNumberOfLightSheets);
     mInterpolationTables.addChangeListener((e) -> {
-      //info("Interpolation table changed!");
+      // info("Interpolation table changed!");
       notifyListeners(this);
     });
 
@@ -368,9 +368,16 @@ public class InterpolatedAcquisitionState extends
     getImageWidthVariable().set(mLightSheetMicroscope.getCameraWidth(0));
     getImageHeightVariable().set(mLightSheetMicroscope.getCameraHeight(0));
 
-    getStageXVariable().set(mLightSheetMicroscope.getStageX());
-    getStageYVariable().set(mLightSheetMicroscope.getStageY());
-    getStageZVariable().set(mLightSheetMicroscope.getStageZ());
+    try
+    {
+      getStageXVariable().set(mLightSheetMicroscope.getStageX());
+      getStageYVariable().set(mLightSheetMicroscope.getStageY());
+      getStageZVariable().set(mLightSheetMicroscope.getStageZ());
+    }
+    catch (Exception e)
+    {
+      // e.printStackTrace();
+    }
 
     int lNumberOfControlPlanes = getNumberOfControlPlanes();
 
@@ -471,6 +478,7 @@ public class InterpolatedAcquisitionState extends
                                lVoxelDepthInMicrons);
 
     lQueue.clearQueue();
+
     for (int lIndex = 0; lIndex < lStackDepthInPlanes; lIndex++)
     {
       applyAcquisitionStateAtStackPlane(lQueue,
@@ -484,6 +492,11 @@ public class InterpolatedAcquisitionState extends
       lQueue.addCurrentStateToQueue();
     }
 
+    for (int d = 0; d < getNumberOfDetectionArms(); d++)
+      lQueue.setDZ(d, get(LightSheetDOF.DZ, 0, d));
+
+    // lQueue.addCurrentStateToQueue();
+    lQueue.setFinalisationTime(0.2);
     lQueue.finalizeQueue();
     return lQueue;
   }

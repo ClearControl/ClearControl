@@ -330,10 +330,13 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             mQueue = getLightSheetMicroscope().requestQueue();
 
             mQueue.clearQueue();
+
             mQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 1);
 
             lCurrentState.applyAcquisitionStateAtZ(mQueue, lCurrentZ);
             mQueue.addCurrentStateToQueue();
+
+            mQueue.setFinalisationTime(0.00005);
             mQueue.finalizeQueue();
 
           }
@@ -357,7 +360,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                     .doubleValue());
 
             mQueue.addCurrentStateToQueue();
-
+            mQueue.setFinalisationTime(0.00005);
             mQueue.finalizeQueue();
 
           }

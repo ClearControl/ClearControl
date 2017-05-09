@@ -2,6 +2,8 @@ package clearcontrol.microscope.lightsheet.component.lightsheet;
 
 import java.util.concurrent.Future;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.QueueableVirtualDevice;
@@ -11,8 +13,6 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIlluminationPatternInterface;
-
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 /**
  * Light sheet device. This device abstracts the parameters of a light sheet
@@ -97,47 +97,33 @@ public class LightSheet extends
       // mLightSheetQueueTemplate.getYVariable().get().doubleValue());
     };
 
-    mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
-                            .set(pReadoutTimeInMicrosecondsPerLine);
-    mLightSheetQueueTemplate.getImageHeightVariable().set(2048L);
-    mLightSheetQueueTemplate.getOverScanVariable().setMinMax(1.001,
-                                                             2);
+    getReadoutTimeInMicrosecondsPerLineVariable().set(pReadoutTimeInMicrosecondsPerLine);
+    getImageHeightVariable().set(2048L);
+    getOverScanVariable().setMinMax(1.001, 2);
 
-    mLightSheetQueueTemplate.getReadoutTimeInMicrosecondsPerLineVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getImageHeightVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getOverScanVariable()
-                            .addSetListener(lVariableListener);
+    getEffectiveExposureInSecondsVariable().addSetListener(lVariableListener);
+    getFinalisationTimeInSecondsVariable().addSetListener(lVariableListener);
+
+    getReadoutTimeInMicrosecondsPerLineVariable().addSetListener(lVariableListener);
+    getImageHeightVariable().addSetListener(lVariableListener);
+    getOverScanVariable().addSetListener(lVariableListener);
 
     for (int i = 0; i < mNumberOfLaserDigitalControls; i++)
     {
-      mLightSheetQueueTemplate.getSIPatternVariable(i)
-                              .addSetListener(lVariableListener);
-      mLightSheetQueueTemplate.getLaserOnOffArrayVariable(i)
-                              .addSetListener(lVariableListener);
-      mLightSheetQueueTemplate.getSIPatternOnOffVariable(i)
-                              .addSetListener(lVariableListener);
+      getSIPatternVariable(i).addSetListener(lVariableListener);
+      getLaserOnOffArrayVariable(i).addSetListener(lVariableListener);
+      getSIPatternOnOffVariable(i).addSetListener(lVariableListener);
     }
 
-    mLightSheetQueueTemplate.getXVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getYVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getZVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getBetaInDegreesVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getAlphaInDegreesVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getHeightVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getWidthVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getPowerVariable()
-                            .addSetListener(lVariableListener);
-    mLightSheetQueueTemplate.getAdaptPowerToWidthHeightVariable()
-                            .addSetListener(lVariableListener);
+    getXVariable().addSetListener(lVariableListener);
+    getYVariable().addSetListener(lVariableListener);
+    getZVariable().addSetListener(lVariableListener);
+    getBetaInDegreesVariable().addSetListener(lVariableListener);
+    getAlphaInDegreesVariable().addSetListener(lVariableListener);
+    getHeightVariable().addSetListener(lVariableListener);
+    getWidthVariable().addSetListener(lVariableListener);
+    getPowerVariable().addSetListener(lVariableListener);
+    getAdaptPowerToWidthHeightVariable().addSetListener(lVariableListener);
 
     final VariableSetListener<?> lFunctionVariableListener =
                                                            (o, n) -> {
@@ -295,6 +281,12 @@ public class LightSheet extends
   public BoundedVariable<Number> getEffectiveExposureInSecondsVariable()
   {
     return mLightSheetQueueTemplate.getEffectiveExposureInSecondsVariable();
+  }
+
+  @Override
+  public BoundedVariable<Number> getFinalisationTimeInSecondsVariable()
+  {
+    return mLightSheetQueueTemplate.getFinalisationTimeInSecondsVariable();
   }
 
   @Override

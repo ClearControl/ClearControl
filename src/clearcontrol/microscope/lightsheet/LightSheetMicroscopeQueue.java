@@ -297,9 +297,8 @@ public class LightSheetMicroscopeQueue extends
   @Override
   public void setExp(double pExpsoureISeconds)
   {
-    int lNumberOfSwitchableDevices =
-                                   getLightSheetOpticalSwitchQueue().getNumberOfSwitches();
-    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
+    int lNumberOfLightsheets = getNumberOfLightSheets();
+    for (int i = 0; i < lNumberOfLightsheets; i++)
       getLightSheetDeviceQueue(i).getEffectiveExposureInSecondsVariable()
                                  .set(pExpsoureISeconds);
 
@@ -309,6 +308,15 @@ public class LightSheetMicroscopeQueue extends
       getStackCameraDeviceQueue(c).getExposureInSecondsVariable()
                                   .set(pExpsoureISeconds);
   };
+
+  @Override
+  public void setFinalisationTime(double pFinalisationTimeInSeconds)
+  {
+    int lNumberOfLightsheets = getNumberOfLightSheets();
+    for (int i = 0; i < lNumberOfLightsheets; i++)
+      getLightSheetDeviceQueue(i).getFinalisationTimeInSecondsVariable()
+                                 .set(pFinalisationTimeInSeconds);
+  }
 
   @Override
   public void setC(int pCameraIndex, boolean pKeepImage)
@@ -353,9 +361,8 @@ public class LightSheetMicroscopeQueue extends
   @Override
   public void setI(int pLightSheetIndex)
   {
-    int lNumberOfSwitchableDevices =
-                                   getLightSheetOpticalSwitchQueue().getNumberOfSwitches();
-    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
+    int lNumberOfLightsheets = getNumberOfLightSheets();
+    for (int i = 0; i < lNumberOfLightsheets; i++)
       setI(i, i == pLightSheetIndex);
     getLightSheetSignalGeneratorQueue().getSelectedLightSheetIndexVariable()
                                        .set(pLightSheetIndex);
@@ -374,9 +381,8 @@ public class LightSheetMicroscopeQueue extends
   @Override
   public void setI(boolean pOnOff)
   {
-    int lNumberOfSwitchableDevices =
-                                   getLightSheetOpticalSwitchQueue().getNumberOfSwitches();
-    for (int i = 0; i < lNumberOfSwitchableDevices; i++)
+    int lNumberOfLightsheets = getNumberOfLightSheets();
+    for (int i = 0; i < lNumberOfLightsheets; i++)
       setI(i, pOnOff);
   };
 

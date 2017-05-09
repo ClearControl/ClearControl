@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
@@ -121,7 +120,6 @@ public class LightSheetSignalGeneratorQueue implements
     mBeforeExposureMovement = new Movement("BeforeExposure");
     mExposureMovement = new Movement("Exposure");
     mFinalMovement = new Movement("Final");
-    mFinalMovement.setDuration(5, TimeUnit.MILLISECONDS);
 
     ScoreInterface lStagingScore = mDelegatedQueue.getStagingScore();
 
@@ -268,7 +266,8 @@ public class LightSheetSignalGeneratorQueue implements
                                            mLightSheetToStavesMap.get(lSelectedLightSheet);
 
         lLightSheetStaves.update(mBeforeExposureMovement,
-                                 mExposureMovement);
+                                 mExposureMovement,
+                                 mFinalMovement);
 
       }
       else
@@ -276,7 +275,8 @@ public class LightSheetSignalGeneratorQueue implements
         {
           LightSheetStaves lLightSheetStaves = lEntry.getValue();
           lLightSheetStaves.update(mBeforeExposureMovement,
-                                   mExposureMovement);
+                                   mExposureMovement,
+                                   mFinalMovement);
         }
 
       for (Entry<LightSheetOpticalSwitch, LightSheetOpticalSwitchStaves> lEntry : mOpticalSwitchToStavesMap.entrySet())
@@ -293,7 +293,7 @@ public class LightSheetSignalGeneratorQueue implements
   @Override
   public void finalizeQueue()
   {
-    // mDelegatedQueue.addCurrentStateToQueue();
+    update();
     mDelegatedQueue.finalizeQueue();
   }
 

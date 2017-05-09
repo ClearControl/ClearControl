@@ -35,6 +35,14 @@ public interface LightSheetMicroscopeParameterInterface
   void setExp(double pExposureISeconds);
 
   /**
+   * Sets the stack finalisation time in seconds.
+   * 
+   * @param pFinalisationTimeInSeconds
+   *          stack finalisation time in seconds
+   */
+  void setFinalisationTime(double pFinalisationTimeInSeconds);
+
+  /**
    * Selects _one_ light sheet to direct light to:
    * 
    * @param pLightSheetIndex

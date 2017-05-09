@@ -14,6 +14,7 @@ import clearcontrol.devices.optomech.filterwheels.devices.sim.FilterWheelDeviceS
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
+import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
@@ -153,8 +154,14 @@ public class SimulatedLightSheetMicroscope extends
                                                                                 + c,
                                                                                 lTrigger);
 
-        lCamera.getMaxWidthVariable().set(pSimulatorDevice.getSimulator().getCameraRenderer(c).getMaxWidth());
-        lCamera.getMaxHeightVariable().set(pSimulatorDevice.getSimulator().getCameraRenderer(c).getMaxHeight());
+        lCamera.getMaxWidthVariable()
+               .set(pSimulatorDevice.getSimulator()
+                                    .getCameraRenderer(c)
+                                    .getMaxWidth());
+        lCamera.getMaxHeightVariable()
+               .set(pSimulatorDevice.getSimulator()
+                                    .getCameraRenderer(c)
+                                    .getMaxHeight());
         lCamera.getStackWidthVariable().set(lDefaultStackWidth);
         lCamera.getStackHeightVariable().set(lDefaultStackHeight);
         lCamera.getExposureInSecondsVariable().set(0.010);
@@ -272,6 +279,9 @@ public class SimulatedLightSheetMicroscope extends
    */
   public void addStandardDevices()
   {
+
+    // Add XYZR stage:
+    setMainXYZRStage(getDevice(StageDeviceInterface.class, 0));
 
     // Adding calibrator:
     {
