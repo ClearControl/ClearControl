@@ -1,10 +1,10 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.adaptive.modules;
 
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
-import clearcontrol.microscope.lightsheet.adaptor.utils.NDIterator;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.adaptive.utils.NDIterator;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
  * ND iterator adaptation module
@@ -13,7 +13,7 @@ import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterf
  * @param <S>
  *          state type
  */
-public abstract class NDIteratorAdaptationModule<S extends LightSheetAcquisitionStateInterface<S>>
+public abstract class NDIteratorAdaptationModule<S extends AcquisitionStateInterface<?, ?>>
                                                 extends
                                                 AdaptationModuleBase<S>
 {

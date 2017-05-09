@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.gui;
+package clearcontrol.microscope.lightsheet.adaptive.gui;
 
 import java.util.ArrayList;
 import javafx.application.Platform;
@@ -13,8 +13,8 @@ import javafx.scene.layout.Priority;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
-import clearcontrol.microscope.lightsheet.adaptor.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 
 /**
@@ -34,7 +34,7 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
    * @param pAdaptator
    *          adaptor
    */
-  public AdaptorToolBar(Adaptator<S> pAdaptator)
+  public AdaptorToolBar(AdaptiveEngine<S> pAdaptator)
   {
     super();
 

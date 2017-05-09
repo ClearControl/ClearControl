@@ -1,21 +1,22 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.adaptive.modules;
 
 import java.util.function.Function;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
  * Interface implemented by all adaptation modules
  *
  * @author royer
+ * 
  * @param <S>
  *          state type
  */
-public interface AdaptationModuleInterface<S extends LightSheetAcquisitionStateInterface<S>>
+public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?, ?>>
                                           extends
                                           Function<Void, Boolean>,
                                           AsynchronousExecutorServiceAccess,
@@ -28,14 +29,14 @@ public interface AdaptationModuleInterface<S extends LightSheetAcquisitionStateI
    * @param pAdaptator
    *          parent adaptor
    */
-  void setAdaptator(Adaptator<S> pAdaptator);
+  void setAdaptator(AdaptiveEngine<S> pAdaptator);
 
   /**
    * Returns the parent adaptor
    * 
    * @return parent adaptor
    */
-  Adaptator<S> getAdaptator();
+  AdaptiveEngine<S> getAdaptator();
 
   /**
    * Sets the priority of this module

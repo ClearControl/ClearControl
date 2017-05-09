@@ -14,6 +14,8 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.AdaptiveEngineInterface;
 import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
@@ -36,6 +38,12 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                             DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SS");
 
   private final MicroscopeInterface<?> mMicroscope;
+
+  private final AdaptiveEngineInterface<?> mAdaptiveEngine;
+
+  private Variable<Boolean> mAdaptiveEngineOnVariable =
+                                                      new Variable<Boolean>("AdaptiveEngineOnVariable",
+                                                                            false);
 
   private final Variable<TimelapseTimerInterface> mTimelapseTimerVariable =
                                                                           new Variable<>("TimelapseTimer",
@@ -112,6 +120,9 @@ public abstract class TimelapseBase extends LoopTaskDevice
   {
     super("Timelapse");
     mMicroscope = pMicroscope;
+
+    mAdaptiveEngine = new AdaptiveEngine(mMicroscope);
+
     getTimelapseTimerVariable().set(pTimelapseTimer);
 
     MachineConfiguration lMachineConfiguration =
@@ -201,7 +212,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
               mMicroscope.getCurrentTask());
       return;
     }
-    
 
     getStartSignalVariable().setEdgeAsync(false, true);
   }
@@ -389,6 +399,13 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   @Override
   public abstract void acquire();
+
+  
+  @Override
+  public Variable<Boolean> getAdaptiveEngineOnVariable()
+  {
+    return mAdaptiveEngineOnVariable;
+  }
 
   @Override
   public Variable<TimelapseTimerInterface> getTimelapseTimerVariable()

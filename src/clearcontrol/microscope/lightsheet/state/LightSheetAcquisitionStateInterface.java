@@ -20,11 +20,7 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
                                                     Cloneable
 {
 
-  /**
-   * @param pName
-   * @return copy of this state
-   */
-  S copy(String pName);
+
   
   /**
    * Returns a queue with a given range of cameras, lightsheets and laser lines.

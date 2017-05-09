@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import static java.lang.Math.atan;
 import static java.lang.Math.toDegrees;
@@ -13,6 +13,7 @@ import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
@@ -58,8 +59,7 @@ public class AdaptationA extends
     int lControlPlaneIndex = pStepCoordinates[0];
     int lLightSheetIndex = pStepCoordinates[1];
 
-    LightSheetMicroscope lMicroscope =
-                                     getAdaptator().getLightSheetMicroscope();
+    LightSheetMicroscope lMicroscope = (LightSheetMicroscope) getAdaptator().getMicroscope();
     LightSheetMicroscopeQueue lQueue = lMicroscope.requestQueue();
 
     InterpolatedAcquisitionState lStackAcquisition =

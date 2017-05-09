@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.utils;
+package clearcontrol.microscope.adaptive.utils;
 
 import java.util.Iterator;
 

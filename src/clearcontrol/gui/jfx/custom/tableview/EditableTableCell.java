@@ -20,6 +20,7 @@ public class EditableTableCell extends TableCell<DoubleRow, Double>
 {
 
   private TextField mTextField;
+  private static volatile double sClipBoard;
 
   /**
    * Instantiates an editable table cell
@@ -28,7 +29,8 @@ public class EditableTableCell extends TableCell<DoubleRow, Double>
    *          parent table view
    * @param pColumnIndex
    *          column index
-   * @param pMinColumnWidth min column width
+   * @param pMinColumnWidth
+   *          min column width
    * @param pMenuItemSpecifications
    *          vararg list of context menu item specifications
    */
@@ -40,13 +42,27 @@ public class EditableTableCell extends TableCell<DoubleRow, Double>
   {
     final ContextMenu lContextMenu = new ContextMenu();
 
+    MenuItem lCopyCell = new MenuItem("Copy");
+    lCopyCell.setOnAction((e) -> {
+      sClipBoard = getItem();
+    });
+
+    MenuItem lPasteCell = new MenuItem("Paste");
+    lPasteCell.setOnAction((e) -> {
+      int lRowIndex = getTableRow().getIndex();
+
+      pDoubleTableView.getItems()
+                      .get(lRowIndex)
+                      .setValue(pColumnIndex, sClipBoard);
+    });
+
     MenuItem lSetColumn = new MenuItem("Set Column");
     lSetColumn.setOnAction((e) -> {
       for (DoubleRow lDoubleRow : pDoubleTableView.getItems())
         lDoubleRow.setValue(pColumnIndex, getItem());
     });
 
-    lContextMenu.getItems().addAll(lSetColumn);
+    lContextMenu.getItems().addAll(lCopyCell, lPasteCell, lSetColumn);
 
     for (Pair<String, EditableTableCellHandler> lMenuItemSpecification : pMenuItemSpecifications)
     {

@@ -9,7 +9,6 @@ import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.application.Platform;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,6 +35,9 @@ public class AcquisitionStatePanel extends CustomGridPane
   public AcquisitionStatePanel(InterpolatedAcquisitionState pAcquisitionState)
   {
     super();
+
+    BoundedVariable<Number> lExposureInSecondsVariable =
+                                                       pAcquisitionState.getExposureInSecondsVariable();
 
     BoundedVariable<Number> lStageXVariable =
                                             pAcquisitionState.getStageXVariable();
@@ -73,6 +75,17 @@ public class AcquisitionStatePanel extends CustomGridPane
                                      pAcquisitionState.getStackDepthInPlanesVariable();
 
     // Creating elements:
+
+    Button lCopyCurrentSettingsButton =
+                                      new Button("Copy current microscope settings");
+    lCopyCurrentSettingsButton.setOnAction((e) -> pAcquisitionState.copyCurrentMicroscopeSettings());
+
+    NumberVariableTextField<Number> lExposureField =
+                                                   new NumberVariableTextField<Number>("Exposure in seconds:",
+                                                                                       lExposureInSecondsVariable,
+                                                                                       0.0,
+                                                                                       Double.POSITIVE_INFINITY,
+                                                                                       0.0);
 
     VariableRangeSlider<Number> lZRangeSlider =
                                               new VariableRangeSlider<>("Z-range",
@@ -114,7 +127,7 @@ public class AcquisitionStatePanel extends CustomGridPane
     for (int i =
                0; i < pAcquisitionState.getNumberOfLightSheets(); i++)
     {
-      lLightSheetOnOffArray.addSwitch("L" + i,
+      lLightSheetOnOffArray.addSwitch("LS" + i,
                                       pAcquisitionState.getLightSheetOnOffVariable(i));
     }
 
@@ -136,6 +149,24 @@ public class AcquisitionStatePanel extends CustomGridPane
     // Laying out components:
 
     int lRow = 0;
+
+    {
+      lCopyCurrentSettingsButton.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setHgrow(lCopyCurrentSettingsButton, Priority.ALWAYS);
+      GridPane.setColumnSpan(lCopyCurrentSettingsButton, 8);
+      add(lCopyCurrentSettingsButton, 0, lRow);
+      lRow++;
+    }
+
+    {
+      HBox lHBox = new HBox(lExposureField.getLabel(),
+                            lExposureField.getTextField(),
+                            lLaserOnOffArray);
+      lHBox.setAlignment(Pos.CENTER_LEFT);
+      GridPane.setColumnSpan(lHBox, 8);
+      add(lHBox, 0, lRow);
+      lRow++;
+    }
 
     {
       add(lStageXSlider.getLabel(), 0, lRow);
@@ -182,8 +213,8 @@ public class AcquisitionStatePanel extends CustomGridPane
       add(lHBox, 0, lRow);
       lRow++;
     }
-    
-   /* {
+
+    /* {
       Button lCopySettingsButton = new Button("Copy current microscope settings to this state");
       lCopySettingsButton.setOnAction((e)-> pAcquisitionState.copyCurrentMicroscopeSettings());
       GridPane.setColumnSpan(lCopySettingsButton, 8);

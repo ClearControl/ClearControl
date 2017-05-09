@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.test;
+package clearcontrol.microscope.adaptive.test;
 
 import java.util.Arrays;
 import java.util.concurrent.Future;
@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.microscope.lightsheet.adaptor.modules.AdaptationModuleInterface;
-import clearcontrol.microscope.lightsheet.adaptor.modules.NDIteratorAdaptationModule;
-import clearcontrol.microscope.lightsheet.adaptor.utils.NDIterator;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.adaptive.modules.NDIteratorAdaptationModule;
+import clearcontrol.microscope.adaptive.utils.NDIterator;
 
 /**
  * Adaptation module used for testing purposes

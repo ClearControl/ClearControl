@@ -241,9 +241,7 @@ public class LightSheetTimelapse extends TimelapseBase implements
   {
     return mFuseStacksPerCameraVariable;
   }
-  
 
-  
-  
+
 
 }

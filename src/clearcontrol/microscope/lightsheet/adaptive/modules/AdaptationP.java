@@ -1,10 +1,13 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleBase;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -47,9 +50,11 @@ public class AdaptationP extends
   @Override
   public Boolean apply(Void pVoid)
   {
+    LightSheetMicroscope lLightsheetMicroscope =
+                                                    (LightSheetMicroscope) getAdaptator().getMicroscope();
+
     LightSheetMicroscopeQueue lQueue =
-                                     getAdaptator().getLightSheetMicroscope()
-                                                   .requestQueue();
+                                     lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lStackAcquisition =
                                                    getAdaptator().getCurrentAcquisitionStateVariable()
                                                                  .get();
@@ -60,14 +65,12 @@ public class AdaptationP extends
                                              .getNumberOfControlPlanes();
 
     int lNumberOfLightSheets =
-                             getAdaptator().getLightSheetMicroscope()
-                                           .getDeviceLists()
-                                           .getNumberOfDevices(LightSheetInterface.class);
+                             lLightsheetMicroscope.getDeviceLists()
+                                                  .getNumberOfDevices(LightSheetInterface.class);
 
     int lNumberOfDetectionArmDevices =
-                                     getAdaptator().getLightSheetMicroscope()
-                                                   .getDeviceLists()
-                                                   .getNumberOfDevices(DetectionArmInterface.class);
+                                     lLightsheetMicroscope.getDeviceLists()
+                                                          .getNumberOfDevices(DetectionArmInterface.class);
 
     lQueue.clearQueue();
 
@@ -101,13 +104,11 @@ public class AdaptationP extends
 
     try
     {
-      getAdaptator().getLightSheetMicroscope()
-                    .useRecycler("adaptation", 1, 4, 4);
+      lLightsheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      getAdaptator().getLightSheetMicroscope()
-                                                    .playQueueAndWaitForStacks(lQueue,
-                                                                               10 + lQueue.getQueueLength(),
-                                                                               TimeUnit.SECONDS);
+                                      lLightsheetMicroscope.playQueueAndWaitForStacks(lQueue,
+                                                                                      10 + lQueue.getQueueLength(),
+                                                                                      TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
@@ -116,9 +117,8 @@ public class AdaptationP extends
       for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
       {
         final OffHeapPlanarStack lStack =
-                                        (OffHeapPlanarStack) getAdaptator().getLightSheetMicroscope()
-                                                                           .getCameraStackVariable(d)
-                                                                           .get();
+                                        (OffHeapPlanarStack) lLightsheetMicroscope.getCameraStackVariable(d)
+                                                                                  .get();
         double[] lImageSumIntensity =
                                     ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lStack);
         lAvgIntensities.add(lImageSumIntensity);

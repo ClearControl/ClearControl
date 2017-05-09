@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor;
+package clearcontrol.microscope.adaptive;
 
 import static java.lang.Math.max;
 
@@ -16,27 +16,28 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.adaptor.modules.AdaptationModuleInterface;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
- * Autopilot
+ * Lightsheet adaptive engine
  *
  * @author royer
+ * 
  * @param <S>
  *          state type
  */
-public class Adaptator<S extends LightSheetAcquisitionStateInterface<S>>
-                      extends TaskDevice implements
-                      Function<Integer, Boolean>,
-                      AdaptatorInterface<S>,
-                      LoggingInterface,
-                      AsynchronousExecutorServiceAccess
+public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
+                           extends TaskDevice implements
+                           Function<Integer, Boolean>,
+                           AdaptiveEngineInterface<S>,
+                           LoggingInterface,
+                           AsynchronousExecutorServiceAccess
 {
   private static final double cEpsilon = 0.8;
 
-  private final LightSheetMicroscope mLightSheetMicroscope;
+  private final MicroscopeInterface<?> mMicroscope;
   private ArrayList<AdaptationModuleInterface<S>> mAdaptationModuleList =
                                                                         new ArrayList<>();
 
@@ -72,16 +73,15 @@ public class Adaptator<S extends LightSheetAcquisitionStateInterface<S>>
                                                                                   false);
 
   /**
-   * Instanciates a lightsheet microscope autopilot given a lightsheet
-   * microscope
+   * Instanciates an adpative engine given a parent lightsheet microscope
    * 
-   * @param pLightSheetMicroscope
-   *          lightsheet
+   * @param pMicroscope
+   *          parent microscope
    */
-  public Adaptator(LightSheetMicroscope pLightSheetMicroscope)
+  public AdaptiveEngine(MicroscopeInterface<?> pMicroscope)
   {
     super("Adaptor");
-    mLightSheetMicroscope = pLightSheetMicroscope;
+    mMicroscope = pMicroscope;
 
     double lCPULoadRatio =
                          MachineConfiguration.getCurrentMachineConfiguration()
@@ -108,9 +108,9 @@ public class Adaptator<S extends LightSheetAcquisitionStateInterface<S>>
   }
 
   @Override
-  public LightSheetMicroscope getLightSheetMicroscope()
+  public MicroscopeInterface<?> getMicroscope()
   {
-    return mLightSheetMicroscope;
+    return mMicroscope;
   }
 
   @Override
@@ -353,10 +353,11 @@ public class Adaptator<S extends LightSheetAcquisitionStateInterface<S>>
       getCurrentAcquisitionStateVariable().set(getNewAcquisitionStateVariable().get());
       mAcquisitionStateCounterVariable.increment();
 
+      @SuppressWarnings("unchecked")
       S lNewState =
-                  getCurrentAcquisitionStateVariable().get()
-                                                      .copy("state"
-                                                            + mAcquisitionStateCounterVariable.get());
+                  (S) getCurrentAcquisitionStateVariable().get()
+                                                          .copy("state"
+                                                                + mAcquisitionStateCounterVariable.get());
 
       getNewAcquisitionStateVariable().set(lNewState);
       // reset();

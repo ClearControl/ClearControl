@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.test;
+package clearcontrol.microscope.adaptive.test;
 
 import java.util.concurrent.TimeUnit;
 
@@ -127,6 +127,13 @@ public class TestState extends
 
   @Override
   public Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public BoundedVariable<Number> getExposureInSecondsVariable()
   {
     // TODO Auto-generated method stub
     return null;

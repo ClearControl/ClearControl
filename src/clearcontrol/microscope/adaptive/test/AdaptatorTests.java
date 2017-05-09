@@ -1,11 +1,11 @@
-package clearcontrol.microscope.lightsheet.adaptor.test;
+package clearcontrol.microscope.adaptive.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.thread.ThreadUtils;
-import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
 
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class AdaptatorTests
   public void test()
   {
 
-    Adaptator<TestState> lAdaptator = new Adaptator<TestState>(null);
+    AdaptiveEngine<TestState> lAdaptator = new AdaptiveEngine<TestState>(null);
     lAdaptator.getNewAcquisitionStateVariable()
               .set(new TestState("initial state"));
 

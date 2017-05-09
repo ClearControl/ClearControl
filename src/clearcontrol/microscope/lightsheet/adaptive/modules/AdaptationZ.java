@@ -1,7 +1,9 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.concurrent.Future;
 
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import gnu.trove.list.array.TDoubleArrayList;
@@ -44,9 +46,11 @@ public class AdaptationZ extends
     int lControlPlaneIndex = pStepCoordinates[0];
     int lLightSheetIndex = pStepCoordinates[1];
 
+    LightSheetMicroscope lLightsheetMicroscope =
+                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+
     LightSheetMicroscopeQueue lQueue =
-                                     getAdaptator().getLightSheetMicroscope()
-                                                   .requestQueue();
+                                     lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    getAdaptator().getCurrentAcquisitionStateVariable()
                                                                  .get();
@@ -104,7 +108,7 @@ public class AdaptationZ extends
   public void updateNewState()
   {
     // TODO Auto-generated method stub
-    
+
   }
 
   /*

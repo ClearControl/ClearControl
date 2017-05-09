@@ -1,14 +1,13 @@
-package clearcontrol.microscope.lightsheet.adaptor.gui.demo;
+package clearcontrol.microscope.lightsheet.adaptive.gui.demo;
 
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
+import clearcontrol.microscope.adaptive.test.TestState;
+import clearcontrol.microscope.lightsheet.adaptive.gui.AdaptorToolBar;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
-import clearcontrol.microscope.lightsheet.adaptor.gui.AdaptorToolBar;
-import clearcontrol.microscope.lightsheet.adaptor.test.AdaptationTestModule;
-import clearcontrol.microscope.lightsheet.adaptor.test.TestState;
 
 /**
  * Simulation manager demo
@@ -27,7 +26,7 @@ public class AdaptorToolBarDemo extends Application
     stage.setTitle(AdaptorToolBarDemo.class.getSimpleName());
     // scene.setFill(Color.BLACK);
 
-    Adaptator<TestState> lAdaptator = new Adaptator<TestState>(null);
+    AdaptiveEngine<TestState> lAdaptator = new AdaptiveEngine<TestState>(null);
     lAdaptator.getNewAcquisitionStateVariable()
               .set(new TestState("initial state"));
 

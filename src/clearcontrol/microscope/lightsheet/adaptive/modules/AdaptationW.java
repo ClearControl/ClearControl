@@ -1,7 +1,9 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.concurrent.Future;
 
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
@@ -41,15 +43,17 @@ public class AdaptationW extends
     int lControlPlaneIndex = pStepCoordinates[0];
     int lLightSheetIndex = pStepCoordinates[1];
 
+    LightSheetMicroscope lLightsheetMicroscope =
+                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+
     LightSheetMicroscopeQueue lQueue =
-                                     getAdaptator().getLightSheetMicroscope()
-                                                   .requestQueue();
+                                     lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    getAdaptator().getCurrentAcquisitionStateVariable()
                                                                  .get();
 
     LightSheetInterface lLightSheetDevice =
-                                          getAdaptator().getLightSheetMicroscope()
+                                          getAdaptator().getMicroscope()
                                                         .getDeviceLists()
                                                         .getDevice(LightSheetInterface.class,
                                                                    lLightSheetIndex);
@@ -120,7 +124,7 @@ public class AdaptationW extends
                              int pLightSheetIndex,
                              ArrayList<Double> pArgMaxList)
   {
-
+  
     info("CORRECTION HAPPENS HERE");
     
     int lBestDetectioArm =
@@ -142,7 +146,7 @@ public class AdaptationW extends
   public void updateNewState()
   {
     // TODO Auto-generated method stub
-    
+
   }
 
 }

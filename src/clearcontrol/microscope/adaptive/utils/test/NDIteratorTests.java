@@ -1,13 +1,13 @@
-package clearcontrol.microscope.lightsheet.adaptor.utils.test;
+package clearcontrol.microscope.adaptive.utils.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
-import clearcontrol.microscope.lightsheet.adaptor.utils.NDIterator;
-
 import org.junit.Test;
+
+import clearcontrol.microscope.adaptive.utils.NDIterator;
 
 /**
  * n-dimensionsl iterator tests

@@ -91,6 +91,25 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
 
       mRow++;
     }
+    
+    {
+      VariableCheckBox lAutoPilotCheckBox =
+                                                   new VariableCheckBox("AutoPilot",
+                                                                        pLightSheetTimelapse.getAdaptiveEngineOnVariable());
+
+      GridPane.setHalignment(lAutoPilotCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(),
+                             1);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(),
+                             1);
+
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
+      add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
+      add(lAutoPilotCheckBox.getLabel(), 1, mRow);
+
+      mRow++;
+    }
 
   }
 

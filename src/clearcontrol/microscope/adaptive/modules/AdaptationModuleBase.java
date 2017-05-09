@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.adaptive.modules;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -6,24 +6,25 @@ import java.util.concurrent.Future;
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.adaptor.Adaptator;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
  * Base class providing common fields and methods for all adaptation modules
  *
  * @author royer
+ * 
  * @param <S>
  *          state type
  */
-public abstract class AdaptationModuleBase<S extends LightSheetAcquisitionStateInterface<S>>
+public abstract class AdaptationModuleBase<S extends AcquisitionStateInterface<?, ?>>
                                           extends NameableBase
                                           implements
                                           AdaptationModuleInterface<S>,
                                           LoggingInterface
 {
 
-  private Adaptator<S> mAdaptator;
+  private AdaptiveEngine<S> mAdaptator;
 
   private int mPriority = 1;
 
@@ -50,13 +51,13 @@ public abstract class AdaptationModuleBase<S extends LightSheetAcquisitionStateI
   }
 
   @Override
-  public void setAdaptator(Adaptator<S> pAdaptator)
+  public void setAdaptator(AdaptiveEngine<S> pAdaptator)
   {
     mAdaptator = pAdaptator;
   }
 
   @Override
-  public Adaptator<S> getAdaptator()
+  public AdaptiveEngine<S> getAdaptator()
   {
     return mAdaptator;
   }

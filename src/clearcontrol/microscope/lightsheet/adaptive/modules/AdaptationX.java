@@ -1,7 +1,9 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.concurrent.Future;
 
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
@@ -39,18 +41,19 @@ public class AdaptationX extends
     int pControlPlaneIndex = pStepCoordinates[0];
     int pLightSheetIndex = pStepCoordinates[1];
 
+    LightSheetMicroscope lLightsheetMicroscope =
+                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+
     LightSheetMicroscopeQueue lQueue =
-                                     getAdaptator().getLightSheetMicroscope()
-                                                   .requestQueue();
+                                     lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    getAdaptator().getCurrentAcquisitionStateVariable()
                                                                  .get();
 
     LightSheetInterface lLightSheetDevice =
-                                          getAdaptator().getLightSheetMicroscope()
-                                                        .getDeviceLists()
-                                                        .getDevice(LightSheetInterface.class,
-                                                                   pLightSheetIndex);
+                                          lLightsheetMicroscope.getDeviceLists()
+                                                               .getDevice(LightSheetInterface.class,
+                                                                          pLightSheetIndex);
 
     double lMinX = lLightSheetDevice.getXVariable()
                                     .getMin()
@@ -108,9 +111,9 @@ public class AdaptationX extends
   public void updateNewState()
   {
     // TODO Auto-generated method stub
-    
+
   }
-  
+
   /*
   @Override
   public void updateNewState(int pControlPlaneIndex,
@@ -123,16 +126,14 @@ public class AdaptationX extends
                                        .get()
                                        .getBestDetectionArm(pControlPlaneIndex);/**/
 
-    /*
-     * 
-     *    COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
-    getAdaptator().getNewAcquisitionState()
-                  .setAtControlPlaneIX(pControlPlaneIndex,
-                                       pLightSheetIndex,
-                                       pArgMaxList.get(lBestDetectioArm));
+  /*
+   * 
+   *    COMMENTED SO IT COMPILES PUT IT BACK EVENTUALLY!
+  getAdaptator().getNewAcquisitionState()
+                .setAtControlPlaneIX(pControlPlaneIndex,
+                                     pLightSheetIndex,
+                                     pArgMaxList.get(lBestDetectioArm));
   
   }  /**/
-
-
 
 }

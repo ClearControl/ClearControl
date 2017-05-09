@@ -1,4 +1,4 @@
-package clearcontrol.microscope.lightsheet.adaptor.modules;
+package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -12,9 +12,10 @@ import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
+import clearcontrol.microscope.adaptive.modules.NDIteratorAdaptationModule;
+import clearcontrol.microscope.adaptive.utils.NDIterator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.adaptor.utils.NDIterator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
@@ -112,8 +113,9 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
   {
     super.reset();
 
-    LightSheetMicroscope lLightSheetMicroscope =
-                                               getAdaptator().getLightSheetMicroscope();
+    LightSheetMicroscope lLightsheetMicroscope =
+                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+
     LightSheetAcquisitionStateInterface<S> lAcquisitionState =
                                                              getAdaptator().getCurrentAcquisitionStateVariable()
                                                                            .get();
@@ -123,7 +125,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
                                                 .getNumberOfControlPlanes();
 
     int lNumberOfLighSheets =
-                            lLightSheetMicroscope.getDeviceLists()
+                            lLightsheetMicroscope.getDeviceLists()
                                                  .getNumberOfDevices(LightSheetInterface.class);
 
     setNDIterator(new NDIterator(lNumberOfControlPlanes,
@@ -140,12 +142,12 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
 
     try
     {
-      LightSheetMicroscope lLightSheetMicroscope =
-                                                 getAdaptator().getLightSheetMicroscope();
+      LightSheetMicroscope lLightsheetMicroscope =
+                                                 (LightSheetMicroscope) getAdaptator().getMicroscope();
 
-      lLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+      lLightsheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      lLightSheetMicroscope.playQueueAndWaitForStacks(pQueue,
+                                      lLightsheetMicroscope.playQueueAndWaitForStacks(pQueue,
                                                                                       10 + pQueue.getQueueLength(),
                                                                                       TimeUnit.SECONDS);
 
@@ -153,7 +155,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
         return null;
 
       final int lNumberOfDetectionArmDevices =
-                                             lLightSheetMicroscope.getDeviceLists()
+                                             lLightsheetMicroscope.getDeviceLists()
                                                                   .getNumberOfDevices(DetectionArmInterface.class);
 
       ArrayList<StackInterface> lStacks = new ArrayList<>();
@@ -161,7 +163,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
         if (isRelevantDetectionArm(pControlPlaneIndex, d))
         {
           final StackInterface lStackInterface =
-                                               lLightSheetMicroscope.getCameraStackVariable(d)
+                                               lLightsheetMicroscope.getCameraStackVariable(d)
                                                                     .get();
           lStacks.add(lStackInterface.duplicate());
 

@@ -33,7 +33,7 @@ public interface TimelapseInterface extends
    * Stops timelapse
    */
   void stopTimelapse();
-  
+
   /**
    * Acquires a single timepoint
    */
@@ -53,6 +53,14 @@ public interface TimelapseInterface extends
    * @return file stack sink type list
    */
   ArrayList<Class<? extends FileStackSinkInterface>> getFileStackSinkTypeList();
+
+  /**
+   * Returns the variable that controls whether the adaptive engine should be
+   * turned on.
+   * 
+   * @return adaptive-engine-on variable
+   */
+  Variable<Boolean> getAdaptiveEngineOnVariable();
 
   /**
    * Returns the timelapse timer variable
@@ -151,7 +159,5 @@ public interface TimelapseInterface extends
    * @return dataset name postfix
    */
   Variable<String> getDataSetNamePostfixVariable();
-
-
 
 }

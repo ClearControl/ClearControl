@@ -1,21 +1,22 @@
-package clearcontrol.microscope.lightsheet.adaptor;
+package clearcontrol.microscope.adaptive;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.adaptor.modules.AdaptationModuleInterface;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
- * Interface implemented by all adaptators
+ * Interface implemented by all adaptive engines
  *
  * @author royer
+ * 
  * @param <S>
  *          state type
  */
-public interface AdaptatorInterface<S extends LightSheetAcquisitionStateInterface<S>>
+public interface AdaptiveEngineInterface<S extends AcquisitionStateInterface<?, ?>>
 {
 
   /**
@@ -60,7 +61,7 @@ public interface AdaptatorInterface<S extends LightSheetAcquisitionStateInterfac
    * 
    * @return parent
    */
-  LightSheetMicroscope getLightSheetMicroscope();
+  MicroscopeInterface<?> getMicroscope();
 
   /**
    * Retuns the concurrent-execution flag
@@ -70,7 +71,7 @@ public interface AdaptatorInterface<S extends LightSheetAcquisitionStateInterfac
   Variable<Boolean> getConcurrentExecutionVariable();
 
   /**
-   * Returns the variable that decides whther this adaptator should run until
+   * Returns the variable that decides whether this adaptator should run until
    * all modules are ready.
    * 
    * @return execute-until-all-modules-ready variable
