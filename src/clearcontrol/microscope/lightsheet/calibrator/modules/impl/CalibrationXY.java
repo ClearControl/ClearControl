@@ -460,6 +460,7 @@ public class CalibrationXY extends CalibrationBase
   /**
    * Resets calibration here
    */
+  @Override
   public void reset()
   {
     // check if there is nothing to do here

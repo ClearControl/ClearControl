@@ -60,7 +60,6 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
   protected final StackRecyclerManager mStackRecyclerManager;
   protected final MicroscopeDeviceLists mDeviceLists;
-  protected StageDeviceInterface mMainXYZRStage;
 
   protected volatile long mAverageTimeInNS;
   private volatile boolean mSimulation;
@@ -73,16 +72,15 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                  new Variable<Q>("LastPlayedQueue",
                                                                  null);
 
-
   // Stack processing pipeline:
   protected volatile StackProcessingPipelineInterface mStackProcessingPipeline;
-  
-  
+
   // Lock:
   protected ReentrantLock mMasterLock = new ReentrantLock();
-  
-  // 
-  protected AtomicReference<Object> mCurrentTask= new AtomicReference<>();
+
+  //
+  protected AtomicReference<Object> mCurrentTask =
+                                                 new AtomicReference<>();
 
   /**
    * Instantiates the microscope base class.
@@ -163,7 +161,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   {
     return mMasterLock;
   }
-  
+
   @Override
   public AtomicReference<Object> getCurrentTask()
   {
@@ -660,22 +658,19 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   }
 
   @Override
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface)
+  public StageDeviceInterface getMainStage()
   {
-    mMainXYZRStage = pStageDeviceInterface;
-  }
-
-  @Override
-  public StageDeviceInterface getMainXYZRStage()
-  {
-    return mMainXYZRStage;
+    StageDeviceInterface lDevice =
+                                 getDevice(StageDeviceInterface.class,
+                                           0);
+    return lDevice;
   }
 
   @Override
   public void setStageX(double pXValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("X"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pXValue);
   }
@@ -684,7 +679,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageY(double pYValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Y"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pYValue);
   }
@@ -693,7 +688,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageZ(double pZValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Z"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pZValue);
   }
@@ -702,7 +697,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageR(double pZValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("R"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pZValue);
   }
@@ -711,7 +706,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageX()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("X"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -721,7 +716,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageY()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Y"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -731,7 +726,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageZ()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Z"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -741,7 +736,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageR()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("R"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;

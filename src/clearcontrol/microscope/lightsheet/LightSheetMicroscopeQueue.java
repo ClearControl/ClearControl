@@ -323,7 +323,7 @@ public class LightSheetMicroscopeQueue extends
   {
     getStackCameraDeviceQueue(pCameraIndex).getKeepPlaneVariable()
                                            .set(pKeepImage);
-  };
+  }
 
   @Override
   public boolean getC(int pCameraIndex)
@@ -336,7 +336,6 @@ public class LightSheetMicroscopeQueue extends
   public void setC(boolean pKeepImage)
   {
     int lNumberOfStackCameraDevices = getNumberOfStackCameras();
-
     for (int c = 0; c < lNumberOfStackCameraDevices; c++)
       getStackCameraDeviceQueue(c).getKeepPlaneVariable()
                                   .set(pKeepImage);
@@ -348,7 +347,7 @@ public class LightSheetMicroscopeQueue extends
   {
     getDetectionArmDeviceQueue(pDetectionArmIndex).getZVariable()
                                                   .set(pValue);
-  };
+  }
 
   @Override
   public double getDZ(int pDetectionArmIndex)
@@ -356,6 +355,29 @@ public class LightSheetMicroscopeQueue extends
     return getDetectionArmDeviceQueue(pDetectionArmIndex).getZVariable()
                                                          .get()
                                                          .doubleValue();
+  }
+
+  @Override
+  public void setFlyBackDZ(int pDetectionArmIndex, double pValue)
+  {
+    getDetectionArmDeviceQueue(pDetectionArmIndex).getFlyBackZVariable()
+                                                  .set(pValue);
+  }
+
+  @Override
+  public double getFlyBackDZ(int pDetectionArmIndex)
+  {
+    return getDetectionArmDeviceQueue(pDetectionArmIndex).getFlyBackZVariable()
+                                                         .get()
+                                                         .doubleValue();
+  }
+
+  @Override
+  public void setDefaultFlyBackDZ()
+  {
+    int lNumberOfStackCameraDevices = getNumberOfStackCameras();
+    for (int c = 0; c < lNumberOfStackCameraDevices; c++)
+      setFlyBackDZ(c, getDZ(c));
   }
 
   @Override

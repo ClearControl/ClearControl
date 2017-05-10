@@ -119,13 +119,37 @@ public interface LightSheetMicroscopeParameterInterface
   public void setDZ(int pDetectionIndex, double pPositionZ);
 
   /**
-   * Returns the detection objective position
+   * Returns the detection objective Z position
    * 
    * @param pDetectionArmIndex
    *          detection arm index
-   * @return position
+   * @return Z position
    */
   double getDZ(int pDetectionArmIndex);
+
+  /**
+   * Sets the detection objective flyback position after a stack acquisition
+   * 
+   * @param pDetectionArmIndex
+   *          detection arm index
+   * @param pPositionZ
+   *          flyback position Z
+   */
+  void setFlyBackDZ(int pDetectionArmIndex, double pPositionZ);
+
+  /**
+   * Returns the detection objective flyback Z position
+   * 
+   * @param pDetectionArmIndex
+   * @return Z position
+   */
+  double getFlyBackDZ(int pDetectionArmIndex);
+
+  /**
+   * Sets the flyback Z position to the current DZ position for all detection
+   * arms.
+   */
+  void setDefaultFlyBackDZ();
 
   /**
    * Sets the lightsheet's X position (illumination objective).

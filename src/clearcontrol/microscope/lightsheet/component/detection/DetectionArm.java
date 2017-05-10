@@ -95,6 +95,12 @@ public class DetectionArm extends
   {
     return mTemplateQueue.getZVariable();
   }
+  
+  @Override
+  public BoundedVariable<Number> getFlyBackZVariable()
+  {
+    return mTemplateQueue.getFlyBackZVariable();
+  }
 
   @Override
   public Variable<UnivariateAffineFunction> getZFunction()

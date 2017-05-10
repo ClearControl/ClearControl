@@ -9,9 +9,11 @@ import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
@@ -38,6 +40,11 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     BoundedVariable<Number> lExposureInSecondsVariable =
                                                        pAcquisitionState.getExposureInSecondsVariable();
+
+    BoundedVariable<Number> lImageWidthVariable =
+                                                pAcquisitionState.getImageWidthVariable();
+    BoundedVariable<Number> lImageHeightVariable =
+                                                 pAcquisitionState.getImageHeightVariable();
 
     BoundedVariable<Number> lStageXVariable =
                                             pAcquisitionState.getStageXVariable();
@@ -81,11 +88,25 @@ public class AcquisitionStatePanel extends CustomGridPane
     lCopyCurrentSettingsButton.setOnAction((e) -> pAcquisitionState.copyCurrentMicroscopeSettings());
 
     NumberVariableTextField<Number> lExposureField =
-                                                   new NumberVariableTextField<Number>("Exposure in seconds:",
+                                                   new NumberVariableTextField<Number>("Exp(s):",
                                                                                        lExposureInSecondsVariable,
                                                                                        0.0,
                                                                                        Double.POSITIVE_INFINITY,
                                                                                        0.0);
+
+    NumberVariableTextField<Number> lImageWidthField =
+                                                     new NumberVariableTextField<Number>("Image width:",
+                                                                                         lImageWidthVariable,
+                                                                                         0.0,
+                                                                                         Double.POSITIVE_INFINITY,
+                                                                                         0.0);
+
+    NumberVariableTextField<Number> lImageHeightField =
+                                                      new NumberVariableTextField<Number>("Image Height:",
+                                                                                          lImageHeightVariable,
+                                                                                          0.0,
+                                                                                          Double.POSITIVE_INFINITY,
+                                                                                          0.0);
 
     VariableRangeSlider<Number> lZRangeSlider =
                                               new VariableRangeSlider<>("Z-range",
@@ -113,8 +134,12 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     lNumberOfPlanesTextField.getTextField().setPrefWidth(100);
 
-    OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();
+    Button lSetupControlPlanesButton =
+                                     new Button("Setup");
+    lSetupControlPlanesButton.setOnAction((e) -> pAcquisitionState.setupControlPlanes(pAcquisitionState.getNumberOfControlPlanes(),
+                                                                                      30));
 
+    OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();
     for (int i =
                0; i < pAcquisitionState.getNumberOfDetectionArms(); i++)
     {
@@ -123,7 +148,6 @@ public class AcquisitionStatePanel extends CustomGridPane
     }
 
     OnOffArrayPane lLightSheetOnOffArray = new OnOffArrayPane();
-
     for (int i =
                0; i < pAcquisitionState.getNumberOfLightSheets(); i++)
     {
@@ -159,12 +183,25 @@ public class AcquisitionStatePanel extends CustomGridPane
     }
 
     {
-      HBox lHBox = new HBox(lExposureField.getLabel(),
-                            lExposureField.getTextField(),
-                            lLaserOnOffArray);
+      HBox lHBox = new HBox(new Label("    "),
+                            lImageWidthField.getLabel(),
+                            lImageWidthField.getTextField(),
+                            new Label("    "),
+                            lImageHeightField.getLabel(),
+                            lImageHeightField.getTextField());
       lHBox.setAlignment(Pos.CENTER_LEFT);
-      GridPane.setColumnSpan(lHBox, 8);
-      add(lHBox, 0, lRow);
+      GridPane.setColumnSpan(lHBox, 6);
+      add(lExposureField.getLabel(), 0, lRow);
+      add(lExposureField.getTextField(), 1, lRow);
+      add(lHBox, 2, lRow);
+      lRow++;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 8);
+      add(lSeparator, 0, lRow);
       lRow++;
     }
 
@@ -190,6 +227,14 @@ public class AcquisitionStatePanel extends CustomGridPane
     }
 
     {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 8);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
       add(lZRangeSlider.getLabel(), 0, lRow);
       add(lZRangeSlider.getLowTextField(), 1, lRow);
       add(lZRangeSlider.getRangeSlider(), 2, lRow);
@@ -200,27 +245,28 @@ public class AcquisitionStatePanel extends CustomGridPane
     {
       HBox lHBox = new HBox(new Label("Z-step: "),
                             lZStepTextField.getTextField(),
-                            new Label("      Nb of planes: "),
+                            new Label("number of planes: "),
                             lNumberOfPlanesTextField.getTextField(),
-                            new Label("      Cameras: "),
-                            lCameraOnOffArray,
-                            new Label("      Lightsheets: "),
-                            lLightSheetOnOffArray,
-                            new Label("      Lasers: "),
-                            lLaserOnOffArray);
+                            new Label("setup control planes: "),
+                            lSetupControlPlanesButton);
       lHBox.setAlignment(Pos.CENTER_LEFT);
       GridPane.setColumnSpan(lHBox, 8);
       add(lHBox, 0, lRow);
       lRow++;
     }
 
-    /* {
-      Button lCopySettingsButton = new Button("Copy current microscope settings to this state");
-      lCopySettingsButton.setOnAction((e)-> pAcquisitionState.copyCurrentMicroscopeSettings());
-      GridPane.setColumnSpan(lCopySettingsButton, 8);
-      add(lCopySettingsButton, 0, lRow);
+    {
+      HBox lHBox = new HBox(new Label("      Cameras: "),
+                            lCameraOnOffArray,
+                            new Label("      Lightsheets: "),
+                            lLightSheetOnOffArray,
+                            new Label("      Lasers: "),
+                            lLaserOnOffArray);
+      lHBox.setAlignment(Pos.CENTER_LEFT);
+      GridPane.setColumnSpan(lHBox, 6);
+      add(lHBox, 1, lRow);
       lRow++;
-    }/**/
+    }
 
     {
       TabPane lTabPane = new TabPane();

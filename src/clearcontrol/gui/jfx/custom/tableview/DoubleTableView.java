@@ -40,10 +40,10 @@ public class DoubleTableView extends TableView<DoubleRow>
                       int lColumn = t.getTablePosition().getColumn();
                       double lNewValue = t.getNewValue();
 
-                      ((DoubleRow) t.getTableView()
+                      t.getTableView()
                                     .getItems()
                                     .get(t.getTablePosition()
-                                          .getRow())).setValue(lColumn,
+                                          .getRow()).setValue(lColumn,
                                                                lNewValue);
                     }
                   };
@@ -87,6 +87,7 @@ public class DoubleTableView extends TableView<DoubleRow>
     if (pIsEditable)
       lColumn.setCellFactory(new Callback<TableColumn<DoubleRow, Double>, TableCell<DoubleRow, Double>>()
       {
+        @Override
         public TableCell<DoubleRow, Double> call(TableColumn<DoubleRow, Double> p)
         {
          

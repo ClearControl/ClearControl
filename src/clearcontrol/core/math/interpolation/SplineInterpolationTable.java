@@ -86,6 +86,14 @@ public class SplineInterpolationTable implements Cloneable
   }
 
   /**
+   * Removes all rows.
+   */
+  public void clear()
+  {
+    mTable.clear();
+  }
+
+  /**
    * Returns the Row at a given index
    * 
    * @param pRowIndex

@@ -197,7 +197,6 @@ public class LightSheetMicroscopeDemo implements
     lStageDeviceSimulator.setSpeed(0.8);
 
     lLightSheetMicroscope.addDevice(0, lStageDeviceSimulator);
-    lLightSheetMicroscope.setMainXYZRStage(lStageDeviceSimulator);
 
     // Setting up Filterwheel:
 
@@ -317,7 +316,7 @@ public class LightSheetMicroscopeDemo implements
     InterpolatedAcquisitionState lAcquisitionState =
                                                    new InterpolatedAcquisitionState("default",
                                                                                     lLightSheetMicroscope);
-    lAcquisitionState.setupDefault(lLightSheetMicroscope);
+    lAcquisitionState.setupControlPlanes(3, 30);
     lAcquisitionStateManager.setCurrentState(lAcquisitionState);
     lLightSheetMicroscope.addInteractiveAcquisition(lAcquisitionStateManager);
 

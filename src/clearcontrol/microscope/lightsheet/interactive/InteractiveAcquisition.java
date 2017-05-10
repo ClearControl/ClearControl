@@ -337,6 +337,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             mQueue.addCurrentStateToQueue();
 
             mQueue.setFinalisationTime(0.00005);
+            mQueue.setDefaultFlyBackDZ();
             mQueue.finalizeQueue();
 
           }
@@ -352,15 +353,13 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             mQueue = getLightSheetMicroscope().requestQueue();
             mQueue.clearQueue();
             mQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 1);
-            for (int c = 0; c < getNumberOfCameras(); c++)
-            {
-              mQueue.setC(c, true);
-            }
+            mQueue.setC(true);
             mQueue.setExp(mExposureVariableInSeconds.get()
                                                     .doubleValue());
 
             mQueue.addCurrentStateToQueue();
             mQueue.setFinalisationTime(0.00005);
+            mQueue.setDefaultFlyBackDZ();
             mQueue.finalizeQueue();
 
           }

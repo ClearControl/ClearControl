@@ -38,6 +38,13 @@ public interface DetectionArmInterface extends
   public BoundedVariable<Number> getZVariable();
 
   /**
+   * Returns the detection plane flyback Z position variable
+   * 
+   * @return flyback Z variable
+   */
+  public BoundedVariable<Number> getFlyBackZVariable();
+
+  /**
    * Returns function that translates Z values into actual control values.
    * 
    * @return Z function

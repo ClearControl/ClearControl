@@ -54,8 +54,8 @@ public class AcquisitionStateManagerPanelDemo extends Application
                                          new InterpolatedAcquisitionState("State2",
                                                                           lLightSheetMicroscope);
 
-    lState1.setup(0, 50, 100, 1, 5, 5);
-    lState2.setup(-100, 50, 100, 2, 5, 5);
+    lState1.setupControlPlanes(3,30);
+    lState2.setupControlPlanes(5,20);
 
     lAcquisitionStateManager.addState(lState1);
     lAcquisitionStateManager.addState(lState2);

@@ -411,6 +411,7 @@ public class CalibrationA extends CalibrationBase
   /**
    * Resets the Alpha angle calibration
    */
+  @Override
   public void reset()
   {
     mMultiPlotAFocusCurves.clear();

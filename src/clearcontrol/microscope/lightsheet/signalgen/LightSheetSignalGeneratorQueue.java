@@ -240,7 +240,8 @@ public class LightSheetSignalGeneratorQueue implements
         DetectionArmStaves lDetectionStaves = lEntry.getValue();
 
         lDetectionStaves.update(mBeforeExposureMovement,
-                                mExposureMovement);
+                                mExposureMovement,
+                                mFinalMovement);
       }
 
       Variable<Boolean> lIsSharedLightSheetControl =

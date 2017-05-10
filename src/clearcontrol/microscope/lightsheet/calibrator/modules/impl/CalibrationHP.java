@@ -379,6 +379,7 @@ public class CalibrationHP extends CalibrationBase
   /**
    * Resets the height-power calibration
    */
+  @Override
   public void reset()
   {
     mMultiPlotAdjustPCurves.clear();

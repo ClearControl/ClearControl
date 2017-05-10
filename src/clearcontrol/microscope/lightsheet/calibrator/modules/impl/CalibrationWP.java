@@ -384,6 +384,7 @@ public class CalibrationWP extends CalibrationBase
   /**
    * Resets this calibration
    */
+  @Override
   public void reset()
   {
     mMultiPlotAdjustPCurves.clear();

@@ -66,7 +66,7 @@ public class LightSheetMicroscopeSimulationDevice extends
                                                         (LightSheetMicroscopeInterface) pMicroscope;
 
     StageDeviceInterface lMainXYZRStage =
-                                        lLightSheetMicroscope.getMainXYZRStage();
+                                        lLightSheetMicroscope.getMainStage();
 
     if (lMainXYZRStage != null)
     {

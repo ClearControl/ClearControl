@@ -113,10 +113,12 @@ public class InterpolationTables extends
       lSplineInterpolationTable.addRow(pZ);
     notifyListeners(this);
   }
-  
+
   /**
    * Adds a control plane after a given z poistion (but before the next one)
-   * @param pZ z position
+   * 
+   * @param pZ
+   *          z position
    */
   public void addControlPlaneAfter(double pZ)
   {
@@ -124,7 +126,6 @@ public class InterpolationTables extends
       lSplineInterpolationTable.addRowAfter(pZ);
     notifyListeners(this);
   }
-
 
   /**
    * Removes the nearest control plane to a given Z value.
@@ -151,6 +152,17 @@ public class InterpolationTables extends
   {
     for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
       lSplineInterpolationTable.moveRow(pControlPlaneIndex, pNewZ);
+    notifyListeners(this);
+  }
+
+  /**
+   * Removes all control planes
+   */
+  public void removeAllControlPlanes()
+  {
+    for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
+      lSplineInterpolationTable.clear();
+
     notifyListeners(this);
   }
 
@@ -355,6 +367,5 @@ public class InterpolationTables extends
   {
     return mInterpolationTableList.get(pLightSheetDOF.ordinal());
   }
-
 
 }

@@ -38,7 +38,7 @@ public class InterpolatedAcquisitionState extends
 
   private final BoundedVariable<Number> mZStep =
                                                new BoundedVariable<Number>("ZStep",
-                                                                           0.5,
+                                                                           1,
                                                                            0,
                                                                            1000);
 
@@ -99,6 +99,7 @@ public class InterpolatedAcquisitionState extends
                                          -200.0,
                                          200.0,
                                          1.0);
+
     }
     else
     {
@@ -188,39 +189,25 @@ public class InterpolatedAcquisitionState extends
       mZHigh.addSetListener(lRangeListener);
       mZStep.addSetListener((o, n) -> {
         if (n != null && !n.equals(o))
-        {
-          long lZPlanes = round(getStackDepthInMicrons()
-                                / n.doubleValue());
-
-          if (mZPlanes.get().longValue() != lZPlanes)
-          {
-            mZPlanes.set(lZPlanes);
-
-            /*getStackZHighVariable().set(getStackZLowVariable().get()
-                                                            .doubleValue()
-                                      + lZPlanes * n.doubleValue());/**/
-          }
-        }
+          setNumberOfPlanesBasedOnZStep(n);
       });
 
       mZPlanes.addSetListener((o, n) -> {
         if (n != null && !n.equals(o))
-        {
-          double lStepZ = (getStackDepthInMicrons()
-                           / (n.doubleValue()));
-          if (mZStep.get().doubleValue() != lStepZ)
-            mZStep.set(lStepZ);
-        }
+          setZStepBasedOnNumberOfPlanes(n);
       });
 
       mZLow.addSetListener(lChangeListener);
       mZHigh.addSetListener(lChangeListener);
       mZStep.addSetListener(lChangeListener);
       mZPlanes.addSetListener(lChangeListener);
+
+      mZPlanes.set(128);
+      setZStepBasedOnNumberOfPlanes(128);
     }
 
     StageDeviceInterface lMainXYZRStage =
-                                        getLightSheetMicroscope().getMainXYZRStage();
+                                        getLightSheetMicroscope().getMainStage();
 
     if (lMainXYZRStage != null)
     {
@@ -238,7 +225,7 @@ public class InterpolatedAcquisitionState extends
       getStageZVariable().setMinMax(lMainXYZRStage.getMinPositionVariable(2)
                                                   .get(),
                                     lMainXYZRStage.getMaxPositionVariable(2)
-                                                  .get());/**/
+                                                  .get());
     }
     else
     {
@@ -252,6 +239,22 @@ public class InterpolatedAcquisitionState extends
     }
 
     resetBounds();
+  }
+
+  protected void setZStepBasedOnNumberOfPlanes(Number pNumberofPlanes)
+  {
+    double lStepZ = (getStackDepthInMicrons()
+                     / (pNumberofPlanes.doubleValue() - 1));
+    if (mZStep.get().doubleValue() != lStepZ)
+      mZStep.set(lStepZ);
+  }
+
+  protected void setNumberOfPlanesBasedOnZStep(Number pZStep)
+  {
+    long lZPlanes = 1 + round(getStackDepthInMicrons()
+                              / pZStep.doubleValue());
+    if (mZPlanes.get().longValue() != lZPlanes)
+      mZPlanes.set(lZPlanes);
   }
 
   /**
@@ -285,49 +288,34 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
-   * Setup defaults given a lightsheet microscope
+   * Setting up control planes
    * 
-   * @param pLightSheetMicroscope
-   *          lightsheet microscope
-   */
-  public void setupDefault(LightSheetMicroscopeInterface pLightSheetMicroscope)
-  {
-    setup(-120, 0, 120, 4, 50, 10);
-  }
-
-  /**
-   * Basic setup
-   * 
-   * @param pLowZ
-   *          low z
-   * @param pMiddleZ
-   *          middle z
-   * @param pHighZ
-   *          high z
-   * @param pStepZ
-   *          z step
-   * @param pControlPlaneStepZ
-   *          control plane z step
+   * @param pNumberOfControlPlanes
+   *          number of control planes
    * @param pMarginZ
-   *          margin z
+   *          distance between Z-range extremities and first and last control
+   *          planes
    */
-  public void setup(double pLowZ,
-                    double pMiddleZ,
-                    double pHighZ,
-                    double pStepZ,
-                    double pControlPlaneStepZ,
-                    double pMarginZ)
+  public void setupControlPlanes(int pNumberOfControlPlanes,
+                                 double pMarginZ)
   {
-    getStackZLowVariable().set(pLowZ);
-    getStackZHighVariable().set(pHighZ);
-    getStackZStepVariable().set(pStepZ);
-    mInterpolationTables.setTransitionPlaneZPosition(pMiddleZ);
+    double lHighZ = getStackZHighVariable().get().doubleValue();
+    double lLowZ = getStackZLowVariable().get().doubleValue();
+    double lMiddleZ = 0.5f * (lHighZ - lLowZ);
 
-    for (double z = pLowZ
-                    + pMarginZ; z <= pHighZ
-                                     - pMarginZ; z +=
-                                                   pControlPlaneStepZ)
+    double lIntervalBetweenControlPlanes = (lHighZ - lLowZ
+                                            - 2 * pMarginZ)
+                                           / (pNumberOfControlPlanes
+                                              - 1);
+
+    mInterpolationTables.setTransitionPlaneZPosition(lMiddleZ);
+
+    mInterpolationTables.removeAllControlPlanes();
+
+    for (int cpi = 0; cpi < pNumberOfControlPlanes; cpi++)
     {
+      double z =
+               lLowZ + pMarginZ + cpi * lIntervalBetweenControlPlanes;
       addControlPlane(z);
     }
     setupDefaultValues();
@@ -419,7 +407,7 @@ public class InterpolatedAcquisitionState extends
   protected void applyStagePosition(long pTimeOut, TimeUnit pTimeUnit)
   {
     StageDeviceInterface lMainXYZRStage =
-                                        getLightSheetMicroscope().getMainXYZRStage();
+                                        getLightSheetMicroscope().getMainStage();
     if (lMainXYZRStage == null)
       return;
 
@@ -433,7 +421,7 @@ public class InterpolatedAcquisitionState extends
     getLightSheetMicroscope().setStageY(lStageY);
     getLightSheetMicroscope().setStageZ(lStageZ);
 
-    getLightSheetMicroscope().getMainXYZRStage()
+    getLightSheetMicroscope().getMainStage()
                              .waitToBeReady(pTimeOut, pTimeUnit);
   }
 
@@ -493,11 +481,10 @@ public class InterpolatedAcquisitionState extends
     }
 
     for (int d = 0; d < getNumberOfDetectionArms(); d++)
-      lQueue.setDZ(d, get(LightSheetDOF.DZ, 0, d));
-
-    // lQueue.addCurrentStateToQueue();
-    lQueue.setFinalisationTime(0.2);
+      lQueue.setFlyBackDZ(d, get(LightSheetDOF.DZ, 0, d));
+    lQueue.setFinalisationTime(0.7);   
     lQueue.finalizeQueue();
+    
     return lQueue;
   }
 

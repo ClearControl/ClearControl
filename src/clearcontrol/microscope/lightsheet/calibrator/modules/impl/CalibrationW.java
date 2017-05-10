@@ -339,6 +339,7 @@ public class CalibrationW extends CalibrationBase
   /**
    * Resets calibration
    */
+  @Override
   public void reset()
   {
     mAverageIntensityCurves.clear();

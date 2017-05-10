@@ -16,7 +16,8 @@ public class DetectionArmQueue extends VariableQueueBase implements
 {
   private DetectionArm mDetectionArm;
 
-  private final BoundedVariable<Number> mDetectionFocusZ;
+  private final BoundedVariable<Number> mDetectionFocusZ,
+      mDetectionFocusFlyBackZ;
 
   /**
    * Instantiates detection arm queue
@@ -33,6 +34,12 @@ public class DetectionArmQueue extends VariableQueueBase implements
                      new BoundedVariable<Number>(mDetectionArm.getName()
                                                  + "-DetectionFocusZ",
                                                  0.0);
+
+    mDetectionFocusFlyBackZ =
+                            new BoundedVariable<Number>(mDetectionArm.getName()
+                                                        + "-DetectionFocusFlyBackZ",
+                                                        0.0);
+
     registerVariable(mDetectionFocusZ);
   }
 
@@ -45,7 +52,8 @@ public class DetectionArmQueue extends VariableQueueBase implements
   public DetectionArmQueue(DetectionArmQueue pTemplateQueue)
   {
     this(pTemplateQueue.getDetectionArm());
-    mDetectionFocusZ.set(pTemplateQueue.getZVariable());
+    getZVariable().set(pTemplateQueue.getZVariable());
+    getFlyBackZVariable().set(pTemplateQueue.getFlyBackZVariable());
   }
 
   /**
@@ -66,6 +74,16 @@ public class DetectionArmQueue extends VariableQueueBase implements
   public BoundedVariable<Number> getZVariable()
   {
     return mDetectionFocusZ;
+  }
+
+  /**
+   * Returns the flyback Z position variable
+   * 
+   * @return flyback Z variable
+   */
+  public BoundedVariable<Number> getFlyBackZVariable()
+  {
+    return mDetectionFocusFlyBackZ;
   }
 
 }

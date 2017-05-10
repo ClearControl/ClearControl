@@ -14,7 +14,6 @@ import clearcontrol.devices.optomech.filterwheels.devices.sim.FilterWheelDeviceS
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
-import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
@@ -119,7 +118,6 @@ public class SimulatedLightSheetMicroscope extends
       lStageDeviceSimulator.setSpeed(0.8);
 
       addDevice(0, lStageDeviceSimulator);
-      setMainXYZRStage(lStageDeviceSimulator);
     }
 
     // Setting up Filterwheel:
@@ -280,9 +278,6 @@ public class SimulatedLightSheetMicroscope extends
   public void addStandardDevices()
   {
 
-    // Add XYZR stage:
-    setMainXYZRStage(getDevice(StageDeviceInterface.class, 0));
-
     // Adding calibrator:
     {
       Calibrator lCalibrator = addCalibrator();
@@ -296,7 +291,7 @@ public class SimulatedLightSheetMicroscope extends
       InterpolatedAcquisitionState lAcquisitionState =
                                                      new InterpolatedAcquisitionState("default",
                                                                                       this);
-      lAcquisitionState.setupDefault(this);
+      lAcquisitionState.setupControlPlanes(3, 30);
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
       addInteractiveAcquisition(lAcquisitionStateManager);
     }

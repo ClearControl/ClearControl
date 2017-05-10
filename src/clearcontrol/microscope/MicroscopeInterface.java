@@ -380,18 +380,10 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
   public double getStageR();
 
   /**
-   * Sets the main XYZR stage of this microscope.
-   * 
-   * @param pStageDeviceInterface
-   *          main XYZR stage.
-   */
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
-
-  /**
    * Returns the main XYZR stage of this microscope.
    * 
    * @return main XYZR stage
    */
-  public StageDeviceInterface getMainXYZRStage();
+  public StageDeviceInterface getMainStage();
 
 }
