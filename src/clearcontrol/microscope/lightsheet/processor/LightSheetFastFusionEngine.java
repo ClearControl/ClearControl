@@ -9,6 +9,7 @@ import clearcontrol.stack.metadata.StackMetaData;
 import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
 import fastfuse.registration.AffineMatrix;
+import fastfuse.tasks.FlipTask;
 import fastfuse.tasks.IdentityTask;
 import fastfuse.tasks.RegistrationTask;
 import fastfuse.tasks.TenengradFusionTask;
@@ -26,7 +27,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   private StackMetaData mFusedStackMetaData = new StackMetaData();
 
-  private boolean mRegistration = true;
+  private volatile boolean mRegistration = true;
 
   /**
    * Instantiates a lightsheet fast fusion engine
@@ -52,7 +53,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       }
       else if (pNumberOfDetectionArms == 2)
       {
-        if (mRegistration)
+        if (isRegistration())
         {
           RegistrationTask lRegisteredFusionTask =
                                                  new RegistrationTask("C0L0",
@@ -70,8 +71,10 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
         }
         else
         {
+          addTask(FlipTask.flipX("C1", "C1flipped"));
+
           addTask(new TenengradFusionTask("C0L0",
-                                          "C1L0",
+                                          "C1flipped",
                                           "fused",
                                           ImageChannelDataType.UnsignedInt16));
 
@@ -92,7 +95,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       else if (pNumberOfDetectionArms == 2)
       {
 
-        if (mRegistration)
+        if (isRegistration())
         {
           addTask(new TenengradFusionTask("C0L0",
                                           "C0L1",
@@ -128,8 +131,10 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.UnsignedInt16));
 
+          addTask(FlipTask.flipX("C1", "C1flipped"));
+
           addTask(new TenengradFusionTask("C0",
-                                          "C1",
+                                          "C1flipped",
                                           "fused",
                                           ImageChannelDataType.UnsignedInt16));
         }
@@ -149,7 +154,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       else if (pNumberOfDetectionArms == 2)
       {
 
-        if (mRegistration)
+        if (isRegistration())
         {
           addTask(new TenengradFusionTask("C0L0",
                                           "C0L1",
@@ -195,8 +200,10 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.UnsignedInt16));
 
+          addTask(FlipTask.flipX("C1", "C1flipped"));
+
           addTask(new TenengradFusionTask("C0",
-                                          "C1",
+                                          "C1flipped",
                                           "fused",
                                           ImageChannelDataType.UnsignedInt16));
         }
@@ -300,6 +307,16 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   public boolean isDone()
   {
     return isImageAvailable("fused");
+  }
+
+  public boolean isRegistration()
+  {
+    return mRegistration;
+  }
+
+  public void setRegistration(boolean pRegistration)
+  {
+    mRegistration = pRegistration;
   }
 
 }
