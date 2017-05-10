@@ -29,6 +29,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   private volatile boolean mRegistration = true;
 
+  private RegistrationTask mRegisteredFusionTask;
+
   /**
    * Instantiates a lightsheet fast fusion engine
    * 
@@ -55,15 +57,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       {
         if (isRegistration())
         {
-          RegistrationTask lRegisteredFusionTask =
-                                                 new RegistrationTask("C0L0",
-                                                                      "C1L0",
-                                                                      "C1L0reg");
-          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+          mRegisteredFusionTask = new RegistrationTask("C0L0",
+                                                       "C1L0",
+                                                       "C1L0reg");
+          mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                             1,
                                                                             1));
 
-          addTask(lRegisteredFusionTask);
+          addTask(mRegisteredFusionTask);
           addTask(new TenengradFusionTask("C0L0",
                                           "C1L0reg",
                                           "fused",
@@ -106,15 +107,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.Float));
 
-          RegistrationTask lRegisteredFusionTask =
-                                                 new RegistrationTask("C0",
-                                                                      "C1",
-                                                                      "C1reg");
-          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+          mRegisteredFusionTask = new RegistrationTask("C0",
+                                                       "C1",
+                                                       "C1reg");
+          mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                             1,
                                                                             1));
 
-          addTask(lRegisteredFusionTask);
+          addTask(mRegisteredFusionTask);
           addTask(new TenengradFusionTask("C0",
                                           "C1reg",
                                           "fused",
@@ -170,15 +170,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.Float));
 
-          RegistrationTask lRegisteredFusionTask =
-                                                 new RegistrationTask("C0",
-                                                                      "C1",
-                                                                      "C1reg");
-          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+          mRegisteredFusionTask = new RegistrationTask("C0",
+                                                       "C1",
+                                                       "C1reg");
+          mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                             1,
                                                                             1));
 
-          addTask(lRegisteredFusionTask);
+          addTask(mRegisteredFusionTask);
           addTask(new TenengradFusionTask("C0",
                                           "C1reg",
                                           "fused",
@@ -264,6 +263,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       {
         pStack.release();
         return;
+      }
+
+      if (mRegisteredFusionTask != null)
+      {
+        float lZAspectRatio =
+                            (float) (lStackMetaData.getVoxelDimZ()
+                                     / lStackMetaData.getVoxelDimX());
+        mRegisteredFusionTask.setScaleZ(lZAspectRatio);
       }
 
       String lKey = MetaDataView.getCxLyString(lStackMetaData);

@@ -82,6 +82,7 @@ public class LightSheetFastFusionProcessor extends
 
     mEngine.passStack(true, pStack);
 
+
     // if (mEngine.isReady())
     {
       int lNumberOfTasksExecuted = mEngine.executeAllTasks();
