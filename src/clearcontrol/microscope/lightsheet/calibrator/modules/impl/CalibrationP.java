@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
@@ -102,18 +101,14 @@ public class CalibrationP extends CalibrationBase
 
       LightSheetMicroscopeQueue lQueue =
                                        mLightSheetMicroscope.requestQueue();
-      lQueue.setI(pLightSheetIndex);
-      ThreadUtils.sleep(200, TimeUnit.MILLISECONDS);
-
-      // Building queue start:
       lQueue.clearQueue();
-      lQueue.zero();
-
+      lQueue.setFullROI();
+      lQueue.setExp(0.100);
+      lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
       lQueue.setIZ(pLightSheetIndex, 0);
       lQueue.setIH(pLightSheetIndex, 0);
-      lQueue.setIZ(pLightSheetIndex, 0);
       lQueue.setIP(pLightSheetIndex, 1);
 
       for (int i = 0; i < lNumberOfDetectionArms; i++)
@@ -122,7 +117,7 @@ public class CalibrationP extends CalibrationBase
       for (int i = 1; i <= pNumberOfSamples; i++)
       {
         for (int d = 0; d < lNumberOfDetectionArms; d++)
-          lQueue.setC(d, i == pNumberOfSamples);
+          lQueue.setC(d, true);
         lQueue.addCurrentStateToQueue();
       }
 
@@ -152,7 +147,7 @@ public class CalibrationP extends CalibrationBase
                         lHeight);
 
       double lAverageIntensity =
-                               ImageAnalysisUtils.computeImageAverageIntensityPerPlane(lStack)[0];
+                               ImageAnalysisUtils.computeImageAverageIntensity(lStack);
 
       System.out.format("Image: average intensity: %s \n",
                         lAverageIntensity);
@@ -193,8 +188,12 @@ public class CalibrationP extends CalibrationBase
 
       double lPowerRatio = mRatioList.get(l);
 
-      if (lPowerRatio == 0)
+      if (lPowerRatio == 0 || Double.isNaN(lPowerRatio))
+      {
+        warning("Power ratio is null or NaN or infinite (%g)",
+                lPowerRatio);
         continue;
+      }
 
       System.out.format("Applying power ratio correction: %g to lightsheet %d \n",
                         lPowerRatio,

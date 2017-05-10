@@ -292,6 +292,7 @@ public class SimulatedLightSheetMicroscope extends
                                                      new InterpolatedAcquisitionState("default",
                                                                                       this);
       lAcquisitionState.setupControlPlanes(3, 30);
+      lAcquisitionState.copyCurrentMicroscopeSettings();
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
       addInteractiveAcquisition(lAcquisitionStateManager);
     }

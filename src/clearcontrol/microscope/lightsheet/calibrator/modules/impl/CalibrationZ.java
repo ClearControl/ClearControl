@@ -500,7 +500,8 @@ public class CalibrationZ extends CalibrationBase
     /*System.out.println("before: getZFunction()="
                        + lLightSheetDevice.getZFunction());/**/
 
-    if (abs(lSlope) > 0.00001)
+    if (abs(lSlope) > 0.00001 && !Double.isNaN(lSlope)
+        && !Double.isNaN(lOffset))
     {
       lLightSheetDevice.getZFunction()
                        .get()
@@ -509,7 +510,15 @@ public class CalibrationZ extends CalibrationBase
       lLightSheetDevice.getZFunction().setCurrent();
     }
     else
-      warning("slope too low: " + abs(lSlope));
+    {
+      if (abs(lSlope) <= 0.00001)
+        warning("slope too low: " + abs(lSlope));
+      else
+        warning("inval;id slope or offset: (y= %g x + %g)",
+                lSlope,
+                lOffset);
+
+    }
 
     /*
     System.out.println("after: getZFunction()="

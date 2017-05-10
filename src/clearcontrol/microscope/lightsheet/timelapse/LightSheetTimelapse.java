@@ -44,12 +44,11 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
   private final Variable<Boolean> mFuseStacksPerCameraVariable =
                                                                new Variable<Boolean>("FuseStacksPerCamera",
-                                                                                     true);
+                                                                                     false);
 
   private final Variable<Boolean> mInterleavedAcquisitionVariable =
                                                                   new Variable<Boolean>("InterleavedAcquisition",
                                                                                         false);
-
 
   /**
    * @param pLightSheetMicroscope
@@ -241,7 +240,5 @@ public class LightSheetTimelapse extends TimelapseBase implements
   {
     return mFuseStacksPerCameraVariable;
   }
-
-
 
 }

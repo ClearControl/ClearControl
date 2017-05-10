@@ -95,6 +95,30 @@ public class ImageAnalysisUtils
   }
 
   /**
+   * Computes the average intensity for a given stack
+   * 
+   * @param pStack
+   *          stack
+   * @return average intensity for whole stack
+   */
+  public static double computeImageAverageIntensity(OffHeapPlanarStack pStack)
+  {
+    double lNumberOfVoxels = pStack.getVolume();
+
+    ContiguousBuffer lBuffer =
+                             ContiguousBuffer.wrap(pStack.getContiguousMemory());
+
+    float lSum = 0;
+    while (lBuffer.hasRemainingByte())
+    {
+      lSum += lBuffer.readChar();
+    }
+    double lIntensity = lSum / lNumberOfVoxels;
+
+    return lIntensity;
+  }
+
+  /**
    * Computes the average intensity elevated to a given power per plane of a
    * given stack
    * 

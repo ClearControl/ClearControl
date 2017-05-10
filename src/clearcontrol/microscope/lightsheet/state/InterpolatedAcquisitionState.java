@@ -421,8 +421,8 @@ public class InterpolatedAcquisitionState extends
     getLightSheetMicroscope().setStageY(lStageY);
     getLightSheetMicroscope().setStageZ(lStageZ);
 
-    getLightSheetMicroscope().getMainStage()
-                             .waitToBeReady(pTimeOut, pTimeUnit);
+    getLightSheetMicroscope().getMainStage().waitToBeReady(pTimeOut,
+                                                           pTimeUnit);
   }
 
   /**
@@ -482,9 +482,9 @@ public class InterpolatedAcquisitionState extends
 
     for (int d = 0; d < getNumberOfDetectionArms(); d++)
       lQueue.setFlyBackDZ(d, get(LightSheetDOF.DZ, 0, d));
-    lQueue.setFinalisationTime(0.7);   
+    lQueue.setFinalisationTime(0.3);
     lQueue.finalizeQueue();
-    
+
     return lQueue;
   }
 
