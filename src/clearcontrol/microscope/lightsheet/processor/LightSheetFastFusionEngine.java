@@ -8,8 +8,10 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
 import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
-import fastfuse.tasks.AverageTask;
+import fastfuse.registration.AffineMatrix;
 import fastfuse.tasks.IdentityTask;
+import fastfuse.tasks.RegistrationTask;
+import fastfuse.tasks.TenengradFusionTask;
 
 /**
  * Lightsheet fast fusion engine
@@ -23,6 +25,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 {
 
   private StackMetaData mFusedStackMetaData = new StackMetaData();
+
+  private boolean mRegistration = true;
 
   /**
    * Instantiates a lightsheet fast fusion engine
@@ -48,45 +52,155 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       }
       else if (pNumberOfDetectionArms == 2)
       {
-        addTask(new AverageTask("C0L0", "C1L0", "fused"));
+        if (mRegistration)
+        {
+          RegistrationTask lRegisteredFusionTask =
+                                                 new RegistrationTask("C0L0",
+                                                                      "C1L0",
+                                                                      "C1L0reg");
+          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+                                                                            1,
+                                                                            1));
+
+          addTask(lRegisteredFusionTask);
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C1L0reg",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+        }
+        else
+        {
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C1L0",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+
+        }
+
       }
     }
     else if (pNumberOfLightSheets == 2)
     {
       if (pNumberOfDetectionArms == 1)
       {
-        addTask(new AverageTask("C0L0", "C0L1", "fused"));
+        addTask(new TenengradFusionTask("C0L0",
+                                        "C0L1",
+                                        "fused",
+                                        ImageChannelDataType.UnsignedInt16));
+
       }
       else if (pNumberOfDetectionArms == 2)
       {
-        addTask(new AverageTask("C0L0", "C0L1", "C0"));
-        addTask(new AverageTask("C1L0", "C1L1", "C1"));
-        addTask(new AverageTask("C0", "C1", "fused"));
+
+        if (mRegistration)
+        {
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C0L1",
+                                          "C0",
+                                          ImageChannelDataType.Float));
+          addTask(new TenengradFusionTask("C1L0",
+                                          "C1L1",
+                                          "C1",
+                                          ImageChannelDataType.Float));
+
+          RegistrationTask lRegisteredFusionTask =
+                                                 new RegistrationTask("C0",
+                                                                      "C1",
+                                                                      "C1reg");
+          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+                                                                            1,
+                                                                            1));
+
+          addTask(lRegisteredFusionTask);
+          addTask(new TenengradFusionTask("C0",
+                                          "C1reg",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+        }
+        else
+        {
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C0L1",
+                                          "C0",
+                                          ImageChannelDataType.UnsignedInt16));
+          addTask(new TenengradFusionTask("C1L0",
+                                          "C1L1",
+                                          "C1",
+                                          ImageChannelDataType.UnsignedInt16));
+
+          addTask(new TenengradFusionTask("C0",
+                                          "C1",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+        }
       }
     }
     else if (pNumberOfLightSheets == 4)
     {
       if (pNumberOfDetectionArms == 1)
       {
-        addTask(new AverageTask("C0L0",
-                                "C0L1",
-                                "C0L2",
-                                "C0L3",
-                                "fused"));
+        addTask(new TenengradFusionTask("C0L0",
+                                        "C0L1",
+                                        "C0L2",
+                                        "C0L3",
+                                        "fused",
+                                        ImageChannelDataType.UnsignedInt16));
       }
       else if (pNumberOfDetectionArms == 2)
       {
-        addTask(new AverageTask("C0L0",
-                                "C0L1",
-                                "C0L2",
-                                "C0L3",
-                                "C0"));
-        addTask(new AverageTask("C1L0",
-                                "C1L1",
-                                "C1L2",
-                                "C1L3",
-                                "C1"));
-        addTask(new AverageTask("C0", "C1", "fused"));
+
+        if (mRegistration)
+        {
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C0L1",
+                                          "C0L2",
+                                          "C0L3",
+                                          "C0",
+                                          ImageChannelDataType.Float));
+
+          addTask(new TenengradFusionTask("C1L0",
+                                          "C1L1",
+                                          "C1L2",
+                                          "C1L3",
+                                          "C1",
+                                          ImageChannelDataType.Float));
+
+          RegistrationTask lRegisteredFusionTask =
+                                                 new RegistrationTask("C0",
+                                                                      "C1",
+                                                                      "C1reg");
+          lRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+                                                                            1,
+                                                                            1));
+
+          addTask(lRegisteredFusionTask);
+          addTask(new TenengradFusionTask("C0",
+                                          "C1reg",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+        }
+        else
+        {
+          addTask(new TenengradFusionTask("C0L0",
+                                          "C0L1",
+                                          "C0L2",
+                                          "C0L3",
+                                          "C0",
+                                          ImageChannelDataType.UnsignedInt16));
+
+          addTask(new TenengradFusionTask("C1L0",
+                                          "C1L1",
+                                          "C1L2",
+                                          "C1L3",
+                                          "C1",
+                                          ImageChannelDataType.UnsignedInt16));
+
+          addTask(new TenengradFusionTask("C0",
+                                          "C1",
+                                          "fused",
+                                          ImageChannelDataType.UnsignedInt16));
+        }
+
       }
     }
 
@@ -175,7 +289,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     StackMetaData lMetaData = pStack.getMetaData();
 
     mFusedStackMetaData.addAll(lMetaData);
-    //System.out.println("passed:" + lMetaData);
+    // System.out.println("passed:" + lMetaData);
   }
 
   /**

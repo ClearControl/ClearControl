@@ -141,10 +141,10 @@ public class InterpolatedAcquisitionState extends
 
     for (int i = 0; i < mCameraOnOff.length; i++)
     {
-      mCameraOnOff[i] = new Variable<Boolean>(
-                                              String.format("Camera%dOnOff",
-                                                            i),
-                                              i == 0);
+      mCameraOnOff[i] =
+                      new Variable<Boolean>(String.format("Camera%dOnOff",
+                                                          i),
+                                            true);
       mCameraOnOff[i].addSetListener(lChangeListener);
     }
 
@@ -155,7 +155,7 @@ public class InterpolatedAcquisitionState extends
       mLightSheetOnOff[i] = new Variable<Boolean>(
                                                   String.format("LightSheet%dOnOff",
                                                                 i),
-                                                  i == 0);
+                                                  true);
       mLightSheetOnOff[i].addSetListener(lChangeListener);
     }
 
@@ -163,10 +163,10 @@ public class InterpolatedAcquisitionState extends
 
     for (int i = 0; i < mLaserOnOff.length; i++)
     {
-      mLaserOnOff[i] = new Variable<Boolean>(
-                                             String.format("Laser%dOnOff",
-                                                           i),
-                                             i == 0);
+      mLaserOnOff[i] =
+                     new Variable<Boolean>(String.format("Laser%dOnOff",
+                                                         i),
+                                           true);
 
       mLaserOnOff[i].addSetListener(lChangeListener);
     }
