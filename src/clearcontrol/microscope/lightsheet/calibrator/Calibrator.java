@@ -34,7 +34,7 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   private static final int cMaxIterations = 3;
 
   private File mCalibrationFolder =
-                                  MachineConfiguration.getCurrentMachineConfiguration()
+                                  MachineConfiguration.get()
                                                       .getFolder("Calibration");
 
   private final LightSheetMicroscope mLightSheetMicroscope;

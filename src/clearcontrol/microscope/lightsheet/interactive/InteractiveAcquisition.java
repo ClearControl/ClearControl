@@ -20,7 +20,6 @@ import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataViewFlags;
 import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
@@ -42,7 +41,7 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
   private static final int cRecyclerMaximumNumberOfLiveStacks = 60;
 
   private final LightSheetMicroscopeInterface mLightSheetMicroscope;
-  private final AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> mAcquisitionStateManager;
+  private final AcquisitionStateManager<InterpolatedAcquisitionState> mAcquisitionStateManager;
 
   private volatile InteractiveAcquisitionModes mCurrentAcquisitionMode =
                                                                        InteractiveAcquisitionModes.None;
@@ -70,17 +69,15 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
    *          device name
    * @param pLightSheetMicroscope
    *          lightsheet microscope
-   * @param pAcquisitionStateManager
-   *          acquisition state manager
    */
   @SuppressWarnings("unchecked")
   public InteractiveAcquisition(String pDeviceName,
-                                LightSheetMicroscope pLightSheetMicroscope,
-                                AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> pAcquisitionStateManager)
+                                LightSheetMicroscope pLightSheetMicroscope)
   {
     super(pDeviceName, 1, TimeUnit.SECONDS);
     mLightSheetMicroscope = pLightSheetMicroscope;
-    mAcquisitionStateManager = pAcquisitionStateManager;
+    mAcquisitionStateManager =
+                             (AcquisitionStateManager<InterpolatedAcquisitionState>) pLightSheetMicroscope.getAcquisitionStateManager();
 
     @SuppressWarnings("rawtypes")
     VariableSetListener lListener = (o, n) -> {

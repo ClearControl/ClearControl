@@ -154,42 +154,42 @@ public class LightSheet extends
   @Override
   public void resetFunctions()
   {
-    mXFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mXFunction.set(MachineConfiguration.get()
                                        .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                     + getName()
                                                                     + ".x.f"));
 
-    mYFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mYFunction.set(MachineConfiguration.get()
                                        .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                     + getName()
                                                                     + ".y.f"));
 
-    mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mZFunction.set(MachineConfiguration.get()
                                        .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                     + getName()
                                                                     + ".z.f"));
 
-    mWidthFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mWidthFunction.set(MachineConfiguration.get()
                                            .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                         + getName()
                                                                         + ".w.f"));
 
-    mHeightFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mHeightFunction.set(MachineConfiguration.get()
                                             .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                          + getName()
                                                                          + ".h.f"));
 
-    mAlphaFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mAlphaFunction.set(MachineConfiguration.get()
                                            .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                         + getName()
                                                                         + ".a.f"));
 
-    mBetaFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mBetaFunction.set(MachineConfiguration.get()
                                           .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                        + getName()
                                                                        + ".b.f"));
 
-    mPowerFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mPowerFunction.set(MachineConfiguration.get()
                                            .getUnivariateAffineFunction("device.lsm.lighsheet."
                                                                         + getName()
                                                                         + ".p.f"));
@@ -206,7 +206,7 @@ public class LightSheet extends
   public void resetBounds()
   {
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".x.bounds",
@@ -214,14 +214,14 @@ public class LightSheet extends
                                               -200,
                                               200);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".y.bounds",
                                               mLightSheetQueueTemplate.getYVariable(),
                                               -400,
                                               400);
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".z.bounds",
@@ -229,7 +229,7 @@ public class LightSheet extends
                                               -200,
                                               200);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".w.bounds",
@@ -237,7 +237,7 @@ public class LightSheet extends
                                               0,
                                               100);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".h.bounds",
@@ -245,7 +245,7 @@ public class LightSheet extends
                                               0,
                                               800);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".a.bounds",
@@ -253,7 +253,7 @@ public class LightSheet extends
                                               -20,
                                               20);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".b.bounds",
@@ -261,7 +261,7 @@ public class LightSheet extends
                                               -20,
                                               20);
 
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.lighsheet."
                                               + getName()
                                               + ".p.bounds",

@@ -14,6 +14,7 @@ import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipelineInterface;
@@ -126,6 +127,20 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
    * @return device list object
    */
   public MicroscopeDeviceLists getDeviceLists();
+
+  /**
+   * Adds acquisition state manager
+   * 
+   * @return acquisition manager
+   */
+  public AcquisitionStateManager<?> addAcquisitionStateManager();
+
+  /**
+   * Returns the acquisition state manager for this microscope
+   * 
+   * @return acquisition state manager
+   */
+  public AcquisitionStateManager<?> getAcquisitionStateManager();
 
   /**
    * Sets the recycler that should be used by the stack camera device of given

@@ -1,10 +1,13 @@
 package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.lang3.tuple.Triple;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.FitProbabilityInterface;
@@ -38,6 +41,10 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
 
   private int mNumberOfSamples;
   private double mProbabilityThreshold;
+
+  private HashMap<Triple<Integer, Integer, Integer>, Double> mResultsMap =
+                                                                         new HashMap<>();
+
   protected MultiPlot mMultiPlotZFocusCurves;
 
   /**
@@ -46,7 +53,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
    * @param pModuleName
    *          module name
    * @param pNumberOfSamples
-   *          numbe rof samples
+   *          number of samples
    * @param pProbabilityThreshold
    *          probability threshold
    */
@@ -178,14 +185,15 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
           ArgMaxFinder1DInterface lSmartArgMaxFinder =
                                                      new ModeArgMaxFinder();
 
-          ArrayList<Double> lArgMaxList = new ArrayList<Double>();
-
           for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
 
           {
             if (!isRelevantDetectionArm(pControlPlaneIndex, d))
             {
-              lArgMaxList.add(Double.NaN);
+              setResult(pControlPlaneIndex,
+                        pLightSheetIndex,
+                        d,
+                        Double.NaN);
               continue;
             }
 
@@ -210,22 +218,32 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
                                        ((FitProbabilityInterface) lSmartArgMaxFinder).getLastFitProbability();
 
                 if (lFitProbability > getProbabilityThreshold())
-                  lArgMaxList.add(lArgmax);
+                  setResult(pControlPlaneIndex,
+                            pLightSheetIndex,
+                            d,
+                            lArgmax);
                 else
-                  lArgMaxList.add(Double.NaN);
+                  setResult(pControlPlaneIndex,
+                            pLightSheetIndex,
+                            d,
+                            Double.NaN);
               }
               else
               {
-                lArgMaxList.add(lArgmax);
+                setResult(pControlPlaneIndex,
+                          pLightSheetIndex,
+                          d,
+                          lArgmax);
               }
 
             }
             else
-              lArgMaxList.add(Double.NaN);
+              setResult(pControlPlaneIndex,
+                        pLightSheetIndex,
+                        d,
+                        Double.NaN);
 
           }
-
-          System.out.println("lArgMaxList=" + lArgMaxList.toString());
 
           for (StackInterface lStack : lStacks)
             lStack.free();
@@ -262,6 +280,26 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
       e.printStackTrace();
     }
     return null;
+  }
+
+  protected void setResult(int pControlPlaneIndex,
+                           int pLightSheetIndex,
+                           int d,
+                           Double lArgmax)
+  {
+    mResultsMap.put(Triple.of(pControlPlaneIndex,
+                              pLightSheetIndex,
+                              d),
+                    lArgmax);
+  }
+
+  protected Double getResult(int pControlPlaneIndex,
+                             int pLightSheetIndex,
+                             int d)
+  {
+    return mResultsMap.get(Triple.of(pControlPlaneIndex,
+                                     pLightSheetIndex,
+                                     d));
   }
 
   /**

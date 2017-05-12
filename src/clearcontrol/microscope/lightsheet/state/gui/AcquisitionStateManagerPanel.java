@@ -2,15 +2,6 @@ package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.VBox;
 
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCell;
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCellManager;
@@ -20,6 +11,14 @@ import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 
 /**
  * Interactive2DAcquisitionPanel is a GUI element that displays information
@@ -37,10 +36,8 @@ public class AcquisitionStateManagerPanel extends
                                                                             FXCollections.observableArrayList();
   private VBox mStateViewVBox;
 
-  private TitledPane mStateViewTitledPane;
-
   /**
-   * Instanciates an acquisition state manager panel
+   * Instantiates an acquisition state manager panel
    * 
    * @param pAcquisitionStateManager
    *          acquisition state manager
@@ -89,23 +86,19 @@ public class AcquisitionStateManagerPanel extends
     MenuItem lNewItem = new MenuItem("New");
     MenuItem lDuplicateItem = new MenuItem("Duplicate");
     MenuItem lDeleteItem = new MenuItem("Delete");
+    MenuItem lDeleteOthersItem = new MenuItem("Delete others");
 
     contextMenu.getItems().addAll(lNewItem,
                                   lDuplicateItem,
-                                  lDeleteItem);
-
-    TitledPane lStateListTitledPane =
-                                    new TitledPane("Acquisition state list",
-                                                   mStateListView);
-    lStateListTitledPane.setAnimated(false);
+                                  lDeleteItem,
+                                  lDeleteOthersItem);
 
     mStateViewVBox = new VBox();
-    mStateViewTitledPane = new TitledPane("Currently selected state",
-                                          mStateViewVBox);
-    mStateViewTitledPane.setAnimated(false);
 
-    this.getChildren().addAll(lStateListTitledPane,
-                              mStateViewTitledPane);
+    mStateListView.setPrefWidth(150);
+
+    this.setLeft(mStateListView);
+    this.setCenter(mStateViewVBox);
 
     LightSheetMicroscopeInterface lMicroscope =
                                               (LightSheetMicroscopeInterface) pAcquisitionStateManager.getMicroscope();
@@ -116,7 +109,7 @@ public class AcquisitionStateManagerPanel extends
                                                                  new InterpolatedAcquisitionState("new",
                                                                                                   lMicroscope);
       pAcquisitionStateManager.addState(lInterpolatedAcquisitionState);
-      //lInterpolatedAcquisitionState.setupDefault(lMicroscope);
+      // lInterpolatedAcquisitionState.setupDefault(lMicroscope);
 
     });
 
@@ -129,8 +122,7 @@ public class AcquisitionStateManagerPanel extends
       if (lSelectedItem instanceof InterpolatedAcquisitionState)
       {
         String lNewName = lSelectedItem.getName() + "’";
-        InterpolatedAcquisitionState lOriginalState =
-                                                    lSelectedItem;
+        InterpolatedAcquisitionState lOriginalState = lSelectedItem;
         InterpolatedAcquisitionState lInterpolatedAcquisitionState =
                                                                    new InterpolatedAcquisitionState(lNewName,
                                                                                                     lOriginalState);
@@ -145,6 +137,14 @@ public class AcquisitionStateManagerPanel extends
                                                  mStateListView.getSelectionModel()
                                                                .getSelectedItem();
       pAcquisitionStateManager.removeState(lSelectedItem);
+    });
+
+    lDeleteOthersItem.setOnAction((e) -> {
+
+      InterpolatedAcquisitionState lSelectedItem =
+                                                 mStateListView.getSelectionModel()
+                                                               .getSelectedItem();
+      pAcquisitionStateManager.removeOtherStates(lSelectedItem);
     });
 
     mAcquisitionStateManager.addChangeListener((e) -> {

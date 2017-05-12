@@ -1,9 +1,5 @@
 package clearcontrol.microscope.lightsheet.state.gui.demo;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
@@ -11,6 +7,9 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Acquisition state manager demo
@@ -35,12 +34,11 @@ public class AcquisitionStateManagerPanelDemo extends Application
     DetectionArm lDetectionArm1 = new DetectionArm("D1");
     lLightSheetMicroscope.addDevice(0, lDetectionArm0);
     lLightSheetMicroscope.addDevice(1, lDetectionArm1);
-    
-    LightSheet lLightSheet0 = new LightSheet("L0",1,2);
-    LightSheet lLightSheet1 = new LightSheet("L1",1,2);
+
+    LightSheet lLightSheet0 = new LightSheet("L0", 1, 2);
+    LightSheet lLightSheet1 = new LightSheet("L1", 1, 2);
     lLightSheetMicroscope.addDevice(0, lLightSheet0);
     lLightSheetMicroscope.addDevice(1, lLightSheet1);
-    
 
     final AcquisitionStateManager<InterpolatedAcquisitionState> lAcquisitionStateManager =
                                                                                          new AcquisitionStateManager<>(null);
@@ -48,17 +46,23 @@ public class AcquisitionStateManagerPanelDemo extends Application
                                                                new AcquisitionStateManagerPanel(lAcquisitionStateManager);
 
     InterpolatedAcquisitionState lState1 =
-                                         new InterpolatedAcquisitionState("State1",
-                                                                          lLightSheetMicroscope);
-    InterpolatedAcquisitionState lState2 =
-                                         new InterpolatedAcquisitionState("State2",
+                                         new InterpolatedAcquisitionState("current",
                                                                           lLightSheetMicroscope);
 
-    lState1.setupControlPlanes(3,30);
-    lState2.setupControlPlanes(5,20);
+    lState1.setupControlPlanes(3, 30);
 
     lAcquisitionStateManager.addState(lState1);
-    lAcquisitionStateManager.addState(lState2);
+
+    for (int i = 0; i < 2000; i++)
+    {
+      InterpolatedAcquisitionState lState =
+                                          new InterpolatedAcquisitionState("State"
+                                                                           + i,
+                                                                            lLightSheetMicroscope);
+      lState.setupControlPlanes(5, 20);
+
+      lAcquisitionStateManager.addState(lState);
+    }
 
     /*
     executeAsynchronously(() -> {

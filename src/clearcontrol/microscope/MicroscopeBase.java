@@ -32,6 +32,7 @@ import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
@@ -106,7 +107,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
     for (int i = 0; i < 128; i++)
     {
       Double lPixelSizeInNanometers =
-                                    MachineConfiguration.getCurrentMachineConfiguration()
+                                    MachineConfiguration.get()
                                                         .getDoubleProperty("device.camera"
                                                                            + i
                                                                            + ".pixelsizenm",
@@ -274,6 +275,21 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
         lHasChangeListenersInterface.removeChangeListener(pChangeListener);
       }
     }
+  }
+
+  @Override
+  public AcquisitionStateManager<?> addAcquisitionStateManager()
+  {
+    AcquisitionStateManager<?> lAcquisitionStateManager =
+                                                        new AcquisitionStateManager<>(this);
+    addDevice(0, lAcquisitionStateManager);
+    return lAcquisitionStateManager;
+  }
+
+  @Override
+  public AcquisitionStateManager<?> getAcquisitionStateManager()
+  {
+    return getDevice(AcquisitionStateManager.class, 0);
   }
 
   @Override

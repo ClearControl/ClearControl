@@ -16,7 +16,9 @@ import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.adaptive.modules.AdaptationZ;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -275,6 +277,7 @@ public class SimulatedLightSheetMicroscope extends
    * Adds standard devices such as the acquisition state manager, calibrator and
    * Tiemlapse
    */
+  @SuppressWarnings("unchecked")
   public void addStandardDevices()
   {
 
@@ -286,15 +289,16 @@ public class SimulatedLightSheetMicroscope extends
 
     // Setting up acquisition state manager:
     {
-      AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager =
-                                                                                               addAcquisitionStateManager();
+      AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager;
+      lAcquisitionStateManager =
+                               (AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>>) addAcquisitionStateManager();
       InterpolatedAcquisitionState lAcquisitionState =
                                                      new InterpolatedAcquisitionState("default",
                                                                                       this);
       lAcquisitionState.setupControlPlanes(3, 30);
       lAcquisitionState.copyCurrentMicroscopeSettings();
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
-      addInteractiveAcquisition(lAcquisitionStateManager);
+      addInteractiveAcquisition();
     }
 
     // Adding timelapse device:
@@ -303,6 +307,15 @@ public class SimulatedLightSheetMicroscope extends
 
       lTimelapse.addFileStackSinkType(RawFileStackSink.class);
     }
+
+    // Adding adaptive engine device:
+    {
+      AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
+                                                                   addAdaptiveEngine();
+
+      lAdaptiveEngine.add(new AdaptationZ(1, 13, 0.95));
+    }
+
   }
 
 }

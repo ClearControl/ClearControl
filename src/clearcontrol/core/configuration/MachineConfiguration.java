@@ -44,7 +44,7 @@ public class MachineConfiguration implements LoggingInterface
    * 
    * @return singketon instance of MachineConfiguration
    */
-  public static MachineConfiguration getCurrentMachineConfiguration()
+  public static MachineConfiguration get()
   {
     return sConfiguration;
   }

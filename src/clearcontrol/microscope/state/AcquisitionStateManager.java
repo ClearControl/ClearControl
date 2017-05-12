@@ -104,6 +104,19 @@ public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
   }
 
   /**
+   * Removes all states except the one given
+   * 
+   * @param pState
+   *          state to keep
+   */
+  public void removeOtherStates(S pState)
+  {
+    mAcquisitionStateList.clear();
+    mAcquisitionStateList.add(pState);
+    notifyListeners(this);
+  }
+
+  /**
    * Clears all states
    * 
    * @param pState

@@ -4,7 +4,7 @@ import java.util.List;
 
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 
 /**
  * AcquisitionStateManagerPanelBase is a GUI element that displays information
@@ -16,7 +16,8 @@ import javafx.scene.layout.VBox;
  *          acquisition state type
  */
 public abstract class AcquisitionStateManagerPanelBase<S extends AcquisitionStateInterface<?, ?>>
-                                                      extends VBox
+                                                      extends
+                                                      BorderPane
 {
 
   /**

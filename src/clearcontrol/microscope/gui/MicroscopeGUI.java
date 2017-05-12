@@ -3,6 +3,8 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.dockfx.DockNode;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
@@ -23,6 +25,8 @@ import clearcontrol.devices.stages.gui.StageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.simulation.SimulationManager;
@@ -36,8 +40,6 @@ import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
-
-import org.dockfx.DockNode;
 
 /**
  * Microscope GUI.
@@ -131,6 +133,9 @@ public class MicroscopeGUI extends VirtualDevice implements
     addPanelMappingEntry(SimulationManager.class,
                          SimulationManagerPanel.class,
                          MicroscopeNodeType.Other);
+
+    addToolbarMappingEntry(AdaptiveEngine.class,
+                           AdaptiveEngineToolbar.class);
 
     SimulationManager lSimulationManager =
                                          new SimulationManager(pMicroscope);

@@ -90,7 +90,7 @@ public class LightSheetStaves implements LoggingInterface
                                                          0);
 
     final MachineConfiguration lCurrentMachineConfiguration =
-                                                            MachineConfiguration.getCurrentMachineConfiguration();
+                                                            MachineConfiguration.get();
 
     mStaveXIndex =
                  lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
@@ -515,7 +515,7 @@ public class LightSheetStaves implements LoggingInterface
   {
 
     final int lLaserDigitalLineIndex =
-                                     MachineConfiguration.getCurrentMachineConfiguration()
+                                     MachineConfiguration.get()
                                                          .getIntegerProperty("device.lsm.lightsheet."
                                                                              + getLightSheet().getName()
                                                                              + ".ld"

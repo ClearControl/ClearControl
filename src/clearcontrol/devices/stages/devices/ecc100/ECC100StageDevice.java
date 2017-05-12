@@ -72,7 +72,7 @@ public class ECC100StageDevice extends StageDeviceBase implements
       if (mECC100Controller.open())
       {
         final MachineConfiguration lCurrentMachineConfiguration =
-                                                                MachineConfiguration.getCurrentMachineConfiguration();
+                                                                MachineConfiguration.get();
 
         final Collection<Integer> lDeviceIdList =
                                                 mECC100Controller.getDeviceIdList();

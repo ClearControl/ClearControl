@@ -54,7 +54,8 @@ public class AdaptationTestModule extends
          getName(),
          Arrays.toString(pStepCoordinates));
     // here we would 'acquire' the data, takes a bit of time... tada...
-    ThreadUtils.sleep(300, TimeUnit.MILLISECONDS);
+    ThreadUtils.sleep(100 * pStepCoordinates.length,
+                      TimeUnit.MILLISECONDS);
 
     // this runnable does the analysis on thw data... takes some time too, but
     // can be done asynchronously

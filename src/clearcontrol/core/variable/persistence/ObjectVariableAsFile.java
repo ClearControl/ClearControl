@@ -29,7 +29,7 @@ public class ObjectVariableAsFile<O> extends Variable<O>
   {
 
     this(pVariableName,
-         MachineConfiguration.getCurrentMachineConfiguration()
+         MachineConfiguration.get()
                              .getPersistentVariableFile(pVariableName),
          null);
   }

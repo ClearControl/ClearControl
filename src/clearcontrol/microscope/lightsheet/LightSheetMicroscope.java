@@ -7,15 +7,15 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
-import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 
 /**
@@ -28,7 +28,6 @@ public class LightSheetMicroscope extends
                                   implements
                                   LightSheetMicroscopeInterface
 {
-  private AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> mAcquisitionStateManager;
   private LightSheetFastFusionProcessor mStackFusionProcessor;
 
   /**
@@ -112,16 +111,13 @@ public class LightSheetMicroscope extends
    * Adds an interactive acquisition device for a given acquisition state
    * manager.
    * 
-   * @param pAcquisitionStateManager
-   *          acquisition state manager
    * @return interactive acquisition
    */
-  public InteractiveAcquisition addInteractiveAcquisition(AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> pAcquisitionStateManager)
+  public InteractiveAcquisition addInteractiveAcquisition()
   {
     InteractiveAcquisition lInteractiveAcquisition =
                                                    new InteractiveAcquisition("Interactive",
-                                                                              this,
-                                                                              pAcquisitionStateManager);
+                                                                              this);
     addDevice(0, lInteractiveAcquisition);
     return lInteractiveAcquisition;
   }
@@ -138,17 +134,7 @@ public class LightSheetMicroscope extends
     return lCalibrator;
   }
 
-  /**
-   * Adds acquisition state manager
-   * 
-   * @return acquisition manager
-   */
-  public AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> addAcquisitionStateManager()
-  {
-    mAcquisitionStateManager = new AcquisitionStateManager<>(this);
-    addDevice(0, mAcquisitionStateManager);
-    return mAcquisitionStateManager;
-  }
+
 
   /**
    * Adds timelapse
@@ -163,13 +149,17 @@ public class LightSheetMicroscope extends
     return lTimelapseInterface;
   }
 
-  /*public AutoPilotInterface addAutoPilot()
+  /**
+   * Adds the adaptive engine
+   * 
+   * @return adaptive engine
+   */
+  public AdaptiveEngine<InterpolatedAcquisitionState> addAdaptiveEngine()
   {
-  	return null;
-  	AutoPilotInterface lAutoPilot = new AutoPilot(this,
-  	                                              mAcquisitionStateManager);
-  	addDevice(0, lAutoPilot);
-  	return lAutoPilot;
+    AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
+                                                                 new AdaptiveEngine<InterpolatedAcquisitionState>(this);
+    addDevice(0, lAdaptiveEngine);
+    return lAdaptiveEngine;
   }/**/
 
   /**

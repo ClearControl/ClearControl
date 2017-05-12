@@ -19,9 +19,10 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 
 /**
- * Lightsheet adaptive engine
+ * adaptive engine
  *
  * @author royer
  * 
@@ -73,7 +74,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                                                                   false);
 
   /**
-   * Instanciates an adpative engine given a parent lightsheet microscope
+   * Instantiates an adaptive engine given a parent microscope
    * 
    * @param pMicroscope
    *          parent microscope
@@ -84,12 +85,12 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     mMicroscope = pMicroscope;
 
     double lCPULoadRatio =
-                         MachineConfiguration.getCurrentMachineConfiguration()
+                         MachineConfiguration.get()
                                              .getDoubleProperty("autopilot.cpuloadratio",
                                                                 0.2);
 
     int pMaxQueueLengthPerWorker =
-                                 MachineConfiguration.getCurrentMachineConfiguration()
+                                 MachineConfiguration.get()
                                                      .getIntegerProperty("autopilot.worker.maxqueuelength",
                                                                          10);
 
@@ -167,7 +168,6 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   {
     mAdaptationModuleList.add(pAdaptationModule);
     pAdaptationModule.setAdaptator(this);
-    pAdaptationModule.reset();
   }
 
   @Override
@@ -195,7 +195,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                                                                                                    .intValue());
       int lPriority = lAdaptationModule.getPriority();
 
-      Long lMethodTimming = getTimmingInNs(lAdaptationModule);
+      Long lMethodTimming = getModuleEstimatedStepTimeInNanoseconds(lAdaptationModule);
 
       if (lMethodTimming == null)
         return 0;
@@ -217,6 +217,31 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     getCurrentAdaptationModuleVariable().set(0.0);
     for (AdaptationModuleInterface<S> lAdaptationModule : mAdaptationModuleList)
       lAdaptationModule.reset();
+    prepareNewAcquisitionState();
+  }
+
+  /**
+   * Prepares a new acquisition state
+   */
+  public void prepareNewAcquisitionState()
+  {
+
+    @SuppressWarnings("unchecked")
+    S lNewState =
+                (S) getCurrentAcquisitionStateVariable().get()
+                                                        .copy("state"
+                                                              + mAcquisitionStateCounterVariable.get());
+
+    if (getMicroscope() != null)
+    {
+      @SuppressWarnings("unchecked")
+      AcquisitionStateManager<S> lAcquisitionStateManager =
+                                                          (AcquisitionStateManager<S>) getMicroscope().getAcquisitionStateManager();
+
+      lAcquisitionStateManager.addState(lNewState);
+    }
+
+    getNewAcquisitionStateVariable().set(lNewState);
   }
 
   @Override
@@ -348,18 +373,12 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
       info("waiting for tasks to complete... \n");
       waitForAllTasksToComplete();
 
-      applyTo(getNewAcquisitionStateVariable().get());
+      updateState(getNewAcquisitionStateVariable().get());
 
       getCurrentAcquisitionStateVariable().set(getNewAcquisitionStateVariable().get());
       mAcquisitionStateCounterVariable.increment();
 
-      @SuppressWarnings("unchecked")
-      S lNewState =
-                  (S) getCurrentAcquisitionStateVariable().get()
-                                                          .copy("state"
-                                                                + mAcquisitionStateCounterVariable.get());
-
-      getNewAcquisitionStateVariable().set(lNewState);
+      // prepareNewAcquisitionState();
       // reset();
       info("end step with false\n");
       return false;
@@ -379,7 +398,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     }
   }
 
-  private void applyTo(S pS)
+  private void updateState(S pS)
   {
     for (AdaptationModuleInterface<S> lAdaptationModule : mAdaptationModuleList)
       if (lAdaptationModule.isActive())
@@ -440,9 +459,31 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     return lResult;
   }
 
-  private Long getTimmingInNs(AdaptationModuleInterface<S> pMethod)
+  @SuppressWarnings("rawtypes")
+  private Long getModuleEstimatedStepTimeInNanoseconds(AdaptationModuleInterface pModule)
   {
-    return mTimmingMap.get(pMethod);
+    return mTimmingMap.get(pModule);
+  }
+
+  /**
+   * Returns estimated step execution time for the given module in the given
+   * time unit.time
+   * 
+   * @param pModule
+   *          module
+   * @param pTimeUnit
+   *          time unit
+   * @return estimated time
+   */
+  @SuppressWarnings("rawtypes")
+  public Long getEstimatedModuleStepTime(AdaptationModuleInterface pModule,
+                                   TimeUnit pTimeUnit)
+  {
+    Long lModuleTimmimgInNs = getModuleEstimatedStepTimeInNanoseconds(pModule);
+    if (lModuleTimmimgInNs == null)
+      return null;
+    return pTimeUnit.convert(lModuleTimmimgInNs.longValue(),
+                             TimeUnit.NANOSECONDS);
   }
 
   private boolean isReady()

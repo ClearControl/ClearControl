@@ -58,7 +58,7 @@ public abstract class PositionDeviceBase extends VirtualDevice
   {
     super(pDeviceName);
     ArrayList<String> lList =
-                            MachineConfiguration.getCurrentMachineConfiguration()
+                            MachineConfiguration.get()
                                                 .getList(pDevicePath
                                                          + "."
                                                          + pDeviceName.toLowerCase());

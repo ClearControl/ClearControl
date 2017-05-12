@@ -296,7 +296,7 @@ public class BoundedVariable<N extends Number> extends Variable<N>
     mMin.set(pVariable.getMin());
     mMax.set(pVariable.getMax());
     mGranularity.set(pVariable.getGranularity());
-    set(pVariable.get());
+    super.set(pVariable);
   }
 
   /**

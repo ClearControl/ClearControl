@@ -1,6 +1,14 @@
-package clearcontrol.microscope.lightsheet.adaptive.gui;
+package clearcontrol.microscope.adaptive.gui;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,31 +18,21 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
-
 /**
  * Adaptor Panel
  *
  * @author royer
- * @param <S>
- *          state type
  */
-public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
-                           extends CustomGridPane
+public class AdaptiveEngineToolbar extends CustomGridPane
 {
 
   /**
-   * Instanciates a panel gievn and adaptor
+   * Instantiates a panel given an adaptive engine
    * 
-   * @param pAdaptator
+   * @param pAdaptiveEngine
    *          adaptor
    */
-  public AdaptorToolBar(AdaptiveEngine<S> pAdaptator)
+  public AdaptiveEngineToolbar(AdaptiveEngine<?> pAdaptiveEngine)
   {
     super();
 
@@ -53,7 +51,7 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
     lStart.setAlignment(Pos.CENTER);
     lStart.setMaxWidth(Double.MAX_VALUE);
     lStart.setOnAction((e) -> {
-      pAdaptator.startTask();
+      pAdaptiveEngine.startTask();
     });
     GridPane.setColumnSpan(lStart, 2);
     GridPane.setHgrow(lStart, Priority.ALWAYS);
@@ -63,7 +61,7 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
     lStop.setAlignment(Pos.CENTER);
     lStop.setMaxWidth(Double.MAX_VALUE);
     lStop.setOnAction((e) -> {
-      pAdaptator.stopTask();
+      pAdaptiveEngine.stopTask();
     });
     GridPane.setColumnSpan(lStop, 2);
     GridPane.setHgrow(lStop, Priority.ALWAYS);
@@ -73,7 +71,7 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
     lReset.setAlignment(Pos.CENTER);
     lReset.setMaxWidth(Double.MAX_VALUE);
     lReset.setOnAction((e) -> {
-      pAdaptator.reset();
+      pAdaptiveEngine.reset();
     });
     GridPane.setColumnSpan(lReset, 2);
     GridPane.setHgrow(lReset, Priority.ALWAYS);
@@ -87,41 +85,44 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
     GridPane.setColumnSpan(lCalibrationProgressIndicator, 2);
     add(lCalibrationProgressIndicator, 2, 0);
 
-    pAdaptator.getProgressVariable().addEdgeListener((n) -> {
+    pAdaptiveEngine.getProgressVariable().addEdgeListener((n) -> {
       Platform.runLater(() -> {
-        lCalibrationProgressIndicator.setProgress(pAdaptator.getProgressVariable()
-                                                            .get());
+        lCalibrationProgressIndicator.setProgress(pAdaptiveEngine.getProgressVariable()
+                                                                 .get());
       });
     });
 
     VariableCheckBox lCheckBox =
                                new VariableCheckBox("run until ready",
-                                                    pAdaptator.getRunUntilAllModulesReadyVariable());
+                                                    pAdaptiveEngine.getRunUntilAllModulesReadyVariable());
     GridPane.setColumnSpan(lCheckBox, 3);
     add(lCheckBox, 0, lRow++);
 
-    ArrayList<AdaptationModuleInterface<S>> lModuleList =
-                                                        pAdaptator.getModuleList();
+    @SuppressWarnings(
+    { "unchecked", "rawtypes" })
+    ArrayList<AdaptationModuleInterface<?>> lModuleList =
+                                                        (ArrayList) pAdaptiveEngine.getModuleList();
 
-    for (AdaptationModuleInterface<S> lAdaptationModuleInterface : lModuleList)
+    for (AdaptationModuleInterface<?> lAdaptationModuleInterface : lModuleList)
     {
-      addCalibrationModule(lAdaptationModuleInterface.getName(),
-                           lAdaptationModuleInterface.getIsActiveVariable(),
-                           lAdaptationModuleInterface.getStatusStringVariable(),
+      addCalibrationModule(pAdaptiveEngine,
+                           lAdaptationModuleInterface,
                            0,
                            lRow++);
     }
 
   }
 
-  private void addCalibrationModule(String pName,
-                                    Variable<Boolean> lCalibrateVariable,
-                                    Variable<String> pStatusStringVariable,
+  private void addCalibrationModule(AdaptiveEngine<?> pAdaptiveEngine,
+                                    AdaptationModuleInterface<?> pAdaptationModule,
                                     int pColumn,
                                     int pRow)
   {
-    CustomGridPane lGroupGridPane = new CustomGridPane(0, 0);
-    lGroupGridPane.setAlignment(Pos.CENTER_LEFT);
+    String pName = pAdaptationModule.getName();
+    Variable<Boolean> lCalibrateVariable =
+                                         pAdaptationModule.getIsActiveVariable();
+    Variable<String> pStatusStringVariable =
+                                           pAdaptationModule.getStatusStringVariable();
 
     VariableCheckBox lCheckBox =
                                new VariableCheckBox(pName,
@@ -134,17 +135,38 @@ public class AdaptorToolBar<S extends LightSheetAcquisitionStateInterface<S>>
     lCheckBox.getCheckBox().setMaxWidth(Double.MAX_VALUE);
 
     Label lStatusLabel = new Label();
-    lStatusLabel.setPrefWidth(50);
-    pStatusStringVariable.addSetListener((o,
-                                          n) -> Platform.runLater(() -> lStatusLabel.setText(" -> "
-                                                                                             + n)));
+    Label lEstimatedTimeLabel = new Label();
+    lStatusLabel.setPrefWidth(100);
+    lEstimatedTimeLabel.setPrefWidth(150);
+    VariableSetListener<String> lListener = (o, n) -> {
+
+      Runnable lRunnable = () -> {
+        lStatusLabel.setText(" -> " + n);
+        lEstimatedTimeLabel.setText("Estimated time: "
+                                    + pAdaptiveEngine.getEstimatedModuleStepTime(pAdaptationModule,
+                                                                                 TimeUnit.MILLISECONDS)
+                                    + " ms");
+      };
+
+      Platform.runLater(lRunnable);
+    };
+
+    pStatusStringVariable.addSetListener(lListener);
+
+    CustomGridPane lGroupGridPane = new CustomGridPane(0, 0);
+    lGroupGridPane.setAlignment(Pos.CENTER_LEFT);
 
     lGroupGridPane.add(lCheckBox.getCheckBox(), 0, 0);
     lGroupGridPane.add(lCheckBox.getLabel(), 1, 0);
+    GridPane.setColumnSpan(lStatusLabel, 2);
+    GridPane.setHgrow(lStatusLabel, Priority.ALWAYS);
     lGroupGridPane.add(lStatusLabel, 2, 0);
+    GridPane.setColumnSpan(lEstimatedTimeLabel, 2);
+    lGroupGridPane.add(lEstimatedTimeLabel, 4, 0);
 
     lGroupGridPane.setMaxWidth(Double.MAX_VALUE);
 
+    GridPane.setColumnSpan(lGroupGridPane, 3);
     add(lGroupGridPane, pColumn, pRow);
 
     lCalibrateVariable.setCurrent();

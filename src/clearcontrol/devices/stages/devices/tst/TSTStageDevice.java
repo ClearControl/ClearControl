@@ -80,7 +80,7 @@ public class TSTStageDevice extends StageDeviceBase implements
     {
 
       final MachineConfiguration lCurrentMachineConfiguration =
-                                                              MachineConfiguration.getCurrentMachineConfiguration();
+                                                              MachineConfiguration.get();
 
       final int lNumberOfDevices =
                                  mAPTJDeviceFactory.getNumberOfDevices();

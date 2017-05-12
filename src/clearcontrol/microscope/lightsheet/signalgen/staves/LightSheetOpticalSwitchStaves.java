@@ -43,7 +43,7 @@ public class LightSheetOpticalSwitchStaves
     for (int i = 0; i < mBitStave.length; i++)
     {
       mStaveIndex[i] =
-                     MachineConfiguration.getCurrentMachineConfiguration()
+                     MachineConfiguration.get()
                                          .getIntegerProperty("device.lsm.switch."
                                                              + getLightSheetOpticalSwitch().getName()
                                                              + i

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
@@ -35,13 +37,9 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
-
-import org.junit.Test;
-
 import simbryo.synthoscopy.microscope.aberration.Miscalibration;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
@@ -61,6 +59,7 @@ public class LightSheetMicroscopeDemo implements
    * @throws Exception
    *           NA
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void demoSimulatedScope() throws Exception
   {
@@ -311,14 +310,15 @@ public class LightSheetMicroscopeDemo implements
     lLightSheetMicroscope.addDevice(0, lLightSheetOpticalSwitch);
 
     // Setting up acquisition state manager
-    AcquisitionStateManager<LightSheetAcquisitionStateInterface<?>> lAcquisitionStateManager =
-                                                                                             lLightSheetMicroscope.addAcquisitionStateManager();
+    AcquisitionStateManager<InterpolatedAcquisitionState> lAcquisitionStateManager;
+    lAcquisitionStateManager =
+                             (AcquisitionStateManager<InterpolatedAcquisitionState>) lLightSheetMicroscope.addAcquisitionStateManager();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    new InterpolatedAcquisitionState("default",
                                                                                     lLightSheetMicroscope);
     lAcquisitionState.setupControlPlanes(3, 30);
     lAcquisitionStateManager.setCurrentState(lAcquisitionState);
-    lLightSheetMicroscope.addInteractiveAcquisition(lAcquisitionStateManager);
+    lLightSheetMicroscope.addInteractiveAcquisition();
 
     // Adding calibrator:
 

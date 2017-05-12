@@ -39,7 +39,7 @@ public class DetectionArmStaves
     mFinalDetectionZStave = new BezierStave("detection.z",0);
 
     mStaveIndex =
-                MachineConfiguration.getCurrentMachineConfiguration()
+                MachineConfiguration.get()
                                     .getIntegerProperty("device.lsm.detection."
                                                         + pDetectionArmQueue.getDetectionArm()
                                                                             .getName()

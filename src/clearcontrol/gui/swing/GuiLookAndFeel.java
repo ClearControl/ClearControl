@@ -32,7 +32,7 @@ public class GuiLookAndFeel
   public static void setLookAndFeelFromMachineConfiguration()
   {
     final MachineConfiguration lCurrentMachineConfiguration =
-                                                            MachineConfiguration.getCurrentMachineConfiguration();
+                                                            MachineConfiguration.get();
 
     String lLookAndFeelName =
                             lCurrentMachineConfiguration.getStringProperty("lookandfeel",

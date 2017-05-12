@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.state.tables;
 import java.util.ArrayList;
 
 import clearcontrol.core.device.change.ChangeListeningBase;
+import clearcontrol.core.math.interpolation.Row;
 import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 
@@ -15,8 +16,8 @@ public class InterpolationTables extends
                                  ChangeListeningBase<InterpolationTables>
                                  implements Cloneable
 {
-  private final int mNumberOfLightSheetDevices;
-  private final int mNumberOfDetectionArmDevices;
+  private int mNumberOfLightSheetDevices;
+  private int mNumberOfDetectionArmDevices;
   private double mTransitionPlaneZ = 0;
   private ArrayList<SplineInterpolationTable> mInterpolationTableList =
                                                                       new ArrayList<SplineInterpolationTable>();
@@ -72,13 +73,31 @@ public class InterpolationTables extends
   }
 
   /**
-   * Instanciate an interpolation table that is a copy of an existing
+   * Instantiate an interpolation table that is a copy of an existing
    * interpolation table.
    * 
    * @param pInterpolationTable
-   *          existing inerpolatio table
+   *          existing interpolation table
    */
   public InterpolationTables(InterpolationTables pInterpolationTable)
+  {
+    set(pInterpolationTable);
+  }
+
+  @Override
+  public InterpolationTables clone()
+  {
+    return new InterpolationTables(this);
+  }
+
+  /**
+   * Sets this interpolation table to be identical to the given interpolation
+   * table. (Uses a deep copy of each interpolation table)
+   * 
+   * @param pInterpolationTable
+   *          existing interpolation table
+   */
+  public void set(InterpolationTables pInterpolationTable)
   {
     mNumberOfDetectionArmDevices =
                                  pInterpolationTable.mNumberOfDetectionArmDevices;
@@ -95,12 +114,6 @@ public class InterpolationTables extends
     }
   }
 
-  @Override
-  public InterpolationTables clone()
-  {
-    return new InterpolationTables(this);
-  }
-
   /**
    * Adds a control plane at a given z position
    * 
@@ -112,6 +125,44 @@ public class InterpolationTables extends
     for (SplineInterpolationTable lSplineInterpolationTable : mInterpolationTableList)
       lSplineInterpolationTable.addRow(pZ);
     notifyListeners(this);
+  }
+
+  /**
+   * Adds a control plane by using interpolated values from a given set of
+   * tables
+   * 
+   * @param pInterpolationTables
+   *          tables to use
+   * @param pZ
+   *          control plane position
+   */
+  public void addControlPlane(InterpolationTables pInterpolationTables,
+                              double pZ)
+  {
+    int lNumberOfTables =mInterpolationTableList.size();
+    
+    for (int j=0; j<lNumberOfTables; j++ )
+    {
+      SplineInterpolationTable lSplineInterpolationTable = mInterpolationTableList.get(j);
+      SplineInterpolationTable lOtherSplineInterpolationTable =
+                                                              pInterpolationTables.mInterpolationTableList.get(j);
+
+      Row lRow = lSplineInterpolationTable.addRow(pZ);
+
+
+      int lNumberOfColumns = lRow.getNumberOfColumns();
+
+      for (int c = 0; c < lNumberOfColumns; c++)
+      {
+        double lValue =
+                      lOtherSplineInterpolationTable.getInterpolatedValue(c,
+                                                                          pZ);
+        lRow.setY(c, lValue);
+      }
+
+    }
+    notifyListeners(this);
+
   }
 
   /**

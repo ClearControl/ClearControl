@@ -1,9 +1,9 @@
-package clearcontrol.microscope.lightsheet.adaptive.gui.demo;
+package clearcontrol.microscope.adaptive.gui.demo;
 
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
 import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
 import clearcontrol.microscope.adaptive.test.TestState;
-import clearcontrol.microscope.lightsheet.adaptive.gui.AdaptorToolBar;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  *
  * @author royer
  */
-public class AdaptorToolBarDemo extends Application
+public class AdaptiveEngineToolBarDemo extends Application
 {
 
   @Override
@@ -23,19 +23,19 @@ public class AdaptorToolBarDemo extends Application
     Group root = new Group();
     Scene scene = new Scene(root, 800, 600);
     stage.setScene(scene);
-    stage.setTitle(AdaptorToolBarDemo.class.getSimpleName());
+    stage.setTitle(AdaptiveEngineToolBarDemo.class.getSimpleName());
     // scene.setFill(Color.BLACK);
 
     AdaptiveEngine<TestState> lAdaptator = new AdaptiveEngine<TestState>(null);
     lAdaptator.getNewAcquisitionStateVariable()
               .set(new TestState("initial state"));
 
-    lAdaptator.add(new AdaptationTestModule("A", 2));
+    lAdaptator.add(new AdaptationTestModule("A", 2, 2, 2));
     lAdaptator.add(new AdaptationTestModule("B", 3));
     // lAdaptator.add(new AdaptationTestModule("C", 2, 3));
 
-    AdaptorToolBar<TestState> lAdaptorToolBar =
-                                              new AdaptorToolBar<>(lAdaptator);
+    AdaptiveEngineToolbar lAdaptorToolBar =
+                                          new AdaptiveEngineToolbar(lAdaptator);
 
     root.getChildren().add(lAdaptorToolBar);
 

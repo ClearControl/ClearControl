@@ -31,7 +31,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice
     mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
     final MachineConfiguration lCurrentMachineConfiguration =
-                                                            MachineConfiguration.getCurrentMachineConfiguration();
+                                                            MachineConfiguration.get();
     File lFlatCalibrationFile =
                               lCurrentMachineConfiguration.getFileProperty("device.ao.mirao."
                                                                            + pDeviceIndex

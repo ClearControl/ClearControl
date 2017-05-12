@@ -362,7 +362,7 @@ public class HalcyonGUIGenerator implements LoggingInterface
     {
       info("Setting up %s", lScriptingEngine);
       MachineConfiguration lCurrentMachineConfiguration =
-                                                        MachineConfiguration.getCurrentMachineConfiguration();
+                                                        MachineConfiguration.get();
 
       ScriptingWindow lScriptingWindow =
                                        new ScriptingWindow(pMicroscopeInterface.getName()

@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import clearcontrol.core.math.functions.PolynomialFunction;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Calibration data
@@ -113,6 +113,8 @@ public class CalibrationData
                                             pLightSheetMicroscope.getDeviceLists()
                                                                  .getDevice(LightSheetInterface.class,
                                                                             l);
+      if (lLightSheetDevice == null)
+        continue;
 
       lLightSheetDevice.getXFunction()
                        .set(new UnivariateAffineFunction(mLightSheetXFunctions[l]));
@@ -142,6 +144,8 @@ public class CalibrationData
                                                 pLightSheetMicroscope.getDeviceLists()
                                                                      .getDevice(DetectionArmInterface.class,
                                                                                 d);
+      if (lDetectionArmDevice == null)
+        continue;
 
       lDetectionArmDevice.getZFunction()
                          .set(new UnivariateAffineFunction(mDetectionArmZFunctions[d]));

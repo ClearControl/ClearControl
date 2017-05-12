@@ -140,6 +140,18 @@ public class Variable<O> extends VariableBase<O> implements
   }
 
   /**
+   * Convenience method that sets the value of the given variable to this
+   * variable
+   * 
+   * @param pVariable
+   *          variable
+   */
+  public void set(Variable<O> pVariable)
+  {
+    set(pVariable.get());
+  }
+
+  /**
    * Toggles the value, fou double it simply changes the sign, for boolean
    * values it toggles between false and true.
    */

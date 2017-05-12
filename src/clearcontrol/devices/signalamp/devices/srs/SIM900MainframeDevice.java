@@ -16,7 +16,7 @@ public class SIM900MainframeDevice extends VirtualDevice
 
   public SIM900MainframeDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
+    this(MachineConfiguration.get()
                              .getSerialDevicePort("stanford.SIM900",
                                                   pDeviceIndex,
                                                   "NULL"));

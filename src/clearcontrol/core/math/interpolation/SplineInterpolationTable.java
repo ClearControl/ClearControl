@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 /**
  * SplineInterpolationTable provides Spline interpolation for tables. Each
@@ -177,16 +177,33 @@ public class SplineInterpolationTable implements Cloneable
    */
   public void addRowAfter(double pX)
   {
-    Row lNextRow = getCeilRow(pX + cEpsilon);
+    Row lRowBefore = getFloorRow(pX);
+    Row lRowAfter = getCeilRow(pX + cEpsilon);
 
-    double lX;
+    if (lRowAfter == null)
+      lRowAfter = lRowBefore;
 
-    if (lNextRow != null)
-      lX = (pX + lNextRow.x) / 2;
-    else
-      lX = pX + 1;
+    if (lRowBefore == null)
+      lRowBefore = lRowAfter;
+      
+    if (lRowAfter == null)
+    {
+      addRow(pX);
+      return;
+    }
+      
+    double lX = (lRowBefore.x + lRowAfter.x) / 2;
 
-    addRow(lX);
+    if (pX == lX)
+      lX++;
+
+    Row lRow = addRow(lX);
+
+    for(int c=0; c<lRow.getNumberOfColumns(); c++)
+    {
+      double lValue = 0.5 * (lRowBefore.getY(c) + lRowAfter.getY(c));
+      lRow.setY(c, lValue);
+    }
   }
 
   /**

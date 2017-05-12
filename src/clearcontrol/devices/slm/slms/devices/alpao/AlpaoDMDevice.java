@@ -18,7 +18,7 @@ public class AlpaoDMDevice extends DeformableMirrorDevice
 
   public AlpaoDMDevice(int pAlpaoDeviceIndex)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
+    this(MachineConfiguration.get()
                              .getStringProperty("device.ao.dm.alpao."
                                                 + pAlpaoDeviceIndex,
                                                 "NULL"));

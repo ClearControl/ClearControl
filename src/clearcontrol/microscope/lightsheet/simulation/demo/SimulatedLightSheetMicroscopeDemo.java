@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcl.ClearCL;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLDevice;
@@ -14,8 +16,6 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
-
-import org.junit.Test;
 
 /**
  * Simulated lightsheet microscope demo
@@ -42,14 +42,14 @@ public class SimulatedLightSheetMicroscopeDemo
 
     int lMaxNumberOfStacks = 32;
 
-    int lMaxCameraResolution = 1024;
+    int lMaxCameraResolution = 512;
 
-    int lNumberOfLightSheets = 2;
-    int lNumberOfDetectionArms = 2;
+    int lNumberOfLightSheets = 1;
+    int lNumberOfDetectionArms = 1;
 
     float lDivisionTime = 11f;
 
-    int lPhantomWidth = 256;
+    int lPhantomWidth = 128;
     int lPhantomHeight = lPhantomWidth;
     int lPhantomDepth = lPhantomWidth;
 
@@ -59,7 +59,7 @@ public class SimulatedLightSheetMicroscopeDemo
       System.out.println(lClearCLDevice.getName());
 
     MachineConfiguration lMachineConfiguration =
-                                               MachineConfiguration.getCurrentMachineConfiguration();
+                                               MachineConfiguration.get();
 
     ClearCLContext lSimulationContext =
                                       getClearCLDeviceByName(lClearCL,

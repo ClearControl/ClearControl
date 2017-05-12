@@ -28,7 +28,7 @@ public class DetectionArm extends
 
   private final Variable<Double> mPixelSizeInMicrometerVariable =
                                                                 new Variable<>("PixelSizeInMicrometers",
-                                                                               MachineConfiguration.getCurrentMachineConfiguration()
+                                                                               MachineConfiguration.get()
                                                                                                    .getDoubleProperty("device.lsm.detection."
                                                                                                                       + getName()
                                                                                                                       + ".pixelsize",
@@ -70,7 +70,7 @@ public class DetectionArm extends
   @Override
   public void resetBounds()
   {
-    MachineConfiguration.getCurrentMachineConfiguration()
+    MachineConfiguration.get()
                         .getBoundsForVariable("device.lsm.detection."
                                               + getName()
                                               + ".z.bounds",
@@ -83,7 +83,7 @@ public class DetectionArm extends
   public void resetFunctions()
   {
 
-    mZFunction.set(MachineConfiguration.getCurrentMachineConfiguration()
+    mZFunction.set(MachineConfiguration.get()
                                        .getUnivariateAffineFunction("device.lsm.detection."
                                                                     + getName()
                                                                     + ".z.f"));

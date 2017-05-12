@@ -97,7 +97,8 @@ public abstract class NDIteratorAdaptationModule<S extends AcquisitionStateInter
 
       getStatusStringVariable().set(Arrays.toString(lNextStepCoordinates));
 
-      mListOfFuturTasks.add(lFuture);
+      if (lFuture != null)
+        mListOfFuturTasks.add(lFuture);
     }
 
     return getNDIterator().hasNext();

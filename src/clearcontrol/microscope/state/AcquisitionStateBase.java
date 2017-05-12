@@ -22,7 +22,7 @@ public abstract class AcquisitionStateBase<M extends MicroscopeInterface<Q>, Q e
                                           AcquisitionStateInterface<M, Q>
 {
 
-  protected M mLightSheetMicroscope;
+  private final M mMicroscope;
 
   protected Q mQueue;
 
@@ -53,14 +53,45 @@ public abstract class AcquisitionStateBase<M extends MicroscopeInterface<Q>, Q e
                                                                                     0.0);
 
   /**
-   * Instantiates an acquisition state given a name
+   * Instantiates an acquisition state given a name and parent microscope
    * 
    * @param pName
    *          name
+   * @param pMicroscope
+   *          parent microscope
    */
-  public AcquisitionStateBase(String pName)
+  public AcquisitionStateBase(String pName, M pMicroscope)
   {
     super(pName);
+    mMicroscope = pMicroscope;
+  }
+
+  /**
+   * Sets the settings of this acquisition state (exp, width, height, stage
+   * x,y,z, ...) to be identical to the given state.
+   * 
+   * @param pAcquisitionState
+   *          state to copy settings from.
+   */
+  public void set(AcquisitionStateBase<M, Q> pAcquisitionState)
+  {
+    getExposureInSecondsVariable().set(pAcquisitionState.getExposureInSecondsVariable());
+    getImageWidthVariable().set(pAcquisitionState.getImageWidthVariable());
+    getImageHeightVariable().set(pAcquisitionState.getImageHeightVariable());
+
+    getStageXVariable().set(pAcquisitionState.getStageXVariable());
+    getStageYVariable().set(pAcquisitionState.getStageYVariable());
+    getStageZVariable().set(pAcquisitionState.getStageZVariable());
+  }
+
+  /**
+   * Returns the parent microscope
+   * 
+   * @return parent microscope
+   */
+  public M getMicroscope()
+  {
+    return mMicroscope;
   }
 
   @Override

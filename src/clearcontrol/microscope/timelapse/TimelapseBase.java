@@ -15,9 +15,10 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.adaptive.AdaptiveEngineInterface;
 import clearcontrol.microscope.lightsheet.state.AcquisitionType;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 import clearcontrol.stack.StackInterface;
@@ -38,8 +39,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                             DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SS");
 
   private final MicroscopeInterface<?> mMicroscope;
-
-  private final AdaptiveEngineInterface<?> mAdaptiveEngine;
 
   private Variable<Boolean> mAdaptiveEngineOnVariable =
                                                       new Variable<Boolean>("AdaptiveEngineOnVariable",
@@ -106,6 +105,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   private final VariableSetListener<StackInterface> mStackListener;
 
+  private AdaptiveEngine mAdaptiveEngine;
+
   /**
    * Instantiates a timelapse with a given timelapse timer
    * 
@@ -121,12 +122,10 @@ public abstract class TimelapseBase extends LoopTaskDevice
     super("Timelapse");
     mMicroscope = pMicroscope;
 
-    mAdaptiveEngine = new AdaptiveEngine(mMicroscope);
-
     getTimelapseTimerVariable().set(pTimelapseTimer);
 
     MachineConfiguration lMachineConfiguration =
-                                               MachineConfiguration.getCurrentMachineConfiguration();
+                                               MachineConfiguration.get();
     File lDefaultRootFolder =
                             lMachineConfiguration.getFileProperty("timelapse.rootfolder",
                                                                   new File(System.getProperty("user.home")
@@ -297,6 +296,9 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                mMicroscope.getPipelineStackVariable();
         lPipelineStackVariable.addSetListener(mStackListener);
       }
+
+      initAdaptiveEngine();
+
       super.run();
       if (mMicroscope != null)
         lPipelineStackVariable.removeSetListener(mStackListener);
@@ -322,6 +324,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   }
 
+
   @Override
   public boolean startTask()
   {
@@ -344,6 +347,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
     TimelapseTimerInterface lTimelapseTimer =
                                             getTimelapseTimerVariable().get();
 
+    runAdaptiveEngine();
+
     lTimelapseTimer.waitToAcquire(1, TimeUnit.DAYS);
     lTimelapseTimer.notifyAcquisition();
     acquire();
@@ -365,6 +370,36 @@ public abstract class TimelapseBase extends LoopTaskDevice
         return false;
 
     return true;
+  }
+
+  @SuppressWarnings("unchecked")
+  private void initAdaptiveEngine()
+  {
+    mAdaptiveEngine =
+        mMicroscope.getDevice(AdaptiveEngine.class,
+                              0);
+    
+    AcquisitionStateManager<?> lAcquisitionStateManager =
+                                                        mMicroscope.getDevice(AcquisitionStateManager.class,
+                                                                              0);
+
+    AcquisitionStateInterface<?, ?> lCurrentState =
+                                                  lAcquisitionStateManager.getCurrentState();
+
+    mAdaptiveEngine.getCurrentAcquisitionStateVariable()
+                   .set(lCurrentState);
+    
+    mAdaptiveEngine.reset();
+
+  }
+
+  private void runAdaptiveEngine()
+  {
+
+    if (!mAdaptiveEngine.step())
+    {
+      mAdaptiveEngine.reset();
+    }
   }
 
   private boolean checkMaxDuration()

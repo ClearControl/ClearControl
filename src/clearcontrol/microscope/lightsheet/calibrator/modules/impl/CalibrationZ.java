@@ -543,7 +543,7 @@ public class CalibrationZ extends CalibrationBase
   protected void adjustYFunctionScale(final LightSheetInterface lLightSheetDevice)
   {
     MachineConfiguration lMachineConfiguration =
-                                               MachineConfiguration.getCurrentMachineConfiguration();
+                                               MachineConfiguration.get();
 
     Double lXYRatio =
                     lMachineConfiguration.getDoubleProperty("device.lsm.lighsheet.yzratio",
