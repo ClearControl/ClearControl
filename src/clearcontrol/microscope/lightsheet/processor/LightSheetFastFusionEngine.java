@@ -63,6 +63,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
         {
           mRegisteredFusionTask = new RegistrationTask("C0L0",
                                                        "C1L0",
+                                                       "C1L0",
                                                        "C1L0reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                             1,
@@ -112,6 +113,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           ImageChannelDataType.Float));
 
           mRegisteredFusionTask = new RegistrationTask("C0",
+                                                       "C1",
                                                        "C1",
                                                        "C1reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
@@ -175,6 +177,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           ImageChannelDataType.Float));
 
           mRegisteredFusionTask = new RegistrationTask("C0",
+                                                       "C1",
                                                        "C1",
                                                        "C1reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,

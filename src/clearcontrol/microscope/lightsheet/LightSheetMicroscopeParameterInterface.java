@@ -119,6 +119,14 @@ public interface LightSheetMicroscopeParameterInterface
   public void setDZ(int pDetectionIndex, double pPositionZ);
 
   /**
+   * Sets all detection objective to a given position
+   * 
+   * @param pPositionZ
+   *          to set objective
+   */
+  void setDZ(double pPositionZ);
+
+  /**
    * Returns the detection objective Z position
    * 
    * @param pDetectionArmIndex
@@ -199,6 +207,14 @@ public interface LightSheetMicroscopeParameterInterface
    *          Z position of lightsheet
    */
   public void setIZ(int pLightSheetIndex, double pPositionZ);
+
+  /**
+   * Sets all lightsheet's Z position (stack scanning direction).
+   * 
+   * @param pPositionZ
+   *          Z position of lightsheet
+   */
+  public void setIZ(double pPositionZ);
 
   /**
    * Returns the lightsheet's Z position (stack scanning direction).
@@ -436,5 +452,6 @@ public interface LightSheetMicroscopeParameterInterface
    */
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
+
 
 }

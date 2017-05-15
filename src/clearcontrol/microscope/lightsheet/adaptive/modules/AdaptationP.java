@@ -14,6 +14,7 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
+import clearcontrol.stack.metadata.MetaDataChannel;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
@@ -51,18 +52,18 @@ public class AdaptationP extends
   public Boolean apply(Void pVoid)
   {
     LightSheetMicroscope lLightsheetMicroscope =
-                                                    (LightSheetMicroscope) getAdaptator().getMicroscope();
+                                               (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
     LightSheetMicroscopeQueue lQueue =
                                      lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lStackAcquisition =
-                                                   getAdaptator().getCurrentAcquisitionStateVariable()
-                                                                 .get();
+                                                   getAdaptiveEngine().getAcquisitionStateVariable()
+                                                                      .get();
 
     int lNumberOfControlPlanes =
-                               getAdaptator().getNewAcquisitionStateVariable()
-                                             .get()
-                                             .getNumberOfControlPlanes();
+                               getAdaptiveEngine().getAcquisitionStateVariable()
+                                                  .get()
+                                                  .getNumberOfControlPlanes();
 
     int lNumberOfLightSheets =
                              lLightsheetMicroscope.getDeviceLists()
@@ -99,8 +100,9 @@ public class AdaptationP extends
         lQueue.addCurrentStateToQueue();
       }
     }
-
     lQueue.finalizeQueue();
+
+    lQueue.addMetaDataEntry(MetaDataChannel.Channel, "NoDisplay");
 
     try
     {
@@ -133,22 +135,21 @@ public class AdaptationP extends
         double lImageIntensityPerLightSheet = 0;
         for (int czi = 0; czi < lNumberOfControlPlanes; czi++)
         {
-          int lBestDetectionArm =
-                                getAdaptator().getCurrentAcquisitionStateVariable()
-                                              .get()
-                                              .getBestDetectionArm(czi);
 
-          double[] lAvgIntensityArray =
-                                      lAvgIntensities.get(lBestDetectionArm);
+          for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
+          {
+            double[] lAvgIntensityArray = lAvgIntensities.get(d);
 
-          double lImageSumIntensity = lAvgIntensityArray[i++];
+            double lImageSumIntensity = lAvgIntensityArray[i++];
 
-          System.out.format("Average Image Intensity [%d,%d]= %g \n",
-                            l,
-                            czi,
-                            lImageSumIntensity);
+            System.out.format("Average Image Intensity [%d,%d,%d]= %g \n",
+                              czi,
+                              l,
+                              d,
+                              lImageSumIntensity);
 
-          lImageIntensityPerLightSheet += lImageSumIntensity;
+            lImageIntensityPerLightSheet += lImageSumIntensity;
+          }
 
         }
 
@@ -258,7 +259,7 @@ public class AdaptationP extends
   }
 
   @Override
-  public void updateNewState()
+  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

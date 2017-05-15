@@ -26,9 +26,9 @@ public class AdaptiveEngineToolBarDemo extends Application
     stage.setTitle(AdaptiveEngineToolBarDemo.class.getSimpleName());
     // scene.setFill(Color.BLACK);
 
-    AdaptiveEngine<TestState> lAdaptator = new AdaptiveEngine<TestState>(null);
-    lAdaptator.getNewAcquisitionStateVariable()
-              .set(new TestState("initial state"));
+    AdaptiveEngine<TestState> lAdaptator =
+                                         new AdaptiveEngine<TestState>(null,
+                                                                       new TestState("initial state"));
 
     lAdaptator.add(new AdaptationTestModule("A", 2, 2, 2));
     lAdaptator.add(new AdaptationTestModule("B", 3));

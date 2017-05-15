@@ -332,7 +332,6 @@ public class InterpolatedAcquisitionState extends
   {
     double lHighZ = getStackZHighVariable().get().doubleValue();
     double lLowZ = getStackZLowVariable().get().doubleValue();
-    double lMiddleZ = 0.5f * (lHighZ - lLowZ);
 
     double lIntervalBetweenControlPlanes = (lHighZ - lLowZ
                                             - 2 * pMarginZ)
@@ -352,7 +351,6 @@ public class InterpolatedAcquisitionState extends
     }
 
     mInterpolationTables.set(lInterpolationTables);
-    mInterpolationTables.setTransitionPlaneZPosition(lMiddleZ);
 
     notifyListeners(this);
   }
@@ -841,28 +839,7 @@ public class InterpolatedAcquisitionState extends
       return lInterpolatedValue;
   }
 
-  /**
-   * Returns best detection arm for given plane index
-   * 
-   * @param pPlaneIndex
-   *          plane index
-   * @return best detection arm index, -1 if something is wrong.
-   */
-  @Override
-  public int getBestDetectionArm(int pPlaneIndex)
-  {
 
-    double lTransitionPlane =
-                            mInterpolationTables.getTransitionPlaneZPosition();
-
-    if (getZRamp(pPlaneIndex) <= lTransitionPlane)
-      return 0;
-    else if (getZRamp(pPlaneIndex) >= lTransitionPlane)
-      return 1;
-
-    return -1;
-
-  }
 
   /**
    * Returns the number of detection arms

@@ -98,6 +98,12 @@ public class Stack3DDisplay extends VirtualDevice
         {
           // info("received stack: " + pStack);
 
+          if (pStack.getMetaData().hasValue("NoDisplay"))
+          {
+            info("Received stack with NoDisplay metadata value");
+            return null;
+          }
+
           final long lSizeInBytes = pStack.getSizeInBytes();
           final long lWidth = pStack.getWidth();
           final long lHeight = pStack.getHeight();
@@ -133,12 +139,30 @@ public class Stack3DDisplay extends VirtualDevice
             return null;
           }
 
-          final Double lVoxelWidth = pStack.getMetaData()
-                                           .getVoxelDimX();
-          final Double lVoxelHeight = pStack.getMetaData()
-                                            .getVoxelDimY();
-          final Double lVoxelDepth = pStack.getMetaData()
-                                           .getVoxelDimZ();
+          Double lVoxelWidth = pStack.getMetaData().getVoxelDimX();
+          Double lVoxelHeight = pStack.getMetaData().getVoxelDimY();
+          Double lVoxelDepth = pStack.getMetaData().getVoxelDimZ();
+
+          if (lVoxelWidth == null)
+          {
+            lVoxelWidth = 1.0 / lWidth;
+            warning("No voxel width provided, using 1.0 instead.");
+
+          }
+
+          if (lVoxelHeight == null)
+          {
+            lVoxelHeight = 1.0 / lHeight;
+            warning("No voxel height provided, using 1.0 instead.");
+
+          }
+
+          if (lVoxelDepth == null)
+          {
+            lVoxelDepth = 1.0 / lDepth;
+            warning("No voxel depth provided, using 1.0 instead.");
+
+          }
 
           mClearVolumeRenderer.setVolumeDataBuffer(lChannel,
                                                    lContiguousMemory,

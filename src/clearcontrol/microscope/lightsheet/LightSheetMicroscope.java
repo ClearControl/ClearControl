@@ -152,12 +152,16 @@ public class LightSheetMicroscope extends
   /**
    * Adds the adaptive engine
    * 
+   * @param pAcquisitionState
+   *          acquisition state
+   * 
    * @return adaptive engine
    */
-  public AdaptiveEngine<InterpolatedAcquisitionState> addAdaptiveEngine()
+  public AdaptiveEngine<InterpolatedAcquisitionState> addAdaptiveEngine(InterpolatedAcquisitionState pAcquisitionState)
   {
     AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
-                                                                 new AdaptiveEngine<InterpolatedAcquisitionState>(this);
+                                                                 new AdaptiveEngine<InterpolatedAcquisitionState>(this,
+                                                                                                                  pAcquisitionState);
     addDevice(0, lAdaptiveEngine);
     return lAdaptiveEngine;
   }/**/

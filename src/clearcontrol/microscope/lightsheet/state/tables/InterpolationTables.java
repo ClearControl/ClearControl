@@ -18,7 +18,6 @@ public class InterpolationTables extends
 {
   private int mNumberOfLightSheetDevices;
   private int mNumberOfDetectionArmDevices;
-  private double mTransitionPlaneZ = 0;
   private ArrayList<SplineInterpolationTable> mInterpolationTableList =
                                                                       new ArrayList<SplineInterpolationTable>();
 
@@ -103,8 +102,6 @@ public class InterpolationTables extends
                                  pInterpolationTable.mNumberOfDetectionArmDevices;
     mNumberOfLightSheetDevices =
                                pInterpolationTable.mNumberOfLightSheetDevices;
-
-    mTransitionPlaneZ = pInterpolationTable.mTransitionPlaneZ;
 
     mInterpolationTableList = new ArrayList<>();
 
@@ -304,7 +301,7 @@ public class InterpolationTables extends
    * @param pDeviceIndex
    *          device index
    * 
-   * @return interpolated value
+   * @return value at control plane
    */
   public double get(LightSheetDOF pLightSheetDOF,
                     int pControlPlaneIndex,
@@ -392,27 +389,7 @@ public class InterpolationTables extends
     notifyListeners(this);
   }
 
-  /**
-   * Sets z position of transition plane
-   * 
-   * @param pZ
-   *          z position
-   */
-  public void setTransitionPlaneZPosition(double pZ)
-  {
-    mTransitionPlaneZ = pZ;
-    notifyListeners(this);
-  }
 
-  /**
-   * Returns z position of transition plane
-   * 
-   * @return z position of transition plane
-   */
-  public double getTransitionPlaneZPosition()
-  {
-    return mTransitionPlaneZ;
-  }
 
   private SplineInterpolationTable getTable(LightSheetDOF pLightSheetDOF)
   {

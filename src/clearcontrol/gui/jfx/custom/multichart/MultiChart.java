@@ -1,5 +1,7 @@
 package clearcontrol.gui.jfx.custom.multichart;
 
+import org.controlsfx.control.CheckListView;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -19,8 +21,6 @@ import javafx.scene.effect.Glow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Path;
-
-import org.controlsfx.control.CheckListView;
 
 /**
  * MultiChart allows the display of multiple series in a single chart and the
@@ -339,10 +339,15 @@ public class MultiChart extends HBox
     mMultiChartItemList.add(lMultiChartListItem);
     mXYChart.getData().add(lSeries);
 
-    Platform.runLater(() -> {
+    Runnable lUpdateMinMax = () -> {
       adjustMinMax(lMultiChartListItem);
       applyMinMax();
-    });
+    };
+
+    Platform.runLater(lUpdateMinMax);
+
+    lSeries.getData()
+           .addListener((ListChangeListener<? super Data<Number, Number>>) (c) -> lUpdateMinMax.run());
 
     return lSeries.getData();
   }

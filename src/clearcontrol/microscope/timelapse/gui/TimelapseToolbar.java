@@ -1,13 +1,5 @@
 package clearcontrol.microscope.timelapse.gui;
 
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.GridPane;
-
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.combo.ClassComboBoxVariable;
@@ -23,6 +15,13 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.GridPane;
 
 /**
  * Timelapse toolbar
@@ -64,7 +63,7 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lStartTimelapse, 2);
       lStartTimelapse.setOnAction((e) -> {
         pTimelapseInterface.startTimelapse();
-        
+
       });
 
       Button lStopTimelapse = new Button("Stop Timelapse");
@@ -341,6 +340,23 @@ public class TimelapseToolbar extends CustomGridPane
       add(lPostFixTextField.getLabel(), 0, mRow);
       add(lPostFixTextField.getTextField(), 1, mRow);
       add(lStackSinkComboBox, 3, mRow);
+
+      mRow++;
+    }
+
+    {
+
+      VariableCheckBox lSaveStacksCheckBox =
+                                           new VariableCheckBox("Save stacks",
+                                                                pTimelapseInterface.getSaveStacksVariable());
+
+      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(),
+                             1);
+      GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+
+      add(lSaveStacksCheckBox.getCheckBox(), 0, mRow);
+      add(lSaveStacksCheckBox.getLabel(), 1, mRow);
 
       mRow++;
     }

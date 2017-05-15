@@ -24,7 +24,7 @@ public abstract class AdaptationModuleBase<S extends AcquisitionStateInterface<?
                                           LoggingInterface
 {
 
-  private AdaptiveEngine<S> mAdaptator;
+  private AdaptiveEngine<S> mAdaptiveEngine;
 
   private int mPriority = 1;
 
@@ -51,15 +51,15 @@ public abstract class AdaptationModuleBase<S extends AcquisitionStateInterface<?
   }
 
   @Override
-  public void setAdaptator(AdaptiveEngine<S> pAdaptator)
+  public void setAdaptator(AdaptiveEngine<S> pAdaptiveEngine)
   {
-    mAdaptator = pAdaptator;
+    mAdaptiveEngine = pAdaptiveEngine;
   }
 
   @Override
-  public AdaptiveEngine<S> getAdaptator()
+  public AdaptiveEngine<S> getAdaptiveEngine()
   {
-    return mAdaptator;
+    return mAdaptiveEngine;
   }
 
   @Override

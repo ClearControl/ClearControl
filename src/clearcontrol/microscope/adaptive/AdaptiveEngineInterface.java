@@ -64,15 +64,22 @@ public interface AdaptiveEngineInterface<S extends AcquisitionStateInterface<?, 
   MicroscopeInterface<?> getMicroscope();
 
   /**
-   * Retuns the concurrent-execution flag
+   * Returns variable holding the acquisition state counter variable
+   * 
+   * @return acquisition state counter variable
+   */
+  Variable<Long> getAcquisitionStateCounterVariable();
+
+  /**
+   * Returns the concurrent-execution flag
    * 
    * @return concurrent-execution flag
    */
   Variable<Boolean> getConcurrentExecutionVariable();
 
   /**
-   * Returns the variable that decides whether this adaptator should run until
-   * all modules are ready.
+   * Returns the variable that decides whether this adaptive engine should run
+   * until all modules are ready.
    * 
    * @return execute-until-all-modules-ready variable
    */
@@ -83,14 +90,7 @@ public interface AdaptiveEngineInterface<S extends AcquisitionStateInterface<?, 
    * 
    * @return current acquisition state variable
    */
-  Variable<S> getCurrentAcquisitionStateVariable();
-
-  /**
-   * Returns new acquisition state variable
-   * 
-   * @return new acquisition state
-   */
-  Variable<S> getNewAcquisitionStateVariable();
+  Variable<S> getAcquisitionStateVariable();
 
   /**
    * Returns the current adaptation module variable

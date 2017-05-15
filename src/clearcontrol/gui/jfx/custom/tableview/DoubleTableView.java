@@ -18,18 +18,18 @@ public class DoubleTableView extends TableView<DoubleRow>
 {
 
   private EventHandler<CellEditEvent<DoubleRow, Double>> mEventHandler;
-  private int mMinColumnWidth;
+  private int mTypicalColumnWidth;
 
   /**
    * Instantiates a table view of doubles
    * 
-   * @param pMinColumnWidth
-   *          min column width
+   * @param pTypicallColumnWidth
+   *          typicall column width
    */
-  public DoubleTableView(int pMinColumnWidth)
+  public DoubleTableView(int pTypicallColumnWidth)
   {
     super();
-    mMinColumnWidth = pMinColumnWidth;
+    mTypicalColumnWidth = pTypicallColumnWidth;
 
     mEventHandler =
                   new EventHandler<TableColumn.CellEditEvent<DoubleRow, Double>>()
@@ -41,10 +41,9 @@ public class DoubleTableView extends TableView<DoubleRow>
                       double lNewValue = t.getNewValue();
 
                       t.getTableView()
-                                    .getItems()
-                                    .get(t.getTablePosition()
-                                          .getRow()).setValue(lColumn,
-                                                               lNewValue);
+                       .getItems()
+                       .get(t.getTablePosition().getRow())
+                       .setValue(lColumn, lNewValue);
                     }
                   };
 
@@ -62,19 +61,22 @@ public class DoubleTableView extends TableView<DoubleRow>
    *          true for editable columns
    * @param pIsRezisable
    *          true for resizable
-   * @param pMenuItemSpecifications vararg list of contextual menu items specifications to associate to this column
+   * @param pMenuItemSpecifications
+   *          vararg list of contextual menu items specifications to associate
+   *          to this column
    * @return column index
    */
   @SafeVarargs
   public final int addColumn(final String pColumnHeader,
-                       final boolean pIsEditable,
-                       final boolean pIsRezisable,
-                       Pair<String, EditableTableCellHandler>... pMenuItemSpecifications)
+                             final boolean pIsEditable,
+                             final boolean pIsRezisable,
+                             Pair<String, EditableTableCellHandler>... pMenuItemSpecifications)
   {
     TableColumn<DoubleRow, Double> lColumn =
                                            new TableColumn<>(pColumnHeader);
-    lColumn.setMinWidth(mMinColumnWidth);
-    lColumn.setMaxWidth(mMinColumnWidth);
+    lColumn.setPrefWidth(mTypicalColumnWidth);
+    lColumn.setMinWidth(mTypicalColumnWidth / 1.3);
+    lColumn.setMaxWidth(mTypicalColumnWidth * 1.3);
     lColumn.setResizable(pIsRezisable);
 
     final int lColumnIndex = getColumns().size();
@@ -82,18 +84,16 @@ public class DoubleTableView extends TableView<DoubleRow>
                                         .getValue(lColumnIndex)
                                         .asObject());
 
-    
-    
     if (pIsEditable)
       lColumn.setCellFactory(new Callback<TableColumn<DoubleRow, Double>, TableCell<DoubleRow, Double>>()
       {
         @Override
         public TableCell<DoubleRow, Double> call(TableColumn<DoubleRow, Double> p)
         {
-         
+
           return new EditableTableCell(DoubleTableView.this,
                                        lColumnIndex,
-                                       mMinColumnWidth,
+                                       mTypicalColumnWidth,
                                        pMenuItemSpecifications);
         }
       });

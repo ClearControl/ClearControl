@@ -1,6 +1,6 @@
 package clearcontrol.devices.cameras.devices.hamamatsu;
 
-import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.cameras.StackCameraQueue;
 
 /**
@@ -21,7 +21,11 @@ public class HamStackCameraQueue extends
   {
     super();
 
-    mStackWidthVariable = new Variable<Long>("FrameWidth", 2048L)
+    mStackWidthVariable =
+                        new BoundedVariable<Long>("FrameWidth",
+                                                  2048L,
+                                                  0L,
+                                                  2048L)
     {
       @Override
       public Long setEventHook(final Long pOldValue,
@@ -38,7 +42,10 @@ public class HamStackCameraQueue extends
 
     };
 
-    mStackHeightVariable = new Variable<Long>("FrameHeight", 2048L)
+    mStackHeightVariable = new BoundedVariable<Long>("FrameHeight",
+                                                     2048L,
+                                                     0L,
+                                                     2048L)
     {
       @Override
       public Long setEventHook(final Long pOldValue,

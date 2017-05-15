@@ -7,6 +7,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
+import clearcontrol.stack.metadata.MetaDataChannel;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
@@ -21,7 +22,7 @@ public class AdaptationX extends
 {
 
   /**
-   * Instanciates a X focus adaptation module given the number of samples and
+   * Instantiates a X focus adaptation module given the number of samples and
    * probability threshold
    * 
    * @param pNumberOfSamples
@@ -42,12 +43,12 @@ public class AdaptationX extends
     int pLightSheetIndex = pStepCoordinates[1];
 
     LightSheetMicroscope lLightsheetMicroscope =
-                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+                                               (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
     LightSheetMicroscopeQueue lQueue =
                                      lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lAcquisitionState =
-                                                   getAdaptator().getCurrentAcquisitionStateVariable()
+                                                   getAdaptiveEngine().getAcquisitionStateVariable()
                                                                  .get();
 
     LightSheetInterface lLightSheetDevice =
@@ -62,7 +63,7 @@ public class AdaptationX extends
                                     .getMax()
                                     .doubleValue();
 
-    int lNumberOfSamples = getNumberOfSamples();
+    int lNumberOfSamples = getNumberOfSamplesVariable().get();
     double lStepX = (lMaxX - lMinX) / (lNumberOfSamples - 1);
 
     double lCurrentX = lQueue.getIX(pLightSheetIndex);
@@ -99,6 +100,8 @@ public class AdaptationX extends
 
     lQueue.finalizeQueue();
 
+    lQueue.addMetaDataEntry(MetaDataChannel.Channel, "NoDisplay");
+
     return findBestDOFValue(pControlPlaneIndex,
                             pLightSheetIndex,
                             lQueue,
@@ -108,7 +111,7 @@ public class AdaptationX extends
   }
 
   @Override
-  public void updateNewState()
+  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

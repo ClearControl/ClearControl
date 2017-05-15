@@ -53,14 +53,6 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    */
   InterpolationTables getInterpolationTables();
 
-  /**
-   * Returns control plane index
-   * 
-   * @param pControlPlaneIndex
-   *          control plane index
-   * @return best detection arm index
-   */
-  int getBestDetectionArm(int pControlPlaneIndex);
 
   /**
    * Applies state at a given control plane index

@@ -135,9 +135,9 @@ public class AcquisitionStatePanel extends CustomGridPane
     lNumberOfPlanesTextField.getTextField().setPrefWidth(100);
 
     Button lSetupControlPlanesButton =
-                                     new Button("Setup");
+                                     new Button("Setup control planes");
     lSetupControlPlanesButton.setOnAction((e) -> pAcquisitionState.setupControlPlanes(pAcquisitionState.getNumberOfControlPlanes(),
-                                                                                      30));
+                                                                                      0));
 
     OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();
     for (int i =
@@ -197,13 +197,7 @@ public class AcquisitionStatePanel extends CustomGridPane
       lRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 8);
-      add(lSeparator, 0, lRow);
-      lRow++;
-    }
+    lRow = insertSeparator(lRow);
 
     {
       add(lStageXSlider.getLabel(), 0, lRow);
@@ -226,13 +220,7 @@ public class AcquisitionStatePanel extends CustomGridPane
       lRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 8);
-      add(lSeparator, 0, lRow);
-      lRow++;
-    }
+    lRow = insertSeparator(lRow);
 
     {
       add(lZRangeSlider.getLabel(), 0, lRow);
@@ -243,17 +231,19 @@ public class AcquisitionStatePanel extends CustomGridPane
     }
 
     {
-      HBox lHBox = new HBox(new Label("Z-step: "),
-                            lZStepTextField.getTextField(),
-                            new Label("number of planes: "),
+      HBox lHBox = new HBox(new Label("Number of planes: "),
                             lNumberOfPlanesTextField.getTextField(),
-                            new Label("setup control planes: "),
+                            new Label("      "),
                             lSetupControlPlanesButton);
       lHBox.setAlignment(Pos.CENTER_LEFT);
-      GridPane.setColumnSpan(lHBox, 8);
-      add(lHBox, 0, lRow);
+      GridPane.setColumnSpan(lHBox, 6);
+      add(lZStepTextField.getLabel(), 0, lRow);
+      add(lZStepTextField.getTextField(), 1, lRow);
+      add(lHBox, 2, lRow);
       lRow++;
     }
+
+    lRow = insertSeparator(lRow);
 
     {
       HBox lHBox = new HBox(new Label("      Cameras: "),
@@ -272,6 +262,8 @@ public class AcquisitionStatePanel extends CustomGridPane
       TabPane lTabPane = new TabPane();
       Tab lChartTab = new Tab("Chart");
       Tab lTableTab = new Tab("Table");
+      lChartTab.setClosable(false);
+      lTableTab.setClosable(false);
       lTabPane.getTabs().addAll(lChartTab, lTableTab);
 
       lChartTab.setContent(lMultiChart);
@@ -298,6 +290,18 @@ public class AcquisitionStatePanel extends CustomGridPane
       }
 
     });
+  }
+
+  protected int insertSeparator(int lRow)
+  {
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 8);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+    return lRow;
   }
 
 }

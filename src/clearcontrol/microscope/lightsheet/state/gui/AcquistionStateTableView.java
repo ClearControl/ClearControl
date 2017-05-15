@@ -31,7 +31,7 @@ public class AcquistionStateTableView extends DoubleTableView
    */
   public AcquistionStateTableView(final InterpolatedAcquisitionState pAcquisitionState)
   {
-    super(60);
+    super(65);
 
     setMaxWidth(Double.MAX_VALUE);
     setMaxHeight(Double.MAX_VALUE);
@@ -41,7 +41,7 @@ public class AcquistionStateTableView extends DoubleTableView
     int lNumberOfIlluminationArms =
                                   pAcquisitionState.getNumberOfLightSheets();
 
-    mNameToColumnMap.put("CP", addColumn("CP", false, false));
+    mNameToColumnMap.put("CPI", addColumn("CPI", false, false));
 
     Pair<String, EditableTableCellHandler> lRemoveControlPlaneMenuItem,
         lAddControlPlaneMenuItem;
@@ -71,40 +71,40 @@ public class AcquistionStateTableView extends DoubleTableView
     for (int d = 0; d < lNumberOfDetectionArms; d++)
     {
       mNameToColumnMap.put("DZ" + d,
-                           addColumn("DZ" + d, true, false));
+                           addColumn("DZ" + d, true, true));
     }
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IX" + i,
-                           addColumn("IX" + i, true, false));
+                           addColumn("IX" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IY" + i,
-                           addColumn("IY" + i, true, false));
+                           addColumn("IY" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IZ" + i,
-                           addColumn("IZ" + i, true, false));
+                           addColumn("IZ" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IA" + i,
-                           addColumn("IA" + i, true, false));
+                           addColumn("IA" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IB" + i,
-                           addColumn("IB" + i, true, false));
+                           addColumn("IB" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IH" + i,
-                           addColumn("IH" + i, true, false));
+                           addColumn("IH" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IW" + i,
-                           addColumn("IW" + i, true, false));
+                           addColumn("IW" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IP" + i,
-                           addColumn("IP" + i, true, false));
+                           addColumn("IP" + i, true, true));
 
     updateTable(pAcquisitionState);
   }
@@ -133,7 +133,7 @@ public class AcquistionStateTableView extends DoubleTableView
       lTableData.add(lRow);
 
       {
-        int lColumnIndex = mNameToColumnMap.get("CP");
+        int lColumnIndex = mNameToColumnMap.get("CPI");
 
         lRow.setValue(lColumnIndex, cpi);
       }

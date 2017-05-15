@@ -1,8 +1,10 @@
 package clearcontrol.microscope.lightsheet.gui;
 
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.gui.MicroscopeGUI;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.adaptive.gui.LightSheetAdaptiveEnginePanel;
 import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
 import clearcontrol.microscope.lightsheet.calibrator.gui.CalibratorToolbar;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
@@ -83,6 +85,10 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
     addToolbarMappingEntry(LightSheetTimelapse.class,
                            LightSheetTimelapseToolbar.class);
+
+    addPanelMappingEntry(AdaptiveEngine.class,
+                         LightSheetAdaptiveEnginePanel.class,
+                         MicroscopeNodeType.Acquisition);
 
   }
 

@@ -208,6 +208,9 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
     LightSheetInterface lFirstLightSheet =
                                          getLightSheetMicroscope().getLightSheet(0);
 
+    int lNumberofLaserLines =
+                            getLightSheetMicroscope().getNumberOfLaserLines();
+
     int lNumberOfLightSheets =
                              getLightSheetMicroscope().getNumberOfLightSheets();
     for (int l = 0; l < lNumberOfLightSheets; l++)
@@ -218,14 +221,89 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
 
         if (pSync)
         {
+          lLightSheet.getXVariable()
+                     .syncWith(lFirstLightSheet.getXVariable());
+          lLightSheet.getXVariable()
+                     .set(lFirstLightSheet.getXVariable().get());
+
+          lLightSheet.getYVariable()
+                     .syncWith(lFirstLightSheet.getYVariable());
+          lLightSheet.getYVariable()
+                     .set(lFirstLightSheet.getYVariable().get());
+
           lLightSheet.getZVariable()
                      .syncWith(lFirstLightSheet.getZVariable());
           lLightSheet.getZVariable()
                      .set(lFirstLightSheet.getZVariable().get());
+
+          lLightSheet.getAlphaInDegreesVariable()
+                     .syncWith(lFirstLightSheet.getAlphaInDegreesVariable());
+          lLightSheet.getAlphaInDegreesVariable()
+                     .set(lFirstLightSheet.getAlphaInDegreesVariable()
+                                          .get());
+
+          lLightSheet.getBetaInDegreesVariable()
+                     .syncWith(lFirstLightSheet.getBetaInDegreesVariable());
+          lLightSheet.getBetaInDegreesVariable()
+                     .set(lFirstLightSheet.getBetaInDegreesVariable()
+                                          .get());
+
+          lLightSheet.getHeightVariable()
+                     .syncWith(lFirstLightSheet.getHeightVariable());
+          lLightSheet.getHeightVariable()
+                     .set(lFirstLightSheet.getHeightVariable().get());
+
+          lLightSheet.getWidthVariable()
+                     .syncWith(lFirstLightSheet.getWidthVariable());
+          lLightSheet.getWidthVariable()
+                     .set(lFirstLightSheet.getWidthVariable().get());
+
+          lLightSheet.getPowerVariable()
+                     .syncWith(lFirstLightSheet.getPowerVariable());
+          lLightSheet.getPowerVariable()
+                     .set(lFirstLightSheet.getPowerVariable().get());
+
+          for (int la = 0; la < lNumberofLaserLines; la++)
+          {
+            lLightSheet.getLaserOnOffArrayVariable(la)
+                       .syncWith(lFirstLightSheet.getLaserOnOffArrayVariable(la));
+            lLightSheet.getLaserOnOffArrayVariable(la)
+                       .set(lFirstLightSheet.getLaserOnOffArrayVariable(la)
+                                            .get());
+          }
+
         }
         else
+        {
+          lLightSheet.getXVariable()
+                     .doNotSyncWith(lFirstLightSheet.getXVariable());
+
+          lLightSheet.getYVariable()
+                     .doNotSyncWith(lFirstLightSheet.getYVariable());
+
           lLightSheet.getZVariable()
                      .doNotSyncWith(lFirstLightSheet.getZVariable());
+
+          lLightSheet.getAlphaInDegreesVariable()
+                     .doNotSyncWith(lFirstLightSheet.getAlphaInDegreesVariable());
+
+          lLightSheet.getBetaInDegreesVariable()
+                     .doNotSyncWith(lFirstLightSheet.getBetaInDegreesVariable());
+
+          lLightSheet.getHeightVariable()
+                     .doNotSyncWith(lFirstLightSheet.getHeightVariable());
+
+          lLightSheet.getWidthVariable()
+                     .doNotSyncWith(lFirstLightSheet.getWidthVariable());
+
+          lLightSheet.getPowerVariable()
+                     .doNotSyncWith(lFirstLightSheet.getPowerVariable());
+
+          for (int la = 0; la < lNumberofLaserLines; la++)
+            lLightSheet.getLaserOnOffArrayVariable(la)
+                       .doNotSyncWith(lFirstLightSheet.getLaserOnOffArrayVariable(la));
+
+        }
       }
 
   }

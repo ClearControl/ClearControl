@@ -81,9 +81,6 @@ public class SimulatedLightSheetMicroscope extends
                                   LightSheetMicroscopeSimulationDevice pSimulatorDevice)
   {
 
-    long lDefaultStackWidth = 512;
-    long lDefaultStackHeight = 1024;
-
     int lNumberOfDetectionArms =
                                pSimulatorDevice.getSimulator()
                                                .getNumberOfDetectionArms();
@@ -147,6 +144,7 @@ public class SimulatedLightSheetMicroscope extends
 
     // Setting up cameras:
     {
+
       for (int c = 0; c < lNumberOfDetectionArms; c++)
       {
         final StackCameraDeviceSimulator lCamera =
@@ -154,16 +152,18 @@ public class SimulatedLightSheetMicroscope extends
                                                                                 + c,
                                                                                 lTrigger);
 
-        lCamera.getMaxWidthVariable()
-               .set(pSimulatorDevice.getSimulator()
-                                    .getCameraRenderer(c)
-                                    .getMaxWidth());
-        lCamera.getMaxHeightVariable()
-               .set(pSimulatorDevice.getSimulator()
-                                    .getCameraRenderer(c)
-                                    .getMaxHeight());
-        lCamera.getStackWidthVariable().set(lDefaultStackWidth);
-        lCamera.getStackHeightVariable().set(lDefaultStackHeight);
+        long lMaxWidth = pSimulatorDevice.getSimulator()
+                                         .getCameraRenderer(c)
+                                         .getMaxWidth();
+
+        long lMaxHeight = pSimulatorDevice.getSimulator()
+                                          .getCameraRenderer(c)
+                                          .getMaxHeight();
+
+        lCamera.getMaxWidthVariable().set(lMaxWidth);
+        lCamera.getMaxHeightVariable().set(lMaxHeight);
+        lCamera.getStackWidthVariable().set(lMaxWidth / 2);
+        lCamera.getStackHeightVariable().set(lMaxHeight);
         lCamera.getExposureInSecondsVariable().set(0.010);
 
         // lCamera.getStackVariable().addSetListener((o,n)->
@@ -232,9 +232,8 @@ public class SimulatedLightSheetMicroscope extends
                                                     getNumberOfLaserLines());
         addDevice(l, lLightSheet);
 
-        lLightSheet.getHeightVariable().set(100.0);
-
-        lLightSheet.getImageHeightVariable().set(lDefaultStackHeight);
+        lLightSheet.getHeightVariable()
+                   .set(lLightSheet.getHeightVariable().getMax());
       }
     }
 
@@ -275,7 +274,7 @@ public class SimulatedLightSheetMicroscope extends
 
   /**
    * Adds standard devices such as the acquisition state manager, calibrator and
-   * Tiemlapse
+   * Timelapse
    */
   @SuppressWarnings("unchecked")
   public void addStandardDevices()
@@ -295,10 +294,18 @@ public class SimulatedLightSheetMicroscope extends
       InterpolatedAcquisitionState lAcquisitionState =
                                                      new InterpolatedAcquisitionState("default",
                                                                                       this);
-      lAcquisitionState.setupControlPlanes(3, 30);
+      lAcquisitionState.setupControlPlanes(5, 30);
       lAcquisitionState.copyCurrentMicroscopeSettings();
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
       addInteractiveAcquisition();
+
+      // Adding adaptive engine device:
+      {
+        AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
+                                                                     addAdaptiveEngine(lAcquisitionState);
+        lAdaptiveEngine.add(new AdaptationZ(1, 17, 0.95));
+      }
+
     }
 
     // Adding timelapse device:
@@ -306,14 +313,6 @@ public class SimulatedLightSheetMicroscope extends
       TimelapseInterface lTimelapse = addTimelapse();
 
       lTimelapse.addFileStackSinkType(RawFileStackSink.class);
-    }
-
-    // Adding adaptive engine device:
-    {
-      AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
-                                                                   addAdaptiveEngine();
-
-      lAdaptiveEngine.add(new AdaptationZ(1, 13, 0.95));
     }
 
   }

@@ -21,7 +21,7 @@ public abstract class NDIteratorAdaptationModule<S extends AcquisitionStateInter
   private NDIterator mNDIterator;
 
   /**
-   * Instanciates a ND iterator adaptation module
+   * Instantiates a ND iterator adaptation module
    * 
    * @param pModuleName
    *          module name

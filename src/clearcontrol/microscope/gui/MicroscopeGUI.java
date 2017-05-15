@@ -26,6 +26,7 @@ import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEnginePanel;
 import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
@@ -136,6 +137,10 @@ public class MicroscopeGUI extends VirtualDevice implements
 
     addToolbarMappingEntry(AdaptiveEngine.class,
                            AdaptiveEngineToolbar.class);
+
+    addPanelMappingEntry(AdaptiveEngine.class,
+                         AdaptiveEnginePanel.class,
+                         MicroscopeNodeType.Acquisition);/**/
 
     SimulationManager lSimulationManager =
                                          new SimulationManager(pMicroscope);
@@ -378,9 +383,6 @@ public class MicroscopeGUI extends VirtualDevice implements
     return super.open();
   }
 
-  /* (non-Javadoc)
-   * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#close()
-   */
   @Override
   public boolean close()
   {

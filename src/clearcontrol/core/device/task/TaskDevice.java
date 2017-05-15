@@ -131,6 +131,16 @@ public abstract class TaskDevice extends SignalStartStopDevice
   }
 
   /**
+   * Clears task (does not stop a running task so use wisely)
+   */
+  public void clearTask()
+  {
+    mStopSignal.set(false);
+    mIsRunningVariable.set(false);
+    mTaskFuture = null;
+  }
+
+  /**
    * Waits for task to start
    * 
    * @param pTimeOut

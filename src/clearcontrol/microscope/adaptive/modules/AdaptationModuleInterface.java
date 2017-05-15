@@ -36,7 +36,7 @@ public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?
    * 
    * @return parent adaptor
    */
-  AdaptiveEngine<S> getAdaptator();
+  AdaptiveEngine<S> getAdaptiveEngine();
 
   /**
    * Sets the priority of this module
@@ -62,10 +62,12 @@ public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?
   void reset();
 
   /**
-   * Updates new state given the modules last results
+   * Updates the given state given the modules last results
+   * 
+   * @param pStateToUpdate
    * 
    */
-  void updateNewState();
+  void updateNewState(S pStateToUpdate);
 
   /**
    * Returns true if all tasks have been completed
@@ -126,5 +128,6 @@ public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?
   {
     return getIsActiveVariable().get();
   }
+
 
 }

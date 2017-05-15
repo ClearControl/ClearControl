@@ -17,6 +17,11 @@ import clearcontrol.core.math.argmax.methods.SplineFitArgMaxFinder;
 import clearcontrol.core.math.argmax.methods.SymetricParabolaFitArgMaxFinder;
 import clearcontrol.core.math.argmax.methods.Top5ArgMaxFinder;
 
+/**
+ * Smart argmax finder
+ *
+ * @author royer
+ */
 public class SmartArgMaxFinder implements
                                ArgMaxFinder1DInterface,
                                Fitting1D,
@@ -45,6 +50,9 @@ public class SmartArgMaxFinder implements
   private Double mFitProbability;
   private Double mRMSD;
 
+  /**
+   * Smart argmax finder
+   */
   public SmartArgMaxFinder()
   {
     super();

@@ -53,7 +53,7 @@ public class AcquisitionStateManagerPanelDemo extends Application
 
     lAcquisitionStateManager.addState(lState1);
 
-    for (int i = 0; i < 2000; i++)
+    for (int i = 0; i < 10; i++)
     {
       InterpolatedAcquisitionState lState =
                                           new InterpolatedAcquisitionState("State"

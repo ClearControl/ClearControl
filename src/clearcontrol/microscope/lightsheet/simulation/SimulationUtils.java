@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.simulation;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcl.enums.ImageChannelDataType;
+import simbryo.synthoscopy.microscope.aberration.IlluminationMisalignment;
 import simbryo.synthoscopy.microscope.lightsheet.drosophila.LightSheetMicroscopeSimulatorDrosophila;
 import simbryo.synthoscopy.microscope.parameters.PhantomParameter;
 import simbryo.synthoscopy.microscope.parameters.UnitConversion;
@@ -56,7 +57,7 @@ public class SimulationUtils
 
     // lSimulator.addAbberation(new Miscalibration());
     // lSimulator.addAbberation(new SampleDrift());
-    // lSimulator.addAbberation(new IlluminationMisalignment());
+    lSimulator.addAbberation(new IlluminationMisalignment());
     // lSimulator.addAbberation(new DetectionMisalignment());
 
     /*scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),

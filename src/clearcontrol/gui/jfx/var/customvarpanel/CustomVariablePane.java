@@ -1,13 +1,5 @@
 package clearcontrol.gui.jfx.var.customvarpanel;
 
-import javafx.collections.ListChangeListener;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -20,6 +12,13 @@ import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
+import javafx.collections.ListChangeListener;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 
 /**
  * Custom variable pane
@@ -173,6 +172,43 @@ public class CustomVariablePane extends TabPane
     final NumberVariableTextField<T> lNumberTextField =
                                                       new NumberVariableTextField<T>(pTextFieldLabel,
                                                                                      pVariable);
+
+    int lCursor = mCursor++;
+    mCurrentTabGridPane.add(lNumberTextField.getLabel(), 0, lCursor);
+    mCurrentTabGridPane.add(lNumberTextField.getTextField(),
+                            1,
+                            lCursor);
+
+    return lNumberTextField;
+  }
+
+  /**
+   * Adds a number text field for the given variable
+   * 
+   * @param pTextFieldLabel
+   *          text field label
+   * @param pVariable
+   *          variable
+   * @param pMin
+   *          min
+   * @param pMax
+   *          max
+   * @param pGranularity
+   *          granularity
+   * @return number text field
+   */
+  public <T extends Number> NumberVariableTextField<T> addNumberTextFieldForVariable(String pTextFieldLabel,
+                                                                                     Variable<T> pVariable,
+                                                                                     T pMin,
+                                                                                     T pMax,
+                                                                                     T pGranularity)
+  {
+    final NumberVariableTextField<T> lNumberTextField =
+                                                      new NumberVariableTextField<T>(pTextFieldLabel,
+                                                                                     pVariable,
+                                                                                     pMin,
+                                                                                     pMax,
+                                                                                     pGranularity);
 
     int lCursor = mCursor++;
     mCurrentTabGridPane.add(lNumberTextField.getLabel(), 0, lCursor);

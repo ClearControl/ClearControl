@@ -11,7 +11,6 @@ import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
-import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
@@ -19,6 +18,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.metadata.MetaDataChannel;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
@@ -59,17 +59,15 @@ public class AdaptationA extends
     int lControlPlaneIndex = pStepCoordinates[0];
     int lLightSheetIndex = pStepCoordinates[1];
 
-    LightSheetMicroscope lMicroscope = (LightSheetMicroscope) getAdaptator().getMicroscope();
+    LightSheetMicroscope lMicroscope =
+                                     (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
     LightSheetMicroscopeQueue lQueue = lMicroscope.requestQueue();
 
     InterpolatedAcquisitionState lStackAcquisition =
-                                                   getAdaptator().getCurrentAcquisitionStateVariable()
-                                                                 .get();
+                                                   getAdaptiveEngine().getAcquisitionStateVariable()
+                                                                      .get();
 
-    int lBestDetectionArm =
-                          getAdaptator().getCurrentAcquisitionStateVariable()
-                                        .get()
-                                        .getBestDetectionArm(lControlPlaneIndex);
+
 
     final TDoubleArrayList lDZList = new TDoubleArrayList();
 
@@ -78,7 +76,7 @@ public class AdaptationA extends
     lStackAcquisition.applyStateAtControlPlane(lQueue,
                                                lControlPlaneIndex);
 
-    double lCurrentDZ = lQueue.getDZ(lBestDetectionArm);
+    double lCurrentDZ = lQueue.getDZ(0);// FIXME
     double lCurrentH = lQueue.getIH(lLightSheetIndex);
     double lIY = 0.6 * lCurrentH;
 
@@ -118,20 +116,18 @@ public class AdaptationA extends
                                 double pCurrentH,
                                 double pIY)
   {
-    int lBestDetectionArm =
-                          getAdaptator().getCurrentAcquisitionStateVariable()
-                                        .get()
-                                        .getBestDetectionArm(pControlPlaneIndex);
+
 
     double lMinZ = -mMaxDefocus;
     double lMaxZ = +mMaxDefocus;
-    double lStepZ = (lMaxZ - lMinZ) / (getNumberOfSamples() - 1);
+    double lStepZ = (lMaxZ - lMinZ)
+                    / (getNumberOfSamplesVariable().get() - 1);
 
     pQueue.setIY(pLightSheetIndex, pIY);
     pQueue.setIH(pLightSheetIndex, pCurrentH / 3);
     // pLSM.setIP(pLightSheetIndex, 1.0 / 3);
 
-    pQueue.setDZ(lBestDetectionArm, pCurrentDZ + lMinZ);
+    pQueue.setDZ(pCurrentDZ + lMinZ);
     pQueue.setC(false);
     pQueue.setILO(false);
     pQueue.setI(pLightSheetIndex);
@@ -142,7 +138,7 @@ public class AdaptationA extends
     for (double z = lMinZ; z <= lMaxZ; z += lStepZ)
     {
       pDZList.add(z);
-      pQueue.setDZ(lBestDetectionArm, pCurrentDZ + z);
+      pQueue.setDZ(pCurrentDZ + z);
 
       pQueue.setILO(true);
       pQueue.setC(true);
@@ -152,9 +148,12 @@ public class AdaptationA extends
 
     pQueue.setC(false);
     pQueue.setILO(false);
-    pQueue.setDZ(lBestDetectionArm, pCurrentDZ);
+    pQueue.setDZ(pCurrentDZ);
     pQueue.setI(pLightSheetIndex);
     pQueue.addCurrentStateToQueue();
+
+    pQueue.addMetaDataEntry(MetaDataChannel.Channel, "NoDisplay");
+
   }
 
   protected Future<?> findBestAlphaValue(int pControlPlaneIndex,
@@ -177,13 +176,9 @@ public class AdaptationA extends
       if (!lPlayQueueAndWait)
         return null;
 
-      final int lBestDetectioArm =
-                                 getAdaptator().getCurrentAcquisitionStateVariable()
-                                               .get()
-                                               .getBestDetectionArm(pControlPlaneIndex);
 
       final StackInterface lStackInterface =
-                                           pMicroscope.getCameraStackVariable(lBestDetectioArm)
+                                           pMicroscope.getCameraStackVariable(0)// FIXME
                                                       .get();
       StackInterface lDuplicateStack = lStackInterface.duplicate();
 
@@ -195,7 +190,7 @@ public class AdaptationA extends
           final double[] lMetricArray =
                                       computeMetricForAlpha(pControlPlaneIndex,
                                                             pLightSheetIndex,
-                                                            lBestDetectioArm,
+                                                            0, // FIXME
                                                             lDOFValueList,
                                                             lDuplicateStack);
 
@@ -262,9 +257,9 @@ public class AdaptationA extends
       };
 
       Future<?> lFuture =
-                        getAdaptator().executeAsynchronously(lRunnable);
+                        getAdaptiveEngine().executeAsynchronously(lRunnable);
 
-      if (!getAdaptator().getConcurrentExecutionVariable().get())
+      if (!getAdaptiveEngine().getConcurrentExecutionVariable().get())
       {
         try
         {
@@ -299,13 +294,10 @@ public class AdaptationA extends
                                 lDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lDuplicatedStack);
     lDuplicatedStack.free();
 
-    PlotTab lPlot =
-                  mMultiPlotZFocusCurves.getPlot(String.format("LS=%d, D=%d CPI=%d",
-                                                               pLightSheetIndex,
-                                                               pDetectionArmIndex,
-                                                               pControlPlaneIndex));
-    lPlot.clearPoints();
-    lPlot.setScatterPlot("samples");
+    String lChartName = String.format("LS=%d, D=%d CPI=%d",
+                                      pLightSheetIndex,
+                                      pDetectionArmIndex,
+                                      pControlPlaneIndex);
 
     int lLength = lMetricArray.length / 2;
 
@@ -314,9 +306,15 @@ public class AdaptationA extends
       System.out.format("%g\t%g \n",
                         lDOFValueList.get(i),
                         lMetricArray[i]);
-      lPlot.addPoint("samples N",
-                     lDOFValueList.get(i),
-                     lMetricArray[i]);
+
+      getAdaptiveEngine().notifyChartListenersOfNewPoint(this,
+                                                         lChartName,
+                                                         i == 0,
+                                                         "delta z",
+                                                         "focus metric",
+                                                         lDOFValueList.get(i),
+                                                         lMetricArray[i]);
+
     }
 
     for (int i = lLength; i < 2 * lLength; i++)
@@ -324,17 +322,22 @@ public class AdaptationA extends
       System.out.format("%g\t%g \n",
                         lDOFValueList.get(i),
                         lMetricArray[i]);
-      lPlot.addPoint("samples P",
-                     lDOFValueList.get(i),
-                     lMetricArray[i]);
+
+      getAdaptiveEngine().notifyChartListenersOfNewPoint(this,
+                                                         lChartName,
+                                                         i == 0,
+                                                         "delta z",
+                                                         "focus metric",
+                                                         lDOFValueList.get(i),
+                                                         lMetricArray[i]);
+
     }
 
-    lPlot.ensureUpToDate();
     return lMetricArray;
   }
 
   @Override
-  public void updateNewState()
+  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

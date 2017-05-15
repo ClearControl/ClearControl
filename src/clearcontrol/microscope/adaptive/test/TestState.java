@@ -38,12 +38,12 @@ public class TestState extends
   {
     return new TestState(pName);
   }
-  
+
   @Override
   public void prepareAcquisition(long pTimeOut, TimeUnit pTimeUnit)
   {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -73,20 +73,12 @@ public class TestState extends
   }
 
   @Override
-  public int getBestDetectionArm(int pControlPlaneIndex)
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
   public void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
                                        int pControlPlaneIndex)
   {
     // TODO Auto-generated method stub
 
   }
-
 
   @Override
   public BoundedVariable<Number> getStageXVariable()
@@ -115,8 +107,6 @@ public class TestState extends
     // TODO Auto-generated method stub
     return null;
   }
-
-
 
   @Override
   public Variable<Boolean> getCameraOnOffVariable(int pCameraIndex)

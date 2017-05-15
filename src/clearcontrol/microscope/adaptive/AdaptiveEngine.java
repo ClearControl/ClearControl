@@ -4,6 +4,7 @@ import static java.lang.Math.max;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -42,6 +43,12 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   private ArrayList<AdaptationModuleInterface<S>> mAdaptationModuleList =
                                                                         new ArrayList<>();
 
+  private CopyOnWriteArrayList<ChartListenerInterface> mChartListenerList =
+                                                                          new CopyOnWriteArrayList<>();
+
+  private CopyOnWriteArrayList<LabelGridListener> mLabelGridListenerList =
+                                                                         new CopyOnWriteArrayList<>();
+
   private HashMap<AdaptationModuleInterface<S>, Long> mTimmingMap =
                                                                   new HashMap<>();
 
@@ -49,13 +56,9 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                                                 new Variable<>("AcquisitionStateCounter",
                                                                                0L);
 
-  private final Variable<S> mCurrentAcquisitionStateVariable =
-                                                             new Variable<>("CurrentAcquisitionState",
-                                                                            null);
-
-  private final Variable<S> mNewAcquisitionStateVariable =
-                                                         new Variable<>("NewAcquisitionState",
-                                                                        null);
+  private final Variable<S> mAcquisitionStateVariable =
+                                                      new Variable<>("CurrentAcquisitionState",
+                                                                     null);
 
   private final Variable<Double> mCurrentAdaptationModuleVariable =
                                                                   new Variable<>("CurrentAdaptationModule",
@@ -78,10 +81,13 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
    * 
    * @param pMicroscope
    *          parent microscope
+   * @param pAcquisitionState
+   *          acquisition state
    */
-  public AdaptiveEngine(MicroscopeInterface<?> pMicroscope)
+  public AdaptiveEngine(MicroscopeInterface<?> pMicroscope,
+                        S pAcquisitionState)
   {
-    super("Adaptor");
+    super("Adaptive");
     mMicroscope = pMicroscope;
 
     double lCPULoadRatio =
@@ -106,6 +112,11 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                                         lNumberOfWorkers,
                                                         pMaxQueueLengthPerWorker
                                                                           * lNumberOfWorkers);
+
+    getAcquisitionStateVariable().set(pAcquisitionState);
+    getAcquisitionStateCounterVariable().set(0L);
+    reset();
+
   }
 
   @Override
@@ -115,21 +126,21 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   }
 
   @Override
+  public Variable<Long> getAcquisitionStateCounterVariable()
+  {
+    return mAcquisitionStateCounterVariable;
+  }
+
+  @Override
   public Variable<Boolean> getConcurrentExecutionVariable()
   {
     return mConcurrentExecutionVariable;
   }
 
   @Override
-  public Variable<S> getCurrentAcquisitionStateVariable()
+  public Variable<S> getAcquisitionStateVariable()
   {
-    return mCurrentAcquisitionStateVariable;
-  }
-
-  @Override
-  public Variable<S> getNewAcquisitionStateVariable()
-  {
-    return mNewAcquisitionStateVariable;
+    return mAcquisitionStateVariable;
   }
 
   @Override
@@ -168,6 +179,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   {
     mAdaptationModuleList.add(pAdaptationModule);
     pAdaptationModule.setAdaptator(this);
+    pAdaptationModule.reset();
   }
 
   @Override
@@ -195,7 +207,8 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                                                                                                    .intValue());
       int lPriority = lAdaptationModule.getPriority();
 
-      Long lMethodTimming = getModuleEstimatedStepTimeInNanoseconds(lAdaptationModule);
+      Long lMethodTimming =
+                          getModuleEstimatedStepTimeInNanoseconds(lAdaptationModule);
 
       if (lMethodTimming == null)
         return 0;
@@ -213,35 +226,36 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   public void reset()
   {
     info("Reset");
+    clearTask();
     getProgressVariable().set(0.0);
     getCurrentAdaptationModuleVariable().set(0.0);
     for (AdaptationModuleInterface<S> lAdaptationModule : mAdaptationModuleList)
       lAdaptationModule.reset();
-    prepareNewAcquisitionState();
+
   }
 
   /**
    * Prepares a new acquisition state
    */
-  public void prepareNewAcquisitionState()
+  public void logCurrentAcquisitionState()
   {
+    @SuppressWarnings("unchecked")
+    AcquisitionStateManager<S> lAcquisitionStateManager =
+                                                        (AcquisitionStateManager<S>) getMicroscope().getAcquisitionStateManager();
+
+    S lCurrentAcquisitionState =
+                               (S) getAcquisitionStateVariable().get();
 
     @SuppressWarnings("unchecked")
-    S lNewState =
-                (S) getCurrentAcquisitionStateVariable().get()
-                                                        .copy("state"
-                                                              + mAcquisitionStateCounterVariable.get());
+    S lLoggedState =
+                   (S) lCurrentAcquisitionState.copy("state "
+                                                     + getAcquisitionStateCounterVariable().get());
 
     if (getMicroscope() != null)
     {
-      @SuppressWarnings("unchecked")
-      AcquisitionStateManager<S> lAcquisitionStateManager =
-                                                          (AcquisitionStateManager<S>) getMicroscope().getAcquisitionStateManager();
-
-      lAcquisitionStateManager.addState(lNewState);
+      lAcquisitionStateManager.addState(lLoggedState);
     }
 
-    getNewAcquisitionStateVariable().set(lNewState);
   }
 
   @Override
@@ -253,7 +267,6 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
       if (getRunUntilAllModulesReadyVariable().get())
       {
         while (step())
-
           if (getStopSignalVariable().get())
           {
             reset();
@@ -373,10 +386,9 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
       info("waiting for tasks to complete... \n");
       waitForAllTasksToComplete();
 
-      updateState(getNewAcquisitionStateVariable().get());
-
-      getCurrentAcquisitionStateVariable().set(getNewAcquisitionStateVariable().get());
-      mAcquisitionStateCounterVariable.increment();
+      logCurrentAcquisitionState();
+      updateState(getAcquisitionStateVariable().get());
+      getAcquisitionStateCounterVariable().increment();
 
       // prepareNewAcquisitionState();
       // reset();
@@ -398,11 +410,11 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     }
   }
 
-  private void updateState(S pS)
+  private void updateState(S pStateToUpdate)
   {
     for (AdaptationModuleInterface<S> lAdaptationModule : mAdaptationModuleList)
       if (lAdaptationModule.isActive())
-        lAdaptationModule.updateNewState();
+        lAdaptationModule.updateNewState(pStateToUpdate);
   }
 
   private AdaptationModuleInterface<S> getCurrentModule()
@@ -477,9 +489,10 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
    */
   @SuppressWarnings("rawtypes")
   public Long getEstimatedModuleStepTime(AdaptationModuleInterface pModule,
-                                   TimeUnit pTimeUnit)
+                                         TimeUnit pTimeUnit)
   {
-    Long lModuleTimmimgInNs = getModuleEstimatedStepTimeInNanoseconds(pModule);
+    Long lModuleTimmimgInNs =
+                            getModuleEstimatedStepTimeInNanoseconds(pModule);
     if (lModuleTimmimgInNs == null)
       return null;
     return pTimeUnit.convert(lModuleTimmimgInNs.longValue(),
@@ -540,5 +553,107 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                        1 + lAdaptationModule.getRemainingNumberOfSteps();
     return lTotalRemainingNumberOfSteps;
   }
+
+  /**
+   * Adds a chart listener
+   * 
+   * @param pChartListener
+   *          chart listener
+   */
+  public void addChartListener(ChartListenerInterface pChartListener)
+  {
+    mChartListenerList.add(pChartListener);
+  }
+
+  /**
+   * Notifies chart listeners of a new point
+   * 
+   * @param pModule
+   *          module
+   * @param pName
+   *          name of chart
+   * @param pClear
+   *          true for clearing before first point
+   * @param pXAxisName
+   *          X axis name
+   * @param pYAxisName
+   *          Y axis name
+   * @param x
+   *          x coordinate
+   * @param y
+   *          y coordinate
+   */
+  public void notifyChartListenersOfNewPoint(AdaptationModuleInterface<?> pModule,
+                                             String pName,
+                                             boolean pClear,
+                                             String pXAxisName,
+                                             String pYAxisName,
+                                             double x,
+                                             double y)
+  {
+    for (ChartListenerInterface lChartListenerInterface : mChartListenerList)
+      lChartListenerInterface.addPoint(pModule,
+                                       pName,
+                                       pClear,
+                                       pXAxisName,
+                                       pYAxisName,
+                                       x,
+                                       y);
+
+  }
+
+  /**
+   * Adds a label grid listener
+   * 
+   * @param pLabelGridListener
+   *          label grid listener
+   */
+  public void addLabelGridListener(LabelGridListener pLabelGridListener)
+  {
+    mLabelGridListenerList.add(pLabelGridListener);
+  }
+
+  /**
+   * Notifies label grid listeners of a new entry
+   * 
+   * @param pModule
+   *          module
+   * @param pName
+   *          name of grid
+   * @param pClear
+   *          true for clearing before ading entry
+   * @param pColumnName
+   *          column name
+   * @param pRowName
+   *          row name
+   * @param x
+   *          x coordinate in grid
+   * @param y
+   *          y coordinate in grid
+   * @param pString
+   *          string to put at given grid coordinate
+   */
+  public void notifyLabelGridListenerOfNewEntry(AdaptationModuleInterface<?> pModule,
+                                                String pName,
+                                                boolean pClear,
+                                                String pColumnName,
+                                                String pRowName,
+                                                int x,
+                                                int y,
+                                                String pString)
+  {
+    for (LabelGridListener lLabelGridListener : mLabelGridListenerList)
+      lLabelGridListener.addEntry(pModule,
+                                  pName,
+                                  pClear,
+                                  pColumnName,
+                                  pRowName,
+                                  x,
+                                  y,
+                                  pString);
+
+  }
+
+
 
 }

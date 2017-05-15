@@ -1,6 +1,9 @@
 package clearcontrol.devices.cameras.gui;
 
 import java.util.Arrays;
+
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -23,19 +26,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
-import clearcontrol.devices.cameras.StackCameraDeviceInterface;
-import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-
 /**
  * CameraDeviceGUI
  */
 public class CameraDevicePanel extends AnchorPane
 {
   private final StackCameraDeviceInterface<?> mCameraDeviceInterface;
-  final int mMainRectangleSize = 300;
+  final int mMainRectangleSize = 312;
 
-  float mMaxCameraWidth = 2048;
-  float mMaxCameraHeight = 2048;
+  float mMaxCameraWidth;
+  float mMaxCameraHeight;
 
   // String properties hold the actual dimension size for the capture resolution
   private StringProperty mCameraWidthStringProperty,

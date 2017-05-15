@@ -316,7 +316,7 @@ public class LightSheetMicroscopeDemo implements
     InterpolatedAcquisitionState lAcquisitionState =
                                                    new InterpolatedAcquisitionState("default",
                                                                                     lLightSheetMicroscope);
-    lAcquisitionState.setupControlPlanes(3, 30);
+    lAcquisitionState.setupControlPlanes(5, 30);
     lAcquisitionStateManager.setCurrentState(lAcquisitionState);
     lLightSheetMicroscope.addInteractiveAcquisition();
 

@@ -1,6 +1,7 @@
 package clearcontrol.microscope.lightsheet.adaptive.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -9,11 +10,9 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.tuple.Triple;
 
-import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
-import clearcontrol.core.math.argmax.FitProbabilityInterface;
-import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.math.argmax.SmartArgMaxFinder;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.adaptive.modules.NDIteratorAdaptationModule;
 import clearcontrol.microscope.adaptive.utils.NDIterator;
@@ -37,15 +36,55 @@ import gnu.trove.list.array.TDoubleArrayList;
 public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionStateInterface<S>>
                                               extends
                                               NDIteratorAdaptationModule<S>
+                                              implements
+                                              AsynchronousExecutorServiceAccess
+
 {
 
-  private int mNumberOfSamples;
-  private double mProbabilityThreshold;
+  private final Variable<Integer> mNumberOfSamplesVariable =
+                                                           new Variable<Integer>("NumberOfSamples",
+                                                                                 17);
+  private final Variable<Double> mProbabilityThresholdVariable =
+                                                               new Variable<Double>("ProbabilityThreshold",
+                                                                                    0.95);
 
-  private HashMap<Triple<Integer, Integer, Integer>, Double> mResultsMap =
+  private final Variable<Double> mImageMetricThresholdVariable =
+                                                               new Variable<Double>("MetricThreshold",
+                                                                                    0.1e-4);
+
+  private HashMap<Triple<Integer, Integer, Integer>, Result> mResultsMap =
                                                                          new HashMap<>();
 
-  protected MultiPlot mMultiPlotZFocusCurves;
+  /**
+   * Result
+   *
+   * @author royer
+   */
+  public static class Result
+  {
+
+    @SuppressWarnings("javadoc")
+    public double argmax, metricmax, probability;
+
+    @SuppressWarnings("javadoc")
+    public static Result of(double pArgMax,
+                            double pMetricMax,
+                            double pProbability)
+    {
+      Result lResult = new Result();
+      lResult.argmax = pArgMax;
+      lResult.metricmax = pMetricMax;
+      lResult.probability = pProbability;
+      return lResult;
+    }
+
+    @SuppressWarnings("javadoc")
+    public static Result none()
+    {
+      return of(Double.NaN, 0.0, 0.0);
+    }
+
+  }
 
   /**
    * Instanciates a ND iterator adaptation module
@@ -62,57 +101,8 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
                                   double pProbabilityThreshold)
   {
     super(pModuleName);
-    setNumberOfSamples(pNumberOfSamples);
-    setProbabilityThreshold(pProbabilityThreshold);
-
-    mMultiPlotZFocusCurves =
-                           MultiPlot.getMultiPlot(this.getClass()
-                                                      .getSimpleName()
-                                                  + " calibration: focus curves");
-    mMultiPlotZFocusCurves.setVisible(true);
-
-  }
-
-  /**
-   * Returns the probability threshold
-   * 
-   * @return probability threshold
-   */
-  public double getProbabilityThreshold()
-  {
-    return mProbabilityThreshold;
-  }
-
-  /**
-   * Sets the probability threshold
-   * 
-   * @param pProbabilityThreshold
-   *          probability threshold
-   */
-  public void setProbabilityThreshold(double pProbabilityThreshold)
-  {
-    mProbabilityThreshold = pProbabilityThreshold;
-  }
-
-  /**
-   * Returns the number of samples
-   * 
-   * @return number of samples
-   */
-  public int getNumberOfSamples()
-  {
-    return mNumberOfSamples;
-  }
-
-  /**
-   * Sets the number of samples
-   * 
-   * @param pNumberOfSamples
-   *          number of samples
-   */
-  public void setNumberOfSamples(int pNumberOfSamples)
-  {
-    mNumberOfSamples = pNumberOfSamples;
+    getNumberOfSamplesVariable().set(pNumberOfSamples);
+    getProbabilityThresholdVariable().set(pProbabilityThreshold);
   }
 
   @Override
@@ -121,11 +111,17 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
     super.reset();
 
     LightSheetMicroscope lLightsheetMicroscope =
-                                               (LightSheetMicroscope) getAdaptator().getMicroscope();
+                                               (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
     LightSheetAcquisitionStateInterface<S> lAcquisitionState =
-                                                             getAdaptator().getCurrentAcquisitionStateVariable()
-                                                                           .get();
+                                                             getAdaptiveEngine().getAcquisitionStateVariable()
+                                                                                .get();
+
+    if (lAcquisitionState == null)
+    {
+      severe("There is no current acquisition state defined!");
+      return;
+    }
 
     int lNumberOfControlPlanes =
                                lAcquisitionState.getInterpolationTables()
@@ -150,7 +146,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
     try
     {
       LightSheetMicroscope lLightsheetMicroscope =
-                                                 (LightSheetMicroscope) getAdaptator().getMicroscope();
+                                                 (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
       lLightsheetMicroscope.useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
@@ -167,83 +163,82 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
 
       ArrayList<StackInterface> lStacks = new ArrayList<>();
       for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
-        if (isRelevantDetectionArm(pControlPlaneIndex, d))
-        {
-          final StackInterface lStackInterface =
-                                               lLightsheetMicroscope.getCameraStackVariable(d)
-                                                                    .get();
-          lStacks.add(lStackInterface.duplicate());
+      {
+        final StackInterface lStackInterface =
+                                             lLightsheetMicroscope.getCameraStackVariable(d)
+                                                                  .get();
+        lStacks.add(lStackInterface.duplicate());
 
-        }
-        else
-          lStacks.add(new EmptyStack());
+      }
 
       Runnable lRunnable = () -> {
 
         try
         {
-          ArgMaxFinder1DInterface lSmartArgMaxFinder =
-                                                     new ModeArgMaxFinder();
+          SmartArgMaxFinder lSmartArgMaxFinder =
+                                               new SmartArgMaxFinder();
 
-          for (int d = 0; d < lNumberOfDetectionArmDevices; d++)
+          String lInfoString = "";
+
+          for (int pDetectionArmIndex =
+                                      0; pDetectionArmIndex < lNumberOfDetectionArmDevices; pDetectionArmIndex++)
 
           {
-            if (!isRelevantDetectionArm(pControlPlaneIndex, d))
-            {
-              setResult(pControlPlaneIndex,
-                        pLightSheetIndex,
-                        d,
-                        Double.NaN);
-              continue;
-            }
 
             final double[] lMetricArray =
                                         computeMetric(pControlPlaneIndex,
                                                       pLightSheetIndex,
-                                                      d,
+                                                      pDetectionArmIndex,
                                                       lDOFValueList,
-                                                      lStacks.get(d));
+                                                      lStacks.get(pDetectionArmIndex));
+
+            if (lMetricArray == null)
+              continue;
 
             Double lArgmax =
                            lSmartArgMaxFinder.argmax(lDOFValueList.toArray(),
                                                      lMetricArray);
 
-            System.out.println("lArgmax = " + lArgmax);
+            Double lFitProbability =
+                                   lSmartArgMaxFinder.getLastFitProbability();
 
-            if (lArgmax != null && !Double.isNaN(lArgmax))
+            if (lArgmax == null || lFitProbability == null)
             {
-              if (lSmartArgMaxFinder instanceof FitProbabilityInterface)
-              {
-                double lFitProbability =
-                                       ((FitProbabilityInterface) lSmartArgMaxFinder).getLastFitProbability();
-
-                if (lFitProbability > getProbabilityThreshold())
-                  setResult(pControlPlaneIndex,
-                            pLightSheetIndex,
-                            d,
-                            lArgmax);
-                else
-                  setResult(pControlPlaneIndex,
-                            pLightSheetIndex,
-                            d,
-                            Double.NaN);
-              }
-              else
-              {
-                setResult(pControlPlaneIndex,
-                          pLightSheetIndex,
-                          d,
-                          lArgmax);
-              }
-
+              lArgmax = 0d;
+              lFitProbability = 0d;
             }
-            else
-              setResult(pControlPlaneIndex,
-                        pLightSheetIndex,
-                        d,
-                        Double.NaN);
 
+            double lMetricMax = Arrays.stream(lMetricArray)
+                                      .max()
+                                      .getAsDouble();
+
+            info("argmax = %s, metric=%s, probability = %s ",
+                 lArgmax,
+                 lMetricMax,
+                 lFitProbability);
+
+            setResult(pControlPlaneIndex,
+                      pLightSheetIndex,
+                      pDetectionArmIndex,
+                      Result.of(lArgmax,
+                                lMetricMax,
+                                lFitProbability));
+
+            lInfoString +=
+                        String.format("argmax=%g\nmetricmax=%g\nprob=%g\n",
+                                      lArgmax,
+                                      lMetricMax,
+                                      lFitProbability);
           }
+
+          getAdaptiveEngine().notifyLabelGridListenerOfNewEntry(this,
+                                                                getName(),
+                                                                false,
+                                                                "LS",
+                                                                "CPI",
+                                                                pLightSheetIndex,
+                                                                pControlPlaneIndex,
+                                                                lInfoString);
 
           for (StackInterface lStack : lStacks)
             lStack.free();
@@ -256,11 +251,10 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
 
       };
 
-      Future<?> lFuture =
-                        getAdaptator().executeAsynchronously(lRunnable);
+      Future<?> lFuture = executeAsynchronously(lRunnable);
 
       // FORCE SYNC:
-      if (!getAdaptator().getConcurrentExecutionVariable().get())
+      if (!getAdaptiveEngine().getConcurrentExecutionVariable().get())
       {
         try
         {
@@ -284,16 +278,16 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
 
   protected void setResult(int pControlPlaneIndex,
                            int pLightSheetIndex,
-                           int d,
-                           Double lArgmax)
+                           int pDetectionArmIndex,
+                           Result pResult)
   {
     mResultsMap.put(Triple.of(pControlPlaneIndex,
                               pLightSheetIndex,
-                              d),
-                    lArgmax);
+                              pDetectionArmIndex),
+                    pResult);
   }
 
-  protected Double getResult(int pControlPlaneIndex,
+  protected Result getResult(int pControlPlaneIndex,
                              int pLightSheetIndex,
                              int d)
   {
@@ -302,26 +296,6 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
                                      d));
   }
 
-  /**
-   * Returns true if the given detection arm index is relevant at this control
-   * plane index
-   * 
-   * @param pControlPlaneIndex
-   *          control plane idnex
-   * @param pDetectionArmIndex
-   *          detection arm index
-   * @return true if relevant
-   */
-  public boolean isRelevantDetectionArm(int pControlPlaneIndex,
-                                        int pDetectionArmIndex)
-  {
-    int lBestDetectionArm =
-                          getAdaptator().getCurrentAcquisitionStateVariable()
-                                        .get()
-                                        .getBestDetectionArm(pControlPlaneIndex);
-    return (lBestDetectionArm == pDetectionArmIndex);
-  };
-
   protected double[] computeMetric(int pControlPlaneIndex,
                                    int pLightSheetIndex,
                                    int pDetectionArmIndex,
@@ -329,34 +303,35 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
                                    StackInterface lDuplicatedStack)
   {
 
+    if (lDuplicatedStack instanceof EmptyStack)
+      return null;
+
     DCTS2D lDCTS2D = new DCTS2D();
 
-    System.out.format("computing DCTS on %s ...\n", lDuplicatedStack);
+    // System.out.format("computing DCTS on %s ...\n", lDuplicatedStack);
     final double[] lMetricArray =
                                 lDCTS2D.computeImageQualityMetric((OffHeapPlanarStack) lDuplicatedStack);
     lDuplicatedStack.free();
 
-    if (isRelevantDetectionArm(pControlPlaneIndex,
-                               pDetectionArmIndex))
-    {
-      PlotTab lPlot =
-                    mMultiPlotZFocusCurves.getPlot(String.format("LS=%d, D=%d CPI=%d",
-                                                                 pLightSheetIndex,
-                                                                 pDetectionArmIndex,
-                                                                 pControlPlaneIndex));
-      lPlot.clearPoints();
-      lPlot.setScatterPlot("samples");
+    String lChartName = String.format("CPI=%d|LS=%d|D=%d",
+                                      pControlPlaneIndex,
+                                      pLightSheetIndex,
+                                      pDetectionArmIndex);
 
-      for (int i = 0; i < lMetricArray.length; i++)
-      {
-        System.out.format("%g\t%g \n",
-                          lDOFValueList.get(i),
-                          lMetricArray[i]);
-        lPlot.addPoint("samples",
-                       lDOFValueList.get(i),
-                       lMetricArray[i]);
-      }
-      lPlot.ensureUpToDate();
+    for (int i = 0; i < lMetricArray.length; i++)
+    {
+      /*System.out.format("%g\t%g \n",
+                        lDOFValueList.get(i),
+                        lMetricArray[i]);/**/
+
+      getAdaptiveEngine().notifyChartListenersOfNewPoint(this,
+                                                         lChartName,
+                                                         i == 0,
+                                                         "ΔZ",
+                                                         "focus metric",
+                                                         lDOFValueList.get(i),
+                                                         lMetricArray[i]);
+
     }
 
     return lMetricArray;
@@ -365,7 +340,38 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
   @Override
   public boolean isReady()
   {
-    return !getNDIterator().hasNext() && super.isReady();
+    return getNDIterator() != null && !getNDIterator().hasNext()
+           && super.isReady();
+  }
+
+  /**
+   * Returns the variable holding the number of samples
+   * 
+   * @return number of samples variable
+   */
+  public Variable<Integer> getNumberOfSamplesVariable()
+  {
+    return mNumberOfSamplesVariable;
+  }
+
+  /**
+   * Returns the variable holding the probability threshold
+   * 
+   * @return probability threshold variable
+   */
+  public Variable<Double> getProbabilityThresholdVariable()
+  {
+    return mProbabilityThresholdVariable;
+  }
+
+  /**
+   * Returns the variable holding the image metric threshold
+   * 
+   * @return image metric threshold variable
+   */
+  public Variable<Double> getImageMetricThresholdVariable()
+  {
+    return mImageMetricThresholdVariable;
   }
 
 }

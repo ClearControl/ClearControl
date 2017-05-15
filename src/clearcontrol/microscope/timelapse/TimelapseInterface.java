@@ -160,4 +160,12 @@ public interface TimelapseInterface extends
    */
   Variable<String> getDataSetNamePostfixVariable();
 
+  /**
+   * Returns the variable holding the boolean flag that decides whether the
+   * stacks should be saved or not.
+   * 
+   * @return save stacks variable
+   */
+  Variable<Boolean> getSaveStacksVariable();
+
 }
