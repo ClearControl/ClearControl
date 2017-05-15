@@ -87,7 +87,7 @@ public abstract class StandardAdaptationModule<S extends LightSheetAcquisitionSt
   }
 
   /**
-   * Instanciates a ND iterator adaptation module
+   * Instantiates a ND iterator adaptation module
    * 
    * @param pModuleName
    *          module name

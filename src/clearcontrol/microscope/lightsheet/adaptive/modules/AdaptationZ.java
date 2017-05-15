@@ -6,6 +6,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
+import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.metadata.MetaDataChannel;
 import gnu.trove.list.array.TDoubleArrayList;
@@ -53,6 +54,10 @@ public class AdaptationZ extends
     int lControlPlaneIndex = pStepCoordinates[0];
     int lLightSheetIndex = pStepCoordinates[1];
 
+    int lNumberOfDetectionArms =
+                               getAdaptiveEngine().getMicroscope()
+                                                  .getNumberOfDevices(DetectionArm.class);
+
     double lDeltaZ = getDeltaZVariable().get();
 
     InterpolatedAcquisitionState lAcquisitionState =
@@ -97,6 +102,10 @@ public class AdaptationZ extends
     lQueue.setC(false);
     lQueue.setDZ(lCurrentDZ);
     lQueue.addCurrentStateToQueue();
+
+    for (int d = 0; d < lNumberOfDetectionArms; d++)
+      lQueue.setFlyBackDZ(d, lCurrentDZ);
+    lQueue.setFinalisationTime(0.3);
 
     lQueue.finalizeQueue();
 

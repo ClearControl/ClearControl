@@ -23,7 +23,7 @@ public class AdaptationZPanel extends StandardAdaptationModulePanel
     addNumberTextFieldForVariable("Delta Z: ",
                                   pAdaptationZ.getDeltaZVariable(),
                                   0.0,
-                                  1.0,
+                                  Double.POSITIVE_INFINITY,
                                   0.001);
   }
 
