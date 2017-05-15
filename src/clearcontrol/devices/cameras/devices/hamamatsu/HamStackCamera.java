@@ -184,23 +184,27 @@ public class HamStackCamera extends
                    mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
                                                        .get(),
                                                  4);
-      long lDepth =
-                  countKeptPlanes(pQueue.getVariableQueue(pQueue.getKeepPlaneVariable()));
+
+      long lAcquiredPlanesDepth = pQueue.getQueueLength();
+
+      long lKeptPlanesDepth =
+                            countKeptPlanes(pQueue.getVariableQueue(pQueue.getKeepPlaneVariable()));
 
       if (mSequence == null || mSequence.getWidth() != lWidth
           || mSequence.getHeight() != lHeight
-          || mSequence.getDepth() != lDepth)
+          || mSequence.getDepth() != lAcquiredPlanesDepth)
         mSequence = new DcamImageSequence(mDcamDevice,
                                           2,
                                           lWidth,
                                           lHeight,
-                                          lDepth);
+                                          lAcquiredPlanesDepth);
 
       final Future<Boolean> lFuture = acquisition(pQueue,
                                                   lExposureInSeconds,
                                                   lWidth,
                                                   lHeight,
-                                                  lDepth);
+                                                  lAcquiredPlanesDepth,
+                                                  lKeptPlanesDepth);
 
       return lFuture;
     }
@@ -211,7 +215,8 @@ public class HamStackCamera extends
                                       double lExposureInSeconds,
                                       long pWidth,
                                       long pHeight,
-                                      long pDepth)
+                                      long pAcquiredPlanesDepth,
+                                      long pKeptPlanesDepth)
   {
 
     Future<Boolean> lAcquisitionResult =
@@ -222,7 +227,7 @@ public class HamStackCamera extends
 
       StackInterface lAcquiredStack;
 
-      if (lAcquisitionResult == null && pDepth == 0)
+      if (lAcquisitionResult == null && pAcquiredPlanesDepth == 0)
       {
         lAcquiredStack = new EmptyStack();
         return true;
@@ -233,9 +238,10 @@ public class HamStackCamera extends
         if (!lResult)
           return false;
 
-        StackRequest lRecyclerRequest = StackRequest.build(pWidth,
-                                                           pHeight,
-                                                           pDepth);
+        StackRequest lRecyclerRequest =
+                                      StackRequest.build(pWidth,
+                                                         pHeight,
+                                                         pKeptPlanesDepth);
         lAcquiredStack =
                        getStackRecycler().getOrWait(cWaitTime,
                                                     TimeUnit.MILLISECONDS,

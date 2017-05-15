@@ -185,13 +185,13 @@ public class SplineInterpolationTable implements Cloneable
 
     if (lRowBefore == null)
       lRowBefore = lRowAfter;
-      
+
     if (lRowAfter == null)
     {
       addRow(pX);
       return;
     }
-      
+
     double lX = (lRowBefore.x + lRowAfter.x) / 2;
 
     if (pX == lX)
@@ -199,7 +199,7 @@ public class SplineInterpolationTable implements Cloneable
 
     Row lRow = addRow(lX);
 
-    for(int c=0; c<lRow.getNumberOfColumns(); c++)
+    for (int c = 0; c < lRow.getNumberOfColumns(); c++)
     {
       double lValue = 0.5 * (lRowBefore.getY(c) + lRowAfter.getY(c));
       lRow.setY(c, lValue);
@@ -445,7 +445,9 @@ public class SplineInterpolationTable implements Cloneable
 
         final double lMinX = getMinX();
         final double lMaxX = getMaxX();
-        final double lRangeWidth = abs(lMaxX - lMinX);
+
+        // this makes sure that we extrapolate outside of the actual range
+        final double lRangeWidth = 10000 * abs(lMaxX - lMinX);
 
         if (x.size() >= 2)
         {
@@ -528,9 +530,9 @@ public class SplineInterpolationTable implements Cloneable
       final double lStep = (lMaxX - lMinX) / 1024;
 
       for (double x = lMinX
-                      - 0.1
+                      - 0.5
                         * lRangeWidth; x <= lMaxX
-                                            + 0.1
+                                            + 0.5
                                               * lRangeWidth; x +=
                                                                lStep)
       {

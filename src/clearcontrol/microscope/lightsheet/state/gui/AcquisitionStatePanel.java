@@ -282,10 +282,24 @@ public class AcquisitionStatePanel extends CustomGridPane
       if (isVisible())
       {
         Platform.runLater(() -> {
-          lMultiChart.updateChart(pAcquisitionState);
+          try
+          {
+            lMultiChart.updateChart(pAcquisitionState);
+          }
+          catch (Throwable e1)
+          {
+            e1.printStackTrace();
+          }
         });
         Platform.runLater(() -> {
-          lTableView.updateTable(pAcquisitionState);
+          try
+          {
+            lTableView.updateTable(pAcquisitionState);
+          }
+          catch (Throwable e1)
+          {
+            e1.printStackTrace();
+          }
         });
       }
 

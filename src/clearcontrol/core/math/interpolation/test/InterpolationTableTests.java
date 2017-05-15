@@ -3,10 +3,14 @@ package clearcontrol.core.math.interpolation.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import clearcontrol.core.math.interpolation.Row;
-import clearcontrol.core.math.interpolation.SplineInterpolationTable;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+
+import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.math.interpolation.Row;
+import clearcontrol.core.math.interpolation.SplineInterpolationTable;
+import clearcontrol.gui.plots.MultiPlot;
 
 public class InterpolationTableTests
 {
@@ -45,12 +49,13 @@ public class InterpolationTableTests
     System.out.println(lInterpolationTable.getInterpolatedValue(1,
                                                                 1.2));
 
-    /*final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
-    
+    final MultiPlot lDisplayTable =
+                                  lInterpolationTable.displayTable("test");
+
     while (lDisplayTable.isVisible())
     {
-    	ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
-    }/**/
+      ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
+    } /**/
 
     assertEquals(5.4,
                  lInterpolationTable.getInterpolatedValue(0, 4),

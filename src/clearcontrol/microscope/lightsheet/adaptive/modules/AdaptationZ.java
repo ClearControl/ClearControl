@@ -82,6 +82,7 @@ public class AdaptationZ extends
                                                lControlPlaneIndex);
     double lCurrentDZ = lQueue.getDZ(0);
 
+    lQueue.setI(lLightSheetIndex);
     lQueue.setILO(false);
     lQueue.setC(false);
     lQueue.setDZ(lCurrentDZ + lMinZ);
@@ -94,7 +95,6 @@ public class AdaptationZ extends
     {
       lDZList.add(z);
       lQueue.setDZ(lCurrentDZ + z);
-      lQueue.setI(lLightSheetIndex);
       lQueue.addCurrentStateToQueue();
     }
 
