@@ -1,5 +1,10 @@
 package clearcontrol.microscope.lightsheet.calibrator.gui;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -11,27 +16,21 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
-
 /**
- * Calibrator toolbar
+ * Calibration Engine Toolbar
  *
  * @author royer
  */
-public class CalibratorToolbar extends CustomGridPane
+public class CalibrationEngineToolbar extends CustomGridPane
 {
 
   /**
-   * Instanciates a calibrator toolbar
+   * Instanciates a calibration engine toolbar
    * 
-   * @param pCalibrator
+   * @param pCalibrationEngine
    *          calubrator
    */
-  public CalibratorToolbar(Calibrator pCalibrator)
+  public CalibrationEngineToolbar(CalibrationEngine pCalibrationEngine)
   {
     super();
     // this.setStyle("-fx-background-color: yellow;");
@@ -51,7 +50,7 @@ public class CalibratorToolbar extends CustomGridPane
       lStartCalibration.setAlignment(Pos.CENTER);
       lStartCalibration.setMaxWidth(Double.MAX_VALUE);
       lStartCalibration.setOnAction((e) -> {
-        pCalibrator.startTask();
+        pCalibrationEngine.startTask();
       });
       GridPane.setColumnSpan(lStartCalibration, 2);
       GridPane.setHgrow(lStartCalibration, Priority.ALWAYS);
@@ -65,7 +64,7 @@ public class CalibratorToolbar extends CustomGridPane
       lStopCalibration.setAlignment(Pos.CENTER);
       lStopCalibration.setMaxWidth(Double.MAX_VALUE);
       lStopCalibration.setOnAction((e) -> {
-        pCalibrator.stopTask();
+        pCalibrationEngine.stopTask();
       });
       GridPane.setColumnSpan(lStopCalibration, 2);
       GridPane.setHgrow(lStopCalibration, Priority.ALWAYS);
@@ -82,9 +81,10 @@ public class CalibratorToolbar extends CustomGridPane
       GridPane.setRowSpan(lCalibrationProgressIndicator, 2);
       add(lCalibrationProgressIndicator, 2, 0);
 
-      pCalibrator.getProgressVariable().addEdgeListener((n) -> {
+      pCalibrationEngine.getProgressVariable()
+                        .addEdgeListener((n) -> {
         Platform.runLater(() -> {
-          lCalibrationProgressIndicator.setProgress(pCalibrator.getProgressVariable()
+                            lCalibrationProgressIndicator.setProgress(pCalibrationEngine.getProgressVariable()
                                                                .get());
         });
       });
@@ -101,19 +101,19 @@ public class CalibratorToolbar extends CustomGridPane
 
     {
       addCheckBoxForCalibrationModule("Z ",
-                                      pCalibrator.getCalibrateZVariable(),
+                                      pCalibrationEngine.getCalibrateZVariable(),
                                       0,
                                       lRow);
       addCheckBoxForCalibrationModule("XY",
-                                      pCalibrator.getCalibrateXYVariable(),
+                                      pCalibrationEngine.getCalibrateXYVariable(),
                                       0,
                                       lRow + 1);
       addCheckBoxForCalibrationModule("A ",
-                                      pCalibrator.getCalibrateAVariable(),
+                                      pCalibrationEngine.getCalibrateAVariable(),
                                       1,
                                       lRow);
       addCheckBoxForCalibrationModule("P ",
-                                      pCalibrator.getCalibratePVariable(),
+                                      pCalibrationEngine.getCalibratePVariable(),
                                       1,
                                       lRow + 1);
 
@@ -132,12 +132,13 @@ public class CalibratorToolbar extends CustomGridPane
       OnOffArrayPane lCalibrateLightSheetOnOffPane =
                                                    new OnOffArrayPane();
 
-      int lNumberOfLightSheets = pCalibrator.getLightSheetMicroscope()
+      int lNumberOfLightSheets =
+                               pCalibrationEngine.getLightSheetMicroscope()
                                             .getNumberOfLightSheets();
       for (int l = 0; l < lNumberOfLightSheets; l++)
       {
         lCalibrateLightSheetOnOffPane.addSwitch("LS" + l,
-                                                pCalibrator.getCalibrateLightSheetOnOff(l));
+                                                pCalibrationEngine.getCalibrateLightSheetOnOff(l));
       }
 
       GridPane.setColumnSpan(lCalibrateLightSheetOnOffPane, 3);
@@ -156,14 +157,14 @@ public class CalibratorToolbar extends CustomGridPane
 
     {
       TextField lCalibrationDataNameTextField =
-                                              new TextField(pCalibrator.getCalibrationDataNameVariable()
+                                              new TextField(pCalibrationEngine.getCalibrationDataNameVariable()
                                                                        .get());
       lCalibrationDataNameTextField.setMaxWidth(Double.MAX_VALUE);
       lCalibrationDataNameTextField.textProperty()
                                    .addListener((obs, o, n) -> {
                                      String lName = n.trim();
                                      if (!lName.isEmpty())
-                                       pCalibrator.getCalibrationDataNameVariable()
+                                       pCalibrationEngine.getCalibrationDataNameVariable()
                                                   .set(lName);
 
                                    });
@@ -183,7 +184,7 @@ public class CalibratorToolbar extends CustomGridPane
       lSaveCalibration.setOnAction((e) -> {
         try
         {
-          pCalibrator.save();
+          pCalibrationEngine.save();
         }
         catch (Exception e1)
         {
@@ -199,7 +200,7 @@ public class CalibratorToolbar extends CustomGridPane
       lLoadCalibration.setOnAction((e) -> {
         try
         {
-          pCalibrator.load();
+          pCalibrationEngine.load();
         }
         catch (Exception e1)
         {
@@ -213,7 +214,7 @@ public class CalibratorToolbar extends CustomGridPane
       lResetCalibration.setAlignment(Pos.CENTER);
       lResetCalibration.setMaxWidth(Double.MAX_VALUE);
       lResetCalibration.setOnAction((e) -> {
-        pCalibrator.reset();
+        pCalibrationEngine.reset();
       });
       GridPane.setColumnSpan(lResetCalibration, 1);
       add(lResetCalibration, 2, lRow);

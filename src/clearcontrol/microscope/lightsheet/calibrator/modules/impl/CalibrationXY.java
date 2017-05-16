@@ -16,7 +16,7 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
@@ -46,7 +46,7 @@ public class CalibrationXY extends CalibrationBase
    * @param pCalibrator
    *          parent calibrator
    */
-  public CalibrationXY(Calibrator pCalibrator)
+  public CalibrationXY(CalibrationEngine pCalibrator)
   {
     super(pCalibrator);
 
@@ -89,7 +89,7 @@ public class CalibrationXY extends CalibrationBase
                             boolean pDoAxisX)
   {
     LightSheetInterface lLightSheet =
-                                    mLightSheetMicroscope.getDeviceLists()
+                                    getLightSheetMicroscope().getDeviceLists()
                                                          .getDevice(LightSheetInterface.class,
                                                                     pLightSheetIndex);
 
@@ -262,7 +262,7 @@ public class CalibrationXY extends CalibrationBase
   {
     // Building queue start:
     LightSheetMicroscopeQueue lQueue =
-                                     mLightSheetMicroscope.requestQueue();
+                                     getLightSheetMicroscope().requestQueue();
     lQueue.clearQueue();
     lQueue.zero();
 
@@ -283,14 +283,14 @@ public class CalibrationXY extends CalibrationBase
       lQueue.addCurrentStateToQueue();
     }
 
-    lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+    lQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 10);
 
     lQueue.finalizeQueue();
     // Building queue end.
 
-    mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+    getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
     final Boolean lPlayQueueAndWait =
-                                    mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
+                                    getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
                                                                                     lQueue.getQueueLength(),
                                                                                     TimeUnit.SECONDS);
 
@@ -298,7 +298,7 @@ public class CalibrationXY extends CalibrationBase
       return null;
 
     final OffHeapPlanarStack lStack =
-                                    (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
+                                    (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
                                                                               .get();
 
     int lWidth = (int) lStack.getWidth();
@@ -400,7 +400,7 @@ public class CalibrationXY extends CalibrationBase
     System.out.format("lYOffset: %s \n", lYOffset);
 
     LightSheetInterface lLightSheetDevice =
-                                          mLightSheetMicroscope.getDeviceLists()
+                                          getLightSheetMicroscope().getDeviceLists()
                                                                .getDevice(LightSheetInterface.class,
                                                                           pLightSheetIndex);
 

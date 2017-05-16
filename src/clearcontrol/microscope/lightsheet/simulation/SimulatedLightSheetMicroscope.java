@@ -18,8 +18,9 @@ import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.adaptive.modules.AdaptationX;
 import clearcontrol.microscope.lightsheet.adaptive.modules.AdaptationZ;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
@@ -232,8 +233,7 @@ public class SimulatedLightSheetMicroscope extends
                                                     getNumberOfLaserLines());
         addDevice(l, lLightSheet);
 
-        lLightSheet.getHeightVariable()
-                   .set(lLightSheet.getHeightVariable().getMax());
+
       }
     }
 
@@ -282,7 +282,7 @@ public class SimulatedLightSheetMicroscope extends
 
     // Adding calibrator:
     {
-      Calibrator lCalibrator = addCalibrator();
+      CalibrationEngine lCalibrator = addCalibrator();
       lCalibrator.load();
     }
 
@@ -303,7 +303,18 @@ public class SimulatedLightSheetMicroscope extends
       {
         AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
                                                                      addAdaptiveEngine(lAcquisitionState);
-        lAdaptiveEngine.add(new AdaptationZ(1, 17, 0.95));
+        lAdaptiveEngine.add(new AdaptationZ(11,
+                                            1.33,
+                                            0.95,
+                                            2e-5,
+                                            0.010,
+                                            1));
+        lAdaptiveEngine.add(new AdaptationX(11,
+                                            20,
+                                            0.95,
+                                            2e-5,
+                                            0.010,
+                                            1));
       }
 
     }

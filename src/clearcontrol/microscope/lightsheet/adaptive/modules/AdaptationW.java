@@ -3,6 +3,7 @@ package clearcontrol.microscope.lightsheet.adaptive.modules;
 import java.util.concurrent.Future;
 
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
@@ -15,27 +16,40 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author royer
  */
-public class AdaptationW extends
-                         StandardAdaptationModule<InterpolatedAcquisitionState>
-                         implements
+public class AdaptationW extends StandardAdaptationModule implements
                          AdaptationModuleInterface<InterpolatedAcquisitionState>
 {
 
   private static final int cRepeats = 2;
 
   /**
-   * Instanciates a W adaptation module given the deltaz parameter, number of
-   * samples and probability threshold
+   * Instantiates a W adaptation module given the number of samples, probability
+   * threshold, and image metric threshold
    * 
    * @param pNumberOfSamples
    *          number of samples
    * @param pProbabilityThreshold
    *          probability threshold
+   * @param pImageMetricThreshold
+   *          image metric threshold
+   * @param pExposureInSeconds
+   *          exposure in seconds
+   * @param pLaserPower
+   *          laser power
    */
   public AdaptationW(int pNumberOfSamples,
-                     double pProbabilityThreshold)
+                     double pProbabilityThreshold,
+                     double pImageMetricThreshold,
+                     double pExposureInSeconds,
+                     double pLaserPower)
   {
-    super("W", pNumberOfSamples, pProbabilityThreshold);
+    super("W",
+          LightSheetDOF.IW,
+          pNumberOfSamples,
+          pProbabilityThreshold,
+          pImageMetricThreshold,
+          pExposureInSeconds,
+          pLaserPower);
   }
 
   @Override
@@ -51,13 +65,13 @@ public class AdaptationW extends
                                      lLightsheetMicroscope.requestQueue();
     InterpolatedAcquisitionState lAcquisitionState =
                                                    getAdaptiveEngine().getAcquisitionStateVariable()
-                                                                 .get();
+                                                                      .get();
 
     LightSheetInterface lLightSheetDevice =
                                           getAdaptiveEngine().getMicroscope()
-                                                        .getDeviceLists()
-                                                        .getDevice(LightSheetInterface.class,
-                                                                   lLightSheetIndex);
+                                                             .getDeviceLists()
+                                                             .getDevice(LightSheetInterface.class,
+                                                                        lLightSheetIndex);
 
     double lMinW = lLightSheetDevice.getWidthVariable()
                                     .getMin()
@@ -146,7 +160,7 @@ public class AdaptationW extends
   }/**/
 
   @Override
-  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
+  public void updateState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

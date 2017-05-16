@@ -20,26 +20,55 @@ public class LabelGrid extends CustomGridPane
   ConcurrentHashMap<Pair<Integer, Integer>, Label> mCellToLabelMap =
                                                                    new ConcurrentHashMap<>();
 
+  /**
+   * Instantiates a label grid
+   */
   public LabelGrid()
   {
     super();
-
   }
 
+  /**
+   * Sets a given column name
+   * 
+   * @param pX
+   *          column index
+   * @param pColumnName
+   *          column name
+   * @return corresponding label
+   */
   public Label setColumnName(int pX, String pColumnName)
   {
-    Label lLabel = new Label(pColumnName);
-    getLabelInternal(pX + 1, 0, false).setText(pColumnName);
+    Label lLabel = getLabelInternal(pX + 1, 0, false);
+    lLabel.setText(pColumnName);
     return lLabel;
   }
 
-  public Label setRowName(int pY, String pColumnName)
+  /**
+   * Sets a given row name
+   * 
+   * @param pY
+   *          row index
+   * @param pRowName
+   *          row name
+   * @return corresponding row name
+   */
+  public Label setRowName(int pY, String pRowName)
   {
-    Label lLabel = new Label(pColumnName);
-    getLabelInternal(0, pY + 1, false).setText(pColumnName);
+    Label lLabel = getLabelInternal(0, pY + 1, false);
+    lLabel.setText(pRowName);
     return lLabel;
   }
 
+  /**
+   * Returns the label at the given coordinates
+   * 
+   * @param pX
+   *          column index
+   * @param pY
+   *          row index
+   * @return label
+   */
   public Label getLabel(int pX, int pY)
   {
     Label lLabel = getLabelInternal(pX + 1, pY + 1, true);

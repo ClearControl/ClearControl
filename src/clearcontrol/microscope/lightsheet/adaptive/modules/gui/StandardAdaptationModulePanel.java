@@ -17,7 +17,7 @@ public class StandardAdaptationModulePanel extends CustomVariablePane
    * @param pAdaptationModule
    *          standard adaptation module
    */
-  public StandardAdaptationModulePanel(StandardAdaptationModule<?> pAdaptationModule)
+  public StandardAdaptationModulePanel(StandardAdaptationModule pAdaptationModule)
   {
     super();
 
@@ -35,8 +35,20 @@ public class StandardAdaptationModulePanel extends CustomVariablePane
                                   1.0,
                                   0.00001);
 
-    addNumberTextFieldForVariable("probability threshold: ",
+    addNumberTextFieldForVariable("probability threshold [0,1]: ",
                                   pAdaptationModule.getProbabilityThresholdVariable(),
+                                  0.0,
+                                  1.0,
+                                  0.001);
+
+    addNumberTextFieldForVariable("exposure (sec): ",
+                                  pAdaptationModule.getExposureInSecondsVariable(),
+                                  0.0,
+                                  10.0,
+                                  0.001);
+
+    addNumberTextFieldForVariable("laser power (%): ",
+                                  pAdaptationModule.getLaserPowerVariable(),
                                   0.0,
                                   1.0,
                                   0.001);

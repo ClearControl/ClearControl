@@ -67,7 +67,7 @@ public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?
    * @param pStateToUpdate
    * 
    */
-  void updateNewState(S pStateToUpdate);
+  void updateState(S pStateToUpdate);
 
   /**
    * Returns true if all tasks have been completed

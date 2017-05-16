@@ -2,7 +2,7 @@ package clearcontrol.microscope.lightsheet.calibrator.modules;
 
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 
@@ -12,24 +12,78 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
  * @author royer
  */
 public abstract class CalibrationBase implements
-                             CalibrationModuleInterface,
-                             LoggingInterface
+                                      CalibrationModuleInterface,
+                                      LoggingInterface
 {
-  protected final Calibrator mCalibrator;
-  protected final LightSheetMicroscope mLightSheetMicroscope;
+  private final CalibrationEngine mCalibrationEngine;
+  private final LightSheetMicroscope mLightSheetMicroscope;
+
+  private volatile int mIteration = 0;
 
   /**
    * Instantiates a calibration module given a parent calibrator and lightsheet
    * microscope.
    * 
-   * @param pCalibrator
+   * @param pCalibrationEngine
    *          parent calibrator
    */
-  public CalibrationBase(Calibrator pCalibrator)
+  public CalibrationBase(CalibrationEngine pCalibrationEngine)
   {
     super();
-    mCalibrator = pCalibrator;
-    mLightSheetMicroscope = pCalibrator.getLightSheetMicroscope();
+    mCalibrationEngine = pCalibrationEngine;
+    mLightSheetMicroscope = pCalibrationEngine.getLightSheetMicroscope();
+  }
+
+  /**
+   * Returns this calibrator's parent lightsheet microscope
+   * 
+   * @return parent lightsheet microscope
+   */
+  public LightSheetMicroscope getLightSheetMicroscope()
+  {
+    return mLightSheetMicroscope;
+  }
+
+  /**
+   * Returns this calibration module parent calibration engine
+   * 
+   * @return parent calibration engine
+   */
+  public CalibrationEngine getCalibrationEngine()
+  {
+    return mCalibrationEngine;
+  }
+
+  @Override
+  public void reset()
+  {
+    resetIteration();
+  }
+
+  /**
+   * Returns the iteration counter
+   * 
+   * @return iteration counter value
+   */
+  public int getIteration()
+  {
+    return mIteration;
+  }
+
+  /**
+   * increment iteration counter
+   */
+  public void incrementIteration()
+  {
+    mIteration++;
+  }
+
+  /**
+   * resets iteration counter
+   */
+  public void resetIteration()
+  {
+    mIteration=0;
   }
 
   /**
@@ -39,8 +93,8 @@ public abstract class CalibrationBase implements
    */
   public int getNumberOfLightSheets()
   {
-    return mLightSheetMicroscope.getDeviceLists()
-                                .getNumberOfDevices(LightSheetInterface.class);
+    return getLightSheetMicroscope().getDeviceLists()
+                                    .getNumberOfDevices(LightSheetInterface.class);
   }
 
   /**
@@ -50,8 +104,8 @@ public abstract class CalibrationBase implements
    */
   public int getNumberOfDetectionArms()
   {
-    return mLightSheetMicroscope.getDeviceLists()
-                                .getNumberOfDevices(DetectionArmInterface.class);
+    return getLightSheetMicroscope().getDeviceLists()
+                                    .getNumberOfDevices(DetectionArmInterface.class);
   }
 
 }

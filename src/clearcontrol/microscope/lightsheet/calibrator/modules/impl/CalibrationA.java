@@ -10,14 +10,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.SmartArgMaxFinder;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
@@ -35,7 +33,6 @@ public class CalibrationA extends CalibrationBase
 {
 
   private ArgMaxFinder1DInterface mArgMaxFinder;
-  private MultiPlot mMultiPlotAFocusCurves;
   private HashMap<Integer, UnivariateAffineFunction> mModels;
 
   /**
@@ -44,14 +41,9 @@ public class CalibrationA extends CalibrationBase
    * @param pCalibrator
    *          parent calibrator
    */
-  public CalibrationA(Calibrator pCalibrator)
+  public CalibrationA(CalibrationEngine pCalibrator)
   {
     super(pCalibrator);
-    mMultiPlotAFocusCurves =
-                           MultiPlot.getMultiPlot(this.getClass()
-                                                      .getSimpleName()
-                                                  + " calibration: focus curves");
-    mMultiPlotAFocusCurves.setVisible(false);
     mModels = new HashMap<>();
   }
 
@@ -74,14 +66,10 @@ public class CalibrationA extends CalibrationBase
 
     mArgMaxFinder = new SmartArgMaxFinder();
 
-    mMultiPlotAFocusCurves.clear();
-    if (!mMultiPlotAFocusCurves.isVisible())
-      mMultiPlotAFocusCurves.setVisible(true);
-
     LightSheetInterface lLightSheet =
-                                    mLightSheetMicroscope.getDeviceLists()
-                                                         .getDevice(LightSheetInterface.class,
-                                                                    pLightSheetIndex);
+                                    getLightSheetMicroscope().getDeviceLists()
+                                                             .getDevice(LightSheetInterface.class,
+                                                                        pLightSheetIndex);
 
     System.out.println("Current Alpha function: "
                        + lLightSheet.getAlphaFunction());
@@ -188,7 +176,7 @@ public class CalibrationA extends CalibrationBase
       int lNumberOfDetectionArmDevices = getNumberOfDetectionArms();
 
       LightSheetMicroscopeQueue lQueue =
-                                       mLightSheetMicroscope.requestQueue();
+                                       getLightSheetMicroscope().requestQueue();
 
       final TDoubleArrayList lAList = new TDoubleArrayList();
       double[] angles = new double[lNumberOfDetectionArmDevices];
@@ -230,48 +218,48 @@ public class CalibrationA extends CalibrationBase
       }
       lQueue.addCurrentStateToQueue();
 
-      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+      lQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 10);
 
       lQueue.finalizeQueue();
 
-      mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+      getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
-                                                                                      TimeUnit.SECONDS);
+                                      getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
+                                                                                          lQueue.getQueueLength(),
+                                                                                          TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)
         for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
         {
           final OffHeapPlanarStack lStack =
-                                          (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(i)
-                                                                                    .get();
+                                          (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(i)
+                                                                                        .get();
 
           final double[] lAvgIntensityArray =
                                             ImageAnalysisUtils.computeAverageSquareVariationPerPlane(lStack);
 
           smooth(lAvgIntensityArray, 10);
 
-          PlotTab lPlot =
-                        mMultiPlotAFocusCurves.getPlot(String.format("D=%d, I=%d, IY=%g",
-                                                                     i,
-                                                                     pLightSheetIndex,
-                                                                     pY));
-          lPlot.setScatterPlot("samples");
+          String lChartName = String.format("D=%d, I=%d, IY=%g",
+                                            i,
+                                            pLightSheetIndex,
+                                            pY);
 
-          // System.out.format("metric array: \n");
+          getCalibrationEngine().configureChart(lChartName,
+                                                "samples",
+                                                "DZ",
+                                                "IZ",
+                                                ChartType.Line);
+
           for (int j = 0; j < lAvgIntensityArray.length; j++)
           {
-            lPlot.addPoint("samples",
-                           lAList.get(j),
-                           lAvgIntensityArray[j]);
-            /*System.out.format("%d,%d\t%g\t%g\n",
-            									i,
-            									j,
-            									lAList.get(j),
-            									lMetricArray[j]);/**/
+            getCalibrationEngine().addPoint(lChartName,
+                                            "samples",
+                                            j == 0,
+                                            lAList.get(j),
+                                            lAvgIntensityArray[j]);
+
           }
-          lPlot.ensureUpToDate();
 
           final Double lArgMax =
                                mArgMaxFinder.argmax(lAList.toArray(),
@@ -290,28 +278,28 @@ public class CalibrationA extends CalibrationBase
                               lArgMax.toString(),
                               lAmplitudeRatio);
 
-            lPlot.setScatterPlot("argmax");
-            lPlot.addPoint("argmax", lArgMax, 0);
+            // lPlot.setScatterPlot("argmax");
+            // lPlot.addPoint("argmax", lArgMax, 0);
 
             if (lAmplitudeRatio > 0.1 && lArgMax > lAList.get(0))
               angles[i] = lArgMax;
             else
               angles[i] = Double.NaN;
 
-            if (mArgMaxFinder instanceof Fitting1D)
+            /* if (mArgMaxFinder instanceof Fitting1D)
             {
               Fitting1D lFitting1D = (Fitting1D) mArgMaxFinder;
-
+            
               double[] lFit =
                             lFitting1D.fit(lAList.toArray(),
                                            new double[lAList.size()]);
-
+            
               for (int j = 0; j < lAList.size(); j++)
               {
-                lPlot.setScatterPlot("fit");
-                lPlot.addPoint("fit", lAList.get(j), lFit[j]);
+                //lPlot.setScatterPlot("fit");
+                //lPlot.addPoint("fit", lAList.get(j), lFit[j]);
               }
-            }
+            }/**/
 
           }
           else
@@ -375,9 +363,9 @@ public class CalibrationA extends CalibrationBase
     System.out.println("LightSheet index: " + pLightSheetIndex);
 
     LightSheetInterface lLightSheetDevice =
-                                          mLightSheetMicroscope.getDeviceLists()
-                                                               .getDevice(LightSheetInterface.class,
-                                                                          pLightSheetIndex);
+                                          getLightSheetMicroscope().getDeviceLists()
+                                                                   .getDevice(LightSheetInterface.class,
+                                                                              pLightSheetIndex);
 
     UnivariateAffineFunction lUnivariateAffineFunction =
                                                        mModels.get(pLightSheetIndex);
@@ -414,8 +402,7 @@ public class CalibrationA extends CalibrationBase
   @Override
   public void reset()
   {
-    mMultiPlotAFocusCurves.clear();
-    mMultiPlotAFocusCurves.setVisible(false);
+    super.reset();
     mModels.clear();
   }
 

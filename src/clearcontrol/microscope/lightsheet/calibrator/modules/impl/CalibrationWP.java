@@ -16,10 +16,9 @@ import org.apache.commons.math3.stat.StatUtils;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
@@ -35,7 +34,6 @@ import gnu.trove.list.array.TDoubleArrayList;
 public class CalibrationWP extends CalibrationBase
                            implements CalibrationModuleInterface
 {
-  private MultiPlot mMultiPlotAdjustPCurves, mMultiPlotHPPCurves;
   private MultiKeyMap<Integer, PolynomialFunction> mWPFunctions;
 
   /**
@@ -44,14 +42,9 @@ public class CalibrationWP extends CalibrationBase
    * @param pCalibrator
    *          parent calibrator
    */
-  public CalibrationWP(Calibrator pCalibrator)
+  public CalibrationWP(CalibrationEngine pCalibrator)
   {
     super(pCalibrator);
-    mMultiPlotAdjustPCurves =
-                            MultiPlot.getMultiPlot(this.getClass()
-                                                       .getSimpleName()
-                                                   + " calibration: adjust power curves");
-    mMultiPlotAdjustPCurves.setVisible(false);
 
     mWPFunctions = new MultiKeyMap<>();
   }
@@ -75,14 +68,10 @@ public class CalibrationWP extends CalibrationBase
                         int pNumberOfSamplesP)
   {
 
-    mMultiPlotAdjustPCurves.clear();
-    if (!mMultiPlotAdjustPCurves.isVisible())
-      mMultiPlotAdjustPCurves.setVisible(true);
-
     LightSheetInterface lLightSheet =
-                                    mLightSheetMicroscope.getDeviceLists()
-                                                         .getDevice(LightSheetInterface.class,
-                                                                    pLightSheetIndex);
+                                    getLightSheetMicroscope().getDeviceLists()
+                                                             .getDevice(LightSheetInterface.class,
+                                                                        pLightSheetIndex);
 
     BoundedVariable<Number> lWidthVariable =
                                            lLightSheet.getWidthVariable();
@@ -144,25 +133,42 @@ public class CalibrationWP extends CalibrationBase
                      pDetectionArmIndex,
                      lPowerRatioFunction);
 
-    PlotTab lPlot =
-                  mMultiPlotHPPCurves.getPlot(String.format(" D=%d, I=%d, W=%g",
-                                                            pDetectionArmIndex,
-                                                            pLightSheetIndex));
+    String lChartName = String.format(" D=%d, I=%d, W=%g",
+                                      pDetectionArmIndex,
+                                      pLightSheetIndex);
 
-    lPlot.setScatterPlot("samples");
-    lPlot.setScatterPlot("fit");
+    getCalibrationEngine().configureChart(lChartName,
+                                          "samples",
+                                          "IW",
+                                          "intensity",
+                                          ChartType.Line);
+
+    getCalibrationEngine().configureChart(lChartName,
+                                          "fit",
+                                          "IW",
+                                          "intensity",
+                                          ChartType.Line);
+
     List<WeightedObservedPoint> lObservationsList =
                                                   lObservations.toList();
 
     for (int j = 0; j < lWList.size(); j++)
     {
-      lPlot.addPoint("samples", lWList.get(j), lPRList.get(j));
-      lPlot.addPoint("fit",
-                     lWList.get(j),
-                     lObservationsList.get(j).getY());
+      getCalibrationEngine().addPoint(lChartName,
+                                      "samples",
+                                      j == 0,
+                                      lWList.get(j),
+                                      lPRList.get(j));
+
+      getCalibrationEngine().addPoint(lChartName,
+                                      "fit",
+                                      j == 0,
+                                      lWList.get(j),
+                                      lObservationsList.get(j)
+                                                       .getY());
 
     }
-    lPlot.ensureUpToDate();
+
 
   }
 
@@ -180,7 +186,7 @@ public class CalibrationWP extends CalibrationBase
       int lNumberOfDetectionArms = getNumberOfLightSheets();
 
       LightSheetMicroscopeQueue lQueue =
-                                       mLightSheetMicroscope.requestQueue();
+                                       getLightSheetMicroscope().requestQueue();
       lQueue.clearQueue();
       lQueue.zero();
 
@@ -223,49 +229,50 @@ public class CalibrationWP extends CalibrationBase
       }
       lQueue.addCurrentStateToQueue();
 
-      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+      lQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 10);
 
       lQueue.finalizeQueue();
 
-      mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+      getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
-                                                                                      TimeUnit.SECONDS);
+                                      getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
+                                                                                          lQueue.getQueueLength(),
+                                                                                          TimeUnit.SECONDS);
 
       if (lPlayQueueAndWait)
       {
         final OffHeapPlanarStack lStack =
-                                        (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
-                                                                                  .get();
+                                        (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
+                                                                                      .get();
 
         final double[] lAvgIntensityArray =
                                           ImageAnalysisUtils.computeAverageSquareVariationPerPlane(lStack);
 
         smooth(lAvgIntensityArray, 1);
 
-        PlotTab lPlot =
-                      mMultiPlotAdjustPCurves.getPlot(String.format("Mode=%s, D=%d, I=%d, W=%g",
-                                                                    pReturnIntensity ? "ret_int"
-                                                                                     : "ret_pow",
-                                                                    pDetectionArmIndex,
-                                                                    pLightSheetIndex,
-                                                                    pW));
-        lPlot.setScatterPlot("samples");
+        String lChartName = String.format("Mode=%s, D=%d, I=%d, W=%g",
+                                          pReturnIntensity ? "ret_int"
+                                                           : "ret_pow",
+                                          pDetectionArmIndex,
+                                          pLightSheetIndex,
+                                          pW);
+
+        getCalibrationEngine().configureChart(lChartName,
+                                              "samples",
+                                              "IP",
+                                              "avg intensity",
+                                              ChartType.Line);
 
         // System.out.format("metric array: \n");
         for (int j = 0; j < lAvgIntensityArray.length; j++)
         {
-          lPlot.addPoint("samples",
-                         lPList.get(j),
-                         lAvgIntensityArray[j]);
-          /*System.out.format("%d,%d\t%g\t%g\n",
-          									i,
-          									j,
-          									lAList.get(j),
-          									lMetricArray[j]);/**/
+          getCalibrationEngine().addPoint(lChartName,
+                                          "samples",
+                                          j == 0,
+                                          lPList.get(j),
+                                          lAvgIntensityArray[j]);
+
         }
-        lPlot.ensureUpToDate();
 
         if (pReturnIntensity)
         {
@@ -357,9 +364,9 @@ public class CalibrationWP extends CalibrationBase
     System.out.println("LightSheet index: " + pLightSheetIndex);
 
     LightSheetInterface lLightSheetDevice =
-                                          mLightSheetMicroscope.getDeviceLists()
-                                                               .getDevice(LightSheetInterface.class,
-                                                                          pLightSheetIndex);
+                                          getLightSheetMicroscope().getDeviceLists()
+                                                                   .getDevice(LightSheetInterface.class,
+                                                                              pLightSheetIndex);
 
     PolynomialFunction lNewWidthPowerFunction =
                                               mWPFunctions.get(pLightSheetIndex,
@@ -387,8 +394,7 @@ public class CalibrationWP extends CalibrationBase
   @Override
   public void reset()
   {
-    mMultiPlotAdjustPCurves.clear();
-    mMultiPlotAdjustPCurves.setVisible(false);
+    super.reset();
     mWPFunctions.clear();
   }
 

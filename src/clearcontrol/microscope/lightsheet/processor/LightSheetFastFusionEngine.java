@@ -323,6 +323,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     return isImageAvailable("fused");
   }
 
+  /**
+   * Is registration turned on?
+   * 
+   * @return true if registration is turned on
+   */
   public boolean isRegistration()
   {
     return mRegistration;

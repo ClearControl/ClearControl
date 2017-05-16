@@ -13,10 +13,9 @@ import org.apache.commons.math3.stat.StatUtils;
 
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationBase;
 import clearcontrol.microscope.lightsheet.calibrator.modules.CalibrationModuleInterface;
 import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
@@ -37,7 +36,6 @@ public class CalibrationW extends CalibrationBase
 
   private HashMap<Integer, TDoubleArrayList> mIntensityLists;
   private TDoubleArrayList mWList = new TDoubleArrayList();
-  private MultiPlot mAverageIntensityCurves;
 
   /**
    * Instantiates a lightsheet width calibration module
@@ -45,15 +43,9 @@ public class CalibrationW extends CalibrationBase
    * @param pCalibrator
    *          parent calibrator
    */
-  public CalibrationW(Calibrator pCalibrator)
+  public CalibrationW(CalibrationEngine pCalibrator)
   {
     super(pCalibrator);
-
-    mAverageIntensityCurves =
-                            MultiPlot.getMultiPlot(this.getClass()
-                                                       .getSimpleName()
-                                                   + "W-calibration: average intensity curves");
-    mAverageIntensityCurves.setVisible(false);
 
   }
 
@@ -105,15 +97,13 @@ public class CalibrationW extends CalibrationBase
                             int pDetectionArmIndex,
                             int pNumberOfSamples)
   {
-    if (!mAverageIntensityCurves.isVisible())
-      mAverageIntensityCurves.setVisible(true);
 
     try
     {
       LightSheetInterface lLightSheetDevice =
-                                            mLightSheetMicroscope.getDeviceLists()
-                                                                 .getDevice(LightSheetInterface.class,
-                                                                            pLightSheetIndex);
+                                            getLightSheetMicroscope().getDeviceLists()
+                                                                     .getDevice(LightSheetInterface.class,
+                                                                                pLightSheetIndex);
 
       BoundedVariable<Number> lWVariable =
                                          lLightSheetDevice.getWidthVariable();
@@ -128,7 +118,7 @@ public class CalibrationW extends CalibrationBase
 
       // Building queue start:
       LightSheetMicroscopeQueue lQueue =
-                                       mLightSheetMicroscope.requestQueue();
+                                       getLightSheetMicroscope().requestQueue();
       lQueue.clearQueue();
       lQueue.zero();
 
@@ -158,23 +148,23 @@ public class CalibrationW extends CalibrationBase
         lQueue.addCurrentStateToQueue();
       }
 
-      lQueue.addVoxelDimMetaData(mLightSheetMicroscope, 10);
+      lQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 10);
 
       lQueue.finalizeQueue();
       // Building queue end.
 
-      mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+      getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
-                                      mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
-                                                                                      TimeUnit.SECONDS);
+                                      getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
+                                                                                          lQueue.getQueueLength(),
+                                                                                          TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
 
       final OffHeapPlanarStack lStack =
-                                      (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
-                                                                                .get();
+                                      (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
+                                                                                    .get();
 
       long lWidth = lStack.getWidth();
       long lHeight = lStack.getHeight();
@@ -188,22 +178,26 @@ public class CalibrationW extends CalibrationBase
 
       System.out.format("Image: average intensities: \n");
 
-      PlotTab lPlot =
-                    mAverageIntensityCurves.getPlot(String.format("D=%d, I=%d",
-                                                                  pDetectionArmIndex,
-                                                                  pLightSheetIndex));
-      lPlot.clearPoints();
-      lPlot.setScatterPlot("avg. intensity");
+      String lChartName = String.format("D=%d, I=%d",
+                                        pDetectionArmIndex,
+                                        pLightSheetIndex);
+
+      getCalibrationEngine().configureChart(lChartName,
+                                            "avg. intensity",
+                                            "IW",
+                                            "intensity",
+                                            ChartType.Line);
 
       for (int i = 0; i < lAverageIntensities.length; i++)
       {
         System.out.println(lAverageIntensities[i]);
-        lPlot.addPoint("avg. intensity",
-                       mWList.get(i),
-                       lAverageIntensities[i]);
+        getCalibrationEngine().addPoint(lChartName,
+                                        "avg. intensity",
+                                        i == 0,
+                                        mWList.get(i),
+                                        lAverageIntensities[i]);
       }
 
-      lPlot.ensureUpToDate();
 
       return lAverageIntensities;
     }
@@ -297,9 +291,9 @@ public class CalibrationW extends CalibrationBase
     for (int l = 0; l < lNumberOfLightSheets; l++)
     {
       LightSheetInterface lLightSheetDevice =
-                                            mLightSheetMicroscope.getDeviceLists()
-                                                                 .getDevice(LightSheet.class,
-                                                                            l);
+                                            getLightSheetMicroscope().getDeviceLists()
+                                                                     .getDevice(LightSheet.class,
+                                                                                l);
 
       UnivariateAffineFunction lFunction =
                                          lLightSheetDevice.getWidthFunction()
@@ -342,7 +336,6 @@ public class CalibrationW extends CalibrationBase
   @Override
   public void reset()
   {
-    mAverageIntensityCurves.clear();
-
+    super.reset();
   }
 }

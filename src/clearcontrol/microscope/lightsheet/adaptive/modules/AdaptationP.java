@@ -259,7 +259,7 @@ public class AdaptationP extends
   }
 
   @Override
-  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
+  public void updateState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

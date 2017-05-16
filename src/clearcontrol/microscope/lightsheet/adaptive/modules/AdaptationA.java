@@ -11,8 +11,10 @@ import java.util.concurrent.TimeoutException;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.methods.ModeArgMaxFinder;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
@@ -26,16 +28,14 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author royer
  */
-public class AdaptationA extends
-                         StandardAdaptationModule<InterpolatedAcquisitionState>
-                         implements
+public class AdaptationA extends StandardAdaptationModule implements
                          AdaptationModuleInterface<InterpolatedAcquisitionState>
 {
 
   private double mMaxDefocus;
 
   /**
-   * Instanciates an Alpha adaptation module given a max defocus, number of
+   * Instantiates an Alpha adaptation module given a max defocus, number of
    * samples and probability threshold.
    * 
    * @param pMaxDefocus
@@ -44,12 +44,27 @@ public class AdaptationA extends
    *          number of samples
    * @param pProbabilityThreshold
    *          probability threshold
+   * @param pImageMetricThreshold
+   *          image metric threshold
+   * @param pExposureInSeconds
+   *          exposure in seconds
+   * @param pLaserPower
+   *          laser power
    */
   public AdaptationA(double pMaxDefocus,
                      int pNumberOfSamples,
-                     double pProbabilityThreshold)
+                     double pProbabilityThreshold,
+                     double pImageMetricThreshold,
+                     double pExposureInSeconds,
+                     double pLaserPower)
   {
-    super("A", pNumberOfSamples, pProbabilityThreshold);
+    super("A",
+          LightSheetDOF.IA,
+          pNumberOfSamples,
+          pProbabilityThreshold,
+          pImageMetricThreshold,
+          pExposureInSeconds,
+          pLaserPower);
     mMaxDefocus = pMaxDefocus;
   }
 
@@ -66,8 +81,6 @@ public class AdaptationA extends
     InterpolatedAcquisitionState lStackAcquisition =
                                                    getAdaptiveEngine().getAcquisitionStateVariable()
                                                                       .get();
-
-
 
     final TDoubleArrayList lDZList = new TDoubleArrayList();
 
@@ -116,7 +129,6 @@ public class AdaptationA extends
                                 double pCurrentH,
                                 double pIY)
   {
-
 
     double lMinZ = -mMaxDefocus;
     double lMaxZ = +mMaxDefocus;
@@ -175,7 +187,6 @@ public class AdaptationA extends
 
       if (!lPlayQueueAndWait)
         return null;
-
 
       final StackInterface lStackInterface =
                                            pMicroscope.getCameraStackVariable(0)// FIXME
@@ -301,35 +312,37 @@ public class AdaptationA extends
 
     int lLength = lMetricArray.length / 2;
 
+    getAdaptiveEngine().configureChart(getName(),
+                                       lChartName,
+                                       "delta z",
+                                       "focus metric",
+                                       ChartType.Line);
+
     for (int i = 0; i < lLength; i++)
     {
-      System.out.format("%g\t%g \n",
+      /*System.out.format("%g\t%g \n",
                         lDOFValueList.get(i),
-                        lMetricArray[i]);
+                        lMetricArray[i]);/**/
 
-      getAdaptiveEngine().notifyChartListenersOfNewPoint(this,
-                                                         lChartName,
-                                                         i == 0,
-                                                         "delta z",
-                                                         "focus metric",
-                                                         lDOFValueList.get(i),
-                                                         lMetricArray[i]);
+      getAdaptiveEngine().addPoint(getName(),
+                                   lChartName,
+                                   i == 0,
+                                   lDOFValueList.get(i),
+                                   lMetricArray[i]);
 
     }
 
     for (int i = lLength; i < 2 * lLength; i++)
     {
-      System.out.format("%g\t%g \n",
+      /*System.out.format("%g\t%g \n",
                         lDOFValueList.get(i),
-                        lMetricArray[i]);
+                        lMetricArray[i]);/**/
 
-      getAdaptiveEngine().notifyChartListenersOfNewPoint(this,
-                                                         lChartName,
-                                                         i == 0,
-                                                         "delta z",
-                                                         "focus metric",
-                                                         lDOFValueList.get(i),
-                                                         lMetricArray[i]);
+      getAdaptiveEngine().addPoint(getName(),
+                                   lChartName,
+                                   i == 0,
+                                   lDOFValueList.get(i),
+                                   lMetricArray[i]);
 
     }
 
@@ -337,7 +350,7 @@ public class AdaptationA extends
   }
 
   @Override
-  public void updateNewState(InterpolatedAcquisitionState pStateToUpdate)
+  public void updateState(InterpolatedAcquisitionState pStateToUpdate)
   {
     // TODO Auto-generated method stub
 

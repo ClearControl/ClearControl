@@ -11,6 +11,7 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.calibrator.modules.impl.CalibrationA;
 import clearcontrol.microscope.lightsheet.calibrator.modules.impl.CalibrationHP;
@@ -24,11 +25,13 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.scripting.engine.ScriptingEngine;
 
 /**
- * Calibrator
+ * Calibration engine
  *
  * @author royer
  */
-public class Calibrator extends TaskDevice implements LoggingInterface
+public class CalibrationEngine extends TaskDevice implements
+                        LoggingInterface,
+                        VisualConsoleInterface
 {
 
   private static final int cMaxIterations = 3;
@@ -85,13 +88,13 @@ public class Calibrator extends TaskDevice implements LoggingInterface
   private final Variable<Double> mProgressVariable;
 
   /**
-   * Instanciates a calibrator, given a lightsheet microscope
+   * Instantiates a calibrator, given a lightsheet microscope
    * 
    * @param pLightSheetMicroscope
-   *          lighthseet microscope
+   *          lightsheet microscope
    */
   @SuppressWarnings("unchecked")
-  public Calibrator(LightSheetMicroscope pLightSheetMicroscope)
+  public CalibrationEngine(LightSheetMicroscope pLightSheetMicroscope)
   {
     super("Calibrator");
 

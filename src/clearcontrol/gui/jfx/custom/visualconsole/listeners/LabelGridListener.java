@@ -1,6 +1,4 @@
-package clearcontrol.microscope.adaptive;
-
-import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
+package clearcontrol.gui.jfx.custom.visualconsole.listeners;
 
 /**
  * Label grid listener
@@ -10,23 +8,32 @@ import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 public interface LabelGridListener
 {
 
+
   /**
    * Adds an entry to the grid
    * 
-   * @param pModule
-   * @param pName
+   * @param pTabName
+   *          tab name
    * @param pClear
+   *          clear
+   * @param pFontSize
+   *          font size
    * @param pColumnName
+   *          column name
    * @param pRowName
+   *          row name
    * @param pX
+   *          x coordinate in grid
    * @param pY
+   *          y coordinate in grid
    * @param pString
+   *          text to put in grid cell
    */
-  void addEntry(AdaptationModuleInterface<?> pModule,
-                String pName,
+  void addEntry(String pTabName,
                 boolean pClear,
                 String pColumnName,
                 String pRowName,
+                int pFontSize,
                 int pX,
                 int pY,
                 String pString);

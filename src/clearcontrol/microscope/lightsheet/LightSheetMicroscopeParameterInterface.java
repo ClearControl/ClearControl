@@ -136,7 +136,7 @@ public interface LightSheetMicroscopeParameterInterface
   double getDZ(int pDetectionArmIndex);
 
   /**
-   * Sets the detection objective flyback position after a stack acquisition
+   * Sets the detection objective flyback Z position after a stack acquisition
    * 
    * @param pDetectionArmIndex
    *          detection arm index
@@ -144,6 +144,13 @@ public interface LightSheetMicroscopeParameterInterface
    *          flyback position Z
    */
   void setFlyBackDZ(int pDetectionArmIndex, double pPositionZ);
+
+  /**
+   * Sets all detection objectives flyback Z position after a stack acquisition
+   * 
+   * @param pValue
+   */
+  void setFlyBackDZ(double pValue);
 
   /**
    * Returns the detection objective flyback Z position
@@ -452,6 +459,7 @@ public interface LightSheetMicroscopeParameterInterface
    */
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
+
 
 
 }

@@ -29,7 +29,7 @@ import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
@@ -322,7 +322,7 @@ public class LightSheetMicroscopeDemo implements
 
     // Adding calibrator:
 
-    Calibrator lCalibrator = lLightSheetMicroscope.addCalibrator();
+    CalibrationEngine lCalibrator = lLightSheetMicroscope.addCalibrator();
     lCalibrator.load();
 
     // Adding timelapse device:

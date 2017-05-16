@@ -408,6 +408,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
     mAdaptiveEngine = mMicroscope.getDevice(AdaptiveEngine.class, 0);
     mAdaptiveEngine.getAcquisitionStateCounterVariable().set(0L);
+    mAdaptiveEngine.reset();
   }
 
   private void runAdaptiveEngine()

@@ -73,7 +73,7 @@ public class AdaptationTestModule extends
   }
 
   @Override
-  public void updateNewState(TestState pStateToUpdate)
+  public void updateState(TestState pStateToUpdate)
   {
     info("!!!TESTMODULE %s - UPDATING NEW STATE... !!", getName());
   }

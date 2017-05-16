@@ -148,6 +148,8 @@ public class LightSheet extends
     mWidthPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
     mHeightPowerFunction.addSetListener((VariableSetListener<PolynomialFunction>) lFunctionVariableListener);
 
+    getHeightVariable().set(getHeightVariable().getMax());
+
     notifyListeners(this);
   }
 

@@ -8,7 +8,7 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.microscope.MicroscopeBase;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.lightsheet.calibrator.Calibrator;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
@@ -127,9 +127,9 @@ public class LightSheetMicroscope extends
    * 
    * @return calibrator
    */
-  public Calibrator addCalibrator()
+  public CalibrationEngine addCalibrator()
   {
-    Calibrator lCalibrator = new Calibrator(this);
+    CalibrationEngine lCalibrator = new CalibrationEngine(this);
     addDevice(0, lCalibrator);
     return lCalibrator;
   }

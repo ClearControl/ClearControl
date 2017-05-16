@@ -366,6 +366,14 @@ public class LightSheetMicroscopeQueue extends
   }
 
   @Override
+  public void setFlyBackDZ(double pValue)
+  {
+    int lNumberOfDetectionArms = getNumberOfDetectionArms();
+    for (int d = 0; d < lNumberOfDetectionArms; d++)
+      getDetectionArmDeviceQueue(d).getFlyBackZVariable().set(pValue);
+  }
+
+  @Override
   public void setFlyBackDZ(int pDetectionArmIndex, double pValue)
   {
     getDetectionArmDeviceQueue(pDetectionArmIndex).getFlyBackZVariable()
@@ -385,7 +393,7 @@ public class LightSheetMicroscopeQueue extends
   {
     int lNumberOfDetectionArms = getNumberOfDetectionArms();
     for (int d = 0; d < lNumberOfDetectionArms; d++)
-      setFlyBackDZ(d, getDZ(d));
+      setFlyBackDZ(getDZ(d));
   }
 
   @Override

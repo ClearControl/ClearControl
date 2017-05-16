@@ -1,5 +1,6 @@
 package clearcontrol.microscope.adaptive.gui.demo;
 
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.adaptive.gui.AdaptiveEnginePanel;
 import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
@@ -48,32 +49,32 @@ public class AdaptiveEnginePanelDemo extends Application
 
     root.getChildren().add(lAdaptiveEnginePanel);
 
+    lAdaptator.configureChart(lAdaptationModuleA.getName(),
+                              "test",
+                              "x",
+                              "y",
+                              ChartType.Line);
+
     for (int i = 0; i < 100; i++)
     {
       double x = i;
       double y = Math.cos(0.1 * x);
 
-      lAdaptator.notifyChartListenersOfNewPoint(lAdaptationModuleA,
+      lAdaptator.addPoint(lAdaptationModuleA.getName(),
                                                 "test",
                                                 i == 0,
-                                                "x",
-                                                "y",
                                                 x,
                                                 y);
 
-      lAdaptator.notifyChartListenersOfNewPoint(lAdaptationModuleB,
+      lAdaptator.addPoint(lAdaptationModuleB.getName(),
                                                 "test",
                                                 i == 0,
-                                                "x",
-                                                "y",
                                                 x,
                                                 y);
 
-      lAdaptator.notifyChartListenersOfNewPoint(lAdaptationModuleB,
+      lAdaptator.addPoint(lAdaptationModuleB.getName(),
                                                 "test2",
                                                 i == 0,
-                                                "x",
-                                                "y",
                                                 x,
                                                 y * y);
 

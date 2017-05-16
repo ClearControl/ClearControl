@@ -57,7 +57,9 @@ public class SimulationUtils
 
     // lSimulator.addAbberation(new Miscalibration());
     // lSimulator.addAbberation(new SampleDrift());
-    lSimulator.addAbberation(new IlluminationMisalignment());
+    lSimulator.addAbberation(IlluminationMisalignment.buildXYZ(0,
+                                                               0,
+                                                               0));
     // lSimulator.addAbberation(new DetectionMisalignment());
 
     /*scheduleAtFixedRate(() -> lSimulator.simulationSteps(1),

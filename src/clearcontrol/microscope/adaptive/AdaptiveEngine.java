@@ -4,7 +4,6 @@ import static java.lang.Math.max;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -17,6 +16,7 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
@@ -35,7 +35,8 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                            Function<Integer, Boolean>,
                            AdaptiveEngineInterface<S>,
                            LoggingInterface,
-                           AsynchronousExecutorServiceAccess
+                           AsynchronousExecutorServiceAccess,
+                           VisualConsoleInterface
 {
   private static final double cEpsilon = 0.8;
 
@@ -43,11 +44,6 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   private ArrayList<AdaptationModuleInterface<S>> mAdaptationModuleList =
                                                                         new ArrayList<>();
 
-  private CopyOnWriteArrayList<ChartListenerInterface> mChartListenerList =
-                                                                          new CopyOnWriteArrayList<>();
-
-  private CopyOnWriteArrayList<LabelGridListener> mLabelGridListenerList =
-                                                                         new CopyOnWriteArrayList<>();
 
   private HashMap<AdaptationModuleInterface<S>, Long> mTimmingMap =
                                                                   new HashMap<>();
@@ -414,7 +410,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   {
     for (AdaptationModuleInterface<S> lAdaptationModule : mAdaptationModuleList)
       if (lAdaptationModule.isActive())
-        lAdaptationModule.updateNewState(pStateToUpdate);
+        lAdaptationModule.updateState(pStateToUpdate);
   }
 
   private AdaptationModuleInterface<S> getCurrentModule()
@@ -554,105 +550,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     return lTotalRemainingNumberOfSteps;
   }
 
-  /**
-   * Adds a chart listener
-   * 
-   * @param pChartListener
-   *          chart listener
-   */
-  public void addChartListener(ChartListenerInterface pChartListener)
-  {
-    mChartListenerList.add(pChartListener);
-  }
 
-  /**
-   * Notifies chart listeners of a new point
-   * 
-   * @param pModule
-   *          module
-   * @param pName
-   *          name of chart
-   * @param pClear
-   *          true for clearing before first point
-   * @param pXAxisName
-   *          X axis name
-   * @param pYAxisName
-   *          Y axis name
-   * @param x
-   *          x coordinate
-   * @param y
-   *          y coordinate
-   */
-  public void notifyChartListenersOfNewPoint(AdaptationModuleInterface<?> pModule,
-                                             String pName,
-                                             boolean pClear,
-                                             String pXAxisName,
-                                             String pYAxisName,
-                                             double x,
-                                             double y)
-  {
-    for (ChartListenerInterface lChartListenerInterface : mChartListenerList)
-      lChartListenerInterface.addPoint(pModule,
-                                       pName,
-                                       pClear,
-                                       pXAxisName,
-                                       pYAxisName,
-                                       x,
-                                       y);
-
-  }
-
-  /**
-   * Adds a label grid listener
-   * 
-   * @param pLabelGridListener
-   *          label grid listener
-   */
-  public void addLabelGridListener(LabelGridListener pLabelGridListener)
-  {
-    mLabelGridListenerList.add(pLabelGridListener);
-  }
-
-  /**
-   * Notifies label grid listeners of a new entry
-   * 
-   * @param pModule
-   *          module
-   * @param pName
-   *          name of grid
-   * @param pClear
-   *          true for clearing before ading entry
-   * @param pColumnName
-   *          column name
-   * @param pRowName
-   *          row name
-   * @param x
-   *          x coordinate in grid
-   * @param y
-   *          y coordinate in grid
-   * @param pString
-   *          string to put at given grid coordinate
-   */
-  public void notifyLabelGridListenerOfNewEntry(AdaptationModuleInterface<?> pModule,
-                                                String pName,
-                                                boolean pClear,
-                                                String pColumnName,
-                                                String pRowName,
-                                                int x,
-                                                int y,
-                                                String pString)
-  {
-    for (LabelGridListener lLabelGridListener : mLabelGridListenerList)
-      lLabelGridListener.addEntry(pModule,
-                                  pName,
-                                  pClear,
-                                  pColumnName,
-                                  pRowName,
-                                  x,
-                                  y,
-                                  pString);
-
-  }
 
 
 
