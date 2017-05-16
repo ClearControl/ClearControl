@@ -107,12 +107,11 @@ public class CalibrationP extends CalibrationBase
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
-      lQueue.setIZ(pLightSheetIndex, 0);
-      lQueue.setIH(pLightSheetIndex, 0);
+      lQueue.setIH(pLightSheetIndex, 1000);
       lQueue.setIP(pLightSheetIndex, 1);
 
-      for (int i = 0; i < lNumberOfDetectionArms; i++)
-        lQueue.setDZ(i, 0);
+      lQueue.setDZ(160);
+      lQueue.setIZ(pLightSheetIndex, 160);
 
       for (int i = 1; i <= pNumberOfSamples; i++)
       {
@@ -129,15 +128,15 @@ public class CalibrationP extends CalibrationBase
       getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
                                       getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
-                                                                                      TimeUnit.SECONDS);
+                                                                                          lQueue.getQueueLength(),
+                                                                                          TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
 
       final OffHeapPlanarStack lStack =
                                       (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
-                                                                                .get();
+                                                                                    .get();
 
       long lWidth = lStack.getWidth();
       long lHeight = lStack.getHeight();
@@ -180,8 +179,8 @@ public class CalibrationP extends CalibrationBase
 
       LightSheetInterface lLightSheetDevice =
                                             getLightSheetMicroscope().getDeviceLists()
-                                                                 .getDevice(LightSheetInterface.class,
-                                                                            l);
+                                                                     .getDevice(LightSheetInterface.class,
+                                                                                l);
 
       Variable<UnivariateAffineFunction> lPowerFunctionVariable =
                                                                 lLightSheetDevice.getPowerFunction();
@@ -223,6 +222,15 @@ public class CalibrationP extends CalibrationBase
   @Override
   public void reset()
   {
+    int lNumberOfLightSheets = getNumberOfLightSheets();
+
+    for (int l = 0; l < lNumberOfLightSheets; l++)
+      getLightSheetMicroscope().getDeviceLists()
+                               .getDevice(LightSheetInterface.class,
+                                          l)
+                               .getPowerFunction()
+                               .set(UnivariateAffineFunction.axplusb(1,
+                                                                     0));
 
   }
 }
