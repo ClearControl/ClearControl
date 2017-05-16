@@ -149,8 +149,10 @@ public class MultiChartDemo extends Application
   }
 
   /**
-   * Main 
-   * @param args NA
+   * Main
+   * 
+   * @param args
+   *          NA
    */
   public static void main(String[] args)
   {

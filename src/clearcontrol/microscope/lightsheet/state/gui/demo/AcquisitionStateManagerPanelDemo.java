@@ -1,5 +1,9 @@
 package clearcontrol.microscope.lightsheet.state.gui.demo;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
@@ -7,9 +11,6 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /**
  * Acquisition state manager demo
@@ -58,7 +59,7 @@ public class AcquisitionStateManagerPanelDemo extends Application
       InterpolatedAcquisitionState lState =
                                           new InterpolatedAcquisitionState("State"
                                                                            + i,
-                                                                            lLightSheetMicroscope);
+                                                                           lLightSheetMicroscope);
       lState.setupControlPlanes(5, 20);
 
       lAcquisitionStateManager.addState(lState);

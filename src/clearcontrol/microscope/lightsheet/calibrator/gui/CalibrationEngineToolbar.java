@@ -1,10 +1,5 @@
 package clearcontrol.microscope.lightsheet.calibrator.gui;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
-import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -15,6 +10,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 
 /**
  * Calibration Engine Toolbar
@@ -83,11 +84,11 @@ public class CalibrationEngineToolbar extends CustomGridPane
 
       pCalibrationEngine.getProgressVariable()
                         .addEdgeListener((n) -> {
-        Platform.runLater(() -> {
+                          Platform.runLater(() -> {
                             lCalibrationProgressIndicator.setProgress(pCalibrationEngine.getProgressVariable()
-                                                               .get());
-        });
-      });
+                                                                                        .get());
+                          });
+                        });
 
     }
 
@@ -134,7 +135,7 @@ public class CalibrationEngineToolbar extends CustomGridPane
 
       int lNumberOfLightSheets =
                                pCalibrationEngine.getLightSheetMicroscope()
-                                            .getNumberOfLightSheets();
+                                                 .getNumberOfLightSheets();
       for (int l = 0; l < lNumberOfLightSheets; l++)
       {
         lCalibrateLightSheetOnOffPane.addSwitch("LS" + l,
@@ -158,14 +159,14 @@ public class CalibrationEngineToolbar extends CustomGridPane
     {
       TextField lCalibrationDataNameTextField =
                                               new TextField(pCalibrationEngine.getCalibrationDataNameVariable()
-                                                                       .get());
+                                                                              .get());
       lCalibrationDataNameTextField.setMaxWidth(Double.MAX_VALUE);
       lCalibrationDataNameTextField.textProperty()
                                    .addListener((obs, o, n) -> {
                                      String lName = n.trim();
                                      if (!lName.isEmpty())
                                        pCalibrationEngine.getCalibrationDataNameVariable()
-                                                  .set(lName);
+                                                         .set(lName);
 
                                    });
       GridPane.setColumnSpan(lCalibrationDataNameTextField, 3);

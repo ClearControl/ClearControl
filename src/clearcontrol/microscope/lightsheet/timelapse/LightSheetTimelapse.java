@@ -38,8 +38,6 @@ public class LightSheetTimelapse extends TimelapseBase implements
 
   private final LightSheetMicroscope mLightSheetMicroscope;
 
-
-
   private final Variable<Boolean> mFuseStacksVariable =
                                                       new Variable<Boolean>("FuseStacks",
                                                                             true);

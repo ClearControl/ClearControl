@@ -1,13 +1,5 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
-import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
-import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -19,6 +11,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 
 /**
  * Acquisition state panel

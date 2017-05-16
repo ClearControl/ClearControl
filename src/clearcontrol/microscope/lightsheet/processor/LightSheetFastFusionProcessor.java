@@ -3,8 +3,6 @@ package clearcontrol.microscope.lightsheet.processor;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.tuple.Triple;
-
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcontrol.core.log.LoggingInterface;
@@ -22,6 +20,8 @@ import clearcontrol.stack.processor.StackProcessorInterface;
 import clearcontrol.stack.processor.clearcl.ClearCLStackProcessorBase;
 import coremem.recycling.RecyclerInterface;
 
+import org.apache.commons.lang3.tuple.Triple;
+
 /**
  *
  *
@@ -37,7 +37,7 @@ public class LightSheetFastFusionProcessor extends
   private LightSheetFastFusionEngine mEngine;
 
   ConcurrentLinkedQueue<Triple<Integer, StackMetaData, ClearCLImage>> mFusedStackQueue =
-                                                                     new ConcurrentLinkedQueue<>();
+                                                                                       new ConcurrentLinkedQueue<>();
 
   private volatile StackInterface mFusedStack;
 
@@ -82,7 +82,6 @@ public class LightSheetFastFusionProcessor extends
 
     mEngine.passStack(true, pStack);
 
-
     // if (mEngine.isReady())
     {
       int lNumberOfTasksExecuted = mEngine.executeAllTasks();
@@ -99,19 +98,24 @@ public class LightSheetFastFusionProcessor extends
         String lKey = "C" + c;
         ClearCLImage lImage = mEngine.getImage(lKey);
         if (lImage != null)
-          mFusedStackQueue.add(Triple.of(c,mEngine.getFusedMetaData().clone(), lImage));
+          mFusedStackQueue.add(Triple.of(c,
+                                         mEngine.getFusedMetaData()
+                                                .clone(),
+                                         lImage));
       }
 
       Triple<Integer, StackMetaData, ClearCLImage> lImageFromQueue =
-                                                 mFusedStackQueue.poll();
+                                                                   mFusedStackQueue.poll();
 
       if (lImageFromQueue != null)
       {
-        StackInterface lStack = copyFusedStack(pStackRecycler,
-                       lImageFromQueue.getRight(),
-                       lImageFromQueue.getMiddle(),
-                       "C"+lImageFromQueue.getLeft());
-        lStack.getMetaData().addEntry(MetaDataView.Camera, lImageFromQueue.getLeft());
+        StackInterface lStack =
+                              copyFusedStack(pStackRecycler,
+                                             lImageFromQueue.getRight(),
+                                             lImageFromQueue.getMiddle(),
+                                             "C" + lImageFromQueue.getLeft());
+        lStack.getMetaData().addEntry(MetaDataView.Camera,
+                                      lImageFromQueue.getLeft());
         return lStack;
       }
 
@@ -120,7 +124,10 @@ public class LightSheetFastFusionProcessor extends
     {
       ClearCLImage lFusedImage = mEngine.getImage("fused");
 
-      return copyFusedStack(pStackRecycler, lFusedImage, mEngine.getFusedMetaData(), null);
+      return copyFusedStack(pStackRecycler,
+                            lFusedImage,
+                            mEngine.getFusedMetaData(),
+                            null);
     }
 
     return null;
@@ -161,19 +168,18 @@ public class LightSheetFastFusionProcessor extends
     AcquisitionType lAcquisitionType =
                                      pStack.getMetaData()
                                            .getValue(MetaDataAcquisitionType.AcquisitionType);
-    
-    
-    if(lAcquisitionType != AcquisitionType.TimeLapse)
+
+    if (lAcquisitionType != AcquisitionType.TimeLapse)
       return true;
-    
-    if(pStack.getMetaData()
-        .hasEntry(MetaDataFusion.RequestFullFusion))
+
+    if (pStack.getMetaData()
+              .hasEntry(MetaDataFusion.RequestFullFusion))
       return false;
-    
-    if(pStack.getMetaData()
-        .hasEntry(MetaDataFusion.RequestPerCameraFusion))
+
+    if (pStack.getMetaData()
+              .hasEntry(MetaDataFusion.RequestPerCameraFusion))
       return false;
-    
+
     return true;
   }
 

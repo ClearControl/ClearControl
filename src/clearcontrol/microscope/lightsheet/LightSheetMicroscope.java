@@ -52,9 +52,9 @@ public class LightSheetMicroscope extends
           pThreadPoolSize);
 
     mStackFusionProcessor =
-                    new LightSheetFastFusionProcessor("Stack Processor",
-                                                      this,
-                                                      pStackFusionContext);
+                          new LightSheetFastFusionProcessor("Stack Processor",
+                                                            this,
+                                                            pStackFusionContext);
 
     mStackProcessingPipeline.addStackProcessor(mStackFusionProcessor,
                                                "StackFusion",
@@ -133,8 +133,6 @@ public class LightSheetMicroscope extends
     addDevice(0, lCalibrator);
     return lCalibrator;
   }
-
-
 
   /**
    * Adds timelapse
@@ -316,8 +314,6 @@ public class LightSheetMicroscope extends
                          mDeviceLists.toString());
   }
 
-  
-  
   @Override
   public LightSheetMicroscopeQueue requestQueue()
   {

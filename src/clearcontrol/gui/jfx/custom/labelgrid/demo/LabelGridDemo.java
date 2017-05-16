@@ -1,14 +1,14 @@
 package clearcontrol.gui.jfx.custom.labelgrid.demo;
 
 import java.util.concurrent.TimeUnit;
-
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
-import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
 
 /**
  * Mulichart demo

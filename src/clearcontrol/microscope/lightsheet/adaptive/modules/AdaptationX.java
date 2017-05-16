@@ -68,7 +68,6 @@ public class AdaptationX extends StandardAdaptationModule implements
     LightSheetMicroscope lLightsheetMicroscope =
                                                (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
-
     double lDeltaX = getDeltaXVariable().get();
     int lNumberOfSamples = getNumberOfSamplesVariable().get();
     int lHalfSamples = (lNumberOfSamples - 1) / 2;

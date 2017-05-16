@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
 import clearcontrol.microscope.adaptive.utils.NDIterator;
+
+import org.junit.Test;
 
 /**
  * n-dimensionsl iterator tests

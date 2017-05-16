@@ -82,7 +82,8 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
     addToolbarMappingEntry(InteractiveAcquisition.class,
                            InteractiveAcquisitionToolbar.class);
 
-    addToolbarMappingEntry(CalibrationEngine.class, CalibrationEngineToolbar.class);
+    addToolbarMappingEntry(CalibrationEngine.class,
+                           CalibrationEngineToolbar.class);
 
     addPanelMappingEntry(CalibrationEngine.class,
                          CalibrationEnginePanel.class,

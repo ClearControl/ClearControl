@@ -1,13 +1,13 @@
 package clearcontrol.gui.jfx.custom.tableview;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Table view of doubles

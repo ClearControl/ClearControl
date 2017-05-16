@@ -1,9 +1,6 @@
 package clearcontrol.devices.cameras.gui;
 
 import java.util.Arrays;
-
-import clearcontrol.devices.cameras.StackCameraDeviceInterface;
-import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -25,6 +22,9 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
+
+import clearcontrol.devices.cameras.StackCameraDeviceInterface;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 
 /**
  * CameraDeviceGUI

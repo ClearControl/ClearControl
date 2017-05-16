@@ -80,8 +80,7 @@ public class BezierStave extends StaveAbstract
     }
     else if (pNormalizedTime > 1 - getMargin())
     {
-      lValue = getValueStop()
-                        - getSlopeEnd() * (1 - pNormalizedTime);
+      lValue = getValueStop() - getSlopeEnd() * (1 - pNormalizedTime);
     }
     else
     {

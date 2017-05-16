@@ -34,10 +34,10 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice
    */
   public ArduinoOpticalSwitchDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.get()
-                             .getSerialDevicePort("fiberswitch.optojena",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "fiberswitch.optojena",
+                                                        pDeviceIndex,
+                                                        "NULL"));
   }
 
   /**

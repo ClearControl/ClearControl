@@ -11,7 +11,7 @@ public interface StackSinkSourceInterface
    * Stacks sinks ans sources default channel
    */
   public static final String cDefaultChannel = "default";
-  
+
   /**
    * Format used to write the stacks filenames
    */

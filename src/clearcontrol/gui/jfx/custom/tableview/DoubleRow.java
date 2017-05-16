@@ -1,7 +1,6 @@
 package clearcontrol.gui.jfx.custom.tableview;
 
 import java.util.ArrayList;
-
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 

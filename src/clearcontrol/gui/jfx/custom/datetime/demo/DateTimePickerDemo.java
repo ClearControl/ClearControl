@@ -1,10 +1,11 @@
 package clearcontrol.gui.jfx.custom.datetime.demo;
 
-import clearcontrol.gui.jfx.custom.datetime.DateTimePicker;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import clearcontrol.gui.jfx.custom.datetime.DateTimePicker;
 
 /**
  * Enum combo box demo

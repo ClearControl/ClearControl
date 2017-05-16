@@ -30,10 +30,10 @@ public class OptoJenaFiberSwitchDevice extends SerialDevice implements
    */
   public OptoJenaFiberSwitchDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.get()
-                             .getSerialDevicePort("fiberswitch.optojena",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "fiberswitch.optojena",
+                                                        pDeviceIndex,
+                                                        "NULL"));
 
     mPositionVariable = new Variable<Integer>("SwitchPosition", 0);
   }

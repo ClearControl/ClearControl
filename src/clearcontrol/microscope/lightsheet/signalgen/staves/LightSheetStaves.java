@@ -81,7 +81,6 @@ public class LightSheetStaves implements LoggingInterface
     mFinalTStave = new EdgeStave("trigger.out.f", 0.5f, 1, 0);
     mFinalYStave = new RampContinuousStave("lightsheet.y.f");
 
-
     mNonSIIluminationLaserTriggerStave =
                                        new IntervalStave("trigger.out",
                                                          0,
@@ -385,8 +384,6 @@ public class LightSheetStaves implements LoggingInterface
       mFinalYStave.setStopValue((float) lGalvoYHighValue);
       mFinalYStave.setOutsideValue((float) lGalvoYHighValue);
       mFinalYStave.setNoJump(true);
-      
-
 
       mBeforeExposureXStave.setValue((float) getLightSheet().getXFunction()
                                                             .get()

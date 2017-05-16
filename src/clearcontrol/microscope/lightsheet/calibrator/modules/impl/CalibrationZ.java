@@ -8,8 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
@@ -28,6 +26,8 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms
@@ -96,6 +96,9 @@ public class CalibrationZ extends CalibrationBase
 
     final TheilSenEstimator[] lTheilSenEstimators =
                                                   new TheilSenEstimator[mNumberOfDetectionArmDevices];
+
+    for (int d = 0; d < mNumberOfDetectionArmDevices; d++)
+      lTheilSenEstimators[d] = new TheilSenEstimator();
 
     LightSheetInterface lLightSheetDevice =
                                           getLightSheetMicroscope().getDeviceLists()
@@ -355,9 +358,6 @@ public class CalibrationZ extends CalibrationBase
             severe("Z position list and metric list have different lengths!");
 
           // System.out.format("metric array: \n");
-          
-        
-
 
           String lChartName = String.format("D=%d, I=%d",
                                             d,

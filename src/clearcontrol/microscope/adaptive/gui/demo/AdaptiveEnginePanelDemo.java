@@ -1,14 +1,15 @@
 package clearcontrol.microscope.adaptive.gui.demo;
 
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.adaptive.gui.AdaptiveEnginePanel;
 import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
 import clearcontrol.microscope.adaptive.test.TestState;
-import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /**
  * Simulation manager demo
@@ -61,22 +62,22 @@ public class AdaptiveEnginePanelDemo extends Application
       double y = Math.cos(0.1 * x);
 
       lAdaptator.addPoint(lAdaptationModuleA.getName(),
-                                                "test",
-                                                i == 0,
-                                                x,
-                                                y);
+                          "test",
+                          i == 0,
+                          x,
+                          y);
 
       lAdaptator.addPoint(lAdaptationModuleB.getName(),
-                                                "test",
-                                                i == 0,
-                                                x,
-                                                y);
+                          "test",
+                          i == 0,
+                          x,
+                          y);
 
       lAdaptator.addPoint(lAdaptationModuleB.getName(),
-                                                "test2",
-                                                i == 0,
-                                                x,
-                                                y * y);
+                          "test2",
+                          i == 0,
+                          x,
+                          y * y);
 
     }
 

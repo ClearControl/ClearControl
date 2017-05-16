@@ -92,7 +92,8 @@ public class RawFileStackSink extends FileStackBase implements
                                 String pChannel,
                                 final StackInterface pStack) throws IOException
   {
-    String lFileName = String.format(StackSinkSourceInterface.cFormat, pIndex);
+    String lFileName = String.format(StackSinkSourceInterface.cFormat,
+                                     pIndex);
     File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
     FragmentedMemoryInterface lFragmentedMemory =

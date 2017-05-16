@@ -1,5 +1,13 @@
 package clearcontrol.gui.jfx.var.customvarpanel;
 
+import javafx.collections.ListChangeListener;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -12,13 +20,6 @@ import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.gui.jfx.var.togglebutton.VariableToggleButton;
-import javafx.collections.ListChangeListener;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 
 /**
  * Custom variable pane

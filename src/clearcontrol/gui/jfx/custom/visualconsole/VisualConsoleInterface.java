@@ -137,7 +137,6 @@ public interface VisualConsoleInterface
     lCopyOnWriteArrayList.add(pLabelGridListener);
   }
 
-
   /**
    * Notifies label grid listeners of a new entry
    * 

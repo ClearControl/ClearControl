@@ -82,7 +82,8 @@ public class Stack2DDisplay extends VirtualDevice implements
    *          window width
    * @param pWindowHeight
    *          window height
-   * @param pFlipX flip image horizontally
+   * @param pFlipX
+   *          flip image horizontally
    */
   public Stack2DDisplay(final String pWindowName,
                         final int pWindowWidth,
@@ -101,7 +102,8 @@ public class Stack2DDisplay extends VirtualDevice implements
    *          window width
    * @param pWindowHeight
    *          window height
-   * @param pFlipX flip image horizontally
+   * @param pFlipX
+   *          flip image horizontally
    * @param pUpdaterQueueLength
    *          updater queue length
    */

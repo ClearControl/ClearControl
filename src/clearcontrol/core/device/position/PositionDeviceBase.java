@@ -57,11 +57,10 @@ public abstract class PositionDeviceBase extends VirtualDevice
                             int pDeviceIndex)
   {
     super(pDeviceName);
-    ArrayList<String> lList =
-                            MachineConfiguration.get()
-                                                .getList(pDevicePath
-                                                         + "."
-                                                         + pDeviceName.toLowerCase());
+    ArrayList<String> lList = MachineConfiguration.get().getList(
+                                                                 pDevicePath
+                                                                 + "."
+                                                                 + pDeviceName.toLowerCase());
 
     mValidPositions = new int[lList.size()];
     for (int i = 0; i < mValidPositions.length; i++)

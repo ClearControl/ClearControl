@@ -233,7 +233,6 @@ public class SimulatedLightSheetMicroscope extends
                                                     getNumberOfLaserLines());
         addDevice(l, lLightSheet);
 
-
       }
     }
 

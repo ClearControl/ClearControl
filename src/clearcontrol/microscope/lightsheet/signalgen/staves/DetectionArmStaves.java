@@ -36,15 +36,14 @@ public class DetectionArmStaves
 
     mDetectionZStave = new ConstantStave("detection.z", 0);
 
-    mFinalDetectionZStave = new BezierStave("detection.z",0);
+    mFinalDetectionZStave = new BezierStave("detection.z", 0);
 
-    mStaveIndex =
-                MachineConfiguration.get()
-                                    .getIntegerProperty("device.lsm.detection."
-                                                        + pDetectionArmQueue.getDetectionArm()
-                                                                            .getName()
-                                                        + ".z.index",
-                                                        0);
+    mStaveIndex = MachineConfiguration.get()
+                                      .getIntegerProperty("device.lsm.detection."
+                                                          + pDetectionArmQueue.getDetectionArm()
+                                                                              .getName()
+                                                          + ".z.index",
+                                                          0);
 
   }
 
@@ -89,7 +88,8 @@ public class DetectionArmStaves
    *          before exposure movement
    * @param pExposureMovement
    *          exposure movement
-   * @param pFinalMovement final movement
+   * @param pFinalMovement
+   *          final movement
    */
   public void update(Movement pBeforeExposureMovement,
                      Movement pExposureMovement,
@@ -99,8 +99,8 @@ public class DetectionArmStaves
     BoundedVariable<Number> lZVariable =
                                        mDetectionArmQueue.getZVariable();
     BoundedVariable<Number> lFlyBackZVariable =
-        mDetectionArmQueue.getFlyBackZVariable();
-    
+                                              mDetectionArmQueue.getFlyBackZVariable();
+
     Variable<UnivariateAffineFunction> lZFunction =
                                                   mDetectionArmQueue.getDetectionArm()
                                                                     .getZFunction();
@@ -109,17 +109,18 @@ public class DetectionArmStaves
     float lZFocusTransformed =
                              (float) lZFunction.get().value(lZFocus);
     mDetectionZStave.setValue(lZFocusTransformed);
-    
+
     double lFlyBackZFocus = lFlyBackZVariable.get().doubleValue();
     float lFlyBackZFocusTransformed =
-                             (float) lZFunction.get().value(lFlyBackZFocus);
-    
+                                    (float) lZFunction.get()
+                                                      .value(lFlyBackZFocus);
+
     mFinalDetectionZStave.setStartValue(lZFocusTransformed);
     mFinalDetectionZStave.setStopValue(lFlyBackZFocusTransformed);
     mFinalDetectionZStave.setStartSlope(0);
     mFinalDetectionZStave.setStopSlope(0);
     mFinalDetectionZStave.setSmoothness(0.3f);
-    
+
   }
 
   /**

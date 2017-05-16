@@ -32,7 +32,7 @@ public abstract class StackServerBase implements
   {
     super();
   }
-  
+
   protected void clear()
   {
     mChannelIndexToTimeStampInSecondsMap.clear();

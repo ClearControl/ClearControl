@@ -20,8 +20,6 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
                                                     Cloneable
 {
 
-
-  
   /**
    * Returns a queue with a given range of cameras, lightsheets and laser lines.
    * 
@@ -52,7 +50,6 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    * @return current Interpolation tables
    */
   InterpolationTables getInterpolationTables();
-
 
   /**
    * Applies state at a given control plane index
@@ -112,7 +109,5 @@ public interface LightSheetAcquisitionStateInterface<S extends LightSheetAcquisi
    * @return on/off variable.
    */
   Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex);
-
-
 
 }

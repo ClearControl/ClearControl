@@ -5,8 +5,6 @@ import static java.lang.Math.pow;
 import java.io.File;
 import java.util.HashMap;
 
-import org.ejml.simple.SimpleMatrix;
-
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingInterface;
@@ -24,14 +22,16 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.scripting.engine.ScriptingEngine;
 
+import org.ejml.simple.SimpleMatrix;
+
 /**
  * Calibration engine
  *
  * @author royer
  */
 public class CalibrationEngine extends TaskDevice implements
-                        LoggingInterface,
-                        VisualConsoleInterface
+                               LoggingInterface,
+                               VisualConsoleInterface
 {
 
   private static final int cMaxIterations = 3;

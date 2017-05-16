@@ -14,8 +14,11 @@ public class MultiChartListItem
 
   /**
    * Instantiates a chart series
-   * @param pName series name
-   * @param pSeries series
+   * 
+   * @param pName
+   *          series name
+   * @param pSeries
+   *          series
    */
   public MultiChartListItem(String pName,
                             Series<Number, Number> pSeries)
@@ -27,6 +30,7 @@ public class MultiChartListItem
 
   /**
    * Returns series
+   * 
    * @return series
    */
   public Series<Number, Number> getSeries()

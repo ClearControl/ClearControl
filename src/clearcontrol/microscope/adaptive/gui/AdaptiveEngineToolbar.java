@@ -3,14 +3,6 @@ package clearcontrol.microscope.adaptive.gui;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.VariableSetListener;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -23,6 +15,14 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+
+import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 
 /**
  * Adaptor Panel

@@ -12,6 +12,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+
 import clearcontrol.core.device.switches.gui.SwitchingDevicePanel;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;

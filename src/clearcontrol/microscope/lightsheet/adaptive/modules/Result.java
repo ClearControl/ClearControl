@@ -8,7 +8,6 @@ package clearcontrol.microscope.lightsheet.adaptive.modules;
 public class Result
 {
 
-
   /**
    * argmax
    */

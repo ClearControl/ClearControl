@@ -136,16 +136,16 @@ public class InterpolationTables extends
   public void addControlPlane(InterpolationTables pInterpolationTables,
                               double pZ)
   {
-    int lNumberOfTables =mInterpolationTableList.size();
-    
-    for (int j=0; j<lNumberOfTables; j++ )
+    int lNumberOfTables = mInterpolationTableList.size();
+
+    for (int j = 0; j < lNumberOfTables; j++)
     {
-      SplineInterpolationTable lSplineInterpolationTable = mInterpolationTableList.get(j);
+      SplineInterpolationTable lSplineInterpolationTable =
+                                                         mInterpolationTableList.get(j);
       SplineInterpolationTable lOtherSplineInterpolationTable =
                                                               pInterpolationTables.mInterpolationTableList.get(j);
 
       Row lRow = lSplineInterpolationTable.addRow(pZ);
-
 
       int lNumberOfColumns = lRow.getNumberOfColumns();
 
@@ -388,8 +388,6 @@ public class InterpolationTables extends
     getTable(pLightSheetDOF).setY(pValue);
     notifyListeners(this);
   }
-
-
 
   private SplineInterpolationTable getTable(LightSheetDOF pLightSheetDOF)
   {

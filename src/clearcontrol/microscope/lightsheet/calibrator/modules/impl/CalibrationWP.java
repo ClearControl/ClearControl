@@ -7,13 +7,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.fitting.PolynomialCurveFitter;
-import org.apache.commons.math3.fitting.WeightedObservedPoint;
-import org.apache.commons.math3.fitting.WeightedObservedPoints;
-import org.apache.commons.math3.stat.StatUtils;
-
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
@@ -25,6 +18,13 @@ import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoint;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
+import org.apache.commons.math3.stat.StatUtils;
 
 /**
  * Width-Power lightsheet calibration
@@ -168,7 +168,6 @@ public class CalibrationWP extends CalibrationBase
                                                        .getY());
 
     }
-
 
   }
 

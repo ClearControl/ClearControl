@@ -65,8 +65,8 @@ public class VideoWindow implements AutoCloseable
   volatile double mMaxIntensity = 1;
 
   volatile double mGamma = 1;
-  
-  volatile boolean mFlipX=false;
+
+  volatile boolean mFlipX = false;
 
   final ReentrantLock mSendBufferLock = new ReentrantLock();
 
@@ -75,8 +75,6 @@ public class VideoWindow implements AutoCloseable
   double mSampledMaxIntensity;
 
   private ClearGLDefaultEventListener mClearGLDebugEventListener;
-
-
 
   // private GLPixelBufferObject mPixelBufferObject;
 
@@ -96,7 +94,8 @@ public class VideoWindow implements AutoCloseable
     mFlipX = pFlipX;
 
     mClearGLDebugEventListener =
-                               new ClearGLDebugEventListenerForVideoWindow(this,mFlipX);
+                               new ClearGLDebugEventListenerForVideoWindow(this,
+                                                                           mFlipX);
 
     mClearGLWindow = new ClearGLWindow(pWindowName,
                                        pWindowWidth,

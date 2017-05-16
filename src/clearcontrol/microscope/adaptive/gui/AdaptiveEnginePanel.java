@@ -22,5 +22,4 @@ public class AdaptiveEnginePanel extends VisualConsolePanel
     super(pAdaptiveEngine);
   }
 
-
 }

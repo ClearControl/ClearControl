@@ -129,15 +129,15 @@ public class CalibrationP extends CalibrationBase
       getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
       final Boolean lPlayQueueAndWait =
                                       getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
-                                                                                      lQueue.getQueueLength(),
-                                                                                      TimeUnit.SECONDS);
+                                                                                          lQueue.getQueueLength(),
+                                                                                          TimeUnit.SECONDS);
 
       if (!lPlayQueueAndWait)
         return null;
 
       final OffHeapPlanarStack lStack =
                                       (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
-                                                                                .get();
+                                                                                    .get();
 
       long lWidth = lStack.getWidth();
       long lHeight = lStack.getHeight();
@@ -180,8 +180,8 @@ public class CalibrationP extends CalibrationBase
 
       LightSheetInterface lLightSheetDevice =
                                             getLightSheetMicroscope().getDeviceLists()
-                                                                 .getDevice(LightSheetInterface.class,
-                                                                            l);
+                                                                     .getDevice(LightSheetInterface.class,
+                                                                                l);
 
       Variable<UnivariateAffineFunction> lPowerFunctionVariable =
                                                                 lLightSheetDevice.getPowerFunction();

@@ -1,14 +1,14 @@
 package clearcontrol.gui.jfx.custom.labelgrid;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *

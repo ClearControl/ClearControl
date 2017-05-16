@@ -3,8 +3,6 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import org.dockfx.DockNode;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
@@ -41,6 +39,8 @@ import clearcontrol.scripting.lang.jython.JythonScripting;
 import clearcontrol.stack.StackInterface;
 import halcyon.HalcyonFrame;
 import halcyon.model.node.HalcyonNodeType;
+
+import org.dockfx.DockNode;
 
 /**
  * Microscope GUI.
