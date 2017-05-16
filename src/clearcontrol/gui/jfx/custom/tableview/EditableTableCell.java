@@ -1,7 +1,5 @@
 package clearcontrol.gui.jfx.custom.tableview;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
@@ -10,6 +8,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Editable table cell

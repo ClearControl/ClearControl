@@ -5,12 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.math.interpolation.Row;
 import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 import clearcontrol.gui.plots.MultiPlot;
+
+import org.junit.Test;
 
 public class InterpolationTableTests
 {

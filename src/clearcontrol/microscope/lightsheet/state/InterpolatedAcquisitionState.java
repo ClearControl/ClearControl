@@ -317,7 +317,6 @@ public class InterpolatedAcquisitionState extends
     return new InterpolatedAcquisitionState(pName, this);
   }
 
-
   /**
    * Setting up control planes
    * 
@@ -337,7 +336,6 @@ public class InterpolatedAcquisitionState extends
                                             - 2 * pMarginZ)
                                            / (pNumberOfControlPlanes
                                               - 1);
-
 
     InterpolationTables lInterpolationTables =
                                              new InterpolationTables(mInterpolationTables);
@@ -838,8 +836,6 @@ public class InterpolatedAcquisitionState extends
     else
       return lInterpolatedValue;
   }
-
-
 
   /**
    * Returns the number of detection arms

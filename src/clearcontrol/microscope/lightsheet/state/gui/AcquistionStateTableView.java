@@ -1,16 +1,16 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.tuple.Pair;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import clearcontrol.gui.jfx.custom.tableview.DoubleRow;
 import clearcontrol.gui.jfx.custom.tableview.DoubleTableView;
 import clearcontrol.gui.jfx.custom.tableview.EditableTableCellHandler;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Multichart displaying the different acquisition DOFs versus imaging depth
@@ -70,41 +70,32 @@ public class AcquistionStateTableView extends DoubleTableView
 
     for (int d = 0; d < lNumberOfDetectionArms; d++)
     {
-      mNameToColumnMap.put("DZ" + d,
-                           addColumn("DZ" + d, true, true));
+      mNameToColumnMap.put("DZ" + d, addColumn("DZ" + d, true, true));
     }
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IX" + i,
-                           addColumn("IX" + i, true, true));
+      mNameToColumnMap.put("IX" + i, addColumn("IX" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IY" + i,
-                           addColumn("IY" + i, true, true));
+      mNameToColumnMap.put("IY" + i, addColumn("IY" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IZ" + i,
-                           addColumn("IZ" + i, true, true));
+      mNameToColumnMap.put("IZ" + i, addColumn("IZ" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IA" + i,
-                           addColumn("IA" + i, true, true));
+      mNameToColumnMap.put("IA" + i, addColumn("IA" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IB" + i,
-                           addColumn("IB" + i, true, true));
+      mNameToColumnMap.put("IB" + i, addColumn("IB" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IH" + i,
-                           addColumn("IH" + i, true, true));
+      mNameToColumnMap.put("IH" + i, addColumn("IH" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IW" + i,
-                           addColumn("IW" + i, true, true));
+      mNameToColumnMap.put("IW" + i, addColumn("IW" + i, true, true));
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
-      mNameToColumnMap.put("IP" + i,
-                           addColumn("IP" + i, true, true));
+      mNameToColumnMap.put("IP" + i, addColumn("IP" + i, true, true));
 
     updateTable(pAcquisitionState);
   }

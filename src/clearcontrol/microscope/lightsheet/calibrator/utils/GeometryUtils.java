@@ -15,8 +15,11 @@ public class GeometryUtils
 {
   /**
    * Computes Y line on image
-   * @param lWidth width
-   * @param lPoints points
+   * 
+   * @param lWidth
+   *          width
+   * @param lPoints
+   *          points
    * @return line
    */
   public static Line computeYLineOnImage(long lWidth,

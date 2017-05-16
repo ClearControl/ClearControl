@@ -11,6 +11,7 @@ import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
 import fastfuse.registration.AffineMatrix;
 import fastfuse.tasks.FlipTask;
+import fastfuse.tasks.GaussianBlurTask;
 import fastfuse.tasks.IdentityTask;
 import fastfuse.tasks.RegistrationTask;
 import fastfuse.tasks.TenengradFusionTask;
@@ -51,6 +52,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   {
     super(pContext);
 
+    int[] lKernelSizes = new int[]
+    { 3, 3, 3 };
+    float[] lKernelSigmas = new float[]
+    { 0.5f, 0.5f, 0.5f };
+
     if (pNumberOfLightSheets == 1)
     {
       if (pNumberOfDetectionArms == 1)
@@ -61,8 +67,19 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       {
         if (isRegistration())
         {
-          mRegisteredFusionTask = new RegistrationTask("C0L0",
-                                                       "C1L0",
+
+          addTask(new GaussianBlurTask("C0L0",
+                                       "C0L0blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+          addTask(new GaussianBlurTask("C1L0",
+                                       "C1L0blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+
+          mRegisteredFusionTask = new RegistrationTask("C0L0blur",
+                                                       "C1L0blur",
+                                                       "C0L0",
                                                        "C1L0",
                                                        "C1L0reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
@@ -112,8 +129,18 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.Float));
 
-          mRegisteredFusionTask = new RegistrationTask("C0",
-                                                       "C1",
+          addTask(new GaussianBlurTask("C0",
+                                       "C0blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+          addTask(new GaussianBlurTask("C1",
+                                       "C1blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+
+          mRegisteredFusionTask = new RegistrationTask("C0blur",
+                                                       "C1blur",
+                                                       "C0",
                                                        "C1",
                                                        "C1reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
@@ -176,8 +203,18 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                           "C1",
                                           ImageChannelDataType.Float));
 
-          mRegisteredFusionTask = new RegistrationTask("C0",
-                                                       "C1",
+          addTask(new GaussianBlurTask("C0",
+                                       "C0blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+          addTask(new GaussianBlurTask("C1",
+                                       "C1blur",
+                                       lKernelSizes,
+                                       lKernelSigmas));
+
+          mRegisteredFusionTask = new RegistrationTask("C0blur",
+                                                       "C1blur",
+                                                       "C0",
                                                        "C1",
                                                        "C1reg");
           mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
@@ -333,6 +370,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     return mRegistration;
   }
 
+  /**
+   * Sets
+   * 
+   * @param pRegistration
+   */
   public void setRegistration(boolean pRegistration)
   {
     mRegistration = pRegistration;

@@ -95,7 +95,7 @@ public class DetectionArm extends
   {
     return mTemplateQueue.getZVariable();
   }
-  
+
   @Override
   public BoundedVariable<Number> getFlyBackZVariable()
   {

@@ -29,10 +29,10 @@ public interface ChartListenerInterface
    * 
    */
   void configureChart(String pTabName,
-                 String pSeriesName,
-                 String pXAxisName,
-                 String pYAxisName,
-                 ChartType pChartType);
+                      String pSeriesName,
+                      String pXAxisName,
+                      String pYAxisName,
+                      ChartType pChartType);
 
   /**
    * Adds a point to the chart of given name, possibly clearing the chart just

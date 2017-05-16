@@ -31,7 +31,8 @@ public abstract class CalibrationBase implements
   {
     super();
     mCalibrationEngine = pCalibrationEngine;
-    mLightSheetMicroscope = pCalibrationEngine.getLightSheetMicroscope();
+    mLightSheetMicroscope =
+                          pCalibrationEngine.getLightSheetMicroscope();
   }
 
   /**
@@ -83,7 +84,7 @@ public abstract class CalibrationBase implements
    */
   public void resetIteration()
   {
-    mIteration=0;
+    mIteration = 0;
   }
 
   /**

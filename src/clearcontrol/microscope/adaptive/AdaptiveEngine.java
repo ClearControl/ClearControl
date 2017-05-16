@@ -44,7 +44,6 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
   private ArrayList<AdaptationModuleInterface<S>> mAdaptationModuleList =
                                                                         new ArrayList<>();
 
-
   private HashMap<AdaptationModuleInterface<S>, Long> mTimmingMap =
                                                                   new HashMap<>();
 
@@ -549,9 +548,5 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                                        1 + lAdaptationModule.getRemainingNumberOfSteps();
     return lTotalRemainingNumberOfSteps;
   }
-
-
-
-
 
 }

@@ -96,7 +96,9 @@ public class RawFileStackSource extends FileStackBase implements
                                                            pTimeUnit,
                                                            lStackRequest);
 
-      String lFileName = String.format(StackSinkSourceInterface.cFormat, pStackIndex);
+      String lFileName =
+                       String.format(StackSinkSourceInterface.cFormat,
+                                     pStackIndex);
       File lFile = new File(getChannelFolder(pChannel), lFileName);
 
       if (!lFile.exists())
@@ -138,7 +140,7 @@ public class RawFileStackSource extends FileStackBase implements
     try
     {
       clear();
-      
+
       ArrayList<String> lChannelList = getCurrentChannelList();
 
       for (String lChannel : lChannelList)

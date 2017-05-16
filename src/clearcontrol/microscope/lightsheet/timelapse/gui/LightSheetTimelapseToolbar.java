@@ -56,15 +56,13 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
 
     {
       VariableCheckBox lFuseStacksCheckBox =
-                                                   new VariableCheckBox("Fuse stacks",
-                                                                        pLightSheetTimelapse.getFuseStacksVariable());
+                                           new VariableCheckBox("Fuse stacks",
+                                                                pLightSheetTimelapse.getFuseStacksVariable());
 
       GridPane.setHalignment(lFuseStacksCheckBox.getCheckBox(),
                              HPos.RIGHT);
-      GridPane.setColumnSpan(lFuseStacksCheckBox.getLabel(),
-                             1);
-      GridPane.setColumnSpan(lFuseStacksCheckBox.getCheckBox(),
-                             1);
+      GridPane.setColumnSpan(lFuseStacksCheckBox.getLabel(), 1);
+      GridPane.setColumnSpan(lFuseStacksCheckBox.getCheckBox(), 1);
 
       GridPane.setColumnSpan(lFuseStacksCheckBox.getLabel(), 3);
       add(lFuseStacksCheckBox.getCheckBox(), 0, mRow);
@@ -72,11 +70,11 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
 
       mRow++;
     }
-    
+
     {
       VariableCheckBox lFuseStacksPerCameraOnlyCheckBox =
-                                                   new VariableCheckBox("Fuse stacks per camera only",
-                                                                        pLightSheetTimelapse.getFuseStacksPerCameraVariable());
+                                                        new VariableCheckBox("Fuse stacks per camera only",
+                                                                             pLightSheetTimelapse.getFuseStacksPerCameraVariable());
 
       GridPane.setHalignment(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(),
                              HPos.RIGHT);
@@ -85,24 +83,23 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
       GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(),
                              1);
 
-      GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getLabel(), 3);
+      GridPane.setColumnSpan(lFuseStacksPerCameraOnlyCheckBox.getLabel(),
+                             3);
       add(lFuseStacksPerCameraOnlyCheckBox.getCheckBox(), 0, mRow);
       add(lFuseStacksPerCameraOnlyCheckBox.getLabel(), 1, mRow);
 
       mRow++;
     }
-    
+
     {
       VariableCheckBox lAutoPilotCheckBox =
-                                                   new VariableCheckBox("AutoPilot",
-                                                                        pLightSheetTimelapse.getAdaptiveEngineOnVariable());
+                                          new VariableCheckBox("AutoPilot",
+                                                               pLightSheetTimelapse.getAdaptiveEngineOnVariable());
 
       GridPane.setHalignment(lAutoPilotCheckBox.getCheckBox(),
                              HPos.RIGHT);
-      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(),
-                             1);
-      GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(),
-                             1);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 1);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(), 1);
 
       GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
       add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);

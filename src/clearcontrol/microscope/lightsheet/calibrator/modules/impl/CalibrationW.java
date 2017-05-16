@@ -9,8 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.math3.stat.StatUtils;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
@@ -24,6 +22,8 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.math3.stat.StatUtils;
 
 /**
  * Lightsheet width calibration module
@@ -197,7 +197,6 @@ public class CalibrationW extends CalibrationBase
                                         mWList.get(i),
                                         lAverageIntensities[i]);
       }
-
 
       return lAverageIntensities;
     }

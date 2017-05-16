@@ -1,10 +1,10 @@
 package clearcontrol.microscope.state.gui.jfx;
 
 import java.util.List;
+import javafx.scene.layout.BorderPane;
 
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
-import javafx.scene.layout.BorderPane;
 
 /**
  * AcquisitionStateManagerPanelBase is a GUI element that displays information

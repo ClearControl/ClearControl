@@ -24,19 +24,21 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q e
                                           HasChangeListenerInterface<AcquisitionStateInterface<M, Q>>
 
 {
-  
+
   /**
    * @param pName
    * @return copy of this state
    */
-  AcquisitionStateInterface<M,Q> copy(String pName);
+  AcquisitionStateInterface<M, Q> copy(String pName);
 
   /**
-   * Returns the variable holding the exposure in seconds for this acquisition state
+   * Returns the variable holding the exposure in seconds for this acquisition
+   * state
+   * 
    * @return exposure in seconds variable
    */
   BoundedVariable<Number> getExposureInSecondsVariable();
-  
+
   /**
    * Executes (asynchronously) any actions that cannot be queue and that needs
    * to happen before an acquisition (such as moving the stage, ...)
@@ -55,11 +57,5 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q e
    * @return queue
    */
   Q getQueue();
-
-
-  
-  
-  
- 
 
 }

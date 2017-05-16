@@ -129,6 +129,7 @@ public class NDIterator implements Iterator<int[]>
 
   /**
    * Returns index
+   * 
    * @return index
    */
   public int getIndex()

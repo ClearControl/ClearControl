@@ -245,8 +245,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
       getStartDateTimeVariable().set(LocalDateTime.now());
     }
 
-
-
     try
     {
 
@@ -302,8 +300,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
     }
 
   }
-
-
 
   @Override
   public boolean startTask()

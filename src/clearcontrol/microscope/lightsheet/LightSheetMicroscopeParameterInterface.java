@@ -460,6 +460,4 @@ public interface LightSheetMicroscopeParameterInterface
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
 
-
-
 }

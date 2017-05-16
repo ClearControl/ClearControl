@@ -8,8 +8,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang3.tuple.Triple;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.math.argmax.SmartArgMaxFinder;
 import clearcontrol.core.variable.Variable;
@@ -29,6 +27,8 @@ import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * ND iterator adaptation module

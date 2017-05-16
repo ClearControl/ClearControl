@@ -1,13 +1,14 @@
 package clearcontrol.microscope.adaptive.gui.demo;
 
-import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
-import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
-import clearcontrol.microscope.adaptive.test.TestState;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
+import clearcontrol.microscope.adaptive.test.AdaptationTestModule;
+import clearcontrol.microscope.adaptive.test.TestState;
 
 /**
  * Simulation manager demo

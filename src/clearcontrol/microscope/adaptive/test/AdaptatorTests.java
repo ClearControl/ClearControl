@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
+
+import org.junit.Test;
 
 /**
  * AutoPilot tests
@@ -27,7 +27,6 @@ public class AdaptatorTests
     AdaptiveEngine<TestState> lAdaptator =
                                          new AdaptiveEngine<TestState>(null,
                                                                        lTestState);
-
 
     AdaptationTestModule lAdaptationTests =
                                           new AdaptationTestModule("A",

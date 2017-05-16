@@ -129,5 +129,4 @@ public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?
     return getIsActiveVariable().get();
   }
 
-
 }

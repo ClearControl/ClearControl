@@ -21,11 +21,10 @@ public class HamStackCameraQueue extends
   {
     super();
 
-    mStackWidthVariable =
-                        new BoundedVariable<Long>("FrameWidth",
-                                                  2048L,
-                                                  0L,
-                                                  2048L)
+    mStackWidthVariable = new BoundedVariable<Long>("FrameWidth",
+                                                    2048L,
+                                                    0L,
+                                                    2048L)
     {
       @Override
       public Long setEventHook(final Long pOldValue,

@@ -2,6 +2,14 @@ package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCell;
 import clearcontrol.gui.jfx.custom.singlechecklist.SingleCheckCellManager;
@@ -11,14 +19,6 @@ import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.microscope.state.gui.jfx.AcquisitionStateManagerPanelBase;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.VBox;
 
 /**
  * Interactive2DAcquisitionPanel is a GUI element that displays information

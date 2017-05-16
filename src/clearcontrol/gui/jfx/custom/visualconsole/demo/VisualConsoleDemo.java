@@ -1,12 +1,13 @@
 package clearcontrol.gui.jfx.custom.visualconsole.demo;
 
-import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
-import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
-import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
 
 /**
  * Simulation manager demo

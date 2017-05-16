@@ -1,13 +1,13 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart.Data;
 
 import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart.Data;
 
 /**
  * Multichart displaying the different acquisition DOFs versus imaging depth
@@ -23,7 +23,8 @@ public class AcquistionStateMultiChart extends MultiChart
   /**
    * Instantiates an acquisition multichart for a given acquisition state
    * 
-   * @param pAcquisitionState acquisition state
+   * @param pAcquisitionState
+   *          acquisition state
    */
   public AcquistionStateMultiChart(InterpolatedAcquisitionState pAcquisitionState)
   {

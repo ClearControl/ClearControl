@@ -1,5 +1,13 @@
 package clearcontrol.microscope.timelapse.gui;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.GridPane;
+
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.combo.ClassComboBoxVariable;
@@ -15,13 +23,6 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.GridPane;
 
 /**
  * Timelapse toolbar
@@ -350,8 +351,7 @@ public class TimelapseToolbar extends CustomGridPane
                                            new VariableCheckBox("Save stacks",
                                                                 pTimelapseInterface.getSaveStacksVariable());
 
-      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(),
-                             1);
+      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
       GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
                              HPos.RIGHT);
 
