@@ -1,16 +1,16 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import clearcontrol.gui.jfx.custom.tableview.DoubleRow;
 import clearcontrol.gui.jfx.custom.tableview.DoubleTableView;
 import clearcontrol.gui.jfx.custom.tableview.EditableTableCellHandler;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-
-import org.apache.commons.lang3.tuple.Pair;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Multichart displaying the different acquisition DOFs versus imaging depth
@@ -31,7 +31,7 @@ public class AcquistionStateTableView extends DoubleTableView
    */
   public AcquistionStateTableView(final InterpolatedAcquisitionState pAcquisitionState)
   {
-    super(65);
+    super(60);
 
     setMaxWidth(Double.MAX_VALUE);
     setMaxHeight(Double.MAX_VALUE);
@@ -69,9 +69,7 @@ public class AcquistionStateTableView extends DoubleTableView
                                          lRemoveControlPlaneMenuItem));
 
     for (int d = 0; d < lNumberOfDetectionArms; d++)
-    {
       mNameToColumnMap.put("DZ" + d, addColumn("DZ" + d, true, true));
-    }
 
     for (int i = 0; i < lNumberOfIlluminationArms; i++)
       mNameToColumnMap.put("IX" + i, addColumn("IX" + i, true, true));

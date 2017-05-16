@@ -1,5 +1,7 @@
 package clearcontrol.gui.jfx.custom.multichart;
 
+import org.controlsfx.control.CheckListView;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -19,8 +21,6 @@ import javafx.scene.effect.Glow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Path;
-
-import org.controlsfx.control.CheckListView;
 
 /**
  * MultiChart allows the display of multiple series in a single chart and the
@@ -149,7 +149,7 @@ public class MultiChart extends HBox
         double lX = mXAxis.getValueForDisplay(e.getX()).doubleValue();
         double lY = mYAxis.getValueForDisplay(e.getY()).doubleValue();
 
-        String lText = String.format("(%.3f,%.3f)", lX, lY);
+        String lText = String.format("(%g,%g)", lX, lY);
 
         Bounds lChartBoundsInLocal = mXYChart.getBoundsInLocal();
         Bounds lChartBoundsInScreen =

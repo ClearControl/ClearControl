@@ -33,7 +33,7 @@ public interface StackInterface extends
   long[] getDimensions();
 
   /**
-   * Returns the dimension for agiven index
+   * Returns the dimension for a given index
    * 
    * @param pIndex
    *          index
@@ -115,7 +115,7 @@ public interface StackInterface extends
   ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex);
 
   /**
-   * Retunrns a fragmented memory object - one fragment per plane
+   * Returns a fragmented memory object - one fragment per plane
    * 
    * @return fragmented memory object
    */

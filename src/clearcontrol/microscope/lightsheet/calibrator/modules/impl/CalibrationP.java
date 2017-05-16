@@ -97,7 +97,25 @@ public class CalibrationP extends CalibrationBase
   {
     try
     {
-      int lNumberOfDetectionArms = getNumberOfDetectionArms();
+      
+      LightSheetInterface lLightSheetDevice =
+          getLightSheetMicroscope().getDeviceLists()
+                                   .getDevice(LightSheetInterface.class,
+                                              pLightSheetIndex);
+
+      double lMaxHeight = lLightSheetDevice.getHeightVariable()
+                                           .getMax()
+                                           .doubleValue();
+
+      double lMinZ = lLightSheetDevice.getZVariable()
+                                      .getMin()
+                                      .doubleValue();
+
+      double lMaxZ = lLightSheetDevice.getZVariable()
+                                      .getMax()
+                                      .doubleValue();
+
+      double lMiddleZ = (lMaxZ - lMinZ) / 2;
 
       LightSheetMicroscopeQueue lQueue =
                                        getLightSheetMicroscope().requestQueue();
@@ -107,16 +125,21 @@ public class CalibrationP extends CalibrationBase
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);
-      lQueue.setIH(pLightSheetIndex, 1000);
+      lQueue.setIH(pLightSheetIndex, lMaxHeight);
       lQueue.setIP(pLightSheetIndex, 1);
 
-      lQueue.setDZ(160);
-      lQueue.setIZ(pLightSheetIndex, 160);
+      lQueue.setDZ(lMiddleZ);
+      lQueue.setIZ(pLightSheetIndex, lMiddleZ);
+
+      lQueue.setC(false);
+      lQueue.addCurrentStateToQueue();
+      lQueue.addCurrentStateToQueue();
 
       for (int i = 1; i <= pNumberOfSamples; i++)
       {
-        for (int d = 0; d < lNumberOfDetectionArms; d++)
-          lQueue.setC(d, true);
+        lQueue.setC(true);
+        double dz = (i - (pNumberOfSamples - 1) / 2);
+        lQueue.setDZ(lMiddleZ + dz);
         lQueue.addCurrentStateToQueue();
       }
 

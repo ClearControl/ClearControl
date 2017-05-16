@@ -31,6 +31,8 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.si.StructuredIllu
 @SuppressWarnings("javadoc")
 public class LightSheetStaves implements LoggingInterface
 {
+  private final static MachineConfiguration cCurrentMachineConfiguration =
+                                                                         MachineConfiguration.get();
 
   private LightSheetQueue mLightSheetQueue;
 
@@ -88,51 +90,48 @@ public class LightSheetStaves implements LoggingInterface
                                                          1,
                                                          0);
 
-    final MachineConfiguration lCurrentMachineConfiguration =
-                                                            MachineConfiguration.get();
-
+    String lPrefix = getDevicePrefixInConfigFile();
     mStaveXIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".x.index",
                                                                  2);
 
     mStaveYIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".y.index",
                                                                  3);
 
     mStaveZIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".z.index",
                                                                  4);
 
     mStaveBIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".b.index",
                                                                  5);
 
     mStaveWIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".w.index",
                                                                  6);
 
     mStaveLAIndex =
-                  lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                  + getLightSheet().getName()
+                  cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                   + ".la.index",
                                                                   7);
 
     mStaveTIndex =
-                 lCurrentMachineConfiguration.getIntegerProperty("device.lsm.lightsheet."
-                                                                 + getLightSheet().getName()
+                 cCurrentMachineConfiguration.getIntegerProperty(lPrefix
                                                                  + ".t.index",
                                                                  8 + 7);
 
+  }
+
+  protected String getDevicePrefixInConfigFile()
+  {
+    return "device.lsm.lightsheet."
+                     + getLightSheet().getName();
   }
 
   private LightSheet getLightSheet()
@@ -498,7 +497,8 @@ public class LightSheetStaves implements LoggingInterface
 
         lPowerValue *= lWidthPowerFactor * lHeightPowerFactor;
       }
-
+      
+      
       mBeforeExposureLAStave.setValue(0f);
       mExposureLAStave.setValue((float) lPowerValue);
 

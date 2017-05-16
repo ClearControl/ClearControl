@@ -303,7 +303,7 @@ public class SimulatedLightSheetMicroscope extends
         AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
                                                                      addAdaptiveEngine(lAcquisitionState);
         lAdaptiveEngine.add(new AdaptationZ(11,
-                                            1.33,
+                                            1.66,
                                             0.95,
                                             2e-5,
                                             0.010,
