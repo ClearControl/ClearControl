@@ -97,11 +97,11 @@ public class CalibrationP extends CalibrationBase
   {
     try
     {
-      
+
       LightSheetInterface lLightSheetDevice =
-          getLightSheetMicroscope().getDeviceLists()
-                                   .getDevice(LightSheetInterface.class,
-                                              pLightSheetIndex);
+                                            getLightSheetMicroscope().getDeviceLists()
+                                                                     .getDevice(LightSheetInterface.class,
+                                                                                pLightSheetIndex);
 
       double lMaxHeight = lLightSheetDevice.getHeightVariable()
                                            .getMax()
@@ -115,7 +115,9 @@ public class CalibrationP extends CalibrationBase
                                       .getMax()
                                       .doubleValue();
 
-      double lMiddleZ = (lMaxZ - lMinZ) / 2;
+      double lMiddleZ = lLightSheetDevice.getZVariable()
+                                         .get()
+                                         .doubleValue();// (lMaxZ - lMinZ) / 2;
 
       LightSheetMicroscopeQueue lQueue =
                                        getLightSheetMicroscope().requestQueue();
