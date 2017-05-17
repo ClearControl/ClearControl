@@ -107,6 +107,18 @@ public class LightSheetSignalGeneratorDevice extends VirtualDevice
   public Future<Boolean> playQueue(LightSheetSignalGeneratorQueue pQueue)
   {
     SignalGeneratorQueue lDelegatedQueue = pQueue.getDelegatedQueue();
+
+    Double lTransitionDurationInSeconds =
+                                        pQueue.getTransitionDurationInSecondsVariable()
+                                              .get();
+    if (lTransitionDurationInSeconds != null)
+    {
+      long lTransitionDurationInNanoseconds =
+                                            (long) (lTransitionDurationInSeconds
+                                                    * 1e9);
+      getDelegatedSignalGenerator().getTransitionDurationInNanosecondsVariable()
+                                   .set(lTransitionDurationInNanoseconds);
+    }
     return getDelegatedSignalGenerator().playQueue(lDelegatedQueue);
   }
 

@@ -43,6 +43,14 @@ public interface LightSheetMicroscopeParameterInterface
   void setFinalisationTime(double pFinalisationTimeInSeconds);
 
   /**
+   * Sets the transition time in seconds
+   * 
+   * @param pTransitionTimeInSeconds
+   *          transition time in seconds
+   */
+  void setTransitionTime(double pTransitionTimeInSeconds);
+
+  /**
    * Selects _one_ light sheet to direct light to:
    * 
    * @param pLightSheetIndex
@@ -135,36 +143,7 @@ public interface LightSheetMicroscopeParameterInterface
    */
   double getDZ(int pDetectionArmIndex);
 
-  /**
-   * Sets the detection objective flyback Z position after a stack acquisition
-   * 
-   * @param pDetectionArmIndex
-   *          detection arm index
-   * @param pPositionZ
-   *          flyback position Z
-   */
-  void setFlyBackDZ(int pDetectionArmIndex, double pPositionZ);
 
-  /**
-   * Sets all detection objectives flyback Z position after a stack acquisition
-   * 
-   * @param pValue
-   */
-  void setFlyBackDZ(double pValue);
-
-  /**
-   * Returns the detection objective flyback Z position
-   * 
-   * @param pDetectionArmIndex
-   * @return Z position
-   */
-  double getFlyBackDZ(int pDetectionArmIndex);
-
-  /**
-   * Sets the flyback Z position to the current DZ position for all detection
-   * arms.
-   */
-  void setDefaultFlyBackDZ();
 
   /**
    * Sets the lightsheet's X position (illumination objective).
@@ -459,5 +438,7 @@ public interface LightSheetMicroscopeParameterInterface
    */
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
+
+
 
 }

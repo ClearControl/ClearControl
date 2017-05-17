@@ -66,10 +66,10 @@ public class Movement extends NameableBase
   {
     this(pMovement.getName(), pMovement.getNumberOfStaves());
 
-    setSync(isSync());
-    setSyncChannel(getSyncChannel());
-    setSyncOnRisingEdge(isSyncOnRisingEdge());
-    setDuration(getDuration(TimeUnit.NANOSECONDS),
+    setSync(pMovement.isSync());
+    setSyncChannel(pMovement.getSyncChannel());
+    setSyncOnRisingEdge(pMovement.isSyncOnRisingEdge());
+    setDuration(pMovement.getDuration(TimeUnit.NANOSECONDS),
                 TimeUnit.NANOSECONDS);
 
     for (int i = 0; i < mStaveListArray.length; i++)
@@ -171,6 +171,7 @@ public class Movement extends NameableBase
     return mSyncChannel;
   }
 
+
   @Override
   public int hashCode()
   {
@@ -185,7 +186,7 @@ public class Movement extends NameableBase
     result = prime * result + mSyncChannel;
     return result;
   }
-
+  
   @Override
   public boolean equals(Object obj)
   {
@@ -208,6 +209,7 @@ public class Movement extends NameableBase
       return false;
     return true;
   }
+  /**/
 
   @Override
   public String toString()

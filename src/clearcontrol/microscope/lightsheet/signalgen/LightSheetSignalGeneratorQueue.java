@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
@@ -43,16 +42,20 @@ public class LightSheetSignalGeneratorQueue implements
   private Movement mBeforeExposureMovement, mExposureMovement,
       mFinalMovement;
 
-  final ConcurrentHashMap<DetectionArm, DetectionArmStaves> mDetectionArmToStavesMap =
+  private final ConcurrentHashMap<DetectionArm, DetectionArmStaves> mDetectionArmToStavesMap =
                                                                                      new ConcurrentHashMap<>();
 
-  final ArrayList<LightSheet> mLightSheetList =
+  private final ArrayList<LightSheet> mLightSheetList =
                                               new ArrayList<LightSheet>();
 
-  final ConcurrentHashMap<LightSheet, LightSheetStaves> mLightSheetToStavesMap =
+  private final ConcurrentHashMap<LightSheet, LightSheetStaves> mLightSheetToStavesMap =
                                                                                new ConcurrentHashMap<>();
-  final ConcurrentHashMap<LightSheetOpticalSwitch, LightSheetOpticalSwitchStaves> mOpticalSwitchToStavesMap =
+  private final ConcurrentHashMap<LightSheetOpticalSwitch, LightSheetOpticalSwitchStaves> mOpticalSwitchToStavesMap =
                                                                                                             new ConcurrentHashMap<>();
+
+  private final Variable<Double> mTransitionDurationInSecondsVariable =
+                                                                new Variable<Double>("mTransitionDurationInSeconds",
+                                                                                     0d);
 
   /**
    * Instantiates a lightsheet signal generator queue device
@@ -296,7 +299,6 @@ public class LightSheetSignalGeneratorQueue implements
   public void finalizeQueue()
   {
     update();
-    mDelegatedQueue.prependTransition(500, TimeUnit.MILLISECONDS);
     mDelegatedQueue.finalizeQueue();
   }
 
@@ -316,6 +318,11 @@ public class LightSheetSignalGeneratorQueue implements
   public Variable<Integer> getSelectedLightSheetIndexVariable()
   {
     return mSelectedLightSheetIndexVariable;
+  }
+
+  public Variable<Double> getTransitionDurationInSecondsVariable()
+  {
+    return mTransitionDurationInSecondsVariable;
   }
 
 }

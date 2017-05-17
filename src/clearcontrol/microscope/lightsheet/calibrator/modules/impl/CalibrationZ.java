@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
@@ -26,8 +28,6 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms
@@ -311,6 +311,8 @@ public class CalibrationZ extends CalibrationBase
         lQueue.setC(d, false);
       }
       lQueue.addCurrentStateToQueue();
+
+      lQueue.setTransitionTime(0.1);
 
       lQueue.finalizeQueue();
       // info("End building queue");

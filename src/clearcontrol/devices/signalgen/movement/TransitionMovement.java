@@ -34,10 +34,41 @@ public class TransitionMovement
                                        long pDuration,
                                        TimeUnit pTimeUnit)
   {
-    int lNumberOfStaves = pPreviousMovement.getNumberOfStaves();
+
 
     Movement lTransitionMovement = new Movement("TransitionMovement",
-                                                lNumberOfStaves);
+                                                pPreviousMovement.getNumberOfStaves());
+
+    adjustInternal(lTransitionMovement,
+                   pPreviousMovement,
+                   pNextMovement,
+                   pDuration,
+                   pTimeUnit);
+
+    return lTransitionMovement;
+  }
+
+  public static void adjust(MovementInterface pTransitionMovement,
+                            MovementInterface pPreviousMovement,
+                            MovementInterface pNextMovement,
+                            long pDuration,
+                            TimeUnit pTimeUnit)
+  {
+    adjustInternal(pTransitionMovement,
+                   pPreviousMovement,
+                   pNextMovement,
+                   pDuration,
+                   pTimeUnit);
+  }
+
+  private static void adjustInternal(MovementInterface lTransitionMovement,
+                                     MovementInterface pPreviousMovement,
+                                     MovementInterface pNextMovement,
+                                     long pDuration,
+                                     TimeUnit pTimeUnit)
+  {
+    int lNumberOfStaves = pPreviousMovement.getNumberOfStaves();
+    lTransitionMovement.setDuration(pDuration, pTimeUnit);
 
     for (int i = 0; i < lNumberOfStaves; i++)
     {
@@ -69,8 +100,7 @@ public class TransitionMovement
       lTransitionMovement.setStave(i, lTransitionStave);
 
     }
-
-    return lTransitionMovement;
   }
+
 
 }

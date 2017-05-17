@@ -26,14 +26,18 @@ public abstract class SignalGeneratorBase extends VirtualDevice
                                                      new Variable<Boolean>("Trigger",
                                                                            false);
 
+  private final Variable<Long> mTransitionDurationInNanosecondsVariable =
+                                                                        new Variable<>("TransitionTimeInNanoseconds",
+                                                                                       0L);
+
   private final Variable<ScoreInterface> mLastPlayedScoreVariable =
-                                                              new Variable<>("PlayedScore",
-                                                                             null);
+                                                                  new Variable<>("PlayedScore",
+                                                                                 null);
 
   protected volatile boolean mIsPlaying;
 
   /**
-   * Instanciates a signal generator.
+   * Instantiates a signal generator.
    * 
    * @param pDeviceName
    *          signal generator name
@@ -56,25 +60,40 @@ public abstract class SignalGeneratorBase extends VirtualDevice
     return lQueue;
   }
 
-  @Override
-  public void prependTransitionMovement(ScoreInterface pScore,
-                                        long pDuration,
-                                        TimeUnit pTimeUnit)
+  protected void prependTransitionMovement(ScoreInterface pScore,
+                                           long pDuration,
+                                           TimeUnit pTimeUnit)
   {
-    MovementInterface lLastMovementFromPreviouslyPlayedScore =
-                                    getLastPlayedScoreVariable().get()
-                                                                .getLastMovement();
+    if (getLastPlayedScoreVariable().get() == null || pDuration == 0)
+      return;
 
     MovementInterface lFirstMovementOfGivenScore =
                                                  pScore.getMovement(0);
 
-    MovementInterface lTransitionMovement =
-                                          TransitionMovement.make(lLastMovementFromPreviouslyPlayedScore,
-                                                                  lFirstMovementOfGivenScore,
-                                                                  pDuration,
-                                                                  pTimeUnit);
-    
-    pScore.insertMovementAt(0, lTransitionMovement);
+    MovementInterface lLastMovementFromPreviouslyPlayedScore =
+                                                             getLastPlayedScoreVariable().get()
+                                                                                         .getLastMovement();
+    if (lFirstMovementOfGivenScore.getName()
+                                  .equals("TransitionMovement"))
+    {
+      TransitionMovement.adjust(lFirstMovementOfGivenScore,
+                                lLastMovementFromPreviouslyPlayedScore,
+                                pScore.getMovement(1),
+                                pDuration,
+                                pTimeUnit);
+
+    }
+    else
+    {
+
+      MovementInterface lTransitionMovement =
+                                            TransitionMovement.make(lLastMovementFromPreviouslyPlayedScore,
+                                                                    lFirstMovementOfGivenScore,
+                                                                    pDuration,
+                                                                    pTimeUnit);
+
+      pScore.insertMovementAt(0, lTransitionMovement);
+    }
   }
 
   @Override
@@ -112,6 +131,20 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   public Variable<ScoreInterface> getLastPlayedScoreVariable()
   {
     return mLastPlayedScoreVariable;
+  }
+
+  @Override
+  public Variable<Long> getTransitionDurationInNanosecondsVariable()
+  {
+    return mTransitionDurationInNanosecondsVariable;
+  }
+
+  @Override
+  public void setTransitionDuration(long pDuration,
+                                    TimeUnit pTimeUnit)
+  {
+    getTransitionDurationInNanosecondsVariable().set(TimeUnit.NANOSECONDS.convert(pDuration,
+                                                                                  pTimeUnit));
   }
 
 }

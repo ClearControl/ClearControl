@@ -5,7 +5,6 @@ import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.signalgen.movement.Movement;
-import clearcontrol.devices.signalgen.staves.BezierStave;
 import clearcontrol.devices.signalgen.staves.ConstantStave;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmQueue;
 
@@ -19,7 +18,6 @@ public class DetectionArmStaves
   private final DetectionArmQueue mDetectionArmQueue;
 
   private final ConstantStave mDetectionZStave;
-  private BezierStave mFinalDetectionZStave;
 
   private final int mStaveIndex;
 
@@ -36,7 +34,6 @@ public class DetectionArmStaves
 
     mDetectionZStave = new ConstantStave("detection.z", 0);
 
-    mFinalDetectionZStave = new BezierStave("detection.z", 0);
 
     mStaveIndex = MachineConfiguration.get()
                                       .getIntegerProperty("device.lsm.detection."
@@ -77,8 +74,8 @@ public class DetectionArmStaves
     // Analog outputs at exposure:
     pExposureMovement.setStave(mStaveIndex, mDetectionZStave);
 
-    // Analog outputs at final movement:
-    pFinalMovement.setStave(mStaveIndex, mFinalDetectionZStave);
+    // Analog outputs at finalization:
+    pFinalMovement.setStave(mStaveIndex, mDetectionZStave);
   }
 
   /**
@@ -98,8 +95,6 @@ public class DetectionArmStaves
 
     BoundedVariable<Number> lZVariable =
                                        mDetectionArmQueue.getZVariable();
-    BoundedVariable<Number> lFlyBackZVariable =
-                                              mDetectionArmQueue.getFlyBackZVariable();
 
     Variable<UnivariateAffineFunction> lZFunction =
                                                   mDetectionArmQueue.getDetectionArm()
@@ -109,17 +104,6 @@ public class DetectionArmStaves
     float lZFocusTransformed =
                              (float) lZFunction.get().value(lZFocus);
     mDetectionZStave.setValue(lZFocusTransformed);
-
-    double lFlyBackZFocus = lFlyBackZVariable.get().doubleValue();
-    float lFlyBackZFocusTransformed =
-                                    (float) lZFunction.get()
-                                                      .value(lFlyBackZFocus);
-
-    mFinalDetectionZStave.setStartValue(lZFocusTransformed);
-    mFinalDetectionZStave.setStopValue(lFlyBackZFocusTransformed);
-    mFinalDetectionZStave.setStartSlope(0);
-    mFinalDetectionZStave.setStopSlope(0);
-    mFinalDetectionZStave.setSmoothness(0.3f);
 
   }
 

@@ -412,7 +412,6 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
             mQueue.addCurrentStateToQueue();
 
             mQueue.setFinalisationTime(0.00005);
-            mQueue.setDefaultFlyBackDZ();
             mQueue.finalizeQueue();
 
           }
@@ -433,8 +432,8 @@ public class InteractiveAcquisition extends PeriodicLoopTaskDevice
                                                     .doubleValue());
 
             mQueue.addCurrentStateToQueue();
+            // mQueue.setTransitionTime(0.005);
             mQueue.setFinalisationTime(0.00005);
-            mQueue.setDefaultFlyBackDZ();
             mQueue.finalizeQueue();
 
           }

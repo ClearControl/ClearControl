@@ -109,21 +109,6 @@ public class SignalGeneratorQueue implements QueueInterface
     mEnqueuedStateCounter++;
   }
 
-  /**
-   * Prepends a transition movement to prevent sudden signal jumps
-   * 
-   * @param pDuration
-   *          duration
-   * @param pTimeUnit
-   *          duration time unit
-   */
-  public void prependTransition(long pDuration, TimeUnit pTimeUnit)
-  {
-    getSignalGenerator().prependTransitionMovement(mQueuedScore,
-                                                   pDuration,
-                                                   pTimeUnit);
-  }
-
   @Override
   public void finalizeQueue()
   {

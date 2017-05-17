@@ -3,6 +3,7 @@ package clearcontrol.devices.signalgen.devices.nirio;
 import static java.lang.Math.toIntExact;
 
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
@@ -59,6 +60,10 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
 
     boolean lPlayed = false;
 
+    prependTransitionMovement(pScore,
+                              getTransitionDurationInNanosecondsVariable().get(),
+                                                   TimeUnit.NANOSECONDS);
+    
     NIRIOScoreCompiler.compile(mNIRIOCompiledScore, pScore);
 
     lPlayed = mDirettore.play(
@@ -81,6 +86,7 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
 
     return lPlayed && super.playScore(pScore);
   }
+
 
 
 

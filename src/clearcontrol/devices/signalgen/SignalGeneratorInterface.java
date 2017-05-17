@@ -27,19 +27,22 @@ public interface SignalGeneratorInterface extends
   public double getTemporalGranularityInMicroseconds();
 
   /**
-   * Prepends a transition movement to the given score based on the last played
-   * score. This prevents sudden jumps in the signal
+   * Returns transition time in nanoseconds
    * 
-   * @param pScore
-   *          score to prepend transition movement to
+   * @return transition time in nanoseconds
+   */
+  Variable<Long> getTransitionDurationInNanosecondsVariable();
+
+  /**
+   * Convenience method for setting the transition duration
+   * 
    * @param pDuration
    *          duration
    * @param pTimeUnit
    *          time unit
    */
-  void prependTransitionMovement(ScoreInterface pScore,
-                                 long pDuration,
-                                 TimeUnit pTimeUnit);
+  void setTransitionDuration(long pDuration, TimeUnit pTimeUnit);
+
 
   /**
    * Play score

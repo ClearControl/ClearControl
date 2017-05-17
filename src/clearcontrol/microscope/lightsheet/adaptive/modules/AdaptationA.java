@@ -109,6 +109,9 @@ public class AdaptationA extends StandardAdaptationModule implements
                      lCurrentH,
                      lIY);
 
+    lQueue.setTransitionTime(0.5);
+    lQueue.setFinalisationTime(0.001);
+
     lQueue.finalizeQueue();
 
     return findBestAlphaValue(lControlPlaneIndex,

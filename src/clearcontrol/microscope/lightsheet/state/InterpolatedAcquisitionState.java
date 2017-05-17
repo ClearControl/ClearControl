@@ -497,9 +497,8 @@ public class InterpolatedAcquisitionState extends
       lQueue.addCurrentStateToQueue();
     }
 
-    for (int d = 0; d < getNumberOfDetectionArms(); d++)
-      lQueue.setFlyBackDZ(d, get(LightSheetDOF.DZ, 0, d));
-    lQueue.setFinalisationTime(0.3);
+    lQueue.setTransitionTime(0.5);
+    lQueue.setFinalisationTime(0.005);
     lQueue.finalizeQueue();
 
     return lQueue;

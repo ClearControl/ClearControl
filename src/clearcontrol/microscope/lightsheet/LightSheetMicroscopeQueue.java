@@ -310,6 +310,15 @@ public class LightSheetMicroscopeQueue extends
   };
 
   @Override
+  public void setTransitionTime(double pTransitionTimeInSeconds)
+  {
+    int lNumberOfLightsheets = getNumberOfLightSheets();
+    for (int i = 0; i < lNumberOfLightsheets; i++)
+      getLightSheetSignalGeneratorQueue().getTransitionDurationInSecondsVariable()
+                                         .set(pTransitionTimeInSeconds);
+  }
+
+  @Override
   public void setFinalisationTime(double pFinalisationTimeInSeconds)
   {
     int lNumberOfLightsheets = getNumberOfLightSheets();
@@ -363,37 +372,6 @@ public class LightSheetMicroscopeQueue extends
     return getDetectionArmDeviceQueue(pDetectionArmIndex).getZVariable()
                                                          .get()
                                                          .doubleValue();
-  }
-
-  @Override
-  public void setFlyBackDZ(double pValue)
-  {
-    int lNumberOfDetectionArms = getNumberOfDetectionArms();
-    for (int d = 0; d < lNumberOfDetectionArms; d++)
-      getDetectionArmDeviceQueue(d).getFlyBackZVariable().set(pValue);
-  }
-
-  @Override
-  public void setFlyBackDZ(int pDetectionArmIndex, double pValue)
-  {
-    getDetectionArmDeviceQueue(pDetectionArmIndex).getFlyBackZVariable()
-                                                  .set(pValue);
-  }
-
-  @Override
-  public double getFlyBackDZ(int pDetectionArmIndex)
-  {
-    return getDetectionArmDeviceQueue(pDetectionArmIndex).getFlyBackZVariable()
-                                                         .get()
-                                                         .doubleValue();
-  }
-
-  @Override
-  public void setDefaultFlyBackDZ()
-  {
-    int lNumberOfDetectionArms = getNumberOfDetectionArms();
-    for (int d = 0; d < lNumberOfDetectionArms; d++)
-      setFlyBackDZ(getDZ(d));
   }
 
   @Override

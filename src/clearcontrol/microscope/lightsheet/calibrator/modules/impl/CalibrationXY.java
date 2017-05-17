@@ -7,6 +7,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.StatUtils;
+import org.ejml.simple.SimpleMatrix;
+
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -18,11 +23,6 @@ import clearcontrol.microscope.lightsheet.calibrator.utils.ImageAnalysisUtils;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.stat.StatUtils;
-import org.ejml.simple.SimpleMatrix;
 
 /**
  * Calibrates lightsheet position in the XY plane
@@ -284,6 +284,8 @@ public class CalibrationXY extends CalibrationBase
     }
 
     lQueue.addVoxelDimMetaData(getLightSheetMicroscope(), 10);
+
+    lQueue.setTransitionTime(0.1);
 
     lQueue.finalizeQueue();
     // Building queue end.
