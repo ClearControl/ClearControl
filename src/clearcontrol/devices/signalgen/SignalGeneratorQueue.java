@@ -14,6 +14,8 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
  */
 public class SignalGeneratorQueue implements QueueInterface
 {
+  private final SignalGeneratorInterface mSignalGenerator;
+
   protected volatile int mEnqueuedStateCounter = 0;
   protected final ScoreInterface mQueuedScore;
   protected final ScoreInterface mStagingScore;
@@ -22,13 +24,27 @@ public class SignalGeneratorQueue implements QueueInterface
   /**
    * Instantiates a real-time signal generator queue
    * 
+   * @param pSignalGenerator
+   *          parent signal generator
+   * 
    */
-  public SignalGeneratorQueue()
+  public SignalGeneratorQueue(SignalGeneratorInterface pSignalGenerator)
   {
     super();
+    mSignalGenerator = pSignalGenerator;
     mQueuedScore = new Score("queuedscore");
     mStagingScore = new Score("stagingscore");
     mFinalizationScore = new Score("finalizationscore");
+  }
+
+  /**
+   * Returns this queue's parent signal generator
+   * 
+   * @return parent signal generator
+   */
+  public SignalGeneratorInterface getSignalGenerator()
+  {
+    return mSignalGenerator;
   }
 
   /**
@@ -91,6 +107,21 @@ public class SignalGeneratorQueue implements QueueInterface
   {
     mQueuedScore.addScoreCopy(mStagingScore);
     mEnqueuedStateCounter++;
+  }
+
+  /**
+   * Prepends a transition movement to prevent sudden signal jumps
+   * 
+   * @param pDuration
+   *          duration
+   * @param pTimeUnit
+   *          duration time unit
+   */
+  public void prependTransition(long pDuration, TimeUnit pTimeUnit)
+  {
+    getSignalGenerator().prependTransitionMovement(mQueuedScore,
+                                                   pDuration,
+                                                   pTimeUnit);
   }
 
   @Override

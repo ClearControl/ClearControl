@@ -1,15 +1,24 @@
 package clearcontrol.devices.signalgen.movement;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.devices.signalgen.staves.ZeroStave;
 
+/**
+ * Movement implementation
+ *
+ * @author royer
+ */
 public class Movement extends NameableBase
                       implements MovementInterface
 {
 
+  /**
+   * Default number of staves pwe movement
+   */
   public static final int cDefaultNumberOfStavesPerMovement = 16;
 
   private volatile long mDurationInNanoseconds;
@@ -18,11 +27,25 @@ public class Movement extends NameableBase
   private volatile boolean mIsSyncOnRisingEdge = false;
   private volatile int mSyncChannel = 0;
 
+  /**
+   * Instantiates a movement with given name
+   * 
+   * @param pName
+   *          name
+   */
   public Movement(final String pName)
   {
     this(pName, cDefaultNumberOfStavesPerMovement);
   }
 
+  /**
+   * Instantiates a movement with given name and number of staves
+   * 
+   * @param pName
+   *          name
+   * @param pNumberOfStaves
+   *          number of staves
+   */
   public Movement(final String pName, final int pNumberOfStaves)
   {
     super(pName);
@@ -31,6 +54,36 @@ public class Movement extends NameableBase
     {
       mStaveListArray[i] = new ZeroStave();
     }
+  }
+
+  /**
+   * Copy constructor
+   * 
+   * @param pMovement
+   *          movement to copy
+   */
+  public Movement(Movement pMovement)
+  {
+    this(pMovement.getName(), pMovement.getNumberOfStaves());
+
+    setSync(isSync());
+    setSyncChannel(getSyncChannel());
+    setSyncOnRisingEdge(isSyncOnRisingEdge());
+    setDuration(getDuration(TimeUnit.NANOSECONDS),
+                TimeUnit.NANOSECONDS);
+
+    for (int i = 0; i < mStaveListArray.length; i++)
+    {
+      final StaveInterface lStaveInterface =
+                                           pMovement.mStaveListArray[i];
+      setStave(i, lStaveInterface.duplicate());
+    }
+  }
+
+  @Override
+  public MovementInterface duplicate()
+  {
+    return new Movement(this);
   }
 
   @Override
@@ -119,36 +172,47 @@ public class Movement extends NameableBase
   }
 
   @Override
-  public String toString()
+  public int hashCode()
   {
-    return String.format("Movement[%s]", getName());
-  }
-
-  public static Movement getNullMovement()
-  {
-    final Movement lNullMovement = new Movement("NullMovement");
-    return lNullMovement;
+    final int prime = 31;
+    int result = 1;
+    result =
+           prime * result + (int) (mDurationInNanoseconds
+                                   ^ (mDurationInNanoseconds >>> 32));
+    result = prime * result + (mIsSync ? 1231 : 1237);
+    result = prime * result + (mIsSyncOnRisingEdge ? 1231 : 1237);
+    result = prime * result + Arrays.hashCode(mStaveListArray);
+    result = prime * result + mSyncChannel;
+    return result;
   }
 
   @Override
-  public MovementInterface copy()
+  public boolean equals(Object obj)
   {
-    final MovementInterface lMovementCopy =
-                                          new Movement(getName(),
-                                                       getNumberOfStaves());
-    lMovementCopy.setSync(isSync());
-    lMovementCopy.setSyncChannel(getSyncChannel());
-    lMovementCopy.setSyncOnRisingEdge(isSyncOnRisingEdge());
-    lMovementCopy.setDuration(getDuration(TimeUnit.NANOSECONDS),
-                              TimeUnit.NANOSECONDS);
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Movement other = (Movement) obj;
+    if (mDurationInNanoseconds != other.mDurationInNanoseconds)
+      return false;
+    if (mIsSync != other.mIsSync)
+      return false;
+    if (mIsSyncOnRisingEdge != other.mIsSyncOnRisingEdge)
+      return false;
+    if (!Arrays.equals(mStaveListArray, other.mStaveListArray))
+      return false;
+    if (mSyncChannel != other.mSyncChannel)
+      return false;
+    return true;
+  }
 
-    for (int i = 0; i < mStaveListArray.length; i++)
-    {
-      final StaveInterface lStaveInterface = mStaveListArray[i];
-      lMovementCopy.setStave(i, lStaveInterface.copy());
-    }
-
-    return lMovementCopy;
+  @Override
+  public String toString()
+  {
+    return String.format("Movement[%s]", getName());
   }
 
 }

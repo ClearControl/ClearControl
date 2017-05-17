@@ -371,9 +371,10 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   }
 
   /**
-   * Sets
+   * Sets the registration flag
    * 
    * @param pRegistration
+   *          registration flag
    */
   public void setRegistration(boolean pRegistration)
   {

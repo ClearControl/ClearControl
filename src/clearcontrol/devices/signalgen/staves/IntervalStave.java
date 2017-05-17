@@ -28,6 +28,16 @@ public class IntervalStave extends StaveAbstract
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    return new IntervalStave(getName(),
+                             getStart(),
+                             getStop(),
+                             getInsideValue(),
+                             getOutsideValue());
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     if ((pNormalizedTime < getStart())
@@ -77,14 +87,6 @@ public class IntervalStave extends StaveAbstract
     mOutsideValue = pOutsideValue;
   }
 
-  @Override
-  public StaveInterface copy()
-  {
-    return new IntervalStave(getName(),
-                             getStart(),
-                             getStop(),
-                             getInsideValue(),
-                             getOutsideValue());
-  }
+
 
 }

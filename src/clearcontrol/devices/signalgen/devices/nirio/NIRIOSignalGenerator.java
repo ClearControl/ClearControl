@@ -4,13 +4,13 @@ import static java.lang.Math.toIntExact;
 
 import java.util.concurrent.Future;
 
-import nirioj.direttore.Direttore;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorQueue;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOCompiledScore;
 import clearcontrol.devices.signalgen.devices.nirio.compiler.NIRIOScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
+import nirioj.direttore.Direttore;
 
 /**
  *
@@ -81,6 +81,8 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
 
     return lPlayed && super.playScore(pScore);
   }
+
+
 
   @Override
   public boolean open()

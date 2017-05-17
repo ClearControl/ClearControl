@@ -8,7 +8,7 @@ public class ZeroStave extends ConstantStave implements StaveInterface
   }
 
   @Override
-  public StaveInterface copy()
+  public StaveInterface duplicate()
   {
     return new ZeroStave();
   }

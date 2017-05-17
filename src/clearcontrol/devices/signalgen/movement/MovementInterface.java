@@ -15,6 +15,13 @@ public interface MovementInterface extends NameableInterface
 {
 
   /**
+   * Returns a field_for_field copy of this movement.
+   * 
+   * @return field_for_field copy
+   */
+  MovementInterface duplicate();
+
+  /**
    * Sets stave at index.
    * 
    * @param pStaveIndex
@@ -117,11 +124,6 @@ public interface MovementInterface extends NameableInterface
    */
   int getSyncChannel();
 
-  /**
-   * Returns a field_for_field copy of this movement.
-   * 
-   * @return field_for_field copy
-   */
-  MovementInterface copy();
+
 
 }

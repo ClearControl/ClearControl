@@ -69,6 +69,18 @@ public class BezierStave extends StaveAbstract
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    return new BezierStave(getName(),
+                           getValueStart(),
+                           getValueStop(),
+                           getSlopeStart(),
+                           getSlopeEnd(),
+                           getSmoothness(),
+                           getMargin());
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
 
@@ -108,17 +120,7 @@ public class BezierStave extends StaveAbstract
     return lValue;
   }
 
-  @Override
-  public StaveInterface copy()
-  {
-    return new BezierStave(getName(),
-                           getValueStart(),
-                           getValueStop(),
-                           getSlopeStart(),
-                           getSlopeEnd(),
-                           getSmoothness(),
-                           getMargin());
-  }
+
 
   /**
    * Returns the value at the beginning of the stave.

@@ -15,6 +15,13 @@ public interface ScoreInterface
 {
 
   /**
+   * Duplicates this score by performing a deep copy
+   * 
+   * @return clone
+   */
+  public abstract ScoreInterface duplicate();
+
+  /**
    * Returns the number of movements in score.
    * 
    * @return number of movements
@@ -97,9 +104,16 @@ public interface ScoreInterface
   public abstract MovementInterface getMovement(int pMovementIndex);
 
   /**
-   * Return maximum number of time points.
+   * Returns the last movement of this score
    * 
-   * @return number of time points
+   * @return last movement
+   */
+  public abstract MovementInterface getLastMovement();
+
+  /**
+   * Return maximum number of staves
+   * 
+   * @return maximum number of staves
    */
   public abstract int getMaxNumberOfStaves();
 
@@ -111,5 +125,8 @@ public interface ScoreInterface
    * @return duration
    */
   public abstract long getDuration(TimeUnit pTimeUnit);
+
+
+
 
 }

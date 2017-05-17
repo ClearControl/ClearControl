@@ -2,10 +2,13 @@ package clearcontrol.devices.signalgen;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.movement.TransitionMovement;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
 /**
@@ -23,7 +26,7 @@ public abstract class SignalGeneratorBase extends VirtualDevice
                                                      new Variable<Boolean>("Trigger",
                                                                            false);
 
-  private final Variable<ScoreInterface> mPlayedScoreVariable =
+  private final Variable<ScoreInterface> mLastPlayedScoreVariable =
                                                               new Variable<>("PlayedScore",
                                                                              null);
 
@@ -49,8 +52,29 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   @Override
   public SignalGeneratorQueue requestQueue()
   {
-    SignalGeneratorQueue lQueue = new SignalGeneratorQueue();
+    SignalGeneratorQueue lQueue = new SignalGeneratorQueue(this);
     return lQueue;
+  }
+
+  @Override
+  public void prependTransitionMovement(ScoreInterface pScore,
+                                        long pDuration,
+                                        TimeUnit pTimeUnit)
+  {
+    MovementInterface lLastMovementFromPreviouslyPlayedScore =
+                                    getLastPlayedScoreVariable().get()
+                                                                .getLastMovement();
+
+    MovementInterface lFirstMovementOfGivenScore =
+                                                 pScore.getMovement(0);
+
+    MovementInterface lTransitionMovement =
+                                          TransitionMovement.make(lLastMovementFromPreviouslyPlayedScore,
+                                                                  lFirstMovementOfGivenScore,
+                                                                  pDuration,
+                                                                  pTimeUnit);
+    
+    pScore.insertMovementAt(0, lTransitionMovement);
   }
 
   @Override
@@ -61,10 +85,8 @@ public abstract class SignalGeneratorBase extends VirtualDevice
       final int lCurrentThreadPriority = lCurrentThread.getPriority();
       lCurrentThread.setPriority(Thread.MAX_PRIORITY);
       mIsPlaying = true;
-      // System.out.println("Symphony: playQueue() begin");
       final boolean lPlayed =
                             playScore(pSignalGeneratorRealTimeQueue.getQueuedScore());
-      // System.out.println("Symphony: playQueue() end");
       mIsPlaying = false;
       lCurrentThread.setPriority(lCurrentThreadPriority);
       return lPlayed;
@@ -76,7 +98,7 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   @Override
   public boolean playScore(ScoreInterface pScore)
   {
-    mPlayedScoreVariable.set(pScore);
+    mLastPlayedScoreVariable.set(pScore.duplicate());
     return true;
   }
 
@@ -87,9 +109,9 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   }
 
   @Override
-  public Variable<ScoreInterface> getPlayedScoreVariable()
+  public Variable<ScoreInterface> getLastPlayedScoreVariable()
   {
-    return mPlayedScoreVariable;
+    return mLastPlayedScoreVariable;
   }
 
 }

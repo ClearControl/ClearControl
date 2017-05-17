@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.log.LoggingInterface;
@@ -295,6 +296,7 @@ public class LightSheetSignalGeneratorQueue implements
   public void finalizeQueue()
   {
     update();
+    mDelegatedQueue.prependTransition(500, TimeUnit.MILLISECONDS);
     mDelegatedQueue.finalizeQueue();
   }
 

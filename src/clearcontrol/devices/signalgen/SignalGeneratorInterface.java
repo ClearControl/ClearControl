@@ -1,5 +1,7 @@
 package clearcontrol.devices.signalgen;
 
+import java.util.concurrent.TimeUnit;
+
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.queue.QueueDeviceInterface;
@@ -25,6 +27,21 @@ public interface SignalGeneratorInterface extends
   public double getTemporalGranularityInMicroseconds();
 
   /**
+   * Prepends a transition movement to the given score based on the last played
+   * score. This prevents sudden jumps in the signal
+   * 
+   * @param pScore
+   *          score to prepend transition movement to
+   * @param pDuration
+   *          duration
+   * @param pTimeUnit
+   *          time unit
+   */
+  void prependTransitionMovement(ScoreInterface pScore,
+                                 long pDuration,
+                                 TimeUnit pTimeUnit);
+
+  /**
    * Play score
    * 
    * @param pScore
@@ -39,7 +56,7 @@ public interface SignalGeneratorInterface extends
    * 
    * @return played score variable
    */
-  Variable<ScoreInterface> getPlayedScoreVariable();
+  Variable<ScoreInterface> getLastPlayedScoreVariable();
 
   /**
    * Returns trigger variable
@@ -54,5 +71,6 @@ public interface SignalGeneratorInterface extends
    * @return true if playing
    */
   public boolean isPlaying();
+
 
 }
