@@ -84,23 +84,7 @@ public class InterpolatedAcquisitionState extends
     getImageHeightVariable().addSetListener(lChangeListener);
 
 
-    {
-      mInterpolationTables =
-                           new InterpolationTables(mNumberOfDetectionArms,
-                                                   mNumberOfLightSheets);
 
-      mInterpolationTables.addChangeListener((e) -> {
-        // info("Interpolation table changed!");
-        mQueueUpdateNeeded = true;
-        notifyListeners(this);
-      });
-
-      addControlPlane(mZLowVariable.get().doubleValue());
-      addControlPlane(mZHighVariable.get().doubleValue());
-
-      setupDefaultValues();
-
-    }
 
     {
       DetectionArmInterface lDetectionArm =
@@ -141,6 +125,24 @@ public class InterpolatedAcquisitionState extends
                                              lDetectionArm.getZVariable()
                                                           .getMax());
       }
+    }
+
+    {
+      mInterpolationTables =
+                           new InterpolationTables(mNumberOfDetectionArms,
+                                                   mNumberOfLightSheets);
+
+      mInterpolationTables.addChangeListener((e) -> {
+        // info("Interpolation table changed!");
+        mQueueUpdateNeeded = true;
+        notifyListeners(this);
+      });
+
+      addControlPlane(mZLowVariable.get().doubleValue());
+      addControlPlane(mZHighVariable.get().doubleValue());
+
+      setupDefaultValues();
+
     }
 
     mCameraOnOff = new Variable[mNumberOfDetectionArms];

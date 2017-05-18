@@ -107,7 +107,8 @@ public class HamStackCamera extends
   {
     this(new DcamDevice(pCameraDeviceIndex, true));
 
-    if (pTriggerType == StandardTriggerType.Software)
+    // TODO: this needs to be set in constructor:
+    /*if (pTriggerType == StandardTriggerType.Software)
       getDcamDevice().setInputTriggerToSoftware();
     else if (pTriggerType == StandardTriggerType.Internal)
       getDcamDevice().setInputTriggerToInternal();
@@ -115,9 +116,9 @@ public class HamStackCamera extends
       getDcamDevice().setInputTriggerToExternalFastEdge();
     else if (pTriggerType == StandardTriggerType.ExternalLevel)
       getDcamDevice().setInputTriggerToExternalLevel();
-
+    
     getDcamDevice().setOutputTriggerToExposure();
-    getDcamDevice().setDefectCorectionMode(true);
+    getDcamDevice().setDefectCorectionMode(true);/**/
 
     // ----------------------- done with the listener -------- //
 
