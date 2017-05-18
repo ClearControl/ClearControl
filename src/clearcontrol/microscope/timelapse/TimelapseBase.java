@@ -12,6 +12,7 @@ import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
@@ -40,10 +41,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
   private final MicroscopeInterface<?> mMicroscope;
 
   private AdaptiveEngine<? extends AcquisitionStateInterface<?, ?>> mAdaptiveEngine;
-
-  private Variable<Boolean> mAdaptiveEngineOnVariable =
-                                                      new Variable<Boolean>("AdaptiveEngineOnVariable",
-                                                                            true);
 
   private final Variable<TimelapseTimerInterface> mTimelapseTimerVariable =
                                                                           new Variable<>("TimelapseTimer",
@@ -108,6 +105,24 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                       new Variable<Boolean>("SaveStacks",
                                                                             true);
 
+  private final Variable<Boolean> mAdaptiveEngineOnVariable =
+                                                            new Variable<Boolean>("AdaptiveEngineOnVariable",
+                                                                                  true);
+
+  private final BoundedVariable<Integer> mMinAdaptiveEngineStepsVariable =
+                                                                         new BoundedVariable<Integer>("MinAdaptiveEngineSteps",
+                                                                                                      1,
+                                                                                                      1,
+                                                                                                      Integer.MAX_VALUE,
+                                                                                                      1);
+
+  private final BoundedVariable<Integer> mMaxAdaptiveEngineStepsVariable =
+                                                                         new BoundedVariable<Integer>("MaxAdaptiveEngineSteps",
+                                                                                                      10,
+                                                                                                      1,
+                                                                                                      Integer.MAX_VALUE,
+                                                                                                      1);
+
   private final VariableSetListener<StackInterface> mStackListener;
 
   /**
@@ -166,6 +181,18 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
       }
     };
+
+    getMaxAdaptiveEngineStepsVariable().addSetListener((o, n) -> {
+      int lMin = getMinAdaptiveEngineStepsVariable().get().intValue();
+      if (n.intValue() != o.intValue() && n < lMin)
+        getMaxAdaptiveEngineStepsVariable().setAsync(lMin);
+    });
+
+    getMinAdaptiveEngineStepsVariable().addSetListener((o, n) -> {
+      int lMax = getMaxAdaptiveEngineStepsVariable().get().intValue();
+      if (n.intValue() != o.intValue() && n > lMax)
+        getMaxAdaptiveEngineStepsVariable().setAsync(n);
+    });
   }
 
   /**
@@ -323,10 +350,11 @@ public abstract class TimelapseBase extends LoopTaskDevice
     TimelapseTimerInterface lTimelapseTimer =
                                             getTimelapseTimerVariable().get();
 
+    runAdaptiveEngine(lTimelapseTimer);
+
     lTimelapseTimer.waitToAcquire(1, TimeUnit.DAYS);
     lTimelapseTimer.notifyAcquisition();
     acquire();
-    runAdaptiveEngine();
 
     getTimePointCounterVariable().increment();
 
@@ -407,15 +435,44 @@ public abstract class TimelapseBase extends LoopTaskDevice
     mAdaptiveEngine.reset();
   }
 
-  private void runAdaptiveEngine()
+  private void runAdaptiveEngine(TimelapseTimerInterface pTimelapseTimer)
   {
     if (!mAdaptiveEngineOnVariable.get())
       return;
 
-    if (!mAdaptiveEngine.step())
+    int lMinSteps = getMinAdaptiveEngineStepsVariable().get()
+                                                       .intValue();
+    int lMaxSteps = getMaxAdaptiveEngineStepsVariable().get()
+                                                       .intValue();
+
+    if (lMaxSteps < lMinSteps)
+      lMaxSteps = lMinSteps;
+
+    Boolean lMoreStepsNeeded = true;
+
+    for (int i = 0; i < lMinSteps && lMoreStepsNeeded; i++)
     {
-      mAdaptiveEngine.reset();
+      lMoreStepsNeeded = mAdaptiveEngine.step();
     }
+
+    for (int i = 0; i < (lMaxSteps - lMinSteps)
+                    && lMoreStepsNeeded; i++)
+    {
+
+      long lNextStepInMilliseconds =
+                                   (long) (mAdaptiveEngine.estimateNextStepInSeconds()
+                                           * 1000);
+
+      if (pTimelapseTimer.enoughTimeFor(lNextStepInMilliseconds,
+                                        lNextStepInMilliseconds / 10,
+                                        TimeUnit.MILLISECONDS))
+        lMoreStepsNeeded = mAdaptiveEngine.step();
+
+    }
+
+    if (!lMoreStepsNeeded)
+      mAdaptiveEngine.reset();
+
   }
 
   private boolean checkMaxDuration()
@@ -545,6 +602,18 @@ public abstract class TimelapseBase extends LoopTaskDevice
   public Variable<Boolean> getSaveStacksVariable()
   {
     return mSaveStacksVariable;
+  }
+
+  @Override
+  public BoundedVariable<Integer> getMinAdaptiveEngineStepsVariable()
+  {
+    return mMinAdaptiveEngineStepsVariable;
+  }
+
+  @Override
+  public BoundedVariable<Integer> getMaxAdaptiveEngineStepsVariable()
+  {
+    return mMaxAdaptiveEngineStepsVariable;
   }
 
 }

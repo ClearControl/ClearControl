@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import clearcontrol.core.device.startstop.StartStopSignalVariablesInterface;
 import clearcontrol.core.device.task.IsRunningTaskInterface;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.stack.sourcesink.sink.FileStackSinkInterface;
@@ -167,5 +168,21 @@ public interface TimelapseInterface extends
    * @return save stacks variable
    */
   Variable<Boolean> getSaveStacksVariable();
+
+  /**
+   * Returns the variable holding the min number of adaptive steps per time
+   * point
+   * 
+   * @return min number of adaptive steps per time point variable
+   */
+  BoundedVariable<Integer> getMinAdaptiveEngineStepsVariable();
+
+  /**
+   * Returns the variable holding the max number of adaptive steps per time
+   * point
+   * 
+   * @return max number of adaptive steps per time point variable
+   */
+  BoundedVariable<Integer> getMaxAdaptiveEngineStepsVariable();
 
 }

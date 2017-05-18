@@ -1,13 +1,5 @@
 package clearcontrol.microscope.timelapse.gui;
 
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.GridPane;
-
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.combo.ClassComboBoxVariable;
@@ -23,6 +15,15 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator;
 import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 /**
  * Timelapse toolbar
@@ -128,13 +129,7 @@ public class TimelapseToolbar extends CustomGridPane
 
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 4);
-      add(lSeparator, 0, mRow);
-      mRow++;
-    }
+    addSeparator();
 
     {
       NumberVariableTextField<Long> lIntervalField =
@@ -190,13 +185,7 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 4);
-      add(lSeparator, 0, mRow);
-      mRow++;
-    }
+    addSeparator();
 
     {
 
@@ -299,13 +288,7 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 4);
-      add(lSeparator, 0, mRow);
-      mRow++;
-    }
+    addSeparator();
 
     {
       VariableFileChooser lRootFolderChooser =
@@ -361,6 +344,66 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
+    addSeparator();
+
+    {
+      VariableCheckBox lAutoPilotCheckBox =
+                                          new VariableCheckBox("AutoPilot",
+                                                               pTimelapseInterface.getAdaptiveEngineOnVariable());
+
+      GridPane.setHalignment(lAutoPilotCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 1);
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(), 1);
+
+      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
+      add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
+      add(lAutoPilotCheckBox.getLabel(), 1, mRow);
+
+      mRow++;
+    }
+
+    {
+      NumberVariableTextField<Integer> lMinStepsTextField =
+                                                          new NumberVariableTextField<>("Min & max steps per tp:",
+                                                                                        pTimelapseInterface.getMinAdaptiveEngineStepsVariable());
+
+      NumberVariableTextField<Integer> lMaxStepsTextField =
+                                                          new NumberVariableTextField<>("",
+                                                                                        pTimelapseInterface.getMaxAdaptiveEngineStepsVariable());
+
+      lMinStepsTextField.getTextField().setPrefWidth(50);
+      lMaxStepsTextField.getTextField().setPrefWidth(50);
+
+      GridPane.setHalignment(lMinStepsTextField.getLabel(),
+                             HPos.RIGHT);
+
+      HBox lHBox = new HBox(lMinStepsTextField.getTextField(),
+                            new Label("    "),
+                            lMaxStepsTextField.getTextField());
+
+      GridPane.setColumnSpan(lHBox, 2);
+      GridPane.setHgrow(lHBox, Priority.ALWAYS);
+
+      GridPane.setHalignment(lHBox, HPos.CENTER);
+
+      add(lMinStepsTextField.getLabel(), 1, mRow);
+      add(lHBox, 2, mRow);
+
+      mRow++;
+    }
+
+  }
+
+  protected void addSeparator()
+  {
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, mRow);
+      mRow++;
+    }
   }
 
 }

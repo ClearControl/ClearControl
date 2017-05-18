@@ -10,6 +10,7 @@ import clearcontrol.stack.metadata.StackMetaData;
 import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
 import fastfuse.registration.AffineMatrix;
+import fastfuse.tasks.DownsampleXYbyHalfTask;
 import fastfuse.tasks.FlipTask;
 import fastfuse.tasks.GaussianBlurTask;
 import fastfuse.tasks.IdentityTask;
@@ -33,6 +34,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                          MachineConfiguration.get()
                                                              .getBooleanProperty("fastfuse.register",
                                                                                  false);
+
+  private volatile boolean mDownscale =
+                                      MachineConfiguration.get()
+                                                          .getBooleanProperty("fastfuse.downscale",
+                                                                              false);
 
   private RegistrationTask mRegisteredFusionTask;
 
@@ -61,7 +67,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     {
       if (pNumberOfDetectionArms == 1)
       {
-        addTask(new IdentityTask("C0L0", "fused"));
+        if (mDownscale)
+        {
+          addTask(new DownsampleXYbyHalfTask("C0L0", "fused"));
+        }
+        else
+        {
+          addTask(new IdentityTask("C0L0", "fused"));
+        }
       }
       else if (pNumberOfDetectionArms == 2)
       {

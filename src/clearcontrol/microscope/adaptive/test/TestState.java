@@ -34,7 +34,7 @@ public class TestState extends
   }
 
   @Override
-  public TestState copy(String pName)
+  public TestState duplicate(String pName)
   {
     return new TestState(pName);
   }

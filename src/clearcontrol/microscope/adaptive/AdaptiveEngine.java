@@ -65,7 +65,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
 
   private final Variable<Boolean> mConcurrentExecutionVariable =
                                                                new Variable<>("ConcurrentExecution",
-                                                                              false);
+                                                                              true);
 
   private final Variable<Boolean> mRunUntilAllModulesReadyVariable =
                                                                    new Variable<>("ConcurrentExecution",
@@ -243,7 +243,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
 
     @SuppressWarnings("unchecked")
     S lLoggedState =
-                   (S) lCurrentAcquisitionState.copy("state "
+                   (S) lCurrentAcquisitionState.duplicate("state "
                                                      + getAcquisitionStateCounterVariable().get());
 
     if (getMicroscope() != null)

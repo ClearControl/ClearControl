@@ -29,7 +29,7 @@ public interface AcquisitionStateInterface<M extends MicroscopeInterface<Q>, Q e
    * @param pName
    * @return copy of this state
    */
-  AcquisitionStateInterface<M, Q> copy(String pName);
+  AcquisitionStateInterface<M, Q> duplicate(String pName);
 
   /**
    * Returns the variable holding the exposure in seconds for this acquisition

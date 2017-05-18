@@ -80,7 +80,7 @@ public class AcquisitionStatePanel extends CustomGridPane
                             pAcquisitionState.getStackZStepVariable();
 
     Variable<Number> lNumberOfPlanes =
-                                     pAcquisitionState.getStackNumberOfPlanesVariable();
+                                     pAcquisitionState.getNumberOfZPlanesVariable();
 
     // Creating elements:
 

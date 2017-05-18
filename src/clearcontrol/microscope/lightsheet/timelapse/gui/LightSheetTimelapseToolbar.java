@@ -1,14 +1,13 @@
 package clearcontrol.microscope.lightsheet.timelapse.gui;
 
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
+import clearcontrol.microscope.timelapse.gui.TimelapseToolbar;
 import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
-
-import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
-import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
-import clearcontrol.microscope.timelapse.gui.TimelapseToolbar;
 
 /**
  * Lightsheet Timelapse toolbar
@@ -91,22 +90,7 @@ public class LightSheetTimelapseToolbar extends TimelapseToolbar
       mRow++;
     }
 
-    {
-      VariableCheckBox lAutoPilotCheckBox =
-                                          new VariableCheckBox("AutoPilot",
-                                                               pLightSheetTimelapse.getAdaptiveEngineOnVariable());
 
-      GridPane.setHalignment(lAutoPilotCheckBox.getCheckBox(),
-                             HPos.RIGHT);
-      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 1);
-      GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(), 1);
-
-      GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
-      add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
-      add(lAutoPilotCheckBox.getLabel(), 1, mRow);
-
-      mRow++;
-    }
 
   }
 

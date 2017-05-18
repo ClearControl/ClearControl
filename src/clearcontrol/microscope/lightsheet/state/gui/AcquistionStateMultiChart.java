@@ -70,7 +70,7 @@ public class AcquistionStateMultiChart extends MultiChart
 
     try
     {
-      int lDepth = pAcquisitionState.getStackNumberOfPlanesVariable()
+      int lDepth = pAcquisitionState.getNumberOfZPlanesVariable()
                                     .get()
                                     .intValue();
       int lNumberOfDetectionArms =
