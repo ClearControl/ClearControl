@@ -112,7 +112,7 @@ public class AdaptationX extends StandardAdaptationModule implements
     lQueue.setIX(lLightSheetIndex, lCurrentDX);
     lQueue.addCurrentStateToQueue();
 
-    lQueue.setTransitionTime(0.5);
+    lQueue.setTransitionTime(0.75);
     lQueue.setFinalisationTime(0.001);
 
     lQueue.finalizeQueue();

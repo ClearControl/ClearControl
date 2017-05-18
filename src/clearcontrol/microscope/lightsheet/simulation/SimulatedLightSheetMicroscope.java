@@ -311,7 +311,7 @@ public class SimulatedLightSheetMicroscope extends
         lAdaptiveEngine.add(new AdaptationX(11,
                                             20,
                                             0.95,
-                                            2e-5,
+                                            8e-5,
                                             0.010,
                                             1));
       }

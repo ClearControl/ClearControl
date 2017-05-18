@@ -70,7 +70,7 @@ public class AdaptationZ extends StandardAdaptationModule implements
     int lNumberOfSamples = getNumberOfSamplesVariable().get();
     int lHalfSamples = (lNumberOfSamples - 1) / 2;
     double lMinZ = -lDeltaZ * lHalfSamples;
-    double lMaxZ = lDeltaZ * lHalfSamples;
+
 
     final TDoubleArrayList lDZList = new TDoubleArrayList();
 
@@ -100,8 +100,9 @@ public class AdaptationZ extends StandardAdaptationModule implements
 
     lQueue.setILO(true);
     lQueue.setC(true);
-    for (double z = lMinZ; z <= lMaxZ; z += lDeltaZ)
+    for (int i = 0; i < lNumberOfSamples; i++)
     {
+      double z = lMinZ + lDeltaZ * i;
       lDZList.add(z);
       lQueue.setDZ(lCurrentDZ + z);
       lQueue.addCurrentStateToQueue();
