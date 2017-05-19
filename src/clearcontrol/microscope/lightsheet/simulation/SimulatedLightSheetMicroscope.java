@@ -309,14 +309,14 @@ public class SimulatedLightSheetMicroscope extends
                                             0.95,
                                             2e-5,
                                             0.010,
-                                            1));
+                                            0.5));
         lAdaptiveEngine.add(new AdaptationX(11,
                                             0,
                                             200,
                                             0.95,
                                             8e-5,
                                             0.010,
-                                            1));
+                                            0.5));
       }
 
     }
