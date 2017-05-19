@@ -112,7 +112,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     if (isRegistration())
     {
 
-      if (mDownscale)
+      if (isDownscale())
       {
         addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
         addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
@@ -151,18 +151,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0blur",
-                                                   "C1blur",
-                                                   "C0",
-                                                   "C1",
-                                                   "C1reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0blur",
+                                                 "C1blur",
+                                                 "C0",
+                                                 "C1",
+                                                 "C1reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
@@ -176,7 +179,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     else
     {
 
-      if (mDownscale)
+      if (isDownscale())
       {
         addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
         addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
@@ -224,7 +227,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   protected void setupFourLightsheetsOneDetectionArm()
   {
-    if (mDownscale)
+    if (isDownscale())
     {
       addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
       addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
@@ -252,7 +255,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   {
     if (isRegistration())
     {
-      if (mDownscale)
+      if (isDownscale())
       {
         addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
         addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
@@ -278,18 +281,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0blur",
-                                                   "C1blur",
-                                                   "C0",
-                                                   "C1",
-                                                   "C1reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0blur",
+                                                 "C1blur",
+                                                 "C0",
+                                                 "C1",
+                                                 "C1reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
@@ -322,7 +328,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   protected void setupTwoLightSheetsOneDetectionArm()
   {
-    if (mDownscale)
+    if (isDownscale())
     {
       addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
       addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
@@ -344,7 +350,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   {
     if (isRegistration())
     {
-      if (mDownscale)
+      if (isDownscale())
       {
         addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
         addTask(new DownsampleXYbyHalfTask("C1L0", "C1L0d"));
@@ -357,18 +363,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0L0d",
                                    "C0L0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1L0d",
                                    "C1L0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0L0blur",
-                                                   "C1L0blur",
-                                                   "C0L0d",
-                                                   "C1L0d",
-                                                   "C1L0reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0L0blur",
+                                                 "C1L0blur",
+                                                 "C0L0d",
+                                                 "C1L0d",
+                                                 "C1L0reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
@@ -381,7 +390,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     }
     else
     {
-      if (mDownscale)
+      if (isDownscale())
       {
         addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
         addTask(new DownsampleXYbyHalfTask("C1L0", "C1L0d"));
@@ -404,7 +413,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   protected void setupOneLightsheetOneDetectionArm()
   {
-    if (mDownscale)
+    if (isDownscale())
     {
       addTask(new DownsampleXYbyHalfTask("C0L0", "fused"));
     }
@@ -537,6 +546,27 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   public void setRegistration(boolean pRegistration)
   {
     mRegistration = pRegistration;
+  }
+
+  /**
+   * Returns true if downscale by a factor 2 along XY is active
+   * 
+   * @return true if downscale isactive
+   */
+  public boolean isDownscale()
+  {
+    return mDownscale;
+  }
+
+  /**
+   * Sets whether to downscale by a factor 2 along XY
+   * 
+   * @param pDownscale
+   *          downscale on or off
+   */
+  public void setDownscale(boolean pDownscale)
+  {
+    mDownscale = pDownscale;
   }
 
 }

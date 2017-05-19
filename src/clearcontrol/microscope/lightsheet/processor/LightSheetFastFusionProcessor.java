@@ -3,6 +3,8 @@ package clearcontrol.microscope.lightsheet.processor;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.tuple.Triple;
+
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcontrol.core.log.LoggingInterface;
@@ -19,8 +21,6 @@ import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.processor.StackProcessorInterface;
 import clearcontrol.stack.processor.clearcl.ClearCLStackProcessorBase;
 import coremem.recycling.RecyclerInterface;
-
-import org.apache.commons.lang3.tuple.Triple;
 
 /**
  *
@@ -78,6 +78,15 @@ public class LightSheetFastFusionProcessor extends
       // info("pass-through mode on, passing stack untouched: %s",
       // pStack);
       return pStack;
+    }
+
+    if (mEngine.isDownscale())
+    {
+      double lVoxelDimX = pStack.getMetaData().getVoxelDimX();
+      double lVoxelDimY = pStack.getMetaData().getVoxelDimY();
+
+      pStack.getMetaData().setVoxelDimX(2 * lVoxelDimX);
+      pStack.getMetaData().setVoxelDimY(2 * lVoxelDimY);
     }
 
     mEngine.passStack(true, pStack);
