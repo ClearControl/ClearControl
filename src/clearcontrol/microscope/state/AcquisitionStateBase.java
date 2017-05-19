@@ -28,7 +28,7 @@ public abstract class AcquisitionStateBase<M extends MicroscopeInterface<Q>, Q e
 
   private final BoundedVariable<Number> mExposureInSeconds =
                                                            new BoundedVariable<Number>("ExposureInSeconds",
-                                                                                       0.010,
+                                                                                       0.020,
                                                                                        0.0,
                                                                                        100.0);
 

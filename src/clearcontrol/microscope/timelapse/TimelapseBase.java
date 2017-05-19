@@ -118,7 +118,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   private final BoundedVariable<Integer> mMaxAdaptiveEngineStepsVariable =
                                                                          new BoundedVariable<Integer>("MaxAdaptiveEngineSteps",
-                                                                                                      10,
+                                                                                                      2,
                                                                                                       1,
                                                                                                       Integer.MAX_VALUE,
                                                                                                       1);
