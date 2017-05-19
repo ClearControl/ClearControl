@@ -9,6 +9,7 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
 import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
+import fastfuse.FastFusionMemoryPool;
 import fastfuse.registration.AffineMatrix;
 import fastfuse.tasks.DownsampleXYbyHalfTask;
 import fastfuse.tasks.FlipTask;
@@ -40,6 +41,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                                           .getBooleanProperty("fastfuse.downscale",
                                                                               true);
 
+  private volatile double mMemRatio =
+                                    MachineConfiguration.get()
+                                                        .getDoubleProperty("fastfuse.memratio",
+                                                                           0.8);
+
   private RegistrationTask mRegisteredFusionTask;
 
   /**
@@ -57,6 +63,13 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                     int pNumberOfDetectionArms)
   {
     super(pContext);
+
+    // setting up pool with max pool size:
+    long lMaxMemoryInBytes =
+                           (long) (mMemRatio
+                                   * pContext.getDevice()
+                                             .getMaxMemoryAllocationSizeInBytes());
+    FastFusionMemoryPool.get(pContext, lMaxMemoryInBytes);
 
     int[] lKernelSizes = new int[]
     { 3, 3, 3 };
@@ -152,13 +165,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
 
       mRegisteredFusionTask =
                             new RegistrationTask("C0blur",
@@ -282,13 +293,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
 
       mRegisteredFusionTask =
                             new RegistrationTask("C0blur",
@@ -364,13 +373,11 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       addTask(new GaussianBlurTask("C0L0d",
                                    "C0L0blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
       addTask(new GaussianBlurTask("C1L0d",
                                    "C1L0blur",
                                    lKernelSigmas,
-                                   lKernelSizes,
-                                   true));
+                                   lKernelSizes));
 
       mRegisteredFusionTask =
                             new RegistrationTask("C0L0blur",
