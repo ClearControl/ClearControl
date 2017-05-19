@@ -151,18 +151,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0blur",
-                                                   "C1blur",
-                                                   "C0",
-                                                   "C1",
-                                                   "C1reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0blur",
+                                                 "C1blur",
+                                                 "C0",
+                                                 "C1",
+                                                 "C1reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
@@ -278,18 +281,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0",
                                    "C0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1",
                                    "C1blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0blur",
-                                                   "C1blur",
-                                                   "C0",
-                                                   "C1",
-                                                   "C1reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0blur",
+                                                 "C1blur",
+                                                 "C0",
+                                                 "C1",
+                                                 "C1reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
@@ -357,18 +363,21 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
       addTask(new GaussianBlurTask("C0L0d",
                                    "C0L0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
       addTask(new GaussianBlurTask("C1L0d",
                                    "C1L0blur",
+                                   lKernelSigmas,
                                    lKernelSizes,
-                                   lKernelSigmas));
+                                   true));
 
-      mRegisteredFusionTask = new RegistrationTask("C0L0blur",
-                                                   "C1L0blur",
-                                                   "C0L0d",
-                                                   "C1L0d",
-                                                   "C1L0reg");
+      mRegisteredFusionTask =
+                            new RegistrationTask("C0L0blur",
+                                                 "C1L0blur",
+                                                 "C0L0d",
+                                                 "C1L0d",
+                                                 "C1L0reg");
       mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
