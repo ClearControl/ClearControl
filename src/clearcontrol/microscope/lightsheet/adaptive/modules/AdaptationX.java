@@ -20,9 +20,14 @@ public class AdaptationX extends StandardAdaptationModule implements
                          AdaptationModuleInterface<InterpolatedAcquisitionState>
 {
 
-  private final Variable<Double> mDeltaXVariable =
-                                                 new Variable<Double>("DeltaX",
-                                                                      20.0);
+  private final Variable<Double> mMinXVariable =
+                                               new Variable<Double>("MinX",
+                                                                    20.0);
+
+  private final Variable<Double> mMaxXVariable =
+                                               new Variable<Double>("MinX",
+                                                                    20.0);
+
 
   /**
    * Instantiates a X focus adaptation module given the number of samples,
@@ -32,6 +37,10 @@ public class AdaptationX extends StandardAdaptationModule implements
    *          number of samples
    * @param pDeltaX
    *          delta X
+   * @param pMinX
+   *          min X
+   * @param pMaxX
+   *          max X
    * @param pProbabilityThreshold
    *          probability threshold
    * @param pImageMetricThreshold
@@ -42,7 +51,8 @@ public class AdaptationX extends StandardAdaptationModule implements
    *          laser power
    */
   public AdaptationX(int pNumberOfSamples,
-                     double pDeltaX,
+                     double pMinX,
+                     double pMaxX,
                      double pProbabilityThreshold,
                      double pImageMetricThreshold,
                      double pExposureInSeconds,
@@ -56,7 +66,8 @@ public class AdaptationX extends StandardAdaptationModule implements
           pExposureInSeconds,
           pLaserPower);
 
-    getDeltaXVariable().set(pDeltaX);
+    getMinXVariable().set(pMinX);
+    getMaxXVariable().set(pMaxX);
   }
 
   @Override
@@ -68,11 +79,11 @@ public class AdaptationX extends StandardAdaptationModule implements
     LightSheetMicroscope lLightsheetMicroscope =
                                                (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
-    double lDeltaX = getDeltaXVariable().get();
+
     int lNumberOfSamples = getNumberOfSamplesVariable().get();
-    int lHalfSamples = (lNumberOfSamples - 1) / 2;
-    double lMinX = -lDeltaX * lHalfSamples;
-    double lMaxX = lDeltaX * lHalfSamples;
+    double lMinX = getMinXVariable().get().doubleValue();
+    double lMaxX = getMaxXVariable().get().doubleValue();
+    double lDeltaX = (lMaxX - lMinX) / (lNumberOfSamples - 1);
 
     LightSheetMicroscopeQueue lQueue =
                                      lLightsheetMicroscope.requestQueue();
@@ -85,7 +96,6 @@ public class AdaptationX extends StandardAdaptationModule implements
     lAcquisitionState.applyStateAtControlPlane(lQueue,
                                                lControlPlaneIndex);
 
-    double lCurrentDX = lQueue.getIX(lLightSheetIndex);
 
     final TDoubleArrayList lIXList = new TDoubleArrayList();
 
@@ -100,16 +110,16 @@ public class AdaptationX extends StandardAdaptationModule implements
 
     lQueue.setILO(true);
     lQueue.setC(true);
-    for (double x = lMinX; x <= lMaxX; x += lDeltaX)
+    for (int i = 0; i < lNumberOfSamples; i++)
     {
+      double x = lMinX + lDeltaX * i;
       lIXList.add(x);
-      lQueue.setIX(lLightSheetIndex, lCurrentDX + x);
+      lQueue.setIX(lLightSheetIndex, x);
       lQueue.addCurrentStateToQueue();
     }
 
     lQueue.setILO(false);
     lQueue.setC(false);
-    lQueue.setIX(lLightSheetIndex, lCurrentDX);
     lQueue.addCurrentStateToQueue();
 
     lQueue.setTransitionTime(0.75);
@@ -130,17 +140,28 @@ public class AdaptationX extends StandardAdaptationModule implements
   @Override
   public void updateState(InterpolatedAcquisitionState pStateToUpdate)
   {
-    updateStateInternal(pStateToUpdate, true, false);
+    updateStateInternal(pStateToUpdate, false, false);
+  }
+
+
+  /**
+   * Returns the minimum X value
+   * 
+   * @return minimum X value
+   */
+  public Variable<Double> getMinXVariable()
+  {
+    return mMinXVariable;
   }
 
   /**
-   * Returns the variable holding the delta X value
+   * Returns the maximum X value
    * 
-   * @return delta Z variable
+   * @return maximum X value
    */
-  public Variable<Double> getDeltaXVariable()
+  public Variable<Double> getMaxXVariable()
   {
-    return mDeltaXVariable;
+    return mMaxXVariable;
   }
 
 }

@@ -1,5 +1,15 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.var.combo.EnumComboBoxVariable;
+import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
+import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
+import clearcontrol.gui.jfx.var.slider.VariableSlider;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
+import clearcontrol.microscope.lightsheet.state.ControlPlaneLayout;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -11,15 +21,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
-import clearcontrol.gui.jfx.var.onoffarray.OnOffArrayPane;
-import clearcontrol.gui.jfx.var.rangeslider.VariableRangeSlider;
-import clearcontrol.gui.jfx.var.slider.VariableSlider;
-import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 
 /**
  * Acquisition state panel
@@ -69,7 +70,7 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                     lStageZVariable,
                                                                     5);
 
-    // Collecting variables:
+    // Collecting state variables:
 
     BoundedVariable<Number> lZLow =
                                   pAcquisitionState.getStackZLowVariable();
@@ -81,6 +82,38 @@ public class AcquisitionStatePanel extends CustomGridPane
 
     Variable<Number> lNumberOfPlanes =
                                      pAcquisitionState.getNumberOfZPlanesVariable();
+
+    // Isotropic ratio:
+
+    Variable<Integer> lAnisotropyFactor =
+                                        new Variable<Integer>("AnisotropyFactor",
+                                                              4);
+
+    // Control planes Z range:
+
+    BoundedVariable<Double> lControlPlanesZLow =
+                                               new BoundedVariable<Double>("ControlPlanesZLow",
+                                                                           lZLow.get()
+                                                                                .doubleValue(),
+                                                                           lZLow.get()
+                                                                                .doubleValue(),
+                                                                           lZHigh.get()
+                                                                                 .doubleValue());
+
+    BoundedVariable<Double> lControlPlanesZHigh =
+                                                new BoundedVariable<Double>("ControlPlanesZHigh",
+                                                                            lZHigh.get()
+                                                                                  .doubleValue(),
+                                                                            lZLow.get()
+                                                                                 .doubleValue(),
+                                                                            lZHigh.get()
+                                                                                  .doubleValue());
+
+    // Control planes layout mode:
+
+    Variable<ControlPlaneLayout> lControlPlaneLayoutModeVariable =
+                                                                 new Variable<>("ControlPlaneLayoutMode",
+                                                                                ControlPlaneLayout.Circular);
 
     // Creating elements:
 
@@ -118,87 +151,112 @@ public class AcquisitionStatePanel extends CustomGridPane
                                                                         0.01d,
                                                                         null);
 
-    NumberVariableTextField<Number> lZStepTextField =
-                                                    new NumberVariableTextField<Number>("Z-step:",
-                                                                                        lZStep,
-                                                                                        0d,
-                                                                                        Double.POSITIVE_INFINITY,
-                                                                                        0d);
-    lZStepTextField.getTextField().setPrefWidth(100);
+    VariableRangeSlider<Double> lControlPlaneZRangeSlider =
+                                                          new VariableRangeSlider<Double>("CP-range",
+                                                                                          lControlPlanesZLow,
+                                                                                          lControlPlanesZHigh,
+                                                                                          lZLow.getMinVariable()
+                                                                                               .get()
+                                                                                               .doubleValue(),
+                                                                                          lZHigh.getMaxVariable()
+                                                                                                .get()
+                                                                                                .doubleValue(),
+                                                                                          0.01d,
+                                                                                          null);
+    
+    lControlPlaneZRangeSlider.getRangeSlider()
+                             .setStyle("-fx-background-color: lightgray");
 
-    NumberVariableTextField<Number> lNumberOfPlanesTextField =
-                                                             new NumberVariableTextField<Number>("Number of planes:",
-                                                                                                 lNumberOfPlanes,
-                                                                                                 0,
-                                                                                                 Double.POSITIVE_INFINITY,
-                                                                                                 0);
+  NumberVariableTextField<Number> lZStepTextField =
+                                                  new NumberVariableTextField<Number>("Z-step:",
+                                                                                      lZStep,
+                                                                                      0d,
+                                                                                      Double.POSITIVE_INFINITY,
+                                                                                      0d);lZStepTextField.getTextField().setPrefWidth(90);
 
-    lNumberOfPlanesTextField.getTextField().setPrefWidth(100);
+  NumberVariableTextField<Number> lNumberOfPlanesTextField =
+                                                           new NumberVariableTextField<Number>("Number of planes:",
+                                                                                               lNumberOfPlanes,
+                                                                                               0,
+                                                                                               Double.POSITIVE_INFINITY,
+                                                                                               0);lNumberOfPlanesTextField.getTextField().setPrefWidth(50);
 
-    Button lSetupControlPlanesButton =
-                                     new Button("Setup control planes");
-    lSetupControlPlanesButton.setOnAction((e) -> pAcquisitionState.setupControlPlanes(pAcquisitionState.getNumberOfControlPlanes(),
-                                                                                      0));
+  NumberVariableTextField<Integer> lAnisotropyFactorTextField =
+                                                              new NumberVariableTextField<Integer>("Anisotropy factor:",
+                                                                                                   lAnisotropyFactor,
+                                                                                                   1,
+                                                                                                   32,
+                                                                                                   1);lAnisotropyFactorTextField.getTextField().setPrefWidth(50);
 
-    OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();
-    for (int i =
-               0; i < pAcquisitionState.getNumberOfDetectionArms(); i++)
-    {
-      lCameraOnOffArray.addSwitch("C" + i,
-                                  pAcquisitionState.getCameraOnOffVariable(i));
-    }
+  Button lSetAnisotropyFactorButton =
+                                    new Button("Set");lSetAnisotropyFactorButton.setOnAction((e)->pAcquisitionState.setNumberOfPlanesForGivenAnisotropy(lAnisotropyFactor.get().doubleValue()));
 
-    OnOffArrayPane lLightSheetOnOffArray = new OnOffArrayPane();
-    for (int i =
-               0; i < pAcquisitionState.getNumberOfLightSheets(); i++)
-    {
-      lLightSheetOnOffArray.addSwitch("LS" + i,
-                                      pAcquisitionState.getLightSheetOnOffVariable(i));
-    }
+  EnumComboBoxVariable<ControlPlaneLayout> lControlPlaneLayoutModeComboBox =
+                                                                           new EnumComboBoxVariable<ControlPlaneLayout>(lControlPlaneLayoutModeVariable,
+                                                                                                                        ControlPlaneLayout.values());
 
-    OnOffArrayPane lLaserOnOffArray = new OnOffArrayPane();
+  Button lSetupControlPlanesButton =
+                                   new Button("Distribute control planes");lSetupControlPlanesButton.setOnAction((e)->pAcquisitionState.setupControlPlanes(pAcquisitionState.getNumberOfControlPlanes(),lControlPlanesZLow.get().doubleValue(),lControlPlanesZHigh.get().doubleValue(),lControlPlaneLayoutModeVariable.get()));
 
-    for (int i =
-               0; i < pAcquisitionState.getNumberOfLaserLines(); i++)
-    {
-      lLaserOnOffArray.addSwitch("La" + i,
-                                 pAcquisitionState.getLaserOnOffVariable(i));
-    }
+  OnOffArrayPane lCameraOnOffArray = new OnOffArrayPane();for(
+  int i = 0;i<pAcquisitionState.getNumberOfDetectionArms();i++)
+  {
+    lCameraOnOffArray.addSwitch("C" + i,
+                                pAcquisitionState.getCameraOnOffVariable(i));
+  }
 
-    AcquistionStateMultiChart lMultiChart =
-                                          new AcquistionStateMultiChart(pAcquisitionState);
+  OnOffArrayPane lLightSheetOnOffArray = new OnOffArrayPane();for(
+  int i = 0;i<pAcquisitionState.getNumberOfLightSheets();i++)
+  {
+    lLightSheetOnOffArray.addSwitch("LS" + i,
+                                    pAcquisitionState.getLightSheetOnOffVariable(i));
+  }
 
-    AcquistionStateTableView lTableView =
-                                        new AcquistionStateTableView(pAcquisitionState);
+  OnOffArrayPane lLaserOnOffArray = new OnOffArrayPane();
 
-    // Laying out components:
+  for(
+  int i = 0;i<pAcquisitionState.getNumberOfLaserLines();i++)
+  {
+    lLaserOnOffArray.addSwitch("La" + i,
+                               pAcquisitionState.getLaserOnOffVariable(i));
+  }
 
-    int lRow = 0;
+  AcquistionStateMultiChart lMultiChart =
+                                        new AcquistionStateMultiChart(pAcquisitionState);
 
-    {
-      lCopyCurrentSettingsButton.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setHgrow(lCopyCurrentSettingsButton, Priority.ALWAYS);
-      GridPane.setColumnSpan(lCopyCurrentSettingsButton, 8);
-      add(lCopyCurrentSettingsButton, 0, lRow);
-      lRow++;
-    }
+  AcquistionStateTableView lTableView =
+                                      new AcquistionStateTableView(pAcquisitionState);
 
-    {
-      HBox lHBox = new HBox(new Label("    "),
-                            lImageWidthField.getLabel(),
-                            lImageWidthField.getTextField(),
-                            new Label("    "),
-                            lImageHeightField.getLabel(),
-                            lImageHeightField.getTextField());
-      lHBox.setAlignment(Pos.CENTER_LEFT);
-      GridPane.setColumnSpan(lHBox, 6);
-      add(lExposureField.getLabel(), 0, lRow);
-      add(lExposureField.getTextField(), 1, lRow);
-      add(lHBox, 2, lRow);
-      lRow++;
-    }
+  // Laying out components:
 
-    lRow = insertSeparator(lRow);
+  int lRow = 0;
+
+  {
+    lCopyCurrentSettingsButton.setMaxWidth(Double.MAX_VALUE);
+    GridPane.setHgrow(lCopyCurrentSettingsButton, Priority.ALWAYS);
+    GridPane.setColumnSpan(lCopyCurrentSettingsButton, 8);
+    add(lCopyCurrentSettingsButton, 0, lRow);
+    lRow++;
+  }
+
+  {
+    HBox lHBox = new HBox(new Label("    "),
+                          lImageWidthField.getLabel(),
+                          lImageWidthField.getTextField(),
+                          new Label("    "),
+                          lImageHeightField.getLabel(),
+                          lImageHeightField.getTextField());
+    lHBox.setAlignment(Pos.CENTER_LEFT);
+    GridPane.setColumnSpan(lHBox, 6);
+    add(lExposureField.getLabel(), 0, lRow);
+    add(lExposureField.getTextField(), 1, lRow);
+    add(lHBox, 2, lRow);
+    lRow++;
+  }
+
+  lRow=
+
+  insertSeparator(lRow);
 
     {
       add(lStageXSlider.getLabel(), 0, lRow);
@@ -232,15 +290,40 @@ public class AcquisitionStatePanel extends CustomGridPane
     }
 
     {
-      HBox lHBox = new HBox(new Label("Number of planes: "),
-                            lNumberOfPlanesTextField.getTextField(),
-                            new Label("      "),
-                            lSetupControlPlanesButton);
+      add(lControlPlaneZRangeSlider.getLabel(), 0, lRow);
+      add(lControlPlaneZRangeSlider.getLowTextField(), 1, lRow);
+      add(lControlPlaneZRangeSlider.getRangeSlider(), 2, lRow);
+      add(lControlPlaneZRangeSlider.getHighTextField(), 3, lRow);
+      lRow++;
+    }
+
+    lRow = insertSeparator(lRow);
+
+    {
+      HBox lHBox =
+                 new HBox(new Label("    "),
+                          lNumberOfPlanesTextField.getLabel(),
+                          lNumberOfPlanesTextField.getTextField(),
+                          new Label("    "),
+                          lAnisotropyFactorTextField.getLabel(),
+                          lAnisotropyFactorTextField.getTextField(),
+                          lSetAnisotropyFactorButton);
       lHBox.setAlignment(Pos.CENTER_LEFT);
       GridPane.setColumnSpan(lHBox, 6);
       add(lZStepTextField.getLabel(), 0, lRow);
       add(lZStepTextField.getTextField(), 1, lRow);
       add(lHBox, 2, lRow);
+      lRow++;
+    }
+
+    {
+      HBox lHBox = new HBox(new Label("Control plane layout mode: "),
+                            lControlPlaneLayoutModeComboBox,
+                            new Label("      "),
+                            lSetupControlPlanesButton);
+      lHBox.setAlignment(Pos.CENTER_LEFT);
+      GridPane.setColumnSpan(lHBox, 8);
+      add(lHBox, 0, lRow);
       lRow++;
     }
 

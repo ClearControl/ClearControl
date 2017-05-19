@@ -25,6 +25,7 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.state.ControlPlaneLayout;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
@@ -293,7 +294,8 @@ public class SimulatedLightSheetMicroscope extends
       InterpolatedAcquisitionState lAcquisitionState =
                                                      new InterpolatedAcquisitionState("default",
                                                                                       this);
-      lAcquisitionState.setupControlPlanes(5, 30);
+      lAcquisitionState.setupControlPlanes(7,
+                                           ControlPlaneLayout.Circular);
       lAcquisitionState.copyCurrentMicroscopeSettings();
       lAcquisitionStateManager.setCurrentState(lAcquisitionState);
       addInteractiveAcquisition();
@@ -302,14 +304,15 @@ public class SimulatedLightSheetMicroscope extends
       {
         AdaptiveEngine<InterpolatedAcquisitionState> lAdaptiveEngine =
                                                                      addAdaptiveEngine(lAcquisitionState);
-        lAdaptiveEngine.add(new AdaptationZ(11,
+        lAdaptiveEngine.add(new AdaptationZ(7,
                                             1.66,
                                             0.95,
                                             2e-5,
                                             0.010,
                                             1));
         lAdaptiveEngine.add(new AdaptationX(11,
-                                            20,
+                                            0,
+                                            200,
                                             0.95,
                                             8e-5,
                                             0.010,

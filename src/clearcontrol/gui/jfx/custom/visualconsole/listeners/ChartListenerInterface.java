@@ -10,6 +10,7 @@ import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartTyp
 public interface ChartListenerInterface
 {
 
+
   /**
    * Adds a point to the chart of given name, possibly clearing the chart just
    * before.

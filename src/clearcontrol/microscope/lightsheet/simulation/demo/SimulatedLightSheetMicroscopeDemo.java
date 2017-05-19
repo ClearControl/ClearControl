@@ -44,7 +44,7 @@ public class SimulatedLightSheetMicroscopeDemo
 
     int lMaxCameraResolution = 1024;
 
-    int lNumberOfLightSheets = 1;
+    int lNumberOfLightSheets = 2;
     int lNumberOfDetectionArms = 1;
 
     float lDivisionTime = 11f;

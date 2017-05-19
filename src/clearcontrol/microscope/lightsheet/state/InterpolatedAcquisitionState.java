@@ -37,14 +37,14 @@ public class InterpolatedAcquisitionState extends
   private BoundedVariable<Number> mZHighVariable;
 
   private final BoundedVariable<Number> mZStepVariable =
-                                               new BoundedVariable<Number>("ZStep",
-                                                                           1,
-                                                                           0,
-                                                                           1000);
+                                                       new BoundedVariable<Number>("ZStep",
+                                                                                   1,
+                                                                                   0,
+                                                                                   1000);
 
   private final Variable<Number> mNumberOfZPlanesVariable =
-                                          new Variable<Number>("ZPlanes",
-                                                               1);
+                                                          new Variable<Number>("ZPlanes",
+                                                                               1);
 
   private final Variable<Boolean>[] mCameraOnOff, mLightSheetOnOff,
       mLaserOnOff;
@@ -83,9 +83,6 @@ public class InterpolatedAcquisitionState extends
     getImageWidthVariable().addSetListener(lChangeListener);
     getImageHeightVariable().addSetListener(lChangeListener);
 
-
-
-
     {
       DetectionArmInterface lDetectionArm =
                                           getMicroscope().getDetectionArm(0);
@@ -93,37 +90,39 @@ public class InterpolatedAcquisitionState extends
       if (lDetectionArm == null)
       {
         mZLowVariable =
-              new BoundedVariable<Number>("LowZ",
-                                          -117.0,
-                                          -200.0,
-                                          200.0,
-                                          1.0);
+                      new BoundedVariable<Number>("LowZ",
+                                                  -117.0,
+                                                  -200.0,
+                                                  200.0,
+                                                  1.0);
         mZHighVariable = new BoundedVariable<Number>("HighZ",
-                                             +117.0,
-                                             -200.0,
-                                             200.0,
-                                             1.0);
+                                                     +117.0,
+                                                     -200.0,
+                                                     200.0,
+                                                     1.0);
 
       }
       else
       {
 
-        mZLowVariable = new BoundedVariable<Number>("LowZ",
-                                            lDetectionArm.getZVariable()
-                                                         .getMin()
-                                                         .doubleValue(),
-                                            lDetectionArm.getZVariable()
-                                                         .getMin(),
-                                            lDetectionArm.getZVariable()
-                                                         .getMax());
-        mZHighVariable = new BoundedVariable<Number>("HighZ",
-                                             lDetectionArm.getZVariable()
-                                                          .getMax()
-                                                          .doubleValue(),
-                                             lDetectionArm.getZVariable()
-                                                          .getMin(),
-                                             lDetectionArm.getZVariable()
-                                                          .getMax());
+        mZLowVariable =
+                      new BoundedVariable<Number>("LowZ",
+                                                  lDetectionArm.getZVariable()
+                                                               .getMin()
+                                                               .doubleValue(),
+                                                  lDetectionArm.getZVariable()
+                                                               .getMin(),
+                                                  lDetectionArm.getZVariable()
+                                                               .getMax());
+        mZHighVariable =
+                       new BoundedVariable<Number>("HighZ",
+                                                   lDetectionArm.getZVariable()
+                                                                .getMax()
+                                                                .doubleValue(),
+                                                   lDetectionArm.getZVariable()
+                                                                .getMin(),
+                                                   lDetectionArm.getZVariable()
+                                                                .getMax());
       }
     }
 
@@ -263,7 +262,8 @@ public class InterpolatedAcquisitionState extends
   {
     double lZStep = (getStackDepthInMicrons()
                      / (pNumberofPlanes.doubleValue() - 1));
-    if (!Double.isNaN(lZStep) && mZStepVariable.get().doubleValue() != lZStep)
+    if (!Double.isNaN(lZStep)
+        && mZStepVariable.get().doubleValue() != lZStep)
       mZStepVariable.set(lZStep);
 
     // System.out.println("lStepZ=" + lZStep);
@@ -278,6 +278,33 @@ public class InterpolatedAcquisitionState extends
       mNumberOfZPlanesVariable.set(lZPlanes);
 
     // System.out.println("lZPlanes=" + lZPlanes);
+  }
+
+  public void setNumberOfPlanesForGivenAnisotropy(double pAnisotropyFactor)
+  {
+    double lPixelSizeInMicrons = 1e-3
+                                 * getMicroscope().getCameraPixelSizeInNanometerVariable(0)
+                                                  .get()
+                                                  .doubleValue();
+
+    double lVoxelDepthInMicrons = lPixelSizeInMicrons
+                                  * pAnisotropyFactor;
+
+
+    double lStackDepthInMicrons = getStackDepthInMicrons();
+
+    int lNumberOfPlanes = (int) (lStackDepthInMicrons
+                                 / lVoxelDepthInMicrons);
+
+    getStackZStepVariable().set(lVoxelDepthInMicrons);
+
+    getStackZHighVariable().set(getStackZLowVariable().get()
+                                                      .doubleValue()
+                                + lNumberOfPlanes
+                                  * lStackDepthInMicrons);
+
+    getNumberOfZPlanesVariable().set(lNumberOfPlanes);
+
   }
 
   /**
@@ -329,24 +356,39 @@ public class InterpolatedAcquisitionState extends
   }
 
   /**
+   * Setting up control planes over the entire Z range
+   * 
+   * @param pNumberOfControlPlanes
+   *          number of control planes
+   * @param pControlPlaneLayout
+   *          control plane layout mode
+   */
+  public void setupControlPlanes(int pNumberOfControlPlanes,
+                                 ControlPlaneLayout pControlPlaneLayout)
+  {
+    setupControlPlanes(pNumberOfControlPlanes,
+                       getStackZLowVariable().get().doubleValue(),
+                       getStackZHighVariable().get().doubleValue(),
+                       pControlPlaneLayout);
+  }
+
+  /**
    * Setting up control planes
    * 
    * @param pNumberOfControlPlanes
    *          number of control planes
-   * @param pMarginZ
-   *          distance between Z-range extremities and first and last control
-   *          planes
+   * @param pControlPlaneLowZ
+   *          control plane low Z
+   * @param pControlPlaneHighZ
+   *          control plane high Z
+   * @param pControlPlaneLayout
+   *          control plane layout mode
    */
   public void setupControlPlanes(int pNumberOfControlPlanes,
-                                 double pMarginZ)
+                                 double pControlPlaneLowZ,
+                                 double pControlPlaneHighZ,
+                                 ControlPlaneLayout pControlPlaneLayout)
   {
-    double lHighZ = getStackZHighVariable().get().doubleValue();
-    double lLowZ = getStackZLowVariable().get().doubleValue();
-
-    double lIntervalBetweenControlPlanes = (lHighZ - lLowZ
-                                            - 2 * pMarginZ)
-                                           / (pNumberOfControlPlanes
-                                              - 1);
 
     InterpolationTables lInterpolationTables =
                                              new InterpolationTables(mInterpolationTables);
@@ -354,9 +396,15 @@ public class InterpolatedAcquisitionState extends
 
     for (int cpi = 0; cpi < pNumberOfControlPlanes; cpi++)
     {
-      double z =
-               lLowZ + pMarginZ + cpi * lIntervalBetweenControlPlanes;
-      lInterpolationTables.addControlPlane(mInterpolationTables, z);
+      double lNormalizedZ =
+                          pControlPlaneLayout.layout(pNumberOfControlPlanes,
+                                                     cpi);
+
+      double lAbsoluteZ = pControlPlaneLowZ
+                          + lNormalizedZ * (pControlPlaneHighZ
+                                            - pControlPlaneLowZ);
+      lInterpolationTables.addControlPlane(mInterpolationTables,
+                                           lAbsoluteZ);
     }
 
     mInterpolationTables.set(lInterpolationTables);
@@ -487,7 +535,7 @@ public class InterpolatedAcquisitionState extends
 
     long lStackDepthInPlanes =
                              getNumberOfZPlanesVariable().get()
-                                                             .longValue();
+                                                         .longValue();
 
     double lVoxelDepthInMicrons = getStackDepthInMicrons()
                                   / lStackDepthInPlanes;
@@ -813,7 +861,8 @@ public class InterpolatedAcquisitionState extends
   public int getPlaneIndexForZRamp(double pZRampValue)
   {
     double lZStep = getStackZStepVariable().get().doubleValue();
-    double lAdjustedZRamp = pZRampValue - mZLowVariable.get().doubleValue();
+    double lAdjustedZRamp = pZRampValue
+                            - mZLowVariable.get().doubleValue();
     final int lIndex = (int) round(lAdjustedZRamp / lZStep);
     return lIndex;
   }
@@ -935,7 +984,8 @@ public class InterpolatedAcquisitionState extends
    */
   public double getStackDepthInMicrons()
   {
-    return (mZHighVariable.get().doubleValue() - mZLowVariable.get().doubleValue());
+    return (mZHighVariable.get().doubleValue()
+            - mZLowVariable.get().doubleValue());
   }
 
   /**

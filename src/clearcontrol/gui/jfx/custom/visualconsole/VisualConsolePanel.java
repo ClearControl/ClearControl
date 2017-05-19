@@ -1,25 +1,27 @@
 package clearcontrol.gui.jfx.custom.visualconsole;
 
 import java.util.concurrent.ConcurrentHashMap;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
 import clearcontrol.gui.jfx.custom.multichart.MultiChart;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.gui.jfx.custom.visualconsole.listeners.ChartListenerInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.listeners.LabelGridListener;
-
-import org.apache.commons.lang3.tuple.Pair;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 
 /**
  * Visual Console Panel displays debug/monitoring information in various ways
@@ -63,6 +65,13 @@ public class VisualConsolePanel extends BorderPane implements
     pVisualConsoleInterface.addChartListener(this);
     pVisualConsoleInterface.addLabelGridListener(this);
 
+    final ContextMenu lContextMenu = new ContextMenu();
+    final MenuItem lClearItem = new MenuItem("Clear");
+    lClearItem.setOnAction((e) -> clear());
+
+    lContextMenu.getItems().addAll(lClearItem);
+
+    mTabPane.setContextMenu(lContextMenu);
   }
 
   protected Tab getTab(TabPane lTabPane, String pTabName)
@@ -77,6 +86,16 @@ public class VisualConsolePanel extends BorderPane implements
       mTabNameToTabMap.put(pTabName, lTab);
     }
     return lTab;
+  }
+
+
+  public void clear()
+  {
+    mTabPane.getTabs().clear();
+    mTabNameToTabMap.clear();
+    mTabNameToMultiChartMap.clear();
+    mTabNameAndSeriesNameToSeriesMap.clear();
+    mTabNameToLabelGridMap.clear();
   }
 
   @Override
@@ -193,5 +212,6 @@ public class VisualConsolePanel extends BorderPane implements
     });
 
   }
+
 
 }

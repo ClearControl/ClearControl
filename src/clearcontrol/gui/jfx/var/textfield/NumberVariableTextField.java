@@ -1,14 +1,13 @@
 package clearcontrol.gui.jfx.var.textfield;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
-
-import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
 
 /**
  * Text field that is synced to a Number
@@ -29,6 +28,27 @@ public class NumberVariableTextField<N extends Number> extends HBox
   private Variable<N> mGranularity;
 
   private int mPrecision = 6;
+
+  /**
+   * Instantiates a number variable text field.
+   * 
+   * @param pTextFieldLabel
+   *          text field label
+   * @param pVariable
+   *          variable to sync with
+   */
+  @SuppressWarnings(
+  { "rawtypes", "unchecked" })
+  public NumberVariableTextField(String pTextFieldLabel,
+                                 Variable<N> pVariable)
+  {
+    this(pTextFieldLabel,
+         pVariable,
+         new Variable("min", Double.NEGATIVE_INFINITY),
+         new Variable("max", Double.POSITIVE_INFINITY),
+         new Variable("granularity", 0d));
+
+  }
 
   /**
    * Instantiates a number variable text field.

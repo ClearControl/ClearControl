@@ -1,16 +1,16 @@
 package clearcontrol.microscope.lightsheet.state.gui.demo;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
+import clearcontrol.microscope.lightsheet.state.ControlPlaneLayout;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
 import clearcontrol.microscope.state.AcquisitionStateManager;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Acquisition state manager demo
@@ -50,7 +50,10 @@ public class AcquisitionStateManagerPanelDemo extends Application
                                          new InterpolatedAcquisitionState("current",
                                                                           lLightSheetMicroscope);
 
-    lState1.setupControlPlanes(3, 30);
+    lState1.setupControlPlanes(5,
+                               -100,
+                               100,
+                               ControlPlaneLayout.Linear);
 
     lAcquisitionStateManager.addState(lState1);
 
@@ -60,7 +63,10 @@ public class AcquisitionStateManagerPanelDemo extends Application
                                           new InterpolatedAcquisitionState("State"
                                                                            + i,
                                                                            lLightSheetMicroscope);
-      lState.setupControlPlanes(5, 20);
+      lState.setupControlPlanes(7,
+                                -100,
+                                100,
+                                ControlPlaneLayout.Circular);
 
       lAcquisitionStateManager.addState(lState);
     }
