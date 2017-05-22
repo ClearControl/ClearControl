@@ -74,7 +74,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     long lMaxMemoryInBytes =
                            (long) (mMemRatio
                                    * pContext.getDevice()
-                                             .getMaxMemoryAllocationSizeInBytes());
+                                             .getGlobalMemorySizeInBytes());
     FastFusionMemoryPool.getInstance(pContext, lMaxMemoryInBytes);
 
     int[] lKernelSizesRegistration = new int[]
