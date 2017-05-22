@@ -11,10 +11,13 @@ import fastfuse.FastFusionEngine;
 import fastfuse.FastFusionEngineInterface;
 import fastfuse.FastFusionMemoryPool;
 import fastfuse.registration.AffineMatrix;
+import fastfuse.tasks.CompositeTasks;
 import fastfuse.tasks.DownsampleXYbyHalfTask;
+import fastfuse.tasks.DownsampleXYbyHalfTask.Type;
 import fastfuse.tasks.FlipTask;
 import fastfuse.tasks.GaussianBlurTask;
 import fastfuse.tasks.IdentityTask;
+import fastfuse.tasks.MemoryReleaseTask;
 import fastfuse.tasks.RegistrationTask;
 import fastfuse.tasks.TenengradFusionTask;
 
@@ -69,12 +72,18 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                            (long) (mMemRatio
                                    * pContext.getDevice()
                                              .getMaxMemoryAllocationSizeInBytes());
-    FastFusionMemoryPool.get(pContext, lMaxMemoryInBytes);
+    FastFusionMemoryPool.getInstance(pContext, lMaxMemoryInBytes);
 
-    int[] lKernelSizes = new int[]
+    int[] lKernelSizesRegistration = new int[]
     { 3, 3, 3 };
-    float[] lKernelSigmas = new float[]
+    float[] lKernelSigmasRegistration = new float[]
     { 0.5f, 0.5f, 0.5f };
+
+    float[] lKernelSigmasFusion = new float[]
+    { 15, 15, 5 };
+
+    float[] lKernelSigmasBackground = new float[]
+    { 30, 30, 10 };
 
     if (pNumberOfLightSheets == 1)
     {
@@ -84,8 +93,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       }
       else if (pNumberOfDetectionArms == 2)
       {
-        setupOneLightsheetTwoDetectionArm(lKernelSizes,
-                                          lKernelSigmas);
+        setupOneLightsheetTwoDetectionArm(lKernelSizesRegistration,
+                                          lKernelSigmasRegistration);
       }
     }
     else if (pNumberOfLightSheets == 2)
@@ -98,8 +107,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       else if (pNumberOfDetectionArms == 2)
       {
 
-        setupTwoLightsheetsTwoDetectionArms(lKernelSizes,
-                                            lKernelSigmas);
+        setupTwoLightsheetsTwoDetectionArms(lKernelSizesRegistration,
+                                            lKernelSigmasRegistration);
       }
     }
     else if (pNumberOfLightSheets == 4)
@@ -111,129 +120,101 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       else if (pNumberOfDetectionArms == 2)
       {
 
-        setupFourLightsheetsTwoDetectionArms(lKernelSizes,
-                                             lKernelSigmas);
-
+        setupFourLightsheetsTwoDetectionArms(lKernelSizesRegistration,
+                                             lKernelSigmasRegistration,
+                                             lKernelSigmasFusion,
+                                             lKernelSigmasBackground);
       }
     }
 
   }
 
-  protected void setupFourLightsheetsTwoDetectionArms(int[] lKernelSizes,
-                                                      float[] lKernelSigmas)
+  protected void setupFourLightsheetsTwoDetectionArms(int[] pKernelSizesRegistration,
+                                                      float[] pKernelSigmasRegistration,
+                                                      float[] pKernelSigmasFusion,
+                                                      float[] pKernelSigmasBackground)
   {
+    if (isDownscale())
+      addTasks(DownsampleXYbyHalfTask.applyAndReleaseInputs(Type.Median,
+                                                            "d",
+                                                            "C0L0",
+                                                            "C0L1",
+                                                            "C0L2",
+                                                            "C0L3",
+                                                            "C1L0",
+                                                            "C1L1",
+                                                            "C1L2",
+                                                            "C1L3"));
+    else
+      addTasks(IdentityTask.withSuffix("d",
+                                       "C0L0",
+                                       "C0L1",
+                                       "C0L2",
+                                       "C0L3",
+                                       "C1L0",
+                                       "C1L1",
+                                       "C1L2",
+                                       "C1L3"));
+
+    ImageChannelDataType lInitialFusionDataType =
+                                                isRegistration() ? ImageChannelDataType.Float
+                                                                 : ImageChannelDataType.UnsignedInt16;
+
+    addTasks(CompositeTasks.fuseWithSmoothWeights("C0",
+                                                  lInitialFusionDataType,
+                                                  pKernelSigmasFusion,
+                                                  true,
+                                                  "C0L0d",
+                                                  "C0L1d",
+                                                  "C0L2d",
+                                                  "C0L3d"));
+
+    addTasks(CompositeTasks.fuseWithSmoothWeights("C1",
+                                                  lInitialFusionDataType,
+                                                  pKernelSigmasFusion,
+                                                  true,
+                                                  "C1L0d",
+                                                  "C1L1d",
+                                                  "C1L2d",
+                                                  "C1L3d"));
+
     if (isRegistration())
     {
-
-      if (isDownscale())
-      {
-        addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
-        addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
-        addTask(new DownsampleXYbyHalfTask("C0L2", "C0L2d"));
-        addTask(new DownsampleXYbyHalfTask("C0L3", "C0L3d"));
-        addTask(new DownsampleXYbyHalfTask("C1L0", "C1L0d"));
-        addTask(new DownsampleXYbyHalfTask("C1L1", "C1L1d"));
-        addTask(new DownsampleXYbyHalfTask("C1L2", "C1L2d"));
-        addTask(new DownsampleXYbyHalfTask("C1L3", "C1L3d"));
-      }
-      else
-      {
-        addTask(new IdentityTask("C0L0", "C0L0d"));
-        addTask(new IdentityTask("C0L1", "C0L1d"));
-        addTask(new IdentityTask("C0L2", "C0L2d"));
-        addTask(new IdentityTask("C0L3", "C0L3d"));
-        addTask(new IdentityTask("C1L0", "C1L0d"));
-        addTask(new IdentityTask("C1L1", "C1L1d"));
-        addTask(new IdentityTask("C1L2", "C1L2d"));
-        addTask(new IdentityTask("C1L3", "C1L3d"));
-      }
-
-      addTask(new TenengradFusionTask("C0L0d",
-                                      "C0L1d",
-                                      "C0L2d",
-                                      "C0L3d",
-                                      "C0",
-                                      ImageChannelDataType.Float));
-
-      addTask(new TenengradFusionTask("C1L0d",
-                                      "C1L1d",
-                                      "C1L2d",
-                                      "C1L3d",
-                                      "C1",
-                                      ImageChannelDataType.Float));
-
-      addTask(new GaussianBlurTask("C0",
-                                   "C0blur",
-                                   lKernelSigmas,
-                                   lKernelSizes));
-      addTask(new GaussianBlurTask("C1",
-                                   "C1blur",
-                                   lKernelSigmas,
-                                   lKernelSizes));
-
-      mRegisteredFusionTask =
-                            new RegistrationTask("C0blur",
-                                                 "C1blur",
-                                                 "C0",
-                                                 "C1",
-                                                 "C1reg");
-      mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
-                                                                        1,
-                                                                        1));
-
-      addTask(mRegisteredFusionTask);
-      addTask(new TenengradFusionTask("C0",
-                                      "C1reg",
-                                      "fused",
-                                      ImageChannelDataType.UnsignedInt16));
+      addTasks(CompositeTasks.registerWithBlurPreprocessing("C0",
+                                                            "C1",
+                                                            "C1adjusted",
+                                                            pKernelSigmasRegistration,
+                                                            pKernelSizesRegistration,
+                                                            AffineMatrix.scaling(-1,
+                                                                                 1,
+                                                                                 1),
+                                                            true));
     }
     else
     {
-
-      if (isDownscale())
-      {
-        addTask(new DownsampleXYbyHalfTask("C0L0", "C0L0d"));
-        addTask(new DownsampleXYbyHalfTask("C0L1", "C0L1d"));
-        addTask(new DownsampleXYbyHalfTask("C0L2", "C0L2d"));
-        addTask(new DownsampleXYbyHalfTask("C0L3", "C0L3d"));
-        addTask(new DownsampleXYbyHalfTask("C1L0", "C1L0d"));
-        addTask(new DownsampleXYbyHalfTask("C1L1", "C1L1d"));
-        addTask(new DownsampleXYbyHalfTask("C1L2", "C1L2d"));
-        addTask(new DownsampleXYbyHalfTask("C1L3", "C1L3d"));
-      }
-      else
-      {
-        addTask(new IdentityTask("C0L0", "C0L0d"));
-        addTask(new IdentityTask("C0L1", "C0L1d"));
-        addTask(new IdentityTask("C0L2", "C0L2d"));
-        addTask(new IdentityTask("C0L3", "C0L3d"));
-        addTask(new IdentityTask("C1L0", "C1L0d"));
-        addTask(new IdentityTask("C1L1", "C1L1d"));
-        addTask(new IdentityTask("C1L2", "C1L2d"));
-        addTask(new IdentityTask("C1L3", "C1L3d"));
-      }
-
-      addTask(new TenengradFusionTask("C0L0d",
-                                      "C0L1d",
-                                      "C0L2d",
-                                      "C0L3d",
-                                      "C0",
-                                      ImageChannelDataType.UnsignedInt16));
-
-      addTask(new TenengradFusionTask("C1L0d",
-                                      "C1L1d",
-                                      "C1L2d",
-                                      "C1L3d",
-                                      "C1",
-                                      ImageChannelDataType.UnsignedInt16));
-
-      addTask(FlipTask.flipX("C1", "C1flipped"));
-
-      addTask(new TenengradFusionTask("C0",
-                                      "C1flipped",
-                                      "fused",
-                                      ImageChannelDataType.UnsignedInt16));
+      addTask(FlipTask.flipX("C1", "C1adjusted"));
+      addTask(new MemoryReleaseTask("C1adjusted", "C1"));
     }
+
+    // addTasks(CompositeTasks.fuseWithSmoothWeights("fused",
+    // ImageChannelDataType.UnsignedInt16,
+    // pKernelSigmasFusion,
+    // true,
+    // "C0",
+    // "C1adjusted"));
+
+    addTasks(CompositeTasks.fuseWithSmoothWeights("fused-preliminary",
+                                                  ImageChannelDataType.Float,
+                                                  pKernelSigmasFusion,
+                                                  true,
+                                                  "C0",
+                                                  "C1adjusted"));
+
+    addTasks(CompositeTasks.subtractBlurredCopyFromFloatImage("fused-preliminary",
+                                                              "fused",
+                                                              pKernelSigmasBackground,
+                                                              true,
+                                                              ImageChannelDataType.UnsignedInt16));
   }
 
   protected void setupFourLightsheetsOneDetectionArm()
