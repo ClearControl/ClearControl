@@ -1,5 +1,7 @@
 package clearcontrol.microscope.lightsheet.processor;
 
+import java.util.List;
+
 import clearcl.ClearCLContext;
 import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
@@ -19,6 +21,7 @@ import fastfuse.tasks.GaussianBlurTask;
 import fastfuse.tasks.IdentityTask;
 import fastfuse.tasks.MemoryReleaseTask;
 import fastfuse.tasks.RegistrationTask;
+import fastfuse.tasks.TaskInterface;
 import fastfuse.tasks.TenengradFusionTask;
 
 /**
@@ -180,15 +183,24 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
     if (isRegistration())
     {
-      addTasks(CompositeTasks.registerWithBlurPreprocessing("C0",
-                                                            "C1",
-                                                            "C1adjusted",
-                                                            pKernelSigmasRegistration,
-                                                            pKernelSizesRegistration,
-                                                            AffineMatrix.scaling(-1,
-                                                                                 1,
-                                                                                 1),
-                                                            true));
+      List<TaskInterface> lRegistrationTaskList =
+                                                CompositeTasks.registerWithBlurPreprocessing("C0",
+                                                                                             "C1",
+                                                                                             "C1adjusted",
+                                                                                             pKernelSigmasRegistration,
+                                                                                             pKernelSizesRegistration,
+                                                                                             AffineMatrix.scaling(-1,
+                                                                                                                  1,
+                                                                                                                  1),
+                                                                                             true);
+      addTasks(lRegistrationTaskList);
+      // extract registration task from list
+      for (TaskInterface lTask : lRegistrationTaskList)
+        if (lTask instanceof RegistrationTask)
+        {
+          mRegisteredFusionTask = (RegistrationTask) lTask;
+          break;
+        }
     }
     else
     {
