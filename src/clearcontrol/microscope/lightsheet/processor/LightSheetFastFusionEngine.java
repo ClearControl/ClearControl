@@ -40,7 +40,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   private volatile boolean mRegistration =
                                          MachineConfiguration.get()
                                                              .getBooleanProperty("fastfuse.register",
-                                                                                 false);
+                                                                                 true);
 
   private volatile boolean mDownscale =
                                       MachineConfiguration.get()
