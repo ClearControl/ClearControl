@@ -14,6 +14,8 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterfa
 import clearcontrol.microscope.lightsheet.component.lightsheet.gui.LightSheetPanel;
 import clearcontrol.microscope.lightsheet.interactive.InteractiveAcquisition;
 import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionToolbar;
+import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
+import clearcontrol.microscope.lightsheet.processor.gui.LightSheetFastFusionProcessorPanel;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.signalgen.gui.LightSheetSignalGeneratorPanel;
 import clearcontrol.microscope.lightsheet.state.gui.AcquisitionStateManagerPanel;
@@ -94,6 +96,10 @@ public class LightSheetMicroscopeGUI extends MicroscopeGUI
 
     addPanelMappingEntry(AdaptiveEngine.class,
                          LightSheetAdaptiveEnginePanel.class,
+                         MicroscopeNodeType.Acquisition);
+
+    addPanelMappingEntry(LightSheetFastFusionProcessor.class,
+                         LightSheetFastFusionProcessorPanel.class,
                          MicroscopeNodeType.Acquisition);
 
   }

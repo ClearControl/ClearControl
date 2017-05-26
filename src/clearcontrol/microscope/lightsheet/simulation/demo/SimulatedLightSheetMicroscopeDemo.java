@@ -42,14 +42,14 @@ public class SimulatedLightSheetMicroscopeDemo
 
     int lMaxNumberOfStacks = 32;
 
-    int lMaxCameraResolution = 1024;
+    int lMaxCameraResolution = 512;
 
     int lNumberOfLightSheets = 4;
     int lNumberOfDetectionArms = 2;
 
     float lDivisionTime = 11f;
 
-    int lPhantomWidth = 320;
+    int lPhantomWidth = 128;
     int lPhantomHeight = lPhantomWidth;
     int lPhantomDepth = lPhantomWidth;
 

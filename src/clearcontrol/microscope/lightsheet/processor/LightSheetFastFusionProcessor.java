@@ -8,6 +8,8 @@ import org.apache.commons.lang3.tuple.Triple;
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataViewFlags;
@@ -31,6 +33,7 @@ public class LightSheetFastFusionProcessor extends
                                            ClearCLStackProcessorBase
                                            implements
                                            StackProcessorInterface,
+                                           VisualConsoleInterface,
                                            LoggingInterface
 {
   private final LightSheetMicroscope mLightSheetMicroscope;
@@ -40,6 +43,21 @@ public class LightSheetFastFusionProcessor extends
                                                                                        new ConcurrentLinkedQueue<>();
 
   private volatile StackInterface mFusedStack;
+
+  private final Variable<Integer> mNumberOfRestartsVariable =
+                                                            new Variable<Integer>("NumberOfRestarts",
+                                                                                  5);
+
+  private final Variable<Integer> mMaxNumberOfEvaluationsVariable =
+                                                                  new Variable<Integer>("MaxNumberOfEvaluations",
+                                                                                        200);
+
+  private final Variable<Double> mTranslationSearchRadiusVariable =
+                                                                  new Variable<Double>("TranslationSearchRadius",
+                                                                                       10.0);
+  private final Variable<Double> mRotationSearchRadiusVariable =
+                                                               new Variable<Double>("RotationSearchRadius",
+                                                                                    3.0);
 
   /**
    * Instantiates a lightsheet stack processor
@@ -57,7 +75,6 @@ public class LightSheetFastFusionProcessor extends
   {
     super(pProcessorName, pContext);
     mLightSheetMicroscope = pLightSheetMicroscope;
-
   }
 
   @Override
@@ -68,6 +85,7 @@ public class LightSheetFastFusionProcessor extends
     if (mEngine == null)
       mEngine =
               new LightSheetFastFusionEngine(getContext(),
+                                             (VisualConsoleInterface) this,
                                              mLightSheetMicroscope.getNumberOfLightSheets(),
                                              mLightSheetMicroscope.getNumberOfDetectionArms());
 
@@ -91,8 +109,28 @@ public class LightSheetFastFusionProcessor extends
 
     mEngine.passStack(true, pStack);
 
+    if (mEngine.getRegisteredFusionTask() != null)
+    {
+      mEngine.getRegisteredFusionTask()
+             .setNumberOfRestarts(getNumberOfRestartsVariable().get()
+                                                               .intValue());
+
+      mEngine.getRegisteredFusionTask()
+             .setTranslationSearchRadius(getTranslationSearchRadiusVariable().get()
+                                                                             .doubleValue());
+
+      mEngine.getRegisteredFusionTask()
+             .setRotationSearchRadius(getRotationSearchRadiusVariable().get()
+                                                                       .doubleValue());
+
+      mEngine.getRegisteredFusionTask()
+             .setMaxNumberOfEvaluations(getMaxNumberOfEvaluationsVariable().get()
+                                                                           .intValue());
+    }
+
     // if (mEngine.isReady())
     {
+
       int lNumberOfTasksExecuted = mEngine.executeAllTasks();
       info("executed %d fusion tasks", lNumberOfTasksExecuted);/**/
     }
@@ -190,6 +228,26 @@ public class LightSheetFastFusionProcessor extends
       return false;
 
     return true;
+  }
+
+  public Variable<Double> getTranslationSearchRadiusVariable()
+  {
+    return mTranslationSearchRadiusVariable;
+  }
+
+  public Variable<Double> getRotationSearchRadiusVariable()
+  {
+    return mRotationSearchRadiusVariable;
+  }
+
+  public Variable<Integer> getNumberOfRestartsVariable()
+  {
+    return mNumberOfRestartsVariable;
+  }
+
+  public Variable<Integer> getMaxNumberOfEvaluationsVariable()
+  {
+    return mMaxNumberOfEvaluationsVariable;
   }
 
 }
