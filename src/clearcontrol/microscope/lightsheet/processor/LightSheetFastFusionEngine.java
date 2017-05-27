@@ -61,7 +61,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
 
   private StackMetaData mFusedStackMetaData = new StackMetaData();
 
-  private RegistrationTask mRegisteredFusionTask;
+  private RegistrationTask mRegistrationTask;
 
   /**
    * Instantiates a lightsheet fast fusion engine
@@ -84,6 +84,12 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     mVisualConsoleInterface = pVisualConsoleInterface;
     if (mVisualConsoleInterface != null)
     {
+      mVisualConsoleInterface.configureChart("Score",
+                                             "score",
+                                             "time",
+                                             "score",
+                                             ChartType.Area);
+
       mVisualConsoleInterface.configureChart("Translation",
                                              "Tx",
                                              "time",
@@ -277,7 +283,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       for (TaskInterface lTask : lRegistrationTaskList)
         if (lTask instanceof RegistrationTask)
         {
-          mRegisteredFusionTask = (RegistrationTask) lTask;
+          mRegistrationTask = (RegistrationTask) lTask;
           break;
         }
     }
@@ -371,18 +377,19 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegisteredFusionTask =
+      mRegistrationTask =
                             new RegistrationTask("C0blur",
                                                  "C1blur",
                                                  "C0",
                                                  "C1",
                                                  "C1reg");
 
-      mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+      mRegistrationTask.getParameters()
+                       .setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
 
-      addTask(mRegisteredFusionTask);
+      addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0",
                                       "C1reg",
                                       "fused",
@@ -452,17 +459,18 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegisteredFusionTask =
+      mRegistrationTask =
                             new RegistrationTask("C0L0blur",
                                                  "C1L0blur",
                                                  "C0L0d",
                                                  "C1L0d",
                                                  "C1L0reg");
-      mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+      mRegistrationTask.getParameters()
+                       .setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
 
-      addTask(mRegisteredFusionTask);
+      addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0L0d",
                                       "C1L0reg",
                                       "fused",
@@ -556,14 +564,14 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
         return;
       }
 
-      if (mRegisteredFusionTask != null)
+      if (mRegistrationTask != null)
       {
         float lZAspectRatio =
                             (float) (lStackMetaData.getVoxelDimZ()
                                      / lStackMetaData.getVoxelDimX());
-        mRegisteredFusionTask.setScaleZ(lZAspectRatio);
+        mRegistrationTask.getParameters().setScaleZ(lZAspectRatio);
 
-        mRegisteredFusionTask.addListener(this);
+        mRegistrationTask.addListener(this);
 
         // mRegisteredFusionTask.setLowerBounds(pLowerBound);
 
@@ -652,6 +660,26 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   public void setDownscale(boolean pDownscale)
   {
     mDownscale = pDownscale;
+  }
+
+  @Override
+  public void notifyListenersOfNewScoreForComputedTheta(double pScore)
+  {
+    mVisualConsoleInterface.addPoint("Score",
+                                     "score",
+                                     false,
+                                     mCounter,
+                                     pScore);
+  }
+
+  @Override
+  public void notifyListenersOfNewScoreForUsedTheta(double pScore)
+  {
+    mVisualConsoleInterface.addPoint("Score",
+                                     "score (used)",
+                                     false,
+                                     mCounter,
+                                     pScore);
   }
 
   @Override
@@ -752,9 +780,16 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     mCounter++;
   }
 
-  public RegistrationTask getRegisteredFusionTask()
+  /**
+   * Returns registration task
+   * 
+   * @return registration task
+   */
+  public RegistrationTask getRegistrationTask()
   {
-    return mRegisteredFusionTask;
+    return mRegistrationTask;
   }
+
+
 
 }

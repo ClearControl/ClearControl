@@ -49,13 +49,22 @@ public class LightSheetFastFusionProcessorPanel extends TabPane
 
     Variable<Integer> lMaxNumberOfEvaluationsVariable =
                                                       pLightSheetFastFusionProcessor.getMaxNumberOfEvaluationsVariable();
-    
+
     Variable<Double> lTranslationSearchRadiusVariable =
-                                                pLightSheetFastFusionProcessor.getTranslationSearchRadiusVariable();
-    
+                                                      pLightSheetFastFusionProcessor.getTranslationSearchRadiusVariable();
+
     Variable<Double> lRotationSearchRadiusVariable =
-                                             pLightSheetFastFusionProcessor.getRotationSearchRadiusVariable();
-    
+                                                   pLightSheetFastFusionProcessor.getRotationSearchRadiusVariable();
+
+    Variable<Double> lSmoothingConstantVariable =
+                                                pLightSheetFastFusionProcessor.getSmoothingConstantVariable();
+
+    Variable<Boolean> lTransformLockSwitchVariable =
+                                                   pLightSheetFastFusionProcessor.getTransformLockSwitchVariable();
+
+    Variable<Integer> lTransformLockThresholdVariable =
+                                                      pLightSheetFastFusionProcessor.getTransformLockThresholdVariable();
+
     CustomVariablePane lCustomVariablePane = new CustomVariablePane();
 
     lCustomVariablePane.addTab("");
@@ -66,14 +75,22 @@ public class LightSheetFastFusionProcessorPanel extends TabPane
     lCustomVariablePane.addNumberTextFieldForVariable("Maximum number of evaluations",
                                                       lMaxNumberOfEvaluationsVariable);
 
-    lCustomVariablePane.addNumberTextFieldForVariable("Translation radius",
+    lCustomVariablePane.addNumberTextFieldForVariable("Translation search radius",
                                                       lTranslationSearchRadiusVariable);
 
-    lCustomVariablePane.addNumberTextFieldForVariable("Rotation radius",
+    lCustomVariablePane.addNumberTextFieldForVariable("Rotation search radius",
                                                       lRotationSearchRadiusVariable);
+
+    lCustomVariablePane.addNumberTextFieldForVariable("Smoothing constant",
+                                                      lSmoothingConstantVariable);
+
+    lCustomVariablePane.addCheckBoxForVariable("Transform lock switch",
+                                               lTransformLockSwitchVariable);
+
+    lCustomVariablePane.addNumberTextFieldForVariable("Transform lock timepoint threshold",
+                                                      lTransformLockThresholdVariable);
 
     return lCustomVariablePane;
   }
-
 
 }
