@@ -6,6 +6,8 @@ import clearcl.ClearCLContext;
 import clearcl.enums.ImageChannelDataType;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.core.configuration.MachineConfiguration;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.StackMetaData;
@@ -20,6 +22,7 @@ import fastfuse.tasks.FlipTask;
 import fastfuse.tasks.GaussianBlurTask;
 import fastfuse.tasks.IdentityTask;
 import fastfuse.tasks.MemoryReleaseTask;
+import fastfuse.tasks.RegistrationListener;
 import fastfuse.tasks.RegistrationTask;
 import fastfuse.tasks.TaskInterface;
 import fastfuse.tasks.TenengradFusionTask;
@@ -32,10 +35,14 @@ import fastfuse.tasks.TenengradFusionTask;
 public class LightSheetFastFusionEngine extends FastFusionEngine
                                         implements
                                         FastFusionEngineInterface,
-                                        AsynchronousExecutorServiceAccess
+                                        AsynchronousExecutorServiceAccess,
+                                        RegistrationListener
 {
 
-  private StackMetaData mFusedStackMetaData = new StackMetaData();
+  private VisualConsoleInterface mVisualConsoleInterface;
+  private volatile int mCounter = 0;
+
+
 
   private volatile boolean mRegistration =
                                          MachineConfiguration.get()
@@ -52,23 +59,101 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                                         .getDoubleProperty("fastfuse.memratio",
                                                                            0.8);
 
-  private RegistrationTask mRegisteredFusionTask;
+  private StackMetaData mFusedStackMetaData = new StackMetaData();
+
+  private RegistrationTask mRegistrationTask;
 
   /**
    * Instantiates a lightsheet fast fusion engine
    * 
    * @param pContext
    *          ClearCL context
+   * @param pVisualConsoleInterface
+   *          visual console interface for logging purposes
    * @param pNumberOfLightSheets
    *          number of lightsheets
    * @param pNumberOfDetectionArms
    *          number of detection arms
    */
   public LightSheetFastFusionEngine(ClearCLContext pContext,
+                                    VisualConsoleInterface pVisualConsoleInterface,
                                     int pNumberOfLightSheets,
                                     int pNumberOfDetectionArms)
   {
     super(pContext);
+    mVisualConsoleInterface = pVisualConsoleInterface;
+    if (mVisualConsoleInterface != null)
+    {
+      mVisualConsoleInterface.configureChart("Score",
+                                             "score",
+                                             "time",
+                                             "score",
+                                             ChartType.Area);
+
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Tx",
+                                             "time",
+                                             "Tx",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Ty",
+                                             "time",
+                                             "Ty",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Tz",
+                                             "time",
+                                             "Tz",
+                                             ChartType.Line);
+
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Tx (used)",
+                                             "time",
+                                             "Tx",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Ty (used)",
+                                             "time",
+                                             "Ty",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Translation",
+                                             "Tz (used)",
+                                             "time",
+                                             "Tz",
+                                             ChartType.Line);
+
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Rx",
+                                             "time",
+                                             "Rx",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Ry",
+                                             "time",
+                                             "Ry",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Rz",
+                                             "time",
+                                             "Rz",
+                                             ChartType.Line);
+
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Rx (used)",
+                                             "time",
+                                             "Rx",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Ry (used)",
+                                             "time",
+                                             "Ry",
+                                             ChartType.Line);
+      mVisualConsoleInterface.configureChart("Rotation",
+                                             "Rz (used)",
+                                             "time",
+                                             "Rz",
+                                             ChartType.Line);
+    }
 
     // setting up pool with max pool size:
     long lMaxMemoryInBytes =
@@ -198,7 +283,7 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
       for (TaskInterface lTask : lRegistrationTaskList)
         if (lTask instanceof RegistrationTask)
         {
-          mRegisteredFusionTask = (RegistrationTask) lTask;
+          mRegistrationTask = (RegistrationTask) lTask;
           break;
         }
     }
@@ -292,17 +377,19 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegisteredFusionTask =
+      mRegistrationTask =
                             new RegistrationTask("C0blur",
                                                  "C1blur",
                                                  "C0",
                                                  "C1",
                                                  "C1reg");
-      mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+
+      mRegistrationTask.getParameters()
+                       .setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
 
-      addTask(mRegisteredFusionTask);
+      addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0",
                                       "C1reg",
                                       "fused",
@@ -372,17 +459,18 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegisteredFusionTask =
+      mRegistrationTask =
                             new RegistrationTask("C0L0blur",
                                                  "C1L0blur",
                                                  "C0L0d",
                                                  "C1L0d",
                                                  "C1L0reg");
-      mRegisteredFusionTask.setZeroTransformMatrix(AffineMatrix.scaling(-1,
+      mRegistrationTask.getParameters()
+                       .setZeroTransformMatrix(AffineMatrix.scaling(-1,
                                                                         1,
                                                                         1));
 
-      addTask(mRegisteredFusionTask);
+      addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0L0d",
                                       "C1L0reg",
                                       "fused",
@@ -476,12 +564,17 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
         return;
       }
 
-      if (mRegisteredFusionTask != null)
+      if (mRegistrationTask != null)
       {
         float lZAspectRatio =
                             (float) (lStackMetaData.getVoxelDimZ()
                                      / lStackMetaData.getVoxelDimX());
-        mRegisteredFusionTask.setScaleZ(lZAspectRatio);
+        mRegistrationTask.getParameters().setScaleZ(lZAspectRatio);
+
+        mRegistrationTask.addListener(this);
+
+        // mRegisteredFusionTask.setLowerBounds(pLowerBound);
+
       }
 
       String lKey = MetaDataView.getCxLyString(lStackMetaData);
@@ -568,5 +661,135 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   {
     mDownscale = pDownscale;
   }
+
+  @Override
+  public void notifyListenersOfNewScoreForComputedTheta(double pScore)
+  {
+    mVisualConsoleInterface.addPoint("Score",
+                                     "score",
+                                     false,
+                                     mCounter,
+                                     pScore);
+  }
+
+  @Override
+  public void notifyListenersOfNewScoreForUsedTheta(double pScore)
+  {
+    mVisualConsoleInterface.addPoint("Score",
+                                     "score (used)",
+                                     false,
+                                     mCounter,
+                                     pScore);
+  }
+
+  @Override
+  public void newComputedTheta(double[] pTheta)
+  {
+    double Tx = pTheta[0];
+    double Ty = pTheta[1];
+    double Tz = pTheta[2];
+    double Rx = pTheta[3];
+    double Ry = pTheta[4];
+    double Rz = pTheta[5];
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Tx",
+                                     false,
+                                     mCounter,
+                                     Tx);
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Ty",
+                                     false,
+                                     mCounter,
+                                     Ty);
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Tz",
+                                     false,
+                                     mCounter,
+                                     Tz);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Rx",
+                                     false,
+                                     mCounter,
+                                     Rx);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Ry",
+                                     false,
+                                     mCounter,
+                                     Ry);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Rz",
+                                     false,
+                                     mCounter,
+                                     Rz);
+
+
+  }
+
+  @Override
+  public void newUsedTheta(double[] pTheta)
+  {
+    double Tx = pTheta[0];
+    double Ty = pTheta[1];
+    double Tz = pTheta[2];
+    double Rx = pTheta[3];
+    double Ry = pTheta[4];
+    double Rz = pTheta[5];
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Tx (used)",
+                                     false,
+                                     mCounter,
+                                     Tx);
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Ty (used)",
+                                     false,
+                                     mCounter,
+                                     Ty);
+
+    mVisualConsoleInterface.addPoint("Translation",
+                                     "Tz (used)",
+                                     false,
+                                     mCounter,
+                                     Tz);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Rx (used)",
+                                     false,
+                                     mCounter,
+                                     Rx);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Ry (used)",
+                                     false,
+                                     mCounter,
+                                     Ry);
+
+    mVisualConsoleInterface.addPoint("Rotation",
+                                     "Rz (used)",
+                                     false,
+                                     mCounter,
+                                     Rz);
+
+    mCounter++;
+  }
+
+  /**
+   * Returns registration task
+   * 
+   * @return registration task
+   */
+  public RegistrationTask getRegistrationTask()
+  {
+    return mRegistrationTask;
+  }
+
+
 
 }

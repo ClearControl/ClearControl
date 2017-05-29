@@ -9,6 +9,8 @@ import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataViewFlags;
@@ -24,7 +26,7 @@ import clearcontrol.stack.processor.clearcl.ClearCLStackProcessorBase;
 import coremem.recycling.RecyclerInterface;
 
 /**
- *
+ * Lightsheet fusion processor
  *
  * @author royer
  */
@@ -32,6 +34,7 @@ public class LightSheetFastFusionProcessor extends
                                            ClearCLStackProcessorBase
                                            implements
                                            StackProcessorInterface,
+                                           VisualConsoleInterface,
                                            LoggingInterface
 {
   private final LightSheetMicroscope mLightSheetMicroscope;
@@ -41,6 +44,33 @@ public class LightSheetFastFusionProcessor extends
                                                                                        new ConcurrentLinkedQueue<>();
 
   private volatile StackInterface mFusedStack;
+
+  private final Variable<Integer> mNumberOfRestartsVariable =
+                                                            new Variable<Integer>("NumberOfRestarts",
+                                                                                  5);
+
+  private final Variable<Integer> mMaxNumberOfEvaluationsVariable =
+                                                                  new Variable<Integer>("MaxNumberOfEvaluations",
+                                                                                        200);
+
+  private final Variable<Double> mTranslationSearchRadiusVariable =
+                                                                  new Variable<Double>("TranslationSearchRadius",
+                                                                                       10.0);
+  private final Variable<Double> mRotationSearchRadiusVariable =
+                                                               new Variable<Double>("RotationSearchRadius",
+                                                                                    3.0);
+
+  private final Variable<Double> mSmoothingConstantVariable =
+                                                            new Variable<Double>("SmoothingConstant",
+                                                                                 0.05);
+
+  private final Variable<Boolean> mTransformLockSwitchVariable =
+                                                               new Variable<Boolean>("TransformLockSwitch",
+                                                                                     true);
+
+  private final Variable<Integer> mTransformLockThresholdVariable =
+                                                                  new Variable<Integer>("TransformLockThreshold",
+                                                                                        20);
 
   /**
    * Instantiates a lightsheet stack processor
@@ -58,7 +88,6 @@ public class LightSheetFastFusionProcessor extends
   {
     super(pProcessorName, pContext);
     mLightSheetMicroscope = pLightSheetMicroscope;
-
   }
 
   @Override
@@ -69,10 +98,11 @@ public class LightSheetFastFusionProcessor extends
     if (mEngine == null)
       mEngine =
               new LightSheetFastFusionEngine(getContext(),
+                                             (VisualConsoleInterface) this,
                                              mLightSheetMicroscope.getNumberOfLightSheets(),
                                              mLightSheetMicroscope.getNumberOfDetectionArms());
 
-    // info("received stack for processing: %s", pStack);
+    info("Received stack for processing: %s", pStack);
 
     if (isPassThrough(pStack))
     {
@@ -91,6 +121,45 @@ public class LightSheetFastFusionProcessor extends
     }
 
     mEngine.passStack(true, pStack);
+
+    if (mEngine.getRegistrationTask() != null)
+    {
+      if (getTransformLockSwitchVariable().get().booleanValue()
+          && pStack.getMetaData()
+                   .getIndex() > getTransformLockThresholdVariable().get()
+                                                                    .intValue())
+      {
+        getSmoothingConstantVariable().set(0.02);
+        getTranslationSearchRadiusVariable().set(5.0);
+        getRotationSearchRadiusVariable().set(2.0);
+        getTransformLockSwitchVariable().set(false);
+      }
+
+      mEngine.getRegistrationTask()
+             .getParameters()
+             .setNumberOfRestarts(getNumberOfRestartsVariable().get()
+                                                               .intValue());
+
+      mEngine.getRegistrationTask()
+             .getParameters()
+             .setTranslationSearchRadius(getTranslationSearchRadiusVariable().get()
+                                                                             .doubleValue());
+
+      mEngine.getRegistrationTask()
+             .getParameters()
+             .setRotationSearchRadius(getRotationSearchRadiusVariable().get()
+                                                                       .doubleValue());
+
+      mEngine.getRegistrationTask()
+             .getParameters()
+             .setMaxNumberOfEvaluations((int) getMaxNumberOfEvaluationsVariable().get()
+                                                                                 .intValue());
+
+      mEngine.getRegistrationTask()
+             .setSmoothingConstant(getSmoothingConstantVariable().get()
+                                                                 .doubleValue());
+
+    }
 
     // if (mEngine.isReady())
     {
@@ -193,6 +262,78 @@ public class LightSheetFastFusionProcessor extends
       return false;
 
     return true;
+  }
+
+  /**
+   * Returns the variable holding the translation search radius.
+   * 
+   * @return translation search radius variable.
+   */
+  public Variable<Double> getTranslationSearchRadiusVariable()
+  {
+    return mTranslationSearchRadiusVariable;
+  }
+
+  /**
+   * Returns the variable holding the rotation search radius
+   * 
+   * @return rotation search radius
+   */
+  public Variable<Double> getRotationSearchRadiusVariable()
+  {
+    return mRotationSearchRadiusVariable;
+  }
+
+  /**
+   * Returns the variable holding the number of optimization restarts
+   * 
+   * @return number of optimization restarts variable
+   */
+  public Variable<Integer> getNumberOfRestartsVariable()
+  {
+    return mNumberOfRestartsVariable;
+  }
+
+  /**
+   * Returns the max number of evaluations variable
+   * 
+   * @return max number of evaluations variable
+   */
+  public Variable<Integer> getMaxNumberOfEvaluationsVariable()
+  {
+    return mMaxNumberOfEvaluationsVariable;
+  }
+
+  /**
+   * Returns the variable holding the smoothing constant
+   * 
+   * @return smoothing constant variable
+   */
+  public Variable<Double> getSmoothingConstantVariable()
+  {
+    return mSmoothingConstantVariable;
+  }
+
+  /**
+   * Returns the switch that decides whether to lock the transformation after a
+   * certain number of time points has elapsed
+   * 
+   * @return Transform lock switch variable
+   */
+  public Variable<Boolean> getTransformLockSwitchVariable()
+  {
+    return mTransformLockSwitchVariable;
+  }
+
+  /**
+   * Returns the variable holding the number of timepoints until the
+   * transformation should be 'locked' with more stringent temporal filtering
+   * 
+   * @return transform lock timer variable
+   */
+  public Variable<Integer> getTransformLockThresholdVariable()
+  {
+    return mTransformLockThresholdVariable;
   }
 
 }

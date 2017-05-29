@@ -52,9 +52,11 @@ public class LightSheetMicroscope extends
           pThreadPoolSize);
 
     mStackFusionProcessor =
-                          new LightSheetFastFusionProcessor("Stack Processor",
+                          new LightSheetFastFusionProcessor("Fusion Stack Processor",
                                                             this,
                                                             pStackFusionContext);
+
+    addDevice(0, mStackFusionProcessor);
 
     mStackProcessingPipeline.addStackProcessor(mStackFusionProcessor,
                                                "StackFusion",

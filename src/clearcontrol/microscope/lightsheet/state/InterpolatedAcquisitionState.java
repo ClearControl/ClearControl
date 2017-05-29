@@ -293,15 +293,15 @@ public class InterpolatedAcquisitionState extends
 
     double lStackDepthInMicrons = getStackDepthInMicrons();
 
-    int lNumberOfPlanes = (int) (lStackDepthInMicrons
+    int lNumberOfPlanes = (int) round(lStackDepthInMicrons
                                  / lVoxelDepthInMicrons);
 
     getStackZStepVariable().set(lVoxelDepthInMicrons);
 
-    getStackZHighVariable().set(getStackZLowVariable().get()
+    /*getStackZHighVariable().set(getStackZLowVariable().get()
                                                       .doubleValue()
-                                + lNumberOfPlanes
-                                  * lStackDepthInMicrons);
+                                + (lNumberOfPlanes - 1)
+                                  * lVoxelDepthInMicrons);/**/
 
     getNumberOfZPlanesVariable().set(lNumberOfPlanes);
 
