@@ -25,7 +25,7 @@ public class AdaptationX extends StandardAdaptationModule implements
                                                                     20.0);
 
   private final Variable<Double> mMaxXVariable =
-                                               new Variable<Double>("MinX",
+                                               new Variable<Double>("MaxX",
                                                                     20.0);
 
 
