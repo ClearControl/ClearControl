@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
+import clearcl.util.ElapsedTime;
 import clearcontrol.core.log.LoggingInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.stacks.MetaDataView;
@@ -93,8 +94,10 @@ public class LightSheetFastFusionProcessor extends
 
     // if (mEngine.isReady())
     {
-      int lNumberOfTasksExecuted = mEngine.executeAllTasks();
-      info("executed %d fusion tasks", lNumberOfTasksExecuted);/**/
+      ElapsedTime.measureForceOutput("FastFuseTaskExecution", () -> {
+        int lNumberOfTasksExecuted = mEngine.executeAllTasks();
+        info("executed %d fusion tasks", lNumberOfTasksExecuted);
+      });
     }
 
     if (pStack.getMetaData()
