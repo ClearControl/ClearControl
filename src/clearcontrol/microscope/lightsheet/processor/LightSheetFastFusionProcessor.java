@@ -55,7 +55,7 @@ public class LightSheetFastFusionProcessor extends
 
   private final Variable<Double> mTranslationSearchRadiusVariable =
                                                                   new Variable<Double>("TranslationSearchRadius",
-                                                                                       10.0);
+                                                                                       15.0);
   private final Variable<Double> mRotationSearchRadiusVariable =
                                                                new Variable<Double>("RotationSearchRadius",
                                                                                     3.0);
@@ -124,16 +124,18 @@ public class LightSheetFastFusionProcessor extends
 
     if (mEngine.getRegistrationTask() != null)
     {
+      try
+      {
+
       if (getTransformLockSwitchVariable().get().booleanValue()
-          && pStack.getMetaData()
-                   .getIndex() > getTransformLockThresholdVariable().get()
+            && pStack.getMetaData()
+                     .getValue(MetaDataOrdinals.TimePoint) > getTransformLockThresholdVariable().get()
                                                                     .intValue())
       {
-        getSmoothingConstantVariable().set(0.02);
-        getTranslationSearchRadiusVariable().set(5.0);
-        getRotationSearchRadiusVariable().set(2.0);
-        getTransformLockSwitchVariable().set(false);
+          getSmoothingConstantVariable().set(0.02);
+          getTransformLockSwitchVariable().set(false);
       }
+
 
       mEngine.getRegistrationTask()
              .getParameters()
@@ -158,6 +160,13 @@ public class LightSheetFastFusionProcessor extends
       mEngine.getRegistrationTask()
              .setSmoothingConstant(getSmoothingConstantVariable().get()
                                                                  .doubleValue());
+
+      }
+      catch (Throwable e)
+      {
+        severe("Problem while setting fast fusion parameters: %s",
+               e.toString());
+      }
 
     }
 

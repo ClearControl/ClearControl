@@ -84,10 +84,16 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
     mVisualConsoleInterface = pVisualConsoleInterface;
     if (mVisualConsoleInterface != null)
     {
-      mVisualConsoleInterface.configureChart("Score",
-                                             "score",
+      mVisualConsoleInterface.configureChart("Registration error",
+                                             "error",
                                              "time",
-                                             "score",
+                                             "error",
+                                             ChartType.Area);
+
+      mVisualConsoleInterface.configureChart("Registration error",
+                                             "error (actual)",
+                                             "time",
+                                             "error",
                                              ChartType.Area);
 
       mVisualConsoleInterface.configureChart("Translation",
@@ -665,8 +671,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   @Override
   public void notifyListenersOfNewScoreForComputedTheta(double pScore)
   {
-    mVisualConsoleInterface.addPoint("Score",
-                                     "score",
+    mVisualConsoleInterface.addPoint("Registration error",
+                                     "error",
                                      false,
                                      mCounter,
                                      pScore);
@@ -675,8 +681,8 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   @Override
   public void notifyListenersOfNewScoreForUsedTheta(double pScore)
   {
-    mVisualConsoleInterface.addPoint("Score",
-                                     "score (used)",
+    mVisualConsoleInterface.addPoint("Registration error",
+                                     "error (actual)",
                                      false,
                                      mCounter,
                                      pScore);

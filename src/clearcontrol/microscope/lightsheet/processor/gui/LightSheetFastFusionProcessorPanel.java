@@ -70,10 +70,16 @@ public class LightSheetFastFusionProcessorPanel extends TabPane
     lCustomVariablePane.addTab("");
 
     lCustomVariablePane.addNumberTextFieldForVariable("Number of restarts",
-                                                      lNumberOfRestartsVariable);
+                                                      lNumberOfRestartsVariable,
+                                                      0,
+                                                      Integer.MAX_VALUE,
+                                                      1);
 
     lCustomVariablePane.addNumberTextFieldForVariable("Maximum number of evaluations",
-                                                      lMaxNumberOfEvaluationsVariable);
+                                                      lMaxNumberOfEvaluationsVariable,
+                                                      0,
+                                                      Integer.MAX_VALUE,
+                                                      1);
 
     lCustomVariablePane.addNumberTextFieldForVariable("Translation search radius",
                                                       lTranslationSearchRadiusVariable);
@@ -88,7 +94,10 @@ public class LightSheetFastFusionProcessorPanel extends TabPane
                                                lTransformLockSwitchVariable);
 
     lCustomVariablePane.addNumberTextFieldForVariable("Transform lock timepoint threshold",
-                                                      lTransformLockThresholdVariable);
+                                                      lTransformLockThresholdVariable,
+                                                      0,
+                                                      Integer.MAX_VALUE,
+                                                      1);
 
     return lCustomVariablePane;
   }
