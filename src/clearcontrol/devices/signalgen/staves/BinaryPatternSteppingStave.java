@@ -170,6 +170,4 @@ public class BinaryPatternSteppingStave extends PatternSteppingStave
     mPatternPhaseIncrement = pPatternPhaseIncrement;
   }
 
-
-
 }

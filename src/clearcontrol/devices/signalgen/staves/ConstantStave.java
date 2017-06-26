@@ -33,6 +33,4 @@ public class ConstantStave extends StaveAbstract
     mConstantValue = pValue;
   }
 
-
-
 }

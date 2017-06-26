@@ -76,6 +76,4 @@ public class SinusStave extends StaveAbstract
     mSinusAmplitude = pSinusAmplitude;
   }
 
-
-
 }

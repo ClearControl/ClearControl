@@ -87,6 +87,4 @@ public class IntervalStave extends StaveAbstract
     mOutsideValue = pOutsideValue;
   }
 
-
-
 }

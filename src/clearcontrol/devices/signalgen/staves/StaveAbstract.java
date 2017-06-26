@@ -32,7 +32,6 @@ public abstract class StaveAbstract extends NameableBase
     mEnabled = pEnabled;
   }
 
-
   @Override
   public int hashCode()
   {
@@ -44,7 +43,7 @@ public abstract class StaveAbstract extends NameableBase
     result = prime * result + (mEnabled ? 1231 : 1237);
     return result;
   }
-  
+
   @Override
   public boolean equals(Object obj)
   {

@@ -120,8 +120,6 @@ public class BezierStave extends StaveAbstract
     return lValue;
   }
 
-
-
   /**
    * Returns the value at the beginning of the stave.
    * 

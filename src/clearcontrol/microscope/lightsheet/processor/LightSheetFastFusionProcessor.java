@@ -3,8 +3,6 @@ package clearcontrol.microscope.lightsheet.processor;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.tuple.Triple;
-
 import clearcl.ClearCLContext;
 import clearcl.ClearCLImage;
 import clearcl.util.ElapsedTime;
@@ -24,6 +22,8 @@ import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.processor.StackProcessorInterface;
 import clearcontrol.stack.processor.clearcl.ClearCLStackProcessorBase;
 import coremem.recycling.RecyclerInterface;
+
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Lightsheet fusion processor
@@ -127,39 +127,38 @@ public class LightSheetFastFusionProcessor extends
       try
       {
 
-      if (getTransformLockSwitchVariable().get().booleanValue()
+        if (getTransformLockSwitchVariable().get().booleanValue()
             && pStack.getMetaData()
                      .getValue(MetaDataOrdinals.TimePoint) > getTransformLockThresholdVariable().get()
-                                                                    .intValue())
-      {
+                                                                                                .intValue())
+        {
           getSmoothingConstantVariable().set(0.02);
           getTransformLockSwitchVariable().set(false);
-      }
+        }
 
+        mEngine.getRegistrationTask()
+               .getParameters()
+               .setNumberOfRestarts(getNumberOfRestartsVariable().get()
+                                                                 .intValue());
 
-      mEngine.getRegistrationTask()
-             .getParameters()
-             .setNumberOfRestarts(getNumberOfRestartsVariable().get()
-                                                               .intValue());
+        mEngine.getRegistrationTask()
+               .getParameters()
+               .setTranslationSearchRadius(getTranslationSearchRadiusVariable().get()
+                                                                               .doubleValue());
 
-      mEngine.getRegistrationTask()
-             .getParameters()
-             .setTranslationSearchRadius(getTranslationSearchRadiusVariable().get()
-                                                                             .doubleValue());
+        mEngine.getRegistrationTask()
+               .getParameters()
+               .setRotationSearchRadius(getRotationSearchRadiusVariable().get()
+                                                                         .doubleValue());
 
-      mEngine.getRegistrationTask()
-             .getParameters()
-             .setRotationSearchRadius(getRotationSearchRadiusVariable().get()
-                                                                       .doubleValue());
+        mEngine.getRegistrationTask()
+               .getParameters()
+               .setMaxNumberOfEvaluations((int) getMaxNumberOfEvaluationsVariable().get()
+                                                                                   .intValue());
 
-      mEngine.getRegistrationTask()
-             .getParameters()
-             .setMaxNumberOfEvaluations((int) getMaxNumberOfEvaluationsVariable().get()
-                                                                                 .intValue());
-
-      mEngine.getRegistrationTask()
-             .setSmoothingConstant(getSmoothingConstantVariable().get()
-                                                                 .doubleValue());
+        mEngine.getRegistrationTask()
+               .setSmoothingConstant(getSmoothingConstantVariable().get()
+                                                                   .doubleValue());
 
       }
       catch (Throwable e)
@@ -167,7 +166,6 @@ public class LightSheetFastFusionProcessor extends
         severe("Problem while setting fast fusion parameters: %s",
                e.toString());
       }
-
     }
 
     // if (mEngine.isReady())

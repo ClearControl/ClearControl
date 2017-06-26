@@ -314,7 +314,7 @@ public class SimulatedLightSheetMicroscope extends
                                             50,
                                             200,
                                             0.95,
-                                            8e-5,
+                                            2e-5,
                                             0.010,
                                             0.5));
       }

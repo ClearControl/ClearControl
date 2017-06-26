@@ -8,8 +8,6 @@ package clearcontrol.gui.jfx.custom.visualconsole.listeners;
 public interface LabelGridListener
 {
 
-
-
   /**
    * Adds an entry to the grid
    * 

@@ -42,8 +42,6 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   private VisualConsoleInterface mVisualConsoleInterface;
   private volatile int mCounter = 0;
 
-
-
   private volatile boolean mRegistration =
                                          MachineConfiguration.get()
                                                              .getBooleanProperty("fastfuse.register",
@@ -383,17 +381,16 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegistrationTask =
-                            new RegistrationTask("C0blur",
-                                                 "C1blur",
-                                                 "C0",
-                                                 "C1",
-                                                 "C1reg");
+      mRegistrationTask = new RegistrationTask("C0blur",
+                                               "C1blur",
+                                               "C0",
+                                               "C1",
+                                               "C1reg");
 
       mRegistrationTask.getParameters()
                        .setZeroTransformMatrix(AffineMatrix.scaling(-1,
-                                                                        1,
-                                                                        1));
+                                                                    1,
+                                                                    1));
 
       addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0",
@@ -465,16 +462,15 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                    lKernelSigmas,
                                    lKernelSizes));
 
-      mRegistrationTask =
-                            new RegistrationTask("C0L0blur",
-                                                 "C1L0blur",
-                                                 "C0L0d",
-                                                 "C1L0d",
-                                                 "C1L0reg");
+      mRegistrationTask = new RegistrationTask("C0L0blur",
+                                               "C1L0blur",
+                                               "C0L0d",
+                                               "C1L0d",
+                                               "C1L0reg");
       mRegistrationTask.getParameters()
                        .setZeroTransformMatrix(AffineMatrix.scaling(-1,
-                                                                        1,
-                                                                        1));
+                                                                    1,
+                                                                    1));
 
       addTask(mRegistrationTask);
       addTask(new TenengradFusionTask("C0L0d",
@@ -734,7 +730,6 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
                                      mCounter,
                                      Rz);
 
-
   }
 
   @Override
@@ -795,7 +790,5 @@ public class LightSheetFastFusionEngine extends FastFusionEngine
   {
     return mRegistrationTask;
   }
-
-
 
 }

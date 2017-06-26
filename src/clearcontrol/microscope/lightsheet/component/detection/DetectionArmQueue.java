@@ -34,7 +34,6 @@ public class DetectionArmQueue extends VariableQueueBase implements
                                                  + "-DetectionFocusZ",
                                                  0.0);
 
-
     registerVariable(mDetectionFocusZ);
   }
 

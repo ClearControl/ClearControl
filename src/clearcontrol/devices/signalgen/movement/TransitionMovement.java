@@ -35,9 +35,9 @@ public class TransitionMovement
                                        TimeUnit pTimeUnit)
   {
 
-
-    Movement lTransitionMovement = new Movement("TransitionMovement",
-                                                pPreviousMovement.getNumberOfStaves());
+    Movement lTransitionMovement =
+                                 new Movement("TransitionMovement",
+                                              pPreviousMovement.getNumberOfStaves());
 
     adjustInternal(lTransitionMovement,
                    pPreviousMovement,
@@ -101,6 +101,5 @@ public class TransitionMovement
 
     }
   }
-
 
 }

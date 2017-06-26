@@ -180,6 +180,4 @@ public class RampContinuousStave extends StaveAbstract
     mExponent = pExponent;
   }
 
-
-
 }

@@ -1,15 +1,15 @@
 package clearcontrol.gui.jfx.custom.visualconsole.demo;
 
 import java.util.concurrent.TimeUnit;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
-import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /**
  * Simulation manager demo
@@ -40,8 +40,6 @@ public class VisualConsoleDemo extends Application implements
                                            new VisualConsolePanel(lVisualConsoleClient);
 
     root.getChildren().add(lVisualConsolePanel);
-
-
 
     Runnable lRunnable = () -> {
       lVisualConsoleClient.configureChart("A" + mCounter,
@@ -102,9 +100,7 @@ public class VisualConsoleDemo extends Application implements
       mCounter++;
     };
 
-
     scheduleAtFixedRate(lRunnable, 10, TimeUnit.SECONDS);
-
 
     stage.show();
   }

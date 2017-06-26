@@ -37,7 +37,6 @@ public interface DetectionArmInterface extends
    */
   public BoundedVariable<Number> getZVariable();
 
-
   /**
    * Returns function that translates Z values into actual control values.
    * 

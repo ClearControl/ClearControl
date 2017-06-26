@@ -3,14 +3,14 @@ package clearcontrol.devices.signalgen.score.demo;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
-
 import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.staves.RampSteppingStave;
 import clearcontrol.devices.signalgen.staves.TriggerStave;
+
+import org.junit.Test;
 
 /**
  * Score demo

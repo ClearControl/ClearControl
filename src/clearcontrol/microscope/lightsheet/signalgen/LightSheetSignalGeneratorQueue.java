@@ -43,19 +43,19 @@ public class LightSheetSignalGeneratorQueue implements
       mFinalMovement;
 
   private final ConcurrentHashMap<DetectionArm, DetectionArmStaves> mDetectionArmToStavesMap =
-                                                                                     new ConcurrentHashMap<>();
+                                                                                             new ConcurrentHashMap<>();
 
   private final ArrayList<LightSheet> mLightSheetList =
-                                              new ArrayList<LightSheet>();
+                                                      new ArrayList<LightSheet>();
 
   private final ConcurrentHashMap<LightSheet, LightSheetStaves> mLightSheetToStavesMap =
-                                                                               new ConcurrentHashMap<>();
+                                                                                       new ConcurrentHashMap<>();
   private final ConcurrentHashMap<LightSheetOpticalSwitch, LightSheetOpticalSwitchStaves> mOpticalSwitchToStavesMap =
-                                                                                                            new ConcurrentHashMap<>();
+                                                                                                                    new ConcurrentHashMap<>();
 
   private final Variable<Double> mTransitionDurationInSecondsVariable =
-                                                                new Variable<Double>("mTransitionDurationInSeconds",
-                                                                                     0d);
+                                                                      new Variable<Double>("mTransitionDurationInSeconds",
+                                                                                           0d);
 
   /**
    * Instantiates a lightsheet signal generator queue device

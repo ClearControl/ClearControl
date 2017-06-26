@@ -130,8 +130,7 @@ public class LightSheetStaves implements LoggingInterface
 
   protected String getDevicePrefixInConfigFile()
   {
-    return "device.lsm.lightsheet."
-                     + getLightSheet().getName();
+    return "device.lsm.lightsheet." + getLightSheet().getName();
   }
 
   private LightSheet getLightSheet()
@@ -497,8 +496,7 @@ public class LightSheetStaves implements LoggingInterface
 
         lPowerValue *= lWidthPowerFactor * lHeightPowerFactor;
       }
-      
-      
+
       mBeforeExposureLAStave.setValue(0f);
       mExposureLAStave.setValue((float) lPowerValue);
 

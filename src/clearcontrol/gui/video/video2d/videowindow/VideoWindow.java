@@ -11,13 +11,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import clearcontrol.gui.video.util.WindowControl;
+import cleargl.ClearGLDefaultEventListener;
+import cleargl.ClearGLWindow;
+
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.opengl.GLException;
 
-import clearcontrol.gui.video.util.WindowControl;
-import cleargl.ClearGLDefaultEventListener;
-import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
@@ -352,16 +353,15 @@ public class VideoWindow implements AutoCloseable
     if (this.mType == NativeTypeEnum.UnsignedByte)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue = (0xFF & pMemory.getByteAligned(i))
-                              / 255d;
+        final double lValue =
+                            (0xFF & pMemory.getByteAligned(i)) / 255d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
       }
     else if (this.mType == NativeTypeEnum.UnsignedShort)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue =
-                            (0xFFFF & pMemory.getCharAligned(i))
+        final double lValue = (0xFFFF & pMemory.getCharAligned(i))
                               / 65535d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
@@ -369,8 +369,7 @@ public class VideoWindow implements AutoCloseable
     else if (this.mType == NativeTypeEnum.UnsignedInt)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue = (0xFFFFFFFF
-                               & pMemory.getIntAligned(i))
+        final double lValue = (0xFFFFFFFF & pMemory.getIntAligned(i))
                               / 4294967296d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
@@ -385,8 +384,7 @@ public class VideoWindow implements AutoCloseable
     else if (this.mType == NativeTypeEnum.Double)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lDoubleAligned =
-                                    pMemory.getDoubleAligned(i);
+        final double lDoubleAligned = pMemory.getDoubleAligned(i);
         lMin = min(lMin, lDoubleAligned);
         lMax = max(lMax, lDoubleAligned);
       }

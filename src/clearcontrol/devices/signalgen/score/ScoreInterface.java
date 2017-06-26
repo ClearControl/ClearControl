@@ -126,7 +126,4 @@ public interface ScoreInterface
    */
   public abstract long getDuration(TimeUnit pTimeUnit);
 
-
-
-
 }

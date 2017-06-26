@@ -1,16 +1,16 @@
 package clearcontrol.microscope.lightsheet.state.gui;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.tuple.Pair;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import clearcontrol.gui.jfx.custom.tableview.DoubleRow;
 import clearcontrol.gui.jfx.custom.tableview.DoubleTableView;
 import clearcontrol.gui.jfx.custom.tableview.EditableTableCellHandler;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Multichart displaying the different acquisition DOFs versus imaging depth

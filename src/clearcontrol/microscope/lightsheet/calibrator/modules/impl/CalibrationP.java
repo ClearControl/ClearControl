@@ -123,7 +123,7 @@ public class CalibrationP extends CalibrationBase
                                        getLightSheetMicroscope().requestQueue();
       lQueue.clearQueue();
       lQueue.setFullROI();
-      lQueue.setExp(0.100);
+      lQueue.setExp(0.5);
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
       lQueue.setIY(pLightSheetIndex, 0);

@@ -1,14 +1,6 @@
 package clearcontrol.gui.jfx.custom.visualconsole;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
-import clearcontrol.gui.jfx.custom.multichart.MultiChart;
-import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
-import clearcontrol.gui.jfx.custom.visualconsole.listeners.ChartListenerInterface;
-import clearcontrol.gui.jfx.custom.visualconsole.listeners.LabelGridListener;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.AreaChart;
@@ -22,6 +14,14 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
+
+import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
+import clearcontrol.gui.jfx.custom.multichart.MultiChart;
+import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
+import clearcontrol.gui.jfx.custom.visualconsole.listeners.ChartListenerInterface;
+import clearcontrol.gui.jfx.custom.visualconsole.listeners.LabelGridListener;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Visual Console Panel displays debug/monitoring information in various ways
@@ -87,7 +87,6 @@ public class VisualConsolePanel extends BorderPane implements
     }
     return lTab;
   }
-
 
   public void clear()
   {
@@ -212,6 +211,5 @@ public class VisualConsolePanel extends BorderPane implements
     });
 
   }
-
 
 }

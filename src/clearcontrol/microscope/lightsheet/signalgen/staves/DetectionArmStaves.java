@@ -34,7 +34,6 @@ public class DetectionArmStaves
 
     mDetectionZStave = new ConstantStave("detection.z", 0);
 
-
     mStaveIndex = MachineConfiguration.get()
                                       .getIntegerProperty("device.lsm.detection."
                                                           + pDetectionArmQueue.getDetectionArm()

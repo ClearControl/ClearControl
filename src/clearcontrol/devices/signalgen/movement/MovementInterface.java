@@ -124,6 +124,4 @@ public interface MovementInterface extends NameableInterface
    */
   int getSyncChannel();
 
-
-
 }

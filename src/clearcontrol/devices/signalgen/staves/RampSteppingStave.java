@@ -128,6 +128,4 @@ public class RampSteppingStave extends RampContinuousStave
     mStepping = pStepping;
   }
 
-
-
 }

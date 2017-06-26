@@ -20,7 +20,6 @@ public class ClosurePatternSteppingStave extends PatternSteppingStave
                                            getSteppingFunction());
   }
 
-
   public SteppingFunction getSteppingFunction()
   {
     return mSteppingFunction;
@@ -31,6 +30,5 @@ public class ClosurePatternSteppingStave extends PatternSteppingStave
   {
     return getSteppingFunction().function(pIndex);
   }
-
 
 }

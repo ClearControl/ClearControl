@@ -83,6 +83,4 @@ public abstract class PatternSteppingStave extends StaveAbstract
     mNumberOfSteps = pNumberOfSteps;
   }
 
-
-
 }

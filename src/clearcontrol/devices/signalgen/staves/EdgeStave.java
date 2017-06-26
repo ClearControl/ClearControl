@@ -62,6 +62,4 @@ public class EdgeStave extends IntervalStave implements StaveInterface
     setInsideValue(pValueAfter);
   }
 
-
-
 }

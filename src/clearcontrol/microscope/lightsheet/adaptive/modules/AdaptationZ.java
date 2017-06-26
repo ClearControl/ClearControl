@@ -71,7 +71,6 @@ public class AdaptationZ extends StandardAdaptationModule implements
     int lHalfSamples = (lNumberOfSamples - 1) / 2;
     double lMinZ = -lDeltaZ * lHalfSamples;
 
-
     final TDoubleArrayList lDZList = new TDoubleArrayList();
 
     InterpolatedAcquisitionState lAcquisitionState =

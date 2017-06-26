@@ -1,7 +1,5 @@
 package clearcontrol.gui.jfx.custom.multichart;
 
-import org.controlsfx.control.CheckListView;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -21,6 +19,8 @@ import javafx.scene.effect.Glow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Path;
+
+import org.controlsfx.control.CheckListView;
 
 /**
  * MultiChart allows the display of multiple series in a single chart and the

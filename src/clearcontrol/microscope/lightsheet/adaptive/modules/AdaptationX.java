@@ -28,7 +28,6 @@ public class AdaptationX extends StandardAdaptationModule implements
                                                new Variable<Double>("MaxX",
                                                                     20.0);
 
-
   /**
    * Instantiates a X focus adaptation module given the number of samples,
    * probability threshold, and image metric threshold
@@ -79,7 +78,6 @@ public class AdaptationX extends StandardAdaptationModule implements
     LightSheetMicroscope lLightsheetMicroscope =
                                                (LightSheetMicroscope) getAdaptiveEngine().getMicroscope();
 
-
     int lNumberOfSamples = getNumberOfSamplesVariable().get();
     double lMinX = getMinXVariable().get().doubleValue();
     double lMaxX = getMaxXVariable().get().doubleValue();
@@ -95,7 +93,6 @@ public class AdaptationX extends StandardAdaptationModule implements
 
     lAcquisitionState.applyStateAtControlPlane(lQueue,
                                                lControlPlaneIndex);
-
 
     final TDoubleArrayList lIXList = new TDoubleArrayList();
 
@@ -142,7 +139,6 @@ public class AdaptationX extends StandardAdaptationModule implements
   {
     updateStateInternal(pStateToUpdate, false, false);
   }
-
 
   /**
    * Returns the minimum X value

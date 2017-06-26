@@ -45,6 +45,4 @@ public interface StaveInterface extends NameableInterface, Cloneable
    */
   float getValue(float pNormalizedTime);
 
-
-
 }

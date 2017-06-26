@@ -1,23 +1,25 @@
 package clearcontrol.microscope.lightsheet.processor.gui.demo;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
 import clearcontrol.microscope.lightsheet.processor.gui.LightSheetFastFusionProcessorPanel;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /**
  * Acquisition state manager demo
  *
  * @author royer
  */
-public class LightSheetFastFusionProcessorPanelDemo extends Application
-                                              implements
-                                              AsynchronousExecutorServiceAccess
+public class LightSheetFastFusionProcessorPanelDemo extends
+                                                    Application
+                                                    implements
+                                                    AsynchronousExecutorServiceAccess
 {
 
   @Override
@@ -43,14 +45,11 @@ public class LightSheetFastFusionProcessorPanelDemo extends Application
                                              new LightSheetFastFusionProcessor("processor",
                                                                                lLightSheetMicroscope,
                                                                                null);
-    
+
     LightSheetFastFusionProcessorPanel lPanel =
                                               new LightSheetFastFusionProcessorPanel(lProcessor);
-    
 
-
-    Scene scene =
-                new Scene(lPanel, 500, 500);
+    Scene scene = new Scene(lPanel, 500, 500);
     stage.setScene(scene);
     stage.setTitle("Interactive2DAcquisitionPanel Demo");
 

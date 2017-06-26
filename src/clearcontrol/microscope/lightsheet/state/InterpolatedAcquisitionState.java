@@ -290,11 +290,10 @@ public class InterpolatedAcquisitionState extends
     double lVoxelDepthInMicrons = lPixelSizeInMicrons
                                   * pAnisotropyFactor;
 
-
     double lStackDepthInMicrons = getStackDepthInMicrons();
 
     int lNumberOfPlanes = (int) round(lStackDepthInMicrons
-                                 / lVoxelDepthInMicrons);
+                                      / lVoxelDepthInMicrons);
 
     getStackZStepVariable().set(lVoxelDepthInMicrons);
 

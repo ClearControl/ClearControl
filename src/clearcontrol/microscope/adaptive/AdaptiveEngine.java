@@ -244,7 +244,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
     @SuppressWarnings("unchecked")
     S lLoggedState =
                    (S) lCurrentAcquisitionState.duplicate("state "
-                                                     + getAcquisitionStateCounterVariable().get());
+                                                          + getAcquisitionStateCounterVariable().get());
 
     if (getMicroscope() != null)
     {

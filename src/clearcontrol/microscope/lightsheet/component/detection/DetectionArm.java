@@ -96,7 +96,6 @@ public class DetectionArm extends
     return mTemplateQueue.getZVariable();
   }
 
-
   @Override
   public Variable<UnivariateAffineFunction> getZFunction()
   {

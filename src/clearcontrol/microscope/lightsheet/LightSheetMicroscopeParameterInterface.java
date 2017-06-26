@@ -143,8 +143,6 @@ public interface LightSheetMicroscopeParameterInterface
    */
   double getDZ(int pDetectionArmIndex);
 
-
-
   /**
    * Sets the lightsheet's X position (illumination objective).
    * 
@@ -438,7 +436,5 @@ public interface LightSheetMicroscopeParameterInterface
    */
   public boolean getIPatternOnOff(int pLightSheetIndex,
                                   int pLaserIndex);
-
-
 
 }

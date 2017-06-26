@@ -171,7 +171,6 @@ public class Movement extends NameableBase
     return mSyncChannel;
   }
 
-
   @Override
   public int hashCode()
   {
@@ -186,7 +185,7 @@ public class Movement extends NameableBase
     result = prime * result + mSyncChannel;
     return result;
   }
-  
+
   @Override
   public boolean equals(Object obj)
   {

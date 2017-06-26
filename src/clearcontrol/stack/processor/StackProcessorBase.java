@@ -14,7 +14,6 @@ public abstract class StackProcessorBase extends VirtualDevice
 {
   private final Variable<Boolean> mIsActiveVariable;
 
-
   /**
    * Instanciates a stack processor of given name
    * 

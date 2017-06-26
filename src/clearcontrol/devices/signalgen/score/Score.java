@@ -151,7 +151,6 @@ public class Score extends NameableBase implements ScoreInterface
     return pTimeUnit.convert(lDurationInNs, TimeUnit.NANOSECONDS);
   }
 
-
   @Override
   public int hashCode()
   {
@@ -162,7 +161,7 @@ public class Score extends NameableBase implements ScoreInterface
                                         : mMovementList.hashCode());
     return result;
   }
-  
+
   @Override
   public boolean equals(Object obj)
   {

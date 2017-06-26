@@ -440,6 +440,9 @@ public abstract class TimelapseBase extends LoopTaskDevice
     if (!mAdaptiveEngineOnVariable.get())
       return;
 
+    if (mAdaptiveEngine == null)
+      initAdaptiveEngine();
+
     int lMinSteps = getMinAdaptiveEngineStepsVariable().get()
                                                        .intValue();
     int lMaxSteps = getMaxAdaptiveEngineStepsVariable().get()

@@ -1,13 +1,14 @@
 package clearcontrol.microscope.lightsheet.processor.gui;
 
+import javafx.scene.Node;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
 import clearcontrol.gui.jfx.var.customvarpanel.CustomVariablePane;
 import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
-import javafx.scene.Node;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 
 /**
  * Lightsheet fast fusion processor panel

@@ -43,7 +43,6 @@ public interface SignalGeneratorInterface extends
    */
   void setTransitionDuration(long pDuration, TimeUnit pTimeUnit);
 
-
   /**
    * Play score
    * 
@@ -74,6 +73,5 @@ public interface SignalGeneratorInterface extends
    * @return true if playing
    */
   public boolean isPlaying();
-
 
 }
