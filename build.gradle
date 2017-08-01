@@ -112,7 +112,7 @@ dependencies
     compile 'com.googlecode.efficient-java-matrix-library:ejml:0.+'
 
     // JTransforms:
-    compile fileTree(dir: '../Libs/jtransforms', include: '*.jar')
+    compile fileTree(dir: 'Libs/jtransforms', include: '*.jar')
 
     // VecMath:
     compile 'java3d:vecmath:1.3.1'
