@@ -162,9 +162,6 @@ dependencies
     // JMathPlot:
     compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
-    // JTransforms:
-    compile fileTree(dir: './libs/jtransforms', include: '*.jar')
-
     // imglib2:
     compile ('net.imglib2:imglib2:2.2.0'){transitive = true}
     compile ('net.imglib2:imglib2-ui:2.0.0-beta-28'){transitive = true}
