@@ -11,7 +11,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.gui.CameraDevicePanel;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.devices.lasers.gui.jfx.LaserDevicePanel;
+import clearcontrol.devices.lasers.gui.LaserDevicePanel;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
 import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;

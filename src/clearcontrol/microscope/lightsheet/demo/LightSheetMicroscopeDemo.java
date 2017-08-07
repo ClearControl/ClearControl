@@ -90,7 +90,7 @@ public class LightSheetMicroscopeDemo implements
 
     ClearCL lClearCL = new ClearCL(lBestBackend);
     ClearCLDevice lSimulationGPUDevice =
-                                       lClearCL.getDeviceByName("TITAN");
+                                       lClearCL.getDeviceByName("HD");
     ClearCLContext lContext = lSimulationGPUDevice.createContext();
 
     LightSheetMicroscopeSimulatorDrosophila lSimulator =

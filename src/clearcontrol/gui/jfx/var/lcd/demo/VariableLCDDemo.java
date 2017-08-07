@@ -1,10 +1,13 @@
 package clearcontrol.gui.jfx.var.lcd.demo;
 
+import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.thread.ThreadUtils;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.lcd.VariableLCD;
 import eu.hansolo.enzo.lcd.Lcd;
@@ -15,7 +18,8 @@ import eu.hansolo.enzo.lcd.LcdBuilder;
  *
  * @author royer
  */
-public class VariableLCDDemo extends Application
+public class VariableLCDDemo extends Application implements
+                             AsynchronousExecutorServiceAccess
 {
 
   @Override
@@ -48,7 +52,7 @@ public class VariableLCDDemo extends Application
                                 .decimals(0)
                                 .minMeasuredValueDecimals(2)
                                 .minMeasuredValueVisible(false)
-                                .maxMeasuredValueDecimals(2)
+                                .maxMeasuredValueDecimals(4)
                                 .maxMeasuredValueVisible(false)
                                 .formerValueVisible(false)
                                 .threshold(26)
@@ -69,6 +73,19 @@ public class VariableLCDDemo extends Application
     root.getChildren().add(lVarLCD);
 
     stage.show();
+
+    executeAsynchronously(() -> {
+      for (int i = 0; i < 1000; i++)
+      {
+        final int fi = i;
+        System.out.println(fi);
+        ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+        lNumberVariable.set(fi);
+
+        System.out.println(lNumberVariable.get());
+      }
+    });
+
   }
 
   /**

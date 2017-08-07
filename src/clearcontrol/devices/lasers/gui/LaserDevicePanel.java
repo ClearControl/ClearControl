@@ -1,4 +1,4 @@
-package clearcontrol.devices.lasers.gui.jfx;
+package clearcontrol.devices.lasers.gui;
 
 import java.util.ArrayList;
 import java.util.List;

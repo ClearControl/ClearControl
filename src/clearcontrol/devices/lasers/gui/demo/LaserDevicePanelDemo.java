@@ -1,11 +1,11 @@
-package clearcontrol.devices.lasers.gui.jfx.demo;
+package clearcontrol.devices.lasers.gui.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
-import clearcontrol.devices.lasers.gui.jfx.LaserDevicePanel;
+import clearcontrol.devices.lasers.gui.LaserDevicePanel;
 
 /**
  * Laser device panel demo
