@@ -2,6 +2,13 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 
+/**
+ * Center-Of-Mass argmax finder.
+ * 
+ * Considers the input data (X,Y) as a distribution.
+ *
+ * @author royer
+ */
 public class COMArgMaxFinder implements ArgMaxFinder1DInterface
 {
 

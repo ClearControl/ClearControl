@@ -1,6 +1,6 @@
 package clearcontrol.microscope.stacks.metadata;
 
-import clearcontrol.microscope.lightsheet.state.AcquisitionType;
+import clearcontrol.microscope.state.AcquisitionType;
 import clearcontrol.stack.metadata.MetaDataEntryInterface;
 
 /**

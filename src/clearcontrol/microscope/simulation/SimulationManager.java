@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.name.ReadOnlyNameableInterface;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.MicroscopeInterface;
 
@@ -18,7 +18,7 @@ import clearcontrol.microscope.MicroscopeInterface;
  */
 public class SimulationManager extends VirtualDevice implements
                                ReadOnlyNameableInterface,
-                               LoggingInterface
+                               LoggingFeature
 {
   private final MicroscopeInterface<?> mMicroscopeInterface;
 

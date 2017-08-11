@@ -7,14 +7,26 @@ import java.io.IOException;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.persistence.DoubleVariableAsFile;
-import clearcontrol.core.variable.persistence.ObjectVariableAsFile;
+import clearcontrol.core.variable.persistence.VariableAsFile;
 import clearcontrol.core.variable.persistence.VariableBundleAsFile;
 
 import org.junit.Test;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class VariableAsFileTests
 {
 
+  /**
+   * 
+   * @throws IOException
+   *           N/A
+   * @throws InterruptedException
+   *           N/A
+   */
   @Test
   public void testDoubleVariableAsFile() throws IOException,
                                          InterruptedException
@@ -46,6 +58,12 @@ public class VariableAsFileTests
 
   }
 
+  /**
+   * @throws IOException
+   *           N/A
+   * @throws InterruptedException
+   *           N/A
+   */
   @Test
   public void testObjectVariableAsFile() throws IOException,
                                          InterruptedException
@@ -53,10 +71,10 @@ public class VariableAsFileTests
     final File lTempFile =
                          File.createTempFile("VariableAsFileTests",
                                              "testObjectVariableAsFile");
-    final ObjectVariableAsFile<String> lObjectVariable1 =
-                                                        new ObjectVariableAsFile<String>("x",
-                                                                                         lTempFile,
-                                                                                         "1");
+    final VariableAsFile<String> lObjectVariable1 =
+                                                  new VariableAsFile<String>("x",
+                                                                             lTempFile,
+                                                                             "1");
 
     lObjectVariable1.set("2");
     Thread.sleep(100);
@@ -65,10 +83,10 @@ public class VariableAsFileTests
 
     assertEquals("2", lValue);
 
-    final ObjectVariableAsFile<String> lObjectVariable2 =
-                                                        new ObjectVariableAsFile<String>("y",
-                                                                                         lTempFile,
-                                                                                         "1");
+    final VariableAsFile<String> lObjectVariable2 =
+                                                  new VariableAsFile<String>("y",
+                                                                             lTempFile,
+                                                                             "1");
 
     final String lValue2 = lObjectVariable2.get();
     assertEquals(lValue, lValue2);
@@ -82,6 +100,12 @@ public class VariableAsFileTests
     lObjectVariable2.close();
   }
 
+  /**
+   * @throws IOException
+   *           N/A
+   * @throws InterruptedException
+   *           N/A
+   */
   @Test
   public void testVariableBundleAsFile() throws IOException,
                                          InterruptedException

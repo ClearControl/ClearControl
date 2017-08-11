@@ -11,7 +11,7 @@ import javafx.scene.Node;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.name.NameableInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
@@ -34,7 +34,7 @@ import org.dockfx.DockNode;
  *
  * @author royer
  */
-public class HalcyonGUIGenerator implements LoggingInterface
+public class HalcyonGUIGenerator implements LoggingFeature
 {
   private MicroscopeInterface<?> mMicroscopeInterface;
   private HalcyonFrame mHalcyonFrame;

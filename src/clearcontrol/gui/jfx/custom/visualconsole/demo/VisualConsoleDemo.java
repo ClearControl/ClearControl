@@ -6,7 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface.ChartType;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
@@ -16,8 +16,8 @@ import clearcontrol.gui.jfx.custom.visualconsole.VisualConsolePanel;
  *
  * @author royer
  */
-public class VisualConsoleDemo extends Application implements
-                               AsynchronousSchedulerServiceAccess
+public class VisualConsoleDemo extends Application
+                               implements AsynchronousSchedulerFeature
 {
 
   private int mCounter;

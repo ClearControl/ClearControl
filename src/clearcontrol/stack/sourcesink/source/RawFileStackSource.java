@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.FileStackBase;
@@ -121,7 +121,7 @@ public class RawFileStackSource extends FileStackBase implements
                                        getStackTimeStampInSeconds(pChannel,
                                                                   pStackIndex);
       lStack.getMetaData()
-            .setTimeStampInNanoseconds((long) Magnitude.unit2nano(lTimeStampInSeconds));
+            .setTimeStampInNanoseconds((long) OrderOfMagnitude.unit2nano(lTimeStampInSeconds));
       lStack.getMetaData().setIndex(pStackIndex);
 
       return lStack;

@@ -10,8 +10,8 @@ import coremem.recycling.RecyclerRequestInterface;
 public class StackRequest implements RecyclerRequestInterface
 {
 
-  private final long mWidth, mHeight, mDepth, mMetaDataSizeInBytes,
-      mAlignment;
+  private final long mWidth, mHeight, mDepth;
+  private final long mMetaDataSizeInBytes, mAlignment;
 
   /**
    * Instanciates a stack request given: width, height, depth, metadata size in

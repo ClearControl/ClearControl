@@ -2,7 +2,7 @@ package clearcontrol.stack.sourcesink.synthetic;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -74,7 +74,7 @@ public class RandomStackSource implements StackSourceInterface
   public Double getStackTimeStampInSeconds(String pChannel,
                                            long pStackIndex)
   {
-    return Magnitude.nano2unit(System.nanoTime());
+    return OrderOfMagnitude.nano2unit(System.nanoTime());
   }
 
   @Override

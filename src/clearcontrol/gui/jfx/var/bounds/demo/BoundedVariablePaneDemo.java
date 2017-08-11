@@ -5,7 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.bounds.BoundedVariablePane;
 
@@ -15,7 +15,7 @@ import clearcontrol.gui.jfx.var.bounds.BoundedVariablePane;
  * @author royer
  */
 public class BoundedVariablePaneDemo extends Application implements
-                                     AsynchronousSchedulerServiceAccess
+                                     AsynchronousSchedulerFeature
 {
 
   @Override

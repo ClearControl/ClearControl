@@ -1,7 +1,7 @@
 package clearcontrol.devices.signalamp.devices.sim;
 
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalamp.ScalingAmplifierBaseDevice;
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
@@ -10,7 +10,7 @@ public class ScalingAmplifierSimulator extends
                                        ScalingAmplifierBaseDevice
                                        implements
                                        ScalingAmplifierDeviceInterface,
-                                       LoggingInterface,
+                                       LoggingFeature,
                                        SimulationDeviceInterface
 {
 

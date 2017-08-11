@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 
 /**
  *
@@ -84,7 +84,7 @@ public interface WaitingInterface
              && (pTimeOut == null
                  || lCounter.incrementAndGet() < lTimeOutInMillis))
       {
-        ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+        ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
       }
       return pCallable.call();
     }

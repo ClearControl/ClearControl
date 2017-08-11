@@ -1,14 +1,9 @@
 package clearcontrol.microscope.timelapse.timer.adaptive;
 
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.gui.plots.MultiPlot;
 import clearcontrol.gui.plots.PlotTab;
 import clearcontrol.stack.StackInterface;
 import ij.ImageJ;
-import ij.ImagePlus;
 
 /**
  * Adaptive acquiistion timer visualizer
@@ -73,10 +68,11 @@ public class AdaptiveAcquisitionTimerVisualizer
    */
   public void visualizeStack(StackInterface pStack)
   {
-    @SuppressWarnings("unchecked")
-    ImagePlus lShow =
-                    ImageJFunctions.show(((OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) pStack.getImage()).copy());
-    lShow.setDisplayRange(0, 1000);
+    // @SuppressWarnings("unchecked")
+    // ImagePlus lShow =
+    // ImageJFunctions.show(((OffHeapPlanarImg<UnsignedShortType,
+    // ShortOffHeapAccess>) pStack.getImage()).copy());
+    // lShow.setDisplayRange(0, 1000);
   }
 
 }

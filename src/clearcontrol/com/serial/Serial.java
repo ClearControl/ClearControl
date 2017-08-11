@@ -10,10 +10,10 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import gnu.trove.list.array.TByteArrayList;
 
-public class Serial implements SerialInterface, LoggingInterface
+public class Serial implements SerialInterface, LoggingFeature
 {
   public final static int cFLOWCONTROL_NONE =
                                             SerialPort.FLOWCONTROL_NONE;

@@ -2,6 +2,12 @@ package clearcontrol.core.math.optimizer;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
+/**
+ * TODO: finish this
+ *
+ * @author royer
+ */
+@SuppressWarnings("javadoc")
 public class PointCloud
 {
   private final int mInputDimension, mOutputDimension;

@@ -6,10 +6,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceBase;
 import clearcontrol.devices.cameras.devices.sim.providers.RandomStackProvider;
@@ -26,10 +26,10 @@ import coremem.recycling.BasicRecycler;
 public class StackCameraDeviceSimulator extends
                                         StackCameraDeviceBase<StackCameraSimulationQueue>
                                         implements
-                                        LoggingInterface,
+                                        LoggingFeature,
                                         SimulationDeviceInterface,
-                                        AsynchronousSchedulerServiceAccess,
-                                        AsynchronousExecutorServiceAccess
+                                        AsynchronousSchedulerFeature,
+                                        AsynchronousExecutorFeature
 {
   private StackCameraSimulationProvider mStackCameraSimulationProvider;
 

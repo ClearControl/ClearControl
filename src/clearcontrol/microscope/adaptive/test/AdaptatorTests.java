@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class AdaptatorTests
                                      lAdaptator.estimateNextStepInSeconds();
       System.out.format("step: estimated-time=%gs \n",
                         lEstimatedTimeInSeconds);
-      ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     }
 
   }

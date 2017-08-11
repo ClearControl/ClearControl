@@ -8,13 +8,21 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import clearcontrol.core.math.argmax.SmartArgMaxFinder;
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 
 import org.junit.Test;
 
+/**
+ * Smart argmax finder tests
+ *
+ * @author royer
+ */
 public class SmartArgMaxFinderTests
 {
 
+  /**
+   * Basic test
+   */
   @Test
   public void basicTest()
   {
@@ -111,12 +119,16 @@ public class SmartArgMaxFinderTests
 
   }
 
+  /**
+   * Performance test
+   */
   @Test
   public void performanceTest()
   {
     final SmartArgMaxFinder lSmartArgMaxFinder =
                                                new SmartArgMaxFinder();
 
+    for (int j = 0; j < 10; j++)
     {
       final double[] lX = new double[]
       { 0, 1, 2, 3, 4 };
@@ -134,45 +146,75 @@ public class SmartArgMaxFinderTests
       }
       final long lStop = System.nanoTime();
       final double lElapsed =
-                            Magnitude.nano2milli((1.0 * lStop
-                                                  - lStart)
-                                                 / lNumberOfIterations);
+                            OrderOfMagnitude.nano2milli((1.0 * lStop
+                                                         - lStart)
+                                                        / lNumberOfIterations);
 
-      System.out.format("%g ms per estimation. \n", lElapsed);
+      // System.out.format("%g ms per estimation. \n", lElapsed);
 
-      System.out.println(Arrays.toString(lX));
-      System.out.println(Arrays.toString(lY));
-      System.out.println(Arrays.toString(lFittedY));
+      // System.out.println(Arrays.toString(lX));
+      // System.out.println(Arrays.toString(lY));
+      // System.out.println(Arrays.toString(lFittedY));
 
-      System.out.println(lArgmax);
+      // System.out.println(lArgmax);
+
+      if (j > 5)
+        assertTrue(lElapsed < 3);
+
+      assertTrue(lFittedY[2] > 0.30);
 
       assertEquals(2, lArgmax, 0.15);
     }
   }
 
+  /**
+   * Benchmark
+   * 
+   * @throws IOException
+   *           N/A
+   * @throws URISyntaxException
+   *           N/A
+   */
   @Test
   public void benchmark() throws IOException, URISyntaxException
   {
 
     final SmartArgMaxFinder lSmartArgMaxFinder =
                                                new SmartArgMaxFinder();
-    final double lMaxError =
-                           ArgMaxTester.test(lSmartArgMaxFinder, 15);
+    final double lMaxError = ArgMaxTestsUtils.test(lSmartArgMaxFinder,
+                                                   15);
     assertEquals(0, lMaxError, 1);
 
   }
 
+  /**
+   * Benchmark with fit estimation
+   * 
+   * @throws IOException
+   *           N/A
+   * @throws URISyntaxException
+   *           N/A
+   */
   @Test
   public void benchmarkWithFitEstimation() throws IOException,
                                            URISyntaxException
   {
     final SmartArgMaxFinder lSmartArgMaxFinder =
                                                new SmartArgMaxFinder();
-    final double lMaxError = ArgMaxTester.test(lSmartArgMaxFinder, 8);
+    final double lMaxError = ArgMaxTestsUtils.test(lSmartArgMaxFinder,
+                                                   8);
     assertEquals(0, lMaxError, 0.7);
 
   }
 
+  /**
+   * Regression test bug
+   * 
+   * @throws IOException
+   *           N/A
+   * @throws URISyntaxException
+   *           N/A
+   */
   @Test
   public void regressionTestBug() throws IOException,
                                   URISyntaxException

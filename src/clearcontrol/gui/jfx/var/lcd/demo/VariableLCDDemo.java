@@ -6,8 +6,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.lcd.VariableLCD;
 import eu.hansolo.enzo.lcd.Lcd;
@@ -18,8 +18,8 @@ import eu.hansolo.enzo.lcd.LcdBuilder;
  *
  * @author royer
  */
-public class VariableLCDDemo extends Application implements
-                             AsynchronousExecutorServiceAccess
+public class VariableLCDDemo extends Application
+                             implements AsynchronousExecutorFeature
 {
 
   @Override
@@ -79,7 +79,7 @@ public class VariableLCDDemo extends Application implements
       {
         final int fi = i;
         System.out.println(fi);
-        ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+        ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
         lNumberVariable.set(fi);
 
         System.out.println(lNumberVariable.get());

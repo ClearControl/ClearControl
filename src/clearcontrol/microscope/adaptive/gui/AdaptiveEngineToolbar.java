@@ -16,7 +16,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
@@ -30,7 +30,7 @@ import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
  * @author royer
  */
 public class AdaptiveEngineToolbar extends CustomGridPane
-                                   implements LoggingInterface
+                                   implements LoggingFeature
 {
 
   /**

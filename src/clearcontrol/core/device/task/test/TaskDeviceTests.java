@@ -5,13 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.device.task.TaskDevice;
 
 import org.junit.Test;
 
 /**
- * task device tests
+ * Task device tests
  *
  * @author royer
  */
@@ -30,14 +30,14 @@ public class TaskDeviceTests
     public void run()
     {
       System.out.println("Beginned task");
-      ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
       System.out.println("Ended task");
     }
 
   }
 
   /**
-   * basic test
+   * Basic test
    */
   @Test
   public void test()

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
@@ -31,7 +31,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author royer
  */
-public class MachineConfiguration implements LoggingInterface
+public class MachineConfiguration implements LoggingFeature
 {
   private static final String cComments =
                                         "ClearControl machine configuration file";

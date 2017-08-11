@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.com.serial.adapters.SerialDeviceAdapterAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.adapters.protocol.ProtocolSIM;
 
@@ -140,14 +140,14 @@ public abstract class SIMAdapter extends
   @Override
   public boolean purgeAfterGet()
   {
-    ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     return true;
   }
 
   @Override
   public boolean purgeAfterSet()
   {
-    ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     return true;
   }
 

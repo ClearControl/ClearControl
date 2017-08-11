@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 /**
  * Set of Futures that return booleans.
@@ -15,7 +15,7 @@ import clearcontrol.core.log.LoggingInterface;
  */
 public class FutureBooleanList implements
                                Future<Boolean>,
-                               LoggingInterface
+                               LoggingFeature
 {
 
   LinkedHashMap<Future<Boolean>, String> mFutureMap =

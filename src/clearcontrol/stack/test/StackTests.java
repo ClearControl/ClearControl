@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
@@ -183,7 +183,7 @@ public class StackTests
           final byte lByte = lContiguousMemory2.getByteAligned(k);
           assertEquals((byte) k, lByte);
         }
-        ThreadUtils.sleep(5 + (int) (Math.random() * 10),
+        ThreadSleep.sleep(5 + (int) (Math.random() * 10),
                           TimeUnit.MILLISECONDS);
 
         lStack.release();

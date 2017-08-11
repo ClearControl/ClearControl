@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.stacks.gui.StackRecyclerManagerPanel;
@@ -16,7 +16,7 @@ import clearcontrol.microscope.stacks.gui.StackRecyclerManagerPanel;
  */
 public class StackRecyclerManagerPanelDemo extends Application
                                            implements
-                                           AsynchronousExecutorServiceAccess
+                                           AsynchronousExecutorFeature
 {
 
   @Override

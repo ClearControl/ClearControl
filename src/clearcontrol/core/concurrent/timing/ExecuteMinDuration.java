@@ -3,7 +3,7 @@ package clearcontrol.core.concurrent.timing;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Executes a runnable synchronously and ensures that the call last for a given
+ * Executes a runnable synchronously and ensures that the call lasts for a given
  * duration.
  *
  * @author royer

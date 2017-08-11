@@ -18,11 +18,11 @@ public class TransformMatricesTests
   {
     final DenseMatrix64F lComputeZernickeTransformMatrix =
                                                          TransformMatrices.computeZernickeTransformMatrix(cDimension);
-    System.out.println(lComputeZernickeTransformMatrix);
+    // System.out.println(lComputeZernickeTransformMatrix);
 
     final double lDeterminant =
                               CommonOps.det(lComputeZernickeTransformMatrix);
-    System.out.println(lDeterminant);
+    // System.out.println(lDeterminant);
 
     // assertEquals(1, lDeterminant, 1e-10);
   }
@@ -32,11 +32,11 @@ public class TransformMatricesTests
   {
     final DenseMatrix64F lComputeCosineTransformMatrix =
                                                        TransformMatrices.computeCosineTransformMatrix(cDimension);
-    System.out.println(lComputeCosineTransformMatrix);
+    // System.out.println(lComputeCosineTransformMatrix);
 
     final double lDeterminant =
                               CommonOps.det(lComputeCosineTransformMatrix);
-    System.out.println(lDeterminant);
+    // System.out.println(lDeterminant);
 
     assertEquals(1, lDeterminant, 1e-10);
   }

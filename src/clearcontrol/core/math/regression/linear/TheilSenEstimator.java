@@ -52,6 +52,9 @@ public class TheilSenEstimator
   private boolean mOutdated = true;
   private final boolean mClassicMethod = true;
 
+  /**
+   * Resets estimator (clears all entered data)
+   */
   public final void reset()
   {
     lListX.clear();
@@ -59,6 +62,14 @@ public class TheilSenEstimator
     mOutdated = true;
   }
 
+  /**
+   * Enters a data point
+   * 
+   * @param pX
+   *          x coordinate
+   * @param pY
+   *          y coordinate
+   */
   public final void enter(final double pX, final double pY)
   {
     lListX.add(pX);
@@ -66,6 +77,11 @@ public class TheilSenEstimator
     mOutdated = true;
   }
 
+  /**
+   * Returns (or computes if not done already) the affine fit model.
+   * 
+   * @return affine function
+   */
   public final UnivariateAffineFunction getModel()
   {
     if (mOutdated)
@@ -190,6 +206,13 @@ public class TheilSenEstimator
 
   }
 
+  /**
+   * Computes the fit error of a given function to the entered data.
+   * 
+   * @param pModel
+   *          model to compute fit error for.
+   * @return fit error
+   */
   public final double computeError(final UnivariateAffineFunction pModel)
   {
     final double[] arrayX = lListX.toArray();
@@ -214,6 +237,13 @@ public class TheilSenEstimator
     return stderror;
   }
 
+  /**
+   * Predicts value y from x with fit model
+   * 
+   * @param pX
+   *          x value
+   * @return y value
+   */
   public final double predict(final double pX)
   {
     if (mOutdated)

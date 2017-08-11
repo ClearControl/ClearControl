@@ -122,13 +122,6 @@ public interface StackInterface extends
   FragmentedMemoryInterface getFragmentedMemory();
 
   /**
-   * Returns internal data representation object
-   * 
-   * @return internal image object
-   */
-  Object getImage();
-
-  /**
    * Returns a duplicate of this stack
    * 
    * @return duplicate stack

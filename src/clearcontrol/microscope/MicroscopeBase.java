@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.VirtualDevice;
@@ -24,12 +24,11 @@ import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.gc.GarbageCollector;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.state.AcquisitionStateManager;
@@ -55,8 +54,8 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                     extends VirtualDevice implements
                                     MicroscopeInterface<Q>,
                                     StartStopDeviceInterface,
-                                    AsynchronousSchedulerServiceAccess,
-                                    LoggingInterface
+                                    AsynchronousSchedulerFeature,
+                                    LoggingFeature
 {
 
   protected final StackRecyclerManager mStackRecyclerManager;
@@ -603,16 +602,16 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   {
     return lock(() -> {
 
-      int lNumberOfDetectionArmDevices =
-                                       getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
+      int lNumberOfStackCameras =
+                                getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
       CountDownLatch[] lStacksReceivedLatches =
-                                              new CountDownLatch[lNumberOfDetectionArmDevices];
+                                              new CountDownLatch[lNumberOfStackCameras];
 
       mAverageTimeInNS = 0;
 
       ArrayList<VariableSetListener<StackInterface>> lListenerList =
                                                                    new ArrayList<>();
-      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfStackCameras; i++)
       {
         lStacksReceivedLatches[i] = new CountDownLatch(1);
 
@@ -639,7 +638,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
                                                                      mAverageTimeInNS +=
                                                                                       lMetaData.getTimeStampInNanoseconds()
-                                                                                         / lNumberOfDetectionArmDevices;
+                                                                                         / lNumberOfStackCameras;
 
                                                                    }
                                                                  };
@@ -657,14 +656,14 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
       if (lBoolean != null && lBoolean)
       {
-        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfStackCameras; i++)
         {
           lStacksReceivedLatches[i].await(pTimeOut, pTimeUnit);
         }
       }
 
       for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
-        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfStackCameras; i++)
         {
           getCameraStackVariable(i).removeSetListener(lVariableSetListener);
         }

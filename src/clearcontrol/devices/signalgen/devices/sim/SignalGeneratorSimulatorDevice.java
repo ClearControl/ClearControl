@@ -3,9 +3,9 @@ package clearcontrol.devices.signalgen.devices.sim;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.devices.signalgen.SignalGeneratorBase;
 import clearcontrol.devices.signalgen.SignalGeneratorInterface;
 import clearcontrol.devices.signalgen.SignalGeneratorQueue;
@@ -20,7 +20,7 @@ public class SignalGeneratorSimulatorDevice extends
                                             SignalGeneratorBase
                                             implements
                                             SignalGeneratorInterface,
-                                            LoggingInterface,
+                                            LoggingFeature,
                                             SimulationDeviceInterface
 {
 
@@ -71,7 +71,7 @@ public class SignalGeneratorSimulatorDevice extends
     for (int i = 0; i < mQueueLength; i++)
     {
       mTriggerVariable.setEdge(false, true);
-      ThreadUtils.sleep(ltriggerPeriodInMilliseconds,
+      ThreadSleep.sleep(ltriggerPeriodInMilliseconds,
                         TimeUnit.MILLISECONDS);
     }
 

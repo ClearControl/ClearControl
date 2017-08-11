@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.file.VariableFileChooser;
 
@@ -17,7 +17,7 @@ import clearcontrol.gui.jfx.var.file.VariableFileChooser;
  * @author royer
  */
 public class VariableFileChooserDemo extends Application implements
-                                     AsynchronousSchedulerServiceAccess
+                                     AsynchronousSchedulerFeature
 {
 
   @Override

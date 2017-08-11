@@ -1,16 +1,13 @@
 package clearcontrol.stack;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import net.imglib2.img.AbstractImg;
-import net.imglib2.img.NativeImg;
-import net.imglib2.img.basictypeaccess.offheap.ShortOffHeapAccess;
-import net.imglib2.img.planar.OffHeapPlanarImg;
-import net.imglib2.img.planar.OffHeapPlanarImgFactory;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.stack.metadata.MetaDataOrdinals;
 import coremem.ContiguousMemoryInterface;
+import coremem.SafeContiguousMemory;
 import coremem.enums.NativeTypeEnum;
+import coremem.fragmented.FragmentedMemory;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.RecyclerInterface;
@@ -26,10 +23,15 @@ public class OffHeapPlanarStack extends StackBase
                                 implements StackInterface
 {
 
-  private OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> mPlanarImage;
+  private ContiguousMemoryInterface mContiguousMemory;
+
+  // Fragmented 'plane-per-plane' view:
+  private FragmentedMemory mFragmentedMemory;
+
+  private boolean mIsSafe;
 
   /**
-   * Instanciates a stack given a recycler, wait time, and stack dimensions. A
+   * Instantiates a stack given a recycler, wait time, and stack dimensions. A
    * stack request is built and the recycler is asked to provide a stack within
    * the given timeout period.
    * 
@@ -64,70 +66,9 @@ public class OffHeapPlanarStack extends StackBase
   }
 
   /**
-   * Instanciates a stack given dimensions and a fragmented memory object
+   * Instantiates an off-heap backed single channel 16bit unsigned int stack
+   * with given width, height and depth
    * 
-   * @param pFragmentedMemory
-   *          memory
-   * @param pWidth
-   *          width
-   * @param pHeight
-   *          height
-   * @param pDepth
-   *          depth
-   * @return stck
-   */
-  public static OffHeapPlanarStack createStack(final FragmentedMemoryInterface pFragmentedMemory,
-                                               final long pWidth,
-                                               final long pHeight,
-                                               final long pDepth)
-  {
-    return createStack(pFragmentedMemory,
-                       true,
-                       pWidth,
-                       pHeight,
-                       pDepth);
-  }
-
-  /**
-   * Instanciates a stack given dimensions, a fragmented memory object, and a
-   * flag that decides whether to use safe off-heap access.
-   * 
-   * @param pFragmentedMemory
-   *          memory
-   * @param pSafe
-   *          true -> safe off-heap access
-   * @param pWidth
-   *          width
-   * @param pHeight
-   *          height
-   * @param pDepth
-   *          depth
-   * @return stack
-   */
-  public static OffHeapPlanarStack createStack(final FragmentedMemoryInterface pFragmentedMemory,
-                                               final boolean pSafe,
-                                               final long pWidth,
-                                               final long pHeight,
-                                               final long pDepth)
-  {
-    final OffHeapPlanarStack lOffHeapPlanarStack =
-                                                 new OffHeapPlanarStack();
-
-    final OffHeapPlanarImgFactory<UnsignedShortType> lOffHeapPlanarImgFactory =
-                                                                              new OffHeapPlanarImgFactory<UnsignedShortType>(pSafe);
-
-    lOffHeapPlanarStack.mPlanarImage =
-                                     (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lOffHeapPlanarImgFactory.createShortInstance(pFragmentedMemory,
-                                                                                                                                            new long[]
-                                                                                                                                            { pWidth, pHeight, pDepth }, new UnsignedShortType());
-
-    return lOffHeapPlanarStack;
-
-  }
-
-  /**
-   * Instanciates an off-heap backed stack given width, height and depth
-   * parameters
    * 
    * @param pWidth
    *          width
@@ -142,16 +83,21 @@ public class OffHeapPlanarStack extends StackBase
                                                final long pDepth)
   {
 
-    return createStack(true, pWidth, pHeight, pDepth);
+    return new OffHeapPlanarStack(false,
+                                  0,
+                                  NativeTypeEnum.UnsignedShort,
+                                  1,
+                                  pWidth,
+                                  pHeight,
+                                  pDepth);
   }
 
   /**
-   * Instanciates an off-heap backed stack given width, height and depth
-   * parameters, as well as a flag that decides whether to use safe off-heap
-   * access.
+   * Instantiates an contiguous memory backed single channel 16bit unsigned int
+   * stack with given width, height and depth
    * 
-   * @param pSafe
-   *          true -> safe off-heap access
+   * @param pContiguousMemory
+   *          contiguous memory to use
    * @param pWidth
    *          width
    * @param pHeight
@@ -160,118 +106,120 @@ public class OffHeapPlanarStack extends StackBase
    *          depth
    * @return stack
    */
-  public static OffHeapPlanarStack createStack(final boolean pSafe,
+  public static OffHeapPlanarStack createStack(ContiguousMemoryInterface pContiguousMemory,
                                                final long pWidth,
                                                final long pHeight,
                                                final long pDepth)
   {
 
-    final long lSizeInBytes = pWidth * pHeight
-                              * pDepth
-                              * Size.of(NativeTypeEnum.UnsignedShort);
+    return new OffHeapPlanarStack(pContiguousMemory,
+                                  false,
+                                  NativeTypeEnum.UnsignedShort,
+                                  1,
+                                  pWidth,
+                                  pHeight,
+                                  pDepth);
+  }
+
+  /**
+   * instantiates an off-heap stack with given parameters
+   * 
+   * @param pSafe
+   *          true -> safe off-heap access
+   * @param pAlignment
+   *          alignment base for buffer allocation
+   * @param pDataType
+   *          data type
+   * @param pNumberOfChannels
+   *          number of channels
+   * @param pDimensions
+   *          dimensions
+   */
+  public OffHeapPlanarStack(final boolean pSafe,
+                            final long pAlignment,
+                            final NativeTypeEnum pDataType,
+                            final long pNumberOfChannels,
+                            final long... pDimensions)
+  {
+    super(pDataType, pNumberOfChannels, pDimensions);
+    mIsSafe = pSafe;
+
+    final long lSizeInBytes = getVolume() * pNumberOfChannels
+                              * Size.of(pDataType);
+
     final ContiguousMemoryInterface lContiguousMemory =
-                                                      OffHeapMemory.allocateBytes(lSizeInBytes);
-    return createStack(lContiguousMemory,
-                       pSafe,
-                       pWidth,
-                       pHeight,
-                       pDepth);
+                                                      SafeContiguousMemory.wrap(OffHeapMemory.allocateAlignedBytes("OffHeapPlanarStack",
+                                                                                                                   lSizeInBytes,
+                                                                                                                   pAlignment),
+                                                                                pSafe);
+
+    long lNumberOfFragments = pDimensions[pDimensions.length - 1];
+
+    FragmentedMemory lFragmentedMemory =
+                                       FragmentedMemory.split(lContiguousMemory,
+                                                              lNumberOfFragments);
+
+    mContiguousMemory = lContiguousMemory;
+    mFragmentedMemory = lFragmentedMemory;
+
   }
 
   /**
-   * Instanciates a stack given dimensions and a contiguous memory object.
+   * instantiates an off-heap stack with given parameters
    * 
-   * @param pContiguousMemoryInterface
-   *          contiguous memory object
-   * @param pWidth
-   *          width
-   * @param pHeight
-   *          height
-   * @param pDepth
-   *          depth
-   * @return stack
-   */
-  public static OffHeapPlanarStack createStack(final ContiguousMemoryInterface pContiguousMemoryInterface,
-                                               final long pWidth,
-                                               final long pHeight,
-                                               final long pDepth)
-  {
-    return createStack(pContiguousMemoryInterface,
-                       true,
-                       pWidth,
-                       pHeight,
-                       pDepth);
-  }
-
-  /**
-   * Instanciates a stack given dimensions, a contiguous memory object, and a
-   * flag that decides whether to use safe off-heap access.
-   * 
-   * @param pContiguousMemoryInterface
-   *          contiguous memory object
+   * @param pContiguousMemory
+   *          contiguous memory to use
    * @param pSafe
    *          true -> safe off-heap access
-   * @param pWidth
-   *          width
-   * @param pHeight
-   *          height
-   * @param pDepth
-   *          depth
-   * @return stack
+   * @param pDataType
+   *          data type
+   * @param pNumberOfChannels
+   *          number of channels
+   * @param pDimensions
+   *          dimensions
    */
-  public static OffHeapPlanarStack createStack(final ContiguousMemoryInterface pContiguousMemoryInterface,
-                                               final boolean pSafe,
-                                               final long pWidth,
-                                               final long pHeight,
-                                               final long pDepth)
+  public OffHeapPlanarStack(final ContiguousMemoryInterface pContiguousMemory,
+                            final boolean pSafe,
+                            final NativeTypeEnum pDataType,
+                            final long pNumberOfChannels,
+                            final long... pDimensions)
   {
-    final OffHeapPlanarStack lOffHeapPlanarStack =
-                                                 new OffHeapPlanarStack();
+    super(pDataType, pNumberOfChannels, pDimensions);
+    mIsSafe = pSafe;
 
-    final OffHeapPlanarImgFactory<UnsignedShortType> lOffHeapPlanarImgFactory =
-                                                                              new OffHeapPlanarImgFactory<UnsignedShortType>(pSafe);
+    final ContiguousMemoryInterface lContiguousMemory =
+                                                      SafeContiguousMemory.wrap(pContiguousMemory,
+                                                                                pSafe);
 
-    lOffHeapPlanarStack.mPlanarImage =
-                                     (OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess>) lOffHeapPlanarImgFactory.createShortInstance(pContiguousMemoryInterface,
-                                                                                                                                            new long[]
-                                                                                                                                            { pWidth, pHeight, pDepth }, new UnsignedShortType());
+    long lNumberOfFragments = pDimensions[pDimensions.length - 1];
 
-    return lOffHeapPlanarStack;
+    FragmentedMemory lFragmentedMemory =
+                                       FragmentedMemory.split(lContiguousMemory,
+                                                              lNumberOfFragments);
 
-  }
+    mContiguousMemory = lContiguousMemory;
+    mFragmentedMemory = lFragmentedMemory;
 
-  private OffHeapPlanarStack()
-  {
-    super();
   }
 
   /**
-   * Instanciates a stack backed by a given off-heap planar imglib2 image, time
-   * index, and time stamp
+   * Returns true if off-heap memory is wrapped by a safe contiguous memory
+   * object
    * 
-   * @param pImageIndex
-   *          image index
-   * @param pTimeStampInNanoseconds
-   *          timestamp
-   * @param pOffHeapPlanarImg
-   *          off-heap planar image
+   * @return true if off-heap memory is wrapped by a safe contiguous memory
+   *         object
    */
-  public OffHeapPlanarStack(final long pImageIndex,
-                            final long pTimeStampInNanoseconds,
-                            final OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> pOffHeapPlanarImg)
+  public boolean isSafe()
   {
-    super();
-    getMetaData().setIndex(pImageIndex);
-    getMetaData().setTimeStampInNanoseconds(pTimeStampInNanoseconds);
-    mPlanarImage = pOffHeapPlanarImg;
+    return mIsSafe;
   }
 
   @Override
   public boolean isCompatible(final StackRequest pStackRequest)
   {
-    if (mPlanarImage == null)
+    if (mContiguousMemory == null)
       return false;
-    if (mPlanarImage.isFree())
+    if (mContiguousMemory.isFree())
       return false;
 
     if (this.getWidth() != pStackRequest.getWidth()
@@ -288,144 +236,32 @@ public class OffHeapPlanarStack extends StackBase
     super.recycle(pStackRequest);
   }
 
-  /**
-   * Returns the internal imglib2 planar image
-   * 
-   * @return imglib2 planar image used internally
-   */
-  public OffHeapPlanarImg<UnsignedShortType, ShortOffHeapAccess> getPlanarImage()
-  {
-    complainIfFreed();
-    return mPlanarImage;
-  }
-
-  @Override
-  public NativeImg<UnsignedShortType, ShortOffHeapAccess> getImage()
-  {
-    return getPlanarImage();
-  }
-
   @Override
   public ContiguousMemoryInterface getContiguousMemory(int pPlaneIndex)
   {
-    return mPlanarImage.getPlaneContiguousMemory(pPlaneIndex);
-  }
-
-  @Override
-  public long getBytesPerVoxel()
-  {
-    final long[] dimensions = new long[mPlanarImage.numDimensions()];
-    mPlanarImage.dimensions(dimensions);
-    final long lNumElements = AbstractImg.numElements(dimensions);
-    final long lBytesPerVoxel = mPlanarImage.getSizeInBytes()
-                                / lNumElements;
-    return lBytesPerVoxel;
-  }
-
-  @Override
-  public long getSizeInBytes()
-  {
-    return mPlanarImage.getSizeInBytes();
-  }
-
-  @Override
-  public long[] getDimensions()
-  {
-    final long[] lDimensions = new long[mPlanarImage.numDimensions()];
-    mPlanarImage.dimensions(lDimensions);
-    return lDimensions;
-  }
-
-  @Override
-  public int getNumberOfDimensions()
-  {
-    return mPlanarImage.numDimensions();
-  }
-
-  @Override
-  public long getDimension(int pIndex)
-  {
-    return mPlanarImage.dimension(pIndex);
-  }
-
-  @Override
-  public long getVolume()
-  {
-    long lVolume = 1;
-    long lDimensions = getNumberOfDimensions();
-    for (int i = 0; i < lDimensions; i++)
-      lVolume *= getDimension(i);
-    return lVolume;
-  }
-
-  @Override
-  public long getWidth()
-  {
-    return mPlanarImage.dimension(0);
-  }
-
-  @Override
-  public long getHeight()
-  {
-    return mPlanarImage.dimension(1);
-  }
-
-  @Override
-  public long getDepth()
-  {
-    return mPlanarImage.dimension(2);
-  }
-
-  @Override
-  public void free()
-  {
-    mPlanarImage.free();
-  }
-
-  @Override
-  public boolean isFree()
-  {
-    return mPlanarImage.isFree();
-  }
-
-  @Override
-  public String toString()
-  {
-
-    return String.format(this.getClass().getSimpleName()
-                         + " [ BytesPerVoxel=%d, width=%s, height=%s, depth=%s, index=%d, timestampns=%d ]",
-                         getBytesPerVoxel(),
-                         mPlanarImage.dimension(0),
-                         mPlanarImage.dimension(1),
-                         mPlanarImage.dimension(2),
-                         getMetaData().getValue(MetaDataOrdinals.Index),
-                         getMetaData().getValue(MetaDataOrdinals.TimeStampInNanoSeconds));
+    return mFragmentedMemory.get(pPlaneIndex);
   }
 
   @Override
   public FragmentedMemoryInterface getFragmentedMemory()
   {
-    final FragmentedMemoryInterface lFragmentedMemoryInterface =
-                                                               mPlanarImage.getFragmentedMemory();
-    return lFragmentedMemoryInterface;
+    return mFragmentedMemory;
   }
 
   @Override
   public ContiguousMemoryInterface getContiguousMemory()
   {
-    return mPlanarImage.getContiguousMemory();
+    return mContiguousMemory;
   }
 
   @Override
   public StackInterface allocateSameSize()
   {
-    final long lSizeInBytes = this.getSizeInBytes();
-    final OffHeapMemory lOffHeapMemory =
-                                       OffHeapMemory.allocateBytes(lSizeInBytes);
-    return OffHeapPlanarStack.createStack(lOffHeapMemory,
-                                          getWidth(),
-                                          getHeight(),
-                                          getDepth());
+    return new OffHeapPlanarStack(isSafe(),
+                                  0,
+                                  getDataType(),
+                                  getNumberOfChannels(),
+                                  getDimensions());
   }
 
   @Override
@@ -437,6 +273,32 @@ public class OffHeapPlanarStack extends StackBase
     lSameSizeStack.getContiguousMemory()
                   .copyFrom(this.getContiguousMemory());
     return lSameSizeStack;
+  }
+
+  @Override
+  public void free()
+  {
+    mContiguousMemory.free();
+  }
+
+  @Override
+  public boolean isFree()
+  {
+    return mContiguousMemory.isFree();
+  }
+
+  @Override
+  public String toString()
+  {
+
+    return String.format(this.getClass().getSimpleName()
+                         + " [ BytesPerVoxel=%d, datatype=%s, numberofchannels=%d, dimensions=%s, index=%d, timestampns=%d ]",
+                         getBytesPerVoxel(),
+                         getDataType(),
+                         getNumberOfChannels(),
+                         Arrays.toString(getDimensions()),
+                         getMetaData().getValue(MetaDataOrdinals.Index),
+                         getMetaData().getValue(MetaDataOrdinals.TimeStampInNanoSeconds));
   }
 
 }

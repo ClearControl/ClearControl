@@ -2,6 +2,13 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 
+/**
+ * Mode argmax finder.
+ * 
+ * Returns the mode of the (X,Y) data interpreted as a distribution.
+ *
+ * @author royer
+ */
 public class ModeArgMaxFinder implements ArgMaxFinder1DInterface
 {
 

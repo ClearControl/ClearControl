@@ -3,8 +3,8 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
@@ -48,7 +48,7 @@ import org.dockfx.DockNode;
  * @author royer
  */
 public class MicroscopeGUI extends VirtualDevice implements
-                           AsynchronousExecutorServiceAccess,
+                           AsynchronousExecutorFeature,
                            WaitingInterface
 {
 
@@ -607,7 +607,7 @@ public class MicroscopeGUI extends VirtualDevice implements
   {
     MicroscopeGUI lMicroscopeGUI = this;
     return waitFor(pTimeOut, pTimeUnit, () -> {
-      ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
       return lMicroscopeGUI.isVisible() == pVisible;
     });
   }

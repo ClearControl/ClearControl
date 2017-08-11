@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
 
 /**
@@ -15,8 +15,8 @@ import clearcontrol.gui.jfx.custom.labelgrid.LabelGrid;
  *
  * @author royer
  */
-public class LabelGridDemo extends Application implements
-                           AsynchronousExecutorServiceAccess
+public class LabelGridDemo extends Application
+                           implements AsynchronousExecutorFeature
 {
 
   @Override
@@ -44,7 +44,7 @@ public class LabelGridDemo extends Application implements
         {
           String lString = String.format("Cell %dx%d", i, j);
           System.out.println(lString);
-          ThreadUtils.sleep(1, TimeUnit.SECONDS);
+          ThreadSleep.sleep(1, TimeUnit.SECONDS);
           lLabelGrid.getLabel(i, j).setText(lString);
         }
 

@@ -1,14 +1,14 @@
 package clearcontrol.devices.optomech.filterwheels.devices.sim;
 
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceBase;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
 
 public class FilterWheelDeviceSimulator extends FilterWheelDeviceBase
                                         implements
                                         FilterWheelDeviceInterface,
-                                        LoggingInterface,
+                                        LoggingFeature,
                                         SimulationDeviceInterface
 {
 

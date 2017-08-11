@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.swing.JButtonBoolean;
 import clearcontrol.gui.swing.JSliderDouble;
@@ -69,8 +69,7 @@ public class VideoFrame2DDisplayDemo
 
     @SuppressWarnings("unchecked")
     final OffHeapPlanarStack lStack =
-                                    OffHeapPlanarStack.createStack(false,
-                                                                   lSizeX,
+                                    OffHeapPlanarStack.createStack(lSizeX,
                                                                    lSizeY,
                                                                    lSizeZ);
 
@@ -93,7 +92,7 @@ public class VideoFrame2DDisplayDemo
           lStackVariable.set(lStack);
           // System.out.println(lStack);
         }
-        ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+        ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
       }
     };
 

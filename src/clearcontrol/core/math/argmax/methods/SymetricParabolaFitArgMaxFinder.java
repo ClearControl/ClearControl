@@ -1,25 +1,39 @@
 package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
-import clearcontrol.core.math.argmax.Fitting1DBase;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
-public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase
-                                             implements
+/**
+ * Fits symetric parabolas using triplets of points, and returns the median of
+ * all found argmax values.
+ *
+ * @author royer
+ */
+public class SymetricParabolaFitArgMaxFinder implements
                                              ArgMaxFinder1DInterface
 {
 
   private PolynomialCurveFitter mPolynomialCurveFitter;
 
+  /**
+   * Instantiates a symetric parabola fit argmax finder with default number of
+   * iterations.
+   */
   public SymetricParabolaFitArgMaxFinder()
   {
     this(1024);
   }
 
+  /**
+   * Instantiates a symetric parabola fit argmax finder
+   * 
+   * @param pMaxIterations
+   *          max iterations
+   */
   public SymetricParabolaFitArgMaxFinder(int pMaxIterations)
   {
     mPolynomialCurveFitter =
@@ -51,9 +65,9 @@ public class SymetricParabolaFitArgMaxFinder extends Fitting1DBase
     return lArgMax;
   }
 
-  public double argmaxWithOneParabola(int pIndex,
-                                      double[] pX,
-                                      double[] pY)
+  private double argmaxWithOneParabola(int pIndex,
+                                       double[] pX,
+                                       double[] pY)
   {
     WeightedObservedPoints lObservedPoints =
                                            new WeightedObservedPoints();

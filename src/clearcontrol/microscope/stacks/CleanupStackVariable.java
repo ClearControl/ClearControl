@@ -2,7 +2,7 @@ package clearcontrol.microscope.stacks;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 
@@ -13,7 +13,7 @@ import clearcontrol.stack.StackInterface;
  * @author royer
  */
 public class CleanupStackVariable extends Variable<StackInterface>
-                                  implements LoggingInterface
+                                  implements LoggingFeature
 {
   private ConcurrentLinkedQueue<StackInterface> mKeepStacksAliveQueue =
                                                                       new ConcurrentLinkedQueue<>();

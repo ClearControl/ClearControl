@@ -6,11 +6,11 @@ import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
 import aptj.APTJExeption;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceBase;
 import clearcontrol.devices.stages.StageDeviceInterface;
@@ -36,8 +36,8 @@ public class TSTStageDevice extends StageDeviceBase implements
                             StageDeviceInterface,
                             StartStopDeviceInterface,
                             WaitingInterface,
-                            LoggingInterface,
-                            AsynchronousSchedulerServiceAccess
+                            LoggingFeature,
+                            AsynchronousSchedulerFeature
 {
 
   private final APTJDeviceFactory mAPTJDeviceFactory;

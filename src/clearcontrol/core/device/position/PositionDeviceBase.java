@@ -43,7 +43,7 @@ public abstract class PositionDeviceBase extends VirtualDevice
   }
 
   /**
-   * Instanciates a position device given a device path, name and index.
+   * Instantiates a position device given a device path, name and index.
    * 
    * @param pDevicePath
    *          device path

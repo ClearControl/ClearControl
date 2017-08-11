@@ -1,8 +1,16 @@
 package clearcontrol.core.concurrent.asyncprocs;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Asynchronous processor adapter
+ *
+ * @param <I>
+ *          input
+ * @param <O>
+ *          output
+ * @author royer
+ */
 public class AsynchronousProcessorAdapter<I, O> implements
                                          AsynchronousProcessorInterface<I, O>
 {
@@ -11,11 +19,6 @@ public class AsynchronousProcessorAdapter<I, O> implements
   public O process(final I pInput)
   {
     return null;
-  }
-
-  @Override
-  public void close() throws IOException
-  {
   }
 
   @Override

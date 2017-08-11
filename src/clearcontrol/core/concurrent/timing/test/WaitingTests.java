@@ -10,6 +10,11 @@ import clearcontrol.core.concurrent.timing.WaitingInterface;
 
 import org.junit.Test;
 
+/**
+ * Waiting tests
+ *
+ * @author royer
+ */
 public class WaitingTests
 {
   AtomicBoolean mWaitFlag = new AtomicBoolean(false);
@@ -36,6 +41,12 @@ public class WaitingTests
     }
   }
 
+  /**
+   * tests the methods provided by the Waiting Interface
+   * 
+   * @throws InterruptedException
+   *           n/A
+   */
   @Test
   public void test() throws InterruptedException
   {

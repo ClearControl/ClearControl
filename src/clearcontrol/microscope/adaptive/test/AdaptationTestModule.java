@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.adaptive.modules.AdaptationModuleInterface;
 import clearcontrol.microscope.adaptive.modules.NDIteratorAdaptationModule;
 import clearcontrol.microscope.adaptive.utils.NDIterator;
@@ -19,7 +19,7 @@ public class AdaptationTestModule extends
                                   NDIteratorAdaptationModule<TestState>
                                   implements
                                   AdaptationModuleInterface<TestState>,
-                                  LoggingInterface
+                                  LoggingFeature
 {
   private int[] mDimensions;
 
@@ -54,7 +54,7 @@ public class AdaptationTestModule extends
          getName(),
          Arrays.toString(pStepCoordinates));
     // here we would 'acquire' the data, takes a bit of time... tada...
-    ThreadUtils.sleep(100 * pStepCoordinates.length,
+    ThreadSleep.sleep(100 * pStepCoordinates.length,
                       TimeUnit.MILLISECONDS);
 
     // this runnable does the analysis on thw data... takes some time too, but
@@ -64,7 +64,7 @@ public class AdaptationTestModule extends
            getName(),
            Arrays.toString(pStepCoordinates));
       System.out.print("Tic");
-      ThreadUtils.sleep(1, TimeUnit.SECONDS);
+      ThreadSleep.sleep(1, TimeUnit.SECONDS);
       System.out.println("Tac");
 
     };

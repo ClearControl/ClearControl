@@ -7,11 +7,24 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Scheduled future that can wait for completion
+ *
+ * @param <V>
+ *          future return type
+ * @author royer
+ */
 public class WaitingScheduledFuture<V> implements ScheduledFuture<V>
 {
 
   private final ScheduledFuture<V> mDelegatedScheduledFuture;
 
+  /**
+   * Instantiates a waiting scheduled future given a delegated scheduled future
+   * 
+   * @param pDelegatedScheduledFuture
+   *          delegated scheduled future
+   */
   public WaitingScheduledFuture(ScheduledFuture<V> pDelegatedScheduledFuture)
   {
     mDelegatedScheduledFuture = pDelegatedScheduledFuture;
@@ -76,6 +89,18 @@ public class WaitingScheduledFuture<V> implements ScheduledFuture<V>
     }
   }
 
+  /**
+   * Waist for completion of the delegated scheduled future or returns after
+   * timeout.
+   * 
+   * @param pTimeout
+   *          timeout
+   * @param pUnit
+   *          timeout unit
+   * @return true if execution finished before timeout
+   * @throws ExecutionException
+   *           thrown if exception occured during execution
+   */
   public boolean waitForCompletion(long pTimeout,
                                    TimeUnit pUnit) throws ExecutionException
   {

@@ -4,12 +4,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.startstop.SignalStartStopDevice;
 import clearcontrol.core.device.startstop.StartStopSignalVariablesInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -23,8 +23,8 @@ public abstract class TaskDevice extends SignalStartStopDevice
                                  StartStopSignalVariablesInterface,
                                  IsRunningTaskInterface,
                                  OpenCloseDeviceInterface,
-                                 AsynchronousExecutorServiceAccess,
-                                 LoggingInterface
+                                 AsynchronousExecutorFeature,
+                                 LoggingFeature
 {
 
   private final Variable<Boolean> mIsRunningVariable;

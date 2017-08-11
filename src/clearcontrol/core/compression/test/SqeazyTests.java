@@ -4,9 +4,17 @@ import org.bridj.Pointer;
 import org.junit.Test;
 import sqeazy.bindings.SqeazyLibrary;
 
+/**
+ * 
+ *
+ * @author royer
+ */
 public class SqeazyTests
 {
 
+  /**
+   * Squeazy tests go here...
+   */
   @Test
   public void test()
   {

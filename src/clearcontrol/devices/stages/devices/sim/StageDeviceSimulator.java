@@ -1,14 +1,13 @@
 package clearcontrol.devices.stages.devices.sim;
 
-import static clearcontrol.core.math.vectors.VectorArrays.normalize;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceBase;
 import clearcontrol.devices.stages.StageDeviceInterface;
@@ -22,8 +21,8 @@ import clearcontrol.devices.stages.StageType;
 public class StageDeviceSimulator extends StageDeviceBase implements
                                   StageDeviceInterface,
                                   SimulationDeviceInterface,
-                                  AsynchronousSchedulerServiceAccess,
-                                  LoggingInterface
+                                  AsynchronousSchedulerFeature,
+                                  LoggingFeature
 
 {
   private static final int cSimulationPeriodInMilliseconds = 10;
@@ -166,6 +165,29 @@ public class StageDeviceSimulator extends StageDeviceBase implements
       }
     normalize(mDirectionVector);
 
+  }
+
+  private static void normalize(double[] pVector)
+  {
+    if (pVector.length == 0)
+    {
+      throw new IllegalArgumentException("Cannot normalise an empty vector! Returning null.");
+    }
+    else
+    {
+      double norm = 0.0;
+      for (int i = 0; i < pVector.length; i++)
+      {
+        norm += pVector[i] * pVector[i];
+      }
+      norm = Math.sqrt(norm);
+      if (norm > 0)
+        for (int i = 0; i < pVector.length; i++)
+        {
+          pVector[i] = pVector[i] / norm;
+        }
+
+    }
   }
 
   /**

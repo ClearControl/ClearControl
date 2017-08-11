@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
@@ -123,9 +123,9 @@ public class RawFileStackSink extends FileStackBase implements
                                                    .getTimeStampInNanoseconds());
     }
     final double lTimeStampInSeconds =
-                                     Magnitude.nano2unit(pStack.getMetaData()
-                                                               .getTimeStampInNanoseconds()
-                                                         - mFirstTimePointAbsoluteNanoSeconds.get());
+                                     OrderOfMagnitude.nano2unit(pStack.getMetaData()
+                                                                      .getTimeStampInNanoseconds()
+                                                                - mFirstTimePointAbsoluteNanoSeconds.get());
 
     setStackTimeStampInSeconds(pChannel, pIndex, lTimeStampInSeconds);
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.sim.StageDeviceSimulator;
 
@@ -31,7 +31,7 @@ public class StageDeviceSimulatorDemo
                     - 1) > 0.01)
     {
       System.out.println(lStageDeviceSimulator.getCurrentPosition(0));
-      ThreadUtils.sleep(200, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(200, TimeUnit.MILLISECONDS);
     }
 
     lStageDeviceSimulator.setTargetPosition(0, -1);

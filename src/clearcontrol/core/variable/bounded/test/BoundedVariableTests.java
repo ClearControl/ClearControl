@@ -7,9 +7,17 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 
 import org.junit.Test;
 
+/**
+ * Bounded variable tests
+ *
+ * @author royer
+ */
 public class BoundedVariableTests
 {
 
+  /**
+   * test bounds
+   */
   @Test
   public void testBounds()
   {
@@ -30,6 +38,9 @@ public class BoundedVariableTests
     assertTrue(lBoundedNumber.get() == -1.0);
   }
 
+  /**
+   * Test cross type
+   */
   @Test
   public void testCrossType()
   {
@@ -50,6 +61,9 @@ public class BoundedVariableTests
     assertTrue(lBoundedNumber.get() == -1);
   }
 
+  /**
+   * Test granularity
+   */
   @Test
   public void testGranularity()
   {

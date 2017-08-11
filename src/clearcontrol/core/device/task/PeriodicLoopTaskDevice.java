@@ -2,9 +2,9 @@ package clearcontrol.core.device.task;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
 /**
@@ -14,7 +14,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
  */
 public abstract class PeriodicLoopTaskDevice extends TaskDevice
                                              implements
-                                             LoggingInterface,
+                                             LoggingFeature,
                                              WaitingInterface
 {
 
@@ -90,7 +90,7 @@ public abstract class PeriodicLoopTaskDevice extends TaskDevice
         while (System.nanoTime() < mDeadline
                && getStopSignalVariable().get() == false)
         {
-          ThreadUtils.sleep((mDeadline - System.nanoTime()) / 4,
+          ThreadSleep.sleep((mDeadline - System.nanoTime()) / 4,
                             TimeUnit.NANOSECONDS);
         }
 

@@ -10,33 +10,38 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 
 import org.junit.Test;
 
+/**
+ * Executor Service tests
+ *
+ * @author royer
+ */
 public class ExecutorServiceTests
 {
   private static final int cNumberOfTasks = 1000;
   AtomicInteger mCounter = new AtomicInteger(0);
 
   private class ExecutorServiceTest implements
-                                    AsynchronousExecutorServiceAccess,
-                                    AsynchronousSchedulerServiceAccess
+                                    AsynchronousExecutorFeature,
+                                    AsynchronousSchedulerFeature
   {
 
     public void doSomething() throws InterruptedException
     {
       for (int i = 0; i < cNumberOfTasks; i++)
       {
-        final int j = i;
+        // final int j = i;
         final Runnable lTask = () -> {
           // System.out.println("task-" + j);
           try
           {
-            ThreadUtils.sleep(4, TimeUnit.MILLISECONDS);
+            ThreadSleep.sleep(4, TimeUnit.MILLISECONDS);
           }
           catch (final Exception e)
           {
@@ -45,6 +50,7 @@ public class ExecutorServiceTests
           mCounter.incrementAndGet();
         };
         // System.out.println("submitting : " + j);
+        @SuppressWarnings("unused")
         final Future<?> lFuture = executeAsynchronously(lTask);
 
         // System.out.println(" done.");
@@ -61,7 +67,7 @@ public class ExecutorServiceTests
         {
           // System.out.println("scheduled task start");
           mCounter.incrementAndGet();
-          ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+          ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
           // System.out.println("scheduled task end");
         }
         catch (final Exception e)
@@ -81,6 +87,16 @@ public class ExecutorServiceTests
 
   }
 
+  /**
+   * Asynchronous execution test
+   * 
+   * @throws InterruptedException
+   *           N/A
+   * @throws ExecutionException
+   *           N/A
+   * @throws TimeoutException
+   *           N/A
+   */
   @Test
   public void testAsynhronousExecution() throws InterruptedException,
                                          ExecutionException,
@@ -118,6 +134,16 @@ public class ExecutorServiceTests
 
   }
 
+  /**
+   * Periodic scheduling test
+   * 
+   * @throws InterruptedException
+   *           N/A
+   * @throws ExecutionException
+   *           N/A
+   * @throws TimeoutException
+   *           N/A
+   */
   @Test
   public void testPeriodicScheduling() throws InterruptedException,
                                        ExecutionException,
