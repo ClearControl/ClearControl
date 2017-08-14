@@ -1,4 +1,11 @@
 language: java
+
+os:
+  - linux
+    dist: trusty
+
+  - osx
+
 script: "./gradlew build  -x spotlessJava --debug --full-stacktrace"
 jdk:
   - oraclejdk8
