@@ -183,7 +183,7 @@ dependencies
     compile ('net.halcyon:Halcyon:0.3.7')                {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:0.2.1')                  {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.3.3')                  {transitive= true; changing= true}
 
     // CoreMem:
     compile ('net.coremem:CoreMem:0.4.3')                {transitive= true; changing= true}
@@ -249,7 +249,7 @@ repositories
     maven { url  "http://dl.bintray.com/jerady/maven" }
     
     //Sqeazy:
-    maven {url  "http://dl.bintray.com/psteinb/maven" }
+    maven {url  "http://dl.bintray.com/sqeazy/maven" }
 
 }
 
