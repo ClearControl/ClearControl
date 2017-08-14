@@ -2,15 +2,29 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 
+/**
+ * Denoising argmax finder. It wraps an argmax finder and cleanses up the input
+ * data (X,Y) by smoothing Y.
+ * 
+ * 
+ *
+ * @author royer
+ */
 public class DenoisingArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
-  private final ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
+  private final ArgMaxFinder1DInterface mDelegatedArgMaxFinder1D;
 
-  public DenoisingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
+  /**
+   * Instantiates a denoising argmax finder given a delegated argmax finder.
+   * 
+   * @param pArgMaxFinder1D
+   *          delegated 1D argmax finder
+   */
+  public DenoisingArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1D)
   {
     super();
-    mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
+    mDelegatedArgMaxFinder1D = pArgMaxFinder1D;
   }
 
   @Override
@@ -41,7 +55,7 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1DInterface
     for (final double y : lY)
     	System.out.println(y); /**/
 
-    final Double lArgmax = mArgMaxFinder1DInterface.argmax(pX, lY);
+    final Double lArgmax = mDelegatedArgMaxFinder1D.argmax(pX, lY);
 
     return lArgmax;
   }
@@ -50,7 +64,7 @@ public class DenoisingArgMaxFinder implements ArgMaxFinder1DInterface
   public String toString()
   {
     return String.format("DenoisingArgMaxFinder [%s]",
-                         mArgMaxFinder1DInterface);
+                         mDelegatedArgMaxFinder1D);
   }
 
 }

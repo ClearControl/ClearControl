@@ -6,7 +6,7 @@ import java.util.List;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 /**
  * GarbageCollector handles programatic triggering of GC and monitoring of GC
@@ -17,7 +17,7 @@ import clearcontrol.core.log.LoggingInterface;
  * @author royer
  *
  */
-public class GarbageCollector implements LoggingInterface
+public class GarbageCollector implements LoggingFeature
 {
 
   static GarbageCollector sGarbageCollector;

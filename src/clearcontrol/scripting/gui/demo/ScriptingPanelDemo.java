@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import clearcontrol.scripting.gui.ScriptingPanel;
 import clearcontrol.scripting.lang.groovy.GroovyScripting;
@@ -47,7 +47,7 @@ public class ScriptingPanelDemo
 
     while (lJFrame.isVisible())
     {
-      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
     }
   }
 
@@ -81,7 +81,7 @@ public class ScriptingPanelDemo
 
     while (lJFrame.isVisible())
     {
-      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
     }
   }
 

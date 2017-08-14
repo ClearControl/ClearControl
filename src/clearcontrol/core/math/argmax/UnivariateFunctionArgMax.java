@@ -8,12 +8,32 @@ import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
+/**
+ * Univariate function argmax.
+ * 
+ * Utility class offering static methods to compute the mode-based argmax of
+ * univariate functions.
+ *
+ * @author royer
+ */
 public class UnivariateFunctionArgMax
 {
 
   private static ModeArgMaxFinder sModeArgMaxFinder =
                                                     new ModeArgMaxFinder();
 
+  /**
+   * Returns the argmax for a given range of x value and a univariate function.
+   * 
+   * @param pX
+   *          List of x values, only the first and last are considered and used
+   *          to define a range [xmin,xmax].
+   * @param pUnivariateFunction
+   *          univariate function
+   * @param pNumberOfSamples
+   *          Number of samples to compute within [xmin,xmax]
+   * @return argmax
+   */
   public static double argmax(double[] pX,
                               UnivariateFunction pUnivariateFunction,
                               int pNumberOfSamples)
@@ -39,6 +59,19 @@ public class UnivariateFunctionArgMax
     return lArgMax;
   }
 
+  /**
+   * Returns the median argmax for a given range of x value and a list of
+   * univariate functions.
+   * 
+   * @param pX
+   *          List of x values, only the first and last are considered and used
+   *          to define a range [xmin,xmax].
+   * @param pUnivariateFunctions
+   *          list of univariate functions
+   * @param pNumberOfSamples
+   *          Number of samples to compute within [xmin,xmax]
+   * @return median of argmax values
+   */
   public static double argmaxmedian(double[] pX,
                                     UnivariateFunction[] pUnivariateFunctions,
                                     int pNumberOfSamples)
@@ -81,6 +114,19 @@ public class UnivariateFunctionArgMax
     return lArgMax;
   }
 
+  /**
+   * Returns the mean argmax for a given range of x value and a list of
+   * univariate functions.
+   * 
+   * @param pX
+   *          List of x values, only the first and last are considered and used
+   *          to define a range [xmin,xmax].
+   * @param pUnivariateFunctions
+   *          list of univariate functions
+   * @param pNumberOfSamples
+   *          Number of samples to compute within [xmin,xmax]
+   * @return mean of argmax values
+   */
   public static double argmaxmean(double[] pX,
                                   UnivariateFunction[] pUnivariateFunctions,
                                   int pNumberOfSamples)

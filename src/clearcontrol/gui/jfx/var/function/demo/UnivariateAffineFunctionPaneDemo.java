@@ -8,7 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
@@ -20,7 +20,7 @@ import clearcontrol.gui.jfx.var.function.UnivariateAffineFunctionPane;
  */
 public class UnivariateAffineFunctionPaneDemo extends Application
                                               implements
-                                              AsynchronousSchedulerServiceAccess
+                                              AsynchronousSchedulerFeature
 {
 
   @Override

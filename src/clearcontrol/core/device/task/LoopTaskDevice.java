@@ -1,7 +1,7 @@
 package clearcontrol.core.device.task;
 
 import clearcontrol.core.concurrent.timing.WaitingInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 /**
  * Base class for loop task devices
@@ -9,7 +9,7 @@ import clearcontrol.core.log.LoggingInterface;
  * @author royer
  */
 public abstract class LoopTaskDevice extends TaskDevice implements
-                                     LoggingInterface,
+                                     LoggingFeature,
                                      WaitingInterface
 {
 

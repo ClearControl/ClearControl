@@ -1,45 +1,73 @@
 package clearcontrol.core.units;
 
+/**
+ * SI units
+ *
+ * @author royer
+ */
+@SuppressWarnings("javadoc")
 public enum SIUnit
 {
+ ArbitraryUnit(OrderOfMagnitude.Unit, "AU"),
+ Meter(OrderOfMagnitude.Unit, "m"),
+ Gram(OrderOfMagnitude.Unit, "g"),
+ Second(OrderOfMagnitude.Unit, "s"),
+ Kelvin(OrderOfMagnitude.Unit, "m"),
+ Mole(OrderOfMagnitude.Kilo, "mol"),
+ Candela(OrderOfMagnitude.Unit, "cd"),
+ Ampere(OrderOfMagnitude.Unit, "A"),
 
- ArbitraryUnit(Magnitude.Unit, "AU"),
- Meter(Magnitude.Unit, "m"),
- Gram(Magnitude.Unit, "g"),
- Second(Magnitude.Unit, "s"),
- Kelvin(Magnitude.Unit, "m"),
- Mole(Magnitude.Kilo, "mol"),
- Candela(Magnitude.Unit, "cd"),
- Ampere(Magnitude.Unit, "A"),
+ MilliMeter(OrderOfMagnitude.Milli, "mm"),
+ MicroMeter(OrderOfMagnitude.Micro, "um"),
+ NanoMeter(OrderOfMagnitude.Nano, "nm"),
+ Kilogram(OrderOfMagnitude.Kilo, "Kg"),
+ MilliSecond(OrderOfMagnitude.Milli, "ms"),
+ MicroSecond(OrderOfMagnitude.Micro, "us");
 
- MilliMeter(Magnitude.Milli, "mm"),
- MicroMeter(Magnitude.Micro, "um"),
- NanoMeter(Magnitude.Nano, "nm"),
- Kilogram(Magnitude.Kilo, "Kg"),
- MilliSecond(Magnitude.Milli, "ms"),
- MicroSecond(Magnitude.Micro, "us");
-
-  private final Magnitude mMagnitude;
+  private final OrderOfMagnitude mMagnitude;
   private final String mAbbreviation;
 
-  SIUnit(Magnitude pMagnitude, String pAbbreviation)
+  /**
+   * Instantiates a SI unit given a magnitude and abbreviation
+   * 
+   * @param pMagnitude
+   *          magnitiude
+   * @param pAbbreviation
+   *          abbreviation
+   */
+  SIUnit(OrderOfMagnitude pMagnitude, String pAbbreviation)
   {
     mMagnitude = pMagnitude;
     mAbbreviation = pAbbreviation;
   }
 
-  public Magnitude getMagnitude()
+  /**
+   * Returns magnitude
+   * 
+   * @return magnitude
+   */
+  public OrderOfMagnitude getMagnitude()
   {
     return mMagnitude;
   }
 
+  /**
+   * Returns the abbreviation
+   * 
+   * @return
+   */
   public String getAbbreviation()
   {
     return mAbbreviation;
   }
 
+  /**
+   * Returns true if this unit is a base unit.
+   * 
+   * @return true if base unit
+   */
   public boolean isBaseUnit()
   {
-    return mMagnitude == Magnitude.Unit;
+    return mMagnitude == OrderOfMagnitude.Unit;
   }
 }

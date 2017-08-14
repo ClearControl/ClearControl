@@ -14,7 +14,13 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableListener;
 import clearcontrol.core.variable.bundle.VariableBundle;
 
+/**
+ * Variable bundle as file
+ *
+ * @author royer
+ */
 public class VariableBundleAsFile extends VariableBundle
+                                  implements AutoCloseable
 {
   private final ExecutorService cSingleThreadExecutor =
                                                       Executors.newSingleThreadExecutor();
@@ -22,18 +28,37 @@ public class VariableBundleAsFile extends VariableBundle
   private final ConcurrentSkipListMap<String, Variable<?>> mPrefixWithNameToVariableMap =
                                                                                         new ConcurrentSkipListMap<String, Variable<?>>();
 
+  @SuppressWarnings("rawtypes")
   private final VariableListener mVariableListener;
 
   private final File mFile;
 
   private final Object mLock = new Object();
 
+  /**
+   * Instantiates a variable-bundle-as-file with a given bundle name and file.
+   * 
+   * @param pBundleName
+   *          bundle name
+   * @param pFile
+   *          file to use to store and retrieve the bundle's variable values.
+   */
   public VariableBundleAsFile(final String pBundleName,
                               final File pFile)
   {
     this(pBundleName, pFile, false);
   }
 
+  /**
+   * Instantiates a variable-bundle-as-file object.
+   * 
+   * @param pBundleName
+   *          bundle name
+   * @param pFile
+   *          file to useto store and retrieve the bundle's variable values.
+   * @param pAutoReadOnGet
+   *          if true the file will be read for every get
+   */
   @SuppressWarnings("rawtypes")
   public VariableBundleAsFile(final String pBundleName,
                               final File pFile,
@@ -58,7 +83,7 @@ public class VariableBundleAsFile extends VariableBundle
       public void setEvent(final Object pCurrentValue,
                            final Object pNewValue)
       {
-        writeAsynchronously();
+        write();
       }
     };
 
@@ -70,6 +95,15 @@ public class VariableBundleAsFile extends VariableBundle
     this.addVariable("", pVariable);
   }
 
+  /**
+   * Adds a variable to this bundle but adds a prefix that is used to store the
+   * variable value in the file.
+   * 
+   * @param pPrefix
+   *          prefix
+   * @param pVariable
+   *          variable
+   */
   public <O> void addVariable(final String pPrefix,
                               final Variable<O> pVariable)
   {
@@ -94,23 +128,27 @@ public class VariableBundleAsFile extends VariableBundle
     super.removeAllVariables();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Variable<?> getVariable(final String pPrefixAndName)
   {
     return mPrefixWithNameToVariableMap.get(pPrefixAndName);
   }
 
+  @SuppressWarnings("unchecked")
   private void registerListener(final Variable<?> pVariable)
   {
     final Variable<?> lObjectVariable = pVariable;
     lObjectVariable.addListener(mVariableListener);
   }
 
+  @SuppressWarnings("unchecked")
   private void unregisterListener(final Variable<?> pVariable)
   {
     pVariable.removeListener(mVariableListener);
   }
 
+  @SuppressWarnings("unchecked")
   private void unregisterListenerForAllVariables()
   {
     final Collection<Variable<?>> lAllVariables = getAllVariables();
@@ -120,6 +158,11 @@ public class VariableBundleAsFile extends VariableBundle
     }
   }
 
+  /**
+   * Reads file to update variable values
+   * 
+   * @return true for success
+   */
   public boolean read()
   {
 
@@ -184,6 +227,7 @@ public class VariableBundleAsFile extends VariableBundle
   private void readDoubleVariable(final String lValue,
                                   final Variable<?> pVariable)
   {
+    @SuppressWarnings("unchecked")
     final Variable<Double> lDoubleVariable =
                                            (Variable<Double>) pVariable;
 
@@ -214,11 +258,17 @@ public class VariableBundleAsFile extends VariableBundle
   {
     final Variable<?> lObjectVariable = lVariable;
 
+    @SuppressWarnings("unchecked")
     final Variable<String> lStringVariable =
                                            (Variable<String>) lObjectVariable;
     lStringVariable.set(lValue);
   }
 
+  /**
+   * Writes the values of the variables in this bundle to the file
+   * 
+   * @return true for success
+   */
   public boolean write()
   {
     synchronized (mLock)
@@ -237,6 +287,7 @@ public class VariableBundleAsFile extends VariableBundle
 
           if (lVariable.get() instanceof Number)
           {
+            @SuppressWarnings("unchecked")
             final Variable<Number> lDoubleVariable =
                                                    (Variable<Number>) lVariable;
 
@@ -272,21 +323,6 @@ public class VariableBundleAsFile extends VariableBundle
     }
 
   }
-
-  private void writeAsynchronously()
-  {
-    // cSingleThreadExecutor.execute(mFileWriterRunnable);
-    write();
-  }
-
-  private final Runnable mFileWriterRunnable = new Runnable()
-  {
-    @Override
-    public void run()
-    {
-      write();
-    }
-  };
 
   public void close()
   {

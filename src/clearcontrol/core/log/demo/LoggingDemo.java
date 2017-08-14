@@ -1,13 +1,24 @@
 package clearcontrol.core.log.demo;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.log.gui.LogWindowHandler;
 
 import org.junit.Test;
 
-public class LoggingDemo implements LoggingInterface
+/**
+ * Logging Demo
+ *
+ * @author royer
+ */
+public class LoggingDemo implements LoggingFeature
 {
 
+  /**
+   * Logging demo
+   * 
+   * @throws InterruptedException
+   *           N/A
+   */
   @Test
   public void demo() throws InterruptedException
   {

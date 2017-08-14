@@ -2,7 +2,7 @@ package clearcontrol.devices.optomech.opticalswitch.devices.sim;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 
@@ -14,7 +14,7 @@ import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 public class OpticalSwitchDeviceSimulator extends VirtualDevice
                                           implements
                                           OpticalSwitchDeviceInterface,
-                                          LoggingInterface,
+                                          LoggingFeature,
                                           SimulationDeviceInterface
 
 {

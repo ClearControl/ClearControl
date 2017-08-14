@@ -2,7 +2,7 @@ package clearcontrol.devices.cameras;
 
 import java.util.concurrent.Future;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.stack.StackInterface;
@@ -20,7 +20,7 @@ public abstract class StackCameraDeviceBase<Q extends StackCameraQueue<Q>>
                                            extends CameraDeviceBase
                                            implements
                                            StackCameraDeviceInterface<Q>,
-                                           LoggingInterface
+                                           LoggingFeature
 
 {
   protected Variable<Boolean> mStackMode;

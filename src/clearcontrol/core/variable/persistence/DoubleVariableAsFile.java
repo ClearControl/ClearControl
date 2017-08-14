@@ -10,6 +10,11 @@ import java.util.concurrent.Executors;
 
 import clearcontrol.core.variable.Variable;
 
+/**
+ * Double variable as file
+ *
+ * @author royer
+ */
 public class DoubleVariableAsFile extends Variable<Double>
                                   implements Closeable
 
@@ -24,6 +29,16 @@ public class DoubleVariableAsFile extends Variable<Double>
 
   private final Object mLock = new Object();
 
+  /**
+   * Double variable as file
+   * 
+   * @param pFile
+   *          file
+   * @param pVariableName
+   *          variable name
+   * @param pDoubleValue
+   *          double value
+   */
   public DoubleVariableAsFile(final File pFile,
                               final String pVariableName,
                               final double pDoubleValue)

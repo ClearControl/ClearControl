@@ -8,13 +8,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.TaskDevice;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import clearcontrol.microscope.MicroscopeInterface;
@@ -34,8 +34,8 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
                            extends TaskDevice implements
                            Function<Integer, Boolean>,
                            AdaptiveEngineInterface<S>,
-                           LoggingInterface,
-                           AsynchronousExecutorServiceAccess,
+                           LoggingFeature,
+                           AsynchronousExecutorFeature,
                            VisualConsoleInterface
 {
   private static final double cEpsilon = 0.8;
@@ -234,23 +234,23 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
    */
   public void logCurrentAcquisitionState()
   {
-    @SuppressWarnings("unchecked")
-    AcquisitionStateManager<S> lAcquisitionStateManager =
-                                                        (AcquisitionStateManager<S>) getMicroscope().getAcquisitionStateManager();
-
-    S lCurrentAcquisitionState =
-                               (S) getAcquisitionStateVariable().get();
-
-    @SuppressWarnings("unchecked")
-    S lLoggedState =
-                   (S) lCurrentAcquisitionState.duplicate("state "
-                                                          + getAcquisitionStateCounterVariable().get());
-
     if (getMicroscope() != null)
     {
+
+      @SuppressWarnings("unchecked")
+      AcquisitionStateManager<S> lAcquisitionStateManager =
+                                                          (AcquisitionStateManager<S>) getMicroscope().getAcquisitionStateManager();
+
+      S lCurrentAcquisitionState =
+                                 (S) getAcquisitionStateVariable().get();
+
+      @SuppressWarnings("unchecked")
+      S lLoggedState =
+                     (S) lCurrentAcquisitionState.duplicate("state "
+                                                            + getAcquisitionStateCounterVariable().get());
+
       lAcquisitionStateManager.addState(lLoggedState);
     }
-
   }
 
   @Override
@@ -286,7 +286,7 @@ public class AdaptiveEngine<S extends AcquisitionStateInterface<?, ?>>
       {
         info("round: %d \n", i);
         while (apply(1))
-          ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+          ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
       }
     };
 

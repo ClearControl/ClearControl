@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
 
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class OmicronLaserDeviceDemo
     System.out.println("current power (%): "
                        + lOmicronLaserDevice.getCurrentPowerInPercent());
 
-    ThreadUtils.sleep(5, TimeUnit.SECONDS);
+    ThreadSleep.sleep(5, TimeUnit.SECONDS);
 
     lOmicronLaserDevice.setLaserOn(false);
 

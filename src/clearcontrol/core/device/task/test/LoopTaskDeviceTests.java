@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.device.task.LoopTaskDevice;
 
 import org.junit.Test;
@@ -32,12 +32,18 @@ public class LoopTaskDeviceTests
     {
       System.out.println("counter: " + mCounter);
       mCounter++;
-      ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
       return true;
     }
 
   }
 
+  /**
+   * tests loop task devices
+   * 
+   * @throws ExecutionException
+   *           N/A
+   */
   @Test
   public void test() throws ExecutionException
   {
@@ -48,7 +54,7 @@ public class LoopTaskDeviceTests
     System.out.println("Waiting to start");
     assertTrue(lTestLoopTaskDevice.waitForStarted(1,
                                                   TimeUnit.SECONDS));
-    ThreadUtils.sleep(1, TimeUnit.SECONDS);
+    ThreadSleep.sleep(1, TimeUnit.SECONDS);
     lTestLoopTaskDevice.getStopSignalVariable().set(true);
 
     assertTrue(lTestLoopTaskDevice.waitForStopped(10,
@@ -56,7 +62,7 @@ public class LoopTaskDeviceTests
     long lCounter = mCounter;
     System.out.println("lCounter=" + mCounter);
 
-    ThreadUtils.sleep(200, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(200, TimeUnit.MILLISECONDS);
 
     assertTrue(lCounter >= mCounter);
   }

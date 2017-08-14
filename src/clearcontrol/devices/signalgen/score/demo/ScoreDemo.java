@@ -3,7 +3,7 @@ package clearcontrol.devices.signalgen.score.demo;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
@@ -72,7 +72,7 @@ public class ScoreDemo
 
     while (lVisualize.isVisible())
     {
-      ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(1000, TimeUnit.MILLISECONDS);
     }
   }
 

@@ -31,9 +31,12 @@ public class ContiguousOffHeapPlanarStackFactory implements
                                                                                                   lBufferSizeInBytesWithMetaData,
                                                                                                   pStackRequest.getAlignment());
 
-    return OffHeapPlanarStack.createStack(lContiguousMemoryInterface,
-                                          pStackRequest.getWidth(),
-                                          pStackRequest.getHeight(),
-                                          pStackRequest.getDepth());
+    return new OffHeapPlanarStack(lContiguousMemoryInterface,
+                                  false,
+                                  NativeTypeEnum.UnsignedShort,
+                                  1,
+                                  pStackRequest.getWidth(),
+                                  pStackRequest.getHeight(),
+                                  pStackRequest.getDepth());
   }
 }

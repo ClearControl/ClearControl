@@ -1,6 +1,6 @@
 package clearcontrol.core.math.argmax;
 
-import clearcontrol.core.math.argmax.fitprob.FitQualityEstimator;
+import clearcontrol.core.math.argmax.fitprob.GaussianFitQualityEstimator;
 import clearcontrol.core.math.argmax.methods.COMArgMaxFinder;
 import clearcontrol.core.math.argmax.methods.ClampingArgMaxFinder;
 import clearcontrol.core.math.argmax.methods.DenoisingArgMaxFinder;
@@ -24,13 +24,11 @@ import clearcontrol.core.math.argmax.methods.Top5ArgMaxFinder;
  */
 public class SmartArgMaxFinder implements
                                ArgMaxFinder1DInterface,
-                               Fitting1D,
+                               Fitting1DInterface,
                                FitProbabilityInterface
 {
 
-  private static final double cDefaultFitProbabilityThreshold = 0.95;
-
-  private FitQualityEstimator mFitQualityEstimator;
+  private GaussianFitQualityEstimator mFitQualityEstimator;
 
   private final ParabolaFitArgMaxFinder mParabolaFitArgMaxFinder;
   private final SymetricParabolaFitArgMaxFinder mSymetricParabolaFitArgMaxFinder;
@@ -78,7 +76,7 @@ public class SmartArgMaxFinder implements
   @Override
   public Double argmax(double[] pX, double[] pY)
   {
-    mFitQualityEstimator = new FitQualityEstimator();
+    mFitQualityEstimator = new GaussianFitQualityEstimator();
 
     final int lLocalMaxima = countLocalMaxima(pY);
     final boolean lDenoiseBefore = lLocalMaxima > 1;
@@ -130,8 +128,8 @@ public class SmartArgMaxFinder implements
       if (argmax(pX, pY) == null)
         return null;
 
-    final FitQualityEstimator lFitQualityEstimator =
-                                                   mFitQualityEstimator;
+    final GaussianFitQualityEstimator lFitQualityEstimator =
+                                                           mFitQualityEstimator;
     mFitQualityEstimator = null;
     return lFitQualityEstimator.getFit(pX, pY);
   }
@@ -210,11 +208,22 @@ public class SmartArgMaxFinder implements
                          mDenoisingArgMaxFinder);
   }
 
+  /**
+   * Return the status of the is-denoising-active flag
+   * 
+   * @return is-denoising-active flag
+   */
   public boolean isDenoisingActive()
   {
     return mDenoisingActive;
   }
 
+  /**
+   * Sets denoising active flag
+   * 
+   * @param pDenoisingActive
+   *          denoising-active flag
+   */
   public void setDenoisingActive(boolean pDenoisingActive)
   {
     mDenoisingActive = pDenoisingActive;

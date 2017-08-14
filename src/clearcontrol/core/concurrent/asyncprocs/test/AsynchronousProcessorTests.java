@@ -11,15 +11,26 @@ import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 
 import org.junit.Test;
 
+/**
+ * Asynchronous processor tests
+ *
+ * @author royer
+ */
 public class AsynchronousProcessorTests
 {
 
+  /**
+   * test simple 2 processor pipeline
+   * 
+   * @throws IOException
+   *           N/A
+   */
   @Test
-  public void testSimple2ProcessorPipeline()
+  public void testSimple2ProcessorPipeline() throws IOException
   {
     final AsynchronousProcessorInterface<String, String> lProcessorA =
                                                                      new AsynchronousProcessorBase<String, String>("A",
@@ -66,11 +77,11 @@ public class AsynchronousProcessorTests
       // if(i>50) assertFalse();
     }
     assertTrue(hasFailed);
-    ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
     for (int i = 0; i < 100; i++)
     {
       assertTrue(lProcessorA.passOrFail("test" + i));
-      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
     }
 
     assertTrue(lProcessorB.waitToFinish(1, TimeUnit.SECONDS));
@@ -90,11 +101,11 @@ public class AsynchronousProcessorTests
       // if(i>50) assertFalse();
     }
     assertTrue(hasFailed);
-    ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
     for (int i = 0; i < 100; i++)
     {
       assertTrue(lProcessorA.passOrFail("test" + i));
-      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
     }
 
     assertTrue(lProcessorB.waitToFinish(1, TimeUnit.SECONDS));
@@ -107,8 +118,14 @@ public class AsynchronousProcessorTests
 
   }
 
+  /**
+   * tests Long queue
+   * 
+   * @throws IOException
+   *           exception
+   */
   @Test
-  public void testLongQueue()
+  public void testLongQueue() throws IOException
   {
     final AsynchronousProcessorInterface<String, String> lProcessorA =
                                                                      new AsynchronousProcessorBase<String, String>("A",
@@ -117,7 +134,7 @@ public class AsynchronousProcessorTests
                                                                        @Override
                                                                        public String process(final String pInput)
                                                                        {
-                                                                         ThreadUtils.sleep(1,
+                                                                         ThreadSleep.sleep(1,
                                                                                            TimeUnit.MILLISECONDS);
                                                                          return "A"
                                                                                 + pInput;
@@ -131,7 +148,7 @@ public class AsynchronousProcessorTests
                                                                        @Override
                                                                        public String process(final String pInput)
                                                                        {
-                                                                         ThreadUtils.sleep(1,
+                                                                         ThreadSleep.sleep(1,
                                                                                            TimeUnit.MILLISECONDS);
                                                                          return "B"
                                                                                 + pInput;
@@ -158,8 +175,17 @@ public class AsynchronousProcessorTests
 
   }
 
+  /**
+   * Tests simple 2 processor pipeline with pooled processor
+   * 
+   * @throws InterruptedException
+   *           N/A
+   * @throws IOException
+   *           N/A
+   */
   @Test
-  public void testSimple2ProcessorPipelineWithPooledProcessor() throws InterruptedException
+  public void testSimple2ProcessorPipelineWithPooledProcessor() throws InterruptedException,
+                                                                IOException
   {
     final AsynchronousProcessorInterface<Integer, Integer> lProcessorA =
                                                                        new AsynchronousProcessorBase<Integer, Integer>("A",
@@ -168,7 +194,7 @@ public class AsynchronousProcessorTests
                                                                          @Override
                                                                          public Integer process(final Integer pInput)
                                                                          {
-                                                                           ThreadUtils.sleep((long) (Math.random()
+                                                                           ThreadSleep.sleep((long) (Math.random()
                                                                                                      * 1000000),
                                                                                              TimeUnit.NANOSECONDS);
                                                                            return pInput;
@@ -176,26 +202,12 @@ public class AsynchronousProcessorTests
                                                                        };
 
     final ProcessorInterface<Integer, Integer> lProcessor =
-                                                          new ProcessorInterface<Integer, Integer>()
-                                                          {
+                                                          (input) -> {
 
-                                                            @Override
-                                                            public Integer process(final Integer pInput)
-                                                            {
-                                                              // System.out.println("Processor
-                                                              // B
-                                                              // received:"+pInput);
-                                                              ThreadUtils.sleep((long) (Math.random()
-                                                                                        * 1000000),
-                                                                                TimeUnit.NANOSECONDS);
-                                                              return pInput;
-                                                            }
-
-                                                            @Override
-                                                            public void close() throws IOException
-                                                            {
-
-                                                            }
+                                                            ThreadSleep.sleep((long) (Math.random()
+                                                                                      * 1000000),
+                                                                              TimeUnit.NANOSECONDS);
+                                                            return input;
                                                           };
 
     final AsynchronousProcessorPool<Integer, Integer> lProcessorB =
@@ -214,7 +226,7 @@ public class AsynchronousProcessorTests
                                                                          @Override
                                                                          public Integer process(final Integer pInput)
                                                                          {
-                                                                           ThreadUtils.sleep((long) (Math.random()
+                                                                           ThreadSleep.sleep((long) (Math.random()
                                                                                                      * 1000000),
                                                                                              TimeUnit.NANOSECONDS);
                                                                            if (pInput > 0)
@@ -233,7 +245,7 @@ public class AsynchronousProcessorTests
     for (int i = 1; i <= 1000; i++)
     {
       lProcessorA.passOrWait(i);
-      ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     }
 
     assertTrue(lProcessorA.waitToFinish(2, TimeUnit.SECONDS));

@@ -1,10 +1,10 @@
 package clearcontrol.com.serial;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 public class SerialListenerAdapter implements
                                    SerialListener,
-                                   LoggingInterface
+                                   LoggingFeature
 {
 
   @Override

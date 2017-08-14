@@ -5,9 +5,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceBase;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
@@ -30,8 +30,8 @@ public class HamStackCamera extends
                             implements
                             StackCameraDeviceInterface<HamStackCameraQueue>,
                             OpenCloseDeviceInterface,
-                            LoggingInterface,
-                            AsynchronousExecutorServiceAccess
+                            LoggingFeature,
+                            AsynchronousExecutorFeature
 {
 
   private static final long cWaitTime = 1000;
@@ -47,8 +47,8 @@ public class HamStackCamera extends
   static
   {
     if (!DcamLibrary.initialize())
-      LoggingInterface.getLoggerStatic()
-                      .severe("Could not initialize Dcam library.");
+      LoggingFeature.getLoggerStatic()
+                    .severe("Could not initialize Dcam library.");
   }
 
   /**

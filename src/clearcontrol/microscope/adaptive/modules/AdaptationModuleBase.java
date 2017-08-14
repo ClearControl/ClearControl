@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import clearcontrol.core.device.name.NameableBase;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
@@ -21,7 +21,7 @@ public abstract class AdaptationModuleBase<S extends AcquisitionStateInterface<?
                                           extends NameableBase
                                           implements
                                           AdaptationModuleInterface<S>,
-                                          LoggingInterface
+                                          LoggingFeature
 {
 
   private AdaptiveEngine<S> mAdaptiveEngine;

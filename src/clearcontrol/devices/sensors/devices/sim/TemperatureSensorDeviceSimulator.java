@@ -3,7 +3,7 @@ package clearcontrol.devices.sensors.devices.sim;
 import java.util.concurrent.ThreadLocalRandom;
 
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.sensors.TemperatureSensorDeviceBase;
 import clearcontrol.devices.sensors.TemperatureSensorDeviceInterface;
@@ -12,7 +12,7 @@ public class TemperatureSensorDeviceSimulator extends
                                               TemperatureSensorDeviceBase
                                               implements
                                               TemperatureSensorDeviceInterface,
-                                              LoggingInterface,
+                                              LoggingFeature,
                                               SimulationDeviceInterface
 
 {

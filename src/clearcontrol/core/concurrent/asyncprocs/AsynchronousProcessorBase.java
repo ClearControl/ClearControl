@@ -7,11 +7,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.executors.WaitingScheduledFuture;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 /**
  * Asynchronous processor base
@@ -24,9 +24,9 @@ import clearcontrol.core.log.LoggingInterface;
  */
 public abstract class AsynchronousProcessorBase<I, O> implements
                                                AsynchronousProcessorInterface<I, O>,
-                                               AsynchronousExecutorServiceAccess,
-                                               AsynchronousSchedulerServiceAccess,
-                                               LoggingInterface,
+                                               AsynchronousExecutorFeature,
+                                               AsynchronousSchedulerFeature,
+                                               LoggingFeature,
                                                WaitingInterface
 {
 
@@ -139,12 +139,6 @@ public abstract class AsynchronousProcessorBase<I, O> implements
             pTimeUnit,
             () -> !mIsProcessing.get() && mInputQueue.isEmpty());
     return mInputQueue.isEmpty();
-  }
-
-  @Override
-  public void close()
-  {
-
   }
 
   @Override

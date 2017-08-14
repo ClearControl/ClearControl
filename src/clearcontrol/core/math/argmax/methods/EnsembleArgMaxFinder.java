@@ -14,6 +14,15 @@ import gnu.trove.list.array.TDoubleArrayList;
 
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
+/**
+ * Ensemble argmax finder.
+ * 
+ * Different argmax finders can be added to an ensemble argmax finder. The
+ * median argmax finder of all resuling argmaxes will be returned.
+ * 
+ *
+ * @author royer
+ */
 public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 {
   private static final Executor sExecutor =
@@ -26,15 +35,24 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
 
   private final boolean mDebug = false;
 
+  /**
+   * Instantiates an ensemble argmax finder.
+   */
   public EnsembleArgMaxFinder()
   {
     super();
     mMedian = new Median();
   }
 
-  public void add(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
+  /**
+   * Adds the given argmax finder to the list of argmax finders to use.
+   * 
+   * @param pArgMaxFinder1D
+   *          argmax finder to add
+   */
+  public void add(ArgMaxFinder1DInterface pArgMaxFinder1D)
   {
-    mArgMaxFinder1DInterfaceList.add(pArgMaxFinder1DInterface);
+    mArgMaxFinder1DInterfaceList.add(pArgMaxFinder1D);
   }
 
   private class ArgMaxCallable implements Callable<Double>
@@ -55,9 +73,9 @@ public class EnsembleArgMaxFinder implements ArgMaxFinder1DInterface
     @Override
     public Double call() throws Exception
     {
-      final long lStartTimeInNs = System.nanoTime();
+      // final long lStartTimeInNs = System.nanoTime();
       final Double lArgMax = mArgMaxFinder1DInterface.argmax(mX, mY);
-      final long lStopTimeInNs = System.nanoTime();
+      // final long lStopTimeInNs = System.nanoTime();
       /*double lElapsedtimeInSeconds = Magnitude.nano2unit(lStopTimeInNs - lStartTimeInNs);
       System.out.format("elapsed time: %g for %s \n",
       										lElapsedtimeInSeconds,

@@ -3,12 +3,9 @@ package clearcontrol.microscope.adaptive.test;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.NameableWithChangeListener;
-import clearcontrol.core.variable.Variable;
+import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.state.LightSheetAcquisitionStateInterface;
-import clearcontrol.microscope.lightsheet.state.tables.InterpolationTables;
+import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 
 /**
@@ -17,9 +14,9 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
  * @author royer
  */
 public class TestState extends
-                       NameableWithChangeListener<AcquisitionStateInterface<LightSheetMicroscopeInterface, LightSheetMicroscopeQueue>>
+                       NameableWithChangeListener<AcquisitionStateInterface<MicroscopeInterface<QueueInterface>, QueueInterface>>
                        implements
-                       LightSheetAcquisitionStateInterface<TestState>
+                       AcquisitionStateInterface<MicroscopeInterface<QueueInterface>, QueueInterface>
 {
 
   /**
@@ -47,76 +44,7 @@ public class TestState extends
   }
 
   @Override
-  public LightSheetMicroscopeQueue getQueue(int pCameraIndexMin,
-                                            int pCameraIndexMax,
-                                            int pLightSheetIndexMin,
-                                            int pLightSheetIndexMax,
-                                            int pLaserLineIndexMin,
-                                            int pLaserLineIndexMax)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public LightSheetMicroscopeQueue getQueue()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public InterpolationTables getInterpolationTables()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void applyStateAtControlPlane(LightSheetMicroscopeQueue pQueue,
-                                       int pControlPlaneIndex)
-  {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public BoundedVariable<Number> getStageXVariable()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public BoundedVariable<Number> getStageYVariable()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public BoundedVariable<Number> getStageZVariable()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Variable<Boolean> getLightSheetOnOffVariable(int pLightSheetIndex)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Variable<Boolean> getCameraOnOffVariable(int pCameraIndex)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Variable<Boolean> getLaserOnOffVariable(int pLaserLineIndex)
+  public QueueInterface getQueue()
   {
     // TODO Auto-generated method stub
     return null;

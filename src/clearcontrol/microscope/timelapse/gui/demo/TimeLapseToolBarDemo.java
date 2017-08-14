@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.microscope.timelapse.TimelapseBase;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.microscope.timelapse.gui.TimelapseToolbar;
@@ -39,7 +39,7 @@ public class TimeLapseToolBarDemo extends Application
       {
         System.out.println("acquire time point: "
                            + getTimePointCounterVariable().get());
-        ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+        ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
       }
 
     };

@@ -3,7 +3,7 @@ package clearcontrol.devices.cameras;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import clearcontrol.core.device.VirtualDevice;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 
@@ -15,7 +15,7 @@ import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 public abstract class CameraDeviceBase extends VirtualDevice
                                        implements
                                        CameraDeviceInterface,
-                                       LoggingInterface
+                                       LoggingFeature
 {
 
   protected final Variable<Long> mMaxWidthVariable,

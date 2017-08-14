@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -20,7 +20,7 @@ import clearcontrol.core.variable.Variable;
  * @author royer
  */
 public class VariableFileChooser extends HBox
-                                 implements LoggingInterface
+                                 implements LoggingFeature
 {
 
   private final Variable<File> mFileVariable;

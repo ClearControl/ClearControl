@@ -6,6 +6,11 @@ import java.util.logging.LogRecord;
 
 import clearcontrol.core.log.CompactFormatter;
 
+/**
+ * Log window handler
+ *
+ * @author royer
+ */
 public class LogWindowHandler extends Handler
 {
   private static LogWindowHandler sHandler = null;
@@ -22,23 +27,52 @@ public class LogWindowHandler extends Handler
       mWindow = new LogWindow(pTitle, pWidth, pHeight);
   }
 
+  /**
+   * Sets the visibility of the log window
+   * 
+   * @param pVisible
+   *          visible if true, invisible otherwise
+   */
   public static synchronized void setVisible(boolean pVisible)
   {
     if (sHandler != null)
       sHandler.mWindow.setVisible(pVisible);
   }
 
+  /**
+   * Disposes the log window
+   */
   public static void dispose()
   {
     if (sHandler != null)
       sHandler.mWindow.dispose();
   }
 
+  /**
+   * Returns a log window handler for a given title. if it does not exist it is
+   * created.
+   * 
+   * @param pTitle
+   *          log window title
+   * @return log window handler
+   */
   public static synchronized LogWindowHandler getInstance(String pTitle)
   {
     return getInstance(pTitle, 768, 320);
   }
 
+  /**
+   * Returns a log window handler for a given title and window dimensions. if it
+   * does not exist it is created.
+   * 
+   * @param pTitle
+   *          log window title
+   * @param pWidth
+   *          window width
+   * @param pHeight
+   *          window height
+   * @return log window handler
+   */
   public static synchronized LogWindowHandler getInstance(String pTitle,
                                                           int pWidth,
                                                           int pHeight)

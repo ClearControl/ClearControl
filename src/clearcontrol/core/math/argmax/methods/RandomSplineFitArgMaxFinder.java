@@ -7,8 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
+import clearcontrol.core.math.argmax.Fitting1DInterface;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -16,10 +16,18 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
+/**
+ * Random spline argmax finder.
+ * 
+ * Samples randomly subsets of points from (X,Y), fits splines, finds the
+ * corresponding argmax values, and returns the median of all argmax obtained.
+ *
+ * @author royer
+ */
 public class RandomSplineFitArgMaxFinder extends Fitting1DBase
                                          implements
                                          ArgMaxFinder1DInterface,
-                                         Fitting1D
+                                         Fitting1DInterface
 {
 
   private static final int cNumberOfSamples = 1024;

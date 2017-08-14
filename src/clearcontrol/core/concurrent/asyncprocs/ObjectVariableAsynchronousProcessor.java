@@ -2,12 +2,19 @@ package clearcontrol.core.concurrent.asyncprocs;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.variable.Variable;
 
+/**
+ * Asynchronous processor that receives and sends objects via variables
+ *
+ * @param <I>
+ *          input type
+ * @param <O>
+ *          outpt type
+ * @author royer
+ */
 public class ObjectVariableAsynchronousProcessor<I, O> implements
-                                                OpenCloseDeviceInterface,
                                                 StartStopDeviceInterface
 {
   private static final long cTimeOutInSeconds = 1;
@@ -17,8 +24,19 @@ public class ObjectVariableAsynchronousProcessor<I, O> implements
 
   AsynchronousProcessorBase<I, O> mAsynchronousProcessorBase;
 
-  private Object mObjectEventSource;
-
+  /**
+   * Instantiates an asynchronous
+   * 
+   * @param pName
+   *          name
+   * @param pMaxQueueSize
+   *          max queue size
+   * @param pProcessor
+   *          processor
+   * @param pDropIfQueueFull
+   *          drops objects if queue is full, otherwise just waits until queue
+   *          has free slots
+   */
   public ObjectVariableAsynchronousProcessor(final String pName,
                                              final int pMaxQueueSize,
                                              final ProcessorInterface<I, O> pProcessor,
@@ -76,20 +94,24 @@ public class ObjectVariableAsynchronousProcessor<I, O> implements
 
   }
 
+  /**
+   * Returns the input object variable
+   * 
+   * @return input object variable
+   */
   public Variable<I> getInputObjectVariable()
   {
     return mInputObjectVariable;
   }
 
+  /**
+   * Returns the output object variable
+   * 
+   * @return output object variable
+   */
   public Variable<O> getOutputObjectVariable()
   {
     return mOutputObjectVariable;
-  }
-
-  @Override
-  public boolean open()
-  {
-    return true;
   }
 
   @Override
@@ -103,13 +125,6 @@ public class ObjectVariableAsynchronousProcessor<I, O> implements
   {
     return mAsynchronousProcessorBase.stop(cTimeOutInSeconds,
                                            TimeUnit.SECONDS);
-  }
-
-  @Override
-  public boolean close()
-  {
-    mAsynchronousProcessorBase.close();
-    return true;
   }
 
 }

@@ -8,8 +8,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.gui.jfx.other.recycler.RecyclerPanel;
 import coremem.exceptions.FreedException;
 import coremem.recycling.BasicRecycler;
@@ -23,8 +23,8 @@ import coremem.recycling.RecyclerRequestInterface;
  *
  * @author royer
  */
-public class RecyclerPaneDemo extends Application implements
-                              AsynchronousExecutorServiceAccess
+public class RecyclerPaneDemo extends Application
+                              implements AsynchronousExecutorFeature
 {
 
   private class DemoRequest implements RecyclerRequestInterface
@@ -181,7 +181,7 @@ public class RecyclerPaneDemo extends Application implements
               lStack.push(lRecyclable);
           }
 
-          ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+          ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
         }
 
         System.out.println("Done!");

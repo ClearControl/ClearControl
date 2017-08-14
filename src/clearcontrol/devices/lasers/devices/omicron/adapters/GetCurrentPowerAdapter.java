@@ -1,7 +1,7 @@
 package clearcontrol.devices.lasers.devices.omicron.adapters;
 
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.devices.lasers.devices.omicron.adapters.protocol.ProtocolOmicron;
 
 /**
@@ -12,7 +12,7 @@ import clearcontrol.devices.lasers.devices.omicron.adapters.protocol.ProtocolOmi
 public class GetCurrentPowerAdapter extends OmicronAdapter<Number>
                                     implements
                                     SerialTextDeviceAdapter<Number>,
-                                    LoggingInterface
+                                    LoggingFeature
 {
   private static final double cCurrentPowerFilteringAlpha = 0.1;
 

@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.signalgen.movement.MovementInterface;
@@ -19,7 +19,7 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
 public abstract class SignalGeneratorBase extends VirtualDevice
                                           implements
                                           SignalGeneratorInterface,
-                                          AsynchronousExecutorServiceAccess
+                                          AsynchronousExecutorFeature
 {
 
   protected final Variable<Boolean> mTriggerVariable =

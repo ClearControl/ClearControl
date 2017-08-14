@@ -275,7 +275,6 @@ public class Stack3DDisplay extends VirtualDevice
     {
       mAsynchronousDisplayUpdater.stop();
       mAsynchronousDisplayUpdater.waitToFinish(1, TimeUnit.SECONDS);
-      mAsynchronousDisplayUpdater.close();
       mClearVolumeRenderer.waitToFinishAllDataBufferCopy(1,
                                                          TimeUnit.SECONDS);
       if (mClearVolumeRenderer != null)

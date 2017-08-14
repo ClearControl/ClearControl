@@ -2,7 +2,7 @@ package clearcontrol.microscope.adaptive.modules;
 
 import java.util.function.Function;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
@@ -19,7 +19,7 @@ import clearcontrol.microscope.state.AcquisitionStateInterface;
 public interface AdaptationModuleInterface<S extends AcquisitionStateInterface<?, ?>>
                                           extends
                                           Function<Void, Boolean>,
-                                          AsynchronousExecutorServiceAccess,
+                                          AsynchronousExecutorFeature,
                                           NameableInterface
 {
 

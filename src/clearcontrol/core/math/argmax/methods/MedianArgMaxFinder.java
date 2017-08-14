@@ -4,6 +4,14 @@ import static java.lang.Math.round;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 
+/**
+ * Median argmax finder.
+ * 
+ * Returns the median of the (X,Y) interpreted as distribution (or 50%
+ * percentile) as argmax.
+ *
+ * @author royer
+ */
 public class MedianArgMaxFinder implements ArgMaxFinder1DInterface
 {
 

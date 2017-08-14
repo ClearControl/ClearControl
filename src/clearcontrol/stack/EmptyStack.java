@@ -1,6 +1,7 @@
 package clearcontrol.stack;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.fragmented.FragmentedMemoryInterface;
 
 /**
@@ -16,7 +17,7 @@ public class EmptyStack extends StackBase implements StackInterface
    */
   public EmptyStack()
   {
-    super();
+    super(NativeTypeEnum.Byte, 0);
   }
 
   @Override
@@ -111,12 +112,6 @@ public class EmptyStack extends StackBase implements StackInterface
 
   @Override
   public FragmentedMemoryInterface getFragmentedMemory()
-  {
-    return null;
-  }
-
-  @Override
-  public Object getImage()
   {
     return null;
   }

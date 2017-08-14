@@ -2,9 +2,9 @@ package clearcontrol.devices.lasers.devices.sim;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.lasers.LaserDeviceBase;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
@@ -16,8 +16,8 @@ import clearcontrol.devices.lasers.LaserDeviceInterface;
  */
 public class LaserDeviceSimulator extends LaserDeviceBase implements
                                   LaserDeviceInterface,
-                                  AsynchronousSchedulerServiceAccess,
-                                  LoggingInterface,
+                                  AsynchronousSchedulerFeature,
+                                  LoggingFeature,
                                   SimulationDeviceInterface
 {
 

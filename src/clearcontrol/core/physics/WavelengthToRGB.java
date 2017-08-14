@@ -2,15 +2,26 @@ package clearcontrol.core.physics;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Utility class to convert visible light wavelengths to RGB colors
+ *
+ * @author royer
+ */
 public class WavelengthToRGB
 {
   static private double Gamma = 0.80;
   static private double IntensityMax = 255;
 
   /**
+   * Returns JFX color for a given wavelength (unit nm).
+   * 
    * Taken from Earl F. Glynn's web page:
    * <a href="http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm">Spectra
    * Lab Report</a>
+   * 
+   * @param Wavelength
+   *          wavelength in nm
+   * @return JFX color
    */
   public static Color waveLengthToJFXColor(double Wavelength)
   {
@@ -25,9 +36,16 @@ public class WavelengthToRGB
   }
 
   /**
+   * Returns a three element array: int[]{R,G,B} with R,G, and B values computed
+   * for a given visible light wavelength (unit: nm)
+   * 
    * Taken from Earl F. Glynn's web page:
    * <a href="http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm">Spectra
    * Lab Report</a>
+   * 
+   * @param Wavelength
+   *          wavelength in nm
+   * @return int[]{R,G,B}
    */
   public static int[] waveLengthToRGB(double Wavelength)
   {

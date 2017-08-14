@@ -1,9 +1,6 @@
 package clearcontrol.stack.imglib2;
 
-import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 import ij.ImageJ;
 import ij.ImagePlus;
@@ -30,9 +27,9 @@ public class ImageJStackDisplay
       sImageJ = new ImageJ();
     if (!sImageJ.isVisible())
       sImageJ.setVisible(true);
-    Img<UnsignedShortType> lCopy =
-                                 ((OffHeapPlanarStack) pStack).getImage()
-                                                              .copy();
-    return ImageJFunctions.show(lCopy);
+
+    // TODO: make a copy fo the data into an imglib2 image
+
+    return ImageJFunctions.show(null);
   }
 }

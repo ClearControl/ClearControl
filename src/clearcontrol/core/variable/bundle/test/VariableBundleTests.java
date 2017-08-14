@@ -6,9 +6,17 @@ import clearcontrol.core.variable.bundle.VariableBundle;
 
 import org.junit.Test;
 
+/**
+ * Variable bunle tests
+ *
+ * @author royer
+ */
 public class VariableBundleTests
 {
 
+  /**
+   * Basic tests
+   */
   @Test
   public void test()
   {

@@ -2,16 +2,23 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
+import clearcontrol.core.math.argmax.Fitting1DInterface;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
 
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+/**
+ * Loess fit argmax filter.
+ * 
+ * Fits a Loess interpolator and returns the x position of the maxima as argmax.
+ *
+ * @author royer
+ */
 public class LoessFitArgMaxFinder extends Fitting1DBase implements
                                   ArgMaxFinder1DInterface,
-                                  Fitting1D
+                                  Fitting1DInterface
 {
   private static final int cNumberOfSamples = 1024;
 

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.video.StackDisplayInterface;
@@ -32,7 +32,7 @@ import coremem.exceptions.FreedException;
  */
 public class Stack2DDisplay extends VirtualDevice implements
                             StackDisplayInterface,
-                            AsynchronousSchedulerServiceAccess
+                            AsynchronousSchedulerFeature
 {
   private final VideoWindow mVideoWindow;
 

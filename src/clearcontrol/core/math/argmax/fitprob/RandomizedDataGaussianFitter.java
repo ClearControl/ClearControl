@@ -3,7 +3,6 @@ package clearcontrol.core.math.argmax.fitprob;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import clearcontrol.core.math.argmax.methods.GaussianFitArgMaxFinder;
@@ -11,6 +10,11 @@ import clearcontrol.core.math.argmax.methods.ParabolaFitArgMaxFinder;
 
 import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 
+/**
+ * Randomized data Gaussian Fitter
+ *
+ * @author royer
+ */
 public class RandomizedDataGaussianFitter
 {
   private static final int cMaxIterationsForRandomizedDataFitting =
@@ -27,16 +31,34 @@ public class RandomizedDataGaussianFitter
   private double[] mY;
   private UnivariateDifferentiableFunction mUnivariateDifferentiableFunction;
 
+  /**
+   * Instantiates a randomized data Gaussian fitter
+   */
   public RandomizedDataGaussianFitter()
   {
   }
 
+  /**
+   * Instantiates a randomized data gaussian fitter with a given (X,Y) pair.
+   * 
+   * @param pX
+   *          x data
+   * @param pY
+   *          y data
+   */
   public RandomizedDataGaussianFitter(double[] pX, double[] pY)
   {
     mX = pX;
     mY = pY;
   }
 
+  /**
+   * Computes RMSD for random data on a given X
+   * 
+   * @param pX
+   *          x data to use
+   * @return RMSD for a given X and random Y
+   */
   public Double computeRMSDForRandomData(double[] pX)
   {
     double[] lRandomY = generateRandomVector(mRandom,
@@ -44,12 +66,29 @@ public class RandomizedDataGaussianFitter
     return computeRMSD(pX, lRandomY);
   }
 
+  /**
+   * Computes the RMSD for the (X,Y) pair (given at construction time)
+   * 
+   * @return RMSD
+   * @throws Exception
+   *           thrown if exception occurs during concurrent execution
+   */
   public Double computeRMSD() throws Exception
   {
     return computeRMSD(mX, mY);
   }
 
-  public Double computeRMSD(double[] pX, double[] pY)
+  /**
+   * Returns the fitted function
+   * 
+   * @return fitted function
+   */
+  public UnivariateDifferentiableFunction getFunction()
+  {
+    return mUnivariateDifferentiableFunction;
+  }
+
+  private Double computeRMSD(double[] pX, double[] pY)
   {
     Double lRMSD = fitGaussian(pX, pY);
     if (lRMSD == null)
@@ -109,34 +148,21 @@ public class RandomizedDataGaussianFitter
     }
   }
 
-  public UnivariateDifferentiableFunction getFunction()
-  {
-    return mUnivariateDifferentiableFunction;
-  }
-
-  public void setFunction(UnivariateDifferentiableFunction pUnivariateDifferentiableFunction)
+  private void setFunction(UnivariateDifferentiableFunction pUnivariateDifferentiableFunction)
   {
     mUnivariateDifferentiableFunction =
                                       pUnivariateDifferentiableFunction;
   }
 
-  public static double[] shuffle(boolean pShuffle,
-                                 Random pRandom,
-                                 double[] pArray)
-  {
-    double[] lNewArray = Arrays.copyOf(pArray, pArray.length);
-    if (pShuffle)
-      for (int i = lNewArray.length - 1; i > 0; i--)
-      {
-        int lIndex = pRandom.nextInt(i + 1);
-        double lValue = lNewArray[lIndex];
-        lNewArray[lIndex] = lNewArray[i];
-        lNewArray[i] = lValue;
-      }
-
-    return lNewArray;
-  }
-
+  /**
+   * Generates a random vector of doubles between 0 and 1.
+   * 
+   * @param pRandom
+   *          random object
+   * @param pArray
+   *          array to store random doubles
+   * @return given array
+   */
   public static double[] generateRandomVector(Random pRandom,
                                               double[] pArray)
   {
@@ -150,6 +176,13 @@ public class RandomizedDataGaussianFitter
     return pArray;
   }
 
+  /**
+   * Returns a normalized copy of the given array.
+   * 
+   * @param pY
+   *          y data
+   * @return normalized copy
+   */
   public static double[] normalizeCopy(double[] pY)
   {
     double[] lNormY = new double[pY.length];
@@ -169,6 +202,13 @@ public class RandomizedDataGaussianFitter
     return lNormY;
   }
 
+  /**
+   * Returns a normalized copy of the given array.
+   * 
+   * @param pY
+   *          y data
+   * @return normalized in place
+   */
   public static double[] normalizeInPlace(double[] pY)
   {
     double lMin = Double.POSITIVE_INFINITY;

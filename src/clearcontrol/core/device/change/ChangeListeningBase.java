@@ -48,7 +48,6 @@ public abstract class ChangeListeningBase<E> implements
   /**
    * Notifies listeners of changes .
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void notifyListeners(E pEvent)
   {

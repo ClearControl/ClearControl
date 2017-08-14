@@ -5,15 +5,22 @@ import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
+/**
+ * File event notifier.
+ * 
+ * 
+ *
+ * @author royer
+ */
 public class FileEventNotifier implements
                                AutoCloseable,
-                               LoggingInterface
+                               LoggingFeature
 {
 
   private static final long cDefaultMonitoringPeriodInMilliseconds =
@@ -27,11 +34,33 @@ public class FileEventNotifier implements
   private final FileAlterationMonitor mFileAlterationMonitor;
   private volatile boolean mIgnore = false;
 
-  public enum FileEventKind
+  /**
+   * File event kind.
+   *
+   * @author royer
+   */
+  public static enum FileEventKind
   {
-   Created, Modified, Deleted
+   /**
+    * Event triggered when a file is created
+    */
+   Created,
+   /**
+    * Event triggered when a file is modified
+    */
+   Modified,
+   /**
+    * Event triggered when a file is deleted
+    */
+   Deleted
   }
 
+  /**
+   * Instantiates a file event notifier for a given file
+   * 
+   * @param pFileToMonitor
+   *          file to monitor
+   */
   public FileEventNotifier(final File pFileToMonitor)
   {
     this(pFileToMonitor,
@@ -39,8 +68,18 @@ public class FileEventNotifier implements
          TimeUnit.MILLISECONDS);
   }
 
+  /**
+   * Instantiates a file event notifier for a given file
+   * 
+   * @param pFileToMonitor
+   *          file to monitor
+   * @param pMonitoringPeriod
+   *          monitoring period
+   * @param pTimeUnit
+   *          monitoring period time unit
+   */
   public FileEventNotifier(final File pFileToMonitor,
-                           final long pPeriod,
+                           final long pMonitoringPeriod,
                            final TimeUnit pTimeUnit)
   {
     super();
@@ -100,21 +139,39 @@ public class FileEventNotifier implements
     });
 
     mFileAlterationMonitor =
-                           new FileAlterationMonitor(TimeUnit.MILLISECONDS.convert(pPeriod,
+                           new FileAlterationMonitor(TimeUnit.MILLISECONDS.convert(pMonitoringPeriod,
                                                                                    pTimeUnit));
     mFileAlterationMonitor.addObserver(mFileAlterationObserver);
   }
 
+  /**
+   * Adds a given file change event listener.
+   * 
+   * @param pFileChangeNotifierListener
+   *          file change event listener
+   */
   public void addFileEventListener(final FileEventNotifierListener pFileChangeNotifierListener)
   {
     mListenerList.add(pFileChangeNotifierListener);
   }
 
+  /**
+   * Removes a given file change event listener
+   * 
+   * @param pFileChangeNotifierListener
+   *          file change event listener
+   */
   public void removeFileEventListener(final FileEventNotifierListener pFileChangeNotifierListener)
   {
     mListenerList.remove(pFileChangeNotifierListener);
   }
 
+  /**
+   * Removes all file change event listener
+   * 
+   * @param pFileChangeNotifierListener
+   *          file change event listener
+   */
   public void removeAllFileEventListener(final FileEventNotifierListener pFileChangeNotifierListener)
   {
     mListenerList.clear();
@@ -138,12 +195,33 @@ public class FileEventNotifier implements
     }
   }
 
-  public void startMonitoring() throws Exception
+  /**
+   * Starts monitoring for file changes.
+   * 
+   * @return true if started successfully.
+   * 
+   */
+  public boolean startMonitoring()
   {
-    mFileAlterationMonitor.start();
+    try
+    {
+      mFileAlterationMonitor.start();
+      return true;
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+      return false;
+    }
   }
 
-  public boolean stopMonitoring() throws Exception
+  /**
+   * Starts monitoring for file changes.
+   * 
+   * @return true if stopped successfully.
+   * 
+   */
+  public boolean stopMonitoring()
   {
     try
     {
@@ -152,6 +230,7 @@ public class FileEventNotifier implements
     }
     catch (Throwable e)
     {
+      e.printStackTrace();
       return false;
     }
   }
@@ -169,6 +248,12 @@ public class FileEventNotifier implements
     }
   }
 
+  /**
+   * Sets ignore flag.
+   * 
+   * @param pIgnore
+   *          new flag value
+   */
   public void setIgnore(boolean pIgnore)
   {
     mIgnore = pIgnore;

@@ -10,9 +10,26 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.StatUtils;
 
+/**
+ * Outlier remover.
+ * 
+ * Static methods that can remove outliers from lists of double values.
+ *
+ * @author royer
+ */
 public class OutlierRemover
 {
 
+  /**
+   * Returns a filtered list of data points after removing low and high
+   * outliers.
+   * 
+   * @param pDataPoints
+   *          data points to remove outliers from.
+   * @param pSigmas
+   *          number of sigmas of the data to keep.
+   * @return filtered data points
+   */
   static public TDoubleArrayList removeOutliers(double[] pDataPoints,
                                                 double pSigmas)
   {
@@ -45,6 +62,16 @@ public class OutlierRemover
     return lResultArray;
   }
 
+  /**
+   * Returns a filtered list of data points after removing low and high
+   * outliers.
+   * 
+   * @param pDataPoints
+   *          data points
+   * @param pSigmas
+   *          number of sigmas of the data to keep.
+   * @return filtere data points
+   */
   static public <O> ArrayList<Pair<O, Double>> removeOutliers(List<Pair<O, Double>> pDataPoints,
                                                               double pSigmas)
   {

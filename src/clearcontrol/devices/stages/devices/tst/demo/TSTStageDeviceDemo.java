@@ -3,7 +3,7 @@ package clearcontrol.devices.stages.devices.tst.demo;
 import java.util.concurrent.TimeUnit;
 
 import aptj.APTJExeption;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 
@@ -39,7 +39,7 @@ public class TSTStageDeviceDemo implements WaitingInterface
     for (int i = 0; i < lNumberOfDOFs; i++)
       lTSTStageDevice.getHomingVariable(i).setEdge(false, true);
 
-    ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
 
     System.out.print("Waiting...");
     lTSTStageDevice.waitToBeReady(30, TimeUnit.SECONDS);

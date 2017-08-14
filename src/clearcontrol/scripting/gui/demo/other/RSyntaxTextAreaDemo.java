@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -59,7 +59,7 @@ public class RSyntaxTextAreaDemo
 
     while (lTextEditorDemo.isVisible())
     {
-      ThreadUtils.sleep(10, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(10, TimeUnit.MILLISECONDS);
     }
   }
 

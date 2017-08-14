@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.device.task.PeriodicLoopTaskDevice;
 
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class PeriodicLoopTaskDeviceTests
     System.out.println("Waiting to start");
     assertTrue(lTestLoopTaskDevice.waitForStarted(1,
                                                   TimeUnit.SECONDS));
-    ThreadUtils.sleep(1, TimeUnit.SECONDS);
+    ThreadSleep.sleep(1, TimeUnit.SECONDS);
     lTestLoopTaskDevice.getStopSignalVariable().set(true);
 
     assertTrue(lTestLoopTaskDevice.waitForStopped(10,
@@ -61,7 +61,7 @@ public class PeriodicLoopTaskDeviceTests
     long lCounter = mCounter;
     System.out.println("lCounter=" + mCounter);
 
-    ThreadUtils.sleep(200, TimeUnit.MILLISECONDS);
+    ThreadSleep.sleep(200, TimeUnit.MILLISECONDS);
 
     assertTrue(lCounter >= mCounter);
   }
