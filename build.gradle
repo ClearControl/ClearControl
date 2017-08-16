@@ -112,8 +112,7 @@ dependencies
     compile ('com.googlecode.efficient-java-matrix-library:ejml:0.+') {transitive= true}
 
     // JTransforms:
-    compile fileTree(dir: './Libs/jtransforms', include: '*.jar')
-    
+    compile fileTree(dir: 'Libs/jtransforms', include: '*.jar')
 
     // VecMath:
     compile ('java3d:vecmath:1.3.1')  {transitive= true}
@@ -153,7 +152,6 @@ dependencies
     // JMathPlot:
     compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
-
     // imglib2:
     compile ('net.imglib2:imglib2:2.2.0')                {transitive = true}
     compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')     {transitive = true}
@@ -175,7 +173,7 @@ dependencies
     compile ('net.halcyon:Halcyon:0.3.7')                {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:0.2.1')                  {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.3.3')                  {transitive= true; changing= true}
 
     // CoreMem:
     compile ('net.coremem:coremem:0.4.4')                {transitive= true; changing= true}
@@ -241,7 +239,7 @@ repositories
     maven { url  "http://dl.bintray.com/jerady/maven" }
     
     //Sqeazy:
-    maven {url  "http://dl.bintray.com/psteinb/maven" }
+    maven {url  "http://dl.bintray.com/sqeazy/maven" }
 
 }
 
