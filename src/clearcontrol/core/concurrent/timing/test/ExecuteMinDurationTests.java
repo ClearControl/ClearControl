@@ -34,10 +34,11 @@ public class ExecuteMinDurationTests
                                    ElapsedTime.measure("test",
                                                        () -> ExecuteMinDuration.execute(50,
                                                                                         TimeUnit.MILLISECONDS,
-                                                                                        () -> System.gc()));
+                                                                                        () -> ThreadSleep.sleep(5,
+                                                                                                                TimeUnit.MILLISECONDS)));
       }
 
-      assertEquals(50, lElapsedTimeInMilliseconds, 25);
+      assertEquals(50, lElapsedTimeInMilliseconds, 10);
     }
 
     {
