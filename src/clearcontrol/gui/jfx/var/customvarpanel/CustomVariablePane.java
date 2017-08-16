@@ -190,31 +190,6 @@ public class CustomVariablePane extends TabPane
    *          text field label
    * @param pVariable
    *          variable
-   * @return number text field
-   */
-  public <T extends Number> NumberVariableTextField<T> addNumberTextFieldForVariable(String pTextFieldLabel,
-                                                                                     Variable<T> pVariable)
-  {
-    final NumberVariableTextField<T> lNumberTextField =
-                                                      new NumberVariableTextField<T>(pTextFieldLabel,
-                                                                                     pVariable);
-
-    int lCursor = mCursor++;
-    mCurrentTabGridPane.add(lNumberTextField.getLabel(), 0, lCursor);
-    mCurrentTabGridPane.add(lNumberTextField.getTextField(),
-                            1,
-                            lCursor);
-
-    return lNumberTextField;
-  }
-
-  /**
-   * Adds a number text field for the given variable
-   * 
-   * @param pTextFieldLabel
-   *          text field label
-   * @param pVariable
-   *          variable
    * @param pMin
    *          min
    * @param pMax

@@ -14,6 +14,7 @@ import clearcontrol.core.math.argmax.test.ArgMaxTestsUtils;
 import clearcontrol.core.units.OrderOfMagnitude;
 import gnu.trove.list.array.TDoubleArrayList;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.junit.Test;
 
 /**
@@ -67,7 +68,10 @@ public class FitQualityEstimatorTests
     final GaussianFitQualityEstimator lFitQualityEstimator =
                                                            new GaussianFitQualityEstimator();
 
-    for (int i = 0; i < 100; i++)
+    Median lMedian = new Median();
+    double[] lMedianData = new double[100];
+
+    for (int i = 0; i < lMedianData.length; i++)
     {
       final double[] lX = new double[]
       { 0, 1, 2, 3, 4, 5, 6 };
@@ -86,12 +90,14 @@ public class FitQualityEstimatorTests
                         lElapsed,
                         lPvalue);/**/
 
-      if (i > 50)
-        assertTrue(lElapsed < 5);
-
+      lMedianData[i] = lElapsed;
       assertTrue(lPvalue >= 0.97);
 
     }
+
+    double lMedianElapsedTime = lMedian.evaluate(lMedianData);
+
+    assertTrue(lMedianElapsedTime <= 10);
 
     {
       final double[] lX = new double[]

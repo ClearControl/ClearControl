@@ -26,22 +26,32 @@ public class ExecuteMinDurationTests
   {
     {
 
-      double lElapsedTimeInMilliseconds =
-                                        ElapsedTime.measure("test",
-                                                            () -> ExecuteMinDuration.execute(50,
-                                                                                             TimeUnit.MILLISECONDS,
-                                                                                             () -> System.gc()));
+      double lElapsedTimeInMilliseconds = 0;
 
-      assertEquals(50, lElapsedTimeInMilliseconds, 10);
+      for (int i = 0; i < 10; i++)
+      {
+        lElapsedTimeInMilliseconds =
+                                   ElapsedTime.measure("test",
+                                                       () -> ExecuteMinDuration.execute(50,
+                                                                                        TimeUnit.MILLISECONDS,
+                                                                                        () -> System.gc()));
+      }
+
+      assertEquals(50, lElapsedTimeInMilliseconds, 25);
     }
 
     {
-      double lElapsedTimeInMilliseconds =
-                                        ElapsedTime.measure("test",
-                                                            () -> ExecuteMinDuration.execute(10,
-                                                                                             TimeUnit.MILLISECONDS,
-                                                                                             () -> ThreadSleep.sleep(20,
-                                                                                                                     TimeUnit.MILLISECONDS)));
+      double lElapsedTimeInMilliseconds = 0;
+
+      for (int i = 0; i < 10; i++)
+      {
+        lElapsedTimeInMilliseconds =
+                                   ElapsedTime.measure("test",
+                                                       () -> ExecuteMinDuration.execute(10,
+                                                                                        TimeUnit.MILLISECONDS,
+                                                                                        () -> ThreadSleep.sleep(20,
+                                                                                                                TimeUnit.MILLISECONDS)));
+      }
 
       assertEquals(20, lElapsedTimeInMilliseconds, 10);
     }

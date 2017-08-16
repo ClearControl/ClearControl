@@ -31,6 +31,16 @@ public interface StackSourceInterface extends StackSinkSourceInterface
   public long getNumberOfStacks();
 
   /**
+   * Returns the number of stacks in source for a given channel
+   * 
+   * @param pChannel
+   *          channel
+   * 
+   * @return number of stacks
+   */
+  public long getNumberOfStacks(String pChannel);
+
+  /**
    * Sets the stack recycler
    * 
    * @param pStackRecycler

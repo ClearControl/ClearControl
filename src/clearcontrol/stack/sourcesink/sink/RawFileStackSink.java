@@ -13,6 +13,7 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
+import clearcontrol.stack.sourcesink.FileStackInterface;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
@@ -22,6 +23,7 @@ import coremem.fragmented.FragmentedMemoryInterface;
  * @author royer
  */
 public class RawFileStackSink extends FileStackBase implements
+                              FileStackInterface,
                               FileStackSinkInterface,
                               AutoCloseable
 {
@@ -32,12 +34,10 @@ public class RawFileStackSink extends FileStackBase implements
                                                                              new ConcurrentHashMap<>();
 
   /**
-   * Instantiates a raw file stack sink given a root folder and dataset name.
+   * Instantiates a raw file stack sink.
    * 
-   * @throws IOException
-   *           thrown if there is an IO problems
    */
-  public RawFileStackSink() throws IOException
+  public RawFileStackSink()
   {
     super(false);
   }
@@ -115,16 +115,23 @@ public class RawFileStackSink extends FileStackBase implements
 
     final FileChannel lIndexFileChannel =
                                         getFileChannel(getIndexFile(pChannel),
+
                                                        false);
 
+    long lTimeStampInNanoseconds;
+
+    if (pStack.getMetaData() != null
+        && pStack.getMetaData().getTimeStampInNanoseconds() != null)
+      lTimeStampInNanoseconds = pStack.getMetaData()
+                                      .getTimeStampInNanoseconds();
+    else
+      lTimeStampInNanoseconds = System.nanoTime();
+
     if (pIndex == 0)
-    {
-      mFirstTimePointAbsoluteNanoSeconds.set(pStack.getMetaData()
-                                                   .getTimeStampInNanoseconds());
-    }
+      mFirstTimePointAbsoluteNanoSeconds.set(lTimeStampInNanoseconds);
+
     final double lTimeStampInSeconds =
-                                     OrderOfMagnitude.nano2unit(pStack.getMetaData()
-                                                                      .getTimeStampInNanoseconds()
+                                     OrderOfMagnitude.nano2unit(lTimeStampInNanoseconds
                                                                 - mFirstTimePointAbsoluteNanoSeconds.get());
 
     setStackTimeStampInSeconds(pChannel, pIndex, lTimeStampInSeconds);

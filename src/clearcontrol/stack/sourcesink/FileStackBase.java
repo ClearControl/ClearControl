@@ -56,7 +56,8 @@ public abstract class FileStackBase extends StackServerBase
     }
   }
 
-  protected ArrayList<String> getCurrentChannelList()
+  @Override
+  public ArrayList<String> getChannelList()
   {
     ArrayList<String> lChannelList = new ArrayList<String>();
 
@@ -73,6 +74,25 @@ public abstract class FileStackBase extends StackServerBase
     }
 
     return lChannelList;
+  }
+
+  protected File getExampleDataFile()
+  {
+    ArrayList<String> lChannelList = getChannelList();
+
+    if (lChannelList.isEmpty())
+      return null;
+
+    String lFirstChannel = lChannelList.get(0);
+
+    File lChannelFolder = getChannelFolder(lFirstChannel);
+
+    File[] lListFiles = lChannelFolder.listFiles();
+
+    if (lListFiles.length == 0)
+      return null;
+
+    return lListFiles[0];
   }
 
   protected File getIndexFile(String pChannel)

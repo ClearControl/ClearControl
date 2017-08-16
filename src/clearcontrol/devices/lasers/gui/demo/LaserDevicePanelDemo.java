@@ -42,8 +42,7 @@ public class LaserDevicePanelDemo extends Application
   }
 
   /**
-   * Main <<<<<<< Updated
-   * upstream:src/clearcontrol/devices/lasers/gui/jfx/demo/LaserDevicePanelDemo.java
+   * Main
    * 
    * @param args
    *          NA

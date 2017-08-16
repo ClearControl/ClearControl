@@ -8,21 +8,12 @@ package clearcontrol.stack.metadata;
 @SuppressWarnings("javadoc")
 public enum MetaDataVoxelDim implements MetaDataEntryInterface<Double>
 {
- VoxelDimX(Double.class),
- VoxelDimY(Double.class),
- VoxelDimZ(Double.class);
-
-  private final Class<Double> mClass;
-
-  private MetaDataVoxelDim(Class<Double> pClass)
-  {
-    mClass = pClass;
-  }
+ VoxelDimX, VoxelDimY, VoxelDimZ;
 
   @Override
   public Class<Double> getMetaDataClass()
   {
-    return mClass;
+    return Double.class;
   }
 
 }
