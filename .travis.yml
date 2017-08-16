@@ -1,17 +1,16 @@
+
 language: java
 
-os:
-  - linux
-  - osx
-
-script: "./gradlew build  -x spotlessJava --debug --full-stacktrace"
-jdk:
-  - oraclejdk8
+sudo: false
+  
+matrix:
+  include:
+    - os: linux
+      jdk: oraclejdk8
+    - os: osx
+      osx_image: xcode8
+ 
 install: ./gradlew assemble -x spotlessJava --stacktrace
 
-sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+script: "./gradlew build  -x spotlessJava --debug --full-stacktrace"
 

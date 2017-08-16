@@ -5,6 +5,7 @@ import static java.lang.Math.toIntExact;
 import java.util.concurrent.ConcurrentHashMap;
 
 import clearcontrol.stack.StackRequest;
+import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -24,6 +25,9 @@ public abstract class StackServerBase implements
 
   private final ConcurrentHashMap<Pair<String, Long>, StackRequest> mChannelIndexToStackRequestMap =
                                                                                                    new ConcurrentHashMap<>();
+
+  private final ConcurrentHashMap<Pair<String, Long>, StackMetaData> mChannelIndexToMetaDataMap =
+                                                                                                new ConcurrentHashMap<>();
 
   /**
    * Instantiates a stack server base
@@ -135,7 +139,7 @@ public abstract class StackServerBase implements
    * @param pStackIndex
    *          stack index
    * @param pStackRequest
-   *          stck request
+   *          stack request
    */
   public void setStackRequest(String pChannel,
                               final long pStackIndex,
@@ -161,6 +165,41 @@ public abstract class StackServerBase implements
 
     return mChannelIndexToStackRequestMap.get(Pair.of(pChannel,
                                                       pStackIndex));
+  }
+
+  /**
+   * Sets - for a given channel and stack index - the stack's metadata.
+   * 
+   * @param pChannel
+   *          channel
+   * @param pStackIndex
+   *          stack index
+   * @param pStackMetaData
+   *          stack request
+   */
+  public void setStackMetaData(String pChannel,
+                               final long pStackIndex,
+                               StackMetaData pStackMetaData)
+  {
+    mChannelIndexToMetaDataMap.put(Pair.of(pChannel, pStackIndex),
+                                   pStackMetaData);
+  }
+
+  /**
+   * Returns - for a given channel and stack index - the stack's metadata.
+   * 
+   * @param pChannel
+   *          channel
+   * @param pStackIndex
+   *          stack index
+   * @return stack's metadata
+   */
+  public StackMetaData getStackMetaData(String pChannel,
+                                        final long pStackIndex)
+  {
+
+    return mChannelIndexToMetaDataMap.get(Pair.of(pChannel,
+                                                  pStackIndex));
   }
 
 }

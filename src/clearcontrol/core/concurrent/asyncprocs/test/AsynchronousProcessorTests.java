@@ -248,17 +248,17 @@ public class AsynchronousProcessorTests
       ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     }
 
-    assertTrue(lProcessorA.waitToFinish(2, TimeUnit.SECONDS));
-    assertTrue(lProcessorB.waitToFinish(2, TimeUnit.SECONDS));
-    assertTrue(lProcessorC.waitToFinish(2, TimeUnit.SECONDS));
+    assertTrue(lProcessorA.waitToFinish(10, TimeUnit.SECONDS));
+    assertTrue(lProcessorB.waitToFinish(10, TimeUnit.SECONDS));
+    assertTrue(lProcessorC.waitToFinish(10, TimeUnit.SECONDS));
 
     assertEquals(0, lProcessorB.getInputQueueLength());
     assertEquals(0, lProcessorB.getInputQueueLength());
     assertEquals(0, lProcessorC.getInputQueueLength());
 
-    assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
-    assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
-    assertTrue(lProcessorC.stop(1, TimeUnit.SECONDS));
+    assertTrue(lProcessorA.stop(10, TimeUnit.SECONDS));
+    assertTrue(lProcessorB.stop(10, TimeUnit.SECONDS));
+    assertTrue(lProcessorC.stop(10, TimeUnit.SECONDS));
 
     for (int i = 1; i <= 1000; i++)
     {

@@ -37,27 +37,6 @@ public class NumberVariableTextField<N extends Number> extends HBox
    *          text field label
    * @param pVariable
    *          variable to sync with
-   */
-  @SuppressWarnings(
-  { "rawtypes", "unchecked" })
-  public NumberVariableTextField(String pTextFieldLabel,
-                                 Variable<N> pVariable)
-  {
-    this(pTextFieldLabel,
-         pVariable,
-         new Variable("min", Double.NEGATIVE_INFINITY),
-         new Variable("max", Double.POSITIVE_INFINITY),
-         new Variable("granularity", 0d));
-
-  }
-
-  /**
-   * Instantiates a number variable text field.
-   * 
-   * @param pTextFieldLabel
-   *          text field label
-   * @param pVariable
-   *          variable to sync with
    * @param pMin
    *          min value
    * @param pMax
@@ -213,6 +192,57 @@ public class NumberVariableTextField<N extends Number> extends HBox
 
   }
 
+  /**
+   * Returns min variable
+   * 
+   * @return min variable
+   */
+  public Variable<N> getMinVariable()
+  {
+    return mMin;
+  }
+
+  /**
+   * Returns max variable
+   * 
+   * @return max variable
+   */
+  public Variable<N> getMaxVariable()
+  {
+    return mMax;
+  }
+
+  /**
+   * Returns granularity variable
+   * 
+   * @return granularity variable
+   */
+  public Variable<N> getGranularityVariable()
+  {
+    return mGranularity;
+  }
+
+  /**
+   * Returns number format precision
+   * 
+   * @return number format precision
+   */
+  public int getNumberFormatPrecision()
+  {
+    return mPrecision;
+  }
+
+  /**
+   * Sets number format precision
+   * 
+   * @param pPrecision
+   *          number format precision
+   */
+  public void setNumberFormatPrecision(int pPrecision)
+  {
+    mPrecision = pPrecision;
+  }
+
   private void setTextFieldValue(Number n)
   {
     if (mMin.get() instanceof Double || mMin.get() instanceof Float)
@@ -297,9 +327,22 @@ public class NumberVariableTextField<N extends Number> extends HBox
   {
     double lCorrectedValue =
                            correctValueDouble(pDoubleValue.doubleValue());
-    getTextField().setText(String.format("%." + mPrecision
-                                         + "g",
-                                         lCorrectedValue)); // f
+
+    String lString;
+
+    if (mVariable.get() == null)
+      lString = "null";
+    else if (mVariable.get() instanceof Long
+             || mVariable.get() instanceof Integer
+             || mVariable.get() instanceof Short
+             || mVariable.get() instanceof Byte)
+      lString = String.format("%d", Math.round(lCorrectedValue));
+    else
+      lString = String.format("%." + getNumberFormatPrecision()
+                              + "g",
+                              lCorrectedValue);
+
+    getTextField().setText(lString);
     getTextField().setStyle("-fx-text-fill: black");
   }
 

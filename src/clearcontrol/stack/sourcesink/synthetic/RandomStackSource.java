@@ -65,6 +65,12 @@ public class RandomStackSource implements StackSourceInterface
   }
 
   @Override
+  public long getNumberOfStacks(String pChannel)
+  {
+    return getNumberOfStacks();
+  }
+
+  @Override
   public Double getStackTimeStampInSeconds(long pStackIndex)
   {
     return getStackTimeStampInSeconds(cDefaultChannel, pStackIndex);
