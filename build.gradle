@@ -76,6 +76,20 @@ test
     maxHeapSize = "16G"
 }
 
+task citest( type: Test ) {
+    testLogging.showStandardStreams = true 
+    testLogging 
+    {
+        events "passed", "skipped", "failed"
+    }
+
+    exclude '**/demo/**'
+    
+    exclude 'clearcontrol.core.math.argmax.fitprob.test'
+
+    maxHeapSize = "16G"
+}
+
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
