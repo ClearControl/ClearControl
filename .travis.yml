@@ -12,5 +12,5 @@ matrix:
  
 install: ./gradlew assemble -x spotlessJava --stacktrace --no-daemon
 
-script: "./gradlew build  -x spotlessJava --full-stacktrace --no-daemon"
+script: "./gradlew build  -x spotlessJava --full-stacktrace --no-daemon --debug"
 
