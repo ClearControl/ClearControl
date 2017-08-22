@@ -12,5 +12,5 @@ matrix:
  
 install: ./gradlew assemble -x spotlessJava --stacktrace
 
-script: "./gradlew build  -x spotlessJava --debug --full-stacktrace"
+script: "./gradlew build  -x spotlessJava --full-stacktrace"
 

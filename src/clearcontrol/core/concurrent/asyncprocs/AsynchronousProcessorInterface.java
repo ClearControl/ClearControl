@@ -40,7 +40,8 @@ public interface AsynchronousProcessorInterface<I, O> extends
   public boolean stop();
 
   /**
-   * Stops asynchronous operation but waist for remining computations to finish.
+   * Stops asynchronous operation but waits for remaining computations to
+   * finish.
    * 
    * @param pTimeOut
    *          timeout

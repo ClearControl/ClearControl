@@ -1,19 +1,20 @@
 package clearcontrol.core.concurrent.asyncprocs.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
 import clearcontrol.core.concurrent.thread.ThreadSleep;
-
-import org.junit.Test;
 
 /**
  * Asynchronous processor tests
@@ -256,13 +257,14 @@ public class AsynchronousProcessorTests
     assertEquals(0, lProcessorB.getInputQueueLength());
     assertEquals(0, lProcessorC.getInputQueueLength());
 
-    assertTrue(lProcessorA.stop(10, TimeUnit.SECONDS));
-    assertTrue(lProcessorB.stop(10, TimeUnit.SECONDS));
-    assertTrue(lProcessorC.stop(10, TimeUnit.SECONDS));
+    assertTrue(lProcessorA.stop(100, TimeUnit.SECONDS));
+    assertTrue(lProcessorB.stop(100, TimeUnit.SECONDS));
+    assertTrue(lProcessorC.stop(100, TimeUnit.SECONDS));
 
     for (int i = 1; i <= 1000; i++)
     {
       final Integer lPoll = lIntList.poll();
+      assertNotNull(lPoll);
       assertEquals(i, lPoll, 0);
     }
 
