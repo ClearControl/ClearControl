@@ -10,7 +10,7 @@ matrix:
     - os: osx
       osx_image: xcode8
  
-install: ./gradlew assemble -x spotlessJava --stacktrace
+install: ./gradlew assemble -x spotlessJava --stacktrace --no-daemon
 
-script: "./gradlew build  -x spotlessJava --full-stacktrace"
+script: "./gradlew build  -x spotlessJava --full-stacktrace --no-daemon"
 
