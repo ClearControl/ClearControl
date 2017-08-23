@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorPool;
 import clearcontrol.core.concurrent.asyncprocs.ProcessorInterface;
 import clearcontrol.core.concurrent.thread.ThreadSleep;
-
-import org.junit.Test;
 
 /**
  * Asynchronous processor tests
@@ -249,17 +249,24 @@ public class AsynchronousProcessorTests
       ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
     }
 
+    // This really makes sure that all the 'jobs' have gone through the entire
+    // pipeline. There is no other way to do this.
+    while (lIntList.size() < 1000)
+      ThreadSleep.sleep(1, TimeUnit.MILLISECONDS);
+
+    // We wait for the process to finish the jobs they have _received_ that's
+    // why we need the line above...
     assertTrue(lProcessorA.waitToFinish(10, TimeUnit.SECONDS));
     assertTrue(lProcessorB.waitToFinish(10, TimeUnit.SECONDS));
     assertTrue(lProcessorC.waitToFinish(10, TimeUnit.SECONDS));
 
-    assertEquals(0, lProcessorB.getInputQueueLength());
+    assertEquals(0, lProcessorA.getInputQueueLength());
     assertEquals(0, lProcessorB.getInputQueueLength());
     assertEquals(0, lProcessorC.getInputQueueLength());
 
-    assertTrue(lProcessorA.stop(100, TimeUnit.SECONDS));
-    assertTrue(lProcessorB.stop(100, TimeUnit.SECONDS));
-    assertTrue(lProcessorC.stop(100, TimeUnit.SECONDS));
+    assertTrue(lProcessorA.stop(1, TimeUnit.SECONDS));
+    assertTrue(lProcessorB.stop(1, TimeUnit.SECONDS));
+    assertTrue(lProcessorC.stop(1, TimeUnit.SECONDS));
 
     for (int i = 1; i <= 1000; i++)
     {
