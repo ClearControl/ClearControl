@@ -85,7 +85,7 @@ task citest( type: Test ) {
 
     exclude '**/demo/**'
     
-    exclude 'clearcontrol.core.math.argmax.fitprob.test'
+    exclude '**/math/argmax/fitprob/**'
 
     maxHeapSize = "16G"
 }
