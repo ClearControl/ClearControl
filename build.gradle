@@ -88,6 +88,7 @@ task citest( type: Test ) {
     exclude '**/math/argmax/fitprob/**'
     exclude '**/math/argmax/test/**'
     exclude '**/scripting/autoimport/**'
+    exclude '**/scripting/**'
     exclude '**/ip/iqm/**'
 
     maxHeapSize = "16G"
