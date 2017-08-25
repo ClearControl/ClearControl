@@ -160,7 +160,7 @@ public class AsynchronousPoolStackProcessorPipelineTests
     for (int i = 0; i < 1000; i++)
     {
       final StackInterface lStack =
-                                  lRecycler0.getOrWait(1,
+                                  lRecycler0.getOrWait(100,
                                                        TimeUnit.SECONDS,
                                                        StackRequest.build(12,
                                                                           13,
