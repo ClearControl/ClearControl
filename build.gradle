@@ -90,6 +90,7 @@ task citest( type: Test ) {
     exclude '**/scripting/autoimport/**'
     exclude '**/scripting/**'
     exclude '**/ip/iqm/**'
+    exclude '**/concurrent/timing/test/**'
 
     maxHeapSize = "16G"
 }
