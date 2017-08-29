@@ -185,7 +185,7 @@ public class CalibrationA extends CalibrationBase
       // lQueue.zero();
 
       lQueue.setFullROI();
-      lQueue.setExp(0.25);
+      lQueue.setExp(0.04);
 
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);

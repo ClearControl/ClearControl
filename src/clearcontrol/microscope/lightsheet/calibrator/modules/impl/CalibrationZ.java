@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 import clearcl.util.ElapsedTime;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
@@ -26,8 +28,6 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterf
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import gnu.trove.list.array.TDoubleArrayList;
-
-import org.apache.commons.collections4.map.MultiKeyMap;
 
 /**
  * Calibration module for the Z position of lightsheets and detection arms
@@ -268,7 +268,7 @@ public class CalibrationZ extends CalibrationBase
       // lQueue.zero();
 
       lQueue.setFullROI();
-      lQueue.setExp(0.25);
+      lQueue.setExp(0.020);
 
       lQueue.setI(pLightSheetIndex);
       lQueue.setIX(pLightSheetIndex, 0);
@@ -381,6 +381,11 @@ public class CalibrationZ extends CalibrationBase
                                             j == 0,
                                             lDZList.get(j),
                                             mMetricArray[j]);
+
+            /*System.out.format("z=%s m=%s \n",
+                              lDZList.get(j),
+                              mMetricArray[j]);/**/
+
           }
 
           // info("Begin argmax");
@@ -402,8 +407,15 @@ public class CalibrationZ extends CalibrationBase
                               lArgMax.toString(),
                               lAmplitudeRatio);/**/
 
-            if (lAmplitudeRatio > 0.1 && lArgMax > lDZList.get(0))
-              dz[d] = lArgMax;
+            if (lAmplitudeRatio > 0.001)
+            {
+              if (lArgMax < lDZList.get(0))
+                dz[d] = lDZList.get(0);
+              else if (lArgMax > lDZList.get(lDZList.size() - 1))
+                dz[d] = lDZList.get(lDZList.size() - 1);
+              else
+                dz[d] = lArgMax;
+            }
             else
               dz[d] = Double.NaN;
 
@@ -498,7 +510,7 @@ public class CalibrationZ extends CalibrationBase
       if (abs(lSlope) <= 0.00001)
         warning("slope too low: " + abs(lSlope));
       else
-        warning("inval;id slope or offset: (y= %g x + %g)",
+        warning("invalid slope or offset: (y= %g x + %g)",
                 lSlope,
                 lOffset);
 

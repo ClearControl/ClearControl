@@ -20,7 +20,7 @@ public class AdaptationZ extends StandardAdaptationModule implements
 {
 
   private final Variable<Double> mDeltaZVariable =
-                                                 new Variable<Double>("DeltaZ",
+                                                 new Variable<>("DeltaZ",
                                                                       1.0);
 
   /**
