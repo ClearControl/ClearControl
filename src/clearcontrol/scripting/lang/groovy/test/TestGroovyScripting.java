@@ -127,7 +127,7 @@ public class TestGroovyScripting
     assertTrue(lScriptingEngine.waitForCompletion(1000,
                                                   TimeUnit.SECONDS));
 
-    System.out.println("code:" + s);
+    // System.out.println("code:" + s);
     assertTrue(s.contains(1.0));
     assertTrue(s.size() == 2);
 
@@ -136,7 +136,7 @@ public class TestGroovyScripting
   @Test
   public void testPerformance() throws IOException
   {
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
       runTest();
   }
 
@@ -152,14 +152,14 @@ public class TestGroovyScripting
                           null,
                           false);
     lStopWatch.stop();
-    System.out.println("script:" + lStopWatch.getTime());
+    // System.out.println("script:" + lStopWatch.getTime());
 
     lStopWatch.reset();
     lStopWatch.start();
     final double[] array = new double[1000];
     testMethod(array);
     lStopWatch.stop();
-    System.out.println("native:" + lStopWatch.getTime());
+    // System.out.println("native:" + lStopWatch.getTime());
   }
 
   private void testMethod(final double[] array)

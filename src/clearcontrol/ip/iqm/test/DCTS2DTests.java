@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
@@ -81,10 +81,10 @@ public class DCTS2DTests
       lComputeDCTS = lDCTS2D.computeImageQualityMetric(lStack);
     final long lStopTimeInNs = System.nanoTime();
 
-    final double lElapsedTimeInMs = Magnitude.nano2milli(
-                                                         (lStopTimeInNs
-                                                          - lStartTimeInNs)
-                                                         / repeats);
+    final double lElapsedTimeInMs =
+                                  OrderOfMagnitude.nano2milli((lStopTimeInNs
+                                                               - lStartTimeInNs)
+                                                              / repeats);
     System.out.println("time per slicewise-dcts computation on a stack: "
                        + lElapsedTimeInMs + " ms");
 

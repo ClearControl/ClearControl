@@ -2,26 +2,43 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
+import clearcontrol.core.math.argmax.Fitting1DInterface;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
+/**
+ * Parabola fit argmax finder.
+ * 
+ * Fits a parabola and returns the center as argmax.
+ *
+ * @author royer
+ */
 public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
                                      ArgMaxFinder1DInterface,
-                                     Fitting1D
+                                     Fitting1DInterface
 {
 
   private PolynomialCurveFitter mPolynomialCurveFitter;
   private PolynomialFunction mPolynomialFunction;
 
+  /**
+   * Parabola fit argmax finder.
+   */
   public ParabolaFitArgMaxFinder()
   {
     this(1024);
   }
 
+  /**
+   * Instantiates a parabola fit argmax finder with a given maximal number of
+   * iterations.
+   * 
+   * @param pMaxIterations
+   *          max iterations
+   */
   public ParabolaFitArgMaxFinder(int pMaxIterations)
   {
     mPolynomialCurveFitter =
@@ -97,6 +114,11 @@ public class ParabolaFitArgMaxFinder extends Fitting1DBase implements
     }
   }
 
+  /**
+   * Returns last polynomial function fit.
+   * 
+   * @return last polynomial fit
+   */
   public PolynomialFunction getFunction()
   {
     return mPolynomialFunction;

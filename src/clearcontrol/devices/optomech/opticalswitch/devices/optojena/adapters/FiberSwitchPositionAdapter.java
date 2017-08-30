@@ -4,12 +4,23 @@ import clearcontrol.com.serial.adapters.SerialDeviceAdapterAdapter;
 import clearcontrol.com.serial.adapters.SerialTextDeviceAdapter;
 import clearcontrol.devices.optomech.opticalswitch.devices.optojena.OptoJenaFiberSwitchDevice;
 
+/**
+ * Fiber switch position adapter
+ *
+ * @author royer
+ */
 public class FiberSwitchPositionAdapter extends
                                         SerialDeviceAdapterAdapter<Integer>
                                         implements
                                         SerialTextDeviceAdapter<Integer>
 {
 
+  /**
+   * Instantiates an OptoJena fiber switch position adapter
+   * 
+   * @param pOptoJenaFiberSwitchDevice
+   *          OptoJena fiber switch device
+   */
   public FiberSwitchPositionAdapter(final OptoJenaFiberSwitchDevice pOptoJenaFiberSwitchDevice)
   {
 

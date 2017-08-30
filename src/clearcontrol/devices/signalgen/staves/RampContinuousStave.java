@@ -54,6 +54,22 @@ public class RampContinuousStave extends StaveAbstract
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    RampContinuousStave lRampContinuousStave =
+                                             new RampContinuousStave(getName(),
+                                                                     getSyncStart(),
+                                                                     getSyncStop(),
+                                                                     getStartValue(),
+                                                                     getStopValue(),
+                                                                     getOutsideValue(),
+                                                                     getExponent());
+
+    return lRampContinuousStave;
+
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     if (pNormalizedTime < getSyncStart()
@@ -162,22 +178,6 @@ public class RampContinuousStave extends StaveAbstract
   public void setExponent(float pExponent)
   {
     mExponent = pExponent;
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-    RampContinuousStave lRampContinuousStave =
-                                             new RampContinuousStave(getName(),
-                                                                     getSyncStart(),
-                                                                     getSyncStop(),
-                                                                     getStartValue(),
-                                                                     getStopValue(),
-                                                                     getOutsideValue(),
-                                                                     getExponent());
-
-    return lRampContinuousStave;
-
   }
 
 }

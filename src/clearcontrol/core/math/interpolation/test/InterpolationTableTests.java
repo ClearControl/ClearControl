@@ -8,9 +8,17 @@ import clearcontrol.core.math.interpolation.SplineInterpolationTable;
 
 import org.junit.Test;
 
+/**
+ * Interpolation table tests
+ *
+ * @author royer
+ */
 public class InterpolationTableTests
 {
 
+  /**
+   * Test
+   */
   @Test
   public void test()
   {
@@ -45,18 +53,19 @@ public class InterpolationTableTests
     System.out.println(lInterpolationTable.getInterpolatedValue(1,
                                                                 1.2));
 
-    /*final MultiPlot lDisplayTable = lInterpolationTable.displayTable("test");
+    /*final MultiPlot lDisplayTable =
+                                  lInterpolationTable.displayTable("test");
     
     while (lDisplayTable.isVisible())
     {
-    	ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
-    }/**/
+      ThreadUtils.sleep(10L, TimeUnit.MILLISECONDS);
+    } /**/
 
-    assertEquals(5.4,
+    assertEquals(5.47,
                  lInterpolationTable.getInterpolatedValue(0, 4),
                  0.03);
 
-    assertEquals(-2,
+    assertEquals(-2.11,
                  lInterpolationTable.getInterpolatedValue(1, 4),
                  0.03);
 

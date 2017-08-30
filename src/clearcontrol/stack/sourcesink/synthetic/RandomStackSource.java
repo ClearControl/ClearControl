@@ -2,7 +2,7 @@ package clearcontrol.stack.sourcesink.synthetic;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -65,19 +65,42 @@ public class RandomStackSource implements StackSourceInterface
   }
 
   @Override
-  public double getStackTimeStampInSeconds(long pStackIndex)
+  public long getNumberOfStacks(String pChannel)
   {
-    return Magnitude.nano2unit(System.nanoTime());
+    return getNumberOfStacks();
+  }
+
+  @Override
+  public Double getStackTimeStampInSeconds(long pStackIndex)
+  {
+    return getStackTimeStampInSeconds(cDefaultChannel, pStackIndex);
+  }
+
+  @Override
+  public Double getStackTimeStampInSeconds(String pChannel,
+                                           long pStackIndex)
+  {
+    return OrderOfMagnitude.nano2unit(System.nanoTime());
   }
 
   @Override
   public StackInterface getStack(final long pStackIndex)
   {
-    return getStack(pStackIndex, 0, TimeUnit.NANOSECONDS);
+    return getStack(cDefaultChannel,
+                    pStackIndex,
+                    0,
+                    TimeUnit.NANOSECONDS);
   }
 
   @Override
-  public StackInterface getStack(final long pStackIndex,
+  public StackInterface getStack(String pChannel, long pStackIndex)
+  {
+    return getStack(pChannel, pStackIndex, 1, TimeUnit.NANOSECONDS);
+  }
+
+  @Override
+  public StackInterface getStack(String pChannel,
+                                 final long pStackIndex,
                                  long pTime,
                                  TimeUnit pTimeUnit)
   {

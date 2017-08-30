@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 
@@ -18,7 +18,7 @@ import clearcontrol.devices.lasers.LaserDeviceInterface;
  */
 public class LasertHubDevice extends VirtualDevice implements
                              StartStopDeviceInterface,
-                             LoggingInterface
+                             LoggingFeature
 {
 
   ArrayList<LaserDeviceInterface> mAddedLaserDeviceList =

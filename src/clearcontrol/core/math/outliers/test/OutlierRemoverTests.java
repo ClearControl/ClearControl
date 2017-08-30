@@ -8,9 +8,17 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.Test;
 
+/**
+ * outlier remover tests.
+ *
+ * @author royer
+ */
 public class OutlierRemoverTests
 {
 
+  /**
+   * Basic test
+   */
   @Test
   public void test()
   {

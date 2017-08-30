@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
@@ -31,6 +31,7 @@ public class StackTests
 {
 
   private static final int cMaximumNumberOfObjects = 1024;
+  @SuppressWarnings("unused")
   private static final long cMaximumLiveMemoryInBytes = 2L * 1024L
                                                         * 1024L
                                                         * 1024L;
@@ -182,7 +183,7 @@ public class StackTests
           final byte lByte = lContiguousMemory2.getByteAligned(k);
           assertEquals((byte) k, lByte);
         }
-        ThreadUtils.sleep(5 + (int) (Math.random() * 10),
+        ThreadSleep.sleep(5 + (int) (Math.random() * 10),
                           TimeUnit.MILLISECONDS);
 
         lStack.release();
@@ -193,14 +194,14 @@ public class StackTests
 
       final long lLiveObjectCount =
                                   lRecycler.getNumberOfLiveObjects();
-      final long lLiveMemoryInBytes =
+      /*final long lLiveMemoryInBytes =
                                     lRecycler.computeLiveMemorySizeInBytes();
-
+      
       final long lAvailableObjectCount =
                                        lRecycler.getNumberOfAvailableObjects();
       final long lAvailableMemoryInBytes =
                                          lRecycler.computeAvailableMemorySizeInBytes();
-      /*System.out.format("live count=%d, live mem=%d, avail count=%d, avail mem=%d \n",
+      System.out.format("live count=%d, live mem=%d, avail count=%d, avail mem=%d \n",
                         lLiveObjectCount,
                         lLiveMemoryInBytes,
                         lAvailableObjectCount,

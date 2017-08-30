@@ -8,16 +8,22 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcl.util.ElapsedTime;
+import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.task.LoopTaskDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
-import clearcontrol.microscope.lightsheet.acquisition.AcquisitionType;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
 import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
+import clearcontrol.microscope.state.AcquisitionStateInterface;
+import clearcontrol.microscope.state.AcquisitionType;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.metadata.MetaDataChannel;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import clearcontrol.stack.sourcesink.sink.FileStackSinkInterface;
 
 /**
@@ -33,6 +39,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                             DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SS");
 
   private final MicroscopeInterface<?> mMicroscope;
+
+  private AdaptiveEngine<? extends AcquisitionStateInterface<?, ?>> mAdaptiveEngine;
 
   private final Variable<TimelapseTimerInterface> mTimelapseTimerVariable =
                                                                           new Variable<>("TimelapseTimer",
@@ -72,7 +80,7 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   private final Variable<Long> mTimePointCounterVariable =
                                                          new Variable<Long>("TimePointCounter",
-                                                                            1L);
+                                                                            0L);
 
   private final ArrayList<Class<? extends FileStackSinkInterface>> mFileStackSinkTypesList =
                                                                                            new ArrayList<>();
@@ -93,6 +101,28 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                              new Variable<>("DataSetNamePrefix",
                                                                             null);
 
+  private final Variable<Boolean> mSaveStacksVariable =
+                                                      new Variable<Boolean>("SaveStacks",
+                                                                            true);
+
+  private final Variable<Boolean> mAdaptiveEngineOnVariable =
+                                                            new Variable<Boolean>("AdaptiveEngineOnVariable",
+                                                                                  true);
+
+  private final BoundedVariable<Integer> mMinAdaptiveEngineStepsVariable =
+                                                                         new BoundedVariable<Integer>("MinAdaptiveEngineSteps",
+                                                                                                      1,
+                                                                                                      1,
+                                                                                                      Integer.MAX_VALUE,
+                                                                                                      1);
+
+  private final BoundedVariable<Integer> mMaxAdaptiveEngineStepsVariable =
+                                                                         new BoundedVariable<Integer>("MaxAdaptiveEngineSteps",
+                                                                                                      2,
+                                                                                                      1,
+                                                                                                      Integer.MAX_VALUE,
+                                                                                                      1);
+
   private final VariableSetListener<StackInterface> mStackListener;
 
   /**
@@ -109,7 +139,16 @@ public abstract class TimelapseBase extends LoopTaskDevice
   {
     super("Timelapse");
     mMicroscope = pMicroscope;
+
     getTimelapseTimerVariable().set(pTimelapseTimer);
+
+    MachineConfiguration lMachineConfiguration =
+                                               MachineConfiguration.get();
+    File lDefaultRootFolder =
+                            lMachineConfiguration.getFileProperty("timelapse.rootfolder",
+                                                                  new File(System.getProperty("user.home")
+                                                                           + "/Desktop"));
+    getRootFolderVariable().set(lDefaultRootFolder);
 
     getDataSetNamePostfixVariable().addSetListener((o, n) -> info(
                                                                   "New dataset name: %s \n",
@@ -118,7 +157,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
     mStackListener = (o, n) -> {
       Variable<FileStackSinkInterface> lStackSinkVariable =
                                                           getCurrentFileStackSinkVariable();
-      if (lStackSinkVariable != null && n != null
+      if (getSaveStacksVariable().get() && lStackSinkVariable != null
+          && n != null
           && n.getMetaData()
               .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse)
       {
@@ -126,12 +166,33 @@ public abstract class TimelapseBase extends LoopTaskDevice
              n,
              lStackSinkVariable);
 
+        String lChannelInMetaData =
+                                  n.getMetaData()
+                                   .getValue(MetaDataChannel.Channel);
+
+        final String lChannel =
+                              lChannelInMetaData != null ? lChannelInMetaData
+                                                         : StackSinkSourceInterface.cDefaultChannel;
+
         ElapsedTime.measureForceOutput("TimeLapse stack saving",
                                        () -> lStackSinkVariable.get()
-                                                               .appendStack(n));
+                                                               .appendStack(lChannel,
+                                                                            n));
 
       }
     };
+
+    getMaxAdaptiveEngineStepsVariable().addSetListener((o, n) -> {
+      int lMin = getMinAdaptiveEngineStepsVariable().get().intValue();
+      if (n.intValue() != o.intValue() && n < lMin)
+        getMaxAdaptiveEngineStepsVariable().setAsync(lMin);
+    });
+
+    getMinAdaptiveEngineStepsVariable().addSetListener((o, n) -> {
+      int lMax = getMaxAdaptiveEngineStepsVariable().get().intValue();
+      if (n.intValue() != o.intValue() && n > lMax)
+        getMaxAdaptiveEngineStepsVariable().setAsync(n);
+    });
   }
 
   /**
@@ -143,6 +204,16 @@ public abstract class TimelapseBase extends LoopTaskDevice
   public TimelapseBase(MicroscopeInterface<?> pMicroscope)
   {
     this(pMicroscope, new FixedIntervalTimelapseTimer());
+  }
+
+  /**
+   * Returns the parent microscope
+   * 
+   * @return parent microscope
+   */
+  public MicroscopeInterface<?> getMicroscope()
+  {
+    return mMicroscope;
   }
 
   /**
@@ -173,6 +244,25 @@ public abstract class TimelapseBase extends LoopTaskDevice
   }
 
   @Override
+  public void startTimelapse()
+  {
+    if (mMicroscope.getCurrentTask().get() != null)
+    {
+      warning("Another task (%s) is already running, please stop it first.",
+              mMicroscope.getCurrentTask());
+      return;
+    }
+
+    getStartSignalVariable().setEdgeAsync(false, true);
+  }
+
+  @Override
+  public void stopTimelapse()
+  {
+    getStopSignalVariable().setEdgeAsync(false, true);
+  }
+
+  @Override
   public void run()
   {
 
@@ -182,49 +272,21 @@ public abstract class TimelapseBase extends LoopTaskDevice
       getStartDateTimeVariable().set(LocalDateTime.now());
     }
 
-    if (getCurrentFileStackSinkTypeVariable().get() == null)
-    {
-      warning("No stack sink type defined!");
-
-      if (getFileStackSinkTypeList().isEmpty())
-      {
-        severe("No stack sink types available! aborting timelapse acquisition!");
-        return;
-      }
-      Class<? extends FileStackSinkInterface> lDefaultStackSink =
-                                                                getFileStackSinkTypeList().get(0);
-      warning("Using the first stack sink available: %s !",
-              lDefaultStackSink);
-
-      getCurrentFileStackSinkTypeVariable().set(lDefaultStackSink);
-    }
-
     try
     {
-      FileStackSinkInterface lStackSink =
-                                        getCurrentFileStackSinkTypeVariable().get()
-                                                                             .newInstance();
-
-      if (mRootFolderVariable.get() == null)
-      {
-        severe("Root folder not defined.");
-        return;
-      }
-
-      if (getDataSetNamePostfixVariable().get() == null)
-        getDataSetNamePostfixVariable().set("");
-
-      String lNowDateTimeString =
-                                sDateTimeFormatter.format(LocalDateTime.now());
-
-      lStackSink.setLocation(mRootFolderVariable.get(),
-                             lNowDateTimeString + "-"
-                                                        + getDataSetNamePostfixVariable().get());
-
-      mCurrentFileStackSinkVariable.set(lStackSink);
 
       getTimePointCounterVariable().set(0L);
       getTimelapseTimerVariable().get().reset();
+
+      if (getSaveStacksVariable().get())
+      {
+        if (mRootFolderVariable.get() == null)
+        {
+          severe("Root folder not defined.");
+          return;
+        }
+        setupFileSink();
+      }
 
       // This is where we actually start the loop, and we make sure to listen to
       // changes
@@ -236,9 +298,14 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                mMicroscope.getPipelineStackVariable();
         lPipelineStackVariable.addSetListener(mStackListener);
       }
+
+      initAdaptiveEngine();
+
       super.run();
       if (mMicroscope != null)
         lPipelineStackVariable.removeSetListener(mStackListener);
+
+      getCurrentFileStackSinkVariable().set((FileStackSinkInterface) null);
     }
     catch (InstantiationException e)
     {
@@ -254,13 +321,17 @@ public abstract class TimelapseBase extends LoopTaskDevice
              e.getMessage());
       return;
     }
+    finally
+    {
+      mMicroscope.getCurrentTask().set(null);
+    }
 
   }
 
   @Override
   public boolean startTask()
   {
-
+    mMicroscope.getCurrentTask().set(this);
     return super.startTask();
   }
 
@@ -278,6 +349,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
     TimelapseTimerInterface lTimelapseTimer =
                                             getTimelapseTimerVariable().get();
+
+    runAdaptiveEngine(lTimelapseTimer);
 
     lTimelapseTimer.waitToAcquire(1, TimeUnit.DAYS);
     lTimelapseTimer.notifyAcquisition();
@@ -300,6 +373,109 @@ public abstract class TimelapseBase extends LoopTaskDevice
         return false;
 
     return true;
+  }
+
+  protected void setupFileSink() throws InstantiationException,
+                                 IllegalAccessException
+  {
+    if (getCurrentFileStackSinkTypeVariable().get() == null)
+    {
+      warning("No stack sink type defined!");
+
+      if (getFileStackSinkTypeList().isEmpty())
+      {
+        severe("No stack sink types available! aborting timelapse acquisition!");
+        return;
+      }
+      Class<? extends FileStackSinkInterface> lDefaultStackSink =
+                                                                getFileStackSinkTypeList().get(0);
+      warning("Using the first stack sink available: %s !",
+              lDefaultStackSink);
+
+      getCurrentFileStackSinkTypeVariable().set(lDefaultStackSink);
+    }
+
+    FileStackSinkInterface lStackSink =
+                                      getCurrentFileStackSinkTypeVariable().get()
+                                                                           .newInstance();
+
+    if (getDataSetNamePostfixVariable().get() == null)
+      getDataSetNamePostfixVariable().set("");
+
+    String lNowDateTimeString =
+                              sDateTimeFormatter.format(LocalDateTime.now());
+
+    lStackSink.setLocation(mRootFolderVariable.get(),
+                           lNowDateTimeString + "-"
+                                                      + getDataSetNamePostfixVariable().get());
+
+    if (getCurrentFileStackSinkVariable().get() != null)
+      try
+      {
+        getCurrentFileStackSinkVariable().get().close();
+      }
+      catch (Exception e)
+      {
+        severe("Error occured while closing stack sink: %s", e);
+        e.printStackTrace();
+      }
+
+    getCurrentFileStackSinkVariable().set(lStackSink);
+  }
+
+  @SuppressWarnings(
+  { "unchecked" })
+  private void initAdaptiveEngine()
+  {
+    if (!mAdaptiveEngineOnVariable.get())
+      return;
+
+    mAdaptiveEngine = mMicroscope.getDevice(AdaptiveEngine.class, 0);
+    mAdaptiveEngine.getAcquisitionStateCounterVariable().set(0L);
+    mAdaptiveEngine.reset();
+  }
+
+  private void runAdaptiveEngine(TimelapseTimerInterface pTimelapseTimer)
+  {
+    if (!mAdaptiveEngineOnVariable.get())
+      return;
+
+    if (mAdaptiveEngine == null)
+      initAdaptiveEngine();
+
+    int lMinSteps = getMinAdaptiveEngineStepsVariable().get()
+                                                       .intValue();
+    int lMaxSteps = getMaxAdaptiveEngineStepsVariable().get()
+                                                       .intValue();
+
+    if (lMaxSteps < lMinSteps)
+      lMaxSteps = lMinSteps;
+
+    Boolean lMoreStepsNeeded = true;
+
+    for (int i = 0; i < lMinSteps && lMoreStepsNeeded; i++)
+    {
+      lMoreStepsNeeded = mAdaptiveEngine.step();
+    }
+
+    for (int i = 0; i < (lMaxSteps - lMinSteps)
+                    && lMoreStepsNeeded; i++)
+    {
+
+      long lNextStepInMilliseconds =
+                                   (long) (mAdaptiveEngine.estimateNextStepInSeconds()
+                                           * 1000);
+
+      if (pTimelapseTimer.enoughTimeFor(lNextStepInMilliseconds,
+                                        lNextStepInMilliseconds / 10,
+                                        TimeUnit.MILLISECONDS))
+        lMoreStepsNeeded = mAdaptiveEngine.step();
+
+    }
+
+    if (!lMoreStepsNeeded)
+      mAdaptiveEngine.reset();
+
   }
 
   private boolean checkMaxDuration()
@@ -334,6 +510,12 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
   @Override
   public abstract void acquire();
+
+  @Override
+  public Variable<Boolean> getAdaptiveEngineOnVariable()
+  {
+    return mAdaptiveEngineOnVariable;
+  }
 
   @Override
   public Variable<TimelapseTimerInterface> getTimelapseTimerVariable()
@@ -417,6 +599,24 @@ public abstract class TimelapseBase extends LoopTaskDevice
   public Variable<String> getDataSetNamePostfixVariable()
   {
     return mDataSetNamePostfixVariable;
+  }
+
+  @Override
+  public Variable<Boolean> getSaveStacksVariable()
+  {
+    return mSaveStacksVariable;
+  }
+
+  @Override
+  public BoundedVariable<Integer> getMinAdaptiveEngineStepsVariable()
+  {
+    return mMinAdaptiveEngineStepsVariable;
+  }
+
+  @Override
+  public BoundedVariable<Integer> getMaxAdaptiveEngineStepsVariable()
+  {
+    return mMaxAdaptiveEngineStepsVariable;
   }
 
 }

@@ -1,6 +1,12 @@
 package clearcontrol.stack.metadata;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Stack meta data
@@ -9,10 +15,12 @@ import java.util.HashMap;
  */
 public class StackMetaData
 {
-  HashMap<MetaDataEntryInterface<?>, Object> mMetaDataMap;
+  private static final ObjectMapper cMapper = new ObjectMapper();
+
+  HashMap<String, Object> mMetaDataMap;
 
   /**
-   * Instanciates an empty meta data object
+   * Instantiates an empty meta data object
    */
   public StackMetaData()
   {
@@ -21,10 +29,10 @@ public class StackMetaData
   }
 
   /**
-   * Instanciates a meta data object
+   * Instantiates a meta data object
    * 
    * @param pStackMetaData
-   *          met data object
+   *          meta data object
    */
   public StackMetaData(StackMetaData pStackMetaData)
   {
@@ -44,12 +52,37 @@ public class StackMetaData
   public <T> void addEntry(MetaDataEntryInterface<T> pEntryKey,
                            T pValue)
   {
-    if (!(pEntryKey.getMetaDataClass().isInstance(pValue)))
-      throw new IllegalArgumentException(String.format("Value of metadata '%s' value must be of type %s.",
-                                                       pEntryKey,
-                                                       pEntryKey.getMetaDataClass()));
+    mMetaDataMap.put(pEntryKey.toString(), pValue);
+  }
 
+  /**
+   * Sets the meta data value for a given key
+   * 
+   * @param pEntryKey
+   *          entry key
+   * @param pValue
+   *          value
+   */
+
+  public <T> void addEntry(String pEntryKey, T pValue)
+  {
     mMetaDataMap.put(pEntryKey, pValue);
+  }
+
+  /**
+   * Removes all meta data entries of a given type
+   * 
+   * @param pEntriesClass
+   *          class of entries to remove
+   */
+  public <T> void removeAllEntries(Class<T> pEntriesClass)
+  {
+
+    for (Entry<String, Object> lEntry : new ArrayList<>(mMetaDataMap.entrySet()))
+    {
+      if (pEntriesClass.isInstance(lEntry.getValue()))
+        mMetaDataMap.remove(lEntry.getKey());
+    }
   }
 
   /**
@@ -61,7 +94,31 @@ public class StackMetaData
 
   public <T> void removeEntry(MetaDataEntryInterface<T> pEntryKey)
   {
-    mMetaDataMap.remove(pEntryKey);
+    mMetaDataMap.remove(pEntryKey.toString());
+  }
+
+  /**
+   * Returns true if this metadata object contains the given entry key
+   * 
+   * @param pEntryKey
+   *          entry
+   * @return true -> entry(key) present
+   */
+  public <T> boolean hasEntry(MetaDataEntryInterface<T> pEntryKey)
+  {
+    return mMetaDataMap.containsKey(pEntryKey.toString());
+  }
+
+  /**
+   * Returns true if this metadata object contains the given value
+   * 
+   * @param pValue
+   *          value
+   * @return true -> value present
+   */
+  public <T> boolean hasValue(Object pValue)
+  {
+    return mMetaDataMap.containsValue(pValue);
   }
 
   /**
@@ -75,12 +132,22 @@ public class StackMetaData
   @SuppressWarnings("unchecked")
   public <T> T getValue(MetaDataEntryInterface<T> pEntryKey)
   {
-    T lT = (T) mMetaDataMap.get(pEntryKey);
+    T lT = (T) mMetaDataMap.get(pEntryKey.toString());
 
     if (lT != null && !(pEntryKey.getMetaDataClass().isInstance(lT)))
-      throw new IllegalArgumentException(String.format("Value of metadata '%s' value must be of type %s.",
+    {
+      if (lT.getClass() == Long.class
+          && pEntryKey.getMetaDataClass() == Integer.class)
+        return (T) lT;
+      else if (lT.getClass() == Integer.class
+               && pEntryKey.getMetaDataClass() == Long.class)
+        return (T) lT;
+
+      throw new IllegalArgumentException(String.format("Value of metadata '%s' value must be of type %s and not %s.",
                                                        pEntryKey,
-                                                       pEntryKey.getMetaDataClass()));
+                                                       pEntryKey.getMetaDataClass(),
+                                                       lT.getClass()));
+    }
 
     return lT;
   }
@@ -125,7 +192,10 @@ public class StackMetaData
 
   public Long getIndex()
   {
-    return getValue(MetaDataOrdinals.Index);
+    Number lValue = getValue(MetaDataOrdinals.Index);
+    if (lValue == null)
+      return null;
+    return lValue.longValue();
   }
 
   /**
@@ -148,7 +218,10 @@ public class StackMetaData
 
   public Long getTimeStampInNanoseconds()
   {
-    return getValue(MetaDataOrdinals.TimeStampInNanoSeconds);
+    Number lValue = getValue(MetaDataOrdinals.TimeStampInNanoSeconds);
+    if (lValue == null)
+      return null;
+    return lValue.longValue();
   }
 
   /**
@@ -236,7 +309,64 @@ public class StackMetaData
   @Override
   public String toString()
   {
-    return mMetaDataMap.toString();
+    try
+    {
+
+      String lString = cMapper.writeValueAsString(mMetaDataMap);
+      return lString;
+    }
+    catch (JsonProcessingException e)
+    {
+      return toString();
+    }
+  }
+
+  /**
+   * Adds to this meta data object the entries contained in the given string (as
+   * produced by toString())
+   * 
+   * @param pString
+   *          string
+   * @return values
+   */
+  public boolean fromString(String pString)
+  {
+    pString = backwardsCompatibilityFilter(pString);
+
+    try
+    {
+      @SuppressWarnings("unchecked")
+      HashMap<String, Object> lMapRead =
+                                       (HashMap<String, Object>) cMapper.readValue(pString,
+                                                                                   HashMap.class);
+      mMetaDataMap.putAll(lMapRead);
+      return true;
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  /**
+   * Applies transformations to the string to convert it t the new JSON format.
+   * This is to make it possible to load older datasets
+   * 
+   * @param pString
+   * @return
+   */
+  protected String backwardsCompatibilityFilter(String pString)
+  {
+    if (!pString.contains("\"") && pString.contains("="))
+    {
+      pString = pString.replaceAll("=", ":");
+      pString = pString.replaceAll(":", "\":");
+      pString = pString.replaceAll(", ", ", \"");
+      pString = pString.replaceAll("\\{", "\\{\"");
+      pString = pString.replaceAll("TimeLapse", "\"TimeLapse\"");
+    }
+    return pString;
   }
 
 }

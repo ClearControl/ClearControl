@@ -3,8 +3,8 @@ tasks.create(name: 'gitExecutableHooks').doLast {
 }
 
 task installGitHooks(type: Copy) {
-    from new File(rootProject.rootDir, 'gradle/pre-commit')
-    into { new File(rootProject.rootDir, '.git/hooks') }
+      from new File(rootProject.rootDir, 'gradle/pre-commit')
+      into { new File(rootProject.rootDir, '.git/hooks') }
 }
 
 gitExecutableHooks.dependsOn installGitHooks

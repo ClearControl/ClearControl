@@ -14,13 +14,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.scripting.lang.ScriptingLanguageInterface;
 
 import org.apache.commons.io.IOUtils;
 
-public class ScriptingEngine implements
-                             AsynchronousExecutorServiceAccess
+public class ScriptingEngine implements AsynchronousExecutorFeature
 {
   private static ThreadLocal<Boolean> mCancelThreadLocal =
                                                          new ThreadLocal<>();

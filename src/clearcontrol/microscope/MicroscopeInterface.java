@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.change.HasChangeListenerInterface;
@@ -12,6 +14,7 @@ import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceInterface;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.processor.StackProcessingPipelineInterface;
@@ -39,6 +42,23 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
    */
   @Override
   public String getName();
+
+  /**
+   * Returns the master lock, which can be used to make sure that opening,
+   * closing, playing queues don't overlapp.
+   * 
+   * @return master lock
+   */
+  ReentrantLock getMasterLock();
+
+  /**
+   * Current task. This is used to prevent multiple tasks executions don't
+   * overlap, for example, starting an acquisition while some other task is
+   * already running...
+   * 
+   * @return current task atomic reference
+   */
+  AtomicReference<Object> getCurrentTask();
 
   /**
    * Sets the simulation flag.
@@ -107,6 +127,20 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
    * @return device list object
    */
   public MicroscopeDeviceLists getDeviceLists();
+
+  /**
+   * Adds acquisition state manager
+   * 
+   * @return acquisition manager
+   */
+  public AcquisitionStateManager<?> addAcquisitionStateManager();
+
+  /**
+   * Returns the acquisition state manager for this microscope
+   * 
+   * @return acquisition state manager
+   */
+  public AcquisitionStateManager<?> getAcquisitionStateManager();
 
   /**
    * Sets the recycler that should be used by the stack camera device of given
@@ -361,18 +395,10 @@ public interface MicroscopeInterface<Q extends QueueInterface> extends
   public double getStageR();
 
   /**
-   * Sets the main XYZR stage of this microscope.
-   * 
-   * @param pStageDeviceInterface
-   *          main XYZR stage.
-   */
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface);
-
-  /**
    * Returns the main XYZR stage of this microscope.
    * 
    * @return main XYZR stage
    */
-  public StageDeviceInterface getMainXYZRStage();
+  public StageDeviceInterface getMainStage();
 
 }

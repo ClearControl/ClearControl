@@ -28,7 +28,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.UnsignedByte,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);
@@ -62,7 +63,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.UnsignedByte,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);
@@ -96,7 +98,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.UnsignedShort,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);
@@ -129,7 +132,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.UnsignedInt,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);
@@ -163,7 +167,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.Float,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);
@@ -197,7 +202,8 @@ public class VideoWindowDemo
                                    new VideoWindow("VideoWindow test",
                                                    NativeTypeEnum.Double,
                                                    768,
-                                                   768);
+                                                   768,
+                                                   false);
     lVideoWindow.setDisplayOn(true);
     lVideoWindow.setManualMinMax(true);
     // lVideoWindow.setLinearInterpolation(true);

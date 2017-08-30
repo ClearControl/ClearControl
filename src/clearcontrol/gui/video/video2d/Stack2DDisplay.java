@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.video.StackDisplayInterface;
@@ -25,9 +25,14 @@ import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.exceptions.FreedException;
 
+/**
+ * Stack 2D display
+ *
+ * @author royer
+ */
 public class Stack2DDisplay extends VirtualDevice implements
                             StackDisplayInterface,
-                            AsynchronousSchedulerServiceAccess
+                            AsynchronousSchedulerFeature
 {
   private final VideoWindow mVideoWindow;
 
@@ -47,34 +52,75 @@ public class Stack2DDisplay extends VirtualDevice implements
 
   private final ReentrantLock mDisplayLock = new ReentrantLock();
 
+  /**
+   * Instantiates a stack 2D display
+   */
   public Stack2DDisplay()
   {
-    this("2D Video Display", 512, 512, 1);
+    this("2D Video Display", 512, 512, false, 1);
   }
 
+  /**
+   * Instantiates a stack 2D display
+   * 
+   * @param pVideoWidth
+   *          window width
+   * @param pVideoHeight
+   *          window height
+   */
   public Stack2DDisplay(final int pVideoWidth, final int pVideoHeight)
   {
-    this("2D Video Display", pVideoWidth, pVideoHeight, 10);
+    this("2D Video Display", pVideoWidth, pVideoHeight, false, 10);
   }
 
-  public Stack2DDisplay(final String pWindowName,
-                        final int pVideoWidth,
-                        final int pVideoHeight)
-  {
-    this(pWindowName, pVideoWidth, pVideoHeight, 10);
-  }
-
+  /**
+   * Instantiates a stack 2D display
+   * 
+   * @param pWindowName
+   *          window name
+   * @param pWindowWidth
+   *          window width
+   * @param pWindowHeight
+   *          window height
+   * @param pFlipX
+   *          flip image horizontally
+   */
   public Stack2DDisplay(final String pWindowName,
                         final int pWindowWidth,
                         final int pWindowHeight,
+                        final boolean pFlipX)
+  {
+    this(pWindowName, pWindowWidth, pWindowHeight, pFlipX, 10);
+  }
+
+  /**
+   * Instantiates a stack 2D display
+   * 
+   * @param pWindowName
+   *          window name
+   * @param pWindowWidth
+   *          window width
+   * @param pWindowHeight
+   *          window height
+   * @param pFlipX
+   *          flip image horizontally
+   * @param pUpdaterQueueLength
+   *          updater queue length
+   */
+  public Stack2DDisplay(final String pWindowName,
+                        final int pWindowWidth,
+                        final int pWindowHeight,
+                        final boolean pFlipX,
                         final int pUpdaterQueueLength)
   {
     super(pWindowName);
 
-    mVideoWindow = new VideoWindow(pWindowName,
-                                   NativeTypeEnum.UnsignedShort,
-                                   pWindowWidth,
-                                   pWindowHeight);
+    mVideoWindow =
+                 new VideoWindow(pWindowName,
+                                 NativeTypeEnum.UnsignedShort,
+                                 pWindowWidth,
+                                 pWindowHeight,
+                                 pFlipX);
 
     // mVideoWindow.setVisible(true);
 

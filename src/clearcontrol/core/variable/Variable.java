@@ -40,22 +40,22 @@ public class Variable<O> extends VariableBase<O> implements
   }
 
   // That where we store the value:
-  protected volatile O mReference;
+  protected volatile O mValue;
 
   // list of variable to send updates to:
   protected final CopyOnWriteArrayList<Variable<O>> mVariablesToSendUpdatesTo =
                                                                               new CopyOnWriteArrayList<Variable<O>>();
 
   /**
-   * Instanciates a variabke witha given name and null reference
+   * Instantiates a variable with a given name and null reference
    * 
    * @param pVariableName
-   *          variale name
+   *          Variable name
    */
   public Variable(final String pVariableName)
   {
     super(pVariableName);
-    mReference = null;
+    mValue = null;
   }
 
   /**
@@ -63,13 +63,13 @@ public class Variable<O> extends VariableBase<O> implements
    * 
    * @param pVariableName
    *          variable name
-   * @param pReference
+   * @param pValue
    *          initial value
    */
-  public Variable(final String pVariableName, final O pReference)
+  public Variable(final String pVariableName, final O pValue)
   {
     super(pVariableName);
-    mReference = pReference;
+    mValue = pValue;
   }
 
   /**
@@ -79,12 +79,12 @@ public class Variable<O> extends VariableBase<O> implements
   public void setCurrent()
   {
     EventPropagator.clear();
-    set(mReference);
+    set(mValue);
   }
 
   protected void setCurrentInternal()
   {
-    set(mReference);
+    set(mValue);
   }
 
   /**
@@ -136,6 +136,19 @@ public class Variable<O> extends VariableBase<O> implements
   {
     EventPropagator.clear();
     setReferenceInternal(pNewReference);
+    EventPropagator.clear();
+  }
+
+  /**
+   * Convenience method that sets the value of the given variable to this
+   * variable
+   * 
+   * @param pVariable
+   *          variable
+   */
+  public void set(Variable<O> pVariable)
+  {
+    set(pVariable.get());
   }
 
   /**
@@ -145,11 +158,11 @@ public class Variable<O> extends VariableBase<O> implements
   @SuppressWarnings("unchecked")
   public void toggle()
   {
-    if (mReference instanceof Number)
+    if (mValue instanceof Number)
     {
       set((O) new Double(-(Double) get()));
     }
-    else if (mReference instanceof Boolean)
+    else if (mValue instanceof Boolean)
     {
       set((O) new Boolean(!(Boolean) get()));
     }
@@ -162,8 +175,7 @@ public class Variable<O> extends VariableBase<O> implements
       return false;
     }
 
-    final O lNewValueAfterHook = setEventHook(mReference,
-                                              pNewReference);
+    final O lNewValueAfterHook = setEventHook(mValue, pNewReference);
 
     EventPropagator.add(this);
     if (mVariablesToSendUpdatesTo != null)
@@ -177,8 +189,8 @@ public class Variable<O> extends VariableBase<O> implements
       }
     }
 
-    final O lOldReference = mReference;
-    mReference = lNewValueAfterHook;
+    final O lOldReference = mValue;
+    mValue = lNewValueAfterHook;
 
     notifyListenersOfSetEvent(lOldReference, lNewValueAfterHook);
     if (lOldReference != null && lNewValueAfterHook != null
@@ -189,7 +201,7 @@ public class Variable<O> extends VariableBase<O> implements
   }
 
   /**
-   * Sends a new avalue to the variables synced to this variable - this is
+   * Sends a new value to the variables synced to this variable - this is
    * normally called internally when setting the value. This should be only used
    * if you know what you are doing...
    * 
@@ -257,7 +269,7 @@ public class Variable<O> extends VariableBase<O> implements
   @Override
   public O get()
   {
-    final O lNewReferenceAfterHook = getEventHook(mReference);
+    final O lNewReferenceAfterHook = getEventHook(mValue);
     notifyListenersOfGetEvent(lNewReferenceAfterHook);
     return lNewReferenceAfterHook;
   }
@@ -339,29 +351,29 @@ public class Variable<O> extends VariableBase<O> implements
   @SuppressWarnings("unchecked")
   public void increment()
   {
-    if (mReference instanceof Long)
+    if (mValue instanceof Long)
     {
-      Long lLong = (Long) mReference;
+      Long lLong = (Long) mValue;
       set((O) (new Long(lLong + 1)));
     }
-    else if (mReference instanceof Integer)
+    else if (mValue instanceof Integer)
     {
-      Integer lInteger = (Integer) mReference;
+      Integer lInteger = (Integer) mValue;
       set((O) (new Integer(lInteger + 1)));
     }
-    else if (mReference instanceof Short)
+    else if (mValue instanceof Short)
     {
-      Short lShort = (Short) mReference;
+      Short lShort = (Short) mValue;
       set((O) (new Short((short) (lShort + 1))));
     }
-    else if (mReference instanceof Character)
+    else if (mValue instanceof Character)
     {
-      Character lCharacter = (Character) mReference;
+      Character lCharacter = (Character) mValue;
       set((O) (new Character((char) (lCharacter + 1))));
     }
-    else if (mReference instanceof Byte)
+    else if (mValue instanceof Byte)
     {
-      Byte lByte = (Byte) mReference;
+      Byte lByte = (Byte) mValue;
       set((O) (new Byte((byte) (lByte + 1))));
     }
     else
@@ -374,29 +386,29 @@ public class Variable<O> extends VariableBase<O> implements
   @SuppressWarnings("unchecked")
   public void decrement()
   {
-    if (mReference instanceof Long)
+    if (mValue instanceof Long)
     {
-      Long lLong = (Long) mReference;
+      Long lLong = (Long) mValue;
       set((O) (new Long(lLong - 1)));
     }
-    else if (mReference instanceof Integer)
+    else if (mValue instanceof Integer)
     {
-      Integer lInteger = (Integer) mReference;
+      Integer lInteger = (Integer) mValue;
       set((O) (new Integer(lInteger - 1)));
     }
-    else if (mReference instanceof Short)
+    else if (mValue instanceof Short)
     {
-      Short lShort = (Short) mReference;
+      Short lShort = (Short) mValue;
       set((O) (new Short((short) (lShort - 1))));
     }
-    else if (mReference instanceof Character)
+    else if (mValue instanceof Character)
     {
-      Character lCharacter = (Character) mReference;
+      Character lCharacter = (Character) mValue;
       set((O) (new Character((char) (lCharacter - 1))));
     }
-    else if (mReference instanceof Byte)
+    else if (mValue instanceof Byte)
     {
-      Byte lByte = (Byte) mReference;
+      Byte lByte = (Byte) mValue;
       set((O) (new Byte((byte) (lByte - 1))));
     }
     else
@@ -410,7 +422,7 @@ public class Variable<O> extends VariableBase<O> implements
    */
   public boolean isNotNull()
   {
-    return mReference != null;
+    return mValue != null;
   }
 
   /**
@@ -420,7 +432,7 @@ public class Variable<O> extends VariableBase<O> implements
    */
   public boolean isNull()
   {
-    return mReference == null;
+    return mValue == null;
   }
 
   @Override
@@ -429,32 +441,12 @@ public class Variable<O> extends VariableBase<O> implements
     try
     {
       return getName() + "="
-             + ((mReference == null) ? "null"
-                                     : mReference.toString());
+             + ((mValue == null) ? "null" : mValue.toString());
     }
     catch (final NullPointerException e)
     {
       return getName() + "=null";
     }
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return getName().hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Variable<?> other = (Variable<?>) obj;
-    return getName().equals(other.getName());
   }
 
 }

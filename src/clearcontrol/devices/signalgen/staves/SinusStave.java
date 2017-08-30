@@ -24,6 +24,16 @@ public class SinusStave extends StaveAbstract
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+
+    return new SinusStave(getName(),
+                          getSinusPeriod(),
+                          getSinusPhase(),
+                          getSinusAmplitude());
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     final float lValue =
@@ -64,16 +74,6 @@ public class SinusStave extends StaveAbstract
   public void setSinusAmplitude(float pSinusAmplitude)
   {
     mSinusAmplitude = pSinusAmplitude;
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-
-    return new SinusStave(getName(),
-                          getSinusPeriod(),
-                          getSinusPhase(),
-                          getSinusAmplitude());
   }
 
 }

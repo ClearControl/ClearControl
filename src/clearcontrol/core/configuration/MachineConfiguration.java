@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import clearcontrol.core.log.LoggingInterface;
-import clearcontrol.core.math.functions.InvertibleFunction;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 
@@ -32,10 +31,10 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author royer
  */
-public class MachineConfiguration implements LoggingInterface
+public class MachineConfiguration implements LoggingFeature
 {
   private static final String cComments =
-                                        "RTlib machine configuration file";
+                                        "ClearControl machine configuration file";
   private static final MachineConfiguration sConfiguration =
                                                            new MachineConfiguration();
   private static ObjectMapper sObjectMapper = new ObjectMapper();
@@ -45,7 +44,7 @@ public class MachineConfiguration implements LoggingInterface
    * 
    * @return singketon instance of MachineConfiguration
    */
-  public static MachineConfiguration getCurrentMachineConfiguration()
+  public static MachineConfiguration get()
   {
     return sConfiguration;
   }
@@ -130,7 +129,12 @@ public class MachineConfiguration implements LoggingInterface
   public String getStringProperty(String pKey, String pDefaultValue)
   {
     if (mProperties == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
     return mProperties.getProperty(pKey, pDefaultValue);
   }
 
@@ -150,7 +154,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %d\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Integer.parseInt(lProperty);
   }
@@ -170,7 +179,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %d\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Long.parseLong(lProperty);
   }
@@ -190,7 +204,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %g\n",
+              pKey,
+              pDefaultValue);
       return pDefaultValue;
+    }
 
     return Double.parseDouble(lProperty);
   }
@@ -211,7 +230,12 @@ public class MachineConfiguration implements LoggingInterface
       return pDefaultValue;
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultValue ? "true" : "false");
       return pDefaultValue;
+    }
 
     return Boolean.parseBoolean(lProperty.toLowerCase())
            || lProperty.trim().equals("1")
@@ -231,9 +255,17 @@ public class MachineConfiguration implements LoggingInterface
    */
   public File getFileProperty(String pKey, File pDefaultFile)
   {
-    return new File(getStringProperty(pKey,
-                                      pDefaultFile == null ? null
-                                                           : pDefaultFile.getPath()));
+    String lStringProperty = getStringProperty(pKey, null);
+
+    if (lStringProperty == null)
+    {
+      warning("Could not find entry %s, using default value %s\n",
+              pKey,
+              pDefaultFile.getAbsolutePath());
+      return pDefaultFile;
+    }
+
+    return new File(lStringProperty);
   }
 
   /**
@@ -251,7 +283,7 @@ public class MachineConfiguration implements LoggingInterface
                                     int pDeviceIndex,
                                     String pDefaultPort)
   {
-    final String lKey = "device.serial." + pDeviceName.toLowerCase()
+    final String lKey = "device.serial." + pDeviceName
                         + "."
                         + pDeviceIndex;
     final String lPort = getStringProperty(lKey, pDefaultPort);
@@ -274,7 +306,7 @@ public class MachineConfiguration implements LoggingInterface
                                                   int pDeviceIndex,
                                                   String pDefaultHostNameAndPort)
   {
-    final String lKey = "device.network." + pDeviceName.toLowerCase()
+    final String lKey = "device.network." + pDeviceName
                         + "."
                         + pDeviceIndex;
     final String lHostnameAndPort =
@@ -295,7 +327,7 @@ public class MachineConfiguration implements LoggingInterface
   public Integer getIODevicePort(String pDeviceName,
                                  Integer pDefaultPort)
   {
-    final String lKey = "device." + pDeviceName.toLowerCase();
+    final String lKey = "device." + pDeviceName;
     final Integer lPort = getIntegerProperty(lKey, pDefaultPort);
     return lPort;
   }
@@ -312,9 +344,7 @@ public class MachineConfiguration implements LoggingInterface
   public boolean getIsDevicePresent(String pDeviceName,
                                     int pDeviceIndex)
   {
-    final String lKey = "device." + pDeviceName.toLowerCase()
-                        + "."
-                        + pDeviceIndex;
+    final String lKey = "device." + pDeviceName + "." + pDeviceIndex;
     return getBooleanProperty(lKey, false);
   }
 
@@ -341,8 +371,8 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
-   * Returns a folder with the clearcontrol folder (.clearcontrol), and creates
-   * it if it does not exist yet
+   * Returns a folder within the clearcontrol folder (.clearcontrol). The folder
+   * is created if it does not exist.
    * 
    * @param pFolderName
    *          folder name
@@ -426,37 +456,20 @@ public class MachineConfiguration implements LoggingInterface
   }
 
   /**
-   * Return bounds for variable
-   * 
-   * @param pBoundsName
-   *          bounds name
-   * @param pVariable
-   *          variable
-   */
-  public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
-                                                                                    BoundedVariable<T> pVariable)
-  {
-    getBoundsForVariable(pBoundsName, pVariable, null);
-  }
-
-  /**
    * Sets the bounds for a given variable.
    * 
    * @param pBoundsName
    *          bounds name
    * @param pVariable
    *          variable
-   * @param pFunction
-   *          function to use
+   * 
    */
   @SuppressWarnings("unchecked")
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
-                                                                                    BoundedVariable<T> pVariable,
-                                                                                    InvertibleFunction<F> pFunction)
+                                                                                    BoundedVariable<T> pVariable)
   {
     getBoundsForVariable(pBoundsName,
                          pVariable,
-                         pFunction,
                          (T) new Double(-100),
                          (T) new Double(100));
   }
@@ -468,8 +481,6 @@ public class MachineConfiguration implements LoggingInterface
    *          bounds name
    * @param pVariable
    *          variable
-   * @param pFunction
-   *          function to use
    * @param pDefaultMin
    *          default min
    * @param pDefaultNax
@@ -477,7 +488,6 @@ public class MachineConfiguration implements LoggingInterface
    */
   public <T extends Number, F extends UnivariateFunction> void getBoundsForVariable(String pBoundsName,
                                                                                     BoundedVariable<T> pVariable,
-                                                                                    InvertibleFunction<F> pFunction,
                                                                                     T pDefaultMin,
                                                                                     T pDefaultNax)
   {
@@ -515,20 +525,7 @@ public class MachineConfiguration implements LoggingInterface
         return;
       }
 
-      if (pFunction == null)
-      {
-        warning("Function provided for setting bounds of %s is null! \n",
-                pBoundsName);
-        pVariable.setMinMax(-100.0, 100.0);
-        return;
-      }
-
-      UnivariateFunction lInverse = pFunction.inverse();
-
-      double lDomainMin = lInverse.value(lMin);
-      double lDomainMax = lInverse.value(lMax);
-
-      pVariable.setMinMax(lDomainMin, lDomainMax);
+      pVariable.setMinMax(lMin, lMax);
 
       Double lGranularity = lMap.get("granularity");
       if (lGranularity == null)

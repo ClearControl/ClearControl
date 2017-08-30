@@ -14,9 +14,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -34,10 +32,10 @@ import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 public class CameraDevicePanel extends AnchorPane
 {
   private final StackCameraDeviceInterface<?> mCameraDeviceInterface;
-  final int mMainRectangleSize = 300;
+  final int mMainRectangleSize = 312;
 
-  float mMaxCameraWidth = 2048;
-  float mMaxCameraHeight = 2048;
+  float mMaxCameraWidth;
+  float mMaxCameraHeight;
 
   // String properties hold the actual dimension size for the capture resolution
   private StringProperty mCameraWidthStringProperty,
@@ -51,7 +49,7 @@ public class CameraDevicePanel extends AnchorPane
   private SimpleLongProperty mCameraWidthProperty,
       mCameraHeightProperty;
 
-  private GridPane mGridPane;
+  private CameraResolutionGrid mGridPane;
 
   Rectangle mRectangle = createDraggableRectangle(37.5, 37.5);
   Line mHLine, mVLine;
@@ -190,31 +188,38 @@ public class CameraDevicePanel extends AnchorPane
     mCameraWidthProperty = new SimpleLongProperty(pWidth);
     mCameraHeightProperty = new SimpleLongProperty(pHeight);
 
-    mGridPane = new GridPane();
+    CameraResolutionGrid.ButtonEventHandler lButtonHandler =
+                                                           (w, h) -> {
+                                                             return event -> {
+                                                               setRectangleProperties(w,
+                                                                                      h);
 
-    for (int x = 7; x < 11; x++)
-    {
-      for (int y = 7; y < 11; y++)
-      {
-        int width = 2 << x;
-        int height = 2 << y;
+                                                               mCameraWidthStringProperty.set(Integer.toString(w));
+                                                               mCameraHeightStringProperty.set(Integer.toString(h));
 
-        Button button = new Button(width + "\n" + height);
-        button.setMaxWidth(Double.MAX_VALUE);
-        button.setOnAction(event -> {
-          setRectangleProperties(width, height);
+                                                               updateWidthHeight((long) w,
+                                                                                 (long) h);
+                                                               // System.out.println(
+                                                               // "Set
+                                                               // width/height:
+                                                               // " + width +
+                                                               // "/" + height
+                                                               // );
+                                                             };
+                                                           };
 
-          mCameraWidthStringProperty.set(Integer.toString(width));
-          mCameraHeightStringProperty.set(Integer.toString(height));
+    final int lMaxCameraWidth =
+                              mCameraDeviceInterface.getMaxWidthVariable()
+                                                    .get()
+                                                    .intValue();
+    final int lMaxCameraHeight =
+                               mCameraDeviceInterface.getMaxHeightVariable()
+                                                     .get()
+                                                     .intValue();
 
-          updateWidthHeight((long) width, (long) height);
-          // System.out.println( "Set width/height: " + width + "/" + height );
-        });
-
-        // Place the button on the GridPane
-        mGridPane.add(button, x, y);
-      }
-    }
+    mGridPane = new CameraResolutionGrid(lButtonHandler,
+                                         lMaxCameraWidth,
+                                         lMaxCameraHeight);
 
     Pane canvas = new Pane();
     canvas.setStyle("-fx-background-color: green;");

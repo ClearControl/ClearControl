@@ -44,7 +44,7 @@ public class CoboltLaserDevice extends LaserDeviceBase
   {
     this(pCoboltModelName,
          pMaxPowerInMilliWatt,
-         MachineConfiguration.getCurrentMachineConfiguration()
+         MachineConfiguration.get()
                              .getSerialDevicePort("laser.cobolt",
                                                   pDeviceIndex,
                                                   "NULL"));

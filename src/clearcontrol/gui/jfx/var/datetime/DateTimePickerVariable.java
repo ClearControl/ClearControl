@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import javafx.application.Platform;
 
 import clearcontrol.core.variable.Variable;
-import clearcontrol.gui.jfx.datetime.DateTimePicker;
+import clearcontrol.gui.jfx.custom.datetime.DateTimePicker;
 
 /**
  * Date and time picker that syncs with a variable

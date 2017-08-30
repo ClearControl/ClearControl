@@ -24,6 +24,8 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
  */
 public class SplineInterpolationTable implements Cloneable
 {
+  private static final double cEpsilon = 1e-9;
+
   private final TreeSet<Row> mTable;
   private final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
   private final int mNumberOfColumns;
@@ -81,6 +83,14 @@ public class SplineInterpolationTable implements Cloneable
   public int getNumberOfColumns()
   {
     return mTable.first().getNumberOfColumns();
+  }
+
+  /**
+   * Removes all rows.
+   */
+  public void clear()
+  {
+    mTable.clear();
   }
 
   /**
@@ -157,6 +167,77 @@ public class SplineInterpolationTable implements Cloneable
     mTable.add(lRow);
     mIsUpToDate = false;
     return lRow;
+  }
+
+  /**
+   * Adds a row after a given X value
+   * 
+   * @param pX
+   *          X
+   */
+  public void addRowAfter(double pX)
+  {
+    Row lRowBefore = getFloorRow(pX);
+    Row lRowAfter = getCeilRow(pX + cEpsilon);
+
+    if (lRowAfter == null)
+      lRowAfter = lRowBefore;
+
+    if (lRowBefore == null)
+      lRowBefore = lRowAfter;
+
+    if (lRowAfter == null)
+    {
+      addRow(pX);
+      return;
+    }
+
+    double lX = (lRowBefore.x + lRowAfter.x) / 2;
+
+    if (pX == lX)
+      lX++;
+
+    Row lRow = addRow(lX);
+
+    for (int c = 0; c < lRow.getNumberOfColumns(); c++)
+    {
+      double lValue = 0.5 * (lRowBefore.getY(c) + lRowAfter.getY(c));
+      lRow.setY(c, lValue);
+    }
+  }
+
+  /**
+   * Removes the nearest row for a given X value
+   * 
+   * @param pX
+   *          X
+   * @return remove row
+   */
+  public Row removeRow(double pX)
+  {
+    Row lNearestRow = getNearestRow(pX);
+    mTable.remove(lNearestRow);
+    mIsUpToDate = false;
+    return lNearestRow;
+  }
+
+  /**
+   * Moves a row of given index to a new value
+   * 
+   * @param pRowIndex
+   *          row index
+   * @param pNewX
+   *          new value
+   * @return new row
+   */
+  public Row moveRow(int pRowIndex, double pNewX)
+  {
+    Row lOldRow = getRow(pRowIndex);
+    mTable.remove(lOldRow);
+    Row lNewRow = new Row(lOldRow, pNewX);
+    mTable.add(lNewRow);
+    mIsUpToDate = false;
+    return lNewRow;
   }
 
   /**
@@ -364,7 +445,9 @@ public class SplineInterpolationTable implements Cloneable
 
         final double lMinX = getMinX();
         final double lMaxX = getMaxX();
-        final double lRangeWidth = abs(lMaxX - lMinX);
+
+        // this makes sure that we extrapolate outside of the actual range
+        final double lRangeWidth = 10000 * abs(lMaxX - lMinX);
 
         if (x.size() >= 2)
         {
@@ -447,9 +530,9 @@ public class SplineInterpolationTable implements Cloneable
       final double lStep = (lMaxX - lMinX) / 1024;
 
       for (double x = lMinX
-                      - 0.1
+                      - 0.5
                         * lRangeWidth; x <= lMaxX
-                                            + 0.1
+                                            + 0.5
                                               * lRangeWidth; x +=
                                                                lStep)
       {

@@ -12,6 +12,12 @@ public class ConstantStave extends StaveAbstract
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    return new ConstantStave(getName(), getConstantValue());
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     return mConstantValue;
@@ -25,12 +31,6 @@ public class ConstantStave extends StaveAbstract
   public void setValue(float pValue)
   {
     mConstantValue = pValue;
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-    return new ConstantStave(getName(), getConstantValue());
   }
 
 }

@@ -26,7 +26,7 @@ public class AsynchronousPoolStackProcessorPipeline extends
    * Instanciates an asynchronous thread pool stack processing pipeline
    * 
    * @param pName
-   *          pipline name
+   *          pipeline name
    * @param pStackRecyclerManager
    *          stack recycler manager
    * @param pMaxQueueSize
@@ -39,7 +39,7 @@ public class AsynchronousPoolStackProcessorPipeline extends
                                                 final int pMaxQueueSize,
                                                 final int pThreadPoolSize)
   {
-    super(pStackRecyclerManager);
+    super(pName, pStackRecyclerManager);
 
     getInputVariable().addSetListener((o,
                                        n) -> mAsynchStackProcessorPool.passOrWait(n));

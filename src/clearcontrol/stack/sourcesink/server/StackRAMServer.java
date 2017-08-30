@@ -1,35 +1,34 @@
 package clearcontrol.stack.sourcesink.server;
 
+import static java.lang.Math.toIntExact;
+
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.variable.bundle.VariableBundle;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.sink.StackSinkInterface;
 import clearcontrol.stack.sourcesink.source.StackSourceInterface;
 import coremem.recycling.RecyclerInterface;
-import gnu.trove.list.array.TLongArrayList;
 
 /**
  * Stack RAM server
  *
  * @author royer
  */
-public class StackRAMServer implements
+public class StackRAMServer extends StackServerBase implements
                             StackSinkInterface,
                             StackSourceInterface
 {
 
-  ArrayList<StackInterface> mStackList =
-                                       new ArrayList<StackInterface>();
-  final TLongArrayList mStackTimePointList = new TLongArrayList();
+  private ConcurrentHashMap<String, ArrayList<StackInterface>> mStackMap =
+                                                                         new ConcurrentHashMap<>();
 
-  protected final VariableBundle mMetaDataVariableBundle =
-                                                         new VariableBundle("MetaData");
+  private Long mStartTimeStampInNanoseconds = null;
 
   /**
-   * Instanciates a stack RAM server
+   * Instantiates a stack RAM server
    */
   public StackRAMServer()
   {
@@ -43,18 +42,13 @@ public class StackRAMServer implements
   }
 
   @Override
-  public long getNumberOfStacks()
-  {
-    return mStackList.size();
-  }
-
-  @Override
   public void setStackRecycler(final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
   {
   }
 
   @Override
-  public StackInterface getStack(final long pStackIndex,
+  public StackInterface getStack(String pChannel,
+                                 final long pStackIndex,
                                  long pTime,
                                  TimeUnit pTimeUnit)
   {
@@ -64,21 +58,62 @@ public class StackRAMServer implements
   @Override
   public StackInterface getStack(long pStackIndex)
   {
-    return mStackList.get((int) pStackIndex);
+    return getStack(cDefaultChannel, pStackIndex);
   }
 
   @Override
-  public double getStackTimeStampInSeconds(final long pStackIndex)
+  public StackInterface getStack(String pChannel, long pStackIndex)
   {
-    return mStackTimePointList.get((int) pStackIndex);
+    ArrayList<StackInterface> lChannelStackList =
+                                                mStackMap.get(pChannel);
+
+    if (lChannelStackList == null)
+      return null;
+
+    return lChannelStackList.get(toIntExact(pStackIndex));
   }
 
   @Override
   public boolean appendStack(final StackInterface pStack)
   {
-    mStackTimePointList.add(pStack.getMetaData()
-                                  .getTimeStampInNanoseconds());
-    return mStackList.add(pStack);
+    return appendStack(cDefaultChannel, pStack);
+  }
+
+  @Override
+  public boolean appendStack(String pChannel,
+                             final StackInterface pStack)
+  {
+    long lNowInNanoseconds = System.nanoTime();
+    if (mStartTimeStampInNanoseconds == null)
+      mStartTimeStampInNanoseconds = lNowInNanoseconds;
+
+    ArrayList<StackInterface> lChannelStackList =
+                                                mStackMap.get(pChannel);
+    if (lChannelStackList == null)
+    {
+      lChannelStackList = new ArrayList<StackInterface>();
+      mStackMap.put(pChannel, lChannelStackList);
+    }
+
+    lChannelStackList.add(pStack);
+
+    int lIndexLastAddedStack = lChannelStackList.size() - 1;
+
+    double lTimeStampInSeconds = 1e-9
+                                 * (lNowInNanoseconds
+                                    - mStartTimeStampInNanoseconds);
+
+    setStackTimeStampInSeconds(pChannel,
+                               lIndexLastAddedStack,
+                               lTimeStampInSeconds);
+
+    return true;
+  }
+
+  @Override
+  public void close() throws Exception
+  {
+    // do nothing
   }
 
 }

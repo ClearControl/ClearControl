@@ -1,7 +1,7 @@
 package clearcontrol.devices.stages.devices.tst.variables;
 
 import aptj.APTJDevice;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -10,8 +10,7 @@ import clearcontrol.core.variable.Variable;
  * @author royer
  */
 public abstract class TSTDoubleVariableBase extends Variable<Double>
-                                            implements
-                                            LoggingInterface
+                                            implements LoggingFeature
 {
 
   protected final APTJDevice mAPTJDevice;

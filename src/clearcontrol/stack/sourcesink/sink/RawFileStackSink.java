@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import clearcontrol.core.units.Magnitude;
+import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
+import clearcontrol.stack.sourcesink.FileStackInterface;
+import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
 
 /**
@@ -20,39 +23,50 @@ import coremem.fragmented.FragmentedMemoryInterface;
  * @author royer
  */
 public class RawFileStackSink extends FileStackBase implements
+                              FileStackInterface,
                               FileStackSinkInterface,
                               AutoCloseable
 {
 
   private final AtomicLong mFirstTimePointAbsoluteNanoSeconds =
                                                               new AtomicLong();
-  private final AtomicLong mNextFreeStackIndex = new AtomicLong();
+  private final ConcurrentHashMap<String, AtomicLong> mNextFreeStackIndexMap =
+                                                                             new ConcurrentHashMap<>();
 
   /**
-   * Instantiates a raw file stack sink given a root folder and dataset name.
+   * Instantiates a raw file stack sink.
    * 
-   * @throws IOException
-   *           thrown if there is an IO problems
    */
-  public RawFileStackSink() throws IOException
+  public RawFileStackSink()
   {
     super(false);
   }
 
   @Override
-  public boolean appendStack(final StackInterface pStack)
+  public boolean appendStack(StackInterface pStack)
+  {
+    return appendStack(cDefaultChannel, pStack);
+  }
+
+  @Override
+  public boolean appendStack(String pChannel,
+                             final StackInterface pStack)
   {
 
     try
     {
+      AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
 
-      writeStackData(pStack);
-      writeIndexFileEntry(pStack);
-      writeMetaDataFileEntry(pStack);
+      writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
+      writeIndexFileEntry(lNextFreeStackIndex.get(),
+                          pChannel,
+                          pStack);
+      writeMetaDataFileEntry(pChannel, pStack);
 
-      mStackIndexToStackRequestMap.put(mNextFreeStackIndex.get(),
-                                       StackRequest.buildFrom(pStack));
-      mNextFreeStackIndex.incrementAndGet();
+      setStackRequest(pChannel,
+                      lNextFreeStackIndex.get(),
+                      StackRequest.buildFrom(pStack));
+      lNextFreeStackIndex.incrementAndGet();
       return true;
     }
     catch (final Throwable e)
@@ -62,11 +76,25 @@ public class RawFileStackSink extends FileStackBase implements
     }
   }
 
-  protected void writeStackData(final StackInterface pStack) throws IOException
+  protected AtomicLong getIndexForChannel(String pChannel)
   {
-    String lFileName = String.format("tp%d.raw",
-                                     mNextFreeStackIndex.get());
-    File lFile = new File(mStacksFolder, lFileName);
+    AtomicLong lNextFreeStackIndex =
+                                   mNextFreeStackIndexMap.get(pChannel);
+    if (lNextFreeStackIndex == null)
+    {
+      lNextFreeStackIndex = new AtomicLong(0);
+      mNextFreeStackIndexMap.put(pChannel, lNextFreeStackIndex);
+    }
+    return lNextFreeStackIndex;
+  }
+
+  protected void writeStackData(long pIndex,
+                                String pChannel,
+                                final StackInterface pStack) throws IOException
+  {
+    String lFileName = String.format(StackSinkSourceInterface.cFormat,
+                                     pIndex);
+    File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
@@ -77,35 +105,44 @@ public class RawFileStackSink extends FileStackBase implements
     lBinnaryFileChannel.close();
   }
 
-  protected void writeIndexFileEntry(final StackInterface pStack) throws IOException
+  protected void writeIndexFileEntry(long pIndex,
+                                     String pChannel,
+                                     final StackInterface pStack) throws IOException
   {
     long[] lDimensions = pStack.getDimensions();
 
     final String lDimensionsString = Arrays.toString(lDimensions);
 
-    final FileChannel lIndexFileChannel = getFileChannel(mIndexFile,
-                                                         false);
+    final FileChannel lIndexFileChannel =
+                                        getFileChannel(getIndexFile(pChannel),
 
-    if (mNextFreeStackIndex.get() == 0)
-    {
-      mFirstTimePointAbsoluteNanoSeconds.set(pStack.getMetaData()
-                                                   .getTimeStampInNanoseconds());
-    }
+                                                       false);
+
+    long lTimeStampInNanoseconds;
+
+    if (pStack.getMetaData() != null
+        && pStack.getMetaData().getTimeStampInNanoseconds() != null)
+      lTimeStampInNanoseconds = pStack.getMetaData()
+                                      .getTimeStampInNanoseconds();
+    else
+      lTimeStampInNanoseconds = System.nanoTime();
+
+    if (pIndex == 0)
+      mFirstTimePointAbsoluteNanoSeconds.set(lTimeStampInNanoseconds);
+
     final double lTimeStampInSeconds =
-                                     Magnitude.nano2unit(pStack.getMetaData()
-                                                               .getTimeStampInNanoseconds()
-                                                         - mFirstTimePointAbsoluteNanoSeconds.get());
+                                     OrderOfMagnitude.nano2unit(lTimeStampInNanoseconds
+                                                                - mFirstTimePointAbsoluteNanoSeconds.get());
 
-    mStackIndexToTimeStampInSecondsMap.put(mNextFreeStackIndex.get(),
-                                           lTimeStampInSeconds);
+    setStackTimeStampInSeconds(pChannel, pIndex, lTimeStampInSeconds);
 
     final String lIndexLineString =
                                   String.format("%d\t%.4f\t%s\n",
-                                                mNextFreeStackIndex.get(),
+                                                pIndex,
                                                 lTimeStampInSeconds,
                                                 lDimensionsString.substring(1,
                                                                             lDimensionsString.length()
-                                                                               - 2));
+                                                                               - 1));
     final byte[] lIndexLineStringBytes = lIndexLineString.getBytes();
     final ByteBuffer lIndexLineStringByteBuffer =
                                                 ByteBuffer.wrap(lIndexLineStringBytes);
@@ -114,10 +151,11 @@ public class RawFileStackSink extends FileStackBase implements
     lIndexFileChannel.close();
   }
 
-  protected void writeMetaDataFileEntry(final StackInterface pStack) throws IOException
+  protected void writeMetaDataFileEntry(String pChannel,
+                                        final StackInterface pStack) throws IOException
   {
     final FileChannel lMetaDataFileChannel =
-                                           getFileChannel(mMetaDataFile,
+                                           getFileChannel(getMetadataFile(pChannel),
                                                           false);
 
     StackMetaData lMetaData = pStack.getMetaData();

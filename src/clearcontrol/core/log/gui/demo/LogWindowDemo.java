@@ -5,12 +5,20 @@ import java.util.logging.Logger;
 import clearcontrol.core.log.CompactFormatter;
 import clearcontrol.core.log.gui.LogWindowHandler;
 
+/**
+ * Log window demo
+ *
+ * @author royer
+ */
 public class LogWindowDemo
 {
   private LogWindowHandler mLogWindowHandler = null;
 
   private Logger mLogger = null;
 
+  /**
+   * Instancates a log window demo
+   */
   public LogWindowDemo()
   {
     mLogWindowHandler =
@@ -21,11 +29,25 @@ public class LogWindowDemo
     mLogger.addHandler(mLogWindowHandler);
   }
 
+  /**
+   * Logs a message
+   * 
+   * @param i
+   *          counter
+   */
   public void logMessage(int i)
   {
     mLogger.info(i + " Hello from LogWindowHandler...");
   }
 
+  /**
+   * Main
+   * 
+   * @param args
+   *          N/A
+   * @throws InterruptedException
+   *           N/A
+   */
   public static void main(String args[]) throws InterruptedException
   {
     final LogWindowDemo lLogWindowDemo = new LogWindowDemo();

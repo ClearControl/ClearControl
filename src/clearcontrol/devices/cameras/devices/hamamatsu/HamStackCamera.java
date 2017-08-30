@@ -5,14 +5,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceBase;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.StandardTriggerType;
 import clearcontrol.devices.cameras.TriggerTypeInterface;
+import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import dcamj2.DcamDevice;
@@ -29,8 +30,8 @@ public class HamStackCamera extends
                             implements
                             StackCameraDeviceInterface<HamStackCameraQueue>,
                             OpenCloseDeviceInterface,
-                            LoggingInterface,
-                            AsynchronousExecutorServiceAccess
+                            LoggingFeature,
+                            AsynchronousExecutorFeature
 {
 
   private static final long cWaitTime = 1000;
@@ -46,8 +47,8 @@ public class HamStackCamera extends
   static
   {
     if (!DcamLibrary.initialize())
-      LoggingInterface.getLoggerStatic()
-                      .severe("Could not initialize Dcam library.");
+      LoggingFeature.getLoggerStatic()
+                    .severe("Could not initialize Dcam library.");
   }
 
   /**
@@ -106,7 +107,8 @@ public class HamStackCamera extends
   {
     this(new DcamDevice(pCameraDeviceIndex, true));
 
-    if (pTriggerType == StandardTriggerType.Software)
+    // TODO: this needs to be set in constructor:
+    /*if (pTriggerType == StandardTriggerType.Software)
       getDcamDevice().setInputTriggerToSoftware();
     else if (pTriggerType == StandardTriggerType.Internal)
       getDcamDevice().setInputTriggerToInternal();
@@ -114,9 +116,9 @@ public class HamStackCamera extends
       getDcamDevice().setInputTriggerToExternalFastEdge();
     else if (pTriggerType == StandardTriggerType.ExternalLevel)
       getDcamDevice().setInputTriggerToExternalLevel();
-
+    
     getDcamDevice().setOutputTriggerToExposure();
-    getDcamDevice().setDefectCorectionMode(false);
+    getDcamDevice().setDefectCorectionMode(true);/**/
 
     // ----------------------- done with the listener -------- //
 
@@ -167,84 +169,111 @@ public class HamStackCamera extends
   @Override
   public Future<Boolean> playQueue(HamStackCameraQueue pQueue)
   {
-    super.playQueue(pQueue);
-
-    final Future<Boolean> lFuture =
-                                  executeAsynchronously(new Callable<Boolean>()
-                                  {
-                                    @Override
-                                    public Boolean call() throws Exception
-                                    {
-                                      return acquisition(pQueue);
-                                    }
-                                  });
-
-    return lFuture;
-  }
-
-  protected Boolean acquisition(HamStackCameraQueue pQueue)
-  {
     synchronized (mLock)
     {
-      try
-      {
-        double lExposureInSeconds =
-                                  pQueue.getExposureInSecondsVariable()
-                                        .get()
-                                        .doubleValue();
-        long lWidth =
-                    mDcamDevice.adjustWidthHeight(pQueue.getStackWidthVariable()
-                                                        .get(),
-                                                  4);
-        long lHeight =
-                     mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
-                                                         .get(),
-                                                   4);
-        long lDepth = pQueue.getStackDepthVariable().get();
+      super.playQueue(pQueue);
 
-        if (mSequence == null || mSequence.getWidth() != lWidth
-            || mSequence.getHeight() != lHeight
-            || mSequence.getDepth() != lDepth)
-          mSequence =
-                    new DcamImageSequence(mDcamDevice,
+      double lExposureInSeconds =
+                                pQueue.getExposureInSecondsVariable()
+                                      .get()
+                                      .doubleValue();
+      long lWidth =
+                  mDcamDevice.adjustWidthHeight(pQueue.getStackWidthVariable()
+                                                      .get(),
+                                                4);
+      long lHeight =
+                   mDcamDevice.adjustWidthHeight(pQueue.getStackHeightVariable()
+                                                       .get(),
+                                                 4);
+
+      long lAcquiredPlanesDepth = pQueue.getQueueLength();
+
+      long lKeptPlanesDepth =
+                            countKeptPlanes(pQueue.getVariableQueue(pQueue.getKeepPlaneVariable()));
+
+      if (mSequence == null || mSequence.getWidth() != lWidth
+          || mSequence.getHeight() != lHeight
+          || mSequence.getDepth() != lAcquiredPlanesDepth)
+        mSequence = new DcamImageSequence(mDcamDevice,
                                           2,
                                           lWidth,
                                           lHeight,
-                                          lDepth);
+                                          lAcquiredPlanesDepth);
 
-        boolean lAcquisitionResult =
-                                   mDcamSequenceAcquisition.acquireSequence(lExposureInSeconds,
-                                                                            mSequence);
-        if (!lAcquisitionResult)
+      final Future<Boolean> lFuture = acquisition(pQueue,
+                                                  lExposureInSeconds,
+                                                  lWidth,
+                                                  lHeight,
+                                                  lAcquiredPlanesDepth,
+                                                  lKeptPlanesDepth);
+
+      return lFuture;
+    }
+
+  }
+
+  private Future<Boolean> acquisition(HamStackCameraQueue pQueue,
+                                      double lExposureInSeconds,
+                                      long pWidth,
+                                      long pHeight,
+                                      long pAcquiredPlanesDepth,
+                                      long pKeptPlanesDepth)
+  {
+
+    Future<Boolean> lAcquisitionResult =
+                                       mDcamSequenceAcquisition.acquireSequenceAsync(lExposureInSeconds,
+                                                                                     mSequence);
+
+    Callable<Boolean> lCallable = () -> {
+
+      StackInterface lAcquiredStack;
+
+      if (lAcquisitionResult == null && pAcquiredPlanesDepth == 0)
+      {
+        lAcquiredStack = new EmptyStack();
+        return true;
+      }
+      else
+      {
+        Boolean lResult = lAcquisitionResult.get();
+        if (!lResult)
           return false;
 
-        StackRequest lRecyclerRequest = StackRequest.build(lWidth,
-                                                           lHeight,
-                                                           lDepth);
-        StackInterface lStack =
-                              getStackRecycler().getOrWait(cWaitTime,
-                                                           TimeUnit.MILLISECONDS,
-                                                           lRecyclerRequest);
+        StackRequest lRecyclerRequest =
+                                      StackRequest.build(pWidth,
+                                                         pHeight,
+                                                         pKeptPlanesDepth);
+        lAcquiredStack =
+                       getStackRecycler().getOrWait(cWaitTime,
+                                                    TimeUnit.MILLISECONDS,
+                                                    lRecyclerRequest);
 
-        if (lStack == null)
+        if (lAcquiredStack == null)
           return false;
 
         ArrayList<Boolean> lKeepPlaneList =
                                           pQueue.getVariableQueue(pQueue.getKeepPlaneVariable());
 
         mSequence.consolidateTo(lKeepPlaneList,
-                                lStack.getContiguousMemory());
+                                lAcquiredStack.getContiguousMemory());
+      }
 
-        getStackVariable().setAsync(lStack);
-        return true;
-      }
-      catch (Throwable e)
-      {
-        severe("Exception while acquiring stack: %s", e);
-        e.printStackTrace();
-        return false;
-      }
-    }
+      lAcquiredStack.setMetaData(pQueue.getMetaDataVariable()
+                                       .get()
+                                       .clone());
+
+      lAcquiredStack.getMetaData()
+                    .setTimeStampInNanoseconds(System.nanoTime());
+      lAcquiredStack.getMetaData()
+                    .setIndex(getCurrentIndexVariable().get());
+
+      getStackVariable().setAsync(lAcquiredStack);
+      return true;
+    };
+
+    final Future<Boolean> lFuture = executeAsynchronously(lCallable);
+
+    return lFuture;
   }
 
   @Override
@@ -275,6 +304,15 @@ public class HamStackCamera extends
   public Variable<Double> getLineReadOutTimeInMicrosecondsVariable()
   {
     return mLineReadOutTimeInMicrosecondsVariable;
+  }
+
+  private long countKeptPlanes(ArrayList<Boolean> pKeptPlanesList)
+  {
+    long lKeptPlanes = 0;
+    for (Boolean lKeptPlane : pKeptPlanesList)
+      if (lKeptPlane)
+        lKeptPlanes++;
+    return lKeptPlanes;
   }
 
 }

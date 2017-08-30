@@ -3,19 +3,19 @@ package clearcontrol.microscope.gui;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.gui.CameraDevicePanel;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.devices.lasers.gui.jfx.LaserDevicePanel;
+import clearcontrol.devices.lasers.gui.LaserDevicePanel;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
 import clearcontrol.devices.optomech.filterwheels.gui.jfx.FilterWheelDevicePanel;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
-import clearcontrol.devices.optomech.opticalswitch.gui.jfx.OpticalSwitchDevicePanel;
+import clearcontrol.devices.optomech.opticalswitch.gui.OpticalSwitchDevicePanel;
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.gui.ScalingAmplifierPanel;
 import clearcontrol.devices.stages.StageDeviceInterface;
@@ -23,6 +23,9 @@ import clearcontrol.devices.stages.gui.StageDevicePanel;
 import clearcontrol.gui.video.video2d.Stack2DDisplay;
 import clearcontrol.gui.video.video3d.Stack3DDisplay;
 import clearcontrol.microscope.MicroscopeInterface;
+import clearcontrol.microscope.adaptive.AdaptiveEngine;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEnginePanel;
+import clearcontrol.microscope.adaptive.gui.AdaptiveEngineToolbar;
 import clearcontrol.microscope.gui.halcyon.HalcyonGUIGenerator;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.simulation.SimulationManager;
@@ -45,7 +48,7 @@ import org.dockfx.DockNode;
  * @author royer
  */
 public class MicroscopeGUI extends VirtualDevice implements
-                           AsynchronousExecutorServiceAccess,
+                           AsynchronousExecutorFeature,
                            WaitingInterface
 {
 
@@ -131,6 +134,13 @@ public class MicroscopeGUI extends VirtualDevice implements
     addPanelMappingEntry(SimulationManager.class,
                          SimulationManagerPanel.class,
                          MicroscopeNodeType.Other);
+
+    addToolbarMappingEntry(AdaptiveEngine.class,
+                           AdaptiveEngineToolbar.class);
+
+    addPanelMappingEntry(AdaptiveEngine.class,
+                         AdaptiveEnginePanel.class,
+                         MicroscopeNodeType.Acquisition);/**/
 
     SimulationManager lSimulationManager =
                                          new SimulationManager(pMicroscope);
@@ -310,7 +320,8 @@ public class MicroscopeGUI extends VirtualDevice implements
                                              new Stack2DDisplay(String.format("Video 2D for camera %d",
                                                                               c),
                                                                 cDefaultWindowWidth,
-                                                                cDefaultWindowHeight);
+                                                                cDefaultWindowHeight,
+                                                                c % 2 == 1);
         lStack2DDisplay.setVisible(false);
         mStack2DDisplayList.add(lStack2DDisplay);
       }
@@ -372,9 +383,6 @@ public class MicroscopeGUI extends VirtualDevice implements
     return super.open();
   }
 
-  /* (non-Javadoc)
-   * @see clearcontrol.device.openclose.OpenCloseDeviceAdapter#close()
-   */
   @Override
   public boolean close()
   {
@@ -599,7 +607,7 @@ public class MicroscopeGUI extends VirtualDevice implements
   {
     MicroscopeGUI lMicroscopeGUI = this;
     return waitFor(pTimeOut, pTimeUnit, () -> {
-      ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
       return lMicroscopeGUI.isVisible() == pVisible;
     });
   }

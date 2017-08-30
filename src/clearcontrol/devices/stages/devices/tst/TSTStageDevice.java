@@ -2,18 +2,15 @@ package clearcontrol.devices.stages.devices.tst;
 
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import aptj.APTJDevice;
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
 import aptj.APTJExeption;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.timing.WaitingInterface;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.StageDeviceBase;
 import clearcontrol.devices.stages.StageDeviceInterface;
@@ -27,6 +24,9 @@ import clearcontrol.devices.stages.devices.tst.variables.ReadyVariable;
 import clearcontrol.devices.stages.devices.tst.variables.ResetVariable;
 import clearcontrol.devices.stages.devices.tst.variables.StopVariable;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 /**
  * TST001 stage device
  *
@@ -36,8 +36,8 @@ public class TSTStageDevice extends StageDeviceBase implements
                             StageDeviceInterface,
                             StartStopDeviceInterface,
                             WaitingInterface,
-                            LoggingInterface,
-                            AsynchronousSchedulerServiceAccess
+                            LoggingFeature,
+                            AsynchronousSchedulerFeature
 {
 
   private final APTJDeviceFactory mAPTJDeviceFactory;
@@ -80,7 +80,7 @@ public class TSTStageDevice extends StageDeviceBase implements
     {
 
       final MachineConfiguration lCurrentMachineConfiguration =
-                                                              MachineConfiguration.getCurrentMachineConfiguration();
+                                                              MachineConfiguration.get();
 
       final int lNumberOfDevices =
                                  mAPTJDeviceFactory.getNumberOfDevices();

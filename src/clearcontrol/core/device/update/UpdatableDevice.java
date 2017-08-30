@@ -2,44 +2,43 @@ package clearcontrol.core.device.update;
 
 import clearcontrol.core.device.VirtualDevice;
 
+/**
+ * Updatable device
+ *
+ * @author royer
+ */
 public abstract class UpdatableDevice extends VirtualDevice
                                       implements UpdatableInterface
 {
 
   private volatile boolean mIsUpToDate = false;
 
+  /**
+   * Instantiates an updatable device of given name
+   * 
+   * @param pDeviceName
+   *          device name
+   */
   public UpdatableDevice(String pDeviceName)
   {
     super(pDeviceName);
   }
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.UpdatableInterface#ensureIsUpToDate()
-   */
   @Override
   public abstract void ensureIsUpToDate();
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.UpdatableInterface#isUpToDate()
-   */
   @Override
   public boolean isUpToDate()
   {
     return mIsUpToDate;
   }
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.UpdatableInterface#setUpToDate(boolean)
-   */
   @Override
   public void setUpToDate(boolean pIsUpToDate)
   {
     mIsUpToDate = pIsUpToDate;
   }
 
-  /* (non-Javadoc)
-   * @see rtlib.core.device.UpdatableInterface#requestUpdate()
-   */
   @Override
   public void requestUpdate()
   {

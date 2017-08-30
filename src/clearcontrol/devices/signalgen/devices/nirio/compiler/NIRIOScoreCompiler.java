@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import nirioj.direttore.Direttore;
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.movement.MovementInterface;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
@@ -19,8 +19,7 @@ import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.devices.signalgen.staves.ZeroStave;
 import coremem.buffers.ContiguousBuffer;
 
-public class NIRIOScoreCompiler implements
-                                AsynchronousExecutorServiceAccess
+public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
 {
 
   public static void compile(NIRIOCompiledScore pNIRIOCompiledScore,
@@ -158,7 +157,7 @@ public class NIRIOScoreCompiler implements
                                  lNumberOfTimePoints,
                                  lNumberOfStaves,
                                  lIntervalStave);
-      }
+      } /**/
       else
       {
         addStaveToBuffer(pScoreBuffer,

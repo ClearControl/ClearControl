@@ -21,16 +21,24 @@ public class WeakArrayList<T> extends AbstractList<T>
 
   private CopyOnWriteArrayList<WeakReference<T>> items;
 
-  /** Creates new WeakList */
+  /**
+   * Instantiates an empty weak array list
+   */
   public WeakArrayList()
   {
     items = new CopyOnWriteArrayList<WeakReference<T>>();
   }
 
-  public WeakArrayList(Collection<T> c)
+  /**
+   * Instantiates a weak array list and initializes it with a given collection
+   * 
+   * @param pCollection
+   *          collection
+   */
+  public WeakArrayList(Collection<T> pCollection)
   {
     items = new CopyOnWriteArrayList<WeakReference<T>>();
-    addAll(0, c);
+    addAll(0, pCollection);
   }
 
   @Override

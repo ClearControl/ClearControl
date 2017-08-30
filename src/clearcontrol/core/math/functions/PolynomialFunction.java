@@ -12,7 +12,9 @@ public class PolynomialFunction extends
   private static final long serialVersionUID = 1L;
 
   /**
-   * Instanciates an identity polynomial function: x
+   * Instantiates an identity polynomial function: x the coefficients order goes
+   * from high power to low power, therefore, {1,0} is the identity function
+   * y=1x+0.
    */
   public PolynomialFunction()
   {
@@ -26,7 +28,7 @@ public class PolynomialFunction extends
    * @param pPolynomialCoefficients
    *          polynomial coefficients
    */
-  public PolynomialFunction(double[] pPolynomialCoefficients)
+  public PolynomialFunction(double... pPolynomialCoefficients)
   {
     super(pPolynomialCoefficients);
   }

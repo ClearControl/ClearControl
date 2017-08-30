@@ -15,6 +15,15 @@ public class EdgeStave extends IntervalStave implements StaveInterface
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    return new EdgeStave(getName(),
+                         getEdgePosition(),
+                         getValueBefore(),
+                         getValueAfter());
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     if (isEnabled() && pNormalizedTime > getEdgePosition())
@@ -51,15 +60,6 @@ public class EdgeStave extends IntervalStave implements StaveInterface
   public void setValueAfter(float pValueAfter)
   {
     setInsideValue(pValueAfter);
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-    return new EdgeStave(getName(),
-                         getEdgePosition(),
-                         getValueBefore(),
-                         getValueAfter());
   }
 
 }

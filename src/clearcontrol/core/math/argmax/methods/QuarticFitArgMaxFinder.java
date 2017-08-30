@@ -2,17 +2,25 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
+import clearcontrol.core.math.argmax.Fitting1DInterface;
 import clearcontrol.core.math.argmax.UnivariateFunctionArgMax;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
+/**
+ * Quartic fit argmax finder.
+ * 
+ * Fits a order 4 polynomial and returns the argmax of the interpolated
+ * function.
+ *
+ * @author royer
+ */
 public class QuarticFitArgMaxFinder extends Fitting1DBase implements
                                     ArgMaxFinder1DInterface,
-                                    Fitting1D
+                                    Fitting1DInterface
 {
   private static final int cNumberOfSamples = 1024;
   private PolynomialFunction mPolynomialFunction;

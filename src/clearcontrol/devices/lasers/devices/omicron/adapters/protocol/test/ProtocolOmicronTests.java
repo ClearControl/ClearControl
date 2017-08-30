@@ -2,6 +2,7 @@ package clearcontrol.devices.lasers.devices.omicron.adapters.protocol.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import clearcontrol.devices.lasers.devices.omicron.adapters.protocol.ProtocolOmicron;
@@ -29,7 +30,7 @@ public class ProtocolOmicronTests
                               new String("!GFwLuxX\u00A74\u00A71.30.");
     final String[] lSplitMessage =
                                  ProtocolOmicron.splitMessage("!GFw",
-                                                              lTestMessage.getBytes());
+                                                              lTestMessage.getBytes(StandardCharsets.ISO_8859_1));
     assertEquals(lSplitMessage[0], "LuxX");
     assertEquals(lSplitMessage[1], "4");
     assertEquals(lSplitMessage[2], "1.30.");

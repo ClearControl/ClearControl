@@ -2,6 +2,7 @@ package clearcontrol.stack.processor;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import clearcontrol.core.device.name.NameableBase;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.stack.StackInterface;
@@ -13,7 +14,8 @@ import coremem.recycling.RecyclerInterface;
  *
  * @author royer
  */
-public class StackProcessorPipelineBase implements
+public class StackProcessorPipelineBase extends NameableBase
+                                        implements
                                         StackProcessingPipelineInterface
 {
   private StackRecyclerManager mStackRecyclerManager;
@@ -27,14 +29,18 @@ public class StackProcessorPipelineBase implements
   private Variable<StackInterface> mOutputVariable;
 
   /**
-   * Instanciates a stack processor given a stack recycler manager
+   * Instantiates a stack processor given a stack recycler manager
+   * 
+   * @param pName
+   *          name
    * 
    * @param pStackRecyclerManager
    *          stack recycler manager
    */
-  public StackProcessorPipelineBase(StackRecyclerManager pStackRecyclerManager)
+  public StackProcessorPipelineBase(String pName,
+                                    StackRecyclerManager pStackRecyclerManager)
   {
-    super();
+    super(pName);
     mStackRecyclerManager = pStackRecyclerManager;
     mInputVariable = new Variable<StackInterface>("inputVariable");
     mOutputVariable = new Variable<StackInterface>("OutputVariable");

@@ -2,27 +2,44 @@ package clearcontrol.core.math.argmax.methods;
 
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import clearcontrol.core.math.argmax.ComputeFitError;
-import clearcontrol.core.math.argmax.Fitting1D;
 import clearcontrol.core.math.argmax.Fitting1DBase;
+import clearcontrol.core.math.argmax.Fitting1DInterface;
 
 import org.apache.commons.math3.analysis.function.Gaussian;
 import org.apache.commons.math3.fitting.GaussianCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
+/**
+ * Gaussian fit argmax finder.
+ * 
+ * Fits a Gaussian and returns the Gaussian mean center as argmax.
+ *
+ * @author royer
+ */
 public class GaussianFitArgMaxFinder extends Fitting1DBase implements
                                      ArgMaxFinder1DInterface,
-                                     Fitting1D
+                                     Fitting1DInterface
 {
 
   private double mLastMean;
   private GaussianCurveFitter mGaussianCurveFitter;
   protected Gaussian mGaussian;
 
+  /**
+   * Instantiates an argmax finder.
+   * 
+   */
   public GaussianFitArgMaxFinder()
   {
     this(1024);
   }
 
+  /**
+   * Instantiates an argmax finder with a given number of iterations.
+   * 
+   * @param pMaxIterations
+   *          max iterations
+   */
   public GaussianFitArgMaxFinder(int pMaxIterations)
   {
     super();
@@ -83,6 +100,11 @@ public class GaussianFitArgMaxFinder extends Fitting1DBase implements
 
   }
 
+  /**
+   * Returns Gaussian function for last fit.
+   * 
+   * @return last Gaussian fit function
+   */
   public Gaussian getFunction()
   {
     return mGaussian;

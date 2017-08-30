@@ -5,9 +5,17 @@ import java.util.logging.ErrorManager;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Standard Out console output handler
+ *
+ * @author royer
+ */
 public class StdOutConsoleHandler extends ConsoleHandler
 {
 
+  /**
+   * Instantiates a console handler
+   */
   public StdOutConsoleHandler()
   {
     super();

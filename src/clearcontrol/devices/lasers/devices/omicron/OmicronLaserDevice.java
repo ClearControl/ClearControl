@@ -38,10 +38,10 @@ public class OmicronLaserDevice extends LaserDeviceBase
    */
   public OmicronLaserDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
-                             .getSerialDevicePort("laser.omicron",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "laser.omicron",
+                                                        pDeviceIndex,
+                                                        "NULL"));
   }
 
   /**
@@ -59,10 +59,10 @@ public class OmicronLaserDevice extends LaserDeviceBase
                             boolean pDigitalControl,
                             boolean pAnalogControl)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
-                             .getSerialDevicePort("laser.omicron",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "laser.omicron",
+                                                        pDeviceIndex,
+                                                        "NULL"));
     mAnalog = pAnalogControl;
     mDigital = pDigitalControl;
   }

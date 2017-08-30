@@ -37,6 +37,10 @@ Some dependencies could not be found online - they are added into the Libs folde
 Currently the maturity of the code in the different packages can be estimated by the number of tests and whether they pass...
 Documentation will follow after code has stabilised.
 
+### Contribution
+
+By default, every call to `git commit` triggers a `gradle test` run. To discard this behavior, either set the `githooks` property to `false` in `gradle.properties` or use a command line flag `-Pgithooks=false`.
+
 ---------------------------------------------------
 NOTE: This version of ClearControl is still in the early stages
 ---------------------------------------------------

@@ -53,7 +53,7 @@ public class ClassComboBoxVariable extends ComboBox<Class<?>>
     showingProperty().addListener((obs, o, n) -> {
       if (!n)
         if (mClassVariable.get() != getSelectionModel().getSelectedItem())
-          mClassVariable.setAsync((Class<?>) getSelectionModel().getSelectedItem());
+          mClassVariable.setAsync(getSelectionModel().getSelectedItem());
     });
 
     setCellFactory(new Callback<ListView<Class<?>>, ListCell<Class<?>>>()

@@ -6,14 +6,14 @@ import java.io.IOException;
 
 import mirao52e.Mirao52eDeformableMirror;
 import clearcontrol.core.configuration.MachineConfiguration;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.slm.slms.DeformableMirrorDevice;
 
 import org.ejml.data.DenseMatrix64F;
 
 public class Mirao52eDevice extends DeformableMirrorDevice
-                            implements LoggingInterface
+                            implements LoggingFeature
 {
   private static final int cFullMatrixWidthHeight = 8;
   private static final int cActuatorResolution = 2 << 14;
@@ -31,7 +31,7 @@ public class Mirao52eDevice extends DeformableMirrorDevice
     mMirao52eDeformableMirror = new Mirao52eDeformableMirror();
 
     final MachineConfiguration lCurrentMachineConfiguration =
-                                                            MachineConfiguration.getCurrentMachineConfiguration();
+                                                            MachineConfiguration.get();
     File lFlatCalibrationFile =
                               lCurrentMachineConfiguration.getFileProperty("device.ao.mirao."
                                                                            + pDeviceIndex

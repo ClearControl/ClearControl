@@ -6,7 +6,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.name.ReadOnlyNameableInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.MicroscopeInterface;
 
 /**
@@ -20,14 +21,16 @@ import clearcontrol.microscope.MicroscopeInterface;
 public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
                                     extends VirtualDevice implements
                                     ReadOnlyNameableInterface,
-                                    LoggingInterface
+                                    LoggingFeature
 {
   private final MicroscopeInterface<?> mMicroscopeInterface;
 
   private CopyOnWriteArrayList<S> mAcquisitionStateList =
                                                         new CopyOnWriteArrayList<>();
 
-  private volatile S mCurrentState;
+  private final Variable<S> mCurrentStateVariable =
+                                                  new Variable<>("CurrentState",
+                                                                 null);
 
   /**
    * Constructs an LoggingManager.
@@ -39,6 +42,17 @@ public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
   {
     super("Acquisition State Manager");
     mMicroscopeInterface = pMicroscopeInterface;
+
+    getCurrentStateVariable().addSetListener((o, n) -> {
+      if (n != null)
+      {
+        if (!mAcquisitionStateList.contains(n))
+          mAcquisitionStateList.add(n);
+        info("setCurrent: " + n.getName());
+        notifyListeners(this);
+      }
+    });
+
   }
 
   /**
@@ -58,25 +72,28 @@ public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
    */
   public S getCurrentState()
   {
-    return mCurrentState;
+    return mCurrentStateVariable.get();
   }
 
   /**
-   * Sets current state.
+   * ConvenienceSets current state.
    * 
    * @param pCurrentState
    *          new current state
    */
   public void setCurrentState(S pCurrentState)
   {
-    if (pCurrentState != null)
-    {
-      if (!mAcquisitionStateList.contains(pCurrentState))
-        mAcquisitionStateList.add(pCurrentState);
-      info("setCurrent: " + pCurrentState.getName());
-      mCurrentState = pCurrentState;
-      notifyListeners(this);
-    }
+    mCurrentStateVariable.set(pCurrentState);
+  }
+
+  /**
+   * Returns the current state variable
+   * 
+   * @return current state variable
+   */
+  public Variable<S> getCurrentStateVariable()
+  {
+    return mCurrentStateVariable;
   }
 
   /**
@@ -100,6 +117,19 @@ public class AcquisitionStateManager<S extends AcquisitionStateInterface<?, ?>>
   public void removeState(S pState)
   {
     mAcquisitionStateList.remove(pState);
+    notifyListeners(this);
+  }
+
+  /**
+   * Removes all states except the one given
+   * 
+   * @param pState
+   *          state to keep
+   */
+  public void removeOtherStates(S pState)
+  {
+    mAcquisitionStateList.clear();
+    mAcquisitionStateList.add(pState);
     notifyListeners(this);
   }
 

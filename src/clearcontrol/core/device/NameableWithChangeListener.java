@@ -43,6 +43,12 @@ public abstract class NameableWithChangeListener<E>
   }
 
   @Override
+  public boolean isChangeListener(ChangeListener<E> pChangeListener)
+  {
+    return mChangeListenerList.contains(pChangeListener);
+  }
+
+  @Override
   public void removeChangeListener(ChangeListener<E> pChangeListener)
   {
     mChangeListenerList.remove(pChangeListener);

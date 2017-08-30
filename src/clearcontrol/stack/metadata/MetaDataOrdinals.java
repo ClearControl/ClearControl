@@ -8,22 +8,12 @@ package clearcontrol.stack.metadata;
 @SuppressWarnings("javadoc")
 public enum MetaDataOrdinals implements MetaDataEntryInterface<Long>
 {
- TimeStampInNanoSeconds(Long.class),
- Index(Long.class),
- TimePoint(Long.class),
- Channel(Long.class);
-
-  private final Class<Long> mClass;
-
-  private MetaDataOrdinals(Class<Long> pClass)
-  {
-    mClass = pClass;
-  }
+ TimeStampInNanoSeconds, Index, TimePoint, DisplayChannel;
 
   @Override
   public Class<Long> getMetaDataClass()
   {
-    return mClass;
+    return Long.class;
   }
 
 }

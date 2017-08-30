@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
 
@@ -16,8 +16,8 @@ import clearcontrol.gui.jfx.var.slider.VariableSlider;
  *
  * @author royer
  */
-public class VariableSliderDemo extends Application implements
-                                AsynchronousExecutorServiceAccess
+public class VariableSliderDemo extends Application
+                                implements AsynchronousExecutorFeature
 {
 
   @Override
@@ -76,7 +76,7 @@ public class VariableSliderDemo extends Application implements
       while (true)
       {
         lChangingIntVariable.set((int) (Math.random() * 10));
-        ThreadUtils.sleep(700, TimeUnit.MILLISECONDS);
+        ThreadSleep.sleep(700, TimeUnit.MILLISECONDS);
       }
     });
 

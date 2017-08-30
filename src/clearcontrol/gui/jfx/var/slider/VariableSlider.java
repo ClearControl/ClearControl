@@ -1,8 +1,6 @@
 package clearcontrol.gui.jfx.var.slider;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.max;
-import static java.lang.Math.signum;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -38,6 +36,8 @@ public class VariableSlider<T extends Number> extends HBox
   private Variable<T> mGranularity;
   private boolean mUpdateIfChanging = false;
   private double mTicks;
+
+  private int mPrecision = 6;
 
   /**
    * Instantiates a variable slider
@@ -282,50 +282,28 @@ public class VariableSlider<T extends Number> extends HBox
   private void updateSliderMinMax(Variable<T> pMin, Variable<T> pMax)
   {
 
-    double lTicksInterval = mTicks;
-    if (lTicksInterval == 0)
+    if (!Double.isInfinite(mMin.get().doubleValue())
+        && !Double.isInfinite(mMax.get().doubleValue())
+        && mMin.get().doubleValue() != mMax.get().doubleValue())
     {
-      double lRange = abs(pMax.get().doubleValue()
-                          - pMin.get().doubleValue());
+      mTicks =
+             abs(mMax.get().doubleValue() - mMin.get().doubleValue())
+               / 10;
 
-      if (lRange > 1)
-        lTicksInterval = max(1, ((int) lRange) / 100);
-      else
-        lTicksInterval = lRange / 100;
-    }
-
-    double lEffectiveSliderMin = lTicksInterval
-                                 * Math.floor(pMin.get().doubleValue()
-                                              / lTicksInterval);
-    double lEffectiveSliderMax = lTicksInterval
-                                 * Math.ceil(pMax.get().doubleValue()
-                                             / lTicksInterval);
-
-    double lRelativeAbsoluteDistance = 2
-                                       * (abs(lEffectiveSliderMin)
-                                          - abs(lEffectiveSliderMax))
-                                       / (abs(lEffectiveSliderMin)
-                                          + abs(lEffectiveSliderMax));
-
-    if (lRelativeAbsoluteDistance < 0.1)
-    {
-      double lRadius = max(abs(lEffectiveSliderMin),
-                           abs(lEffectiveSliderMax));
-      lEffectiveSliderMin = signum(lEffectiveSliderMin) * lRadius;
-      lEffectiveSliderMax = signum(lEffectiveSliderMax) * lRadius;
+      getSlider().setMajorTickUnit(mTicks);
     }
 
     if (Double.isInfinite(mMin.get().doubleValue())
         || Double.isNaN(mMin.get().doubleValue()))
-      getSlider().setMin(-10 * mTicks);
+      getSlider().setMin(-1717);
     else
-      getSlider().setMin(lEffectiveSliderMin);
+      getSlider().setMin(mMin.get().doubleValue());
 
     if (Double.isInfinite(mMax.get().doubleValue())
         || Double.isNaN(mMax.get().doubleValue()))
-      getSlider().setMax(10 * mTicks);
+      getSlider().setMax(1717);
     else
-      getSlider().setMax(lEffectiveSliderMax);
+      getSlider().setMax(mMax.get().doubleValue());
   }
 
   @SuppressWarnings("unchecked")
@@ -402,7 +380,9 @@ public class VariableSlider<T extends Number> extends HBox
   {
     double lCorrectedValue =
                            correctValueDouble(pDoubleValue.doubleValue());
-    getTextField().setText(String.format("%.3f", lCorrectedValue));
+    getTextField().setText(String.format("%." + mPrecision
+                                         + "g",
+                                         lCorrectedValue));
     getTextField().setStyle("-fx-text-fill: black");
   }
 

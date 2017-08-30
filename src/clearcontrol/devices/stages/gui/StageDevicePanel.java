@@ -1,13 +1,14 @@
 package clearcontrol.devices.stages.gui;
 
-import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.devices.stages.StageType;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+
+import clearcontrol.devices.stages.StageDeviceInterface;
+import clearcontrol.devices.stages.StageType;
 
 /**
  * Stage 3D Control

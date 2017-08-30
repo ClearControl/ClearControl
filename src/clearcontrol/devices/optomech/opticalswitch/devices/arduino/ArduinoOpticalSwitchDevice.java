@@ -7,6 +7,11 @@ import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 import clearcontrol.devices.optomech.opticalswitch.devices.arduino.adapters.ArduinoOpticalSwitchPositionAdapter;
 
+/**
+ * Arduino Optical Switch device
+ *
+ * @author royer
+ */
 public class ArduinoOpticalSwitchDevice extends SerialDevice
                                         implements
                                         OpticalSwitchDeviceInterface
@@ -18,16 +23,30 @@ public class ArduinoOpticalSwitchDevice extends SerialDevice
   private final Variable<Boolean>[] mLightSheetOnOff;
 
   private static final long cAllClosed = 0;
+  @SuppressWarnings("unused")
   private static final long cAllOpened = 100;
 
+  /**
+   * Instantiates an Arduino Optical Switch device given a device index
+   * 
+   * @param pDeviceIndex
+   *          device index.
+   */
   public ArduinoOpticalSwitchDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
-                             .getSerialDevicePort("fiberswitch.optojena",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "fiberswitch.optojena",
+                                                        pDeviceIndex,
+                                                        "NULL"));
   }
 
+  /**
+   * Instantiates an Arduino Optical Switch device given a port name
+   * 
+   * @param pPortName
+   *          port name
+   */
+  @SuppressWarnings("unchecked")
   public ArduinoOpticalSwitchDevice(final String pPortName)
   {
     super("ArduinoOpticalSwitch", pPortName, 250000);

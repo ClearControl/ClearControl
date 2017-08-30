@@ -27,6 +27,9 @@ public abstract class PatternSteppingStave extends StaveAbstract
   }
 
   @Override
+  public abstract StaveInterface duplicate();
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     if (!isEnabled())
@@ -79,8 +82,5 @@ public abstract class PatternSteppingStave extends StaveAbstract
   {
     mNumberOfSteps = pNumberOfSteps;
   }
-
-  @Override
-  public abstract StaveInterface copy();
 
 }

@@ -2,14 +2,19 @@ package clearcontrol.devices.optomech.opticalswitch.devices.sim;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.sim.SimulationDeviceInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.optomech.opticalswitch.OpticalSwitchDeviceInterface;
 
+/**
+ * Optical switch device simulator
+ *
+ * @author royer
+ */
 public class OpticalSwitchDeviceSimulator extends VirtualDevice
                                           implements
                                           OpticalSwitchDeviceInterface,
-                                          LoggingInterface,
+                                          LoggingFeature,
                                           SimulationDeviceInterface
 
 {
@@ -17,6 +22,14 @@ public class OpticalSwitchDeviceSimulator extends VirtualDevice
   private final Variable<Boolean>[] mOpticalSwitchOnOffVariableArray;
   private int mNumberOfSwitches;
 
+  /**
+   * Instantiates an optical switch device simulator
+   * 
+   * @param pDeviceName
+   *          device name
+   * @param pNumberOfSwitches
+   *          number of switches
+   */
   @SuppressWarnings("unchecked")
   public OpticalSwitchDeviceSimulator(String pDeviceName,
                                       final int pNumberOfSwitches)

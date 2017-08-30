@@ -149,7 +149,7 @@ public class MultiChart extends HBox
         double lX = mXAxis.getValueForDisplay(e.getX()).doubleValue();
         double lY = mYAxis.getValueForDisplay(e.getY()).doubleValue();
 
-        String lText = String.format("(%.3f,%.3f)", lX, lY);
+        String lText = String.format("(%g,%g)", lX, lY);
 
         Bounds lChartBoundsInLocal = mXYChart.getBoundsInLocal();
         Bounds lChartBoundsInScreen =
@@ -339,10 +339,15 @@ public class MultiChart extends HBox
     mMultiChartItemList.add(lMultiChartListItem);
     mXYChart.getData().add(lSeries);
 
-    Platform.runLater(() -> {
+    Runnable lUpdateMinMax = () -> {
       adjustMinMax(lMultiChartListItem);
       applyMinMax();
-    });
+    };
+
+    Platform.runLater(lUpdateMinMax);
+
+    lSeries.getData()
+           .addListener((ListChangeListener<? super Data<Number, Number>>) (c) -> lUpdateMinMax.run());
 
     return lSeries.getData();
   }

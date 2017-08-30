@@ -15,6 +15,13 @@ public interface StaveInterface extends NameableInterface, Cloneable
 {
 
   /**
+   * Makes a copy of this stave
+   * 
+   * @return field-for-field copy
+   */
+  StaveInterface duplicate();
+
+  /**
    * Sets whether this stave is enabled.
    * 
    * @param pEnabled
@@ -37,12 +44,5 @@ public interface StaveInterface extends NameableInterface, Cloneable
    * @return value
    */
   float getValue(float pNormalizedTime);
-
-  /**
-   * Makes a copy of this stave
-   * 
-   * @return field-for-field copy
-   */
-  StaveInterface copy();
 
 }

@@ -2,7 +2,7 @@ package clearcontrol.stack.imglib2.demo;
 
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.imglib2.ImageJStackDisplay;
 import ij.ImagePlus;
@@ -31,7 +31,7 @@ public class ImageJStackDisplayDemo
     ImagePlus lShow = ImageJStackDisplay.show(lStack);
 
     while (lShow.isVisible())
-      ThreadUtils.sleep(100, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
   }
 
 }

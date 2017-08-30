@@ -58,13 +58,15 @@ public class VideoWindow implements AutoCloseable
 
   volatile boolean mMinMaxFixed = false;
 
-  private volatile boolean mIsDisplayLines = false;
+  volatile boolean mIsDisplayLines = false;
 
   volatile double mMinIntensity = 0;
 
   volatile double mMaxIntensity = 1;
 
   volatile double mGamma = 1;
+
+  volatile boolean mFlipX = false;
 
   final ReentrantLock mSendBufferLock = new ReentrantLock();
 
@@ -79,7 +81,8 @@ public class VideoWindow implements AutoCloseable
   public VideoWindow(final String pWindowName,
                      final NativeTypeEnum pType,
                      final int pWindowWidth,
-                     final int pWindowHeight) throws GLException
+                     final int pWindowHeight,
+                     final boolean pFlipX) throws GLException
   {
     mType = pType;
     mVideoWidth = pWindowWidth;
@@ -88,15 +91,18 @@ public class VideoWindow implements AutoCloseable
     // this is a guess until we get the actual values:
     mEffectiveWindowWidth = pWindowWidth;
     mEffectiveWindowHeight = pWindowHeight;
+    mFlipX = pFlipX;
 
     mClearGLDebugEventListener =
-                               new ClearGLDebugEventListenerForVideoWindow(this);
+                               new ClearGLDebugEventListenerForVideoWindow(this,
+                                                                           mFlipX);
 
     mClearGLWindow = new ClearGLWindow(pWindowName,
                                        pWindowWidth,
                                        pWindowHeight,
                                        mClearGLDebugEventListener);
     mClearGLDebugEventListener.setClearGLWindow(mClearGLWindow);
+    mClearGLWindow.setFPS(30);
 
     final MouseControl lMouseControl = new MouseControl(this);
     mClearGLWindow.addMouseListener(lMouseControl);
@@ -329,8 +335,11 @@ public class VideoWindow implements AutoCloseable
     return mEffectiveWindowHeight;
   }
 
-  public void fastMinMaxSampling(final ContiguousMemoryInterface pSourceBuffer)
+  public void fastMinMaxSampling(final ContiguousMemoryInterface pMemory)
   {
+    if (pMemory.isFree())
+      return;
+
     final long lLength = this.mSourceBufferWidth
                          * this.mSourceBufferHeight;
     final int lStep =
@@ -344,16 +353,15 @@ public class VideoWindow implements AutoCloseable
     if (this.mType == NativeTypeEnum.UnsignedByte)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue = (0xFF & pSourceBuffer.getByteAligned(i))
-                              / 255d;
+        final double lValue =
+                            (0xFF & pMemory.getByteAligned(i)) / 255d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
       }
     else if (this.mType == NativeTypeEnum.UnsignedShort)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue =
-                            (0xFFFF & pSourceBuffer.getCharAligned(i))
+        final double lValue = (0xFFFF & pMemory.getCharAligned(i))
                               / 65535d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
@@ -361,8 +369,7 @@ public class VideoWindow implements AutoCloseable
     else if (this.mType == NativeTypeEnum.UnsignedInt)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lValue = (0xFFFFFFFF
-                               & pSourceBuffer.getIntAligned(i))
+        final double lValue = (0xFFFFFFFF & pMemory.getIntAligned(i))
                               / 4294967296d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
@@ -370,15 +377,14 @@ public class VideoWindow implements AutoCloseable
     else if (this.mType == NativeTypeEnum.Float)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final float lFloatAligned = pSourceBuffer.getFloatAligned(i);
+        final float lFloatAligned = pMemory.getFloatAligned(i);
         lMin = min(lMin, lFloatAligned);
         lMax = max(lMax, lFloatAligned);
       }
     else if (this.mType == NativeTypeEnum.Double)
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
-        final double lDoubleAligned =
-                                    pSourceBuffer.getDoubleAligned(i);
+        final double lDoubleAligned = pMemory.getDoubleAligned(i);
         lMin = min(lMin, lDoubleAligned);
         lMax = max(lMax, lDoubleAligned);
       }

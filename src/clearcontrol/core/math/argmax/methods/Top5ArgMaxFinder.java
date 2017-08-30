@@ -3,15 +3,29 @@ package clearcontrol.core.math.argmax.methods;
 import clearcontrol.core.math.argmax.ArgMaxFinder1DInterface;
 import gnu.trove.list.array.TDoubleArrayList;
 
+/**
+ * Top-5 argmax finder.
+ * 
+ * keeps only the top 5 Y values and sends the corresponding (X,Y) pairs to a
+ * delegated argmax finder
+ *
+ * @author royer
+ */
 public class Top5ArgMaxFinder implements ArgMaxFinder1DInterface
 {
 
   private ArgMaxFinder1DInterface mArgMaxFinder1DInterface;
 
-  public Top5ArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1DInterface)
+  /**
+   * Instantiates a top-5 argmax finder given a delegated argmax finder.
+   * 
+   * @param pArgMaxFinder1D
+   *          delegated argmax finder
+   */
+  public Top5ArgMaxFinder(ArgMaxFinder1DInterface pArgMaxFinder1D)
   {
     super();
-    mArgMaxFinder1DInterface = pArgMaxFinder1DInterface;
+    mArgMaxFinder1DInterface = pArgMaxFinder1D;
   }
 
   @Override

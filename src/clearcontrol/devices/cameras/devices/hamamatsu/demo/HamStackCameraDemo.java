@@ -93,10 +93,13 @@ public class HamStackCameraDemo
 
     lQueue.clearQueue();
 
+    lQueue.getKeepPlaneVariable().set(true);
     for (int i = 0; i < lDepth; i++)
-    {
       lQueue.addCurrentStateToQueue();
-    }
+
+    lQueue.getKeepPlaneVariable().set(false);
+    for (int i = 0; i < 3; i++)
+      lQueue.addCurrentStateToQueue();
 
     lQueue.finalizeQueue();
 

@@ -21,10 +21,10 @@ public class FLIFilterWheelDevice extends SerialDevice implements
 
   public FLIFilterWheelDevice(final int pDeviceIndex)
   {
-    this(MachineConfiguration.getCurrentMachineConfiguration()
-                             .getSerialDevicePort("filterwheel.fli",
-                                                  pDeviceIndex,
-                                                  "NULL"));
+    this(MachineConfiguration.get().getSerialDevicePort(
+                                                        "filterwheel.fli",
+                                                        pDeviceIndex,
+                                                        "NULL"));
   }
 
   public FLIFilterWheelDevice(final String pPortName)

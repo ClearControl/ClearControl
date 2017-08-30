@@ -1,16 +1,15 @@
 package clearcontrol.core.device.task;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.device.openclose.OpenCloseDeviceInterface;
 import clearcontrol.core.device.startstop.SignalStartStopDevice;
 import clearcontrol.core.device.startstop.StartStopSignalVariablesInterface;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 
 /**
@@ -24,8 +23,8 @@ public abstract class TaskDevice extends SignalStartStopDevice
                                  StartStopSignalVariablesInterface,
                                  IsRunningTaskInterface,
                                  OpenCloseDeviceInterface,
-                                 AsynchronousExecutorServiceAccess,
-                                 LoggingInterface
+                                 AsynchronousExecutorFeature,
+                                 LoggingFeature
 {
 
   private final Variable<Boolean> mIsRunningVariable;
@@ -128,7 +127,17 @@ public abstract class TaskDevice extends SignalStartStopDevice
    */
   public void stopTask()
   {
-    mStopSignal.set(true);
+    mStopSignal.setEdge(false, true);
+  }
+
+  /**
+   * Clears task (does not stop a running task so use wisely)
+   */
+  public void clearTask()
+  {
+    mStopSignal.set(false);
+    mIsRunningVariable.set(false);
+    mTaskFuture = null;
   }
 
   /**
@@ -168,24 +177,14 @@ public abstract class TaskDevice extends SignalStartStopDevice
     try
     {
       boolean lResult = false;
-      try
-      {
-        if (mStoppedLatch != null)
-          lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
-        else
-          lResult = true;
-      }
-      catch (InterruptedException e)
-      {
-        e.printStackTrace();
-      }
+      if (mStoppedLatch != null)
+        lResult = mStoppedLatch.await(pTimeOut, pTimeUnit);
+      else
+        lResult = true;
 
-      boolean lWaitForCompletion = waitForCompletion(pTimeOut,
-                                                     pTimeUnit);
-
-      return lResult && lWaitForCompletion;
+      return lResult;
     }
-    catch (ExecutionException e)
+    catch (Throwable e)
     {
       String lError =
                     "Error during previous execution of loop function!";

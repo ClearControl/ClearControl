@@ -54,6 +54,24 @@ public class RampSteppingStave extends RampContinuousStave
   }
 
   @Override
+  public StaveInterface duplicate()
+  {
+    final RampSteppingStave lRampSteppingStave =
+                                               new RampSteppingStave(getName(),
+                                                                     getSyncStart(),
+                                                                     getSyncStop(),
+                                                                     getStartValue(),
+                                                                     getStopValue(),
+                                                                     getOutsideValue(),
+                                                                     getStepHeight());
+
+    lRampSteppingStave.setStepping(isStepping());
+    lRampSteppingStave.setExponent(getExponent());
+
+    return lRampSteppingStave;
+  }
+
+  @Override
   public float getValue(float pNormalizedTime)
   {
     if (!isStepping())
@@ -108,24 +126,6 @@ public class RampSteppingStave extends RampContinuousStave
   public void setStepping(boolean pStepping)
   {
     mStepping = pStepping;
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-    final RampSteppingStave lRampSteppingStave =
-                                               new RampSteppingStave(getName(),
-                                                                     getSyncStart(),
-                                                                     getSyncStop(),
-                                                                     getStartValue(),
-                                                                     getStopValue(),
-                                                                     getOutsideValue(),
-                                                                     getStepHeight());
-
-    lRampSteppingStave.setStepping(isStepping());
-    lRampSteppingStave.setExponent(getExponent());
-
-    return lRampSteppingStave;
   }
 
 }

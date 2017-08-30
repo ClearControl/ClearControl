@@ -3,9 +3,10 @@ package clearcontrol.stack.sourcesink.sink;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
-import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorInterface;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Asynchronous stack sink adapter. This sink adapter can wrap anotehr sink an
@@ -19,7 +20,7 @@ public class AsynchronousStackSinkAdapter implements
 
   private StackSinkInterface mStackSink;
 
-  private AsynchronousProcessorInterface<StackInterface, StackInterface> mAsynchronousConversionProcessor;
+  private AsynchronousProcessorBase<Pair<String, StackInterface>, StackInterface> mAsynchronousConversionProcessor;
 
   private Variable<StackInterface> mFinishedProcessingStackVariable;
 
@@ -55,16 +56,21 @@ public class AsynchronousStackSinkAdapter implements
     mStackSink = pStackSink;
 
     mAsynchronousConversionProcessor =
-                                     new AsynchronousProcessorBase<StackInterface, StackInterface>("AsynchronousStackSinkAdapter",
-                                                                                                   pMaxQueueSize)
+                                     new AsynchronousProcessorBase<Pair<String, StackInterface>, StackInterface>("AsynchronousStackSinkAdapter",
+                                                                                                                 pMaxQueueSize)
                                      {
                                        @Override
-                                       public StackInterface process(final StackInterface pStack)
+                                       public StackInterface process(final Pair<String, StackInterface> pPair)
                                        {
-                                         mStackSink.appendStack(pStack);
+                                         String lChannel =
+                                                         pPair.getLeft();
+                                         StackInterface lStack =
+                                                               pPair.getRight();
+                                         mStackSink.appendStack(lChannel,
+                                                                lStack);
                                          if (mFinishedProcessingStackVariable != null)
                                          {
-                                           mFinishedProcessingStackVariable.set(pStack);
+                                           mFinishedProcessingStackVariable.set(lStack);
                                          }
                                          return null;
                                        }
@@ -94,7 +100,15 @@ public class AsynchronousStackSinkAdapter implements
   @Override
   public boolean appendStack(final StackInterface pStack)
   {
-    return mAsynchronousConversionProcessor.passOrWait(pStack);
+    return appendStack(cDefaultChannel, pStack);
+  }
+
+  @Override
+  public boolean appendStack(String pChannel,
+                             final StackInterface pStack)
+  {
+    return mAsynchronousConversionProcessor.passOrWait(Pair.of(pChannel,
+                                                               pStack));
   }
 
   /**

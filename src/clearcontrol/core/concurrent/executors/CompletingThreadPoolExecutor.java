@@ -11,12 +11,32 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Thread pool executor that can complete execution
+ *
+ * @author royer
+ */
 public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
 {
 
   private final BlockingQueue<Future<?>> mFutureQueue =
                                                       new LinkedBlockingQueue<Future<?>>(Integer.MAX_VALUE);
 
+  /**
+   * Instantiates a completing thread pool executor given a core pool size,
+   * maximum pool size, a given keep alive time, and a working queue.
+   * 
+   * @param pCorePoolSize
+   *          core pool size
+   * @param pMaximumPoolSize
+   *          maximum pool size
+   * @param pKeepAliveTime
+   *          keep alive time
+   * @param pUnit
+   *          keep alive time unit
+   * @param pWorkQueue
+   *          working queue
+   */
   public CompletingThreadPoolExecutor(int pCorePoolSize,
                                       int pMaximumPoolSize,
                                       long pKeepAliveTime,
@@ -30,6 +50,24 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
           pWorkQueue);
   }
 
+  /**
+   * Instantiates a completing thread pool executor given a core pool size,
+   * maximum pool size, a given keep alive time, a working queue, and a rejected
+   * execution handler.
+   * 
+   * @param pCorePoolSize
+   *          core pool size
+   * @param pMaximumPoolSize
+   *          maximum pool size
+   * @param pKeepAliveTime
+   *          keep alive time
+   * @param pUnit
+   *          keep alive time unit
+   * @param pWorkQueue
+   *          working queue
+   * @param pHandler
+   *          rejected execution handler
+   */
   public CompletingThreadPoolExecutor(int pCorePoolSize,
                                       int pMaximumPoolSize,
                                       long pKeepAliveTime,
@@ -45,6 +83,26 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
           pHandler);
   }
 
+  /**
+   * Instantiates a completing thread pool executor given a core pool size,
+   * maximum pool size, a given keep alive time, a working queue, a thread
+   * factory, and a rejected execution handler.
+   * 
+   * @param pCorePoolSize
+   *          core pool size
+   * @param pMaximumPoolSize
+   *          maximum pool size
+   * @param pKeepAliveTime
+   *          keep alive time
+   * @param pUnit
+   *          keep alive unit
+   * @param pWorkQueue
+   *          working queue
+   * @param pThreadFactory
+   *          thread factory
+   * @param pHandler
+   *          rejected execution handler
+   */
   public CompletingThreadPoolExecutor(int pCorePoolSize,
                                       int pMaximumPoolSize,
                                       long pKeepAliveTime,
@@ -62,6 +120,24 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
           pHandler);
   }
 
+  /**
+   * Instantiates a completing thread pool executor given a core pool size,
+   * maximum pool size, a given keep alive time, a working queue, and a thread
+   * factory.
+   * 
+   * @param pCorePoolSize
+   *          core pool size
+   * @param pMaximumPoolSize
+   *          maximum pool size
+   * @param pKeepAliveTime
+   *          keep alive time
+   * @param pUnit
+   *          keep alive unit
+   * @param pWorkQueue
+   *          working queue
+   * @param pThreadFactory
+   *          thread factory
+   */
   public CompletingThreadPoolExecutor(int pCorePoolSize,
                                       int pMaximumPoolSize,
                                       long pKeepAliveTime,
@@ -106,12 +182,37 @@ public class CompletingThreadPoolExecutor extends ThreadPoolExecutor
     mFutureQueue.add(pFutur);
   }
 
+  /**
+   * Returns the oldest Future of this executor or rreturns after a given
+   * timeout.
+   * 
+   * @param pTimeOut
+   *          timeout
+   * @param pTimeUnit
+   *          time unit
+   * @return oldest future
+   * @throws InterruptedException
+   *           if interrupted before timeout expired.
+   */
   public Future<?> getFutur(long pTimeOut,
                             TimeUnit pTimeUnit) throws InterruptedException
   {
     return mFutureQueue.poll(pTimeOut, pTimeUnit);
   }
 
+  /**
+   * Waist for completion of all tasks given to this executor or returns aftera
+   * given timeout.
+   * 
+   * @param pTimeOut
+   *          timeout
+   * @param pTimeUnit
+   *          timeout unit
+   * @throws ExecutionException
+   *           thrown if execution occurs during execution
+   * @throws TimeoutException
+   *           thrown if timeout occurs
+   */
   public void waitForCompletion(long pTimeOut,
                                 TimeUnit pTimeUnit) throws ExecutionException,
                                                     TimeoutException

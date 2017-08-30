@@ -1,6 +1,6 @@
 package clearcontrol.devices.optomech.filterwheels.gui.jfx;
 
-import clearcontrol.core.device.position.gui.jfx.PositionDevicePanel;
+import clearcontrol.core.device.position.gui.PositionDevicePanel;
 import clearcontrol.devices.optomech.filterwheels.FilterWheelDeviceInterface;
 
 /**

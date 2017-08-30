@@ -14,19 +14,37 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
  */
 public class SignalGeneratorQueue implements QueueInterface
 {
+  private final SignalGeneratorInterface mSignalGenerator;
+
   protected volatile int mEnqueuedStateCounter = 0;
   protected final ScoreInterface mQueuedScore;
   protected final ScoreInterface mStagingScore;
+  protected final ScoreInterface mFinalizationScore;
 
   /**
    * Instantiates a real-time signal generator queue
    * 
+   * @param pSignalGenerator
+   *          parent signal generator
+   * 
    */
-  public SignalGeneratorQueue()
+  public SignalGeneratorQueue(SignalGeneratorInterface pSignalGenerator)
   {
     super();
+    mSignalGenerator = pSignalGenerator;
     mQueuedScore = new Score("queuedscore");
     mStagingScore = new Score("stagingscore");
+    mFinalizationScore = new Score("finalizationscore");
+  }
+
+  /**
+   * Returns this queue's parent signal generator
+   * 
+   * @return parent signal generator
+   */
+  public SignalGeneratorInterface getSignalGenerator()
+  {
+    return mSignalGenerator;
   }
 
   /**
@@ -37,6 +55,16 @@ public class SignalGeneratorQueue implements QueueInterface
   public ScoreInterface getStagingScore()
   {
     return mStagingScore;
+  }
+
+  /**
+   * Returns finalisation score
+   * 
+   * @return finalisation score
+   */
+  public ScoreInterface getFinalizationScore()
+  {
+    return mFinalizationScore;
   }
 
   /**
@@ -84,7 +112,7 @@ public class SignalGeneratorQueue implements QueueInterface
   @Override
   public void finalizeQueue()
   {
-
+    mQueuedScore.addScoreCopy(mFinalizationScore);
   }
 
   @Override

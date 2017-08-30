@@ -13,6 +13,13 @@ public class ClosurePatternSteppingStave extends PatternSteppingStave
     mSteppingFunction = pSteppingFunction;
   }
 
+  @Override
+  public StaveInterface duplicate()
+  {
+    return new ClosurePatternSteppingStave(getName(),
+                                           getSteppingFunction());
+  }
+
   public SteppingFunction getSteppingFunction()
   {
     return mSteppingFunction;
@@ -22,13 +29,6 @@ public class ClosurePatternSteppingStave extends PatternSteppingStave
   public float function(int pIndex)
   {
     return getSteppingFunction().function(pIndex);
-  }
-
-  @Override
-  public StaveInterface copy()
-  {
-    return new ClosurePatternSteppingStave(getName(),
-                                           getSteppingFunction());
   }
 
 }

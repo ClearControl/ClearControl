@@ -3,7 +3,7 @@ package clearcontrol.devices.signalgen.score.demo;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.thread.ThreadUtils;
+import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
 import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
@@ -12,11 +12,24 @@ import clearcontrol.devices.signalgen.staves.TriggerStave;
 
 import org.junit.Test;
 
+/**
+ * Score demo
+ *
+ * @author royer
+ */
 public class ScoreDemo
 {
 
+  /**
+   * Demo
+   * 
+   * @throws IOException
+   *           NA
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
-  public void Demo() throws IOException, InterruptedException
+  public void demo() throws IOException, InterruptedException
   {
 
     final Score lScore = new Score("Test Score");
@@ -50,7 +63,7 @@ public class ScoreDemo
     for (int i = 0; i < 10; i++)
     {
       lGalvoScannerStave.setSyncStop((float) (0.5 + 0.03 * i));
-      lScore.addMovement(lMovement.copy());
+      lScore.addMovement(lMovement.duplicate());
     }
 
     final ScoreVisualizerJFrame lVisualize =
@@ -59,7 +72,7 @@ public class ScoreDemo
 
     while (lVisualize.isVisible())
     {
-      ThreadUtils.sleep(1000, TimeUnit.MILLISECONDS);
+      ThreadSleep.sleep(1000, TimeUnit.MILLISECONDS);
     }
   }
 

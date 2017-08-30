@@ -39,10 +39,15 @@ public abstract class ChangeListeningBase<E> implements
     mListenersList.add(pListener);
   }
 
+  @Override
+  public boolean isChangeListener(ChangeListener<E> pChangeListener)
+  {
+    return mListenersList.contains(pChangeListener);
+  }
+
   /**
    * Notifies listeners of changes .
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void notifyListeners(E pEvent)
   {

@@ -1,32 +1,30 @@
 package clearcontrol.microscope.state.gui.jfx;
 
 import java.util.List;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 
-import clearcontrol.microscope.lightsheet.interactive.gui.InteractiveAcquisitionPanel;
-import clearcontrol.microscope.stacks.StackRecyclerManager;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
 import clearcontrol.microscope.state.AcquisitionStateManager;
 
 /**
  * AcquisitionStateManagerPanelBase is a GUI element that displays information
- * about all acquisition states managed by a LoggingManager. This is a base
- * class offering the basic functionality for derived classes.
+ * about all acquisition states managed by a AcquisitionStateManager. This is a
+ * base class offering the basic functionality for derived classes.
  * 
  * @author royer
  * @param <S>
  *          acquisition state type
  */
 public abstract class AcquisitionStateManagerPanelBase<S extends AcquisitionStateInterface<?, ?>>
-                                                      extends VBox
+                                                      extends
+                                                      BorderPane
 {
 
   /**
-   * Constructs a {@link InteractiveAcquisitionPanel} given a
-   * {@link StackRecyclerManager}.
+   * Constructs an Acquisition state manager panel
    * 
    * @param pAcquisitionStateManager
-   *          {@link StackRecyclerManager} to use.
+   *          acquisition state manager to use.
    */
   @SuppressWarnings("unchecked")
   public AcquisitionStateManagerPanelBase(AcquisitionStateManager<S> pAcquisitionStateManager)

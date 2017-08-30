@@ -6,6 +6,13 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DocumentFilter;
 
+/**
+ * Line limited document filter.
+ * 
+ * This is a document filter that limits the number of lines in a TextArea.
+ *
+ * @author royer
+ */
 public class LineLimitedDocumentFilter extends DocumentFilter
 {
 
@@ -16,6 +23,14 @@ public class LineLimitedDocumentFilter extends DocumentFilter
   private volatile long mLastCheck = Long.MIN_VALUE;
   private final DefaultCaret mDefaultCaret;
 
+  /**
+   * Instantiates a line limited document filter
+   * 
+   * @param pTextArea
+   *          text area
+   * @param pMaxNumberOfLines
+   *          max number of lines
+   */
   public LineLimitedDocumentFilter(JTextArea pTextArea,
                                    int pMaxNumberOfLines)
   {

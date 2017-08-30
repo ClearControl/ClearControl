@@ -134,7 +134,7 @@ public class StackCameraSimulationQueue extends
       getStackCameraSimulator().severe("COULD NOT GET NEW STACK! QUEUE FULL OR INVALID STACK PARAMETERS!");
     else
     {
-      mAquiredStack.setMetaData(getMetaDataVariable().get());
+      mAquiredStack.setMetaData(getMetaDataVariable().get().clone());
       mAquiredStack.getMetaData()
                    .setTimeStampInNanoseconds(System.nanoTime());
       mAquiredStack.getMetaData()

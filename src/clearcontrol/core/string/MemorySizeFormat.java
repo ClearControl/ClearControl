@@ -1,8 +1,25 @@
 package clearcontrol.core.string;
 
+/**
+ * Formats a memory size in bytes by automatically changing the scale from
+ * bytes, to kilobytes, megabytes and gigatbytes.
+ *
+ * @author royer
+ */
 public class MemorySizeFormat
 {
 
+  /**
+   * Returns a formatted string for a given size in bytes. if the short form is
+   * chosen, 'Bytes' will be replaced by 'B', and so one for 'KiloBytes' to
+   * 'KB'...
+   * 
+   * @param pSizeInBytes
+   *          size in bytes
+   * @param pShortForm
+   *          short form flag
+   * @return formatted string
+   */
   public static String format(double pSizeInBytes, boolean pShortForm)
   {
     double lSizeScaled = pSizeInBytes;

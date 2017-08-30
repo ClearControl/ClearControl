@@ -43,7 +43,7 @@ public abstract class PositionDeviceBase extends VirtualDevice
   }
 
   /**
-   * Instanciates a position device given a device path, name and index.
+   * Instantiates a position device given a device path, name and index.
    * 
    * @param pDevicePath
    *          device path
@@ -57,11 +57,10 @@ public abstract class PositionDeviceBase extends VirtualDevice
                             int pDeviceIndex)
   {
     super(pDeviceName);
-    ArrayList<String> lList =
-                            MachineConfiguration.getCurrentMachineConfiguration()
-                                                .getList(pDevicePath
-                                                         + "."
-                                                         + pDeviceName.toLowerCase());
+    ArrayList<String> lList = MachineConfiguration.get().getList(
+                                                                 pDevicePath
+                                                                 + "."
+                                                                 + pDeviceName.toLowerCase());
 
     mValidPositions = new int[lList.size()];
     for (int i = 0; i < mValidPositions.length; i++)

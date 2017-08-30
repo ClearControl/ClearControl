@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.executors.ClearControlExecutors;
 import clearcontrol.core.concurrent.executors.CompletingThreadPoolExecutor;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 
 /**
  * Asynchronous processor pool
@@ -24,9 +24,9 @@ public class AsynchronousProcessorPool<I, O> extends
                                       AsynchronousProcessorBase<I, O>
                                       implements
                                       AsynchronousProcessorInterface<I, O>,
-                                      AsynchronousExecutorServiceAccess,
-                                      AsynchronousSchedulerServiceAccess,
-                                      LoggingInterface
+                                      AsynchronousExecutorFeature,
+                                      AsynchronousSchedulerFeature,
+                                      LoggingFeature
 {
 
   private final ProcessorInterface<I, O> mProcessor;

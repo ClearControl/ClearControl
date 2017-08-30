@@ -1,17 +1,18 @@
 package clearcontrol.stack.processor;
 
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 
 /**
- * Base class for stac processor implementations
+ * Base class for stack processor implementations
  *
  * @author royer
  */
-public abstract class StackProcessorBase implements
+public abstract class StackProcessorBase extends VirtualDevice
+                                         implements
                                          StackProcessorInterface
 {
   private final Variable<Boolean> mIsActiveVariable;
-  private final String mProcessorName;
 
   /**
    * Instanciates a stack processor of given name
@@ -21,8 +22,7 @@ public abstract class StackProcessorBase implements
    */
   public StackProcessorBase(final String pProcessorName)
   {
-    super();
-    mProcessorName = pProcessorName;
+    super(pProcessorName);
     mIsActiveVariable = new Variable<Boolean>(pProcessorName, true);
   }
 
@@ -49,21 +49,11 @@ public abstract class StackProcessorBase implements
     return mIsActiveVariable;
   }
 
-  /**
-   * Returns processor's name
-   * 
-   * @return processor's name
-   */
-  public String getName()
-  {
-    return mProcessorName;
-  }
-
   @Override
   public String toString()
   {
     return String.format("StackProcessor [mProcessorName=%s,mIsActiveVariable=%s]",
-                         mProcessorName,
+                         getName(),
                          mIsActiveVariable);
   }
 

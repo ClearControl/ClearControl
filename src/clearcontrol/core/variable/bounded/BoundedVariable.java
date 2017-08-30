@@ -108,12 +108,13 @@ public class BoundedVariable<N extends Number> extends Variable<N>
    * @param pMax
    *          max value
    */
+  @SuppressWarnings("unchecked")
   public BoundedVariable(String pVariableName,
                          N pReference,
                          N pMin,
                          N pMax)
   {
-    this(pVariableName, pReference, pMin, pMax, null);
+    this(pVariableName, pReference, pMin, pMax, (N) (new Double(0)));
   }
 
   /**
@@ -292,10 +293,10 @@ public class BoundedVariable<N extends Number> extends Variable<N>
    */
   public void set(BoundedVariable<N> pVariable)
   {
-    set(pVariable.get());
     mMin.set(pVariable.getMin());
     mMax.set(pVariable.getMax());
     mGranularity.set(pVariable.getGranularity());
+    super.set(pVariable);
   }
 
   /**
@@ -346,32 +347,32 @@ public class BoundedVariable<N extends Number> extends Variable<N>
     double lReordedMin = Math.min(pMin, pMax);
     double lReordedlMax = Math.max(pMin, pMax);
 
-    if (mReference instanceof Double)
+    if (mValue instanceof Double)
     {
       mMin.set((N) new Double(lReordedMin));
       mMax.set((N) new Double(lReordedlMax));
     }
-    else if (mReference instanceof Float)
+    else if (mValue instanceof Float)
     {
       mMin.set((N) new Float(lReordedMin));
       mMax.set((N) new Float(lReordedlMax));
     }
-    else if (mReference instanceof Long)
+    else if (mValue instanceof Long)
     {
       mMin.set((N) new Long((long) lReordedMin));
       mMax.set((N) new Long((long) lReordedlMax));
     }
-    else if (mReference instanceof Integer)
+    else if (mValue instanceof Integer)
     {
       mMin.set((N) new Integer((int) lReordedMin));
       mMax.set((N) new Integer((int) lReordedlMax));
     }
-    else if (mReference instanceof Short)
+    else if (mValue instanceof Short)
     {
       mMin.set((N) new Short((short) lReordedMin));
       mMax.set((N) new Short((short) lReordedlMax));
     }
-    else if (mReference instanceof Byte)
+    else if (mValue instanceof Byte)
     {
       mMin.set((N) new Byte((byte) lReordedMin));
       mMax.set((N) new Byte((byte) lReordedlMax));
@@ -387,27 +388,27 @@ public class BoundedVariable<N extends Number> extends Variable<N>
   @SuppressWarnings("unchecked")
   public void setGranularity(double pGranularity)
   {
-    if (mReference instanceof Double)
+    if (mValue instanceof Double)
     {
       mGranularity.set((N) new Double(pGranularity));
     }
-    else if (mReference instanceof Float)
+    else if (mValue instanceof Float)
     {
       mGranularity.set((N) new Float(pGranularity));
     }
-    else if (mReference instanceof Long)
+    else if (mValue instanceof Long)
     {
       mGranularity.set((N) new Long((long) pGranularity));
     }
-    else if (mReference instanceof Integer)
+    else if (mValue instanceof Integer)
     {
       mGranularity.set((N) new Integer((int) pGranularity));
     }
-    else if (mReference instanceof Short)
+    else if (mValue instanceof Short)
     {
       mGranularity.set((N) new Short((short) pGranularity));
     }
-    else if (mReference instanceof Byte)
+    else if (mValue instanceof Byte)
     {
       mGranularity.set((N) new Byte((byte) pGranularity));
     }

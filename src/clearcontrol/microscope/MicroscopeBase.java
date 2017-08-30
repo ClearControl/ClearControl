@@ -3,13 +3,16 @@ package clearcontrol.microscope;
 import static java.lang.Math.max;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
-import clearcontrol.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.concurrent.future.FutureBooleanList;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.VirtualDevice;
@@ -21,16 +24,17 @@ import clearcontrol.core.device.queue.QueueDeviceInterface;
 import clearcontrol.core.device.queue.QueueInterface;
 import clearcontrol.core.device.startstop.StartStopDeviceInterface;
 import clearcontrol.core.gc.GarbageCollector;
-import clearcontrol.core.log.LoggingInterface;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.stages.StageDeviceInterface;
-import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.stacks.CleanupStackVariable;
 import clearcontrol.microscope.stacks.StackRecyclerManager;
+import clearcontrol.microscope.state.AcquisitionStateManager;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
+import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.processor.AsynchronousPoolStackProcessorPipeline;
 import clearcontrol.stack.processor.AsynchronousStackProcessorPipeline;
 import clearcontrol.stack.processor.StackProcessingPipelineInterface;
@@ -50,13 +54,12 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                     extends VirtualDevice implements
                                     MicroscopeInterface<Q>,
                                     StartStopDeviceInterface,
-                                    AsynchronousSchedulerServiceAccess,
-                                    LoggingInterface
+                                    AsynchronousSchedulerFeature,
+                                    LoggingFeature
 {
 
   protected final StackRecyclerManager mStackRecyclerManager;
   protected final MicroscopeDeviceLists mDeviceLists;
-  protected StageDeviceInterface mMainXYZRStage;
 
   protected volatile long mAverageTimeInNS;
   private volatile boolean mSimulation;
@@ -64,19 +67,23 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   private final ArrayList<Variable<Double>> mCameraPixelSizeInNanometerVariableList =
                                                                                     new ArrayList<>();
 
-  // Played queuevariable:
+  // Played queue variable:
   private final Variable<Q> mPlayedQueueVariable =
                                                  new Variable<Q>("LastPlayedQueue",
                                                                  null);
 
-  // Lock:
-  protected Object mAcquisitionLock = new Object();
-
   // Stack processing pipeline:
   protected volatile StackProcessingPipelineInterface mStackProcessingPipeline;
 
+  // Lock:
+  protected ReentrantLock mMasterLock = new ReentrantLock();
+
+  //
+  protected AtomicReference<Object> mCurrentTask =
+                                                 new AtomicReference<>();
+
   /**
-   * Instanciates the micorsocope base class.
+   * Instantiates the microscope base class.
    * 
    * @param pDeviceName
    *          device name
@@ -99,7 +106,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
     for (int i = 0; i < 128; i++)
     {
       Double lPixelSizeInNanometers =
-                                    MachineConfiguration.getCurrentMachineConfiguration()
+                                    MachineConfiguration.get()
                                                         .getDoubleProperty("device.camera"
                                                                            + i
                                                                            + ".pixelsizenm",
@@ -147,6 +154,45 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                             });/**/
 
     addDevice(0, mStackProcessingPipeline);
+  }
+
+  @Override
+  public ReentrantLock getMasterLock()
+  {
+    return mMasterLock;
+  }
+
+  @Override
+  public AtomicReference<Object> getCurrentTask()
+  {
+    return mCurrentTask;
+  }
+
+  /**
+   * Executes a portion of code while holding the master lock.
+   * 
+   * @param pCallable
+   *          callable to execute
+   * @return return of the callable
+   */
+  public <R> R lock(Callable<R> pCallable)
+  {
+    getMasterLock().lock();
+    try
+    {
+      return pCallable.call();
+    }
+    catch (Exception e)
+    {
+      String lMessage = "Exception wile executing locked code";
+      severe(lMessage);
+      throw new RuntimeException(lMessage, e);
+    }
+    finally
+    {
+      if (getMasterLock().isHeldByCurrentThread())
+        getMasterLock().unlock();
+    }
   }
 
   @Override
@@ -231,6 +277,21 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   }
 
   @Override
+  public AcquisitionStateManager<?> addAcquisitionStateManager()
+  {
+    AcquisitionStateManager<?> lAcquisitionStateManager =
+                                                        new AcquisitionStateManager<>(this);
+    addDevice(0, lAcquisitionStateManager);
+    return lAcquisitionStateManager;
+  }
+
+  @Override
+  public AcquisitionStateManager<?> getAcquisitionStateManager()
+  {
+    return getDevice(AcquisitionStateManager.class, 0);
+  }
+
+  @Override
   public void addStackProcessor(StackProcessorInterface pStackProcessor,
                                 String pRecyclerName,
                                 int pMaximumNumberOfLiveObjects,
@@ -269,8 +330,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   @Override
   public boolean open()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsOpen = true;
 
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
@@ -293,14 +353,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsOpen;
-    }
+    });
   }
 
   @Override
   public boolean close()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsClosed = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -324,14 +383,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       mStackRecyclerManager.clearAll();
 
       return lIsClosed;
-    }
+    });
   }
 
   @Override
   public boolean start()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsStarted = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -353,14 +411,13 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsStarted;
-    }
+    });
   }
 
   @Override
   public boolean stop()
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       boolean lIsStopped = true;
       for (final Object lDevice : mDeviceLists.getAllDeviceList())
       {
@@ -382,7 +439,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lIsStopped;
-    }
+    });
   }
 
   boolean isActiveDevice(final Object lDevice)
@@ -489,8 +546,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   @Override
   public FutureBooleanList playQueue(Q pQueue)
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       GarbageCollector.trigger();
 
       getPlayedQueueVariable().set(pQueue);
@@ -503,7 +559,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
         if (lDevice instanceof QueueDeviceInterface)
         {
-          info("playQueue() on device: %s \n", lDevice);/**/
+          // info("playQueue() on device: %s \n", lDevice);/**/
           @SuppressWarnings("unchecked")
           final QueueDeviceInterface<QueueInterface> lStateQueueDeviceInterface =
                                                                                 (QueueDeviceInterface<QueueInterface>) lDevice;
@@ -521,7 +577,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
       }
 
       return lFutureBooleanList;
-    }
+    });
   }
 
   @Override
@@ -531,11 +587,10 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                       ExecutionException,
                                                       TimeoutException
   {
-    synchronized (mAcquisitionLock)
-    {
+    return lock(() -> {
       final FutureBooleanList lPlayQueue = playQueue(pQueue);
       return lPlayQueue.get(pTimeOut, pTimeUnit);
-    }
+    });
   }
 
   @Override
@@ -545,18 +600,18 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                                ExecutionException,
                                                                TimeoutException
   {
-    synchronized (mAcquisitionLock)
-    {
-      int lNumberOfDetectionArmDevices =
-                                       getDeviceLists().getNumberOfDevices(DetectionArmInterface.class);
+    return lock(() -> {
+
+      int lNumberOfStackCameras =
+                                getDeviceLists().getNumberOfDevices(StackCameraDeviceInterface.class);
       CountDownLatch[] lStacksReceivedLatches =
-                                              new CountDownLatch[lNumberOfDetectionArmDevices];
+                                              new CountDownLatch[lNumberOfStackCameras];
 
       mAverageTimeInNS = 0;
 
       ArrayList<VariableSetListener<StackInterface>> lListenerList =
                                                                    new ArrayList<>();
-      for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+      for (int i = 0; i < lNumberOfStackCameras; i++)
       {
         lStacksReceivedLatches[i] = new CountDownLatch(1);
 
@@ -573,10 +628,18 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
                                                                      /*System.out.println("Received: "
                                                                                         + pNewValue);/**/
                                                                      lStacksReceivedLatches[fi].countDown();
+                                                                     if (pNewValue == null)
+                                                                       return;
+                                                                     StackMetaData lMetaData =
+                                                                                             pNewValue.getMetaData();
+                                                                     if (lMetaData == null
+                                                                         || lMetaData.getTimeStampInNanoseconds() == null)
+                                                                       return;
+
                                                                      mAverageTimeInNS +=
-                                                                                      pNewValue.getMetaData()
-                                                                                               .getTimeStampInNanoseconds()
-                                                                                         / lNumberOfDetectionArmDevices;
+                                                                                      lMetaData.getTimeStampInNanoseconds()
+                                                                                         / lNumberOfStackCameras;
+
                                                                    }
                                                                  };
 
@@ -593,39 +656,36 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
 
       if (lBoolean != null && lBoolean)
       {
-        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfStackCameras; i++)
         {
           lStacksReceivedLatches[i].await(pTimeOut, pTimeUnit);
         }
       }
 
       for (VariableSetListener<StackInterface> lVariableSetListener : lListenerList)
-        for (int i = 0; i < lNumberOfDetectionArmDevices; i++)
+        for (int i = 0; i < lNumberOfStackCameras; i++)
         {
           getCameraStackVariable(i).removeSetListener(lVariableSetListener);
         }
 
       return lBoolean;
-    }
+    });
   }
 
   @Override
-  public void setMainXYZRStage(StageDeviceInterface pStageDeviceInterface)
+  public StageDeviceInterface getMainStage()
   {
-    mMainXYZRStage = pStageDeviceInterface;
-  }
-
-  @Override
-  public StageDeviceInterface getMainXYZRStage()
-  {
-    return mMainXYZRStage;
+    StageDeviceInterface lDevice =
+                                 getDevice(StageDeviceInterface.class,
+                                           0);
+    return lDevice;
   }
 
   @Override
   public void setStageX(double pXValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("X"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pXValue);
   }
@@ -634,7 +694,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageY(double pYValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Y"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pYValue);
   }
@@ -643,7 +703,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageZ(double pZValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Z"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pZValue);
   }
@@ -652,7 +712,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public void setStageR(double pZValue)
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("R"));
     if (lTargetPositionVariable != null)
       lTargetPositionVariable.set(pZValue);
   }
@@ -661,7 +721,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageX()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("X"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("X"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -671,7 +731,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageY()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Y"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Y"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -681,7 +741,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageZ()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("Z"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("Z"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;
@@ -691,7 +751,7 @@ public abstract class MicroscopeBase<M extends MicroscopeBase<M, Q>, Q extends M
   public double getStageR()
   {
     Variable<Double> lTargetPositionVariable =
-                                             mMainXYZRStage.getTargetPositionVariable(mMainXYZRStage.getDOFIndexByName("R"));
+                                             getMainStage().getTargetPositionVariable(getMainStage().getDOFIndexByName("R"));
     if (lTargetPositionVariable != null)
       return lTargetPositionVariable.get();
     return 0;

@@ -37,7 +37,7 @@ public class TC01 extends TemperatureSensorDeviceBase
     super("TC01");
     mThermoCoupleNIType = pNIThermoCoupleType;
     mIsDevicePresent =
-                     MachineConfiguration.getCurrentMachineConfiguration()
+                     MachineConfiguration.get()
                                          .getIsDevicePresent("ni.tc01",
                                                              pDeviceIndex);
 

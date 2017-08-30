@@ -2,10 +2,13 @@ package clearcontrol.devices.signalgen;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import clearcontrol.core.concurrent.executors.AsynchronousExecutorServiceAccess;
+import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.movement.TransitionMovement;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
 /**
@@ -16,21 +19,25 @@ import clearcontrol.devices.signalgen.score.ScoreInterface;
 public abstract class SignalGeneratorBase extends VirtualDevice
                                           implements
                                           SignalGeneratorInterface,
-                                          AsynchronousExecutorServiceAccess
+                                          AsynchronousExecutorFeature
 {
 
   protected final Variable<Boolean> mTriggerVariable =
                                                      new Variable<Boolean>("Trigger",
                                                                            false);
 
-  private final Variable<ScoreInterface> mPlayedScoreVariable =
-                                                              new Variable<>("PlayedScore",
-                                                                             null);
+  private final Variable<Long> mTransitionDurationInNanosecondsVariable =
+                                                                        new Variable<>("TransitionTimeInNanoseconds",
+                                                                                       0L);
+
+  private final Variable<ScoreInterface> mLastPlayedScoreVariable =
+                                                                  new Variable<>("PlayedScore",
+                                                                                 null);
 
   protected volatile boolean mIsPlaying;
 
   /**
-   * Instanciates a signal generator.
+   * Instantiates a signal generator.
    * 
    * @param pDeviceName
    *          signal generator name
@@ -49,9 +56,44 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   @Override
   public SignalGeneratorQueue requestQueue()
   {
-    SignalGeneratorQueue lQueue =
-                                        new SignalGeneratorQueue();
+    SignalGeneratorQueue lQueue = new SignalGeneratorQueue(this);
     return lQueue;
+  }
+
+  protected void prependTransitionMovement(ScoreInterface pScore,
+                                           long pDuration,
+                                           TimeUnit pTimeUnit)
+  {
+    if (getLastPlayedScoreVariable().get() == null || pDuration == 0)
+      return;
+
+    MovementInterface lFirstMovementOfGivenScore =
+                                                 pScore.getMovement(0);
+
+    MovementInterface lLastMovementFromPreviouslyPlayedScore =
+                                                             getLastPlayedScoreVariable().get()
+                                                                                         .getLastMovement();
+    if (lFirstMovementOfGivenScore.getName()
+                                  .equals("TransitionMovement"))
+    {
+      TransitionMovement.adjust(lFirstMovementOfGivenScore,
+                                lLastMovementFromPreviouslyPlayedScore,
+                                pScore.getMovement(1),
+                                pDuration,
+                                pTimeUnit);
+
+    }
+    else
+    {
+
+      MovementInterface lTransitionMovement =
+                                            TransitionMovement.make(lLastMovementFromPreviouslyPlayedScore,
+                                                                    lFirstMovementOfGivenScore,
+                                                                    pDuration,
+                                                                    pTimeUnit);
+
+      pScore.insertMovementAt(0, lTransitionMovement);
+    }
   }
 
   @Override
@@ -62,10 +104,8 @@ public abstract class SignalGeneratorBase extends VirtualDevice
       final int lCurrentThreadPriority = lCurrentThread.getPriority();
       lCurrentThread.setPriority(Thread.MAX_PRIORITY);
       mIsPlaying = true;
-      // System.out.println("Symphony: playQueue() begin");
       final boolean lPlayed =
                             playScore(pSignalGeneratorRealTimeQueue.getQueuedScore());
-      // System.out.println("Symphony: playQueue() end");
       mIsPlaying = false;
       lCurrentThread.setPriority(lCurrentThreadPriority);
       return lPlayed;
@@ -77,7 +117,7 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   @Override
   public boolean playScore(ScoreInterface pScore)
   {
-    mPlayedScoreVariable.set(pScore);
+    mLastPlayedScoreVariable.set(pScore.duplicate());
     return true;
   }
 
@@ -88,9 +128,23 @@ public abstract class SignalGeneratorBase extends VirtualDevice
   }
 
   @Override
-  public Variable<ScoreInterface> getPlayedScoreVariable()
+  public Variable<ScoreInterface> getLastPlayedScoreVariable()
   {
-    return mPlayedScoreVariable;
+    return mLastPlayedScoreVariable;
+  }
+
+  @Override
+  public Variable<Long> getTransitionDurationInNanosecondsVariable()
+  {
+    return mTransitionDurationInNanosecondsVariable;
+  }
+
+  @Override
+  public void setTransitionDuration(long pDuration,
+                                    TimeUnit pTimeUnit)
+  {
+    getTransitionDurationInNanosecondsVariable().set(TimeUnit.NANOSECONDS.convert(pDuration,
+                                                                                  pTimeUnit));
   }
 
 }

@@ -33,7 +33,7 @@ public class VariableRangeSlider<T extends Number> extends HBox
 
   private Variable<T> mLow, mHigh, mMin, mMax, mGranularity;
   private boolean mUpdateIfChanging = false;
-  private T mTicks;
+  private double mTicks;
 
   /**
    * Instantiates the range slider
@@ -139,7 +139,15 @@ public class VariableRangeSlider<T extends Number> extends HBox
     mMin = pMinVar;
     mMax = pMaxVar;
     mGranularity = pGranularityVar;
-    mTicks = pTicks;
+
+    if (pTicks == null)
+    {
+      mTicks =
+             abs(mMax.get().doubleValue() - mMin.get().doubleValue())
+               / 10;
+    }
+    else
+      mTicks = pTicks.doubleValue();
 
     setMaxWidth(Double.MAX_VALUE);
     setAlignment(Pos.CENTER);
@@ -167,9 +175,9 @@ public class VariableRangeSlider<T extends Number> extends HBox
     getChildren().add(mRangeSlider);
     getChildren().add(mHighTextField);
 
-    updateSliderMinMax(pMinVar, pMaxVar, pTicks);
+    updateSliderMinMax(pMinVar, pMaxVar, mTicks);
 
-    getRangeSlider().setMajorTickUnit(pTicks.doubleValue());
+    getRangeSlider().setMajorTickUnit(mTicks);
     getRangeSlider().setShowTickMarks(true);
     getRangeSlider().setShowTickLabels(true);
     if (pGranularityVar != null && pGranularityVar.get() != null)
@@ -179,19 +187,19 @@ public class VariableRangeSlider<T extends Number> extends HBox
     pMinVar.addSetListener((o, n) -> {
       if (!pMinVar.get().equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMinVar, pMaxVar, pTicks);
+          updateSliderMinMax(pMinVar, pMaxVar, mTicks);
         });
     });
 
     pMaxVar.addSetListener((o, n) -> {
       if (!pMaxVar.get().equals(n) && n != null)
         Platform.runLater(() -> {
-          updateSliderMinMax(pMinVar, pMaxVar, pTicks);
+          updateSliderMinMax(pMinVar, pMaxVar, mTicks);
         });
     });
 
     Platform.runLater(() -> {
-      updateSliderMinMax(pMinVar, pMaxVar, pTicks);
+      updateSliderMinMax(pMinVar, pMaxVar, mTicks);
     });
 
     getRangeSlider().setOnMouseDragged((e) -> {
@@ -369,9 +377,9 @@ public class VariableRangeSlider<T extends Number> extends HBox
 
   private void updateSliderMinMax(Variable<T> pMin,
                                   Variable<T> pMax,
-                                  T pTicks)
+                                  double pTicks)
   {
-    double lTicksInterval = mTicks.doubleValue();
+    double lTicksInterval = mTicks;
     if (lTicksInterval == 0)
     {
       double lRange = abs(pMax.get().doubleValue()
@@ -406,13 +414,13 @@ public class VariableRangeSlider<T extends Number> extends HBox
 
     if (Double.isInfinite(mMin.get().doubleValue())
         || Double.isNaN(mMin.get().doubleValue()))
-      getRangeSlider().setMin(-10 * pTicks.doubleValue());
+      getRangeSlider().setMin(-10 * pTicks);
     else
       getRangeSlider().setMin(lEffectiveSliderMin);
 
     if (Double.isInfinite(mMax.get().doubleValue())
         || Double.isNaN(mMax.get().doubleValue()))
-      getRangeSlider().setMax(10 * pTicks.doubleValue());
+      getRangeSlider().setMax(10 * pTicks);
     else
       getRangeSlider().setMax(lEffectiveSliderMax);
   }

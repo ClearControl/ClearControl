@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import net.imglib2.img.planar.PlanarCursor;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
@@ -175,22 +173,23 @@ public class RawFileStackTests
       for (int i = 0; i < cNumberOfStacks; i++)
       {
 
-        final PlanarCursor<UnsignedShortType> lCursor =
-                                                      lStack.getPlanarImage()
-                                                            .cursor();
+        final ContiguousMemoryInterface lContiguousMemory =
+                                                          lStack.getContiguousMemory();
 
-        while (lCursor.hasNext())
+        ContiguousBuffer lContiguousBuffer =
+                                           ContiguousBuffer.wrap(lContiguousMemory);
+
+        while (lContiguousBuffer.hasRemainingShort())
         {
-          final UnsignedShortType lUnsignedShortType = lCursor.next();
-          lUnsignedShortType.set(i);
+          lContiguousBuffer.writeShort((short) i);
         }
 
-        lCursor.reset();
+        lContiguousBuffer.rewind();
 
-        while (lCursor.hasNext())
+        while (lContiguousBuffer.hasRemainingShort())
         {
-          final UnsignedShortType lUnsignedShortType = lCursor.next();
-          assertEquals(i & 0xFFFF, lUnsignedShortType.get());
+          final short lShort = lContiguousBuffer.readShort();
+          assertEquals(i & 0xFFFF, lShort);
         }
 
         assertTrue(lLocalFileStackSink.appendStack(lStack));
@@ -215,26 +214,17 @@ public class RawFileStackTests
 
       lLocalFileStackSource.setLocation(lRootFolder, "testSink");
 
-      // StackInterface lStack;
+      lLocalFileStackSource.update();
 
-      // lLocalFileStackSource.update();
-
-      /* assertEquals(cNumberOfStacks,
+      assertEquals(cNumberOfStacks,
                    lLocalFileStackSource.getNumberOfStacks());
-      
-      for (int i = 0; i < cNumberOfStacks; i++)
-      {
-        lStack = lLocalFileStackSource.getStack(i);
-        final Cursor<UnsignedShortType> lCursor = lStack.getImage()
-                                                        .cursor();
-      
-        while (lCursor.hasNext())
-        {
-          final UnsignedShortType lValue = lCursor.next();
-          // System.out.println("size=" + lValue);
-          assertEquals(i, lValue.get());
-        }
-      }/**/
+
+      assertEquals(cSizeX,
+                   lLocalFileStackSource.getStack(0).getWidth());
+      assertEquals(cSizeY,
+                   lLocalFileStackSource.getStack(0).getHeight());
+      assertEquals(cSizeZ,
+                   lLocalFileStackSource.getStack(0).getDepth());
 
       lLocalFileStackSource.close();
     }
