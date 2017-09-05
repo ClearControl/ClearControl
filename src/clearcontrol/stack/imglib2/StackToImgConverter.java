@@ -4,17 +4,22 @@ import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.view.IntervalView;
+import net.imglib2.view.Views;
+
+import java.util.Random;
 
 /**
  * Stack to imglib2 Img Image format converter
  *
  * @author Robert Haase, http://github.com/haesleinhuepf
  */
-public class StackToImgConverter <T extends RealType<T>>
+public class StackToImgConverter<T extends RealType<T>>
 {
   private StackInterface mStack;
   private Img<T> mResultImg;
@@ -25,7 +30,7 @@ public class StackToImgConverter <T extends RealType<T>>
     mStack = pStack;
   }
 
-  public Img getImg()
+  public RandomAccessibleInterval getRandomAccessibleInterval()
   {
     Img lReturnImg = null;
 
@@ -33,13 +38,24 @@ public class StackToImgConverter <T extends RealType<T>>
         contiguousMemory =
         mStack.getContiguousMemory();
 
-    /*
-    long[] dimensions = new long[mStack.getDimensions().length];
+    int numDimensions = mStack.getNumberOfDimensions();
+    if (mStack.getNumberOfChannels() > 1)
+    {
+      // Channels are an additional dimension in imglib2 world
+      numDimensions++;
+    }
+
+    long[] dimensions = new long[numDimensions];
     dimensions[0] = mStack.getWidth();
     dimensions[1] = mStack.getHeight();
-    dimensions[2] = mStack.getWidth();
-    dimensions[3] = mStack.getWidth();
-    */
+    if (dimensions.length > 2)
+    {
+      dimensions[2] = mStack.getDepth();
+    }
+    if (dimensions.length > 3)
+    {
+      dimensions[3] = mStack.getNumberOfChannels();
+    }
 
     if (mStack.getDataType() == NativeTypeEnum.Float
         || mStack.getDataType() == NativeTypeEnum.HalfFloat)
@@ -50,8 +66,7 @@ public class StackToImgConverter <T extends RealType<T>>
                            / mStack.getBytesPerVoxel())
                     % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg =
-          ArrayImgs.floats(pixelArray, mStack.getDimensions());
+      lReturnImg = ArrayImgs.floats(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Short
              || mStack.getDataType() == NativeTypeEnum.UnsignedShort)
@@ -62,8 +77,7 @@ public class StackToImgConverter <T extends RealType<T>>
                            / mStack.getBytesPerVoxel())
                     % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg =
-          ArrayImgs.shorts(pixelArray, mStack.getDimensions());
+      lReturnImg = ArrayImgs.shorts(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Byte
              || mStack.getDataType() == NativeTypeEnum.UnsignedByte)
@@ -74,8 +88,7 @@ public class StackToImgConverter <T extends RealType<T>>
                           / mStack.getBytesPerVoxel())
                    % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg =
-          ArrayImgs.bytes(pixelArray, mStack.getDimensions());
+      lReturnImg = ArrayImgs.bytes(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Int
              || mStack.getDataType() == NativeTypeEnum.UnsignedInt)
@@ -86,7 +99,7 @@ public class StackToImgConverter <T extends RealType<T>>
                          / mStack.getBytesPerVoxel())
                   % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.ints(pixelArray, mStack.getDimensions());
+      lReturnImg = ArrayImgs.ints(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Long
              || mStack.getDataType() == NativeTypeEnum.UnsignedLong)
@@ -97,20 +110,29 @@ public class StackToImgConverter <T extends RealType<T>>
                           / mStack.getBytesPerVoxel())
                    % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg =
-          ArrayImgs.longs(pixelArray, mStack.getDimensions());
-    } else {
-      throw new IllegalArgumentException("Unknown type: " + mStack.getDataType());
+      lReturnImg = ArrayImgs.longs(pixelArray, dimensions);
+    }
+    else
+    {
+      throw new IllegalArgumentException("Unknown type: "
+                                         + mStack.getDataType());
     }
 
     mResultImg = lReturnImg;
     mAnyResultingPixel = mResultImg.cursor().next();
     mResultImg.cursor().reset();
 
+    // in ImageJ, the dimension order must be X, Y, C, Z
+    if (dimensions.length == 4)
+    {
+      return Views.permute(mResultImg, 2, 3);
+    }
+
     return lReturnImg;
   }
 
-  public T getAnyPixel() {
+  public T getAnyPixel()
+  {
     return mAnyResultingPixel;
   }
 }
