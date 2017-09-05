@@ -84,8 +84,8 @@ public class ImageJStackDisplayDemo
     ImagePlus lLongImagePlus = ImageJStackDisplay.show(lLongStack);
     lLongImagePlus.setTitle("Long");
 
-    while (lFloatImagePlus.isVisible() && lShortImagePlus.isVisible()
-           && lLongImagePlus.isVisible())
+    while (lFloatImagePlus.isVisible() || lShortImagePlus.isVisible()
+           || lLongImagePlus.isVisible())
       ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
   }
 
