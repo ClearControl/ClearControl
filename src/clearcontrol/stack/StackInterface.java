@@ -2,6 +2,7 @@ package clearcontrol.stack;
 
 import clearcontrol.stack.metadata.StackMetaData;
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.recycling.RecyclableInterface;
@@ -135,4 +136,11 @@ public interface StackInterface extends
    */
   StackInterface allocateSameSize();
 
+
+  /**
+   * Returns the stack's data type
+   *
+   * @return data type
+   */
+  public NativeTypeEnum getDataType();
 }
