@@ -1,18 +1,13 @@
 package clearcontrol.stack.imglib2;
 
-import clearcontrol.stack.StackInterface;
-import coremem.ContiguousMemoryInterface;
-import coremem.enums.NativeTypeEnum;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
-
-import java.util.Random;
+import clearcontrol.stack.StackInterface;
+import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 
 /**
  * Stack to imglib2 Img Image format converter
@@ -34,9 +29,8 @@ public class StackToImgConverter<T extends RealType<T>>
   {
     Img lReturnImg = null;
 
-    final ContiguousMemoryInterface
-        contiguousMemory =
-        mStack.getContiguousMemory();
+    final ContiguousMemoryInterface contiguousMemory =
+                                                     mStack.getContiguousMemory();
 
     int numDimensions = mStack.getNumberOfDimensions();
     if (mStack.getNumberOfChannels() > 1)
@@ -60,55 +54,50 @@ public class StackToImgConverter<T extends RealType<T>>
     if (mStack.getDataType() == NativeTypeEnum.Float
         || mStack.getDataType() == NativeTypeEnum.HalfFloat)
     {
-      float[]
-          pixelArray =
-          new float[(int) (contiguousMemory.getSizeInBytes()
-                           / mStack.getBytesPerVoxel())
-                    % Integer.MAX_VALUE];
+      float[] pixelArray =
+                         new float[(int) (contiguousMemory.getSizeInBytes()
+                                          / mStack.getBytesPerVoxel())
+                                   % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
       lReturnImg = ArrayImgs.floats(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Short
              || mStack.getDataType() == NativeTypeEnum.UnsignedShort)
     {
-      short[]
-          pixelArray =
-          new short[(int) (contiguousMemory.getSizeInBytes()
-                           / mStack.getBytesPerVoxel())
-                    % Integer.MAX_VALUE];
+      short[] pixelArray =
+                         new short[(int) (contiguousMemory.getSizeInBytes()
+                                          / mStack.getBytesPerVoxel())
+                                   % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
       lReturnImg = ArrayImgs.shorts(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Byte
              || mStack.getDataType() == NativeTypeEnum.UnsignedByte)
     {
-      byte[]
-          pixelArray =
-          new byte[(int) (contiguousMemory.getSizeInBytes()
-                          / mStack.getBytesPerVoxel())
-                   % Integer.MAX_VALUE];
+      byte[] pixelArray =
+                        new byte[(int) (contiguousMemory.getSizeInBytes()
+                                        / mStack.getBytesPerVoxel())
+                                 % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
       lReturnImg = ArrayImgs.bytes(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Int
              || mStack.getDataType() == NativeTypeEnum.UnsignedInt)
     {
-      int[]
-          pixelArray =
-          new int[(int) (contiguousMemory.getSizeInBytes()
-                         / mStack.getBytesPerVoxel())
-                  % Integer.MAX_VALUE];
+      int[] pixelArray =
+                       new int[(int) (contiguousMemory.getSizeInBytes()
+                                      / mStack.getBytesPerVoxel())
+                               % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
       lReturnImg = ArrayImgs.ints(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Long
              || mStack.getDataType() == NativeTypeEnum.UnsignedLong)
     {
-      long[]
-          pixelArray =
-          new long[(int) (contiguousMemory.getSizeInBytes()
-                          / mStack.getBytesPerVoxel())
-                   % Integer.MAX_VALUE];
+      long[] pixelArray =
+                        new long[(int) (contiguousMemory.getSizeInBytes()
+                                        / mStack.getBytesPerVoxel())
+                                 % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
       lReturnImg = ArrayImgs.longs(pixelArray, dimensions);
     }

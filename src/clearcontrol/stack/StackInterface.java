@@ -143,7 +143,6 @@ public interface StackInterface extends
    */
   StackInterface allocateSameSize();
 
-
   /**
    * Returns the stack's data type
    *
