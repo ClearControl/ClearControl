@@ -7,6 +7,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
@@ -15,6 +16,10 @@ import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.FileStackInterface;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.fragmented.FragmentedMemoryInterface;
+
+import org.bridj.CLong;
+import org.bridj.Pointer;
+import sqeazy.bindings.SqeazyLibrary;
 
 /**
  * Raw file stack sink
@@ -31,6 +36,9 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                               new AtomicLong();
   private final ConcurrentHashMap<String, AtomicLong> mNextFreeStackIndexMap =
                                                                              new ConcurrentHashMap<>();
+
+  private final AtomicReference<String> mPipelineName =
+                                                      new AtomicReference<String>("bitswap1->lz4");
 
   /**
    * Instantiates a raw file stack sink.
@@ -52,28 +60,29 @@ public class SqeazyFileStackSink extends FileStackBase implements
                              final StackInterface pStack)
   {
 
-    // try
-    // {
-    // AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
+    try
+    {
+      AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
 
-    // writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
-    // writeIndexFileEntry(lNextFreeStackIndex.get(),
-    // pChannel,
-    // pStack);
-    // writeMetaDataFileEntry(pChannel, pStack);
+      writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
+      // writeIndexFileEntry(lNextFreeStackIndex.get(),
+      // pChannel,
+      // pStack);
+      // writeMetaDataFileEntry(pChannel, pStack);
 
-    // setStackRequest(pChannel,
-    // lNextFreeStackIndex.get(),
-    // StackRequest.buildFrom(pStack));
-    // lNextFreeStackIndex.incrementAndGet();
-    // return true;
-    // }
-    // catch (final Throwable e)
-    // {
-    // e.printStackTrace();
-    // return false;
-    // }
-    return false;
+      // setStackRequest(pChannel,
+      // lNextFreeStackIndex.get(),
+      // StackRequest.buildFrom(pStack));
+      // lNextFreeStackIndex.incrementAndGet();
+
+    }
+    catch (final Throwable e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+
+    return true;
   }
 
   protected AtomicLong getIndexForChannel(String pChannel)
@@ -99,7 +108,54 @@ public class SqeazyFileStackSink extends FileStackBase implements
     FragmentedMemoryInterface lFragmentedMemory =
                                                 pStack.getFragmentedMemory();
 
-    lFragmentedMemory.writeBytesToFileChannel(lBinnaryFileChannel, 0);
+    final Pointer<Byte> bPipelineName =
+                                      Pointer.pointerToCString(mPipelineName.get());
+
+    final long[] lShape = pStack.getDimensions();
+    final long lFrameSize = lShape[1] * lShape[0];
+    final long lBufferLengthInByte = pStack.getVolume()
+                                     * pStack.getBytesPerVoxel();
+
+    final Pointer<Short> lDestShort =
+                                    Pointer.allocateShorts(pStack.getVolume());
+    final Pointer<CLong> lSourceShape =
+                                      Pointer.pointerToCLongs(lShape[2],
+                                                              lShape[1],
+                                                              lShape[0]);
+    final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
+    lMaxEncodedBytes.setCLong(lBufferLengthInByte);
+    SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
+                                                          lMaxEncodedBytes);
+
+    final Pointer<Byte> bCompressedData =
+                                        Pointer.allocateBytes(lMaxEncodedBytes.getLong());
+
+    final Pointer<Short> bInputData =
+                                    Pointer.allocateShorts(pStack.getVolume());
+    for (long plane = 0; plane < lShape[2]; plane++)
+    {
+      final Pointer<Short> frame_memory =
+                                        pStack.getContiguousMemory((int) plane)
+                                              .getBridJPointer(Short.class);
+      bInputData.setShortsAtOffset(plane * lFrameSize
+                                   * pStack.getBytesPerVoxel(),
+                                   frame_memory.getShorts());
+    }
+    final Pointer<CLong> lEncodedBytes = Pointer.allocateCLong();
+
+    // do the encoding with sqeazy here
+    int rvalue = SqeazyLibrary.SQY_PipelineEncode_UI16(bPipelineName,
+                                                       bInputData.as(Byte.class),
+                                                       lSourceShape,
+                                                       lShape.length,
+                                                       bCompressedData,
+                                                       lEncodedBytes);
+
+    // hand the bytes over to the file writer
+    final ByteBuffer output_buffer =
+                                   ByteBuffer.wrap(bCompressedData.as(Byte.class)
+                                                                  .getBytes());
+    lBinnaryFileChannel.write(output_buffer);
 
     lBinnaryFileChannel.force(false);
     lBinnaryFileChannel.close();
