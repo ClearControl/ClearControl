@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.FileStackInterface;
@@ -22,10 +21,10 @@ import coremem.fragmented.FragmentedMemoryInterface;
  *
  * @author royer
  */
-public class RawFileStackSink extends FileStackBase implements
-                              FileStackInterface,
-                              FileStackSinkInterface,
-                              AutoCloseable
+public class SqeazyFileStackSink extends FileStackBase implements
+                                 FileStackInterface,
+                                 FileStackSinkInterface,
+                                 AutoCloseable
 {
 
   private final AtomicLong mFirstTimePointAbsoluteNanoSeconds =
@@ -37,7 +36,7 @@ public class RawFileStackSink extends FileStackBase implements
    * Instantiates a raw file stack sink.
    * 
    */
-  public RawFileStackSink()
+  public SqeazyFileStackSink()
   {
     super(false);
   }
@@ -53,27 +52,28 @@ public class RawFileStackSink extends FileStackBase implements
                              final StackInterface pStack)
   {
 
-    try
-    {
-      AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
+    // try
+    // {
+    // AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
 
-      writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
-      writeIndexFileEntry(lNextFreeStackIndex.get(),
-                          pChannel,
-                          pStack);
-      writeMetaDataFileEntry(pChannel, pStack);
+    // writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
+    // writeIndexFileEntry(lNextFreeStackIndex.get(),
+    // pChannel,
+    // pStack);
+    // writeMetaDataFileEntry(pChannel, pStack);
 
-      setStackRequest(pChannel,
-                      lNextFreeStackIndex.get(),
-                      StackRequest.buildFrom(pStack));
-      lNextFreeStackIndex.incrementAndGet();
-      return true;
-    }
-    catch (final Throwable e)
-    {
-      e.printStackTrace();
-      return false;
-    }
+    // setStackRequest(pChannel,
+    // lNextFreeStackIndex.get(),
+    // StackRequest.buildFrom(pStack));
+    // lNextFreeStackIndex.incrementAndGet();
+    // return true;
+    // }
+    // catch (final Throwable e)
+    // {
+    // e.printStackTrace();
+    // return false;
+    // }
+    return false;
   }
 
   protected AtomicLong getIndexForChannel(String pChannel)

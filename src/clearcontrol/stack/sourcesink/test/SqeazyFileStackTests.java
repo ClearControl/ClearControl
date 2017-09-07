@@ -51,9 +51,9 @@ public class SqeazyFileStackTests
     System.out.println(lRootFolder);
 
     {
-      final SqeazyFileStackSink lLocalFileStackSink =
-                                                    new SqeazyFileStackSink();
-      lLocalFileStackSink.setLocation(lRootFolder, "testSink");
+      final SqeazyFileStackSink lSqyFileStackSink =
+                                                  new SqeazyFileStackSink();
+      lSqyFileStackSink.setLocation(lRootFolder, "testSink");
 
       final OffHeapPlanarStack lStack =
                                       OffHeapPlanarStack.createStack(cSizeX,
@@ -96,13 +96,13 @@ public class SqeazyFileStackTests
       // assertEquals(i & 0xFFFF, lShort);
       // }
 
-      // assertTrue(lLocalFileStackSink.appendStack(lStack));
+      // assertTrue(lSqyFileStackSink.appendStack(lStack));
       // }
 
       // assertEquals(cNumberOfStacks,
-      // lLocalFileStackSink.getNumberOfStacks());
+      // lSqyFileStackSink.getNumberOfStacks());
 
-      // lLocalFileStackSink.close();
+      // lSqyFileStackSink.close();
       // }
 
       // {
@@ -114,24 +114,24 @@ public class SqeazyFileStackTests
       // StackRequest>(lOffHeapPlanarStackFactory,
       // cMaximalNumberOfAvailableStacks);
 
-      // final SqeazyFileStackSource lLocalFileStackSource =
+      // final SqeazyFileStackSource lSqyFileStackSource =
       // new SqeazyFileStackSource(lStackRecycler);
 
-      // lLocalFileStackSource.setLocation(lRootFolder, "testSink");
+      // lSqyFileStackSource.setLocation(lRootFolder, "testSink");
 
-      // lLocalFileStackSource.update();
+      // lSqyFileStackSource.update();
 
       // assertEquals(cNumberOfStacks,
-      // lLocalFileStackSource.getNumberOfStacks());
+      // lSqyFileStackSource.getNumberOfStacks());
 
       // assertEquals(cSizeX,
-      // lLocalFileStackSource.getStack(0).getWidth());
+      // lSqyFileStackSource.getStack(0).getWidth());
       // assertEquals(cSizeY,
-      // lLocalFileStackSource.getStack(0).getHeight());
+      // lSqyFileStackSource.getStack(0).getHeight());
       // assertEquals(cSizeZ,
-      // lLocalFileStackSource.getStack(0).getDepth());
+      // lSqyFileStackSource.getStack(0).getDepth());
 
-      // lLocalFileStackSource.close();
+      // lSqyFileStackSource.close();
     }
 
     try
