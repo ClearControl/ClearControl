@@ -2,6 +2,7 @@ package clearcontrol.stack;
 
 import clearcontrol.stack.metadata.StackMetaData;
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.fragmented.FragmentedMemoryInterface;
 import coremem.interfaces.SizedInBytes;
 import coremem.recycling.RecyclableInterface;
@@ -70,6 +71,13 @@ public interface StackInterface extends
   long getDepth();
 
   /**
+   * Returns the number of channels per voxel
+   *
+   * @return number of channels
+   */
+  long getNumberOfChannels();
+
+  /**
    * Returns the number of bytes per voxel
    * 
    * @return number of bytes per voxel
@@ -89,7 +97,7 @@ public interface StackInterface extends
    * 
    * @return stack meta data interface
    */
-  public StackMetaData getMetaData();
+  StackMetaData getMetaData();
 
   /**
    * Copies the meta data from the given stack
@@ -135,4 +143,10 @@ public interface StackInterface extends
    */
   StackInterface allocateSameSize();
 
+  /**
+   * Returns the stack's data type
+   *
+   * @return data type
+   */
+  NativeTypeEnum getDataType();
 }
