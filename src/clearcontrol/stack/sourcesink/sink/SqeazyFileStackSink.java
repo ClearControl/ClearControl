@@ -131,16 +131,8 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                         Pointer.allocateBytes(lMaxEncodedBytes.getLong());
 
     final Pointer<Short> bInputData =
-                                    Pointer.allocateShorts(pStack.getVolume());
-    for (long plane = 0; plane < lShape[2]; plane++)
-    {
-      final Pointer<Short> frame_memory =
-                                        pStack.getContiguousMemory((int) plane)
-                                              .getBridJPointer(Short.class);
-      bInputData.setShortsAtOffset(plane * lFrameSize
-                                   * pStack.getBytesPerVoxel(),
-                                   frame_memory.getShorts());
-    }
+                                    pStack.getContiguousMemory()
+                                          .getBridJPointer(Short.class);
     final Pointer<CLong> lEncodedBytes = Pointer.allocateCLong();
 
     // do the encoding with sqeazy here
