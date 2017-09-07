@@ -35,6 +35,16 @@ public class SqeazyFileStackTests
   private static final int cNumberOfStacks = 2;
   private static final int cMaximalNumberOfAvailableStacks = 20;
 
+  @Test
+  public void testSqeazyVersion()
+  {
+    final Pointer<Integer> version = Pointer.allocateInts(3);
+    SqeazyLibrary.SQY_Version_Triple(version);
+    assertTrue(version.get(0) >= 0);
+    assertTrue(version.get(1) >= 3);
+    assertTrue(version.get(2) >= 0);
+  }
+
   /**
    * test sqeazy to disentangle problems from java interface issues
    *
