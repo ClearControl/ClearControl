@@ -192,7 +192,7 @@ dependencies
     compile ('net.halcyon:Halcyon:0.3.7')                {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:0.3.3')                  {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.4.2')                  {transitive= true; changing= true}
 
     // CoreMem:
     compile ('net.coremem:coremem:0.4.4')                {transitive= true; changing= true}
