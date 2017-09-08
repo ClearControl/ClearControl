@@ -41,6 +41,8 @@ public class SqeazyFileStackSink extends FileStackBase implements
   private final AtomicReference<String> mPipelineName =
                                                       new AtomicReference<String>("bitswap1->lz4");
 
+  private final String cFilenameExtension = ".sqy";
+
   /**
    * Instantiates a raw file stack sink.
    * 
@@ -102,8 +104,9 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                 String pChannel,
                                 final StackInterface pStack) throws IOException
   {
-    String lFileName = String.format(StackSinkSourceInterface.cFormat,
-                                     pIndex);
+    String lFileName =
+                     String.format(StackSinkSourceInterface.cBasename
+                                   + cFilenameExtension, pIndex);
     File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
     FragmentedMemoryInterface lFragmentedMemory =
