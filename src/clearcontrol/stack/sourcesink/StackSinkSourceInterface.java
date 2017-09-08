@@ -27,6 +27,17 @@ public interface StackSinkSourceInterface
   public static final String cDefaultFileExtension = ".raw";
 
   /**
+   * Filename suffix for stacks written to files using sqeazy
+   */
+  public static final String cSqeazyFileExtension = ".sqy";
+
+  /**
+   * Filename suffix for stacks written to files using sqeazy in HDF5 format
+   */
+  public static final String cSqeazyHDF5FileExtension = ".h5";
+
+
+  /**
    * Format used to write the stacks filenames
    */
   public static final String cFormat = cBasename
