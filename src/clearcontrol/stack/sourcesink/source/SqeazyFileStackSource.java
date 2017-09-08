@@ -21,20 +21,17 @@ import org.bridj.CLong;
 import org.bridj.Pointer;
 import sqeazy.bindings.SqeazyLibrary;
 
-
 /**
  * Sqeazy file stack source
  *
  * @author steinbac
  */
 public class SqeazyFileStackSource extends FileStackBase implements
-                                FileStackSourceInterface,
-                                AutoCloseable
+                                   FileStackSourceInterface,
+                                   AutoCloseable
 {
 
   private RecyclerInterface<StackInterface, StackRequest> mStackRecycler;
-
-
 
   /**
    * Instantiates a raw file stack source
@@ -97,7 +94,8 @@ public class SqeazyFileStackSource extends FileStackBase implements
                                                            lStackRequest);
 
       String lFileName =
-                       String.format(StackSinkSourceInterface.cBasename + StackSinkSourceInterface.cSqeazyFileExtension,
+                       String.format(StackSinkSourceInterface.cBasename
+                                     + StackSinkSourceInterface.cSqeazyFileExtension,
                                      pStackIndex);
 
       File lFile = new File(getChannelFolder(pChannel), lFileName);
@@ -108,40 +106,46 @@ public class SqeazyFileStackSource extends FileStackBase implements
       FileChannel lBinaryFileChannel = getFileChannel(lFile, true);
       final long n_bytes_to_read = lBinaryFileChannel.size();
       final Pointer<Byte> bCompressedBytes =
-                                        Pointer.allocateBytes(n_bytes_to_read);
+                                           Pointer.allocateBytes(n_bytes_to_read);
 
-      //performing I/O
-      final long n_bytes_read = lBinaryFileChannel.read(bCompressedBytes.getByteBuffer(n_bytes_to_read));
+      // performing I/O
+      final long n_bytes_read =
+                              lBinaryFileChannel.read(bCompressedBytes.getByteBuffer(n_bytes_to_read));
 
-      //checking the decoded size
-      final Pointer<CLong> lPointerToDestinationLength = Pointer.allocateCLong();
+      // checking the decoded size
+      final Pointer<CLong> lPointerToDestinationLength =
+                                                       Pointer.allocateCLong();
       lPointerToDestinationLength.setCLong(n_bytes_read);
 
       SqeazyLibrary.SQY_Pipeline_Decompressed_Length(bCompressedBytes,
                                                      lPointerToDestinationLength);
 
-      //decompress into lDecodedBytes
-      final Pointer<Byte> lDecodedBytes = Pointer.allocateBytes(lPointerToDestinationLength.getCLong());
-      final int return_value = SqeazyLibrary.SQY_PipelineDecode_UI16(bCompressedBytes,
-                                                                     n_bytes_read,
-                                                                     lDecodedBytes);
+      // decompress into lDecodedBytes
+      final Pointer<Byte> lDecodedBytes =
+                                        Pointer.allocateBytes(lPointerToDestinationLength.getCLong());
+      final int return_value =
+                             SqeazyLibrary.SQY_PipelineDecode_UI16(bCompressedBytes,
+                                                                   n_bytes_read,
+                                                                   lDecodedBytes);
 
-      final long n_elements = lPointerToDestinationLength.getCLong()/lStack.getBytesPerVoxel();
+      final long n_elements = lPointerToDestinationLength.getCLong()
+                              / lStack.getBytesPerVoxel();
 
-      if (lStack.getContiguousMemory() != null){
+      if (lStack.getContiguousMemory() != null)
+      {
 
-        lStack.getContiguousMemory().copyFrom(lDecodedBytes.getShorts(),
+        lStack.getContiguousMemory().copyFrom(
+                                              lDecodedBytes.getShorts(),
                                               0,
                                               0,
-                                              (int)n_elements
-          );
+                                              (int) n_elements);
 
       }
       // else
-      //   lStack.getFragmentedMemory()
-      //         .readBytesFromFileChannel(lBinaryFileChannel,
-      //                                   0,
-      //                                   lStack.getSizeInBytes());
+      // lStack.getFragmentedMemory()
+      // .readBytesFromFileChannel(lBinaryFileChannel,
+      // 0,
+      // lStack.getSizeInBytes());
 
       final double lTimeStampInSeconds =
                                        getStackTimeStampInSeconds(pChannel,

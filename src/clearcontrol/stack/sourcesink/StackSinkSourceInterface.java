@@ -36,7 +36,6 @@ public interface StackSinkSourceInterface
    */
   public static final String cSqeazyHDF5FileExtension = ".h5";
 
-
   /**
    * Format used to write the stacks filenames
    */
