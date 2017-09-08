@@ -395,4 +395,93 @@ public class SqeazyFileStackTests
     }
 
   }
+
+  /**
+   * Test write speed
+   *
+   * @throws IOException
+   *           NA
+   */
+  @Test
+  public void testWriteSpeed() throws IOException
+  {
+
+    for (int r = 0; r < 1; r++)
+    {
+      System.gc();
+
+      final File lRootFolder =
+                             new File(File.createTempFile("test",
+                                                          "test")
+                                          .getParentFile(),
+                                      "LocalFileStackTests" + Math.random());/**/
+
+      lRootFolder.mkdirs();
+      System.out.println(lRootFolder);
+
+      final SqeazyFileStackSink lLocalFileStackSink =
+                                                 new SqeazyFileStackSink();
+      lLocalFileStackSink.setLocation(lRootFolder, "testSink");
+
+      final OffHeapPlanarStack lStack =
+                                      OffHeapPlanarStack.createStack(cSizeX,
+                                                                     cSizeY,
+                                                                     cSizeZ);
+
+      lStack.getMetaData().setIndex(0);
+      lStack.getMetaData()
+            .setTimeStampInNanoseconds(System.nanoTime());
+
+      assertEquals(cSizeX * cSizeY * cSizeZ, lStack.getVolume());
+
+      assertEquals(cSizeX * cSizeY
+                   * cSizeZ
+                   * cBytesPerVoxel,
+                   lStack.getSizeInBytes());
+
+      System.out.println("generating data...");
+      System.out.println("size: " + lStack.getSizeInBytes()
+                         + " bytes!");
+      ContiguousMemoryInterface lContiguousMemory =
+                                                  lStack.getContiguousMemory();
+
+      ContiguousBuffer lBuffer =
+                               ContiguousBuffer.wrap(lContiguousMemory);
+      int i = 0;
+      while (lBuffer.hasRemainingByte())
+      {
+        lBuffer.writeByte((byte) i++);
+      } /**/
+
+      System.out.println("done generating data...");
+
+      System.out.println("start");
+      long lStart = System.nanoTime();
+      assertTrue(lLocalFileStackSink.appendStack(lStack));
+      long lStop = System.nanoTime();
+      System.out.println("stop");
+
+      double lElapsedTimeInSeconds = (lStop - lStart) * 1e-9;
+
+      double lSpeed = (lStack.getSizeInBytes() * 1e-6)
+                      / lElapsedTimeInSeconds;
+
+      System.out.format("speed: %g MB/s \n", lSpeed);
+
+      lLocalFileStackSink.close();
+
+      try
+      {
+        FileUtils.deleteDirectory(lRootFolder);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
+
+      lStack.free();
+    }
+
+  }
+
 }
