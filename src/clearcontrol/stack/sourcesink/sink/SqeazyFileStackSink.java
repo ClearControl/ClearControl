@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.FileStackInterface;
@@ -65,15 +66,15 @@ public class SqeazyFileStackSink extends FileStackBase implements
       AtomicLong lNextFreeStackIndex = getIndexForChannel(pChannel);
 
       writeStackData(lNextFreeStackIndex.get(), pChannel, pStack);
-      // writeIndexFileEntry(lNextFreeStackIndex.get(),
-      // pChannel,
-      // pStack);
-      // writeMetaDataFileEntry(pChannel, pStack);
+      writeIndexFileEntry(lNextFreeStackIndex.get(),
+                          pChannel,
+                          pStack);
+      writeMetaDataFileEntry(pChannel, pStack);
 
-      // setStackRequest(pChannel,
-      // lNextFreeStackIndex.get(),
-      // StackRequest.buildFrom(pStack));
-      // lNextFreeStackIndex.incrementAndGet();
+      setStackRequest(pChannel,
+                      lNextFreeStackIndex.get(),
+                      StackRequest.buildFrom(pStack));
+      lNextFreeStackIndex.incrementAndGet();
 
     }
     catch (final Throwable e)
