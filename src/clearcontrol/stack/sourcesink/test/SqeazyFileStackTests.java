@@ -5,11 +5,21 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
+import clearcontrol.stack.ContiguousOffHeapPlanarStackFactory;
 import clearcontrol.stack.OffHeapPlanarStack;
+import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.sourcesink.sink.SqeazyFileStackSink;
 import coremem.ContiguousMemoryInterface;
 import coremem.buffers.ContiguousBuffer;
+import coremem.recycling.BasicRecycler;
 
 import org.apache.commons.io.FileUtils;
 import org.bridj.CLong;
@@ -25,7 +35,7 @@ import sqeazy.bindings.SqeazyLibrary;
 public class SqeazyFileStackTests
 {
 
-  private static final long cDiv = 4;
+  private static final long cDiv = 8;
 
   private static final long cSizeX = 2048 / cDiv;
   private static final long cSizeY = 2048 / cDiv;
@@ -34,6 +44,29 @@ public class SqeazyFileStackTests
 
   private static final int cNumberOfStacks = 2;
   private static final int cMaximalNumberOfAvailableStacks = 20;
+
+  /**
+   * adapted from http://javapapers.com/java/glob-with-java-nio/
+   */
+  public static List<String> find_files(String glob,
+                                        String start_location) throws IOException
+  {
+
+    final List<String> value = new ArrayList<>();
+
+    long n_files = 0;
+    DirectoryStream<Path> dir_stream =
+                                     Files.newDirectoryStream(Paths.get(start_location),
+                                                              glob);
+    for (Path path : dir_stream)
+    {
+      value.add(path.getFileName().toString());
+      n_files = n_files + 1;
+    }
+    dir_stream.close();
+
+    return value;
+  }
 
   @Test
   public void testSqeazyVersion()
@@ -112,8 +145,104 @@ public class SqeazyFileStackTests
   }
 
   /**
+   * test sink only
+   *
+   * @throws IOException
+   *           NA
+   */
+  @Test
+  public void testSink() throws IOException
+  {
+
+    final File lRootFolder =
+                           new File(File.createTempFile("test",
+                                                        "test")
+                                        .getParentFile(),
+                                    "LocalFileStackTests" + Math.random());/**/
+
+    // final File lRootFolder = new File("/Volumes/External/Temp");
+
+    lRootFolder.mkdirs();
+    System.out.println(lRootFolder);
+
+    {
+      final SqeazyFileStackSink lSqyFileStackSink =
+                                                  new SqeazyFileStackSink();
+      lSqyFileStackSink.setLocation(lRootFolder, "testSink");
+
+      final OffHeapPlanarStack lStack =
+                                      OffHeapPlanarStack.createStack(cSizeX,
+                                                                     cSizeY,
+                                                                     cSizeZ);
+
+      lStack.getMetaData().setIndex(0);
+      lStack.getMetaData()
+            .setTimeStampInNanoseconds(System.nanoTime());
+
+      assertEquals(cSizeX * cSizeY * cSizeZ, lStack.getVolume());
+      // System.out.println(lStack.mNDimensionalArray.getLengthInElements()
+      // *
+      // 2);
+
+      assertEquals(cSizeX * cSizeY
+                   * cSizeZ
+                   * cBytesPerVoxel,
+                   lStack.getSizeInBytes());
+
+      for (int i = 0; i < cNumberOfStacks; i++)
+      {
+
+        final ContiguousMemoryInterface lContiguousMemory =
+                                                          lStack.getContiguousMemory();
+
+        ContiguousBuffer lContiguousBuffer =
+                                           ContiguousBuffer.wrap(lContiguousMemory);
+
+        while (lContiguousBuffer.hasRemainingShort())
+        {
+          lContiguousBuffer.writeShort((short) i);
+        }
+
+        lContiguousBuffer.rewind();
+
+        while (lContiguousBuffer.hasRemainingShort())
+        {
+          final short lShort = lContiguousBuffer.readShort();
+          assertEquals(i & 0xFFFF, lShort);
+        }
+
+        assertTrue(lSqyFileStackSink.appendStack(lStack));
+      }
+
+      assertEquals(cNumberOfStacks,
+                   lSqyFileStackSink.getNumberOfStacks());
+
+      lSqyFileStackSink.close();
+
+    }
+
+    String parent_path = lRootFolder + "/testSink/stacks/default/";
+    assertTrue("check if " + parent_path
+               + " exists failed",
+               Files.exists(Paths.get(parent_path)));
+
+    List<String> stacks_written = find_files("*.sqy", parent_path);
+    assertTrue(!stacks_written.isEmpty());
+    assertEquals(stacks_written.size(), cNumberOfStacks);
+
+    try
+    {
+      FileUtils.deleteDirectory(lRootFolder);
+    }
+    catch (Exception e)
+    {
+    }
+
+  }
+
+  /**
    * test sink and source
-   * 
+   *
    * @throws IOException
    *           NA
    */
@@ -185,36 +314,45 @@ public class SqeazyFileStackTests
                    lSqyFileStackSink.getNumberOfStacks());
 
       lSqyFileStackSink.close();
+
     }
 
-    // {
-    // final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory =
-    // new ContiguousOffHeapPlanarStackFactory();
+    String parent_path = lRootFolder + "/testSink/stacks/default/";
+    assertTrue("check if " + parent_path
+               + " exists failed",
+               Files.exists(Paths.get(parent_path)));
 
-    // final BasicRecycler<StackInterface, StackRequest> lStackRecycler =
-    // new BasicRecycler<StackInterface,
-    // StackRequest>(lOffHeapPlanarStackFactory,
-    // cMaximalNumberOfAvailableStacks);
+    List<String> stacks_written = find_files("*.sqy", parent_path);
+    assertTrue(!stacks_written.isEmpty());
+    assertEquals(stacks_written.size(), cNumberOfStacks);
 
-    // final SqeazyFileStackSource lSqyFileStackSource =
-    // new SqeazyFileStackSource(lStackRecycler);
+    {
+      final ContiguousOffHeapPlanarStackFactory lOffHeapPlanarStackFactory =
+                                                                           new ContiguousOffHeapPlanarStackFactory();
 
-    // lSqyFileStackSource.setLocation(lRootFolder, "testSink");
+      final BasicRecycler<StackInterface, StackRequest> lStackRecycler =
+                                                                       new BasicRecycler<StackInterface, StackRequest>(lOffHeapPlanarStackFactory,
+                                                                                                                       cMaximalNumberOfAvailableStacks);
 
-    // lSqyFileStackSource.update();
+      final SqeazyFileStackSource lSqyFileStackSource =
+                                                      new SqeazyFileStackSource(lStackRecycler);
 
-    // assertEquals(cNumberOfStacks,
-    // lSqyFileStackSource.getNumberOfStacks());
+      lSqyFileStackSource.setLocation(lRootFolder, "testSink");
 
-    // assertEquals(cSizeX,
-    // lSqyFileStackSource.getStack(0).getWidth());
-    // assertEquals(cSizeY,
-    // lSqyFileStackSource.getStack(0).getHeight());
-    // assertEquals(cSizeZ,
-    // lSqyFileStackSource.getStack(0).getDepth());
+      lSqyFileStackSource.update();
 
-    // lSqyFileStackSource.close();
-    // }
+      assertEquals(cNumberOfStacks,
+                   lSqyFileStackSource.getNumberOfStacks());
+
+      assertEquals(cSizeX,
+                   lSqyFileStackSource.getStack(0).getWidth());
+      assertEquals(cSizeY,
+                   lSqyFileStackSource.getStack(0).getHeight());
+      assertEquals(cSizeZ,
+                   lSqyFileStackSource.getStack(0).getDepth());
+
+      lSqyFileStackSource.close();
+    }
 
     try
     {
