@@ -9,6 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bridj.CLong;
+import org.bridj.Pointer;
+
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -16,10 +19,7 @@ import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.FileStackInterface;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
-import coremem.fragmented.FragmentedMemoryInterface;
-
-import org.bridj.CLong;
-import org.bridj.Pointer;
+import coremem.offheap.OffHeapMemory;
 import sqeazy.bindings.SqeazyLibrary;
 
 /**
@@ -40,6 +40,7 @@ public class SqeazyFileStackSink extends FileStackBase implements
 
   private final AtomicReference<String> mPipelineName =
                                                       new AtomicReference<String>("bitswap1->lz4");
+  private OffHeapMemory mCompressedData;
 
   /**
    * Instantiates a raw file stack sink.
@@ -108,19 +109,13 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                    pIndex);
     File lFile = new File(getChannelFolder(pChannel), lFileName);
     FileChannel lBinnaryFileChannel = getFileChannel(lFile, false);
-    FragmentedMemoryInterface lFragmentedMemory =
-                                                pStack.getFragmentedMemory();
 
     final Pointer<Byte> bPipelineName =
                                       Pointer.pointerToCString(mPipelineName.get());
 
     final long[] lShape = pStack.getDimensions();
-    final long lFrameSize = lShape[1] * lShape[0];
-    final long lBufferLengthInByte = pStack.getVolume()
-                                     * pStack.getBytesPerVoxel();
+    final long lBufferLengthInByte = pStack.getSizeInBytes();
 
-    final Pointer<Short> lDestShort =
-                                    Pointer.allocateShorts(pStack.getVolume());
     final Pointer<CLong> lSourceShape =
                                       Pointer.pointerToCLongs(lShape[2],
                                                               lShape[1],
@@ -130,27 +125,35 @@ public class SqeazyFileStackSink extends FileStackBase implements
     SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
                                                           lMaxEncodedBytes);
 
-    final Pointer<Byte> bCompressedData =
-                                        Pointer.allocateBytes(lMaxEncodedBytes.getLong());
+    if (mCompressedData == null
+        || mCompressedData.getSizeInBytes() != lMaxEncodedBytes.getLong())
+    {
+      mCompressedData =
+                      OffHeapMemory.allocateBytes(lMaxEncodedBytes.getLong());
+    }
 
     final Pointer<Short> bInputData =
                                     pStack.getContiguousMemory()
                                           .getBridJPointer(Short.class);
+
     final Pointer<CLong> lEncodedBytes = Pointer.allocateCLong();
 
     // do the encoding with sqeazy here
-    int rvalue = SqeazyLibrary.SQY_PipelineEncode_UI16(bPipelineName,
+    @SuppressWarnings("unchecked")
+    int lReturnValue =
+                     SqeazyLibrary.SQY_PipelineEncode_UI16(bPipelineName,
                                                        bInputData.as(Byte.class),
                                                        lSourceShape,
                                                        lShape.length,
-                                                       bCompressedData,
+                                                       (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
                                                        lEncodedBytes);
 
-    // hand the bytes over to the file writer
-    final ByteBuffer output_buffer =
-                                   ByteBuffer.wrap(bCompressedData.as(Byte.class)
-                                                                  .getBytes());
-    lBinnaryFileChannel.write(output_buffer);
+    if (lReturnValue != 0)
+      throw new RuntimeException("Error while peforming sqy compression, error code:  "
+                                 + lReturnValue);
+
+    mCompressedData.subRegion(0, lEncodedBytes.getCLong())
+                   .writeBytesToFileChannel(lBinnaryFileChannel, 0);
 
     lBinnaryFileChannel.force(false);
     lBinnaryFileChannel.close();

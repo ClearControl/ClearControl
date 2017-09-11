@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import org.bridj.CLong;
+import org.bridj.Pointer;
+
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
+import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
-
-import org.bridj.CLong;
-import org.bridj.Pointer;
 import sqeazy.bindings.SqeazyLibrary;
 
 /**
@@ -32,6 +33,8 @@ public class SqeazyFileStackSource extends FileStackBase implements
 {
 
   private RecyclerInterface<StackInterface, StackRequest> mStackRecycler;
+
+  private OffHeapMemory mCompressedBytes;
 
   /**
    * Instantiates a raw file stack source
@@ -72,6 +75,8 @@ public class SqeazyFileStackSource extends FileStackBase implements
     return getStack(pChannel, pStackIndex, 1, TimeUnit.NANOSECONDS);
   }
 
+
+  @SuppressWarnings("unchecked")
   @Override
   public StackInterface getStack(final String pChannel,
                                  final long pStackIndex,
@@ -104,48 +109,42 @@ public class SqeazyFileStackSource extends FileStackBase implements
         return null;
 
       FileChannel lBinaryFileChannel = getFileChannel(lFile, true);
-      final long n_bytes_to_read = lBinaryFileChannel.size();
-      final Pointer<Byte> bCompressedBytes =
-                                           Pointer.allocateBytes(n_bytes_to_read);
+      final long lCompressedDataLength = lBinaryFileChannel.size();
 
-      // performing I/O
-      final long n_bytes_read =
-                              lBinaryFileChannel.read(bCompressedBytes.getByteBuffer(n_bytes_to_read));
+      // we could be smarter here and only reallocate if we need a bigger
+      // buffer....
+      if (mCompressedBytes == null
+          || mCompressedBytes.getSizeInBytes() != lCompressedDataLength)
+        mCompressedBytes =
+                         OffHeapMemory.allocateBytes(lCompressedDataLength);
+
+      mCompressedBytes.readBytesFromFileChannel(lBinaryFileChannel,
+                                                0,
+                                                lCompressedDataLength);
 
       // checking the decoded size
       final Pointer<CLong> lPointerToDestinationLength =
                                                        Pointer.allocateCLong();
-      lPointerToDestinationLength.setCLong(n_bytes_read);
 
-      SqeazyLibrary.SQY_Pipeline_Decompressed_Length(bCompressedBytes,
+      SqeazyLibrary.SQY_Pipeline_Decompressed_Length((Pointer<Byte>) mCompressedBytes.getBridJPointer(Byte.class),
                                                      lPointerToDestinationLength);
+
 
       // decompress into lDecodedBytes
       final Pointer<Byte> lDecodedBytes =
-                                        Pointer.allocateBytes(lPointerToDestinationLength.getCLong());
-      final int return_value =
-                             SqeazyLibrary.SQY_PipelineDecode_UI16(bCompressedBytes,
-                                                                   n_bytes_read,
+                                        lStack.getContiguousMemory()
+                                              .getBridJPointer(Byte.class);
+      final int lReturnValue =
+                             SqeazyLibrary.SQY_PipelineDecode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
+                                                                   lCompressedDataLength,
                                                                    lDecodedBytes);
 
-      final long n_elements = lPointerToDestinationLength.getCLong()
-                              / lStack.getBytesPerVoxel();
+      if (lReturnValue != 0)
+        throw new RuntimeException("Error while peforming sqy compression, error code:  "
+                                   + lReturnValue);
 
-      if (lStack.getContiguousMemory() != null)
-      {
-
-        lStack.getContiguousMemory().copyFrom(
-                                              lDecodedBytes.getShorts(),
-                                              0,
-                                              0,
-                                              (int) n_elements);
-
-      }
-      // else
-      // lStack.getFragmentedMemory()
-      // .readBytesFromFileChannel(lBinaryFileChannel,
-      // 0,
-      // lStack.getSizeInBytes());
+      // NOte: we don't need to write 'fragmented memory' as this is a just used
+      // as a view into a contiguous buffer...
 
       final double lTimeStampInSeconds =
                                        getStackTimeStampInSeconds(pChannel,
