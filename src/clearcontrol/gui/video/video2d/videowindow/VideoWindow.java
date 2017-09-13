@@ -11,17 +11,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import clearcontrol.gui.video.util.WindowControl;
-import cleargl.ClearGLDefaultEventListener;
-import cleargl.ClearGLWindow;
-
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.opengl.GLException;
 
+import clearcontrol.gui.video.util.WindowControl;
+import cleargl.ClearGLDefaultEventListener;
+import cleargl.ClearGLWindow;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
+import coremem.util.Size;
 
 public class VideoWindow implements AutoCloseable
 {
@@ -340,8 +340,10 @@ public class VideoWindow implements AutoCloseable
     if (pMemory.isFree())
       return;
 
-    final long lLength = this.mSourceBufferWidth
-                         * this.mSourceBufferHeight;
+    final long lLength =
+                       min(this.mSourceBufferWidth
+                           * this.mSourceBufferHeight,
+                           pMemory.getSizeInBytes() / Size.of(mType));
     final int lStep =
                     1 + round(VideoWindow.cPercentageOfPixelsToSample
                               * lLength);
