@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import org.bridj.CLong;
-import org.bridj.Pointer;
-
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -20,6 +17,9 @@ import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
+
+import org.bridj.CLong;
+import org.bridj.Pointer;
 import sqeazy.bindings.SqeazyLibrary;
 
 /**
@@ -75,7 +75,6 @@ public class SqeazyFileStackSource extends FileStackBase implements
     return getStack(pChannel, pStackIndex, 1, TimeUnit.NANOSECONDS);
   }
 
-
   @SuppressWarnings("unchecked")
   @Override
   public StackInterface getStack(final String pChannel,
@@ -128,7 +127,6 @@ public class SqeazyFileStackSource extends FileStackBase implements
 
       SqeazyLibrary.SQY_Pipeline_Decompressed_Length((Pointer<Byte>) mCompressedBytes.getBridJPointer(Byte.class),
                                                      lPointerToDestinationLength);
-
 
       // decompress into lDecodedBytes
       final Pointer<Byte> lDecodedBytes =

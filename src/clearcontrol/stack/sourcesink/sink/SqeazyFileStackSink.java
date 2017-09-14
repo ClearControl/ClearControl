@@ -9,9 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.bridj.CLong;
-import org.bridj.Pointer;
-
 import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
@@ -20,6 +17,9 @@ import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.FileStackInterface;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
 import coremem.offheap.OffHeapMemory;
+
+import org.bridj.CLong;
+import org.bridj.Pointer;
 import sqeazy.bindings.SqeazyLibrary;
 
 /**
@@ -142,11 +142,11 @@ public class SqeazyFileStackSink extends FileStackBase implements
     @SuppressWarnings("unchecked")
     int lReturnValue =
                      SqeazyLibrary.SQY_PipelineEncode_UI16(bPipelineName,
-                                                       bInputData.as(Byte.class),
-                                                       lSourceShape,
-                                                       lShape.length,
-                                                       (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
-                                                       lEncodedBytes);
+                                                           bInputData.as(Byte.class),
+                                                           lSourceShape,
+                                                           lShape.length,
+                                                           (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
+                                                           lEncodedBytes);
 
     if (lReturnValue != 0)
       throw new RuntimeException("Error while peforming sqy compression, error code:  "

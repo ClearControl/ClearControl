@@ -189,7 +189,7 @@ dependencies
     compile ('org.scream3r:jssc:2.8.0')                  {transitive= true; changing= true}
    
     // Halcyon:
-    compile ('net.halcyon:Halcyon:0.3.7')                {transitive=true;  changing= true}
+    compile ('net.halcyon:halcyon:0.3.7')                {transitive=true;  changing= true}
 
     // Sqeazy:
     compile ('net.sqeazy:sqeazy:0.4.2')                  {transitive= true; changing= true}
@@ -202,7 +202,7 @@ dependencies
     compile ('net.clearvolume:clearaudio:1.0.2')         {transitive= true; changing= true}
     
     // Symbrio:
-    compile ('net.clearcontrol:Simbryo:0.7.0')           {transitive= true; changing= true}
+    compile ('net.clearcontrol:Simbryo:0.7.1')           {transitive= true; changing= true}
     
     // fastFuse:
     compile ('net.clearcontrol:FastFuse:0.5.0')           {transitive= true; changing= true}

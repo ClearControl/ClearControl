@@ -1,10 +1,9 @@
 package clearcontrol.stack.sourcesink.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.ShortBuffer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -288,11 +287,10 @@ public class SqeazyFileStackTests
                    * cBytesPerVoxel,
                    lStack.getSizeInBytes());
 
-
       for (int i = 0; i < cNumberOfStacks; i++)
       {
 
-        final short value = (short)i;
+        final short value = (short) i;
         final ContiguousMemoryInterface lContiguousMemory =
                                                           lStack.getContiguousMemory();
 
@@ -357,28 +355,30 @@ public class SqeazyFileStackTests
       assertEquals(cSizeZ,
                    lSqyFileStackSource.getStack(0).getDepth());
 
-      final short[] expected_values = new short[(int)cSizeX];
-      final int cSizeX_as_int = (int)cSizeX;
+      final short[] expected_values = new short[(int) cSizeX];
+      final int cSizeX_as_int = (int) cSizeX;
 
       for (int i = 0; i < cNumberOfStacks; i++)
       {
 
         for (int r = 0; r < cSizeX_as_int; r++)
         {
-          expected_values[r] = (short)i;
+          expected_values[r] = (short) i;
         }
-        assertArrayEquals(lSqyFileStackSource
-                          .getStack(i)
-                          .getContiguousMemory()
-                          .getBridJPointer(Short.class)
-                          .getShorts(cSizeX_as_int),
+        assertArrayEquals(lSqyFileStackSource.getStack(i)
+                                             .getContiguousMemory()
+                                             .getBridJPointer(Short.class)
+                                             .getShorts(cSizeX_as_int),
                           expected_values);
 
-        assertArrayEquals(lSqyFileStackSource
-                          .getStack(i)
-                          .getContiguousMemory()
-                          .getBridJPointer(Short.class)
-                          .getShortsAtOffset(((cSizeX-1) * cSizeY*cSizeZ), cSizeX_as_int),
+        assertArrayEquals(lSqyFileStackSource.getStack(i)
+                                             .getContiguousMemory()
+                                             .getBridJPointer(Short.class)
+                                             .getShortsAtOffset(((cSizeX
+                                                                  - 1)
+                                                                 * cSizeY
+                                                                 * cSizeZ),
+                                                                cSizeX_as_int),
                           expected_values);
 
       }
@@ -420,7 +420,7 @@ public class SqeazyFileStackTests
       System.out.println(lRootFolder);
 
       final SqeazyFileStackSink lLocalFileStackSink =
-                                                 new SqeazyFileStackSink();
+                                                    new SqeazyFileStackSink();
       lLocalFileStackSink.setLocation(lRootFolder, "testSink");
 
       final OffHeapPlanarStack lStack =
