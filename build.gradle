@@ -178,7 +178,6 @@ dependencies
     compile ('net.imglib2:imglib2-algorithm:0.2.1')      {transitive = true}
     
     // scifio:
-    compile ('io.scif:pom-scifio:5.8.0')                 {transitive = true}
     compile ('io.scif:scifio:0.21.0')                    {transitive = true}
 
     // Bridj and co:
