@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
 import clearcontrol.core.units.OrderOfMagnitude;
@@ -15,12 +16,26 @@ import io.scif.Plane;
 import io.scif.Reader;
 import io.scif.SCIFIO;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+/**
+ * DCTS 2D tests
+ *
+ * @author royer
+ */
 public class DCTS2DTests
 {
 
+  /**
+   * Test
+   * 
+   * @throws IOException
+   *           NA
+   * @throws FormatException
+   *           NA
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void test() throws IOException,
                      FormatException,
@@ -29,8 +44,13 @@ public class DCTS2DTests
     final File lTempFile =
                          File.createTempFile(DCTS2DTests.class.getSimpleName(),
                                              "test.tif");
-    FileUtils.copyInputStreamToFile(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
-                                    lTempFile);
+
+    java.nio.file.Files.copy(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
+                             lTempFile.toPath(),
+                             StandardCopyOption.REPLACE_EXISTING);
+
+    /*FileUtils.copyInputStreamToFile(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
+                                    lTempFile);/**/
 
     SCIFIO lSCIFIO = null;
     try
@@ -48,8 +68,6 @@ public class DCTS2DTests
     final int lWidth = (int) lReader.openPlane(0, 0).getLengths()[0];
     final int lHeight = (int) lReader.openPlane(0, 0).getLengths()[1];
     final int lDepth = (int) lReader.getPlaneCount(0);
-
-    final int lPlaneLengthInElements = lWidth * lHeight;
 
     final DCTS2D lDCTS2D = new DCTS2D();
 
