@@ -194,18 +194,18 @@ dependencies
     // Sqeazy:
     compile ('net.sqeazy:sqeazy:0.4.2')                    {transitive= true; changing= true}
 
-    // CoreMem:
-    compile ('net.coremem:coremem:0.4.4')                  {transitive= true; changing= true}
+    // CoreMem: 
+    // transitively available via simbryo, clearvolume...
 
     // Clear*:
-    compile ('net.clearvolume:clearvolume:1.4.0')          {transitive= true; changing= true}
+    compile ('net.clearvolume:clearvolume:1.4.1')          {transitive= true; changing= true}
     compile ('net.clearvolume:clearaudio:1.0.2')           {transitive= true; changing= true}
     
     // Symbrio:
-    compile ('net.clearcontrol:simbryo:0.7.2')             {transitive= true; changing= true}
+    compile ('net.clearcontrol:simbryo:0.7.3')             {transitive= true; changing= true}
     
     // FastFuse:
-    compile ('net.clearcontrol:fastfuse:0.5.2')            {transitive= true; changing= true}
+    compile ('net.clearcontrol:fastfuse:0.5.3')            {transitive= true; changing= true}
 
     // AO:
     compile ('net.rtlib:mirao52j:(,2.0.0]')                {transitive=true; changing= true}
