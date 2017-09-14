@@ -68,7 +68,7 @@ public class HalcyonGUIGenerator implements LoggingFeature
     TreePanel lTreePanel = new TreePanel("Device tree",
                                          "Devices",
                                          this.getClass()
-                                             .getResourceAsStream("./icons/folder_16.png"),
+                                             .getResourceAsStream("icons/folder_16.png"),
                                          pNodeTypeCollection);
 
     mHalcyonFrame = new HalcyonFrame(pMicroscopeInterface.getName());
