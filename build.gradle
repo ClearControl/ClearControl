@@ -128,7 +128,7 @@ dependencies
 
     // Matrix libs:
     compile ('de.mukis:de.mukis.jama:2.0.0.M1') {transitive= true}
-    compile ('com.googlecode.efficient-java-matrix-library:ejml:0.+') {transitive= true}
+    compile ('com.googlecode.efficient-java-matrix-library:ejml:0.25') {transitive= true}
 
     // JTransforms:
     compile fileTree(dir: 'Libs/jtransforms', include: '*.jar')
