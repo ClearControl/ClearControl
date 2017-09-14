@@ -17,7 +17,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.diffplug.gradle.spotless'
 //apply plugin: 'findbugs'
-apply plugin: "jacoco"
+//apply plugin: "jacoco"
 
 
 sourceSets {
@@ -209,18 +209,18 @@ dependencies
 
     // AO:
     compile ('net.rtlib:mirao52j:(,2.0.0]')                {transitive=true; changing= true}
-    compile ('net.rtlib:ASDKJ:(,2.0.0]')                   {transitive=true; changing= true}
+    compile ('net.rtlib:asdkj:(,2.0.0]')                   {transitive=true; changing= true}
 
     // Cameras:
     compile ('net.rtlib:dcamj:2.1.4')                      {transitive=true; changing= true}
-    //compile ('net.clearcontrol:AndorSDKJ:[0.1.0,1.0.0]') {transitive=true; changing= true}
+    //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]') {transitive=true; changing= true}
     compile 'com.github.sarxos:webcam-capture:0.3.9'
  
     // Stages:
     compile ('net.rtlib:ecc100j:1.0.0')                    {transitive=true; changing= true}
     compile ('net.rtlib:aptj:0.2.2')                       {transitive=true; changing= true}
 
-    // Symphony:
+    // NIRIOJ:
     compile ('net.rtlib:nirioj:(,1.1]')                    {transitive=true; changing= true}
 
     // Other:
@@ -344,6 +344,7 @@ spotless {
 //***********************************************************************************
 // JACOCO:
 
+/*
 jacocoTestCoverageVerification {
     violationRules {
         rule {
@@ -361,6 +362,7 @@ jacocoTestReport {
         html.destination "${buildDir}/jacoco.html"
     }
 }
+/**/
 
 
 
