@@ -61,7 +61,7 @@ def getVersionName = {
 sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
-version = getVersionName()
+version = '0.8.9'//getVersionName()
 
 test 
 {
@@ -204,7 +204,7 @@ dependencies
     compile ('net.clearcontrol:Simbryo:0.7.0')           {transitive= true; changing= true}
     
     // fastFuse:
-    compile ('net.clearcontrol:FastFuse:0.5.0')           {transitive= true; changing= true}
+    compile ('net.clearcontrol:FastFuse:0.6.1-SNAPSHOT')           {transitive= true; changing= true}
 
     // AO:
     compile ('net.rtlib:Mirao52J:(,2.0.0]')              {transitive=true; changing= true}
