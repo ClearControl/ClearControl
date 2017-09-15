@@ -31,8 +31,6 @@ public class FileStackSourceViewer extends StackSourceViewer
    * 
    * @param pRootFolder
    *          root folder
-   * @param pDatasetName
-   *          dataset name
    * 
    */
   public FileStackSourceViewer(File pRootFolder)
@@ -70,6 +68,13 @@ public class FileStackSourceViewer extends StackSourceViewer
     });
   }
 
+  /**
+   * Returns dataset names list in a given root folder
+   * 
+   * @param pRootFolder
+   *          root folder
+   * @return list of dataset names
+   */
   public ArrayList<String> getDataSetNamesList(File pRootFolder)
   {
     ArrayList<String> lListOfDatasets = new ArrayList<String>();

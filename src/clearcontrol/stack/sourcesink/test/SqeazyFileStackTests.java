@@ -50,8 +50,8 @@ public class SqeazyFileStackTests
   /**
    * adapted from http://javapapers.com/java/glob-with-java-nio/
    */
-  public static List<String> find_files(String glob,
-                                        String start_location) throws IOException
+  static List<String> find_files(String glob,
+                                 String start_location) throws IOException
   {
 
     final List<String> value = new ArrayList<>();
@@ -70,6 +70,9 @@ public class SqeazyFileStackTests
     return value;
   }
 
+  /**
+   * Tests querying sqeazy version.
+   */
   @Test
   public void testSqeazyVersion()
   {
@@ -81,7 +84,7 @@ public class SqeazyFileStackTests
   }
 
   /**
-   * test sqeazy to disentangle problems from java interface issues
+   * Test sqeazy to disentangle problems from java interface issues
    *
    */
   @Test
@@ -248,6 +251,7 @@ public class SqeazyFileStackTests
    * @throws IOException
    *           NA
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testSinkAndSource() throws IOException
   {

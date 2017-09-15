@@ -18,8 +18,6 @@ public interface ChartListenerInterface
    *          name of tab to sue to display data point
    * @param pSeriesName
    *          series name
-   * @param pClear
-   *          true for clearing chart before adding the first point
    * @param pXAxisName
    *          X axis name
    * @param pYAxisName

@@ -24,7 +24,10 @@ public class StackSourceViewerDemo
 {
 
   /**
+   * Demo with saved data
+   * 
    * @throws IOException
+   *           NA
    */
   @Test
   public void demoWithSavedData() throws IOException
@@ -61,7 +64,10 @@ public class StackSourceViewerDemo
   }
 
   /**
+   * Demo with fractal data
+   * 
    * @throws IOException
+   *           NA
    */
   @Test
   public void demoWithFractalSource() throws IOException

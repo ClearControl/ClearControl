@@ -159,10 +159,10 @@ dependencies
     compile 'org.devzendo:Quaqua:7.3.4'
 
     // JavaFX:
-    compile ('eu.hansolo.enzo:Enzo:0.3.6')                 {transitive= true}
-    compile ('org.controlsfx:controlsfx:8.40.11')          {transitive= true}
+    compile ('eu.hansolo.enzo:Enzo:0.3.6')                   {transitive= true}
+    compile ('org.controlsfx:controlsfx:8.40.11')            {transitive= true}
     
-    compile ('de.jensd:fontawesomefx:8.0.10')              {transitive= true}
+    compile ('de.jensd:fontawesomefx:8.0.10')                {transitive= true}
 
  
     // MigLayout:
@@ -171,57 +171,57 @@ dependencies
     // JMathPlot:
     compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
-    // imglib2:
-    compile ('net.imglib2:imglib2:2.2.0')                  {transitive = true}
-    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')       {transitive = true}
-    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')       {transitive = true}
-    compile ('net.imglib2:imglib2-algorithm:0.2.1')        {transitive = true}
+    // imglib2:  
+    compile ('net.imglib2:imglib2:2.2.0')                    {transitive = true}
+    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')         {transitive = true}
+    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')         {transitive = true}
+    compile ('net.imglib2:imglib2-algorithm:0.2.1')          {transitive = true}
     
     // scifio:
-    compile ('io.scif:pom-scifio:5.8.0')                   {transitive = true}
-    compile ('io.scif:scifio:0.21.0')                      {transitive = true}
+    compile ('io.scif:pom-scifio:5.8.0')                     {transitive = true}
+    compile ('io.scif:scifio:0.21.0')                        {transitive = true}
 
     // Bridj and co:
     compile 'com.nativelibs4java:bridj:0.7.0'
     compile 'com.nativelibs4java:javacl:1.0.0-RC4'
 
     // JSSC (serial):
-    compile ('org.scream3r:jssc:2.8.0')                    {transitive= true; changing= true}
+    compile ('org.scream3r:jssc:2.8.0')                      {transitive= true; changing= true}
    
     // Halcyon:
-    compile ('net.halcyon:halcyon:0.3.8')                  {transitive=true;  changing= true}
+    compile ('net.halcyon:halcyon:[0.3.8, 0.4.0[')           {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:0.4.2')                    {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:[0.4.2, 0.5.0[')             {transitive= true; changing= true}
 
     // CoreMem: 
     // transitively available via simbryo, clearvolume...
 
     // Clear*:
-    compile ('net.clearvolume:clearvolume:1.4.1')          {transitive= true; changing= true}
-    compile ('net.clearvolume:clearaudio:1.0.2')           {transitive= true; changing= true}
+    compile ('net.clearvolume:clearvolume:[1.4.1, 1.5.0[')   {transitive= true; changing= true}
+    compile ('net.clearvolume:clearaudio:[1.0.2, 1.1.0[')    {transitive= true; changing= true}
     
     // Symbrio:
-    compile ('net.clearcontrol:simbryo:0.7.3')             {transitive= true; changing= true}
+    compile ('net.clearcontrol:simbryo:[0.7.3, 0.8.0[')      {transitive= true; changing= true}
     
     // FastFuse:
-    compile ('net.clearcontrol:fastfuse:0.5.3')            {transitive= true; changing= true}
+    compile ('net.clearcontrol:fastfuse:[0.5.3,0.6.0[')      {transitive= true; changing= true}
 
     // AO:
-    compile ('net.rtlib:mirao52j:(,2.0.0]')                {transitive=true; changing= true}
-    compile ('net.rtlib:asdkj:(,2.0.0]')                   {transitive=true; changing= true}
+    compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
+    compile ('net.clearcontrol:asdkj:(,2.0.0[')              {transitive=true; changing= true}
 
     // Cameras:
-    compile ('net.rtlib:dcamj:2.1.4')                      {transitive=true; changing= true}
-    //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]') {transitive=true; changing= true}
+    compile ('net.clearcontrol:dcamj:(,3.0.0[')              {transitive=true; changing= true}
+    //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]')   {transitive=true; changing= true}
     compile 'com.github.sarxos:webcam-capture:0.3.9'
  
     // Stages:
-    compile ('net.rtlib:ecc100j:1.0.0')                    {transitive=true; changing= true}
-    compile ('net.rtlib:aptj:0.2.2')                       {transitive=true; changing= true}
+    compile ('net.clearcontrol:ecc100j:(,2.0.0[')            {transitive=true; changing= true}
+    compile ('net.clearcontrol:aptj:(,1.0.0[')               {transitive=true; changing= true}
 
     // NIRIOJ:
-    compile ('net.rtlib:nirioj:(,1.1]')                    {transitive=true; changing= true}
+    compile ('net.clearcontrol:nirioj:(,2.0.0]')             {transitive=true; changing= true}
 
     // Other:
     //compile 'com.github.rwl:jtransforms:2.4.0'
