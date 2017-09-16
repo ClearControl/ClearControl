@@ -2,6 +2,7 @@ package clearcontrol.microscope.gui;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import javafx.stage.Stage;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.concurrent.thread.ThreadSleep;
@@ -67,6 +68,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
   private final boolean m2DDisplay, m3DDisplay;
   private HalcyonGUIGenerator mHalcyonGUIGenerator;
+  private Stage mPrimaryStage;
   private HalcyonFrame mHalcyonFrame;
 
   /**
@@ -77,6 +79,8 @@ public class MicroscopeGUI extends VirtualDevice implements
    *          microscope
    * @param pHalcyonNodeTypeArray
    *          halcyon node type array
+   * @param pPrimaryStage
+   *          JFX primary stage
    * @param p2DDisplay
    *          2D display
    * @param p3DDisplay
@@ -84,11 +88,13 @@ public class MicroscopeGUI extends VirtualDevice implements
    */
   public MicroscopeGUI(MicroscopeInterface<?> pMicroscope,
                        HalcyonNodeType[] pHalcyonNodeTypeArray,
+                       Stage pPrimaryStage,
                        boolean p2DDisplay,
                        boolean p3DDisplay)
   {
     super(pMicroscope.getName() + "GUI");
     mMicroscope = pMicroscope;
+    mPrimaryStage = pPrimaryStage;
     m2DDisplay = p2DDisplay;
     m3DDisplay = p3DDisplay;
 
@@ -98,10 +104,10 @@ public class MicroscopeGUI extends VirtualDevice implements
     for (HalcyonNodeType lNode : pHalcyonNodeTypeArray)
       lNodeTypeList.add(lNode);
 
-    mHalcyonGUIGenerator =
-                         new HalcyonGUIGenerator(pMicroscope,
-                                                 this,
-                                                 lNodeTypeList);
+    mHalcyonGUIGenerator = new HalcyonGUIGenerator(pMicroscope,
+                                                   this,
+                                                   lNodeTypeList,
+                                                   pPrimaryStage);
 
     addPanelMappingEntry(LaserDeviceInterface.class,
                          LaserDevicePanel.class,
@@ -373,7 +379,7 @@ public class MicroscopeGUI extends VirtualDevice implements
 
     try
     {
-      mHalcyonFrame.externalStart();
+      mHalcyonFrame.start(mPrimaryStage);
     }
     catch (Exception e)
     {
