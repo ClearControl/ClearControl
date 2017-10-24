@@ -135,7 +135,11 @@ public class SqeazyFileStackSource extends FileStackBase implements
       final int lReturnValue =
                              SqeazyLibrary.SQY_PipelineDecode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
                                                                    lCompressedDataLength,
-                                                                   lDecodedBytes);
+                                                                   lDecodedBytes,
+                                                                   1// = number
+                                                                    // of
+                                                                    // threads
+                             );
 
       if (lReturnValue != 0)
         throw new RuntimeException("Error while peforming sqy compression, error code:  "

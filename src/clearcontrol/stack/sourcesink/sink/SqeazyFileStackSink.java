@@ -146,7 +146,9 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                            lSourceShape,
                                                            lShape.length,
                                                            (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
-                                                           lEncodedBytes);
+                                                           lEncodedBytes,
+                                                           1// n_threads to use
+                     );
 
     if (lReturnValue != 0)
       throw new RuntimeException("Error while peforming sqy compression, error code:  "

@@ -142,7 +142,9 @@ public class SqeazyFileStackTests
                                                        lSourceShape,
                                                        3,
                                                        bCompressedData,
-                                                       lEncodedBytes));
+                                                       lEncodedBytes,
+                                                       1// = number of threads
+                 ));
 
     assertTrue(lEncodedBytes.getLong() > nil);
     assertTrue(lEncodedBytes.getLong() < lBufferLengthInByte);
