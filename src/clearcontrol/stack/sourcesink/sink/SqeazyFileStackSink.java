@@ -147,7 +147,7 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                            lShape.length,
                                                            (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
                                                            lEncodedBytes,
-                                                           1// n_threads to use
+                                                           1// number of threads
                      );
 
     if (lReturnValue != 0)
