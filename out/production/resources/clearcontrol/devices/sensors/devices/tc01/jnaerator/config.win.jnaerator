@@ -1,0 +1,14 @@
+-library TC01lib
+-beautifyNames
+//-libraryNamingPrefixes TC01lib
+//-reification
+-f
+-o ..\..\..\..\..\
+-rootPackage tc01.bridj
+-package rtlib.sensors.devices.tc01.bridj
+-arch win64 
+-D _M_X64
+-libFile ..\labview\lib\TC01lib.dll
+-runtime BridJ
+-mode Directory
+..\labview\lib\TC01lib.h

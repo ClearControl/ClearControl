@@ -61,7 +61,8 @@ def getVersionName = {
 sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
-version = '0.8.9'//getVersionName()
+
+version = '0.10.2-RH' // getVersionName()
 
 test 
 {
@@ -172,13 +173,11 @@ dependencies
     compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
     // imglib2:
-    compile ('net.imglib2:imglib2:2.2.0')                {transitive = true}
-    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')     {transitive = true}
-    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')     {transitive = true}
-    compile ('net.imglib2:imglib2-algorithm:0.2.1')      {transitive = true}
-    
-    // scifio:
-    compile ('io.scif:scifio:0.21.0')                    {transitive = true}
+    compile ('net.imglib2:imglib2:2.2.0')                    {transitive = true}
+    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')         {transitive = true}
+    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')         {transitive = true}
+    compile ('net.imglib2:imglib2-algorithm:0.2.1')          {transitive = true}
+
 
     // Bridj and co:
     compile 'com.nativelibs4java:bridj:0.7.0'
