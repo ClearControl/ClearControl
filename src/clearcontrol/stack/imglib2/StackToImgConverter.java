@@ -13,6 +13,8 @@ import coremem.enums.NativeTypeEnum;
  * Stack to imglib2 Img Image format converter
  *
  * @author Robert Haase, http://github.com/haesleinhuepf
+ * @param <T>
+ *          image data type
  */
 public class StackToImgConverter<T extends RealType<T>>
 {
@@ -20,14 +22,26 @@ public class StackToImgConverter<T extends RealType<T>>
   private Img<T> mResultImg;
   private T mAnyResultingPixel;
 
+  /**
+   * Instantiates a stack to image converter with a given stack.
+   * 
+   * @param pStack
+   *          stack
+   */
   public StackToImgConverter(StackInterface pStack)
   {
     mStack = pStack;
   }
 
-  public RandomAccessibleInterval getRandomAccessibleInterval()
+  /**
+   * Returns a random accessible interval for the
+   * 
+   * @return random accessible interval
+   */
+  @SuppressWarnings("unchecked")
+  public RandomAccessibleInterval<T> getRandomAccessibleInterval()
   {
-    Img lReturnImg = null;
+    Img<T> lReturnImg = null;
 
     final ContiguousMemoryInterface contiguousMemory =
                                                      mStack.getContiguousMemory();
@@ -59,7 +73,7 @@ public class StackToImgConverter<T extends RealType<T>>
                                           / mStack.getBytesPerVoxel())
                                    % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.floats(pixelArray, dimensions);
+      lReturnImg = (Img<T>) ArrayImgs.floats(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Short
              || mStack.getDataType() == NativeTypeEnum.UnsignedShort)
@@ -69,7 +83,7 @@ public class StackToImgConverter<T extends RealType<T>>
                                           / mStack.getBytesPerVoxel())
                                    % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.shorts(pixelArray, dimensions);
+      lReturnImg = (Img<T>) ArrayImgs.shorts(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Byte
              || mStack.getDataType() == NativeTypeEnum.UnsignedByte)
@@ -79,7 +93,7 @@ public class StackToImgConverter<T extends RealType<T>>
                                         / mStack.getBytesPerVoxel())
                                  % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.bytes(pixelArray, dimensions);
+      lReturnImg = (Img<T>) ArrayImgs.bytes(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Int
              || mStack.getDataType() == NativeTypeEnum.UnsignedInt)
@@ -89,7 +103,7 @@ public class StackToImgConverter<T extends RealType<T>>
                                       / mStack.getBytesPerVoxel())
                                % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.ints(pixelArray, dimensions);
+      lReturnImg = (Img<T>) ArrayImgs.ints(pixelArray, dimensions);
     }
     else if (mStack.getDataType() == NativeTypeEnum.Long
              || mStack.getDataType() == NativeTypeEnum.UnsignedLong)
@@ -99,7 +113,7 @@ public class StackToImgConverter<T extends RealType<T>>
                                         / mStack.getBytesPerVoxel())
                                  % Integer.MAX_VALUE];
       contiguousMemory.copyTo(pixelArray);
-      lReturnImg = ArrayImgs.longs(pixelArray, dimensions);
+      lReturnImg = (Img<T>) ArrayImgs.longs(pixelArray, dimensions);
     }
     else
     {
@@ -120,6 +134,11 @@ public class StackToImgConverter<T extends RealType<T>>
     return lReturnImg;
   }
 
+  /**
+   * Returns any pixel.
+   * 
+   * @return pixel
+   */
   public T getAnyPixel()
   {
     return mAnyResultingPixel;

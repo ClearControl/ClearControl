@@ -5,9 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
+import javafx.stage.Stage;
 
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.device.name.NameableInterface;
@@ -56,19 +56,22 @@ public class HalcyonGUIGenerator implements LoggingFeature
    *          microscope GUI (parent of this generator)
    * @param pNodeTypeCollection
    *          node type list
+   * @param pPrimaryStage
+   *          JFX primary stage
    */
   public HalcyonGUIGenerator(MicroscopeInterface<?> pMicroscopeInterface,
                              MicroscopeGUI pMicroscopeGUI,
-                             Collection<HalcyonNodeType> pNodeTypeCollection)
+                             Collection<HalcyonNodeType> pNodeTypeCollection,
+                             Stage pPrimaryStage)
   {
     mMicroscopeInterface = pMicroscopeInterface;
     mMicroscopeGUI = pMicroscopeGUI;
-    initJavaFX();
+    initJavaFX(pPrimaryStage);
 
     TreePanel lTreePanel = new TreePanel("Device tree",
                                          "Devices",
                                          this.getClass()
-                                             .getResourceAsStream("./icons/folder_16.png"),
+                                             .getResourceAsStream("icons/folder_16.png"),
                                          pNodeTypeCollection);
 
     mHalcyonFrame = new HalcyonFrame(pMicroscopeInterface.getName());
@@ -167,20 +170,11 @@ public class HalcyonGUIGenerator implements LoggingFeature
 
   }
 
-  private void initJavaFX()
+  private void initJavaFX(Stage pPrimaryStage)
   {
-    final CountDownLatch latch = new CountDownLatch(1);
-
-    new JFXPanel(); // initializes JavaFX environment
-    latch.countDown();
-
-    try
+    if (pPrimaryStage == null)
     {
-      latch.await();
-    }
-    catch (InterruptedException e)
-    {
-      e.printStackTrace();
+      new JFXPanel(); // initializes JavaFX environment
     }
   }
 

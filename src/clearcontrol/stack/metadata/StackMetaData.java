@@ -354,7 +354,7 @@ public class StackMetaData
    * This is to make it possible to load older datasets
    * 
    * @param pString
-   * @return
+   * @return transformed string normalized from old format to new JSOn format
    */
   protected String backwardsCompatibilityFilter(String pString)
   {
