@@ -10,17 +10,13 @@ import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
-import io.scif.FormatException;
-import io.scif.Plane;
-import io.scif.Reader;
-import io.scif.SCIFIO;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 public class DCTS2DTests
 {
-
+/*
   @Test
   public void test() throws IOException,
                      FormatException,
@@ -99,5 +95,5 @@ public class DCTS2DTests
     }
 
   }
-
+*/
 }
