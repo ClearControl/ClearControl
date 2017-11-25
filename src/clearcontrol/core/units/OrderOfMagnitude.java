@@ -41,7 +41,7 @@ public enum OrderOfMagnitude
   /**
    * Returns the order-of-magnitude as a double
    * 
-   * @return
+   * @return order-of-magnitude as double
    */
   public double getMagnitude()
   {

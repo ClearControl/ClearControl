@@ -54,7 +54,7 @@ public enum SIUnit
   /**
    * Returns the abbreviation
    * 
-   * @return
+   * @return abbreviation
    */
   public String getAbbreviation()
   {

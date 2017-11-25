@@ -12,7 +12,7 @@ import clearcontrol.stack.sourcesink.source.viewer.FileStackSourceViewer;
 import clearcontrol.stack.sourcesink.source.viewer.gui.FileStackSourceViewerPanel;
 
 /**
- *
+ * Stack viewer app
  *
  * @author royer
  */
@@ -60,7 +60,10 @@ public class StackViewerApp extends Application
   }
 
   /**
+   * Main
+   * 
    * @param args
+   *          NA
    */
   public static void main(String[] args)
   {

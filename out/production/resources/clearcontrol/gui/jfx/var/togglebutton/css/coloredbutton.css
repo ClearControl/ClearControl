@@ -1,0 +1,33 @@
+/**
+ * file: colored-toggle.css
+ *   Place in same directory as ColoredToggle.java.
+ *   Have your build system copy this file to your build output directory.
+ **/
+
+/*
+.root {
+  -fx-background-color: cornsilk; 
+  -fx-padding: 10;
+}
+*/
+
+.toggle-button {
+  -fx-color-sel: lightblue;
+}
+
+
+.toggle-button:selected {
+    -fx-background-color:
+        -fx-shadow-highlight-color,
+        linear-gradient(to bottom, derive(-fx-color-sel,-22%) 0%, derive(-fx-color-sel,-15%) 100%),
+        linear-gradient(to bottom, derive(-fx-color-sel,-15%) 0%, derive(-fx-color-sel,-10%) 50%, derive(-fx-color-sel,-8%) 98%, derive(-fx-color-sel,-12%) 100%);
+}
+
+/*
+.toggle-button:selected:focused {
+    -fx-background-color:
+        -fx-focus-color,
+        linear-gradient(to bottom, derive(-fx-color-notsel,-22%) 0%, derive(-fx-color-notsel,-15%) 100%),
+        linear-gradient(to bottom, derive(-fx-color-notsel,-15%) 0%, derive(-fx-color-notsel,-10%) 50%, derive(-fx-color-notsel,-8%) 98%, derive(-fx-color-notsel,-12%) 100%);
+}
+*/
