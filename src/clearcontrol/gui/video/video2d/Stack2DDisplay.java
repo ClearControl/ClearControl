@@ -166,7 +166,7 @@ public class Stack2DDisplay extends VirtualDevice implements
           }
 
           break;
-        case KeyEvent.VK_B:
+        case KeyEvent.VK_V:
           openVisualisationOptionsDialog();
           break;
         }
