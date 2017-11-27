@@ -99,15 +99,13 @@ public class Stack3DDisplay extends VirtualDevice
         {
           switch (pE.getKeyCode())
           {
-          case KeyEvent.VK_A:
+          case KeyEvent.VK_F:
             mManualVisualisationAdjustment = false;
             break;
-
-          case KeyEvent.VK_M:
+          case KeyEvent.VK_G:
             mManualVisualisationAdjustment = true;
             break;
-
-          case KeyEvent.VK_B:
+          case KeyEvent.VK_V:
             mManualVisualisationAdjustment = true;
             MinMaxControlDialog.showDialog(mClearVolumeRenderer);
             break;
@@ -352,11 +350,17 @@ public class Stack3DDisplay extends VirtualDevice
         lMax = max(lMax, lDoubleAligned);
       }
 
+    if (Math.abs(this.mSampledMaxIntensity) < 0.0001 && Math.abs(this.mSampledMinIntensity) < 0.0001) {
+      mSampledMinIntensity = lMin;
+      mSampledMaxIntensity = lMax;
+    }
+
     if (!Double.isFinite(this.mSampledMinIntensity))
       this.mSampledMinIntensity = 0;
 
     if (!Double.isFinite(this.mSampledMaxIntensity))
       this.mSampledMaxIntensity = 1;
+
 
     this.mSampledMinIntensity = (0.9)
                                 * this.mSampledMinIntensity
