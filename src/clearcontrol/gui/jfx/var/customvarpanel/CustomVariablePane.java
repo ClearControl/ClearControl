@@ -1,5 +1,6 @@
 package clearcontrol.gui.jfx.var.customvarpanel;
 
+import clearcontrol.gui.jfx.var.textfield.StringVariableTextField;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -483,6 +484,20 @@ public class CustomVariablePane extends TabPane
     mCurrentTabGridPane.add(lIntComboBoxVariable, 1, lCursor);
     GridPane.setHgrow(lIntComboBoxVariable, Priority.ALWAYS);
     GridPane.setColumnSpan(lIntComboBoxVariable, 2);
+  }
+
+  public void addStringField(String pName, Variable<String> pVariable) {
+    StringVariableTextField
+        lPostFixTextField = new StringVariableTextField(pName, pVariable);
+
+    Label lLabel = new Label(pName);
+    int lCursor = mCursor++;
+
+    mCurrentTabGridPane.add(lLabel, 0, lCursor);
+    mCurrentTabGridPane.add(lPostFixTextField, 1, lCursor);
+    GridPane.setHgrow(lPostFixTextField, Priority.ALWAYS);
+    GridPane.setColumnSpan(lPostFixTextField, 2);
+
   }
 
 }
