@@ -46,8 +46,6 @@ public class Stack2DSumDisplay extends Stack2DDisplay
 
   private void viewChanged() {
 
-    System.out.println("View changed am I visible?");
-
     if (!isVisible()) {
       return;
     }
