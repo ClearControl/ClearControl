@@ -2,6 +2,8 @@ package clearcontrol.microscope.gui;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import clearcontrol.gui.video.video2d.Stack2DSumDisplay;
 import javafx.stage.Stage;
 
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
@@ -331,6 +333,13 @@ public class MicroscopeGUI extends VirtualDevice implements
         lStack2DDisplay.setVisible(false);
         mStack2DDisplayList.add(lStack2DDisplay);
       }
+
+      final Stack2DSumDisplay lStack2DSumDisplay =
+          new Stack2DSumDisplay("Video 2D for sum of all cameras",
+                             cDefaultWindowWidth,
+                             cDefaultWindowHeight);
+      lStack2DSumDisplay.setVisible(false);
+      mStack2DDisplayList.add(lStack2DSumDisplay);
     }
 
     if (m3DDisplay)
@@ -462,6 +471,7 @@ public class MicroscopeGUI extends VirtualDevice implements
    */
   public void connectCamerasTo2D()
   {
+    System.out.println("Connecting cameras to 2D");
 
     int lNumberOfCameras =
                          getMicroscope().getNumberOfDevices(StackCameraDeviceInterface.class);
@@ -474,6 +484,20 @@ public class MicroscopeGUI extends VirtualDevice implements
                  .sendUpdatesTo(lStack2dDisplay.getInputStackVariable());
 
       lStack2dDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
+
+      for (Stack2DDisplay lAnyDisplay : mStack2DDisplayList) {
+        if (lAnyDisplay instanceof Stack2DSumDisplay) {
+          System.out.println("Connecting camera " + c + " to 2D sum view ");
+
+          Variable<StackInterface> lStackInterfaceVariable = ((Stack2DSumDisplay)lAnyDisplay).getInputStackVariable(c);
+
+          System.out.println("Connecting...");
+
+          mMicroscope.getCameraStackVariable(c)
+                     .sendUpdatesTo(lStackInterfaceVariable);
+          System.out.println("Connected");
+        }
+      }
     }
   }
 
