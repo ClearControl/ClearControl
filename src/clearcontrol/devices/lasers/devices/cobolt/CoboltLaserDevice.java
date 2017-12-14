@@ -89,7 +89,14 @@ public class CoboltLaserDevice extends LaserDeviceBase
                                                       mMaxPowerInMilliWatt);
 
     mSetOperatingModeVariable = new Variable<Integer>("OperatingMode",
-                                                      0);
+                                                      0) {
+      @Override public Integer setEventHook(Integer pOldReference,
+                                            Integer pNewReference)
+      {
+        System.out.println("Cobolt changing operating mode to " + pNewReference );
+        return super.setEventHook(pOldReference, pNewReference);
+      }
+    };
 
     final SetPowerOnOffAdapter lSetPowerOnOffAdapter =
                                                      new SetPowerOnOffAdapter();
