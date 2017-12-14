@@ -130,9 +130,9 @@ public class MachineConfiguration implements LoggingFeature
   {
     if (mProperties == null)
     {
-      warning("Could not find entry %s, using default value %s\n",
-              pKey,
-              pDefaultValue);
+//      warning("Could not find entry %s, using default value %s\n",
+//              pKey,
+//              pDefaultValue);
       return pDefaultValue;
     }
     return mProperties.getProperty(pKey, pDefaultValue);
@@ -155,9 +155,9 @@ public class MachineConfiguration implements LoggingFeature
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
     {
-      warning("Could not find entry %s, using default value %d\n",
-              pKey,
-              pDefaultValue);
+//      warning("Could not find entry %s, using default value %d\n",
+//              pKey,
+//              pDefaultValue);
       return pDefaultValue;
     }
 
@@ -180,9 +180,9 @@ public class MachineConfiguration implements LoggingFeature
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
     {
-      warning("Could not find entry %s, using default value %d\n",
-              pKey,
-              pDefaultValue);
+//      warning("Could not find entry %s, using default value %d\n",
+//              pKey,
+//              pDefaultValue);
       return pDefaultValue;
     }
 
@@ -205,9 +205,9 @@ public class MachineConfiguration implements LoggingFeature
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
     {
-      warning("Could not find entry %s, using default value %g\n",
-              pKey,
-              pDefaultValue);
+//      warning("Could not find entry %s, using default value %g\n",
+//              pKey,
+//              pDefaultValue);
       return pDefaultValue;
     }
 
@@ -231,9 +231,9 @@ public class MachineConfiguration implements LoggingFeature
     final String lProperty = mProperties.getProperty(pKey);
     if (lProperty == null)
     {
-      warning("Could not find entry %s, using default value %s\n",
-              pKey,
-              pDefaultValue ? "true" : "false");
+//      warning("Could not find entry %s, using default value %s\n",
+//              pKey,
+//              pDefaultValue ? "true" : "false");
       return pDefaultValue;
     }
 
@@ -259,9 +259,9 @@ public class MachineConfiguration implements LoggingFeature
 
     if (lStringProperty == null)
     {
-      warning("Could not find entry %s, using default value %s\n",
-              pKey,
-              pDefaultFile.getAbsolutePath());
+//      warning("Could not find entry %s, using default value %s\n",
+//              pKey,
+//              pDefaultFile.getAbsolutePath());
       return pDefaultFile;
     }
 
