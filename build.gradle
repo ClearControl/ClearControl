@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.11.6-RH' // getVersionName()
+version = '0.12.0-RH' // getVersionName()
 
 test 
 {
