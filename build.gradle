@@ -244,6 +244,7 @@ repositories
 
     // ClearVolume: 
     maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
+    maven { url "http://dl.bintray.com/haesleinhuepf/snapshots" }
 
     //imglib2:
     maven { url  "http://maven.imagej.net/content/repositories/releases" }
