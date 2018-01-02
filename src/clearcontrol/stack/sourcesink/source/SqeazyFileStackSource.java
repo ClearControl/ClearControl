@@ -133,9 +133,9 @@ public class SqeazyFileStackSource extends FileStackBase implements
                                         lStack.getContiguousMemory()
                                               .getBridJPointer(Byte.class);
       final int lReturnValue =
-                             SqeazyLibrary.SQY_PipelineDecode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
+                              SqeazyLibrary.SQY_PipelineDecode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
                                                                    lCompressedDataLength,
-                                                                   lDecodedBytes);
+                                                                   lDecodedBytes, 1);
 
       if (lReturnValue != 0)
         throw new RuntimeException("Error while peforming sqy compression, error code:  "

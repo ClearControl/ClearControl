@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.12.0-RH' // getVersionName()
+version = '0.13.1-RH' // getVersionName()
 
 test 
 {
@@ -190,7 +190,7 @@ dependencies
     compile ('net.halcyon:halcyon:[0.3.8, 0.4.0[')           {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:[0.4.2, 0.5.0[')             {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.5.2')             {transitive= true; changing= true}
 
     // CoreMem:
     compile ('net.coremem:coremem:0.4.4')      {transitive= true; changing= true}
