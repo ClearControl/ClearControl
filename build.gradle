@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.13.1-RH' // getVersionName()
+version = '0.13.2-RH' // getVersionName()
 
 test 
 {
@@ -208,7 +208,7 @@ dependencies
 
     // AO:
     compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
-    compile ('net.clearcontrol:asdkj:(,2.0.0[')              {transitive=true; changing= true}
+    compile ('net.clearcontrol:asdkj:1.0.2-RH')              {transitive=true; changing= true}
 
     // Cameras:
     compile ('net.clearcontrol:dcamj:(,3.0.0[')              {transitive=true; changing= true}
