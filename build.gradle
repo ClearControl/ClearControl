@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.13.2-RH' // getVersionName()
+version = '0.14.0-RH' // getVersionName()
 
 test 
 {
@@ -217,7 +217,7 @@ dependencies
  
     // Stages:
     compile ('net.clearcontrol:ecc100j:(,2.0.0[')            {transitive=true; changing= true}
-    compile ('net.clearcontrol:aptj:(,1.0.0[')               {transitive=true; changing= true}
+    compile ('net.clearcontrol:aptj:0.0.2-RH')               {transitive=true; changing= true}
 
     // NIRIOJ:
     compile ('net.clearcontrol:nirioj:(,2.0.0]')             {transitive=true; changing= true}
