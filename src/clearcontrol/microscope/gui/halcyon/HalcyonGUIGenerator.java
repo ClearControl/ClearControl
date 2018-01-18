@@ -396,8 +396,10 @@ public class HalcyonGUIGenerator implements LoggingFeature
       HalcyonNodeType lNodeType =
                                 mDeviceClassToHalcyonTypeMap.get(pDeviceClass);
 
+      System.out.println("Checking for devices");
       for (Object lDevice : mMicroscopeInterface.getDevices(pDeviceClass))
       {
+        System.out.println("Device: " + lDevice + " found");
 
         try
         {
