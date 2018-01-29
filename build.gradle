@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.14.0-RH' // getVersionName()
+version = '0.14.1-RH' // getVersionName()
 
 test 
 {
@@ -187,7 +187,7 @@ dependencies
     compile ('org.scream3r:jssc:2.8.0')                      {transitive= true; changing= true}
    
     // Halcyon:
-    compile ('net.halcyon:halcyon:[0.3.8, 0.4.0[')           {transitive=true;  changing= true}
+    compile ('net.halcyon:halcyon:0.3.8')           {transitive=true;  changing= true}
 
     // Sqeazy:
     compile ('net.sqeazy:sqeazy:0.5.2')             {transitive= true; changing= true}
@@ -208,7 +208,6 @@ dependencies
 
     // AO:
     compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
-    compile ('net.clearcontrol:asdkj:1.0.2-RH')              {transitive=true; changing= true}
 
     // Cameras:
     compile ('net.clearcontrol:dcamj:(,3.0.0[')              {transitive=true; changing= true}

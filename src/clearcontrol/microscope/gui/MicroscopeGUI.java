@@ -334,12 +334,13 @@ public class MicroscopeGUI extends VirtualDevice implements
         mStack2DDisplayList.add(lStack2DDisplay);
       }
 
+      /*
       final Stack2DSumDisplay lStack2DSumDisplay =
           new Stack2DSumDisplay("Video 2D for sum of all cameras",
                              cDefaultWindowWidth,
                              cDefaultWindowHeight);
       lStack2DSumDisplay.setVisible(false);
-      mStack2DDisplayList.add(lStack2DSumDisplay);
+      mStack2DDisplayList.add(lStack2DSumDisplay);*/
     }
 
     if (m3DDisplay)
