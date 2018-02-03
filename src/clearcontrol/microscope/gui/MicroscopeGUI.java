@@ -332,6 +332,7 @@ public class MicroscopeGUI extends VirtualDevice implements
                                                                 c % 2 == 1);
         lStack2DDisplay.setVisible(false);
         mStack2DDisplayList.add(lStack2DDisplay);
+        getMicroscope().addDevice(0, lStack2DDisplay);
       }
 
       /*
