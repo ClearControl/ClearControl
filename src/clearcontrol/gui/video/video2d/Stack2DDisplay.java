@@ -40,6 +40,7 @@ public class Stack2DDisplay extends VirtualDevice implements
   private final VideoWindow mVideoWindow;
 
   private final Variable<StackInterface> mInputStackVariable;
+  private boolean mFlipX = false;
   private Variable<StackInterface> mOutputStackVariable;
 
   private volatile StackInterface mReceivedStackCopy;
@@ -124,6 +125,7 @@ public class Stack2DDisplay extends VirtualDevice implements
                                  pWindowWidth,
                                  pWindowHeight,
                                  pFlipX);
+    mFlipX = pFlipX;
 
     // mVideoWindow.setVisible(true);
 
@@ -540,5 +542,14 @@ public class Stack2DDisplay extends VirtualDevice implements
   public ClearGLWindow getGLWindow()
   {
     return mVideoWindow.getGLWindow();
+  }
+
+  public StackInterface getLastViewedStack() {
+    return mReceivedStackCopy;
+  }
+
+  public boolean isFlipX()
+  {
+    return mFlipX;
   }
 }
