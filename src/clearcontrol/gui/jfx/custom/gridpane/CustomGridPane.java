@@ -1,7 +1,9 @@
 package clearcontrol.gui.jfx.custom.gridpane;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -11,6 +13,7 @@ import javafx.scene.layout.GridPane;
  */
 public class CustomGridPane extends GridPane
 {
+  protected int mRow;
 
   /**
    * Standard custom grid pane gap
@@ -67,5 +70,17 @@ public class CustomGridPane extends GridPane
     setHgap(pGap);
     setVgap(pGap);
   }
+
+  public void addSeparator()
+  {
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, mRow);
+      mRow++;
+    }
+  }
+
 
 }

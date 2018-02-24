@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -33,8 +34,6 @@ import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
  */
 public class TimelapseToolbar extends CustomGridPane
 {
-  protected int mRow;
-
   /**
    * Instanciates a timelapse toolbar.
    * 
@@ -158,6 +157,21 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
+
+
+    CustomGridPane lGridPane = new CustomGridPane();
+
+    TitledPane lTitledPane =
+        new TitledPane("Advanced options",
+                       lGridPane);
+    lTitledPane.setAnimated(false);
+    lTitledPane.setExpanded(true);
+    GridPane.setColumnSpan(lTitledPane, 4);
+    add(lTitledPane, 0, mRow);
+    mRow++;
+
+
+
     {
       NumberVariableTextField<Long> lActualIntervalField =
                                                          new NumberVariableTextField<Long>("Actual Interval:",
@@ -180,13 +194,13 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lActualIntervalField.getTextField(), 1);
       GridPane.setColumnSpan(lActualIntervalTimeUnitBox, 1);
 
-      add(lActualIntervalField.getLabel(), 1, mRow);
-      add(lActualIntervalField.getTextField(), 2, mRow);
-      add(lActualIntervalTimeUnitBox, 3, mRow);
+      lGridPane.add(lActualIntervalField.getLabel(), 1, mRow);
+      lGridPane.add(lActualIntervalField.getTextField(), 2, mRow);
+      lGridPane.add(lActualIntervalTimeUnitBox, 3, mRow);
       mRow++;
     }
 
-    addSeparator();
+    lGridPane.addSeparator();
 
     {
 
@@ -210,9 +224,9 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lMaxNumberOfTimePointsField.getTextField(),
                              2);
 
-      add(lLimitNumberOfTimePointsCheckBox.getCheckBox(), 0, mRow);
-      add(lMaxNumberOfTimePointsField.getLabel(), 1, mRow);
-      add(lMaxNumberOfTimePointsField.getTextField(), 2, mRow);
+      lGridPane.add(lLimitNumberOfTimePointsCheckBox.getCheckBox(), 0, mRow);
+      lGridPane.add(lMaxNumberOfTimePointsField.getLabel(), 1, mRow);
+      lGridPane.add(lMaxNumberOfTimePointsField.getTextField(), 2, mRow);
       mRow++;
     }
 
@@ -240,10 +254,10 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lMaxDurationField.getTextField(), 1);
       GridPane.setColumnSpan(lMaxDurationTimeUnitBox, 1);
 
-      add(lLimitTimelapseDurationCheckBox.getCheckBox(), 0, mRow);
-      add(lMaxDurationField.getLabel(), 1, mRow);
-      add(lMaxDurationField.getTextField(), 2, mRow);
-      add(lMaxDurationTimeUnitBox, 3, mRow);
+      lGridPane.add(lLimitTimelapseDurationCheckBox.getCheckBox(), 0, mRow);
+      lGridPane.add(lMaxDurationField.getLabel(), 1, mRow);
+      lGridPane.add(lMaxDurationField.getTextField(), 2, mRow);
+      lGridPane.add(lMaxDurationTimeUnitBox, 3, mRow);
       mRow++;
     }
 
@@ -261,8 +275,8 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lStartDateTimeLabel, 1);
       GridPane.setColumnSpan(lTimelapseStartDeadline, 2);
 
-      add(lStartDateTimeLabel, 1, mRow);
-      add(lTimelapseStartDeadline, 2, mRow);
+      lGridPane.add(lStartDateTimeLabel, 1, mRow);
+      lGridPane.add(lTimelapseStartDeadline, 2, mRow);
       mRow++;
     }
 
@@ -283,13 +297,13 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lStopDateTimeLabel, 1);
       GridPane.setColumnSpan(lTimelapseStopDeadline, 2);
 
-      add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
-      add(lStopDateTimeLabel, 1, mRow);
-      add(lTimelapseStopDeadline, 2, mRow);
+      lGridPane.add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
+      lGridPane.add(lStopDateTimeLabel, 1, mRow);
+      lGridPane.add(lTimelapseStopDeadline, 2, mRow);
       mRow++;
     }
 
-    addSeparator();
+    lGridPane.addSeparator();
 
     {
       VariableFileChooser lRootFolderChooser =
@@ -329,23 +343,8 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-    {
 
-      VariableCheckBox lSaveStacksCheckBox =
-                                           new VariableCheckBox("Save stacks",
-                                                                pTimelapseInterface.getSaveStacksVariable());
-
-      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
-      GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
-                             HPos.RIGHT);
-
-      add(lSaveStacksCheckBox.getCheckBox(), 0, mRow);
-      add(lSaveStacksCheckBox.getLabel(), 1, mRow);
-
-      mRow++;
-    }
-
-    addSeparator();
+    lGridPane.addSeparator();
 
     {
       VariableCheckBox lAutoPilotCheckBox =
@@ -358,8 +357,8 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(), 1);
 
       GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
-      add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
-      add(lAutoPilotCheckBox.getLabel(), 1, mRow);
+      lGridPane.add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
+      lGridPane.add(lAutoPilotCheckBox.getLabel(), 1, mRow);
 
       mRow++;
     }
@@ -388,23 +387,31 @@ public class TimelapseToolbar extends CustomGridPane
 
       GridPane.setHalignment(lHBox, HPos.CENTER);
 
-      add(lMinStepsTextField.getLabel(), 1, mRow);
-      add(lHBox, 2, mRow);
+      lGridPane.add(lMinStepsTextField.getLabel(), 1, mRow);
+      lGridPane.add(lHBox, 2, mRow);
 
       mRow++;
     }
 
-  }
 
-  protected void addSeparator()
-  {
+
+
     {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 4);
-      add(lSeparator, 0, mRow);
+
+      VariableCheckBox lSaveStacksCheckBox =
+          new VariableCheckBox("Save stacks",
+                               pTimelapseInterface.getSaveStacksVariable());
+
+      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
+      GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
+                             HPos.RIGHT);
+
+      add(lSaveStacksCheckBox.getCheckBox(), 0, mRow);
+      add(lSaveStacksCheckBox.getLabel(), 1, mRow);
+
       mRow++;
     }
   }
+
 
 }
