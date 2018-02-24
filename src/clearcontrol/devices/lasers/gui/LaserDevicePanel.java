@@ -3,6 +3,7 @@ package clearcontrol.devices.lasers.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.lasers.gui.icon.LaserIcon;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
@@ -32,6 +33,8 @@ import clearcontrol.gui.jfx.custom.rbg.RadialBargraphBuilder;
 import eu.hansolo.enzo.common.Marker;
 import eu.hansolo.enzo.common.SymbolType;
 import eu.hansolo.enzo.onoffswitch.IconSwitch;
+
+import javax.management.loading.MLet;
 
 /**
  * Laser device GUI panel
@@ -268,7 +271,7 @@ public class LaserDevicePanel extends HBox
     // ---------------------------------------------------------------
     int lRow = 0;
     grid = new CustomGridPane();
-    Label lLabel = new Label("The tools on the left are deprecated and just kept for legacy. Future laser control comes here (under development):");
+    Label lLabel = new Label("*The tools on the left are deprecated and just kept for legacy. Future laser control comes here (under development):");
     lLabel.setTextFill(Color.web("#DD0000"));
     lLabel.setWrapText(true);
     lLabel.setMaxWidth(150);
@@ -298,13 +301,53 @@ public class LaserDevicePanel extends HBox
     grid.add(lLaserOnButton, 0, lRow);
     lRow++;
 
-    NumberVariableTextField<Number> lTargetLaserPowerField = new NumberVariableTextField<Number>("Target laser power:", mLaserDeviceInterface.getTargetPowerInMilliWattVariable(), 0.0, mLaserDeviceInterface.getMaxPowerInMilliWatt(), 0.1);
+
+    /*
+    Variable<Number>
+        lVariable = new Variable<Number>("", 0.0);
+    lVariable.addSetListener((o,n)->{
+      mLaserDeviceInterface.getTargetPowerInMilliWattVariable().set(n);
+    });
+
+
+
+
+    NumberVariableTextField<Number> lTargetLaserPowerField = new NumberVariableTextField<Number>("Target laser power:", lVariable, 0.0, mLaserDeviceInterface.getMaxPowerInMilliWatt(), 0.1);
+    grid.add(lTargetLaserPowerField.getLabel(), 0, lRow);
+    lRow++;
+    grid.add(lTargetLaserPowerField.getTextField(),0 ,lRow);
+    lRow++;
+  */
+  final Variable<Number> lTargetPowerVariable = new Variable<Number>("", 0.0);
+    mLaserDeviceInterface.getTargetPowerInMilliWattVariable().addSetListener((o, n) -> {
+      if (Math.abs(lTargetPowerVariable.get().doubleValue() - n.doubleValue()) > 0.1)
+      {
+        Platform.runLater(() -> {
+          lTargetPowerVariable.set(n);
+        });
+      }
+    });
+    lTargetPowerVariable.addSetListener((o,n)-> {
+      mLaserDeviceInterface.setTargetPowerInMilliWatt(n.doubleValue());
+    });
+
+    Variable<Number> lCurrentPowerVariable = new Variable<Number>("", 0.0);
+    mLaserDeviceInterface.getCurrentPowerInMilliWattVariable().addSetListener((o, n) -> {
+      if (Math.abs(lCurrentPowerVariable.get().doubleValue() - n.doubleValue()) > 0.1)
+      {
+        Platform.runLater(() -> {
+          lCurrentPowerVariable.set(n);
+        });
+      }
+    });
+
+    NumberVariableTextField<Number> lTargetLaserPowerField = new NumberVariableTextField<Number>("Target laser power:", lTargetPowerVariable, 0.0, mLaserDeviceInterface.getMaxPowerInMilliWatt(), 0.1);
     grid.add(lTargetLaserPowerField.getLabel(), 0, lRow);
     lRow++;
     grid.add(lTargetLaserPowerField.getTextField(),0 ,lRow);
     lRow++;
 
-    NumberVariableTextField<Number> lCurrentLaserPowerField = new NumberVariableTextField<Number>("Target laser power (read only):", mLaserDeviceInterface.getCurrentPowerInMilliWattVariable(), 0.0, mLaserDeviceInterface.getMaxPowerInMilliWatt(), 0.1);
+    NumberVariableTextField<Number> lCurrentLaserPowerField = new NumberVariableTextField<Number>("Target laser power (read only):", lCurrentPowerVariable, 0.0, mLaserDeviceInterface.getMaxPowerInMilliWatt(), 0.1);
     grid.add(lCurrentLaserPowerField.getLabel(), 0, lRow);
     lRow++;
     grid.add(lCurrentLaserPowerField.getTextField(),0 ,lRow);
