@@ -159,8 +159,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                           getCurrentFileStackSinkVariable();
       if (getSaveStacksVariable().get() && lStackSinkVariable != null
           && n != null
-          && n.getMetaData()
-              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse)
+          /*&& n.getMetaData()
+              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse*/)
       {
         info("Appending new stack %s to the file sink %s",
              n,
