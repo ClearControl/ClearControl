@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.14.1-RH' // getVersionName()
+version = '0.15.0' // getVersionName()
 
 test 
 {
@@ -202,9 +202,9 @@ dependencies
     
     // Symbrio:
     compile ('net.clearcontrol:simbryo:0.8.1-RH')      {transitive= true; changing= true}
-    
+
     // FastFuse:
-    compile ('net.clearcontrol:fastfuse:0.6.1-RH')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:fastfuse:0.6.2')      {transitive= true; changing= true}
 
     // AO:
     compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
