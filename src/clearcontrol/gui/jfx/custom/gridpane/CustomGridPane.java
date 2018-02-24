@@ -3,6 +3,7 @@ package clearcontrol.gui.jfx.custom.gridpane;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 
@@ -82,5 +83,15 @@ public class CustomGridPane extends GridPane
     }
   }
 
+  public int getLastUsedRow() {
+    return mRow;
+  }
 
+  @Override
+  public void add(Node child, int columnIndex, int rowIndex) {
+    super.add(child, columnIndex, rowIndex);
+    if (rowIndex > mRow) {
+      mRow = rowIndex;
+    }
+  }
 }
