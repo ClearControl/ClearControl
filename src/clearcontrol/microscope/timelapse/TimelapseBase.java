@@ -619,4 +619,12 @@ public abstract class TimelapseBase extends LoopTaskDevice
     return mMaxAdaptiveEngineStepsVariable;
   }
 
+  @Override
+  public File getWorkingDirectory() {
+    if (mCurrentFileStackSinkVariable.get() == null) {
+      return null;
+    }
+    return mCurrentFileStackSinkVariable.get().getLocation();
+  }
+
 }

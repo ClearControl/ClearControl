@@ -21,4 +21,12 @@ public interface FileStackInterface extends AutoCloseable
    */
   void setLocation(File pRootFolder, String pDataSetName);
 
+  /**
+   * A File object representing the directory, where meta header and
+   * log files are written to
+   *
+   * @return File
+   */
+  File getLocation();
+
 }
