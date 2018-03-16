@@ -34,7 +34,6 @@ public abstract class AbstractInterpolationTable
   }
 
 
-
   /**
    * Returns the number of rows in the table
    *
