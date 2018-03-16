@@ -125,6 +125,8 @@ public class InterpolationTableTests
     assertTrue(lInterpolationTable.getInterpolatedValue(0, 3.5) == 1.5);
 
 
+    System.out.println(lInterpolationTable.getInterpolatedValue(0, 3.75));
+    assertTrue(lInterpolationTable.getInterpolatedValue(0, 3.75) == 1.75);
 
   }
 }
