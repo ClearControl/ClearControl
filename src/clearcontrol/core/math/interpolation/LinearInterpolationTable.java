@@ -38,6 +38,9 @@ public class LinearInterpolationTable extends AbstractInterpolationTable
     double dA = Math.abs(getFloorRow(pX).getX() - pX);
 
     double distance = dA + dB;
+    if (Math.abs(distance) < 0.00001) {
+      return yA;
+    }
     double result = (yA * dA + yB * dB) / distance;
     if (Double.isNaN(result)) {
       return 0;
