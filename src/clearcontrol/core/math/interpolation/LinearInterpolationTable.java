@@ -1,5 +1,6 @@
 package clearcontrol.core.math.interpolation;
 
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -8,12 +9,14 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.floor;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * March 2018
  */
-public class LinearInterpolationTable extends AbstractInterpolationTable
+public class LinearInterpolationTable extends AbstractInterpolationTable implements
+                                                                         LoggingFeature
 {
   /**
    * Creates a SplineInterpolationTable witha given number of columns.
@@ -29,10 +32,25 @@ public class LinearInterpolationTable extends AbstractInterpolationTable
   @Override public double getInterpolatedValue(int pColumnIndex,
                                                double pX)
   {
-    //ensureIsUpToDate();
+    Row ceilRow = getCeilRow(pX);
+    Row floorRow = getFloorRow(pX);
 
-    double yA = getCeilRow(pX).getY(pColumnIndex);
-    double yB = getFloorRow(pX).getY(pColumnIndex);
+    // extrapolation in case we are at the border...
+    if (ceilRow == null && floorRow != null) {
+      return floorRow.getY(pColumnIndex);
+    }
+    if (ceilRow != null && floorRow == null) {
+      return ceilRow.getY(pColumnIndex);
+    }
+
+    // error handling; this block should never be entered:
+    if (ceilRow == null && floorRow == null) {
+      warning("interpolation of position " + pX + " failed.");
+      return pX;
+    }
+
+    double yA = ceilRow.getY(pColumnIndex);
+    double yB = floorRow.getY(pColumnIndex);
 
     double dB = Math.abs(getCeilRow(pX).getX() - pX);
     double dA = Math.abs(getFloorRow(pX).getX() - pX);
