@@ -19,7 +19,7 @@ public class LinearInterpolationTable extends AbstractInterpolationTable impleme
                                                                          LoggingFeature
 {
   /**
-   * Creates a SplineInterpolationTable witha given number of columns.
+   * Creates a LinearInterpolationTable witha given number of columns.
    *
    * @param pNumberOfColumns
    *          number of columns
