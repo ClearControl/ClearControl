@@ -17,6 +17,7 @@ import org.junit.Test;
  */
 public class InterpolationTableTests
 {
+  private static double tolerance = 0.00001;
 
   /**
    * Test
@@ -127,6 +128,22 @@ public class InterpolationTableTests
 
     System.out.println(lInterpolationTable.getInterpolatedValue(0, 3.75));
     assertTrue(lInterpolationTable.getInterpolatedValue(0, 3.75) == 1.75);
+
+  }
+
+  @Test
+  public void testLinearInterpolation2() {
+    final LinearInterpolationTable lInterpolationTable =
+        new LinearInterpolationTable(2);
+
+    Row lAddRow1 = lInterpolationTable.addRow(1.0);
+    lAddRow1.setY(0, 1);
+    lAddRow1 = lInterpolationTable.addRow(2.0);
+    lAddRow1.setY(0, 0);
+    lAddRow1 = lInterpolationTable.addRow(3.0);
+    lAddRow1.setY(0, 0);
+
+    assertEquals(0, lInterpolationTable.getCeil(0, 2.5), tolerance);
 
   }
 }
