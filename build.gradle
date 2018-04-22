@@ -62,7 +62,7 @@ sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
 
-version = '0.15.10' // getVersionName()
+version = '0.16.0' // getVersionName()
 
 test 
 {
@@ -197,6 +197,7 @@ dependencies
     // transitively available via simbryo, clearvolume...
 
     // Clear*:
+    compile ('net.clearvolume:clearcl:0.5.9')   {transitive= true; changing= true}
     compile ('net.clearvolume:clearvolume:1.4.2-RH')   {transitive= true; changing= true}
     compile ('net.clearvolume:clearaudio:[1.0.2, 1.1.0[')    {transitive= true; changing= true}
     
