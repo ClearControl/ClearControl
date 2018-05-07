@@ -1,1 +1,0 @@
-java.exe -jar jnaerator.jar config.win.jnaerator
