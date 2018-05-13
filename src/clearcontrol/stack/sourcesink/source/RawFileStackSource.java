@@ -36,7 +36,7 @@ public class RawFileStackSource extends FileStackBase implements
    *          stack recycler
    * 
    */
-  public RawFileStackSource(final BasicRecycler<StackInterface, StackRequest> pStackRecycler)
+  public RawFileStackSource(final RecyclerInterface<StackInterface, StackRequest> pStackRecycler)
   {
     super(true);
     mStackRecycler = pStackRecycler;
