@@ -4,6 +4,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
+import clearcontrol.gui.jfx.var.textfield.StringVariableTextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -144,5 +145,17 @@ public class CustomGridPane extends GridPane
 
     add(lLabel, 0, pRow);
     add(lCheckBox.getCheckBox(), 1, pRow);
+  }
+
+
+  public void addStringField(Variable<String> pStringVariable,
+                          int pRow)
+  {
+    StringVariableTextField lTextField =
+            new StringVariableTextField(pStringVariable.getName(),
+                    pStringVariable);
+
+    add(lTextField.getLabel(), 0, pRow);
+    add(lTextField.getTextField(), 1, pRow);
   }
 }
