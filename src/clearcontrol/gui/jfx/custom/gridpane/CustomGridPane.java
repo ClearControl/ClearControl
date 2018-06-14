@@ -1,7 +1,17 @@
 package clearcontrol.gui.jfx.custom.gridpane;
 
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
+import clearcontrol.gui.jfx.var.textfield.StringVariableTextField;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -11,6 +21,7 @@ import javafx.scene.layout.GridPane;
  */
 public class CustomGridPane extends GridPane
 {
+  protected int mRow;
 
   /**
    * Standard custom grid pane gap
@@ -68,4 +79,83 @@ public class CustomGridPane extends GridPane
     setVgap(pGap);
   }
 
+  public void addSeparator()
+  {
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 4);
+      add(lSeparator, 0, mRow);
+      mRow++;
+    }
+  }
+
+  public int getLastUsedRow() {
+    return mRow;
+  }
+
+  @Override
+  public void add(Node child, int columnIndex, int rowIndex) {
+    super.add(child, columnIndex, rowIndex);
+    if (rowIndex > mRow) {
+      mRow = rowIndex;
+    }
+  }
+
+
+  public void addIntegerField(BoundedVariable<Integer> variable,
+                               int pRow)
+  {
+    NumberVariableTextField<Integer> lField =
+        new NumberVariableTextField<Integer>(variable.getName(),
+                                             variable,
+                                             variable.getMin(),
+                                             variable.getMax(),
+                                             variable.getGranularity());
+    this.add(lField.getLabel(), 0, pRow);
+    this.add(lField.getTextField(), 1, pRow);
+
+  }
+
+  public void addDoubleField(BoundedVariable<Double> variable,
+                              int pRow)
+  {
+    NumberVariableTextField<Double> lField =
+        new NumberVariableTextField<Double>(variable.getName(),
+                                            variable,
+                                            variable.getMin(),
+                                            variable.getMax(),
+                                            variable.getGranularity());
+    this.add(lField.getLabel(), 0, pRow);
+    this.add(lField.getTextField(), 1, pRow);
+  }
+
+  public void addCheckbox(Variable<Boolean> pBooleanVariable,
+                           int pRow)
+  {
+    VariableCheckBox lCheckBox =
+        new VariableCheckBox("",
+                             pBooleanVariable);
+
+    Label lLabel = new Label(pBooleanVariable.getName());
+
+    GridPane.setHalignment(lCheckBox.getCheckBox(), HPos.RIGHT);
+    GridPane.setColumnSpan(lCheckBox.getCheckBox(), 1);
+    GridPane.setColumnSpan(lLabel, 3);
+
+    add(lLabel, 0, pRow);
+    add(lCheckBox.getCheckBox(), 1, pRow);
+  }
+
+
+  public void addStringField(Variable<String> pStringVariable,
+                          int pRow)
+  {
+    StringVariableTextField lTextField =
+            new StringVariableTextField(pStringVariable.getName(),
+                    pStringVariable);
+
+    add(lTextField.getLabel(), 0, pRow);
+    add(lTextField.getTextField(), 1, pRow);
+  }
 }
