@@ -15,5 +15,11 @@ public enum AcquisitionType
  /**
   * Tiemlapse stack
   */
- TimeLapse
+ TimeLapse,
+
+ TimelapseSequential,
+
+ TimeLapseInterleaved,
+
+ TimeLapseOpticallyCameraFused
 }
