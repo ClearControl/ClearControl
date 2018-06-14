@@ -330,6 +330,7 @@ public class MicroscopeGUI extends VirtualDevice implements
                                                                 c % 2 == 1);
         lStack2DDisplay.setVisible(false);
         mStack2DDisplayList.add(lStack2DDisplay);
+        getMicroscope().addDevice(0, lStack2DDisplay);
       }
     }
 
@@ -343,6 +344,7 @@ public class MicroscopeGUI extends VirtualDevice implements
                                                               10);
       lStack3DDisplay.getVisibleVariable().set(false);
       mStack3DDisplayList.add(lStack3DDisplay);
+      getMicroscope().addDevice(0, lStack3DDisplay);
     }
 
   }
@@ -441,17 +443,22 @@ public class MicroscopeGUI extends VirtualDevice implements
 
   /**
    * Connects Stack cameras to 3D display.
+   *
+   * Deprecated: Stacks to view should be sent to the viewer explicitly via schedulers see ViewFusedStackScheduler in
+   * clearcontrol-lightsheet repository
    * 
    * @param p3DDisplayIndex
    *          3D display index
    */
+  @Deprecated
   public void connectPipelineTo3D(int p3DDisplayIndex)
   {
     Stack3DDisplay lStack3DDisplay =
                                    mStack3DDisplayList.get(p3DDisplayIndex);
 
-    mMicroscope.getPipelineStackVariable()
-               .sendUpdatesTo(lStack3DDisplay.getInputStackVariable());
+
+    //mMicroscope.getPipelineStackVariable()
+    //           .sendUpdatesTo(lStack3DDisplay.getInputStackVariable());
 
     lStack3DDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
   }
