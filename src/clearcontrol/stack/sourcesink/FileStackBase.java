@@ -57,6 +57,11 @@ public abstract class FileStackBase extends StackServerBase
   }
 
   @Override
+  public File getLocation() {
+    return mFolder;
+  }
+
+  @Override
   public ArrayList<String> getChannelList()
   {
     ArrayList<String> lChannelList = new ArrayList<String>();
