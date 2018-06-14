@@ -2,6 +2,8 @@ package clearcontrol.stack.processor;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.stack.StackInterface;
+import clearcontrol.stack.StackRequest;
+import coremem.recycling.RecyclerInterface;
 
 /**
  * Stack processing pipeline
@@ -59,4 +61,13 @@ public interface StackProcessingPipelineInterface
    */
   public Variable<StackInterface> getOutputVariable();
 
+
+
+  /**
+   * This is a temporary helper function which will be removed again later on
+   * @param pProcessor processor to find a recycler for
+   * @return found recycler; may be null in case the processor is not found
+   */
+  @Deprecated
+  RecyclerInterface<StackInterface, StackRequest> getRecyclerOfProcessor(StackProcessorInterface pProcessor);
 }
