@@ -8,7 +8,9 @@ import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.video.StackDisplayInterface;
+import clearcontrol.gui.video.util.MinMaxControlDialog;
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
@@ -24,6 +26,7 @@ import com.jogamp.newt.event.MouseEvent;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.exceptions.FreedException;
+import javafx.application.Platform;
 
 /**
  * Stack 2D display
@@ -37,6 +40,7 @@ public class Stack2DDisplay extends VirtualDevice implements
   private final VideoWindow mVideoWindow;
 
   private final Variable<StackInterface> mInputStackVariable;
+  private boolean mFlipX = false;
   private Variable<StackInterface> mOutputStackVariable;
 
   private volatile StackInterface mReceivedStackCopy;
@@ -121,6 +125,7 @@ public class Stack2DDisplay extends VirtualDevice implements
                                  pWindowWidth,
                                  pWindowHeight,
                                  pFlipX);
+    mFlipX = pFlipX;
 
     // mVideoWindow.setVisible(true);
 
@@ -162,6 +167,9 @@ public class Stack2DDisplay extends VirtualDevice implements
             e.printStackTrace();
           }
 
+          break;
+        case KeyEvent.VK_V:
+          openVisualisationOptionsDialog();
           break;
         }
 
@@ -315,6 +323,13 @@ public class Stack2DDisplay extends VirtualDevice implements
                         TimeUnit.MILLISECONDS);
     /**/
 
+  }
+
+  private void openVisualisationOptionsDialog()
+  {
+    mVideoWindow.setManualMinMax(true);
+
+    MinMaxControlDialog.showDialog(mVideoWindow);
   }
 
   private void makeCopyOfReceivedStack(final StackInterface pStack)
@@ -527,5 +542,14 @@ public class Stack2DDisplay extends VirtualDevice implements
   public ClearGLWindow getGLWindow()
   {
     return mVideoWindow.getGLWindow();
+  }
+
+  public StackInterface getLastViewedStack() {
+    return mReceivedStackCopy;
+  }
+
+  public boolean isFlipX()
+  {
+    return mFlipX;
   }
 }
