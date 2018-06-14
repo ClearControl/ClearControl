@@ -61,7 +61,8 @@ def getVersionName = {
 sourceCompatibility = 1.8
 
 group = 'net.clearcontrol'
-version = getVersionName()
+
+version = '0.16.4' // getVersionName()
 
 test 
 {
@@ -128,7 +129,7 @@ dependencies
 
     // Matrix libs:
     compile ('de.mukis:de.mukis.jama:2.0.0.M1') {transitive= true}
-    compile ('com.googlecode.efficient-java-matrix-library:ejml:0.+') {transitive= true}
+    compile ('com.googlecode.efficient-java-matrix-library:ejml:0.25') {transitive= true}
 
     // JTransforms:
     compile fileTree(dir: 'Libs/jtransforms', include: '*.jar')
@@ -176,10 +177,7 @@ dependencies
     compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')         {transitive = true}
     compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')         {transitive = true}
     compile ('net.imglib2:imglib2-algorithm:0.2.1')          {transitive = true}
-    
-    // scifio:
-    compile ('io.scif:pom-scifio:5.8.0')                     {transitive = true}
-    compile ('io.scif:scifio:0.21.0')                        {transitive = true}
+
 
     // Bridj and co:
     compile 'com.nativelibs4java:bridj:0.7.0'
@@ -189,36 +187,37 @@ dependencies
     compile ('org.scream3r:jssc:2.8.0')                      {transitive= true; changing= true}
    
     // Halcyon:
-    compile ('net.halcyon:halcyon:[0.3.8, 0.4.0[')           {transitive=true;  changing= true}
+    compile ('net.halcyon:halcyon:0.3.8')           {transitive=true;  changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:[0.4.2, 0.5.0[')             {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.5.2')             {transitive= true; changing= true}
 
-    // CoreMem: 
+    // CoreMem:
+    compile ('net.coremem:coremem:0.4.4')      {transitive= true; changing= true}
     // transitively available via simbryo, clearvolume...
 
     // Clear*:
-    compile ('net.clearvolume:clearvolume:[1.4.1, 1.5.0[')   {transitive= true; changing= true}
+    compile ('net.clearvolume:clearcl:0.5.9')   {transitive= true; changing= true}
+    compile ('net.clearvolume:clearvolume:1.4.2-RH')   {transitive= true; changing= true}
     compile ('net.clearvolume:clearaudio:[1.0.2, 1.1.0[')    {transitive= true; changing= true}
     
     // Symbrio:
-    compile ('net.clearcontrol:simbryo:[0.7.3, 0.8.0[')      {transitive= true; changing= true}
-    
+    compile ('net.clearcontrol:simbryo:0.8.1-RH')      {transitive= true; changing= true}
+
     // FastFuse:
-    compile ('net.clearcontrol:fastfuse:[0.5.3,0.6.0[')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:fastfuse:0.6.2')      {transitive= true; changing= true}
 
     // AO:
     compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
-    compile ('net.clearcontrol:asdkj:(,2.0.0[')              {transitive=true; changing= true}
 
     // Cameras:
-    compile ('net.clearcontrol:dcamj:(,3.0.0[')              {transitive=true; changing= true}
+    compile ('net.clearcontrol:dcamj:2.1.6')              {transitive=true; changing= true}
     //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]')   {transitive=true; changing= true}
     compile 'com.github.sarxos:webcam-capture:0.3.9'
  
     // Stages:
     compile ('net.clearcontrol:ecc100j:(,2.0.0[')            {transitive=true; changing= true}
-    compile ('net.clearcontrol:aptj:(,1.0.0[')               {transitive=true; changing= true}
+    compile ('net.clearcontrol:aptj:0.0.2-RH')               {transitive=true; changing= true}
 
     // NIRIOJ:
     compile ('net.clearcontrol:nirioj:(,2.0.0]')             {transitive=true; changing= true}
@@ -245,6 +244,7 @@ repositories
 
     // ClearVolume: 
     maven { url "http://dl.bintray.com/clearvolume/ClearVolume" }
+    maven { url "http://dl.bintray.com/haesleinhuepf/snapshots" }
 
     //imglib2:
     maven { url  "http://maven.imagej.net/content/repositories/releases" }
