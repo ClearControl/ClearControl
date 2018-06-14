@@ -159,8 +159,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                           getCurrentFileStackSinkVariable();
       if (getSaveStacksVariable().get() && lStackSinkVariable != null
           && n != null
-          && n.getMetaData()
-              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse)
+          /*&& n.getMetaData()
+              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse*/)
       {
         info("Appending new stack %s to the file sink %s",
              n,
@@ -274,7 +274,6 @@ public abstract class TimelapseBase extends LoopTaskDevice
 
     try
     {
-
       getTimePointCounterVariable().set(0L);
       getTimelapseTimerVariable().get().reset();
 
@@ -291,20 +290,21 @@ public abstract class TimelapseBase extends LoopTaskDevice
       // This is where we actually start the loop, and we make sure to listen to
       // changes
 
-      Variable<StackInterface> lPipelineStackVariable = null;
+      /*Variable<StackInterface> lPipelineStackVariable = null;
       if (mMicroscope != null)
       {
         lPipelineStackVariable =
                                mMicroscope.getPipelineStackVariable();
         lPipelineStackVariable.addSetListener(mStackListener);
-      }
+      }*/
 
       initAdaptiveEngine();
 
       super.run();
+      /*
       if (mMicroscope != null)
         lPipelineStackVariable.removeSetListener(mStackListener);
-
+      */
       getCurrentFileStackSinkVariable().set((FileStackSinkInterface) null);
     }
     catch (InstantiationException e)
@@ -617,6 +617,14 @@ public abstract class TimelapseBase extends LoopTaskDevice
   public BoundedVariable<Integer> getMaxAdaptiveEngineStepsVariable()
   {
     return mMaxAdaptiveEngineStepsVariable;
+  }
+
+  @Override
+  public File getWorkingDirectory() {
+    if (mCurrentFileStackSinkVariable.get() == null) {
+      return null;
+    }
+    return mCurrentFileStackSinkVariable.get().getLocation();
   }
 
 }

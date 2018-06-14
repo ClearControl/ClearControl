@@ -185,4 +185,12 @@ public interface TimelapseInterface extends
    */
   BoundedVariable<Integer> getMaxAdaptiveEngineStepsVariable();
 
+  /**
+   * Returns a file representing the directory of the dataset, where
+   * meta header and log files are written to. Image data is saved in
+   * the subfolder /stacks/
+   * @return File (directory of the dataset)
+   */
+  File getWorkingDirectory();
+
 }
