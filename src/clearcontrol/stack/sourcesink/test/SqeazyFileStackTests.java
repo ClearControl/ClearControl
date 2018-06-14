@@ -142,7 +142,7 @@ public class SqeazyFileStackTests
                                                        lSourceShape,
                                                        3,
                                                        bCompressedData,
-                                                       lEncodedBytes));
+                                                       lEncodedBytes,1));
 
     assertTrue(lEncodedBytes.getLong() > nil);
     assertTrue(lEncodedBytes.getLong() < lBufferLengthInByte);
