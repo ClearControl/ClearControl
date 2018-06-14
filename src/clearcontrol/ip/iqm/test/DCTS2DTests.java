@@ -11,10 +11,10 @@ import clearcontrol.core.units.OrderOfMagnitude;
 import clearcontrol.ip.iqm.DCTS2D;
 import clearcontrol.stack.OffHeapPlanarStack;
 import coremem.ContiguousMemoryInterface;
-import io.scif.FormatException;
+/*import io.scif.FormatException;
 import io.scif.Plane;
 import io.scif.Reader;
-import io.scif.SCIFIO;
+import io.scif.SCIFIO;*/
 
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class DCTS2DTests
    * @throws InterruptedException
    *           NA
    */
-  @Test
+  /*@Test
   public void test() throws IOException,
                      FormatException,
                      InterruptedException
@@ -49,8 +49,6 @@ public class DCTS2DTests
                              lTempFile.toPath(),
                              StandardCopyOption.REPLACE_EXISTING);
 
-    /*FileUtils.copyInputStreamToFile(DCTS2DTests.class.getResourceAsStream("./stacks/example.tif"),
-                                    lTempFile);/**/
 
     SCIFIO lSCIFIO = null;
     try
@@ -116,6 +114,6 @@ public class DCTS2DTests
 
     }
 
-  }
+  }*/
 
 }
