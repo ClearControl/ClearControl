@@ -48,4 +48,5 @@ NOTE: This version of ClearControl is still in the early stages
 ### Author(s) ###
 
 * royer@mpi-cbg.de
+* rhaase@mpi-cbg.de
 * you? soon?
