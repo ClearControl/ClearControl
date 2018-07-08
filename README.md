@@ -1,14 +1,8 @@
-# README #
-
-
-
-### RTlib - Real-Time and High-Performance Control Library ###
-
+### ClearControl - Real-Time and High-Performance Control Library ###
 
 ClearControl philosophy is that it is possible to design control software in
 Java for high-performance microscopes with a minimum of native code by
 leveraging the best Java practices and libraries available. 
-
 
 ### How to build the project? ###
 
@@ -32,21 +26,9 @@ That's it, now you can import the ClearControl project in Eclipse.
 * Dependencies
 Some dependencies could not be found online - they are added into the Libs folder for now...
 
-### Work in PROGRESS!!!! ###
-
-Currently the maturity of the code in the different packages can be estimated by the number of tests and whether they pass...
-Documentation will follow after code has stabilised.
-
-### Contribution
-
-By default, every call to `git commit` triggers a `gradle test` run. To discard this behavior, either set the `githooks` property to `false` in `gradle.properties` or use a command line flag `-Pgithooks=false`.
-
----------------------------------------------------
-NOTE: This version of ClearControl is still in the early stages
----------------------------------------------------
 
 ### Author(s) ###
 
-* royer@mpi-cbg.de
+* loic.royer@czbiohub.org
 * rhaase@mpi-cbg.de
-* you? soon?
+
