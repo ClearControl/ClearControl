@@ -131,7 +131,7 @@ public class HamStackCamera extends
     getMaxWidthVariable().set(MachineConfiguration.get().getLongProperty("device.camera" + pCameraDeviceIndex +".imagewidthpixels", 2048L));
     getMaxHeightVariable().set(MachineConfiguration.get().getLongProperty("device.camera" + pCameraDeviceIndex +".imageheightpixels", 2048L));
 
-    getPixelSizeInMicrometersVariable().set(MachineConfiguration.get().getDoubleProperty("device.camera" + pCameraDeviceIndex +".pixelsizenm", 260.0));
+    getPixelSizeInMicrometersVariable().set(MachineConfiguration.get().getDoubleProperty("device.camera" + pCameraDeviceIndex +".pixelsizenm", 260.0) / 1000.0);
 
   }
 
