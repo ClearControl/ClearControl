@@ -233,7 +233,7 @@ public class Stack2DDisplay extends VirtualDevice implements
 
     };
 
-    mDisplayOn = new Variable<Boolean>("DisplayOn", true)
+    mDisplayOn = new Variable<Boolean>("DisplayOn", false)
     {
       @Override
       public Boolean setEventHook(final Boolean pOldValue,
@@ -516,10 +516,14 @@ public class Stack2DDisplay extends VirtualDevice implements
     setVisible(false);
     try
     {
-      mVideoWindow.stop();
-      mDisplayOn.set(false);
+      // if the mVideoWindow was never started, it crashes while stopping
+      if (mDisplayOn.get()) {
+        mVideoWindow.stop();
+        mDisplayOn.set(false);
+      }
       mVideoWindow.setVisible(false);
       mVideoWindow.close();
+
       return true;
     }
     catch (final IOException e)
