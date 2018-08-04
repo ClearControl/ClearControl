@@ -141,7 +141,6 @@ public class CustomGridPane extends GridPane
 
     GridPane.setHalignment(lCheckBox.getCheckBox(), HPos.RIGHT);
     GridPane.setColumnSpan(lCheckBox.getCheckBox(), 1);
-    GridPane.setColumnSpan(lLabel, 3);
 
     add(lLabel, 0, pRow);
     add(lCheckBox.getCheckBox(), 1, pRow);
