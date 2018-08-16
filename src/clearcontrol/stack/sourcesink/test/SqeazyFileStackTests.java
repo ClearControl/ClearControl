@@ -117,12 +117,13 @@ public class SqeazyFileStackTests
                                                               lWidth);
 
     assertEquals(true,
-                 SqeazyLibrary.SQY_Pipeline_Possible(bPipelineName));
+                 SqeazyLibrary.SQY_Pipeline_Possible(bPipelineName, 2));
 
     final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
     lMaxEncodedBytes.setCLong(lBufferLengthInByte);
     assertEquals(0,
                  SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
+                                                                       lPipeline.length(),
                                                                        lMaxEncodedBytes));
 
     final long nil = 0;
