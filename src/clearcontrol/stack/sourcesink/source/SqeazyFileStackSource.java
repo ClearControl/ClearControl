@@ -125,7 +125,7 @@ public class SqeazyFileStackSource extends FileStackBase implements
       final Pointer<CLong> lPointerToDestinationLength =
                                                        Pointer.allocateCLong();
 
-      SqeazyLibrary.SQY_Pipeline_Decompressed_Length((Pointer<Byte>) mCompressedBytes.getBridJPointer(Byte.class),
+      SqeazyLibrary.SQY_Decompressed_Length((Pointer<Byte>) mCompressedBytes.getBridJPointer(Byte.class),
                                                      lPointerToDestinationLength);
 
       // decompress into lDecodedBytes
@@ -133,7 +133,7 @@ public class SqeazyFileStackSource extends FileStackBase implements
                                         lStack.getContiguousMemory()
                                               .getBridJPointer(Byte.class);
       final int lReturnValue =
-                              SqeazyLibrary.SQY_PipelineDecode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
+                              SqeazyLibrary.SQY_Decode_UI16(mCompressedBytes.getBridJPointer(Byte.class),
                                                                    lCompressedDataLength,
                                                                    lDecodedBytes, 1);
 

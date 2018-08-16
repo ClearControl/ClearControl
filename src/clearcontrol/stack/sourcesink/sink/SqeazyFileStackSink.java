@@ -123,6 +123,7 @@ public class SqeazyFileStackSink extends FileStackBase implements
     final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
     lMaxEncodedBytes.setCLong(lBufferLengthInByte);
     SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
+                                                          mPipelineName.get().length(),
                                                           lMaxEncodedBytes);
 
     if (mCompressedData == null
