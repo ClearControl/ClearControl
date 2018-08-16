@@ -127,10 +127,10 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                           lMaxEncodedBytes);
 
     if (mCompressedData == null
-        || mCompressedData.getSizeInBytes() != lMaxEncodedBytes.getLong())
+        || mCompressedData.getSizeInBytes() != lMaxEncodedBytes.getCLong())
     {
       mCompressedData =
-                      OffHeapMemory.allocateBytes(lMaxEncodedBytes.getLong());
+                      OffHeapMemory.allocateBytes(lMaxEncodedBytes.getCLong());
     }
 
     final Pointer<Short> bInputData =
