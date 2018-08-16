@@ -1,6 +1,8 @@
 package clearcontrol.microscope.timelapse.gui.demo;
 
 import java.util.concurrent.TimeUnit;
+
+import clearcontrol.stack.sourcesink.sink.SqeazyFileStackSink;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -45,6 +47,7 @@ public class TimeLapseToolBarDemo extends Application
     };
 
     lTimelapse.addFileStackSinkType(RawFileStackSink.class);
+    lTimelapse.addFileStackSinkType(SqeazyFileStackSink.class);
 
     TimelapseToolbar lTimelapseToolbar =
                                        new TimelapseToolbar(lTimelapse);
