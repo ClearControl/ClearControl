@@ -51,11 +51,24 @@ public class SqeazyFileStackSink extends FileStackBase implements
 
   /**
    * Instantiates a raw file stack sink.
-   * 
+   *
    */
   public SqeazyFileStackSink()
   {
     super(false);
+
+  }
+
+  /**
+   * Instantiates a raw file stack sink.
+   * 
+   */
+  public SqeazyFileStackSink(String PipelineName, int NumThreads)
+  {
+    super(false);
+
+    mPipelineName.set(PipelineName);
+    mNumThreads.set(NumThreads);
   }
 
   @Override

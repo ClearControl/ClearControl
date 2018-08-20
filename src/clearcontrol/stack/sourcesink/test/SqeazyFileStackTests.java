@@ -272,7 +272,8 @@ public class SqeazyFileStackTests
 
     {
       final SqeazyFileStackSink lSqyFileStackSink =
-                                                  new SqeazyFileStackSink();
+                                                  new SqeazyFileStackSink("bitswap1->lz4",
+                                                                          1);
       lSqyFileStackSink.setLocation(lRootFolder, "testSink");
 
       final OffHeapPlanarStack lStack =
@@ -372,6 +373,9 @@ public class SqeazyFileStackTests
         {
           expected_values[r] = (short) i;
         }
+        System.out.println("rereading stack " + i
+                           + "/"
+                           + cNumberOfStacks);
         assertArrayEquals(lSqyFileStackSource.getStack(i)
                                              .getContiguousMemory()
                                              .getBridJPointer(Short.class)
