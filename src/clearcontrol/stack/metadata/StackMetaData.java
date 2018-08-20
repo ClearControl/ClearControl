@@ -365,10 +365,14 @@ public class StackMetaData
       pString = pString.replaceAll(", ", ", \"");
       pString = pString.replaceAll("\\{", "\\{\"");
       pString = pString.replaceAll("TimeLapse", "\"TimeLapse\"");
-      for (int l = 0; l < 4; l++) {
+      for (int l = 0; l < 4; l++)
+      {
         for (int c = 0; c < 2; c++)
         {
-          pString = pString.replaceAll("C" + c + "L" + l, "\"C" + c + "L" + l +"\"");
+          pString = pString.replaceAll("C" + c
+                                       + "L"
+                                       + l,
+                                       "\"C" + c + "L" + l + "\"");
         }
       }
     }

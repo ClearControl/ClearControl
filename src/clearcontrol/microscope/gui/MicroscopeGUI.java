@@ -444,8 +444,9 @@ public class MicroscopeGUI extends VirtualDevice implements
   /**
    * Connects Stack cameras to 3D display.
    *
-   * Deprecated: Stacks to view should be sent to the viewer explicitly via schedulers see ViewFusedStackScheduler in
-   * clearcontrol-lightsheet repository
+   * Deprecated: Stacks to view should be sent to the viewer explicitly via
+   * schedulers see ViewFusedStackScheduler in clearcontrol-lightsheet
+   * repository
    * 
    * @param p3DDisplayIndex
    *          3D display index
@@ -456,9 +457,8 @@ public class MicroscopeGUI extends VirtualDevice implements
     Stack3DDisplay lStack3DDisplay =
                                    mStack3DDisplayList.get(p3DDisplayIndex);
 
-
-    //mMicroscope.getPipelineStackVariable()
-    //           .sendUpdatesTo(lStack3DDisplay.getInputStackVariable());
+    // mMicroscope.getPipelineStackVariable()
+    // .sendUpdatesTo(lStack3DDisplay.getInputStackVariable());
 
     lStack3DDisplay.setOutputStackVariable(new Variable<StackInterface>("Null"));
   }

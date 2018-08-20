@@ -110,9 +110,13 @@ public class StackProcessorPipelineBase extends NameableBase
   }
 
   @Deprecated
-  public RecyclerInterface<StackInterface, StackRequest> getRecyclerOfProcessor(StackProcessorInterface pProcessor){
-    for (int i = 0; i < mProcessorList.size() && i < mRecyclerList.size(); i++) {
-      if (mProcessorList.get(i) == pProcessor) {
+  public RecyclerInterface<StackInterface, StackRequest> getRecyclerOfProcessor(StackProcessorInterface pProcessor)
+  {
+    for (int i = 0; i < mProcessorList.size()
+                    && i < mRecyclerList.size(); i++)
+    {
+      if (mProcessorList.get(i) == pProcessor)
+      {
         return mRecyclerList.get(i);
       }
     }

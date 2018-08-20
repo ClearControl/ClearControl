@@ -195,7 +195,8 @@ public class VisualConsolePanel extends BorderPane implements
       ObservableList<Data<Number, Number>> lSeries =
                                                    mTabNameAndSeriesNameToSeriesMap.get(Pair.of(lTabName,
                                                                                                 pSeriesName));
-      if (lMultiChart == null) {
+      if (lMultiChart == null)
+      {
         return;
       }
       if (lSeries == null)

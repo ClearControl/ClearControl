@@ -123,7 +123,8 @@ public class SqeazyFileStackSink extends FileStackBase implements
     final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
     lMaxEncodedBytes.setCLong(lBufferLengthInByte);
     SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
-                                                          mPipelineName.get().length(),
+                                                          mPipelineName.get()
+                                                                       .length(),
                                                           lMaxEncodedBytes);
 
     if (mCompressedData == null
@@ -147,7 +148,8 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                            lSourceShape,
                                                            lShape.length,
                                                            (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
-                                                           lEncodedBytes, 1);
+                                                           lEncodedBytes,
+                                                           1);
 
     if (lReturnValue != 0)
       throw new RuntimeException("Error while peforming sqy compression, error code:  "

@@ -26,8 +26,16 @@ public class FLIFilterWheelDevice extends SerialDevice implements
                                                         pDeviceIndex,
                                                         "NULL"));
 
-    for (int i : getValidPositions()) {
-      setPositionName(i, MachineConfiguration.get().getStringProperty("filterwheel.fli." + pDeviceIndex + "." + i, "filter " + i));
+    for (int i : getValidPositions())
+    {
+      setPositionName(i,
+                      MachineConfiguration.get()
+                                          .getStringProperty("filterwheel.fli."
+                                                             + pDeviceIndex
+                                                             + "."
+                                                             + i,
+                                                             "filter "
+                                                                  + i));
     }
   }
 
@@ -36,7 +44,6 @@ public class FLIFilterWheelDevice extends SerialDevice implements
     super("FLIFilterWheel", pPortName, 9600);
 
     mFilterPositionToNameMap = new ConcurrentHashMap<>();
-
 
     final FilterWheelPositionDeviceAdapter lFilterWheelPosition =
                                                                 new FilterWheelPositionDeviceAdapter(this);

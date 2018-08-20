@@ -39,8 +39,8 @@ public class SqeazyFileStackTests
 
   private static final long cDiv = 8;
 
-  private static final long cSizeX = 2048 / cDiv;
-  private static final long cSizeY = 2048 / cDiv;
+  private static final long cSizeX = 1024 / cDiv;
+  private static final long cSizeY = 1024 / cDiv;
   private static final long cSizeZ = 512 / cDiv;
   private static final int cBytesPerVoxel = 2;
 
@@ -117,7 +117,8 @@ public class SqeazyFileStackTests
                                                               lWidth);
 
     assertEquals(true,
-                 SqeazyLibrary.SQY_Pipeline_Possible(bPipelineName, 2));
+                 SqeazyLibrary.SQY_Pipeline_Possible(bPipelineName,
+                                                     2));
 
     final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
     lMaxEncodedBytes.setCLong(lBufferLengthInByte);
@@ -143,7 +144,8 @@ public class SqeazyFileStackTests
                                                        lSourceShape,
                                                        3,
                                                        bCompressedData,
-                                                       lEncodedBytes,1));
+                                                       lEncodedBytes,
+                                                       1));
 
     assertTrue(lEncodedBytes.getLong() > nil);
     assertTrue(lEncodedBytes.getLong() < lBufferLengthInByte);
@@ -411,6 +413,12 @@ public class SqeazyFileStackTests
   public void testWriteSpeed() throws IOException
   {
 
+    final long sizeX = cSizeX * 4;
+    final long sizeZ = cSizeZ * 4;
+    final long n_elements = sizeX * sizeX * sizeZ;
+    final long n_bytes = n_elements * cBytesPerVoxel;
+    final double n_mbytes = ((double) n_bytes) / (1024. * 1024.);
+
     for (int r = 0; r < 1; r++)
     {
       System.gc();
@@ -428,25 +436,28 @@ public class SqeazyFileStackTests
                                                     new SqeazyFileStackSink();
       lLocalFileStackSink.setLocation(lRootFolder, "testSink");
 
+      System.out.println("generating data ... " + sizeX
+                         + "x"
+                         + sizeX
+                         + "x"
+                         + sizeZ);
+
       final OffHeapPlanarStack lStack =
-                                      OffHeapPlanarStack.createStack(cSizeX,
-                                                                     cSizeY,
-                                                                     cSizeZ);
+                                      OffHeapPlanarStack.createStack(sizeX,
+                                                                     sizeX,
+                                                                     sizeZ);
 
       lStack.getMetaData().setIndex(0);
       lStack.getMetaData()
             .setTimeStampInNanoseconds(System.nanoTime());
 
-      assertEquals(cSizeX * cSizeY * cSizeZ, lStack.getVolume());
+      assertEquals(n_elements, lStack.getVolume());
 
-      assertEquals(cSizeX * cSizeY
-                   * cSizeZ
-                   * cBytesPerVoxel,
-                   lStack.getSizeInBytes());
+      assertEquals(n_bytes, lStack.getSizeInBytes());
 
-      System.out.println("generating data...");
-      System.out.println("size: " + lStack.getSizeInBytes()
-                         + " bytes!");
+      System.out.println("size: "
+                         + lStack.getSizeInBytes() / (1024 * 1024.)
+                         + " mbytes!");
       ContiguousMemoryInterface lContiguousMemory =
                                                   lStack.getContiguousMemory();
 

@@ -14,7 +14,6 @@ import clearcontrol.stack.StackRequest;
 import clearcontrol.stack.metadata.StackMetaData;
 import clearcontrol.stack.sourcesink.FileStackBase;
 import clearcontrol.stack.sourcesink.StackSinkSourceInterface;
-import coremem.recycling.BasicRecycler;
 import coremem.recycling.RecyclerInterface;
 
 /**
