@@ -71,6 +71,28 @@ public class SqeazyFileStackTests
   }
 
   /**
+   * adapted from http://javapapers.com/java/glob-with-java-nio/
+   */
+  static List<Path> find_paths(String glob,
+                               final Path start_location) throws IOException
+  {
+
+    final List<Path> value = new ArrayList<>();
+
+    DirectoryStream<Path> dir_stream =
+                                     Files.newDirectoryStream(start_location,
+                                                              glob);
+    for (Path path : dir_stream)
+    {
+      value.add(path.toAbsolutePath());
+
+    }
+    dir_stream.close();
+
+    return value;
+  }
+
+  /**
    * Tests querying sqeazy version.
    */
   @Test
@@ -373,9 +395,7 @@ public class SqeazyFileStackTests
         {
           expected_values[r] = (short) i;
         }
-        System.out.println("rereading stack " + i
-                           + "/"
-                           + cNumberOfStacks);
+
         assertArrayEquals(lSqyFileStackSource.getStack(i)
                                              .getContiguousMemory()
                                              .getBridJPointer(Short.class)
@@ -399,7 +419,15 @@ public class SqeazyFileStackTests
 
     try
     {
-      FileUtils.deleteDirectory(lRootFolder);
+      if (System.getenv("CLEARCONTROL_KEEP_TMPS") == null)
+      {
+        FileUtils.deleteDirectory(lRootFolder);
+      }
+      else
+      {
+        System.out.println("[CLEARCONTROL_KEEP_TMPS detected] "
+                           + lRootFolder.toString());
+      }
     }
     catch (Exception e)
     {
@@ -471,15 +499,14 @@ public class SqeazyFileStackTests
       while (lBuffer.hasRemainingByte())
       {
         lBuffer.writeByte((byte) i++);
+        // lBuffer.writeByte((byte) 0);
       } /**/
 
       System.out.println("done generating data...");
 
-      System.out.println("start");
       long lStart = System.nanoTime();
       assertTrue(lLocalFileStackSink.appendStack(lStack));
       long lStop = System.nanoTime();
-      System.out.println("stop");
 
       double lElapsedTimeInSeconds = (lStop - lStart) * 1e-9;
 
@@ -487,6 +514,19 @@ public class SqeazyFileStackTests
                       / lElapsedTimeInSeconds;
 
       System.out.format("speed: %g MB/s \n", lSpeed);
+      System.out.format("time : %g   ms \n", (lStop - lStart) * 1e-6);
+
+      List<Path> stacks_written =
+                                find_paths("*.sqy",
+                                           Paths.get(lRootFolder.toString(),
+                                                     "/testSink/stacks/default/"));
+      if (stacks_written.size() > 0)
+      {
+        System.out.format("size : %g  MB %s\n",
+                          Files.size(stacks_written.get(0))
+                                                / (1024. * 1024.),
+                          stacks_written.get(0).toString());
+      }
 
       lLocalFileStackSink.close();
 
