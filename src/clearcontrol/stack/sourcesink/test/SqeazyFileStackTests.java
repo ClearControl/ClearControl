@@ -351,12 +351,15 @@ public class SqeazyFileStackTests
 
     }
 
-    String parent_path = lRootFolder + "/testSink/stacks/default/";
+    final String parent_path = lRootFolder
+                               + "/testSink/stacks/default/";
     assertTrue("check if " + parent_path
                + " exists failed",
                Files.exists(Paths.get(parent_path)));
 
-    List<String> stacks_written = find_files("*.sqy", parent_path);
+    System.out.println(cNumberOfStacks + " stacks encoded");
+    final List<String> stacks_written = find_files("*.sqy",
+                                                   parent_path);
     assertTrue(!stacks_written.isEmpty());
     assertEquals(stacks_written.size(), cNumberOfStacks);
 
@@ -375,15 +378,10 @@ public class SqeazyFileStackTests
 
       lSqyFileStackSource.update();
 
+      System.out.println(cNumberOfStacks + " stacks reread");
+
       assertEquals(cNumberOfStacks,
                    lSqyFileStackSource.getNumberOfStacks());
-
-      assertEquals(cSizeX,
-                   lSqyFileStackSource.getStack(0).getWidth());
-      assertEquals(cSizeY,
-                   lSqyFileStackSource.getStack(0).getHeight());
-      assertEquals(cSizeZ,
-                   lSqyFileStackSource.getStack(0).getDepth());
 
       final short[] expected_values = new short[(int) cSizeX];
       final int cSizeX_as_int = (int) cSizeX;
@@ -396,20 +394,25 @@ public class SqeazyFileStackTests
           expected_values[r] = (short) i;
         }
 
-        assertArrayEquals(lSqyFileStackSource.getStack(i)
-                                             .getContiguousMemory()
-                                             .getBridJPointer(Short.class)
-                                             .getShorts(cSizeX_as_int),
+        System.out.println(i + " loaded into StackInterface");
+        final StackInterface current =
+                                     lSqyFileStackSource.getStack(i);
+
+        assertEquals(cSizeX, current.getWidth());
+        assertEquals(cSizeY, current.getHeight());
+        assertEquals(cSizeZ, current.getDepth());
+
+        assertArrayEquals(current.getContiguousMemory()
+                                 .getBridJPointer(Short.class)
+                                 .getShorts(cSizeX_as_int),
                           expected_values);
 
-        assertArrayEquals(lSqyFileStackSource.getStack(i)
-                                             .getContiguousMemory()
-                                             .getBridJPointer(Short.class)
-                                             .getShortsAtOffset(((cSizeX
-                                                                  - 1)
-                                                                 * cSizeY
-                                                                 * cSizeZ),
-                                                                cSizeX_as_int),
+        assertArrayEquals(current.getContiguousMemory()
+                                 .getBridJPointer(Short.class)
+                                 .getShortsAtOffset(((cSizeX - 1)
+                                                     * cSizeY
+                                                     * cSizeZ),
+                                                    cSizeX_as_int),
                           expected_values);
 
       }
@@ -426,7 +429,7 @@ public class SqeazyFileStackTests
       else
       {
         System.out.println("[CLEARCONTROL_KEEP_TMPS detected] "
-                           + lRootFolder.toString());
+                           + lRootFolder.toString() + " not removed");
       }
     }
     catch (Exception e)
