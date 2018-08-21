@@ -169,8 +169,8 @@ public class SqeazyFileStackTests
                                                        lEncodedBytes,
                                                        1));
 
-    assertTrue(lEncodedBytes.getLong() > nil);
-    assertTrue(lEncodedBytes.getLong() < lBufferLengthInByte);
+    assertTrue(lEncodedBytes.getCLong() > nil);
+    assertTrue(lEncodedBytes.getCLong() < lBufferLengthInByte);
 
   }
 
