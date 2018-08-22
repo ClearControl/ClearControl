@@ -41,7 +41,7 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                                              new ConcurrentHashMap<>();
 
   private final AtomicReference<String> mPipelineName =
-                                                      new AtomicReference<String>("rmestbkrd->bitswap1->lz4");
+                                                      new AtomicReference<String>("rmestbkrd->lz4");
 
   private final AtomicInteger mNumThreads =
                                           new AtomicInteger(Runtime.getRuntime()

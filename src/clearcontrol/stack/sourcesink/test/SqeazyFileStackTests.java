@@ -547,4 +547,109 @@ public class SqeazyFileStackTests
 
   }
 
+  @Test
+  public void testWriteSpeedCustomPipeline() throws IOException
+  {
+
+    final long sizeX = cSizeX * 4;
+    final long sizeZ = cSizeZ * 4;
+    final long n_elements = sizeX * sizeX * sizeZ;
+    final long n_bytes = n_elements * cBytesPerVoxel;
+    final double n_mbytes = ((double) n_bytes) / (1024. * 1024.);
+
+    for (int r = 0; r < 1; r++)
+    {
+      System.gc();
+
+      final File lRootFolder =
+                             new File(File.createTempFile("test",
+                                                          "test")
+                                          .getParentFile(),
+                                      "LocalFileStackTests" + Math.random());/**/
+
+      lRootFolder.mkdirs();
+      System.out.println(lRootFolder);
+
+      final SqeazyFileStackSink lLocalFileStackSink =
+                                                    new SqeazyFileStackSink("rmestbkrd->bitswap1->lz4",
+                                                                            Runtime.getRuntime()
+                                                                                   .availableProcessors());
+      lLocalFileStackSink.setLocation(lRootFolder, "testSink");
+
+      System.out.println("generating data ... " + sizeX
+                         + "x"
+                         + sizeX
+                         + "x"
+                         + sizeZ);
+
+      final OffHeapPlanarStack lStack =
+                                      OffHeapPlanarStack.createStack(sizeX,
+                                                                     sizeX,
+                                                                     sizeZ);
+
+      lStack.getMetaData().setIndex(0);
+      lStack.getMetaData()
+            .setTimeStampInNanoseconds(System.nanoTime());
+
+      assertEquals(n_elements, lStack.getVolume());
+
+      assertEquals(n_bytes, lStack.getSizeInBytes());
+
+      System.out.println("size: "
+                         + lStack.getSizeInBytes() / (1024 * 1024.)
+                         + " mbytes!");
+      ContiguousMemoryInterface lContiguousMemory =
+                                                  lStack.getContiguousMemory();
+
+      ContiguousBuffer lBuffer =
+                               ContiguousBuffer.wrap(lContiguousMemory);
+      int i = 0;
+      while (lBuffer.hasRemainingByte())
+      {
+        lBuffer.writeByte((byte) i++);
+        // lBuffer.writeByte((byte) 0);
+      } /**/
+
+      System.out.println("done generating data...");
+
+      long lStart = System.nanoTime();
+      assertTrue(lLocalFileStackSink.appendStack(lStack));
+      long lStop = System.nanoTime();
+
+      double lElapsedTimeInSeconds = (lStop - lStart) * 1e-9;
+
+      double lSpeed = (lStack.getSizeInBytes() * 1e-6)
+                      / lElapsedTimeInSeconds;
+
+      System.out.format("speed: %g MB/s \n", lSpeed);
+      System.out.format("time : %g   ms \n", (lStop - lStart) * 1e-6);
+
+      List<Path> stacks_written =
+                                find_paths("*.sqy",
+                                           Paths.get(lRootFolder.toString(),
+                                                     "/testSink/stacks/default/"));
+      if (stacks_written.size() > 0)
+      {
+        System.out.format("size : %g  MB %s\n",
+                          Files.size(stacks_written.get(0))
+                                                / (1024. * 1024.),
+                          stacks_written.get(0).toString());
+      }
+
+      lLocalFileStackSink.close();
+
+      try
+      {
+        FileUtils.deleteDirectory(lRootFolder);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
+
+      lStack.free();
+    }
+
+  }
+
 }
