@@ -2,10 +2,12 @@ package clearcontrol.stack.sourcesink.sink;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Runtime;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -39,16 +41,34 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                                              new ConcurrentHashMap<>();
 
   private final AtomicReference<String> mPipelineName =
-                                                      new AtomicReference<String>("bitswap1->lz4");
+                                                      new AtomicReference<String>("rmestbkrd->lz4");
+
+  private final AtomicInteger mNumThreads =
+                                          new AtomicInteger(Runtime.getRuntime()
+                                                                   .availableProcessors());
+
   private OffHeapMemory mCompressedData;
+
+  /**
+   * Instantiates a raw file stack sink.
+   *
+   */
+  public SqeazyFileStackSink()
+  {
+    super(false);
+
+  }
 
   /**
    * Instantiates a raw file stack sink.
    * 
    */
-  public SqeazyFileStackSink()
+  public SqeazyFileStackSink(String PipelineName, int NumThreads)
   {
     super(false);
+
+    mPipelineName.set(PipelineName);
+    mNumThreads.set(NumThreads);
   }
 
   @Override
@@ -123,13 +143,15 @@ public class SqeazyFileStackSink extends FileStackBase implements
     final Pointer<CLong> lMaxEncodedBytes = Pointer.allocateCLong();
     lMaxEncodedBytes.setCLong(lBufferLengthInByte);
     SqeazyLibrary.SQY_Pipeline_Max_Compressed_Length_UI16(bPipelineName,
+                                                          mPipelineName.get()
+                                                                       .length(),
                                                           lMaxEncodedBytes);
 
     if (mCompressedData == null
-        || mCompressedData.getSizeInBytes() != lMaxEncodedBytes.getLong())
+        || mCompressedData.getSizeInBytes() != lMaxEncodedBytes.getCLong())
     {
       mCompressedData =
-                      OffHeapMemory.allocateBytes(lMaxEncodedBytes.getLong());
+                      OffHeapMemory.allocateBytes(lMaxEncodedBytes.getCLong());
     }
 
     final Pointer<Short> bInputData =
@@ -146,11 +168,14 @@ public class SqeazyFileStackSink extends FileStackBase implements
                                                            lSourceShape,
                                                            lShape.length,
                                                            (Pointer<Byte>) mCompressedData.getBridJPointer(Byte.class),
-                                                           lEncodedBytes, 1);
+                                                           lEncodedBytes,
+                                                           mNumThreads.get());
 
     if (lReturnValue != 0)
+    {
       throw new RuntimeException("Error while peforming sqy compression, error code:  "
                                  + lReturnValue);
+    }
 
     mCompressedData.subRegion(0, lEncodedBytes.getCLong())
                    .writeBytesToFileChannel(lBinnaryFileChannel, 0);

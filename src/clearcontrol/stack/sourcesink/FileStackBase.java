@@ -57,7 +57,8 @@ public abstract class FileStackBase extends StackServerBase
   }
 
   @Override
-  public File getLocation() {
+  public File getLocation()
+  {
     return mFolder;
   }
 

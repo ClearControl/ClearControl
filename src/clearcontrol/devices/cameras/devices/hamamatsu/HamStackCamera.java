@@ -17,7 +17,6 @@ import clearcontrol.devices.cameras.TriggerTypeInterface;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.StackRequest;
-import com.android.dx.cf.code.Machine;
 import dcamj2.DcamDevice;
 import dcamj2.DcamLibrary;
 import dcamj2.DcamSequenceAcquisition;
@@ -125,13 +124,34 @@ public class HamStackCamera extends
     // ----------------------- done with the listener -------- //
 
     // for OrcaFlash 4.0:
-    getLineReadOutTimeInMicrosecondsVariable().set(MachineConfiguration.get().getDoubleProperty("device.camera" + pCameraDeviceIndex +".readouttimems", 9.74));
-    getBytesPerPixelVariable().set(MachineConfiguration.get().getLongProperty("device.camera" + pCameraDeviceIndex +".bytesperpixel", 2L));
+    getLineReadOutTimeInMicrosecondsVariable().set(MachineConfiguration.get()
+                                                                       .getDoubleProperty("device.camera"
+                                                                                          + pCameraDeviceIndex
+                                                                                          + ".readouttimems",
+                                                                                          9.74));
+    getBytesPerPixelVariable().set(MachineConfiguration.get()
+                                                       .getLongProperty("device.camera"
+                                                                        + pCameraDeviceIndex
+                                                                        + ".bytesperpixel",
+                                                                        2L));
 
-    getMaxWidthVariable().set(MachineConfiguration.get().getLongProperty("device.camera" + pCameraDeviceIndex +".imagewidthpixels", 2048L));
-    getMaxHeightVariable().set(MachineConfiguration.get().getLongProperty("device.camera" + pCameraDeviceIndex +".imageheightpixels", 2048L));
+    getMaxWidthVariable().set(MachineConfiguration.get()
+                                                  .getLongProperty("device.camera"
+                                                                   + pCameraDeviceIndex
+                                                                   + ".imagewidthpixels",
+                                                                   2048L));
+    getMaxHeightVariable().set(MachineConfiguration.get()
+                                                   .getLongProperty("device.camera"
+                                                                    + pCameraDeviceIndex
+                                                                    + ".imageheightpixels",
+                                                                    2048L));
 
-    getPixelSizeInMicrometersVariable().set(MachineConfiguration.get().getDoubleProperty("device.camera" + pCameraDeviceIndex +".pixelsizenm", 260.0) / 1000.0);
+    getPixelSizeInMicrometersVariable().set(MachineConfiguration.get()
+                                                                .getDoubleProperty("device.camera"
+                                                                                   + pCameraDeviceIndex
+                                                                                   + ".pixelsizenm",
+                                                                                   260.0)
+                                            / 1000.0);
 
   }
 

@@ -1,11 +1,9 @@
 package clearcontrol.microscope.timelapse.gui;
 
 import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -35,6 +33,7 @@ import eu.hansolo.enzo.simpleindicator.SimpleIndicator.IndicatorStyle;
 public class TimelapseToolbar extends CustomGridPane
 {
   TimelapseInterface mTimelapseInterface;
+
   /**
    * Instanciates a timelapse toolbar.
    * 
@@ -159,9 +158,6 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-
-
-
     {
 
       VariableCheckBox lLimitNumberOfTimePointsCheckBox =
@@ -189,10 +185,6 @@ public class TimelapseToolbar extends CustomGridPane
       add(lMaxNumberOfTimePointsField.getTextField(), 2, mRow);
       mRow++;
     }
-
-
-
-
 
     {
       VariableFileChooser lRootFolderChooser =
@@ -232,16 +224,11 @@ public class TimelapseToolbar extends CustomGridPane
       mRow++;
     }
 
-
-
-
-
-
     {
 
       VariableCheckBox lSaveStacksCheckBox =
-          new VariableCheckBox("Save stacks",
-                               pTimelapseInterface.getSaveStacksVariable());
+                                           new VariableCheckBox("Save stacks",
+                                                                pTimelapseInterface.getSaveStacksVariable());
 
       GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
       GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
@@ -255,25 +242,25 @@ public class TimelapseToolbar extends CustomGridPane
 
   }
 
-  public CustomGridPane buildAdvancedOptionsGripPane() {
+  public CustomGridPane buildAdvancedOptionsGripPane()
+  {
     CustomGridPane lAdvancedOptionsGridPane = new CustomGridPane();
-
 
     {
       NumberVariableTextField<Long> lActualIntervalField =
-          new NumberVariableTextField<Long>("Actual Interval:",
-                                            mTimelapseInterface.getTimelapseTimerVariable()
-                                                               .get()
-                                                               .getActualAcquisitionIntervalVariable(),
-                                            0L,
-                                            Long.MAX_VALUE,
-                                            1L);
+                                                         new NumberVariableTextField<Long>("Actual Interval:",
+                                                                                           mTimelapseInterface.getTimelapseTimerVariable()
+                                                                                                              .get()
+                                                                                                              .getActualAcquisitionIntervalVariable(),
+                                                                                           0L,
+                                                                                           Long.MAX_VALUE,
+                                                                                           1L);
 
       EnumComboBoxVariable<TimeUnitEnum> lActualIntervalTimeUnitBox =
-          new EnumComboBoxVariable<TimeUnitEnum>(mTimelapseInterface.getTimelapseTimerVariable()
-                                                                    .get()
-                                                                    .getActualAcquisitionIntervalUnitVariable(),
-                                                 TimeUnitEnum.values());
+                                                                    new EnumComboBoxVariable<TimeUnitEnum>(mTimelapseInterface.getTimelapseTimerVariable()
+                                                                                                                              .get()
+                                                                                                                              .getActualAcquisitionIntervalUnitVariable(),
+                                                                                                           TimeUnitEnum.values());
 
       lActualIntervalField.getTextField().setEditable(false);
 
@@ -281,30 +268,35 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lActualIntervalField.getTextField(), 1);
       GridPane.setColumnSpan(lActualIntervalTimeUnitBox, 1);
 
-      lAdvancedOptionsGridPane.add(lActualIntervalField.getLabel(), 1, mRow);
-      lAdvancedOptionsGridPane.add(lActualIntervalField.getTextField(), 2, mRow);
-      lAdvancedOptionsGridPane.add(lActualIntervalTimeUnitBox, 3, mRow);
+      lAdvancedOptionsGridPane.add(lActualIntervalField.getLabel(),
+                                   1,
+                                   mRow);
+      lAdvancedOptionsGridPane.add(lActualIntervalField.getTextField(),
+                                   2,
+                                   mRow);
+      lAdvancedOptionsGridPane.add(lActualIntervalTimeUnitBox,
+                                   3,
+                                   mRow);
       mRow++;
     }
 
     lAdvancedOptionsGridPane.addSeparator();
 
-
     {
       VariableCheckBox lLimitTimelapseDurationCheckBox =
-          new VariableCheckBox("",
-                               mTimelapseInterface.getEnforceMaxDurationVariable());
+                                                       new VariableCheckBox("",
+                                                                            mTimelapseInterface.getEnforceMaxDurationVariable());
 
       NumberVariableTextField<Long> lMaxDurationField =
-          new NumberVariableTextField<Long>("Max Duration:",
-                                            mTimelapseInterface.getMaxDurationVariable(),
-                                            0L,
-                                            Long.MAX_VALUE,
-                                            1L);
+                                                      new NumberVariableTextField<Long>("Max Duration:",
+                                                                                        mTimelapseInterface.getMaxDurationVariable(),
+                                                                                        0L,
+                                                                                        Long.MAX_VALUE,
+                                                                                        1L);
 
       EnumComboBoxVariable<TimeUnitEnum> lMaxDurationTimeUnitBox =
-          new EnumComboBoxVariable<TimeUnitEnum>(mTimelapseInterface.getMaxDurationUnitVariable(),
-                                                 TimeUnitEnum.values());
+                                                                 new EnumComboBoxVariable<TimeUnitEnum>(mTimelapseInterface.getMaxDurationUnitVariable(),
+                                                                                                        TimeUnitEnum.values());
 
       GridPane.setHalignment(lLimitTimelapseDurationCheckBox.getCheckBox(),
                              HPos.RIGHT);
@@ -314,9 +306,15 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lMaxDurationField.getTextField(), 1);
       GridPane.setColumnSpan(lMaxDurationTimeUnitBox, 1);
 
-      lAdvancedOptionsGridPane.add(lLimitTimelapseDurationCheckBox.getCheckBox(), 0, mRow);
-      lAdvancedOptionsGridPane.add(lMaxDurationField.getLabel(), 1, mRow);
-      lAdvancedOptionsGridPane.add(lMaxDurationField.getTextField(), 2, mRow);
+      lAdvancedOptionsGridPane.add(lLimitTimelapseDurationCheckBox.getCheckBox(),
+                                   0,
+                                   mRow);
+      lAdvancedOptionsGridPane.add(lMaxDurationField.getLabel(),
+                                   1,
+                                   mRow);
+      lAdvancedOptionsGridPane.add(lMaxDurationField.getTextField(),
+                                   2,
+                                   mRow);
       lAdvancedOptionsGridPane.add(lMaxDurationTimeUnitBox, 3, mRow);
       mRow++;
     }
@@ -326,7 +324,7 @@ public class TimelapseToolbar extends CustomGridPane
       Label lStartDateTimeLabel = new Label("Start:");
 
       DateTimePickerVariable lTimelapseStartDeadline =
-          new DateTimePickerVariable(mTimelapseInterface.getStartDateTimeVariable());
+                                                     new DateTimePickerVariable(mTimelapseInterface.getStartDateTimeVariable());
       lTimelapseStartDeadline.setEditable(false);
       lTimelapseStartDeadline.getEditor().setEditable(false);
       lTimelapseStartDeadline.setDisable(true);
@@ -342,13 +340,13 @@ public class TimelapseToolbar extends CustomGridPane
 
     {
       VariableCheckBox lEnforceMaxDateTimeCheckBox =
-          new VariableCheckBox("",
-                               mTimelapseInterface.getEnforceMaxDateTimeVariable());
+                                                   new VariableCheckBox("",
+                                                                        mTimelapseInterface.getEnforceMaxDateTimeVariable());
 
       Label lStopDateTimeLabel = new Label("Stop:");
 
       DateTimePickerVariable lTimelapseStopDeadline =
-          new DateTimePickerVariable(mTimelapseInterface.getMaxDateTimeVariable());
+                                                    new DateTimePickerVariable(mTimelapseInterface.getMaxDateTimeVariable());
 
       GridPane.setHalignment(lEnforceMaxDateTimeCheckBox.getCheckBox(),
                              HPos.RIGHT);
@@ -357,7 +355,9 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lStopDateTimeLabel, 1);
       GridPane.setColumnSpan(lTimelapseStopDeadline, 2);
 
-      lAdvancedOptionsGridPane.add(lEnforceMaxDateTimeCheckBox.getCheckBox(), 0, mRow);
+      lAdvancedOptionsGridPane.add(lEnforceMaxDateTimeCheckBox.getCheckBox(),
+                                   0,
+                                   mRow);
       lAdvancedOptionsGridPane.add(lStopDateTimeLabel, 1, mRow);
       lAdvancedOptionsGridPane.add(lTimelapseStopDeadline, 2, mRow);
       mRow++;
@@ -365,16 +365,12 @@ public class TimelapseToolbar extends CustomGridPane
 
     lAdvancedOptionsGridPane.addSeparator();
 
-
-
-
-
     lAdvancedOptionsGridPane.addSeparator();
 
     {
       VariableCheckBox lAutoPilotCheckBox =
-          new VariableCheckBox("AutoPilot",
-                               mTimelapseInterface.getAdaptiveEngineOnVariable());
+                                          new VariableCheckBox("AutoPilot",
+                                                               mTimelapseInterface.getAdaptiveEngineOnVariable());
 
       GridPane.setHalignment(lAutoPilotCheckBox.getCheckBox(),
                              HPos.RIGHT);
@@ -382,20 +378,24 @@ public class TimelapseToolbar extends CustomGridPane
       GridPane.setColumnSpan(lAutoPilotCheckBox.getCheckBox(), 1);
 
       GridPane.setColumnSpan(lAutoPilotCheckBox.getLabel(), 3);
-      lAdvancedOptionsGridPane.add(lAutoPilotCheckBox.getCheckBox(), 0, mRow);
-      lAdvancedOptionsGridPane.add(lAutoPilotCheckBox.getLabel(), 1, mRow);
+      lAdvancedOptionsGridPane.add(lAutoPilotCheckBox.getCheckBox(),
+                                   0,
+                                   mRow);
+      lAdvancedOptionsGridPane.add(lAutoPilotCheckBox.getLabel(),
+                                   1,
+                                   mRow);
 
       mRow++;
     }
 
     {
       NumberVariableTextField<Integer> lMinStepsTextField =
-          new NumberVariableTextField<>("Min & max steps per tp:",
-                                        mTimelapseInterface.getMinAdaptiveEngineStepsVariable());
+                                                          new NumberVariableTextField<>("Min & max steps per tp:",
+                                                                                        mTimelapseInterface.getMinAdaptiveEngineStepsVariable());
 
       NumberVariableTextField<Integer> lMaxStepsTextField =
-          new NumberVariableTextField<>("",
-                                        mTimelapseInterface.getMaxAdaptiveEngineStepsVariable());
+                                                          new NumberVariableTextField<>("",
+                                                                                        mTimelapseInterface.getMaxAdaptiveEngineStepsVariable());
 
       lMinStepsTextField.getTextField().setPrefWidth(50);
       lMaxStepsTextField.getTextField().setPrefWidth(50);
@@ -412,7 +412,9 @@ public class TimelapseToolbar extends CustomGridPane
 
       GridPane.setHalignment(lHBox, HPos.CENTER);
 
-      lAdvancedOptionsGridPane.add(lMinStepsTextField.getLabel(), 1, mRow);
+      lAdvancedOptionsGridPane.add(lMinStepsTextField.getLabel(),
+                                   1,
+                                   mRow);
       lAdvancedOptionsGridPane.add(lHBox, 2, mRow);
 
       mRow++;
@@ -421,8 +423,8 @@ public class TimelapseToolbar extends CustomGridPane
     {
 
       TitledPane lTitledPane =
-          new TitledPane("Advanced options",
-                         lAdvancedOptionsGridPane);
+                             new TitledPane("Advanced options",
+                                            lAdvancedOptionsGridPane);
       lTitledPane.setAnimated(false);
       lTitledPane.setExpanded(false);
       GridPane.setColumnSpan(lTitledPane, 4);
@@ -432,7 +434,5 @@ public class TimelapseToolbar extends CustomGridPane
     }
     return lAdvancedOptionsGridPane;
   }
-
-
 
 }

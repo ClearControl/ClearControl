@@ -1,18 +1,19 @@
 package clearcontrol.core.math.interpolation;
 
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import static java.lang.Math.abs;
+import clearcontrol.gui.plots.MultiPlot;
+import clearcontrol.gui.plots.PlotTab;
+
+import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
- * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
- * March 2018
+ * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG
+ * (http://mpi-cbg.de) March 2018
  */
 public abstract class AbstractInterpolationTable
 {
@@ -23,8 +24,6 @@ public abstract class AbstractInterpolationTable
   protected volatile boolean mIsUpToDate = false;
   protected final ArrayList<UnivariateFunction> mInterpolatingFunctionsList;
 
-
-
   public AbstractInterpolationTable(int pNumberOfColumns)
   {
     super();
@@ -32,7 +31,6 @@ public abstract class AbstractInterpolationTable
     mNumberOfColumns = pNumberOfColumns;
     mInterpolatingFunctionsList = new ArrayList<>();
   }
-
 
   /**
    * Returns the number of rows in the table
@@ -266,8 +264,8 @@ public abstract class AbstractInterpolationTable
    *          X value
    * @return Y=f(X) interpolated value
    */
-  public abstract double getInterpolatedValue(int pColumnIndex, double pX);
-
+  public abstract double getInterpolatedValue(int pColumnIndex,
+                                              double pX);
 
   /**
    * Sets the Y value for a given column and row index.
@@ -373,7 +371,6 @@ public abstract class AbstractInterpolationTable
     }
   }
 
-
   /**
    * Displays a MultiPlot for debug purposes.
    *
@@ -384,7 +381,7 @@ public abstract class AbstractInterpolationTable
   public MultiPlot displayTable(String pMultiPlotName)
   {
     final MultiPlot lMultiPlot =
-        MultiPlot.getMultiPlot(pMultiPlotName);
+                               MultiPlot.getMultiPlot(pMultiPlotName);
 
     for (int i = 0; i < mNumberOfColumns; i++)
     {
@@ -410,7 +407,7 @@ public abstract class AbstractInterpolationTable
                         * lRangeWidth; x <= lMaxX
                                             + 0.5
                                               * lRangeWidth; x +=
-               lStep)
+                                                               lStep)
       {
         final double y = getInterpolatedValue(i, x);
         lPlot.addPoint("interpolated", x, y);
@@ -422,6 +419,5 @@ public abstract class AbstractInterpolationTable
 
     return lMultiPlot;
   }
-
 
 }

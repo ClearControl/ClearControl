@@ -96,18 +96,17 @@ public class RawFileStackTests
 
       System.out.println("done generating data...");
 
-      System.out.println("start");
       long lStart = System.nanoTime();
       assertTrue(lLocalFileStackSink.appendStack(lStack));
       long lStop = System.nanoTime();
-      System.out.println("stop");
 
       double lElapsedTimeInSeconds = (lStop - lStart) * 1e-9;
 
       double lSpeed = (lStack.getSizeInBytes() * 1e-6)
                       / lElapsedTimeInSeconds;
 
-      System.out.format("speed: %g \n", lSpeed);
+      System.out.format("speed: %g MB/s \n", lSpeed);
+      System.out.format("time : %g   ms \n", (lStop - lStart) * 1e-6);
 
       lLocalFileStackSink.close();
 

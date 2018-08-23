@@ -12,6 +12,7 @@ import clearcontrol.microscope.timelapse.TimelapseBase;
 import clearcontrol.microscope.timelapse.TimelapseInterface;
 import clearcontrol.microscope.timelapse.gui.TimelapseToolbar;
 import clearcontrol.stack.sourcesink.sink.RawFileStackSink;
+import clearcontrol.stack.sourcesink.sink.SqeazyFileStackSink;
 
 /**
  * Timelapse toolbar demo
@@ -45,6 +46,7 @@ public class TimeLapseToolBarDemo extends Application
     };
 
     lTimelapse.addFileStackSinkType(RawFileStackSink.class);
+    lTimelapse.addFileStackSinkType(SqeazyFileStackSink.class);
 
     TimelapseToolbar lTimelapseToolbar =
                                        new TimelapseToolbar(lTimelapse);

@@ -1,5 +1,9 @@
 package clearcontrol.gui.video.video3d;
 
+import static java.lang.Math.*;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -9,27 +13,21 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.util.MinMaxControlDialog;
 import clearcontrol.gui.video.util.WindowControl;
-import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
 import clearcontrol.stack.EmptyStack;
 import clearcontrol.stack.StackInterface;
-import clearcontrol.stack.imglib2.ImageJStackDisplay;
 import clearcontrol.stack.metadata.MetaDataOrdinals;
-import clearcontrol.stack.metadata.StackMetaData;
 import cleargl.ClearGLWindow;
 import clearvolume.renderer.ClearVolumeRendererInterface;
 import clearvolume.renderer.cleargl.ClearGLVolumeRenderer;
 import clearvolume.renderer.factory.ClearVolumeRendererFactory;
+
 import com.jogamp.newt.event.KeyAdapter;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
+
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.util.Size;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-
-import static java.lang.Math.*;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class Stack3DDisplay extends VirtualDevice
                             implements StackDisplayInterface
@@ -90,7 +88,6 @@ public class Stack3DDisplay extends VirtualDevice
       ClearGLWindow lClearGLWindow =
                                    lClearGLVolumeRenderer.getClearGLWindow();
       lClearGLWindow.addWindowListener(new WindowControl(lClearGLWindow));
-
 
       KeyListener lKeyAdapter = new KeyAdapter()
       {
@@ -229,8 +226,7 @@ public class Stack3DDisplay extends VirtualDevice
                                                             cTimeOutForBufferCopy,
                                                             TimeUnit.SECONDS);/**/
 
-          adjustVisualisation( pStack );
-
+          adjustVisualisation(pStack);
 
         }
 
@@ -273,15 +269,21 @@ public class Stack3DDisplay extends VirtualDevice
 
   private void adjustVisualisation(StackInterface pStack)
   {
-    if (mManualVisualisationAdjustment) {
+    if (mManualVisualisationAdjustment)
+    {
       return;
     }
-    if (mAdjustmentRunning.isLocked()) {
+    if (mAdjustmentRunning.isLocked())
+    {
       return;
     }
     mAdjustmentRunning.lock();
     {
-      fastMinMaxSampling(pStack.getContiguousMemory(), pStack.getDataType(), pStack.getWidth(), pStack.getHeight(), pStack.getDepth());
+      fastMinMaxSampling(pStack.getContiguousMemory(),
+                         pStack.getDataType(),
+                         pStack.getWidth(),
+                         pStack.getHeight(),
+                         pStack.getDepth());
 
       this.mClearVolumeRenderer.setTransferFunctionRangeMin(mSampledMinIntensity);
       this.mClearVolumeRenderer.setTransferFunctionRangeMax(mSampledMaxIntensity);
@@ -289,23 +291,24 @@ public class Stack3DDisplay extends VirtualDevice
     mAdjustmentRunning.unlock();
   }
 
-
   double mSampledMinIntensity;
   double mSampledMaxIntensity;
 
-  public void fastMinMaxSampling(final ContiguousMemoryInterface pMemory, NativeTypeEnum pNativeTypeEnum, long pBufferWidth, long pBufferHeight, long pBufferDepth)
+  public void fastMinMaxSampling(final ContiguousMemoryInterface pMemory,
+                                 NativeTypeEnum pNativeTypeEnum,
+                                 long pBufferWidth,
+                                 long pBufferHeight,
+                                 long pBufferDepth)
   {
     if (pMemory.isFree())
       return;
 
     final long lLength =
-        min(pBufferWidth
-            * pBufferHeight
-            * pBufferDepth,
-            pMemory.getSizeInBytes() / Size.of(pNativeTypeEnum));
-    final long lStep =
-        1 + round(0.001
-                  * lLength);
+                       min(pBufferWidth * pBufferHeight
+                           * pBufferDepth,
+                           pMemory.getSizeInBytes()
+                                           / Size.of(pNativeTypeEnum));
+    final long lStep = 1 + round(0.001 * lLength);
     final int lStartPixel = (int) round(random() * lStep);
 
     double lMin = Double.POSITIVE_INFINITY;
@@ -315,7 +318,7 @@ public class Stack3DDisplay extends VirtualDevice
       for (int i = lStartPixel; i < lLength; i += lStep)
       {
         final double lValue =
-            (0xFF & pMemory.getByteAligned(i)) / 255d;
+                            (0xFF & pMemory.getByteAligned(i)) / 255d;
         lMin = min(lMin, lValue);
         lMax = max(lMax, lValue);
       }
@@ -350,7 +353,9 @@ public class Stack3DDisplay extends VirtualDevice
         lMax = max(lMax, lDoubleAligned);
       }
 
-    if (Math.abs(this.mSampledMaxIntensity) < 0.0001 && Math.abs(this.mSampledMinIntensity) < 0.0001) {
+    if (Math.abs(this.mSampledMaxIntensity) < 0.0001
+        && Math.abs(this.mSampledMinIntensity) < 0.0001)
+    {
       mSampledMinIntensity = lMin;
       mSampledMaxIntensity = lMax;
     }
@@ -361,12 +366,9 @@ public class Stack3DDisplay extends VirtualDevice
     if (!Double.isFinite(this.mSampledMaxIntensity))
       this.mSampledMaxIntensity = 1;
 
-
-    this.mSampledMinIntensity = (0.9)
-                                * this.mSampledMinIntensity
+    this.mSampledMinIntensity = (0.9) * this.mSampledMinIntensity
                                 + 0.1 * lMin;
-    this.mSampledMaxIntensity = (0.9)
-                                * this.mSampledMaxIntensity
+    this.mSampledMaxIntensity = (0.9) * this.mSampledMaxIntensity
                                 + 0.1 * lMax;
 
     // System.out.println("mSampledMinIntensity=" +

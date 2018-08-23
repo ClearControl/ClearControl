@@ -2,13 +2,7 @@ package clearcontrol.core.math.interpolation;
 
 import static java.lang.Math.abs;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.TreeSet;
-
 import clearcontrol.core.math.functions.UnivariateAffineFunction;
-import clearcontrol.gui.plots.MultiPlot;
-import clearcontrol.gui.plots.PlotTab;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -22,10 +16,10 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
  * 
  * @author royer
  */
-public class SplineInterpolationTable extends AbstractInterpolationTable implements Cloneable
+public class SplineInterpolationTable extends
+                                      AbstractInterpolationTable
+                                      implements Cloneable
 {
-
-
 
   /**
    * Creates a SplineInterpolationTable witha given number of columns.
@@ -73,7 +67,7 @@ public class SplineInterpolationTable extends AbstractInterpolationTable impleme
     ensureIsUpToDate();
 
     final UnivariateFunction lUnivariateFunction =
-        mInterpolatingFunctionsList.get(pColumnIndex);
+                                                 mInterpolatingFunctionsList.get(pColumnIndex);
     final double lValue = lUnivariateFunction.value(pX);
     return lValue;
   }

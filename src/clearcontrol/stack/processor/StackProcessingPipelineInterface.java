@@ -61,11 +61,11 @@ public interface StackProcessingPipelineInterface
    */
   public Variable<StackInterface> getOutputVariable();
 
-
-
   /**
    * This is a temporary helper function which will be removed again later on
-   * @param pProcessor processor to find a recycler for
+   * 
+   * @param pProcessor
+   *          processor to find a recycler for
    * @return found recycler; may be null in case the processor is not found
    */
   @Deprecated

@@ -16,9 +16,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.var.combo.enums.TimeUnitEnum;
 import clearcontrol.microscope.MicroscopeInterface;
 import clearcontrol.microscope.adaptive.AdaptiveEngine;
-import clearcontrol.microscope.stacks.metadata.MetaDataAcquisitionType;
 import clearcontrol.microscope.state.AcquisitionStateInterface;
-import clearcontrol.microscope.state.AcquisitionType;
 import clearcontrol.microscope.timelapse.timer.TimelapseTimerInterface;
 import clearcontrol.microscope.timelapse.timer.fixed.FixedIntervalTimelapseTimer;
 import clearcontrol.stack.StackInterface;
@@ -159,8 +157,8 @@ public abstract class TimelapseBase extends LoopTaskDevice
                                                           getCurrentFileStackSinkVariable();
       if (getSaveStacksVariable().get() && lStackSinkVariable != null
           && n != null
-          /*&& n.getMetaData()
-              .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse*/)
+      /*&& n.getMetaData()
+          .getValue(MetaDataAcquisitionType.AcquisitionType) == AcquisitionType.TimeLapse*/)
       {
         info("Appending new stack %s to the file sink %s",
              n,
@@ -620,8 +618,10 @@ public abstract class TimelapseBase extends LoopTaskDevice
   }
 
   @Override
-  public File getWorkingDirectory() {
-    if (mCurrentFileStackSinkVariable.get() == null) {
+  public File getWorkingDirectory()
+  {
+    if (mCurrentFileStackSinkVariable.get() == null)
+    {
       return null;
     }
     return mCurrentFileStackSinkVariable.get().getLocation();

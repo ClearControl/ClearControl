@@ -8,7 +8,6 @@ import clearcontrol.core.concurrent.asyncprocs.AsynchronousProcessorBase;
 import clearcontrol.core.concurrent.executors.AsynchronousSchedulerFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.video.StackDisplayInterface;
 import clearcontrol.gui.video.util.MinMaxControlDialog;
 import clearcontrol.gui.video.video2d.videowindow.VideoWindow;
@@ -26,7 +25,6 @@ import com.jogamp.newt.event.MouseEvent;
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.exceptions.FreedException;
-import javafx.application.Platform;
 
 /**
  * Stack 2D display
@@ -517,7 +515,8 @@ public class Stack2DDisplay extends VirtualDevice implements
     try
     {
       // if the mVideoWindow was never started, it crashes while stopping
-      if (mDisplayOn.get()) {
+      if (mDisplayOn.get())
+      {
         mVideoWindow.stop();
         mDisplayOn.set(false);
       }
@@ -548,7 +547,8 @@ public class Stack2DDisplay extends VirtualDevice implements
     return mVideoWindow.getGLWindow();
   }
 
-  public StackInterface getLastViewedStack() {
+  public StackInterface getLastViewedStack()
+  {
     return mReceivedStackCopy;
   }
 
