@@ -14,3 +14,7 @@ hs_err_pid*
 .DS_Store
 /nbproject/private/
 settings.gradle
+gradle/installGitHooks
+gradle/master.gradle
+gradle/spotless.gradle
+codeformat.eclipse.xml
