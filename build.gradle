@@ -1,13 +1,8 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-}
 
 plugins {
     id "com.jfrog.bintray" version "1.2"
-    id "us.kirchmeier.capsule" version "1.0.2"
     id "com.diffplug.gradle.spotless" version "3.1.0"
+    id "de.undercouch.download" version "3.4.3"
 }
 
 apply plugin: 'java'
@@ -15,54 +10,38 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.diffplug.gradle.spotless'
-//apply plugin: 'findbugs'
-//apply plugin: "jacoco"
 
 
-sourceSets {
+// Master gradle file:
+apply from: 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
+
+//***********************************************************************************
+// JAVA CODE BUILDING
+
+sourceSets
+{
     main
     {
         java
-        { srcDir 'src' }
+        { srcDir 'src/main/java' }
         resources
-        { srcDir 'src' }
+        { 
+            srcDir 'src/main/java'
+            srcDir 'src/main/arduino'
+        }
     }
     test
     {
         java
-        { srcDir 'src' }
+        { srcDir 'src/test/java' }
         resources
-        { srcDir 'src' }
+        { srcDir 'src/test/java' }
     }
 }
-
-/*
- * Gets the version name from the latest Git tag
- */
-def getVersionName = {
-    ->
-    try
-    {
-	    def stdout = new ByteArrayOutputStream()
-	    exec {
-	        commandLine 'git', 'describe', '--tags'
-	        standardOutput = stdout
-	    }
-	    return stdout.toString().trim()
-    }
-    catch(Throwable e)
-    {
-    	println e
-    }
-}
-
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-group = 'net.clearcontrol'
-
-version = '0.16.8' // getVersionName()
 
 test 
 {
@@ -108,12 +87,12 @@ dependencies
     testCompile group: 'junit', name: 'junit', version: '4.11'
 
     // Commons:
-    compile ('org.apache.commons:commons-collections4:4.0') {transitive= true}
-    compile ('commons-io:commons-io:2.4')                   {transitive= true}
-    compile ('org.apache.commons:commons-lang3:3.4')        {transitive= true}
-    compile ('org.apache.commons:commons-math3:3.5')        {transitive= true}
-    compile ('org.apache.logging.log4j:log4j-api:2.1')      {transitive= true}
-    compile ('org.apache.logging.log4j:log4j-core:2.1')     {transitive= true}
+    compile ('org.apache.commons:commons-collections4:4.0')           {transitive= true}
+    compile ('commons-io:commons-io:2.4')                             {transitive= true}
+    compile ('org.apache.commons:commons-lang3:3.4')                  {transitive= true}
+    compile ('org.apache.commons:commons-math3:3.5')                  {transitive= true}
+    compile ('org.apache.logging.log4j:log4j-api:2.1')                {transitive= true}
+    compile ('org.apache.logging.log4j:log4j-core:2.1')               {transitive= true}
 
     // Guava:
     compile ('com.google.guava:guava:18.0') {transitive= true}
@@ -122,7 +101,7 @@ dependencies
     compile ('net.sf.trove4j:trove4j:3.0.3') {transitive= true}
 
     // Jakson for JSON:
-    compile ('com.fasterxml.jackson.core:jackson-databind:2.6.1') {transitive= true}
+    compile ('com.fasterxml.jackson.core:jackson-databind:2.6.1')     {transitive= true}
 
     // JScience:
     compile ('org.jscience:jscience:4.3.1') {transitive= true}
@@ -153,17 +132,17 @@ dependencies
     // Mail:
     compile 'javax.mail:mail:1.4.7'
 
-    
+
     // Look and feels:
     compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
     compile 'com.jgoodies:looks:2.2.2'
     compile 'org.devzendo:Quaqua:7.3.4'
 
     // JavaFX:
-    compile ('eu.hansolo.enzo:Enzo:0.3.6')                   {transitive= true}
-    compile ('org.controlsfx:controlsfx:8.40.11')            {transitive= true}
+    compile ('eu.hansolo.enzo:Enzo:0.3.6')                            {transitive= true}
+    compile ('org.controlsfx:controlsfx:8.40.11')                     {transitive= true}
     
-    compile ('de.jensd:fontawesomefx:8.0.10')                {transitive= true}
+    compile ('de.jensd:fontawesomefx:8.0.10')                         {transitive= true}
 
  
     // MigLayout:
@@ -173,40 +152,41 @@ dependencies
     compile 'com.github.yannrichet:JMathPlot:1.0.1'
 
     // imglib2:  
-    compile ('net.imglib2:imglib2:2.2.0')                    {transitive = true}
-    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')         {transitive = true}
-    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')         {transitive = true}
-    compile ('net.imglib2:imglib2-algorithm:0.2.1')          {transitive = true}
+    compile ('net.imglib2:imglib2:2.2.0')                             {transitive = true}
+    compile ('net.imglib2:imglib2-ui:2.0.0-beta-28')                  {transitive = true}
+    compile ('net.imglib2:imglib2-ij:2.0.0-beta-30')                  {transitive = true}
+    compile ('net.imglib2:imglib2-algorithm:0.2.1')                   {transitive = true}
 
     // JSSC (serial):
-    compile ('org.scream3r:jssc:2.8.0')                      {transitive= true; changing= true}
-   
-    // Halcyon:
-    compile ('net.halcyon:halcyon:0.3.8')                    {transitive=true;  changing= true}
+    compile ('org.scream3r:jssc:2.8.0')                               {transitive= true; changing= true}
 
     // Sqeazy:
-    compile ('net.sqeazy:sqeazy:0.7.2')                      {transitive= true; changing= true}
+    compile ('net.sqeazy:sqeazy:0.7.2')                               {transitive= true; changing= true}
+
+    // Halcyon:
+    compile ('net.clearcontrol:halcyon:'+depver('halcyon'))           {transitive=true;  changing= true}
+
 
     // ClearVolume (carries):
-    compile ('net.clearvolume:clearvolume:1.4.2-RH')         {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearvolume:'+depver('clearvolume'))   {transitive= true; changing= true}
 
     // FastFuse:
-    compile ('net.clearcontrol:fastfuse:0.6.2')              {transitive= true; changing= true}
+    compile ('net.clearcontrol:fastfuse:'+depver('fastfuse'))         {transitive= true; changing= true}
 
     // AO:
-    compile ('net.clearcontrol:mirao52j:(,2.0.0[')           {transitive=true; changing= true}
+    compile ('net.clearcontrol:mirao52j:'+depver('mirao52j'))         {transitive=true; changing= true}
 
     // Cameras:
-    compile ('net.clearcontrol:dcamj:2.1.6')                 {transitive=true; changing= true}
-    //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]')   {transitive=true; changing= true}
+    compile ('net.clearcontrol:dcamj:'+depver('dcamj'))               {transitive=true; changing= true}
+    //compile ('net.clearcontrol:andorsdkj:[0.1.0,1.0.0]')            {transitive=true; changing= true}
     compile 'com.github.sarxos:webcam-capture:0.3.9'
  
     // Stages:
-    compile ('net.clearcontrol:ecc100j:(,2.0.0[')            {transitive=true; changing= true}
-    compile ('net.clearcontrol:aptj:0.0.2-RH')               {transitive=true; changing= true}
+    compile ('net.clearcontrol:ecc100j:'+depver('ecc100j'))           {transitive=true; changing= true}
+    compile ('net.clearcontrol:aptj:'+depver('aptj'))                 {transitive=true; changing= true}
 
     // NIRIOJ:
-    compile ('net.clearcontrol:nirioj:(,2.0.0]')             {transitive=true; changing= true}
+    compile ('net.clearcontrol:nirioj:'+depver('nirioj'))             {transitive=true; changing= true}
 
     // Other:
     //compile 'com.github.rwl:jtransforms:2.4.0'
@@ -217,10 +197,12 @@ dependencies
 
 repositories 
 {
-    // main repos:
-
+    // Main repos:
     mavenLocal()
     mavenCentral()
+    jcenter()
+
+
     // maven {url "C:\\Users\\myersadmin\\.m2\\repository"}
     maven { url "http://oss.sonatype.org/content/groups/public"} 
     maven { url "http://mvnrepository.com/artifact" }
@@ -270,18 +252,18 @@ if (JavaVersion.current().isJava8Compatible()) {
   }
 
 
-//***********************************************************************************
 
+//***********************************************************************************
 // PUBLISHING
 
-
-
+group   = project.ext.groupname
+version = project.ext.versionsMap[project.name]
 
 artifacts
-{
-    archives sourcesJar
-    archives javadocJar
-}
+        {
+            archives sourcesJar
+            archives javadocJar
+        }
 
 publishing {
     publications {
@@ -291,70 +273,6 @@ publishing {
         }
     }
 }
-
-apply from: 'gradle/bintrayUpload.gradle'
-
-//***********************************************************************************
-// GIT HOOKS:
-
-apply from: 'gradle/install-git-hooks.gradle'
-
-
-//***********************************************************************************
-// SPOTLESS:
-
-spotless {
-    java {
-        //licenseHeader '/* Licensed under Apache-2.0 */' // License header
- 
-        importOrder(['java', 'javax', 'com', 'org'])
-
-        removeUnusedImports() // removes any unused imports
-
-        eclipseFormatFile 'codeformat.eclipse.xml'  
-    }
-}
-
-
-//***********************************************************************************
-// FINDBUGS:
-
-//tasks.withType(FindBugs) {
-//    reports {
-//        xml.enabled false
-//        html.enabled true
-//    }
-//}
-
-
-//***********************************************************************************
-// JACOCO:
-
-/*
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.20
-            }
-        }
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacoco.html"
-    }
-}
-/**/
-
-
-
-
-
-
 
 
 
