@@ -147,7 +147,7 @@ dependencies
     compile 'javax.mail:mail:1.4.7'
 
 
-    // Look and feels:
+    // Look and feel:
     compile 'com.seaglasslookandfeel:seaglasslookandfeel:0.1.7.3'
     compile 'com.jgoodies:looks:2.2.2'
     compile 'org.devzendo:Quaqua:7.3.4'
