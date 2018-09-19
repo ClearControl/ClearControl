@@ -19,7 +19,7 @@ try {
     download {
         src 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
         dest project.ext.masterfile
-        overwrite true
+        overwrite false
         onlyIfModified true
         tempAndMove true
     }
