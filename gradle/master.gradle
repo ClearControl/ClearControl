@@ -13,7 +13,7 @@ ext {
   // Level 0 (don't depend on any other lib): 
   versionsMap['coremem']                 = "0.4.6"
   versionsMap['dockfx']                  = "0.1.12"
-  versionsMap['cleargl']                 = "2.2.1"  // Ulrik Guenter (skalarproduktraum) is currently maintaing this project and releases versions
+  versionsMap['cleargl']                 = "2.0.4"  // Ulrik Guenter (skalarproduktraum) is currently maintaing this project and releases versions
   versionsMap['clearaudio']              = "1.0.2"
 
   // devices adapters:
@@ -33,7 +33,7 @@ ext {
   versionsMap['clearcl']                 = "0.6.2"  // depends directly on coremem
   
   // Level 2:
-  versionsMap['clearvolume']             = "1.4.2"  // depends directly on clearcl, clearaudio, cleargl
+  versionsMap['clearvolume']             = "1.4.2-RH"  // depends directly on clearcl, clearaudio, cleargl
   versionsMap['simbryo']                 = "0.9.1"  // depends directly on clearcl
   
   // Level 3:
@@ -43,10 +43,10 @@ ext {
   versionsMap['clearclij']               = "0.3.16"  // depends directly FastFuse and indirectly to ClearCL
   
   // Level 5:
-  versionsMap['clearcontrol']            = "0.16.9" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
+  versionsMap['clearcontrol']            = "0.16.10" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
     
   // Level 6:
-  versionsMap['clearcontrol-lightsheet'] = "1.27.10" // depends directly on clearcontrol, only
+  versionsMap['clearcontrol-lightsheet'] = "1.27.11" // depends directly on clearcontrol, only
 
   
   // Loads locale file: ~/.gradle/local.gradle
