@@ -17,7 +17,7 @@ ext {
     versionsMap['clearaudio']              = "1.0.2"
 
     // devices adapters:
-    versionsMap['aptj']                    = "0.0.3"
+    versionsMap['aptj']                    = "0.0.5"
     versionsMap['asdkj']                   = "1.0.2"
     versionsMap['mirao52j']                = "1.0.1"
     versionsMap['dmp40j']                  = "0.1.0"
@@ -43,10 +43,10 @@ ext {
     versionsMap['clearclij']               = "0.3.16"  // depends directly FastFuse and indirectly to ClearCL
 
     // Level 5:
-    versionsMap['clearcontrol']            = "0.16.11" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
+    versionsMap['clearcontrol']            = "0.16.13" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
 
     // Level 6:
-    versionsMap['clearcontrol-lightsheet'] = "1.27.12" // depends directly on clearcontrol, only
+    versionsMap['clearcontrol-lightsheet'] = "1.27.14" // depends directly on clearcontrol, only
 
 
     // Loads locale file: ~/.gradle/local.gradle
