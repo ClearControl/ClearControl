@@ -6,7 +6,6 @@ import ecc100.ECC100Axis;
 public class PositionTargetVariable extends Variable<Double>
 {
 
-  private static final double cEpsilon = 5; // nm
   private final ECC100Axis mECC100Axis;
 
   public PositionTargetVariable(String pVariableName,
@@ -20,7 +19,7 @@ public class PositionTargetVariable extends Variable<Double>
   public Double setEventHook(Double pOldValue, Double pNewValue)
   {
     final double lValue = super.setEventHook(pOldValue, pNewValue);
-    mECC100Axis.goToPosition(pNewValue, cEpsilon);
+    mECC100Axis.goToPosition(lValue, cEpsilon);
     return lValue;
   }
 
