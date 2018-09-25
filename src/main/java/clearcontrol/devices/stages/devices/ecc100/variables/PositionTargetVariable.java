@@ -5,6 +5,7 @@ import ecc100.ECC100Axis;
 
 public class PositionTargetVariable extends Variable<Double>
 {
+  private static final double cEpsilon = 5; // nm
 
   private final ECC100Axis mECC100Axis;
 
