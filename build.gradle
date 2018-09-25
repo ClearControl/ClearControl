@@ -19,7 +19,7 @@ try {
     download {
         src 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
         dest project.ext.masterfile
-        overwrite false
+        overwrite true
         onlyIfModified true
         tempAndMove true
     }
@@ -183,7 +183,7 @@ dependencies
 
 
     // ClearVolume (carries):
-    compile ('net.clearvolume:clearvolume:'+depver('clearvolume'))   {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearvolume:'+depver('clearvolume'))   {transitive= true; changing= true}
 
     // FastFuse:
     compile ('net.clearcontrol:fastfuse:'+depver('fastfuse'))         {transitive= true; changing= true}
