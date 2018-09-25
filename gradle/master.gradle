@@ -43,7 +43,7 @@ ext {
     versionsMap['clearclij']               = "0.3.18"  // depends directly FastFuse and indirectly to ClearCL
 
     // Level 5:
-    versionsMap['clearcontrol']            = "0.16.13" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
+    versionsMap['clearcontrol']            = "0.16.14" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
 
     // Level 6:
     versionsMap['clearcontrol-lightsheet'] = "1.29.0" // depends directly on clearcontrol, only
