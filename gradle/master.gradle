@@ -13,7 +13,7 @@ ext {
     // Level 0 (don't depend on any other lib):
     versionsMap['coremem']                 = "0.4.6"
     versionsMap['dockfx']                  = "0.1.12"
-    versionsMap['cleargl']                 = "2.0.4"  // Ulrik Guenter (skalarproduktraum) is currently maintaing this project and releases versions
+    versionsMap['cleargl']                 = "2.2.1"  // Ulrik Guenter (skalarproduktraum) is currently maintaing this project and releases versions
     versionsMap['clearaudio']              = "1.0.2"
 
     // devices adapters:
@@ -33,21 +33,23 @@ ext {
     versionsMap['clearcl']                 = "0.6.2"  // depends directly on coremem
 
     // Level 2:
-    versionsMap['clearvolume']             = "1.4.2-RH"  // depends directly on clearcl, clearaudio, cleargl
+    versionsMap['clearvolume']             = "1.4.2"  // depends directly on clearcl, clearaudio, cleargl
     versionsMap['simbryo']                 = "0.9.1"  // depends directly on clearcl
 
     // Level 3:
     versionsMap['fastfuse']                = "0.6.5"  // depends directly on symbryo
 
     // Level 4
-    versionsMap['clearclij']               = "0.3.16"  // depends directly FastFuse and indirectly to ClearCL
+    versionsMap['clearclij']               = "0.3.18"  // depends directly FastFuse and indirectly to ClearCL
 
     // Level 5:
     versionsMap['clearcontrol']            = "0.16.13" // depends directly on halcyon, clearvolume, fastfuse, and _all_ devices adapters
 
     // Level 6:
-    versionsMap['clearcontrol-lightsheet'] = "1.27.14" // depends directly on clearcontrol, only
+    versionsMap['clearcontrol-lightsheet'] = "1.29.0" // depends directly on clearcontrol, only
 
+    // Level 7:
+    versionsMap['clearcontrol-lightsheet-csbd'] = "0.0.1" // depends directly on clearcontrol-lightsheet
 
     // Loads locale file: ~/.gradle/local.gradle
     // You can override versions locally for example:
@@ -59,7 +61,6 @@ ext {
     if(file(localfilename).exists()){
         apply from: localfilename
     }
-
 }
 
 ext.depver = { name -> project.ext.versionsMap[name] }
