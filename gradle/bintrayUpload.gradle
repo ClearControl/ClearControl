@@ -12,23 +12,23 @@ if(hasProperty('bintray_user') && hasProperty('bintray_key') )
     publications = ['maven'] 
     
     //Whether to run this as dry-run, without deploying:
-    dryRun = false 
+    dryRun = false
     
     //If version should be auto published after an upload:
     publish = true 
     
     pkg {
-      // bintray repo name:
-      repo = bintray_repo
-      
-      //An optional organization name when the repo belongs to one of the user's orgs
-      userOrg = bintray_userorg 
-      
-      // package name:
-      name = bintray_packagename
-      
-      // package description:
-      desc = bintray_packagename
+        // bintray repo name:
+        repo = bintray_repo
+
+        //An optional organization name when the repo belongs to one of the user's orgs
+        userOrg = bintray_userorg
+
+        // package name:
+        name = bintray_packagename
+
+        // package description:
+        desc = bintray_packagename
       
       licenses = ['LGPL-3.0']
       publicDownloadNumbers = true
