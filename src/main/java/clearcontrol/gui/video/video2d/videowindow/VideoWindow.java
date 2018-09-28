@@ -13,10 +13,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import clearcontrol.gui.video.util.WindowControl;
 import cleargl.ClearGLDefaultEventListener;
+import cleargl.ClearGLDisplayable;
+import cleargl.ClearGLEventListener;
 import cleargl.ClearGLWindow;
 
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import com.jogamp.newt.event.WindowAdapter;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLException;
 
 import coremem.ContiguousMemoryInterface;
@@ -75,7 +78,6 @@ public class VideoWindow implements AutoCloseable
 
   double mSampledMaxIntensity;
 
-  private ClearGLDefaultEventListener mClearGLDebugEventListener;
 
   // private GLPixelBufferObject mPixelBufferObject;
 
@@ -95,10 +97,40 @@ public class VideoWindow implements AutoCloseable
     mFlipX = pFlipX;
 
     mClearGLWindow = new ClearGLWindow(pWindowName,
-                                       pWindowWidth,
-                                       pWindowHeight,
-                                       mClearGLDebugEventListener);
-    mClearGLDebugEventListener.setClearGLWindow(mClearGLWindow);
+            pWindowWidth,
+            pWindowHeight, new ClearGLEventListener() {
+
+      ClearGLWindow window;
+      @Override
+      public void setClearGLWindow(ClearGLWindow clearGLWindow) {
+        window = clearGLWindow;
+      }
+
+      @Override
+      public ClearGLDisplayable getClearGLWindow() {
+        return window;
+      }
+
+      @Override
+      public void init(GLAutoDrawable glAutoDrawable) {
+
+      }
+
+      @Override
+      public void dispose(GLAutoDrawable glAutoDrawable) {
+
+      }
+
+      @Override
+      public void display(GLAutoDrawable glAutoDrawable) {
+
+      }
+
+      @Override
+      public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+
+      }
+    });
     mClearGLWindow.setFPS(30);
 
     final MouseControl lMouseControl = new MouseControl(this);
