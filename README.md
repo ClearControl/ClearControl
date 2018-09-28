@@ -9,7 +9,7 @@ Open pom.xml as project in your IDE
 
 To deploy it to your local maven repository, run
 
-mvn deploy
+mvn install
 
 
 ### Author(s) ###
