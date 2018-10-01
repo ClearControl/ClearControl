@@ -8,13 +8,13 @@
 	<parent>
 		<groupId>net.clearcontrol</groupId>
 		<artifactId>ClearParentPom</artifactId>
-		<version>0.6.15</version>
+		<version>0.6.17</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>clearcontrol</artifactId>
-	<version>0.17.4-m</version>
+	<version>0.17.6-m</version>
 
 	<name>clearcontrol</name>
 	<description>clearcontrol</description>
@@ -93,7 +93,6 @@
 		<dependency>
 			<groupId>net.clearvolume</groupId>
 			<artifactId>cleargl</artifactId>
-			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.imagej</groupId>
@@ -274,9 +273,9 @@
 			<artifactId>halcyon</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.clearvolume</groupId>
+			<groupId>net.clearcontrol</groupId>
 			<artifactId>clearvolume</artifactId>
-			<version>1.4.2-RH</version>
+			<version>1.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.clearcontrol</groupId>

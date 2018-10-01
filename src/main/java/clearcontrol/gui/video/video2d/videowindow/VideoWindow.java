@@ -35,6 +35,7 @@ public class VideoWindow implements AutoCloseable
   static final float cPercentageOfPixelsToSample = 0.01f;
 
   static final int cMipMapLevel = 3;
+  private final ClearGLDebugEventListenerForVideoWindow mClearGLDebugEventListener;
 
   NativeTypeEnum mType;
   ClearGLWindow mClearGLWindow;
@@ -96,41 +97,14 @@ public class VideoWindow implements AutoCloseable
     mEffectiveWindowHeight = pWindowHeight;
     mFlipX = pFlipX;
 
+    mClearGLDebugEventListener =
+            new ClearGLDebugEventListenerForVideoWindow(this,
+                    mFlipX);
+
     mClearGLWindow = new ClearGLWindow(pWindowName,
             pWindowWidth,
-            pWindowHeight, new ClearGLEventListener() {
-
-      ClearGLWindow window;
-      @Override
-      public void setClearGLWindow(ClearGLWindow clearGLWindow) {
-        window = clearGLWindow;
-      }
-
-      @Override
-      public ClearGLDisplayable getClearGLWindow() {
-        return window;
-      }
-
-      @Override
-      public void init(GLAutoDrawable glAutoDrawable) {
-
-      }
-
-      @Override
-      public void dispose(GLAutoDrawable glAutoDrawable) {
-
-      }
-
-      @Override
-      public void display(GLAutoDrawable glAutoDrawable) {
-
-      }
-
-      @Override
-      public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-
-      }
-    });
+            pWindowHeight,
+            mClearGLDebugEventListener);
     mClearGLWindow.setFPS(30);
 
     final MouseControl lMouseControl = new MouseControl(this);
