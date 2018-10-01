@@ -8,13 +8,13 @@
 	<parent>
 		<groupId>net.clearcontrol</groupId>
 		<artifactId>ClearParentPom</artifactId>
-		<version>0.6.8</version>
+		<version>0.6.15</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>clearcontrol</artifactId>
-	<version>0.17.1-m</version>
+	<version>0.17.4-m</version>
 
 	<name>clearcontrol</name>
 	<description>clearcontrol</description>
@@ -93,6 +93,7 @@
 		<dependency>
 			<groupId>net.clearvolume</groupId>
 			<artifactId>cleargl</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.imagej</groupId>
@@ -273,8 +274,9 @@
 			<artifactId>halcyon</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.clearcontrol</groupId>
+			<groupId>net.clearvolume</groupId>
 			<artifactId>clearvolume</artifactId>
+			<version>1.4.2-RH</version>
 		</dependency>
 		<dependency>
 			<groupId>net.clearcontrol</groupId>
@@ -295,10 +297,6 @@
 		<dependency>
 			<groupId>net.clearcontrol</groupId>
 			<artifactId>clearcl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>andor</groupId>
-			<artifactId>andorsdkj</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.clearcontrol</groupId>
@@ -327,6 +325,22 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>hslh</id>
+			<url>http://dl.bintray.com/haesleinhuepf/snapshots</url>
+		</repository>
+	</repositories>
+
+    <distributionManagement>
+
+        <repository>
+            <id>bintray-haesleinhuepf-snapshots</id>
+            <name>bintray-snapshots</name>
+            <url>https://api.bintray.com/maven/haesleinhuepf/snapshots/clearcontrol/;publish=1</url>
+        </repository>
+
+    </distributionManagement>
 
 
 </project>
