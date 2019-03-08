@@ -1,4 +1,4 @@
-package clearcontrol.devices.signalgen.movement;
+package clearcontrol.devices.signalgen.measure;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,20 +6,20 @@ import clearcontrol.core.device.name.NameableInterface;
 import clearcontrol.devices.signalgen.staves.StaveInterface;
 
 /**
- * Movement interface
+ * Measure interface
  *
  * @author Loic Royer (2015)
  *
  */
-public interface MovementInterface extends NameableInterface
+public interface MeasureInterface extends NameableInterface
 {
 
   /**
-   * Returns a field_for_field copy of this movement.
+   * Returns a field_for_field copy of this measure.
    * 
    * @return field_for_field copy
    */
-  MovementInterface duplicate();
+  MeasureInterface duplicate();
 
   /**
    * Sets stave at index.
@@ -54,7 +54,7 @@ public interface MovementInterface extends NameableInterface
   StaveInterface getStave(int pStaveIndex);
 
   /**
-   * Number of staves in Movement
+   * Number of staves in Measure
    * 
    * @return number of staves
    */
@@ -64,7 +64,7 @@ public interface MovementInterface extends NameableInterface
    * Returns the duration of the stave in the provided time unit.
    * 
    * @param pDuration
-   *          duration of the movement
+   *          duration of the measure
    * @param pTimeUnit
    *          time unit
    */
@@ -80,7 +80,7 @@ public interface MovementInterface extends NameableInterface
   long getDuration(TimeUnit pTimeUnit);
 
   /**
-   * Sets whether this movement can be triggered (synced).
+   * Sets whether this measure can be triggered (synced).
    * 
    * @param pSync
    *          true if sync, false if not.
@@ -88,14 +88,14 @@ public interface MovementInterface extends NameableInterface
   public void setSync(boolean pSync);
 
   /**
-   * Returns if syncing is activated for this movement.
+   * Returns if syncing is activated for this measure.
    * 
    * @return true if syncing is activated for this
    */
   boolean isSync();
 
   /**
-   * Sets whether this movement should sync to a rising or falling edge.
+   * Sets whether this measure should sync to a rising or falling edge.
    * 
    * @param pSyncOnRisingEdge
    *          true if sync on raising edge, false if sync on falling edge

@@ -59,7 +59,7 @@ public class GS16AO64cSignalGenerator extends SignalGeneratorBase
         lCurrentThread.setPriority(Thread.MAX_PRIORITY);
         mTriggerVariable.set(true);
 
-        prependTransitionMovement(pScore,
+        prependTransitionMeasure(pScore,
                 getTransitionDurationInNanosecondsVariable().get(),
                 TimeUnit.NANOSECONDS);
 

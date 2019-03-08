@@ -60,7 +60,7 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
 
     boolean lPlayed = false;
 
-    prependTransitionMovement(pScore,
+    prependTransitionMeasure(pScore,
                               getTransitionDurationInNanosecondsVariable().get(),
                               TimeUnit.NANOSECONDS);
 
@@ -76,7 +76,7 @@ public class NIRIOSignalGenerator extends SignalGeneratorBase
                               mNIRIOCompiledScore.getSyncBuffer()
                                                  .getContiguousMemory()
                                                  .getBridJPointer(Integer.class),
-                              toIntExact(mNIRIOCompiledScore.getNumberOfMovements()),
+                              toIntExact(mNIRIOCompiledScore.getNumberOfMeasures()),
                               mNIRIOCompiledScore.getScoreBuffer()
                                                  .getContiguousMemory()
                                                  .getBridJPointer(Short.class));

@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import clearcontrol.devices.signalgen.measure.Measure;
 import net.miginfocom.swing.MigLayout;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizer;
-import clearcontrol.devices.signalgen.movement.Movement;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.RampContinuousStave;
@@ -65,8 +65,8 @@ public class ScoreVisualizerDemo
   {
     final Score lScore = new Score("SinusScore");
 
-    final Movement lMovement = new Movement("SinusScoreMovement");
-    lMovement.setDuration(1, TimeUnit.SECONDS);
+    final Measure lMeasure = new Measure("SinusScoreMeasure");
+    lMeasure.setDuration(1, TimeUnit.SECONDS);
 
     for (int i = 0; i < 8; i++)
     {
@@ -81,7 +81,7 @@ public class ScoreVisualizerDemo
                                                                                     / 8f,
                                                                              0);
 
-      lMovement.setStave(i, lRampContinuousStave);
+      lMeasure.setStave(i, lRampContinuousStave);
     }
 
     for (int i = 8; i < 16; i++)
@@ -95,10 +95,10 @@ public class ScoreVisualizerDemo
                                                            * pOmega),
                                                   0.5f);
 
-      lMovement.setStave(i, lSinusStave);
+      lMeasure.setStave(i, lSinusStave);
     } /**/
 
-    lScore.addMovement(lMovement);
+    lScore.addMeasure(lMeasure);
 
     return lScore;
   }

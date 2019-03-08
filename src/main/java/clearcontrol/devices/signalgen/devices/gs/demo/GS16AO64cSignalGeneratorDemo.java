@@ -1,9 +1,8 @@
 package clearcontrol.devices.signalgen.devices.gs.demo;
 
 import clearcontrol.devices.signalgen.devices.gs.GS16AO64cSignalGenerator;
-import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizer;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
-import clearcontrol.devices.signalgen.movement.Movement;
+import clearcontrol.devices.signalgen.measure.Measure;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.SinusStave;
@@ -38,7 +37,7 @@ public class GS16AO64cSignalGeneratorDemo
     private ScoreInterface buildScore()
     {
         final Score lScore = new Score("Test Score");
-        final Movement lMovement = new Movement("Test Movement");
+        final Measure lMeasure = new Measure("Test Measure");
 
         final SinusStave lSinusStave1 = new SinusStave(
                 "sinus1",
@@ -57,14 +56,14 @@ public class GS16AO64cSignalGeneratorDemo
                 1f);
 
         for (int i = 0; i < 1; i++)
-    	    lMovement.setStave(i, lSinusStave1);
+    	    lMeasure.setStave(i, lSinusStave1);
         for (int i = 1; i < 2; i++)
-            lMovement.setStave(i, lSinusStave2);
+            lMeasure.setStave(i, lSinusStave2);
         for (int i = 1; i < 8; i++)
-            lMovement.setStave(i, lSinusStave3);
+            lMeasure.setStave(i, lSinusStave3);
 
-        lScore.addMovementMultipleTimes(lMovement, 10);
-        lMovement.setDuration(1, TimeUnit.MILLISECONDS);
+        lScore.addMeasureMultipleTimes(lMeasure, 10);
+        lMeasure.setDuration(1, TimeUnit.MILLISECONDS);
 
         return lScore;
     }

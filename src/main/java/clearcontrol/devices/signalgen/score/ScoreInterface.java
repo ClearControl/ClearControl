@@ -3,7 +3,7 @@ package clearcontrol.devices.signalgen.score;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
 
 /**
  * Score interface
@@ -22,72 +22,72 @@ public interface ScoreInterface
   public abstract ScoreInterface duplicate();
 
   /**
-   * Returns the number of movements in score.
+   * Returns the number of measures in score.
    * 
-   * @return number of movements
+   * @return number of measures
    */
-  public abstract int getNumberOfMovements();
+  public abstract int getNumberOfMeasures();
 
   /**
-   * Returns list of movements in score
+   * Returns list of measures in score
    * 
-   * @return list of movements
+   * @return list of measures
    */
-  public abstract ArrayList<MovementInterface> getMovements();
+  public abstract ArrayList<MeasureInterface> getMeasures();
 
   /**
-   * Clears the score from any movement.
+   * Clears the score from any measure.
    */
   public abstract void clear();
 
   /**
-   * Removes movement at given index.
+   * Removes measure at given index.
    * 
    * @param pIndex
-   *          movement index.
+   *          measure index.
    */
-  public abstract void removeMovementAt(final int pIndex);
+  public abstract void removeMeasureAt(final int pIndex);
 
   /**
-   * Inserts movement at given index.
+   * Inserts measure at given index.
    * 
    * @param pIndex
    *          given index
-   * @param pMovement
-   *          given movement
+   * @param pMeasure
+   *          given measure
    */
-  public abstract void insertMovementAt(final int pIndex,
-                                        final MovementInterface pMovement);
+  public abstract void insertMeasureAt(final int pIndex,
+                                        final MeasureInterface pMeasure);
 
   /**
-   * Adds movement to score.
+   * Adds measure to score.
    * 
-   * @param pMovement
-   *          movement to add
+   * @param pMeasure
+   *          measure to add
    */
-  public abstract void addMovement(final MovementInterface pMovement);
+  public abstract void addMeasure(final MeasureInterface pMeasure);
 
   /**
-   * Adds movement multiple times.
+   * Adds measure multiple times.
    * 
-   * @param pMovement
-   *          movement to add
+   * @param pMeasure
+   *          measure to add
    * @param pNumberOfTimes
    *          number of times
    */
-  public abstract void addMovementMultipleTimes(final MovementInterface pMovement,
+  public abstract void addMeasureMultipleTimes(final MeasureInterface pMeasure,
                                                 final int pNumberOfTimes);
 
   /**
-   * Adds all movements in given score to this score.
+   * Adds all measures in given score to this score.
    * 
    * @param pScore
-   *          score from which movements are added
+   *          score from which measures are added
    */
   public abstract void addScore(ScoreInterface pScore);
 
   /**
-   * Adds _copies_ of all movements in given score to this score
+   * Adds _copies_ of all measures in given score to this score
    * 
    * @param pScore
    *          score to copy into this score.
@@ -95,20 +95,20 @@ public interface ScoreInterface
   public abstract void addScoreCopy(ScoreInterface pScore);
 
   /**
-   * Returns the movement at the given movement index position.
+   * Returns the measure at the given measure index position.
    * 
-   * @param pMovementIndex
-   *          movement index.
-   * @return movement
+   * @param pMeasureIndex
+   *          measure index.
+   * @return measure
    */
-  public abstract MovementInterface getMovement(int pMovementIndex);
+  public abstract MeasureInterface getMeasure(int pMeasureIndex);
 
   /**
-   * Returns the last movement of this score
+   * Returns the last measure of this score
    * 
-   * @return last movement
+   * @return last measure
    */
-  public abstract MovementInterface getLastMovement();
+  public abstract MeasureInterface getLastMeasure();
 
   /**
    * Return maximum number of staves

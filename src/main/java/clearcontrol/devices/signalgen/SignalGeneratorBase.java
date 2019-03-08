@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
-import clearcontrol.devices.signalgen.movement.TransitionMovement;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
+import clearcontrol.devices.signalgen.measure.TransitionMeasure;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
 /**
@@ -60,25 +60,25 @@ public abstract class SignalGeneratorBase extends VirtualDevice
     return lQueue;
   }
 
-  protected void prependTransitionMovement(ScoreInterface pScore,
+  protected void prependTransitionMeasure(ScoreInterface pScore,
                                            long pDuration,
                                            TimeUnit pTimeUnit)
   {
     if (getLastPlayedScoreVariable().get() == null || pDuration == 0)
       return;
 
-    MovementInterface lFirstMovementOfGivenScore =
-                                                 pScore.getMovement(0);
+    MeasureInterface lFirstMeasureOfGivenScore =
+                                                 pScore.getMeasure(0);
 
-    MovementInterface lLastMovementFromPreviouslyPlayedScore =
+    MeasureInterface lLastMeasureFromPreviouslyPlayedScore =
                                                              getLastPlayedScoreVariable().get()
-                                                                                         .getLastMovement();
-    if (lFirstMovementOfGivenScore.getName()
-                                  .equals("TransitionMovement"))
+                                                                                         .getLastMeasure();
+    if (lFirstMeasureOfGivenScore.getName()
+                                  .equals("TransitionMeasure"))
     {
-      TransitionMovement.adjust(lFirstMovementOfGivenScore,
-                                lLastMovementFromPreviouslyPlayedScore,
-                                pScore.getMovement(1),
+      TransitionMeasure.adjust(lFirstMeasureOfGivenScore,
+                                lLastMeasureFromPreviouslyPlayedScore,
+                                pScore.getMeasure(1),
                                 pDuration,
                                 pTimeUnit);
 
@@ -86,13 +86,13 @@ public abstract class SignalGeneratorBase extends VirtualDevice
     else
     {
 
-      MovementInterface lTransitionMovement =
-                                            TransitionMovement.make(lLastMovementFromPreviouslyPlayedScore,
-                                                                    lFirstMovementOfGivenScore,
+      MeasureInterface lTransitionMeasure =
+                                            TransitionMeasure.make(lLastMeasureFromPreviouslyPlayedScore,
+                                                                    lFirstMeasureOfGivenScore,
                                                                     pDuration,
                                                                     pTimeUnit);
 
-      pScore.insertMovementAt(0, lTransitionMovement);
+      pScore.insertMeasureAt(0, lTransitionMeasure);
     }
   }
 

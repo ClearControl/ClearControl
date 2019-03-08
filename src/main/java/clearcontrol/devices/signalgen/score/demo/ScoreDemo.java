@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.devices.signalgen.gui.swing.score.ScoreVisualizerJFrame;
-import clearcontrol.devices.signalgen.movement.Movement;
+import clearcontrol.devices.signalgen.measure.Measure;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.staves.RampSteppingStave;
 import clearcontrol.devices.signalgen.staves.TriggerStave;
@@ -34,7 +34,7 @@ public class ScoreDemo
 
     final Score lScore = new Score("Test Score");
 
-    final Movement lMovement = new Movement("Test Movement");
+    final Measure lMeasure = new Measure("Test Measure");
 
     final TriggerStave lCameraTriggerStave =
                                            new TriggerStave("camera trigger");
@@ -54,16 +54,16 @@ public class ScoreDemo
     lLaserTriggerStave.setStart(0.3f);
     lLaserTriggerStave.setStop(0.5f);
 
-    lMovement.setStave(0, lCameraTriggerStave);
-    lMovement.setStave(1, lGalvoScannerStave);
-    lMovement.setStave(2, lLaserTriggerStave);
+    lMeasure.setStave(0, lCameraTriggerStave);
+    lMeasure.setStave(1, lGalvoScannerStave);
+    lMeasure.setStave(2, lLaserTriggerStave);
 
-    lMovement.setDuration(1, TimeUnit.SECONDS);
+    lMeasure.setDuration(1, TimeUnit.SECONDS);
 
     for (int i = 0; i < 10; i++)
     {
       lGalvoScannerStave.setSyncStop((float) (0.5 + 0.03 * i));
-      lScore.addMovement(lMovement.duplicate());
+      lScore.addMeasure(lMeasure.duplicate());
     }
 
     final ScoreVisualizerJFrame lVisualize =

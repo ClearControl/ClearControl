@@ -3,7 +3,7 @@ package clearcontrol.devices.signalgen;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.queue.QueueInterface;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
 import clearcontrol.devices.signalgen.score.Score;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
@@ -87,11 +87,11 @@ public class SignalGeneratorQueue implements QueueInterface
   public long estimatePlayTime(TimeUnit pTimeUnit)
   {
     long lDuration = 0;
-    for (final MovementInterface lMovement : mQueuedScore.getMovements())
+    for (final MeasureInterface lMeasure : mQueuedScore.getMeasures())
     {
-      lDuration += lMovement.getDuration(pTimeUnit);
+      lDuration += lMeasure.getDuration(pTimeUnit);
     }
-    lDuration *= mQueuedScore.getNumberOfMovements();
+    lDuration *= mQueuedScore.getNumberOfMeasures();
     return lDuration;
   }
 

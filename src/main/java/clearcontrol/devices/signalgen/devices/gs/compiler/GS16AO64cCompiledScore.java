@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 
 public class GS16AO64cCompiledScore
 {
-    private volatile long mNumberOfMovements;
+    private volatile long mNumberOfMeasures;
     private ArrayDeque<GSBuffer> mArrayData;
 
 
@@ -21,14 +21,14 @@ public class GS16AO64cCompiledScore
 
     // Getters, Setters and Attr Helpers
 
-    public void setNumberOfMovements(long pNumberOfMovements)
+    public void setNumberOfMeasures(long pNumberOfMeasures)
     {
-        mNumberOfMovements = pNumberOfMovements;
+        mNumberOfMeasures = pNumberOfMeasures;
     }
 
-    public long getNumberOfMovements()
+    public long getNumberOfMeasures()
     {
-        return mNumberOfMovements;
+        return mNumberOfMeasures;
     }
 
     public ArrayDeque<GSBuffer> getArrayData()

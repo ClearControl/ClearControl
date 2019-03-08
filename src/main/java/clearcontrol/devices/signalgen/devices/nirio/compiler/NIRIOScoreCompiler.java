@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import nirioj.direttore.Direttore;
 import clearcontrol.core.concurrent.executors.AsynchronousExecutorFeature;
-import clearcontrol.devices.signalgen.movement.Movement;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.measure.Measure;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.ConstantStave;
 import clearcontrol.devices.signalgen.staves.IntervalStave;
@@ -28,12 +28,12 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
 
     ensureBuffersAreLargeEnough(pNIRIOCompiledScore, pScore);
 
-    final ArrayList<MovementInterface> lMovements =
-                                                  pScore.getMovements();
+    final ArrayList<MeasureInterface> lMeasures =
+                                                  pScore.getMeasures();
 
-    for (final MovementInterface lMovement : lMovements)
+    for (final MeasureInterface lMeasure : lMeasures)
     {
-      compileMovement(pNIRIOCompiledScore, lMovement);
+      compileMeasure(pNIRIOCompiledScore, lMeasure);
     }
 
   }
@@ -41,11 +41,11 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
   private static void ensureBuffersAreLargeEnough(NIRIOCompiledScore pNIRIOCompiledScore,
                                                   ScoreInterface pScore)
   {
-    final int lNumberOfMovements = pScore.getMovements().size();
+    final int lNumberOfMeasures = pScore.getMeasures().size();
 
-    pNIRIOCompiledScore.setNumberOfMovements(0);
+    pNIRIOCompiledScore.setNumberOfMeasures(0);
 
-    final int lDeltaTimeBufferLengthInBytes = 4 * lNumberOfMovements;
+    final int lDeltaTimeBufferLengthInBytes = 4 * lNumberOfMeasures;
 
     if (pNIRIOCompiledScore.getDeltaTimeBuffer() == null
         || pNIRIOCompiledScore.getDeltaTimeBuffer()
@@ -55,7 +55,7 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     }
     pNIRIOCompiledScore.getDeltaTimeBuffer().rewind();
 
-    final int lSyncBufferLengthInBytes = 4 * lNumberOfMovements;
+    final int lSyncBufferLengthInBytes = 4 * lNumberOfMeasures;
 
     if (pNIRIOCompiledScore.getSyncBuffer() == null
         || pNIRIOCompiledScore.getSyncBuffer()
@@ -66,7 +66,7 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     pNIRIOCompiledScore.getSyncBuffer().rewind();
 
     final int lNumberOfTimePointsBufferLengthInBytes =
-                                                     4 * lNumberOfMovements;
+                                                     4 * lNumberOfMeasures;
 
     if (pNIRIOCompiledScore.getNumberOfTimePointsBuffer() == null
         || pNIRIOCompiledScore.getNumberOfTimePointsBuffer()
@@ -77,8 +77,8 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     pNIRIOCompiledScore.getNumberOfTimePointsBuffer().rewind();
 
     final long lMatricesBufferLengthInBytes =
-                                            Movement.cDefaultNumberOfStavesPerMovement
-                                              * lNumberOfMovements
+                                            Measure.cDefaultNumberOfStavesPerMeasure
+                                              * lNumberOfMeasures
                                               * 2048
                                               * 2;
 
@@ -92,41 +92,41 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
 
   }
 
-  private static void compileMovement(NIRIOCompiledScore pNIRIOCompiledScore,
-                                      MovementInterface pMovement)
+  private static void compileMeasure(NIRIOCompiledScore pNIRIOCompiledScore,
+                                      MeasureInterface pMeasure)
   {
     final int pDeltaTimeInTicks =
-                                round(getDeltaTimeInNs(pMovement)
+                                round(getDeltaTimeInNs(pMeasure)
                                       / Direttore.cNanosecondsPerTicks);
     pNIRIOCompiledScore.getDeltaTimeBuffer()
                        .writeInt(pDeltaTimeInTicks);
 
-    final byte lSyncMode = getSyncMode(pMovement);
-    final byte lSyncChannel = (byte) pMovement.getSyncChannel();
+    final byte lSyncMode = getSyncMode(pMeasure);
+    final byte lSyncChannel = (byte) pMeasure.getSyncChannel();
     final int lSync = twoBytesToShort(lSyncChannel, lSyncMode);
     pNIRIOCompiledScore.getSyncBuffer().writeInt(lSync);
 
-    final long lNumberOfTimePoints = getNumberOfTimePoints(pMovement);
+    final long lNumberOfTimePoints = getNumberOfTimePoints(pMeasure);
     pNIRIOCompiledScore.getNumberOfTimePointsBuffer()
                        .writeInt(toIntExact(lNumberOfTimePoints));
 
-    addMovementToBuffer(pNIRIOCompiledScore.getScoreBuffer(),
-                        pMovement);
+    addMeasureToBuffer(pNIRIOCompiledScore.getScoreBuffer(),
+                        pMeasure);
 
-    pNIRIOCompiledScore.setNumberOfMovements(pNIRIOCompiledScore.getNumberOfMovements()
+    pNIRIOCompiledScore.setNumberOfMeasures(pNIRIOCompiledScore.getNumberOfMeasures()
                                              + 1);
   }
 
-  private static void addMovementToBuffer(ContiguousBuffer pScoreBuffer,
-                                          MovementInterface pMovement)
+  private static void addMeasureToBuffer(ContiguousBuffer pScoreBuffer,
+                                          MeasureInterface pMeasure)
   {
-    final long lNumberOfTimePoints = getNumberOfTimePoints(pMovement);
-    final int lNumberOfStaves = pMovement.getNumberOfStaves();
+    final long lNumberOfTimePoints = getNumberOfTimePoints(pMeasure);
+    final int lNumberOfStaves = pMeasure.getNumberOfStaves();
 
     pScoreBuffer.pushPosition();
-    long lNumberOfShortsInMovement = lNumberOfTimePoints
+    long lNumberOfShortsInMeasure = lNumberOfTimePoints
                                      * lNumberOfStaves;
-    pScoreBuffer.writeBytes(2 * lNumberOfShortsInMovement, (byte) 0);
+    pScoreBuffer.writeBytes(2 * lNumberOfShortsInMeasure, (byte) 0);
     pScoreBuffer.popPosition();
 
     pScoreBuffer.pushPosition();
@@ -134,7 +134,7 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     {
 
       pScoreBuffer.pushPosition();
-      final StaveInterface lStave = pMovement.getStave(s);
+      final StaveInterface lStave = pMeasure.getStave(s);
 
       if (lStave instanceof ZeroStave)
       {
@@ -171,7 +171,7 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     }
     pScoreBuffer.popPosition();
 
-    pScoreBuffer.skipShorts(lNumberOfShortsInMovement);
+    pScoreBuffer.skipShorts(lNumberOfShortsInMeasure);
 
   }
 
@@ -268,44 +268,44 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     return lShort;
   }
 
-  private static byte getSyncMode(MovementInterface pMovement)
+  private static byte getSyncMode(MeasureInterface pMeasure)
   {
-    return (byte) (pMovement.isSync() ? 0
-                                      : pMovement.isSyncOnRisingEdge() ? 1
+    return (byte) (pMeasure.isSync() ? 0
+                                      : pMeasure.isSyncOnRisingEdge() ? 1
                                                                        : 2);
   }
 
-  private static double getNumberOfTimePointsDouble(MovementInterface pMovementInterface)
+  private static double getNumberOfTimePointsDouble(MeasureInterface pMeasureInterface)
   {
     final long lMinDeltaTime =
                              Direttore.cMinimumDeltaTimeInNanoseconds;
-    final long lMaxNumberOfTimePointsPerMovement =
+    final long lMaxNumberOfTimePointsPerMeasure =
                                                  Direttore.cMaxNumberOfTimePointsPerMovement;
     final long lDuration =
-                         pMovementInterface.getDuration(TimeUnit.NANOSECONDS);
+                         pMeasureInterface.getDuration(TimeUnit.NANOSECONDS);
 
     final double lNumberOfTimePoints =
-                                     min(lMaxNumberOfTimePointsPerMovement,
+                                     min(lMaxNumberOfTimePointsPerMeasure,
                                          ((double) lDuration) / lMinDeltaTime);
 
     return lNumberOfTimePoints;
   }
 
-  public static long getNumberOfTimePoints(MovementInterface pMovementInterface)
+  public static long getNumberOfTimePoints(MeasureInterface pMeasureInterface)
   {
     final long lNumberOfTimePoints =
-                                   round(getNumberOfTimePointsDouble(pMovementInterface));
+                                   round(getNumberOfTimePointsDouble(pMeasureInterface));
 
     return lNumberOfTimePoints;
   }
 
-  public static long getDeltaTimeInNs(MovementInterface pMovementInterface)
+  public static long getDeltaTimeInNs(MeasureInterface pMeasureInterface)
   {
 
     final long lDuration =
-                         pMovementInterface.getDuration(TimeUnit.NANOSECONDS);
+                         pMeasureInterface.getDuration(TimeUnit.NANOSECONDS);
     final double lNumberOfTimePoints =
-                                     getNumberOfTimePointsDouble(pMovementInterface);
+                                     getNumberOfTimePointsDouble(pMeasureInterface);
 
     final long lDeltaTime = round(lDuration / lNumberOfTimePoints);
 
