@@ -280,7 +280,7 @@ public class NIRIOScoreCompiler implements AsynchronousExecutorFeature
     final long lMinDeltaTime =
                              Direttore.cMinimumDeltaTimeInNanoseconds;
     final long lMaxNumberOfTimePointsPerMeasure =
-                                                 Direttore.cMaxNumberOfTimePointsPerMovement;
+                                                 Direttore.cMaxNumberOfTimePointsPerMeasure;
     final long lDuration =
                          pMeasureInterface.getDuration(TimeUnit.NANOSECONDS);
 
