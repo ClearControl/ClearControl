@@ -8,7 +8,7 @@ public class NIRIOCompiledScore
 
 {
 
-  private volatile long mNumberOfMovements;
+  private volatile long mNumberOfMeasures;
   private ContiguousBuffer mDeltaTimeBuffer;
   private ContiguousBuffer mSyncBuffer;
   private ContiguousBuffer mNumberOfTimePointsBuffer;
@@ -23,8 +23,8 @@ public class NIRIOCompiledScore
   @Override
   public String toString()
   {
-    return String.format("NIRIOCompiledScore:\n mNumberOfMovements=%s\n mDeltaTimeBuffer=%s\n mSyncBuffer=%s\n mNumberOfTimePointsBuffer=%s\n mScoreBuffer=%s\n\n",
-                         getNumberOfMovements(),
+    return String.format("NIRIOCompiledScore:\n mNumberOfMeasures=%s\n mDeltaTimeBuffer=%s\n mSyncBuffer=%s\n mNumberOfTimePointsBuffer=%s\n mScoreBuffer=%s\n\n",
+                         getNumberOfMeasures(),
                          getDeltaTimeBuffer(),
                          getSyncBuffer(),
                          getNumberOfTimePointsBuffer(),
@@ -71,13 +71,13 @@ public class NIRIOCompiledScore
     mScoreBuffer = pScoreBuffer;
   }
 
-  public void setNumberOfMovements(long pNumberOfMovements)
+  public void setNumberOfMeasures(long pNumberOfMeasures)
   {
-    mNumberOfMovements = pNumberOfMovements;
+    mNumberOfMeasures = pNumberOfMeasures;
   }
 
-  public long getNumberOfMovements()
+  public long getNumberOfMeasures()
   {
-    return mNumberOfMovements;
+    return mNumberOfMeasures;
   }
 }

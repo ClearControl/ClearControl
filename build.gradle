@@ -201,7 +201,10 @@ dependencies
     compile ('net.clearcontrol:aptj:'+depver('aptj'))                 {transitive=true; changing= true}
 
     // NIRIOJ:
-    compile ('net.clearcontrol:nirioj:'+depver('nirioj'))             {transitive=true; changing= true}
+    compile ('net.clearcontrol:nirioj:1.1.0')                         {transitive=true; changing= true}
+
+    // GS driver
+    compile ('net.clearcontrol:GS16AO64c:0.0.1')
 
     // Other:
     //compile 'com.github.rwl:jtransforms:2.4.0'
@@ -246,6 +249,9 @@ repositories
     //bio-formats:
     maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases" }
     maven { url "http://artifacts.openmicroscopy.org/artifactory/maven/"}
+
+    //GS driver
+    maven { url "https://dl.bintray.com/ahmetcansolak/gsrepo" }
 }
 
 task sourcesJar(type: Jar, dependsOn:classes) {

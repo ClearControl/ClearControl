@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableListener;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.devices.signalgen.staves.ZeroStave;
@@ -97,12 +97,12 @@ public class ScoreVisualizer extends JPanel
       return;
 
     // System.out.println(lScore.getTotalNumberOfTimePoints());
-    if (lScore.getNumberOfMovements() == 0
+    if (lScore.getNumberOfMeasures() == 0
         || lScore.getDuration(TimeUnit.NANOSECONDS) == 0)
       return;
 
     final float lScaling = mScalingVariable.get().floatValue();
-    final int lNumberOfMovements = lScore.getNumberOfMovements();
+    final int lNumberOfMeasures = lScore.getNumberOfMeasures();
     final int lMaxNumberOfStaves = lScore.getMaxNumberOfStaves();
     final double lPixelsPerStave = ((double) lHeight)
                                    / lMaxNumberOfStaves;
@@ -114,27 +114,27 @@ public class ScoreVisualizer extends JPanel
 
     int lLastX = 0, lLastY = 0;
 
-    double lMovementPixelOffset = 0;
-    for (int m = 0; m < lNumberOfMovements; m++)
+    double lMeasurePixelOffset = 0;
+    for (int m = 0; m < lNumberOfMeasures; m++)
     {
-      final MovementInterface lMovement = lScore.getMovement(m);
-      final double lMovementWidthInPixels = (((lWidth)
-                                              * lMovement.getDuration(TimeUnit.NANOSECONDS))
+      final MeasureInterface lMeasure = lScore.getMeasure(m);
+      final double lMeasureWidthInPixels = (((lWidth)
+                                              * lMeasure.getDuration(TimeUnit.NANOSECONDS))
                                              / lTotalDuration);
 
-      for (int s = 0; s < lMovement.getNumberOfStaves(); s++)
+      for (int s = 0; s < lMeasure.getNumberOfStaves(); s++)
       {
-        final StaveInterface lStave = lMovement.getStave(s);
+        final StaveInterface lStave = lMeasure.getStave(s);
 
         if (!(lStave instanceof ZeroStave))
         {
-          lLastX = round(lMovementPixelOffset);
+          lLastX = round(lMeasurePixelOffset);
           lLastY = round(lPixelsPerStave * s);
-          for (int i = 0; i < lMovementWidthInPixels; i++)
+          for (int i = 0; i < lMeasureWidthInPixels; i++)
           {
             final float lNormalizedTime =
                                         (float) ((i)
-                                                 / lMovementWidthInPixels);
+                                                 / lMeasureWidthInPixels);
             final float lFloatValue =
                                     lStave.getValue(lNormalizedTime);
 
@@ -152,12 +152,12 @@ public class ScoreVisualizer extends JPanel
             lGraphics2D.setColor(Color.getHSBColor(lHue,
                                                    0.5f,
                                                    lBrightness));/**/
-            lGraphics2D.fillRect(round(lMovementPixelOffset + i),
+            lGraphics2D.fillRect(round(lMeasurePixelOffset + i),
                                  round(lPixelsPerStave * s),
                                  roundmin1(1),
                                  roundmin1(lPixelsPerStave));/**/
 
-            final int lNewX = round(lMovementPixelOffset + i);
+            final int lNewX = round(lMeasurePixelOffset + i);
             final int lNewY = round(
                                     lPixelsPerStave
                                     * (s + 1) - (clamp(
@@ -175,25 +175,25 @@ public class ScoreVisualizer extends JPanel
           }
           lGraphics2D.setColor(Color.white);
           lGraphics2D.drawString(lStave.getName(),
-                                 round(lMovementPixelOffset + 2),
+                                 round(lMeasurePixelOffset + 2),
                                  12 + round(lPixelsPerStave * (s)));
         }
 
         lGraphics2D.setColor(Color.gray.darker());
-        lGraphics2D.fillRect(round(lMovementPixelOffset),
+        lGraphics2D.fillRect(round(lMeasurePixelOffset),
                              round(lPixelsPerStave * s),
-                             round(lMovementWidthInPixels),
+                             round(lMeasureWidthInPixels),
                              1);
 
       }
 
       lGraphics2D.setColor(Color.white);
-      lGraphics2D.drawLine(round(lMovementPixelOffset),
+      lGraphics2D.drawLine(round(lMeasurePixelOffset),
                            0,
-                           round(lMovementPixelOffset),
+                           round(lMeasurePixelOffset),
                            lHeight);
 
-      lMovementPixelOffset += lMovementWidthInPixels;
+      lMeasurePixelOffset += lMeasureWidthInPixels;
     }
 
   }

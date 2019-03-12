@@ -134,7 +134,7 @@ public interface StageDeviceInterface extends
   }
 
   /**
-   * Waits for DOF to be ready (finish last movement).
+   * Waits for DOF to be ready (finish last measure).
    * 
    * @param pDOFIndex
    *          DOF's index
@@ -154,7 +154,7 @@ public interface StageDeviceInterface extends
   }
 
   /**
-   * Waits for all DOFs to be ready (finish all last movement)
+   * Waits for all DOFs to be ready (finish all last measure)
    * 
    * @param pTimeOut
    *          timeout time
@@ -311,7 +311,7 @@ public interface StageDeviceInterface extends
   Variable<Boolean> getHomingVariable(int pDOFIndex);
 
   /**
-   * Returns the stop variable for a given DOF's index. Stops all movement on
+   * Returns the stop variable for a given DOF's index. Stops all measure on
    * the stage's DOF.
    * 
    * @param pDOFIndex

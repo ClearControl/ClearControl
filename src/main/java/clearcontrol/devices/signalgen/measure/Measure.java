@@ -1,4 +1,4 @@
-package clearcontrol.devices.signalgen.movement;
+package clearcontrol.devices.signalgen.measure;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -8,18 +8,18 @@ import clearcontrol.devices.signalgen.staves.StaveInterface;
 import clearcontrol.devices.signalgen.staves.ZeroStave;
 
 /**
- * Movement implementation
+ * Measure implementation
  *
  * @author royer
  */
-public class Movement extends NameableBase
-                      implements MovementInterface
+public class Measure extends NameableBase
+                      implements MeasureInterface
 {
 
   /**
-   * Default number of staves pwe movement
+   * Default number of staves pwe measure
    */
-  public static final int cDefaultNumberOfStavesPerMovement = 16;
+  public static final int cDefaultNumberOfStavesPerMeasure = 16;
 
   private volatile long mDurationInNanoseconds;
   private final StaveInterface[] mStaveListArray;
@@ -28,25 +28,25 @@ public class Movement extends NameableBase
   private volatile int mSyncChannel = 0;
 
   /**
-   * Instantiates a movement with given name
+   * Instantiates a measure with given name
    * 
    * @param pName
    *          name
    */
-  public Movement(final String pName)
+  public Measure(final String pName)
   {
-    this(pName, cDefaultNumberOfStavesPerMovement);
+    this(pName, cDefaultNumberOfStavesPerMeasure);
   }
 
   /**
-   * Instantiates a movement with given name and number of staves
+   * Instantiates a measure with given name and number of staves
    * 
    * @param pName
    *          name
    * @param pNumberOfStaves
    *          number of staves
    */
-  public Movement(final String pName, final int pNumberOfStaves)
+  public Measure(final String pName, final int pNumberOfStaves)
   {
     super(pName);
     mStaveListArray = new StaveInterface[pNumberOfStaves];
@@ -59,31 +59,31 @@ public class Movement extends NameableBase
   /**
    * Copy constructor
    * 
-   * @param pMovement
-   *          movement to copy
+   * @param pMeasure
+   *          measure to copy
    */
-  public Movement(Movement pMovement)
+  public Measure(Measure pMeasure)
   {
-    this(pMovement.getName(), pMovement.getNumberOfStaves());
+    this(pMeasure.getName(), pMeasure.getNumberOfStaves());
 
-    setSync(pMovement.isSync());
-    setSyncChannel(pMovement.getSyncChannel());
-    setSyncOnRisingEdge(pMovement.isSyncOnRisingEdge());
-    setDuration(pMovement.getDuration(TimeUnit.NANOSECONDS),
+    setSync(pMeasure.isSync());
+    setSyncChannel(pMeasure.getSyncChannel());
+    setSyncOnRisingEdge(pMeasure.isSyncOnRisingEdge());
+    setDuration(pMeasure.getDuration(TimeUnit.NANOSECONDS),
                 TimeUnit.NANOSECONDS);
 
     for (int i = 0; i < mStaveListArray.length; i++)
     {
       final StaveInterface lStaveInterface =
-                                           pMovement.mStaveListArray[i];
+                                           pMeasure.mStaveListArray[i];
       setStave(i, lStaveInterface.duplicate());
     }
   }
 
   @Override
-  public MovementInterface duplicate()
+  public MeasureInterface duplicate()
   {
-    return new Movement(this);
+    return new Measure(this);
   }
 
   @Override
@@ -195,7 +195,7 @@ public class Movement extends NameableBase
       return false;
     if (getClass() != obj.getClass())
       return false;
-    Movement other = (Movement) obj;
+    Measure other = (Measure) obj;
     if (mDurationInNanoseconds != other.mDurationInNanoseconds)
       return false;
     if (mIsSync != other.mIsSync)
@@ -213,7 +213,7 @@ public class Movement extends NameableBase
   @Override
   public String toString()
   {
-    return String.format("Movement[%s]", getName());
+    return String.format("Measure[%s]", getName());
   }
 
 }

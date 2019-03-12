@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.name.NameableBase;
-import clearcontrol.devices.signalgen.movement.MovementInterface;
+import clearcontrol.devices.signalgen.measure.MeasureInterface;
 
 /**
  * Score
@@ -16,8 +16,8 @@ import clearcontrol.devices.signalgen.movement.MovementInterface;
 public class Score extends NameableBase implements ScoreInterface
 {
 
-  private final ArrayList<MovementInterface> mMovementList =
-                                                           new ArrayList<MovementInterface>();
+  private final ArrayList<MeasureInterface> mMeasureList =
+                                                           new ArrayList<MeasureInterface>();
 
   /**
    * Instantiates a score of given name
@@ -40,8 +40,8 @@ public class Score extends NameableBase implements ScoreInterface
   {
     super(pScore.getName());
 
-    for (MovementInterface lMovement : pScore.getMovements())
-      mMovementList.add(lMovement.duplicate());
+    for (MeasureInterface lMeasure : pScore.getMeasures())
+      mMeasureList.add(lMeasure.duplicate());
 
   }
 
@@ -52,80 +52,80 @@ public class Score extends NameableBase implements ScoreInterface
   }
 
   @Override
-  public void addMovement(final MovementInterface pMovement)
+  public void addMeasure(final MeasureInterface pMeasure)
   {
-    mMovementList.add(pMovement);
+    mMeasureList.add(pMeasure);
   }
 
   @Override
-  public void addMovementMultipleTimes(final MovementInterface pMovement,
+  public void addMeasureMultipleTimes(final MeasureInterface pMeasure,
                                        final int pNumberOfTimes)
   {
     for (int i = 0; i < pNumberOfTimes; i++)
     {
-      addMovement(pMovement);
+      addMeasure(pMeasure);
     }
   }
 
   @Override
   public void addScore(ScoreInterface pScore)
   {
-    for (final MovementInterface lMovementInterface : pScore.getMovements())
+    for (final MeasureInterface lMeasureInterface : pScore.getMeasures())
     {
-      addMovement(lMovementInterface);
+      addMeasure(lMeasureInterface);
     }
   }
 
   @Override
   public void addScoreCopy(ScoreInterface pScore)
   {
-    for (final MovementInterface lMovementInterface : pScore.getMovements())
+    for (final MeasureInterface lMeasureInterface : pScore.getMeasures())
     {
-      addMovement(lMovementInterface.duplicate());
+      addMeasure(lMeasureInterface.duplicate());
     }
   }
 
   @Override
-  public void insertMovementAt(final int pIndex,
-                               final MovementInterface pMovement)
+  public void insertMeasureAt(final int pIndex,
+                               final MeasureInterface pMeasure)
   {
-    mMovementList.add(pIndex, pMovement);
+    mMeasureList.add(pIndex, pMeasure);
   }
 
   @Override
-  public void removeMovementAt(final int pIndex)
+  public void removeMeasureAt(final int pIndex)
   {
-    mMovementList.remove(pIndex);
+    mMeasureList.remove(pIndex);
   }
 
   @Override
-  public MovementInterface getMovement(int pMovementIndex)
+  public MeasureInterface getMeasure(int pMeasureIndex)
   {
-    return mMovementList.get(pMovementIndex);
+    return mMeasureList.get(pMeasureIndex);
   }
 
   @Override
-  public MovementInterface getLastMovement()
+  public MeasureInterface getLastMeasure()
   {
-    return mMovementList.get(mMovementList.size() - 1);
+    return mMeasureList.get(mMeasureList.size() - 1);
   }
 
   @Override
   public void clear()
   {
-    mMovementList.clear();
+    mMeasureList.clear();
   }
 
   @Override
-  public ArrayList<MovementInterface> getMovements()
+  public ArrayList<MeasureInterface> getMeasures()
   {
-    return mMovementList;
+    return mMeasureList;
   }
 
   @Override
-  public int getNumberOfMovements()
+  public int getNumberOfMeasures()
   {
-    return mMovementList.size();
+    return mMeasureList.size();
   }
 
   @Override
@@ -133,9 +133,9 @@ public class Score extends NameableBase implements ScoreInterface
   {
     int lMaxNumberOfStaves = 0;
 
-    for (final MovementInterface lMovement : mMovementList)
+    for (final MeasureInterface lMeasure : mMeasureList)
       lMaxNumberOfStaves = max(lMaxNumberOfStaves,
-                               lMovement.getNumberOfStaves());
+                               lMeasure.getNumberOfStaves());
 
     return lMaxNumberOfStaves;
   }
@@ -144,9 +144,9 @@ public class Score extends NameableBase implements ScoreInterface
   public long getDuration(TimeUnit pTimeUnit)
   {
     long lDurationInNs = 0;
-    for (final MovementInterface lMovement : mMovementList)
+    for (final MeasureInterface lMeasure : mMeasureList)
     {
-      lDurationInNs += lMovement.getDuration(TimeUnit.NANOSECONDS);
+      lDurationInNs += lMeasure.getDuration(TimeUnit.NANOSECONDS);
     }
     return pTimeUnit.convert(lDurationInNs, TimeUnit.NANOSECONDS);
   }
@@ -157,8 +157,8 @@ public class Score extends NameableBase implements ScoreInterface
     final int prime = 31;
     int result = 1;
     result = prime * result
-             + ((mMovementList == null) ? 0
-                                        : mMovementList.hashCode());
+             + ((mMeasureList == null) ? 0
+                                        : mMeasureList.hashCode());
     return result;
   }
 
@@ -172,12 +172,12 @@ public class Score extends NameableBase implements ScoreInterface
     if (getClass() != obj.getClass())
       return false;
     Score other = (Score) obj;
-    if (mMovementList == null)
+    if (mMeasureList == null)
     {
-      if (other.mMovementList != null)
+      if (other.mMeasureList != null)
         return false;
     }
-    else if (!mMovementList.equals(other.mMovementList))
+    else if (!mMeasureList.equals(other.mMeasureList))
       return false;
     return true;
   }
@@ -186,10 +186,10 @@ public class Score extends NameableBase implements ScoreInterface
   @Override
   public String toString()
   {
-    return String.format("Score[name=%s, duration=%g sec, #movements=%d, #staves=%d]",
+    return String.format("Score[name=%s, duration=%g sec, #measures=%d, #staves=%d]",
                          getName(),
                          getDuration(TimeUnit.MICROSECONDS) * 1e-6,
-                         getNumberOfMovements(),
+                         getNumberOfMeasures(),
                          getMaxNumberOfStaves());
   }
 
