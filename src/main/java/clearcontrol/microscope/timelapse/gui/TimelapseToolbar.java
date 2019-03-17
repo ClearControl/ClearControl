@@ -43,148 +43,15 @@ public class TimelapseToolbar extends CustomGridPane
   public TimelapseToolbar(TimelapseInterface pTimelapseInterface)
   {
     mTimelapseInterface = pTimelapseInterface;
-    setPrefSize(500, 300);
+    //setPrefSize(500, 300);
 
     mRow = 0;
 
-    {
-      SimpleIndicator lAcquisitionStateIndicator =
-                                                 new SimpleIndicator();
-      lAcquisitionStateIndicator.indicatorStyleProperty()
-                                .set(IndicatorStyle.RED);
-      pTimelapseInterface.getIsRunningVariable()
-                         .addSetListener((o, n) -> {
-                           lAcquisitionStateIndicator.onProperty()
-                                                     .set(n);
-                         });
-
-      lAcquisitionStateIndicator.setMinSize(50, 50);
-
-      Button lStartTimelapse = new Button("Start Timelapse");
-      lStartTimelapse.setAlignment(Pos.CENTER);
-      lStartTimelapse.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setColumnSpan(lStartTimelapse, 2);
-      lStartTimelapse.setOnAction((e) -> {
-        pTimelapseInterface.startTimelapse();
-
-      });
-
-      Button lStopTimelapse = new Button("Stop Timelapse");
-      lStopTimelapse.setAlignment(Pos.CENTER);
-      lStopTimelapse.setMaxWidth(Double.MAX_VALUE);
-      GridPane.setColumnSpan(lStopTimelapse, 2);
-      lStopTimelapse.setOnAction((e) -> {
-        pTimelapseInterface.stopTimelapse();
-      });
-
-      Lcd lTimeLapseLcdDisplay =
-                               LcdBuilder.create()
-                                         // .prefWidth(480)
-                                         // .prefHeight(192)
-                                         .styleClass(Lcd.STYLE_CLASS_WHITE)
-                                         .backgroundVisible(true)
-                                         .value(0)
-                                         .minValue(0)
-                                         .maxValue(Double.MAX_VALUE)
-                                         .foregroundShadowVisible(true)
-                                         .crystalOverlayVisible(false)
-                                         .title("time points")
-                                         .titleVisible(false)
-                                         .batteryVisible(false)
-                                         .signalVisible(false)
-                                         .alarmVisible(false)
-                                         .unit("tp")
-                                         .unitVisible(true)
-                                         .decimals(0)
-
-                                         .minMeasuredValueDecimals(2)
-                                         .minMeasuredValueVisible(false)
-                                         .maxMeasuredValueDecimals(2)
-                                         .maxMeasuredValueVisible(false)
-                                         .formerValueVisible(false)
-                                         .threshold(26)
-                                         .thresholdVisible(false)
-                                         .trendVisible(false)
-                                         .trend(Lcd.Trend.RISING)
-                                         .numberSystemVisible(true)
-                                         .lowerRightTextVisible(false)
-                                         .valueFont(Lcd.LcdFont.LCD)
-                                         .animated(false)
-                                         .build();
-
-      VariableLCD<Long> lVariableLCD =
-                                     new VariableLCD<Long>(lTimeLapseLcdDisplay,
-                                                           pTimelapseInterface.getTimePointCounterVariable());
-
-      GridPane.setRowSpan(lAcquisitionStateIndicator, 2);
-      GridPane.setColumnSpan(lStartTimelapse, 2);
-      GridPane.setColumnSpan(lStopTimelapse, 2);
-      GridPane.setHalignment(lVariableLCD, HPos.CENTER);
-      GridPane.setColumnSpan(lVariableLCD, 1);
-      GridPane.setRowSpan(lVariableLCD, 2);
-
-      add(lAcquisitionStateIndicator, 0, mRow);
-      add(lVariableLCD, 3, mRow);
-      add(lStartTimelapse, 1, mRow++);
-      add(lStopTimelapse, 1, mRow++);
-
-    }
+    addStartStopButtons(pTimelapseInterface);
 
     addSeparator();
 
-    {
-      NumberVariableTextField<Long> lIntervalField =
-                                                   new NumberVariableTextField<Long>("Interval:",
-                                                                                     pTimelapseInterface.getTimelapseTimerVariable()
-                                                                                                        .get()
-                                                                                                        .getAcquisitionIntervalVariable(),
-                                                                                     0L,
-                                                                                     Long.MAX_VALUE,
-                                                                                     1L);
 
-      EnumComboBoxVariable<TimeUnitEnum> lIntervalTimeUnitBox =
-                                                              new EnumComboBoxVariable<TimeUnitEnum>(pTimelapseInterface.getTimelapseTimerVariable()
-                                                                                                                        .get()
-                                                                                                                        .getAcquisitionIntervalUnitVariable(),
-                                                                                                     TimeUnitEnum.values());
-
-      GridPane.setColumnSpan(lIntervalField.getLabel(), 1);
-      GridPane.setColumnSpan(lIntervalField.getTextField(), 1);
-      GridPane.setColumnSpan(lIntervalTimeUnitBox, 1);
-
-      add(lIntervalField.getLabel(), 1, mRow);
-      add(lIntervalField.getTextField(), 2, mRow);
-      add(lIntervalTimeUnitBox, 3, mRow);
-      mRow++;
-    }
-
-    {
-
-      VariableCheckBox lLimitNumberOfTimePointsCheckBox =
-                                                        new VariableCheckBox("",
-                                                                             pTimelapseInterface.getEnforceMaxNumberOfTimePointsVariable());
-
-      NumberVariableTextField<Long> lMaxNumberOfTimePointsField =
-                                                                new NumberVariableTextField<Long>("Max timepoints:",
-                                                                                                  pTimelapseInterface.getMaxNumberOfTimePointsVariable(),
-                                                                                                  0L,
-                                                                                                  Long.MAX_VALUE,
-                                                                                                  1L);
-
-      GridPane.setHalignment(lLimitNumberOfTimePointsCheckBox.getCheckBox(),
-                             HPos.RIGHT);
-      GridPane.setColumnSpan(lLimitNumberOfTimePointsCheckBox.getCheckBox(),
-                             1);
-      GridPane.setColumnSpan(lMaxNumberOfTimePointsField.getLabel(),
-                             1);
-      GridPane.setColumnSpan(lMaxNumberOfTimePointsField.getTextField(),
-                             2);
-
-      add(lLimitNumberOfTimePointsCheckBox.getCheckBox(), 0, mRow);
-      add(lMaxNumberOfTimePointsField.getLabel(), 1, mRow);
-      add(lMaxNumberOfTimePointsField.getTextField(), 2, mRow);
-      mRow++;
-    }
 
     {
       VariableFileChooser lRootFolderChooser =
@@ -208,43 +75,189 @@ public class TimelapseToolbar extends CustomGridPane
                                                 new StringVariableTextField("Name:",
                                                                             pTimelapseInterface.getDataSetNamePostfixVariable());
 
-      ClassComboBoxVariable lStackSinkComboBox =
-                                               new ClassComboBoxVariable(pTimelapseInterface.getCurrentFileStackSinkTypeVariable(),
-                                                                         pTimelapseInterface.getFileStackSinkTypeList(),
-                                                                         100);
 
       GridPane.setColumnSpan(lPostFixTextField.getLabel(), 1);
       GridPane.setColumnSpan(lPostFixTextField.getTextField(), 2);
-      GridPane.setColumnSpan(lStackSinkComboBox, 1);
 
       add(lPostFixTextField.getLabel(), 0, mRow);
       add(lPostFixTextField.getTextField(), 1, mRow);
-      add(lStackSinkComboBox, 3, mRow);
+
 
       mRow++;
     }
+
+
+  }
+
+  protected void addStartStopButtons(TimelapseInterface pTimelapseInterface) {
 
     {
+      SimpleIndicator lAcquisitionStateIndicator =
+              new SimpleIndicator();
+      lAcquisitionStateIndicator.indicatorStyleProperty()
+              .set(IndicatorStyle.RED);
+      pTimelapseInterface.getIsRunningVariable()
+              .addSetListener((o, n) -> {
+                lAcquisitionStateIndicator.onProperty()
+                        .set(n);
+              });
 
-      VariableCheckBox lSaveStacksCheckBox =
-                                           new VariableCheckBox("Save stacks",
-                                                                pTimelapseInterface.getSaveStacksVariable());
+      lAcquisitionStateIndicator.setMinSize(50, 50);
 
-      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
-      GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
-                             HPos.RIGHT);
+      Button lStartTimelapse = new Button("Start Timelapse");
+      lStartTimelapse.setAlignment(Pos.CENTER);
+      lStartTimelapse.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setColumnSpan(lStartTimelapse, 2);
+      lStartTimelapse.setOnAction((e) -> {
+        pTimelapseInterface.startTimelapse();
 
-      add(lSaveStacksCheckBox.getCheckBox(), 0, mRow);
-      add(lSaveStacksCheckBox.getLabel(), 1, mRow);
+      });
 
-      mRow++;
+      Button lStopTimelapse = new Button("Stop Timelapse");
+      lStopTimelapse.setAlignment(Pos.CENTER);
+      lStopTimelapse.setMaxWidth(Double.MAX_VALUE);
+      GridPane.setColumnSpan(lStopTimelapse, 2);
+      lStopTimelapse.setOnAction((e) -> {
+        pTimelapseInterface.stopTimelapse();
+      });
+
+      Lcd lTimeLapseLcdDisplay =
+              LcdBuilder.create()
+                      // .prefWidth(480)
+                      // .prefHeight(192)
+                      .styleClass(Lcd.STYLE_CLASS_WHITE)
+                      .backgroundVisible(true)
+                      .value(0)
+                      .minValue(0)
+                      .maxValue(Double.MAX_VALUE)
+                      .foregroundShadowVisible(true)
+                      .crystalOverlayVisible(false)
+                      .title("time points")
+                      .titleVisible(false)
+                      .batteryVisible(false)
+                      .signalVisible(false)
+                      .alarmVisible(false)
+                      .unit("tp")
+                      .unitVisible(true)
+                      .decimals(0)
+
+                      .minMeasuredValueDecimals(2)
+                      .minMeasuredValueVisible(false)
+                      .maxMeasuredValueDecimals(2)
+                      .maxMeasuredValueVisible(false)
+                      .formerValueVisible(false)
+                      .threshold(26)
+                      .thresholdVisible(false)
+                      .trendVisible(false)
+                      .trend(Lcd.Trend.RISING)
+                      .numberSystemVisible(true)
+                      .lowerRightTextVisible(false)
+                      .valueFont(Lcd.LcdFont.LCD)
+                      .animated(false)
+                      .build();
+
+      VariableLCD<Long> lVariableLCD =
+              new VariableLCD<Long>(lTimeLapseLcdDisplay,
+                      pTimelapseInterface.getTimePointCounterVariable());
+
+      GridPane.setRowSpan(lAcquisitionStateIndicator, 2);
+      GridPane.setColumnSpan(lStartTimelapse, 2);
+      GridPane.setColumnSpan(lStopTimelapse, 2);
+      GridPane.setHalignment(lVariableLCD, HPos.CENTER);
+      GridPane.setColumnSpan(lVariableLCD, 1);
+      GridPane.setRowSpan(lVariableLCD, 2);
+
+      add(lAcquisitionStateIndicator, 0, mRow);
+      add(lVariableLCD, 3, mRow);
+      add(lStartTimelapse, 1, mRow++);
+      add(lStopTimelapse, 1, mRow++);
+
     }
-
   }
 
   public CustomGridPane buildAdvancedOptionsGripPane()
   {
     CustomGridPane lAdvancedOptionsGridPane = new CustomGridPane();
+
+
+    {
+      VariableCheckBox lSaveStacksCheckBox =
+              new VariableCheckBox("Save stacks",
+                      mTimelapseInterface.getSaveStacksVariable());
+
+      GridPane.setColumnSpan(lSaveStacksCheckBox.getLabel(), 1);
+      GridPane.setHalignment(lSaveStacksCheckBox.getCheckBox(),
+              HPos.RIGHT);
+
+      lAdvancedOptionsGridPane.add(lSaveStacksCheckBox.getCheckBox(), 0, mRow);
+      lAdvancedOptionsGridPane.add(lSaveStacksCheckBox.getLabel(), 1, mRow);
+
+
+      ClassComboBoxVariable lStackSinkComboBox =
+              new ClassComboBoxVariable(mTimelapseInterface.getCurrentFileStackSinkTypeVariable(),
+                      mTimelapseInterface.getFileStackSinkTypeList(),
+                      100);
+
+      GridPane.setColumnSpan(lStackSinkComboBox, 1);
+
+      lAdvancedOptionsGridPane.add(lStackSinkComboBox, 3, mRow);
+      mRow++;
+    }
+
+    {
+      NumberVariableTextField<Long> lIntervalField =
+              new NumberVariableTextField<Long>("Interval:",
+                      mTimelapseInterface.getTimelapseTimerVariable()
+                              .get()
+                              .getAcquisitionIntervalVariable(),
+                      0L,
+                      Long.MAX_VALUE,
+                      1L);
+
+      EnumComboBoxVariable<TimeUnitEnum> lIntervalTimeUnitBox =
+              new EnumComboBoxVariable<TimeUnitEnum>(mTimelapseInterface.getTimelapseTimerVariable()
+                      .get()
+                      .getAcquisitionIntervalUnitVariable(),
+                      TimeUnitEnum.values());
+
+      GridPane.setColumnSpan(lIntervalField.getLabel(), 1);
+      GridPane.setColumnSpan(lIntervalField.getTextField(), 1);
+      GridPane.setColumnSpan(lIntervalTimeUnitBox, 1);
+
+      lAdvancedOptionsGridPane.add(lIntervalField.getLabel(), 1, mRow);
+      lAdvancedOptionsGridPane.add(lIntervalField.getTextField(), 2, mRow);
+      lAdvancedOptionsGridPane.add(lIntervalTimeUnitBox, 3, mRow);
+      mRow++;
+    }
+
+    {
+
+      VariableCheckBox lLimitNumberOfTimePointsCheckBox =
+              new VariableCheckBox("",
+                      mTimelapseInterface.getEnforceMaxNumberOfTimePointsVariable());
+
+      NumberVariableTextField<Long> lMaxNumberOfTimePointsField =
+              new NumberVariableTextField<Long>("Max timepoints:",
+                      mTimelapseInterface.getMaxNumberOfTimePointsVariable(),
+                      0L,
+                      Long.MAX_VALUE,
+                      1L);
+
+      GridPane.setHalignment(lLimitNumberOfTimePointsCheckBox.getCheckBox(),
+              HPos.RIGHT);
+      GridPane.setColumnSpan(lLimitNumberOfTimePointsCheckBox.getCheckBox(),
+              1);
+      GridPane.setColumnSpan(lMaxNumberOfTimePointsField.getLabel(),
+              1);
+      GridPane.setColumnSpan(lMaxNumberOfTimePointsField.getTextField(),
+              2);
+
+      lAdvancedOptionsGridPane.add(lLimitNumberOfTimePointsCheckBox.getCheckBox(), 0, mRow);
+      lAdvancedOptionsGridPane.add(lMaxNumberOfTimePointsField.getLabel(), 1, mRow);
+      lAdvancedOptionsGridPane.add(lMaxNumberOfTimePointsField.getTextField(), 2, mRow);
+      mRow++;
+    }
+
 
     {
       NumberVariableTextField<Long> lActualIntervalField =
