@@ -94,10 +94,6 @@ public class VideoWindow implements AutoCloseable
     mEffectiveWindowHeight = pWindowHeight;
     mFlipX = pFlipX;
 
-    mClearGLDebugEventListener =
-                               new ClearGLDebugEventListenerForVideoWindow(this,
-                                                                           mFlipX);
-
     mClearGLWindow = new ClearGLWindow(pWindowName,
                                        pWindowWidth,
                                        pWindowHeight,
